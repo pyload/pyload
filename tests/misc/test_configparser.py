@@ -21,9 +21,9 @@ class TestConfigParser(object):
 
     def test_dict(self):
 
-        assert self.config["general"]["language"]
-        self.config["general"]["language"] = "de"
-        assert self.config["general"]["language"] == "de"
+        assert self.config['general']['language']
+        self.config['general']['language'] = "de"
+        assert self.config['general']['language'] == "de"
 
     def test_contains(self):
 
@@ -41,8 +41,8 @@ class TestConfigParser(object):
 
     @raises(KeyError)
     def test_invalid_config(self):
-        print(self.config["invalid"]["config"])
+        print(self.config['invalid']['config'])
 
     @raises(KeyError)
     def test_invalid_section(self):
-        print(self.config["general"]["invalid"])
+        print(self.config['general']['invalid'])

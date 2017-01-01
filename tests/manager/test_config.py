@@ -50,8 +50,8 @@ class TestConfigManager(TestCase):
         assert self.db.loadConfig("plugin", 1) == "some other value"
 
         d = self.db.loadAllConfigs()
-        assert d[0]["plugin"] == "some value"
-        assert self.db.loadConfigsForUser(0)["plugin"] == "some value"
+        assert d[0]['plugin'] == "some value"
+        assert self.db.loadConfigsForUser(0)['plugin'] == "some value"
 
         self.db.deleteConfig("plugin", 0)
 
@@ -65,24 +65,24 @@ class TestConfigManager(TestCase):
 
     def test_parser(self):
         assert self.config.get("general", "language")
-        self.config["general"]["language"] = "de"
-        assert self.config["general"]["language"] == "de"
+        self.config['general']['language'] = "de"
+        assert self.config['general']['language'] == "de"
         assert self.config.get("general", "language", adminUser) == "de"
 
     def test_user(self):
         self.add_config()
 
-        assert self.config["plugin"]["value"] == "default"
+        assert self.config['plugin']['value'] == "default"
         assert self.config.get("plugin", "value", adminUser) == "default"
         assert self.config.get("plugin", "value", normalUser) == "default"
 
         assert self.config.set("plugin", "value", False, user=normalUser)
         assert self.config.get("plugin", "value", normalUser) is False
-        assert self.config["plugin"]["value"] == "default"
+        assert self.config['plugin']['value'] == "default"
 
         assert self.config.set("plugin", "value", True, user=adminUser)
         assert self.config.get("plugin", "value", adminUser) is True
-        assert self.config["plugin"]["value"] is True
+        assert self.config['plugin']['value'] is True
         assert self.config.get("plugin", "value", normalUser) is False
 
         self.config.delete("plugin", normalUser)
@@ -90,7 +90,7 @@ class TestConfigManager(TestCase):
 
         self.config.delete("plugin")
         assert self.config.get("plugin", "value", adminUser) == "default"
-        assert self.config["plugin"]["value"] == "default"
+        assert self.config['plugin']['value'] == "default"
 
         # should not trigger something
         self.config.delete("foo")

@@ -22,7 +22,7 @@ def add_json_header(r):
 
 def set_session(request, user):
     s = request.environ.get('beaker.session')
-    s["uid"] = user.uid
+    s['uid'] = user.uid
     s.save()
     return s
 
@@ -92,7 +92,7 @@ def login_required(perm=None):
                         else:
                             return redirect("/nopermission")
 
-                kwargs["api"] = api
+                kwargs['api'] = api
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

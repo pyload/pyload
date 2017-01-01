@@ -263,10 +263,10 @@ class Account(Base):
         if not self.valid or not self.activated: return False
 
         # TODO: not in ui currently
-        if "time" in self.options and self.options["time"]:
+        if "time" in self.options and self.options['time']:
             time_data = ""
             try:
-                time_data = self.options["time"]
+                time_data = self.options['time']
                 start, end = time_data.split("-")
                 if not compare_time(start.split(":"), end.split(":")):
                     return False

@@ -56,14 +56,14 @@ class AddonThread(BaseThread):
     def run(self): #TODO: approach via func_code
         try:
             try:
-                self.kwargs["thread"] = self
+                self.kwargs['thread'] = self
                 self.f(*self.args, **self.kwargs)
             except TypeError as e:
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
-                del self.kwargs["thread"]
+                del self.kwargs['thread']
                 self.f(*self.args, **self.kwargs)
         except Exception as e:
             if hasattr(self.f, "im_self"):

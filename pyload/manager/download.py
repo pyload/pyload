@@ -127,8 +127,8 @@ class DownloadManager(object):
 
         self.try_reconnect()
 
-        if free_space(self.pyload.config["general"]["download_folder"]) / 1024 / 1024 < \
-                self.pyload.config["general"]["min_free_space"]:
+        if free_space(self.pyload.config['general']['download_folder']) / 1024 / 1024 < \
+                self.pyload.config['general']['min_free_space']:
             self.log.warning(_("Not enough space left on device"))
             self.paused = True
 
@@ -217,7 +217,7 @@ class DownloadManager(object):
     def try_reconnect(self):
         """checks if reconnect needed"""
 
-        if not self.pyload.config["reconnect"]["activated"] or not self.pyload.api.is_time_reconnect():
+        if not self.pyload.config['reconnect']['activated'] or not self.pyload.api.is_time_reconnect():
             return False
 
         # only reconnect when all threads are ready
@@ -228,7 +228,7 @@ class DownloadManager(object):
             if exists(join(COREDIR, self.pyload.config['reconnect']['method'])):
                 self.pyload.config['reconnect']['method'] = join(COREDIR, self.pyload.config['reconnect']['method'])
             else:
-                self.pyload.config["reconnect"]["activated"] = False
+                self.pyload.config['reconnect']['activated'] = False
                 self.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -249,7 +249,7 @@ class DownloadManager(object):
             call(self.pyload.config['reconnect']['method'], shell=True)
         except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
-            self.pyload.config["reconnect"]["activated"] = False
+            self.pyload.config['reconnect']['activated'] = False
             self.reconnecting.clear()
             self.pyload.print_exc()
             return

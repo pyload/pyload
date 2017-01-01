@@ -156,31 +156,31 @@ class Xdcc(Hoster):
                     "text": msg[3][1:]
                 }
 
-                if nick == msg["target"][0:len(nick)] and "PRIVMSG" == msg["action"]:
-                    if msg["text"] == "\x01VERSION\x01":
+                if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
+                    if msg['text'] == "\x01VERSION\x01":
                         self.log_debug("XDCC: Sending CTCP VERSION")
                         sock.send("NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad IRC Interface"))
-                    elif msg["text"] == "\x01TIME\x01":
+                    elif msg['text'] == "\x01TIME\x01":
                         self.log_debug("Sending CTCP TIME")
                         sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
-                    elif msg["text"] == "\x01LAG\x01":
+                    elif msg['text'] == "\x01LAG\x01":
                         pass  # don't know how to answer
 
-                if not (bot == msg["origin"][0:len(bot)]
-                        and nick == msg["target"][0:len(nick)]
-                        and msg["action"] in ("PRIVMSG", "NOTICE")):
+                if not (bot == msg['origin'][0:len(bot)]
+                        and nick == msg['target'][0:len(nick)]
+                        and msg['action'] in ("PRIVMSG", "NOTICE")):
                     continue
 
                 if self.debug is 1:
-                    print("{}: {}".format(msg["origin"], msg["text"]))
+                    print("{}: {}".format(msg['origin'], msg['text']))
 
-                if "You already requested that pack" in msg["text"]:
+                if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300
 
-                if "you must be on a known channel to request a pack" in msg["text"]:
+                if "you must be on a known channel to request a pack" in msg['text']:
                     self.fail(_("Wrong channel"))
 
-                m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg["text"])
+                m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg['text'])
                 if m:
                     done = True
 

@@ -127,7 +127,7 @@ class Base(object):
 
     def _log(self, level, *args, **kwargs):
         if "sep" in kwargs:
-            sep = "{}".format(kwargs["sep"])
+            sep = "{}".format(kwargs['sep'])
         else:
             sep = " | "
 

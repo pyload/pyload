@@ -108,24 +108,24 @@ class CurlRequest(Request):
 
     def set_interface(self, options):
 
-        interface, proxy, ipv6 = options["interface"], options["proxies"], options["ipv6"]
+        interface, proxy, ipv6 = options['interface'], options['proxies'], options['ipv6']
 
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, bytes(interface))
 
         if proxy:
-            if proxy["type"] == "socks4":
+            if proxy['type'] == "socks4":
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
-            elif proxy["type"] == "socks5":
+            elif proxy['type'] == "socks5":
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
             else:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
-            self.c.setopt(pycurl.PROXY, bytes(proxy["address"]))
-            self.c.setopt(pycurl.PROXYPORT, proxy["port"])
+            self.c.setopt(pycurl.PROXY, bytes(proxy['address']))
+            self.c.setopt(pycurl.PROXYPORT, proxy['port'])
 
-            if proxy["username"]:
-                self.c.setopt(pycurl.PROXYUSERPWD, bytes("{}:{}".format(proxy["username"], proxy["password"])))
+            if proxy['username']:
+                self.c.setopt(pycurl.PROXYUSERPWD, bytes("{}:{}".format(proxy['username'], proxy['password'])))
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
@@ -133,10 +133,10 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
         if "timeout" in options:
-            self.c.setopt(pycurl.LOW_SPEED_TIME, options["timeout"])
+            self.c.setopt(pycurl.LOW_SPEED_TIME, options['timeout'])
 
         if "auth" in options:
-            self.c.setopt(pycurl.USERPWD, bytes(options["auth"]))
+            self.c.setopt(pycurl.USERPWD, bytes(options['auth']))
 
     def init_options(self, options):
         """  Sets same options as available in pycurl  """
@@ -172,9 +172,9 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.POST, 0)
 
         if referer and self.last_url:
-            self.headers["Referer"] = str(self.last_url)
+            self.headers['Referer'] = str(self.last_url)
         else:
-            self.headers["Referer"] = ""
+            self.headers['Referer'] = ""
 
         if cookies:
             for c in self.cj.output().splitlines():
@@ -185,7 +185,7 @@ class CurlRequest(Request):
 
         # TODO: remove auth again
         if "auth" in self.options:
-            self.c.setopt(pycurl.USERPWD, bytes(self.options["auth"]))
+            self.c.setopt(pycurl.USERPWD, bytes(self.options['auth']))
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers.to_headerlist())
 
@@ -200,7 +200,7 @@ class CurlRequest(Request):
         if "header" in self.options:
             # TODO
             print("custom header not implemented")
-            self.c.setopt(pycurl.HTTPHEADER, self.options["header"])
+            self.c.setopt(pycurl.HTTPHEADER, self.options['header'])
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)

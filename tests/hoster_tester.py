@@ -101,11 +101,11 @@ c = Core()
 
 sections = parse_config(join(dirname(__file__), "hosterlinks.txt"))
 
-for f in sections["files"]:
+for f in sections['files']:
     name, hash = f.rsplit(" ", 1)
     HosterPluginTester.files[name] = str(hash)
 
-del sections["files"]
+del sections['files']
 
 urls = []
 status = {}

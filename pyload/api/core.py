@@ -91,12 +91,12 @@ class CoreApi(BaseApi):
 
         :return: new reconnect state
         """
-        self.pyload.config["reconnect"]["activated"] ^= True
-        return self.pyload.config["reconnect"]["activated"]
+        self.pyload.config['reconnect']['activated'] ^= True
+        return self.pyload.config['reconnect']['activated']
 
     def free_space(self):
         """Available free space at download directory in bytes"""
-        return free_space(self.pyload.config["general"]["download_folder"])
+        return free_space(self.pyload.config['general']['download_folder'])
 
 
     def quit(self):
@@ -142,7 +142,7 @@ class CoreApi(BaseApi):
         """
         start = self.pyload.config['reconnect']['startTime'].split(":")
         end = self.pyload.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.pyload.config["reconnect"]["activated"]
+        return compare_time(start, end) and self.pyload.config['reconnect']['activated']
 
 
 if Api.extend(CoreApi):

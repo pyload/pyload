@@ -217,46 +217,46 @@ class PluginLoader(object):
         version = 0
         if "version" in attrs:
             try:
-                version = float(attrs["version"])
+                version = float(attrs['version'])
             except ValueError:
-                self.log_debug(folder, name, "Invalid version {}".format(attrs["version"]))
+                self.log_debug(folder, name, "Invalid version {}".format(attrs['version']))
                 version = 9 #TODO remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
 
-        if "pattern" in attrs and attrs["pattern"]:
+        if "pattern" in attrs and attrs['pattern']:
             try:
-                plugin_re = re.compile(attrs["pattern"], re.I)
+                plugin_re = re.compile(attrs['pattern'], re.I)
             except Exception:
-                self.log_debug(folder, name, "Invalid regexp pattern '{}'".format(attrs["pattern"]))
+                self.log_debug(folder, name, "Invalid regexp pattern '{}'".format(attrs['pattern']))
                 plugin_re = self.NO_MATCH
         else:
             plugin_re = self.NO_MATCH
 
-        deps = attrs["dependencies"]
-        category = attrs["category"] if folder == "addon" else ""
+        deps = attrs['dependencies']
+        category = attrs['category'] if folder == "addon" else ""
 
         # create plugin tuple
         # user_context=True is the default for non addon plugins
         plugin = PluginTuple(version, plugin_re, deps, category,
-                             bool(folder != "addon" or attrs["user_context"]), filename)
+                             bool(folder != "addon" or attrs['user_context']), filename)
 
         # These have none or their own config
         if folder in ("internal", "account", "network"):
             return plugin
 
-        if folder == "addon" and "config" not in attrs and not attrs["internal"]:
-            attrs["config"] = (["activated", "bool", "Activated", False],)
+        if folder == "addon" and "config" not in attrs and not attrs['internal']:
+            attrs['config'] = (["activated", "bool", "Activated", False],)
 
-        if "config" in attrs and attrs["config"] is not None:
-            config = attrs["config"]
-            desc = attrs["description"]
-            expl = attrs["explanation"]
+        if "config" in attrs and attrs['config'] is not None:
+            config = attrs['config']
+            desc = attrs['description']
+            expl = attrs['explanation']
 
             # Convert tuples to list
             config = [list(x) for x in config]
 
-            if folder == "addon" and not attrs["internal"]:
+            if folder == "addon" and not attrs['internal']:
                 for item in config:
                     if item[0] == "activated": break
                 else: # activated flag missing

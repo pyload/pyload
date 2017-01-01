@@ -56,9 +56,9 @@ class Setup(object):
                 "v": v
             }
             if d.optional:
-                result["opt"].append(check)
+                result['opt'].append(check)
             else:
-                result["core"].append(check)
+                result['core'].append(check)
 
         return result
 
@@ -182,15 +182,15 @@ class Setup(object):
 
         print("")
         langs = self.config.get_meta_data("general", "language")
-        self.config["general"]["language"] = self.ask(_("Language"), "en", langs.type.split(";"))
+        self.config['general']['language'] = self.ask(_("Language"), "en", langs.type.split(";"))
 
-        self.config["general"]["download_folder"] = self.ask(_("Download folder"), "Downloads")
-        self.config["download"]["max_downloads"] = self.ask(_("Max parallel downloads"), "3")
+        self.config['general']['download_folder'] = self.ask(_("Download folder"), "Downloads")
+        self.config['download']['max_downloads'] = self.ask(_("Max parallel downloads"), "3")
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
-        self.config["reconnect"]["activated"] = reconnect
+        self.config['reconnect']['activated'] = reconnect
         if reconnect:
-            self.config["reconnect"]["method"] = self.ask(_("Reconnect script location"), "./reconnect.sh")
+            self.config['reconnect']['method'] = self.ask(_("Reconnect script location"), "./reconnect.sh")
 
 
     def conf_web(self):
@@ -198,11 +198,11 @@ class Setup(object):
         print(_("## Webinterface Setup ##"))
 
         print("")
-        self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
+        self.config['webinterface']['activated'] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
         print("")
         print(_("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally"))
-        self.config["webinterface"]["host"] = self.ask(_("Address"), "localhost")
-        self.config["webinterface"]["port"] = self.ask(_("Port"), "8010")
+        self.config['webinterface']['host'] = self.ask(_("Address"), "localhost")
+        self.config['webinterface']['port'] = self.ask(_("Port"), "8010")
         print("")
         print(_("pyLoad offers several server backends, now following a short explanation"))
         print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin"))
@@ -215,7 +215,7 @@ class Setup(object):
         print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
         print(_("come back here and change the builtin server to the threaded one here"))
 
-        self.config["webinterface"]["server"] = self.ask(_("Server"), "threaded",
+        self.config['webinterface']['server'] = self.ask(_("Server"), "threaded",
             ["builtin", "threaded", "fastcgi", "lightweight"])
 
     def conf_ssl(self):
@@ -229,11 +229,11 @@ class Setup(object):
         print("openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt ")
         print("")
         print(_("If you're done and everything went fine, you can activate ssl now"))
-        self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
+        self.config['ssl']['activated'] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
         translation = gettext.translation("setup", join(self.path, "locale"),
-            languages=[self.config["general"]["language"], "en"], fallback=True)
+            languages=[self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
 
         self.open_db()
@@ -301,7 +301,7 @@ class Setup(object):
     def conf_path(self, trans=False):
         if trans:
             translation = gettext.translation("setup", join(self.path, "locale"),
-                languages=[self.config["general"]["language"], "en"], fallback=True)
+                languages=[self.config['general']['language'], "en"], fallback=True)
             translation.install(True)
 
         print(_("Setting new configpath, current configuration will not be transferred!"))

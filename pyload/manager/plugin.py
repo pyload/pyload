@@ -117,9 +117,9 @@ class PluginManager(object):
                 if found: break
 
             if not found:
-                res["hoster"].append((url, self.DEFAULT_PLUGIN))
+                res['hoster'].append((url, self.DEFAULT_PLUGIN))
 
-        return res["hoster"], res["crypter"]
+        return res['hoster'], res['crypter']
 
     def find_plugin(self, name):
         """ Finds the type to a plugin name """

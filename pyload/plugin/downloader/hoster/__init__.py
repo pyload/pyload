@@ -116,8 +116,8 @@ class Hoster(Base):
 
     def get_chunk_count(self):
         if self.chunk_limit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunk_limit)
+            return self.config['download']['chunks']
+        return min(self.config['download']['chunks'], self.chunk_limit)
 
     def get_download_limit(self):
         if self.account:
@@ -262,12 +262,12 @@ class Hoster(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
+            makedirs(location, int(self.pyload.config['permission']['folder'], 8))
 
-            if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
+            if self.pyload.config['permission']['change_dl'] and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.config['permission']['user'])[2]
+                    gid = getgrnam(self.config['permission']['group'])[2]
 
                     chown(location, uid, gid)
                 except Exception as e:
@@ -298,13 +298,13 @@ class Hoster(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.pyload.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
+        if self.pyload.config['permission']['change_file']:
+            chmod(fs_filename, int(self.pyload.config['permission']['file'], 8))
 
-        if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
+        if self.pyload.config['permission']['change_dl'] and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.config['permission']['user'])[2]
+                gid = getgrnam(self.config['permission']['group'])[2]
 
                 chown(fs_filename, uid, gid)
             except Exception as e:

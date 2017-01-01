@@ -33,16 +33,16 @@ def info():
         install_requires.append("dbus-python")
 
     extras_require = {
-        'Archive decompression': ["unrar"],
+        'Archive decompression': ['unrar'],
         'Captcha recognition'  : ["Pillow >= 2.0"],  #@TODO: Fix `tesserocr` installation
-        'Colored log'          : ["colorlog"],
-        'JavaScript evaluation': ["Js2Py"],
+        'Colored log'          : ['colorlog'],
+        'JavaScript evaluation': ['Js2Py'],
         # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Use `smart_import`
-        'pyLoad auto-update'   : ["pip"],
-        'SSL connection'       : ["pyOpenSSL"]
+        'pyLoad auto-update'   : ['pip'],
+        'SSL connection'       : ['pyOpenSSL']
     }
     if os.name != 'nt':
-        extras_require['Lightweight webserver'] = ["bjoern"]
+        extras_require['Lightweight webserver'] = ['bjoern']
 
     entry_points = {
         'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]
@@ -122,7 +122,7 @@ def _pre_setup():
         from distutils.core import setup
         setupinfo.update(requires=["setuptools", "virtualenv"])
     else:
-        setupinfo.update(setup_requires=["setuptools"],
+        setupinfo.update(setup_requires=['setuptools'],
                          install_requires=["setuptools", "virtualenv"])
     setup(**setupinfo)
 

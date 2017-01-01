@@ -33,7 +33,7 @@ class BaseEncoderCompact(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, BaseObject) or isinstance(o, ExceptionObject):
             ret = {"@compact": [o.__class__.__name__]}
-            ret["@compact"].extend(getattr(o, attr) for attr in o.__slots__)
+            ret['@compact'].extend(getattr(o, attr) for attr in o.__slots__)
             return ret
 
         return json.JSONEncoder.default(self, o)

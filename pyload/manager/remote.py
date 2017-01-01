@@ -19,8 +19,8 @@ class RemoteManager(object):
 
 
     def start_backends(self):
-        host = self.pyload.config["webui"]["wshost"]
-        port = self.pyload.config["webui"]["wsport"]
+        host = self.pyload.config['webui']['wshost']
+        port = self.pyload.config['webui']['wsport']
 
         for b in self.available:
             klass = getattr(

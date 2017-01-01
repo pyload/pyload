@@ -31,8 +31,8 @@ class WebServer(threading.Thread):
 
         self.server = config['webui']['server']
         self.https = config['webui']['https']
-        self.cert = config["ssl"]["cert"]
-        self.key = config["ssl"]["key"]
+        self.cert = config['ssl']['cert']
+        self.key = config['ssl']['key']
         self.host = config['webui']['host']
         self.port = config['webui']['port']
         self.debug = config['general']['debug_mode']

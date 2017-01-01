@@ -311,25 +311,25 @@ class Core(object):
             print(_("pyLoad already running with pid {}").format(pid))
             exit()
 
-        if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice {:d} {:d}".format(self.config["general"]["renice"], os.getpid()))
+        if os.name != "nt" and self.config['general']['renice']:
+            os.system("renice {:d} {:d}".format(self.config['general']['renice'], os.getpid()))
 
-        if self.config["permission"]["change_group"]:
+        if self.config['permission']['change_group']:
             if os.name != "nt":
                 try:
                     from grp import getgrnam
 
-                    group = getgrnam(self.config["permission"]["group"])
+                    group = getgrnam(self.config['permission']['group'])
                     os.setgid(group[2])
                 except Exception as e:
                     print(_("Failed changing group: {}").format(e.message))
 
-        if self.config["permission"]["change_user"]:
+        if self.config['permission']['change_user']:
             if os.name != "nt":
                 try:
                     from pwd import getpwnam
 
-                    user = getpwnam(self.config["permission"]["user"])
+                    user = getpwnam(self.config['permission']['user'])
                     os.setuid(user[2])
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e.message))
@@ -397,7 +397,7 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        dl_folder = self.config["general"]["download_folder"]
+        dl_folder = self.config['general']['download_folder']
 
         if not exists(dl_folder):
             makedirs(dl_folder)
@@ -428,7 +428,7 @@ class Core(object):
         self.accountmanager.refresh_all_accounts()
 
         #restart failed
-        if self.config["download"]["restart_failed"]:
+        if self.config['download']['restart_failed']:
             self.log.info(_("Restarting failed downloads ..."))
             self.api.restart_failed()
 

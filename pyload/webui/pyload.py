@@ -78,7 +78,7 @@ def index():
     resp.headers.append("Cache-Control", "no-cache")
     # they are rendered and last modified would be wrong
     if "Last-Modified" in resp.headers:
-        del resp.headers["Last-Modified"]
+        del resp.headers['Last-Modified']
 
     return resp
 
@@ -100,7 +100,7 @@ def serve_static(path):
 
     if path.endswith(".html") or path.endswith(".html.gz"):
         # tell the browser all html files must be revalidated
-        resp.headers["Cache-Control"] = "must-revalidate"
+        resp.headers['Cache-Control'] = "must-revalidate"
     elif resp.status_code == 200:
         # expires after 7 days
         resp.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",

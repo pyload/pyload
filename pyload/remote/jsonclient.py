@@ -45,7 +45,7 @@ class JSONClient(object):
 
     def call(self, func, *args, **kwargs):
         # Add the current session
-        kwargs["session"] = self.session
+        kwargs['session'] = self.session
         path = "/{}/{}".format(func, "/".join(dumps(x) for x in args))
         data = dict((k, dumps(v)) for k, v in kwargs.items())
         rep = self.request(path, data)

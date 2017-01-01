@@ -82,8 +82,8 @@ def addcrypted():
 def addcrypted2():
 
     package = request.forms.get("source", None)
-    crypted = request.forms["crypted"]
-    jk = request.forms["jk"]
+    crypted = request.forms['crypted']
+    jk = request.forms['jk']
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:

@@ -133,7 +133,7 @@ from apitypes import *\n
         dev.write("\t'{}' : [".format(name))
 
         #create init
-        args = ["self"] + ["{}=None".format(x) for x in klass.__slots__]
+        args = ['self'] + ["{}=None".format(x) for x in klass.__slots__]
         specs = []
 
         f.write("\tdef __init__({}):\n".format(", ".join(args)))

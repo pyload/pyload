@@ -86,7 +86,7 @@ def call_api(func, args=""):
 
     # file upload, reads whole file into memory
     for name, f in request.files.items():
-        kwargs["filename"] = f.filename
+        kwargs['filename'] = f.filename
         content = StringIO()
         f.save(content)
         kwargs[name] = content.getvalue()
@@ -134,13 +134,13 @@ def login():
 
     # get the session id by dirty way, documentations seems wrong
     try:
-        sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
+        sid = s._headers['cookie_out'].split("=")[1].split(";")[0]
     # reuse old session id
     except Exception:
         sid = request.get_header(session.options['key'])
 
     result = BaseEncoder().default(user)
-    result["session"] = sid
+    result['session'] = sid
 
     # Return full user information if needed
     if request.params.get('user', None):

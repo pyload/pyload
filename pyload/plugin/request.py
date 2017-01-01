@@ -72,7 +72,7 @@ class Request(object):
 
     def add_auth(self, user, pwd):
         """  Adds authentication information to the request """
-        self.options["auth"] = "{}:{}".format(user, pwd)
+        self.options['auth'] = "{}:{}".format(user, pwd)
 
     def remove_auth(self):
         """ Removes authentication from the request """

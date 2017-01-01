@@ -57,7 +57,7 @@ class UpdateManager(Hook):
             self.check_plugins(updates)
 
         if self.updated and not self.reloaded:
-            self.info["plugins"] = True
+            self.info['plugins'] = True
             self.log_info(_("*** Plugins have been updated, please restart pyLoad ***"))
         elif self.updated and self.reloaded:
             self.log_info(_("Plugins updated and reloaded"))
@@ -83,7 +83,7 @@ class UpdateManager(Hook):
                     self.log_info(_("No Updates for pyLoad"))
                     return version_check[1:]
 
-            self.info["pyload"] = True
+            self.info['pyload'] = True
             self.log_info(_("***  New pyLoad Version {} available  ***").format(self.version))
             self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
 
@@ -96,7 +96,7 @@ class UpdateManager(Hook):
         """ checks for plugins updates"""
 
         # plugins were already updated
-        if self.info["plugins"]:
+        if self.info['plugins']:
             return
 
         reloads = []
@@ -108,9 +108,9 @@ class UpdateManager(Hook):
 
         for plugin in updates:
             info = dict(list(zip(schema, plugin.split("|"))))
-            filename = info["name"]
-            prefix = info["type"]
-            version = info["version"]
+            filename = info['name']
+            prefix = info['type']
+            version = info['version']
 
             if filename.endswith(".pyc"):
                 name = filename[:filename.find("_")]
@@ -126,7 +126,7 @@ class UpdateManager(Hook):
             plugins = getattr(self.pyload.pluginmanager, "{}Plugins".format(type))
 
             if name in plugins:
-                if float(plugins[name]["v"]) >= float(version):
+                if float(plugins[name]['v']) >= float(version):
                     continue
 
             if name in IGNORE or (type, name) in IGNORE:

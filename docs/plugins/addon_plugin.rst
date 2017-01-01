@@ -23,7 +23,7 @@ All hooks should start with something like this: ::
                 __version__ = "0.1"
                 __description__ = "Does really cool stuff"
                 __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
-                __threaded__ = ["downloadFinished"]
+                __threaded__ = ['downloadFinished']
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
 
@@ -148,7 +148,7 @@ Just store everything in ``self.info``. ::
             self.info = {"running": False}
 
         def activate(self):
-            self.info["running"] = True
+            self.info['running'] = True
 
 Usable with: ::
 

@@ -41,7 +41,7 @@ class Ftp(Hoster):
 
             if netloc in servers:
                 self.log_debug("Logging on to {}".format(netloc))
-                self.req.add_auth(self.account.accounts[netloc]["password"])
+                self.req.add_auth(self.account.accounts[netloc]['password'])
             else:
                 for pwd in pyfile.package().password.splitlines():
                     if ":" in pwd:
