@@ -23,7 +23,6 @@ All hooks should start with something like this: ::
                 __version__ = "0.1"
                 __description__ = "Does really cool stuff"
                 __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
-                __threaded__ = ['downloadFinished']
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
 
@@ -82,7 +81,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
         Your Hook code here.
         """
         event_map = {"downloadFinished" : "doSomeWork",
-                     "allDownloadsFnished": "someMethod",
+                     "allDownloadsFinished": "someMethod",
                      "activate": "initialize"}
 
         def initialize(self):

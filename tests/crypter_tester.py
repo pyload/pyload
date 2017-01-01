@@ -49,7 +49,8 @@ urls = []
 flags = {}
 
 for l in links:
-    if not l or l.startswith("#"): continue
+    if not l or l.startswith("#"):
+        continue
     if l.startswith("http"):
         if "||" in l:
             l, flag = l.split("||")

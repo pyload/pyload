@@ -96,7 +96,8 @@ class Api(Iface):
         """
         if cls.EXTEND:
             for name, func in api.__dict__.items():
-                if name.startswith("_"): continue
+                if name.startswith("_"):
+                    continue
                 setattr(cls, name, MethodType(func, None, cls))
 
         return cls.EXTEND
@@ -112,7 +113,7 @@ class Api(Iface):
 
         if uid not in self.user_apis:
             user = self.pyload.db.get_user_data(uid=uid)
-            if not user: #TODO: anonymous user?
+            if not user:  #@TODO: anonymous user?
                 return None
 
             self.user_apis[uid] = UserApi(self.pyload, User.from_user_data(self, user))

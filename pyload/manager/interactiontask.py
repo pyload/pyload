@@ -73,7 +73,8 @@ class InteractionTask(BaseInteractionTask):
             else:
                 self.wait_until = max(time() + sec, self.wait_until)
 
-            if lock: self.locked = True
+            if lock:
+                self.locked = True
 
     def is_waiting(self):
         if self.result or self.error or self.timed_out():

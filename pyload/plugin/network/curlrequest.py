@@ -256,7 +256,8 @@ class CurlRequest(Request):
 
     def get_response(self):
         """ retrieve response from string io """
-        if self.rep is None: return ""
+        if self.rep is None:
+            return ""
         value = self.rep.getvalue()
         self.rep.close()
         self.rep = StringIO()
@@ -300,7 +301,8 @@ class CurlRequest(Request):
         """ writes response """
         if self.rep.tell() > 1000000 or self.do_abort:
             rep = self.get_response()
-            if self.do_abort: raise Abort
+            if self.do_abort:
+                raise Abort
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()

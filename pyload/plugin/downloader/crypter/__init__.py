@@ -239,7 +239,8 @@ class Crypter(Base):
             self.setup()
             result.extend(to_list(self.decrypt_file(c)))
             try:
-                if f.startswith("tmp_"): remove(f)
+                if f.startswith("tmp_"):
+                    remove(f)
             except IOError:
                 self.log_warning(_("Could not remove file '{}'").format(f))
                 self.pyload.print_exc()

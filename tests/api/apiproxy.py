@@ -22,14 +22,16 @@ class ApiProxy(object):
             self.api.login(user, pw)
 
     def assert_type(self, result, type):
-        if not type: return # void
+        if not type:
+            return  #: void
         try:
             # Complex attribute
             if isinstance(type, tuple):
                 # Optional result
                 if type[0] is None:
                     # Only check if not None
-                    if result is not None: self.assert_type(result, type[1])
+                    if result is not None:
+                        self.assert_type(result, type[1])
 
                 # List
                 elif type[0] == list:

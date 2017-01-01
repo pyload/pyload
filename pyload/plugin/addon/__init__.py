@@ -151,7 +151,8 @@ class Addon(Base):
 
     def _periodical(self):
         try:
-            if self.is_activated(): self.periodical()
+            if self.is_activated():
+                self.periodical()
         except Exception as e:
             self.pyload.log.error(_("Error executing addon: {}").format(e.message))
             self.pyload.print_exc()

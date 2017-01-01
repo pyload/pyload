@@ -70,7 +70,8 @@ class ConfigApi(BaseApi):
         active = [x.get_name() for x in self.pyload.addonmanager.active_plugins()]
         for name, config, values in self.pyload.config.iter_sections(self.primary_uid):
             # skip unmodified and inactive addons
-            if not values and name not in active: continue
+            if not values and name not in active:
+                continue
 
             item = ConfigInfo(name, config.label, config.description,
                               self.pyload.pluginmanager.get_category(name),

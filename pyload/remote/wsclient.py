@@ -27,7 +27,8 @@ class WSClient(object):
         self.ws.close()
 
     def login(self, username, password):
-        if not self.ws: self.connect()
+        if not self.ws:
+            self.connect()
         return self.call("login", username, password)
 
     def call(self, func, *args, **kwargs):

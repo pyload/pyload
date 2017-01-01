@@ -145,8 +145,10 @@ class FileMethods(DatabaseMethods):
             qry += "name LIKE ? "
 
         # make qry valid
-        if qry.endswith("WHERE "): qry = qry[:-6]
-        if qry.endswith("AND "): qry = qry[:-4]
+        if qry.endswith("WHERE "):
+            qry = qry[:-6]
+        if qry.endswith("AND "):
+            qry = qry[:-4]
 
         self.c.execute(qry + "ORDER BY package, fileorder", arg)
 

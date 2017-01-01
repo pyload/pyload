@@ -212,7 +212,8 @@ class Core(object):
 
     def is_already_running(self):
         pid = self.check_pid_file()
-        if not pid or os.name == "nt": return False
+        if not pid or os.name == "nt":
+            return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
         except Exception:
@@ -387,7 +388,8 @@ class Core(object):
         self.remotemanager = RemoteManager(self)
 
         # enough initialization for test cases
-        if tests: return
+        if tests:
+            return
 
         self.log.info(_("Download time: {}").format(self.api.is_time_download()))
 
@@ -533,7 +535,8 @@ class Core(object):
                     color = False
                     print("Install 'colorama' to use the colored log on windows")
 
-            if color: console_frm = ColoredFormatter(cfmt, datefmt, clr)
+            if color:
+                console_frm = ColoredFormatter(cfmt, datefmt, clr)
 
         # set console formatter
         console = logging.StreamHandler(sys.stdout)
@@ -614,7 +617,8 @@ class Core(object):
             from IPython.core.debugger import Pdb
 
             sys.stdout = sys._stdout
-            if not self.pdb: self.pdb = Pdb()
+            if not self.pdb:
+                self.pdb = Pdb()
             self.pdb.set_trace()
 
     def print_exc(self, force=False):

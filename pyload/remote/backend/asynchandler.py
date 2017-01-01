@@ -83,7 +83,8 @@ class AsyncHandler(AbstractHandler):
 
         for req in self.clients:
             # Not logged in yet
-            if not req.api: continue
+            if not req.api:
+                continue
 
             # filter events that these user is no owner of
             # TODO: events are security critical, this should be revised later
@@ -99,7 +100,8 @@ class AsyncHandler(AbstractHandler):
                         break
 
                 # user should not get this event
-                if skip: break
+                if skip:
+                    break
 
             if req.events.search(event.eventname):
                 self.log.debug("Pushing event {}".format(event))

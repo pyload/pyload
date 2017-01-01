@@ -29,7 +29,8 @@ class ConfigParser(object):
 
     def __init__(self, config=None):
 
-        if config: self.CONFIG = config
+        if config:
+            self.CONFIG = config
 
         # Meta data information
         self.config = OrderedDict()
@@ -74,7 +75,8 @@ class ConfigParser(object):
             line = line.strip()
 
             # comment line, different variants
-            if not line or line.startswith("#") or line.startswith("//") or line.startswith(";"): continue
+            if not line or line.startswith("#") or line.startswith("//") or line.startswith(";"):
+                continue
 
             if line.startswith("["):
                 section = line.replace("[", "").replace("]", "")
@@ -147,7 +149,8 @@ class ConfigParser(object):
 
         # only save when different values
         if value != old_value:
-            if section not in self.values: self.values[section] = {}
+            if section not in self.values:
+                self.values[section] = {}
             self.values[section][option] = value
             if sync:
                 self.save()

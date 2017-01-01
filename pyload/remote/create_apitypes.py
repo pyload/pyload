@@ -109,7 +109,8 @@ from apitypes import *\n
         f.write("class {}:\n".format(name))
 
         for attr in sorted(dir(enum), key=lambda x: getattr(enum, x)):
-            if attr.startswith("_") or attr in ("read", "write"): continue
+            if attr.startswith("_") or attr in ("read", "write"):
+                continue
             f.write("\t{} = {}\n".format(attr, getattr(enum, attr)))
 
         dev.write('\t"{}",\n'.format(name))
@@ -160,7 +161,8 @@ from apitypes import *\n
     dev.write("methods = {\n")
 
     for name in dir(Pyload.Iface):
-        if name.startswith("_"): continue
+        if name.startswith("_"):
+            continue
 
         func = inspect.getargspec(getattr(Pyload.Iface, name))
 

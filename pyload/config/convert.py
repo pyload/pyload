@@ -64,8 +64,10 @@ def from_string(value, typ=None):
     elif typ == InputType.Bool:
         return to_bool(value)
     elif typ == InputType.Time:
-        if not value: value = "0:00"
-        if not ":" in value: value += ":00"
+        if not value:
+            value = "0:00"
+        if not ":" in value:
+            value += ":00"
         return value
     else:
         return value

@@ -35,7 +35,8 @@ def _wait(self):
 
     while self.pyfile.wait_until > time():
         sleep(1)
-        if self.pyfile.abort: raise Abort
+        if self.pyfile.abort:
+            raise Abort
 
     self.waiting = False
     self.pyfile.setStatus("starting")
@@ -109,7 +110,8 @@ class PluginTester(TestCase):
     @classmethod
     def tearDownClass(cls):
         name = "{}.{}".format(cls.__module__, cls.__name__)
-        if not exists(name): makedirs(name)
+        if not exists(name):
+            makedirs(name)
         for f in glob("debug_*"):
             move(f, join(name, f))
 

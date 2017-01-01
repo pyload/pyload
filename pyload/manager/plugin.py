@@ -113,8 +113,10 @@ class PluginManager(object):
                             del self.history[self.MATCH_HISTORY:] # cut down to size
                             found = True
                             break
-                    if found: break
-                if found: break
+                    if found:
+                        break
+                if found:
+                    break
 
             if not found:
                 res['hoster'].append((url, self.DEFAULT_PLUGIN))
@@ -161,7 +163,8 @@ class PluginManager(object):
 
         :param plugin: plugin type, subfolder of module.plugins
         """
-        if (plugin, name) in self.modules: return self.modules[(plugin, name)]
+        if (plugin, name) in self.modules:
+            return self.modules[(plugin, name)]
         for loader in self.loader:
             if loader.has_plugin(plugin, name):
                 try:
@@ -177,7 +180,8 @@ class PluginManager(object):
         """Returns the class of a plugin with the same name"""
         module = self.load_module(plugin, name)
         try:
-            if module: return getattr(module, name)
+            if module:
+                return getattr(module, name)
         except AttributeError:
             self.log.error(_("Plugin does not define class '{}'").format(name))
 
@@ -191,7 +195,8 @@ class PluginManager(object):
             offset = 1 - loader.package.count(".")
 
             split = fullname.split(".")
-            if len(split) != 4 - offset: return
+            if len(split) != 4 - offset:
+                return
             plugin, name = split[2 - offset:4 - offset]
 
             # check if a different loader than the current one has the plugin

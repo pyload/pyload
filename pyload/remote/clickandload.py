@@ -82,7 +82,8 @@ class CNLHandler(BaseHTTPRequestHandler):
         if func:
             try:
                 resp = func()
-                if not resp: resp = "success"
+                if not resp:
+                    resp = "success"
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)

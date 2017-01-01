@@ -95,7 +95,8 @@ class AddonManager(object):
                 if internal or self.pyload.config.get(pluginname, "activated"):
                     pluginclass = self.pyload.pluginmanager.load_class("addon", pluginname)
 
-                    if not pluginclass: continue
+                    if not pluginclass:
+                        continue
 
                     plugin = pluginclass(self.pyload, self)
                     self.plugins[pluginclass.__name__].instances.append(plugin)
@@ -135,7 +136,8 @@ class AddonManager(object):
 
         pluginclass = self.pyload.pluginmanager.load_class("addon", plugin)
 
-        if not pluginclass: return
+        if not pluginclass:
+            return
 
         self.log.debug("Plugin loaded: {}".format(plugin))
 
@@ -153,7 +155,8 @@ class AddonManager(object):
         else: # todo: multiple instances
             addon = self.plugins[plugin].instances[0]
 
-        if addon.__internal__: return
+        if addon.__internal__:
+            return
 
         self.call(addon, "deactivate")
         self.log.debug("Plugin deactivated: {}".format(plugin))
@@ -188,16 +191,16 @@ class AddonManager(object):
                 self.call(inst, "deactivate")
 
     def download_preparing(self, pyfile):
-        self.call_in_hooks("preDownload", "download:preparing", pyfile)
+        self.call_in_hooks("pre_download", "download:preparing", pyfile)
 
     def download_finished(self, pyfile):
-        self.call_in_hooks("downloadFinished", "download:finished", pyfile)
+        self.call_in_hooks("download_finished", "download:finished", pyfile)
 
     def download_failed(self, pyfile):
-        self.call_in_hooks("downloadFailed", "download:failed", pyfile)
+        self.call_in_hooks("download_failed", "download:failed", pyfile)
 
     def package_finished(self, package):
-        self.call_in_hooks("packageFinished", "package:finished", package)
+        self.call_in_hooks("package_finished", "package:finished", package)
 
     @lock
     def start_thread(self, function, *args, **kwargs):

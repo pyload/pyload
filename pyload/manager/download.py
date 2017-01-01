@@ -183,8 +183,10 @@ class DownloadManager(object):
     def choose_jobs(self, jobs, k):
         """ make a fair choice of which k jobs to start """
         # TODO: prefer admins, make a fairer choice?
-        if k <= 0: return []
-        if k >= len(jobs): return jobs
+        if k <= 0:
+            return []
+        if k >= len(jobs):
+            return jobs
 
         return sample(jobs, k)
 
@@ -283,14 +285,16 @@ class DownloadManager(object):
 
         # get all default dl limits
         for t in self.working:
-            if not t.active.has_plugin(): continue
+            if not t.active.has_plugin():
+                continue
             limit = t.active.plugin.get_download_limit()
             # limit <= 0 means no limit
             occ[t.active.pluginname] = limit if limit > 0 else float('inf')
 
         # subtract with running downloads
         for t in self.working:
-            if not t.active.has_plugin(): continue
+            if not t.active.has_plugin():
+                continue
             plugin = t.active.pluginname
             if plugin in occ:
                 occ[plugin] -= 1

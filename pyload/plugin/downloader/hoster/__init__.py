@@ -122,7 +122,8 @@ class Hoster(Base):
     def get_download_limit(self):
         if self.account:
             limit = self.account.options.get("limitDL", 0)
-            if limit == "": limit = 0
+            if limit == "":
+                limit = 0
             if self.limit_dl > 0: # a limit is already set, we use the minimum
                 return min(int(limit), self.limit_dl)
             else:
@@ -235,7 +236,8 @@ class Hoster(Base):
                         defaults to no backoff / fixed wait time
         """
         if 0 < max_tries <= self.retries:
-            if not reason: reason = "Max retries reached"
+            if not reason:
+                reason = "Max retries reached"
             raise Fail(reason)
 
         self.want_reconnect = False
@@ -324,7 +326,8 @@ class Hoster(Base):
         :return: dictionary key of the first rule that matched
         """
         last_download = fs_encode(self.last_download)
-        if not exists(last_download): return None
+        if not exists(last_download):
+            return None
 
         size = stat(last_download)
         size = size.st_size
@@ -357,7 +360,8 @@ class Hoster(Base):
     def get_password(self):
         """ get the password the user provided in the package"""
         password = self.pyfile.package().password
-        if not password: return ""
+        if not password:
+            return ""
         return password
 
 

@@ -72,7 +72,7 @@ class CurlDownload(Download):
                 fname = fs_encode("{}.chunk{:d}".format(self.path, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
-                while True: #copy in chunks, consumes less memory
+                while True:  #: copy in chunks, consumes less memory
                     data = fi.read(buf)
                     if not data:
                         break
@@ -286,7 +286,8 @@ class CurlDownload(Download):
     def find_chunk(self, handle):
         """ linear search to find a chunk (should be ok since chunk size is usually low) """
         for chunk in self.chunks:
-            if chunk.c == handle: return chunk
+            if chunk.c == handle:
+                return chunk
 
     def close_chunk(self, chunk):
         try:

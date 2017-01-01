@@ -31,7 +31,8 @@ class HosterPluginTester(PluginTester):
     def setUp(self):
         PluginTester.setUp(self)
         for f in self.files:
-            if exists(save_join(DL_DIR, f)): remove(save_join(DL_DIR, f))
+            if exists(save_join(DL_DIR, f)):
+                remove(save_join(DL_DIR, f))
 
         # folder for reports
         report = join("tmp", self.__class__.__name__)
@@ -73,7 +74,8 @@ class HosterPluginTester(PluginTester):
             f = open(save_join(DL_DIR, pyfile.name), "rb")
             while True:
                 buf = f.read(4096)
-                if not buf: break
+                if not buf:
+                    break
                 hash.update(buf)
             f.close()
 

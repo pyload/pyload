@@ -64,6 +64,7 @@ class ApiHandler(AbstractHandler):
                 return self.send_result(req, self.ERROR, e.message)
 
             # None is invalid json type
-            if result is None: result = True
+            if result is None:
+                result = True
 
             return self.send_result(req, self.OK, result)

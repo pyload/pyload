@@ -53,7 +53,8 @@ class ThreadManager(object):
     def create_info_thread(self, data, pid):
         """ start a thread which fetches online status and other info's """
         self.timestamp = time() + 5 * 60
-        if data: InfoThread(self, None, data, pid)
+        if data:
+            InfoThread(self, None, data, pid)
 
     @lock
     def create_result_thread(self, user, data):
@@ -83,10 +84,12 @@ class ThreadManager(object):
 
         for thread in self.thread:
             # skip if not belong to current user
-            if user is not None and thread.owner != user: continue
+            if user is not None and thread.owner != user:
+                continue
 
             progress = thread.get_progress()
-            if progress: info.extend(to_list(progress))
+            if progress:
+                info.extend(to_list(progress))
 
         return info
 

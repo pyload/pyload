@@ -111,7 +111,8 @@ class FileManager(object):
             return pack
         else:
             info = self.db.get_package_info(pid, False)
-            if not info: return None
+            if not info:
+                return None
 
             pack = PyPackage.from_info_data(self, info)
             self.packages[pid] = pack
@@ -129,12 +130,14 @@ class FileManager(object):
         else:
             pack = self.db.get_package_info(pid)
 
-        if not pack: return None
+        if not pack:
+            return None
 
         # todo: what does this todo mean?!
         #todo: fill child packs and files
         packs = self.db.get_all_packages(root=pid)
-        if pid in packs: del packs[pid]
+        if pid in packs:
+            del packs[pid]
         pack.pids = list(packs.keys())
 
         files = self.db.get_all_files(package=pid)
@@ -149,7 +152,8 @@ class FileManager(object):
             return self.files[fid]
         else:
             info = self.db.get_file_info(fid)
-            if not info: return None
+            if not info:
+                return None
 
             f = PyFile.from_info_data(self, info)
             self.files[fid] = f
@@ -200,17 +204,21 @@ class FileManager(object):
 
         # linear traversal over all data
         for fpid, p in packs.items():
-            if p.fids is None: p.fids = []
-            if p.pids is None: p.pids = []
+            if p.fids is None:
+                p.fids = []
+            if p.pids is None:
+                p.pids = []
 
             root = packs.get(p.root, None)
             if root:
-                if root.pids is None: root.pids = []
+                if root.pids is None:
+                    root.pids = []
                 root.pids.append(fpid)
 
         for fid, f in files.items():
             p = packs.get(f.package, None)
-            if p: p.fids.append(fid)
+            if p:
+                p.fids.append(fid)
 
 
         # cutting of tree is not good in runtime, only saves bandwidth
@@ -273,7 +281,8 @@ class FileManager(object):
         """delete package and all contained links"""
 
         p = self.get_package(pid)
-        if not p: return
+        if not p:
+            return
 
         oldorder = p.packageorder
         root = p.root
@@ -297,7 +306,8 @@ class FileManager(object):
         """deletes links"""
 
         f = self.get_file(fid)
-        if not f: return
+        if not f:
+            return
 
         pid = f.packageid
         order = f.fileorder
@@ -433,7 +443,8 @@ class FileManager(object):
         self.db.order_package(pid, p.root, p.packageorder, position)
 
         for pack in self.packages.values():
-            if pack.root != p.root or pack.packageorder < 0: continue
+            if pack.root != p.root or pack.packageorder < 0:
+                continue
             if pack.pid == pid:
                 pack.packageorder = position
             if p.packageorder > position:
@@ -465,7 +476,8 @@ class FileManager(object):
 
         if f.fileorder > position:
             for pyfile in self.files.values():
-                if pyfile.packageid != f.package or pyfile.fileorder < 0: continue
+                if pyfile.packageid != f.package or pyfile.fileorder < 0:
+                    continue
                 if position <= pyfile.fileorder < f.fileorder:
                     pyfile.fileorder += diff
 
@@ -475,7 +487,8 @@ class FileManager(object):
 
         elif f.fileorder < position:
             for pyfile in self.files.values():
-                if pyfile.packageid != f.package or pyfile.fileorder < 0: continue
+                if pyfile.packageid != f.package or pyfile.fileorder < 0:
+                    continue
                 if position >= pyfile.fileorder >= f.fileorder + diff:
                     pyfile.fileorder -= diff
 
@@ -494,11 +507,14 @@ class FileManager(object):
 
         p = self.get_package_info(pid)
         dest = self.get_package_info(root)
-        if not p: raise PackageDoesNotExist(pid)
-        if not dest: raise PackageDoesNotExist(root)
+        if not p:
+            raise PackageDoesNotExist(pid)
+        if not dest:
+            raise PackageDoesNotExist(root)
 
         # cantor won't be happy if we put the package in itself
-        if pid == root or p.root == root: return False
+        if pid == root or p.root == root:
+            return False
 
         # we assume pack is not in use anyway, so we can release it
         self.release_package(pid)

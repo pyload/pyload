@@ -126,7 +126,8 @@ class AccountManager(object):
             uid = user.true_primary if user else None
             # TODO: temporary allowed None user
             accs = [x for x in self.accounts[plugin] if x.is_usable() and (x.shared or uid is None or x.owner == uid)]
-            if accs: return choice(accs)
+            if accs:
+                return choice(accs)
 
     @lock
     def get_all_accounts(self, uid):

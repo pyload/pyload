@@ -95,9 +95,11 @@ class ConfigManager(ConfigParser):
             if value != old_value:
                 changed = True
                 self.values[user, section][option] = value
-                if sync: self.save_values(user, section)
+                if sync:
+                    self.save_values(user, section)
 
-        if changed: self.pyload.evm.dispatch_event("config:changed", section, option, value)
+        if changed:
+            self.pyload.evm.dispatch_event("config:changed", section, option, value)
         return changed
 
     def save_values(self, user, section):

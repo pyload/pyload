@@ -149,19 +149,28 @@ class OCR(object):
 
         for x in range(w):
             for y in range(h):
-                if pixels[x, y] == 255: continue
+                if pixels[x, y] == 255:
+                    continue
                 # no point in processing white pixels since we only want to remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x-1, y-1] != 255: count += 1
-                    if pixels[x-1, y] != 255: count += 1
-                    if pixels[x-1, y + 1] != 255: count += 1
-                    if pixels[x, y + 1] != 255: count += 1
-                    if pixels[x + 1, y + 1] != 255: count += 1
-                    if pixels[x + 1, y] != 255: count += 1
-                    if pixels[x + 1, y-1] != 255: count += 1
-                    if pixels[x, y-1] != 255: count += 1
+                    if pixels[x-1, y-1] != 255:
+                        count += 1
+                    if pixels[x-1, y] != 255:
+                        count += 1
+                    if pixels[x-1, y + 1] != 255:
+                        count += 1
+                    if pixels[x, y + 1] != 255:
+                        count += 1
+                    if pixels[x + 1, y + 1] != 255:
+                        count += 1
+                    if pixels[x + 1, y] != 255:
+                        count += 1
+                    if pixels[x + 1, y-1] != 255:
+                        count += 1
+                    if pixels[x, y-1] != 255:
+                        count += 1
                 except Exception:
                     pass
 
@@ -173,7 +182,8 @@ class OCR(object):
             # second pass: this time set all 1's to 255 (white)
         for x in range(w):
             for y in range(h):
-                if pixels[x, y] == 1: pixels[x, y] = 255
+                if pixels[x, y] == 1:
+                    pixels[x, y] = 255
 
         self.pixels = pixels
 
@@ -268,9 +278,12 @@ class OCR(object):
                         first_x = x
                         last_x = x
 
-                    if y > bottom_y: bottom_y = y
-                    if y < top_y: top_y = y
-                    if x > last_x: last_x = x
+                    if y > bottom_y:
+                        bottom_y = y
+                    if y < top_y:
+                        top_y = y
+                    if x > last_x:
+                        last_x = x
 
                     black_pixel_in_col = True
 

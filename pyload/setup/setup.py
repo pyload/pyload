@@ -88,7 +88,7 @@ class Setup(object):
         error = web.check_error()
 
         # TODO: start cli in this case
-        if error: #todo errno 44 port already in use
+        if error:  #todo errno 44 port already in use
             print(error)
 
         url = "http://{}:{:d}/".format(socket.gethostbyname(socket.gethostname()), web.port)

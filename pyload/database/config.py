@@ -8,13 +8,15 @@ class ConfigMethods(DatabaseMethods):
 
     @async
     def save_config(self, plugin, config, user=None):
-        if user is None: user = -1
+        if user is None:
+            user = -1
         self.c.execute('INSERT INTO settings(plugin, config, user) VALUES(?,?,?)', (plugin, config, user))
 
 
     @queue
     def load_config(self, plugin, user=None):
-        if user is None: user = -1
+        if user is None:
+            user = -1
         self.c.execute('SELECT config FROM settings WHERE plugin=? AND user=?', (plugin, user))
 
         r = self.c.fetchone()
@@ -41,7 +43,8 @@ class ConfigMethods(DatabaseMethods):
 
     @queue
     def load_configs_for_user(self, user=None):
-        if user is None: user = -1
+        if user is None:
+            user = -1
         self.c.execute('SELECT plugin, config FROM settings WHERE user=?', (user,))
         configs = {}
         for r in self.c:

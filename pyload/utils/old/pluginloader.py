@@ -144,7 +144,8 @@ class PluginLoader(object):
 
                 # replace suffix and version tag
                 name = f[:-3]
-                if name[-1] == ".": name = name[:-4]
+                if name[-1] == ".":
+                    name = name[:-4]
 
                 plugin = self.parse_plugin(join(pfolder, f), folder, name)
                 if plugin:
@@ -212,7 +213,8 @@ class PluginLoader(object):
         :returns PluginTuple"""
 
         attrs = self.parse_attributes(filename, name, folder)
-        if not attrs: return
+        if not attrs:
+            return
 
         version = 0
         if "version" in attrs:
@@ -258,7 +260,8 @@ class PluginLoader(object):
 
             if folder == "addon" and not attrs['internal']:
                 for item in config:
-                    if item[0] == "activated": break
+                    if item[0] == "activated":
+                        break
                 else: # activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
 

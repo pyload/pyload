@@ -199,7 +199,8 @@ class Base(object):
 
     def check_abort(self):
         """  Will be overwritten to determine if control flow should be aborted """
-        if self.abort(): raise Abort
+        if self.abort():
+            raise Abort
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
         """Load content at url and returns it
@@ -244,7 +245,8 @@ class Base(object):
             header = {"code": self.req.code}
             for line in res.splitlines():
                 line = line.strip()
-                if not line or ":" not in line: continue
+                if not line or ":" not in line:
+                    continue
 
                 key, none, value = line.partition(":")
                 key = key.lower().strip()

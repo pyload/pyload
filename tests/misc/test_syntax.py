@@ -19,7 +19,8 @@ class TestSyntax(TestCase):
 for path, dirs, files in walk(join(PATH, "pyload")):
 
     for f in files:
-        if not f.endswith(".py") or f.startswith("__"): continue
+        if not f.endswith(".py") or f.startswith("__"):
+            continue
         fpath = join(path, f)
         pack = fpath.replace(PATH, "")[1:-3] #replace / and  .py
         imp = pack.replace("/", ".")
@@ -27,7 +28,8 @@ for path, dirs, files in walk(join(PATH, "pyload")):
         #__import__(imp)
 
         # to much sideeffect when importing
-        if "web" in packages or "lib" in packages: continue
+        if "web" in packages or "lib" in packages:
+            continue
 
         # currying
         def meta(imp, sig):

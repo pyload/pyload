@@ -422,13 +422,15 @@ class DatabaseBackend(Thread):
 
     def queue(self, f, *args, **kwargs):
         # Raise previous error of initialization
-        if self.error: raise self.error
+        if self.error:
+            raise self.error
         args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
         # only wait when db is running
-        if self.running.isSet(): job.wait()
+        if self.running.isSet():
+            job.wait()
         return job.result
 
     @classmethod

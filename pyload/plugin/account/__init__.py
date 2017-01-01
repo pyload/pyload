@@ -254,13 +254,15 @@ class Account(Base):
                 "maxtraffic" : self.maxtraffic, "validuntil": self.validuntil}
 
     def is_premium(self, user=None):
-        if user: self.log_debug("Deprecated Argument user for .is_premium()", user)
+        if user:
+            self.log_debug("Deprecated Argument user for .is_premium()", user)
         return self.premium
 
     def is_usable(self):
         """Check several constraints to determine if account should be used"""
 
-        if not self.valid or not self.activated: return False
+        if not self.valid or not self.activated:
+            return False
 
         # TODO: not in ui currently
         if "time" in self.options and self.options['time']:
@@ -292,7 +294,8 @@ class Account(Base):
         raise WrongPassword
 
     def empty(self, user=None):
-        if user: self.log_debug("Deprecated argument user for .empty()", user)
+        if user:
+            self.log_debug("Deprecated argument user for .empty()", user)
 
         self.log_warning(_("Account {} has not enough traffic, checking again in 30min").format(self.login))
 
@@ -300,7 +303,8 @@ class Account(Base):
         self.schedule_refresh(30 * 60)
 
     def expired(self, user=None):
-        if user: self.log_debug("Deprecated argument user for .expired()", user)
+        if user:
+            self.log_debug("Deprecated argument user for .expired()", user)
 
         self.log_warning(_("Account {} is expired, checking again in 1h").format(user))
 

@@ -66,7 +66,8 @@ def compare_time(start, end):
     start = list(map(int, start))
     end = list(map(int, end))
 
-    if start == end: return True
+    if start == end:
+        return True
 
     now = list(time.localtime()[3:5])
     if start < now < end:
@@ -99,7 +100,8 @@ def format_speed(speed):
 
 
 def format_time(seconds):
-    if seconds < 0: return "00:00:00"
+    if seconds < 0:
+        return "00:00:00"
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
     return "{:.2d}:{:.2d}:{:.2d}".format(hours, minutes, seconds)
@@ -255,7 +257,8 @@ def get_index(l, value):
 
 def primary_uid(user):
     """ Gets primary user id for user instances or ints """
-    if isinstance(user, int): return user
+    if isinstance(user, int):
+        return user
     return user.primary if user else None
 
 

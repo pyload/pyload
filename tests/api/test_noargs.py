@@ -17,7 +17,8 @@ class TestNoArgs(ApiTester):
 
 # Setup test_methods dynamically, only these which require no arguments
 for name in dir(Iface):
-    if name.startswith("_") or name in IGNORE: continue
+    if name.startswith("_") or name in IGNORE:
+        continue
 
     spec = inspect.getargspec(getattr(Iface, name))
     if len(spec.args) == 1 and (not spec.varargs or len(spec.varargs) == 0):

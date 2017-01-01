@@ -134,7 +134,8 @@ class InfoThread(DecrypterThread):
                 self.manager.log.debug("Run Info Fetching for {}".format(pluginname))
                 for result in plugin.get_info(process):
                     #result = [ .. (name, size, status, url) .. ]
-                    if not isinstance(result, list): result = [result]
+                    if not isinstance(result, list):
+                        result = [result]
 
                     links = []
                     # Convert results to link statuses

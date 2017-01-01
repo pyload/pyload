@@ -61,7 +61,8 @@ def call_api(func, args=""):
     elif auth:
         user = PYLOAD.check_auth(auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
         # if auth is correct create a pseudo session
-        if user: s = {'uid': user.uid}
+        if user:
+            s = {'uid': user.uid}
 
     api = get_user_api(s)
     if not api:
@@ -95,7 +96,8 @@ def call_api(func, args=""):
     # convert arguments from json to obj separately
     for x, y in request.params.items():
         try:
-            if not x or not y or x == "session": continue
+            if not x or not y or x == "session":
+                continue
             kwargs[x] = loads(unquote(y))
         except Exception as e:
             # Unsupported input
@@ -107,7 +109,8 @@ def call_api(func, args=""):
     try:
         result = getattr(api, func)(*args, **kwargs)
         # null is invalid json response
-        if result is None: result = True
+        if result is None:
+            result = True
         return json_response(result)
 
     except ExceptionObject as e:
