@@ -31,7 +31,7 @@ class TestAPI(TestCase):
             t = Test()
             t.enableWS()
             t = Test()
-            t.setApi(cls.core.api)
+            t.set_api(cls.core.api)
 
         cls.methods = ApiTester.get_methods()
 

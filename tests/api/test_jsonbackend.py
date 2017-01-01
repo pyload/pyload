@@ -22,7 +22,7 @@ class TestJSONBackend(object):
 
     def test_login(self):
         self.client.login(*credentials)
-        self.client.getServerVersion()
+        self.client.get_server_version()
         self.client.logout()
 
     def test_wronglogin(self):
@@ -47,7 +47,7 @@ class TestJSONBackend(object):
 
     @raises(Forbidden)
     def test_access(self):
-        self.client.getServerVersion()
+        self.client.get_server_version()
 
     @raises(AttributeError)
     def test_unknown_method(self):

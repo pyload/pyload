@@ -21,22 +21,22 @@ class TestCurlRequest(TestCase):
         self.req.load("https://pyload.net")
 
     def test_cookies(self):
-        self.req.load(self.cookieURL, cookies=False)
+        self.req.load(self.cookie_url, cookies=False)
         assert len(self.req.cj) == 0
 
-        self.req.load(self.cookieURL)
+        self.req.load(self.cookie_url)
         assert len(self.req.cj) > 1
 
-        cookies = dict(c.strip().split(":") for c in self.req.load(self.cookieURL + "/cookies.php").splitlines())
+        cookies = dict(c.strip().split(":") for c in self.req.load(self.cookie_url + "/cookies.php").splitlines())
         for k, v in cookies.items():
-            self.assertIn(k, self.req.cj)
-            self.assertEqual(v, self.req.cj[k].value)
+            self.assert_in(k, self.req.cj)
+            self.assert_equal(v, self.req.cj[k].value)
 
         for c in self.req.cj:
-            self.assertIn(c, cookies)
+            self.assert_in(c, cookies)
 
-        cookies = self.req.load(self.cookieURL + "/cookies.php", cookies=False)
-        self.assertEqual(cookies, "")
+        cookies = self.req.load(self.cookie_url + "/cookies.php", cookies=False)
+        self.assert_equal(cookies, "")
 
 
     def test_auth(self):

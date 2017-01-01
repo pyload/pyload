@@ -55,10 +55,10 @@ class TestCore(Core):
         super(TestCore, self).__init__()
         self.start(tests=True)
 
-        self.db.getUserData = self.getUserData
+        self.db.get_user_data = self.get_user_data
         self.log = LogStub()
 
-    def getServerVersion(self):
+    def get_server_version(self):
         return "TEST_RUNNER on {}".format(strftime("%d %h %Y"))
 
     def init_logger(self, level):

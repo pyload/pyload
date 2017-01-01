@@ -35,7 +35,7 @@ class TestCurlRequest(TestCase):
     def test_cookies(self):
 
         req = CurlRequest({})
-        req.load(self.cookieURL)
+        req.load(self.cookie_url)
 
         assert len(req.cj) > 0
 
@@ -43,13 +43,13 @@ class TestCurlRequest(TestCase):
 
         assert req.context is dl.context is not None
 
-        dl.download(self.cookieURL + "/cookies.php", "cookies.txt")
+        dl.download(self.cookie_url + "/cookies.php", "cookies.txt")
         cookies = open("cookies.txt", "rb").read().splitlines()
 
-        self.assertEqual(len(cookies), len(dl.context))
+        self.assert_equal(len(cookies), len(dl.context))
         for c in cookies:
             k, v = c.strip().split(":")
-            self.assertIn(k, req.cj)
+            self.assert_in(k, req.cj)
 
 
     def test_attributes(self):

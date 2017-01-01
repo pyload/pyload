@@ -25,15 +25,15 @@ def _wait(self):
     """ waits the time previously set """
     self.waiting = True
 
-    waittime = self.pyfile.waitUntil - time()
+    waittime = self.pyfile.wait_until - time()
     log(DEBUG, "waiting {}s".format(waittime))
 
-    if self.wantReconnect and waittime > 300:
+    if self.want_reconnect and waittime > 300:
         raise Fail("Would wait for reconnect {}s".format(waittime))
     elif waittime > 300:
         raise Fail("Would wait {}s".format(waittime))
 
-    while self.pyfile.waitUntil > time():
+    while self.pyfile.wait_until > time():
         sleep(1)
         if self.pyfile.abort: raise Abort
 
@@ -56,9 +56,9 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
     # put username and passkey into two lines in ct.conf
     conf = join(expanduser("~"), "ct.conf")
     if not exists(conf):
-        raise Exception("CaptchaService config {} not found.".format(conf))
+        raise Exception("CaptchaService config {} not found".format(conf))
     f = open(conf, "rb")
-    req = getRequest()
+    req = get_request()
 
     #raise timeout threshold
     req.c.setopt(LOW_SPEED_TIME, 300)
@@ -78,11 +78,11 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, i
     log(DEBUG, str(response))
     result = response[1]
 
-    self.cTask = response[0]
+    self.c_task = response[0]
 
     return result
 
-Hoster.decryptCaptcha = decryptCaptcha
+Hoster.decrypt_captcha = decryptCaptcha
 
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")

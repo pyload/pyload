@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
-from past.builtins import basestring
+from builtins import str
 from builtins import object
 from nose.tools import raises
 
@@ -32,12 +32,12 @@ class TestConfigParser(object):
 
     def test_iter(self):
         for section, config, values in self.config.iterSections():
-            assert isinstance(section, basestring)
+            assert isinstance(section, str)
             assert isinstance(config.config, dict)
             assert isinstance(values, dict)
 
     def test_get(self):
-        assert self.config.getSection("general")[0].config
+        assert self.config.get_section("general")[0].config
 
     @raises(KeyError)
     def test_invalid_config(self):

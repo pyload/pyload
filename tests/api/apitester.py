@@ -31,7 +31,7 @@ class ApiTester(object):
         ApiTester.register(self)
         self.api = None
 
-    def setApi(self, api):
+    def set_api(self, api):
         self.api = api
 
     def enableJSON(self):

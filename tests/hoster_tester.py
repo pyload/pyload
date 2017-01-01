@@ -48,7 +48,7 @@ class HosterPluginTester(PluginTester):
 
         # url and plugin should be only important thing
         pyfile = PyFile(self.pyload, -1, url, url, 0, 0, 0, 0, url, name, "", 0, 0, 0, 0)
-        pyfile.initPlugin()
+        pyfile.init_plugin()
 
         self.thread.pyfile = pyfile
         self.thread.plugin = pyfile.plugin
@@ -61,13 +61,13 @@ class HosterPluginTester(PluginTester):
             log(DEBUG, "size {:d} KiB".format(pyfile.size // 1024))
 
             if status == "offline":
-                raise Exception("No offline Exception raised.")
+                raise Exception("No offline Exception raised")
 
             if pyfile.name not in self.files:
-                raise Exception("Filename {} not recognized.".format(pyfile.name))
+                raise Exception("Filename {} not recognized".format(pyfile.name))
 
             if not exists(save_join(DL_DIR, pyfile.name)):
-                raise Exception("File {} does not exists.".format(pyfile.name))
+                raise Exception("File {} does not exists".format(pyfile.name))
 
             hash = md5()
             f = open(save_join(DL_DIR, pyfile.name), "rb")
@@ -86,7 +86,7 @@ class HosterPluginTester(PluginTester):
                     log(DEBUG, "Downloaded file copied to report")
                     move(f.name, join("tmp", plugin, f.name))
 
-                raise Exception("Hash does not match.")
+                raise Exception("Hash does not match")
 
         except Exception as e:
             if isinstance(e, Fail) and status == "failed":
@@ -117,7 +117,7 @@ for k, v in sections.items():
         urls.append(url)
         status[url] = k
 
-hoster, c = c.pluginManager.parseUrls(urls)
+hoster, c = c.pluginmanager.parseUrls(urls)
 
 plugins = accumulate(hoster)
 for plugin, urls in plugins.items():

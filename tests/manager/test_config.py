@@ -26,7 +26,7 @@ class TestConfigManager(TestCase):
         cls.db = DatabaseBackend(cls.core)
         cls.core.db = cls.db
         cls.db.manager = cls.core
-        cls.db.manager.statusMsg = defaultdict(lambda: "statusmsg")
+        cls.db.manager.status_msg = defaultdict(lambda: "statusmsg")
         cls.parser = ConfigParser()
         cls.config = ConfigManager(cls.core, cls.parser)
         cls.db.setup()
@@ -38,7 +38,7 @@ class TestConfigManager(TestCase):
 
 
     def addConfig(self):
-        self.config.addConfigSection("plugin", "Name", "desc", "something",
+        self.config.add_configSection("plugin", "Name", "desc", "something",
             [("value", "str", "label", "default")])
 
     def test_db(self):
@@ -70,7 +70,7 @@ class TestConfigManager(TestCase):
         assert self.config.get("general", "language", adminUser) == "de"
 
     def test_user(self):
-        self.addConfig()
+        self.add_config()
 
         assert self.config["plugin"]["value"] == "default"
         assert self.config.get("plugin", "value", adminUser) == "default"
@@ -96,7 +96,7 @@ class TestConfigManager(TestCase):
         self.config.delete("foo")
 
     def test_sections(self):
-        self.addConfig()
+        self.add_config()
 
         i = 0
         # there should be only one section, with no values
@@ -117,12 +117,12 @@ class TestConfigManager(TestCase):
         assert i == 1
 
     def test_get_section(self):
-        self.addConfig()
-        self.assertEqual(self.config.getSection("plugin")[0].label, "Name")
+        self.add_config()
+        self.assert_equal(self.config.get_section("plugin")[0].label, "Name")
 
     # TODO: more save tests are needed
     def test_saveValues(self):
-        self.addConfig()
+        self.add_config()
         self.config.saveValues(adminUser, "plugin")
 
     @raises(InvalidConfigSection)
