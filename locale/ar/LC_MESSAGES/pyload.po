@@ -33,11 +33,11 @@ msgid "Deactivated addons: {}"
 msgstr "الاضافات المعطلة: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
+msgid "Activating addons ..."
 msgstr ""
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
+msgid "Deactivating addons ..."
 msgstr ""
 
 #: pyload/web/ServerThread.py:49
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "المساحه الحره: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "تفعيل الحسابات..."
+msgid "Activating Accounts ..."
+msgstr "تفعيل الحسابات ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "اعادة تشغيل التنزيلات الفاشلة..."
+msgid "Restarting failed downloads ..."
+msgstr "اعادة تشغيل التنزيلات الفاشلة ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "اغلاق باي لود"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "جاري ايقاف التشغيل..."
+msgid "shutting down ..."
+msgstr "جاري ايقاف التشغيل ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

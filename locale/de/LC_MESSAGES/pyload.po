@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Deaktivierte Erweiterungen: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Aktiviere Erweiterungen..."
+msgid "Activating addons ..."
+msgstr "Aktiviere Erweiterungen ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Deaktiviere Erweiterungen..."
+msgid "Deactivating addons ..."
+msgstr "Deaktiviere Erweiterungen ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Freier Speicher: {}GB"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "Aktiviere Konten..."
+msgid "Activating Accounts ..."
+msgstr "Aktiviere Konten ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "starte fehlgeschlagenen Downloads neu..."
+msgid "Restarting failed downloads ..."
+msgstr "starte fehlgeschlagenen Downloads neu ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "pyLoad wird beendet"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "Beenden..."
+msgid "shutting down ..."
+msgstr "Beenden ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"
@@ -616,7 +616,7 @@ msgstr "Download fehlgeschlagen: {} | {}"
 
 #: pyload/threads/DownloadThread.py:136
 msgid "Couldn't connect to host or connection reset, waiting 1 minute and retry."
-msgstr "Verbindungsaufbau zum Host fehlgeschlagen oder die Verbindung wurde zurückgesetzt. Erneuter Versuch in 1 Minute..."
+msgstr "Verbindungsaufbau zum Host fehlgeschlagen oder die Verbindung wurde zurückgesetzt. Erneuter Versuch in 1 Minute ..."
 
 #: pyload/threads/DownloadThread.py:171
 #, python-format

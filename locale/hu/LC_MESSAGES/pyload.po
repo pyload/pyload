@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Bővítmény deaktiválása: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Bővítmények aktiválása..."
+msgid "Activating addons ..."
+msgstr "Bővítmények aktiválása ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Bővítmények deaktiválása..."
+msgid "Deactivating addons ..."
+msgstr "Bővítmények deaktiválása ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Szabad hely: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "Hozzáférések aktiválása..."
+msgid "Activating Accounts ..."
+msgstr "Hozzáférések aktiválása ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "Sikertelen letöltések újraindítása..."
+msgid "Restarting failed downloads ..."
+msgstr "Sikertelen letöltések újraindítása ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "pyLoad kilép"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "leállítás..."
+msgid "shutting down ..."
+msgstr "leállítás ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

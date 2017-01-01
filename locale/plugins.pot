@@ -147,7 +147,7 @@ msgstr ""
 #: pyload/plugins/hoster/filesmailru.py:99
 #, python-format
 msgid ""
-"There was HTML Code in the Downloaded File ({})...redirect error? The "
+"There was HTML Code in the Downloaded File ({}) ...redirect error? The "
 "Download will be restarted."
 msgstr ""
 

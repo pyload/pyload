@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Απενεργοποιημένα πρόσθετα: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Ενεργοποίηση πρόσθετων..."
+msgid "Activating addons ..."
+msgstr "Ενεργοποίηση πρόσθετων ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Απενεργοποίηση πρόσθετων..."
+msgid "Deactivating addons ..."
+msgstr "Απενεργοποίηση πρόσθετων ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Ελέυθερος χώρος στο δίσκο: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "Ενεργοποίηση Λογαριασμών..."
+msgid "Activating Accounts ..."
+msgstr "Ενεργοποίηση Λογαριασμών ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "Επανεκκίνηση αποτυχημένων λήψεων..."
+msgid "Restarting failed downloads ..."
+msgstr "Επανεκκίνηση αποτυχημένων λήψεων ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "το pyLoad σταματάει"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "κλείσιμο..."
+msgid "shutting down ..."
+msgstr "κλείσιμο ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

@@ -58,8 +58,8 @@ msgid "Addons"
 msgstr "Complements"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
-msgstr "Carregant..."
+msgid "Loading ..."
+msgstr "Carregant ..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -171,8 +171,8 @@ msgid "Try to restart it or open a bug report."
 msgstr "Intenti tornar-la a iniciar o obri un informe d'error."
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
-msgstr "En execució..."
+msgid "Running ..."
+msgstr "En execució ..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -266,8 +266,8 @@ msgid "paste & add links to pyLoad"
 msgstr "enganxar & afegir enllaços a pyLoad"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
-msgstr " Enganxar els enllaços aquí..."
+msgid " Paste your links here ..."
+msgstr " Enganxar els enllaços aquí ..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"

@@ -62,7 +62,7 @@ msgid "Addons"
 msgstr ""
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
+msgid "Loading ..."
 msgstr ""
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
@@ -175,7 +175,7 @@ msgid "Try to restart it or open a bug report."
 msgstr "Поново га покрените или нам пошаљите извештај о грешци."
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
+msgid "Running ..."
 msgstr "Покрећем…"
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
@@ -270,7 +270,7 @@ msgid "paste & add links to pyLoad"
 msgstr "додајте везе у pyLoad"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
+msgid " Paste your links here ..."
 msgstr " Овде копирајте везе…"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17

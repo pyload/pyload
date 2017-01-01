@@ -58,8 +58,8 @@ msgid "Addons"
 msgstr "Erweiterungen"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
-msgstr "Lade..."
+msgid "Loading ..."
+msgstr "Lade ..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -171,8 +171,8 @@ msgid "Try to restart it or open a bug report."
 msgstr "Versuche einen Neustart oder erstelle einen Fehlerbericht."
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
-msgstr "Läuft..."
+msgid "Running ..."
+msgstr "Läuft ..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -266,7 +266,7 @@ msgid "paste & add links to pyLoad"
 msgstr "Links einfügen"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
+msgid " Paste your links here ..."
 msgstr " Links hier einfügen ..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17

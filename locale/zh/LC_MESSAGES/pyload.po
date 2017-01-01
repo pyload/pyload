@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "{} 已停用"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "外掛啟動中..."
+msgid "Activating addons ..."
+msgstr "外掛啟動中 ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "外掛停用中..."
+msgid "Deactivating addons ..."
+msgstr "外掛停用中 ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,11 +495,11 @@ msgid "Free space: {}"
 msgstr "剩餘空間： {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "啟動帳戶..."
+msgid "Activating Accounts ..."
+msgstr "啟動帳戶 ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
+msgid "Restarting failed downloads ..."
 msgstr "重新啟動失敗的下載"
 
 #: pyload/Core.py:449
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "離開pyLoad"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "關閉..."
+msgid "shutting down ..."
+msgstr "關閉 ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

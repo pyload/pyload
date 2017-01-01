@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Deaktivovaná rozšíření: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Aktivace addonů..."
+msgid "Activating addons ..."
+msgstr "Aktivace addonů ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Deaktivace addonů..."
+msgid "Deactivating addons ..."
+msgstr "Deaktivace addonů ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Volne misto: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "Aktivuji Ucty..."
+msgid "Activating Accounts ..."
+msgstr "Aktivuji Ucty ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "Restartuji neúspěšná stahování..."
+msgid "Restarting failed downloads ..."
+msgstr "Restartuji neúspěšná stahování ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "pyLoad se ukonci"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "vypinani..."
+msgid "shutting down ..."
+msgstr "vypinani ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

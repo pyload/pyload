@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Addon disattivati: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Attivazione estensioni..."
+msgid "Activating addons ..."
+msgstr "Attivazione estensioni ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Disattivazione estensioni..."
+msgid "Deactivating addons ..."
+msgstr "Disattivazione estensioni ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Spazio libero: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
-msgstr "Attivazione Account..."
+msgid "Activating Accounts ..."
+msgstr "Attivazione Account ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "Riavvio download falliti..."
+msgid "Restarting failed downloads ..."
+msgstr "Riavvio download falliti ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,8 +515,8 @@ msgid "pyLoad quits"
 msgstr "esco da pyLoad"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
-msgstr "spegnimento..."
+msgid "shutting down ..."
+msgstr "spegnimento ..."
 
 #: pyload/Core.py:608
 msgid "error while shutting down"

@@ -33,12 +33,12 @@ msgid "Deactivated addons: {}"
 msgstr "Pasif eklentiler: {}"
 
 #: pyload/AddonManager.py:184
-msgid "Activating addons..."
-msgstr "Eklentiler aktif..."
+msgid "Activating addons ..."
+msgstr "Eklentiler aktif ..."
 
 #: pyload/AddonManager.py:194
-msgid "Deactivating addons..."
-msgstr "Eklentileri devre dışı bırakılıyor..."
+msgid "Deactivating addons ..."
+msgstr "Eklentileri devre dışı bırakılıyor ..."
 
 #: pyload/web/ServerThread.py:49
 msgid "SSL certificates not found."
@@ -495,12 +495,12 @@ msgid "Free space: {}"
 msgstr "Boş alan: {}"
 
 #: pyload/Core.py:436
-msgid "Activating Accounts..."
+msgid "Activating Accounts ..."
 msgstr "Hesap etkinleştiriliyor ..."
 
 #: pyload/Core.py:441
-msgid "Restarting failed downloads..."
-msgstr "Başarısız olan yüklemeler yeniden başlatılıyor..."
+msgid "Restarting failed downloads ..."
+msgstr "Başarısız olan yüklemeler yeniden başlatılıyor ..."
 
 #: pyload/Core.py:449
 msgid "pyLoad is up and running"
@@ -515,7 +515,7 @@ msgid "pyLoad quits"
 msgstr "pyload çıkış"
 
 #: pyload/Core.py:593
-msgid "shutting down..."
+msgid "shutting down ..."
 msgstr "kapatılıyor ..."
 
 #: pyload/Core.py:608

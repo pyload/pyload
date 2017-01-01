@@ -80,7 +80,7 @@ msgid "Addons"
 msgstr ""
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
+msgid "Loading ..."
 msgstr ""
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
@@ -193,8 +193,8 @@ msgid "Try to restart it or open a bug report."
 msgstr "حاول اعادة تشغيلة او افتح تقرير التبليغ عن علة."
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
-msgstr "قيد التشغيل..."
+msgid "Running ..."
+msgstr "قيد التشغيل ..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -288,8 +288,8 @@ msgid "paste & add links to pyLoad"
 msgstr "لصق و اضافة الروابط الى باي لود"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
-msgstr " الصق الروابط الخاصة بك هنا..."
+msgid " Paste your links here ..."
+msgstr " الصق الروابط الخاصة بك هنا ..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"

@@ -56,8 +56,8 @@ msgid "Addons"
 msgstr "外掛"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
-msgstr "載入中..."
+msgid "Loading ..."
+msgstr "載入中 ..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -169,8 +169,8 @@ msgid "Try to restart it or open a bug report."
 msgstr "請嘗試重新啟動並回報pyLoad此錯誤"
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
-msgstr "處理中..."
+msgid "Running ..."
+msgstr "處理中 ..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -264,7 +264,7 @@ msgid "paste & add links to pyLoad"
 msgstr "貼上下載位址並開始"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
+msgid " Paste your links here ..."
 msgstr "請在這裡輸入您的連結"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17

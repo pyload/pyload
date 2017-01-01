@@ -58,8 +58,8 @@ msgid "Addons"
 msgstr "Kiegészítők"
 
 #: pyload/web/app/templates/default/dashboard/package.html:35
-msgid "Loading..."
-msgstr "Betöltés..."
+msgid "Loading ..."
+msgstr "Betöltés ..."
 
 #: pyload/web/app/templates/default/dashboard/actionbar.html:9
 msgid "Local"
@@ -171,8 +171,8 @@ msgid "Try to restart it or open a bug report."
 msgstr "Próbáld meg újraindítani, vagy nyiss egy hibajegyet."
 
 #: pyload/web/app/templates/default/header/layout.html:13
-msgid "Running..."
-msgstr "fut..."
+msgid "Running ..."
+msgstr "fut ..."
 
 #: pyload/web/app/templates/default/dialogs/addPluginConfig.html:3
 msgid "Choose a plugin"
@@ -266,8 +266,8 @@ msgid "paste & add links to pyLoad"
 msgstr "hivatkozások beszúrása és hozzáadása a pyLoad-hoz"
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:13
-msgid " Paste your links here..."
-msgstr " Szúrd be a linket ide..."
+msgid " Paste your links here ..."
+msgstr " Szúrd be a linket ide ..."
 
 #: pyload/web/app/templates/default/linkgrabber/modal.html:17
 msgid "Container"
