@@ -15,7 +15,7 @@ from pyload.remote.apitypes import Unauthorized, Forbidden
 
 
 class JSONClient(object):
-    URL = "http://localhost:8001/api"
+    URL = "http://localhost:8010/api"
 
     def __init__(self, url=None):
         self.url = url or self.URL

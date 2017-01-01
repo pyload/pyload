@@ -85,4 +85,4 @@ def run_server(host, port, server):
 
 
 if __name__ == "__main__":
-    run(app=web, port=8001)
+    run(app=web, port=8010)

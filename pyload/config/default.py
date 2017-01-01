@@ -59,11 +59,11 @@ def make_config(config):
                                 ("external", "bool", _("Served external"), False),
                                 ("server", "auto;threaded;fallback;fastcgi", _("Server"), "auto"),
                                 ("force_server", "str", _("Favor specific server"), ""),
-                                ("host", "ip", _("IP"), "0.0.0.0"),
+                                ("host", "ip", _("IP"), "localhost"),
                                 ("https", "bool", _("Use HTTPS"), False),
-                                ("port", "int", _("Port"), 8001),
-                                ("wsHost", "ip", _("IP"), "0.0.0.0"),
-                                ("wsPort", "int", _("Port"), 7447),
+                                ("port", "int", _("Port"), 8010),
+                                ("wshost", "ip", _("IP"), "localhost"),
+                                ("wsport", "int", _("Port"), 7447),
                             ])
 
     config.add_config_section("proxy", _("Proxy"), _("Description"), _("Long description"),

@@ -36,7 +36,7 @@ Comparision
 
 The remaining servers, were evaluated for different criteria. We ran the following benchmark with different options:
 
-    ab -n 15000 -c 1 http://127.0.0.1:8001/login
+    ab -n 15000 -c 1 http://127.0.0.1:8010/login
 
 This benchmark was ran with -c 1, -c 5, as well as -k option to test performance with more concurrency and keep-alive
 feature, we use time per request (mean, across all concurrent requests) for comparision.

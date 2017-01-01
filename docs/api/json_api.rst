@@ -32,7 +32,7 @@ In general you can use any method listed at the :class:`Api <pyload.api.Api>` do
 the thrift backend.
 
 Access works simply via ``http://pyload-core/api/methodName``, where ``pyload-core`` is the ip address
-or hostname including the web interface port. By default on local access this would be `localhost:8000`.
+or hostname including the web interface port. By default on local access this would be `localhost:8010`.
 
 The return value will be formatted in JSON, complex data types as dictionaries. Definition for data types can be found
 :doc:`here <datatypes>`
@@ -65,7 +65,7 @@ Here is a little python script that is able to send commands to the pyload api::
     from urllib import urlopen, urlencode
     from json import dumps
 
-    URL = "http://localhost:8001/api/{}"
+    URL = "http://localhost:8010/api/{}"
 
     def login(user, pw):
         params = {"username": user, "password": pw}
