@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from __future__ import division
 from future import standard_library
 standard_library.install_aliases()
+from builtins import bytes
 from builtins import str
-from past.builtins import basestring
 from urllib.parse import urlparse
 import re
 from time import time
@@ -55,7 +55,7 @@ def parse_html_form(attr_str, html, input_names=None):
             # check input attributes
             for key, val in input_names.items():
                 if key in inputs:
-                    if isinstance(val, basestring) and inputs[key] == val:
+                    if (isinstance(val, str) or isinstance(val, bytes)) and inputs[key] == val:
                         continue
                     elif isinstance(val, tuple) and inputs[key] in val:
                         continue

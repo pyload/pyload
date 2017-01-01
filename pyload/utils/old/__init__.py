@@ -6,10 +6,10 @@ from __future__ import unicode_literals
 
 from future import standard_library
 standard_library.install_aliases()
+from builtins import bytes
 from builtins import str
 from builtins import map
 from builtins import chr
-from past.builtins import basestring
 import os
 import time
 import re
@@ -124,7 +124,7 @@ def parse_size(string, unit=None):
         else:
             return 0
     else:
-        if isinstance(string, basestring):
+        if isinstance(string, str) or sinstance(string, bytes):
             traffic = float(string.replace(",", "."))
         else:
             traffic = string
@@ -226,11 +226,12 @@ def accumulate(it, inv_map=None):
 
 
 def to_string(value):
-    return str(value) if not isinstance(value, basestring) else value
+    return str(value) if not isinstance(value, str) and not isinstance(value, bytes) else value
 
 
 def to_bool(value):
-    if not isinstance(value, basestring): return True if value else False
+    if not isinstance(value, str) and not isinstance(value, bytes):
+        return True if value else False
     return True if value.lower() in ("1", "true", "on", "an", "yes") else False
 
 

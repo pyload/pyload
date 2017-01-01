@@ -2,7 +2,8 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from past.builtins import basestring
+from builtins import bytes
+from builtins import str
 from builtins import object
 from pyload.api import LinkStatus, DownloadStatus as DS
 from pyload.utils import to_list, has_method, uniqify
@@ -12,7 +13,7 @@ from pyload.plugin import Base, Retry
 
 # represent strings as LinkStatus
 def to_link_list(links, status=DS.Queued):
-    return [LinkStatus(link, link, -1, status) if isinstance(link, basestring) else link
+    return [LinkStatus(link, link, -1, status) if isinstance(link, str) or isinstance(link, bytes) else link
             for link in links]
 
 

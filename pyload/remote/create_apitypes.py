@@ -22,7 +22,7 @@ type_map = {
     TType.I16: 'int',
     TType.I32: 'int',
     TType.I64: 'int',
-    TType.STRING: 'basestring',
+    TType.STRING: 'str',
     TType.MAP: 'dict',
     TType.LIST: 'list',
     TType.SET: 'set',

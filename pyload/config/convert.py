@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from past.builtins import basestring
+from builtins import bytes
+from builtins import str
 from gettext import gettext
 
 from new_collections import namedtuple
@@ -53,7 +54,7 @@ def from_string(value, typ=None):
     """ cast value to given type, unicode for strings """
 
     # value is no string
-    if not isinstance(value, basestring):
+    if not isinstance(value, str) and not isinstance(value, bytes):
         return value
 
     value = decode(value)

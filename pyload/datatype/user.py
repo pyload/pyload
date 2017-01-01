@@ -2,7 +2,8 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
-from past.builtins import basestring
+from builtins import bytes
+from builtins import str
 from pyload.api import UserData, Permission, Role
 from pyload.utils import bits_set
 
@@ -27,13 +28,13 @@ class User(UserData):
 
     def has_permission(self, perms):
         """  Accepts permission bit or name  """
-        if isinstance(perms, basestring) and hasattr(Permission, perms):
+        if (isinstance(perms, str) or isinstance(perms, bytes)) and hasattr(Permission, perms):
             perms = getattr(Permission, perms)
 
         return bits_set(perms, self.permission)
 
     def has_role(self, role):
-        if isinstance(role, basestring) and hasattr(Role, role):
+        if (isinstance(role, str) or isinstance(role, bytes)) and hasattr(Role, role):
             role = getattr(Role, role)
 
         return self.role == role
