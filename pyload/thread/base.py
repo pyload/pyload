@@ -85,7 +85,7 @@ class BaseThread(Thread):
             f.write(dump)
             f.close()
 
-        self.log.info(_("Debug Report written to {}".format(dump_name))
+        self.log.info(_("Debug Report written to {}").format(dump_name))
         return dump_name
 
     def get_plugin_dump(self, plugin):

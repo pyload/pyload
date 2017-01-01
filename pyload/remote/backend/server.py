@@ -401,7 +401,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
             self._sockets.remove(socketinfo)
 
         if len(self._sockets) == 0:
-            self._logger.critical(_('No sockets activated. Use info log level to see the reason')
+            self._logger.critical(_('No sockets activated. Use info log level to see the reason'))
 
     def server_close(self):
         """Override SocketServer.TCPServer.server_close to enable multiple

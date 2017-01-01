@@ -38,7 +38,7 @@ def info():
         'Colored log'          : ["colorlog"],
         'JavaScript evaluation': ["Js2Py"],
         # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Use `smart_import`
-        'pyLoad auto-updater'  : ["pip"],
+        'pyLoad auto-update'   : ["pip"],
         'SSL connection'       : ["pyOpenSSL"]
     }
     if os.name != 'nt':

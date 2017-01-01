@@ -1,7 +1,10 @@
-pyLoad - download manager
-Copyright(c) 2009-2017 The pyLoad Team
+License
+-------
+
+Copyright(c) 2009-2017 The pyLoad Team <http://pyload.net/>
 All rights reserved.
 licensing@pyload.net
+
 
 Open Source License
 -------------------
@@ -11,12 +14,14 @@ General Public License as published by the Free Software Foundation;
 either version 3 of the License, or (at your option) any later version.
 A copy of the GNU Affero General Public License can be found below.
 
+
 Alternative License
 -------------------
 
 With an explicit permission of the authors you may use or distribute
 this software under a different license according to the agreement.
 Please contact licensing@pyload.net for further information.
+
 
 Contribution
 ------------
@@ -31,6 +36,7 @@ contributors@pyload.net
 
 Beside that you need to initial release your code with a license compatible
 to the Open Source License as choosen above.
+
 
 --
 

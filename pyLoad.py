@@ -63,7 +63,7 @@ def parse_args(argv=None):
 
     prog   = blue("py") + yellow("Load")
     desc   = red(pyload.info().description)
-    epilog = green("*** Please refer to the attached `README.md` for further info ***")
+    epilog = green("*** Please refer to the included `README.md` for further info ***")
 
     ap = argparse.ArgumentParser(prog=prog,
                                  description=desc,
