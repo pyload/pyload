@@ -98,7 +98,7 @@ class InteractionManager(object):
 
         #todo: title desc plugin
         task = InteractionTask(self.ids, IA.Captcha, input,
-                            _("Captcha request"), _("Please solve the captcha."), plugin, owner=owner)
+                            _("Captcha request"), _("Please solve the captcha"), plugin, owner=owner)
 
         self.ids += 1
         self.queue_task(task)

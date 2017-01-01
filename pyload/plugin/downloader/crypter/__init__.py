@@ -2,7 +2,6 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from builtins import str
 from past.builtins import basestring
 from builtins import object
 from pyload.api import LinkStatus, DownloadStatus as DS
@@ -276,7 +275,7 @@ class Crypter(Base):
                             content.append((f.name, f.read()))
                             f.close()
                     except IOError as e:
-                        self.log_error("IOError", e.message)
+                        self.log_error(_("IOError"), e.message)
                 else:
                     remote.append(url)
 
@@ -291,7 +290,7 @@ class Crypter(Base):
 
     def get_password(self):
         """ Deprecated """
-        self.log_debug("Deprecated method .get_password(), use self.password instead.")
+        self.log_debug("Deprecated method .get_password(), use self.password instead")
         return self.password
 
     def convert_packages(self):

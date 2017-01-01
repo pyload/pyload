@@ -3,7 +3,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
-from builtins import str
 from time import time
 from threading import RLock
 
@@ -24,7 +23,7 @@ class Account(Base):
     """
     Base class for every account plugin.
     Just overwrite `login` and cookies will be stored and the account becomes accessible in\
-    associated hoster plugin. Plugin should also provide `loadAccountInfo`. \
+    associated hoster plugin. Plugin should also provide `load_account_info`. \
     An instance of this class is created for every entered account, it holds all \
     fields of AccountInfo ttype, and can be set easily at runtime.
     """
@@ -74,7 +73,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.log_error("Invalid config: {}".format(e.message))
+            self.log_error(_("Invalid config: {}").format(e.message))
             self.config_data = {}
 
         self.init()
@@ -196,7 +195,7 @@ class Account(Base):
     @lock
     def get_account_info(self, force=False):
         """retrieve account info's for an user, do **not** overwrite this method!\\
-        just use it to retrieve info's in hoster plugins. see `loadAccountInfo`
+        just use it to retrieve info's in hoster plugins. see `load_account_info`
 
         :param name: username
         :param force: reloads cached account information
@@ -211,7 +210,7 @@ class Account(Base):
                 try:
                     infos = self.load_account_info(req)
                 except TypeError: #TODO: temporary
-                    self.log_debug("Deprecated .load_account_info(...) signature, omit user argument.")
+                    self.log_debug("Deprecated .load_account_info(...) signature, omit user argument")
                     infos = self.load_account_info(self.loginname, req)
             except Exception as e:
                 infos = {"error": e.message}

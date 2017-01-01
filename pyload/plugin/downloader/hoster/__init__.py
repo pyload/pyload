@@ -2,7 +2,6 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from builtins import str
 import os
 from time import time
 
@@ -293,7 +292,7 @@ class Hoster(Base):
             self.pyfile.size = self.dl.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info("{} saved as {}".format(name, newname))
+            self.log.info(_("{} saved as {}").format(name, newname))
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -385,7 +384,7 @@ class Hoster(Base):
         if starting and self.pyload.config['download']['skip_existing'] and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
-                raise SkipDownload("File exists.")
+                raise SkipDownload("File exists")
 
         pyfile = self.pyload.db.find_duplicates(self.pyfile.fid, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:

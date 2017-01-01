@@ -200,7 +200,7 @@ class SimpleHoster(Hoster):
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.check_traffic_left()):
             self.handle_premium()
         elif premium_only:
-            self.fail("This link require a premium account")
+            self.fail(_("This link require a premium account"))
         else:
             # This line is required due to the get_url workaround. Can be removed in 0.5
             self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
@@ -223,7 +223,7 @@ class SimpleHoster(Hoster):
             self.offline()
         elif status != 2:
             self.log_debug(self.file_info)
-            self.parse_error('File info')
+            self.parse_error(_('File info'))
 
         if name:
             self.pyfile.name = name
@@ -233,16 +233,16 @@ class SimpleHoster(Hoster):
         if size:
             self.pyfile.size = size
         else:
-            self.log_error("File size not parsed")
+            self.log_error(_("File size not parsed"))
 
         self.log_debug("FILE NAME: {} FILE SIZE: {}".format(self.pyfile.name, self.pyfile.size))
         return self.file_info
 
     def handle_free(self):
-        self.fail("Free download not implemented")
+        self.fail(_("Free download not implemented"))
 
     def handle_premium(self):
-        self.fail("Premium download not implemented")
+        self.fail(_("Premium download not implemented"))
 
     def parse_error(self, msg):
         raise PluginParseError(msg)
@@ -255,7 +255,7 @@ class SimpleHoster(Hoster):
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.log_info("Download limit reached, reconnect or wait {}".format(time_str))
+        self.log_info(_("Download limit reached, reconnect or wait {}").format(time_str))
 
         self.set_wait(wait_time, True)
         self.wait()
@@ -269,7 +269,7 @@ class SimpleHoster(Hoster):
         if traffic == -1:
             return True
         size = self.pyfile.size // 1024
-        self.log_info("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB".format(size, self.user, traffic))
+        self.log_info(_("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB").format(size, self.user, traffic))
         return size <= traffic
 
     # TODO: Remove in 0.5

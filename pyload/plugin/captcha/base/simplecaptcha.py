@@ -46,7 +46,7 @@ class ReCaptcha(object):
             challenge = re.search("challenge : '(.*?)',", js).group(1)
             server = re.search("server : '(.*?)',", js).group(1)
         except Exception:
-            self.plugin.fail("recaptcha error")
+            self.plugin.fail(_("recaptcha error"))
         result = self.result(server, challenge)
 
         return challenge, result
@@ -64,7 +64,7 @@ class AdsCaptcha(CaptchaService):
             challenge = re.search("challenge: '(.*?)',", js).group(1)
             server = re.search("server: '(.*?)',", js).group(1)
         except Exception:
-            self.plugin.fail("adscaptcha error")
+            self.plugin.fail(_("adscaptcha error"))
         result = self.result(server, challenge)
 
         return challenge, result
@@ -82,7 +82,7 @@ class SolveMedia(CaptchaService):
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
         except Exception:
-            self.plugin.fail("solvemedia error")
+            self.plugin.fail(_("solvemedia error"))
         result = self.result(challenge)
 
         return challenge, result

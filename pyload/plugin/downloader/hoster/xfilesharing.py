@@ -63,7 +63,7 @@ class XFileSharingPro(SimpleHoster):
             if self.premium:
                 self.handle_overriden()
             else:
-                self.fail("Only premium users can download from other hosters with {}".format(self.HOSTER_NAME))
+                self.fail(_("Only premium users can download from other hosters with {}").format(self.HOSTER_NAME))
         else:
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
@@ -138,9 +138,9 @@ class XFileSharingPro(SimpleHoster):
 
         else:
             if self.errmsg and 'captcha' in self.errmsg:
-                self.fail("No valid captcha code entered")
+                self.fail(_("No valid captcha code entered"))
             else:
-                self.fail("Download link not found")
+                self.fail(_("Download link not found"))
 
         return found.group(1)
 
@@ -148,7 +148,7 @@ class XFileSharingPro(SimpleHoster):
         self.html = self.load(self.pyfile.url, post=self.get_post_parameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found:
-            self.parse_error('DIRECT LINK')
+            self.parse_error(_('DIRECT LINK'))
         self.start_download(found.group(1))
 
     def handle_overriden(self):
@@ -168,7 +168,7 @@ class XFileSharingPro(SimpleHoster):
 
         action, inputs = self.parse_html_form('F1')
         if not inputs:
-            self.parse_error('TEXTAREA')
+            self.parse_error(_('TEXTAREA'))
         self.log_debug(self.HOSTER_NAME, inputs)
         if inputs['st'] == 'OK':
             self.html = self.load(action, post=inputs)
@@ -180,7 +180,7 @@ class XFileSharingPro(SimpleHoster):
         #get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found:
-            self.parse_error('DIRECT LINK (OVR)')
+            self.parse_error(_('DIRECT LINK (OVR)'))
         self.pyfile.url = found.group(1)
         header = self.load(self.pyfile.url, just_header=True)
         if 'location' in header:  # Direct link
@@ -208,7 +208,7 @@ class XFileSharingPro(SimpleHoster):
             elif 'captcha' in self.errmsg:
                 self.invalid_captcha()
             elif 'premium' in self.errmsg and 'require' in self.errmsg:
-                self.fail("File can be downloaded by premium users only")
+                self.fail(_("File can be downloaded by premium users only"))
             elif 'limit' in self.errmsg:
                 self.wait(1 * 60 * 60, True)
                 self.retry(25)
@@ -217,7 +217,7 @@ class XFileSharingPro(SimpleHoster):
             elif 'maintenance' in self.errmsg:
                 self.temp_offline()
             elif 'download files up to' in self.errmsg:
-                self.fail("File too large for free download")
+                self.fail(_("File too large for free download"))
             else:
                 self.fail(self.errmsg)
 
@@ -242,7 +242,7 @@ class XFileSharingPro(SimpleHoster):
                     if self.errmsg:
                         self.retry()
                     else:
-                        self.parse_error("Form not found")
+                        self.parse_error(_("Form not found"))
 
             self.log_debug(self.HOSTER_NAME, inputs)
 
@@ -251,7 +251,7 @@ class XFileSharingPro(SimpleHoster):
                     if self.passwords:
                         inputs['password'] = self.passwords.pop(0)
                     else:
-                        self.fail("No or invalid passport")
+                        self.fail(_("No or invalid passport"))
 
                 if not self.premium:
                     found = re.search(self.WAIT_PATTERN, self.html)
@@ -285,7 +285,7 @@ class XFileSharingPro(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.parse_error('FORM: {}'.format(inputs['op'] if 'op' in inputs else 'UNKNOWN'))
+            self.parse_error(_('FORM: {}').format(inputs['op'] if 'op' in inputs else _('UNKNOWN')))
 
     def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)

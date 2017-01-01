@@ -60,10 +60,10 @@ What a basic excerpt would look like: ::
         """
 
         def activate(self):
-            print("Yay, the core is ready let's do some work.")
+            print("Yay, the core is ready let's do some work")
 
         def downloadFinished(self, pyfile):
-            print("A Download just finished.")
+            print("A Download just finished")
 
 Another important feature to mention can be seen at the ``__threaded__`` parameter. Function names listed will be executed
 in a thread, in order to not block the main thread. This should be used for all kinds of long lived processing tasks.
@@ -86,10 +86,10 @@ It requires a `dict` that maps event names to function names or a `list` of func
                      "activate": "initialize"}
 
         def initialize(self):
-            print("Initialized.")
+            print("Initialized")
 
         def doSomeWork(self, pyfile):
-            print("This is equivalent to the above example.")
+            print("This is equivalent to the above example")
 
         def someMethod(self):
             print("The underlying event (allDownloadsFinished) for this method is not available through the base class")

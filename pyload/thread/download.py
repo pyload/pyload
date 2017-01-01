@@ -5,7 +5,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
-from builtins import str
 from threading import Event
 from queue import Queue
 from time import sleep, time
@@ -72,7 +71,7 @@ class DownloadThread(BaseThread):
                 self.pyload.files.check_package_finished(pyfile)
 
             except NotImplementedError:
-                self.log.error(_("Plugin {} is missing a function.").format(pyfile.pluginname))
+                self.log.error(_("Plugin {} is missing a function").format(pyfile.pluginname))
                 pyfile.set_status("failed")
                 pyfile.error = "Plugin does not work"
                 self.clean(pyfile)
@@ -134,7 +133,7 @@ class DownloadThread(BaseThread):
                 self.log.debug("pycurl exception {}: {}".format(code, msg))
 
                 if code in (7, 18, 28, 52, 56):
-                    self.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
+                    self.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry"))
                     wait = time() + 60
 
                     pyfile.wait_until = wait
@@ -157,7 +156,7 @@ class DownloadThread(BaseThread):
 
                 else:
                     pyfile.set_status("failed")
-                    self.log.error("pycurl error {}: {}".format(code, msg))
+                    self.log.error(_("pycurl error {}: {}").format(code, msg))
                     if self.pyload.debug:
                         print_exc()
                         self.write_debug_report(pyfile.plugin.__name__, pyfile)

@@ -156,9 +156,9 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.pyload.log.warning(_("Database was deleted due to incompatible version."))
+                    self.manager.pyload.log.warning(_("Database was deleted due to incompatible version"))
                 except Exception:
-                    print("Database was deleted due to incompatible version.")
+                    print("Database was deleted due to incompatible version")
 
                 remove(self.VERSION_FILE)
                 move(self.DB_FILE, self.DB_FILE + ".backup")

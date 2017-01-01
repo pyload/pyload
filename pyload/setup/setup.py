@@ -97,7 +97,7 @@ class Setup(object):
 
         opened = webbrowser.open_new_tab(url)
         if not opened:
-            print("Please point your browser to the url above.")
+            print("Please point your browser to the url above")
 
         input()
 
@@ -108,16 +108,16 @@ class Setup(object):
 
         self.ask_lang()
 
-        print(_("Welcome to the pyLoad Configuration Assistent."))
-        print(_("It will check your system and make a basic setup in order to run pyLoad."))
+        print(_("Welcome to the pyLoad Configuration Assistent"))
+        print(_("It will check your system and make a basic setup in order to run pyLoad"))
         print("")
         print(_("The value in brackets [] always is the default value,"))
-        print(_("in case you don't want to change it or you are unsure what to choose, just hit enter."))
-        print(_("Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."))
+        print(_("in case you don't want to change it or you are unsure what to choose, just hit enter"))
+        print(_("Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore"))
         print(_("If you have any problems with this assistent hit CTRL+C,"))
-        print(_("to abort and don't let him start with pyLoadCore automatically anymore."))
+        print(_("to abort and don't let him start with pyLoadCore automatically anymore"))
         print("")
-        print(_("When you are ready for system check, hit enter."))
+        print(_("When you are ready for system check, hit enter"))
         input()
 
 
@@ -130,7 +130,7 @@ class Setup(object):
 
         print("")
         print(_("Do you want to change the config path? Current is {}").format(abspath("")))
-        print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."))
+        print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it"))
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
@@ -138,7 +138,7 @@ class Setup(object):
 
         print("")
         print(_("Do you want to configure login data and basic settings?"))
-        print(_("This is recommend for first run."))
+        print(_("This is recommend for first run"))
         con = self.ask(_("Make basic setup?"), self.yes, bool=True)
 
         if con:
@@ -158,7 +158,7 @@ class Setup(object):
             self.conf_web()
 
         print("")
-        print(_("Setup finished successfully."))
+        print(_("Setup finished successfully"))
         print(_("Hit enter to exit and restart pyLoad"))
         input()
         return True
@@ -169,7 +169,7 @@ class Setup(object):
         print(_("## Basic Setup ##"))
 
         print("")
-        print(_("The following logindata is valid for CLI, GUI and webinterface."))
+        print(_("The following logindata is valid for CLI, GUI and webinterface"))
 
         from pyload.database import DatabaseBackend
 
@@ -200,20 +200,20 @@ class Setup(object):
         print("")
         self.config["webinterface"]["activated"] = self.ask(_("Activate webinterface?"), self.yes, bool=True)
         print("")
-        print(_("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."))
+        print(_("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally"))
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print("")
-        print(_("pyLoad offers several server backends, now following a short explanation."))
-        print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin."))
-        print("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."))
-        print("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge."))
+        print(_("pyLoad offers several server backends, now following a short explanation"))
+        print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin"))
+        print("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job"))
+        print("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge"))
         print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print()
         print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
-        print(_("come back here and change the builtin server to the threaded one here."))
+        print(_("come back here and change the builtin server to the threaded one here"))
 
         self.config["webinterface"]["server"] = self.ask(_("Server"), "threaded",
             ["builtin", "threaded", "fastcgi", "lightweight"])
@@ -228,7 +228,7 @@ class Setup(object):
         print("openssl req -new -key ssl.key -out ssl.csr")
         print("openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt ")
         print("")
-        print(_("If you're done and everything went fine, you can activate ssl now."))
+        print(_("If you're done and everything went fine, you can activate ssl now"))
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
@@ -313,8 +313,8 @@ class Setup(object):
             f = open(join(COREDIR, "pyload", "config", "configdir"), "wb")
             f.write(path)
             f.close()
-            print(_("Config path changed, setup will now close, please restart to go on."))
-            print(_("Press Enter to exit."))
+            print(_("Config path changed, setup will now close, please restart to go on"))
+            print(_("Press Enter to exit"))
             input()
             exit()
         except Exception as e:
@@ -358,7 +358,7 @@ class Setup(object):
                 p1 = getpass("")
 
                 if len(p1) < 4:
-                    print(_("Password too short. Use at least 4 symbols."))
+                    print(_("Password too short. Use at least 4 symbols"))
                     continue
 
                 sys.stdout.write(_("Password (again): "))
@@ -367,7 +367,7 @@ class Setup(object):
                 if p1 == p2:
                     return p1
                 else:
-                    print(_("Passwords did not match."))
+                    print(_("Passwords did not match"))
 
         while True:
             input = input(qst + " {}: ".format(info))

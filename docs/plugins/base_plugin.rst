@@ -91,7 +91,7 @@ For other plugins use ``getURL(...)`` or ``get_request()``.
 
 Use ``self.store(...)`` and ``self.retrieve(...)`` to store data persistently into the database.
 
-Make use of ``logInfo, logError, logWarning, log_debug`` for logging purposes.
+Make use of ``log_info, log_error, log_warning, log_debug`` for logging purposes.
 
 Debugging
 ---------

@@ -18,7 +18,7 @@ define(['jquery', 'backbone', 'underscore', 'helpers/gettext', './inputView'], f
       if (this.default_value)
         this.$el.attr('placeholder', this.default_value);
       else
-        this.$el.attr('placeholder', gettext('Please click on the right position in the captcha.'));
+        this.$el.attr('placeholder', gettext('Please click on the right position in the captcha'));
 
       if (this.value)
         this.$el.val(this.value);

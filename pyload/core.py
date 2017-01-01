@@ -222,12 +222,12 @@ class Core(object):
 
     def quit_instance(self):
         if os.name == "nt":
-            print("Not supported on windows.")
+            print("Not supported on windows")
             return
 
         pid = self.is_already_running()
         if not pid:
-            print("No pyLoad running.")
+            print("No pyLoad running")
             return
 
         try:
@@ -270,7 +270,7 @@ class Core(object):
         if not exists("pyload.conf") and not tests:
             from pyload.setup.setup import Setup
 
-            print("This is your first start, running configuration assistant now.")
+            print("This is your first start, running configuration assistant now")
             self.config = ConfigParser()
             s = Setup(COREDIR, self.config)
             res = False

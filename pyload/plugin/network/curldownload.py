@@ -4,7 +4,6 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
-from builtins import str
 from builtins import range
 from os import remove
 from os.path import dirname
@@ -83,7 +82,7 @@ class CurlDownload(Download):
                     fo.close()
                     remove(init)
                     self.info.remove() #there are probably invalid chunks
-                    raise Exception("Downloaded content was smaller than expected. Try to reduce download connections.")
+                    raise Exception("Downloaded content was smaller than expected. Try to reduce download connections")
                 remove(fname) #remove chunk
             fo.close()
 
@@ -255,7 +254,7 @@ class CurlDownload(Download):
 
                     if len(chunks_done) >= len(self.chunks):
                         if len(chunks_done) > len(self.chunks):
-                            self.log.warning("Finished download chunks size incorrect, please report bug.")
+                            self.log.warning(_("Finished download chunks size incorrect, please report bug"))
                         done = True  #all chunks loaded
 
                     break

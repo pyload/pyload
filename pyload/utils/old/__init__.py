@@ -54,7 +54,7 @@ def remove_chars(string, repl):
 def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001": # aka UTF-8
-            print("WARNING: Windows codepage 65001 is not supported.")
+            print("WARNING: Windows codepage 65001 is not supported")
             enc = "cp850"
     else:
         enc = "utf8"

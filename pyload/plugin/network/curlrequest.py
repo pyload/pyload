@@ -291,7 +291,7 @@ class CurlRequest(Request):
         except LookupError:
             self.log.debug("No Decoder found for {}".format(encoding))
         except Exception:
-            self.log.debug("Error when decoding string from {}.".format(encoding))
+            self.log.debug("Error when decoding string from {}".format(encoding))
 
         return rep
 

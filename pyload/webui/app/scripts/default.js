@@ -7,7 +7,7 @@ define('default', ['require', 'backbone', 'jquery', 'app', 'router',
     var options = {
       statusCode: {
         401: function() {
-          console.log('Not logged in.');
+          console.log('Not logged in');
           App.navigate('login');
         }
       },

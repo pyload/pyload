@@ -3,7 +3,6 @@
 
 from __future__ import unicode_literals
 
-from builtins import str
 from builtins import zip
 import sys
 import re

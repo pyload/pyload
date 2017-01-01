@@ -214,7 +214,7 @@ class Base(object):
         :return: Loaded content
         """
         if not hasattr(self, "req"):
-            raise Exception("Plugin type does not have Request attribute.")
+            raise Exception("Plugin type does not have Request attribute")
         self.check_abort()
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
@@ -333,7 +333,7 @@ class Base(object):
             elif task.error:
                 self.fail(task.error)
             elif not task.result:
-                self.fail(_("No captcha result obtained in appropriate time."))
+                self.fail(_("No captcha result obtained in appropriate time"))
 
             result = task.result
             self.log.debug("Received captcha result: {}".format(result))

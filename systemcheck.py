@@ -53,7 +53,7 @@ def main():
     try:
         import pycurl
     except Exception:
-        core_err.append("Please install py-curl to use pyLoad.")
+        core_err.append("Please install py-curl to use pyLoad")
 
 
     try:
@@ -64,25 +64,25 @@ def main():
     try:
         import Image
     except Exception:
-        core_err.append("Please install py-imaging/pil to use Hoster, which use captchas.")
+        core_err.append("Please install py-imaging/pil to use Hoster, which use captchas")
 
     pipe = subprocess.PIPE
     try:
         p = subprocess.call(["tesseract"], stdout=pipe, stderr=pipe)
     except Exception:
-        core_info.append("Install tesseract to try automatic captcha resolution.")
+        core_info.append("Install tesseract to try automatic captcha resolution")
 
     try:
         import OpenSSL
     except Exception:
-        core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
+        core_info.append("Install OpenSSL if you want to create a secure connection to the core")
 
     if core_err:
         print("The system check has detected some errors:\n")
         for err in core_err:
             print(err)
     else:
-        print("No Problems detected, pyLoadCore should work fine.")
+        print("No Problems detected, pyLoadCore should work fine")
 
     if core_info:
         print("\nPossible improvements for pyload:\n")
@@ -97,7 +97,7 @@ def main():
     try:
         import flup
     except Exception:
-        web_info.append("Install Flup to use FastCGI or optional web servers.")
+        web_info.append("Install Flup to use FastCGI or optional web servers")
 
 
     if web_err:
@@ -105,7 +105,7 @@ def main():
         for err in web_err:
             print(err)
     else:
-        print("No Problems detected, web interface should work fine.")
+        print("No Problems detected, web interface should work fine")
 
     if web_info:
         print("\nPossible improvements for web interface:\n")
@@ -118,6 +118,6 @@ if __name__ == "__main__":
 
     # comp. with py2 and 3
     try:
-        eval(input("Press Enter to Exit."))
+        eval(input("Press Enter to Exit"))
     except SyntaxError:  # will raise in py2
         pass

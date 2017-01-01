@@ -31,6 +31,6 @@ class XfilesharingProFolder(Crypter):
             if self.package: name = "{}/{}".format(self.package.name, name)
             new_links.append(Package(name, [url]))
 
-        if not new_links: self.fail('Could not extract any links')
+        if not new_links: self.fail(_('Could not extract any links'))
 
         return new_links

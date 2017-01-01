@@ -18,7 +18,7 @@ from pyload.utils.new.lib.safe_threading import Thread
                                       # old_func.__name__, new_func.__name__))
                 # return new_func(self, *args, **kargs)
             # else:
-                # self.pyload.log.error('`{}` has been removed'.format(old_func.__name__))
+                # self.pyload.log.error(_('`{}` has been removed').format(old_func.__name__))
                 # print_traceback()
         # return new
     # return wrapper
