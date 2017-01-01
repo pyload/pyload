@@ -107,6 +107,7 @@ colorlog       | *           | Colored log           |
 Js2Py          | *           | JavaScript evaluation |
 Pillow         | 2.0         | Captcha recognition   |
 pip            | *           | pyLoad auto-update    |
+pycrypto       | *           | Plugin dependencies   |
 pyOpenSSL      | *           | SSL connection        |
 unrar          | *           | Archive decompression |
 
@@ -175,7 +176,10 @@ To show the help list, type:
 > On first start, the setup assistant will be automatically launched to help you to configure your profile.
 
 > **Note:**
-> The web interface will be accessible pointing your web browser to the ip address and configured port (defaults to `http://localhost:8010`).
+> The web user interface will be accessible pointing your web browser to the ip address and configured port (defaults to `http://localhost:8010`).
+
+> **Note:**
+> The remote API server instead will be listening on `http://localhost:7447`.
 
 
 Advanced Start
@@ -200,7 +204,7 @@ To run as daemon, type:
 Configuration
 -------------
     
-After finishing the setup assistant **pyLoad** is ready to use and more configuration can be done via the web interface.
+After finishing the setup assistant **pyLoad** is ready to use and more configuration can be done via the web user interface.
 Additionally you could simply edit the config files located in your config directory.
 
 To run the built-in setup utility, type:
@@ -265,8 +269,8 @@ Available methods of the `pyload` object are:
     - `profile` sets the profile name to use *(`default` if none entered)*.
     - `configdir` sets the config directory path to use *(`%appdata%\pyload` on Windows platforms or `~/.pyload` otherwise, if none entered)*.
     - `refresh` sets refresh/restore mode *(0=off|1=removes compiled and temp files|2=plus restore admin access `admin|pyload`)*.
-    - `remote` enables remote api interface at entered *`IP address:Port number` (use defaults if none entered)*.
-    - `webui` enables webui interface at entered *`IP address:Port number` (use defaults if none entered)*.
+    - `remote` enables remote API interface at entered *`IP address:Port number` (use defaults if none entered)*.
+    - `webui` enables web user interface at entered *`IP address:Port number` (use defaults if none entered)*.
     - `debug` sets debug mode *(0=off|1=on|2=verbose)*.
     - `webdebug` sets webserver debugging *(0=off|1=on)*.
     - `daemon` daemonizes process.
@@ -281,8 +285,8 @@ Available methods of the `pyload` object are:
     - `profile` sets the profile name to use *(`default` if none entered)*.
     - `configdir` sets the config directory path to use *(`%appdata%\pyload` on Windows platforms or `~/.pyload` otherwise, if none entered)*.
     - `refresh` sets refresh/restore mode *(0=off|1=removes compiled and temp files|2=plus restore admin access `admin|pyload`)*.
-    - `remote` enables remote api interface at entered *`IP address:Port number` (use defaults if none entered)*.
-    - `webui` enables webui interface at entered *`IP address:Port number` (use defaults if none entered)*.
+    - `remote` enables remote API interface at entered *`IP address:Port number` (use defaults if none entered)*.
+    - `webui` enables web user interface at entered *`IP address:Port number` (use defaults if none entered)*.
     - `debug` sets debug mode *(0=off|1=on|2=verbose)*.
     - `webdebug` sets webserver debugging *(0=off|1=on)*.
     - `daemon` daemonizes process.    
