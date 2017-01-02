@@ -24,7 +24,7 @@ def require_perm(bits):
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
-stateMap = {
+state_map = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
     DownloadState.Unfinished: None, # set below
@@ -33,10 +33,10 @@ stateMap = {
     DownloadState.Unmanaged: None, #TODO
 }
 
-stateMap[DownloadState.Unfinished] = frozenset(stateMap[DownloadState.All].difference(stateMap[DownloadState.Finished]))
+state_map[DownloadState.Unfinished] = frozenset(state_map[DownloadState.All].difference(state_map[DownloadState.Finished]))
 
 def state_string(state):
-    return ",".join(str(x) for x in stateMap[state])
+    return ",".join(str(x) for x in state_map[state])
 
 from pyload.datatype.user import User
 

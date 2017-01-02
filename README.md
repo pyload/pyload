@@ -10,7 +10,7 @@ Table of contents
 -----------------
 
  - [Supported Platforms](#supported-platforms)
- - [Dependencies](#dependencies)    
+ - [Dependencies](#dependencies)
     - [Tested Interpreters](#tested-interpreters)
     - [Required Packages](#required-packages)
     - [Optional Packages](#optional-packages)
@@ -72,7 +72,7 @@ So, it's not recommended to install the dependencies manually.
     - [x] **CPython 3.4**
     - [x] **CPython 3.5**
     - [ ] PyPy3
-  
+
 ### Required Packages
 
 Package name | Min version | Notes
@@ -96,7 +96,7 @@ tld          | *           |
 validators   | *           |
 watchdog     | *           |
 wsgigzip     | *           |
-  
+
 ### Optional Packages
 
 Package name   | Min version | Purpose               | Notes
@@ -122,7 +122,7 @@ You can install **pyLoad** in several ways:
   - [PIP install](#pip-install) *(recommended)*
   - [Manually install](#manually-install)
   - [Sources install](#sorces-install)
-   
+
 ### PIP Install
 
 > **Note:**
@@ -135,7 +135,7 @@ Type in your command shell ***with administrator/root privileges***:
 If the above command fails, try typing:
 
     pip install --user pyload-ng
-    
+
 ### Manually Install
 
   1. Download the **pre-built packages** for your platform from <https://github.com/pyload/pyload/releases>.
@@ -162,7 +162,7 @@ To run **pyLoad** with default profile, just type in your command shell:
 To run as daemon, type:
 
     pyload --daemon
-    
+
 To show the help list, type:
 
     pyload --help
@@ -188,11 +188,11 @@ Advanced Start
 To run **pyLoad** with a custom profile, type:
 
     pyload -p <profilename>
-    
+
 To run as daemon, type:
 
     pyload -p <profilename> --daemon
-    
+
 > **Note:**
 > The `profile` argument must be a string name, **NOT a directory path**!
 
@@ -200,10 +200,10 @@ To run as daemon, type:
 > The `profile` argument is **optional**, but if you do not enter any value, the profile `default` will be used.
 > **New profiles will be created automatically inside the current config directory when declared**.
 
-    
+
 Configuration
 -------------
-    
+
 After finishing the setup assistant **pyLoad** is ready to use and more configuration can be done via the web user interface.
 Additionally you could simply edit the config files located in your config directory.
 
@@ -214,45 +214,45 @@ To run the built-in setup utility, type:
 **Or** type *(from the directory where **pyLoad** is installed)*:
 
     python pyLoad.py setup.py
-    
+
 > **Note:**
 > The default path of the config directory is `%appdata%\pyload` on Windows platform and `~/.pyload` otherwise.
 
 > **Note:**
 > To learn how change the config directory see the help list.
-    
-    
+
+
 Advanced Usage
 --------------
 
 To start *pyLoad* in verbose (debug) mode, type:
 
     pyload --debug
-    
+
 To enable the webserver debugging as well, append:
 
     pyload --debug --webdebug
-    
+
 To stop a *pyLoad* instance, type:
 
     pyload stop -p <profilename>
-    
+
 **Or** directly, to stop anyone:
-    
+
     pyload stop
 
 To restart a **pyLoad** instance, type:
-    
+
     pyload restart -p <profilename>
 
 To update the **pyLoad** core (NOT plugins), type:
 
     pyload update
-    
+
 To run the built-in test suite, type:
 
     pyload test
-    
+
 
 Script Usage
 ------------
@@ -289,7 +289,7 @@ Available methods of the `pyload` object are:
     - `webui` enables web user interface at entered *`IP address:Port number` (use defaults if none entered)*.
     - `debug` sets debug mode *(0=off|1=on|2=verbose)*.
     - `webdebug` sets webserver debugging *(0=off|1=on)*.
-    - `daemon` daemonizes process.    
+    - `daemon` daemonizes process.
   - `pyload.setup()`
     - **DESCRIPTION**: Setup the package.
     - **RETURN**: None type.

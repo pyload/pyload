@@ -60,7 +60,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
 
-    def do_GET(self):
+    def do_get(self):
         path = self.path.strip("/").lower()
         #self.wfile.write(path+"\n")
 
@@ -104,7 +104,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         for name in form.keys():
             self.post[name] = form[name].value
 
-        return self.do_GET()
+        return self.do_get()
 
     def flash(self):
         return "JDownloader"

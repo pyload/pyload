@@ -279,7 +279,7 @@ class Base(object):
         self.log_debug("Deprecated method .correct_captcha, use .correct_task")
         self.correct_task()
 
-    def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceUser=False, imgtype='jpg',
+    def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceuser=False, imgtype='jpg',
                        result_type='textual'):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -287,7 +287,7 @@ class Base(object):
         :param get: get part for request
         :param post: post part for request
         :param cookies: True if cookies should be enabled
-        :param forceUser: if True, ocr is not used
+        :param forceuser: if True, ocr is not used
         :param imgtype: Type of the Image
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
@@ -311,7 +311,7 @@ class Base(object):
         else:
             OCR = None
 
-        if OCR and not forceUser:
+        if OCR and not forceuser:
             sleep(randint(3000, 5000) // 1000.0)
             self.check_abort()
 

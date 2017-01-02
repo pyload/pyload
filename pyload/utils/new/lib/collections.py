@@ -198,7 +198,7 @@ if 'OrderedDict' not in globals():
             return default
 
         def setdefault(self, key, default=None):
-            'od.setdefault(k[,d]) -> od.get(k,d), also set od[k]=d if k not in od'
+            'od.setdefault(k[,d]) -> od.get(k, d), also set od[k] = d if k not in od'
             if key in self:
                 return self[key]
             self[key] = default

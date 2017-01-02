@@ -468,7 +468,7 @@ class FileManager(object):
             raise Exception("Tried to reorder non continuous block of files")
 
         # minimum fileorder
-        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
+        f = reduce(lambda x,y: x if x.fileorder < y.fileorder else y, files)
         order = f.fileorder
 
         self.db.order_files(pid, fids, order, position)

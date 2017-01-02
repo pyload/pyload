@@ -417,9 +417,9 @@ class Unauthorized(ExceptionObject):
 
 
 class UserData(BaseObject):
-    __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templateName']
+    __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templatename']
 
-    def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templateName=None):
+    def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templatename=None):
         self.uid = uid
         self.name = name
         self.email = email
@@ -431,7 +431,7 @@ class UserData(BaseObject):
         self.dlquota = dlquota
         self.hddquota = hddquota
         self.user = user
-        self.template_name = templateName
+        self.templatename = templatename
 
 
 class UserDoesNotExist(ExceptionObject):

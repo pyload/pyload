@@ -34,7 +34,7 @@ Using the Config
 
 We are taking a closer look at the ``__config__`` parameter.
 You can add more config values as desired by adding tuples of the following format to the config list: ``("name", "type", "description", "default value")``.
-When everything went right you can access the config values with ``self.get_config(name)`` and ``self.set_config(name,value``.
+When everything went right you can access the config values with ``self.get_config(name)`` and ``self.set_config(name, value``.
 
 
 Interacting on Events

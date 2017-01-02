@@ -29,7 +29,7 @@ def serve_icon(path):
 @login_required('Download')
 def download(fid, api):
     # TODO: check owner ship
-    path, name = api.getFilePath(fid)
+    path, name = api.get_file_path(fid)
     return static_file(name, path, download=True)
 
 

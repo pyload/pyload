@@ -292,7 +292,7 @@ for various languages. It is also a good overview of avaible methods and return 
        9: string dlquota,
        10: ByteCount hddquota,
        11: UserID user,
-       12: string templateName
+       12: string templatename
      }
 
      struct AccountInfo {

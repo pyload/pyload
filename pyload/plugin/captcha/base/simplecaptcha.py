@@ -53,7 +53,7 @@ class ReCaptcha(object):
 
     def result(self, server, challenge):
         return self.plugin.decrypt_captcha("{}image".format(server), get={"c": challenge},
-                                          cookies=True, forceUser=True, imgtype="jpg")
+                                          cookies=True, forceuser=True, imgtype="jpg")
 
 
 class AdsCaptcha(CaptchaService):
