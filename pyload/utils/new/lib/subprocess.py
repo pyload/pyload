@@ -18,7 +18,7 @@ if sys.version_info[:2] < (2, 7) and os.name != "nt":
             except (OSError, WindowsError) as e:
                 if e.errno == errno.EINTR:
                     continue
-                raise type(e)()
+                raise
 
     #: Unsued timeout option for older python version
     def wait(self, timeout=0):

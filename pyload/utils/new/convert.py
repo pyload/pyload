@@ -30,7 +30,7 @@ def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
     except Exception as e:
         if callable(fallback):
             return fallback(obj, *cvargs[-1])
-        raise type(e)(e)
+        raise
     return res
 
 

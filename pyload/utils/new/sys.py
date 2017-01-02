@@ -50,7 +50,7 @@ def call_cmd(command, *args, **kwargs):
 
     except Exception as e:
         if not ignore_except:
-            raise type(e)(e)
+            raise
         else:
             returncode = 1
             stdoutdata = ""
