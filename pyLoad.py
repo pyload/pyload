@@ -23,8 +23,8 @@ import colorama
 
 import pyload
 
-from pyload.utils import format
-from pyload.utils.sys import set_console_icon, set_console_title
+from pyload.utils.new import format
+from pyload.utils.new.sys import set_console_icon, set_console_title
 
 
 __all__ = ['logo', 'main', 'parse_args']

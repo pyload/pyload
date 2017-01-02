@@ -24,8 +24,8 @@ import daemonize
 import psutil
 
 from pyload.core import Core
-from pyload.utils import convert, path
-from pyload.utils.check import lookup
+from pyload.utils.new import convert, path
+from pyload.utils.new.check import lookup
 
 
 __all__ = ['info', 'restart', 'setup', 'start', 'status', 'stop',
@@ -51,7 +51,7 @@ sys.stdout = writer(sys.stdout, errors="replace")
 
 
 def info():
-    from pyload.utils.struct import Info
+    from pyload.utils.new.struct import Info
 
     file = os.path.join(os.path.dirname(__file__), "..", "README.md")
     with path.open(file) as f:
@@ -109,7 +109,7 @@ def setup():
 
 def update(dependencies=True, reinstall=False, prerelease=False):
     try:
-        from pyload.utils.lib import autoupgrade
+        from pyload.utils.new.lib import autoupgrade
     except ImportError:
         return
     au = autoupgrade.AutoUpgrade(info().name, verbose=True)

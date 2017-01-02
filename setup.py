@@ -14,7 +14,7 @@ __all__ = ['info', 'main', 'run_venv', 'setup']
 
 
 def info():
-    from pyload.utils.struct import Info
+    from pyload.utils.new.struct import Info
 
     info = pyload.info()
 
