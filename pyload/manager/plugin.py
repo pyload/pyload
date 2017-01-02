@@ -73,7 +73,7 @@ class PluginManager(object):
         res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, buffer):
+            if not isinstance(url, str):
                 self.log.debug("Parsing invalid type {}".format(type(url)))
                 continue
 
