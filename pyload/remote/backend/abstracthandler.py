@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
-from builtins import bytes
 from builtins import str
 from builtins import object
 from mod_pywebsocket.msgutil import send_message
@@ -88,13 +87,13 @@ class AbstractHandler(object):
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
 
-        if not isinstance(o, str) and not isinstance(o, bytes) and not isinstance(o, list) and len(o) not in range(1, 4):
+        if not isinstance(o, str) and not isinstance(o, list) and len(o) not in range(1, 4):
             self.log.debug("Invalid Api call: {}".format(o))
             self.send_result(req, self.ERROR, "Invalid Api call")
             return None, None, None
 
         # called only with name, no args
-        if isinstance(o, str) or isinstance(o, bytes):
+        if isinstance(o, str):
             return o, [], {}
         elif len(o) == 1: # arguments omitted
             return o[0], [], {}

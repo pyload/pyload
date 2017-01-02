@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 
 from future import standard_library
 standard_library.install_aliases()
-from builtins import bytes
 from builtins import str
 from builtins import map
 from builtins import chr
@@ -126,7 +125,7 @@ def parse_size(string, unit=None):
         else:
             return 0
     else:
-        if isinstance(string, str) or sinstance(string, bytes):
+        if isinstance(string, str):
             traffic = float(string.replace(",", "."))
         else:
             traffic = string
@@ -232,7 +231,7 @@ def to_string(value):
 
 
 def to_bool(value):
-    if not isinstance(value, str) and not isinstance(value, bytes):
+    if not isinstance(value, str):
         return True if value else False
     return True if value.lower() in ("1", "true", "on", "an", "yes") else False
 

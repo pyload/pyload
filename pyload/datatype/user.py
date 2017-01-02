@@ -2,7 +2,6 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
-from builtins import bytes
 from builtins import str
 from pyload.api import UserData, Permission, Role
 from pyload.utils import bits_set
@@ -15,7 +14,7 @@ class User(UserData):
     @staticmethod
     def from_user_data(api, user):
         return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
-            user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.template_name)
+            user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templatename)
 
     def __init__(self, api, *args, **kwargs):
         UserData.__init__(self, *args, **kwargs)
@@ -28,13 +27,13 @@ class User(UserData):
 
     def has_permission(self, perms):
         """  Accepts permission bit or name  """
-        if (isinstance(perms, str) or isinstance(perms, bytes)) and hasattr(Permission, perms):
+        if isinstance(perms, str) and hasattr(Permission, perms):
             perms = getattr(Permission, perms)
 
         return bits_set(perms, self.permission)
 
     def has_role(self, role):
-        if (isinstance(role, str) or isinstance(role, bytes)) and hasattr(Role, role):
+        if isinstance(role, str) and hasattr(Role, role):
             role = getattr(Role, role)
 
         return self.role == role
