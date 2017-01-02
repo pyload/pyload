@@ -9,7 +9,7 @@ from unittest import TestCase
 PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
 
 # needed to register globals
-from tests.helper import Stubs
+from tests.helper import stubs
 
 
 class TestSyntax(TestCase):

@@ -40,7 +40,7 @@ class TestInteractionManager(TestCase):
         for i in range(10):
             self.im.create_notification("title", "test")
 
-        self.assert_equal(len(self.im.get_tasks(self.ADMIN)), 11)
+        self.assertEqual(len(self.im.get_tasks(self.ADMIN)), 11)
         self.assert_false(self.im.get_tasks(self.USER))
         self.assert_false(self.im.get_tasks(self.ADMIN, Interaction.Query))
 
@@ -48,7 +48,7 @@ class TestInteractionManager(TestCase):
     def test_captcha(self):
         t = self.im.create_captcha_task("1", "png", "", owner=self.ADMIN)
 
-        self.assert_equal(t.type, Interaction.Captcha)
+        self.assertEqual(t.type, Interaction.Captcha)
         self.assert_list_equal(self.im.get_tasks(self.ADMIN), [t])
         self.assert_empty(self.im.get_tasks(self.USER))
         t.set_shared()
@@ -66,7 +66,7 @@ class TestInteractionManager(TestCase):
     def test_query(self):
         t = self.im.create_query_task(InputType.Text, "text", owner=self.ADMIN)
 
-        self.assert_equal(t.description, "text")
+        self.assertEqual(t.description, "text")
         self.assert_list_equal(self.im.get_tasks(self.ADMIN, Interaction.Query), [t])
         self.assert_empty(self.im.get_tasks(Interaction.Captcha))
 

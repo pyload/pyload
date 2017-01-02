@@ -17,7 +17,7 @@ from tests.helper.stubs import Core
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
 
-from pyload.datatype.file import PyFile, statusMap
+from pyload.datatype.file import PyFile, status_map
 from pyload.plugins.base import Fail
 from pyload.utils import accumulate
 from pyload.utils.fs import save_join, join, exists, listdir, remove, stat
@@ -113,7 +113,7 @@ urls = []
 status = {}
 
 for k, v in sections.items():
-    if k not in statusMap:
+    if k not in status_map:
         print("Unknown status {}".format(k))
     for url in v:
         urls.append(url)

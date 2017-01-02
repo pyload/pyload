@@ -29,14 +29,14 @@ class TestCurlRequest(TestCase):
 
         cookies = dict(c.strip().split(":") for c in self.req.load(self.cookie_url + "/cookies.php").splitlines())
         for k, v in cookies.items():
-            self.assert_in(k, self.req.cj)
-            self.assert_equal(v, self.req.cj[k].value)
+            self.assert_int(k, self.req.cj)
+            self.assertEqual(v, self.req.cj[k].value)
 
         for c in self.req.cj:
-            self.assert_in(c, cookies)
+            self.assert_int(c, cookies)
 
         cookies = self.req.load(self.cookie_url + "/cookies.php", cookies=False)
-        self.assert_equal(cookies, "")
+        self.assertEqual(cookies, "")
 
 
     def test_auth(self):

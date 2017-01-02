@@ -46,10 +46,10 @@ class TestCurlRequest(TestCase):
         dl.download(self.cookie_url + "/cookies.php", "cookies.txt")
         cookies = open("cookies.txt", "rb").read().splitlines()
 
-        self.assert_equal(len(cookies), len(dl.context))
+        self.assertEqual(len(cookies), len(dl.context))
         for c in cookies:
             k, v = c.strip().split(":")
-            self.assert_in(k, req.cj)
+            self.assert_int(k, req.cj)
 
 
     def test_attributes(self):

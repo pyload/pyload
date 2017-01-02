@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 from builtins import object
-from nose.tools import raises, assert_equal
+from nose.tools import raises, assertEqual
 
 from requests.auth import HTTPBasicAuth
 import requests
@@ -32,7 +32,7 @@ class TestJSONBackend(object):
     def test_httpauth(self):
         # cheap http auth
         ret = requests.get(webaddress + "/getServerVersion", auth=HTTPBasicAuth(*credentials))
-        assert_equal(ret.status_code, 200)
+        assertEqual(ret.status_code, 200)
         assert ret.text
 
     def test_jsonbody(self):
@@ -42,7 +42,7 @@ class TestJSONBackend(object):
         ret = requests.get(webaddress + "/getConfigValue", headers=headers,
                            auth=HTTPBasicAuth(*credentials), data=json.dumps(payload))
 
-        assert_equal(ret.status_code, 200)
+        assertEqual(ret.status_code, 200)
         assert ret.text
 
     @raises(Forbidden)

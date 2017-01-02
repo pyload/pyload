@@ -17,7 +17,7 @@ from json import loads
 
 from tests.helper.stubs import Thread, Core, noop
 
-from pyload.network.request import getRequest
+from pyload.network.request import get_request
 from pyload.plugins.base import Abort, Fail
 from pyload.plugins.hoster import Hoster
 
@@ -49,7 +49,7 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
     img = self.load(url, get=get, post=post, cookies=cookies)
 
     id = "{:.2f}".format(time())[-6:].replace(".", "")
-    temp_file = open(join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
+    temp_file = open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
     temp_file.write(img)
     temp_file.close()
 

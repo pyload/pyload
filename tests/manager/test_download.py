@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 from builtins import range
 from tests.helper.stubs import Core, normal_user, admin_user, other_user
-from tests.helper.benchmarktest import BenchmarkTest
+from tests.helper.benchmark import BenchmarkTest
 
 from pyload.database import DatabaseBackend
 # disable asyncronous queries

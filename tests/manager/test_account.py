@@ -26,7 +26,7 @@ class TestAccountManager(TestCase):
         account = self.manager.create_account("Http", "User", "somepw", admin_user.uid)
 
         assert account is self.manager.update_account(account.aid, "Http", "User", "newpw", admin_user)
-        self.assert_equal(account.password, "newpw")
+        self.assertEqual(account.password, "newpw")
 
         assert self.manager.get_account(account.aid, "Http", admin_user) is account
         assert self.manager.get_account(account.aid, "Http", normal_user) is None
@@ -36,19 +36,19 @@ class TestAccountManager(TestCase):
         account = self.manager.create_account("Http", "User", "somepw", admin_user.uid)
         info = account.to_info_data()
 
-        self.assert_equal(info.config[0].name, "domain")
-        self.assert_equal(info.config[0].value, "")
-        self.assert_equal(account.get_config("domain"), "")
+        self.assertEqual(info.config[0].name, "domain")
+        self.assertEqual(info.config[0].value, "")
+        self.assertEqual(account.get_config("domain"), "")
 
         account.set_config("domain", "df")
 
         info = account.to_info_data()
-        self.assert_equal(info.config[0].value, "df")
+        self.assertEqual(info.config[0].value, "df")
 
         info.config[0].value = "new"
 
         account.update_config(info.config)
-        self.assert_equal(account.get_config("domain"), "new")
+        self.assertEqual(account.get_config("domain"), "new")
 
 
     def test_shared(self):

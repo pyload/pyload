@@ -6,7 +6,7 @@ from builtins import range
 from random import choice
 
 from tests.helper.stubs import Core, normal_user
-from tests.helper.benchmarktest import BenchmarkTest
+from tests.helper.benchmark import BenchmarkTest
 
 from pyload.database import DatabaseBackend
 # disable asyncronous queries

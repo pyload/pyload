@@ -118,7 +118,7 @@ class TestConfigManager(TestCase):
 
     def test_get_section(self):
         self.add_config()
-        self.assert_equal(self.config.get_section("plugin")[0].label, "Name")
+        self.assertEqual(self.config.get_section("plugin")[0].label, "Name")
 
     # TODO: more save tests are needed
     def test_saveValues(self):
