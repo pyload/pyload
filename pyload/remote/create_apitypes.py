@@ -28,7 +28,7 @@ type_map = {
     TType.SET: 'set',
     TType.VOID: 'None',
     TType.STRUCT: 'BaseObject',
-    TType.UTF8: 'unicode',
+    TType.UTF8: 'str',
 }
 
 def get_spec(spec, optional=False):
@@ -85,7 +85,7 @@ class BaseObject(object):
 \t__slots__ = []
 
 \tdef __str__(self):
-\t\treturn "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self,k)) for k in self.__slots__))
+\t\treturn "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self, k)) for k in self.__slots__))
 
 
 class ExceptionObject(Exception):
