@@ -31,7 +31,7 @@ class TestConfigParser(object):
         assert "foobaar" not in self.config
 
     def test_iter(self):
-        for section, config, values in self.config.iterSections():
+        for section, config, values in self.config.iter_sections():
             assert isinstance(section, str)
             assert isinstance(config.config, dict)
             assert isinstance(values, dict)

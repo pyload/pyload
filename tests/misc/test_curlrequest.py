@@ -9,7 +9,7 @@ from unittest import TestCase
 
 class TestCurlRequest(TestCase):
     # This page provides a test which prints all set cookies
-    cookieURL = "https://pyload.net"
+    cookie_url = "https://pyload.net"
 
     def setUp(self):
         self.req = CurlRequest({})

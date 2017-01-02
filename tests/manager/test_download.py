@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 from builtins import range
-from tests.helper.stubs import Core, normalUser, adminUser, otherUser
+from tests.helper.stubs import Core, normal_user, admin_user, other_user
 from tests.helper.benchmarktest import BenchmarkTest
 
 from pyload.database import DatabaseBackend
@@ -24,17 +24,17 @@ class TestDownloadManager(BenchmarkTest):
     def setUpClass(cls):
         cls.c = Core()
         cls.db = cls.c.db
-        cls.db.purgeAll()
-        cls.db.addDebugUser(normalUser.uid)
-        cls.db.addDebugUser(adminUser.uid)
-        cls.db.addDebugUser(otherUser.uid)
+        cls.db.purge_all()
+        cls.db.add_debug_user(normal_user.uid)
+        cls.db.add_debug_user(admin_user.uid)
+        cls.db.add_debug_user(other_user.uid)
 
         cls.files = cls.c.files
-        cls.m = cls.c.downloadManager
+        cls.m = cls.c.downloadmanager
 
     @classmethod
     def tearDownClass(cls):
-        cls.db.purgeAll()
+        cls.db.purge_all()
         cls.db.shutdown()
 
     def setUp(self):
@@ -42,17 +42,17 @@ class TestDownloadManager(BenchmarkTest):
 
     def test_add_links(self):
         # just generate some links and files
-        for user in (adminUser, normalUser):
+        for user in (admin_user, normal_user):
             for i in range(self.PACKAGES):
-                pid = self.files.addPackage("name {:d}", "folder", -1, "", "", "", False, user.uid)
-                self.files.addLinks((("url{:d}".format(i), "plugin{:d}".format(i % self.PLUGINS)) for i in range(self.LINKS)), pid, user.uid)
+                pid = self.files.add_package("name {:d}", "folder", -1, "", "", "", False, user.uid)
+                self.files.add_links((("url{:d}".format(i), "plugin{:d}".format(i % self.PLUGINS)) for i in range(self.LINKS)), pid, user.uid)
 
     def test_simple(self):
-        jobs = self.db.getJobs([])
+        jobs = self.db.get_jobs([])
         assert len(jobs) == 2
 
     def test_empty(self):
-        assert not self.db.getJobs("plugin{:d}".format(i) for i in range(self.PLUGINS))
+        assert not self.db.get_jobs("plugin{:d}".format(i) for i in range(self.PLUGINS))
 
 
 

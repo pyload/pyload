@@ -13,7 +13,7 @@ IGNORE = ('quit', 'restart')
 
 class TestNoArgs(ApiTester):
     def setUp(self):
-        self.enableJSON()
+        self.enable_json()
 
 # Setup test_methods dynamically, only these which require no arguments
 for name in dir(Iface):

@@ -7,13 +7,13 @@ from nose.tools import raises
 from pyload.remote.apitypes import Forbidden
 from pyload.remote.WSClient import WSClient
 
-from tests.helper.config import credentials, wsAddress
+from tests.helper.config import credentials, wsaddress
 
 
 class TestWebSocketBackend(object):
 
     def setUp(self):
-        self.client = WSClient(wsAddress)
+        self.client = WSClient(wsaddress)
         self.client.connect()
 
     def tearDown(self):

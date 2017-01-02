@@ -70,11 +70,11 @@ class TestCore(Core):
 
     def getUserData(self, uid):
         if uid == 0:
-            return adminUser
+            return admin_user
         elif uid == 1:
-            return normalUser
+            return normal_user
 
-        return otherUser
+        return other_user
 
 
 class Thread(BaseThread):
@@ -85,9 +85,9 @@ class Thread(BaseThread):
 
     def writeDebugReport(self):
         if hasattr(self, "pyfile"):
-            dump = BaseThread.writeDebugReport(self, self.plugin.__name__, pyfile=self.pyfile)
+            dump = BaseThread.write_debug_report(self, self.plugin.__name__, pyfile=self.pyfile)
         else:
-            dump = BaseThread.writeDebugReport(self, self.plugin.__name__, plugin=self.plugin)
+            dump = BaseThread.write_debug_report(self, self.plugin.__name__, plugin=self.plugin)
 
         return dump
 
@@ -96,9 +96,9 @@ Core = TestCore
 
 builtins._ = lambda x: x
 
-adminUser = User(None, uid=0, role=Role.Admin)
-normalUser = User(None, uid=1, role=Role.User)
-otherUser = User(None, uid=2, role=Role.User)
+admin_user  = User(None, uid=0, role=Role.Admin)
+normal_user = User(None, uid=1, role=Role.User)
+other_user  = User(None, uid=2, role=Role.User)
 
 # fixes the module paths because we changed the directory
 for name, m in sys.modules.items():

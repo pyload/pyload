@@ -14,7 +14,7 @@ from pyload.plugins.network.curldownload import CurlDownload
 
 class TestCurlRequest(TestCase):
 
-    cookieURL = "https://pyload.net"
+    cookie_url = "https://pyload.net"
 
     def setUp(self):
         self.dl = CurlDownload(Bucket())

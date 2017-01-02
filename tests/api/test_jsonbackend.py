@@ -12,13 +12,13 @@ import json
 from pyload.remote.apitypes import Forbidden
 from pyload.remote.JSONClient import JSONClient
 
-from tests.helper.config import credentials, webAddress
+from tests.helper.config import credentials, webaddress
 
 
 class TestJSONBackend(object):
 
     def setUp(self):
-        self.client = JSONClient(webAddress)
+        self.client = JSONClient(webaddress)
 
     def test_login(self):
         self.client.login(*credentials)
@@ -31,7 +31,7 @@ class TestJSONBackend(object):
 
     def test_httpauth(self):
         # cheap http auth
-        ret = requests.get(webAddress + "/getServerVersion", auth=HTTPBasicAuth(*credentials))
+        ret = requests.get(webaddress + "/getServerVersion", auth=HTTPBasicAuth(*credentials))
         assert_equal(ret.status_code, 200)
         assert ret.text
 
@@ -39,7 +39,7 @@ class TestJSONBackend(object):
         payload = {'section': 'webinterface', 'option': 'port'}
         headers = {'content-type': 'application/json'}
 
-        ret = requests.get(webAddress + "/getConfigValue", headers=headers,
+        ret = requests.get(webaddress + "/getConfigValue", headers=headers,
                            auth=HTTPBasicAuth(*credentials), data=json.dumps(payload))
 
         assert_equal(ret.status_code, 200)

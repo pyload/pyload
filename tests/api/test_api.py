@@ -27,9 +27,9 @@ class TestAPI(TestCase):
         cls.core.start(False, False, True)
         for Test in (TestNoArgs,):
             t = Test()
-            t.enableJSON()
+            t.enable_json()
             t = Test()
-            t.enableWS()
+            t.enable_ws()
             t = Test()
             t.set_api(cls.core.api)
 

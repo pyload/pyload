@@ -29,7 +29,7 @@ class HosterPluginTester(PluginTester):
     files = {}
 
     def setUp(self):
-        PluginTester.setUp(self)
+        PluginTester.set_up(self)
         for f in self.files:
             if exists(save_join(DL_DIR, f)):
                 remove(save_join(DL_DIR, f))
@@ -119,7 +119,7 @@ for k, v in sections.items():
         urls.append(url)
         status[url] = k
 
-hoster, c = c.pluginmanager.parseUrls(urls)
+hoster, c = c.pluginmanager.parse_urls(urls)
 
 plugins = accumulate(hoster)
 for plugin, urls in plugins.items():

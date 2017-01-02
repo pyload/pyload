@@ -39,12 +39,12 @@ def _wait(self):
             raise Abort
 
     self.waiting = False
-    self.pyfile.setStatus("starting")
+    self.pyfile.set_status("starting")
 
 Hoster.wait = _wait
 
 
-def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceUser=False, imgtype='jpg',
+def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, imgtype='jpg',
                    result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
@@ -88,14 +88,14 @@ Hoster.decrypt_captcha = decryptCaptcha
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")
 
-Hoster.invalidCaptcha = invalidCaptcha
+Hoster.invalid_captcha = invalidCaptcha
 
 def correctCaptcha(self):
     log(DEBUG, "Captcha correct")
 
-Hoster.correctCaptcha = correctCaptcha
+Hoster.correct_captcha = correctCaptcha
 
-Hoster.checkForSameFiles = noop
+Hoster.check_for_same_files = noop
 
 
 class PluginTester(TestCase):
@@ -122,5 +122,5 @@ class PluginTester(TestCase):
     def tearDown(self):
         exc = exc_info()
         if exc != (None, None, None):
-            debug = self.thread.writeDebugReport()
+            debug = self.thread.write_debug_report()
             log(DEBUG, debug)

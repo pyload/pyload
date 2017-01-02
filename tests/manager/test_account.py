@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from unittest import TestCase
 
-from tests.helper.stubs import Core, adminUser, normalUser
+from tests.helper.stubs import Core, admin_user, normal_user
 
 from pyload.manager.account import AccountManager
 
@@ -19,52 +19,52 @@ class TestAccountManager(TestCase):
         cls.db.shutdown()
 
     def setUp(self):
-        self.db.purgeAccounts()
+        self.db.purge_accounts()
         self.manager = AccountManager(self.pyload)
 
     def test_access(self):
-        account = self.manager.create_account("Http", "User", "somepw", adminUser.uid)
+        account = self.manager.create_account("Http", "User", "somepw", admin_user.uid)
 
-        assert account is self.manager.update_account(account.aid, "Http", "User", "newpw", adminUser)
+        assert account is self.manager.update_account(account.aid, "Http", "User", "newpw", admin_user)
         self.assert_equal(account.password, "newpw")
 
-        assert self.manager.get_account(account.aid, "Http", adminUser) is account
-        assert self.manager.get_account(account.aid, "Http", normalUser) is None
+        assert self.manager.get_account(account.aid, "Http", admin_user) is account
+        assert self.manager.get_account(account.aid, "Http", normal_user) is None
 
 
     def test_config(self):
-        account = self.manager.create_account("Http", "User", "somepw", adminUser.uid)
-        info = account.toInfoData()
+        account = self.manager.create_account("Http", "User", "somepw", admin_user.uid)
+        info = account.to_info_data()
 
         self.assert_equal(info.config[0].name, "domain")
         self.assert_equal(info.config[0].value, "")
-        self.assert_equal(account.getConfig("domain"), "")
+        self.assert_equal(account.get_config("domain"), "")
 
-        account.setConfig("domain", "df")
+        account.set_config("domain", "df")
 
-        info = account.toInfoData()
+        info = account.to_info_data()
         self.assert_equal(info.config[0].value, "df")
 
         info.config[0].value = "new"
 
-        account.updateConfig(info.config)
-        self.assert_equal(account.getConfig("domain"), "new")
+        account.update_config(info.config)
+        self.assert_equal(account.get_config("domain"), "new")
 
 
     def test_shared(self):
-        account = self.manager.create_account("Http", "User", "somepw", adminUser.uid)
+        account = self.manager.create_account("Http", "User", "somepw", admin_user.uid)
 
-        assert self.manager.select_account("Http", adminUser) is account
+        assert self.manager.select_account("Http", admin_user) is account
         assert account.loginname == "User"
 
-        assert self.manager.select_account("Something", adminUser) is None
-        assert self.manager.select_account("Http", normalUser) is None
+        assert self.manager.select_account("Something", admin_user) is None
+        assert self.manager.select_account("Http", normal_user) is None
 
         account.shared = True
 
-        assert self.manager.select_account("Http", normalUser) is account
-        assert self.manager.select_account("sdf", normalUser) is None
+        assert self.manager.select_account("Http", normal_user) is account
+        assert self.manager.select_account("sdf", normal_user) is None
 
-        self.manager.remove_account(account.aid, "Http", adminUser.uid)
+        self.manager.remove_account(account.aid, "Http", admin_user.uid)
 
-        assert self.manager.select_account("Http", adminUser) is None
+        assert self.manager.select_account("Http", admin_user) is None

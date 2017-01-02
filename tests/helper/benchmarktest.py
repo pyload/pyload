@@ -58,7 +58,7 @@ class BenchmarkTest(object):
     def collect_results(cls):
         if hasattr(cls, "setUpClass"):
             a = time()
-            cls.setUpClass()
+            cls.set_up_class()
             cls.timestamp("setUpClass", a)
 
         obj = cls()
@@ -70,5 +70,5 @@ class BenchmarkTest(object):
 
         if hasattr(cls, "tearDownClass"):
             a = time()
-            cls.tearDownClass()
+            cls.tear_down_class()
             cls.timestamp("tearDownClass", a)
