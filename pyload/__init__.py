@@ -134,13 +134,13 @@ def start(profile=None, configdir=None, refresh=0, remote=None, webui=None,
     # setup.run_venv()
 
     p = Core(profile, configdir, refresh, remote, webui, debug, webdebug)
-    if not daemon:
-        p.start()
-    else:
-        info = info()
-        app = "{}-{}".format(info.name, profile or 'default')
-        pid = tempfile.mkstemp(suffix='.pid', prefix='daemon-{}-'.format(info.name))[1]
-        d = daemonize.Daemonize(app, pid, p.start)
+    p.start()
+    
+    if daemon:
+        name = info().name
+        app = "{}-{}".format(name, profile or 'default')
+        pid = tempfile.mkstemp(suffix='.pid', prefix='daemon-{}-'.format(name))[1]
+        d = daemonize.Daemonize(app, pid, p.join)
         d.start()
 
     return p  #: returns process instance

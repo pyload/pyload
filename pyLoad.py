@@ -159,7 +159,9 @@ def main():
     res = func(**kwgs)
 
     if args.command in ('restart', 'start'):
-        _open_browser(p)
+        if not args.daemon:
+            _open_browser(p)
+            res.join()
 
     elif args.command in ('status', 'version'):
         print(' '.join(format.iter(res)))
