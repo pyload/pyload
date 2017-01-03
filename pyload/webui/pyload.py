@@ -66,7 +66,7 @@ def index():
     if PYLOAD:
         web = PYLOAD.get_config_value('webui', 'port')
     elif SETUP:
-        web = SETUP.config['webui']['port']
+        web = SETUP.config.get('webui', 'port')
 
     # Render variables into the html page
     if resp.status_code == 200:

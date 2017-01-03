@@ -39,8 +39,8 @@ class WebSocketBackend(BackendBase):
             if tls_module:
                 options.use_tls = True
                 options.tls_module = tls_module
-                options.certificate = self.pyload.config['ssl']['cert']
-                options.private_key = self.pyload.config['ssl']['key']
+                options.certificate = self.pyload.config.get('ssl', 'cert')
+                options.private_key = self.pyload.config.get('ssl', 'key')
                 self.pyload.log.info(_('Using secure WebSocket'))
             else:
                 self.pyload.log.warning(_('SSL could not be imported'))

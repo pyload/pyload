@@ -65,7 +65,7 @@ class Xdcc(Hoster):
     def do_download(self, url):
         self.pyfile.set_status("waiting")  # real link
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config.get('general', 'download_folder')
         location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
         if not exists(location):
             makedirs(location)

@@ -45,32 +45,32 @@ class RequestFactory(object):
         return klass(self.bucket, request)
 
     def get_interface(self):
-        return self.pyload.config['download']['interface']
+        return self.pyload.config.get('download', 'interface')
 
     def get_proxies(self):
         """ returns a proxy list for the request classes """
-        if not self.pyload.config['proxy']['proxy']:
+        if not self.pyload.config.get('proxy', 'proxy'):
             return {}
         else:
             type = "http"
-            setting = self.pyload.config['proxy']['type'].lower()
+            setting = self.pyload.config.get('proxy', 'type').lower()
             if setting == "socks4":
                 type = "socks4"
             elif setting == "socks5":
                 type = "socks5"
 
             username = None
-            if self.pyload.config['proxy']['username'] and self.pyload.config['proxy']['username'].lower() != "none":
-                username = self.pyload.config['proxy']['username']
+            if self.pyload.config.get('proxy', 'username') and self.pyload.config.get('proxy', 'username').lower() != "none":
+                username = self.pyload.config.get('proxy', 'username')
 
             pw = None
-            if self.pyload.config['proxy']['password'] and self.pyload.config['proxy']['password'].lower() != "none":
-                pw = self.pyload.config['proxy']['password']
+            if self.pyload.config.get('proxy', 'password') and self.pyload.config.get('proxy', 'password').lower() != "none":
+                pw = self.pyload.config.get('proxy', 'password')
 
             return {
                 "type": type,
-                "address": self.pyload.config['proxy']['address'],
-                "port": self.pyload.config['proxy']['port'],
+                "address": self.pyload.config.get('proxy', 'address'),
+                "port": self.pyload.config.get('proxy', 'port'),
                 "username": username,
                 "password": pw,
             }
@@ -84,14 +84,14 @@ class RequestFactory(object):
         """returns options needed for pycurl"""
         return {"interface": self.get_interface(),
                 "proxies": self.get_proxies(),
-                "ipv6": self.pyload.config['download']['ipv6']}
+                "ipv6": self.pyload.config.get('download', 'ipv6')}
 
     def update_bucket(self):
         """ set values in the bucket according to settings"""
-        if not self.pyload.config['download']['limit_speed']:
+        if not self.pyload.config.get('download', 'limit_speed'):
             self.bucket.set_rate(-1)
         else:
-            self.bucket.set_rate(self.pyload.config['download']['max_speed'] * 1024)
+            self.bucket.set_rate(self.pyload.config.get('download', 'max_speed') * 1024)
 
 # needs pyreq in global namespace
 def get_url(*args, **kwargs):

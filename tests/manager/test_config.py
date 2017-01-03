@@ -65,24 +65,24 @@ class TestConfigManager(TestCase):
 
     def test_parser(self):
         assert self.config.get("general", "language")
-        self.config['general']['language'] = "de"
-        assert self.config['general']['language'] == "de"
+        self.config.set('general', 'language', 'de')
+        assert self.config.get('general', 'language') == "de"
         assert self.config.get("general", "language", admin_user) == "de"
 
     def test_user(self):
         self.add_config()
 
-        assert self.config['plugin']['value'] == "default"
+        assert self.config.get('plugin', 'value') == "default"
         assert self.config.get("plugin", "value", admin_user) == "default"
         assert self.config.get("plugin", "value", normal_user) == "default"
 
         assert self.config.set("plugin", "value", False, user=normal_user)
         assert self.config.get("plugin", "value", normal_user) is False
-        assert self.config['plugin']['value'] == "default"
+        assert self.config.get('plugin', 'value') == "default"
 
         assert self.config.set("plugin", "value", True, user=admin_user)
         assert self.config.get("plugin", "value", admin_user) is True
-        assert self.config['plugin']['value'] is True
+        assert self.config.get('plugin', 'value') is True
         assert self.config.get("plugin", "value", normal_user) is False
 
         self.config.delete("plugin", normal_user)
@@ -90,7 +90,7 @@ class TestConfigManager(TestCase):
 
         self.config.delete("plugin")
         assert self.config.get("plugin", "value", admin_user) == "default"
-        assert self.config['plugin']['value'] == "default"
+        assert self.config.get('plugin', 'value') == "default"
 
         # should not trigger something
         self.config.delete("foo")

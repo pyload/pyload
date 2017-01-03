@@ -298,13 +298,13 @@ class Core(object):
         self.config = ConfigParser()
 
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'], "en"], fallback=True)
+                                          languages=[self.config.get('general', 'language'), "en"], fallback=True)
         translation.install(True)
 
         # load again so translations are propagated
         self.config.load_default()
 
-        self.debug = self.do_debug or self.config['general']['debug_mode']
+        self.debug = self.do_debug or self.config.get('general', 'debug_mode')
 
         pid = self.is_already_running()
         # don't exit when in test runner
@@ -312,25 +312,25 @@ class Core(object):
             print(_("pyLoad already running with pid {}").format(pid))
             exit()
 
-        if os.name != "nt" and self.config['general']['renice']:
-            os.system("renice {:d} {:d}".format(self.config['general']['renice'], os.getpid()))
+        if os.name != "nt" and self.config.get('general', 'renice'):
+            os.system("renice {:d} {:d}".format(self.config.get('general', 'renice'), os.getpid()))
 
-        if self.config['permission']['change_group']:
+        if self.config.get('permission', 'change_group'):
             if os.name != "nt":
                 try:
                     from grp import getgrnam
 
-                    group = getgrnam(self.config['permission']['group'])
+                    group = getgrnam(self.config.get('permission', 'group'))
                     os.setgid(group[2])
                 except Exception as e:
                     print(_("Failed changing group: {}").format(e.message))
 
-        if self.config['permission']['change_user']:
+        if self.config.get('permission', 'change_user'):
             if os.name != "nt":
                 try:
                     from pwd import getpwnam
 
-                    user = getpwnam(self.config['permission']['user'])
+                    user = getpwnam(self.config.get('permission', 'user'))
                     os.setuid(user[2])
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e.message))
@@ -399,7 +399,7 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        dl_folder = self.config['general']['download_folder']
+        dl_folder = self.config.get('general', 'download_folder')
 
         if not exists(dl_folder):
             makedirs(dl_folder)
@@ -430,7 +430,7 @@ class Core(object):
         self.accountmanager.refresh_all_accounts()
 
         #restart failed
-        if self.config['download']['restart_failed']:
+        if self.config.get('download', 'restart_failed'):
             self.log.info(_("Restarting failed downloads ..."))
             self.api.restart_failed()
 
@@ -504,10 +504,10 @@ class Core(object):
         console_frm = fh_frm
 
         # console formatter
-        if self.config['log']['console_color']:
+        if self.config.get('log', 'console_color'):
             from colorlog import ColoredFormatter
 
-            if self.config['log']['color_theme'] == "full":
+            if self.config.get('log', 'color_theme') == "full":
                 cfmt = "%(asctime)s %(log_color)s%(bold)s%(white)s %(levelname)-8s %(reset)s %(message)s"
                 clr = {
                     'DEBUG': 'bg_cyan',
@@ -544,17 +544,17 @@ class Core(object):
 
         self.log = logging.getLogger("log") # setable in config
 
-        if not exists(self.config['log']['log_folder']):
-            makedirs(self.config['log']['log_folder'], 0o700)
+        if not exists(self.config.get('log', 'log_folder')):
+            makedirs(self.config.get('log', 'log_folder'), 0o700)
 
-        if self.config['log']['file_log']:
-            if self.config['log']['log_rotate']:
-                file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
-                                                                    maxBytes=self.config['log']['log_size'] * 1024,
-                                                                    backupCount=int(self.config['log']['log_count']),
+        if self.config.get('log', 'file_log'):
+            if self.config.get('log', 'log_rotate'):
+                file_handler = logging.handlers.RotatingFileHandler(join(self.config.get('log', 'log_folder'), 'log.txt'),
+                                                                    maxBytes=self.config.get('log', 'log_size') * 1024,
+                                                                    backupCount=int(self.config.get('log', 'log_count')),
                                                                     encoding="utf8")
             else:
-                file_handler = logging.FileHandler(join(self.config['log']['log_folder'], 'log.txt'), encoding="utf8")
+                file_handler = logging.FileHandler(join(self.config.get('log', 'log_folder'), 'log.txt'), encoding="utf8")
 
             #: set file handler formatter
             file_handler.setFormatter(fh_frm)

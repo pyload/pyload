@@ -19,10 +19,10 @@ class CoreApi(BaseApi):
 
     def is_ws_secure(self):
         # needs to use TLS when either requested or webui is also using encryption
-        if not self.pyload.config['ssl']['activated'] or self.pyload.config['webui']['https']:
+        if not self.pyload.config.get('ssl', 'activated') or self.pyload.config.get('webui', 'https'):
             return False
 
-        if not exists(self.pyload.config['ssl']['cert']) or not exists(self.pyload.config['ssl']['key']):
+        if not exists(self.pyload.config.get('ssl', 'cert')) or not exists(self.pyload.config.get('ssl', 'key')):
             self.pyload.log.warning(_('SSL key or certificate not found'))
             return False
 
@@ -36,7 +36,7 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "{}://%{}:{:d}".format(ws, self.pyload.config['webui']['wsport'])
+        return "{}://%{}:{:d}".format(ws, self.pyload.config.get('webui', 'wsport'))
 
     @require_perm(Permission.All)
     def get_status_info(self):
@@ -53,7 +53,7 @@ class CoreApi(BaseApi):
                                     self.is_interaction_waiting(Interaction.All),
                                     not self.pyload.dlm.paused and self.is_time_download(),
                                     self.pyload.dlm.paused,
-                                    self.pyload.config['reconnect']['activated'] and self.is_time_reconnect(),
+                                    self.pyload.config.get('reconnect', 'activated') and self.is_time_reconnect(),
                                     self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
@@ -92,11 +92,11 @@ class CoreApi(BaseApi):
         :return: new reconnect state
         """
         self.pyload.config['reconnect']['activated'] ^= True
-        return self.pyload.config['reconnect']['activated']
+        return self.pyload.config.get('reconnect', 'activated')
 
     def free_space(self):
         """Available free space at download directory in bytes"""
-        return free_space(self.pyload.config['general']['download_folder'])
+        return free_space(self.pyload.config.get('general', 'download_folder'))
 
 
     def quit(self):
@@ -113,7 +113,7 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config['log']['log_folder'], 'log.txt')
+        filename = join(self.pyload.config.get('log', 'log_folder'), 'log.txt')
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
@@ -130,8 +130,8 @@ class CoreApi(BaseApi):
 
         :return: bool
         """
-        start = self.pyload.config['downloadTime']['start'].split(":")
-        end = self.pyload.config['downloadTime']['end'].split(":")
+        start = self.pyload.config.get('downloadTime', 'start').split(":")
+        end = self.pyload.config.get('downloadTime', 'end').split(":")
         return compare_time(start, end)
 
     @require_perm(Permission.All)
@@ -140,9 +140,9 @@ class CoreApi(BaseApi):
 
         :return: bool
         """
-        start = self.pyload.config['reconnect']['startTime'].split(":")
-        end = self.pyload.config['reconnect']['endTime'].split(":")
-        return compare_time(start, end) and self.pyload.config['reconnect']['activated']
+        start = self.pyload.config.get('reconnect', 'startTime').split(":")
+        end = self.pyload.config.get('reconnect', 'endTime').split(":")
+        return compare_time(start, end) and self.pyload.config.get('reconnect', 'activated')
 
 
 if Api.extend(CoreApi):

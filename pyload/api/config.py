@@ -77,8 +77,8 @@ class ConfigApi(BaseApi):
                               self.pyload.pluginmanager.get_category(name),
                               self.pyload.pluginmanager.is_user_plugin(name),
                               # TODO: won't work probably
-                              values.get("activated", None if "activated" not in config.config else config.config[
-                                  "activated"].input.default_value))
+                              values.get("activated",
+                                         None if "activated" not in config.config else config.config['activated'].input.default_value))
             data.append(item)
 
         return data

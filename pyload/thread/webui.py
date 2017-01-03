@@ -29,14 +29,14 @@ class WebServer(threading.Thread):
         else:
             raise Exception("No config context provided")
 
-        self.server = config['webui']['server']
-        self.https = config['webui']['https']
-        self.cert = config['ssl']['cert']
-        self.key = config['ssl']['key']
-        self.host = config['webui']['host']
-        self.port = config['webui']['port']
-        self.debug = config['general']['debug_mode']
-        self.force_server = config['webui']['force_server']
+        self.server = config.get('webui', 'server')
+        self.https = config.get('webui', 'https')
+        self.cert = config.get('ssl', 'cert')
+        self.key = config.get('ssl', 'key')
+        self.host = config.get('webui', 'host')
+        self.port = config.get('webui', 'port')
+        self.debug = config.get('general', 'debug_mode')
+        self.force_server = config.get('webui', 'force_server')
         self.error = None
 
         self.setDaemon(True)
