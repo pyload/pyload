@@ -14,21 +14,26 @@ Table of contents
     - [Tested Interpreters](#tested-interpreters)
     - [Required Packages](#required-packages)
     - [Optional Packages](#optional-packages)
+    - [Test-suite Packages](#test-suite-packages)
  - [Installation](#installation)
     - [PIP Install](#pip-install)
+    - [Easy Install](#easy-install)
     - [Manually Install](#manually-install)
-    - [Sources Install](#sources-install)
- - [Quick Start](#quick-start)
- - [Advanced Start](#advanced-start)
- - [Configuration](#configuration)
- - [Advanced Usage](#advanced-usage)
- - [Script Usage](#script-usage)
- - [Performances](#performances)
+ - [First Start](#first-start)
+    - [Quick Start](#quick-start)
+    - [Advanced Start](#advanced-start)
+    - [Configuration](#configuration)
+ - [Usage](#usage)
+    - [Basic Usage](#basic-usage)
+    - [Script Usage](#script-usage)
  - [Development](#development)
- - [Localization](#localization)
+    - [Report an issue](#report-an-issue)
+    - [Submit a Code Contribution](#Submit-a-code-contribution)
+    - [Localization](#localization)
+    - [Performances](#performances)
  - [Licensing](#licensing)
-   - [Main Program](#main-program)
-   - [Plugins](#plugins)
+    - [Main Program](#main-program)
+    - [Plugins](#plugins)
  - [Credits](#credits)
 
 
@@ -47,10 +52,13 @@ Supported Platforms
 Dependencies
 ------------
 
-You need at least *Python 2.6* or *Python 3.4* to run **pyLoad** and all of its required software dependencies.
+You need at least *Python 2.6* or *Python 3.4* to run **pyLoad** and all of its [required software dependencies](#required-packages).
 All the dependencies should be automatically installed if you choose the [PIP install procedure](#pip-install).
 The **pre-built packages** also install all the needed dependencies or have them included.
-So, it's not recommended to install the dependencies manually.
+So, **it's not recommended to install the dependencies manually**.
+
+> **Note:**
+> [Test-suite packages](#test-suite-packages) are required only if you want to test your installation with the built-in test suite.
 
 ### Tested Interpreters
 
@@ -111,6 +119,14 @@ pycrypto       | *           | Plugin dependencies   |
 pyOpenSSL      | *           | SSL connection        |
 unrar          | *           | Archive decompression |
 
+### Test-suite Packages
+
+Package name     | Min version | Notes
+---------------- | ----------- | -----
+nose             | *           |
+requests         | 1.2.2       |
+websocket-client | 0.8.0       |
+
 
 Installation
 ------------
@@ -119,9 +135,9 @@ Installation
 > Before start, install **Python 2** (or **Python 3**) if missing. See <https://www.python.org/> to learn how to.
 
 You can install **pyLoad** in several ways:
-  - [PIP install](#pip-install) *(recommended)*
+  - [PIP install](#pip-install) *(recommended on Unix based systems)*
+  - [Easy install](#easy-install) *(recommended on Windows)*
   - [Manually install](#manually-install)
-  - [Sources install](#sorces-install)
 
 ### PIP Install
 
@@ -135,25 +151,29 @@ Type in your command shell ***with administrator/root privileges***:
 If the above command fails, try typing:
 
     pip install --user pyload-ng
+    
+If that fails too, try the [easy install procedure](#easy-install) or at least the [manually install procedure](#manually-install).
+
+### Easy Install
+
+  1. Download the **pre-built package** for your platform from <https://github.com/pyload/pyload/releases>.
+  2. Extract the downloaded archive.
+  3. Run *pyLoad* from the extracted archive path.
 
 ### Manually Install
 
-  1. Download the **pre-built packages** for your platform from <https://github.com/pyload/pyload/releases>.
+  1. Get the latest tarball of the source code from <https://github.com/pyload/pyload/archive/stable.zip> *(stable branch)* **OR** <https://github.com/pyload/pyload/archive/testing.zip> *(testing branch)*.
   2. Extract the downloaded archive.
   3. Change directory to the extracted archive path.
-  4. Run the built-in setup utility, typing in your command shell: `python setup.py install`.
-
-### Sources Install
-
-  1. Get the latest tarball of the source code from <https://github.com/pyload/pyload/archive/stable.zip> *(stable)* **OR** <https://github.com/pyload/pyload/archive/testing.zip> *(testing)*.
-  2. Extract the downloaded archive.
-  3. Change directory to the extracted archive path.
-  4. Run the built-in setup utility, typing in your command shell: `python setup.py install`.
-  5. If setup fails or **pyLoad** crashes, manually install the [Required software dependencies](#required-packages) at least and retry.
+  4. Run the built-in setup utility as described in the [configuration section](#configuration).
+  5. If setup fails or **pyLoad** crashes on startup,
+     try manually installing the [software dependencies](#dependencies) or [report your issue](#report-an-issue).
 
 
-Quick Start
+First Start
 -----------
+
+### Quick Start
 
 To run **pyLoad** with default profile, just type in your command shell:
 
@@ -179,11 +199,9 @@ To show the help list, type:
 > The web user interface will be accessible pointing your web browser to the ip address and configured port (defaults to `http://localhost:8010`).
 
 > **Note:**
-> The remote API server instead will be listening on `http://localhost:7447`.
+> The remote API server instead will be listening to `http://localhost:7447`.
 
-
-Advanced Start
---------------
+### Advanced Start
 
 To run **pyLoad** with a custom profile, type:
 
@@ -200,9 +218,7 @@ To run as daemon, type:
 > The `profile` argument is **optional**, but if you do not enter any value, the profile `default` will be used.
 > **New profiles will be created automatically inside the current config directory when declared**.
 
-
-Configuration
--------------
+### Configuration
 
 After finishing the setup assistant **pyLoad** is ready to use and more configuration can be done via the web user interface.
 Additionally you could simply edit the config files located in your config directory.
@@ -213,7 +229,7 @@ To run the built-in setup utility, type:
 
 **Or** type *(from the directory where **pyLoad** is installed)*:
 
-    python pyLoad.py setup.py
+    python setup.py install
 
 > **Note:**
 > The default path of the config directory is `%appdata%\pyload` on Windows platform and `~/.pyload` otherwise.
@@ -222,8 +238,10 @@ To run the built-in setup utility, type:
 > To learn how change the config directory see the help list.
 
 
-Advanced Usage
---------------
+Usage
+-----
+
+### Basic Usage
 
 To start *pyLoad* in verbose (debug) mode, type:
 
@@ -253,15 +271,13 @@ To run the built-in test suite, type:
 
     pyload test
 
+### Script Usage
 
-Script Usage
-------------
-
-You can import **pyLoad** directly in your script in this way:
+You can import **pyLoad** directly in your script:
 
     import pyload-ng as pyload
 
-Available methods of the `pyload` object are:
+Available methods for the above `pyload` object are:
 
   - `pyload.start(profile=None, configdir=None, refresh=0, remote=None, webui=None, debug=0, webdebug=0, daemon=False)`
     - **DESCRIPTION**: Start a process instance.
@@ -314,7 +330,7 @@ Available methods of the `pyload` object are:
     - **RETURN**: None type.
 
 > **Note:**
-> `pyload.start` (and `pyload.restart`) returns immediately, even if the resulting instance is not fully running already!
+> `pyload.start` (and `pyload.restart`) returns immediately, even if the resulting instance is not already fully running!
 
 > **Note:**
 > To stop a single **pyLoad** instance you MUST pass its profile name to the function `pyload.stop`,
@@ -332,29 +348,43 @@ A quick example of how *start & stop* a couple instances of **pyLoad** launched 
     pyload.stop('MyProfile2')
 
 
-Performances
-------------
-
-No stats right now.
-
-
 Development
 -----------
 
+  - **pyLoad** repository: <https://github.com/pyload/pyload>.
   - **pyLoad** documentation: <https://github.com/pyload/pyload/wiki>.
   - **pyLoad** roadmap: <https://github.com/pyload/pyload/milestones>.
-  - To report bugs, suggest features, ask for a question or help us out, visit: <https://github.com/pyload/pyload/issues>.
-  - To submit your code to the **pyLoad** repository, open a new *Pull Request* here: <https://github.com/pyload/pyload/pulls>.
 
+> **Note:**
+> To report issues or submit your code to the dev team, you must be registered to the *GitHub platform*,
+> but it's all free and take less than a minute to get in, so why not?!
 
-Localization
-------------
+### Report an Issue
+
+**To report an issue, suggest features, ask for a question or help us out, open a ticket to <https://github.com/pyload/pyload/issues>**.
+
+Please, always title your issues with a pertinent short description and expone accurately the problem you encounter.
+**Don't foget to attach a full debug log of your bugged session from the first start** or we cannot help you.
+To learn how to start **pyLoad** in *debug mode* see the [usage section](#usage).
+
+### Submit a Code Contribution
+
+To submit your code to the **pyLoad** repository, open a new *Pull Request* on <https://github.com/pyload/pyload/pulls>.
+
+> **Note:**
+> Take a look to the included [CLA](/CLA) before request the integration of your code in the **pyLoad** main program.
+
+### Localization
 
 > **Note:**
 > The localization process is managed with **Crowdin** here: <http://crowdin.net/project/pyload>.
 
 You can download the latest locale files from <https://crowdin.com/download/project/pyload.zip>.
-To compile them, run the built-in setup utility *(see the [Configuration section](#configuration))*.
+To compile them, run the built-in setup utility *(see the [configuration section](#configuration))*.
+
+### Performances
+
+No stats right now.
 
 
 Licensing
@@ -366,7 +396,7 @@ Please refer to the included [LICENSE](/LICENSE.md) for the extended license.
 
 ### Plugins
 
-Please refer to the included [PLUGIN LICENSE](https://github.com/pyload/plugins/readme.md) for the extended license.
+Please refer to the plugins [LICENSE](https://github.com/pyload/plugins/README.md) for the extended license.
 
 
 Credits
