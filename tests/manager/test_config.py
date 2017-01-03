@@ -65,9 +65,9 @@ class TestConfigManager(TestCase):
 
     def test_parser(self):
         assert self.config.get("general", "language")
-        self.config.set('general', 'language', 'de')
-        assert self.config.get('general', 'language') == "de"
-        assert self.config.get("general", "language", admin_user) == "de"
+        self.config.set('general', 'language', 'en')
+        assert self.config.get('general', 'language') == "en"
+        assert self.config.get("general", "language", admin_user) == "en"
 
     def test_user(self):
         self.add_config()

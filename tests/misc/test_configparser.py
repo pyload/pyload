@@ -22,8 +22,8 @@ class TestConfigParser(object):
     def test_dict(self):
 
         assert self.config.get('general', 'language')
-        self.config.set('general', 'language', 'de')
-        assert self.config.get('general', 'language') == "de"
+        self.config.set('general', 'language', 'en')
+        assert self.config.get('general', 'language') == "en"
 
     def test_contains(self):
 
