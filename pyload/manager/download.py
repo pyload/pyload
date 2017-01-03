@@ -31,7 +31,6 @@ class DownloadManager(object):
 
     def __init__(self, core):
         self.pyload = core
-        self.log = core.log
 
         #: won't start download when true
         self.paused = True
@@ -129,7 +128,7 @@ class DownloadManager(object):
 
         if free_space(self.pyload.config.get('general', 'download_folder')) / 1024 / 1024 < \
                 self.pyload.config.get('general', 'min_free_space'):
-            self.log.warning(_("Not enough space left on device"))
+            self.pyload.log.warning(_("Not enough space left on device"))
             self.paused = True
 
         if self.paused or not self.pyload.api.is_time_download():
@@ -196,7 +195,7 @@ class DownloadManager(object):
         plugin = self.pyload.pgm.find_plugin(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
-            self.log.error(_("Plugin '{}' does not exists").format(info.download.plugin))
+            self.pyload.log.error(_("Plugin '{}' does not exists").format(info.download.plugin))
             self.pyload.files.set_download_status(info.fid, DS.Failed)
             return False
 
@@ -211,7 +210,7 @@ class DownloadManager(object):
         elif plugin == "crypter":
             self.start_decrypter_thread(info)
         else:
-            self.log.error(_("Plugin type '{}' can't be used for downloading").format(plugin))
+            self.pyload.log.error(_("Plugin type '{}' can't be used for downloading").format(plugin))
 
         return False
 
@@ -231,12 +230,12 @@ class DownloadManager(object):
                 self.pyload.config.set('reconnect', 'method', join(COREDIR, self.pyload.config.get('reconnect', 'method')))
             else:
                 self.pyload.config.set('reconnect', 'activated', False)
-                self.log.warning(_("Reconnect script not found!"))
+                self.pyload.log.warning(_("Reconnect script not found!"))
                 return
 
         self.reconnecting.set()
 
-        self.log.info(_("Starting reconnect"))
+        self.pyload.log.info(_("Starting reconnect"))
 
         # wait until all thread got the event
         while [x.active.plugin.waiting for x in self.working].count(True) != 0:
@@ -245,12 +244,12 @@ class DownloadManager(object):
         old_ip = get_ip()
 
         self.pyload.evm.dispatch_event("reconnect:before", old_ip)
-        self.log.debug("Old IP: {}".format(old_ip))
+        self.pyload.log.debug("Old IP: {}".format(old_ip))
 
         try:
             call(self.pyload.config.get('reconnect', 'method'), shell=True)
         except Exception:
-            self.log.warning(_("Failed executing reconnect script!"))
+            self.pyload.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
             self.pyload.print_exc()
@@ -261,9 +260,9 @@ class DownloadManager(object):
         self.pyload.evm.dispatch_event("reconnect:after", ip)
 
         if not old_ip or old_ip == ip:
-            self.log.warning(_("Reconnect not successful"))
+            self.pyload.log.warning(_("Reconnect not successful"))
         else:
-            self.log.info(_("Reconnected, new IP: {}").format(ip))
+            self.pyload.log.info(_("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 

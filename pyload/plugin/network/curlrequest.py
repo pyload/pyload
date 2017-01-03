@@ -281,7 +281,7 @@ class CurlRequest(Request):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded {}".format(encoding))
+            #self.pyload.log.debug("Decoded {}".format(encoding))
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 
@@ -291,9 +291,9 @@ class CurlRequest(Request):
             #TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder found for {}".format(encoding))
+            self.pyload.log.debug("No Decoder found for {}".format(encoding))
         except Exception:
-            self.log.debug("Error when decoding string from {}".format(encoding))
+            self.pyload.log.debug("Error when decoding string from {}".format(encoding))
 
         return rep
 

@@ -30,7 +30,6 @@ class EventManager(object):
 
     def __init__(self, core):
         self.pyload = core
-        self.log = core.log
 
         self.events = {"event": []}
 
@@ -40,7 +39,7 @@ class EventManager(object):
         """Adds an event listener for event name"""
         if event in self.events:
             if func in self.events[event]:
-                self.log.debug("Function already registered {}".format(func))
+                self.pyload.log.debug("Function already registered {}".format(func))
             else:
                 self.events[event].append(func)
         else:
@@ -68,7 +67,7 @@ class EventManager(object):
                 try:
                     f(*args, **kwargs)
                 except Exception as e:
-                    self.log.warning(
+                    self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(event, f, args, e.message)
                     )
                     self.pyload.print_exc()

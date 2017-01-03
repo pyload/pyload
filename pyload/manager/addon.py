@@ -33,8 +33,6 @@ class AddonManager(object):
 
         builtins.addonmanager = self #needed to let addons register themselves
 
-        self.log = self.pyload.log
-
         # TODO: multiuser addons
 
         # maps plugin names to info tuple
@@ -105,16 +103,16 @@ class AddonManager(object):
                     if not internal and plugin.is_activated():
                         active.append(pluginclass.__name__)
                     else:
-                        self.log.debug("Loaded internal plugin: {}".format(pluginclass.__name__))
+                        self.pyload.log.debug("Loaded internal plugin: {}".format(pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 
             except Exception:
-                self.log.warning(_("Failed activating {}").format(pluginname))
+                self.pyload.log.warning(_("Failed activating {}").format(pluginname))
                 self.pyload.print_exc()
 
-        self.log.info(_("Activated addons: {}").format(", ".join(sorted(active))))
-        self.log.info(_("Deactivated addons: {}").format(", ".join(sorted(deactive))))
+        self.pyload.log.info(_("Activated addons: {}").format(", ".join(sorted(active))))
+        self.pyload.log.info(_("Deactivated addons: {}").format(", ".join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
         # TODO: multi user
@@ -139,7 +137,7 @@ class AddonManager(object):
         if not pluginclass:
             return
 
-        self.log.debug("Plugin loaded: {}".format(plugin))
+        self.pyload.log.debug("Plugin loaded: {}".format(plugin))
 
         plugin = pluginclass(self.pyload, self)
         self.plugins[pluginclass.__name__].instances.append(plugin)
@@ -159,10 +157,10 @@ class AddonManager(object):
             return
 
         self.call(addon, "deactivate")
-        self.log.debug("Plugin deactivated: {}".format(plugin))
+        self.pyload.log.debug("Plugin deactivated: {}".format(plugin))
 
         #remove periodic call
-        self.log.debug("Removed callback {}".format(self.pyload.scheduler.remove_job(addon.cb)))
+        self.pyload.log.debug("Removed callback {}".format(self.pyload.scheduler.remove_job(addon.cb)))
 
         # todo: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]
@@ -175,7 +173,7 @@ class AddonManager(object):
             self.pyload.evm.remove_from_events(getattr(addon, f))
 
     def activate_addons(self):
-        self.log.info(_("Activating addons ..."))
+        self.pyload.log.info(_("Activating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.is_activated():
@@ -185,7 +183,7 @@ class AddonManager(object):
 
     def deactivate_addons(self):
         """  Called when core is shutting down """
-        self.log.info(_("Deactivating addons ..."))
+        self.pyload.log.info(_("Deactivating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, "deactivate")

@@ -273,7 +273,7 @@ class Hoster(Base):
 
                     chown(location, uid, gid)
                 except Exception as e:
-                    self.log.warning(_("Setting User and Group failed: {}").format(e.message))
+                    self.pyload.log.warning(_("Setting User and Group failed: {}").format(e.message))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -294,7 +294,7 @@ class Hoster(Base):
             self.pyfile.size = self.dl.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info(_("{} saved as {}").format(name, newname))
+            self.pyload.log.info(_("{} saved as {}").format(name, newname))
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -310,7 +310,7 @@ class Hoster(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: {}").format(e.message))
+                self.pyload.log.warning(_("Setting User and Group failed: {}").format(e.message))
 
         self.last_download = filename
         return self.last_download
@@ -336,12 +336,12 @@ class Hoster(Base):
             return None
         elif size > max_size and not read_size:
             return None
-        self.log.debug("Download Check triggered")
+        self.pyload.log.debug("Download Check triggered")
         f = open(last_download, "rb")
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: {}".format(content))
+        #self.pyload.log.debug("Content: {}".format(content))
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
@@ -395,7 +395,7 @@ class Hoster(Base):
             if exists(location):
                 raise SkipDownload(pyfile[0])
 
-            self.log.debug("File {} not skipped, because it does not exists".format(self.pyfile.name))
+            self.pyload.log.debug("File {} not skipped, because it does not exists".format(self.pyfile.name))
 
     def clean(self):
         """ clean everything and remove references """

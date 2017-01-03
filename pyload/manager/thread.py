@@ -20,7 +20,6 @@ class ThreadManager(object):
     def __init__(self, core):
         """Constructor"""
         self.pyload = core
-        self.log = core.log
 
         self.thread = []  # thread list
 
@@ -98,7 +97,7 @@ class ThreadManager(object):
 
         if self.info_cache and self.timestamp < time():
             self.info_cache.clear()
-            self.log.debug("Cleared Result cache")
+            self.pyload.log.debug("Cleared Result cache")
 
         for rid in self.info_results.keys():
             if self.info_results[rid].is_stale():

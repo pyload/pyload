@@ -78,8 +78,6 @@ class Base(object):
 
         #: Core instance
         self.pyload = core
-        #: logging instance
-        self.log = core.log
         #: core config
         self.config = core.config
         #: :class:`EventManager`
@@ -338,7 +336,7 @@ class Base(object):
                 self.fail(_("No captcha result obtained in appropriate time"))
 
             result = task.result
-            self.log.debug("Received captcha result: {}".format(result))
+            self.pyload.log.debug("Received captcha result: {}".format(result))
 
         if not self.pyload.debug:
             try:

@@ -122,7 +122,7 @@ class CurlDownload(Download):
             code = e.args[0]
             if code == 33:
                 # try again without resume
-                self.log.debug("Errno 33 -> Restart without resume")
+                self.pyload.log.debug("Errno 33 -> Restart without resume")
 
                 #remove old handles
                 for chunk in self.chunks:
@@ -179,7 +179,7 @@ class CurlDownload(Download):
                         self.manager.add_handle(handle)
                     else:
                         #close immediately
-                        self.log.debug("Invalid curl handle -> closed")
+                        self.pyload.log.debug("Invalid curl handle -> closed")
                         c.close()
 
                 chunks_created = True
@@ -204,7 +204,7 @@ class CurlDownload(Download):
                     try: # check if the header implies success, else add it to failed list
                         chunk.verify_header()
                     except ResponseException as e:
-                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
+                        self.pyload.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -217,13 +217,13 @@ class CurlDownload(Download):
                     if errno != 23 or "0 !=" not in msg:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
-                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, ex))
+                        self.pyload.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, ex))
                         continue
 
                     try: # check if the header implies success, else add it to failed list
                         chunk.verify_header()
                     except ResponseException as e:
-                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
+                        self.pyload.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -233,7 +233,7 @@ class CurlDownload(Download):
                     # check if init is not finished so we reset download connections
                     # note that other chunks are closed and everything downloaded with initial connection
                     if failed and init not in failed and init.c not in chunks_done:
-                        self.log.error(_("Download chunks failed, fallback to single connection | {}".format(ex)))
+                        self.pyload.log.error(_("Download chunks failed, fallback to single connection | {}".format(ex)))
 
                         #list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -254,7 +254,7 @@ class CurlDownload(Download):
 
                     if len(chunks_done) >= len(self.chunks):
                         if len(chunks_done) > len(self.chunks):
-                            self.log.warning(_("Finished download chunks size incorrect, please report bug"))
+                            self.pyload.log.warning(_("Finished download chunks size incorrect, please report bug"))
                         done = True  #all chunks loaded
 
                     break
@@ -293,7 +293,7 @@ class CurlDownload(Download):
         try:
             self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
-            self.log.debug("Error removing chunk: {}".format(e.message))
+            self.pyload.log.debug("Error removing chunk: {}".format(e.message))
         finally:
             chunk.close()
 

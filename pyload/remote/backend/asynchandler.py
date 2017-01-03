@@ -104,7 +104,7 @@ class AsyncHandler(AbstractHandler):
                     break
 
             if req.events.search(event.eventname):
-                self.log.debug("Pushing event {}".format(event))
+                self.pyload.log.debug("Pushing event {}".format(event))
                 req.queue.put(event)
 
     def transfer_data(self, req):
@@ -114,7 +114,7 @@ class AsyncHandler(AbstractHandler):
                 try:
                     line = receive_message(req)
                 except TypeError as e: # connection closed
-                    self.log.debug("WS Error: {}".format(e.message))
+                    self.pyload.log.debug("WS Error: {}".format(e.message))
                     return self.passive_closing_handshake(req)
 
                 self.mode_standby(line, req)
@@ -156,7 +156,7 @@ class AsyncHandler(AbstractHandler):
             try:
                 self.send(req, ev)
             except TypeError:
-                self.log.debug("Event {} not converted".format(ev))
+                self.pyload.log.debug("Event {} not converted".format(ev))
                 ev.event_args = []
                 # Resend the event without arguments
                 self.send(req, ev)

@@ -2,7 +2,6 @@
 
 from __future__ import unicode_literals
 from builtins import object
-from logging import getLogger
 
 from pyload.network.headerdict import HeaderDict
 
@@ -22,8 +21,7 @@ class Request(object):
     CONTEXT_CLASS = None
 
     def __init__(self, config, context=None, options=None):
-        self.log = getLogger("log")
-
+        
         # Global config, holds some configurable parameter
         self.config = config
 

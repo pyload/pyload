@@ -68,7 +68,7 @@ class InfoThread(DecrypterThread):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
             elif has_method(plugin, "get_info"):
-                self.log.debug("Deprecated .get_info() method on module level, use staticmethod instead")
+                self.pyload.log.debug("Deprecated .get_info() method on module level, use staticmethod instead")
                 self.fetch_for_plugin(plugin, urls, cb)
 
         if self.oc:

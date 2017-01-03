@@ -43,7 +43,7 @@ class DecrypterThread(BaseThread):
             del packages[0]
 
         if links:
-            self.log.info(
+            self.pyload.log.info(
                 _("Decrypted {:d} links into package {}").format(len(links), pack.name))
             api.add_links(self.pid, [l.url for l in links])
 
@@ -74,7 +74,7 @@ class DecrypterThread(BaseThread):
                 self.error = True
                 if err:
                     plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
-                self.log.debug("Plugin '{}' for decrypting was not loaded".format(name))
+                self.pyload.log.debug("Plugin '{}' for decrypting was not loaded".format(name))
             else:
                 try:
                     plugin = klass(self.pyload, password)

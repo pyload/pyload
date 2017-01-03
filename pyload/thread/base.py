@@ -22,7 +22,6 @@ class BaseThread(Thread):
         self.setDaemon(True)
         self.manager = manager #thread manager
         self.pyload = manager.pyload
-        self.log = manager.pyload.log
 
         #: Owner of the thread, every type should set it or overwrite user
         self.owner = owner
@@ -78,14 +77,14 @@ class BaseThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
-            self.log.debug("Error creating zip file: {}".format(e.message))
+            self.pyload.log.debug("Error creating zip file: {}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
             f = open(dump_name, "wb")
             f.write(dump)
             f.close()
 
-        self.log.info(_("Debug Report written to {}").format(dump_name))
+        self.pyload.log.info(_("Debug Report written to {}").format(dump_name))
         return dump_name
 
     def get_plugin_dump(self, plugin):
