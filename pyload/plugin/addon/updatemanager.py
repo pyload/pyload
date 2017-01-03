@@ -123,7 +123,7 @@ class UpdateManager(Hook):
             else:
                 type = prefix
 
-            plugins = getattr(self.pyload.pluginmanager, "{}Plugins".format(type))
+            plugins = getattr(self.pyload.pgm, "{}Plugins".format(type))
 
             if name in plugins:
                 if float(plugins[name]['v']) >= float(version):
@@ -152,7 +152,7 @@ class UpdateManager(Hook):
 
             reloads.append((prefix, name))
 
-        self.reloaded = self.pyload.pluginmanager.reload_plugins(reloads)
+        self.reloaded = self.pyload.pgm.reload_plugins(reloads)
 
     def check_changes(self):
 
@@ -168,7 +168,7 @@ class UpdateManager(Hook):
         for m in modules:
             root, type, name = m.__name__.rsplit(".", 2)
             id = (type, name)
-            if type in self.pyload.pluginmanager.plugins:
+            if type in self.pyload.pgm.plugins:
                 f = m.__file__.replace(".pyc", ".py")
                 if not exists(f):
                     continue
@@ -181,4 +181,4 @@ class UpdateManager(Hook):
                     reloads.append(id)
                     self.mtimes[id] = mtime
 
-        self.pyload.pluginmanager.reload_plugins(reloads)
+        self.pyload.pgm.reload_plugins(reloads)

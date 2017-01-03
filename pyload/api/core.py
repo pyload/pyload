@@ -68,7 +68,7 @@ class CoreApi(BaseApi):
         :rtype: list of :class:`ProgressInfo`
         """
         return self.pyload.dlm.get_progress_list(self.primary_uid) +\
-            self.pyload.threadmanager.get_progress_list(self.primary_uid)
+            self.pyload.thm.get_progress_list(self.primary_uid)
 
     def pause_server(self):
         """Pause server: It won't start any new downloads, but nothing gets aborted."""

@@ -379,13 +379,13 @@ class Core(object):
         self.js = JsEngine()
 
         #hell yeah, so many important managers :D
-        self.pluginmanager = PluginManager(self)
-        self.interactionmanager = self.im = InteractionManager(self)
-        self.accountmanager = AccountManager(self)
-        self.threadmanager = ThreadManager(self)
+        self.pluginmanager = self.pgm = PluginManager(self)
+        self.interactionmanager = self.itm = InteractionManager(self)
+        self.accountmanager = self.acm = AccountManager(self)
+        self.threadmanager = self.thm = ThreadManager(self)
         self.downloadmanager = self.dlm = DownloadManager(self)
-        self.addonmanager = AddonManager(self)
-        self.remotemanager = RemoteManager(self)
+        self.addonmanager = self.adm = AddonManager(self)
+        self.remotemanager = self.rem = RemoteManager(self)
 
         # enough initialization for test cases
         if tests:
@@ -394,7 +394,7 @@ class Core(object):
         self.log.info(_("Download time: {}").format(self.api.is_time_download()))
 
         if rpc:
-            self.remotemanager.start_backends()
+            self.rem.start_backends()
 
         if web:
             self.init_webserver()
@@ -425,9 +425,9 @@ class Core(object):
                 self.api.add_package("links.txt", [link_file], 1)
             f.close()
 
-        #self.scheduler.add_job(0, self.accountmanager.get_account_infos)
+        #self.scheduler.add_job(0, self.acm.get_account_infos)
         self.log.info(_("Activating Accounts ..."))
-        self.accountmanager.refresh_all_accounts()
+        self.acm.refresh_all_accounts()
 
         #restart failed
         if self.config.get('download', 'restart_failed'):
@@ -438,10 +438,10 @@ class Core(object):
         self.dlm.paused = False
         self.running = True
 
-        self.addonmanager.activate_addons()
+        self.adm.activate_addons()
 
         self.log.info(_("pyLoad is up and running"))
-        self.eventmanager.dispatch_event("pyload:ready")
+        self.evm.dispatch_event("pyload:ready")
 
         #test api
         #        from pyload.common.APIExerciser import start_api_exerciser
@@ -472,8 +472,8 @@ class Core(object):
                 _exit(0)
                 # TODO check exits codes, clean exit is still blocked
             try:
-                self.downloadmanager.work()
-                self.threadmanager.work()
+                self.dlm.work()
+                self.thm.work()
                 self.interactionmanager.work()
                 self.scheduler.work()
             except Exception as e:
@@ -591,7 +591,7 @@ class Core(object):
 
             self.dlm.shutdown()
             self.api.stop_all_downloads()
-            self.addonmanager.deactivate_addons()
+            self.adm.deactivate_addons()
 
         except:
             self.print_exc()

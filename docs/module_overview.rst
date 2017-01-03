@@ -16,7 +16,7 @@ A little selection of most important modules in pyLoad.
    pyload.plugins.addon.Addon
    pyload.plugins.account.account
    pyload.plugins.multihoster.MultiHoster
-   pyload.addonmanager.addon
+   pyload.adm.addon
    pyload.interaction.eventmanager.EventManager
    pyload.interaction.interactionmanager.InteractionManager
    pyload.interaction.interactiontask.interactiontask

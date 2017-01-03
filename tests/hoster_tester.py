@@ -119,7 +119,7 @@ for k, v in sections.items():
         urls.append(url)
         status[url] = k
 
-hoster, c = c.pluginmanager.parse_urls(urls)
+hoster, c = c.pgm.parse_urls(urls)
 
 plugins = accumulate(hoster)
 for plugin, urls in plugins.items():

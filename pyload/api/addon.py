@@ -26,7 +26,7 @@ class AddonApi(BaseApi):
         :param plugin: pluginName
         :return: list of :class:`AddonInfo`
         """
-        return self.pyload.addonmanager.get_info(plugin)
+        return self.pyload.adm.get_info(plugin)
 
     @require_perm(Permission.Interaction)
     def get_addon_handler(self):
@@ -35,7 +35,7 @@ class AddonApi(BaseApi):
         :return: dict of plugin name to list of :class:`AddonService`
         """
         handler = {}
-        for name, data in self.pyload.addonmanager.iter_addons():
+        for name, data in self.pyload.adm.iter_addons():
             if data.handler:
                 handler[name] = list(data.handler.values())
         return handler
@@ -43,7 +43,7 @@ class AddonApi(BaseApi):
     @require_perm(Permission.Interaction)
     def invoke_addon(self, plugin, func, func_args):
         """ Calls any function exposed by an addon """
-        return self.pyload.addonmanager.invoke(plugin, func, func_args)
+        return self.pyload.adm.invoke(plugin, func, func_args)
 
     @require_perm(Permission.Interaction)
     def invoke_addon_handler(self, plugin, func, pid_or_fid):

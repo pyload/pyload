@@ -85,7 +85,7 @@ class Base(object):
         #: :class:`EventManager`
         self.evm = core.eventmanager
         #: :class:`InteractionManager`
-        self.im = core.interactionmanager
+        self.itm = core.interactionmanager
         if owner is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.pyload.api.with_user_context(owner)
@@ -149,7 +149,7 @@ class Base(object):
     @property
     def pattern(self):
         """  Gives the compiled pattern of the plugin """
-        return self.pyload.pluginmanager.get_plugin(self.__type__, self.__name__).re
+        return self.pyload.pgm.get_plugin(self.__type__, self.__name__).re
 
     def set_config(self, option, value):
         """ Set config value for current plugin """
@@ -304,10 +304,10 @@ class Base(object):
         temp_file.close()
 
         name = "{}OCR".format(self.__name__)
-        has_plugin = name in self.pyload.pluginmanager.get_plugins("internal")
+        has_plugin = name in self.pyload.pgm.get_plugins("internal")
 
         if self.pyload.captcha:
-            OCR = self.pyload.pluginmanager.load_class("internal", name)
+            OCR = self.pyload.pgm.load_class("internal", name)
         else:
             OCR = None
 
@@ -318,17 +318,17 @@ class Base(object):
             ocr = OCR()
             result = ocr.get_captcha(temp_file.name)
         else:
-            task = self.im.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
+            task = self.itm.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
 
             while task.is_waiting():
                 if self.abort():
-                    self.im.remove_task(task)
+                    self.itm.remove_task(task)
                     raise Abort
                 sleep(1)
 
             #TODO task handling
-            self.im.remove_task(task)
+            self.itm.remove_task(task)
 
             if task.error and has_plugin: #ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))

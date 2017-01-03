@@ -25,7 +25,7 @@ class PreDownloadApi(BaseApi):
         :param links:
         :return: {plugin: urls}
         """
-        data, crypter = self.pyload.pluginmanager.parse_urls(links)
+        data, crypter = self.pyload.pgm.parse_urls(links)
         plugins = {}
 
         for url, plugin in chain(data, crypter):
@@ -43,13 +43,13 @@ class PreDownloadApi(BaseApi):
         :param links:
         :return: initial set of data as :class:`OnlineCheck` instance containing the result id
         """
-        hoster, crypter = self.pyload.pluginmanager.parse_urls(links)
+        hoster, crypter = self.pyload.pgm.parse_urls(links)
 
         #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
         tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster]
         data = parse_names(tmp)
-        rid = self.pyload.threadmanager.create_result_thread(self.primary_uid, hoster + crypter)
+        rid = self.pyload.thm.create_result_thread(self.primary_uid, hoster + crypter)
 
         return OnlineCheck(rid, data)
 
@@ -89,7 +89,7 @@ class PreDownloadApi(BaseApi):
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
-        result = self.pyload.threadmanager.get_info_result(rid)
+        result = self.pyload.thm.get_info_result(rid)
         if result and result.owner == self.primary_uid:
             return result.to_api_data()
 

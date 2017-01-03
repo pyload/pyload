@@ -67,15 +67,15 @@ class ConfigApi(BaseApi):
         # TODO: multi user
         # TODO: better plugin / addon activated config
         data = []
-        active = [x.get_name() for x in self.pyload.addonmanager.active_plugins()]
+        active = [x.get_name() for x in self.pyload.adm.active_plugins()]
         for name, config, values in self.pyload.config.iter_sections(self.primary_uid):
             # skip unmodified and inactive addons
             if not values and name not in active:
                 continue
 
             item = ConfigInfo(name, config.label, config.description,
-                              self.pyload.pluginmanager.get_category(name),
-                              self.pyload.pluginmanager.is_user_plugin(name),
+                              self.pyload.pgm.get_category(name),
+                              self.pyload.pgm.is_user_plugin(name),
                               # TODO: won't work probably
                               values.get("activated",
                                          None if "activated" not in config.config else config.config['activated'].input.default_value))
@@ -91,8 +91,8 @@ class ConfigApi(BaseApi):
         """
         # TODO: filter user_context / addons when not allowed
         plugins = [ConfigInfo(name, config.label, config.description,
-                              self.pyload.pluginmanager.get_category(name),
-                              self.pyload.pluginmanager.is_user_plugin(name))
+                              self.pyload.pgm.get_category(name),
+                              self.pyload.pgm.is_user_plugin(name))
                    for name, config, values in self.pyload.config.iter_sections(self.primary_uid)]
 
         return plugins

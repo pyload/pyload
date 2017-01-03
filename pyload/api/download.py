@@ -83,11 +83,11 @@ class DownloadApi(BaseApi):
         :param pid: package id
         :param links: list of urls
         """
-        hoster, crypter = self.pyload.pluginmanager.parse_urls(links)
+        hoster, crypter = self.pyload.pgm.parse_urls(links)
 
         self.pyload.files.add_links(hoster + crypter, pid, self.true_primary())
         if hoster:
-            self.pyload.threadmanager.create_info_thread(hoster, pid)
+            self.pyload.thm.create_info_thread(hoster, pid)
 
         self.pyload.log.info((_("Added {:d} links to package") + " #{:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()

@@ -68,7 +68,7 @@ class Hoster(Base):
 
         self.ocr = None  #captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = self.pyload.accountmanager.select_account(self.__name__, self.owner)
+        self.account = self.pyload.acm.select_account(self.__name__, self.owner)
 
         #: premium status
         self.premium = False
@@ -281,7 +281,7 @@ class Hoster(Base):
 
         filename = join(location, name)
 
-        self.pyload.addonmanager.dispatch_event("download:start", self.pyfile, url, filename)
+        self.pyload.adm.dispatch_event("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
         self.dl = self.pyload.request.get_download_request(self.req, self.DOWNLOAD_CLASS)

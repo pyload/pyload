@@ -60,7 +60,7 @@ class DecrypterThread(BaseThread):
                                          0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
-            klass = self.pyload.pluginmanager.load_class("crypter", name)
+            klass = self.pyload.pgm.load_class("crypter", name)
             plugin = None
             plugin_result = []
 

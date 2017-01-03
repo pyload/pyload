@@ -22,7 +22,7 @@ class CrypterPluginTester(PluginTester):
         print("{}: {}".format(name, url.encode("utf8")))
         log(DEBUG, "{}: {}".format(name, url.encode("utf8")))
 
-        plugin = self.pyload.pluginmanager.get_plugin_class("crypter", name)
+        plugin = self.pyload.pgm.get_plugin_class("crypter", name)
         p = plugin(self.pyload, None, "")
         self.thread.plugin = p
 
@@ -58,7 +58,7 @@ for l in links:
 
         urls.append(l)
 
-h, crypter = c.pluginmanager.parse_urls(urls)
+h, crypter = c.pgm.parse_urls(urls)
 plugins = accumulate(crypter)
 for plugin, urls in plugins.items():
 

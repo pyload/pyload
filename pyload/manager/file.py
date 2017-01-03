@@ -35,7 +35,6 @@ class FileManager(object):
     def __init__(self, core):
         """Constructor"""
         self.pyload = core
-        self.evm = core.eventmanager
 
         # translations
         self.status_msg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
@@ -86,7 +85,7 @@ class FileManager(object):
     def add_links(self, data, pid, owner):
         """Add links, data = (url, plugin) tuple. Internal method should use API."""
         self.db.add_links(data, pid, owner)
-        self.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.dispatch_event("package:updated", pid)
 
 
     @invalidate
@@ -96,7 +95,7 @@ class FileManager(object):
                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.get_package_info(pid)
 
-        self.evm.dispatch_event("package:inserted", pid, p.root, p.packageorder)
+        self.pyload.evm.dispatch_event("package:inserted", pid, p.root, p.packageorder)
         return pid
 
 
@@ -298,7 +297,7 @@ class FileManager(object):
             if pack.root == root and pack.packageorder > oldorder:
                 pack.packageorder -= 1
 
-        self.evm.dispatch_event("package:deleted", pid)
+        self.pyload.evm.dispatch_event("package:deleted", pid)
 
     @lock
     @invalidate
@@ -322,7 +321,7 @@ class FileManager(object):
             if pyfile.packageid == pid and pyfile.fileorder > order:
                 pyfile.fileorder -= 1
 
-        self.evm.dispatch_event("file:deleted", fid, pid)
+        self.pyload.evm.dispatch_event("file:deleted", fid, pid)
 
     @lock
     def release_file(self, fid):
@@ -342,7 +341,7 @@ class FileManager(object):
         self.db.update_file(pyfile)
 
         # This event is thrown with pyfile or only fid
-        self.evm.dispatch_event("file:updated", pyfile)
+        self.pyload.evm.dispatch_event("file:updated", pyfile)
 
     @invalidate
     @read_lock
@@ -353,26 +352,26 @@ class FileManager(object):
         else:
             self.db.set_download_status(fid, status)
 
-        self.evm.dispatch_event("file:updated", fid)
+        self.pyload.evm.dispatch_event("file:updated", fid)
 
     @invalidate
     def update_package(self, pypack):
         """updates a package"""
         self.db.update_package(pypack)
-        self.evm.dispatch_event("package:updated", pypack.pid)
+        self.pyload.evm.dispatch_event("package:updated", pypack.pid)
 
     @invalidate
     def update_file_info(self, data, pid):
         """ updates file info (name, size, status,[ hash,] url)"""
         self.db.update_link_info(data)
-        self.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.dispatch_event("package:updated", pid)
 
     def check_all_links_finished(self):
         """checks if all files are finished and dispatch event"""
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.pyload.addonmanager.dispatch_event("download:allFinished")
+            self.pyload.adm.dispatch_event("download:allFinished")
             self.pyload.log.debug("All downloads finished")
             return True
 
@@ -386,7 +385,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.pyload.addonmanager.dispatch_event("download:allProcessed")
+            self.pyload.adm.dispatch_event("download:allProcessed")
             self.pyload.log.debug("All downloads processed")
             return True
 
@@ -399,7 +398,7 @@ class FileManager(object):
         if not ids or (pyfile.fid in ids and len(ids) == 1):
             if not pyfile.package().set_finished:
                 self.pyload.log.info(_("Package finished: {}").format(pyfile.package().name))
-                self.pyload.addonmanager.package_finished(pyfile.package())
+                self.pyload.adm.package_finished(pyfile.package())
                 pyfile.package().set_finished = True
 
     def reset_count(self):
@@ -418,7 +417,7 @@ class FileManager(object):
         if pid in self.packages:
             self.packages[pid].set_finished = False
 
-        self.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.dispatch_event("package:updated", pid)
 
     @read_lock
     @invalidate
@@ -432,7 +431,7 @@ class FileManager(object):
             f.abort_download()
 
         self.db.restart_file(fid)
-        self.evm.dispatch_event("file:updated", fid)
+        self.pyload.evm.dispatch_event("file:updated", fid)
 
 
     @lock
@@ -456,7 +455,7 @@ class FileManager(object):
 
         self.db.commit()
 
-        self.evm.dispatch_event("package:reordered", pid, position, p.root)
+        self.pyload.evm.dispatch_event("package:reordered", pid, position, p.root)
 
     @lock
     @invalidate
@@ -498,7 +497,7 @@ class FileManager(object):
 
         self.db.commit()
 
-        self.evm.dispatch_event("file:reordered", pid)
+        self.pyload.evm.dispatch_event("file:reordered", pid)
 
     @read_lock
     @invalidate
@@ -549,7 +548,7 @@ class FileManager(object):
             if pyfile.status not in (DS.NA, DS.Finished, DS.Skipped):
                 urls.append((pyfile.url, pyfile.pluginname))
 
-        self.pyload.threadmanager.create_info_thread(urls, pid)
+        self.pyload.thm.create_info_thread(urls, pid)
 
 
     @invalidate

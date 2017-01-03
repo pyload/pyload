@@ -30,7 +30,7 @@ class TestDownloadManager(BenchmarkTest):
         cls.db.add_debug_user(other_user.uid)
 
         cls.files = cls.c.files
-        cls.m = cls.c.downloadmanager
+        cls.m = cls.c.dlm
 
     @classmethod
     def tearDownClass(cls):

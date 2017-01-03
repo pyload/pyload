@@ -63,11 +63,11 @@ class DownloadThread(BaseThread):
                 self.log.info(_("Download starts: {}".format(pyfile.name)))
 
                 # start download
-                self.pyload.addonmanager.download_preparing(pyfile)
+                self.pyload.adm.download_preparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.log.info(_("Download finished: {}").format(pyfile.name))
-                self.pyload.addonmanager.download_finished(pyfile)
+                self.pyload.adm.download_finished(pyfile)
                 self.pyload.files.check_package_finished(pyfile)
 
             except NotImplementedError:
@@ -119,7 +119,7 @@ class DownloadThread(BaseThread):
                     self.log.warning(_("Download failed: {} | {}").format(pyfile.name, msg))
                     pyfile.error = msg
 
-                self.pyload.addonmanager.download_failed(pyfile)
+                self.pyload.adm.download_failed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -161,7 +161,7 @@ class DownloadThread(BaseThread):
                         print_exc()
                         self.write_debug_report(pyfile.plugin.__name__, pyfile)
 
-                    self.pyload.addonmanager.download_failed(pyfile)
+                    self.pyload.adm.download_failed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -195,7 +195,7 @@ class DownloadThread(BaseThread):
                     print_exc()
                     self.write_debug_report(pyfile.plugin.__name__, pyfile)
 
-                self.pyload.addonmanager.download_failed(pyfile)
+                self.pyload.adm.download_failed(pyfile)
                 self.clean(pyfile)
                 continue
 

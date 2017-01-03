@@ -149,7 +149,7 @@ class Crypter(Base):
         self.req = None
         # load account if set
         if self.USE_ACCOUNT:
-            self.account = self.pyload.accountmanager.select_account(self.USE_ACCOUNT, self.owner)
+            self.account = self.pyload.acm.select_account(self.USE_ACCOUNT, self.owner)
             if self.account:
                 self.req = self.account.get_account_request()
 

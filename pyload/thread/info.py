@@ -36,7 +36,7 @@ class InfoThread(DecrypterThread):
         cb = self.update_db if self.pid > 1 else self.update_result
 
         # filter out crypter plugins
-        for name in self.manager.pyload.pluginmanager.get_plugins("crypter"):
+        for name in self.manager.pyload.pgm.get_plugins("crypter"):
             if name in plugins:
                 crypter[name] = plugins[name]
                 del plugins[name]
@@ -55,15 +55,15 @@ class InfoThread(DecrypterThread):
 
             # TODO: no plugin information pushed to GUI
             # parse links and merge
-            hoster, crypter = self.manager.pyload.pluginmanager.parse_urls(l.url for l in links)
+            hoster, crypter = self.manager.pyload.pgm.parse_urls(l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
         self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
                                      self.owner, ProgressType.LinkCheck)
 
         for pluginname, urls in plugins.items():
-            plugin = self.manager.pyload.pluginmanager.load_module("hoster", pluginname)
-            klass = self.manager.pyload.pluginmanager.get_plugin_class("hoster", pluginname, overwrite=False)
+            plugin = self.manager.pyload.pgm.load_module("hoster", pluginname)
+            klass = self.manager.pyload.pgm.get_plugin_class("hoster", pluginname, overwrite=False)
             if has_method(klass, "get_info"):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future

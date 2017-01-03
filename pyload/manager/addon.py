@@ -86,14 +86,14 @@ class AddonManager(object):
         active = []
         deactive = []
 
-        for pluginname in self.pyload.pluginmanager.get_plugins("addon"):
+        for pluginname in self.pyload.pgm.get_plugins("addon"):
             try:
                 # check first for builtin plugin
-                attrs = self.pyload.pluginmanager.load_attributes("addon", pluginname)
+                attrs = self.pyload.pgm.load_attributes("addon", pluginname)
                 internal = attrs.get("internal", False)
 
                 if internal or self.pyload.config.get(pluginname, "activated"):
-                    pluginclass = self.pyload.pluginmanager.load_class("addon", pluginname)
+                    pluginclass = self.pyload.pgm.load_class("addon", pluginname)
 
                     if not pluginclass:
                         continue
@@ -120,7 +120,7 @@ class AddonManager(object):
         # TODO: multi user
 
         # check if section was a plugin
-        if plugin not in self.pyload.pluginmanager.get_plugins("addon"):
+        if plugin not in self.pyload.pgm.get_plugins("addon"):
             return
 
         if name == "activated" and value:
@@ -134,7 +134,7 @@ class AddonManager(object):
         if plugin in self.plugins:
             return
 
-        pluginclass = self.pyload.pluginmanager.load_class("addon", plugin)
+        pluginclass = self.pyload.pgm.load_class("addon", plugin)
 
         if not pluginclass:
             return
@@ -172,7 +172,7 @@ class AddonManager(object):
         for f in dir(addon):
             if f.startswith("__") or not isinstance(getattr(addon, f), MethodType):
                 continue
-            self.pyload.eventmanager.remove_from_events(getattr(addon, f))
+            self.pyload.evm.remove_from_events(getattr(addon, f))
 
     def activate_addons(self):
         self.log.info(_("Activating addons ..."))
@@ -204,7 +204,7 @@ class AddonManager(object):
 
     @lock
     def start_thread(self, function, *args, **kwargs):
-        AddonThread(self.pyload.threadmanager, function, args, kwargs)
+        AddonThread(self.pyload.thm, function, args, kwargs)
 
     def active_plugins(self):
         """ returns all active plugins """
@@ -244,7 +244,7 @@ class AddonManager(object):
         self.info_props[h] = AddonInfo(name, desc)
 
     def listen_to(self, *args):
-        self.pyload.eventmanager.listen_to(*args)
+        self.pyload.evm.listen_to(*args)
 
     def dispatch_event(self, *args):
-        self.pyload.eventmanager.dispatch_event(*args)
+        self.pyload.evm.dispatch_event(*args)

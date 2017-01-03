@@ -31,7 +31,7 @@ class AccountManager(object):
         if info.owner is None:
             raise ValueError("Owner must not be null")
 
-        klass = self.pyload.pluginmanager.load_class("account", plugin)
+        klass = self.pyload.pgm.load_class("account", plugin)
         if not klass:
             self.pyload.log.warning(_("Account plugin {} not available").format(plugin))
             raise ValueError("Account plugin {} not available".format(plugin))
@@ -90,7 +90,7 @@ class AccountManager(object):
         account.schedule_refresh()
         self.save_accounts()
 
-        self.pyload.eventmanager.dispatch_event("account:created", account.to_info_data())
+        self.pyload.evm.dispatch_event("account:created", account.to_info_data())
         return account
 
     @lock
@@ -104,7 +104,7 @@ class AccountManager(object):
             self.save_accounts()
             account.schedule_refresh(force=True)
 
-        self.pyload.eventmanager.dispatch_event("account:updated", account.to_info_data())
+        self.pyload.evm.dispatch_event("account:updated", account.to_info_data())
         return account
 
     @lock
