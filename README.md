@@ -27,7 +27,7 @@ Table of contents
     - [Basic Usage](#basic-usage)
     - [Script Usage](#script-usage)
  - [Development](#development)
-    - [Report an issue](#report-an-issue)
+    - [Report an Issue](#report-an-issue)
     - [Submit a Code Contribution](#Submit-a-code-contribution)
     - [Localization](#localization)
     - [Performances](#performances)
