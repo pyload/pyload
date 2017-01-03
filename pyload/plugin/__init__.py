@@ -311,17 +311,17 @@ class Base(object):
             ocr = OCR()
             result = ocr.get_captcha(temp_file.name)
         else:
-            task = self.itm.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
+            task = self.pyload.itm.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
 
             while task.is_waiting():
                 if self.abort():
-                    self.itm.remove_task(task)
+                    self.pyload.itm.remove_task(task)
                     raise Abort
                 sleep(1)
 
             #TODO task handling
-            self.itm.remove_task(task)
+            self.pyload.itm.remove_task(task)
 
             if task.error and has_plugin: #ignore default error message since the user could use OCR
                 self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))

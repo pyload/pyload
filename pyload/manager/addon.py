@@ -29,7 +29,6 @@ class AddonManager(object):
 
     def __init__(self, core):
         self.pyload = core
-        self.config = self.pyload.config
 
         builtins.ADDONMANAGER = self #needed to let addons register themselves
 
