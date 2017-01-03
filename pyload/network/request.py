@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
+from builtins import REQUEST
 from pyload.network.bucket import Bucket
 
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
@@ -93,10 +94,10 @@ class RequestFactory(object):
         else:
             self.bucket.set_rate(self.pyload.config.get('download', 'max_speed') * 1024)
 
-# needs pyreq in global namespace
+# needs REQUEST in global namespace
 def get_url(*args, **kwargs):
-    return pyreq.get_url(*args, **kwargs)
+    return REQUEST.get_url(*args, **kwargs)
 
 
 def get_request(*args, **kwargs):
-    return pyreq.get_request(*args, **kwargs)
+    return REQUEST.get_request(*args, **kwargs)

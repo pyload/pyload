@@ -362,8 +362,8 @@ class Core(object):
             self.log.info(_("All links removed"))
             self.db.purge_links()
 
-        self.request = RequestFactory(self)
-        builtins.pyreq = self.request
+        self.request = self.req = RequestFactory(self)
+        builtins.REQUEST = self.request
 
         # deferred import, could improve start-up time
         from pyload.api import Api

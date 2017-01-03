@@ -78,12 +78,7 @@ class Base(object):
 
         #: Core instance
         self.pyload = core
-        #: core config
-        self.config = core.config
-        #: :class:`EventManager`
-        self.evm = core.eventmanager
-        #: :class:`InteractionManager`
-        self.itm = core.interactionmanager
+        
         if owner is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.pyload.api.with_user_context(owner)

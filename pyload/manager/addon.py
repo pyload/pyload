@@ -31,7 +31,7 @@ class AddonManager(object):
         self.pyload = core
         self.config = self.pyload.config
 
-        builtins.addonmanager = self #needed to let addons register themselves
+        builtins.ADDONMANAGER = self #needed to let addons register themselves
 
         # TODO: multiuser addons
 

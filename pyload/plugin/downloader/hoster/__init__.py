@@ -80,7 +80,7 @@ class Hoster(Base):
             self.chunk_limit, self.limit_dl, self.resume_download = self.account.get_download_settings()
             self.premium = self.account.is_premium()
         else:
-            self.req = self.pyload.request.get_request(klass=self.REQUEST_CLASS)
+            self.req = self.pyload.req.get_request(klass=self.REQUEST_CLASS)
 
         #: Will hold the download class
         self.dl = None
@@ -169,7 +169,7 @@ class Hoster(Base):
     def reset_account(self):
         """ don't use account and retry download """
         self.account = None
-        self.req = self.pyload.request.get_request(self.__name__)
+        self.req = self.pyload.req.get_request(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
@@ -284,7 +284,7 @@ class Hoster(Base):
         self.pyload.adm.dispatch_event("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
-        self.dl = self.pyload.request.get_download_request(self.req, self.DOWNLOAD_CLASS)
+        self.dl = self.pyload.req.get_download_request(self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
             newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),

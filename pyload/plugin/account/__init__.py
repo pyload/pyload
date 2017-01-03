@@ -182,7 +182,7 @@ class Account(Base):
                 self.set_config(item.name, item.value)
 
     def get_account_request(self):
-        return self.pyload.request.get_request(self.cj)
+        return self.pyload.req.get_request(self.cj)
 
     def get_download_settings(self):
         """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload

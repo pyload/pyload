@@ -12,5 +12,5 @@ pylint --reports=no pyload > pylint.txt || exit 0
 # pyflakes to pylint syntak
 #find -name '*.py' |egrep -v '^.(/tests/|/pyload/lib)'|xargs pyflakes  > pyflakes.log || :
 # Filter warnings and strip ./ from path
-#cat pyflakes.log | awk -F\: '{printf "%s:%s: [E]%s\n", $1, $2, $3}' | grep -i -E -v "'_'|COREDIR|webinterface|pyreq|addonmanager" > pyflakes.txt
+#cat pyflakes.log | awk -F\: '{printf "%s:%s: [E]%s\n", $1, $2, $3}' | grep -i -E -v "'_'|COREDIR|webinterface|REQUEST|addonmanager" > pyflakes.txt
 #sed -i 's/^.\///g' pyflakes.txt
