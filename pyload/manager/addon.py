@@ -159,7 +159,7 @@ class AddonManager(object):
         self.pyload.log.debug("Plugin deactivated: {}".format(plugin))
 
         #remove periodic call
-        self.pyload.log.debug("Removed callback {}".format(self.pyload.scheduler.remove_job(addon.cb)))
+        self.pyload.log.debug("Removed callback {}".format(self.pyload.scheduler.cancel(addon.cb)))
 
         # todo: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]

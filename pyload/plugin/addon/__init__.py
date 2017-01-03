@@ -135,7 +135,7 @@ class Addon(Base):
         if self.cb:
             self.stop_periodical()
 
-        self.cb = self.pyload.scheduler.add_job(wait, self._periodical, threaded=False)
+        self.cb = self.pyload.scheduler.enter(wait, 2, self._periodical)
         self.interval = interval
         return True
 
@@ -143,7 +143,7 @@ class Addon(Base):
         """ Stops periodical call if existing
         :return: True if the callback was stopped, false otherwise.
         """
-        if self.cb and self.pyload.scheduler.remove_job(self.cb):
+        if self.cb and self.pyload.scheduler.cancel(self.cb):
             self.cb = None
             return True
         else:
@@ -158,7 +158,7 @@ class Addon(Base):
             # self.pyload.print_exc()
 
         if self.cb:
-            self.cb = self.pyload.scheduler.add_job(self.interval, self._periodical, threaded=False)
+            self.cb = self.pyload.scheduler.enter(self.interval, 2, self._periodical)
 
     def __repr__(self):
         return "<Addon {}>".format(self.__name__)

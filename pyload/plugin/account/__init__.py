@@ -314,7 +314,7 @@ class Account(Base):
     def schedule_refresh(self, time=0, force=True):
         """ add a task for refreshing the account info to the scheduler """
         self.log_debug("Scheduled Account refresh for {} in {} seconds".format(self.loginname, time))
-        self.pyload.scheduler.add_job(time, self.get_account_info, [force])
+        self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
     @lock
     def check_login(self, req):
