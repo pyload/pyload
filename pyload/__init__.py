@@ -85,7 +85,7 @@ def _list_pids():
             continue
         file = os.path.join(tmpdir, filename)
         try:
-            with open(file, 'rb') as f:
+            with path.open(file, 'rb') as f:
                 pid = convert.to_int(f.read().strip())
         except Exception:
             continue
@@ -135,7 +135,7 @@ def start(profile=None, configdir=None, refresh=0, remote=None, webui=None,
 
     p = Core(profile, configdir, refresh, remote, webui, debug, webdebug)
     p.start()
-    
+
     if daemon:
         name = info().name
         app = "{}-{}".format(name, profile or 'default')

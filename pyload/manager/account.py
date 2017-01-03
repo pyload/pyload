@@ -55,7 +55,7 @@ class AccountManager(object):
                 self._create_account(info, password, options)
             except Exception:
                 self.pyload.log.error(_("Could not load account {}").format(info))
-                self.pyload.print_exc()
+                # self.pyload.print_exc()
 
     def iter_accounts(self):
         """ yields login, account  for all accounts"""

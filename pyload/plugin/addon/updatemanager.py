@@ -145,9 +145,9 @@ class UpdateManager(Hook):
                 self.log_warning(_("Error when updating {}").format(name), _("Version mismatch"))
                 continue
 
-            f = open(join("userplugins", prefix, filename), "wb")
-            f.write(content)
-            f.close()
+            with open(join("userplugins", prefix, filename), "wb") as f:
+                f.write(content)
+
             self.updated = True
 
             reloads.append((prefix, name))

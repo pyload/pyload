@@ -66,9 +66,8 @@ def addcrypted():
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = join(DL_ROOT, safe_filename(package) + ".dlc")
-    dlc_file = open(dlc_path, "wb")
-    dlc_file.write(dlc)
-    dlc_file.close()
+    with open(dlc_path, "wb") as f:
+        f.write(dlc)
 
     try:
         PYLOAD.add_package(package, [dlc_path], paused=True)

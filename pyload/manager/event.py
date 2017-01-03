@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 from builtins import object
 from threading import Lock
-from traceback import print_exc
 
 
 class EventManager(object):
@@ -70,4 +69,4 @@ class EventManager(object):
                     self.pyload.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(event, f, args, e.message)
                     )
-                    self.pyload.print_exc()
+                    # self.pyload.print_exc()

@@ -173,7 +173,7 @@ class PluginManager(object):
                     return module
                 except Exception as e:
                     self.pyload.log.error(_("Error importing {}: {}").format(name, e.message))
-                    self.pyload.print_exc()
+                    # self.pyload.print_exc()
 
     def load_class(self, plugin, name):
         """Returns the class of a plugin with the same name"""

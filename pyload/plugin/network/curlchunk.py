@@ -56,45 +56,42 @@ class ChunkInfo(object):
 
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        fh = codecs.open(fs_name, "w", "utf_8")
-        fh.write("name:{}\n".format(self.name))
-        fh.write("size:{}\n".format(self.size))
-        for i, c in enumerate(self.chunks):
-            fh.write("#{:d}:\n".format(i))
-            fh.write("\tname:{}\n".format(c[0]))
-            fh.write("\trange:{:d}-{:d}\n".format(*c[1]))
-        fh.close()
+        with codecs.open(fs_name, "w", "utf_8") as f:
+            f.write("name:{}\n".format(self.name))
+            f.write("size:{}\n".format(self.size))
+            for i, c in enumerate(self.chunks):
+                f.write("#{:d}:\n".format(i))
+                f.write("\tname:{}\n".format(c[0]))
+                f.write("\trange:{:d}-{:d}\n".format(*c[1]))
 
     @staticmethod
     def load(name):
         fs_name = fs_encode("{}.chunks".format(name))
         if not exists(fs_name):
             raise IOError
-        fh = codecs.open(fs_name, "r", "utf_8")
-        name = fh.readline()[:-1]
-        size = fh.readline()[:-1]
-        if name.startswith("name:") and size.startswith("size:"):
-            name = name[5:]
-            size = size[5:]
-        else:
-            fh.close()
-            raise TypeError("chunk.file has wrong format")
-        ci = ChunkInfo(name)
-        ci.loaded = True
-        ci.set_size(size)
-        while True:
-            if not fh.readline(): #skip line
-                break
-            name = fh.readline()[1:-1]
-            range = fh.readline()[1:-1]
-            if name.startswith("name:") and range.startswith("range:"):
+        with codecs.open(fs_name, "r", "utf_8") as f:
+            name = f.readline()[:-1]
+            size = f.readline()[:-1]
+            if name.startswith("name:") and size.startswith("size:"):
                 name = name[5:]
-                range = range[6:].split("-")
+                size = size[5:]
             else:
                 raise TypeError("chunk.file has wrong format")
+            ci = ChunkInfo(name)
+            ci.loaded = True
+            ci.set_size(size)
+            while True:
+                if not f.readline(): #skip line
+                    break
+                name = f.readline()[1:-1]
+                range = f.readline()[1:-1]
+                if name.startswith("name:") and range.startswith("range:"):
+                    name = name[5:]
+                    range = range[6:].split("-")
+                else:
+                    raise TypeError("chunk.file has wrong format")
 
-            ci.add_chunk(name, (int(range[0]), int(range[1])))
-        fh.close()
+                ci.add_chunk(name, (int(range[0]), int(range[1])))
         return ci
 
     def remove(self):

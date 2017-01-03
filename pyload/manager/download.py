@@ -252,7 +252,7 @@ class DownloadManager(object):
             self.pyload.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
-            self.pyload.print_exc()
+            # self.pyload.print_exc()
             return
 
         sleep(1)

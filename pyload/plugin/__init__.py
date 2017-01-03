@@ -78,7 +78,7 @@ class Base(object):
 
         #: Core instance
         self.pyload = core
-        
+
         if owner is not None:
             #: :class:`Api`, user api when user is set
             self.api = self.pyload.api.with_user_context(owner)
@@ -220,18 +220,14 @@ class Base(object):
             if not exists(join("tmp", self.__name__)):
                 makedirs(join("tmp", self.__name__))
 
-            f = open(
-                join("tmp", self.__name__, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-                , "wb")
-            del frame # delete the frame or it wont be cleaned
-
-            try:
-                tmp = res.encode("utf8")
-            except Exception:
-                tmp = res
-
-            f.write(tmp)
-            f.close()
+            file = join("tmp", self.__name__, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            with open(file, "wb") as f:
+                del frame # delete the frame or it wont be cleaned
+                try:
+                    tmp = res.encode("utf8")
+                except Exception:
+                    tmp = res
+                f.write(tmp)
 
         if just_header:
             #parse header
@@ -292,9 +288,8 @@ class Base(object):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
-        temp_file = open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
-        temp_file.write(img)
-        temp_file.close()
+        with open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
+            f.write(img)
 
         name = "{}OCR".format(self.__name__)
         has_plugin = name in self.pyload.pgm.get_plugins("internal")

@@ -64,27 +64,25 @@ class CurlDownload(Download):
         init = fs_encode(self.info.get_chunk_name(0)) #initial chunk name
 
         if self.info.get_count() > 1:
-            fo = open(init, "rb+") #first chunkfile
-            for i in range(1, self.info.get_count()):
-                #input file
-                fo.seek(
-                    self.info.get_chunk_range(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
-                fname = fs_encode("{}.chunk{:d}".format(self.path, i))
-                fi = open(fname, "rb")
-                buf = 32 * 1024
-                while True:  #: copy in chunks, consumes less memory
-                    data = fi.read(buf)
-                    if not data:
-                        break
-                    fo.write(data)
-                fi.close()
-                if fo.tell() < self.info.get_chunk_range(i)[1]:
-                    fo.close()
-                    remove(init)
-                    self.info.remove() #there are probably invalid chunks
-                    raise Exception("Downloaded content was smaller than expected. Try to reduce download connections")
-                remove(fname) #remove chunk
-            fo.close()
+            with open(init, "rb+") as fo: #first chunkfile
+                for i in range(1, self.info.get_count()):
+                    #input file
+                    fo.seek(
+                        self.info.get_chunk_range(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
+                    fname = fs_encode("{}.chunk{:d}".format(self.path, i))
+                    buf = 32 * 1024
+                    with open(fname, "rb") as fi:
+                        while True:  #: copy in chunks, consumes less memory
+                            data = fi.read(buf)
+                            if not data:
+                                break
+                            fo.write(data)
+
+                    if fo.tell() < self.info.get_chunk_range(i)[1]:
+                        remove(init)
+                        self.info.remove() #there are probably invalid chunks
+                        raise Exception("Downloaded content was smaller than expected. Try to reduce download connections")
+                    remove(fname) #remove chunk
 
         if self.name:
             self.path = save_join(dirname(self.path), self.name)

@@ -188,9 +188,8 @@ class Core(object):
     def write_pid_file(self):
         self.delete_pid_file()
         pid = os.getpid()
-        f = open(self.pidfile, "wb")
-        f.write(str(pid))
-        f.close()
+        with open(self.pidfile, "wb") as f:
+            f.write(str(pid))
         chmod(self.pidfile, 0o660)
 
     def delete_pid_file(self):
@@ -201,9 +200,8 @@ class Core(object):
     def check_pid_file(self):
         """ return pid as int or 0"""
         if os.path.isfile(self.pidfile):
-            f = open(self.pidfile, "rb")
-            pid = f.read().strip()
-            f.close()
+            with open(self.pidfile, "rb") as f:
+                pid = f.read().strip()
             if pid:
                 pid = int(pid)
                 return pid
@@ -413,17 +411,15 @@ class Core(object):
         link_file = join(COREDIR, "links.txt")
 
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.add_package("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.add_package("links.txt", [link_file], 1)
 
         link_file = "links.txt"
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.add_package("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.add_package("links.txt", [link_file], 1)
 
         #self.scheduler.add_job(0, self.acm.get_account_infos)
         self.log.info(_("Activating Accounts ..."))

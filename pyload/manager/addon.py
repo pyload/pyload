@@ -63,7 +63,7 @@ class AddonManager(object):
             return func(*args)
         except Exception as e:
             plugin.log_error(_("Error when executing {}".format(f)), e.message)
-            self.pyload.print_exc()
+            # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
         """ Invokes a registered method """
@@ -108,7 +108,7 @@ class AddonManager(object):
 
             except Exception:
                 self.pyload.log.warning(_("Failed activating {}").format(pluginname))
-                self.pyload.print_exc()
+                # self.pyload.print_exc()
 
         self.pyload.log.info(_("Activated addons: {}").format(", ".join(sorted(active))))
         self.pyload.log.info(_("Deactivated addons: {}").format(", ".join(sorted(deactive))))

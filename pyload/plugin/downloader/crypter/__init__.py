@@ -242,7 +242,7 @@ class Crypter(Base):
                     remove(f)
             except IOError:
                 self.log_warning(_("Could not remove file '{}'").format(f))
-                self.pyload.print_exc()
+                # self.pyload.print_exc()
 
         return to_link_list(result)
 
@@ -272,9 +272,8 @@ class Crypter(Base):
                         if path.startswith(self.CONTENT_PREFIX):
                             content.append(("", path[len(self.CONTENT_PREFIX)]))
                         else:
-                            f = open(fs_encode(path), "rb")
-                            content.append((f.name, f.read()))
-                            f.close()
+                            with open(fs_encode(path), "rb") as f:
+                                content.append((f.name, f.read()))
                     except IOError as e:
                         self.log_error(_("IOError"), e.message)
                 else:

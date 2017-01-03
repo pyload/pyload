@@ -80,9 +80,8 @@ class BaseThread(Thread):
             self.pyload.log.debug("Error creating zip file: {}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
-            f = open(dump_name, "wb")
-            f.write(dump)
-            f.close()
+            with open(dump_name, "wb") as f:
+                f.write(dump)
 
         self.pyload.log.info(_("Debug Report written to {}").format(dump_name))
         return dump_name

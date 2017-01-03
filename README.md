@@ -151,7 +151,7 @@ Type in your command shell ***with administrator/root privileges***:
 If the above command fails, try typing:
 
     pip install --user pyload-ng
-    
+
 If that fails too, try the [easy install procedure](#easy-install) or at least the [manually install procedure](#manually-install).
 
 ### Easy Install

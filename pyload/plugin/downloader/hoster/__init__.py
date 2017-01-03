@@ -337,9 +337,8 @@ class Hoster(Base):
         elif size > max_size and not read_size:
             return None
         self.pyload.log.debug("Download Check triggered")
-        f = open(last_download, "rb")
-        content = f.read(read_size if read_size else -1)
-        f.close()
+        with open(last_download, "rb") as f:
+            content = f.read(read_size if read_size else -1)
         #produces encoding errors, better log to other file in the future?
         #self.pyload.log.debug("Content: {}".format(content))
         for name, rule in rules.items():

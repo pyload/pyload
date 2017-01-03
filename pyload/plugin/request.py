@@ -21,7 +21,7 @@ class Request(object):
     CONTEXT_CLASS = None
 
     def __init__(self, config, context=None, options=None):
-        
+
         # Global config, holds some configurable parameter
         self.config = config
 

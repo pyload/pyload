@@ -253,9 +253,8 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
         websock_handler_map_file: alias map file
     """
 
-    fp = open(websock_handlers_map_file)
-    try:
-        for line in fp:
+    with open(websock_handlers_map_file) as f:
+        for line in f:
             if line[0] == '#' or line.isspace():
                 continue
             m = re.match('(\S+)\s+(\S+)', line)
@@ -267,8 +266,6 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
                     m.group(1), m.group(2))
             except dispatch.DispatchException as e:
                 logging.error(e.message)
-    finally:
-        fp.close()
 
 
 class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):

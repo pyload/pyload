@@ -43,8 +43,8 @@ class CrypterPluginTester(PluginTester):
 
 c = Core()
 
-f = open(join(dirname(__file__), "crypterlinks.txt"))
-links = [x.strip() for x in f.readlines()]
+with open(join(dirname(__file__), "crypterlinks.txt")) as f:
+    links = [x.strip() for x in f.readlines()]
 urls = []
 flags = {}
 

@@ -162,9 +162,8 @@ class DatabaseBackend(Thread):
 
                 remove(self.VERSION_FILE)
                 move(self.DB_FILE, self.DB_FILE + ".backup")
-                f = open(self.VERSION_FILE, "wb")
-                f.write(str(DB_VERSION))
-                f.close()
+                with open(self.VERSION_FILE, "wb") as f:
+                    f.write(str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
                 chmod(self.DB_FILE, 0o600)
@@ -202,14 +201,12 @@ class DatabaseBackend(Thread):
     def _check_version(self):
         """ get db version"""
         if not exists(self.VERSION_FILE):
-            f = open(self.VERSION_FILE, "wb")
-            f.write(str(DB_VERSION))
-            f.close()
+            with open(self.VERSION_FILE, "wb") as f:
+                f.write(str(DB_VERSION))
             return
 
-        f = open(self.VERSION_FILE, "rb")
-        v = int(f.read().strip())
-        f.close()
+        with open(self.VERSION_FILE, "rb") as f:
+            v = int(f.read().strip())
 
         return v
 

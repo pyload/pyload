@@ -75,8 +75,8 @@ class WebServer(threading.Thread):
         except Exception as e:
             log.error(_("Failed starting webserver: {}").format(e.message))
             self.error = e
-            if core:
-                core.print_exc()
+            # if core:
+                # core.print_exc()
 
     def select_server(self, prefer=None):
         """ find a working server """

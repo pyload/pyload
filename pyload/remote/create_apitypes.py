@@ -57,7 +57,7 @@ def main():
 
     enums = []
     classes = []
-    tf = open(join(path, "pyload.thrift"), "rb").read()
+    # tf = open(join(path, "pyload.thrift"), "rb").read()
 
     print("generating apitypes.py")
 

@@ -310,9 +310,8 @@ class Setup(object):
             path = join(COREDIR, path)
             if not exists(path):
                 makedirs(path)
-            f = open(join(COREDIR, "pyload", "config", "configdir"), "wb")
-            f.write(path)
-            f.close()
+            with open(join(COREDIR, "pyload", "config", "configdir"), "wb") as f:
+                f.write(path)
             print(_("Config path changed, setup will now close, please restart to go on"))
             print(_("Press Enter to exit"))
             input()

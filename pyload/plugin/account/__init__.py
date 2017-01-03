@@ -151,7 +151,7 @@ class Account(Base):
             self.log_warning(
                 _("Could not login with account {} | {}").format(self.loginname, e.message))
             self.valid = False
-            self.pyload.print_exc()
+            # self.pyload.print_exc()
 
         return self.valid
 

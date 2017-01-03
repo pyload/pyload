@@ -99,7 +99,7 @@ class DecrypterThread(BaseThread):
 
                     # no debug for intentional errors
                     if self.pyload.debug and not isinstance(e, Fail):
-                        self.pyload.print_exc()
+                        # self.pyload.print_exc()
                         self.write_debug_report(plugin.__name__, plugin=plugin)
                 finally:
                     if plugin:

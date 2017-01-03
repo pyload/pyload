@@ -44,7 +44,8 @@ class TestCurlRequest(TestCase):
         assert req.context is dl.context is not None
 
         dl.download(self.cookie_url + "/cookies.php", "cookies.txt")
-        cookies = open("cookies.txt", "rb").read().splitlines()
+        with open("cookies.txt", "rb") as f:
+            cookies = f.read().splitlines()
 
         self.assertEqual(len(cookies), len(dl.context))
         for c in cookies:

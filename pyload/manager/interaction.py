@@ -146,7 +146,8 @@ class InteractionManager(object):
             try:
                 plugin.new_interaction_task(task)
             except Exception:
-                self.pyload.print_exc()
+                # self.pyload.print_exc()
+                pass
 
         self.tasks[task.iid] = task
         self.pyload.evm.dispatch_event("interaction:added", task)

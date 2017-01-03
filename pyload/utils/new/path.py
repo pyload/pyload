@@ -159,7 +159,7 @@ def mkfile(path, opened=None):
 def makedirs(path, mode=0o700, exist_ok=True):
     try:
         os.makedirs(path, mode)
-    except OSError, e:
+    except OSError as e:
         if not exist_ok or not isdir(name):
             raise OSError(e)
 

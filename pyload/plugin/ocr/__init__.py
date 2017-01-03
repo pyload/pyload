@@ -91,18 +91,17 @@ class OCR(object):
         if subset and (digits or lowercase or uppercase):
             #self.log.debug("create temp subset config")
             #tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
-            tmp_sub = open(join("tmp", "tmp_sub_{}.subset".format(self.__name__)), "wb")
-            tmp_sub.write("tessedit_char_whitelist ")
-            if digits:
-                tmp_sub.write("0123456789")
-            if lowercase:
-                tmp_sub.write("abcdefghijklmnopqrstuvwxyz")
-            if uppercase:
-                tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-            tmp_sub.write("\n")
-            tessparams.append("nobatch")
-            tessparams.append(abspath(tmp_sub.name))
-            tmp_sub.close()
+            with open(join("tmp", "tmp_sub_{}.subset".format(self.__name__)), "wb") as tmp_sub:
+                tmp_sub.write("tessedit_char_whitelist ")
+                if digits:
+                    tmp_sub.write("0123456789")
+                if lowercase:
+                    tmp_sub.write("abcdefghijklmnopqrstuvwxyz")
+                if uppercase:
+                    tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                tmp_sub.write("\n")
+                tessparams.append("nobatch")
+                tessparams.append(abspath(tmp_sub.name))
 
         self.log.debug("run tesseract")
         self.run(tessparams)

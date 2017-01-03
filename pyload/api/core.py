@@ -115,9 +115,8 @@ class CoreApi(BaseApi):
         """
         filename = join(self.pyload.config.get('log', 'log_folder'), 'log.txt')
         try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
+            with open(filename, "r") as f:
+                lines = f.readlines()
             if offset >= len(lines):
                 return []
             return lines[offset:]

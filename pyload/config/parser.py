@@ -48,25 +48,22 @@ class ConfigParser(object):
     def check_version(self):
         """Determines if config needs to be deleted"""
         if exists(self.CONFIG):
-            f = open(self.CONFIG, "rb")
-            v = f.readline()
-            f.close()
+            with open(self.CONFIG, "rb") as f:
+                v = f.readline()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                f = open(self.CONFIG, "wb")
-                f.write("version: {}".format(CONF_VERSION))
-                f.close()
+                with open(self.CONFIG, "wb") as f:
+                    f.write("version: {}".format(CONF_VERSION))
                 print("Old version of {} deleted".format(self.CONFIG))
         else:
-            f = open(self.CONFIG, "wb")
-            f.write("version: {}".format(CONF_VERSION))
-            f.close()
+            with open(self.CONFIG, "wb") as f:
+                f.write("version: {}".format(CONF_VERSION))
 
     def parse_values(self, filename):
         """read config values from file"""
-        f = open(filename, "rb")
-        config = f.readlines()[1:]
+        with open(filename, "rb") as f:
+            config = f.readlines()[1:]
 
         # save the current section
         section = ""
@@ -104,26 +101,24 @@ class ConfigParser(object):
         """saves config to filename"""
 
         configs = []
-        f = open(self.CONFIG, "wb")
-        configs.append(f)
-        chmod(self.CONFIG, 0o600)
-        f.write("version: {:d}\n\n".format(CONF_VERSION))
+        with open(self.CONFIG, "wb") as f:
+            configs.append(f)
+            chmod(self.CONFIG, 0o600)
+            f.write("version: {:d}\n\n".format(CONF_VERSION))
 
-        for section, data in self.config.items():
-            f.write("[{}]\n".format(section))
+            for section, data in self.config.items():
+                f.write("[{}]\n".format(section))
 
-            for option, data in data.config.items():
-                value = self.get(section, option)
-                if isinstance(value, str):
-                    value = value.encode("utf8")
-                else:
-                    value = str(value)
+                for option, data in data.config.items():
+                    value = self.get(section, option)
+                    if isinstance(value, str):
+                        value = value.encode("utf8")
+                    else:
+                        value = str(value)
 
-                f.write('{} = {}\n'.format(option, value))
+                    f.write('{} = {}\n'.format(option, value))
 
-            f.write("\n")
-
-        f.close()
+                f.write("\n")
 
     def __getitem__(self, section):
         """provides dictionary like access: c['section']['option']"""

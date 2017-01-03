@@ -74,45 +74,41 @@ class XDCCRequest(object):
                     filename = newfilename
                     break
 
-        fh = open(filename, "wb")
+        with open(filename, "wb") as f:
+            # recv loop for dcc socket
+            while True:
+                if self.abort:
+                    dccsock.close()
+                    remove(filename)
+                    raise Abort
 
-        # recv loop for dcc socket
-        while True:
-            if self.abort:
-                dccsock.close()
-                fh.close()
-                remove(filename)
-                raise Abort
+                self._keep_alive(irc, ircbuffer)
 
-            self._keep_alive(irc, ircbuffer)
+                data = dccsock.recv(4096)
+                data_len = len(data)
+                self.recv += data_len
 
-            data = dccsock.recv(4096)
-            data_len = len(data)
-            self.recv += data_len
+                cum_recv_len += data_len
 
-            cum_recv_len += data_len
+                now = time()
+                timespan = now - last_update
+                if timespan > 1:
+                    self.speed = cum_recv_len // timespan
+                    cum_recv_len = 0
+                    last_update = now
 
-            now = time()
-            timespan = now - last_update
-            if timespan > 1:
-                self.speed = cum_recv_len // timespan
-                cum_recv_len = 0
-                last_update = now
+                    if progress_notify:
+                        progress_notify(self.percent)
 
-                if progress_notify:
-                    progress_notify(self.percent)
+                if not data:
+                    break
 
+                f.write(data)
 
-            if not data:
-                break
-
-            fh.write(data)
-
-            # acknowledge data by sending number of received bytes
-            dccsock.send(struct.pack('!I', self.recv))
+                # acknowledge data by sending number of received bytes
+                dccsock.send(struct.pack('!I', self.recv))
 
         dccsock.close()
-        fh.close()
 
         return filename
 

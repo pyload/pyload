@@ -71,13 +71,12 @@ class HosterPluginTester(PluginTester):
                 raise Exception("File {} does not exists".format(pyfile.name))
 
             hash = md5()
-            f = open(save_join(DL_DIR, pyfile.name), "rb")
-            while True:
-                buf = f.read(4096)
-                if not buf:
-                    break
-                hash.update(buf)
-            f.close()
+            with open(save_join(DL_DIR, pyfile.name), "rb") as f:
+                while True:
+                    buf = f.read(4096)
+                    if not buf:
+                        break
+                    hash.update(buf)
 
             if hash.hexdigest() != self.files[pyfile.name]:
                 log(DEBUG, "Hash is {}".format(hash.hexdigest()))

@@ -49,31 +49,29 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
     img = self.load(url, get=get, post=post, cookies=cookies)
 
     id = "{:.2f}".format(time())[-6:].replace(".", "")
-    temp_file = open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
-    temp_file.write(img)
-    temp_file.close()
+    with open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
+        f.write(img)
 
     log(DEBUG, "Using ct for captcha")
     # put username and passkey into two lines in ct.conf
     conf = join(expanduser("~"), "ct.conf")
     if not exists(conf):
         raise Exception("CaptchaService config {} not found".format(conf))
-    f = open(conf, "rb")
-    req = get_request()
+    with open(conf, "rb") as f:
+        req = get_request()
 
-    #raise timeout threshold
-    req.c.setopt(LOW_SPEED_TIME, 300)
+        #raise timeout threshold
+        req.c.setopt(LOW_SPEED_TIME, 300)
 
-    try:
-        json = req.load("http://captchatrader.com/api/submit",
-            post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
-                  "username": f.readline().strip(),
-                  "password": f.readline().strip(),
-                  "value": (FORM_FILE, temp_file.name),
-                  "type": "file"}, multipart=True)
-    finally:
-        f.close()
-        req.close()
+        try:
+            json = req.load("http://captchatrader.com/api/submit",
+                post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
+                      "username": f.readline().strip(),
+                      "password": f.readline().strip(),
+                      "value": (FORM_FILE, temp_file.name),
+                      "type": "file"}, multipart=True)
+        finally:
+            req.close()
 
     response = loads(json)
     log(DEBUG, str(response))

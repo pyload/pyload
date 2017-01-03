@@ -99,9 +99,9 @@ class DownloadApi(BaseApi):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.pyload.config.get('general', 'download_folder'), "tmp_{}".format(filename)), "wb")
-        th.write(str(data))
-        th.close()
+        file = join(self.pyload.config.get('general', 'download_folder'), "tmp_{}".format(filename))
+        with open(file, "wb") as f:
+            f.write(str(data))
 
         return self.add_package(th.name, [th.name])
 
