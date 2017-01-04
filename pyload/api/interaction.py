@@ -48,15 +48,15 @@ class UserInteractionApi(BaseApi):
 
     @require_perm(Permission.Interaction)
     def get_addon_handler(self):
-        pass
+        raise NotImplementedError
 
     @require_perm(Permission.Interaction)
     def call_addon_handler(self, plugin, func, pid_or_fid):
-        pass
+        raise NotImplementedError
 
     @require_perm(Permission.Download)
     def generate_download_link(self, fid, timeout):
-        pass
+        raise NotImplementedError
 
 
 if Api.extend(UserInteractionApi):

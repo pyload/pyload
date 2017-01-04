@@ -40,4 +40,4 @@ class TestCurlRequest(TestCase):
 
 
     def test_auth(self):
-        pass
+        raise NotImplementedError

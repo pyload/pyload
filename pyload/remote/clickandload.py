@@ -156,7 +156,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         return rep
 
     def checksupport(self):
-        pass
+        raise NotImplementedError
 
     def jdcheck(self):
         rep = "jdownloader=true;\n"

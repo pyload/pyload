@@ -145,4 +145,4 @@ class XDCCRequest(object):
         return (self.recv * 100) // self.filesize
 
     def close(self):
-        pass
+        raise NotImplementedError

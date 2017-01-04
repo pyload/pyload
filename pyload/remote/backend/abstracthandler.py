@@ -47,7 +47,7 @@ class AbstractHandler(object):
         self.on_open(req)
 
     def on_open(self, req):
-        pass
+        raise NotImplementedError
 
     def load_session(self, cookies):
         from http.cookies import SimpleCookie
@@ -70,7 +70,7 @@ class AbstractHandler(object):
         self.on_close(req)
 
     def on_close(self, req):
-        pass
+        raise NotImplementedError
 
     def transfer_data(self, req):
         raise NotImplemented

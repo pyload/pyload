@@ -95,10 +95,10 @@ class RootPackage(PyPackage):
 
     # no database operations
     def sync(self):
-        pass
+        raise NotImplementedError
 
     def delete(self):
-        pass
+        raise NotImplementedError
 
     def release(self):
-        pass
+        raise NotImplementedError

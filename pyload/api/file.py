@@ -99,7 +99,7 @@ class FileApi(BaseApi):
 
     @require_perm(Permission.All)
     def find_packages(self, tags):
-        pass
+        raise NotImplementedError
 
     @require_perm(Permission.Modify)
     def update_package(self, pack):

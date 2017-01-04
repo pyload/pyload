@@ -179,10 +179,10 @@ class PyFile(object):
         )
 
     def get_path(self):
-        pass
+        raise NotImplementedError
 
     def move(self, pid):
-        pass
+        raise NotImplementedError
 
     def abort_download(self):
         """abort pyfile if possible"""

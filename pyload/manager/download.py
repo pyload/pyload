@@ -192,7 +192,7 @@ class DownloadManager(object):
     def start_job(self, info, limit):
         """ start a download or decrypter thread with given file info """
 
-        plugin = self.pyload.pgm.find_plugin(info.download.plugin)
+        plugin = self.pyload.pgm.find_type(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
             self.pyload.log.error(_("Plugin '{}' does not exists").format(info.download.plugin))

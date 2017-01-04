@@ -79,7 +79,7 @@ class FileManager(object):
         return list(self.packages.values())
 
     def get_collector(self):
-        pass
+        raise NotImplementedError
 
     @invalidate
     def add_links(self, data, pid, owner):
@@ -272,7 +272,7 @@ class FileManager(object):
         return self.queuestats[user]
 
     def scan_download_folder(self):
-        pass
+        raise NotImplementedError
 
     @lock
     @invalidate

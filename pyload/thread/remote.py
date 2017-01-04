@@ -27,16 +27,16 @@ class BackendBase(Thread):
             self.running = False
 
     def setup(self, host, port):
-        pass
+        raise NotImplementedError
 
     def check_deps(self):
         return True
 
     def serve(self):
-        pass
+        raise NotImplementedError
 
     def shutdown(self):
-        pass
+        raise NotImplementedError
 
     def stop(self):
         self.enabled = False# set flag and call shutdowm message, so thread can react

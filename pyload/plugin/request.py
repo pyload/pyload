@@ -89,4 +89,4 @@ class Request(object):
 
     def close(self):
         """ Close and clean everything """
-        pass
+        raise NotImplementedError
