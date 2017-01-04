@@ -9,7 +9,7 @@ from builtins import object
 from threading import  RLock
 from time import time
 
-from pyload.datatype.onlinecheck import OnlineCheck
+from pyload.datatype.check import OnlineCheck
 from pyload.utils import lock, to_list
 from pyload.thread.info import InfoThread
 
