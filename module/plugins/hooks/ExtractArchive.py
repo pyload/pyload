@@ -274,6 +274,9 @@ class ExtractArchive(Addon):
 
             if not exists(out):
                 os.makedirs(out)
+            
+                if subfolder:
+                    self.set_permissions(out)
 
             matched   = False
             success   = True
