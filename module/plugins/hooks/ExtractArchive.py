@@ -288,6 +288,10 @@ class ExtractArchive(Addon):
                     files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
 
+                    #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                    #: This is important because, for example, UnRar ignores preceding parts in listing mode
+                    files_ids.sort(key=lambda file_id: file_id[1])
+
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
                     if targets:

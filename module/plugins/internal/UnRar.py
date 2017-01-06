@@ -191,8 +191,20 @@ class UnRar(Extractor):
                 if os.path.isfile(f):
                     result.add(fsjoin(self.dest, os.path.basename(f)))
         else:
-            for f in decode(out).splitlines():
-                result.add(fsjoin(self.dest, f.strip()))
+            if self.fullpath:
+                for f in decode(out).splitlines():
+                    # Unrar fails to list all directories for some archives
+                    f = f.strip()
+                    while f:
+                        fabs = fsjoin(self.dest, f)
+                        if fabs not in result:
+                            result.add(fabs)
+                            f = os.path.dirname(f)
+                        else:
+                            break
+            else:
+                for f in decode(out).splitlines():
+                    result.add(fsjoin(self.dest, f.strip()))
 
         self.files = list(result)
         return self.files
