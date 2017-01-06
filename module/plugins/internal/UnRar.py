@@ -159,14 +159,16 @@ class UnRar(Extractor):
 
 
     def chunks(self):
+        files = []
         dir, name = os.path.split(self.filename)
-
-        #: Actually extracted file
-        files = [self.filename]
 
         #: eventually Multipart Files
         files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
                      if re.sub(self._RE_PART, "", name) == re.sub(self._RE_PART, "", file))
+
+        #: Actually extracted file
+        if self.filename not in files:
+            files.append(self.filename)
 
         return files
 
