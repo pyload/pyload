@@ -12,7 +12,7 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.33"
+    __version__ = "1.34"
     __status__  = "testing"
 
     __description__ = """RAR extractor plugin"""
