@@ -26,7 +26,6 @@ class UlozTo(Account):
         html = self.load("https://www.ulozto.net/")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        print m
 
         trafficleft = self.parse_traffic(m.group(1), m.group(2))
         premium     = True if trafficleft else False
