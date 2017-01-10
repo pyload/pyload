@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class SendspaceCom(SimpleHoster):
     __name__    = "SendspaceCom"
     __type__    = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?sendspace\.com/file/\w+'
@@ -27,7 +27,7 @@ class SendspaceCom(SimpleHoster):
     SIZE_PATTERN    = r'<div class="file_description reverse margin_center">\s*<b>File Size:</b>\s*(?P<S>[\d.,]+)(?P<U>[\w^_]+)\s*</div>'
     OFFLINE_PATTERN = r'<div class="msg error" style="cursor: default">Sorry, the file you requested is not available.</div>'
 
-    LINK_FREE_PATTERN = r'<a id="download_button" href="(.+?)"'
+    LINK_FREE_PATTERN = r'<a id="download_button" class="download_page_button button1" href="(.+?)"'
 
     CAPTCHA_PATTERN      = r'<td><img src="(/captchas/captcha\.php?captcha=(.+?))"></td>'
     USER_CAPTCHA_PATTERN = r'<td><img src="/captchas/captcha\.php?user=(.+?))"></td>'

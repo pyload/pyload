@@ -10,7 +10,7 @@ from module.plugins.internal.misc import format_exc
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -34,7 +34,7 @@ class OneFichierCom(SimpleHoster):
 
     DISPOSITION      = False  #@TODO: Remove disposition in 0.4.10
 
-    URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
+    URL_REPLACEMENTS = [("http:", "https:")]
 
     COOKIES          = [("1fichier.com", "LG", "en")]
 
@@ -108,4 +108,4 @@ class OneFichierCom(SimpleHoster):
 
 
     def handle_premium(self, pyfile):
-        self.download(pyfile.url, post={'did': 1, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
+        self.download(pyfile.url, post={'did': 0, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10

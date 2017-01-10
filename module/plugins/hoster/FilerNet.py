@@ -4,6 +4,7 @@
 # http://filer.net/get/ivgf5ztw53et3ogd
 # http://filer.net/get/hgo14gzcng3scbvv
 
+import os
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
@@ -13,7 +14,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__    = "FilerNet"
     __type__    = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
@@ -51,7 +52,25 @@ class FilerNet(SimpleHoster):
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge()
 
+        #: Avoid 'Correct catcha'
+        captcha_task = self.captcha.task
+        self.captcha.task = None
+
         self.download(pyfile.url,
                       post={'recaptcha_challenge_field': challenge,
                             'recaptcha_response_field' : response,
                             'hash'                     : inputs['hash']})
+
+        #: Restore the captcha task
+        self.captcha.task = captcha_task
+
+        if self.scan_download({'html': re.compile(r'\A\s*<!DOCTYPE html')}) == "html":
+            self.log_warning(
+                _("There was HTML code in the downloaded file (%s)...bad captcha? The download will be restarted." %
+                  self.pyfile.name))
+            os.remove(self.last_download)
+            self.retry_captcha()
+
+        else:
+            self.captcha.correct()
+

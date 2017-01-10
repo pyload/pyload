@@ -10,13 +10,14 @@ from module.network.HTTPRequest import BadHeader
 class OnlineTvRecorder(Http):
     __name__    = "OnlineTvRecorder"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     # RIPE Database:
     # inetnum: 81.95.11.0 - 81.95.11.63
     # route:   81.95.8.0/21
-    __pattern__ = r'http://81\.95\.11\.\d{1,2}/download/\d+/\d+/\d*/[0-9a-f]+/.+'
+    # additional: 93.115.84.162
+    __pattern__ = r'http://(81\.95\.11\.\d{1,2}|93\.115\.84\.162)/download/\d+/\d+/\d*/[0-9a-f]+/.+'
     __config__  = [("activated", "bool", "Activated", True)]
     __description__ = """OnlineTvRecorder hoster plugin"""
     __license__     = "GPLv3"
