@@ -98,7 +98,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.59"
+    __version__ = "1.60"
     __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
@@ -274,6 +274,9 @@ class ExtractArchive(Addon):
 
             if not exists(out):
                 os.makedirs(out)
+            
+                if subfolder:
+                    self.set_permissions(out)
 
             matched   = False
             success   = True
@@ -287,6 +290,10 @@ class ExtractArchive(Addon):
                 if extensions:
                     files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
+
+                    #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                    #: This is important because, for example, UnRar ignores preceding parts in listing mode
+                    files_ids.sort(key=lambda file_id: file_id[1])
 
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
@@ -316,6 +323,10 @@ class ExtractArchive(Addon):
                             thread.addActive(pyfile)
                             archive.init()
 
+                            #: Save for removal from file processing list, which happens after deletion.
+                            #: So archive.chunks() would just return an empty list.
+                            chunks = archive.chunks()
+
                             try:
                                 new_files = self._extract(pyfile, archive, pypack.password)
 
@@ -330,7 +341,7 @@ class ExtractArchive(Addon):
 
                         #: Remove processed file and related multiparts from list
                         files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
-                                    if fname not in archive.chunks()]
+                                    if fname not in chunks]
                         self.log_debug("Extracted files: %s" % new_files)
 
                         for filename in new_files:
