@@ -39,11 +39,11 @@ class UploadedTo(Account):
                 if expiredate == "unlimited":
                     validuntil = -1
                 else:
-                    m = re.findall(r'(\d+) (week|day|hour)', expiredate)
+                    m = re.findall(r'(\d+) (week|day|hour|minute|second)', expiredate)
                     if m is not None:
                         validuntil = time.time()
                         for n, u in m:
-                            validuntil += float(n) * 60 * 60 * {'week': 168, 'day': 24, 'hour': 1}[u]
+                            validuntil += float(n) * {'week': 3600 * 168, 'day': 3600 * 24, 'hour': 3600, 'minute': 60, 'second': 1}[u]
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if m is not None:
