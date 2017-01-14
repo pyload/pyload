@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)'
@@ -21,8 +21,8 @@ class DlFreeFr(SimpleHoster):
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
-    NAME_PATTERN    = r'Fichier:</td>\s*<td.*?>(?P<N>[^>]*)</td>'
-    SIZE_PATTERN    = r'Taille:</td>\s*<td.*?>(?P<S>[\d.,]+)(?P<U>\w+)'
+    NAME_PATTERN    = r'Fichier</span>\s*<span.*?>(?P<N>[^<]*)</span>'
+    SIZE_PATTERN    = r'Taille</span>\s*<span.*?>(?P<S>[\d.,]+)(?P<U>\w+)</span>'
     OFFLINE_PATTERN = r'>ERREUR 404|Fichier inexistant'
 
 
@@ -32,8 +32,9 @@ class DlFreeFr(SimpleHoster):
         self.limitDL         = 5
         self.chunk_limit     = 1
 
+    def process(self, pyfile):
+        pyfile.url = 'http://dl.free.fr/getfile.pl?file=/' + self.info['pattern']['ID']
+        super(DlFreeFr, self).process(pyfile)
 
     def handle_free(self, pyfile):
-        self.download("http://dl.free.fr/getfile.pl",
-                      post={'file': '/' + self.info['pattern']['ID'],
-                            'send': "Valider+et+télécharger+le+fichier"})
+        self.download('http://dl.free.fr/v' + self.info['pattern']['ID'])
