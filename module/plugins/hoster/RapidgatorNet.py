@@ -63,6 +63,11 @@ class RapidgatorNet(SimpleHoster):
         else:
             self.sid = None
 
+	self.load(self.pyfile.url)
+	m = re.search("^Location: (.+)$", self.req.http.header, re.MULTILINE)
+	if m:
+	    self.offline() if "http://rapidgator.net/article/premium" in m.group(1) else None
+
         if self.sid:
             self.premium = True
 
