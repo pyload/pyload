@@ -5,8 +5,8 @@ import re
 from module.plugins.internal.XFSHoster import XFSHoster
 
 
-class XFileSharing(XFSHoster):
-    __name__    = "XFileSharing"
+class XFileSharingHoster(XFSHoster):
+    __name__    = "XFileSharingHoster"
     __type__    = "hoster"
     __version__ = "0.64"
     __status__  = "testing"
@@ -28,7 +28,7 @@ class XFileSharing(XFSHoster):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
-        return super(XFileSharing, self)._log(level, plugintype, pluginname, messages)
+        return super(XFileSharingHoster, self)._log(level, plugintype, pluginname, messages)
 
 
     def init(self):
@@ -46,7 +46,7 @@ class XFileSharing(XFSHoster):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
-        super(XFileSharing, self).setup_base()
+        super(XFileSharingHoster, self).setup_base()
 
         if self.account:
             self.req     = self.pyload.requestFactory.getRequest(self.PLUGIN_NAME, self.account.user)
@@ -60,5 +60,5 @@ class XFileSharing(XFSHoster):
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)
-        super(XFileSharing, self).load_account()
+        super(XFileSharingHoster, self).load_account()
         self.__class__.__name__ = class_name
