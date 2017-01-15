@@ -6,7 +6,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class DlFreeFr(SimpleHoster):
     __name__    = "DlFreeFr"
     __type__    = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)'
@@ -37,4 +37,6 @@ class DlFreeFr(SimpleHoster):
         super(DlFreeFr, self).process(pyfile)
 
     def handle_free(self, pyfile):
-        self.download('http://dl.free.fr/v' + self.info['pattern']['ID'])
+        self.download("http://dl.free.fr/getfile.pl",
+            post={'file': '/' + self.info['pattern']['ID'],
+                'send': "Valider+et+télécharger+le+fichier"})
