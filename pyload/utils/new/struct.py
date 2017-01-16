@@ -121,7 +121,7 @@ class Info(MutableMapping):
 
 class InscDict(MutableMapping):
     """
-    Revised version of the header dictionary from `requests.structures.CaseInsensitiveDict`
+    Revised version of the header dictionary from `requests.structures.CaseInsensitiveDict`.
     """
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)
@@ -153,7 +153,7 @@ class InscDict(MutableMapping):
 
     def _loweritems(self):
         """
-        Like `items`, but with all lowercase keys
+        Like `items`, but with all lowercase keys.
         """
         return ((lowerkey, val) for lowerkey, (key, val) in self.__dict__.items())
 
@@ -226,7 +226,7 @@ class HeadDict(InscDict):
 
     def list(self):
         """
-        Converts all entries to header list usable by curl
+        Converts all entries to header list usable by curl.
         """
         header = []
         for key, val in self.__dict__.values():

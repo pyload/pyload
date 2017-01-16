@@ -12,7 +12,9 @@ from pyload.config.parser import ConfigParser
 from pyload.config.convert import to_input, from_string
 
 def convertkeyerror(func):
-    """ converts KeyError into InvalidConfigSection """
+    """
+    Converts KeyError into InvalidConfigSection.
+    """
 
     def conv(*args, **kwargs):
         try:
@@ -24,8 +26,10 @@ def convertkeyerror(func):
 
 
 class ConfigManager(ConfigParser):
-    """ Manages the core config and configs for addons and single user.
-        Has similar interface to ConfigParser. """
+    """
+    Manages the core config and configs for addons and single user.
+    Has similar interface to ConfigParser.
+    """
 
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!
@@ -49,9 +53,10 @@ class ConfigManager(ConfigParser):
 
     @convertkeyerror
     def get(self, section, option, user=None):
-        """get config value, core config only available for admins.
-        if user is not valid default value will be returned"""
-
+        """
+        Get config value, core config only available for admins.
+        if user is not valid default value will be returned.
+        """
         # Core config loaded from parser, when no user is given or he is admin
         if section in self.parser and user is None:
             return self.parser.get(section, option)
@@ -81,8 +86,9 @@ class ConfigManager(ConfigParser):
 
     @convertkeyerror
     def set(self, section, option, value, sync=True, user=None):
-        """ set config value  """
-
+        """
+        Set config value.
+        """
         changed = False
         if section in self.parser and user is None:
             changed = self.parser.set(section, option, value, sync)
@@ -109,8 +115,10 @@ class ConfigManager(ConfigParser):
             self.db.save_config(section, json.dumps(self.values[user, section]), user)
 
     def delete(self, section, user=None):
-        """ Deletes values saved in db and cached values for given user, NOT meta data
-            Does not trigger an error when nothing was deleted. """
+        """
+        Deletes values saved in db and cached values for given user, NOT meta data.
+        Does not trigger an error when nothing was deleted.
+        """
         if (user, section) in self.values:
             del self.values[user, section]
 
@@ -121,7 +129,9 @@ class ConfigManager(ConfigParser):
         return self.parser.iter_sections()
 
     def iter_sections(self, user=None):
-        """ Yields: section, metadata, values """
+        """
+        Yields: section, metadata, values.
+        """
         values = self.db.load_configs_for_user(user)
 
         # Every section needs to be json decoded

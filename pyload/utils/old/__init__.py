@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" Store all useful functions here """
+"""
+Store all useful functions here.
+"""
 from __future__ import print_function
 from __future__ import unicode_literals
 
@@ -27,7 +29,9 @@ json_dumps = json.dumps
 
 
 def decode(string):
-    """ decode string to unicode with utf8 """
+    """
+    Decode string to unicode with utf8.
+    """
     if isinstance(string, str):
         return string.decode("utf8", "replace")
     else:
@@ -35,7 +39,9 @@ def decode(string):
 
 
 def encode(string):
-    """ decode string to utf8 """
+    """
+    Decode string to utf8.
+    """
     if isinstance(string, str):
         return string.encode("utf8", "replace")
     else:
@@ -43,7 +49,9 @@ def encode(string):
 
 
 def remove_chars(string, repl):
-    """ removes all chars in repl from string"""
+    """
+    Removes all chars in repl from string.
+    """
     if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
     elif isinstance(string, str):
@@ -107,13 +115,17 @@ def format_time(seconds):
 
 
 def parse_time(timestamp, pattern):
-    """ Parse a string representing a time according to a pattern and
-    return a time in seconds suitable for an account plugin. """
+    """
+    Parse a string representing a time according to a pattern and
+    return a time in seconds suitable for an account plugin.
+    """
     return int(time.mktime(time.strptime(timestamp, pattern)))
 
 
 def parse_size(string, unit=None):
-    """ Parses file size from a string. Tries to parse unit if not given.
+    """
+    Parses file size from a string.
+    Tries to parse unit if not given.
 
     :return: size in bytes
     """
@@ -144,13 +156,17 @@ def parse_size(string, unit=None):
 
 
 def uniqify(seq): #by Dave Kirby
-    """ removes duplicates from list, preserve order """
+    """
+    Removes duplicates from list, preserve order.
+    """
     seen = set()
     return [x for x in seq if x not in seen and not seen.add(x)]
 
 
 def bits_set(bits, compare):
-    """ checks if all bits are set in compare, or bits is 0 """
+    """
+    Checks if all bits are set in compare, or bits is 0.
+    """
     return bits == (bits & compare)
 
 
@@ -208,12 +224,16 @@ def fixup(m):
 
 
 def has_method(obj, name):
-    """ checks if 'name' was defined in obj, (false if it was inhereted) """
+    """
+    Checks if 'name' was defined in obj, (false if it was inhereted).
+    """
     return hasattr(obj, '__dict__') and name in obj.__dict__
 
 
 def accumulate(it, inv_map=None):
-    """ accumulate (key, value) data to {value : [keylist]} dictionary """
+    """
+    Accumulate (key, value) data to {value : [keylist]} dictionary.
+    """
     if inv_map is None:
         inv_map = {}
 
@@ -237,7 +257,9 @@ def to_bool(value):
 
 
 def to_int(string, default=0):
-    """ return int from string or default """
+    """
+    Return int from string or default.
+    """
     try:
         return int(string)
     except ValueError:
@@ -245,7 +267,9 @@ def to_int(string, default=0):
 
 
 def get_index(l, value):
-    """ .index method that also works on tuple and python 2.5 """
+    """
+    .index method that also works on tuple and python 2.5.
+    """
     for pos, t in enumerate(l):
         if t == value:
             return pos
@@ -255,19 +279,25 @@ def get_index(l, value):
 
 
 def primary_uid(user):
-    """ Gets primary user id for user instances or ints """
+    """
+    Gets primary user id for user instances or ints.
+    """
     if isinstance(user, int):
         return user
     return user.primary if user else None
 
 
 def html_unescape(text):
-    """Removes HTML or XML character references and entities from a text string"""
+    """
+    Removes HTML or XML character references and entities from a text string.
+    """
     return re.sub("&#?\w+;", fixup, text)
 
 
 def try_catch(fallback):
-    """ Decorator that executes the function and returns the value or fallback on any exception """
+    """
+    Decorator that executes the function and returns the value or fallback on any exception.
+    """
     def wrap(f):
         def new(*args, **kwargs):
             try:

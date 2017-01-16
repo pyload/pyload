@@ -17,7 +17,9 @@ def to_link_list(links, status=DS.Queued):
 
 
 class Package(object):
-    """ Container that indicates that a new package should be created """
+    """
+    Container that indicates that a new package should be created.
+    """
 
     def __init__(self, name=None, links=None):
         self.name = name
@@ -32,7 +34,8 @@ class Package(object):
         self.packs = []
 
     def add_links(self, links):
-        """ Add one or multiple links to the package
+        """
+        Add one or multiple links to the package
 
         :param links: One or list of urls or :class:`LinkStatus`
         """
@@ -62,7 +65,9 @@ class Package(object):
 
 
 class PyFileMockup(object):
-    """ Legacy class needed by old crypter plugins """
+    """
+    Legacy class needed by old crypter plugins.
+    """
 
     def __init__(self, url, pack_name):
         self.url = url
@@ -94,12 +99,11 @@ class Crypter(Base):
         A **new** package will be created with the name and the urls of the object.
 
     List of urls and `Package` instances
-        All urls in the list will be added to the **current** package. For each `Package`\
+        All urls in the list will be added to the **current** package. For each `Package`
         instance a new package will be created.
 
     """
-
-    #: Prefix to annotate that the submited string for decrypting is indeed file content
+def    #: Prefix to annotate that the submited string for decrypting is indeed file content
     CONTENT_PREFIX = "filecontent:"
 
     #: Optional name of an account plugin that should be used, but does not guarantee that one is available
@@ -111,7 +115,8 @@ class Crypter(Base):
 
     @classmethod
     def decrypt(cls, core, url_or_urls, password=None):
-        """Static method to decrypt urls or content. Can be used by other plugins.
+        """
+        Static method to decrypt urls or content. Can be used by other plugins.
         To decrypt file content prefix the string with ``CONTENT_PREFIX `` as seen above.
 
         :param core: pyLoad `Core`, needed in decrypt context
@@ -168,13 +173,18 @@ class Crypter(Base):
         self.init()
 
     def init(self):
-        """More init stuff if needed"""
+        """
+        More init stuff if needed.
+        """
 
     def setup(self):
-        """Called everytime before decrypting. A Crypter plugin will be most likely used for several jobs."""
+        """
+        Called everytime before decrypting. A Crypter plugin will be most likely used for several jobs.
+        """
 
     def decrypt_url(self, url):
-        """Decrypt a single url
+        """
+        Decrypt a single url
 
         :param url: url to decrypt
         :return: See :class:`Crypter` Documentation
@@ -185,7 +195,8 @@ class Crypter(Base):
             self.fail(_("Not existing file or unsupported protocol"))
 
     def decrypt_urls(self, urls):
-        """Decrypt a bunch of urls
+        """
+        Decrypt a bunch of urls
 
         :param urls: list of urls
         :return: See :class:`Crypter` Documentation
@@ -193,7 +204,8 @@ class Crypter(Base):
         raise NotImplementedError
 
     def decrypt_file(self, content):
-        """Decrypt file content
+        """
+        Decrypt file content
 
         :param content: content to decrypt as string
         :return: See :class:`Crypter` Documentation
@@ -201,7 +213,8 @@ class Crypter(Base):
         raise NotImplementedError
 
     def _decrypt(self, urls):
-        """Internal method to select decrypting method
+        """
+        Internal method to select decrypting method
 
         :param urls: List of urls/content
         :return: (links, packages)
@@ -247,7 +260,8 @@ class Crypter(Base):
         return to_link_list(result)
 
     def get_local_content(self, urls):
-        """Load files from disk and separate to file content and url list
+        """
+        Load files from disk and separate to file content and url list
 
         :param urls:
         :return: list of (filename, content), remote urls
@@ -285,16 +299,22 @@ class Crypter(Base):
         return content, urls
 
     def retry(self):
-        """ Retry decrypting, will only work once. Somewhat deprecated method, should be avoided. """
+        """
+        Retry decrypting, will only work once. Somewhat deprecated method, should be avoided.
+        """
         raise Retry
 
     def get_password(self):
-        """ Deprecated """
+        """
+        Deprecated.
+        """
         self.log_debug("Deprecated method .get_password(), use self.password instead")
         return self.password
 
     def convert_packages(self):
-        """ Deprecated """
+        """
+        Deprecated.
+        """
         self.log_debug("Deprecated method .convert_packages()")
         res = []
         for pack in self.packages:

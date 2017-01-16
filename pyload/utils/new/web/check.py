@@ -124,7 +124,7 @@ def isurl(url):
 
 def local_addr():
     """
-    Retrieve current local ip address
+    Retrieve current local ip address.
     """
     return bottle.request.urlparts.netloc
 

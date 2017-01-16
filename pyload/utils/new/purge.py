@@ -55,7 +55,7 @@ def truncate(name, length):
 
 def uniqify(seq):
     """
-    Remove duplicates from list preserving order
+    Remove duplicates from list preserving order.
     """
     seen = set()
     seen_add = seen.add

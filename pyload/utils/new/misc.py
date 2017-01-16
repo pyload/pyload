@@ -53,7 +53,7 @@ def forward(source, destination):
 #@TODO: Recheck in 0.8.x
 def get_translation(domain, language, default=None):
     """
-    Load language and return its translation object or None
+    Load language and return its translation object or None.
     """
     localedir = os.path.join(ROOTDIR, "locale")
     languages = [language, default]

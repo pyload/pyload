@@ -5,10 +5,14 @@ from bottle import HeaderDict as BottleHeaderDict
 
 
 class HeaderDict(BottleHeaderDict):
-    """ Multidict for header values  """
+    """
+    Multidict for header values.
+    """
 
     def to_headerlist(self):
-        """  Converts all entries to header list usable by curl """
+        """
+        Converts all entries to header list usable by curl.
+        """
         header = []
         for key in self.keys():
             fields = ",".join(self.getall(key))

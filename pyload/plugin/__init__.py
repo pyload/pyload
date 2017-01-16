@@ -18,21 +18,28 @@ from pyload.utils.fs import exists, makedirs, join, remove
 #       get rid of catpcha & container plugins ?! (move to crypter & internals)
 #       adapt old plugins as needed
 class Fail(Exception):
-    """ raised when failed """
+    """
+    Raised when failed.
+    """
 
 
 class Retry(Exception):
-    """ raised when start again from beginning """
+    """
+    Raised when start again from beginning.
+    """
 
 
 class Abort(Exception):
-    """ raised when aborted """
+    """
+    Raised when aborted.
+    """
 
 
 class Base(object):
     """
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
+
     #: Version as string or number
     __version__ = "0.1"
     # Type of the plugin, will be inherited and should not be set!
@@ -98,11 +105,14 @@ class Base(object):
         self.js = self.pyload.js
 
     def __getitem__(self, item):
-        """ Retrieves meta data attribute """
+        """
+        Retrieves meta data attribute.
+        """
         return getattr(self, "__{}__".format(item))
 
     def log_info(self, *args, **kwargs):
-        """ Print args to log at specific level
+        """
+        Print args to log at specific level
 
         :param args: Arbitrary object which should be logged
         :param kwargs: sep=(how to separate arguments), default = " | "
@@ -136,50 +146,72 @@ class Base(object):
         getattr(self.log, level)("{}: {}".format(self.__name__, sep.join(strings)))
 
     def get_name(self):
-        """ Name of the plugin class """
+        """
+        Name of the plugin class.
+        """
         return self.__name__
 
     @property
     def pattern(self):
-        """  Gives the compiled pattern of the plugin """
+        """
+        Gives the compiled pattern of the plugin.
+        """
         return self.pyload.pgm.get_plugin(self.__type__, self.__name__).re
 
     def set_config(self, option, value):
-        """ Set config value for current plugin """
+        """
+        Set config value for current plugin.
+        """
         self.pyload.config.set(self.__name__, option, value)
 
     def get_conf(self, option):
-        """ see `get_config` """
+        """
+        See `get_config`.
+        """
         return self.get_config(option)
 
     def get_config(self, option):
-        """ Returns config value for current plugin """
+        """
+        Returns config value for current plugin.
+        """
         return self.pyload.config.get(self.__name__, option)
 
     def set_storage(self, key, value):
-        """ Saves a value persistently to the database """
+        """
+        Saves a value persistently to the database.
+        """
         self.pyload.db.set_storage(self.__name__, key, value)
 
     def store(self, key, value):
-        """ same as `setStorage` """
+        """
+        Same as `set_storage`.
+        """
         self.pyload.db.set_storage(self.__name__, key, value)
 
     def get_storage(self, key=None, default=None):
-        """ Retrieves saved value or dict of all saved entries if key is None """
+        """
+        Retrieves saved value or dict of all saved entries if key is None.
+        """
         if key is not None:
             return self.pyload.db.get_storage(self.__name__, key) or default
         return self.pyload.db.get_storage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
-        """ same as `getStorage` """
+        """
+        Same as `get_storage`.
+        """
         return self.get_storage(*args, **kwargs)
 
     def del_storage(self, key):
-        """ Delete entry in db """
+        """
+        Delete entry in db.
+        """
         self.pyload.db.del_storage(self.__name__, key)
 
     def shell(self):
-        """ open ipython shell """
+        """
+        Open ipython shell.
+        """
         if self.pyload.debug:
             from IPython import embed
             #noinspection PyUnresolvedReferences
@@ -187,16 +219,21 @@ class Base(object):
             embed()
 
     def abort(self):
-        """ Check if plugin is in an abort state, is overwritten by subtypes"""
+        """
+        Check if plugin is in an abort state, is overwritten by subtypes.
+        """
         return False
 
     def check_abort(self):
-        """  Will be overwritten to determine if control flow should be aborted """
+        """
+        Will be overwritten to determine if control flow should be aborted.
+        """
         if self.abort():
             raise Abort
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
-        """Load content at url and returns it
+        """
+        Load content at url and returns it
 
         :param url: url as string
         :param get: GET as dict
@@ -205,6 +242,7 @@ class Base(object):
         :param cookies: use saved cookies
         :param just_header: if True only the header will be retrieved and returned as dict
         :param decode: Whether to decode the output according to http header, should be True in most cases
+
         :return: Loaded content
         """
         if not hasattr(self, "req"):
@@ -270,7 +308,8 @@ class Base(object):
 
     def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceuser=False, imgtype='jpg',
                        result_type='textual'):
-        """ Loads a captcha and decrypts it with ocr, plugin, user input
+        """
+        Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
         :param get: get part for request
@@ -278,13 +317,12 @@ class Base(object):
         :param cookies: True if cookies should be enabled
         :param forceuser: if True, ocr is not used
         :param imgtype: Type of the Image
-        :param result_type: 'textual' if text is written on the captcha\
-        or 'positional' for captcha where the user have to click\
+        :param result_type: 'textual' if text is written on the captcha
+        or 'positional' for captcha where the user have to click
         on a specific region on the captcha
 
         :return: result of decrypting
         """
-
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
@@ -337,5 +375,7 @@ class Base(object):
         return result
 
     def fail(self, reason):
-        """ fail and give reason """
+        """
+        Fail and give reason.
+        """
         raise Fail(reason)

@@ -11,8 +11,8 @@ if os.name != "nt":
     from grp import getgrnam
 
 from pyload.utils import chunks as _chunks
-from pyload.utils.fs import save_join, safe_filename, fs_encode, fs_decode, \
-    remove, makedirs, chmod, stat, exists, join
+from pyload.utils.fs import (save_join, safe_filename, fs_encode, fs_decode, remove, makedirs,
+                             chmod, stat, exists, join)
 
 from pyload.plugin import Base, Fail, Retry
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
@@ -22,11 +22,15 @@ chunks = _chunks
 
 
 class Reconnect(Exception):
-    """ raised when reconnected """
+    """
+    Raised when reconnected.
+    """
 
 
 class SkipDownload(Exception):
-    """ raised when download should be skipped """
+    """
+    Raised when download should be skipped.
+    """
 
 
 class Hoster(Base):
@@ -42,7 +46,8 @@ class Hoster(Base):
 
     @staticmethod
     def get_info(urls):
-        """This method is used to retrieve the online status of files for hoster plugins.
+        """
+        This method is used to retrieve the online status of files for hoster plugins.
 
         :param urls: List of urls
         :return: yield list of :class:`LinkStatus` as result
@@ -91,7 +96,7 @@ class Hoster(Base):
 
         #: location where the last call to download was saved
         self.last_download = ""
-        #: re match of the last call to `checkDownload`
+        #: re match of the last call to `check_download`
         self.last_check = None
 
         self.retries = 0 # amount of retries already made
@@ -136,15 +141,21 @@ class Hoster(Base):
         return self.__name__
 
     def init(self):
-        """initialize the plugin (in addition to `__init__`)"""
+        """
+        Initialize the plugin (in addition to `__init__`).
+        """
         pass
 
     def setup(self):
-        """ setup for environment and other things, called before downloading (possibly more than one time)"""
+        """
+        Setup for environment and other things, called before downloading (possibly more than one time).
+        """
         pass
 
     def preprocessing(self, thread):
-        """ handles important things to do before starting """
+        """
+        Handles important things to do before starting.
+        """
         self.thread = thread
 
         if self.account:
@@ -160,14 +171,18 @@ class Hoster(Base):
         return self.process(self.pyfile)
 
     def process(self, pyfile):
-        """the 'main' method of every plugin, you **have to** overwrite it"""
+        """
+        The 'main' method of every plugin, you **have to** overwrite it.
+        """
         raise NotImplementedError
 
     def abort(self):
         return self.pyfile.abort
 
     def reset_account(self):
-        """ don't use account and retry download """
+        """
+        Don't use account and retry download.
+        """
         self.account = None
         self.req = self.pyload.req.get_request(self.__name__)
         self.retry()
@@ -181,12 +196,14 @@ class Hoster(Base):
         10 - not implemented
         20 - unknown error
         """
+
         #@TODO checksum check addon
 
         return True, 10
 
     def set_wait(self, seconds, reconnect=None):
-        """Set a specific wait time later used with `wait`
+        """
+        Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
@@ -196,7 +213,8 @@ class Hoster(Base):
         self.pyfile.wait_until = time() + int(seconds)
 
     def wait(self, seconds=None, reconnect=None):
-        """ Waits the time previously set or use these from arguments. See `setWait`
+        """
+        Waits the time previously set or use these from arguments. See `set_wait`.
         """
         if seconds is not None:
             self.set_wait(seconds, reconnect)
@@ -219,15 +237,20 @@ class Hoster(Base):
         self.pyfile.set_status("starting")
 
     def offline(self):
-        """ fail and indicate file is offline """
+        """
+        Fail and indicate file is offline.
+        """
         raise Fail("offline")
 
     def temp_offline(self):
-        """ fail and indicates file ist temporary offline, the core may take consequences """
+        """
+        Fail and indicates file ist temporary offline, the core may take consequences.
+        """
         raise Fail("temp. offline")
 
     def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x,y: x):
-        """Retries and begin again from the beginning
+        """
+        Retries and begin again from the beginning
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
@@ -248,9 +271,10 @@ class Hoster(Base):
         raise Retry(reason)
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
-        """Downloads the content at url to download folder
+        """
+        Downloads the content at url to download folder
 
-        :param disposition: if True and server provides content-disposition header\
+        :param disposition: if True and server provides content-disposition header
         the filename will be changed if needed
         :return: The location where the file was saved
         """
@@ -316,7 +340,8 @@ class Hoster(Base):
         return self.last_download
 
     def check_download(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
-        """ checks the content of the last downloaded file, re match is saved to `lastCheck`
+        """
+        Checks the content of the last downloaded file, re match is saved to `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
@@ -357,7 +382,9 @@ class Hoster(Base):
 
 
     def get_password(self):
-        """ get the password the user provided in the package"""
+        """
+        Get the password the user provided in the package.
+        """
         password = self.pyfile.package().password
         if not password:
             return ""
@@ -365,12 +392,12 @@ class Hoster(Base):
 
 
     def check_for_same_files(self, starting=False):
-        """ checks if same file was/is downloaded within same package
+        """
+        Checks if same file was/is downloaded within same package
 
         :param starting: indicates that the current download is going to start
         :raises SkipDownload:
         """
-
         pack = self.pyfile.package()
 
         for pyfile in self.pyload.files.cached_files():
@@ -397,7 +424,9 @@ class Hoster(Base):
             self.pyload.log.debug("File {} not skipped, because it does not exists".format(self.pyfile.name))
 
     def clean(self):
-        """ clean everything and remove references """
+        """
+        Clean everything and remove references.
+        """
         if hasattr(self, "pyfile"):
             del self.pyfile
         if hasattr(self, "req"):

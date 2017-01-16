@@ -36,7 +36,7 @@ def map(obj, ignore=None):
 @iterate
 def name(value):
     """
-    Remove invalid characters
+    Remove invalid characters.
     """
     unixbadchars = ('\0', '/', '\\')
     winbadchars  = ('\0', '<', '>', '"', '/', '\\', '|', '?', '*')
@@ -60,7 +60,7 @@ def name(value):
 
 def path(*paths):
     """
-    Remove invalid characters and truncate the path if needed
+    Remove invalid characters and truncate the path if needed.
     """
     value = os.path.join(*paths)
 

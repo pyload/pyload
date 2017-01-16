@@ -27,8 +27,9 @@ def myquote(url):
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf8') if isinstance(x, str) else x, \
-                           y.encode('utf8') if isinstance(y, str) else y) for x, y in data.items()))
+    return urlencode(
+        dict((x.encode('utf8') if isinstance(x, str) else x, y.encode('utf8') if isinstance(y, str) else y)
+             for x, y in data.items()))
 
 
 bad_headers = list(range(400, 418)) + list(range(500, 506))
@@ -37,8 +38,9 @@ pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
 
 class CurlRequest(Request):
-    """  Request class based on libcurl """
-
+    """
+    Request class based on libcurl.
+    """
     __version__ = "0.1"
 
     CONTEXT_CLASS = CookieJar
@@ -73,8 +75,9 @@ class CurlRequest(Request):
             self.init_options(self.config)
 
     def init_handle(self):
-        """ sets common options to curl handle """
-
+        """
+        Sets common options to curl handle.
+        """
         self.c.setopt(pycurl.FOLLOWLOCATION, 1)
         self.c.setopt(pycurl.MAXREDIRS, 5)
         self.c.setopt(pycurl.CONNECTTIMEOUT, 30)
@@ -139,13 +142,17 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.USERPWD, bytes(options['auth']))
 
     def init_options(self, options):
-        """  Sets same options as available in pycurl  """
+        """
+        Sets same options as available in pycurl.
+        """
         for k, v in options.items():
             if hasattr(pycurl, k):
                 self.c.setopt(getattr(pycurl, k), v)
 
     def set_request_context(self, url, get, post, referer, cookies, multipart=False):
-        """ sets everything needed for the request """
+        """
+        Sets everything needed for the request.
+        """
         url = myquote(url)
 
         if get:
@@ -190,8 +197,9 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.HTTPHEADER, self.headers.to_headerlist())
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
-        """ load and returns a given page """
-
+        """
+        Load and returns a given page.
+        """
         self.set_request_context(url, get, post, referer, cookies, multipart)
 
         # TODO: use http/rfc message instead
@@ -248,14 +256,18 @@ class CurlRequest(Request):
             self.cj.set_cookie(domain, name, value, path, expires, secure)
 
     def verify_header(self):
-        """ raise an exceptions on bad headers """
+        """
+        Raise an exceptions on bad headers.
+        """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
             raise ResponseException(code, responses.get(code, "Unknown statuscode"))
         return code
 
     def get_response(self):
-        """ retrieve response from string io """
+        """
+        Retrieve response from string io.
+        """
         if self.rep is None:
             return ""
         value = self.rep.getvalue()
@@ -264,14 +276,16 @@ class CurlRequest(Request):
         return value
 
     def decode_response(self, rep):
-        """ decode with correct encoding, relies on header """
+        """
+        Decode with correct encoding, relies on header.
+        """
         header = self.header.splitlines()
         encoding = "utf8" # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or \
-                    ("text" not in line and "application" not in line):
+            if (not line.startswith("content-type:") or
+                ("text" not in line and "application" not in line)):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -298,7 +312,9 @@ class CurlRequest(Request):
         return rep
 
     def write(self, buf):
-        """ writes response """
+        """
+        Writes response.
+        """
         if self.rep.tell() > 1000000 or self.do_abort:
             rep = self.get_response()
             if self.do_abort:
@@ -310,7 +326,9 @@ class CurlRequest(Request):
         self.rep.write(buf)
 
     def write_header(self, buf):
-        """ writes header """
+        """
+        Writes header.
+        """
         self.header += buf
 
     def reset(self):
@@ -318,7 +336,9 @@ class CurlRequest(Request):
         self.options.clear()
 
     def close(self):
-        """ cleanup, unusable after this """
+        """
+        Cleanup, unusable after this.
+        """
         self.rep.close()
         if hasattr(self, "cj"):
             del self.cj

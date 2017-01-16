@@ -74,59 +74,70 @@ _TLS_BY_PYOPENSSL = 'pyopenssl'
 
 
 class _StandaloneConnection(object):
-    """Mimic mod_python mp_conn."""
+    """
+    Mimic mod_python mp_conn.
+    """
 
     def __init__(self, request_handler):
-        """Construct an instance.
+        """
+        Construct an instance.
 
         Args:
-            request_handler: A WebSocketRequestHandler instance.
+            request_handler: A WebSocketRequestHandler instance
         """
-
         self._request_handler = request_handler
 
     def get_local_addr(self):
-        """Getter to mimic mp_conn.local_addr."""
-
+        """
+        Getter to mimic mp_conn.local_addr.
+        """
         return (self._request_handler.server.server_name,
                 self._request_handler.server.server_port)
+
     local_addr = property(get_local_addr)
 
     def get_remote_addr(self):
-        """Getter to mimic mp_conn.remote_addr.
+        """
+        Getter to mimic mp_conn.remote_addr.
 
         Setting the property in __init__ won't work because the request
-        handler is not initialized yet there."""
-
+        handler is not initialized yet there.
+        """
         return self._request_handler.client_address
+
     remote_addr = property(get_remote_addr)
 
     def write(self, data):
-        """Mimic mp_conn.write()."""
-
+        """
+        Mimic mp_conn.write().
+        """
         return self._request_handler.wfile.write(data)
 
     def read(self, length):
-        """Mimic mp_conn.read()."""
-
+        """
+        Mimic mp_conn.read().
+        """
         return self._request_handler.rfile.read(length)
 
     def get_memorized_lines(self):
-        """Get memorized lines."""
-
+        """
+        Get memorized lines.
+        """
         return self._request_handler.rfile.get_memorized_lines()
 
 
 class _StandaloneRequest(object):
-    """Mimic mod_python request."""
+    """
+    Mimic mod_python request.
+    """
 
     def __init__(self, request_handler, use_tls):
-        """Construct an instance.
+        """
+        Construct an instance.
 
         Args:
-            request_handler: A WebSocketRequestHandler instance.
+            request_handler: A WebSocketRequestHandler instance
         """
-
         self._logger = util.get_class_logger(self)
 
         self._request_handler = request_handler
@@ -135,45 +146,53 @@ class _StandaloneRequest(object):
         self.headers_in = request_handler.headers
 
     def get_uri(self):
-        """Getter to mimic request.uri.
+        """
+        Getter to mimic request.uri.
 
         This method returns the raw data at the Request-URI part of the
         Request-Line, while the uri method on the request object of mod_python
         returns the path portion after parsing the raw data. This behavior is
-        kept for compatibility.
+        kept for compatibility
         """
-
         return self._request_handler.path
+
     uri = property(get_uri)
 
     def get_unparsed_uri(self):
-        """Getter to mimic request.unparsed_uri."""
-
+        """
+        Getter to mimic request.unparsed_uri.
+        """
         return self._request_handler.path
+
     unparsed_uri = property(get_unparsed_uri)
 
     def get_method(self):
-        """Getter to mimic request.method."""
-
+        """
+        Getter to mimic request.method.
+        """
         return self._request_handler.command
+
     method = property(get_method)
 
     def get_protocol(self):
-        """Getter to mimic request.protocol."""
-
+        """
+        Getter to mimic request.protocol.
+        """
         return self._request_handler.request_version
+
     protocol = property(get_protocol)
 
     def is_https(self):
-        """Mimic request.is_https()."""
-
+        """
+        Mimic request.is_https().
+        """
         return self._use_tls
 
     def _drain_received_data(self):
-        """Don't use this method from WebSocket handler. Drains unread data
-        in the receive buffer.
         """
-
+        Don't use this method from WebSocket handler. Drains unread data
+        in the receive buffer
+        """
         raw_socket = self._request_handler.connection
         drained_data = util.drain_received_data(raw_socket)
 
@@ -200,15 +219,15 @@ def _import_pyopenssl():
 
 
 class _StandaloneSSLConnection(object):
-    """A wrapper class for OpenSSL.SSL.Connection to
+    """
+    A wrapper class for OpenSSL.SSL.Connection to
     - provide makefile method which is not supported by the class
     - tweak shutdown method since OpenSSL.SSL.Connection.shutdown doesn't
       accept the "how" argument.
     - convert SysCallError exceptions that its recv method may raise into a
       return value of '', meaning EOF. We cannot overwrite the recv method on
-      self._connection since it's immutable.
+      self._connection since it's immutable
     """
-
     _OVERRIDDEN_ATTRIBUTES = ['_connection', 'makefile', 'shutdown', 'recv']
 
     def __init__(self, connection):
@@ -246,13 +265,13 @@ class _StandaloneSSLConnection(object):
 
 
 def _alias_handlers(dispatcher, websock_handlers_map_file):
-    """Set aliases specified in websock_handler_map_file in dispatcher.
+    """
+    Set aliases specified in websock_handler_map_file in dispatcher.
 
     Args:
         dispatcher: dispatch.Dispatcher instance
         websock_handler_map_file: alias map file
     """
-
     with open(websock_handlers_map_file) as f:
         for line in f:
             if line[0] == '#' or line.isspace():
@@ -269,7 +288,9 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
 
 
 class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
-    """HTTPServer specialized for WebSocket."""
+    """
+    HTTPServer specialized for WebSocket.
+    """
 
     # Overrides SocketServer.ThreadingMixIn.daemon_threads
     daemon_threads = True
@@ -277,10 +298,12 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
     allow_reuse_address = True
 
     def __init__(self, options):
-        """Override SocketServer.TCPServer.__init__ to set SSL enabled
-        socket object to self.socket before server_bind and server_activate,
-        if necessary.
         """
+        Override SocketServer.TCPServer.__init__ to set SSL enabled
+        socket object to self.socket before server_bind and server_activate,
+        if necessary
+        """
+
         # Removed dispatcher init here
         self._logger = logging.getLogger("log")
 
@@ -348,10 +371,10 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
             self._sockets.append((socket_, addrinfo))
 
     def server_bind(self):
-        """Override SocketServer.TCPServer.server_bind to enable multiple
-        sockets bind.
         """
-
+        Override SocketServer.TCPServer.server_bind to enable multiple
+        sockets bind
+        """
         failed_sockets = []
 
         for socketinfo in self._sockets:
@@ -378,10 +401,10 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
             self._sockets.remove(socketinfo)
 
     def server_activate(self):
-        """Override SocketServer.TCPServer.server_activate to enable multiple
-        sockets listen.
         """
-
+        Override SocketServer.TCPServer.server_activate to enable multiple
+        sockets listen
+        """
         failed_sockets = []
 
         for socketinfo in self._sockets:
@@ -401,36 +424,38 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
             self._logger.critical(_('No sockets activated. Use info log level to see the reason'))
 
     def server_close(self):
-        """Override SocketServer.TCPServer.server_close to enable multiple
-        sockets close.
         """
-
+        Override SocketServer.TCPServer.server_close to enable multiple
+        sockets close
+        """
         for socketinfo in self._sockets:
             socket_, addrinfo = socketinfo
             self._logger.info(_('Close on: {}').format(addrinfo))
             socket_.close()
 
     def fileno(self):
-        """Override SocketServer.TCPServer.fileno."""
-
+        """
+        Override SocketServer.TCPServer.fileno.
+        """
         self._logger.critical(_('Not supported: fileno'))
         return self._sockets[0][0].fileno()
 
     def handle_error(self, request, client_address):
-        """Override SocketServer.handle_error."""
-
+        """
+        Override SocketServer.handle_error.
+        """
         self._logger.error(
             'Exception in processing request from: {}\n{}'.format(client_address, util.get_stack_trace())
         )
         # Note: client_address is a tuple.
 
     def get_request(self):
-        """Override TCPServer.get_request to wrap OpenSSL.SSL.Connection
+        """
+        Override TCPServer.get_request to wrap OpenSSL.SSL.Connection
         object with _StandaloneSSLConnection to provide makefile method. We
         cannot substitute OpenSSL.SSL.Connection.makefile since it's readonly
-        attribute.
+        attribute
         """
-
         accepted_socket, client_address = self.socket.accept()
 
         server_options = self.websocket_server_options
@@ -492,8 +517,9 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
         return accepted_socket, client_address
 
     def serve_forever(self, poll_interval=0.5):
-        """Override SocketServer.BaseServer.serve_forever."""
-
+        """
+        Override SocketServer.BaseServer.serve_forever.
+        """
         self.__ws_serving = True
         self.__ws_is_shut_down.clear()
         handle_request = self.handle_request
@@ -514,27 +540,31 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
             self.__ws_is_shut_down.set()
 
     def shutdown(self):
-        """Override SocketServer.BaseServer.shutdown."""
-
+        """
+        Override SocketServer.BaseServer.shutdown.
+        """
         self.__ws_serving = False
         self.__ws_is_shut_down.wait()
 
 
 class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
-    """CGIHTTPRequestHandler specialized for WebSocket."""
+    """
+    CGIHTTPRequestHandler specialized for WebSocket.
+    """
 
     # Use httplib.HTTPMessage instead of mimetools.Message.
     MessageClass = http.client.HTTPMessage
 
     def setup(self):
-        """Override SocketServer.StreamRequestHandler.setup to wrap rfile
+        """
+        Override SocketServer.StreamRequestHandler.setup to wrap rfile
         with MemorizingFile.
 
         This method will be called by BaseRequestHandler's constructor
         before calling BaseHTTPRequestHandler.handle.
         BaseHTTPRequestHandler.handle will call
         BaseHTTPRequestHandler.handle_one_request and it will call
-        WebSocketRequestHandler.parse_request.
+        WebSocketRequestHandler.parse_request
         """
 
         # Call superclass's setup to prepare rfile, wfile, etc. See setup
@@ -570,12 +600,13 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
             self._logger.debug("WS: Broken pipe")
 
     def parse_request(self):
-        """Override BaseHTTPServer.BaseHTTPRequestHandler.parse_request.
+        """
+        Override BaseHTTPServer.BaseHTTPRequestHandler.parse_request.
 
         Return True to continue processing for HTTP(S), False otherwise.
 
         See BaseHTTPRequestHandler.handle_one_request method which calls
-        this method to understand how the return value will be handled.
+        this method to understand how the return value will be handled
         """
 
         # We hook parse_request method, but also call the original
@@ -668,26 +699,29 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
         return False
 
     def log_request(self, code='-', size='-'):
-        """Override BaseHTTPServer.log_request."""
-
+        """
+        Override BaseHTTPServer.log_request.
+        """
         self._logger.info(_('"{}" {} {}').format(self.requestline, code, size))
 
     def log_error(self, *args):
-        """Override BaseHTTPServer.log_error."""
+        """
+        Override BaseHTTPServer.log_error.
+        """
 
         # Despite the name, this method is for warnings than for errors.
         # For example, HTTP status code is logged by this method.
         self._logger.warning(_('{} - {}').format(self.address_string(), args[0] % args[1:]))
 
     def is_cgi(self):
-        """Test whether self.path corresponds to a CGI script.
+        """
+        Test whether self.path corresponds to a CGI script.
 
         Add extra check that self.path doesn't contains ..
         Also check if the file is a executable file or not.
         If the file is not executable, it is handled as static file or dir
-        rather than a CGI script.
+        rather than a CGI script
         """
-
         if http.server.CGIHTTPRequestHandler.is_cgi(self):
             if '..' in self.path:
                 return False
@@ -761,12 +795,12 @@ def import_ssl():
     return False
 
 def _main(args=None):
-    """You can call this function from your own program, but please note that
+    """
+    You can call this function from your own program, but please note that
     this function has some side-effects that might affect your program. For
     example, util.wrap_popen3_for_win use in this method replaces implementation
-    of os.popen3.
+    of os.popen3
     """
-
     options, args = _parse_args_and_config(args=args)
 
     os.chdir(options.document_root)

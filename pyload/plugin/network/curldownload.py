@@ -24,7 +24,9 @@ from pyload.plugin.network.curlrequest import ResponseException
 
 # TODO: save content-disposition for resuming
 class CurlDownload(Download):
-    """ loads an url, http + ftp supported """
+    """
+    Loads an url, http + ftp supported.
+    """
 
     # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
     #              options={}, disposition=False):
@@ -100,7 +102,9 @@ class CurlDownload(Download):
             self.info = ChunkInfo(self.path)
 
     def download(self, uri, path, get={}, post={}, referer=True, disposition=False, chunks=1, resume=False, cookies=True):
-        """ returns new filename or None """
+        """
+        Returns new filename or None.
+        """
         self.url = uri
         self.path = path
         self.disposition = disposition
@@ -282,7 +286,9 @@ class CurlDownload(Download):
         self._copy_chunks()
 
     def find_chunk(self, handle):
-        """ linear search to find a chunk (should be ok since chunk size is usually low) """
+        """
+        Linear search to find a chunk (should be ok since chunk size is usually low).
+        """
         for chunk in self.chunks:
             if chunk.c == handle:
                 return chunk
@@ -296,7 +302,9 @@ class CurlDownload(Download):
             chunk.close()
 
     def close(self):
-        """ cleanup """
+        """
+        Cleanup.
+        """
         for chunk in self.chunks:
             self.close_chunk(chunk)
         else:

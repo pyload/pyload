@@ -12,10 +12,16 @@ class ContentProvider(Base):
     """
 
     def newest(self):
-        """ TODO  """
+        """
+        TODO.
+        """
 
     def search(self, query):
-        """  TODO """
+        """
+        TODO.
+        """
 
     def suggest(self, query):
-        """  TODO   """
+        """
+        TODO.
+        """

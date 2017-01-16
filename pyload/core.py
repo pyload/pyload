@@ -75,7 +75,9 @@ sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 # - new attributes (date|sync status)
 # - improve external scripts
 class Core(object):
-    """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
+    """
+    PyLoad Core, one tool to rule them all... (the filehosters) :D.
+    """
 
     def __init__(self):
         self.do_debug = False
@@ -198,7 +200,9 @@ class Core(object):
             os.remove(self.pidfile)
 
     def check_pid_file(self):
-        """ return pid as int or 0"""
+        """
+        Return pid as int or 0.
+        """
         if os.path.isfile(self.pidfile):
             with open(self.pidfile, "rb") as f:
                 pid = f.read().strip()
@@ -262,8 +266,9 @@ class Core(object):
                 remove(join(path, f))
 
     def start(self, rpc=True, web=True, tests=False):
-        """ starts the fun :D """
-
+        """
+        Starts the fun! :D.
+        """
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf") and not tests:
@@ -601,7 +606,9 @@ class Core(object):
         self.delete_pid_file()
 
     def shell(self):
-        """ stop and open an ipython shell inplace"""
+        """
+        Stop and open an ipython shell inplace.
+        """
         if self.debug:
             from IPython import embed
 

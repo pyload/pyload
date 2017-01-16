@@ -19,7 +19,8 @@ class ServerAdapter(BaseAdapter):
 
     @classmethod
     def find(cls):
-        """ Check if server is available by trying to import it
+        """
+        Check if server is available by trying to import it
 
         :raises Exception: importing  C dependant library could also fail with other reasons
         :return: True on success
@@ -54,8 +55,9 @@ class CherryPyWSGI(ServerAdapter):
 
 
 class FapwsServer(ServerAdapter):
-    """ Does not work very good currently  """
-
+    """
+    Does not work very good currently.
+    """
     NAME = "fapws"
 
     def run(self, handler): # pragma: no cover
@@ -95,8 +97,9 @@ class MeinheldServer(ServerAdapter):
 
 # todo:ssl
 class TornadoServer(ServerAdapter):
-    """ The super hyped asynchronous server by facebook. Untested. """
-
+    """
+    The super hyped asynchronous server by facebook. Untested.
+    """
     SSL = True
     NAME = "tornado"
 
@@ -110,8 +113,9 @@ class TornadoServer(ServerAdapter):
 
 
 class BjoernServer(ServerAdapter):
-    """ Fast server written in C: https://github.com/jonashaag/bjoern """
-
+    """
+    Fast server written in C: https://github.com/jonashaag/bjoern.
+    """
     NAME = "bjoern"
 
     def run(self, handler):

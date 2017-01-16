@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from threading import Thread
+from threading import Thread, Event
 from traceback import print_exc
 
 
@@ -13,10 +13,10 @@ class BackendBase(Thread):
         self.manager = manager
         self.pyload = manager.pyload
         self.enabled = True
-        self.running = False
+        self.running = Event()
 
     def run(self):
-        self.running = True
+        self.running.set()
         try:
             self.serve()
         except Exception as e:
@@ -24,7 +24,7 @@ class BackendBase(Thread):
             if self.pyload.debug:
                 print_exc()
         finally:
-            self.running = False
+            self.running.clear()
 
     def setup(self, host, port):
         raise NotImplementedError

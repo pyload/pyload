@@ -10,11 +10,15 @@ from pyload.api.base import BaseApi
 
 
 class CoreApi(BaseApi):
-    """ This module provides methods for general interaction with the core, like status or progress retrieval  """
+    """
+    This module provides methods for general interaction with the core, like status or progress retrieval.
+    """
 
     @require_perm(Permission.All)
     def get_server_version(self):
-        """pyLoad Core version """
+        """
+        PyLoad Core version.
+        """
         return self.pyload.version
 
     def is_ws_secure(self):
@@ -30,7 +34,9 @@ class CoreApi(BaseApi):
 
     @require_perm(Permission.All)
     def get_ws_address(self):
-        """Gets and address for the websocket based on configuration"""
+        """
+        Gets and address for the websocket based on configuration.
+        """
         if self.is_ws_secure():
             ws = "wss"
         else:
@@ -40,7 +46,8 @@ class CoreApi(BaseApi):
 
     @require_perm(Permission.All)
     def get_status_info(self):
-        """Some general information about the current status of pyLoad.
+        """
+        Some general information about the current status of pyLoad.
 
         :return: `StatusInfo`
         """
@@ -63,23 +70,29 @@ class CoreApi(BaseApi):
 
     @require_perm(Permission.All)
     def get_progress_info(self):
-        """ Status of all currently running tasks
+        """
+        Status of all currently running tasks
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return self.pyload.dlm.get_progress_list(self.primary_uid) +\
-            self.pyload.thm.get_progress_list(self.primary_uid)
+        return (self.pyload.dlm.get_progress_list(self.primary_uid) +
+                self.pyload.thm.get_progress_list(self.primary_uid))
 
     def pause_server(self):
-        """Pause server: It won't start any new downloads, but nothing gets aborted."""
+        """
+        Pause server: It won't start any new downloads, but nothing gets aborted.
+        """
         self.pyload.dlm.paused = True
 
     def unpause_server(self):
-        """Unpause server: New Downloads will be started."""
+        """
+        Unpause server: New Downloads will be started.
+        """
         self.pyload.dlm.paused = False
 
     def toggle_pause(self):
-        """Toggle pause state.
+        """
+        Toggle pause state.
 
         :return: new pause state
         """
@@ -87,7 +100,8 @@ class CoreApi(BaseApi):
         return self.pyload.dlm.paused
 
     def toggle_reconnect(self):
-        """Toggle reconnect activation.
+        """
+        Toggle reconnect activation.
 
         :return: new reconnect state
         """
@@ -95,20 +109,27 @@ class CoreApi(BaseApi):
         return self.pyload.config.get('reconnect', 'activated')
 
     def free_space(self):
-        """Available free space at download directory in bytes"""
+        """
+        Available free space at download directory in bytes.
+        """
         return free_space(self.pyload.config.get('general', 'download_folder'))
 
 
     def quit(self):
-        """Clean way to quit pyLoad"""
+        """
+        Clean way to quit pyLoad.
+        """
         self.pyload.do_kill = True
 
     def restart(self):
-        """Restart pyload core"""
+        """
+        Restart pyload core.
+        """
         self.pyload.do_restart = True
 
     def get_log(self, offset=0):
-        """Returns most recent log entries.
+        """
+        Returns most recent log entries.
 
         :param offset: line offset
         :return: List of log entries
@@ -125,7 +146,8 @@ class CoreApi(BaseApi):
 
     @require_perm(Permission.All)
     def is_time_download(self):
-        """Checks if pyload will start new downloads according to time in config.
+        """
+        Checks if pyload will start new downloads according to time in config.
 
         :return: bool
         """
@@ -135,7 +157,8 @@ class CoreApi(BaseApi):
 
     @require_perm(Permission.All)
     def is_time_reconnect(self):
-        """Checks if pyload will try to make a reconnect
+        """
+        Checks if pyload will try to make a reconnect
 
         :return: bool
         """

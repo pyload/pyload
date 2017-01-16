@@ -36,7 +36,7 @@ def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
 
 def accumulate(it, inv_map=None):
     """
-    Accumulate (key, value) data to {value : [keylist]} dictionary
+    Accumulate (key, value) data to {value : [keylist]} dictionary.
     """
     if inv_map is None:
         inv_map = {}
@@ -70,7 +70,7 @@ def language(text, target=None, source=None):
 
 def merge(d1, d2):
     """
-    Recursively merges d2 into d1
+    Recursively merges d2 into d1.
     """
     for key in d2:
         if key in d1 and isinstance(d1, dict) and isinstance(d2, dict):
@@ -82,7 +82,7 @@ def merge(d1, d2):
 
 def size(value, in_unit, out_unit):
     """
-    Convert file size
+    Convert file size.
     """
     in_unit  = in_unit.strip()[0].upper()
     out_unit = out_unit.strip()[0].upper()
@@ -118,7 +118,7 @@ def size(value, in_unit, out_unit):
 
 def to_bool(value, default=None):
     """
-    Convert value to boolean or return default
+    Convert value to boolean or return default.
     """
     try:
         return bool(value)
@@ -128,7 +128,7 @@ def to_bool(value, default=None):
 
 def to_bytes(value, default=None):
     """
-    Convert value to bytes or return default
+    Convert value to bytes or return default.
     """
     try:
         try:
@@ -141,7 +141,7 @@ def to_bytes(value, default=None):
 
 def to_dict(obj, default=None):
     """
-    Convert object to dictionary or return default
+    Convert object to dictionary or return default.
     """
     try:
         return {attr: getattr(obj, att) for attr in obj.__slots__}
@@ -151,7 +151,7 @@ def to_dict(obj, default=None):
 
 def to_float(value, default=None):
     """
-    Convert value to fractional or return default
+    Convert value to fractional or return default.
     """
     try:
         return float(value)
@@ -161,7 +161,7 @@ def to_float(value, default=None):
 
 def to_int(value, default=None):
     """
-    Convert value to integer or return default
+    Convert value to integer or return default.
     """
     try:
         return int(value)
@@ -171,7 +171,7 @@ def to_int(value, default=None):
 
 def to_list(value, default=None):
     """
-    Convert value to a list with value inside or return default
+    Convert value to a list with value inside or return default.
     """
     res = default
     if isinstance(value, list):
@@ -187,7 +187,7 @@ def to_list(value, default=None):
 
 def to_str(value, default=None):
     """
-    Convert value to unicode or return default
+    Convert value to unicode or return default.
     """
     try:
         try:
@@ -200,7 +200,7 @@ def to_str(value, default=None):
 
 def ver_to_tuple(value, default=None):
     """
-    Convert version like string to a tuple of integers or return default
+    Convert version like string to a tuple of integers or return default.
     """
     try:
         values = map(to_int, re.split(r'([\d.,]+)', value))

@@ -50,15 +50,18 @@ class OCR(object):
         self.result_captcha = ''
 
     def unload(self):
-        """delete all tmp images"""
+        """
+        Delete all tmp images.
+        """
         pass
 
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
 
     def run(self, command):
-        """Run a command"""
-
+        """
+        Run a command.
+        """
         popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
         output = "{} | {}".format(popen.stdout.read(), popen.stderr.read())
@@ -187,8 +190,9 @@ class OCR(object):
         self.pixels = pixels
 
     def derotate_by_average(self):
-        """rotate by checking each angle and guess most suitable"""
-
+        """
+        Rotate by checking each angle and guess most suitable.
+        """
         w, h = self.image.size
         pixels = self.pixels
 

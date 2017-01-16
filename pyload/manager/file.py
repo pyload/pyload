@@ -26,14 +26,17 @@ def invalidate(func):
 
 
 class FileManager(object):
-    """Handles all request made to obtain information,
-    modify status or other request for links or packages"""
-
+    """
+    Handles all request made to obtain information,
+    modify status or other request for links or packages
+    """
     ROOT_PACKAGE = -1
     ROOT_OWNER = -1
 
     def __init__(self, core):
-        """Constructor"""
+        """
+        Constructor.
+        """
         self.pyload = core
 
         # translations
@@ -58,12 +61,16 @@ class FileManager(object):
         self.db = self.pyload.db
 
     def save(self):
-        """saves all data to backend"""
+        """
+        Saves all data to backend.
+        """
         self.db.commit()
 
     @read_lock
     def sync_save(self):
-        """saves all data to backend and waits until all data are written"""
+        """
+        Saves all data to backend and waits until all data are written.
+        """
         for pyfile in self.files.values():
             pyfile.sync()
 
@@ -83,14 +90,18 @@ class FileManager(object):
 
     @invalidate
     def add_links(self, data, pid, owner):
-        """Add links, data = (url, plugin) tuple. Internal method should use API."""
+        """
+        Add links, data = (url, plugin) tuple. Internal method should use API.
+        """
         self.db.add_links(data, pid, owner)
         self.pyload.evm.dispatch_event("package:updated", pid)
 
 
     @invalidate
     def add_package(self, name, folder, root, password, site, comment, paused, owner):
-        """Adds a package to database"""
+        """
+        Adds a package to database.
+        """
         pid = self.db.add_package(name, folder, root, password, site, comment,
                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.get_package_info(pid)
@@ -101,7 +112,9 @@ class FileManager(object):
 
     @lock
     def get_package(self, pid):
-        """return package instance"""
+        """
+        Return package instance.
+        """
         if pid == self.ROOT_PACKAGE:
             return RootPackage(self, self.ROOT_OWNER)
         elif pid in self.packages:
@@ -120,7 +133,9 @@ class FileManager(object):
 
     @read_lock
     def get_package_info(self, pid):
-        """returns dict with package information"""
+        """
+        Returns dict with package information.
+        """
         if pid == self.ROOT_PACKAGE:
             pack = RootPackage(self, self.ROOT_OWNER).to_info_data()
         elif pid in self.packages:
@@ -146,7 +161,9 @@ class FileManager(object):
 
     @lock
     def get_file(self, fid):
-        """returns pyfile instance"""
+        """
+        Returns pyfile instance.
+        """
         if fid in self.files:
             return self.files[fid]
         else:
@@ -160,7 +177,9 @@ class FileManager(object):
 
     @read_lock
     def get_file_info(self, fid):
-        """returns dict with file information"""
+        """
+        Returns dict with file information.
+        """
         if fid in self.files:
             return self.files[fid].to_info_data()
 
@@ -168,8 +187,9 @@ class FileManager(object):
 
     @read_lock
     def get_tree(self, pid, full, state, owner=None, search=None):
-        """  return a TreeCollection and fill the info data of containing packages.
-             optional filter only unfinished files
+        """
+        Return a TreeCollection and fill the info data of containing packages.
+        Optional filter only unfinished files.
         """
         view = TreeCollection(pid)
 
@@ -258,14 +278,18 @@ class FileManager(object):
         return self.job_cache[occ]
 
     def get_download_stats(self, user=None):
-        """ return number of downloads  """
+        """
+        Return number of downloads.
+        """
         if user not in self.downloadstats:
             self.downloadstats[user] = self.db.downloadstats(user)
 
         return self.downloadstats[user]
 
     def get_queue_stats(self, user=None, force=False):
-        """number of files that have to be processed, failed files will not be included"""
+        """
+        Number of files that have to be processed, failed files will not be included.
+        """
         if user not in self.queuestats or force:
             self.queuestats[user] = self.db.queuestats(user)
 
@@ -277,8 +301,9 @@ class FileManager(object):
     @lock
     @invalidate
     def remove_package(self, pid):
-        """delete package and all contained links"""
-
+        """
+        Delete package and all contained links.
+        """
         p = self.get_package(pid)
         if not p:
             return
@@ -302,8 +327,9 @@ class FileManager(object):
     @lock
     @invalidate
     def remove_file(self, fid):
-        """deletes links"""
-
+        """
+        Deletes links.
+        """
         f = self.get_file(fid)
         if not f:
             return
@@ -325,19 +351,25 @@ class FileManager(object):
 
     @lock
     def release_file(self, fid):
-        """removes pyfile from cache"""
+        """
+        Removes pyfile from cache.
+        """
         if fid in self.files:
             del self.files[fid]
 
     @lock
     def release_package(self, pid):
-        """removes package from cache"""
+        """
+        Removes package from cache.
+        """
         if pid in self.packages:
             del self.packages[pid]
 
     @invalidate
     def update_file(self, pyfile):
-        """updates file"""
+        """
+        Updates file.
+        """
         self.db.update_file(pyfile)
 
         # This event is thrown with pyfile or only fid
@@ -346,7 +378,9 @@ class FileManager(object):
     @invalidate
     @read_lock
     def set_download_status(self, fid, status):
-        """ sets a download status for a file """
+        """
+        Sets a download status for a file.
+        """
         if fid in self.files:
             self.files[fid].set_status(status)
         else:
@@ -356,18 +390,24 @@ class FileManager(object):
 
     @invalidate
     def update_package(self, pypack):
-        """updates a package"""
+        """
+        Updates a package.
+        """
         self.db.update_package(pypack)
         self.pyload.evm.dispatch_event("package:updated", pypack.pid)
 
     @invalidate
     def update_file_info(self, data, pid):
-        """ updates file info (name, size, status,[ hash,] url)"""
+        """
+        Updates file info (name, size, status,[ hash,] url).
+        """
         self.db.update_link_info(data)
         self.pyload.evm.dispatch_event("package:updated", pid)
 
     def check_all_links_finished(self):
-        """checks if all files are finished and dispatch event"""
+        """
+        Checks if all files are finished and dispatch event.
+        """
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
@@ -378,7 +418,9 @@ class FileManager(object):
         return False
 
     def check_all_links_processed(self, fid=-1):
-        """checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting"""
+        """
+        Checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting.
+        """
 
         # reset count so statistic will update (this is called when dl was processed)
         self.reset_count()
@@ -392,8 +434,9 @@ class FileManager(object):
         return False
 
     def check_package_finished(self, pyfile):
-        """ checks if package is finished and calls addonmanager """
-
+        """
+        Checks if package is finished and calls addonmanager.
+        """
         ids = self.db.get_unfinished(pyfile.packageid)
         if not ids or (pyfile.fid in ids and len(ids) == 1):
             if not pyfile.package().set_finished:
@@ -407,7 +450,9 @@ class FileManager(object):
     @read_lock
     @invalidate
     def restart_package(self, pid):
-        """restart package"""
+        """
+        Restart package.
+        """
         for pyfile in self.cached_files():
             if pyfile.packageid == pid:
                 self.restart_file(pyfile.fid)
@@ -422,7 +467,9 @@ class FileManager(object):
     @read_lock
     @invalidate
     def restart_file(self, fid):
-        """ restart file"""
+        """
+        Restart file.
+        """
         if fid in self.files:
             f = self.files[fid]
             f.status = DS.Queued
@@ -502,8 +549,9 @@ class FileManager(object):
     @read_lock
     @invalidate
     def move_package(self, pid, root):
-        """  move pid - root """
-
+        """
+        Move pid - root.
+        """
         p = self.get_package_info(pid)
         dest = self.get_package_info(root)
         if not p:
@@ -524,8 +572,9 @@ class FileManager(object):
     @read_lock
     @invalidate
     def move_files(self, fids, pid):
-        """ move all fids to pid """
-
+        """
+        Move all fids to pid.
+        """
         f = self.get_file_info(fids[0])
         if not f or f.package == pid:
             return False
@@ -539,7 +588,9 @@ class FileManager(object):
 
     @invalidate
     def re_check_package(self, pid):
-        """ recheck links in package """
+        """
+        Recheck links in package.
+        """
         data = self.db.get_package_data(pid)
 
         urls = []
@@ -553,6 +604,9 @@ class FileManager(object):
 
     @invalidate
     def restart_failed(self):
-        """ restart all failed links """
+        """
+        Restart all failed links.
+        """
+
         # failed should not be in cache anymore, so working on db is sufficient
         self.db.restart_failed()

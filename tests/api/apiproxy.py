@@ -11,7 +11,9 @@ from tests.helper.config import credentials
 
 
 class ApiProxy(object):
-    """ Proxy that does type checking on the api """
+    """
+    Proxy that does type checking on the api.
+    """
 
     def __init__(self, api, user=credentials[0], pw=credentials[1]):
         self.api = api

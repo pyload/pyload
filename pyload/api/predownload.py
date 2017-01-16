@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from builtins import str
 from itertools import chain
 
-from pyload.api import Api, DownloadStatus as DS,\
-    require_perm, Permission, OnlineCheck, LinkStatus, urlmatcher
+from pyload.api import (Api, DownloadStatus as DS, require_perm, Permission, OnlineCheck,
+                        LinkStatus, urlmatcher)
 from pyload.utils import uniqify
 from pyload.utils.fs import join
 from pyload.utils.packagetools import parse_names
@@ -16,11 +16,14 @@ from pyload.api.base import BaseApi
 
 
 class PreDownloadApi(BaseApi):
-    """ All kind of methods to parse links or retrieve online status """
+    """
+    All kind of methods to parse links or retrieve online status.
+    """
 
     @require_perm(Permission.Add)
     def parse_links(self, links):
-        """ Gets urls and returns pluginname mapped to list of matching urls.
+        """
+        Gets urls and returns pluginname mapped to list of matching urls.
 
         :param links:
         :return: {plugin: urls}
@@ -38,7 +41,8 @@ class PreDownloadApi(BaseApi):
 
     @require_perm(Permission.Add)
     def check_links(self, links):
-        """ initiates online status check, will also decrypt files.
+        """
+        Initiates online status check, will also decrypt files.
 
         :param links:
         :return: initial set of data as :class:`OnlineCheck` instance containing the result id
@@ -55,7 +59,8 @@ class PreDownloadApi(BaseApi):
 
     @require_perm(Permission.Add)
     def check_container(self, filename, data):
-        """ checks online status of urls and a submitted container file
+        """
+        Checks online status of urls and a submitted container file
 
         :param filename: name of the file
         :param data: file content
@@ -68,7 +73,8 @@ class PreDownloadApi(BaseApi):
 
     @require_perm(Permission.Add)
     def check_html(self, html, url):
-        """Parses html content or any arbitrary text for links and returns result of `checkURLs`
+        """
+        Parses html content or any arbitrary text for links and returns result of `check_urls`
 
         :param html: html source
         :return:
@@ -84,7 +90,8 @@ class PreDownloadApi(BaseApi):
 
     @require_perm(Permission.Add)
     def poll_results(self, rid):
-        """ Polls the result available for ResultID
+        """
+        Polls the result available for ResultID
 
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then there is no more data available
@@ -95,7 +102,8 @@ class PreDownloadApi(BaseApi):
 
     @require_perm(Permission.Add)
     def generate_packages(self, links):
-        """ Parses links, generates packages names from urls
+        """
+        Parses links, generates packages names from urls
 
         :param links: list of urls
         :return: package names mapped to urls

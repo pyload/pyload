@@ -21,7 +21,9 @@ class ApiTester(object):
 
     @classmethod
     def get_methods(cls):
-        """ All available methods for testing """
+        """
+        All available methods for testing.
+        """
         methods = []
         for t in cls.tester:
             methods.extend(getattr(t, attr) for attr in dir(t) if attr.startswith("test_"))

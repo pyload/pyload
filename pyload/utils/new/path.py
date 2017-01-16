@@ -77,7 +77,7 @@ def copytree(src, dst, overwrite=None, preserve_metadata=True):
 @iterate
 def exists(path, case_sensitive=False):
     """
-    Case-sensitive os.path.exists
+    Case-sensitive os.path.exists.
     """
     if not case_sensitive:
         return os.path.exists(path)
@@ -113,7 +113,7 @@ def flush(path):
 @iterate
 def fsbsize(path):
     """
-    Get optimal file system buffer size (in bytes) for I/O calls
+    Get optimal file system buffer size (in bytes) for I/O calls.
     """
     if os.name != "nt":
         res = os.statvfs(path).f_bsize
@@ -232,8 +232,8 @@ def mtime(path):
     if not isdir(path):
         return getmtime(path)
 
-    mtimes = [getmtime(join(dirpath, file)) \
-              for dirpath, dirnames, filenames in os.walk(path) \
+    mtimes = [getmtime(join(dirpath, file))
+              for dirpath, dirnames, filenames in os.walk(path)
               for file in filenames]
 
     return max(0, 0, *mtimes)

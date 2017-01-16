@@ -22,10 +22,10 @@ class WrongPassword(Exception):
 class Account(Base):
     """
     Base class for every account plugin.
-    Just overwrite `login` and cookies will be stored and the account becomes accessible in\
-    associated hoster plugin. Plugin should also provide `load_account_info`. \
-    An instance of this class is created for every entered account, it holds all \
-    fields of AccountInfo ttype, and can be set easily at runtime.
+    Just overwrite `login` and cookies will be stored and the account becomes accessible in
+    associated hoster plugin. Plugin should also provide `load_account_info`.
+    An instance of this class is created for every entered account, it holds all
+    fields of AccountInfo ttype, and can be set easily at runtime
     """
 
     # constants for special values
@@ -91,8 +91,10 @@ class Account(Base):
         pass
 
     def get_config(self, option):
-        """ Gets an option that was configured via the account options dialog and
-        is only valid for this specific instance."""
+        """
+        Gets an option that was configured via the account options dialog and
+        is only valid for this specific instance.
+        """
         if option not in self.config_data:
             return Base.get_config(self, option)
 
@@ -102,7 +104,9 @@ class Account(Base):
         return self.config_data[option].input.default_value
 
     def set_config(self, option, value):
-        """ Sets a config value for this account instance. Modifying the global values is not allowed. """
+        """
+        Sets a config value for this account instance. Modifying the global values is not allowed.
+        """
         if option not in self.config_data:
             return
 
@@ -115,14 +119,17 @@ class Account(Base):
             self.options[option] = from_string(value, self.config_data[option].input.type)
 
     def login(self, req):
-        """login into account, the cookies will be saved so the user can be recognized
+        """
+        Login into account, the cookies will be saved so the user can be recognized
 
         :param req: `Request` instance
         """
         raise NotImplementedError
 
     def relogin(self):
-        """ Force a login. """
+        """
+        Force a login.
+        """
         req = self.get_account_request()
         try:
             return self._login(req)
@@ -162,8 +169,9 @@ class Account(Base):
         self.premium = Account.premium
 
     def set_login(self, loginname, password):
-        """ updates the loginname and password and returns true if anything changed """
-
+        """
+        Updates the loginname and password and returns true if anything changed.
+        """
         if password != self.password or loginname != self.loginname:
             self.login_ts = 0
             self.valid = True #set valid, so the login will be retried
@@ -175,7 +183,9 @@ class Account(Base):
         return False
 
     def update_config(self, items):
-        """  Updates the accounts options from config items """
+        """
+        Updates the accounts options from config items.
+        """
         for item in items:
             # Check if a valid option
             if item.name in self.config_data:
@@ -185,7 +195,9 @@ class Account(Base):
         return self.pyload.req.get_request(self.cj)
 
     def get_download_settings(self):
-        """ Can be overwritten to change download settings. Default is no chunkLimit, max dl limit, resumeDownload
+        """
+        Can be overwritten to change download settings.
+        Default is no chunkLimit, max dl limit, resumeDownload
 
         :return: (chunkLimit, limitDL, resumeDownload) / (int, int, bool)
         """
@@ -194,8 +206,10 @@ class Account(Base):
     # TODO: this method is ambiguous, it returns nothing, but just retrieves the data if needed
     @lock
     def get_account_info(self, force=False):
-        """retrieve account info's for an user, do **not** overwrite this method!\\
-        just use it to retrieve info's in hoster plugins. see `load_account_info`
+        """
+        Retrieve account info's for an user, do **not** overwrite this method!
+        just use it to retrieve info's in hoster plugins.
+        See `load_account_info`
 
         :param name: username
         :param force: reloads cached account information
@@ -232,7 +246,8 @@ class Account(Base):
 
     #TODO: remove user
     def load_account_info(self, req):
-        """ Overwrite this method and set account attributes within this method.
+        """
+        Overwrite this method and set account attributes within this method.
 
         :param user: Deprecated
         :param req: Request instance
@@ -259,8 +274,9 @@ class Account(Base):
         return self.premium
 
     def is_usable(self):
-        """Check several constraints to determine if account should be used"""
-
+        """
+        Check several constraints to determine if account should be used.
+        """
         if not self.valid or not self.activated:
             return False
 
@@ -312,13 +328,17 @@ class Account(Base):
         self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):
-        """ add a task for refreshing the account info to the scheduler """
+        """
+        Add a task for refreshing the account info to the scheduler.
+        """
         self.log_debug("Scheduled Account refresh for {} in {} seconds".format(self.loginname, time))
         self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
     @lock
     def check_login(self, req):
-        """ checks if the user is still logged in """
+        """
+        Checks if the user is still logged in.
+        """
         if self.login_ts + self.login_timeout * 60 < time():
             if self.login_ts: # separate from fresh login to have better debug logs
                 self.log_debug("Reached login timeout for {}".format(self.loginname))

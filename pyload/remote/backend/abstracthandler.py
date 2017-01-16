@@ -16,7 +16,7 @@ from pyload.remote.json_converter import loads, dumps
 
 class AbstractHandler(object):
     """
-        Abstract Handler providing common methods shared across WebSocket handlers
+        Abstract Handler providing common methods shared across WebSocket handlers.
     """
     PATH = "/"
 
@@ -76,7 +76,9 @@ class AbstractHandler(object):
         raise NotImplemented
 
     def handle_call(self, msg, req):
-        """ Parses the msg for an argument call. If func is null an response was already sent.
+        """
+        Parses the msg for an argument call.
+        If func is null an response was already sent.
 
         :return: func, args, kwargs
         """

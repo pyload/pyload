@@ -21,7 +21,9 @@ class Bucket(object):
         self.rate = int(rate)
 
     def consumed(self, amount):
-        """ return the time the process has to sleep, after it consumed a specified amount """
+        """
+        Return the time the process has to sleep, after it consumed a specified amount.
+        """
         if self.rate < MIN_RATE:
             return 0 #May become unresponsive otherwise
 

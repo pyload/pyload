@@ -24,7 +24,7 @@ if sys.version_info[:2] < (2, 7) and os.name != "nt":
     def wait(self, timeout=0):
         """
         Wait for child process to terminate.  Returns returncode
-        attribute.
+        attribute
         """
         if self.returncode is None:
             try:

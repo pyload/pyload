@@ -19,7 +19,9 @@ class RequestFactory(object):
         self.pyload.evm.listen_to("config:changed", self.update_config)
 
     def get_url(self, *args, **kwargs):
-        """ see HTTPRequest for argument list """
+        """
+        See HTTPRequest for argument list.
+        """
         h = DefaultRequest(self.get_config())
         try:
             rep = h.load(*args, **kwargs)
@@ -31,7 +33,10 @@ class RequestFactory(object):
         ########## old api methods above
 
     def get_request(self, context=None, klass=DefaultRequest):
-        """ Creates a request with new or given context """
+        """
+        Creates a request with new or given context.
+        """
+
         # also accepts the context class directly
         if isinstance(context, klass.CONTEXT_CLASS):
             return klass(self.get_config(), context)
@@ -41,7 +46,10 @@ class RequestFactory(object):
             return klass(self.get_config())
 
     def get_download_request(self, request=None, klass=DefaultDownload):
-        """ Instantiates a instance for downloading """
+        """
+        Instantiates a instance for downloading.
+        """
+
         # TODO: load with plugin manager
         return klass(self.bucket, request)
 
@@ -49,7 +57,9 @@ class RequestFactory(object):
         return self.pyload.config.get('download', 'interface')
 
     def get_proxies(self):
-        """ returns a proxy list for the request classes """
+        """
+        Returns a proxy list for the request classes.
+        """
         if not self.pyload.config.get('proxy', 'proxy'):
             return {}
         else:
@@ -77,18 +87,24 @@ class RequestFactory(object):
             }
 
     def update_config(self, section, option, value):
-        """ Updates the bucket when a config value changed """
+        """
+        Updates the bucket when a config value changed.
+        """
         if option in ("limit_speed", "max_speed"):
             self.update_bucket()
 
     def get_config(self):
-        """returns options needed for pycurl"""
+        """
+        Returns options needed for pycurl.
+        """
         return {"interface": self.get_interface(),
                 "proxies": self.get_proxies(),
                 "ipv6": self.pyload.config.get('download', 'ipv6')}
 
     def update_bucket(self):
-        """ set values in the bucket according to settings"""
+        """
+        Set values in the bucket according to settings.
+        """
         if not self.pyload.config.get('download', 'limit_speed'):
             self.bucket.set_rate(-1)
         else:

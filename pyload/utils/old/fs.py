@@ -25,7 +25,7 @@ else:
 def chmod(path, mode):
     try:
         return os.chmod(fs_encode(path), mode)
-    except :
+    except Exception:
         pass
 
 def dirname(path):
@@ -60,7 +60,9 @@ def stat(name):
     return os.stat(fs_encode(name))
 
 def safe_join(*args):
-    """ joins a path, encoding aware """
+    """
+    Joins a path, encoding aware.
+    """
     return fs_encode(join(*[x if isinstance(x, str) else decode(x) for x in args]))
 
 def save_join(*args):
@@ -80,7 +82,9 @@ def free_space(folder):
         return s.f_frsize * s.f_bavail
 
 def get_bsize(path):
-    """ get optimal file system buffer size (in bytes) for i/o calls """
+    """
+    Get optimal file system buffer size (in bytes) for i/o calls.
+    """
     path = fs_encode(path)
 
     if os.name == "nt":

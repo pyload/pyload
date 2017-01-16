@@ -28,7 +28,9 @@ class BasePlugin(Hoster):
         self.resume_download = True
 
     def process(self, pyfile):
-        """main function"""
+        """
+        Main function.
+        """
 
         #debug part, for api exerciser
         if pyfile.url.startswith("DEBUG_API"):

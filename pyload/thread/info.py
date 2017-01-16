@@ -107,7 +107,10 @@ class InfoThread(DecrypterThread):
         self.manager.set_info_results(self.oc, data)
 
     def fetch_for_plugin(self, plugin, urls, cb):
-        """executes info fetching for given plugin and urls"""
+        """
+        Executes info fetching for given plugin and urls.
+        """
+
         # also works on module names
         pluginname = plugin.__name__.split(".")[-1]
 

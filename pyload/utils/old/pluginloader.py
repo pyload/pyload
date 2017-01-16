@@ -23,7 +23,9 @@ PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 
 
 class BaseAttributes(defaultdict):
-    """ Dictionary that loads defaults values from Base object """
+    """
+    Dictionary that loads defaults values from Base object.
+    """
 
     def __missing__(self, key):
         attr = "__{}__".format(key)
@@ -34,7 +36,9 @@ class BaseAttributes(defaultdict):
 
 
 class LoaderFactory(object):
-    """ Container for multiple plugin loaders  """
+    """
+    Container for multiple plugin loaders.
+    """
 
     def __init__(self, *loader):
         self.loader = list(loader)
@@ -44,19 +48,23 @@ class LoaderFactory(object):
 
 
     def check_versions(self):
-        """ Reduces every plugin loader to the globally newest version.
-        Afterwards every plugin is unique across all available loader """
-        for plugin_type in self.loader[0].iter_types():
+        """
+        Reduces every plugin loader to the globally newest version.
+        Afterwards every plugin is unique across all available loader.
+        """
+        for type in self.loader[0].iter_types():
             for loader in self.loader:
                 # iterate all plugins
-                for plugin, info in loader.get_plugins(plugin_type).items():
+                for name, info in loader.get_plugins(type).items():
                     # now iterate all other loaders
                     for l2 in self.loader:
                         if l2 is not loader:
-                            l2.remove_plugin(plugin_type, plugin, info.version)
+                            l2.remove_plugin(type, name, info.version)
 
-    def find_plugin(self, name):
-        """ Finds a plugin type for given name """
+    def find_type(self, name):
+        """
+        Finds a plugin type for given name.
+        """
         for loader in self.loader:
             for t in loader.TYPES:
                 if loader.has_plugin(t, name):
@@ -64,16 +72,18 @@ class LoaderFactory(object):
 
         return None
 
-    def get_plugin(self, plugin, name):
-        """ retrieve a plugin from an available loader """
+    def get_plugin(self, type, name):
+        """
+        Retrieve a plugin from an available loader.
+        """
         for loader in self.loader:
-            if loader.has_plugin(plugin, name):
-                return loader.get_plugin(plugin, name)
+            if loader.has_plugin(type, name):
+                return loader.get_plugin(type, name)
 
 
 class PluginLoader(object):
     """
-    Class to provide and load plugins from the file-system
+    Class to provide and load plugins from the file-system.
     """
     TYPES = ("crypter", "hoster", "account", "addon", "network", "internal")
 
@@ -85,9 +95,9 @@ class PluginLoader(object):
 
     # closing symbols
     MULTI_MATCH = {
-        "{": "}",
-        "(": ")",
-        "[": "]",
+        "{"  : "}" ,
+        "("  : ")" ,
+        "["  : "]" ,
         '"""': '"""'
     }
 
@@ -106,8 +116,9 @@ class PluginLoader(object):
         self.log.debug("Plugin {} | {}: {}".format(plugin, name, msg))
 
     def create_index(self):
-        """create information for all plugins available"""
-
+        """
+        Create information for all plugins available.
+        """
         if not exists(self.path):
             makedirs(self.path)
         if not exists(join(self.path, "__init__.py")):
@@ -115,15 +126,17 @@ class PluginLoader(object):
             f.close()
 
         a = time()
-        for plugin in self.TYPES:
-            self.plugins[plugin] = self.parse(plugin)
+        for type in self.TYPES:
+            self.plugins[type] = self.parse(type)
 
         self.log.debug(
             "Created index of plugins for {} in {:.2f} ms".format(self.path, (time() - a) * 1000)
         )
 
     def parse(self, folder):
-        """  Analyze and parses all plugins in folder """
+        """
+        Analyze and parses all plugins in folder.
+        """
         plugins = {}
         pfolder = join(self.path, folder)
         if not exists(pfolder):
@@ -133,15 +146,7 @@ class PluginLoader(object):
             f.close()
 
         for f in listdir(pfolder):
-            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
-                    "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
-                    continue
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
-                    continue
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
-                    continue
-
+            if isfile(join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
                 # replace suffix and version tag
                 name = f[:-3]
                 if name[-1] == ".":
@@ -154,7 +159,9 @@ class PluginLoader(object):
         return plugins
 
     def parse_attributes(self, filename, name, folder=""):
-        """ Parse attribute dict from plugin"""
+        """
+        Parse attribute dict from plugin.
+        """
         with open(filename, "rb") as f:
             content = f.read()
 
@@ -206,11 +213,12 @@ class PluginLoader(object):
 
 
     def parse_plugin(self, filename, folder, name):
-        """  Parses a plugin from disk, folder means plugin type in this context. Also sets config.
+        """
+        Parses a plugin from disk, folder means plugin type in this context. Also sets config.
 
         :arg home: dict with plugins, of which the found one will be matched against (according version)
-        :returns PluginTuple"""
-
+        :returns PluginTuple
+        """
         attrs = self.parse_attributes(filename, name, folder)
         if not attrs:
             return
@@ -272,50 +280,61 @@ class PluginLoader(object):
         return plugin
 
     def iter_plugins(self):
-        """ Iterates over all plugins returning (type, name, info)  with info as PluginTuple """
-
-        for plugin, data in self.plugins.items():
+        """
+        Iterates over all plugins returning (type, name, info)  with info as PluginTuple.
+        """
+        for type, data in self.plugins.items():
             for name, info in data.items():
-                yield plugin, name, info
+                yield type, name, info
 
     def iter_types(self):
-        """ Iterate over the available plugin types """
+        """
+        Iterate over the available plugin types.
+        """
+        for type in self.plugins.keys():
+            yield type
 
-        for plugin in self.plugins.keys():
-            yield plugin
+    def has_plugin(self, type, name):
+        """
+        Check if certain plugin is available.
+        """
+        return type in self.plugins and name in self.plugins[type]
 
-    def has_plugin(self, plugin, name):
-        """ Check if certain plugin is available """
-        return plugin in self.plugins and name in self.plugins[plugin]
-
-    def get_plugin(self, plugin, name):
-        """  Return plugin info for a single entity """
+    def get_plugin(self, type, name):
+        """
+        Return plugin info for a single entity.
+        """
         try:
-            return self.plugins[plugin][name]
+            return self.plugins[type][name]
         except KeyError:
             return None
 
-    def get_plugins(self, plugin):
-        """ Return all plugins of given plugin type """
-        return self.plugins[plugin]
+    def get_plugins(self, type):
+        """
+        Return all plugins of given plugin type.
+        """
+        return self.plugins[type]
 
-    def remove_plugin(self, plugin, name, available_version=None):
-        """ Removes a plugin from the index.
-         Optionally only when its version is below or equal the available one
-         """
+    def remove_plugin(self, type, name, version=None):
+        """
+        Removes a plugin from the index.
+        Optionally only when its version is below or equal the available one
+        """
         try:
-            if available_version is not None:
-                if self.plugins[plugin][name] <= available_version:
-                    del self.plugins[plugin][name]
+            if version is not None:
+                if self.plugins[type][name] <= version:
+                    del self.plugins[type][name]
             else:
-                del self.plugins[plugin][name]
+                del self.plugins[type][name]
 
         # no errors are thrown if the plugin didn't existed
         except KeyError:
             return
 
     def is_user_plugin(self, name):
-        """ Determine if given plugin name is enable for user_context in any plugin type """
+        """
+        Determine if given plugin name is enable for user_context in any plugin type.
+        """
         for plugins in self.plugins:
             if name in plugins and name[plugins].user:
                 return True
@@ -323,20 +342,26 @@ class PluginLoader(object):
         return False
 
     def save_plugin(self, content):
-        """ Saves a plugin to disk  """
+        """
+        Saves a plugin to disk.
+        """
+        raise NotImplementedError
 
-    def load_module(self, plugin, name):
-        """ Returns loaded module for plugin
+    def load_module(self, type, name):
+        """
+        Returns loaded module for plugin
 
-        :param plugin: plugin type, subfolder of module.plugins
+        :param type: plugin type, subfolder of module.plugins
         :raises Exception: Everything could go wrong, failures needs to be catched
         """
-        plugins = self.plugins[plugin]
+        plugins = self.plugins[type]
         # convert path to python recognizable import
         path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
-        module = __import__("{}.{}.{}".format(self.package, plugin, path), globals(), locals(), path)
+        module = __import__("{}.{}.{}".format(self.package, type, path), globals(), locals(), path)
         return module
 
-    def load_attributes(self, plugin, name):
-        """ Same as `parseAttributes` for already indexed plugins  """
-        return self.parse_attributes(self.plugins[plugin][name].path, name, plugin)
+    def load_attributes(self, type, name):
+        """
+        Same as `parse_attributes` for already indexed plugins.
+        """
+        return self.parse_attributes(self.plugins[type][name].path, name, type)

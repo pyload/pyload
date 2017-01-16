@@ -20,10 +20,14 @@ from pyload.thread.base import BaseThread
 
 
 class DownloadThread(BaseThread):
-    """thread for downloading files from 'real' hoster plugins"""
+    """
+    Thread for downloading files from 'real' hoster plugins.
+    """
 
     def __init__(self, manager):
-        """Constructor"""
+        """
+        Constructor.
+        """
         BaseThread.__init__(self, manager)
 
         self.is_working = Event()
@@ -35,7 +39,9 @@ class DownloadThread(BaseThread):
         self.start()
 
     def run(self):
-        """run method"""
+        """
+        Run method.
+        """
         pyfile = None
 
         while True:
@@ -221,13 +227,19 @@ class DownloadThread(BaseThread):
             return self.active.get_progress_info()
 
     def put(self, job):
-        """assign a job to the thread"""
+        """
+        Assign a job to the thread.
+        """
         self.queue.put(job)
 
     def clean(self, pyfile):
-        """ set thread inactive and release pyfile """
+        """
+        Set thread inactive and release pyfile.
+        """
         pyfile.release()
 
     def stop(self):
-        """stops the thread"""
+        """
+        Stops the thread.
+        """
         self.put("quit")

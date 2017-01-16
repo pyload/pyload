@@ -8,7 +8,9 @@ from pyload.api import OnlineCheck as OC
 
 
 class OnlineCheck(object):
-    """  Helper class that holds result of an initiated online check """
+    """
+    Helper class that holds result of an initiated online check.
+    """
 
     def __init__(self, rid, owner):
         self.rid = rid
@@ -19,7 +21,9 @@ class OnlineCheck(object):
         self.timestamp = time()
 
     def is_stale(self, timeout=5):
-        """ checks if the data was updated or accessed recently """
+        """
+        Checks if the data was updated or accessed recently.
+        """
         return self.timestamp + timeout * 60 < time()
 
     def update(self, result):

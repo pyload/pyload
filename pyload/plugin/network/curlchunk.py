@@ -152,8 +152,9 @@ class CurlChunk(CurlRequest):
         return self.p.context
 
     def get_handle(self):
-        """ returns a Curl handle ready to use for perform/multiperform """
-
+        """
+        Returns a Curl handle ready to use for perform/multiperform.
+        """
         self.set_request_context(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
         self.c.setopt(pycurl.WRITEFUNCTION, self.write_body)
         self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
@@ -247,7 +248,9 @@ class CurlChunk(CurlRequest):
 
 
     def parse_header(self):
-        """parse data from received header"""
+        """
+        Parse data from received header.
+        """
         for orgline in self.decode_response(self.header).splitlines():
             line = orgline.strip().lower()
             if line.startswith("accept-ranges") and "bytes" in line:
@@ -267,12 +270,16 @@ class CurlChunk(CurlRequest):
         self.header_parsed = True
 
     def stop(self):
-        """The download will not proceed after next call of write_body"""
+        """
+        The download will not proceed after next call of write_body.
+        """
         self.range = [0, 0]
         self.size = 0
 
     def reset_range(self):
-        """ Reset the range, so the download will load all data available  """
+        """
+        Reset the range, so the download will load all data available.
+        """
         self.range = None
 
     def set_range(self, range):
@@ -280,13 +287,17 @@ class CurlChunk(CurlRequest):
         self.size = range[1] - range[0]
 
     def flush_file(self):
-        """  flush and close file """
+        """
+        Flush and close file.
+        """
         self.fp.flush()
         fsync(self.fp.fileno()) #make sure everything was written to disk
         self.fp.close() #needs to be closed, or merging chunks will fail
 
     def close(self):
-        """ closes everything, unusable after this """
+        """
+        Closes everything, unusable after this.
+        """
         if self.fp:
             self.fp.close()
         self.c.close()

@@ -28,7 +28,9 @@ class Dependency(object):
 
     @classmethod
     def check(cls):
-        """  Returns (availability, version) as tuple """
+        """
+        Returns (availability, version) as tuple.
+        """
         inst = cls()
         avail = inst.is_statisfied()
         v = None

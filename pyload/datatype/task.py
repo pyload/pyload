@@ -13,6 +13,7 @@ class InteractionTask(BaseInteractionTask):
     """
     General Interaction Task extends ITask defined by api with additional fields and methods.
     """
+
     #: Plugins can put needed data here
     storage = None
     #: Timestamp when task expires
@@ -59,14 +60,18 @@ class InteractionTask(BaseInteractionTask):
         return self.result
 
     def set_shared(self):
-        """ enable shared mode, should not be reversed"""
+        """
+        Enable shared mode, should not be reversed.
+        """
         self.shared = True
 
     def set_result(self, value):
         self.result = self.convert_result(value)
 
     def set_waiting(self, sec, lock=False):
-        """ sets waiting in seconds from now, < 0 can be used as infinitive  """
+        """
+        Sets waiting in seconds from now, < 0 can be used as infinitive.
+        """
         if not self.locked:
             if sec < 0:
                 self.wait_until = -1

@@ -11,7 +11,7 @@ from pyload.utils.fs import join
 
 class PyPackage(object):
     """
-    Represents a package object at runtime
+    Represents a package object at runtime.
     """
 
     @staticmethod
@@ -50,13 +50,17 @@ class PyPackage(object):
         )
 
     def update_from_info_data(self, pack):
-        """ Updated allowed values from info data """
+        """
+        Updated allowed values from info data.
+        """
         for attr in PackageInfo.__slots__:
             if attr in ("site", "comment", "password"):
                 setattr(self, attr, getattr(pack, attr))
 
     def get_files(self):
-        """get contaied files data"""
+        """
+        Get contaied files data.
+        """
         return self.manager.pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=""):
@@ -64,11 +68,15 @@ class PyPackage(object):
         return join(self.manager.get_package(self.root).get_path(), self.folder, name)
 
     def sync(self):
-        """sync with db"""
+        """
+        Sync with db.
+        """
         self.manager.update_package(self)
 
     def release(self):
-        """sync and delete from cache"""
+        """
+        Sync and delete from cache.
+        """
         self.sync()
         self.manager.release_package(self.id)
 
@@ -76,7 +84,9 @@ class PyPackage(object):
         self.manager.remove_package(self.id)
 
     def delete_if_empty(self):
-        """  True if deleted  """
+        """
+        True if deleted.
+        """
         if not len(self.get_files()):
             self.delete()
             return True

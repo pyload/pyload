@@ -14,13 +14,17 @@ zero_stats = PackageStats(0, 0, 0, 0)
 class FileMethods(DatabaseMethods):
     @queue
     def filecount(self):
-        """returns number of files, currently only used for debugging"""
+        """
+        Returns number of files, currently only used for debugging.
+        """
         self.c.execute("SELECT COUNT(*) FROM files")
         return self.c.fetchone()[0]
 
     @queue
     def downloadstats(self, user=None):
-        """ number of downloads and size """
+        """
+        Number of downloads and size.
+        """
         if user is None:
             self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
         else:
@@ -35,7 +39,10 @@ class FileMethods(DatabaseMethods):
     # TODO: missing and not possible DLs ?
     @queue
     def queuestats(self, user=None):
-        """ number and size of files in queue not finished yet"""
+        """
+        Number and size of files in queue not finished yet.
+        """
+
         # status not in NA, finished, skipped
         if user is None:
             self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
@@ -51,7 +58,10 @@ class FileMethods(DatabaseMethods):
     # TODO: multi user?
     @queue
     def processcount(self, fid=-1, user=None):
-        """ number of files which have to be processed """
+        """
+        Number of files which have to be processed.
+        """
+
         # status in online, queued, starting, waiting, downloading
         self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
         return self.c.fetchone()[0]
@@ -76,7 +86,9 @@ class FileMethods(DatabaseMethods):
 
     @async
     def add_links(self, links, package, owner):
-        """ links is a list of tuples (url, plugin)"""
+        """
+        Links is a list of tuples (url, plugin).
+        """
         links = [(x[0], x[0], x[1], package, owner) for x in links]
         self.c.executemany(
             'INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
@@ -106,7 +118,9 @@ class FileMethods(DatabaseMethods):
 
     @async
     def delete_file(self, fid, order, package, owner=None):
-        """ To delete a file order and package of it is needed """
+        """
+        To delete a file order and package of it is needed.
+        """
         if owner is None:
             self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
@@ -118,7 +132,8 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_all_files(self, package=None, search=None, state=None, owner=None):
-        """ Return dict with file information
+        """
+        Return dict with file information
 
         :param package: optional package to filter out
         :param search: or search string for file name
@@ -164,7 +179,9 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_matching_filenames(self, pattern, owner=None):
-        """ Return matching file names for pattern, useful for search suggestions """
+        """
+        Return matching file names for pattern, useful for search suggestions.
+        """
         qry = 'SELECT name FROM files WHERE name LIKE ?'
         args = ["%%{}%%".format(pattern.strip("%"))]
         if owner:
@@ -176,7 +193,8 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_all_packages(self, root=None, owner=None, tags=None):
-        """ Return dict with package information
+        """
+        Return dict with package information
 
         :param root: optional root to filter
         :param owner: optional user id
@@ -244,7 +262,9 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_file_info(self, fid, force=False):
-        """get data for specific file, when force is true download info will be appended"""
+        """
+        Get data for specific file, when force is true download info will be appended.
+        """
         self.c.execute('SELECT fid, name, owner, size, status, media, added, fileorder, '
                        'url, plugin, hash, dlstatus, error, package FROM files '
                        'WHERE fid=?', (fid,))
@@ -260,7 +280,9 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_package_info(self, pid, stats=True):
-        """get data for a specific package, optionally with package stats"""
+        """
+        Get data for a specific package, optionally with package stats.
+        """
         if stats:
             stats = self.get_package_stats(pid=pid)
 
@@ -280,7 +302,9 @@ class FileMethods(DatabaseMethods):
     # TODO: does this need owner?
     @async
     def update_link_info(self, data):
-        """ data is list of tuples (name, size, status,[ hash,] url)"""
+        """
+        Data is list of tuples (name, size, status,[ hash,] url).
+        """
 
         # inserts media type as n-1th arguments
         data = [t[:-1] + (guess_type(t[0]), t[-1])  for t in data]
@@ -378,7 +402,9 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_jobs(self, occ):
-        """return pyfile ids, which are suitable for download and don't use a occupied plugin"""
+        """
+        Return pyfile ids, which are suitable for download and don't use a occupied plugin.
+        """
         cmd = "({})".format(", ".join("'{}'".format(x) for x in occ))
 
         # dlstatus in online, queued, occupied | package status = ok
@@ -401,7 +427,9 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def get_unfinished(self, pid):
-        """return list of max length 3 ids with pyfiles in package not finished or processed"""
+        """
+        Return list of max length 3 ids with pyfiles in package not finished or processed.
+        """
 
         # status in finished, skipped, processing
         self.c.execute("SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
@@ -414,7 +442,10 @@ class FileMethods(DatabaseMethods):
 
     @queue
     def find_duplicates(self, id, folder, filename):
-        """ checks if filename exists with different id and same package, dlstatus = finished """
+        """
+        Checks if filename exists with different id and same package, dlstatus = finished.
+        """
+
         # TODO: also check root of package
         self.c.execute(
             "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?"

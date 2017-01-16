@@ -27,7 +27,9 @@ from pyload.thread.decrypter import DecrypterThread
 
 
 class DownloadManager(object):
-    """ Schedules and manages download and decrypter jobs. """
+    """
+    Schedules and manages download and decrypter jobs.
+    """
 
     def __init__(self, core):
         self.pyload = core
@@ -50,7 +52,10 @@ class DownloadManager(object):
 
     @lock
     def done(self, thread):
-        """ Switch thread from working to free state """
+        """
+        Switch thread from working to free state.
+        """
+
         # only download threads will be re-used
         if isinstance(thread, DownloadThread):
             # clean local var
@@ -63,7 +68,9 @@ class DownloadManager(object):
 
     @lock
     def stop(self, thread):
-        """  Removes a thread from all lists  """
+        """
+        Removes a thread from all lists.
+        """
         if thread in self.free:
             self.free.remove(thread)
         elif thread in self.working:
@@ -71,7 +78,9 @@ class DownloadManager(object):
 
     @lock
     def start_download_thread(self, info):
-        """ Use a free dl thread or create a new one """
+        """
+        Use a free dl thread or create a new one.
+        """
         if self.free:
             thread = self.free[0]
             del self.free[0]
@@ -86,48 +95,62 @@ class DownloadManager(object):
 
     @lock
     def start_decrypter_thread(self, info):
-        """ Start decrypting of entered data, all links in one package are accumulated to one thread."""
+        """
+        Start decrypting of entered data, all links in one package are accumulated to one thread.
+        """
         self.pyload.files.set_download_status(info.fid, DS.Decrypting)
         self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
                                               info.fid, info.package, info.owner))
 
     @read_lock
     def active_downloads(self, uid=None):
-        """ retrieve pyfiles of running downloads  """
+        """
+        Retrieve pyfiles of running downloads.
+        """
         return [x.active for x in self.working
                 if uid is None or x.active.owner == uid]
 
     @read_lock
     def waiting_downloads(self):
-        """ all waiting downloads """
+        """
+        All waiting downloads.
+        """
         return [x.active for x in self.working if x.active.has_status("waiting")]
 
     @read_lock
     def get_progress_list(self, uid):
-        """ Progress of all running downloads """
+        """
+        Progress of all running downloads.
+        """
+
         # decrypter progress could be none
         return [x for x in [p.get_progress() for p in self.working + self.decrypter
                        if uid is None or p.owner == uid] if x is not None]
 
     def processing_ids(self):
-        """get a id list of all pyfiles processed"""
+        """
+        Get a id list of all pyfiles processed.
+        """
         return [x.fid for x in self.active_downloads(None)]
 
 
     @read_lock
     def shutdown(self):
-        """  End all threads """
+        """
+        End all threads.
+        """
         self.paused = True
         for thread in self.working + self.free:
             thread.put("quit")
 
     def work(self):
-        """ main routine that does the periodical work """
-
+        """
+        Main routine that does the periodical work.
+        """
         self.try_reconnect()
 
-        if free_space(self.pyload.config.get('general', 'download_folder')) / 1024 / 1024 < \
-                self.pyload.config.get('general', 'min_free_space'):
+        if (free_space(self.pyload.config.get('general', 'download_folder')) / 1024 / 1024 <
+            self.pyload.config.get('general', 'min_free_space')):
             self.pyload.log.warning(_("Not enough space left on device"))
             self.paused = True
 
@@ -143,8 +166,9 @@ class DownloadManager(object):
         # TODO: clean free threads
 
     def assign_jobs(self):
-        """ Load jobs from db and try to assign them """
-
+        """
+        Load jobs from db and try to assign them.
+        """
         limit = self.pyload.config.get('download', 'max_downloads') - len(self.active_downloads())
 
         # check for waiting dl rule
@@ -180,7 +204,10 @@ class DownloadManager(object):
                     limit -= 1
 
     def choose_jobs(self, jobs, k):
-        """ make a fair choice of which k jobs to start """
+        """
+        Make a fair choice of which k jobs to start.
+        """
+
         # TODO: prefer admins, make a fairer choice?
         if k <= 0:
             return []
@@ -190,8 +217,9 @@ class DownloadManager(object):
         return sample(jobs, k)
 
     def start_job(self, info, limit):
-        """ start a download or decrypter thread with given file info """
-
+        """
+        Start a download or decrypter thread with given file info.
+        """
         plugin = self.pyload.pgm.find_type(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
@@ -216,8 +244,9 @@ class DownloadManager(object):
 
     @read_lock
     def try_reconnect(self):
-        """checks if reconnect needed"""
-
+        """
+        Checks if reconnect needed.
+        """
         if not self.pyload.config.get('reconnect', 'activated') or not self.pyload.api.is_time_reconnect():
             return False
 
@@ -268,13 +297,17 @@ class DownloadManager(object):
 
     @read_lock
     def want_reconnect(self):
-        """ number of downloads that are waiting for reconnect """
+        """
+        Number of downloads that are waiting for reconnect.
+        """
         active = [x.active.has_plugin() and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock
     def get_remaining_plugin_slots(self):
-        """  dict of plugin names mapped to remaining dls  """
+        """
+        Dict of plugin names mapped to remaining dls.
+        """
         occ = {}
         # decrypter are treated as occupied
         for p in self.decrypter:

@@ -17,10 +17,13 @@ def to_config_holder(section, config, values):
 
 
 class ConfigApi(BaseApi):
-    """ Everything related to configuration """
+    """
+    Everything related to configuration.
+    """
 
     def get_config_value(self, section, option):
-        """Retrieve config value.
+        """
+        Retrieve config value.
 
         :param section: name of category, or plugin
         :param option: config option
@@ -31,7 +34,8 @@ class ConfigApi(BaseApi):
         return to_string(value)
 
     def set_config_value(self, section, option, value):
-        """Set new config value.
+        """
+        Set new config value.
 
         :param section:
         :param option:
@@ -40,7 +44,8 @@ class ConfigApi(BaseApi):
         self.pyload.config.set(section, option, value, self.primary_uid)
 
     def get_config(self):
-        """Retrieves complete config of core.
+        """
+        Retrieves complete config of core.
 
         :rtype: dict of section -> ConfigHolder
         """
@@ -50,7 +55,8 @@ class ConfigApi(BaseApi):
         return data
 
     def get_core_config(self):
-        """ Retrieves core config sections
+        """
+        Retrieves core config sections
 
         :rtype: list of PluginInfo
         """
@@ -59,10 +65,12 @@ class ConfigApi(BaseApi):
 
     @require_perm(Permission.Plugins)
     def get_plugin_config(self):
-        """All plugins and addons the current user has configured
+        """
+        All plugins and addons the current user has configured
 
         :rtype: list of PluginInfo
         """
+
         # TODO: include addons that are activated by default
         # TODO: multi user
         # TODO: better plugin / addon activated config
@@ -85,10 +93,12 @@ class ConfigApi(BaseApi):
 
     @require_perm(Permission.Plugins)
     def get_available_plugins(self):
-        """List of all available plugins, that are configurable
+        """
+        List of all available plugins, that are configurable
 
         :rtype: list of PluginInfo
         """
+
         # TODO: filter user_context / addons when not allowed
         plugins = [ConfigInfo(name, config.label, config.description,
                               self.pyload.pgm.get_category(name),
@@ -99,11 +109,13 @@ class ConfigApi(BaseApi):
 
     @require_perm(Permission.Plugins)
     def load_config(self, name):
-        """Get complete config options for desired section
+        """
+        Get complete config options for desired section
 
         :param name: Name of plugin or config section
         :rtype: ConfigHolder
         """
+
         # requires at least plugin permissions, but only admin can load core config
         config, values = self.pyload.config.get_section(name, self.primary_uid)
         return toConfigHolder(name, config, values)
@@ -111,7 +123,8 @@ class ConfigApi(BaseApi):
 
     @require_perm(Permission.Plugins)
     def save_config(self, config):
-        """Used to save a configuration, core config can only be saved by admins
+        """
+        Used to save a configuration, core config can only be saved by admins
 
         :param config: :class:`ConfigHolder`
         """
@@ -122,10 +135,12 @@ class ConfigApi(BaseApi):
 
     @require_perm(Permission.Plugins)
     def delete_config(self, plugin):
-        """Deletes modified config
+        """
+        Deletes modified config
 
         :param plugin: plugin name
         """
+
         #TODO: delete should deactivate addons?
         self.pyload.config.delete(plugin, self.primary_uid)
 

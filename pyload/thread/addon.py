@@ -10,10 +10,14 @@ from pyload.thread.base import BaseThread
 
 
 class AddonThread(BaseThread):
-    """thread for addons"""
+    """
+    Thread for addons.
+    """
 
     def __init__(self, m, function, args, kwargs):
-        """Constructor"""
+        """
+        Constructor.
+        """
         BaseThread.__init__(self, m)
 
         self.f = function
@@ -32,18 +36,24 @@ class AddonThread(BaseThread):
 
     # TODO: multiple progresses
     def set_progress(self, progress, pyfile=None):
-        """  Sets progress for the thread in percent"""
+        """
+        Sets progress for the thread in percent.
+        """
         self.progress = progress
 
     def get_progress(self):
-        """ Progress of the thread  """
+        """
+        Progress of the thread.
+        """
         if self.active:
             active = self.active[0]
             return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
                                 self.progress, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, pyfile):
-        """ Adds a pyfile to active list and thus will be displayed on overview"""
+        """
+        Adds a pyfile to active list and thus will be displayed on overview.
+        """
         if pyfile not in self.active:
             self.active.append(pyfile)
 

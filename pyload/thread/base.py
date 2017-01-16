@@ -15,7 +15,9 @@ from pyload.setup.system import get_system_info
 
 
 class BaseThread(Thread):
-    """abstract base class for thread types"""
+    """
+    Abstract base class for thread types.
+    """
 
     def __init__(self, manager, owner=None):
         Thread.__init__(self)
@@ -31,19 +33,22 @@ class BaseThread(Thread):
         return primary_uid(self.owner)
 
     def finished(self):
-        """ Remove thread from list  """
+        """
+        Remove thread from list.
+        """
         self.manager.remove_thread(self)
 
     def get_progress(self):
-        """ retrieves progress information about the current running task
+        """
+        Retrieves progress information about the current running task
 
         :return: :class:`ProgressInfo`
         """
-
-    # Debug Stuff
+def    # Debug Stuff
     def write_debug_report(self, name, pyfile=None, plugin=None):
-        """ writes a debug report to disk  """
-
+        """
+        Writes a debug report to disk.
+        """
         dump_name = "debug_{}_{}.zip".format(name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
             dump = self.get_plugin_dump(pyfile.plugin) + "\n"

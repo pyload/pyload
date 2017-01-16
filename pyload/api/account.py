@@ -8,11 +8,14 @@ from pyload.api.base import BaseApi
 
 
 class AccountApi(BaseApi):
-    """ All methods to control accounts """
+    """
+    All methods to control accounts.
+    """
 
     @require_perm(Permission.All)
     def get_account_types(self):
-        """All available account types.
+        """
+        All available account types.
 
         :return: string list
         """
@@ -20,7 +23,8 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def get_accounts(self):
-        """Get information about all entered accounts.
+        """
+        Get information about all entered accounts.
 
         :return: list of `AccountInfo`
         """
@@ -29,9 +33,10 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def get_account_info(self, aid, plugin, refresh=False):
-        """ Returns :class:`AccountInfo` for a specific account
+        """
+        Returns :class:`AccountInfo` for a specific account
 
-            :param refresh: reload account info
+        :param refresh: reload account info
         """
         account = self.pyload.acm.get_account(aid, plugin)
 
@@ -47,7 +52,8 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def create_account(self, plugin, loginname, password):
-        """  Creates a new account
+        """
+        Creates a new account
 
         :return class:`AccountInfo`
         """
@@ -55,7 +61,8 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def update_account(self, aid, plugin, loginname, password):
-        """Updates loginname and password of an existent account
+        """
+        Updates loginname and password of an existent account
 
         :return: updated account info
         """
@@ -64,7 +71,9 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def update_account_info(self, account):
-        """ Update account settings from :class:`AccountInfo` """
+        """
+        Update account settings from :class:`AccountInfo`.
+        """
         inst = self.pyload.acm.get_account(account.aid, account.plugin, self.user)
         if not inst:
             return
@@ -76,7 +85,8 @@ class AccountApi(BaseApi):
 
     @require_perm(Permission.Accounts)
     def remove_account(self, account):
-        """Remove account from pyload.
+        """
+        Remove account from pyload.
 
         :param account: :class:`ÀccountInfo` instance
         """

@@ -21,7 +21,7 @@ from pyload.datatype.task import InteractionTask
 class InteractionManager(object):
     """
     Class that gives ability to interact with the user.
-    Arbitrary tasks with predefined output and input types can be set off.
+    Arbitrary tasks with predefined output and input types can be set off
     """
 
     # number of seconds a client is classified as active
@@ -53,7 +53,8 @@ class InteractionManager(object):
 
     @lock
     def create_notification(self, title, content, desc="", plugin="", owner=None):
-        """ Creates and queues a new Notification
+        """
+        Creates and queues a new Notification
 
         :param title: short title
         :param content: text content
@@ -82,7 +83,8 @@ class InteractionManager(object):
 
     @lock
     def create_captcha_task(self, img, format, filename, plugin="", type=InputType.Text, owner=None):
-        """ Createss a new captcha task.
+        """
+        Createss a new captcha task.
 
         :param img: image content (not base encoded)
         :param format: img format

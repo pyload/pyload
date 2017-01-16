@@ -67,12 +67,15 @@ class UpdateManager(Hook):
 
     @Expose
     def recheck_for_updates(self):
-        """recheck if updates are available"""
+        """
+        Recheck if updates are available.
+        """
         self.periodical()
 
     def check_for_update(self):
-        """checks if an update is available, return result"""
-
+        """
+        Checks if an update is available, return result.
+        """
         try:
             if self.version == "None":  # No updated known
                 version_check = get_url(self.URL.format(self.pyload.api.get_server_version()).splitlines())
@@ -93,7 +96,9 @@ class UpdateManager(Hook):
         return None  # Nothing will be done
 
     def check_plugins(self, updates):
-        """ checks for plugins updates"""
+        """
+        Checks for plugins updates.
+        """
 
         # plugins were already updated
         if self.info['plugins']:

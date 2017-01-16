@@ -26,7 +26,9 @@ class User(UserData):
         return UserData()
 
     def has_permission(self, perms):
-        """  Accepts permission bit or name  """
+        """
+        Accepts permission bit or name.
+        """
         if isinstance(perms, str) and hasattr(Permission, perms):
             perms = getattr(Permission, perms)
 
@@ -46,13 +48,18 @@ class User(UserData):
 
     @property
     def primary(self):
-        """ Primary user id, Internal user handle used for most operations
-        Secondary user account share id with primary user. Only Admins have no primary id. """
+        """
+        Primary user id, Internal user handle used for most operations.
+        Secondary user account share id with primary user.
+        Only Admins have no primary id.
+        """
         if self.has_role(Role.Admin):
             return None
         return self.true_primary
 
     @property
     def true_primary(self):
-        """ Primary handle that does not distinguish admin accounts  """
+        """
+        Primary handle that does not distinguish admin accounts.
+        """
         return self.user if self.user else self.uid

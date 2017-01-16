@@ -11,7 +11,8 @@ from pyload.remote.backend.abstracthandler import AbstractHandler
 
 
 class ApiHandler(AbstractHandler):
-    """Provides access to the API.
+    """
+    Provides access to the API.
 
     Send your request as json encoded string in the following manner:
     ["function", [*args]] or ["function", {**kwargs}]
@@ -21,9 +22,8 @@ class ApiHandler(AbstractHandler):
     [code, result]
 
     Don't forget to login first.
-    Non json request will be ignored.
+    Non json request will be ignored
     """
-
     PATH = "/api"
 
     def transfer_data(self, req):

@@ -88,7 +88,9 @@ class XFileSharingPro(SimpleHoster):
                 self.handle_free()
 
     def prepare(self):
-        """ Initialize important variables """
+        """
+        Initialize important variables.
+        """
         if not hasattr(self, "HOSTER_NAME"):
             self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
@@ -98,7 +100,9 @@ class XFileSharingPro(SimpleHoster):
         self.passwords = self.get_password().splitlines()
 
     def get_direct_download_link(self):
-        """ Get download link for premium users with direct download enabled """
+        """
+        Get download link for premium users with direct download enabled.
+        """
         self.req.http.last_url = self.pyfile.url
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)

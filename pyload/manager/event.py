@@ -24,7 +24,7 @@ class EventManager(object):
     ===================== ================ ===========================================================
 
     | Notes:
-    |    download:allProcessed is *always* called before download:allFinished.
+    |    download:allProcessed is *always* called before download:allFinished
     """
 
     def __init__(self, core):
@@ -35,7 +35,9 @@ class EventManager(object):
         self.lock = Lock()
 
     def listen_to(self, event, func):
-        """Adds an event listener for event name"""
+        """
+        Adds an event listener for event name.
+        """
         if event in self.events:
             if func in self.events[event]:
                 self.pyload.log.debug("Function already registered {}".format(func))
@@ -45,18 +47,25 @@ class EventManager(object):
             self.events[event] = [func]
 
     def remove_event(self, event, func):
-        """removes previously added event listener"""
+        """
+        Removes previously added event listener.
+        """
         if event in self.events:
             self.events[event].remove(func)
 
     def remove_from_events(self, func):
-        """ Removes func from all known events """
+        """
+        Removes func from all known events.
+        """
         for name, events in self.events.items():
             if func in events:
                 events.remove(func)
 
     def dispatch_event(self, event, *args, **kwargs):
-        """dispatches event with args"""
+        """
+        Dispatches event with args.
+        """
+
         # dispatch the meta event
         if event != "event":
             self.dispatch_event("event", *(event,) + args, **kwargs)

@@ -13,7 +13,9 @@ from pyload.thread.base import BaseThread
 
 
 class DecrypterThread(BaseThread):
-    """thread for decrypting"""
+    """
+    Thread for decrypting.
+    """
 
     def __init__(self, manager, data, fid, pid, owner):
         BaseThread.__init__(self, manager, owner)

@@ -39,7 +39,6 @@ class SimpleCrypter(Crypter):
     load_page(self, page_n):
     must return the html of the page number 'page_n'
     """
-
     FILE_URL_REPLACEMENTS = []
 
     def decrypt_url(self, url):
@@ -64,7 +63,7 @@ class SimpleCrypter(Crypter):
     def get_links(self):
         """
         Returns the links extracted from self.html
-        You should override this only if it's impossible to extract links using only the LINK_PATTERN.
+        You should override this only if it's impossible to extract links using only the LINK_PATTERN
         """
         return re.findall(self.LINK_PATTERN, self.html)
 

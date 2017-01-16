@@ -16,7 +16,7 @@ from pyload.utils.new import convert
 
 class NoVersionsError(Exception):
     """
-    No versions found for package
+    No versions found for package.
     """
     def __str__(self):
         return """<NoVersionsError {}>""".format(self.message)
@@ -24,7 +24,7 @@ class NoVersionsError(Exception):
 
 class PIPError(Exception):
     """
-    PIP process failure
+    PIP process failure.
     """
     def __str__(self):
         return """<PIPError {}>""".format(self.message)
@@ -32,21 +32,22 @@ class PIPError(Exception):
 
 class PkgNotFoundError(Exception):
     """
-    No package found
+    No package found.
     """
     def __str__(self):
         return """<PkgNotFoundError {}>""".format(self.message)
 
 
 class AutoUpgrade(object):
-    """AutoUpgrade class, holds one package
     """
-
+    AutoUpgrade class, holds one package.
+    """
     def __init__(self, pkg, index=None, verbose=False):
-        """Args:
-                pkg (str): name of package
-                index (str): alternative index, if not given default for *pip* will be used. Include
-                             full index url, e.g. https://example.com/simple
+        """
+        Args:
+            pkg (str): name of package
+            index (str): alternative index, if not given default for *pip* will be used. Include
+                         full index url, e.g. https://example.com/simple
         """
         self.pkg     = pkg
         self.verbose = verbose
@@ -59,11 +60,12 @@ class AutoUpgrade(object):
 
 
     def smartupgrade(self, restart=True, dependencies=False, prerelease=False):
-        """ Upgrade the package if there is a later version available.
-            Args:
-                restart: restart app if True
-                dependencies: update package dependencies if True (see pip --no-deps)
-                prerelease: update to pre-release and development versions
+        """
+        Upgrade the package if there is a later version available.
+        Args:
+            restart: restart app if True
+            dependencies: update package dependencies if True (see pip --no-deps)
+            prerelease: update to pre-release and development versions
         """
         if not self.check():
             return
@@ -75,12 +77,13 @@ class AutoUpgrade(object):
 
 
     def upgrade(self, reinstall=False, dependencies=False, prerelease=False):
-        """ Upgrade the package unconditionaly
-            Args:
-                reinstall: reinstall all packages even if they are already up-to-date
-                dependencies: update package dependencies if True (see pip --no-deps)
-                prerelease: update to pre-release and development versions
-            Returns True if pip was sucessful
+        """
+        Upgrade the package unconditionaly
+        Args:
+            reinstall: reinstall all packages even if they are already up-to-date
+            dependencies: update package dependencies if True (see pip --no-deps)
+            prerelease: update to pre-release and development versions
+        Returns True if pip was sucessful
         """
         pip_args = ['install', self.pkg]
 
@@ -116,8 +119,9 @@ class AutoUpgrade(object):
 
 
     def restart(self):
-        """ Restart application with same args as it was started.
-            Does **not** return
+        """
+        Restart application with same args as it was started.
+        Does **not** return
         """
         if self.verbose:
             print("Restarting {} {}".format(sys.executable, sys.argv))
@@ -125,8 +129,9 @@ class AutoUpgrade(object):
 
 
     def check(self):
-        """ Check if pkg has a later version
-            Returns true if later version exists.
+        """
+        Check if pkg has a later version
+        Returns true if later version exists
         """
         current = self._get_current()
         highest = self._get_highest_version()

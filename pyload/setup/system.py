@@ -14,7 +14,9 @@ info = None
 
 
 def get_system_info():
-    """ Returns system information as dict """
+    """
+    Returns system information as dict.
+    """
     global info
 
     if info is None:

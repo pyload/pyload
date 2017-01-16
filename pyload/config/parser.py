@@ -24,7 +24,6 @@ class ConfigParser(object):
     """
     Holds and manages the configuration + meta data for config read from file.
     """
-
     CONFIG = "pyload.conf"
 
     def __init__(self, config=None):
@@ -46,7 +45,9 @@ class ConfigParser(object):
         make_config(self)
 
     def check_version(self):
-        """Determines if config needs to be deleted"""
+        """
+        Determines if config needs to be deleted.
+        """
         if exists(self.CONFIG):
             with open(self.CONFIG, "rb") as f:
                 v = f.readline()
@@ -61,7 +62,9 @@ class ConfigParser(object):
                 f.write("version: {}".format(CONF_VERSION))
 
     def parse_values(self, filename):
-        """read config values from file"""
+        """
+        Read config values from file.
+        """
         with open(filename, "rb") as f:
             config = f.readlines()[1:]
 
@@ -98,8 +101,9 @@ class ConfigParser(object):
 
 
     def save(self):
-        """saves config to filename"""
-
+        """
+        Saves config to filename.
+        """
         configs = []
         with open(self.CONFIG, "wb") as f:
             configs.append(f)
@@ -121,23 +125,30 @@ class ConfigParser(object):
                 f.write("\n")
 
     def __getitem__(self, section):
-        """provides dictionary like access: c['section']['option']"""
+        """
+        Provides dictionary like access: c['section']['option'].
+        """
         return Section(self, section)
 
     def __contains__(self, section):
-        """ checks if parser contains section """
+        """
+        Checks if parser contains section.
+        """
         return section in self.config
 
     def get(self, section, option):
-        """get value or default"""
+        """
+        Get value or default.
+        """
         try:
             return self.values[section][option]
         except KeyError:
             return self.config[section].config[option].input.default_value
 
     def set(self, section, option, value, sync=True):
-        """set value"""
-
+        """
+        Set value.
+        """
         data = self.config[section].config[option]
         value = from_string(value, data.input.type)
         old_value = self.get(section, option)
@@ -154,22 +165,29 @@ class ConfigParser(object):
         return False
 
     def get_meta_data(self, section, option):
-        """ get all config data for an option """
+        """
+        Get all config data for an option.
+        """
         return self.config[section].config[option]
 
     def iter_sections(self):
-        """ Yields section, config info, values, for all sections """
-
+        """
+        Yields section, config info, values, for all sections.
+        """
         for name, config in self.config.items():
             yield name, config, self.values[name] if name in self.values else {}
 
     def get_section(self, section):
-        """ Retrieves single config as tuple (section, values) """
+        """
+        Retrieves single config as tuple (section, values).
+        """
         return self.config[section], self.values[section] if section in self.values else {}
 
     def add_config_section(self, section, label, desc, expl, config):
-        """Adds a section to the config. `config` is a list of config tuple as used in plugin api defined as:
-        The order of the config elements is preserved with OrderedDict
+        """
+        Adds a section to the config.
+        `config` is a list of config tuple as used in plugin api defined as
+        the order of the config elements is preserved with OrderedDict
         """
         d = OrderedDict()
 
@@ -182,17 +200,25 @@ class ConfigParser(object):
 
 
 class Section(object):
-    """provides dictionary like access for configparser"""
+    """
+    Provides dictionary like access for configparser.
+    """
 
     def __init__(self, parser, section):
-        """Constructor"""
+        """
+        Constructor.
+        """
         self.parser = parser
         self.section = section
 
     def __getitem__(self, item):
-        """getitem"""
+        """
+        Getitem.
+        """
         return self.parser.get(self.section, item)
 
     def __setitem__(self, item, value):
-        """setitem"""
+        """
+        Setitem.
+        """
         self.parser.set(self.section, item, value)

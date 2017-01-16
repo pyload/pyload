@@ -3,6 +3,8 @@
 from __future__ import with_statement
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+from threading import Event
 from time import time, sleep
 
 import threading
@@ -42,7 +44,9 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        self.running = True
+        self.running = Event()
+        self.running.set()
+
         from pyload.webui import webinterface
 
         global webinterface
@@ -79,7 +83,9 @@ class WebServer(threading.Thread):
                 # core.print_exc()
 
     def select_server(self, prefer=None):
-        """ find a working server """
+        """
+        Find a working server.
+        """
         from pyload.webui.servers import all_server
 
         unavailable = []

@@ -168,9 +168,8 @@ class SimpleHoster(Hoster):
     FILE_OFFLINE_PATTERN = r'File (deleted|not found)'
     TEMP_OFFLINE_PATTERN = r'Server maintainance'
 
-    You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account.
+    You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account
     """
-
     FILE_SIZE_REPLACEMENTS = []
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []

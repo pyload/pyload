@@ -107,7 +107,7 @@ def print_framestack(frame=None, limit=None, file=None):
 
 def _format_traceback(frame=None, limit=None, offset=None):
     """
-    Format call-stack and exception information (if available)
+    Format call-stack and exception information (if available).
     """
     limit  = None if not limit else abs(limit)
     offset = 1 if not offset else abs(offset) + 1

@@ -8,11 +8,14 @@ from pyload.api.base import BaseApi
 
 
 class UserInteractionApi(BaseApi):
-    """ Everything needed for user interaction """
+    """
+    Everything needed for user interaction.
+    """
 
     @require_perm(Permission.Interaction)
     def is_interaction_waiting(self, mode):
-        """ Check if task is waiting.
+        """
+        Check if task is waiting.
 
         :param mode: binary or'ed output type
         :return: boolean
@@ -21,7 +24,8 @@ class UserInteractionApi(BaseApi):
 
     @require_perm(Permission.Interaction)
     def get_interaction_tasks(self, mode):
-        """Retrieve task for specific mode.
+        """
+        Retrieve task for specific mode.
 
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
@@ -37,7 +41,8 @@ class UserInteractionApi(BaseApi):
 
     @require_perm(Permission.Interaction)
     def set_interaction_result(self, iid, result):
-        """Set Result for a interaction task. It will be immediately removed from task queue afterwards
+        """
+        Set Result for a interaction task. It will be immediately removed from task queue afterwards
 
         :param iid: interaction id
         :param result: result as json string

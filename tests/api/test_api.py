@@ -13,7 +13,7 @@ from tests.api.apitester import ApiTester
 
 class TestAPI(TestCase):
     """
-    Test all available testers randomly and on all backends
+    Test all available testers randomly and on all backends.
     """
     _multiprocess_can_split_ = True
     core = None

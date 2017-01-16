@@ -10,7 +10,9 @@ from pyload.plugin.account import Account
 
 
 def normalize(domain):
-    """ Normalize domain/plugin name, so they are comparable """
+    """
+    Normalize domain/plugin name, so they are comparable.
+    """
     return remove_chars(domain.strip().lower(), "-.")
 
 
@@ -21,7 +23,7 @@ class MultiHoster(Account):
     This is also an Account instance so you should see :class:`Account` and overwrite necessary methods.
     Multihoster becomes only active when an Account was entered and the MultiHoster addon was activated.
     You need to overwrite `loadHosterList` and a corresponding :class:`Hoster` plugin with the same name should
-    be available to make your service working.
+    be available to make your service working
     """
 
     #: List of hoster names that will be replaced so pyLoad will recognize them: (orig_name, pyload_name)
@@ -40,7 +42,8 @@ class MultiHoster(Account):
         Account.__init__(self, *args, **kwargs)
 
     def load_hoster_list(self, req):
-        """Load list of supported hoster
+        """
+        Load list of supported hoster
 
         :return: List of domain names
         """
@@ -48,7 +51,8 @@ class MultiHoster(Account):
 
 
     def is_hoster_usuable(self, domain):
-        """ Determine before downloading if hoster should be used.
+        """
+        Determine before downloading if hoster should be used.
 
         :param domain: domain name
         :return: True to let the MultiHoster download, False to fallback to default plugin

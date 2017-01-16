@@ -11,7 +11,9 @@ from pyload.network.request import get_url
 
 
 def get_ip(n=10):
-    """retrieve current ip. try n times for n seconds"""
+    """
+    Retrieve current ip. try n times for n seconds.
+    """
     services = [
         ("http://checkip.dyndns.org", r".*Current IP Address: (\S+)</body>.*"),
         ("http://myexternalip.com/raw", r"(\S+)"),

@@ -15,12 +15,12 @@ def class_name(p):
 
 
 def add_event_listener(event):
-    """ Used to register method for events. Arguments needs to match parameter of event
+    """
+    Used to register method for events.
+    Arguments needs to match parameter of event.
 
     :param event: Name of event or list of them.
     """
-
-
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
@@ -31,17 +31,16 @@ def add_event_listener(event):
 
 
 def addon_handler(label, desc, package=True, media=-1):
-    """ Register Handler for files, packages, or arbitrary callable methods. In case package is True (default)
-        The method should only accept a pid as argument. When media is set it will work on files
-        and should accept a fileid. Only when both is None the method can be arbitrary.
+    """
+    Register Handler for files, packages, or arbitrary callable methods. In case package is True (default).
+    The method should only accept a pid as argument. When media is set it will work on files
+    and should accept a fileid. Only when both is None the method can be arbitrary.
 
     :param label: verbose name
     :param desc: short description
     :param package: True if method works withs packages
     :param media: media type of the file to work with.
     """
-
-
     class _klass(object):
         def __new__(cls, f, *args, **kwargs):
             ADDONMANAGER.add_addon_handler(class_name(f.__module__), f.__name__, label, desc,
@@ -52,9 +51,10 @@ def addon_handler(label, desc, package=True, media=-1):
 
 
 def addon_property(name, desc, default=None, fire_event=True):
-    """ Use this function to declare class variables, that will be exposed as :class:`AddonInfo`.
-        It works similar to the @property function. You declare the variable like `state = addon_property(...)`
-        and use it as any other variable.
+    """
+    Use this function to declare class variables, that will be exposed as :class:`AddonInfo`.
+    It works similar to the @property function. You declare the variable like `state = addon_property(...)`
+    and use it as any other variable.
 
     :param name: display name
     :param desc: verbose description
@@ -86,7 +86,9 @@ def addon_property(name, desc, default=None, fire_event=True):
 
 
 def threaded(f):
-    """ Decorator to run method in a thread. """
+    """
+    Decorator to run method in a thread.
+    """
 
     #@wraps(f)
     def run(*args, **kwargs):
@@ -123,7 +125,8 @@ class Addon(Base):
         self.start_periodical(self.interval, 0)
 
     def start_periodical(self, interval, wait):
-        """ Starts the periodical calls with given interval. Older entries will be canceled.
+        """
+        Starts the periodical calls with given interval. Older entries will be canceled.
         :param interval: interval in seconds
         :param wait: time to wait in seconds before periodically starts
         :return: True if s
@@ -140,8 +143,9 @@ class Addon(Base):
         return True
 
     def stop_periodical(self):
-        """ Stops periodical call if existing
-        :return: True if the callback was stopped, false otherwise.
+        """
+        Stops periodical call if existing
+        :return: True if the callback was stopped, false otherwise
         """
         if self.cb and self.pyload.scheduler.cancel(self.cb):
             self.cb = None
@@ -164,7 +168,9 @@ class Addon(Base):
         return "<Addon {}>".format(self.__name__)
 
     def is_activated(self):
-        """ checks if addon is activated"""
+        """
+        Checks if addon is activated.
+        """
         return True if self.__internal__ else self.get_config("activated")
 
     def get_category(self):
@@ -174,20 +180,26 @@ class Addon(Base):
         pass
 
     def activate(self):
-        """  Used to activate the addon """
+        """
+        Used to activate the addon.
+        """
         if has_method(self.__class__, "core_ready"):
             self.log_debug("Deprecated method .core_ready() use activate() instead")
             self.pyload_ready()
 
     def deactivate(self):
-        """ Used to deactivate the addon. """
+        """
+        Used to deactivate the addon.
+        """
         pass
 
     def periodical(self):
         pass
 
     def new_interaction_task(self, task):
-        """ new interaction task for the plugin, it MUST set the handler and timeout or will be ignored """
+        """
+        New interaction task for the plugin, it MUST set the handler and timeout or will be ignored.
+        """
         pass
 
     def task_correct(self, task):

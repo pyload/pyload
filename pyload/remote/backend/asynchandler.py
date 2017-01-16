@@ -31,7 +31,6 @@ class AsyncHandler(AbstractHandler):
         After connect you have to login and can set the interval by sending the json command ["setInterval", xy].
         To start receiving updates call "start", afterwards no more incoming messages will be accepted!
     """
-
     PATH = "/async"
     COMMAND = "start"
 
@@ -123,7 +122,9 @@ class AsyncHandler(AbstractHandler):
                     return self.passive_closing_handshake(req)
 
     def mode_standby(self, msg, req):
-        """ accepts calls  before pushing updates """
+        """
+        Accepts calls  before pushing updates.
+        """
         func, args, kwargs = self.handle_call(msg, req)
         if not func:
             return # Result was already sent
@@ -149,7 +150,9 @@ class AsyncHandler(AbstractHandler):
 
 
     def mode_running(self, req):
-        """  Listen for events, closes socket when returning True """
+        """
+        Listen for events, closes socket when returning True.
+        """
         try:
             # block length of update interval if necessary
             ev = req.queue.get(True, req.interval)

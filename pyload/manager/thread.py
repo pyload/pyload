@@ -15,10 +15,14 @@ from pyload.thread.info import InfoThread
 
 
 class ThreadManager(object):
-    """manages all non download related threads and jobs """
+    """
+    Manages all non download related threads and jobs.
+    """
 
     def __init__(self, core):
-        """Constructor"""
+        """
+        Constructor.
+        """
         self.pyload = core
 
         self.thread = []  # thread list
@@ -44,20 +48,26 @@ class ThreadManager(object):
 
     @lock
     def remove_thread(self, thread):
-        """ Remove a thread from the local list """
+        """
+        Remove a thread from the local list.
+        """
         if thread in self.thread:
             self.thread.remove(thread)
 
     @lock
     def create_info_thread(self, data, pid):
-        """ start a thread which fetches online status and other info's """
+        """
+        Start a thread which fetches online status and other info's.
+        """
         self.timestamp = time() + 5 * 60
         if data:
             InfoThread(self, None, data, pid)
 
     @lock
     def create_result_thread(self, user, data):
-        """ creates a thread to fetch online status, returns result id """
+        """
+        Creates a thread to fetch online status, returns result id.
+        """
         self.timestamp = time() + 5 * 60
 
         rid = self.result_ids
@@ -93,8 +103,9 @@ class ThreadManager(object):
         return info
 
     def work(self):
-        """run all task which have to be done (this is for repetitive call by core)"""
-
+        """
+        Run all task which have to be done (this is for repetitive call by core).
+        """
         if self.info_cache and self.timestamp < time():
             self.info_cache.clear()
             self.pyload.log.debug("Cleared Result cache")

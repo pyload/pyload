@@ -22,7 +22,9 @@ from pyload.plugins.base import Abort, Fail
 from pyload.plugins.hoster import Hoster
 
 def _wait(self):
-    """ waits the time previously set """
+    """
+    Waits the time previously set.
+    """
     self.waiting = True
 
     waittime = self.pyfile.wait_until - time()

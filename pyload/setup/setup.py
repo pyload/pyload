@@ -33,7 +33,7 @@ from pyload.setup.dependencies import deps
 
 class Setup(object):
     """
-    pyLoads initial setup configuration assistant
+    pyLoads initial setup configuration assistant.
     """
 
     @staticmethod
@@ -332,8 +332,9 @@ class Setup(object):
         self.no = _("n")
 
     def ask(self, qst, default, answers=[], bool=False, password=False):
-        """ Generate dialog on command line """
-
+        """
+        Generate dialog on command line.
+        """
         if answers:
             info = "("
             for i, answer in enumerate(answers):

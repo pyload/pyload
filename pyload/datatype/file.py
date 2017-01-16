@@ -39,7 +39,7 @@ status_map = {
 
 class PyFile(object):
     """
-    Represents a file object at runtime
+    Represents a file object at runtime.
     """
     __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
                  "url", "pluginname", "hash", "status", "error", "packageid", "owner",
@@ -108,7 +108,9 @@ class PyFile(object):
             return self._name
 
     def set_name(self, name):
-        """ Only set unicode or utf8 strings as name """
+        """
+        Only set unicode or utf8 strings as name.
+        """
         if isinstance(name, str):
             name = name.decode("utf8")
 
@@ -126,18 +128,24 @@ class PyFile(object):
 
     @lock
     def init_plugin(self):
-        """ inits plugin instance """
+        """
+        Inits plugin instance.
+        """
         if not self.plugin:
             self.pluginclass = self.manager.pyload.pgm.get_plugin_class("hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock
     def has_plugin(self):
-        """Thread safe way to determine this file has initialized plugin attribute"""
+        """
+        Thread safe way to determine this file has initialized plugin attribute.
+        """
         return self.plugin is not None
 
     def package(self):
-        """ return package instance"""
+        """
+        Return package instance.
+        """
         return self.manager.get_package(self.packageid)
 
     def set_status(self, status):
@@ -159,12 +167,16 @@ class PyFile(object):
         return status_map[status] == self.status
 
     def sync(self):
-        """sync PyFile instance with database"""
+        """
+        Sync PyFile instance with database.
+        """
         self.manager.update_file(self)
 
     @lock
     def release(self):
-        """sync and remove from cache"""
+        """
+        Sync and remove from cache.
+        """
         if self.plugin is not None:
             self.plugin.clean()
             self.plugin = None
@@ -185,7 +197,9 @@ class PyFile(object):
         raise NotImplementedError
 
     def abort_download(self):
-        """abort pyfile if possible"""
+        """
+        Abort pyfile if possible.
+        """
         while self.fid in self.manager.pyload.dlm.processing_ids():
 
             self.lock.acquire(shared=True)
@@ -203,7 +217,9 @@ class PyFile(object):
         self.release()
 
     def finish_if_done(self):
-        """set status to finish and release file if every thread is finished with it"""
+        """
+        Set status to finish and release file if every thread is finished with it.
+        """
 
         # TODO: this is wrong now, it should check if addons are using it
         if self.id in self.manager.pyload.dlm.processing_ids():
@@ -219,12 +235,16 @@ class PyFile(object):
 
     @try_catch(0)
     def get_speed(self):
-        """ calculates speed """
+        """
+        Calculates speed.
+        """
         return self.plugin.dl.speed
 
     @try_catch(0)
     def get_eta(self):
-        """ gets estimated time of arrival / or waiting time"""
+        """
+        Gets estimated time of arrival / or waiting time.
+        """
         if self.status == DownloadStatus.Waiting:
             return self.wait_until - time()
 
@@ -232,16 +252,22 @@ class PyFile(object):
 
     @try_catch(0)
     def get_bytes_arrived(self):
-        """ gets bytes arrived """
+        """
+        Gets bytes arrived.
+        """
         return self.plugin.dl.arrived
 
     @try_catch(0)
     def get_bytes_left(self):
-        """ gets bytes left """
+        """
+        Gets bytes left.
+        """
         return self.plugin.dl.size - self.plugin.dl.arrived
 
     def get_size(self):
-        """ get size of download """
+        """
+        Get size of download.
+        """
         try:
             if self.plugin.dl.size:
                 return self.plugin.dl.size

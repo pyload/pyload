@@ -13,7 +13,7 @@ except Exception:
 
     def relpath(path, start=curdir):
         """
-        Return a relative version of a path
+        Return a relative version of a path.
         """
         if not path:
             raise ValueError("no path specified")

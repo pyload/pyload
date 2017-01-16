@@ -59,7 +59,7 @@ def threaded(func, daemon=True):
 
 def trycatch(callback):
     """
-    Decorator that executes the function and returns the value or fallback on any exception
+    Decorator that executes the function and returns the value or fallback on any exception.
     """
     def wrapper(func):
         def new(self, *args, **kwargs):

@@ -133,13 +133,16 @@ class DatabaseBackend(Thread):
         set_db(self)
 
     def setup(self):
-        """ *MUST* be called before db can be used !"""
+        """
+        *MUST* be called before db can be used !.
+        """
         self.start()
         self.running.wait()
 
     def init(self):
-        """main loop, which executes commands"""
-
+        """
+        Main loop, which executes commands.
+        """
         version = self._check_version()
 
         self.conn = sqlite3.connect(self.DB_FILE)
@@ -199,7 +202,9 @@ class DatabaseBackend(Thread):
         self.closing.wait(1)
 
     def _check_version(self):
-        """ get db version"""
+        """
+        Get db version.
+        """
         if not exists(self.VERSION_FILE):
             with open(self.VERSION_FILE, "wb") as f:
                 f.write(str(DB_VERSION))
@@ -224,8 +229,9 @@ class DatabaseBackend(Thread):
     #--convert scripts end
 
     def _create_tables(self):
-        """create tables for database"""
-
+        """
+        Create tables for database.
+        """
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "packages" ('
             '"pid" INTEGER PRIMARY KEY AUTOINCREMENT, '

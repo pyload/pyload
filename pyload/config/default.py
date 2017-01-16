@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Configuration layout for default base config
+Configuration layout for default base config.
 """
 from __future__ import unicode_literals
 
