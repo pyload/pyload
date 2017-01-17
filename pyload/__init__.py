@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
-#     ____________
-#    /       |    \
-#    |    ___/    |
-#    \___/  ______/
-#        |   o|
-#        \    /
-#         \  /
-#          \/
+#      ____________
+#   _ /       |    \ ___________ _ _______________ _ ___ _______________
+#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
+# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
+# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
+#  \______\    /______|_|___|__/________________________//______ /___/__/
+#          \  /
+#           \/
 
 from __future__ import unicode_literals
 from future import standard_library
@@ -86,12 +86,12 @@ def _list_pids():
         file = os.path.join(tmpdir, filename)
         try:
             with path.open(file, 'rb') as f:
-                pid = convert.to_int(f.read().strip())
+                pid = int(f.read().strip())
         except Exception:
             continue
         else:
             pids.add(pid)
-    return sorted(filter(None, pids))
+    return sorted(pids)
 
 
 def status(profile=None):  #@NOTE: If not profile, then catch all pyLoad pids
@@ -122,7 +122,7 @@ def update(dependencies=True, reinstall=False, prerelease=False):
 def stop(profile=None, wait=300):
     for pid in status(profile):
         try:
-            sys.pkill(pid)
+            sys.pkill(pid, wait)
         except Exception:
             continue
 

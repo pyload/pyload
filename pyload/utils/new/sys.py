@@ -21,26 +21,11 @@ from pyload.utils.new.lib.subprocess import PIPE, Popen
 def exec_cmd(command, *args, **kwargs):
     cmd = shlex.split(command)
     cmd.extend(x.encode('uft-8') for x in args)
-
     xargs = {'bufsize': -1,
              'stdout' : PIPE,
              'stderr' : PIPE}
     xargs.update(kwargs)
-
-    try:
-        p = Popen(cmd, **xargs)
-
-    except WindowsError as e:
-        executable = cmd[0]
-        if which(executable):
-            raise WindowsError(e)
-        elif os.path.splitext(executable)[1]:
-            raise WindowsError(e)
-        else:
-            cmd[0] += ".exe"
-            return exec_cmd("", *cmd)
-    else:
-        return p
+    return Popen(cmd, **xargs)
 
 
 def call_cmd(command, *args, **kwargs):
@@ -73,7 +58,7 @@ def get_namepid(name):
 
 def get_info():
     """
-    Returns system information as dict
+    Returns system information as dict.
     """
     return dict(platform=platform.platform(),
                 version=version,
@@ -90,7 +75,7 @@ def get_pidname(pid):
                                        p.status() != zombie]
 
 
-def pkill(pid):
+def pkill(pid, wait=None):
     try:
         p = psutil.Process(pid)
         p.terminate()
@@ -101,7 +86,7 @@ def pkill(pid):
 
 def renice(value, pid=None):
     """
-    Unix notation process nicener
+    Unix notation process nicener.
     """
     if os.name == "nt":
         MIN_NICENESS = -20
