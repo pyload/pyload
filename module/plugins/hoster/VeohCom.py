@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class VeohCom(SimpleHoster):
     __name__    = "VeohCom"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)'
@@ -39,7 +39,7 @@ class VeohCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         quality = self.config.get('quality')
-        if quality == "Auto":
+        if quality == "Auto" or quality == None:
             quality = ("High", "Low")
 
         for q in quality:
