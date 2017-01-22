@@ -4,16 +4,23 @@ import base64
 import urllib
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
+
+
+def xor_decrypt(data, key):
+    data = base64.b64decode(data)
+    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0] % len(key)])), [(i, c) for i, c in enumerate(data)]))
+
 
 class MegadyskPl(SimpleHoster):
     __name__    = "MegadyskPl"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?megadysk\.pl/(?:f|s)/.+'
+    __pattern__ = r'https?://(?:www\.)?megadysk\.pl/dl/.+'
     __config__  = [("activated"   , "bool", "Activated"                                        , True),
                    ("use_premium" , "bool", "Use premium account if available"                 , True),
                    ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
@@ -24,10 +31,51 @@ class MegadyskPl(SimpleHoster):
     __license__     = "GPLv3"
     __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    NAME_PATTERN = r'data-reactid="30">(?P<N>.+?)<'
+    NAME_PATTERN = r'data-reactid="25">(?P<N>.+?)<'
     SIZE_PATTERN = r'<!-- react-text: 40 -->(?P<S>[\d.,]+)(?P<U>[\w^_]+)'
 
     OFFLINE_PATTERN = r'(?:Nothing has been found|have been deleted)<'
+
+
+    @classmethod
+    def api_info(cls, url):
+        html = get_url(url)
+        info = {}
+
+        m = re.search(r"window\['.*?'\]\s*=\s*\"(.*?)\"", html)
+        if m is None:
+            info['status'] = 8
+            info['error'] = _("Encrypted info pattern not found")
+            return
+
+        encrypted_info = m.group(1)
+
+        html = get_url("https://megadysk.pl/dist/index.js")
+
+        m = re.search(r't.ISK\s*=\s*"(\w+)"', html)
+        if m is None:
+            info['status'] = 8
+            info['error'] = _("Encryption key pattern not found")
+            return
+
+        key = m.group(1)
+
+        res = xor_decrypt(encrypted_info , key)
+        json_data = json.loads(urllib.unquote(res))
+
+        if json_data['app']['maintenance']:
+            info['status'] = 6
+            return
+
+        if json_data['app']['downloader']['file']['deleted']:
+            info['status'] = 1
+            return
+
+        info['name'] = json_data['app']['downloader']['file']['name']
+        info['size'] = json_data['app']['downloader']['file']['size']
+        info['download_url'] = json_data['app']['downloader']['url']
+
+        return info
 
 
     def setup(self):
@@ -35,44 +83,9 @@ class MegadyskPl(SimpleHoster):
         self.resume_download = False
         self.chunk_limit     = 1
 
+
     def handle_free(self, pyfile):
-        m = re.search(r"window\['.*?'\]\s*=\s*\"(.*?)\"", self.data)
-        if m is None:
-            self.fail(_("Encrypted info 1 not found"))
+        if 'download_url' not in self.info:
+            self.error(_("Missing JSON data"))
 
-        encrypted_info = m.group(1)
-
-        self.data = self.load("https://megadysk.pl/dist/index.js")
-
-        m = re.search(r't.ISK\s*=\s*"(\w+)"', self.data)
-        if m is None:
-            self.fail(_("Encryption key not found"))
-
-        key = m.group(1)
-
-        data = self.xor_decrypt(encrypted_info , key)
-        json_data = json.loads(urllib.unquote(data))
-
-        if json_data['app']['maintenance']:
-            self.temp_offline()
-
-        if json_data['app']['folderView']['notFound']:
-            self.offline()
-
-        self.data = self.load(self.fixurl(json_data['app']['folderView']['entities'][0]['downloadUrl']))
-
-        m = re.search(r"window\['.*?'\]\s*=\s*\"(.*?)\"", self.data)
-        if m is None:
-            self.fail(_("Encrypted info 2 not found"))
-
-        encrypted_info = m.group(1)
-
-        data = self.xor_decrypt(encrypted_info , key)
-        json_data = json.loads(urllib.unquote(data))
-
-        self.link = self.fixurl(json_data['app']['downloader']['url'])
-
-
-    def xor_decrypt(self, data, key):
-        data = base64.b64decode(data)
-        return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0] % len(key)])), [(i,c) for i,c in enumerate(data)]))
+        self.link = self.fixurl(self.info['download_url'])
