@@ -17,7 +17,7 @@ def xor_decrypt(data, key):
 class MegadyskPl(SimpleHoster):
     __name__    = "MegadyskPl"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?megadysk\.pl/dl/.+'
@@ -46,7 +46,7 @@ class MegadyskPl(SimpleHoster):
         if m is None:
             info['status'] = 8
             info['error'] = _("Encrypted info pattern not found")
-            return
+            return info
 
         encrypted_info = m.group(1)
 
@@ -56,7 +56,7 @@ class MegadyskPl(SimpleHoster):
         if m is None:
             info['status'] = 8
             info['error'] = _("Encryption key pattern not found")
-            return
+            return info
 
         key = m.group(1)
 
@@ -65,11 +65,11 @@ class MegadyskPl(SimpleHoster):
 
         if json_data['app']['maintenance']:
             info['status'] = 6
-            return
+            return info
 
-        if json_data['app']['downloader']['file']['deleted']:
+        if json_data['app']['downloader'] is None or json_data['app']['downloader']['file']['deleted']:
             info['status'] = 1
-            return
+            return info
 
         info['name'] = json_data['app']['downloader']['file']['name']
         info['size'] = json_data['app']['downloader']['file']['size']
