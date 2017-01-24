@@ -17,7 +17,7 @@ def xor_decrypt(data, key):
 class MegadyskPlFolder(SimpleCrypter):
     __name__    = "MegadyskPlFolder"
     __type__    = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?megadysk\.pl/(?:f|s)/.+'
@@ -40,7 +40,7 @@ class MegadyskPlFolder(SimpleCrypter):
         if m is None:
             info['status'] = 8
             info['error'] = _("Encrypted info pattern not found")
-            return
+            return info
 
         encrypted_info = m.group(1)
 
@@ -50,7 +50,7 @@ class MegadyskPlFolder(SimpleCrypter):
         if m is None:
             info['status'] = 8
             info['error'] = _("Encryption key pattern not found")
-            return
+            return info
 
         key = m.group(1)
 
@@ -59,11 +59,11 @@ class MegadyskPlFolder(SimpleCrypter):
 
         if json_data['app']['maintenance']:
             info['status'] = 6
-            return
+            return info
 
         if json_data['app']['folderView']['notFound']:
             info['status'] = 1
-            return
+            return info
 
         info['entities'] = json_data['app']['folderView']['entities']
 
