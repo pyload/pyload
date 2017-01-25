@@ -10,7 +10,7 @@ from module.plugins.internal.misc import format_exc
 class OneFichierCom(SimpleHoster):
     __name__    = "OneFichierCom"
     __type__    = "hoster"
-    __version__ = "1.02"
+    __version__ = "1.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -38,10 +38,11 @@ class OneFichierCom(SimpleHoster):
 
     COOKIES          = [("1fichier.com", "LG", "en")]
 
-    NAME_PATTERN     = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
-    SIZE_PATTERN     = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN  = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
-    LINK_PATTERN     = r'<a href="(.+?)".*>Click here to download the file</a>'
+    NAME_PATTERN         = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN         = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN      = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
+    LINK_PATTERN         = r'<a href="(.+?)".*>Click here to download the file</a>'
+    TEMP_OFFLINE_PATTERN = r'Warning ! Without subscription, you can only download one file at|Our services are in maintenance'
 
     WAIT_PATTERN     = r'>You must wait \d+ minutes'
 
