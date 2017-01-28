@@ -19,6 +19,10 @@ def plugin_id(plugin):
 def is_simple_plugin(obj):
     return any(k.__name__ in ("SimpleHoster", "SimpleCrypter") for k in inspect.getmro(type(obj)))
 
+def get_plugin_last_header(plugin):
+    # @NOTE: req can be a HTTPRequest or a Browser object
+    return plugin.req.http.header if hasattr(plugin.req, "http") else plugin.req.header
+
 
 class CloudFlare(object):
     @staticmethod
@@ -33,8 +37,7 @@ class CloudFlare(object):
         except BadHeader, e:
             addon_plugin.log_debug(_("%s(): got BadHeader exception %s") % (func_name, e.code))
 
-            header = parse_html_header(owner_plugin.req.http.header if hasattr(owner_plugin.req, "http")
-                                       else owner_plugin.req.header)  # @NOTE: req can be a HTTPRequest or a Browser object
+            header = parse_html_header(get_plugin_last_header(owner_plugin))
 
             if header.get('server') == "cloudflare-nginx":
                 if e.code == 403:
@@ -99,7 +102,7 @@ class CloudFlare(object):
 
         except Exception, e:
             addon_plugin.log_error(e)
-            return None
+            return None  # Tell the exception handler to re-throw the exception
 
 
     @staticmethod
@@ -124,7 +127,7 @@ class CloudFlare(object):
 
         except Exception, e:
             addon_plugin.log_error(e)
-            return None
+            return None  # Tell the exception handler to re-throw the exception
 
 
 class PreloadStub(object):
@@ -147,7 +150,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__    = "CloudFlareDdos"
     __type__    = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False)]
@@ -228,7 +231,6 @@ class CloudFlareDdos(Addon):
 
 
     def download_preparing(self, pyfile):
-        self.log_debug("download_preparing=%s" % type(pyfile.plugin).__name__)
         #: Only SimpleHoster and SimpleCrypter based plugins are supported
         if not is_simple_plugin(pyfile.plugin):
             self.log_debug(_("Skipping plugin %s") % plugin_id(pyfile.plugin))
@@ -256,4 +258,10 @@ class CloudFlareDdos(Addon):
         else:
             #@NOTE: Better use hotser_plugin.load() instead of get_url() so cookies are saved and so captcha credits
             #@NOTE: Also that way we can use 'hotser_plugin.req.header' to get the headers, otherwise we cannot get them
-            return CloudFlare.handle_function(self, hotser_plugin, "get_url", hotser_plugin.load, (args, kwargs))
+            res = CloudFlare.handle_function(self, hotser_plugin, "get_url", hotser_plugin.load, (args, kwargs))
+            if kwargs.get('just_header', False):
+                # @NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
+                # make sure we return a string for get_url('just_header'=True)
+                res = get_plugin_last_header(hotser_plugin)
+
+            return res
