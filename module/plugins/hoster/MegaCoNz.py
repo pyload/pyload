@@ -41,6 +41,7 @@ from module.plugins.internal.misc import decode, encode, exists, fsjoin, json
 # EWRITE              (-20): Write failed
 # EREAD               (-21): Read failed
 # EAPPKEY             (-22): Invalid application key; request not processed
+# ESSL                (-23): SSL verification failed
 
 
 class MegaCrypto(object):
@@ -67,8 +68,14 @@ class MegaCrypto(object):
 
 
     @staticmethod
+    def a32_to_base64(a):
+        return MegaCrypto.base64_encode(MegaCrypto.a32_to_str(a))
+
+
+    @staticmethod
     def base64_to_a32(s):
         return MegaCrypto.str_to_a32(MegaCrypto.base64_decode(s))
+
 
     @staticmethod
     def cbc_decrypt(data, key):
@@ -190,10 +197,21 @@ class MegaClient(object):
         Dispatch a call to the api, see https://mega.co.nz/#developers
         """
         uid = random.randint(10 << 9, 10 ** 10)  #: Generate a session id, no idea where to obtain elsewhere
+        get_params = {'id': uid}
+
+        if self.node_id:
+            get_params['n'] = self.node_id
+
+        mega_session_id = self.plugin.info.get('mega_session_id', None) or \
+                          (self.plugin.account.info.get('mega_session_id', None)
+                           if (hasattr(self.plugin, 'account') and self.plugin.account) else None)
+
+        if mega_session_id:
+            get_params['sid'] = mega_session_id
 
         try:
             res = self.plugin.load(self.API_URL,
-                                   get={'id': uid, 'n': self.node_id},
+                                   get=get_params,
                                    post=json.dumps([kwargs]))
 
         except BadHeader, e:
@@ -203,7 +221,12 @@ class MegaClient(object):
                 raise
 
         self.plugin.log_debug(_("Api Response: ") + res)
-        return json.loads(res)
+
+        res = json.loads(res)
+        if isinstance(res, list):
+            res = res[0]
+
+        return res
 
 
     def check_error(self, code):
@@ -225,7 +248,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -376,9 +399,7 @@ class MegaCoNz(Hoster):
 
         if isinstance(res, int):
             mega.check_error(res)
-        elif isinstance(res, list):
-            res = res[0]
-            if "e" in res:
+        elif isinstance(res, dict) and 'e' in res:
                 mega.check_error(res['e'])
 
         attr = MegaCrypto.decrypt_attr(res['at'], key)
@@ -401,7 +422,15 @@ class MegaCoNz(Hoster):
 
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
-        self.download(res['g'])
+        try:
+            self.download(res['g'])
+
+        except BadHeader, e:
+            if e.code == 509:
+                self.fail(_("Bandwidth Limit Exceeded"))
+
+            else:
+                raise
 
         self.decrypt_file(key)
 
