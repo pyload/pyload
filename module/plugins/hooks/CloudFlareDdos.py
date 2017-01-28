@@ -150,7 +150,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__    = "CloudFlareDdos"
     __type__    = "hook"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__  = "testing"
 
     __config__ = [("activated", "bool", "Activated" , False)]
@@ -250,18 +250,18 @@ class CloudFlareDdos(Addon):
 
 
     def my_get_url(self, *args, **kwargs):
-        hotser_plugin = self._find_owner_plugin()
-        if hotser_plugin is None:
+        owner_plugin = self._find_owner_plugin()
+        if owner_plugin is None:
             self.log_warning("Owner plugin not found, cannot process")
             return self.old_get_url(*args, **kwargs)
 
         else:
-            #@NOTE: Better use hotser_plugin.load() instead of get_url() so cookies are saved and so captcha credits
-            #@NOTE: Also that way we can use 'hotser_plugin.req.header' to get the headers, otherwise we cannot get them
-            res = CloudFlare.handle_function(self, hotser_plugin, "get_url", hotser_plugin.load, (args, kwargs))
+            #@NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
+            #@NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
+            res = CloudFlare.handle_function(self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
             if kwargs.get('just_header', False):
                 # @NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
                 # make sure we return a string for get_url('just_header'=True)
-                res = get_plugin_last_header(hotser_plugin)
+                res = get_plugin_last_header(owner_plugin)
 
             return res
