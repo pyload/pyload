@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class MegaCoNz(Account):
     __name__    = "MegaCoNz"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __description__ = """Mega.co.nz account plugin"""
@@ -19,7 +19,7 @@ class MegaCoNz(Account):
 
 
     def init(self):
-        self.mega_session_id = None
+        self.info['mega_session_id'] = None
 
 
     def grab_info(self, user, password, data):
