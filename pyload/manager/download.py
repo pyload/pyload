@@ -107,8 +107,7 @@ class DownloadManager(object):
         """
         Retrieve pyfiles of running downloads.
         """
-        return [x.active for x in self.working
-                if uid is None or x.active.owner == uid]
+        return [x.active for x in self.working if uid is None or x.active.owner == uid]
 
     @read_lock
     def waiting_downloads(self):
@@ -125,7 +124,7 @@ class DownloadManager(object):
 
         # decrypter progress could be none
         return [x for x in [p.get_progress() for p in self.working + self.decrypter
-                       if uid is None or p.owner == uid] if x is not None]
+                if uid is None or p.owner == uid] if x is not None]
 
     def processing_ids(self):
         """
@@ -272,7 +271,7 @@ class DownloadManager(object):
 
         old_ip = get_ip()
 
-        self.pyload.evm.dispatch_event("reconnect:before", old_ip)
+        self.pyload.evm.fire("reconnect:before", old_ip)
         self.pyload.log.debug("Old IP: {}".format(old_ip))
 
         try:
@@ -286,7 +285,7 @@ class DownloadManager(object):
 
         sleep(1)
         ip = get_ip()
-        self.pyload.evm.dispatch_event("reconnect:after", ip)
+        self.pyload.evm.fire("reconnect:after", ip)
 
         if not old_ip or old_ip == ip:
             self.pyload.log.warning(_("Reconnect not successful"))

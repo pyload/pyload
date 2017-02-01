@@ -105,7 +105,7 @@ class ConfigManager(ConfigParser):
                     self.save_values(user, section)
 
         if changed:
-            self.pyload.evm.dispatch_event("config:changed", section, option, value)
+            self.pyload.evm.fire("config:changed", section, option, value)
         return changed
 
     def save_values(self, user, section):
@@ -123,7 +123,7 @@ class ConfigManager(ConfigParser):
             del self.values[user, section]
 
         self.db.delete_config(section, user)
-        self.pyload.evm.dispatch_event("config:deleted", section, user)
+        self.pyload.evm.fire("config:deleted", section, user)
 
     def iter_core_sections(self):
         return self.parser.iter_sections()

@@ -102,7 +102,7 @@ class AccountManager(object):
         account.schedule_refresh()
         self.save_accounts()
 
-        self.pyload.evm.dispatch_event("account:created", account.to_info_data())
+        self.pyload.evm.fire("account:created", account.to_info_data())
         return account
 
     @lock
@@ -118,7 +118,7 @@ class AccountManager(object):
             self.save_accounts()
             account.schedule_refresh(force=True)
 
-        self.pyload.evm.dispatch_event("account:updated", account.to_info_data())
+        self.pyload.evm.fire("account:updated", account.to_info_data())
         return account
 
     @lock
@@ -132,7 +132,7 @@ class AccountManager(object):
                 if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
                     self.pyload.db.remove_account(aid)
-                    self.pyload.evm.dispatch_event("account:deleted", aid, user=uid)
+                    self.pyload.evm.fire("account:deleted", aid, user=uid)
                     break
 
     @lock

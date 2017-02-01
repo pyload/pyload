@@ -94,7 +94,7 @@ class FileManager(object):
         Add links, data = (url, plugin) tuple. Internal method should use API.
         """
         self.db.add_links(data, pid, owner)
-        self.pyload.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.fire("package:updated", pid)
 
 
     @invalidate
@@ -106,7 +106,7 @@ class FileManager(object):
                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.get_package_info(pid)
 
-        self.pyload.evm.dispatch_event("package:inserted", pid, p.root, p.packageorder)
+        self.pyload.evm.fire("package:inserted", pid, p.root, p.packageorder)
         return pid
 
 
@@ -322,7 +322,7 @@ class FileManager(object):
             if pack.root == root and pack.packageorder > oldorder:
                 pack.packageorder -= 1
 
-        self.pyload.evm.dispatch_event("package:deleted", pid)
+        self.pyload.evm.fire("package:deleted", pid)
 
     @lock
     @invalidate
@@ -347,7 +347,7 @@ class FileManager(object):
             if pyfile.packageid == pid and pyfile.fileorder > order:
                 pyfile.fileorder -= 1
 
-        self.pyload.evm.dispatch_event("file:deleted", fid, pid)
+        self.pyload.evm.fire("file:deleted", fid, pid)
 
     @lock
     def release_file(self, fid):
@@ -373,7 +373,7 @@ class FileManager(object):
         self.db.update_file(pyfile)
 
         # This event is thrown with pyfile or only fid
-        self.pyload.evm.dispatch_event("file:updated", pyfile)
+        self.pyload.evm.fire("file:updated", pyfile)
 
     @invalidate
     @read_lock
@@ -386,7 +386,7 @@ class FileManager(object):
         else:
             self.db.set_download_status(fid, status)
 
-        self.pyload.evm.dispatch_event("file:updated", fid)
+        self.pyload.evm.fire("file:updated", fid)
 
     @invalidate
     def update_package(self, pypack):
@@ -394,7 +394,7 @@ class FileManager(object):
         Updates a package.
         """
         self.db.update_package(pypack)
-        self.pyload.evm.dispatch_event("package:updated", pypack.pid)
+        self.pyload.evm.fire("package:updated", pypack.pid)
 
     @invalidate
     def update_file_info(self, data, pid):
@@ -402,7 +402,7 @@ class FileManager(object):
         Updates file info (name, size, status,[ hash,] url).
         """
         self.db.update_link_info(data)
-        self.pyload.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.fire("package:updated", pid)
 
     def check_all_links_finished(self):
         """
@@ -411,7 +411,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.pyload.adm.dispatch_event("download:allFinished")
+            self.pyload.adm.fire("download:allFinished")
             self.pyload.log.debug("All downloads finished")
             return True
 
@@ -427,7 +427,7 @@ class FileManager(object):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.pyload.adm.dispatch_event("download:allProcessed")
+            self.pyload.adm.fire("download:allProcessed")
             self.pyload.log.debug("All downloads processed")
             return True
 
@@ -462,7 +462,7 @@ class FileManager(object):
         if pid in self.packages:
             self.packages[pid].set_finished = False
 
-        self.pyload.evm.dispatch_event("package:updated", pid)
+        self.pyload.evm.fire("package:updated", pid)
 
     @read_lock
     @invalidate
@@ -478,7 +478,7 @@ class FileManager(object):
             f.abort_download()
 
         self.db.restart_file(fid)
-        self.pyload.evm.dispatch_event("file:updated", fid)
+        self.pyload.evm.fire("file:updated", fid)
 
 
     @lock
@@ -502,7 +502,7 @@ class FileManager(object):
 
         self.db.commit()
 
-        self.pyload.evm.dispatch_event("package:reordered", pid, position, p.root)
+        self.pyload.evm.fire("package:reordered", pid, position, p.root)
 
     @lock
     @invalidate
@@ -544,7 +544,7 @@ class FileManager(object):
 
         self.db.commit()
 
-        self.pyload.evm.dispatch_event("file:reordered", pid)
+        self.pyload.evm.fire("file:reordered", pid)
 
     @read_lock
     @invalidate

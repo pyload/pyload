@@ -61,14 +61,14 @@ class EventManager(object):
             if func in events:
                 events.remove(func)
 
-    def dispatch_event(self, event, *args, **kwargs):
+    def fire(self, event, *args, **kwargs):
         """
         Dispatches event with args.
         """
 
         # dispatch the meta event
         if event != "event":
-            self.dispatch_event("event", *(event,) + args, **kwargs)
+            self.fire("event", *(event,) + args, **kwargs)
 
         if event in self.events:
             for f in self.events[event]:

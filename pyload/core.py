@@ -231,7 +231,7 @@ class Core(Process):
             self.webserver = WebServer(self)
             self.webserver.start()
             # self.svm.add('webui', **kwgs)
-            # self.svm.run()
+            # self.svm.start()
 
         Api.init_components()
         self.api = Api(self)

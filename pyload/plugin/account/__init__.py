@@ -242,7 +242,7 @@ class Account(Base):
 
             self.log_debug("Account Info: {}".format(infos))
             self.timestamp = time()
-            self.pyload.evm.dispatch_event("account:loaded", self.to_info_data())
+            self.pyload.evm.fire("account:loaded", self.to_info_data())
 
     #TODO: remove user
     def load_account_info(self, req):

@@ -305,7 +305,7 @@ class Hoster(Base):
 
         filename = join(location, name)
 
-        self.pyload.adm.dispatch_event("download:start", self.pyfile, url, filename)
+        self.pyload.adm.fire("download:start", self.pyfile, url, filename)
 
         # Create the class used for downloading
         self.dl = self.pyload.req.get_download_request(self.req, self.DOWNLOAD_CLASS)

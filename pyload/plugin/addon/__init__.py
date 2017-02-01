@@ -75,7 +75,7 @@ def addon_property(name, desc, default=None, fire_event=True):
 
     def _set(self, value):
         if fire_event:
-            self.manager.dispatch_event("addon:property:change", value)
+            self.manager.fire("addon:property:change", value)
 
         return setattr(self, h, value)
 

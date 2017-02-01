@@ -121,7 +121,7 @@ class Info(MutableMapping):
 
 class InscDict(MutableMapping):
     """
-    Revised version of the header dictionary from `requests.structures.CaseInsensitiveDict`.
+    Improved version of the header dictionary from `requests.structures.CaseInsensitiveDict`.
     """
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)

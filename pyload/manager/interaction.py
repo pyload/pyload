@@ -110,7 +110,7 @@ class InteractionManager(object):
     def remove_task(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
-            self.pyload.evm.dispatch_event("interaction:deleted", task.iid)
+            self.pyload.evm.fire("interaction:deleted", task.iid)
 
     @lock
     def get_task_by_id(self, iid):
@@ -152,7 +152,7 @@ class InteractionManager(object):
                 pass
 
         self.tasks[task.iid] = task
-        self.pyload.evm.dispatch_event("interaction:added", task)
+        self.pyload.evm.fire("interaction:added", task)
 
 
 # if __name__ == "__main__":

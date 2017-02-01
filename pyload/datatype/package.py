@@ -93,7 +93,7 @@ class PyPackage(object):
         return False
 
     def notify_change(self):
-        self.manager.pyload.evm.dispatch_event("packageUpdated", self.id)
+        self.manager.pyload.evm.fire("packageUpdated", self.id)
 
 
 class RootPackage(PyPackage):

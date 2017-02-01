@@ -61,7 +61,7 @@ class AddonManager(object):
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, event, *args)
-        self.dispatch_event(event_name, *args)
+        self.fire(event_name, *args)
 
     def call(self, plugin, f, *args):
         try:
@@ -263,5 +263,5 @@ class AddonManager(object):
     def listen_to(self, *args):
         self.pyload.evm.listen_to(*args)
 
-    def dispatch_event(self, *args):
-        self.pyload.evm.dispatch_event(*args)
+    def fire(self, *args):
+        self.pyload.evm.fire(*args)
