@@ -559,7 +559,12 @@ def parse_size(value, unit=""):  #: returns bytes
     if m is None:
         return 0
 
-    size = float(m.group(1).replace(',', '.'))
+    # fix for size vales like 1,000.00
+    if re.match(r'\d+,\d+\.\d+$', m.group(1)) is not None:
+        size = float(m.group(1).replace(',', ''))
+    else:
+        size = float(m.group(1).replace(',', '.'))
+
     unit = (unit.strip().lower() or m.group(2) or "byte")[0]
 
     if unit == "b":
