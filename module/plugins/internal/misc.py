@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -367,6 +367,12 @@ def get_console_encoding(enc):
     return enc
 
 
+# Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
+def normalize(value):
+    import unicodedata
+    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+
 #@NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors='strict'):
     """
@@ -380,6 +386,12 @@ def decode(value, encoding=None, errors='strict'):
 
     else:
         res = unicode(value)
+
+    # Hotfix UnicodeDecodeError
+    try:
+        str(res)
+    except UnicodeEncodeError:
+        return normalize(res)
 
     return res
 
