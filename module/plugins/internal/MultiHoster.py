@@ -4,31 +4,31 @@ import re
 
 from module.plugins.internal.Plugin import Fail
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import encode
 
 
 class MultiHoster(SimpleHoster):
     __name__    = "MultiHoster"
     __type__    = "hoster"
-    __version__ = "0.59"
+    __version__ = "0.60"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated"    , "bool", "Activated"                                        , True ),
+                   ("use_premium"  , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"     , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize" , "bool", "Check file size"                                  , True ),
+                   ("max_wait"     , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revert_failed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """Multi hoster plugin"""
     __license__     = "GPLv3"
     __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
 
+    OFFLINE_PATTERN = r'^unmatchable$'
 
-    DIRECT_LINK   = None
-    LEECH_HOSTER  = False
-    LOGIN_ACCOUNT = True
+    DIRECT_LINK     = None
+    LEECH_HOSTER    = False
+    LOGIN_ACCOUNT   = True
 
 
     def init(self):
@@ -68,7 +68,7 @@ class MultiHoster(SimpleHoster):
             super(MultiHoster, self)._process(thread)
 
         except Fail, e:
-            if self.config.get('revertfailed', True) and \
+            if self.config.get('revert_failed', True) and \
                self.pyload.pluginManager.hosterPlugins.get(self.classname).get('new_module'):
                 hdict = self.pyload.pluginManager.hosterPlugins.get(self.classname)
 
@@ -77,7 +77,7 @@ class MultiHoster(SimpleHoster):
                 hdict.pop('new_module', None)
                 hdict.pop('new_name', None)
 
-                pyfile.initPlugin()
+                self.pyfile.initPlugin()
 
                 hdict['new_module'] = tmp_module
                 hdict['new_name']   = tmp_name
