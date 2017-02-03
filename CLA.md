@@ -57,8 +57,8 @@ perpetual, worldwide, non-exclusive, transferable, royalty-free, irrevocable
 license under the Copyright covering the Contribution, with the right to
 sublicense such rights through multiple tiers of sublicensees, to reproduce,
 modify, display, perform and distribute the Contribution as part of the
-Material; provided that this license is conditioned upon compliance with Section
-2.3.
+Material; provided that this license is conditioned upon compliance with [Section
+2.3](#2.3-outbound-license).
 
 ### 2.2 Patent License
 
@@ -71,16 +71,16 @@ for sale, import and otherwise transfer the Contribution and the Contribution in
 combination with the Material (and portions of such combination). This license
 is granted only to the extent that the exercise of the licensed rights infringes
 such patent claims; and provided that this license is conditioned upon
-compliance with Section 2.3.
+compliance with [Section 2.3](#2.3-outbound-license).
 
 ### 2.3 Outbound License
 
-Based on the grant of rights in Sections 2.1 and 2.2, if We include Your
-Contribution in a Material, We may license the Contribution under any license,
-including copyleft, permissive, commercial, or proprietary licenses. As a
-condition on the exercise of this right, We agree to also license the
-Contribution under the terms of the license or licenses which We are using for
-the Material on the Submission Date.
+Based on the grant of rights in [Sections 2.1](#2.1-copyright-license)
+and [2.2](#2.2-patent-license), if We include Your Contribution in a Material,
+We may license the Contribution under any license, including copyleft, permissive,
+commercial, or proprietary licenses. As a condition on the exercise of this right,
+We agree to also license the Contribution under the terms of the license or
+licenses which We are using for the Material on the Submission Date.
 
 ### 2.4 Moral Rights
 
@@ -109,24 +109,25 @@ You confirm that:
 1. You have the legal authority to enter into this Agreement.
 
 2. You own the Copyright and patent claims covering the Contribution which are
-required to grant the rights under Section 2.
+required to grant the rights under [Section 2](#2.-grant-of-rights).
 
-3. The grant of rights under Section 2 does not violate any grant of rights
-which You have made to third parties, including Your employer. If You are an
-employee, You have had Your employer approve this Agreement or sign the Entity
-version of this document. If You are less than eighteen years old, please have
-Your parents or guardian sign the Agreement.
+3. The grant of rights under [Section 2](#2.-grant-of-rights) does not violate
+any grant of rights which You have made to third parties, including Your employer.
+If You are an employee, You have had Your employer approve this Agreement or sign
+the Entity version of this document. If You are less than eighteen years old,
+please have Your parents or guardian sign the Agreement.
 
-4. You have followed the instructions in https://github.com/pyload/pyload/blob/master/LICENSE.md,
-if You do not own the Copyright in the entire work of authorship Submitted.
+4. You have followed the instructions in
+https://github.com/pyload/pyload/blob/master/LICENSE.md, if You do not own the
+Copyright in the entire work of authorship Submitted.
 
 
 4\. Disclaimer
 --------------
 
-EXCEPT FOR THE EXPRESS WARRANTIES IN SECTION 3, THE CONTRIBUTION IS PROVIDED *"AS
-IS"*. MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING, WITHOUT
-LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+EXCEPT FOR THE EXPRESS WARRANTIES IN [SECTION 3](#3.-agreement), THE CONTRIBUTION
+IS PROVIDED *"AS IS"*. MORE PARTICULARLY, ALL EXPRESS OR IMPLIED WARRANTIES INCLUDING,
+WITHOUT LIMITATION, ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
 PURPOSE AND NON-INFRINGEMENT ARE EXPRESSLY DISCLAIMED BY YOU TO US. TO THE
 EXTENT THAT ANY SUCH WARRANTIES CANNOT BE DISCLAIMED, SUCH WARRANTY IS LIMITED
 IN DURATION TO THE MINIMUM PERIOD PERMITTED BY LAW.
