@@ -2,8 +2,6 @@
 
 from __future__ import with_statement
 
-import os
-
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import encode
 
@@ -11,30 +9,30 @@ from module.plugins.internal.misc import encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated"    , "bool", "Activated"                                        , True ),
+                   ("use_premium"  , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"     , "bool", "Fallback to free download if premium fails"       , False),
+                   ("revert_failed", "bool", "Revert to standard download if fails"             , True ),
+                   ("chk_filesize" , "bool", "Check file size"                                  , True ),
+                   ("max_wait"     , "int" , "Reconnect if waiting time is greater than minutes", 10   )]
 
     __description__ = """Premium.to multi-hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it")]
+    __authors__     = [("RaNaN"    , "RaNaN@pyload.org"          ),
+                       ("zoidberg" , "zoidberg@mujmail.cz"       ),
+                       ("stickell" , "l.stickell@yahoo.it"       ),
+                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
     CHECK_TRAFFIC = True
 
 
     def handle_premium(self, pyfile):
-        #: Raise timeout to 2 min
-        self.download("http://premium.to/api/getfile.php",
+        self.download("http://api.premium.to/api/getfile.php",
                       get={'username': self.account.username,
                            'password': self.account.password,
                            'link'    : pyfile.url},
@@ -47,7 +45,7 @@ class PremiumTo(MultiHoster):
 
         err = ""
         if self.req.http.code == "420":
-            #: Custom error code send - fail
+            #: Custom error code sent - fail
             file = encode(self.last_download)
 
             with open(file, "rb") as f:
