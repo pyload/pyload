@@ -13,11 +13,10 @@ class TestAccountManager(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        cls.db = cls.core.db
 
     @classmethod
     def tearDownClass(cls):
-        cls.db.shutdown()
+        cls.core.db.shutdown()
 
     def setUp(self):
         self.db.purge_accounts()

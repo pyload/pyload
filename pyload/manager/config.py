@@ -36,7 +36,7 @@ class ConfigManager(Config):
         # No __init__ call to super class is needed!
 
         self.pyload = core
-        self.db = core.db
+        
         # The config parser, holding the core config
         self.parser = parser
 
@@ -76,7 +76,7 @@ class ConfigManager(Config):
 
     def load_values(self, user, section):
         if (user, section) not in self.values:
-            conf = self.db.load_config(section, user)
+            conf = self.pyload.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
             except ValueError:  # Something did go wrong when parsing
@@ -113,7 +113,7 @@ class ConfigManager(Config):
         if section in self.parser and user is None:
             self.save()
         elif (user, section) in self.values:
-            self.db.save_config(section, json.dumps(
+            self.pyload.db.save_config(section, json.dumps(
                 self.values[user, section]), user)
 
     def delete(self, section, user=None):
@@ -124,7 +124,7 @@ class ConfigManager(Config):
         if (user, section) in self.values:
             del self.values[user, section]
 
-        self.db.delete_config(section, user)
+        self.pyload.db.delete_config(section, user)
         self.pyload.evm.fire("config:deleted", section, user)
 
     def iter_core_sections(self):
@@ -134,7 +134,7 @@ class ConfigManager(Config):
         """
         Yields: section, metadata, values.
         """
-        values = self.db.load_configs_for_user(user)
+        values = self.pyload.db.load_configs_for_user(user)
 
         # Every section needs to be json decoded
         for section, data in values.items():

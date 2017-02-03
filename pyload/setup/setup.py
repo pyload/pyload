@@ -151,8 +151,8 @@ class Setup(object):
                 self.conf_ssl()
 
         print("")
-        print(_("Do you want to configure the Web User Interface?"))
-        web = self.ask(_("Configure the Web User Interface?"),
+        print(_("Do you want to configure the Web UI?"))
+        web = self.ask(_("Configure the Web UI?"),
                        self.yes, bool=True)
         if web:
             self.conf_web()
@@ -194,13 +194,13 @@ class Setup(object):
 
     def conf_web(self):
         print("")
-        print(_("## WUI (Web User Interface) Setup ##"))
+        print(_("## Web UI Setup ##"))
 
         print("")
         self.config.set('webui', 'activated', self.ask(
-            _("Activate the Web User Interface?"), self.yes, bool=True))
+            _("Activate the Web UI?"), self.yes, bool=True))
         print("")
-        print(_("Listen address, if you use 127.0.0.1 or localhost, the Web User Interface will only accessible locally"))
+        print(_("Listen address, if you use 127.0.0.1 or localhost, the Web UI will only accessible locally"))
         self.config.set('webui', 'host', self.ask(_("Address"), "localhost"))
         self.config.set('webui', 'port', self.ask(_("Port"), "8010"))
         print("")
@@ -215,7 +215,7 @@ class Setup(object):
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print()
-        print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the Web User Interface"))
+        print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the Web UI"))
         print(_("come back here and change the builtin server to the threaded one here"))
 
         self.config.set('webui', 'server', self.ask(_("Server"), "threaded",
