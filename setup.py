@@ -24,10 +24,9 @@ def info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        "Beaker >= 1.6", "Send2Trash", "argparse", "bitmath", "bottle >= 0.10.0",
-        "colorama", "daemonize", "future", "goslate", "psutil", "pycurl",
-        "requests >= 2.0", "ruamel.yaml", "setproctitle", "tld", "validators",
-        "watchdog", "wsgigzip"
+        "Beaker >= 1.6", "Send2Trash", "argparse", "bitmath", "bottle >= 0.10.0", "colorama",
+        "daemonize", "future", "goslate", "psutil", "pycurl", "requests >= 2.0", "setproctitle",
+        "tld", "validators", "watchdog", "wsgigzip"
     ]
     if os.name != 'nt':
         install_requires.append("dbus-python")
@@ -51,15 +50,18 @@ def info():
     classifiers = [
         "Development Status :: {}".format(info.status),
         "Environment :: Web Environment",
-        "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
         "License :: OSI Approved :: {}".format(info.license),
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Other",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Topic :: Communications",
         "Topic :: Communications :: File Sharing",
         "Topic :: Internet",
