@@ -16,22 +16,20 @@ from pyload.utils.fs import chmod
 from pyload.config.default import make_config
 from pyload.config.convert import to_configdata, from_string
 
-CONF_VERSION = 2
 SectionTuple = namedtuple(
     "SectionTuple", "label description explanation config")
 
 
-class ConfigParser(object):
+class Config(object):
     """
     Holds and manages the configuration + meta data for config read from file.
     """
-    CONFIG = "pyload.conf"
 
-    def __init__(self, config=None):
+    def __init__(self, file, version):
 
-        if config:
-            self.CONFIG = config
-
+        self.filename = file
+        self.version  = version
+        
         # Meta data information
         self.config = OrderedDict()
         # The actual config values
@@ -40,7 +38,7 @@ class ConfigParser(object):
         self.check_version()
 
         self.load_default()
-        self.parse_values(self.CONFIG)
+        self.parse_values(self.filename)
 
     def load_default(self):
         make_config(self)
@@ -49,18 +47,18 @@ class ConfigParser(object):
         """
         Determines if config needs to be deleted.
         """
-        if exists(self.CONFIG):
-            with open(self.CONFIG, "rb") as f:
+        if exists(self.filename):
+            with open(self.filename, "rb") as f:
                 v = f.readline()
             v = v[v.find(":") + 1:].strip()
 
-            if not v or int(v) < CONF_VERSION:
-                with open(self.CONFIG, "wb") as f:
-                    f.write("version: {}".format(CONF_VERSION))
-                print("Old version of {} deleted".format(self.CONFIG))
+            if not v or int(v) < self.version:
+                with open(self.filename, "wb") as f:
+                    f.write("version: {}".format(self.version))
+                print("Old version of {} deleted".format(self.filename))
         else:
-            with open(self.CONFIG, "wb") as f:
-                f.write("version: {}".format(CONF_VERSION))
+            with open(self.filename, "wb") as f:
+                f.write("version: {}".format(self.version))
 
     def parse_values(self, filename):
         """
@@ -105,10 +103,10 @@ class ConfigParser(object):
         Saves config to filename.
         """
         configs = []
-        with open(self.CONFIG, "wb") as f:
+        with open(self.filename, "wb") as f:
             configs.append(f)
-            chmod(self.CONFIG, 0o600)
-            f.write("version: {:d}\n\n".format(CONF_VERSION))
+            chmod(self.filename, 0o600)
+            f.write("version: {:d}\n\n".format(self.version))
 
             for section, data in self.config.items():
                 f.write("[{}]\n".format(section))

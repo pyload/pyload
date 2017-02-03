@@ -7,7 +7,7 @@ from new_collections import OrderedDict
 from pyload.api import InvalidConfigSection
 from pyload.utils import json
 
-from pyload.config.parser import ConfigParser
+from pyload.config.parser import Config
 
 from pyload.config.convert import to_input, from_string
 
@@ -26,10 +26,10 @@ def convertkeyerror(func):
     return conv
 
 
-class ConfigManager(ConfigParser):
+class ConfigManager(Config):
     """
     Manages the core config and configs for addons and single user.
-    Has similar interface to ConfigParser.
+    Has similar interface to Config.
     """
 
     def __init__(self, core, parser):

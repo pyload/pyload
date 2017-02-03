@@ -161,7 +161,7 @@ class Core(Process):
                 self.log.error(_("Unable to change uid"), e.message)
 
     def _init_config(self, configdir):
-        from pyload.config import Config, core_defaults
+        from pyload.config import Config
 
         if configdir:
             self.configdir = os.path.expanduser(configdir)
@@ -178,8 +178,8 @@ class Core(Process):
         # NOTE: pyLoad runs over configdir/profile for its entire process-life
         os.chdir(profiledir)
 
-        self.config = self.cfg = Config(
-            profiledir, self.profile, self.__version__, core_defaults)
+        configfile = self.profile + '.conf'
+        self.config = self.cfg = Config(configfile, self.__version__)
 
     def _init_translation(self):
         language = self.config.get('general', 'language')
