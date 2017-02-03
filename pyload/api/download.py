@@ -72,7 +72,7 @@ class DownloadApi(BaseApi):
         :param root: parents package id
         :return: package id of the new package
         """
-        if self.pyload.config.get('general', 'folder_per_package'):
+        if self.pyload.config.get('general', 'folder_pack'):
             folder = name
         else:
             folder = ""
@@ -108,7 +108,7 @@ class DownloadApi(BaseApi):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        file = join(self.pyload.config.get('general', 'download_folder'), "tmp_{}".format(filename))
+        file = join(self.pyload.config.get('general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
 

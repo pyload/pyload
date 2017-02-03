@@ -103,7 +103,8 @@ class Crypter(Base):
         instance a new package will be created.
 
     """
-def    #: Prefix to annotate that the submited string for decrypting is indeed file content
+    
+    #: Prefix to annotate that the submited string for decrypting is indeed file content
     CONTENT_PREFIX = "filecontent:"
 
     #: Optional name of an account plugin that should be used, but does not guarantee that one is available

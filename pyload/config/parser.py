@@ -75,7 +75,7 @@ class ConfigParser(object):
             line = line.strip()
 
             # comment line, different variants
-            if not line or line.startswith("#") or line.startswith("//") or line.startswith(";"):
+            if not line or line.startswith("#") or line.startswith("//") or line.startswith("|"):
                 continue
 
             if line.startswith("["):

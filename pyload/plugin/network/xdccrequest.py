@@ -11,6 +11,7 @@ import re
 from os import remove
 from os.path import exists
 
+from contextlib import closing
 from time import time
 
 import struct
@@ -58,57 +59,54 @@ class XDCCRequest(object):
         last_update = time()
         cum_recv_len = 0
 
-        dccsock = self.create_socket()
+        with closing(self.create_socket()) as dccsock:
+            dccsock.settimeout(self.timeout)
+            dccsock.connect((ip, port))
 
-        dccsock.settimeout(self.timeout)
-        dccsock.connect((ip, port))
+            if exists(filename):
+                i = 0
+                name_parts = filename.rpartition(".")
+                while True:
+                    newfilename = "{}-{:d}{}{}".format(name_parts[0], i, name_parts[1], name_parts[2])
+                    i += 1
 
-        if exists(filename):
-            i = 0
-            name_parts = filename.rpartition(".")
-            while True:
-                newfilename = "{}-{:d}{}{}".format(name_parts[0], i, name_parts[1], name_parts[2])
-                i += 1
+                    if not exists(newfilename):
+                        filename = newfilename
+                        break
 
-                if not exists(newfilename):
-                    filename = newfilename
-                    break
+            with open(filename, "wb") as f:
+                # recv loop for dcc socket
+                while True:
+                    if self.abort:
+                        # dccsock.close()
+                        remove(filename)
+                        raise Abort
 
-        with open(filename, "wb") as f:
-            # recv loop for dcc socket
-            while True:
-                if self.abort:
-                    dccsock.close()
-                    remove(filename)
-                    raise Abort
+                    self._keep_alive(irc, ircbuffer)
 
-                self._keep_alive(irc, ircbuffer)
+                    data = dccsock.recv(4096)
+                    data_len = len(data)
+                    self.recv += data_len
 
-                data = dccsock.recv(4096)
-                data_len = len(data)
-                self.recv += data_len
+                    cum_recv_len += data_len
 
-                cum_recv_len += data_len
+                    now = time()
+                    timespan = now - last_update
+                    if timespan > 1:
+                        self.speed = cum_recv_len // timespan
+                        cum_recv_len = 0
+                        last_update = now
 
-                now = time()
-                timespan = now - last_update
-                if timespan > 1:
-                    self.speed = cum_recv_len // timespan
-                    cum_recv_len = 0
-                    last_update = now
+                        if progress_notify:
+                            progress_notify(self.percent)
 
-                    if progress_notify:
-                        progress_notify(self.percent)
+                    if not data:
+                        break
 
-                if not data:
-                    break
+                    f.write(data)
 
-                f.write(data)
-
-                # acknowledge data by sending number of received bytes
-                dccsock.send(struct.pack('!I', self.recv))
-
-        dccsock.close()
+                    # acknowledge data by sending number of received bytes
+                    dccsock.send(struct.pack('!I', self.recv))
 
         return filename
 

@@ -112,10 +112,10 @@ class Setup(object):
         print(_("It will check your system and make a basic setup in order to run pyLoad"))
         print("")
         print(_("The value in brackets [] always is the default value,"))
-        print(_("in case you don't want to change it or you are unsure what to choose, just hit enter"))
+        print(_("in case you do not want to change it or you are unsure what to choose, just hit enter"))
         print(_("Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore"))
         print(_("If you have any problems with this assistent hit CTRL+C,"))
-        print(_("to abort and don't let him start with pyLoadCore automatically anymore"))
+        print(_("to abort and do not let him start with pyLoadCore automatically anymore"))
         print("")
         print(_("When you are ready for system check, hit enter"))
         input()
@@ -152,8 +152,8 @@ class Setup(object):
                 self.conf_ssl()
 
         print("")
-        print(_("Do you want to configure webinterface?"))
-        web = self.ask(_("Configure webinterface?"), self.yes, bool=True)
+        print(_("Do you want to configure the Web User Interface?"))
+        web = self.ask(_("Configure the Web User Interface?"), self.yes, bool=True)
         if web:
             self.conf_web()
 
@@ -168,9 +168,6 @@ class Setup(object):
         print("")
         print(_("## Basic Setup ##"))
 
-        print("")
-        print(_("The following logindata is valid for CLI, GUI and webinterface"))
-
         from pyload.database import DatabaseBackend
 
         db = DatabaseBackend(None)
@@ -184,25 +181,25 @@ class Setup(object):
         langs = self.config.get_meta_data("general", "language")
         self.config.set('general', 'language', self.ask(_("Language"), "en", langs.type.split(";")))
 
-        self.config.set('general', 'download_folder', self.ask(_("Download folder"), "Downloads"))
-        self.config.set('download', 'max_downloads', self.ask(_("Max parallel downloads"), "3"))
+        self.config.set('general', 'storage_folder', self.ask(_("Storage folder"), "Downloads"))
+        self.config.set('connection', 'max_transfers', self.ask(_("Max parallel transfers"), "3"))
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config.set('reconnect', 'activated', reconnect)
         if reconnect:
-            self.config.set('reconnect', 'method', self.ask(_("Reconnect script location"), "./reconnect.sh"))
+            self.config.set('reconnect', 'script', self.ask(_("Reconnection script"), "./reconnect.sh"))
 
 
     def conf_web(self):
         print("")
-        print(_("## Webinterface Setup ##"))
+        print(_("## WUI (Web User Interface) Setup ##"))
 
         print("")
-        self.config.set('webinterface', 'activated', self.ask(_("Activate webinterface?"), self.yes, bool=True))
+        self.config.set('webui', 'activated', self.ask(_("Activate the Web User Interface?"), self.yes, bool=True))
         print("")
-        print(_("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally"))
-        self.config.set('webinterface', 'host', self.ask(_("Address"), "localhost"))
-        self.config.set('webinterface', 'port', self.ask(_("Port"), "8010"))
+        print(_("Listen address, if you use 127.0.0.1 or localhost, the Web User Interface will only accessible locally"))
+        self.config.set('webui', 'host', self.ask(_("Address"), "localhost"))
+        self.config.set('webui', 'port', self.ask(_("Port"), "8010"))
         print("")
         print(_("pyLoad offers several server backends, now following a short explanation"))
         print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin"))
@@ -212,10 +209,10 @@ class Setup(object):
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print()
-        print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
+        print(_("Attention: In some rare cases the builtin server is not working, if you notice problems with the Web User Interface"))
         print(_("come back here and change the builtin server to the threaded one here"))
 
-        self.config.set('webinterface', 'server', self.ask(_("Server"), "threaded",
+        self.config.set('webui', 'server', self.ask(_("Server"), "threaded",
             ["builtin", "threaded", "fastcgi", "lightweight"]))
 
     def conf_ssl(self):

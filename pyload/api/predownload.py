@@ -66,7 +66,7 @@ class PreDownloadApi(BaseApi):
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        file = join(self.pyload.config.get('general', 'download_folder'), "tmp_{}".format(filename))
+        file = join(self.pyload.config.get('general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
         return self.check_links([th.name])

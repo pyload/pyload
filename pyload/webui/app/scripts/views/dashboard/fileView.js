@@ -92,7 +92,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
           size: prog.get('total')
         }, {silent: true});
 
-        if (this.model.get('download').status === Api.DownloadStatus.Downloading) {
+        if (this.model.get('connection').status === Api.DownloadStatus.Downloading) {
           if (render)
             this.render();
 
@@ -100,7 +100,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'views/abst
 
           bar.width(this.model.get('progress') + '%');
           bar.html('&nbsp;&nbsp;' + formatTime(this.model.get('eta')));
-        } else if (this.model.get('download').status === Api.DownloadStatus.Waiting) {
+        } else if (this.model.get('connection').status === Api.DownloadStatus.Waiting) {
           this.$('.second').html(
             '<i class="icon-time"></i>&nbsp;' + formatTime(this.model.get('eta')));
 

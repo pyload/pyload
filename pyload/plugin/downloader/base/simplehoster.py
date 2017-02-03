@@ -193,7 +193,7 @@ class SimpleHoster(Hoster):
         # Workaround using get_url. Can be reverted in 0.5 as the cookies bug has been fixed.
         self.html = get_url(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
-        if not premium_only:  # Usually premium only pages doesn't show the file information
+        if not premium_only:  # Usually premium only pages does not show the file information
             self.get_file_info()
 
         if self.premium and (not self.SH_CHECK_TRAFFIC or self.check_traffic_left()):

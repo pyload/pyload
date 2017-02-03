@@ -23,7 +23,7 @@ class CoreApi(BaseApi):
 
     def is_ws_secure(self):
         # needs to use TLS when either requested or webui is also using encryption
-        if not self.pyload.config.get('ssl', 'activated') or self.pyload.config.get('webui', 'https'):
+        if not self.pyload.config.get('ssl', 'activated'):
             return False
 
         if not exists(self.pyload.config.get('ssl', 'cert')) or not exists(self.pyload.config.get('ssl', 'key')):
@@ -42,7 +42,7 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "{}://%{}:{:d}".format(ws, self.pyload.config.get('webui', 'wsport'))
+        return "{}://%{}:{:d}".format(ws, self.pyload.config.get('remote', 'port'))
 
     @require_perm(Permission.All)
     def get_status_info(self):
@@ -58,9 +58,9 @@ class CoreApi(BaseApi):
                                     total[0], queue[0],
                                     total[1], queue[1],
                                     self.is_interaction_waiting(Interaction.All),
-                                    not self.pyload.dlm.paused and self.is_time_download(),
+                                    not self.pyload.dlm.paused,  # and self.is_time_download(),
                                     self.pyload.dlm.paused,
-                                    self.pyload.config.get('reconnect', 'activated') and self.is_time_reconnect(),
+                                    self.pyload.config.get('reconnect', 'activated'),  # and self.is_time_reconnect(),
                                     self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
@@ -112,7 +112,7 @@ class CoreApi(BaseApi):
         """
         Available free space at download directory in bytes.
         """
-        return free_space(self.pyload.config.get('general', 'download_folder'))
+        return free_space(self.pyload.config.get('general', 'storage_folder'))
 
 
     def quit(self):
@@ -134,7 +134,7 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config.get('log', 'log_folder'), 'log.txt')
+        filename = join(self.pyload.config.get('log', 'logfile_folder'), 'log.txt')
         try:
             with open(filename, "r") as f:
                 lines = f.readlines()
@@ -144,27 +144,27 @@ class CoreApi(BaseApi):
         except Exception:
             return ['No log available']
 
-    @require_perm(Permission.All)
-    def is_time_download(self):
-        """
-        Checks if pyload will start new downloads according to time in config.
+    # @require_perm(Permission.All)
+    # def is_time_download(self):
+        # """
+        # Checks if pyload will start new downloads according to time in config.
 
-        :return: bool
-        """
-        start = self.pyload.config.get('downloadTime', 'start').split(":")
-        end = self.pyload.config.get('downloadTime', 'end').split(":")
-        return compare_time(start, end)
+        # :return: bool
+        # """
+        # start = self.pyload.config.get('connection', 'start').split(":")
+        # end = self.pyload.config.get('connection', 'end').split(":")
+        # return compare_time(start, end)
 
-    @require_perm(Permission.All)
-    def is_time_reconnect(self):
-        """
-        Checks if pyload will try to make a reconnect
+    # @require_perm(Permission.All)
+    # def is_time_reconnect(self):
+        # """
+        # Checks if pyload will try to make a reconnect
 
-        :return: bool
-        """
-        start = self.pyload.config.get('reconnect', 'startTime').split(":")
-        end = self.pyload.config.get('reconnect', 'endTime').split(":")
-        return compare_time(start, end) and self.pyload.config.get('reconnect', 'activated')
+        # :return: bool
+        # """
+        # start = self.pyload.config.get('reconnect', 'start').split(":")
+        # end = self.pyload.config.get('reconnect', 'end').split(":")
+        # return compare_time(start, end) and self.pyload.config.get('reconnect', 'activated')
 
 
 if Api.extend(CoreApi):

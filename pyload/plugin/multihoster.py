@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+from contextlib import closing
 from time import time
 
 from pyload.utils import remove_chars
@@ -61,14 +63,12 @@ class MultiHoster(Account):
 
     def get_hoster_list(self, force=False):
         if self.ts + self.hoster_timeout < time() or force:
-            req = self.get_account_request()
-            try:
-                self.hoster = self.load_hoster_list(req)
-            except Exception as e:
-                self.log_error(e.message)
-                return []
-            finally:
-                req.close()
+            with closing(self.get_account_request()) as req:
+                try:
+                    self.hoster = self.load_hoster_list(req)
+                except Exception as e:
+                    self.log_error(e.message)
+                    return []
 
             for rep in self.replacements:
                 if rep[0] in self.hoster:

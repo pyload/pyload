@@ -148,12 +148,14 @@ class DownloadManager(object):
         """
         self.try_reconnect()
 
-        if (free_space(self.pyload.config.get('general', 'download_folder')) / 1024 / 1024 <
-            self.pyload.config.get('general', 'min_free_space')):
+        if (free_space(self.pyload.config.get('general', 'storage_folder')) / 1024 / 1024 <
+            self.pyload.config.get('general', 'min_storage_size')):
             self.pyload.log.warning(_("Not enough space left on device"))
             self.paused = True
 
-        if self.paused or not self.pyload.api.is_time_download():
+        # if self.paused or not self.pyload.api.is_time_download():
+            # return False
+        if self.paused:
             return False
 
         # at least one thread want reconnect and we are supposed to wait
@@ -168,13 +170,13 @@ class DownloadManager(object):
         """
         Load jobs from db and try to assign them.
         """
-        limit = self.pyload.config.get('download', 'max_downloads') - len(self.active_downloads())
+        limit = self.pyload.config.get('connection', 'max_transfers') - len(self.active_downloads())
 
         # check for waiting dl rule
         if limit <= 0:
             # increase limit if there are waiting downloads
-            limit += min(len(self.waiting_downloads()), self.pyload.config.get('download', 'wait_downloads') +
-                                                  self.pyload.config.get('download', 'max_downloads') - len(
+            limit += min(len(self.waiting_downloads()), self.pyload.config.get('connection', 'wait') +
+                                                  self.pyload.config.get('connection', 'max_transfers') - len(
                 self.active_downloads()))
 
         slots = self.get_remaining_plugin_slots()
@@ -246,16 +248,18 @@ class DownloadManager(object):
         """
         Checks if reconnect needed.
         """
-        if not self.pyload.config.get('reconnect', 'activated') or not self.pyload.api.is_time_reconnect():
+        # if not self.pyload.config.get('reconnect', 'activated') or not self.pyload.api.is_time_reconnect():
+            # return False
+        if not self.pyload.config.get('reconnect', 'activated'):
             return False
 
         # only reconnect when all threads are ready
         if not (0 < self.want_reconnect() == len(self.working)):
             return False
 
-        if not exists(self.pyload.config.get('reconnect', 'method')):
-            if exists(join(COREDIR, self.pyload.config.get('reconnect', 'method'))):
-                self.pyload.config.set('reconnect', 'method', join(COREDIR, self.pyload.config.get('reconnect', 'method')))
+        if not exists(self.pyload.config.get('reconnect', 'script')):
+            if exists(join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
+                self.pyload.config.set('reconnect', 'script', join(COREDIR, self.pyload.config.get('reconnect', 'script')))
             else:
                 self.pyload.config.set('reconnect', 'activated', False)
                 self.pyload.log.warning(_("Reconnect script not found!"))
@@ -275,7 +279,7 @@ class DownloadManager(object):
         self.pyload.log.debug("Old IP: {}".format(old_ip))
 
         try:
-            call(self.pyload.config.get('reconnect', 'method'), shell=True)
+            call(self.pyload.config.get('reconnect', 'script'), shell=True)
         except Exception:
             self.pyload.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config.set('reconnect', 'activated', False)

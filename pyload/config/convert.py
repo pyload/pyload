@@ -14,11 +14,11 @@ ConfigData = namedtuple("ConfigData", "label description input")
 
 # Maps old config formats to new values
 input_dict = {
-    "int": InputType.Int,
-    "bool": InputType.Bool,
-    "time": InputType.Time,
-    "file": InputType.File,
-    "list": InputType.List,
+    "int"   : InputType.Int,
+    "bool"  : InputType.Bool,
+    "time"  : InputType.Time,
+    "file"  : InputType.File,
+    "list"  : InputType.List,
     "folder": InputType.Folder
 }
 

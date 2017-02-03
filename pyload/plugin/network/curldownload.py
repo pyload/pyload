@@ -4,6 +4,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
+
+from contextlib import closing
 from builtins import range
 from os import remove
 from os.path import dirname
@@ -310,10 +312,9 @@ class CurlDownload(Download):
         else:
             #Workaround: pycurl segfaults when closing multi, that never had any curl handles
             if hasattr(self, "m"):
-                c = pycurl.Curl()
-                self.manager.add_handle(c)
-                self.manager.remove_handle(c)
-                c.close()
+                with closing(pycurl.Curl()) as c:
+                    self.manager.add_handle(c)
+                    self.manager.remove_handle(c)
 
         self.chunks = []
         if hasattr(self, "m"):

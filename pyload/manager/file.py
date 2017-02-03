@@ -193,7 +193,7 @@ class FileManager(object):
         """
         view = TreeCollection(pid)
 
-        # for depth=1, we don't need to retrieve all files/packages
+        # for depth=1, we do not need to retrieve all files/packages
         root = pid if not full else None
 
         packs = self.db.get_all_packages(root, owner=owner)
@@ -204,7 +204,7 @@ class FileManager(object):
             if fid in files:
                 files[fid] = f.to_info_data()
 
-        # foreign pid, don't overwrite local pid !
+        # foreign pid, do not overwrite local pid !
         for fpid, p in self.packages.items():
             if fpid in packs:
                 # copy the stats data

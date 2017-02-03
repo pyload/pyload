@@ -32,12 +32,12 @@ class WebServer(threading.Thread):
             raise Exception("No config context provided")
 
         self.server = config.get('webui', 'server')
-        self.https = config.get('webui', 'https')
+        self.https = config.get('aal', 'activated')
         self.cert = config.get('ssl', 'cert')
         self.key = config.get('ssl', 'key')
         self.host = config.get('webui', 'host')
         self.port = config.get('webui', 'port')
-        self.debug = config.get('general', 'debug_mode')
+        self.debug = config.get('webui', 'debug')
         self.force_server = config.get('webui', 'force_server')
         self.error = None
 

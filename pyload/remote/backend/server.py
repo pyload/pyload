@@ -222,7 +222,7 @@ class _StandaloneSSLConnection(object):
     """
     A wrapper class for OpenSSL.SSL.Connection to
     - provide makefile method which is not supported by the class
-    - tweak shutdown method since OpenSSL.SSL.Connection.shutdown doesn't
+    - tweak shutdown method since OpenSSL.SSL.Connection.shutdown does not
       accept the "how" argument.
     - convert SysCallError exceptions that its recv method may raise into a
       return value of '', meaning EOF. We cannot overwrite the recv method on
@@ -326,7 +326,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
         self.server_name, self.server_port = self.server_address
         self._sockets = []
         if not self.server_name:
-            # On platforms that doesn't support IPv6, the first bind fails.
+            # On platforms that does not support IPv6, the first bind fails.
             # On platforms that supports IPv6
             # - If it binds both IPv4 and IPv6 on call with AF_INET6, the
             #   first bind succeeds and the second fails (we'll see 'Address
@@ -471,7 +471,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
                 self._logger.debug('Cipher: {}'.format(accepted_socket.cipher()))
                 self._logger.debug('Client cert: {}'.format(accepted_socket.getpeercert()))
             elif server_options.tls_module == _TLS_BY_PYOPENSSL:
-                # We cannot print(the cipher in use. pyOpenSSL doesn't provide)
+                # We cannot print(the cipher in use. pyOpenSSL does not provide)
                 # any method to fetch that.
 
                 ctx = OpenSSL.SSL.Context(OpenSSL.SSL.SSLv23_METHOD)
@@ -658,7 +658,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
 
         try:
             # Fallback to default http handler for request paths for which
-            # we don't have request handlers.
+            # we do not have request handlers.
             if not self._options.dispatcher.get_handler_suite(self.path):
                 self._logger.info(_('No handler for resource: {}').format(self.path))
                 self._logger.info(_('Fallback to CGIHTTPRequestHandler'))
@@ -717,7 +717,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
         """
         Test whether self.path corresponds to a CGI script.
 
-        Add extra check that self.path doesn't contains ..
+        Add extra check that self.path does not contains ..
         Also check if the file is a executable file or not.
         If the file is not executable, it is handled as static file or dir
         rather than a CGI script

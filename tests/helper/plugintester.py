@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
+from contextlib import closing
 from builtins import str
 from unittest import TestCase
 from os import makedirs, remove
@@ -59,21 +61,18 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
     conf = join(expanduser("~"), "ct.conf")
     if not exists(conf):
         raise Exception("CaptchaService config {} not found".format(conf))
+        
     with open(conf, "rb") as f:
-        req = get_request()
-
-        #raise timeout threshold
-        req.c.setopt(LOW_SPEED_TIME, 300)
-
-        try:
+        with closing(get_request()) as req:
+            #raise timeout threshold
+            req.c.setopt(LOW_SPEED_TIME, 300)
+            
             json = req.load("http://captchatrader.com/api/submit",
                 post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
                       "username": f.readline().strip(),
                       "password": f.readline().strip(),
                       "value": (FORM_FILE, temp_file.name),
                       "type": "file"}, multipart=True)
-        finally:
-            req.close()
 
     response = loads(json)
     log(DEBUG, str(response))

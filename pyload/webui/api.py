@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
+
+from contextlib import closing
 from urllib.parse import unquote
 from traceback import format_exc, print_exc
 from io import StringIO
@@ -28,14 +30,13 @@ except ImportError:
 def json_response(obj):
     accept = 'gzip' in request.headers.get('Accept-Encoding', '')
     result = dumps(obj)
-    # don't compress small string
+    # do not compress small string
     if gzip and accept and len(result) > 500:
         response.headers['Vary'] = 'Accept-Encoding'
         response.headers['Content-Encoding'] = 'gzip'
         zbuf = StringIO()
-        zfile = gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)
-        zfile.write(result)
-        zfile.close()
+        with closing(gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)) as zfile:
+            zfile.write(result)
         return zbuf.getvalue()
 
     return result
@@ -88,10 +89,9 @@ def call_api(func, args=""):
     # file upload, reads whole file into memory
     for name, f in request.files.items():
         kwargs['filename'] = f.filename
-        content = StringIO()
-        f.save(content)
-        kwargs[name] = content.getvalue()
-        content.close()
+        with closing(StringIO()) as content:
+            f.save(content)
+            kwargs[name] = content.getvalue()
 
     # convert arguments from json to obj separately
     for x, y in request.params.items():

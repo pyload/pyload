@@ -117,7 +117,7 @@ def json_response(obj):
     result = json.dumps(obj, cls=TBaseEncoder)
     if 'gzip' not in bottle.request.headers.get('Accept-Encoding', ''):
         return result
-    # don't compress small string
+    # do not compress small string
     if len(result) > 500:
         bottle.response.set_header("Vary", "Accept-Encoding")
         bottle.response.set_header("Content-Encoding", "gzip")

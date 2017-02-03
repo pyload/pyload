@@ -73,23 +73,23 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes'], function($
 
     setDownloadStatus: function(status) {
       if (this.isDownload())
-        this.get('download').status = status;
+        this.get('connection').status = status;
     },
 
     isDownload: function() {
-      return this.has('download');
+      return this.has('connection');
     },
 
     isFinished: function() {
-      return _.indexOf(Finished, this.get('download').status) > -1;
+      return _.indexOf(Finished, this.get('connection').status) > -1;
     },
 
     isUnfinished: function() {
-      return _.indexOf(Finished, this.get('download').status) === -1 && _.indexOf(Failed, this.get('download').status) === -1;
+      return _.indexOf(Finished, this.get('connection').status) === -1 && _.indexOf(Failed, this.get('connection').status) === -1;
     },
 
     isFailed: function() {
-      return _.indexOf(Failed, this.get('download').status) > -1;
+      return _.indexOf(Failed, this.get('connection').status) > -1;
     }
 
   });

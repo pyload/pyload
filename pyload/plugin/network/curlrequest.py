@@ -90,7 +90,7 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.LOW_SPEED_TIME, 45)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
-        # don't save the cookies
+        # do not save the cookies
         self.c.setopt(pycurl.COOKIEFILE, b"")
         self.c.setopt(pycurl.COOKIEJAR, b"")
 
@@ -124,7 +124,7 @@ class CurlRequest(Request):
             else:
                 self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
-            self.c.setopt(pycurl.PROXY, bytes(proxy['address']))
+            self.c.setopt(pycurl.PROXY, bytes(proxy['host']))
             self.c.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:

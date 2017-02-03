@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
 from builtins import REQUEST
+from contextlib import closing
+
 from pyload.network.bucket import Bucket
 
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
@@ -22,12 +24,8 @@ class RequestFactory(object):
         """
         See HTTPRequest for argument list.
         """
-        h = DefaultRequest(self.get_config())
-        try:
+        with closing(DefaultRequest(self.get_config())) as h:
             rep = h.load(*args, **kwargs)
-        finally:
-            h.close()
-
         return rep
 
         ########## old api methods above
@@ -54,13 +52,13 @@ class RequestFactory(object):
         return klass(self.bucket, request)
 
     def get_interface(self):
-        return self.pyload.config.get('download', 'interface')
+        return self.pyload.config.get('connection', 'interface')
 
     def get_proxies(self):
         """
         Returns a proxy list for the request classes.
         """
-        if not self.pyload.config.get('proxy', 'proxy'):
+        if not self.pyload.config.get('proxy', 'activated'):
             return {}
         else:
             type = "http"
@@ -80,7 +78,7 @@ class RequestFactory(object):
 
             return {
                 "type": type,
-                "address": self.pyload.config.get('proxy', 'address'),
+                "address": self.pyload.config.get('proxy', 'host'),
                 "port": self.pyload.config.get('proxy', 'port'),
                 "username": username,
                 "password": pw,
@@ -99,16 +97,17 @@ class RequestFactory(object):
         """
         return {"interface": self.get_interface(),
                 "proxies": self.get_proxies(),
-                "ipv6": self.pyload.config.get('download', 'ipv6')}
+                "ipv6": self.pyload.config.get('connection', 'ipv6')}
 
     def update_bucket(self):
         """
         Set values in the bucket according to settings.
         """
-        if not self.pyload.config.get('download', 'limit_speed'):
-            self.bucket.set_rate(-1)
+        max_speed = self.pyload.config.get('connection', 'max_speed')
+        if max_speed > 0:
+            self.bucket.set_rate(max_speed * 1024)
         else:
-            self.bucket.set_rate(self.pyload.config.get('download', 'max_speed') * 1024)
+            self.bucket.set_rate(-1)
 
 # needs REQUEST in global namespace
 def get_url(*args, **kwargs):

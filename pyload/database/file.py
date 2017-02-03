@@ -403,7 +403,7 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_jobs(self, occ):
         """
-        Return pyfile ids, which are suitable for download and don't use a occupied plugin.
+        Return pyfile ids, which are suitable for download and do not use a occupied plugin.
         """
         cmd = "({})".format(", ".join("'{}'".format(x) for x in occ))
 

@@ -9,7 +9,7 @@ from new_collections import OrderedDict
 # gettext decorator, translated only when needed
 _ = lambda x: x
 
-# platform usually don't change at runtime
+# platform usually do not change at runtime
 info = None
 
 

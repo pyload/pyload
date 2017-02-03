@@ -84,7 +84,7 @@ class Core(Process):
         self.log.setLevel(level)
 
         # Set console handler
-        if not self.config.get('logging', 'color_console'):
+        if not self.config.get('log', 'color_console'):
             fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
             datefmt = "%Y-%m-%d %H:%M:%S"
             consoleform = logging.Formatter(fmt, datefmt)
@@ -113,11 +113,11 @@ class Core(Process):
         self.log.add_handler(consolehdlr)
 
         # Create logfile folder
-        logfile_folder = self.config.get('logging', 'logfile_folder') or "logs"
+        logfile_folder = self.config.get('log', 'logfile_folder') or "logs"
         makedirs(logfile_folder)
 
         # Set file handler
-        if not self.config.get('logging', 'logfile'):
+        if not self.config.get('log', 'logfile'):
             return
 
         fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
@@ -125,9 +125,9 @@ class Core(Process):
         fileform = logging.Formatter(fmt, datefmt)
 
         logfile = os.path.join(logfile_folder, 'log.txt')
-        if self.config.get('logging', 'logfile_rotate'):
-            logfile_size = self.config.get('logging', 'logfile_size') * 1024
-            max_logfiles = self.config.get('logging', 'max_logfiles')
+        if self.config.get('log', 'rotate'):
+            logfile_size = self.config.get('log', 'logfile_size') * 1024
+            max_logfiles = self.config.get('log', 'max_logfiles')
             filehdlr = logging.handlers.RotatingFileHandler(logfile,
                                                             maxBytes=logfile_size,
                                                             backupCount=max_logfiles,
@@ -195,13 +195,13 @@ class Core(Process):
 
 
     def _init_debug(self, debug, webdebug):
-        logging_debug_mode = self.config.get('logging', 'debug_mode')
-        logging_debug_ext  = self.config.get('logging', 'debug_extended')
-        webui_debug_mode   = config.get('webui', 'debug_mode')
+        debug_log   = self.config.get('log', 'debug')
+        verbose_log = self.config.get('log', 'verbose')
+        debug_webui = config.get('webui', 'debug')
 
-        self.debug         = bool(debug) or logging_debug_mode
-        self.debug_level   = 2 if debug > 1 or logging_debug_ext else 1
-        self.webdebug      = bool(webdebug) or webui_debug_mode
+        self.debug         = bool(debug) or debug_log
+        self.debug_level   = 2 if debug > 1 or verbose_log else 1
+        self.webdebug      = bool(webdebug) or debug_webui
 
 
     def _start_interfaces(self, webui, remote):

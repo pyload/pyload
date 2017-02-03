@@ -63,7 +63,7 @@ class Base(object):
     __category__ = ""
     #: Tags to categorize the plugin, see documentation for further info
     __tags__ = tuple()
-    #: Base64 encoded .png icon, should be 32x32, please don't use sizes above ~2KB, for bigger icons use url.
+    #: Base64 encoded .png icon, should be 32x32, please do not use sizes above ~2KB, for bigger icons use url.
     __icon__ = ""
     #: Alternative, link to png icon
     __icon_url__ = ""

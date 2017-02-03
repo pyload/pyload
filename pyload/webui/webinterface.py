@@ -34,8 +34,8 @@ else:
 from pyload.utils.jsengine import JsEngine
 JS = JsEngine()
 
-TEMPLATE = config.get('webui', 'template')
-DL_ROOT = config.get('general', 'download_folder')
+TEMPLATE = "default"
+DL_ROOT = config.get('general', 'storage_folder')
 PREFIX = config.get('webui', 'prefix')
 
 if PREFIX:
@@ -53,7 +53,7 @@ elif exists(join(APP_DIR, "dist", "index.html")):
     # APP_PATH = "dist"
     UNAVAILALBE = False
 
-DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
+DEBUG = config.get('webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
 

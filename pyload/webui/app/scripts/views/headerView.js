@@ -141,7 +141,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
         App.progressList.each(function(progress) {
           if (progress.isDownload()) {
             data.downloads++;
-            data.speed += progress.get('download').speed;
+            data.speed += progress.get('connection').speed;
           } else
             data.tasks++;
         });
@@ -235,9 +235,9 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
         // update currently open files with progress
         App.progressList.each(function(prog) {
           if (prog.isDownload() && App.dashboard.files) {
-            var file = App.dashboard.files.get(prog.get('download').fid);
+            var file = App.dashboard.files.get(prog.get('connection').fid);
             if (file) {
-              file.setDownloadStatus(prog.get('download').status);
+              file.setDownloadStatus(prog.get('connection').status);
               file.trigger('change:progress', prog);
             }
           }

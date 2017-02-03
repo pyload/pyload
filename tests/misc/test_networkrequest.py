@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
+from contextlib import closing
 from builtins import object
 from tests.helper.stubs import Core
 
@@ -33,9 +35,7 @@ class TestRequestFactory(object):
 
         # with given request
         req = self.req.get_request()
-        dl = self.req.get_download_request(req)
-
-        assert req.context is dl.context
-        assert req.options is dl.options
-
-        dl.close()
+        with closing(self.req.get_download_request(req)) as dl:
+            assert req.context is dl.context
+            assert req.options is dl.options
+            

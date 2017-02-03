@@ -153,7 +153,7 @@ class DownloadThread(BaseThread):
                     if pyfile.abort:
                         self.pyload.log.info(_("Download aborted: {}").format(pyfile.name))
                         pyfile.set_status("aborted")
-                        # don't clean, aborting function does this itself
+                        # do not clean, aborting function does this itself
                         # self.clean(pyfile)
                     else:
                         self.queue.put(pyfile)

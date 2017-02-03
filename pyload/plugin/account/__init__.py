@@ -3,6 +3,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import division
+
+from contextlib import closing
 from time import time
 from threading import RLock
 
@@ -130,11 +132,8 @@ class Account(Base):
         """
         Force a login.
         """
-        req = self.get_account_request()
-        try:
+        with closing(self.get_account_request()) as req:
             return self._login(req)
-        finally:
-            req.close()
 
     @lock
     def _login(self, req):
@@ -217,20 +216,18 @@ class Account(Base):
         if force or self.timestamp + self.info_threshold * 60 < time():
 
             # make sure to login
-            req = self.get_account_request()
-            self.check_login(req)
-            self.log_info(_("Get Account Info for {}").format(self.loginname))
-            try:
+            with closing(self.get_account_request()) as req:
+                self.check_login(req)
+                self.log_info(_("Get Account Info for {}").format(self.loginname))
                 try:
-                    infos = self.load_account_info(req)
-                except TypeError: #TODO: temporary
-                    self.log_debug("Deprecated .load_account_info(...) signature, omit user argument")
-                    infos = self.load_account_info(self.loginname, req)
-            except Exception as e:
-                infos = {"error": e.message}
-                self.log_error(_("Error: {}").format(e.message))
-            finally:
-                req.close()
+                    try:
+                        infos = self.load_account_info(req)
+                    except TypeError: #TODO: temporary
+                        self.log_debug("Deprecated .load_account_info(...) signature, omit user argument")
+                        infos = self.load_account_info(self.loginname, req)
+                except Exception as e:
+                    infos = {"error": e.message}
+                    self.log_error(_("Error: {}").format(e.message))
 
             self.restore_defaults() # reset to initial state
             if isinstance(infos, dict): # copy result from dict to class

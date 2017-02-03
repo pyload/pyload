@@ -8,6 +8,8 @@ from builtins import range
 from os.path import join
 from os.path import exists
 from os import makedirs
+from contextlib import closing
+
 import re
 import sys
 import time
@@ -65,7 +67,7 @@ class Xdcc(Hoster):
     def do_download(self, url):
         self.pyfile.set_status("waiting")  # real link
 
-        download_folder = self.pyload.config.get('general', 'download_folder')
+        download_folder = self.pyload.config.get('general', 'storage_folder')
         location = join(download_folder, self.pyfile.package().folder.decode(sys.getfilesystemencoding()))
         if not exists(location):
             makedirs(location)
@@ -92,119 +94,118 @@ class Xdcc(Hoster):
         # CONNECT TO IRC AND IDLE FOR REAL LINK
         dl_time = time.time()
 
-        sock = socket.socket()
-        sock.connect((host, int(port)))
-        if nick == "pyload":
-            nick = "pyload-{:d}".format(time.time() % 1000)  # last 3 digits
-        sock.send("NICK {}\r\n".format(nick))
-        sock.send("USER {} {} bla :{}\r\n".format(ident, host, real))
-        time.sleep(3)
-        sock.send("JOIN #{}\r\n".format(chan))
-        sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
+        with closing(socket.socket()) as sock:
+            sock.connect((host, int(port)))
+            if nick == "pyload":
+                nick = "pyload-{:d}".format(time.time() % 1000)  # last 3 digits
+            sock.send("NICK {}\r\n".format(nick))
+            sock.send("USER {} {} bla :{}\r\n".format(ident, host, real))
+            time.sleep(3)
+            sock.send("JOIN #{}\r\n".format(chan))
+            sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
 
-        # IRC recv loop
-        readbuffer = ""
-        done = False
-        retry = None
-        m = None
-        while True:
+            # IRC recv loop
+            readbuffer = ""
+            done = False
+            retry = None
+            m = None
+            while True:
 
-            # done is set if we got our real link
-            if done:
-                break
+                # done is set if we got our real link
+                if done:
+                    break
 
-            if retry:
-                if time.time() > retry:
-                    retry = None
-                    dl_time = time.time()
-                    sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
+                if retry:
+                    if time.time() > retry:
+                        retry = None
+                        dl_time = time.time()
+                        sock.send("PRIVMSG {} :xdcc send #{}\r\n".format(bot, pack))
 
-            else:
-                if (dl_time + self.timeout) < time.time():  # todo: add in config
-                    sock.send("QUIT :byebye\r\n")
-                    sock.close()
-                    self.fail(_("XDCC Bot did not answer"))
+                else:
+                    if (dl_time + self.timeout) < time.time():  # todo: add in config
+                        sock.send("QUIT :byebye\r\n")
+                        # sock.close()
+                        self.fail(_("XDCC Bot did not answer"))
 
-            fdset = select([sock], [], [], 0)
-            if sock not in fdset[0]:
-                continue
-
-            readbuffer += sock.recv(1024)
-            temp = readbuffer.split("\n")
-            readbuffer = temp.pop()
-
-            for line in temp:
-                if self.debug is 2:
-                    print("*> {}".format(line, errors='ignore'))
-                line = line.rstrip()
-                first = line.split()
-
-                if first[0] == "PING":
-                    sock.send("PONG {}\r\n".format(first[1]))
-
-                if first[0] == "ERROR":
-                    self.fail(_("IRC-Error: {}").format(line))
-
-                msg = line.split(None, 3)
-                if len(msg) != 4:
+                fdset = select([sock], [], [], 0)
+                if sock not in fdset[0]:
                     continue
 
-                msg = {
-                    "origin": msg[0][1:],
-                    "action": msg[1],
-                    "target": msg[2],
-                    "text": msg[3][1:]
-                }
+                readbuffer += sock.recv(1024)
+                temp = readbuffer.split("\n")
+                readbuffer = temp.pop()
 
-                if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
-                    if msg['text'] == "\x01VERSION\x01":
-                        self.log_debug("XDCC: Sending CTCP VERSION")
-                        sock.send("NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad IRC Interface"))
-                    elif msg['text'] == "\x01TIME\x01":
-                        self.log_debug("Sending CTCP TIME")
-                        sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
-                    elif msg['text'] == "\x01LAG\x01":
-                        pass  # don't know how to answer
+                for line in temp:
+                    if self.debug is 2:
+                        print("*> {}".format(line, errors='ignore'))
+                    line = line.rstrip()
+                    first = line.split()
 
-                if not (bot == msg['origin'][0:len(bot)]
-                        and nick == msg['target'][0:len(nick)]
-                        and msg['action'] in ("PRIVMSG", "NOTICE")):
-                    continue
+                    if first[0] == "PING":
+                        sock.send("PONG {}\r\n".format(first[1]))
 
-                if self.debug is 1:
-                    print("{}: {}".format(msg['origin'], msg['text']))
+                    if first[0] == "ERROR":
+                        self.fail(_("IRC-Error: {}").format(line))
 
-                if "You already requested that pack" in msg['text']:
-                    retry = time.time() + 300
+                    msg = line.split(None, 3)
+                    if len(msg) != 4:
+                        continue
 
-                if "you must be on a known channel to request a pack" in msg['text']:
-                    self.fail(_("Wrong channel"))
+                    msg = {
+                        "origin": msg[0][1:],
+                        "action": msg[1],
+                        "target": msg[2],
+                        "text": msg[3][1:]
+                    }
 
-                m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg['text'])
-                if m:
-                    done = True
+                    if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
+                        if msg['text'] == "\x01VERSION\x01":
+                            self.log_debug("XDCC: Sending CTCP VERSION")
+                            sock.send("NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad IRC Interface"))
+                        elif msg['text'] == "\x01TIME\x01":
+                            self.log_debug("Sending CTCP TIME")
+                            sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
+                        elif msg['text'] == "\x01LAG\x01":
+                            pass  # do not know how to answer
 
-        # get connection data
-        ip = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
-        port = int(m.group(3))
-        packname = m.group(1)
+                    if not (bot == msg['origin'][0:len(bot)]
+                            and nick == msg['target'][0:len(nick)]
+                            and msg['action'] in ("PRIVMSG", "NOTICE")):
+                        continue
 
-        if len(m.groups()) > 3:
-            self.req.filesize = int(m.group(4))
+                    if self.debug is 1:
+                        print("{}: {}".format(msg['origin'], msg['text']))
 
-        self.pyfile.name = packname
-        filename = save_join(location, packname)
-        self.log_info(_("XDCC: Downloading {} from {}:{:d}").format(packname, ip, port))
+                    if "You already requested that pack" in msg['text']:
+                        retry = time.time() + 300
 
-        self.pyfile.set_status("downloading")
-        newname = self.req.download(ip, port, filename, sock, self.pyfile.set_progress)
-        if newname and newname != filename:
-            self.log_info(_("{} saved as {}").format(self.pyfile.name, newname))
-            filename = newname
+                    if "you must be on a known channel to request a pack" in msg['text']:
+                        self.fail(_("Wrong channel"))
 
-        # kill IRC socket
-        # sock.send("QUIT :byebye\r\n")
-        sock.close()
+                    m = re.match('\x01DCC SEND (.*?) (\d+) (\d+)(?: (\d+))?\x01', msg['text'])
+                    if m:
+                        done = True
+
+            # get connection data
+            ip = socket.inet_ntoa(struct.pack('L', socket.ntohl(int(m.group(2)))))
+            port = int(m.group(3))
+            packname = m.group(1)
+
+            if len(m.groups()) > 3:
+                self.req.filesize = int(m.group(4))
+
+            self.pyfile.name = packname
+            filename = save_join(location, packname)
+            self.log_info(_("XDCC: Downloading {} from {}:{:d}").format(packname, ip, port))
+
+            self.pyfile.set_status("downloading")
+            newname = self.req.download(ip, port, filename, sock, self.pyfile.set_progress)
+            if newname and newname != filename:
+                self.log_info(_("{} saved as {}").format(self.pyfile.name, newname))
+                filename = newname
+
+            # kill IRC socket
+            # sock.send("QUIT :byebye\r\n")
 
         self.last_download = filename
         return self.last_download

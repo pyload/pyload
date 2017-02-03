@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 from builtins import str
 import sys
+
+from contextlib import closing
 from threading import Thread
 from time import strftime, gmtime
 from types import MethodType
@@ -44,7 +46,8 @@ class BaseThread(Thread):
 
         :return: :class:`ProgressInfo`
         """
-def    # Debug Stuff
+    
+    # Debug Stuff
     def write_debug_report(self, name, pyfile=None, plugin=None):
         """
         Writes a debug report to disk.
@@ -58,25 +61,22 @@ def    # Debug Stuff
 
         try:
             import zipfile
-            zip = zipfile.ZipFile(dump_name, "w")
+            with closing(zipfile.ZipFile(dump_name, "w")) as zip:
+                if exists(join("tmp", name)):
+                    for f in listdir(join("tmp", name)):
+                        try:
+                            # avoid encoding errors
+                            zip.write(join("tmp", name, f), save_join(name, f))
+                        except Exception:
+                            pass
 
-            if exists(join("tmp", name)):
-                for f in listdir(join("tmp", name)):
-                    try:
-                        # avoid encoding errors
-                        zip.write(join("tmp", name, f), save_join(name, f))
-                    except Exception:
-                        pass
+                info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
+                info.external_attr = 0o644 << 16 # change permissions
+                zip.writestr(info, dump)
 
-            info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
-            info.external_attr = 0o644 << 16 # change permissions
-            zip.writestr(info, dump)
-
-            info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
-            info.external_attr = 0o644 << 16
-            zip.writestr(info, self.get_system_dump())
-
-            zip.close()
+                info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
+                info.external_attr = 0o644 << 16
+                zip.writestr(info, self.get_system_dump())
 
             if not stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
