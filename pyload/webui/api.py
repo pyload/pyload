@@ -14,7 +14,7 @@ from io import StringIO
 from bottle import route, request, response, HTTPError, parse_auth
 
 from pyload.webui.utils import set_session, get_user_api, add_json_header
-from pyload.webui.webinterface import PYLOAD, session
+from pyload.webui.interface import PYLOAD, session
 
 from pyload.api import ExceptionObject
 from pyload.remote.json_converter import loads, dumps, BaseEncoder

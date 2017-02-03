@@ -19,7 +19,7 @@ from pyload.webui.middlewares import StripPathMiddleware, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from pyload.thread import server as ServerThread
+from pyload.thread import webserver as ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:

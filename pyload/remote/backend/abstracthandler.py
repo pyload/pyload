@@ -53,7 +53,7 @@ class AbstractHandler(object):
     def load_session(self, cookies):
         from http.cookies import SimpleCookie
         from beaker.session import Session
-        from pyload.webui.webinterface import session
+        from pyload.webui.interface import session
 
         cookies = SimpleCookie(cookies)
         sid = cookies.get(session.options['key'])

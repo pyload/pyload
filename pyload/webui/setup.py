@@ -8,7 +8,7 @@ from pyload.utils import json_dumps
 
 from bottle import route, request, response, HTTPError, redirect
 
-from pyload.webui.webinterface import SETUP
+from pyload.webui.interface import SETUP
 
 from pyload.webui.utils import add_json_header
 

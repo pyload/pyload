@@ -37,7 +37,7 @@ class TestJSONBackend(object):
         assert ret.text
 
     def test_jsonbody(self):
-        payload = {'section': 'webinterface', 'option': 'port'}
+        payload = {'section': 'webui', 'option': 'port'}
         headers = {'content-type': 'application/json'}
 
         ret = requests.get(webaddress + "/getConfigValue", headers=headers,
