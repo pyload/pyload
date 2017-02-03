@@ -13,6 +13,8 @@ from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
+import js2py
+
 try:
     from Crypto.Cipher import AES
 except Exception:
@@ -21,16 +23,14 @@ except Exception:
 from pyload.thread.remote import BackendBase
 
 core = None
-js = None
 
 
 class ClickAndLoadBackend(BackendBase):
 
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
-        global core, js
+        global core
         core = self.manager.pyload
-        js = core.js
 
     def serve(self):
         while self.enabled:
@@ -129,7 +129,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
         jk = "{} f()".format(jk)
-        jk = js.eval(jk)
+        jk = js2py.eval_js(jk)
         Key = unhexlify(jk)
         IV = Key
 
