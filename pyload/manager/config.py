@@ -11,6 +11,7 @@ from pyload.config.parser import ConfigParser
 
 from pyload.config.convert import to_input, from_string
 
+
 def convertkeyerror(func):
     """
     Converts KeyError into InvalidConfigSection.
@@ -69,7 +70,7 @@ class ConfigManager(ConfigParser):
                 data = self.config[section].config[option]
                 return self.load_values(user, section)[option]
             except KeyError:
-                pass # Returns default value later
+                pass  # Returns default value later
 
         return self.config[section].config[option].input.default_value
 
@@ -78,7 +79,7 @@ class ConfigManager(ConfigParser):
             conf = self.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
-            except ValueError: # Something did go wrong when parsing
+            except ValueError:  # Something did go wrong when parsing
                 self.values[user, section] = {}
                 # self.pyload.print_exc()
 
@@ -112,7 +113,8 @@ class ConfigManager(ConfigParser):
         if section in self.parser and user is None:
             self.save()
         elif (user, section) in self.values:
-            self.db.save_config(section, json.dumps(self.values[user, section]), user)
+            self.db.save_config(section, json.dumps(
+                self.values[user, section]), user)
 
     def delete(self, section, user=None):
         """

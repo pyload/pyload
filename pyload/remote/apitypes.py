@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 
 
 from builtins import object
+
+
 class BaseObject(object):
     __version__ = (0, 5, 0)
     __slots__ = []
@@ -135,7 +137,8 @@ class Role(object):
 
 
 class AccountInfo(BaseObject):
-    __slots__ = ['aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil', 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
+    __slots__ = ['aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
+                 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
 
     def __init__(self, aid=None, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
         self.aid = aid
@@ -162,7 +165,8 @@ class AddonInfo(BaseObject):
 
 
 class AddonService(BaseObject):
-    __slots__ = ['func_name', 'label', 'description', 'arguments', 'pack', 'media']
+    __slots__ = ['func_name', 'label',
+                 'description', 'arguments', 'pack', 'media']
 
     def __init__(self, func_name=None, label=None, description=None, arguments=None, pack=None, media=None):
         self.__name__ = func_name
@@ -174,7 +178,8 @@ class AddonService(BaseObject):
 
 
 class ConfigHolder(BaseObject):
-    __slots__ = ['name', 'label', 'description', 'explanation', 'items', 'info']
+    __slots__ = ['name', 'label', 'description',
+                 'explanation', 'items', 'info']
 
     def __init__(self, name=None, label=None, description=None, explanation=None, items=None, info=None):
         self.name = name
@@ -186,7 +191,8 @@ class ConfigHolder(BaseObject):
 
 
 class ConfigInfo(BaseObject):
-    __slots__ = ['name', 'label', 'description', 'category', 'user_context', 'activated']
+    __slots__ = ['name', 'label', 'description',
+                 'category', 'user_context', 'activated']
 
     def __init__(self, name=None, label=None, description=None, category=None, user_context=None, activated=None):
         self.name = name
@@ -251,7 +257,8 @@ class FileDoesNotExist(ExceptionObject):
 
 
 class FileInfo(BaseObject):
-    __slots__ = ['fid', 'name', 'package', 'owner', 'size', 'status', 'media', 'added', 'fileorder', 'download']
+    __slots__ = ['fid', 'name', 'package', 'owner', 'size',
+                 'status', 'media', 'added', 'fileorder', 'download']
 
     def __init__(self, fid=None, name=None, package=None, owner=None, size=None, status=None, media=None, added=None, fileorder=None, download=None):
         self.fid = fid
@@ -326,7 +333,8 @@ class PackageDoesNotExist(ExceptionObject):
 
 
 class PackageInfo(BaseObject):
-    __slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password', 'added', 'tags', 'status', 'shared', 'packageorder', 'stats', 'fids', 'pids']
+    __slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password',
+                 'added', 'tags', 'status', 'shared', 'packageorder', 'stats', 'fids', 'pids']
 
     def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, tags=None, status=None, shared=None, packageorder=None, stats=None, fids=None, pids=None):
         self.pid = pid
@@ -358,7 +366,8 @@ class PackageStats(BaseObject):
 
 
 class ProgressInfo(BaseObject):
-    __slots__ = ['plugin', 'name', 'statusmsg', 'eta', 'done', 'total', 'owner', 'type', 'download']
+    __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
+                 'done', 'total', 'owner', 'type', 'download']
 
     def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, done=None, total=None, owner=None, type=None, download=None):
         self.plugin = plugin
@@ -388,7 +397,8 @@ class ServiceException(ExceptionObject):
 
 
 class StatusInfo(BaseObject):
-    __slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue', 'notifications', 'paused', 'download', 'reconnect', 'quota']
+    __slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal',
+                 'sizequeue', 'notifications', 'paused', 'download', 'reconnect', 'quota']
 
     def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None, notifications=None, paused=None, download=None, reconnect=None, quota=None):
         self.speed = speed
@@ -417,7 +427,8 @@ class Unauthorized(ExceptionObject):
 
 
 class UserData(BaseObject):
-    __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder', 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templatename']
+    __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder',
+                 'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templatename']
 
     def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templatename=None):
         self.uid = uid
@@ -442,171 +453,255 @@ class UserDoesNotExist(ExceptionObject):
 
 
 class Iface(object):
+
     def add_links(self, pid, links):
         pass
+
     def add_local_file(self, pid, name, path):
         pass
+
     def add_package(self, name, links, password):
         pass
+
     def add_package_child(self, name, links, password, root, paused):
         pass
+
     def addPackageP(self, name, links, password, paused):
         pass
+
     def add_user(self, username, password):
         pass
+
     def check_container(self, filename, data):
         pass
+
     def check_html(self, html, url):
         pass
+
     def check_links(self, links):
         pass
+
     def create_account(self, plugin, loginname, password):
         pass
+
     def create_package(self, name, folder, root, password, site, comment, paused):
         pass
+
     def delete_config(self, plugin):
         pass
+
     def delete_files(self, fids):
         pass
+
     def delete_packages(self, pids):
         pass
+
     def find_files(self, pattern):
         pass
+
     def find_packages(self, tags):
         pass
+
     def free_space(self):
         pass
+
     def generate_download_link(self, fid, timeout):
         pass
+
     def generate_packages(self, links):
         pass
+
     def get_account_info(self, aid, plugin, refresh):
         pass
+
     def get_account_types(self):
         pass
+
     def get_accounts(self):
         pass
+
     def get_addon_handler(self):
         pass
+
     def get_all_files(self):
         pass
+
     def get_all_info(self):
         pass
+
     def get_all_user_data(self):
         pass
+
     def get_available_plugins(self):
         pass
+
     def get_config(self):
         pass
+
     def get_config_value(self, section, option):
         pass
+
     def get_core_config(self):
         pass
+
     def get_file_info(self, fid):
         pass
+
     def get_file_tree(self, pid, full):
         pass
+
     def get_filtered_file_tree(self, pid, full, state):
         pass
+
     def get_filtered_files(self, state):
         pass
+
     def get_info_by_plugin(self, plugin):
         pass
+
     def get_interaction_tasks(self, mode):
         pass
+
     def get_log(self, offset):
         pass
+
     def get_package_content(self, pid):
         pass
+
     def get_package_info(self, pid):
         pass
+
     def get_plugin_config(self):
         pass
+
     def get_progress_info(self):
         pass
+
     def get_quota(self):
         pass
+
     def get_server_version(self):
         pass
+
     def get_status_info(self):
         pass
+
     def get_user_data(self):
         pass
+
     def get_ws_address(self):
         pass
+
     def invoke_addon(self, plugin, func, func_args):
         pass
+
     def invoke_addon_handler(self, plugin, func, pid_or_fid):
         pass
+
     def is_interaction_waiting(self, mode):
         pass
+
     def load_config(self, name):
         pass
+
     def login(self, username, password):
         pass
+
     def move_files(self, fids, pid):
         pass
+
     def move_package(self, pid, root):
         pass
+
     def order_files(self, fids, pid, position):
         pass
+
     def order_package(self, pids, position):
         pass
+
     def parse_links(self, links):
         pass
+
     def pause_server(self):
         pass
+
     def poll_results(self, rid):
         pass
+
     def quit(self):
         pass
+
     def recheck_package(self, pid):
         pass
+
     def remove_account(self, account):
         pass
+
     def remove_files(self, fids):
         pass
+
     def remove_packages(self, pids):
         pass
+
     def remove_user(self, uid):
         pass
+
     def restart(self):
         pass
+
     def restart_failed(self):
         pass
+
     def restart_file(self, fid):
         pass
+
     def restart_package(self, pid):
         pass
+
     def save_config(self, config):
         pass
+
     def search_suggestions(self, pattern):
         pass
+
     def set_config_value(self, section, option, value):
         pass
+
     def set_interaction_result(self, iid, result):
         pass
+
     def set_package_paused(self, pid, paused):
         pass
+
     def set_password(self, username, old_password, new_password):
         pass
+
     def stop_all_downloads(self):
         pass
+
     def stop_downloads(self, fids):
         pass
+
     def toggle_pause(self):
         pass
+
     def toggle_reconnect(self):
         pass
+
     def unpause_server(self):
         pass
+
     def update_account(self, aid, plugin, loginname, password):
         pass
+
     def update_account_info(self, account):
         pass
+
     def update_package(self, pack):
         pass
+
     def update_user_data(self, data):
         pass
+
     def upload_container(self, filename, data):
         pass

@@ -12,6 +12,7 @@ if not hasattr(crypto.pbkdf2, "PBKDF2"):
     import binascii
 
     class PBKDF2(object):
+
         def __init__(self, passphrase, salt, iterations=1000):
             self.passphrase = passphrase
             self.salt = salt

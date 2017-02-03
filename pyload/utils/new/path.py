@@ -32,14 +32,14 @@ def availspace(folder):
 
 
 def copytree(src, dst, overwrite=None, preserve_metadata=True):
-    NT       = os.name == 'nt'
-    copy     = shutil.copy2 if preserve_metadata else shutil.copy
+    NT = os.name == 'nt'
+    copy = shutil.copy2 if preserve_metadata else shutil.copy
     copytree = shutil.copytree
     # isdir    = os.path.isdir
     # isfile   = os.path.isfile
     # join     = os.path.join
-    mtime    = os.path.getmtime
-    remove   = os.remove
+    mtime = os.path.getmtime
+    remove = os.remove
 
     if not isdir(dst) or not isdir(src):
         return copytree(src, dst)
@@ -120,9 +120,10 @@ def fsbsize(path):
     else:
         drive = "{}\\".format(splitdrive(abspath(path))[0])
         cluster_sectors = ctypes.c_longlong(0)
-        sector_size     = ctypes.c_longlong(0)
+        sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),
-                                                 ctypes.pointer(cluster_sectors),
+                                                 ctypes.pointer(
+                                                     cluster_sectors),
                                                  ctypes.pointer(sector_size),
                                                  None,
                                                  None)
@@ -174,13 +175,13 @@ def makefile(path, opened=None, dirmode=0o700):
 
 
 def movetree(src, dst, overwrite=None):
-    NT         = os.name == 'nt'
+    NT = os.name == 'nt'
     # isdir      = os.path.isdir
     # isfile     = os.path.isfile
     # join       = os.path.join
-    move       = shutil.move
-    mtime      = os.path.getmtime
-    remove     = os.remove
+    move = shutil.move
+    mtime = os.path.getmtime
+    remove = os.remove
     removedirs = os.removedirs
 
     if not isdir(dst) or not isdir(src):

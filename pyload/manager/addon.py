@@ -32,7 +32,7 @@ class AddonManager(object):
     def __init__(self, core):
         self.pyload = core
 
-        builtins.ADDONMANAGER = self #needed to let addons register themselves
+        builtins.ADDONMANAGER = self  # needed to let addons register themselves
 
         # TODO: multiuser addons
 
@@ -97,7 +97,8 @@ class AddonManager(object):
                 internal = attrs.get("internal", False)
 
                 if internal or self.pyload.config.get(pluginname, "activated"):
-                    pluginclass = self.pyload.pgm.load_class("addon", pluginname)
+                    pluginclass = self.pyload.pgm.load_class(
+                        "addon", pluginname)
 
                     if not pluginclass:
                         continue
@@ -109,16 +110,20 @@ class AddonManager(object):
                     if not internal and plugin.is_activated():
                         active.append(pluginclass.__name__)
                     else:
-                        self.pyload.log.debug("Loaded internal plugin: {}".format(pluginclass.__name__))
+                        self.pyload.log.debug(
+                            "Loaded internal plugin: {}".format(pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 
             except Exception:
-                self.pyload.log.warning(_("Failed activating {}").format(pluginname))
+                self.pyload.log.warning(
+                    _("Failed activating {}").format(pluginname))
                 # self.pyload.print_exc()
 
-        self.pyload.log.info(_("Activated addons: {}").format(", ".join(sorted(active))))
-        self.pyload.log.info(_("Deactivated addons: {}").format(", ".join(sorted(deactive))))
+        self.pyload.log.info(
+            _("Activated addons: {}").format(", ".join(sorted(active))))
+        self.pyload.log.info(_("Deactivated addons: {}").format(
+            ", ".join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
         # TODO: multi user
@@ -134,7 +139,7 @@ class AddonManager(object):
 
     @lock
     def activate_addon(self, plugin):
-        #check if already loaded
+        # check if already loaded
         if plugin in self.plugins:
             return
 
@@ -156,7 +161,7 @@ class AddonManager(object):
     def deactivate_addon(self, plugin):
         if plugin not in self.plugins:
             return
-        else: # todo: multiple instances
+        else:  # todo: multiple instances
             addon = self.plugins[plugin].instances[0]
 
         if addon.__internal__:
@@ -165,14 +170,15 @@ class AddonManager(object):
         self.call(addon, "deactivate")
         self.pyload.log.debug("Plugin deactivated: {}".format(plugin))
 
-        #remove periodic call
-        self.pyload.log.debug("Removed callback {}".format(self.pyload.scheduler.cancel(addon.cb)))
+        # remove periodic call
+        self.pyload.log.debug("Removed callback {}".format(
+            self.pyload.scheduler.cancel(addon.cb)))
 
         # todo: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]
 
         # TODO: could be improved
-        #remove event listener
+        # remove event listener
         for f in dir(addon):
             if f.startswith("__") or not isinstance(getattr(addon, f), MethodType):
                 continue
@@ -252,7 +258,8 @@ class AddonManager(object):
         """
         Registers addon service description.
         """
-        self.plugins[plugin].handler[func] = AddonService(func, gettext(label), gettext(desc), args, package, media)
+        self.plugins[plugin].handler[func] = AddonService(
+            func, gettext(label), gettext(desc), args, package, media)
 
     def add_info_property(self, h, name, desc):
         """

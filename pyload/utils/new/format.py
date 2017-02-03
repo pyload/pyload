@@ -39,10 +39,10 @@ def name(value):
     Remove invalid characters.
     """
     unixbadchars = ('\0', '/', '\\')
-    winbadchars  = ('\0', '<', '>', '"', '/', '\\', '|', '?', '*')
-    winbadwords  = ('com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8',
-                    'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7',
-                    'lpt8', 'lpt9', 'con', 'prn')
+    winbadchars = ('\0', '<', '>', '"', '/', '\\', '|', '?', '*')
+    winbadwords = ('com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8',
+                   'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7',
+                   'lpt8', 'lpt9', 'con', 'prn')
 
     deletechars = r''.join(winbadchars if os.name == "nt" else unixbadchars)
     if isinstance(value, str):
@@ -64,7 +64,7 @@ def path(*paths):
     """
     value = os.path.join(*paths)
 
-    unt, rest       = os.path.splitunc(value) if os.name == 'nt' else ("", value)
+    unt, rest = os.path.splitunc(value) if os.name == 'nt' else ("", value)
     drive, filename = os.path.splitdrive(rest)
 
     sep = os.sep if os.path.isabs(filename) else ""
@@ -74,7 +74,7 @@ def path(*paths):
     filepath = unt + drive + sep + filename
 
     try:
-        length = len(filepath) - 259  #@NOTE: Max 260 chars fs indipendent
+        length = len(filepath) - 259  # @NOTE: Max 260 chars fs indipendent
         if length < 1:
             return
 
@@ -106,13 +106,14 @@ def speed(value):
 
 @iterate
 def time(value):
-    sec  = abs(int(value))
-    dt   = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=sec)
+    sec = abs(int(value))
+    dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=sec)
     days = dt.day - 1 if dt.day else 0
 
     attrlist = ("hour", "minute", "second")
-    timelist = ["{:d} {}s".format(getattr(dt, attr), attr) for attr in attrlist if getattr(dt, attr)]
-    timemsg  = ", ".join(timelist)
+    timelist = ["{:d} {}s".format(getattr(dt, attr), attr)
+                for attr in attrlist if getattr(dt, attr)]
+    timemsg = ", ".join(timelist)
 
     return "{} days and {}".format(days, timemsg) if days else timemsg
 

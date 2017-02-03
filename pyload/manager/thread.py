@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
-from threading import  RLock
+from threading import RLock
 from time import time
 
 from pyload.datatype.check import OnlineCheck
@@ -85,7 +85,8 @@ class ThreadManager(object):
         return self.info_results.get(rid)
 
     def set_info_results(self, oc, result):
-        self.pyload.evm.fire("linkcheck:updated", oc.rid, result, owner=oc.owner)
+        self.pyload.evm.fire("linkcheck:updated", oc.rid,
+                             result, owner=oc.owner)
         oc.update(result)
 
     def get_progress_list(self, user=None):

@@ -21,6 +21,7 @@ from pyload.plugin.network.curlrequest import CurlRequest
 
 
 class ChunkInfo(object):
+
     def __init__(self, name):
         self.name = fs_decode(name)
         self.size = 0
@@ -53,7 +54,6 @@ class ChunkInfo(object):
             self.add_chunk("{}.chunk{}".format(self.name, i), (current, end))
             current += chunk_size + 1
 
-
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
         with codecs.open(fs_name, "w", "utf_8") as f:
@@ -81,7 +81,7 @@ class ChunkInfo(object):
             ci.loaded = True
             ci.set_size(size)
             while True:
-                if not f.readline(): #skip line
+                if not f.readline():  # skip line
                     break
                 name = f.readline()[1:-1]
                 range = f.readline()[1:-1]
@@ -108,16 +108,18 @@ class ChunkInfo(object):
     def get_chunk_range(self, index):
         return self.chunks[index][1]
 
-re_filename = re.compile(r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re.I)
+re_filename = re.compile(
+    r"filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", re.I)
 
 
 class CurlChunk(CurlRequest):
+
     def __init__(self, id, parent, range=None, resume=False):
         self.set_context(*parent.get_context())
 
         self.id = id
-        self.p = parent # CurlDownload instance
-        self.range = range # tuple (start, end)
+        self.p = parent  # CurlDownload instance
+        self.range = range  # tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -128,14 +130,14 @@ class CurlChunk(CurlRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.header_parsed = False #indicates if the header has been processed
+        self.header_parsed = False  # indicates if the header has been processed
         self.headers = HeaderDict()
 
-        self.fp = None #file handle
+        self.fp = None  # file handle
 
         self.init_context()
 
-        self.BOMChecked = False # check and remove byte order mark
+        self.BOMChecked = False  # check and remove byte order mark
 
         self.rep = None
 
@@ -155,11 +157,13 @@ class CurlChunk(CurlRequest):
         """
         Returns a Curl handle ready to use for perform/multiperform.
         """
-        self.set_request_context(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
+        self.set_request_context(
+            self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
         self.c.setopt(pycurl.WRITEFUNCTION, self.write_body)
         self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
-        # request all bytes, since some servers in russia seems to have a defect arihmetic unit
+        # request all bytes, since some servers in russia seems to have a
+        # defect arihmetic unit
 
         fs_name = fs_encode(self.p.info.get_chunk_name(self.id))
         if self.resume:
@@ -169,14 +173,16 @@ class CurlChunk(CurlRequest):
                 self.arrived = stat(fs_name).st_size
 
             if self.range:
-                #do nothing if chunk already finished
+                # do nothing if chunk already finished
                 if self.arrived + self.range[0] >= self.range[1]:
                     return None
 
-                if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
+                # as last chunk dont set end range, so we get everything
+                if self.id == len(self.p.info.chunks) - 1:
                     range = b"{:d}-".format(self.arrived + self.range[0])
                 else:
-                    range = b"{:d}-{:d}".format(self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = b"{:d}-{:d}".format(self.arrived + self.range[
+                                                0], min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -186,10 +192,11 @@ class CurlChunk(CurlRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1: # see above
+                if self.id == len(self.p.info.chunks) - 1:  # see above
                     range = "{:d}-".format(self.range[0])
                 else:
-                    range = "{:d}-{:d}".format(self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = "{:d}-{:d}".format(self.range[0],
+                                               min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -204,7 +211,8 @@ class CurlChunk(CurlRequest):
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parse_header()
-        elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
+        # ftp file size parsing
+        elif not self.range and buf.startswith("150") and "data connection" in buf:
             size = re.search(r"(\d+) bytes", buf)
             if size:
                 self.p._size = int(size.group(1))
@@ -213,7 +221,7 @@ class CurlChunk(CurlRequest):
         self.header_parsed = True
 
     def write_body(self, buf):
-        #ignore BOM, it confuses unrar
+        # ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if [ord(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
@@ -234,7 +242,8 @@ class CurlChunk(CurlRequest):
         elif size != self.last_size or size != self.n_last_size:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentile (values are based on tests)
-            # So in general cpu time is saved without reducing bandwidth too much
+            # So in general cpu time is saved without reducing bandwidth too
+            # much
 
             if size < self.last_size:
                 self.sleep += 0.002
@@ -244,8 +253,7 @@ class CurlChunk(CurlRequest):
             sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0 #close if we have enough data
-
+            return 0  # close if we have enough data
 
     def parse_header(self):
         """
@@ -291,8 +299,8 @@ class CurlChunk(CurlRequest):
         Flush and close file.
         """
         self.fp.flush()
-        fsync(self.fp.fileno()) #make sure everything was written to disk
-        self.fp.close() #needs to be closed, or merging chunks will fail
+        fsync(self.fp.fileno())  # make sure everything was written to disk
+        self.fp.close()  # needs to be closed, or merging chunks will fail
 
     def close(self):
         """

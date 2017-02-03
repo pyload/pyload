@@ -33,12 +33,13 @@ def info():
 
     extras_require = {
         'Archive decompression': ['unrar'],
-        'Captcha recognition'  : ["Pillow >= 2.0"],  #@TODO: Fix `tesserocr` installation
-        'Colored log'          : ['colorlog'],
+        # @TODO: Fix `tesserocr` installation
+        'Captcha recognition': ["Pillow >= 2.0"],
+        'Colored log': ['colorlog'],
         'JavaScript evaluation': ['Js2Py'],
         # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Use `smart_import`
-        'pyLoad auto-update'   : ['pip'],
-        'SSL connection'       : ['pyOpenSSL']
+        'pyLoad auto-update': ['pip'],
+        'SSL connection': ['pyOpenSSL']
     }
     if os.name != 'nt':
         extras_require['Lightweight webserver'] = ['bjoern']
@@ -78,7 +79,7 @@ def info():
         entry_points=entry_points,
         test_suite='nose.collector',
         tests_require=tests_require,
-        zip_safe=False,  #@TODO: Recheck...
+        zip_safe=False,  # @TODO: Recheck...
         classifiers=classifiers
     )
 
@@ -114,9 +115,9 @@ def _set_win_env():
 def _pre_setup():
     info = pyload.info()
     setupinfo = {
-        'name'   : info.title,
+        'name': info.title,
         'version': info.version,
-        'url'    : info.url
+        'url': info.url
     }
     try:
         from setuptools import setup

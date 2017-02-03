@@ -51,21 +51,22 @@ class TestDatabase(BenchmarkTest):
         self.test_insert_many()
         self.fids = list(self.db.get_all_files().keys())
 
-
     def test_insert(self, n=200):
         for i in range(n):
             pid = self.db.add_package("name", "folder", choice(self.pids), "password", "site", "comment", self.pstatus,
-                self.owner)
+                                      self.owner)
             self.pids.append(pid)
 
     def test_insert_links(self):
         for i in range(10000):
-            fid = self.db.add_link("url {}".format(i), "name", "plugin", choice(self.pids), self.owner)
+            fid = self.db.add_link("url {}".format(
+                i), "name", "plugin", choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.add_links((("url {}".format(i), "plugin") for i in range(50)), pid, self.owner)
+            self.db.add_links((("url {}".format(i), "plugin")
+                               for i in range(50)), pid, self.owner)
 
     def test_get_packages(self):
         packs = self.db.get_all_packages()
@@ -137,25 +138,33 @@ class TestDatabase(BenchmarkTest):
     def test_purge(self):
         self.db.purge_links()
 
-
     def test_user_context(self):
         self.db.purge_all()
 
-        p1 = self.db.add_package("name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+        p1 = self.db.add_package(
+            "name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
         self.db.add_link("url", "name", "plugin", p1, 0)
-        p2 = self.db.add_package("name", "folder", 0, "password", "site", "comment", self.pstatus, 1)
+        p2 = self.db.add_package(
+            "name", "folder", 0, "password", "site", "comment", self.pstatus, 1)
         self.db.add_link("url", "name", "plugin", p2, 1)
 
-        assert len(self.db.get_all_packages(owner=0)) == 1 == len(self.db.get_all_files(owner=0))
-        assert len(self.db.get_all_packages(root=0, owner=0)) == 1 == len(self.db.get_all_files(package=p1, owner=0))
-        assert len(self.db.get_all_packages(owner=1)) == 1 == len(self.db.get_all_files(owner=1))
-        assert len(self.db.get_all_packages(root=0, owner=1)) == 1 == len(self.db.get_all_files(package=p2, owner=1))
-        assert len(self.db.get_all_packages()) == 2 == len(self.db.get_all_files())
+        assert len(self.db.get_all_packages(owner=0)) == 1 == len(
+            self.db.get_all_files(owner=0))
+        assert len(self.db.get_all_packages(root=0, owner=0)) == 1 == len(
+            self.db.get_all_files(package=p1, owner=0))
+        assert len(self.db.get_all_packages(owner=1)) == 1 == len(
+            self.db.get_all_files(owner=1))
+        assert len(self.db.get_all_packages(root=0, owner=1)) == 1 == len(
+            self.db.get_all_files(package=p2, owner=1))
+        assert len(self.db.get_all_packages()) == 2 == len(
+            self.db.get_all_files())
 
         self.db.delete_package(p1, 1)
-        assert len(self.db.get_all_packages(owner=0)) == 1 == len(self.db.get_all_files(owner=0))
+        assert len(self.db.get_all_packages(owner=0)) == 1 == len(
+            self.db.get_all_files(owner=0))
         self.db.delete_package(p1, 0)
-        assert len(self.db.get_all_packages(owner=1)) == 1 == len(self.db.get_all_files(owner=1))
+        assert len(self.db.get_all_packages(owner=1)) == 1 == len(
+            self.db.get_all_files(owner=1))
         self.db.delete_package(p2)
 
         assert len(self.db.get_all_packages()) == 0
@@ -168,7 +177,8 @@ class TestDatabase(BenchmarkTest):
         assert self.db.processcount() == 0
 
     def test_update(self):
-        p1 = self.db.add_package("name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+        p1 = self.db.add_package(
+            "name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
         pack = self.db.get_package_info(p1)
         assert isinstance(pack, PackageInfo)
 
@@ -187,12 +197,13 @@ class TestDatabase(BenchmarkTest):
         try:
             assert f is not None
             assert isinstance(f, FileInfo)
-            self.assert_int(f, ("fid", "status", "size", "media", "fileorder", "added", "package", "owner"))
+            self.assert_int(f, ("fid", "status", "size", "media",
+                                "fileorder", "added", "package", "owner"))
             assert f.status in range(5)
             assert f.owner == self.owner
             assert f.media in range(1024)
             assert f.package in self.pids
-            assert f.added > 10 ** 6 # date is usually big integer
+            assert f.added > 10 ** 6  # date is usually big integer
         except Exception:
             print(f)
             raise
@@ -201,7 +212,8 @@ class TestDatabase(BenchmarkTest):
         try:
             assert p is not None
             assert isinstance(p, PackageInfo)
-            self.assert_int(p, ("pid", "root", "added", "status", "packageorder", "owner"))
+            self.assert_int(p, ("pid", "root", "added",
+                                "status", "packageorder", "owner"))
             assert p.pid in self.pids
             assert p.owner == self.owner
             assert p.status in range(5)
@@ -214,7 +226,8 @@ class TestDatabase(BenchmarkTest):
             raise
 
     def assert_int(self, obj, list):
-        for attr in list: assert isinstance(getattr(obj, attr), int)
+        for attr in list:
+            assert isinstance(getattr(obj, attr), int)
 
 if __name__ == "__main__":
     TestDatabase.benchmark()

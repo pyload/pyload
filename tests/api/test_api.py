@@ -18,7 +18,7 @@ class TestAPI(TestCase):
     _multiprocess_can_split_ = True
     core = None
 
-    #TODO: parallel testing
+    # TODO: parallel testing
     @classmethod
     def setUpClass(cls):
         from tests.api.test_noargs import TestNoArgs

@@ -16,7 +16,8 @@ from pyload.webui.webinterface import PYLOAD, SETUP
 def add_json_header(r):
     r.headers.replace("Content-type", "application/json")
     r.headers.append("Cache-Control", "no-cache, must-revalidate")
-    r.headers.append("Access-Control-Allow-Origin", request.get_header('Origin', '*'))
+    r.headers.append("Access-Control-Allow-Origin",
+                     request.get_header('Origin', '*'))
     r.headers.append("Access-Control-Allow-Credentials", "true")
 
 

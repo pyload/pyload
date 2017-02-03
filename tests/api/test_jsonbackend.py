@@ -31,7 +31,8 @@ class TestJSONBackend(object):
 
     def test_httpauth(self):
         # cheap http auth
-        ret = requests.get(webaddress + "/getServerVersion", auth=HTTPBasicAuth(*credentials))
+        ret = requests.get(webaddress + "/getServerVersion",
+                           auth=HTTPBasicAuth(*credentials))
         assertEqual(ret.status_code, 200)
         assert ret.text
 

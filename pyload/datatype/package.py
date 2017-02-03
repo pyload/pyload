@@ -17,7 +17,7 @@ class PyPackage(object):
     @staticmethod
     def from_info_data(m, info):
         return PyPackage(m, info.pid, info.name, info.folder, info.root, info.owner,
-            info.site, info.comment, info.password, info.added, info.tags, info.status, info.shared, info.packageorder)
+                         info.site, info.comment, info.password, info.added, info.tags, info.status, info.shared, info.packageorder)
 
     def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status,
                  shared, packageorder):
@@ -46,8 +46,8 @@ class PyPackage(object):
 
     def to_info_data(self):
         return PackageInfo(self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
-            self.comment, self.password, self.added, self.tags, self.status, self.shared, self.packageorder
-        )
+                           self.comment, self.password, self.added, self.tags, self.status, self.shared, self.packageorder
+                           )
 
     def update_from_info_data(self, pack):
         """
@@ -97,8 +97,10 @@ class PyPackage(object):
 
 
 class RootPackage(PyPackage):
+
     def __init__(self, m, owner):
-        PyPackage.__init__(self, m, -1, "root", "", owner, -2, "", "", "", 0, [], PackageStatus.Ok, False, 0)
+        PyPackage.__init__(self, m, -1, "root", "", owner, -2,
+                           "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
         return join(self.manager.pyload.config.get('general', 'storage_folder'), name)

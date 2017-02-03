@@ -8,14 +8,15 @@ from builtins import map
 import dis
 
 _const_codes = list(map(dis.opmap.__getitem__, [
-    'POP_TOP','ROT_TWO','ROT_THREE','ROT_FOUR','DUP_TOP',
-    'BUILD_LIST','BUILD_MAP','BUILD_TUPLE',
-    'LOAD_CONST','RETURN_VALUE','STORE_SUBSCR'
-    ]))
+    'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP',
+    'BUILD_LIST', 'BUILD_MAP', 'BUILD_TUPLE',
+    'LOAD_CONST', 'RETURN_VALUE', 'STORE_SUBSCR'
+]))
 
 _load_names = ['False', 'True', 'null', 'true', 'false']
 
 _locals = {'null': None, 'true': True, 'false': False}
+
 
 def _get_opcodes(codeobj):
     i = 0
@@ -30,6 +31,7 @@ def _get_opcodes(codeobj):
         else:
             i += 1
     return opcodes, names
+
 
 def test_expr(expr, allowed_codes):
     try:
@@ -46,7 +48,7 @@ def test_expr(expr, allowed_codes):
                     raise ValueError(msg.format(dis.opname[code]))
     return c
 
+
 def const_eval(expr):
     c = test_expr(expr, _const_codes)
     return eval(c, None, _locals)
-

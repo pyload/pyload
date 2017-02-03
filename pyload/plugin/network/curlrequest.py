@@ -86,7 +86,8 @@ class CurlRequest(Request):
         if hasattr(pycurl, "AUTOREFERER"):
             self.c.setopt(pycurl.AUTOREFERER, 1)
         self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        # Interval for low speed, detects connection loss, but can abort dl if hoster stalls the download
+        # Interval for low speed, detects connection loss, but can abort dl if
+        # hoster stalls the download
         self.c.setopt(pycurl.LOW_SPEED_TIME, 45)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
@@ -111,7 +112,8 @@ class CurlRequest(Request):
 
     def set_interface(self, options):
 
-        interface, proxy, ipv6 = options['interface'], options['proxies'], options['ipv6']
+        interface, proxy, ipv6 = options[
+            'interface'], options['proxies'], options['ipv6']
 
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, bytes(interface))
@@ -128,7 +130,8 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:
-                self.c.setopt(pycurl.PROXYUSERPWD, bytes("{}:{}".format(proxy['username'], proxy['password'])))
+                self.c.setopt(pycurl.PROXYUSERPWD, bytes(
+                    "{}:{}".format(proxy['username'], proxy['password'])))
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
@@ -165,7 +168,7 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if isinstance(post, str):
-                    post = str(post) #unicode not allowed
+                    post = str(post)  # unicode not allowed
                 elif isinstance(post, str):
                     pass
                 else:
@@ -173,7 +176,8 @@ class CurlRequest(Request):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if isinstance(y, str) else y) for x, y in post.items()]
+                post = [(x, y.encode('utf8') if isinstance(y, str) else y)
+                        for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
@@ -212,7 +216,7 @@ class CurlRequest(Request):
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.c.setopt(pycurl.NOBODY, 1) #TODO: nobody= no post?
+            self.c.setopt(pycurl.NOBODY, 1)  # TODO: nobody= no post?
 
             # overwrite HEAD request, we want a common request type
             if post:
@@ -249,7 +253,7 @@ class CurlRequest(Request):
 
     def parse_cookies(self):
         for c in self.c.getinfo(pycurl.INFO_COOKIELIST):
-            #http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
+            # http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
             domain, flag, path, secure, expires, name, value = c.split("\t")
             # http only was added in py 2.6
             domain = domain.replace("#HttpOnly_", "")
@@ -261,7 +265,8 @@ class CurlRequest(Request):
         """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
-            raise ResponseException(code, responses.get(code, "Unknown statuscode"))
+            raise ResponseException(
+                code, responses.get(code, "Unknown statuscode"))
         return code
 
     def get_response(self):
@@ -280,12 +285,12 @@ class CurlRequest(Request):
         Decode with correct encoding, relies on header.
         """
         header = self.header.splitlines()
-        encoding = "utf8" # default encoding
+        encoding = "utf8"  # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
             if (not line.startswith("content-type:") or
-                ("text" not in line and "application" not in line)):
+                    ("text" not in line and "application" not in line)):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -302,12 +307,13 @@ class CurlRequest(Request):
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
-            #TODO: html_unescape as default
+            # TODO: html_unescape as default
 
         except LookupError:
             self.pyload.log.debug("No Decoder found for {}".format(encoding))
         except Exception:
-            self.pyload.log.debug("Error when decoding string from {}".format(encoding))
+            self.pyload.log.debug(
+                "Error when decoding string from {}".format(encoding))
 
         return rep
 

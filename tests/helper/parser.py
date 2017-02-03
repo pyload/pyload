@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import codecs
 
+
 def parse_config(path):
     f = codecs.open(path, "rb", "utf_8")
     result = {}

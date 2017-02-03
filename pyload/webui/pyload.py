@@ -50,7 +50,8 @@ def i18n(lang=None):
 
 @route('/')
 def index():
-    # the browser should not set this, but remove in case to to avoid cached requests
+    # the browser should not set this, but remove in case to to avoid cached
+    # requests
     if 'HTTP_IF_MODIFIED_SINCE' in request.environ:
         del request.environ['HTTP_IF_MODIFIED_SINCE']
 
@@ -71,7 +72,8 @@ def index():
     # Render variables into the html page
     if resp.status_code == 200:
         content = resp.body.read()
-        resp.body = template(content, ws=ws, web=web, setup=setup, external=external, prefix=PREFIX)
+        resp.body = template(content, ws=ws, web=web,
+                             setup=setup, external=external, prefix=PREFIX)
         resp.content_length = len(resp.body) + 1
 
     # these page should not be cached at all
@@ -83,6 +85,8 @@ def index():
     return resp
 
 # Very last route that is registered, could match all uris
+
+
 @route('/<path:path>')
 def serve_static(path):
     # save if this resource is available as gz

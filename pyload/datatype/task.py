@@ -53,7 +53,7 @@ class InteractionTask(BaseInteractionTask):
             parts = value.split(',')
             return int(parts[0]), int(parts[1])
 
-        #TODO: convert based on input/output
+        # TODO: convert based on input/output
         return value
 
     def get_result(self):

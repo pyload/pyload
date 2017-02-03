@@ -6,9 +6,11 @@ from pyload.database import DatabaseMethods, queue, async
 
 
 class AccountMethods(DatabaseMethods):
+
     @queue
     def load_accounts(self):
-        self.c.execute('SELECT aid, plugin, loginname, owner, activated, shared, password, options FROM accounts')
+        self.c.execute(
+            'SELECT aid, plugin, loginname, owner, activated, shared, password, options FROM accounts')
 
         return [(AccountInfo(r[0], r[1], r[2], r[3], activated=r[4] is 1, shared=r[5] is 1), r[6], r[7]) for r in
                 self.c]

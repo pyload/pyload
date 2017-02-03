@@ -40,7 +40,8 @@ class ReCaptcha(object):
         elif not (key or self.recaptcha_key):
             raise TypeError("ReCaptcha key not found")
 
-        js = self.plugin.req.load("http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)
+        js = self.plugin.req.load(
+            "http://www.google.com/recaptcha/api/challenge", get={"k": key}, cookies=True)
 
         try:
             challenge = re.search("challenge : '(.*?)',", js).group(1)
@@ -53,10 +54,11 @@ class ReCaptcha(object):
 
     def result(self, server, challenge):
         return self.plugin.decrypt_captcha("{}image".format(server), get={"c": challenge},
-                                          cookies=True, forceuser=True, imgtype="jpg")
+                                           cookies=True, forceuser=True, imgtype="jpg")
 
 
 class AdsCaptcha(CaptchaService):
+
     def challenge(self, src):
         js = self.plugin.req.load(src, cookies=True)
 
@@ -71,13 +73,14 @@ class AdsCaptcha(CaptchaService):
 
     def result(self, server, challenge):
         return self.plugin.decrypt_captcha("{}Challenge.aspx".format(server), get={"cid": challenge, "dummy": random()},
-                                          cookies=True, imgtype="jpg")
+                                           cookies=True, imgtype="jpg")
 
 
 class SolveMedia(CaptchaService):
 
     def challenge(self, src):
-        html = self.plugin.req.load("http://api.solvemedia.com/papi/challenge.noscript?k={}".format(src), cookies=True)
+        html = self.plugin.req.load(
+            "http://api.solvemedia.com/papi/challenge.noscript?k={}".format(src), cookies=True)
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)

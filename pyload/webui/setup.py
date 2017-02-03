@@ -13,6 +13,8 @@ from pyload.webui.webinterface import SETUP
 from pyload.webui.utils import add_json_header
 
 # returns http error
+
+
 def error(code, msg):
     return HTTPError(code, json_dumps(msg), **dict(response.headers))
 

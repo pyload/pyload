@@ -27,7 +27,8 @@ class TestCurlRequest(TestCase):
         self.req.load(self.cookie_url)
         assert len(self.req.cj) > 1
 
-        cookies = dict(c.strip().split(":") for c in self.req.load(self.cookie_url + "/cookies.php").splitlines())
+        cookies = dict(c.strip().split(":") for c in self.req.load(
+            self.cookie_url + "/cookies.php").splitlines())
         for k, v in cookies.items():
             self.assert_int(k, self.req.cj)
             self.assertEqual(v, self.req.cj[k].value)
@@ -35,9 +36,9 @@ class TestCurlRequest(TestCase):
         for c in self.req.cj:
             self.assert_int(c, cookies)
 
-        cookies = self.req.load(self.cookie_url + "/cookies.php", cookies=False)
+        cookies = self.req.load(
+            self.cookie_url + "/cookies.php", cookies=False)
         self.assertEqual(cookies, "")
-
 
     def test_auth(self):
         raise NotImplementedError

@@ -32,14 +32,17 @@ __all__ = ['info', 'restart', 'setup', 'start', 'status', 'stop',
            'update', 'version']
 
 
-builtins.PACKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+builtins.PACKDIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), ".."))
 builtins.COREDIR = os.path.join(builtins.PACKDIR, 'pyload')
-builtins.USERDIR = os.getenv('APPDATA') if os.name == 'nt' else os.path.expanduser('~')
+builtins.USERDIR = os.getenv(
+    'APPDATA') if os.name == 'nt' else os.path.expanduser('~')
 
 
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
-    sys.modules['pyload'].__path__ = [os.path.abspath(p) for p in sys.modules['pyload'].__path__]
+    sys.modules['pyload'].__path__ = [os.path.abspath(
+        p) for p in sys.modules['pyload'].__path__]
 
 
 # sys.path.append(os.path.join(PACKDIR, 'venv'))
@@ -75,9 +78,9 @@ def info():
 
 
 def _list_pids():
-    pids   = set()
+    pids = set()
     tmpdir = tempfile.gettempdir()
-    info   = info()
+    info = info()
     for filename in os.listdir(tmpdir):
         if not filename.endswith('.pid'):
             continue
@@ -94,8 +97,9 @@ def _list_pids():
     return sorted(pids)
 
 
-def status(profile=None):  #@NOTE: If not profile, then catch all pyLoad pids
-    return [pid for pid in _list_pids() if psutil.pid_exists(pid)]  #@NOTE: Include zombie pids
+def status(profile=None):  # @NOTE: If not profile, then catch all pyLoad pids
+    # @NOTE: Include zombie pids
+    return [pid for pid in _list_pids() if psutil.pid_exists(pid)]
 
 
 def version():
@@ -139,7 +143,8 @@ def start(profile=None, configdir=None, refresh=0, remote=None, webui=None,
     if daemon:
         name = info().name
         app = "{}-{}".format(name, profile or 'default')
-        pid = tempfile.mkstemp(suffix='.pid', prefix='daemon-{}-'.format(name))[1]
+        pid = tempfile.mkstemp(
+            suffix='.pid', prefix='daemon-{}-'.format(name))[1]
         d = daemonize.Daemonize(app, pid, p.join)
         d.start()
 

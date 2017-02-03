@@ -53,7 +53,8 @@ elif exists(join(APP_DIR, "dist", "index.html")):
     # APP_PATH = "dist"
     UNAVAILALBE = False
 
-DEBUG = config.get('webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
+DEBUG = config.get(
+    'webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
 
@@ -80,6 +81,8 @@ from pyload.webui import setup
 from pyload.webui import pyload
 
 # Server Adapter
+
+
 def run_server(host, port, server):
     run(app=web, host=host, port=port, quiet=True, server=server)
 

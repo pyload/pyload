@@ -70,6 +70,7 @@ class DatabaseMethods(object):
 
 
 class DatabaseJob(object):
+
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 
@@ -89,7 +90,8 @@ class DatabaseJob(object):
         frame = self.frame.f_back
         output = ""
         for i in range(5):
-            output += "\t{}:{}, {}\n".format(basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+            output += "\t{}:{}, {}\n".format(
+                basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
         del self.frame
@@ -102,7 +104,8 @@ class DatabaseJob(object):
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e.message)
+                print("Database Error @", self.f.__name__,
+                      self.args[1:], self.kwargs, e.message)
             except Exception:
                 pass
 
@@ -124,7 +127,7 @@ class DatabaseBackend(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.pyload = core
-        self.manager = None # set later
+        self.manager = None  # set later
         self.error = None
         self.running = Event()
 
@@ -159,7 +162,8 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.pyload.log.warning(_("Database was deleted due to incompatible version"))
+                    self.manager.pyload.log.warning(
+                        _("Database was deleted due to incompatible version"))
                 except Exception:
                     print("Database was deleted due to incompatible version")
 
@@ -174,7 +178,6 @@ class DatabaseBackend(Thread):
 
         self._create_tables()
         self.conn.commit()
-
 
     def run(self):
         try:
@@ -193,7 +196,6 @@ class DatabaseBackend(Thread):
                 self.closing.set()
                 break
             j.process_job()
-
 
     def shutdown(self):
         self.running.clear()
@@ -240,11 +242,11 @@ class DatabaseBackend(Thread):
             '"site" TEXT DEFAULT "" NOT NULL, '
             '"comment" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT DEFAULT "" NOT NULL, '
-            '"added" INTEGER DEFAULT 0 NOT NULL,' # set by trigger
+            '"added" INTEGER DEFAULT 0 NOT NULL,'  # set by trigger
             '"status" INTEGER DEFAULT 0 NOT NULL,'
             '"tags" TEXT DEFAULT "" NOT NULL,'
             '"shared" INTEGER DEFAULT 0 NOT NULL,'
-            '"packageorder" INTEGER DEFAULT -1 NOT NULL,' #incremented by trigger
+            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  # incremented by trigger
             '"root" INTEGER DEFAULT -1 NOT NULL, '
             '"owner" INTEGER NOT NULL, '
             'FOREIGN KEY(owner) REFERENCES users(uid), '
@@ -268,8 +270,10 @@ class DatabaseBackend(Thread):
             'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > old.packageorder AND root=old.pid;'
             'END'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
-        self.c.execute('CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "files" ('
@@ -291,9 +295,12 @@ class DatabaseBackend(Thread):
             'FOREIGN KEY(package) REFERENCES packages(id)'
             ')'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
-        self.c.execute('CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
-        self.c.execute('CREATE INDEX IF NOT EXISTS "file_plugin" ON files(plugin)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "file_index" ON files(package, owner)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "file_owner" ON files(owner)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "file_plugin" ON files(plugin)')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
@@ -336,11 +343,12 @@ class DatabaseBackend(Thread):
             '"dlquota" TEXT DEFAULT "" NOT NULL, '
             '"hddquota" INTEGER DEFAULT -1 NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL, '
-            '"user" INTEGER DEFAULT -1 NOT NULL, ' # set by trigger to self
+            '"user" INTEGER DEFAULT -1 NOT NULL, '  # set by trigger to self
             'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER INSERT ON "users"'
@@ -374,7 +382,8 @@ class DatabaseBackend(Thread):
             ')'
         )
 
-        self.c.execute('CREATE INDEX IF NOT EXISTS "accounts_login" ON accounts(plugin, loginname)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "accounts_login" ON accounts(plugin, loginname)')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "stats" ('
@@ -387,21 +396,23 @@ class DatabaseBackend(Thread):
             'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
-        self.c.execute('CREATE INDEX IF NOT EXISTS "stats_time" ON stats(user, time)')
+        self.c.execute(
+            'CREATE INDEX IF NOT EXISTS "stats_time" ON stats(user, time)')
 
-        #try to lower ids
+        # try to lower ids
         self.c.execute('SELECT max(fid) FROM files')
         fid = self.c.fetchone()[0]
         fid = int(fid) if fid else 0
-        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "files"))
+        self.c.execute(
+            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "files"))
 
         self.c.execute('SELECT max(pid) FROM packages')
         pid = self.c.fetchone()[0]
         pid = int(pid) if pid else 0
-        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+        self.c.execute(
+            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
 
         self.c.execute('VACUUM')
-
 
     def create_cursor(self):
         return self.conn.cursor()
@@ -458,29 +469,29 @@ class DatabaseBackend(Thread):
     # class Test():
         # @queue
         # def insert(db):
-            # c = db.create_cursor()
-            # for i in range(1000):
-                # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
+        # c = db.create_cursor()
+        # for i in range(1000):
+        # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
         # @async
         # def insert2(db):
-            # c = db.create_cursor()
-            # for i in range(1000 * 1000):
-                # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
+        # c = db.create_cursor()
+        # for i in range(1000 * 1000):
+        # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
 
         # @queue
         # def select(db):
-            # c = db.create_cursor()
-            # for i in range(10):
-                # res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
-                # print(res.fetchone())
+        # c = db.create_cursor()
+        # for i in range(10):
+        # res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
+        # print(res.fetchone())
 
         # @queue
         # def error(db):
-            # c = db.create_cursor()
-            # print("a")
-            # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
-            # print("e")
+        # c = db.create_cursor()
+        # print("a")
+        # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
+        # print("e")
 
     # db.register_sub(Test)
     # from time import time

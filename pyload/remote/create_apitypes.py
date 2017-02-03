@@ -33,13 +33,14 @@ type_map = {
     TType.UTF8: 'str',
 }
 
+
 def get_spec(spec, optional=False):
     """
     Analyze the generated spec file and writes information into file.
     """
     if spec[1] == TType.STRUCT:
         return spec[3][0].__name__
-    elif spec[1]  == TType.LIST:
+    elif spec[1] == TType.LIST:
         if spec[3][0] == TType.STRUCT:
             ttype = spec[3][1][0].__name__
         else:
@@ -56,6 +57,7 @@ def get_spec(spec, optional=False):
         return type_map[spec[1]]
 
 optional_re = "{:d}: +optional +[a-z0-9<>_-]+ +{}"
+
 
 def main():
 
@@ -77,7 +79,6 @@ def main():
             classes.append(klass)
         else:
             enums.append(klass)
-
 
     with nested(open(join(path, "apitypes.py"), "wb"),
                 open(join(path, "apitypes_debug.py"), "wb")) as (f, dev):
@@ -108,7 +109,7 @@ from apitypes import *\n
 
         dev.write("enums = [\n")
 
-        ## generate enums
+        # generate enums
         for enum in enums:
             name = enum.__name__
             f.write("class {}:\n".format(name))
@@ -127,7 +128,8 @@ from apitypes import *\n
 
         for klass in classes:
             name = klass.__name__
-            base = "ExceptionObject" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
+            base = "ExceptionObject" if issubclass(
+                klass, ttypes.TExceptionBase) else "BaseObject"
             f.write("class {}({}):\n".format(name, base))
 
             # No attributes, do not write further info
@@ -138,7 +140,7 @@ from apitypes import *\n
             f.write("\t__slots__ = {}\n\n".format(klass.__slots__))
             dev.write("\t'{}' : [".format(name))
 
-            #create init
+            # create init
             args = ['self'] + ["{}=None".format(x) for x in klass.__slots__]
             specs = []
 
@@ -146,8 +148,9 @@ from apitypes import *\n
             for i, attr in enumerate(klass.__slots__):
                 f.write("\t\tself.{} = {}\n".format(attr, attr))
 
-                spec = klass.thrift_spec[i+1]
-                # assert correct order, so the list of types is enough for check
+                spec = klass.thrift_spec[i + 1]
+                # assert correct order, so the list of types is enough for
+                # check
                 assert spec[2] == attr
                 # dirty way to check optional attribute, since it is not in the generated code
                 # can produce false positives, but these are not critical
@@ -171,7 +174,8 @@ from apitypes import *\n
 
             func = inspect.getargspec(getattr(Pyload.Iface, name))
 
-            f.write("\tdef {}({}):\n\t\tpass\n".format(name, ", ".join(func.args)))
+            f.write("\tdef {}({}):\n\t\tpass\n".format(
+                name, ", ".join(func.args)))
 
             spec = getattr(Pyload, "{}_result".format(name)).thrift_spec
             if not spec or not spec[0]:

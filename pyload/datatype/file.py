@@ -84,13 +84,12 @@ class PyFile(object):
 
         self.plugin = None
 
-        self.wait_until = 0 # time() + time to wait
+        self.wait_until = 0  # time() + time to wait
 
         # status attributes
         self.abort = False
         self.reconnected = False
         self.statusname = None
-
 
     def set_size(self, value):
         self._size = int(value)
@@ -132,7 +131,8 @@ class PyFile(object):
         Inits plugin instance.
         """
         if not self.plugin:
-            self.pluginclass = self.manager.pyload.pgm.get_plugin_class("hoster", self.pluginname)
+            self.pluginclass = self.manager.pyload.pgm.get_plugin_class(
+                "hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @read_lock
@@ -183,11 +183,10 @@ class PyFile(object):
 
         self.manager.release_file(self.fid)
 
-
     def to_info_data(self):
         return FileInfo(self.fid, self.get_name(), self.packageid, self.owner, self.get_size(), self.filestatus,
                         self.media, self.added, self.fileorder, DownloadInfo(
-                self.url, self.pluginname, self.hash, self.status, self.get_status_name(), self.error)
+            self.url, self.pluginname, self.hash, self.status, self.get_status_name(), self.error)
         )
 
     def get_path(self):

@@ -22,15 +22,17 @@ try:
 except Exception:
     pass
 
+
 def generate_and_add(urls, paused):
     packs = PYLOAD.generate_packages(urls)
     for name, urls in packs.items():
         PYLOAD.add_package(name, urls, paused=paused)
 
+
 def local_check(function):
     def _view(*args, **kwargs):
         if (request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') or
-            request.environ.get('HTTP_HOST', '0') in ('127.0.0.1:9666', 'localhost:9666')):
+                request.environ.get('HTTP_HOST', '0') in ('127.0.0.1:9666', 'localhost:9666')):
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -45,6 +47,7 @@ def local_check(function):
 def flash(id="0"):
     return "JDownloader\r\n"
 
+
 @route("/flash/add", method="POST")
 @local_check
 def add(request):
@@ -57,6 +60,7 @@ def add(request):
         generate_and_add(urls, True)
 
     return ""
+
 
 @route("/flash/addcrypted", method="POST")
 @local_check
@@ -76,6 +80,7 @@ def addcrypted():
     else:
         return "success\r\n"
 
+
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
@@ -93,7 +98,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except Exception:
-        ## Test for some known js functions to decode
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = reversed(org)
@@ -110,7 +115,8 @@ def addcrypted2():
     IV = Key
 
     obj = AES.new(Key, AES.MODE_CBC, IV)
-    result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
+    result = obj.decrypt(crypted).replace(
+        "\x00", "").replace("\r", "").split("\n")
 
     result = [x for x in result if x != ""]
 
@@ -124,6 +130,7 @@ def addcrypted2():
         return "failed"
     else:
         return "success\r\n"
+
 
 @route("/flashgot_pyload")
 @route("/flashgot_pyload", method="POST")
@@ -147,6 +154,7 @@ def flashgot():
         generate_and_add(urls, autostart)
     return ""
 
+
 @route("/crossdomain.xml")
 @local_check
 def crossdomain():
@@ -167,6 +175,7 @@ def checksupport():
     supported = (not res[0][1] is None)
 
     return str(supported).lower()
+
 
 @route("/jdcheck.js")
 @local_check

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # Monkey patch bug in python 2.6 and earlier
-# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
+# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
+# http://bugs.python.org/issue1731717
 
 from __future__ import absolute_import
 from __future__ import unicode_literals

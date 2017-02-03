@@ -40,7 +40,8 @@ class EventManager(object):
         """
         if event in self.events:
             if func in self.events[event]:
-                self.pyload.log.debug("Function already registered {}".format(func))
+                self.pyload.log.debug(
+                    "Function already registered {}".format(func))
             else:
                 self.events[event].append(func)
         else:
@@ -76,6 +77,7 @@ class EventManager(object):
                     f(*args, **kwargs)
                 except Exception as e:
                     self.pyload.log.warning(
-                        "Error calling event handler {}: {}, {}, {}".format(event, f, args, e.message)
+                        "Error calling event handler {}: {}, {}, {}".format(
+                            event, f, args, e.message)
                     )
                     # self.pyload.print_exc()

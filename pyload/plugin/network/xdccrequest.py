@@ -22,6 +22,7 @@ from pyload.plugin import Abort
 
 # TODO: This must be adapted to the new request interfaces
 class XDCCRequest(object):
+
     def __init__(self, timeout=30, proxies={}):
 
         self.proxies = proxies
@@ -32,7 +33,6 @@ class XDCCRequest(object):
         self.speed = 0
 
         self.abort = False
-
 
     def create_socket(self):
         # proxytype = None
@@ -67,7 +67,8 @@ class XDCCRequest(object):
                 i = 0
                 name_parts = filename.rpartition(".")
                 while True:
-                    newfilename = "{}-{:d}{}{}".format(name_parts[0], i, name_parts[1], name_parts[2])
+                    newfilename = "{}-{:d}{}{}".format(
+                        name_parts[0], i, name_parts[1], name_parts[2])
                     i += 1
 
                     if not exists(newfilename):
@@ -120,7 +121,7 @@ class XDCCRequest(object):
         readbuffer = temp.pop()
 
         for line in temp:
-            line  = line.rstrip()
+            line = line.rstrip()
             first = line.split()
             if first[0] == "PING":
                 sock.send("PONG {}\r\n".format(first[1]))

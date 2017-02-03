@@ -7,8 +7,10 @@ from pyload.network.headerdict import HeaderDict
 
 
 class ResponseException(Exception):
+
     def __init__(self, code, content=""):
-        Exception.__init__(self, "Server response error: {} {}".format(code, content))
+        Exception.__init__(
+            self, "Server response error: {} {}".format(code, content))
         self.code = code
 
 

@@ -20,25 +20,26 @@ from pyload.utils.new.lib import beaker
 from pyload.webui import env
 
 
-################################################################################
-#: Classes  ####################################################################
-################################################################################
+##########################################################################
+#: Classes  ##############################################################
+##########################################################################
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
+
     def default(self, value):
         if type(value) in (instance, object):
             return convert.to_dict(value, {})
         return json.JSONEncoder.default(self, value)
 
 
-################################################################################
-#: Functions  ##################################################################
-################################################################################
+##########################################################################
+#: Functions  ############################################################
+##########################################################################
 
 def parse_permissions(session):
     perms = {x: False for x in dir(AUTH) if not x.startswith("_")}
-    perms['ADMIN']    = False
+    perms['ADMIN'] = False
     perms['is_admin'] = False
 
     if not session.get("auth", False):
@@ -55,9 +56,9 @@ def parse_permissions(session):
     return perms
 
 
-################################################################################
-#: Decorators  #################################################################
-################################################################################
+##########################################################################
+#: Decorators  ###########################################################
+##########################################################################
 
 def require_auth(perm=None):
     def wrapper(func):
@@ -80,9 +81,9 @@ def require_auth(perm=None):
     return wrapper
 
 
-################################################################################
-#: Functions  ##################################################################
-################################################################################
+##########################################################################
+#: Functions  ############################################################
+##########################################################################
 
 def add_json_header(response):
     response.headers.replace("Content-type", "application/json")
@@ -129,9 +130,9 @@ def json_response(obj):
 
 
 def parse_userdata(session):
-    return {'name'    : session.get("name", "Anonymous"),
+    return {'name': session.get("name", "Anonymous"),
             'is_admin': session.get("role", 1) == 0,
-            'is_auth' : session.get("auth", False)}
+            'is_auth': session.get("auth", False)}
 
 
 def render_to_response(file, args={}, proc=[]):
@@ -163,11 +164,11 @@ def set_permission(perms):
 
 def set_session(info):
     s = bottle.request.environ.get('beaker.session')
-    s.update({'auth'    : True,
-              'uid'     : info['id'],
-              'name'    : info['name'],
-              'role'    : info['role'],
-              'perms'   : info['permission'],
+    s.update({'auth': True,
+              'uid': info['id'],
+              'name': info['name'],
+              'role': info['role'],
+              'perms': info['permission'],
               'template': info['template']})
     s.save()
     return s

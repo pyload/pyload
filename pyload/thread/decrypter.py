@@ -52,14 +52,15 @@ class DecrypterThread(BaseThread):
         for p in packages:
             api.add_package(p.name, p.get_urls(), pack.password)
 
-        self.pyload.files.set_download_status(self.fid, DS.Finished if not self.error else DS.Failed)
+        self.pyload.files.set_download_status(
+            self.fid, DS.Finished if not self.error else DS.Failed)
         self.manager.done(self)
 
     def decrypt(self, plugin_map, password=None, err=False):
         result = []
 
         self.progress = ProgressInfo("BasePlugin", "", _("decrypting"),
-                                         0, 0, len(self.data), self.owner, ProgressType.Decrypting)
+                                     0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO QUEUE_DECRYPT
         for name, urls in plugin_map.items():
             klass = self.pyload.pgm.load_class("crypter", name)
@@ -68,15 +69,18 @@ class DecrypterThread(BaseThread):
 
             # updating progress
             self.progress.plugin = name
-            self.progress.name = _("Decrypting {} links").format(len(urls) if len(urls) > 1 else urls[0])
+            self.progress.name = _("Decrypting {} links").format(
+                len(urls) if len(urls) > 1 else urls[0])
 
-            #TODO: dependency check, there is a new error code for this
+            # TODO: dependency check, there is a new error code for this
             # TODO: decrypting with result yielding
             if not klass:
                 self.error = True
                 if err:
-                    plugin_result.extend(LinkStatus(url, url, -1, DS.NotPossible, name) for url in urls)
-                self.pyload.log.debug("Plugin '{}' for decrypting was not loaded".format(name))
+                    plugin_result.extend(LinkStatus(
+                        url, url, -1, DS.NotPossible, name) for url in urls)
+                self.pyload.log.debug(
+                    "Plugin '{}' for decrypting was not loaded".format(name))
             else:
                 try:
                     plugin = klass(self.pyload, password)
@@ -97,7 +101,8 @@ class DecrypterThread(BaseThread):
                     self.error = True
                     # generate error linkStatus
                     if err:
-                        plugin_result.extend(LinkStatus(url, url, -1, DS.Failed, name) for url in urls)
+                        plugin_result.extend(LinkStatus(
+                            url, url, -1, DS.Failed, name) for url in urls)
 
                     # no debug for intentional errors
                     if self.pyload.debug and not isinstance(e, Fail):

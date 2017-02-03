@@ -93,7 +93,7 @@ def methods(obj):
 
 def missingitems(iterable, start=None, end=None):
     iter_seq = set(map(int, iterable))
-    min_val  = start or min(iter_seq)
-    max_val  = end or max(iter_seq)
+    min_val = start or min(iter_seq)
+    max_val = end or max(iter_seq)
     full_seq = set(range(min_val, max_val + 1))
     return sorted(full_seq - iter_seq)

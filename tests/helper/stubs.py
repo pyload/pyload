@@ -24,11 +24,14 @@ from pyload.config.parser import ConfigParser
 from logging import log, DEBUG, INFO, WARN, ERROR
 
 # Do nothing
+
+
 def noop(*args, **kwargs):
     pass
 
 
 class NoopClass(object):
+
     def __getattr__(self, item):
         return noop
 
@@ -37,6 +40,7 @@ ConfigParser.save = noop
 
 
 class LogStub(object):
+
     def debug(self, *args):
         log(DEBUG, *args)
 
@@ -51,6 +55,7 @@ class LogStub(object):
 
 
 class TestCore(Core):
+
     def __init__(self):
         super(TestCore, self).__init__()
         self.start(tests=True)
@@ -78,16 +83,18 @@ class TestCore(Core):
 
 
 class Thread(BaseThread):
+
     def __init__(self, core):
         BaseThread.__init__(self, core)
         self.plugin = None
 
-
     def writeDebugReport(self):
         if hasattr(self, "pyfile"):
-            dump = BaseThread.write_debug_report(self, self.plugin.__name__, pyfile=self.pyfile)
+            dump = BaseThread.write_debug_report(
+                self, self.plugin.__name__, pyfile=self.pyfile)
         else:
-            dump = BaseThread.write_debug_report(self, self.plugin.__name__, plugin=self.plugin)
+            dump = BaseThread.write_debug_report(
+                self, self.plugin.__name__, plugin=self.plugin)
 
         return dump
 
@@ -96,9 +103,9 @@ Core = TestCore
 
 builtins._ = lambda x: x
 
-admin_user  = User(None, uid=0, role=Role.Admin)
+admin_user = User(None, uid=0, role=Role.Admin)
 normal_user = User(None, uid=1, role=Role.User)
-other_user  = User(None, uid=2, role=Role.User)
+other_user = User(None, uid=2, role=Role.User)
 
 # fixes the module paths because we changed the directory
 for name, m in sys.modules.items():

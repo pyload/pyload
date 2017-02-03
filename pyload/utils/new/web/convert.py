@@ -22,9 +22,9 @@ def code_to_status(code):
 
 
 def url_to_name(url):
-    url   = format.url(url)
+    url = format.url(url)
     url_p = urllib.parse.urlparse(url)
-    name  = url_p.path.split('/')[-1]
+    name = url_p.path.split('/')[-1]
     if not name:
         name = url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
     if not name:

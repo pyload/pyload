@@ -50,15 +50,17 @@ def parse_args(argv=None):
     if not set(map(operator.itemgetter(0), sc)) & set(argv):
         argv.append('start')
 
-    color  = lambda c, msg: getattr(colorama.Fore, c) + msg + colorama.Style.RESET_ALL
-    blue   = lambda msg: color('BLUE'  , msg)
-    green  = lambda msg: color('GREEN' , msg)
-    red    = lambda msg: color('RED'   , msg)
+    color = lambda c, msg: getattr(
+        colorama.Fore, c) + msg + colorama.Style.RESET_ALL
+    blue = lambda msg: color('BLUE', msg)
+    green = lambda msg: color('GREEN', msg)
+    red = lambda msg: color('RED', msg)
     yellow = lambda msg: color('YELLOW', msg)
 
-    prog   = blue("py") + yellow("Load")
-    desc   = red(pyload.info().description)
-    epilog = green("*** Please refer to the included `README.md` for further info ***")
+    prog = blue("py") + yellow("Load")
+    desc = red(pyload.info().description)
+    epilog = green(
+        "*** Please refer to the included `README.md` for further info ***")
 
     ap = argparse.ArgumentParser(prog=prog,
                                  description=desc,
@@ -71,18 +73,19 @@ def parse_args(argv=None):
                                 yellow("`COMMAND --help`") +
                                 red(" for detailed help)"))
 
-    sc = (('start'  , "Start process instance"),
-          ('stop'   , "Terminate process instance"),
+    sc = (('start', "Start process instance"),
+          ('stop', "Terminate process instance"),
           ('restart', "Restart process instance"),
-          ('setup'  , "Setup package"),
-          ('update' , "Update package"),
-          ('status' , "Show process PID"),
+          ('setup', "Setup package"),
+          ('update', "Update package"),
+          ('status', "Show process PID"),
           ('version', "Show package version"),
-          ('info'   , "Show package info"))
+          ('info', "Show package info"))
 
     for prog, desc in sc:
         desc = red(desc)
-        p = sp.add_parser(prog, description=desc, epilog=epilog, help=desc, add_help=False)
+        p = sp.add_parser(prog, description=desc,
+                          epilog=epilog, help=desc, add_help=False)
         globals()['sp_' + prog] = p
 
     for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_update, sp_setup, sp_version:
@@ -92,27 +95,28 @@ def parse_args(argv=None):
 
     for p in pg, sp_start, sp_stop, sp_restart, sp_status:
         profile_help = red("Config profile to use (") + yellow("`default`") + \
-                       red(" if missing)")
+            red(" if missing)")
         p.add_argument('-p', '--profile', help=profile_help)
 
     for p in pg, sp_start, sp_restart:
         configdir_help = red("Change path of config directory")
         refresh_help   = red("Remove compiled files and tmp config (") + \
-                         yellow("`-rr`") + red(" to restore admin access ") + \
-                         yellow("`admin|pyload`") + red(")")
+            yellow("`-rr`") + red(" to restore admin access ") + \
+            yellow("`admin|pyload`") + red(")")
         remote_help    = red("Enable remote api interface at entered ") + \
-                         yellow("`IP address:Port number`") + \
-                         red(" (use defaults if missing)")
+            yellow("`IP address:Port number`") + \
+            red(" (use defaults if missing)")
         webui_help     = red("Enable webui interface at entered ") + \
-                         yellow("`IP address:Port number`") + \
-                         red(" (use defaults if missing)")
+            yellow("`IP address:Port number`") + \
+            red(" (use defaults if missing)")
         debug_help     = red("Enable debug mode (") + yellow("`-dd`") + \
-                         red(" for extended debug)")
-        webdebug_help  = red("Enable webserver debugging")
-        daemon_help    = red("Run as daemon")
+            red(" for extended debug)")
+        webdebug_help = red("Enable webserver debugging")
+        daemon_help = red("Run as daemon")
 
         p.add_argument('-c', '--configdir', help=configdir_help)
-        p.add_argument('-r', '--refresh', '--restore', action='count', help=refresh_help)
+        p.add_argument('-r', '--refresh', '--restore',
+                       action='count', help=refresh_help)
         p.add_argument('-a', '--remote', help=remote_help)
         p.add_argument('-u', '--webui', help=webui_help)
         p.add_argument('-d', '--debug', action='count', help=debug_help)
@@ -120,7 +124,8 @@ def parse_args(argv=None):
         p.add_argument('-D', '--daemon', action='store_true', help=daemon_help)
 
     force_help = red("Force package installation")
-    sp_update.add_argument('-f', '--force', action='store_true', help=force_help)
+    sp_update.add_argument(
+        '-f', '--force', action='store_true', help=force_help)
 
     print(logo() + '\n')
     return ap.parse_args(argv)

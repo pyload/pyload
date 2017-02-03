@@ -47,7 +47,8 @@ class XFileSharingPro(SimpleHoster):
 
     def setup(self):
         if self.__name__ == "XFileSharingPro":
-            self.__pattern__ = self.pyload.pgm.plugins['hoster'][self.__name__]['pattern']
+            self.__pattern__ = self.pyload.pgm.plugins[
+                'hoster'][self.__name__]['pattern']
             self.multi_dl = True
         else:
             self.resume_download = self.multi_dl = self.premium
@@ -63,7 +64,8 @@ class XFileSharingPro(SimpleHoster):
             if self.premium:
                 self.handle_overriden()
             else:
-                self.fail(_("Only premium users can download from other hosters with {}").format(self.HOSTER_NAME))
+                self.fail(_("Only premium users can download from other hosters with {}").format(
+                    self.HOSTER_NAME))
         else:
             try:
                 # Due to a 0.4.9 core bug self.load would use cookies even if
@@ -92,9 +94,11 @@ class XFileSharingPro(SimpleHoster):
         Initialize important variables.
         """
         if not hasattr(self, "HOSTER_NAME"):
-            self.HOSTER_NAME = re.match(self.__pattern__, self.pyfile.url).group(1)
+            self.HOSTER_NAME = re.match(
+                self.__pattern__, self.pyfile.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
-            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?{}|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'.format(self.HOSTER_NAME)
+            self.DIRECT_LINK_PATTERN = r'(http://([^/]*?{}|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'.format(
+                self.HOSTER_NAME)
 
         self.captcha = self.errmsg = None
         self.passwords = self.get_password().splitlines()
@@ -128,7 +132,8 @@ class XFileSharingPro(SimpleHoster):
             data = self.get_post_parameters()
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
-            self.html = self.load(self.pyfile.url, post=data, ref=True, decode=True)
+            self.html = self.load(
+                self.pyfile.url, post=data, ref=True, decode=True)
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
@@ -156,7 +161,7 @@ class XFileSharingPro(SimpleHoster):
         self.start_download(found.group(1))
 
     def handle_overriden(self):
-        #only tested with easybytez.com
+        # only tested with easybytez.com
         self.html = self.load("http://www.{}/".format(self.HOSTER_NAME))
         action, inputs = self.parse_html_form('')
         upload_id = "{:012d}".format(random() * 10 ** 12)
@@ -166,7 +171,7 @@ class XFileSharingPro(SimpleHoster):
         inputs['up1oad_type'] = 'url'
 
         self.log_debug(self.HOSTER_NAME, action, inputs)
-        #wait for file to upload to easybytez.com
+        # wait for file to upload to easybytez.com
         self.req.http.c.setopt(LOW_SPEED_TIME, 600)
         self.html = self.load(action, post=inputs)
 
@@ -181,7 +186,7 @@ class XFileSharingPro(SimpleHoster):
         else:
             self.fail(inputs['st'])
 
-        #get easybytez.com link for uploaded file
+        # get easybytez.com link for uploaded file
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found:
             self.parse_error(_('DIRECT LINK (OVR)'))
@@ -238,7 +243,8 @@ class XFileSharingPro(SimpleHoster):
             if hasattr(self, "FORM_PATTERN"):
                 action, inputs = self.parse_html_form(self.FORM_PATTERN)
             else:
-                action, inputs = self.parse_html_form(input_names={"op": re.compile("^download")})
+                action, inputs = self.parse_html_form(
+                    input_names={"op": re.compile("^download")})
 
             if not inputs:
                 action, inputs = self.parse_html_form('F1')
@@ -289,7 +295,8 @@ class XFileSharingPro(SimpleHoster):
                 self.errmsg = None
 
         else:
-            self.parse_error(_('FORM: {}').format(inputs['op'] if 'op' in inputs else _('UNKNOWN')))
+            self.parse_error(_('FORM: {}').format(
+                inputs['op'] if 'op' in inputs else _('UNKNOWN')))
 
     def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)
@@ -297,7 +304,8 @@ class XFileSharingPro(SimpleHoster):
             recaptcha_key = unquote(found.group(1))
             self.log_debug("RECAPTCHA KEY: {}".format(recaptcha_key))
             recaptcha = ReCaptcha(self)
-            inputs['recaptcha_challenge_field'], inputs['recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
+            inputs['recaptcha_challenge_field'], inputs[
+                'recaptcha_response_field'] = recaptcha.challenge(recaptcha_key)
             return 1
         else:
             found = re.search(self.CAPTCHA_URL_PATTERN, self.html)
@@ -306,12 +314,15 @@ class XFileSharingPro(SimpleHoster):
                 inputs['code'] = self.decrypt_captcha(captcha_url)
                 return 2
             else:
-                found = re.search(self.CAPTCHA_DIV_PATTERN, self.html, re.DOTALL)
+                found = re.search(self.CAPTCHA_DIV_PATTERN,
+                                  self.html, re.DOTALL)
                 if found:
                     captcha_div = found.group(1)
                     self.log_debug(captcha_div)
-                    numerals = re.findall(r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
-                    inputs['code'] = "".join(a[1] for a in sorted(numerals, key=lambda num: int(num[0])))
+                    numerals = re.findall(
+                        r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+                    inputs['code'] = "".join(a[1] for a in sorted(
+                        numerals, key=lambda num: int(num[0])))
                     self.log_debug("CAPTCHA", inputs['code'], numerals)
                     return 3
                 else:
@@ -319,7 +330,8 @@ class XFileSharingPro(SimpleHoster):
                     if found:
                         captcha_key = found.group(1)
                         captcha = SolveMedia(self)
-                        inputs['adcopy_challenge'], inputs['adcopy_response'] = captcha.challenge(captcha_key)
+                        inputs['adcopy_challenge'], inputs[
+                            'adcopy_response'] = captcha.challenge(captcha_key)
                         return 4
         return 0
 

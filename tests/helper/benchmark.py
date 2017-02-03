@@ -18,7 +18,7 @@ class BenchmarkTest(object):
     def timestamp(cls, name, a):
         t = time()
         r = cls.results.get(name, [])
-        r.append((t-a) * 1000)
+        r.append((t - a) * 1000)
         cls.results[name] = r
 
     @classmethod
@@ -44,7 +44,8 @@ class BenchmarkTest(object):
 
             if len(v) > 1:
                 print(("{:" + length + "} {} | average: {:.2f} ms").format(
-                    k, ", ".join("{:.2f}".format(x) for x in v), sum(v) // len(v)
+                    k, ", ".join("{:.2f}".format(x)
+                                 for x in v), sum(v) // len(v)
                 ))
                 total += sum(v) // len(v)
             else:
@@ -52,7 +53,6 @@ class BenchmarkTest(object):
                 total += v[0]
 
         print("\ntotal: {:.2f} ms".format(total))
-
 
     @classmethod
     def collect_results(cls):

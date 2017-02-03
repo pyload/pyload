@@ -63,13 +63,13 @@ class AddonThread(BaseThread):
 
         pyfile.finish_if_done()
 
-    def run(self): #TODO: approach via func_code
+    def run(self):  # TODO: approach via func_code
         try:
             try:
                 self.kwargs['thread'] = self
                 self.f(*self.args, **self.kwargs)
             except TypeError as e:
-                #dirty method to filter out exceptions
+                # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 

@@ -44,20 +44,19 @@ from pyload.utils.new.check import lookup
 #  improve external scripts
 class Core(Process):
 
-    __title__       = "pyLoad"
-    __version__     = "0.5.0"
-    __status__      = "3 - Alpha"
+    __title__ = "pyLoad"
+    __version__ = "0.5.0"
+    __status__ = "3 - Alpha"
 
     __description__ = """Free and Open Source download manager written in Python
                          and designed to be extremely lightweight, easily extensible
                          and fully manageable via web"""
-    __license__     = "AGPLv3"
-    __authors__     = (("Walter Purcaro" , "vuolter@gmail.com     "),
-                       ("Christian Rakow", "Mast3rRaNaN@hotmail.de"))
-
+    __license__ = "AGPLv3"
+    __authors__ = (("Walter Purcaro", "vuolter@gmail.com     "),
+                   ("Christian Rakow", "Mast3rRaNaN@hotmail.de"))
 
     def _clean(self):
-        join   = os.path.join
+        join = os.path.join
         remove = os.remove
         for dir, dirnames, filenames in os.walk(COREDIR):
             for dirname in dirnames:
@@ -76,7 +75,6 @@ class Core(Process):
                     continue
         remove('tmp', trash=False, ignore_errors=True)
 
-
     #@TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
         # Init logger
@@ -92,17 +90,17 @@ class Core(Process):
             fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
             datefmt = "%Y-%m-%d  %H:%M:%S"
             log_colors = {
-                'DEBUG'   : "bold,cyan"  ,
-                'WARNING' : "bold,yellow",
-                'ERROR'   : "bold,red"   ,
+                'DEBUG': "bold,cyan",
+                'WARNING': "bold,yellow",
+                'ERROR': "bold,red",
                 'CRITICAL': "bold,purple",
             }
             log_colors_2 = {
                 'label': {
-                    'DEBUG'   : "bold,white,bg_cyan"  ,
-                    'INFO'    : "bold,white,bg_green" ,
-                    'WARNING' : "bold,white,bg_yellow",
-                    'ERROR'   : "bold,white,bg_red"   ,
+                    'DEBUG': "bold,white,bg_cyan",
+                    'INFO': "bold,white,bg_green",
+                    'WARNING': "bold,white,bg_yellow",
+                    'ERROR': "bold,white,bg_red",
                     'CRITICAL': "bold,white,bg_purple",
                 }
             }
@@ -138,15 +136,14 @@ class Core(Process):
         filehdlr.setFormatter(fileform)
         self.log.add_handler(filehdlr)
 
-
     def _init_permissions(self):
         change_group = self.config.get('permission', 'change_group')
-        change_user  = self.config.get('permission', 'change_user')
+        change_user = self.config.get('permission', 'change_user')
 
         if change_group:
             try:
                 group = self.config.get('permission', 'group')
-                gid   = grp.getgrnam(group)[2]
+                gid = grp.getgrnam(group)[2]
                 os.setgid(gid)
             except Exception as e:
                 self.log.error(_("Unable to change gid"), e.message)
@@ -154,7 +151,7 @@ class Core(Process):
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
-                uid  = pwd.getpwnam(user).pw_uid
+                uid = pwd.getpwnam(user).pw_uid
             except KeyError:
                 self.log.error(_("User `{}` not found").format(user))
                 return
@@ -162,7 +159,6 @@ class Core(Process):
                 os.setuid(uid)
             except Exception as e:
                 self.log.error(_("Unable to change uid"), e.message)
-
 
     def _init_config(self, configdir):
         from pyload.config import Config, core_defaults
@@ -175,14 +171,15 @@ class Core(Process):
             self.configdir = os.path.join(USERDIR, dirname)
 
         profiledir = os.path.join(self.configdir, self.profile)
-        tmpdir     = os.path.join(profiledir, 'tmp')
+        tmpdir = os.path.join(profiledir, 'tmp')
 
         makedirs(profiledir)
         makedirs(tmpdir)
-        os.chdir(profiledir)  #@NOTE: pyLoad runs over configdir/profile for its entire process-life
+        # @NOTE: pyLoad runs over configdir/profile for its entire process-life
+        os.chdir(profiledir)
 
-        self.config = self.cfg = Config(profiledir, self.profile, self.__version__, core_defaults)
-
+        self.config = self.cfg = Config(
+            profiledir, self.profile, self.__version__, core_defaults)
 
     def _init_translation(self):
         language = self.config.get('general', 'language')
@@ -193,16 +190,14 @@ class Core(Process):
         else:
             translation.install(True)
 
-
     def _init_debug(self, debug, webdebug):
-        debug_log   = self.config.get('log', 'debug')
+        debug_log = self.config.get('log', 'debug')
         verbose_log = self.config.get('log', 'verbose')
         debug_webui = config.get('webui', 'debug')
 
-        self.debug         = bool(debug) or debug_log
-        self.debug_level   = 2 if debug > 1 or verbose_log else 1
-        self.webdebug      = bool(webdebug) or debug_webui
-
+        self.debug = bool(debug) or debug_log
+        self.debug_level = 2 if debug > 1 or verbose_log else 1
+        self.webdebug = bool(webdebug) or debug_webui
 
     def _start_interfaces(self, webui, remote):
         #@TODO: Parse `remote`
@@ -220,11 +215,11 @@ class Core(Process):
 
         kwgs = {
             'server': self.pyload.config.get('webui', 'server'),
-            'host'  : host or self.pyload.config.get('webui', 'host'),
-            'port'  : port or self.pyload.config.get('webui', 'port'),
-            'key'   : self.pyload.config.get('ssl', 'key'),
-            'cert'  : self.pyload.config.get('ssl', 'cert'),
-            'ssl'   : self.pyload.config.get('ssl', 'activated')
+            'host': host or self.pyload.config.get('webui', 'host'),
+            'port': port or self.pyload.config.get('webui', 'port'),
+            'key': self.pyload.config.get('ssl', 'key'),
+            'cert': self.pyload.config.get('ssl', 'cert'),
+            'ssl': self.pyload.config.get('ssl', 'activated')
         }
         if webui or self.config.get('webui', 'activated'):
             from pyload.thread.webui import WebServer
@@ -235,7 +230,6 @@ class Core(Process):
 
         Api.init_components()
         self.api = Api(self)
-
 
     def _init_database(self, restore):
         from pyload.database import DatabaseBackend
@@ -250,38 +244,36 @@ class Core(Process):
         if restore or not os.path.isfile("pyload.conf"):
             self.db.add_user("admin", "pyload")
 
-
     def _init_managers(self):
         from pyload.manager import (AccountManager, AddonManager, DownloadManager, EventManager,
                                     InteractionManager, PluginManager, RemoteManager,
                                     ThreadManager)
 
-        self.scheduler          = sched.scheduler(time.time, time.sleep)
-        self.pluginmanager      = self.pgm = PluginManager(self)
+        self.scheduler = sched.scheduler(time.time, time.sleep)
+        self.pluginmanager = self.pgm = PluginManager(self)
         self.interactionmanager = self.itm = InteractionManager(self)
-        self.eventmanager       = self.evm = EventManager(self)
-        self.accountmanager     = self.acm = AccountManager(self)
-        self.threadmanager      = self.thm = ThreadManager(self)
-        self.downloadmanager    = self.dlm = DownloadManager(self)
-        self.addonmanager       = self.adm = AddonManager(self)
-        self.remotemanager      = self.rem = RemoteManager(self)
+        self.eventmanager = self.evm = EventManager(self)
+        self.accountmanager = self.acm = AccountManager(self)
+        self.threadmanager = self.thm = ThreadManager(self)
+        self.downloadmanager = self.dlm = DownloadManager(self)
+        self.addonmanager = self.adm = AddonManager(self)
+        self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager      = self.svm = ServerManager(self)
-
 
     #@TODO: Remove?
     def _init_requests(self):
         from pyload.network.factory import RequestFactory
         self.request = self.req = RequestFactory(self)
 
-
     def _init_process(self, profile):
         if not profile:
             profile = "default"
 
         pidname = "pyLoad-{}.pid".format(profile)
-        tmpdir  = tempfile.gettempdir()
+        tmpdir = tempfile.gettempdir()
         if pidname in os.listdir(tmpdir):
-            msg = 'A pyLoad instance with profile `{}` is already running'.format(profile)
+            msg = 'A pyLoad instance with profile `{}` is already running'.format(
+                profile)
             raise Exception(msg)
 
         self.pidfile = os.path.join(tmpdir, pidname)
@@ -290,16 +282,17 @@ class Core(Process):
         with open(self.pidfile, 'wb') as f:
             f.write(os.getpid())
 
-        signal.signal(signal.SIGTERM, lambda s,f: self.terminate())  #: register exit signal
+        #: register exit signal
+        signal.signal(signal.SIGTERM, lambda s, f: self.terminate())
         Process.__init__(self)
-
 
     def __init__(self, profile=None, configdir=None, refresh=0, remote=None,
                  webui=None, debug=0, webdebug=0):
         #@NOTE: Don't change the init order!
         self._init_process(profile)
         self._init_debug(debug, webdebug)
-        self._init_logger(logging.DEBUG if self.debug else logging.INFO)  #@NOTE: Logging level
+        # @NOTE: Logging level
+        self._init_logger(logging.DEBUG if self.debug else logging.INFO)
         self._init_translation()
         self._init_config(configdir)
 
@@ -314,7 +307,6 @@ class Core(Process):
         self._init_requests()
         self._start_interfaces(webui, remote)
 
-
     def _set_process(self):
         profile = os.path.basename(os.getcwd())
         setproctitle.setproctitle('pyLoad-{}'.format(profile))
@@ -322,13 +314,12 @@ class Core(Process):
         niceness = self.config.get('general', 'niceness')
         sys.renice(niceness)
 
-
     def _set_storage(self):
-        storage_folder = self.config.get('general', 'storage_folder') or "downloads"
+        storage_folder = self.config.get(
+            'general', 'storage_folder') or "downloads"
         makedirs(storage_folder)
         space_size = format.size(availspace(storage_folder))
         self.log.info(_("Available storage space: {}").format(space_size))
-
 
     def run(self):
         self.log.info(_("Starting pyLoad ..."))
@@ -338,7 +329,8 @@ class Core(Process):
         self._set_storage()
         self._set_process()
 
-        self.log.info(_("Activating accounts ..."))  #@TODO: Move in accountmanager
+        # @TODO: Move in accountmanager
+        self.log.info(_("Activating accounts ..."))
         self.acm.get_account_infos()
         # self.scheduler.enter(0, 0, self.acm.get_account_infos)
 
@@ -368,7 +360,7 @@ class Core(Process):
         try:
             while not self._exiting:
                 self.dlm.work()
-                self.thm.work()  #@TODO: Rename `work` to `run`
+                self.thm.work()  # @TODO: Rename `work` to `run`
                 self.itm.work()
                 self.scheduler.run()
         except Exception as e:
@@ -380,19 +372,16 @@ class Core(Process):
         # else:
             # self.shutdown()
 
-
     def _exit_logger(self):
         for handler in self.log.handlers:
             with closing(handler) as hdlr:
                 self.log.remove_handler(hdlr)
-
 
     # def restart(self):
         # self.log.info(_("Restarting pyLoad ..."))
         # self._restart.set()
         # self._stop()
         # self.start()
-
 
     def shutdown(self):
         try:
@@ -401,7 +390,6 @@ class Core(Process):
         finally:
             return Process.shutdown(self)
 
-
     def terminate(self):
         try:
             self._stop()
@@ -409,11 +397,11 @@ class Core(Process):
             pass
         return Process.terminate(self)
 
-
     def _stop(self):
         self.log.info(_("Stopping pyLoad ..."))
         self._exiting.set()
-        self.evm.fire('pyload:restarting' if self._restart else 'pyload:exiting')
+        self.evm.fire(
+            'pyload:restarting' if self._restart else 'pyload:exiting')
         try:
             #@TODO: quit webserver
             self.dlm.shutdown()

@@ -43,7 +43,7 @@ class PluginManager(object):
         # match history to speedup parsing (type, name)
         self.history = []
 
-        #register for import addon
+        # register for import addon
         sys.meta_path.append(self)
 
         # add to path, so we can import from userplugins
@@ -62,7 +62,8 @@ class PluginManager(object):
         Inserts matcher at given index, first position by default.
         """
         if not isinstance(matcher, PluginMatcher):
-            raise TypeError("Expected type of PluginMatcher, got '{}' instead".format(type(matcher)))
+            raise TypeError(
+                "Expected type of PluginMatcher, got '{}' instead".format(type(matcher)))
 
         if matcher in self.matcher:
             self.matcher.remove(matcher)
@@ -80,11 +81,12 @@ class PluginManager(object):
         """
         Parse plugins for given list of urls, separate to crypter and hoster.
         """
-        res = {"hoster": [], "crypter": []} # tupels of (url, plugin)
+        res = {"hoster": [], "crypter": []}  # tupels of (url, plugin)
 
         for url in urls:
             if not isinstance(url, str):
-                self.pyload.log.debug("Parsing invalid type {}".format(type(url)))
+                self.pyload.log.debug(
+                    "Parsing invalid type {}".format(type(url)))
                 continue
 
             found = False
@@ -94,10 +96,10 @@ class PluginManager(object):
                 if self.loader.get_plugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
-                    break # need to exit this loop first
+                    break  # need to exit this loop first
 
             if found:  # found match
-                if self.history[0] != found: #update history
+                if self.history[0] != found:  # update history
                     self.history.remove(found)
                     self.history.insert(0, found)
                 continue
@@ -120,7 +122,8 @@ class PluginManager(object):
                         if info.re.match(url):
                             res[type].append((url, name))
                             self.history.insert(0, (type, name))
-                            del self.history[self.MATCH_HISTORY:] # cut down to size
+                            # cut down to size
+                            del self.history[self.MATCH_HISTORY:]
                             found = True
                             break
                     if found:
@@ -191,7 +194,8 @@ class PluginManager(object):
                     self.modules[(type, name)] = module
                     return module
                 except Exception as e:
-                    self.pyload.log.error(_("Error importing {}: {}").format(name, e.message))
+                    self.pyload.log.error(
+                        _("Error importing {}: {}").format(name, e.message))
                     # self.pyload.print_exc()
 
     def load_class(self, type, name):
@@ -203,10 +207,11 @@ class PluginManager(object):
             if module:
                 return getattr(module, name)
         except AttributeError:
-            self.pyload.log.error(_("Plugin does not define class '{}'").format(name))
+            self.pyload.log.error(
+                _("Plugin does not define class '{}'").format(name))
 
     def find_module(self, fullname, path=None):
-        #redirecting imports if necessary
+        # redirecting imports if necessary
         for loader in self.loader:
             if not fullname.startswith(loader.package):
                 continue

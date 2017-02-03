@@ -10,6 +10,8 @@ import fnmatch
 import os
 
 # patch to let it support list of patterns
+
+
 def new_fnmatch(self, pattern):
     if isinstance(pattern, list):
         for p in pattern:
@@ -60,23 +62,33 @@ xargs = ["--language=Python", "--add-comments=L10N",
 
 # Modules replace rules
 module_replace = [
-    ('from pyload.plugins.hoster import Hoster', 'from pyload.plugins.hoster import Hoster'),
+    ('from pyload.plugins.hoster import Hoster',
+     'from pyload.plugins.hoster import Hoster'),
     ('from pyload.plugins.hook import threaded, Expose, Hook',
      'from pyload.plugins.addon import threaded, Expose, Addon'),
-    ('from pyload.plugins.hook import Hook', 'from pyload.plugins.addon import Addon'),
-    ('from pyload.common.json_layer import json_loads, json_dumps', 'from pyload.utils import json_loads, json_dumps'),
-    ('from pyload.common.json_layer import json_loads', 'from pyload.utils import json_loads'),
-    ('from pyload.common.json_layer import json_dumps', 'from pyload.utils import json_dumps'),
-    ('from pyload.utils import parseFileSize', 'from pyload.utils import parseFileSize'),
+    ('from pyload.plugins.hook import Hook',
+     'from pyload.plugins.addon import Addon'),
+    ('from pyload.common.json_layer import json_loads, json_dumps',
+     'from pyload.utils import json_loads, json_dumps'),
+    ('from pyload.common.json_layer import json_loads',
+     'from pyload.utils import json_loads'),
+    ('from pyload.common.json_layer import json_dumps',
+     'from pyload.utils import json_dumps'),
+    ('from pyload.utils import parseFileSize',
+     'from pyload.utils import parseFileSize'),
     ('from pyload.utils import save_join, save_path',
      'from pyload.utils.fs import save_join, safe_filename as save_path'),
-    ('from pyload.utils import save_join, fs_encode', 'from pyload.utils.fs import save_join, fs_encode'),
+    ('from pyload.utils import save_join, fs_encode',
+     'from pyload.utils.fs import save_join, fs_encode'),
     ('from pyload.utils import save_join', 'from pyload.utils.fs import save_join'),
     ('from pyload.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
-    ('from pyload.unescape import unescape', 'from pyload.utils import html_unescape as unescape'),
-    ('from pyload.lib.BeautifulSoup import BeautifulSoup', 'from BeautifulSoup import BeautifulSoup'),
+    ('from pyload.unescape import unescape',
+     'from pyload.utils import html_unescape as unescape'),
+    ('from pyload.lib.BeautifulSoup import BeautifulSoup',
+     'from BeautifulSoup import BeautifulSoup'),
     ('from pyload.lib import feedparser', 'import feedparser'),
-    ('self.account.get_account_info(self.user, ', 'self.account.get_account_data('),
+    ('self.account.get_account_info(self.user, ',
+     'self.account.get_account_data('),
     ('self.account.get_account_info(self.user)', 'self.account.get_account_data()'),
     ('self.account.accounts[self.user]["password"]', 'self.account.password'),
     ("self.account.accounts[self.user]['password']", 'self.account.password'),
@@ -106,7 +118,8 @@ def apitypes(options):
     if (os.path.join(outdir, "gen-py")).exists():
         (os.path.join(outdir, "gen-py")).rmtree()
 
-    cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", os.path.join(outdir, "pyload.thrift")]
+    cmd = [options.apitypes.path, "-strict", "-o", outdir, "--gen",
+           "py:slots,dynamic", os.path.join(outdir, "pyload.thrift")]
 
     print("running", cmd)
 
@@ -116,7 +129,7 @@ def apitypes(options):
     (os.path.join(outdir, "thriftgen")).rmtree()
     (os.path.join(outdir, "gen-py")).move(os.path.join(outdir, "thriftgen"))
 
-    #create light ttypes
+    # create light ttypes
     from pyload.remote.create_apitypes import main
 
     main()
@@ -260,7 +273,8 @@ def virtualenv(options):
     if path(options.dir).exists():
         return
 
-    call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
+    call([options.virtual, "--no-site-packages",
+          "--python", options.python, options.dir])
     print("$ source {}/bin/activate".format(options.dir))
 
 
@@ -293,21 +307,25 @@ def replace_module_imports():
             if '/addon/' in path:
                 content = content.replace('(Hook):', '(Addon):')
             elif '/accounts/' in path:
-                content = content.replace('self.accounts[user]["password"]', 'self.password')
-                content = content.replace("self.accounts[user]['password']", 'self.password')
+                content = content.replace(
+                    'self.accounts[user]["password"]', 'self.password')
+                content = content.replace(
+                    "self.accounts[user]['password']", 'self.password')
             f = open(path, 'w')
             f.write(content)
             f.close()
 
 
-#helper functions
+# helper functions
 
 def walk_trans(path, excludes, endings=[".py"]):
     result = ""
 
     for f in path.walkfiles():
-        if [True for x in excludes if x in f.dirname().relpath()]: continue
-        if f.name in excludes: continue
+        if [True for x in excludes if x in f.dirname().relpath()]:
+            continue
+        if f.name in excludes:
+            continue
 
         for e in endings:
             if f.name.endswith(e):
@@ -329,7 +347,8 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain={}".format(domain)] + xargs + xxargs)
+    call(["xgettext", "--files-from=includes.txt",
+          "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
     with open("{}.po".format(domain), "rb") as f:
@@ -340,6 +359,7 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     with open("locale/{}.pot".format(domain), "wb") as f:
         f.write(content)
+
 
 def makehtml(domain, p):
     """ Parses entries from html and append them to existing pot file"""
@@ -357,11 +377,13 @@ def makehtml(domain, p):
             msgids[msgid] = i
 
     # TODO: parses only n=2 plural
-    single =  re.compile(r'\{\{ ?(?:gettext|_) "((?:\\.|[^"\\])*)" ?\}\}')
-    plural =  re.compile(r'\{\{ ?(?:ngettext) *"((?:\\.|[^"\\])*)" *"((?:\\.|[^"\\])*)"')
+    single = re.compile(r'\{\{ ?(?:gettext|_) "((?:\\.|[^"\\])*)" ?\}\}')
+    plural = re.compile(
+        r'\{\{ ?(?:ngettext) *"((?:\\.|[^"\\])*)" *"((?:\\.|[^"\\])*)"')
 
     for f in p.walkfiles():
-        if not f.endswith("html"): continue
+        if not f.endswith("html"):
+            continue
         with open(f, "rb") as html:
             for i, line in enumerate(html.readlines()):
                 key = None
@@ -379,7 +401,6 @@ def makehtml(domain, p):
                         content.append('msgstr[1] ""\n')
                         msgids[key] = len(content) - 4
 
-
                 elif message:
                     key = message.group(1)
 
@@ -392,7 +413,6 @@ def makehtml(domain, p):
                 if key:
                     content.insert(msgids[key], "#: {}:{:d}\n".format(f, i))
                     msgids[key] += 1
-
 
         with open(pot, 'wb') as f:
             f.writelines(content)

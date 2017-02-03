@@ -17,23 +17,25 @@ class RemoteManager(object):
         if self.pyload.remote:
             self.available.append("WebSocketBackend")
 
-
     def start_backends(self):
         host = self.pyload.config.get('remote', 'host')
         port = self.pyload.config.get('remote', 'port')
 
         for b in self.available:
             klass = getattr(
-                __import__("pyload.remote.{}".format(b.lower()), globals(), locals(), [b.lower()], -1), b
+                __import__("pyload.remote.{}".format(b.lower()),
+                           globals(), locals(), [b.lower()], -1), b
             )
             backend = klass(self)
             if not backend.check_deps():
                 continue
             try:
                 backend.setup(host, port)
-                self.pyload.log.info(_("Starting {}: {}:{}").format(b, host, port))
+                self.pyload.log.info(
+                    _("Starting {}: {}:{}").format(b, host, port))
             except Exception as e:
-                self.pyload.log.error(_("Failed loading backend {} | {}").format(b, e.message))
+                self.pyload.log.error(
+                    _("Failed loading backend {} | {}").format(b, e.message))
                 if self.pyload.debug:
                     print_exc()
             else:

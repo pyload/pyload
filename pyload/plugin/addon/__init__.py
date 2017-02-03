@@ -22,9 +22,11 @@ def add_event_listener(event):
     :param event: Name of event or list of them.
     """
     class _klass(object):
+
         def __new__(cls, f, *args, **kwargs):
             for ev in to_list(event):
-                ADDONMANAGER.add_event_listener(class_name(f.__module__), f.__name__, ev)
+                ADDONMANAGER.add_event_listener(
+                    class_name(f.__module__), f.__name__, ev)
             return f
 
     return _klass
@@ -42,9 +44,10 @@ def addon_handler(label, desc, package=True, media=-1):
     :param media: media type of the file to work with.
     """
     class _klass(object):
+
         def __new__(cls, f, *args, **kwargs):
             ADDONMANAGER.add_addon_handler(class_name(f.__module__), f.__name__, label, desc,
-                                         f.__code__.co_varnames[1:], package, media)
+                                           f.__code__.co_varnames[1:], package, media)
             return f
 
     return _klass
@@ -158,11 +161,13 @@ class Addon(Base):
             if self.is_activated():
                 self.periodical()
         except Exception as e:
-            self.pyload.log.error(_("Error executing addon: {}").format(e.message))
+            self.pyload.log.error(
+                _("Error executing addon: {}").format(e.message))
             # self.pyload.print_exc()
 
         if self.cb:
-            self.cb = self.pyload.scheduler.enter(self.interval, 2, self._periodical)
+            self.cb = self.pyload.scheduler.enter(
+                self.interval, 2, self._periodical)
 
     def __repr__(self):
         return "<Addon {}>".format(self.__name__)
@@ -184,7 +189,8 @@ class Addon(Base):
         Used to activate the addon.
         """
         if has_method(self.__class__, "core_ready"):
-            self.log_debug("Deprecated method .core_ready() use activate() instead")
+            self.log_debug(
+                "Deprecated method .core_ready() use activate() instead")
             self.pyload_ready()
 
     def deactivate(self):

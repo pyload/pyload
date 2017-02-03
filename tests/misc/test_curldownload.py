@@ -26,7 +26,8 @@ class TestCurlRequest(TestCase):
 
         assert self.dl.context is not None
 
-        self.dl.download("https://pyload.net/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
+        self.dl.download(
+            "https://pyload.net/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
 
         print(self.dl.size, self.dl.arrived)
         assert self.dl.size == self.dl.arrived > 0
@@ -51,7 +52,6 @@ class TestCurlRequest(TestCase):
         for c in cookies:
             k, v = c.strip().split(":")
             self.assert_int(k, req.cj)
-
 
     def test_attributes(self):
         assert self.dl.size == 0

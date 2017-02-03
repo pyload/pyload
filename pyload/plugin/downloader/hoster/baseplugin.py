@@ -32,7 +32,7 @@ class BasePlugin(Hoster):
         Main function.
         """
 
-        #debug part, for api exerciser
+        # debug part, for api exerciser
         if pyfile.url.startswith("DEBUG_API"):
             self.multi_dl = False
             return
@@ -69,7 +69,8 @@ class BasePlugin(Hoster):
                                 self.req.add_auth(pwd.strip())
                                 break
                         else:
-                            self.fail(_("Authorization required (username:password)"))
+                            self.fail(
+                                _("Authorization required (username:password)"))
 
                     self.download_file(pyfile)
                 else:
@@ -103,8 +104,10 @@ class BasePlugin(Hoster):
         name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
 
         if 'content-disposition' in header:
-            self.log_debug("Content-Disposition: {}".format(header['content-disposition']))
-            m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)", header['content-disposition'])
+            self.log_debug(
+                "Content-Disposition: {}".format(header['content-disposition']))
+            m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)",
+                       header['content-disposition'])
             if m:
                 disp = m.groupdict()
                 self.log_debug(disp)

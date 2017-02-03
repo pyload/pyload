@@ -19,7 +19,7 @@ class FileApi(BaseApi):
         Internal method to verify result and owner.
         """
 
-        #TODO: shared?
+        # TODO: shared?
         return info and (not self.primary_uid or info.owner == self.primary_uid)
 
     @require_perm(Permission.All)
@@ -110,7 +110,8 @@ class FileApi(BaseApi):
 
     @require_perm(Permission.All)
     def search_suggestions(self, pattern):
-        names = self.pyload.db.get_matching_filenames(pattern, self.primary_uid)
+        names = self.pyload.db.get_matching_filenames(
+            pattern, self.primary_uid)
         # TODO: stemming and reducing the names to provide better suggestions
         return uniqify(names)
 
@@ -191,7 +192,6 @@ class FileApi(BaseApi):
         """
 
         # TODO
-
 
     def delete_packages(self, pids):
         """

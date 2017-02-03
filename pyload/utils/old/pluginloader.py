@@ -46,7 +46,6 @@ class LoaderFactory(object):
     def __iter__(self):
         return self.loader.__iter__()
 
-
     def check_versions(self):
         """
         Reduces every plugin loader to the globally newest version.
@@ -87,7 +86,8 @@ class PluginLoader(object):
     """
     TYPES = ("crypter", "hoster", "account", "addon", "network", "internal")
 
-    BUILTIN = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(True|False|None|[0-9x.]+)', re.I)
+    BUILTIN = re.compile(
+        r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(True|False|None|[0-9x.]+)', re.I)
     SINGLE = re.compile(r'__(?P<attr>[a-z0-9_]+)__\s*=\s*(?:r|u|_)?((?:(?<!")"(?!")|\').*(?:(?<!")"(?!")|\'))',
                         re.I)
     # finds the beginning of a expression that could span multiple lines
@@ -95,9 +95,9 @@ class PluginLoader(object):
 
     # closing symbols
     MULTI_MATCH = {
-        "{"  : "}" ,
-        "("  : ")" ,
-        "["  : "]" ,
+        "{": "}",
+        "(": ")",
+        "[": "]",
         '"""': '"""'
     }
 
@@ -130,7 +130,8 @@ class PluginLoader(object):
             self.plugins[type] = self.parse(type)
 
         self.log.debug(
-            "Created index of plugins for {} in {:.2f} ms".format(self.path, (time() - a) * 1000)
+            "Created index of plugins for {} in {:.2f} ms".format(
+                self.path, (time() - a) * 1000)
         )
 
     def parse(self, folder):
@@ -167,17 +168,19 @@ class PluginLoader(object):
 
         attrs = BaseAttributes()
         for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.parse_multi_line(content):
-            #replace gettext function and eval result
+            # replace gettext function and eval result
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
             except Exception as e:
-                self.log_debug(folder, name, "Error when parsing: {}".format(m[-1]))
+                self.log_debug(
+                    folder, name, "Error when parsing: {}".format(m[-1]))
                 self.log.debug(e.message)
 
             if not hasattr(Base, "__{}__".format(m[0])):
-                #TODO remove type from all plugins, its not needed
+                # TODO remove type from all plugins, its not needed
                 if m[0] != "type" and m[0] != "author_name":
-                    self.log_debug(folder, name, "Unknown attribute '{}'".format(m[0]))
+                    self.log_debug(
+                        folder, name, "Unknown attribute '{}'".format(m[0]))
 
         return attrs
 
@@ -194,7 +197,7 @@ class PluginLoader(object):
             stack = 0
             endpos = m.start(2) - size
 
-            #TODO: strings must be parsed too, otherwise breaks very easily
+            # TODO: strings must be parsed too, otherwise breaks very easily
             for i in range(m.end(2), len(content) - size + 1):
                 if content[i:i + size] == endchar:
                     # closing char seen and match now complete
@@ -210,7 +213,6 @@ class PluginLoader(object):
             attrs.append((attr, content[m.start(2): endpos + size]))
 
         return attrs
-
 
     def parse_plugin(self, filename, folder, name):
         """
@@ -228,8 +230,9 @@ class PluginLoader(object):
             try:
                 version = float(attrs['version'])
             except ValueError:
-                self.log_debug(folder, name, "Invalid version {}".format(attrs['version']))
-                version = 9 #TODO remove when plugins are fixed, causing update loops
+                self.log_debug(
+                    folder, name, "Invalid version {}".format(attrs['version']))
+                version = 9  # TODO remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
 
@@ -237,7 +240,8 @@ class PluginLoader(object):
             try:
                 plugin_re = re.compile(attrs['pattern'], re.I)
             except Exception:
-                self.log_debug(folder, name, "Invalid regexp pattern '{}'".format(attrs['pattern']))
+                self.log_debug(
+                    folder, name, "Invalid regexp pattern '{}'".format(attrs['pattern']))
                 plugin_re = self.NO_MATCH
         else:
             plugin_re = self.NO_MATCH
@@ -269,13 +273,14 @@ class PluginLoader(object):
                 for item in config:
                     if item[0] == "activated":
                         break
-                else: # activated flag missing
+                else:  # activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
 
             try:
                 self.config.add_config_section(name, name, desc, expl, config)
             except Exception:
-                self.log_debug(folder, name, "Invalid config  {}".format(config))
+                self.log_debug(
+                    folder, name, "Invalid config  {}".format(config))
 
         return plugin
 
@@ -356,8 +361,10 @@ class PluginLoader(object):
         """
         plugins = self.plugins[type]
         # convert path to python recognizable import
-        path = basename(plugins[name].path).replace(".pyc", "").replace(".py", "")
-        module = __import__("{}.{}.{}".format(self.package, type, path), globals(), locals(), path)
+        path = basename(plugins[name].path).replace(
+            ".pyc", "").replace(".py", "")
+        module = __import__("{}.{}.{}".format(
+            self.package, type, path), globals(), locals(), path)
         return module
 
     def load_attributes(self, type, name):

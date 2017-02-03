@@ -18,6 +18,7 @@ log = logging.getLogger("log")
 
 
 class WebServer(threading.Thread):
+
     def __init__(self, pycore=None, pysetup=None):
         global core, setup
         threading.Thread.__init__(self)
@@ -80,7 +81,7 @@ class WebServer(threading.Thread):
             log.error(_("Failed starting webserver: {}").format(e.message))
             self.error = e
             # if core:
-                # core.print_exc()
+            # core.print_exc()
 
     def select_server(self, prefer=None):
         """
@@ -93,14 +94,14 @@ class WebServer(threading.Thread):
         for server in all_server:
 
             if self.force_server and self.force_server == server.NAME:
-                break # Found server
+                break  # Found server
             # When force_server is set, no further checks have to be made
             elif self.force_server:
                 continue
 
             if prefer and prefer == server.NAME:
-                break # found prefered server
-            elif prefer: # prefer is similar to force, but force has precedence
+                break  # found prefered server
+            elif prefer:  # prefer is similar to force, but force has precedence
                 continue
 
             # Filter for server that offer ssl if needed
@@ -109,20 +110,20 @@ class WebServer(threading.Thread):
 
             try:
                 if server.find():
-                    break # Found a server
+                    break  # Found a server
                 else:
                     unavailable.append(server.NAME)
             except Exception as e:
                 log.error(_("Failed importing webserver: {}").format(e.message))
 
-        if unavailable: # Just log whats not available to have some debug information
-            log.debug("Unavailable webserver: {}".format(", ".join(unavailable)))
+        if unavailable:  # Just log whats not available to have some debug information
+            log.debug("Unavailable webserver: {}".format(
+                ", ".join(unavailable)))
 
         if not server and self.force_server:
-            server = self.force_server # just return the name
+            server = self.force_server  # just return the name
 
         return server
-
 
     def start_server(self, server):
 
@@ -131,22 +132,24 @@ class WebServer(threading.Thread):
         if issubclass(server, ServerAdapter):
 
             if self.https and not server.SSL:
-                log.warning(_("This server offers no SSL, please consider using threaded instead"))
+                log.warning(
+                    _("This server offers no SSL, please consider using threaded instead"))
             elif not self.https:
-                self.cert = self.key = None # This implicitly disables SSL
+                self.cert = self.key = None  # This implicitly disables SSL
                 # there is no extra argument for the server adapter
                 # TODO: check for openSSL ?
 
             # Now instantiate the serverAdapter
-            server = server(self.host, self.port, self.key, self.cert, 6, self.debug) # todo, num_connections
+            server = server(self.host, self.port, self.key,
+                            self.cert, 6, self.debug)  # todo, num_connections
             name = server.NAME
 
-        else: # server is just a string
+        else:  # server is just a string
             name = server
 
-        log.info(_("Starting {} webserver: {}:{:d}").format(name, self.host, self.port))
+        log.info(_("Starting {} webserver: {}:{:d}").format(
+            name, self.host, self.port))
         webinterface.run_server(host=self.host, port=self.port, server=server)
-
 
     # check if an error was raised for n seconds
     def check_error(self, n=1):

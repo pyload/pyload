@@ -79,7 +79,6 @@ class Base(object):
     __author__ = tuple()
     __author_mail__ = tuple()
 
-
     def __init__(self, core, owner=None):
         self.__name__ = self.__class__.__name__
 
@@ -143,7 +142,8 @@ class Base(object):
             else:
                 strings.append(str(obj))
 
-        getattr(self.log, level)("{}: {}".format(self.__name__, sep.join(strings)))
+        getattr(self.log, level)("{}: {}".format(
+            self.__name__, sep.join(strings)))
 
     def get_name(self):
         """
@@ -214,7 +214,7 @@ class Base(object):
         """
         if self.pyload.debug:
             from IPython import embed
-            #noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences
             sys.stdout = sys._stdout
             embed()
 
@@ -249,7 +249,8 @@ class Base(object):
             raise Exception("Plugin type does not have Request attribute")
         self.check_abort()
 
-        res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
+        res = self.req.load(url, get, post, ref, cookies,
+                            just_header, decode=decode)
 
         if self.pyload.debug:
             from inspect import currentframe
@@ -258,9 +259,10 @@ class Base(object):
             if not exists(join("tmp", self.__name__)):
                 makedirs(join("tmp", self.__name__))
 
-            file = join("tmp", self.__name__, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            file = join("tmp", self.__name__, "{}_line{}.dump.html".format(
+                frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             with open(file, "wb") as f:
-                del frame # delete the frame or it wont be cleaned
+                del frame  # delete the frame or it wont be cleaned
                 try:
                     tmp = res.encode("utf8")
                 except Exception:
@@ -268,7 +270,7 @@ class Base(object):
                 f.write(tmp)
 
         if just_header:
-            #parse header
+            # parse header
             header = {"code": self.req.code}
             for line in res.splitlines():
                 line = line.strip()
@@ -307,7 +309,7 @@ class Base(object):
         self.correct_task()
 
     def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceuser=False, imgtype='jpg',
-                       result_type='textual'):
+                        result_type='textual'):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -344,7 +346,8 @@ class Base(object):
             ocr = OCR()
             result = ocr.get_captcha(temp_file.name)
         else:
-            task = self.pyload.itm.create_captcha_task(img, imgtype, temp_file.name, self.__name__, result_type)
+            task = self.pyload.itm.create_captcha_task(
+                img, imgtype, temp_file.name, self.__name__, result_type)
             self.task = task
 
             while task.is_waiting():
@@ -353,11 +356,12 @@ class Base(object):
                     raise Abort
                 sleep(1)
 
-            #TODO task handling
+            # TODO task handling
             self.pyload.itm.remove_task(task)
 
-            if task.error and has_plugin: #ignore default error message since the user could use OCR
-                self.fail(_("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+            if task.error and has_plugin:  # ignore default error message since the user could use OCR
+                self.fail(
+                    _("Pil and tesseract not installed and no Client connected for captcha decrypting"))
             elif task.error:
                 self.fail(task.error)
             elif not task.result:

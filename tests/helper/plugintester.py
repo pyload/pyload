@@ -23,6 +23,7 @@ from pyload.network.request import get_request
 from pyload.plugins.base import Abort, Fail
 from pyload.plugins.hoster import Hoster
 
+
 def _wait(self):
     """
     Waits the time previously set.
@@ -61,18 +62,18 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
     conf = join(expanduser("~"), "ct.conf")
     if not exists(conf):
         raise Exception("CaptchaService config {} not found".format(conf))
-        
+
     with open(conf, "rb") as f:
         with closing(get_request()) as req:
-            #raise timeout threshold
+            # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
-            
+
             json = req.load("http://captchatrader.com/api/submit",
-                post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
-                      "username": f.readline().strip(),
-                      "password": f.readline().strip(),
-                      "value": (FORM_FILE, temp_file.name),
-                      "type": "file"}, multipart=True)
+                            post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
+                                  "username": f.readline().strip(),
+                                  "password": f.readline().strip(),
+                                  "value": (FORM_FILE, temp_file.name),
+                                  "type": "file"}, multipart=True)
 
     response = loads(json)
     log(DEBUG, str(response))
@@ -84,10 +85,12 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
 
 Hoster.decrypt_captcha = decryptCaptcha
 
+
 def invalidCaptcha(self):
     log(DEBUG, "Captcha invalid")
 
 Hoster.invalid_captcha = invalidCaptcha
+
 
 def correctCaptcha(self):
     log(DEBUG, "Captcha correct")
@@ -98,6 +101,7 @@ Hoster.check_for_same_files = noop
 
 
 class PluginTester(TestCase):
+
     @classmethod
     def setUpClass(cls):
         cls.core = Core()

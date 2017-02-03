@@ -18,6 +18,7 @@ class NoVersionsError(Exception):
     """
     No versions found for package.
     """
+
     def __str__(self):
         return """<NoVersionsError {}>""".format(self.message)
 
@@ -26,6 +27,7 @@ class PIPError(Exception):
     """
     PIP process failure.
     """
+
     def __str__(self):
         return """<PIPError {}>""".format(self.message)
 
@@ -34,6 +36,7 @@ class PkgNotFoundError(Exception):
     """
     No package found.
     """
+
     def __str__(self):
         return """<PkgNotFoundError {}>""".format(self.message)
 
@@ -42,6 +45,7 @@ class AutoUpgrade(object):
     """
     AutoUpgrade class, holds one package.
     """
+
     def __init__(self, pkg, index=None, verbose=False):
         """
         Args:
@@ -49,15 +53,14 @@ class AutoUpgrade(object):
             index (str): alternative index, if not given default for *pip* will be used. Include
                          full index url, e.g. https://example.com/simple
         """
-        self.pkg     = pkg
+        self.pkg = pkg
         self.verbose = verbose
         if index:
-            self.index  = index.rstrip('/')
+            self.index = index.rstrip('/')
             self._index = True
         else:
-            self.index  = "https://pypi.python.org/simple"
+            self.index = "https://pypi.python.org/simple"
             self._index = False
-
 
     def smartupgrade(self, restart=True, dependencies=False, prerelease=False):
         """
@@ -75,7 +78,6 @@ class AutoUpgrade(object):
         if restart:
             self.restart()
 
-
     def upgrade(self, reinstall=False, dependencies=False, prerelease=False):
         """
         Upgrade the package unconditionaly
@@ -92,7 +94,8 @@ class AutoUpgrade(object):
             pip_args.append("--upgrade")
 
         if reinstall:
-            pip_args.append("--force-reinstall" if found else "--ignore-installed")
+            pip_args.append(
+                "--force-reinstall" if found else "--ignore-installed")
 
         if not dependencies:
             pip_args.append("--no-deps")
@@ -108,15 +111,15 @@ class AutoUpgrade(object):
             pip_args.extend(['-i', self.index])
 
         try:
-            ecode = pip.main(args = pip_args)
+            ecode = pip.main(args=pip_args)
         except TypeError:
             # pip changed in 0.6.0 from initial_args to args, this is for backwards compatibility
-            # can be removed when pip 0.5 is no longer in use at all (approx. year 2025)
-            ecode = pip.main(initial_args = pip_args)
+            # can be removed when pip 0.5 is no longer in use at all (approx.
+            # year 2025)
+            ecode = pip.main(initial_args=pip_args)
 
         if ecode != 0:
             raise PIPError(ecode)
-
 
     def restart(self):
         """
@@ -127,7 +130,6 @@ class AutoUpgrade(object):
             print("Restarting {} {}".format(sys.executable, sys.argv))
         os.execl(sys.executable, *([sys.executable] + sys.argv))
 
-
     def check(self):
         """
         Check if pkg has a later version
@@ -137,14 +139,13 @@ class AutoUpgrade(object):
         highest = self._get_highest_version()
         return highest > current
 
-
     def _get_current(self):
         try:
-            current = convert.ver_to_tuple(pkg_resources.get_distribution(self.pkg).version)
+            current = convert.ver_to_tuple(
+                pkg_resources.get_distribution(self.pkg).version)
         except pkg_resources.DistributionNotFound:
             current = (-1,)
         return current
-
 
     def _get_highest_version(self):
         url = urllib.parse.urljoin(self.index, self.pkg)
@@ -152,7 +153,8 @@ class AutoUpgrade(object):
         if r.status_code != requests.codes.ok:
             raise PkgNotFoundError
         pattr = r'>{}-(.+?)<'.format(self.pkg)
-        versions = map(convert.ver_to_tuple, re.findall(pattr, r.text, flags=re.I))
+        versions = map(convert.ver_to_tuple,
+                       re.findall(pattr, r.text, flags=re.I))
         if not versions:
             raise NoVersionsError
         return max(versions)

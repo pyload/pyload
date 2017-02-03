@@ -13,6 +13,7 @@ from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
 
 
 class RequestFactory(object):
+
     def __init__(self, core):
         self.pyload = core
         self.bucket = Bucket()
@@ -28,7 +29,7 @@ class RequestFactory(object):
             rep = h.load(*args, **kwargs)
         return rep
 
-        ########## old api methods above
+        # old api methods above
 
     def get_request(self, context=None, klass=DefaultRequest):
         """
@@ -110,6 +111,8 @@ class RequestFactory(object):
             self.bucket.set_rate(-1)
 
 # needs REQUEST in global namespace
+
+
 def get_url(*args, **kwargs):
     return REQUEST.get_url(*args, **kwargs)
 

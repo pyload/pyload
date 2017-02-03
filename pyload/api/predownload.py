@@ -51,9 +51,11 @@ class PreDownloadApi(BaseApi):
 
         #: TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
-        tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname)) for url, pluginname in hoster]
+        tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname))
+               for url, pluginname in hoster]
         data = parse_names(tmp)
-        rid = self.pyload.thm.create_result_thread(self.primary_uid, hoster + crypter)
+        rid = self.pyload.thm.create_result_thread(
+            self.primary_uid, hoster + crypter)
 
         return OnlineCheck(rid, data)
 
@@ -66,7 +68,8 @@ class PreDownloadApi(BaseApi):
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        file = join(self.pyload.config.get('general', 'storage_folder'), "tmp_{}".format(filename))
+        file = join(self.pyload.config.get(
+            'general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
         return self.check_links([th.name])

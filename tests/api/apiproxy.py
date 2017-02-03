@@ -51,19 +51,17 @@ class ApiProxy(object):
             elif hasattr(result, "__name__") and result.__name__ in classes:
                 for attr, atype in zip(result.__slots__, classes[result.__name__]):
                     self.assert_type(getattr(result, attr), atype)
-            else: # simple object
+            else:  # simple object
                 assert isinstance(result, type)
         except AssertionError:
             print("Assertion for {} as {} failed".format(result, type))
             raise
-
 
     def call(self, func, *args, **kwargs):
         result = getattr(self.api, func)(*args, **kwargs)
         self.assert_type(result, methods[func])
 
         return result
-
 
     def __getattr__(self, item):
         def call(*args, **kwargs):

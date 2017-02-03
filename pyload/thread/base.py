@@ -24,7 +24,7 @@ class BaseThread(Thread):
     def __init__(self, manager, owner=None):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.manager = manager #thread manager
+        self.manager = manager  # thread manager
         self.pyload = manager.pyload
 
         #: Owner of the thread, every type should set it or overwrite user
@@ -46,13 +46,14 @@ class BaseThread(Thread):
 
         :return: :class:`ProgressInfo`
         """
-    
+
     # Debug Stuff
     def write_debug_report(self, name, pyfile=None, plugin=None):
         """
         Writes a debug report to disk.
         """
-        dump_name = "debug_{}_{}.zip".format(name, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump_name = "debug_{}_{}.zip".format(
+            name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
             dump = self.get_plugin_dump(pyfile.plugin) + "\n"
             dump += self.get_file_dump(pyfile)
@@ -70,11 +71,13 @@ class BaseThread(Thread):
                         except Exception:
                             pass
 
-                info = zipfile.ZipInfo(save_join(name, "debug_Report.txt"), gmtime())
-                info.external_attr = 0o644 << 16 # change permissions
+                info = zipfile.ZipInfo(
+                    save_join(name, "debug_Report.txt"), gmtime())
+                info.external_attr = 0o644 << 16  # change permissions
                 zip.writestr(info, dump)
 
-                info = zipfile.ZipInfo(save_join(name, "system_Report.txt"), gmtime())
+                info = zipfile.ZipInfo(
+                    save_join(name, "system_Report.txt"), gmtime())
                 info.external_attr = 0o644 << 16
                 zip.writestr(info, self.get_system_dump())
 
@@ -82,7 +85,8 @@ class BaseThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
-            self.pyload.log.debug("Error creating zip file: {}".format(e.message))
+            self.pyload.log.debug(
+                "Error creating zip file: {}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
             with open(dump_name, "wb") as f:
@@ -93,7 +97,8 @@ class BaseThread(Thread):
 
     def get_plugin_dump(self, plugin):
         dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
-            self.manager.pyload.api.get_server_version(), plugin.__name__, plugin.__version__, format_exc()
+            self.manager.pyload.api.get_server_version(
+            ), plugin.__name__, plugin.__version__, format_exc()
         )
         tb = sys.exc_info()[2]
         stack = []
@@ -111,11 +116,12 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                        e.message)
 
             del frame
 
-        del stack #delete it just to be sure...
+        del stack  # delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 
@@ -126,7 +132,8 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                        e.message)
 
         return dump
 
@@ -140,7 +147,8 @@ class BaseThread(Thread):
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e.message)
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                        e.message)
 
         return dump
 

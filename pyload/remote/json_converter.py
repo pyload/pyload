@@ -18,6 +18,7 @@ separators = (',', ':')
 
 # json encoder that accepts api objects
 class BaseEncoder(json.JSONEncoder):
+
     def default(self, o):
         if isinstance(o, BaseObject) or isinstance(o, ExceptionObject):
             ret = {"@class": o.__class__.__name__}
@@ -28,8 +29,10 @@ class BaseEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
-# more compact representation, only clients with information of the classes can handle it
+# more compact representation, only clients with information of the
+# classes can handle it
 class BaseEncoderCompact(json.JSONEncoder):
+
     def default(self, o):
         if isinstance(o, BaseObject) or isinstance(o, ExceptionObject):
             ret = {"@compact": [o.__class__.__name__]}

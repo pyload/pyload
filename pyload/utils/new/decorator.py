@@ -10,18 +10,18 @@ from pyload.utils.new.debug import print_traceback
 from pyload.utils.new.lib.safe_threading import Thread
 
 # def deprecated(by=None):
-    # new_func = by
-    # def wrapper(old_func):
-        # def new(self, *args, **kargs):
-            # if new_func:
-                # self.pyload.log.debug('`{}` has been deprecated, use `{}` instead'.format(
-                                      # old_func.__name__, new_func.__name__))
-                # return new_func(self, *args, **kargs)
-            # else:
-                # self.pyload.log.error(_('`{}` has been removed').format(old_func.__name__))
-                # print_traceback()
-        # return new
-    # return wrapper
+# new_func = by
+# def wrapper(old_func):
+# def new(self, *args, **kargs):
+# if new_func:
+# self.pyload.log.debug('`{}` has been deprecated, use `{}` instead'.format(
+# old_func.__name__, new_func.__name__))
+# return new_func(self, *args, **kargs)
+# else:
+# self.pyload.log.error(_('`{}` has been removed').format(old_func.__name__))
+# print_traceback()
+# return new
+# return wrapper
 
 
 def fork(func, daemon=True):
@@ -66,7 +66,8 @@ def trycatch(callback):
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
-                msg = 'Error executing `{}` | {}'.format(func.__name__, e.message)
+                msg = 'Error executing `{}` | {}'.format(
+                    func.__name__, e.message)
                 self.pyload.log.debug(msg)
                 if self.pyload.debug:
                     print_traceback()

@@ -124,14 +124,13 @@ class DownloadManager(object):
 
         # decrypter progress could be none
         return [x for x in [p.get_progress() for p in self.working + self.decrypter
-                if uid is None or p.owner == uid] if x is not None]
+                            if uid is None or p.owner == uid] if x is not None]
 
     def processing_ids(self):
         """
         Get a id list of all pyfiles processed.
         """
         return [x.fid for x in self.active_downloads(None)]
-
 
     @read_lock
     def shutdown(self):
@@ -149,7 +148,7 @@ class DownloadManager(object):
         self.try_reconnect()
 
         if (free_space(self.pyload.config.get('general', 'storage_folder')) / 1024 / 1024 <
-            self.pyload.config.get('general', 'min_storage_size')):
+                self.pyload.config.get('general', 'min_storage_size')):
             self.pyload.log.warning(_("Not enough space left on device"))
             self.paused = True
 
@@ -170,18 +169,19 @@ class DownloadManager(object):
         """
         Load jobs from db and try to assign them.
         """
-        limit = self.pyload.config.get('connection', 'max_transfers') - len(self.active_downloads())
+        limit = self.pyload.config.get(
+            'connection', 'max_transfers') - len(self.active_downloads())
 
         # check for waiting dl rule
         if limit <= 0:
             # increase limit if there are waiting downloads
             limit += min(len(self.waiting_downloads()), self.pyload.config.get('connection', 'wait') +
-                                                  self.pyload.config.get('connection', 'max_transfers') - len(
+                         self.pyload.config.get('connection', 'max_transfers') - len(
                 self.active_downloads()))
 
         slots = self.get_remaining_plugin_slots()
-        occ   = tuple(plugin for plugin, v in slots.items() if v == 0)
-        jobs  = self.pyload.files.get_jobs(occ)
+        occ = tuple(plugin for plugin, v in slots.items() if v == 0)
+        jobs = self.pyload.files.get_jobs(occ)
 
         # map plugin to list of jobs
         plugins = defaultdict(list)
@@ -224,7 +224,8 @@ class DownloadManager(object):
         plugin = self.pyload.pgm.find_type(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
-            self.pyload.log.error(_("Plugin '{}' does not exists").format(info.download.plugin))
+            self.pyload.log.error(
+                _("Plugin '{}' does not exists").format(info.download.plugin))
             self.pyload.files.set_download_status(info.fid, DS.Failed)
             return False
 
@@ -239,7 +240,8 @@ class DownloadManager(object):
         elif plugin == "crypter":
             self.start_decrypter_thread(info)
         else:
-            self.pyload.log.error(_("Plugin type '{}' can't be used for downloading").format(plugin))
+            self.pyload.log.error(
+                _("Plugin type '{}' can't be used for downloading").format(plugin))
 
         return False
 
@@ -249,7 +251,7 @@ class DownloadManager(object):
         Checks if reconnect needed.
         """
         # if not self.pyload.config.get('reconnect', 'activated') or not self.pyload.api.is_time_reconnect():
-            # return False
+        # return False
         if not self.pyload.config.get('reconnect', 'activated'):
             return False
 
@@ -259,7 +261,8 @@ class DownloadManager(object):
 
         if not exists(self.pyload.config.get('reconnect', 'script')):
             if exists(join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
-                self.pyload.config.set('reconnect', 'script', join(COREDIR, self.pyload.config.get('reconnect', 'script')))
+                self.pyload.config.set('reconnect', 'script', join(
+                    COREDIR, self.pyload.config.get('reconnect', 'script')))
             else:
                 self.pyload.config.set('reconnect', 'activated', False)
                 self.pyload.log.warning(_("Reconnect script not found!"))
@@ -303,7 +306,8 @@ class DownloadManager(object):
         """
         Number of downloads that are waiting for reconnect.
         """
-        active = [x.active.has_plugin() and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
+        active = [x.active.has_plugin(
+        ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
     @read_lock

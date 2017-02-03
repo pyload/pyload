@@ -78,6 +78,7 @@ class PyFileMockup(object):
     def package(self):
         # mockes the pyfile package
         class PyPackage(object):
+
             def __init__(self, f):
                 self.name = f.pack_name
                 self.folder = self.name
@@ -103,7 +104,7 @@ class Crypter(Base):
         instance a new package will be created.
 
     """
-    
+
     #: Prefix to annotate that the submited string for decrypting is indeed file content
     CONTENT_PREFIX = "filecontent:"
 
@@ -111,7 +112,8 @@ class Crypter(Base):
     USE_ACCOUNT = None
 
     #: When True this crypter will not be decrypted directly and queued one by one.
-    # Needed for crypter that can't run in parallel or need to wait between decryption.
+    # Needed for crypter that can't run in parallel or need to wait between
+    # decryption.
     QUEUE_DECRYPT = False
 
     @classmethod
@@ -137,25 +139,27 @@ class Crypter(Base):
         ret = []
 
         for url_or_pack in result:
-            if isinstance(url_or_pack, Package): #package
+            if isinstance(url_or_pack, Package):  # package
                 ret.extend(url_or_pack.get_all_urls())
-            elif isinstance(url_or_pack, LinkStatus): #link
+            elif isinstance(url_or_pack, LinkStatus):  # link
                 ret.append(url_or_pack.url)
             else:
-                core.log.debug("Invalid decrypter result: {}".format(url_or_pack))
+                core.log.debug(
+                    "Invalid decrypter result: {}".format(url_or_pack))
 
         return uniqify(ret)
 
-
     __type__ = "crypter"
     # TODO: pass user to crypter
+
     def __init__(self, core, password=None):
         Base.__init__(self, core)
 
         self.req = None
         # load account if set
         if self.USE_ACCOUNT:
-            self.account = self.pyload.acm.select_account(self.USE_ACCOUNT, self.owner)
+            self.account = self.pyload.acm.select_account(
+                self.USE_ACCOUNT, self.owner)
             if self.account:
                 self.req = self.account.get_account_request()
 
@@ -190,7 +194,7 @@ class Crypter(Base):
         :param url: url to decrypt
         :return: See :class:`Crypter` Documentation
         """
-        if url.startswith("http"): # basic method to redirect
+        if url.startswith("http"):  # basic method to redirect
             return self.decrypt_file(self.load(url))
         else:
             self.fail(_("Not existing file or unsupported protocol"))
@@ -273,7 +277,7 @@ class Crypter(Base):
             remote = []
             for url in urls:
                 path = None
-                if url.startswith("http"): # skip urls directly
+                if url.startswith("http"):  # skip urls directly
                     pass
                 elif url.startswith(self.CONTENT_PREFIX):
                     path = url
@@ -285,7 +289,8 @@ class Crypter(Base):
                 if path:
                     try:
                         if path.startswith(self.CONTENT_PREFIX):
-                            content.append(("", path[len(self.CONTENT_PREFIX)]))
+                            content.append(
+                                ("", path[len(self.CONTENT_PREFIX)]))
                         else:
                             with open(fs_encode(path), "rb") as f:
                                 content.append((f.name, f.read()))
@@ -294,7 +299,7 @@ class Crypter(Base):
                 else:
                     remote.append(url)
 
-            #swap filtered url list
+            # swap filtered url list
             urls = remote
 
         return content, urls
@@ -309,7 +314,8 @@ class Crypter(Base):
         """
         Deprecated.
         """
-        self.log_debug("Deprecated method .get_password(), use self.password instead")
+        self.log_debug(
+            "Deprecated method .get_password(), use self.password instead")
         return self.password
 
     def convert_packages(self):

@@ -38,4 +38,3 @@ class TestRequestFactory(object):
         with closing(self.req.get_download_request(req)) as dl:
             assert req.context is dl.context
             assert req.options is dl.options
-            

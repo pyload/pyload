@@ -40,7 +40,6 @@ class Setup(object):
     def check_system():
         return get_system_info()
 
-
     @staticmethod
     def check_deps():
         result = {
@@ -62,7 +61,6 @@ class Setup(object):
 
         return result
 
-
     def __init__(self, path, config):
         self.path = path
         self.config = config
@@ -70,7 +68,8 @@ class Setup(object):
         self.lang = None
         self.db = None
 
-        # We will create a timestamp so that the setup will be completed in a specific interval
+        # We will create a timestamp so that the setup will be completed in a
+        # specific interval
         self.timestamp = time()
 
         # TODO: probably unneeded
@@ -88,10 +87,11 @@ class Setup(object):
         error = web.check_error()
 
         # TODO: start cli in this case
-        if error:  #todo errno 44 port already in use
+        if error:  # todo errno 44 port already in use
             print(error)
 
-        url = "http://{}:{:d}/".format(socket.gethostbyname(socket.gethostname()), web.port)
+        url = "http://{}:{:d}/".format(
+            socket.gethostbyname(socket.gethostname()), web.port)
 
         print("Setup is running at {}".format(url))
 
@@ -102,7 +102,6 @@ class Setup(object):
         input()
 
         return True
-
 
     def start_cli(self):
 
@@ -120,7 +119,6 @@ class Setup(object):
         print(_("When you are ready for system check, hit enter"))
         input()
 
-
         # TODO: new system check + deps
 
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
@@ -129,12 +127,13 @@ class Setup(object):
             return False
 
         print("")
-        print(_("Do you want to change the config path? Current is {}").format(abspath("")))
+        print(_("Do you want to change the config path? Current is {}").format(
+            abspath("")))
         print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it"))
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
-            #calls exit when changed
+            # calls exit when changed
 
         print("")
         print(_("Do you want to configure login data and basic settings?"))
@@ -153,7 +152,8 @@ class Setup(object):
 
         print("")
         print(_("Do you want to configure the Web User Interface?"))
-        web = self.ask(_("Configure the Web User Interface?"), self.yes, bool=True)
+        web = self.ask(_("Configure the Web User Interface?"),
+                       self.yes, bool=True)
         if web:
             self.conf_web()
 
@@ -162,7 +162,6 @@ class Setup(object):
         print(_("Hit enter to exit and restart pyLoad"))
         input()
         return True
-
 
     def conf_basic(self):
         print("")
@@ -179,32 +178,39 @@ class Setup(object):
 
         print("")
         langs = self.config.get_meta_data("general", "language")
-        self.config.set('general', 'language', self.ask(_("Language"), "en", langs.type.split(";")))
+        self.config.set('general', 'language', self.ask(
+            _("Language"), "en", langs.type.split(";")))
 
-        self.config.set('general', 'storage_folder', self.ask(_("Storage folder"), "Downloads"))
-        self.config.set('connection', 'max_transfers', self.ask(_("Max parallel transfers"), "3"))
+        self.config.set('general', 'storage_folder',
+                        self.ask(_("Storage folder"), "Downloads"))
+        self.config.set('connection', 'max_transfers',
+                        self.ask(_("Max parallel transfers"), "3"))
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config.set('reconnect', 'activated', reconnect)
         if reconnect:
-            self.config.set('reconnect', 'script', self.ask(_("Reconnection script"), "./reconnect.sh"))
-
+            self.config.set('reconnect', 'script', self.ask(
+                _("Reconnection script"), "./reconnect.sh"))
 
     def conf_web(self):
         print("")
         print(_("## WUI (Web User Interface) Setup ##"))
 
         print("")
-        self.config.set('webui', 'activated', self.ask(_("Activate the Web User Interface?"), self.yes, bool=True))
+        self.config.set('webui', 'activated', self.ask(
+            _("Activate the Web User Interface?"), self.yes, bool=True))
         print("")
         print(_("Listen address, if you use 127.0.0.1 or localhost, the Web User Interface will only accessible locally"))
         self.config.set('webui', 'host', self.ask(_("Address"), "localhost"))
         self.config.set('webui', 'port', self.ask(_("Port"), "8010"))
         print("")
         print(_("pyLoad offers several server backends, now following a short explanation"))
-        print("threaded:", _("Default server, this server offers SSL and is a good alternative to builtin"))
-        print("fastcgi:", _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job"))
-        print("lightweight:", _("Very fast alternative written in C, requires libev and linux knowledge"))
+        print("threaded:", _(
+            "Default server, this server offers SSL and is a good alternative to builtin"))
+        print("fastcgi:", _(
+            "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job"))
+        print("lightweight:", _(
+            "Very fast alternative written in C, requires libev and linux knowledge"))
         print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
@@ -213,24 +219,26 @@ class Setup(object):
         print(_("come back here and change the builtin server to the threaded one here"))
 
         self.config.set('webui', 'server', self.ask(_("Server"), "threaded",
-            ["builtin", "threaded", "fastcgi", "lightweight"]))
+                                                    ["builtin", "threaded", "fastcgi", "lightweight"]))
 
     def conf_ssl(self):
         print("")
         print(_("## SSL Setup ##"))
         print("")
-        print(_("Execute these commands from pyLoad config folder to make ssl certificates:"))
+        print(
+            _("Execute these commands from pyLoad config folder to make ssl certificates:"))
         print("")
         print("openssl genrsa -out ssl.key 1024")
         print("openssl req -new -key ssl.key -out ssl.csr")
         print("openssl req -days 36500 -x509 -key ssl.key -in ssl.csr > ssl.crt ")
         print("")
         print(_("If you're done and everything went fine, you can activate ssl now"))
-        self.config.set('ssl', 'activated', self.ask(_("Activate SSL?"), self.yes, bool=True))
+        self.config.set('ssl', 'activated', self.ask(
+            _("Activate SSL?"), self.yes, bool=True))
 
     def set_user(self):
         translation = gettext.translation("setup", join(self.path, "locale"),
-            languages=[self.config.get('general', 'language'), "en"], fallback=True)
+                                          languages=[self.config.get('general', 'language'), "en"], fallback=True)
         translation.install(True)
 
         self.open_db()
@@ -251,7 +259,8 @@ class Setup(object):
                     password = self.ask("", "", password=True)
                     admin = self.ask("Admin?", self.yes, bool=True)
 
-                    self.db.add_user(username, password, Role.Admin if admin else Role.User, int('1111111', 2))
+                    self.db.add_user(
+                        username, password, Role.Admin if admin else Role.User, int('1111111', 2))
                 elif action == "2":
                     print("")
                     print(_("Users"))
@@ -298,7 +307,7 @@ class Setup(object):
     def conf_path(self, trans=False):
         if trans:
             translation = gettext.translation("setup", join(self.path, "locale"),
-                languages=[self.config.get('general', 'language'), "en"], fallback=True)
+                                              languages=[self.config.get('general', 'language'), "en"], fallback=True)
             translation.install(True)
 
         print(_("Setting new configpath, current configuration will not be transferred!"))
@@ -316,16 +325,18 @@ class Setup(object):
         except Exception as e:
             print(_("Setting config path failed: {}").format(e.message))
 
-
     def ask_lang(self):
-        langs = self.config.get_meta_data("general", "language").type.split(";")
-        self.lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=[self.lang, "en"], fallback=True)
+        langs = self.config.get_meta_data(
+            "general", "language").type.split(";")
+        self.lang = self.ask(
+            u"Choose your Language / Wähle deine Sprache", "en", langs)
+        translation = gettext.translation("setup", join(
+            self.path, "locale"), languages=[self.lang, "en"], fallback=True)
         translation.install(True)
 
-        #l10n Input shorthand for yes
+        # l10n Input shorthand for yes
         self.yes = _("y")
-        #l10n Input shorthand for no
+        # l10n Input shorthand for no
         self.no = _("n")
 
     def ask(self, qst, default, answers=[], bool=False, password=False):
@@ -335,7 +346,8 @@ class Setup(object):
         if answers:
             info = "("
             for i, answer in enumerate(answers):
-                info += (", " if i != 0 else "") + str((answer == default and "[{}]".format(answer)) or answer)
+                info += (", " if i != 0 else "") + str((answer ==
+                                                        default and "[{}]".format(answer)) or answer)
 
             info += ")"
         elif bool:
@@ -350,7 +362,8 @@ class Setup(object):
             p1 = True
             p2 = False
             while p1 != p2:
-                # getpass(_("Password: ")) will crash on systems with broken locales (Win, NAS)
+                # getpass(_("Password: ")) will crash on systems with broken
+                # locales (Win, NAS)
                 sys.stdout.write(_("Password: "))
                 p1 = getpass("")
 
@@ -374,10 +387,10 @@ class Setup(object):
                 input = default
 
             if bool:
-                #l10n yes, true,t are inputs for booleans with value true
+                # l10n yes, true,t are inputs for booleans with value true
                 if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
-                #l10n no, false,f are inputs for booleans with value false
+                # l10n no, false,f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:

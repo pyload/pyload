@@ -22,7 +22,8 @@ class CoreApi(BaseApi):
         return self.pyload.version
 
     def is_ws_secure(self):
-        # needs to use TLS when either requested or webui is also using encryption
+        # needs to use TLS when either requested or webui is also using
+        # encryption
         if not self.pyload.config.get('ssl', 'activated'):
             return False
 
@@ -55,16 +56,19 @@ class CoreApi(BaseApi):
         total = self.pyload.files.get_download_stats(self.primary_uid)
 
         server_status = StatusInfo(0,
-                                    total[0], queue[0],
-                                    total[1], queue[1],
-                                    self.is_interaction_waiting(Interaction.All),
-                                    not self.pyload.dlm.paused,  # and self.is_time_download(),
-                                    self.pyload.dlm.paused,
-                                    self.pyload.config.get('reconnect', 'activated'),  # and self.is_time_reconnect(),
-                                    self.get_quota())
+                                   total[0], queue[0],
+                                   total[1], queue[1],
+                                   self.is_interaction_waiting(
+                                       Interaction.All),
+                                   not self.pyload.dlm.paused,  # and self.is_time_download(),
+                                   self.pyload.dlm.paused,
+                                   # and self.is_time_reconnect(),
+                                   self.pyload.config.get(
+                                       'reconnect', 'activated'),
+                                   self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
-            server_status.speed += pyfile.get_speed() #bytes/s
+            server_status.speed += pyfile.get_speed()  # bytes/s
 
         return server_status
 
@@ -114,7 +118,6 @@ class CoreApi(BaseApi):
         """
         return free_space(self.pyload.config.get('general', 'storage_folder'))
 
-
     def quit(self):
         """
         Clean way to quit pyLoad.
@@ -134,7 +137,8 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config.get('log', 'logfile_folder'), 'log.txt')
+        filename = join(self.pyload.config.get(
+            'log', 'logfile_folder'), 'log.txt')
         try:
             with open(filename, "r") as f:
                 lines = f.readlines()
@@ -147,7 +151,8 @@ class CoreApi(BaseApi):
     # @require_perm(Permission.All)
     # def is_time_download(self):
         # """
-        # Checks if pyload will start new downloads according to time in config.
+        # Checks if pyload will start new downloads according to time in
+        # config.
 
         # :return: bool
         # """
@@ -164,7 +169,8 @@ class CoreApi(BaseApi):
         # """
         # start = self.pyload.config.get('reconnect', 'start').split(":")
         # end = self.pyload.config.get('reconnect', 'end').split(":")
-        # return compare_time(start, end) and self.pyload.config.get('reconnect', 'activated')
+        # return compare_time(start, end) and
+        # self.pyload.config.get('reconnect', 'activated')
 
 
 if Api.extend(CoreApi):

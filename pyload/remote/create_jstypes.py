@@ -13,6 +13,8 @@ from pyload.remote import apitypes
 from pyload.remote.apitypes_debug import enums
 
 # generate js enums
+
+
 def main():
 
     print("generating apitypes.js")
@@ -27,7 +29,8 @@ define([], function() {
 
     for name in enums:
         enum = getattr(apitypes, name)
-        values = dict((attr, getattr(enum, attr)) for attr in dir(enum) if not attr.startswith("_"))
+        values = dict((attr, getattr(enum, attr))
+                      for attr in dir(enum) if not attr.startswith("_"))
 
         f.write("\t\t{}: {},\n".format(name, values))
 

@@ -32,10 +32,10 @@ class InteractionManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
-        self.tasks = OrderedDict() #task store, for all outgoing tasks
+        self.tasks = OrderedDict()  # task store, for all outgoing tasks
 
         self.last_clients = {}
-        self.ids = 0 #uniue interaction ids
+        self.ids = 0  # uniue interaction ids
 
     def is_client_connected(self, user):
         return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time()
@@ -47,7 +47,8 @@ class InteractionManager(object):
             del self.tasks[n]
 
         # keep notifications count limited
-        n = [k for k, v in self.tasks.items() if v.type == IA.Notification][::-1]
+        n = [k for k, v in self.tasks.items() if v.type == IA.Notification][
+            ::-1]
         for v in n[:self.MAX_NOTIFICATIONS]:
             del self.tasks[v]
 
@@ -74,9 +75,11 @@ class InteractionManager(object):
         if isinstance(input, int):
             input = Input(input)
         if not isinstance(input, Input):
-            raise TypeError("'Input' class expected not '{}'".format(type(input)))
+            raise TypeError(
+                "'Input' class expected not '{}'".format(type(input)))
 
-        task = InteractionTask(self.ids, IA.Query, input, _("Query"), desc, plugin, owner=owner)
+        task = InteractionTask(self.ids, IA.Query, input, _(
+            "Query"), desc, plugin, owner=owner)
         self.ids += 1
         self.queue_task(task)
         return task
@@ -98,9 +101,9 @@ class InteractionManager(object):
 
         input = Input(type, data=[standard_b64encode(img), format, filename])
 
-        #todo: title desc plugin
+        # todo: title desc plugin
         task = InteractionTask(self.ids, IA.Captcha, input,
-                            _("Captcha request"), _("Please solve the captcha"), plugin, owner=owner)
+                               _("Captcha request"), _("Please solve the captcha"), plugin, owner=owner)
 
         self.ids += 1
         self.queue_task(task)
@@ -122,14 +125,16 @@ class InteractionManager(object):
         self.last_clients[user] = time()
 
         # filter current mode
-        tasks = [t for t in self.tasks.values() if mode == IA.All or bits_set(t.type, mode)]
+        tasks = [t for t in self.tasks.values() if mode ==
+                 IA.All or bits_set(t.type, mode)]
         # filter correct user / or shared
         tasks = [t for t in tasks if user is None or user == t.owner or t.shared]
 
         return tasks
 
     def is_task_waiting(self, user, mode=IA.All):
-        tasks = [t for t in self.get_tasks(user, mode) if not t.type == IA.Notification or not t.seen]
+        tasks = [t for t in self.get_tasks(
+            user, mode) if not t.type == IA.Notification or not t.seen]
         return len(tasks) > 0
 
     def queue_task(self, task):
@@ -138,11 +143,12 @@ class InteractionManager(object):
         # set waiting times based on threshold
         if cli:
             task.set_waiting(self.CLIENT_THRESHOLD)
-        else: # TODO: higher threshold after client connects?
+        else:  # TODO: higher threshold after client connects?
             task.set_waiting(self.CLIENT_THRESHOLD // 3)
 
         if task.type == IA.Notification:
-            task.set_waiting(self.NOTIFICATION_TIMEOUT) # notifications are valid for 30h
+            # notifications are valid for 30h
+            task.set_waiting(self.NOTIFICATION_TIMEOUT)
 
         for plugin in self.pyload.adm.active_plugins():
             try:

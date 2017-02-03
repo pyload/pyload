@@ -36,7 +36,8 @@ class AccountManager(object):
 
         klass = self.pyload.pgm.load_class("account", plugin)
         if not klass:
-            self.pyload.log.warning(_("Account plugin {} not available").format(plugin))
+            self.pyload.log.warning(
+                _("Account plugin {} not available").format(plugin))
             raise ValueError("Account plugin {} not available".format(plugin))
 
         if plugin not in self.accounts:
@@ -59,7 +60,8 @@ class AccountManager(object):
             try:
                 self._create_account(info, password, options)
             except Exception:
-                self.pyload.log.error(_("Could not load account {}").format(info))
+                self.pyload.log.error(
+                    _("Could not load account {}").format(info))
                 # self.pyload.print_exc()
 
     def iter_accounts(self):
@@ -143,7 +145,8 @@ class AccountManager(object):
         if plugin in self.accounts:
             uid = user.true_primary if user else None
             # TODO: temporary allowed None user
-            accs = [x for x in self.accounts[plugin] if x.is_usable() and (x.shared or uid is None or x.owner == uid)]
+            accs = [x for x in self.accounts[plugin] if x.is_usable() and (
+                x.shared or uid is None or x.owner == uid)]
             if accs:
                 return choice(accs)
 
@@ -156,7 +159,8 @@ class AccountManager(object):
         # filter by owner / shared, but admins see all accounts
         accounts = []
         for plugin, accs in self.accounts.items():
-            accounts.extend(acc for acc in accs if acc.shared or not uid or acc.owner == uid)
+            accounts.extend(
+                acc for acc in accs if acc.shared or not uid or acc.owner == uid)
 
         return accounts
 

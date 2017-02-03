@@ -30,7 +30,7 @@ class ApiHandler(AbstractHandler):
         while True:
             try:
                 line = receive_message(req)
-            except TypeError as e: # connection closed
+            except TypeError as e:  # connection closed
                 self.pyload.log.debug("WS Error: {}".format(e.message))
                 return self.passive_closing_handshake(req)
 
@@ -40,7 +40,7 @@ class ApiHandler(AbstractHandler):
 
         func, args, kwargs = self.handle_call(msg, req)
         if not func:
-            return # handle_call already sent the result
+            return  # handle_call already sent the result
 
         if func == 'login':
             return self.do_login(req, args, kwargs)

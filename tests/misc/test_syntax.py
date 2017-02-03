@@ -22,7 +22,7 @@ for path, dirs, files in walk(join(PATH, "pyload")):
         if not f.endswith(".py") or f.startswith("__"):
             continue
         fpath = join(path, f)
-        pack = fpath.replace(PATH, "")[1:-3] #replace / and  .py
+        pack = fpath.replace(PATH, "")[1:-3]  # replace / and  .py
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)

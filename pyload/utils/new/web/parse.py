@@ -33,7 +33,8 @@ def form(html, name=None, inputs={}):
         formaction = attr(form.group('TAG'), "action")
 
         for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    webutils.purge.comments(form.group('CONTENT')),
+                                    webutils.purge.comments(
+                                        form.group('CONTENT')),
                                     re.I | re.S):
             tagname = attr(inputtag.group(1), "name")
             if not tagname:
@@ -85,6 +86,6 @@ def header(html):
 def name(url, *args, **kwargs):
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
-    r  = requests.head(url, *args, **kwargs)
+    r = requests.head(url, *args, **kwargs)
     cd = r.headers.get('content-disposition')
     return webutils.convert.url_to_name(cd or url)

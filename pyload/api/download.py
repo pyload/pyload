@@ -40,13 +40,15 @@ class DownloadApi(BaseApi):
         if isabs(folder):
             folder = folder.replace("/", "_")
 
-        folder = folder.replace("http://", "").replace(":", "").replace("\\", "_").replace("..", "")
+        folder = folder.replace(
+            "http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
-        self.pyload.log.info(_("Added package {} as folder {}").format(name, folder))
-        pid = self.pyload.files.add_package(name, folder, root, password, site, comment, paused, self.true_primary())
+        self.pyload.log.info(
+            _("Added package {} as folder {}").format(name, folder))
+        pid = self.pyload.files.add_package(
+            name, folder, root, password, site, comment, paused, self.true_primary())
 
         return pid
-
 
     @require_perm(Permission.Add)
     def add_package(self, name, links, password="", paused=False):
@@ -97,7 +99,8 @@ class DownloadApi(BaseApi):
         if hoster:
             self.pyload.thm.create_info_thread(hoster, pid)
 
-        self.pyload.log.info((_("Added {:d} links to package") + " #{:d}".format(pid)).format(len(hoster + crypter)))
+        self.pyload.log.info(
+            (_("Added {:d} links to package") + " #{:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()
 
     @require_perm(Permission.Add)
@@ -108,7 +111,8 @@ class DownloadApi(BaseApi):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        file = join(self.pyload.config.get('general', 'storage_folder'), "tmp_{}".format(filename))
+        file = join(self.pyload.config.get(
+            'general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
 
@@ -137,7 +141,6 @@ class DownloadApi(BaseApi):
             self.pyload.files.remove_package(pid)
 
         self.pyload.files.save()
-
 
     @require_perm(Permission.Modify)
     def restart_package(self, pid):

@@ -12,7 +12,8 @@
 # serve to show the default.
 
 from __future__ import unicode_literals
-import sys, os
+import sys
+import os
 from os.path import dirname, join, abspath, exists
 
 dir_name = join(dirname(abspath("")))
@@ -25,7 +26,7 @@ sys.path.append(join(dir_name, "pyload", "lib"))
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
-# -- General configuration -----------------------------------------------------
+# -- General configuration -----------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 needs_sphinx = '1.0'
@@ -107,7 +108,7 @@ pygments_style = 'sphinx'
 #modindex_common_prefix = []
 
 
-# -- Options for HTML output ---------------------------------------------------
+# -- Options for HTML output ---------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -130,12 +131,14 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "pyload", "web", "app", "components", "pyload-common", "images", "logo.png")
+html_logo = join(dir_name, "pyload", "web", "app", "components",
+                 "pyload-common", "images", "logo.png")
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = join(dir_name, "pyload", "web", "app", "components", "pyload-common", "favicon.ico")
+html_favicon = join(dir_name, "pyload", "web", "app",
+                    "components", "pyload-common", "favicon.ico")
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -187,7 +190,7 @@ html_use_smartypants = True
 htmlhelp_basename = 'pyLoaddoc'
 
 
-# -- Options for LaTeX output --------------------------------------------------
+# -- Options for LaTeX output --------------------------------------------
 
 # The paper size ('letter' or 'a4').
 #latex_paper_size = 'letter'
@@ -226,7 +229,7 @@ latex_documents = [
 #latex_domain_indices = True
 
 
-# -- Options for manual page output --------------------------------------------
+# -- Options for manual page output --------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).

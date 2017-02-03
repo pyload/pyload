@@ -68,20 +68,19 @@ class AccountApi(BaseApi):
         """
         return self.pyload.acm.update_account(aid, plugin, loginname, password, self.user).to_info_data()
 
-
     @require_perm(Permission.Accounts)
     def update_account_info(self, account):
         """
         Update account settings from :class:`AccountInfo`.
         """
-        inst = self.pyload.acm.get_account(account.aid, account.plugin, self.user)
+        inst = self.pyload.acm.get_account(
+            account.aid, account.plugin, self.user)
         if not inst:
             return
 
         inst.activated = to_bool(account.activated)
         inst.shared = to_bool(account.shared)
         inst.update_config(account.config)
-
 
     @require_perm(Permission.Accounts)
     def remove_account(self, account):
@@ -90,7 +89,8 @@ class AccountApi(BaseApi):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        self.pyload.acm.remove_account(account.aid, account.plugin, self.primary_uid)
+        self.pyload.acm.remove_account(
+            account.aid, account.plugin, self.primary_uid)
 
 
 if Api.extend(AccountApi):

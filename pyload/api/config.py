@@ -8,8 +8,11 @@ from pyload.utils import to_string
 from pyload.api.base import BaseApi
 
 # helper function to create a ConfigHolder
+
+
 def to_config_holder(section, config, values):
-    holder = ConfigHolder(section, config.label, config.description, config.explanation)
+    holder = ConfigHolder(section, config.label,
+                          config.description, config.explanation)
     holder.items = [ConfigItem(option, x.label, x.description, x.input,
                                to_string(values.get(option, x.input.default_value))) for option, x in
                     config.config.items()]
@@ -116,10 +119,10 @@ class ConfigApi(BaseApi):
         :rtype: ConfigHolder
         """
 
-        # requires at least plugin permissions, but only admin can load core config
+        # requires at least plugin permissions, but only admin can load core
+        # config
         config, values = self.pyload.config.get_section(name, self.primary_uid)
         return toConfigHolder(name, config, values)
-
 
     @require_perm(Permission.Plugins)
     def save_config(self, config):
@@ -129,7 +132,8 @@ class ConfigApi(BaseApi):
         :param config: :class:`ConfigHolder`
         """
         for item in config.items:
-            self.pyload.config.set(config.name, item.name, item.value, sync=False, user=self.primary_uid)
+            self.pyload.config.set(
+                config.name, item.name, item.value, sync=False, user=self.primary_uid)
             # save the changes
         self.pyload.config.save_values(self.primary_uid, config.name)
 
@@ -141,7 +145,7 @@ class ConfigApi(BaseApi):
         :param plugin: plugin name
         """
 
-        #TODO: delete should deactivate addons?
+        # TODO: delete should deactivate addons?
         self.pyload.config.delete(plugin, self.primary_uid)
 
 

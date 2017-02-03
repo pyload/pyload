@@ -33,7 +33,8 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(r"{}\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1".format(attr_name,), tag, re.I)
+    m = re.search(
+        r"{}\s*=\s*([\"']?)((?<=\")[^\"]+|(?<=')[^']+|[^>\s\"'][^>\s]*)\1".format(attr_name,), tag, re.I)
     return m.group(2) if m else None
 
 
@@ -101,7 +102,8 @@ def parse_file_info(self, url='', html=''):
 
             for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
-                    info.update(re.search(getattr(self, pattern), html).groupdict())
+                    info.update(
+                        re.search(getattr(self, pattern), html).groupdict())
                     online = True
                 except AttributeError:
                     continue
@@ -110,7 +112,8 @@ def parse_file_info(self, url='', html=''):
                 # File online, return name and size
                 info['status'] = 2
                 if 'N' in info:
-                    info['name'] = replace_patterns(info['N'], self.FILE_NAME_REPLACEMENTS)
+                    info['name'] = replace_patterns(
+                        info['N'], self.FILE_NAME_REPLACEMENTS)
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
@@ -133,7 +136,7 @@ def create_get_info(plugin):
             if isinstance(plugin.SH_COOKIES, list):
                 set_cookies(cj, plugin.SH_COOKIES)
             file_info = parseFileInfo(plugin, url, get_url(replace_patterns(url, plugin.FILE_URL_REPLACEMENTS),
-                                                          decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
+                                                           decode=not plugin.SH_BROKEN_ENCODING, cookies=cj))
             yield file_info
 
     return get_info
@@ -144,6 +147,7 @@ def timestamp():
 
 
 class PluginParseError(Exception):
+
     def __init__(self, msg):
         Exception.__init__(self)
         self.value = 'Parse error ({}) - plugin may be out of date'.format(msg)
@@ -174,7 +178,8 @@ class SimpleHoster(Hoster):
     FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
 
-    SH_BROKEN_ENCODING = False  # Set to True or encoding name if encoding in http header is not correct
+    # Set to True or encoding name if encoding in http header is not correct
+    SH_BROKEN_ENCODING = False
     SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
     SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
 
@@ -190,9 +195,12 @@ class SimpleHoster(Hoster):
         pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
         self.req.set_option("timeout", 120)
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
-        # Workaround using get_url. Can be reverted in 0.5 as the cookies bug has been fixed.
-        self.html = get_url(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
-        premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(self.PREMIUM_ONLY_PATTERN, self.html)
+        # Workaround using get_url. Can be reverted in 0.5 as the cookies bug
+        # has been fixed.
+        self.html = get_url(
+            pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+        premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(
+            self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  # Usually premium only pages does not show the file information
             self.get_file_info()
 
@@ -201,8 +209,10 @@ class SimpleHoster(Hoster):
         elif premium_only:
             self.fail(_("This link require a premium account"))
         else:
-            # This line is required due to the get_url workaround. Can be removed in 0.5
-            self.html = self.load(pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+            # This line is required due to the get_url workaround. Can be
+            # removed in 0.5
+            self.html = self.load(
+                pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handle_free()
 
     def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
@@ -227,14 +237,16 @@ class SimpleHoster(Hoster):
         if name:
             self.pyfile.name = name
         else:
-            self.pyfile.name = html_unescape(urlparse(self.pyfile.url).path.split("/")[-1])
+            self.pyfile.name = html_unescape(
+                urlparse(self.pyfile.url).path.split("/")[-1])
 
         if size:
             self.pyfile.size = size
         else:
             self.log_error(_("File size not parsed"))
 
-        self.log_debug("FILE NAME: {} FILE SIZE: {}".format(self.pyfile.name, self.pyfile.size))
+        self.log_debug("FILE NAME: {} FILE SIZE: {}".format(
+            self.pyfile.name, self.pyfile.size))
         return self.file_info
 
     def handle_free(self):
@@ -254,7 +266,8 @@ class SimpleHoster(Hoster):
             time_str = "(unknown time)"
             max_tries = 100
 
-        self.log_info(_("Download limit reached, reconnect or wait {}").format(time_str))
+        self.log_info(
+            _("Download limit reached, reconnect or wait {}").format(time_str))
 
         self.set_wait(wait_time, True)
         self.wait()
@@ -268,7 +281,8 @@ class SimpleHoster(Hoster):
         if traffic == -1:
             return True
         size = self.pyfile.size // 1024
-        self.log_info(_("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB").format(size, self.user, traffic))
+        self.log_info(_("Filesize: {:d} KiB, Traffic left for user {}: {:d} KiB").format(
+            size, self.user, traffic))
         return size <= traffic
 
     # TODO: Remove in 0.5

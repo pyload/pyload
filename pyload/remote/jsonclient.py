@@ -36,7 +36,8 @@ class JSONClient(object):
         return ret.read()
 
     def login(self, username, password):
-        self.session = loads(self.request("/login", {'username': username, 'password': password}))
+        self.session = loads(self.request(
+            "/login", {'username': username, 'password': password}))
         return self.session
 
     def logout(self):

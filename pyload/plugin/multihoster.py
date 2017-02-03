@@ -18,7 +18,7 @@ def normalize(domain):
     return remove_chars(domain.strip().lower(), "-.")
 
 
-#noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences
 class MultiHoster(Account):
     """
     Base class for MultiHoster services.
@@ -29,7 +29,8 @@ class MultiHoster(Account):
     """
 
     #: List of hoster names that will be replaced so pyLoad will recognize them: (orig_name, pyload_name)
-    replacements = [("freakshare.net", "freakshare.com"), ("uploaded.net", "uploaded.to")]
+    replacements = [("freakshare.net", "freakshare.com"),
+                    ("uploaded.net", "uploaded.to")]
 
     #: Load new hoster list every x seconds
     hoster_timeout = 300
@@ -50,7 +51,6 @@ class MultiHoster(Account):
         :return: List of domain names
         """
         raise NotImplementedError
-
 
     def is_hoster_usuable(self, domain):
         """

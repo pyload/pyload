@@ -5,6 +5,7 @@ from pyload.database import DatabaseMethods, queue, async, inner
 
 
 class StatisticMethods(DatabaseMethods):
+
     def add_entry(self, user, plugin, premium, amount):
         raise NotImplementedError
 

@@ -16,41 +16,41 @@ from pyload.utils.new.web.convert import url_to_name
 
 #@TODO: Recheck
 # def ismobile():
-    # if 'mobile' in bottle.request.cookies:
-        # return parse.boolean(bottle.request.cookies['mobile'])
+# if 'mobile' in bottle.request.cookies:
+# return parse.boolean(bottle.request.cookies['mobile'])
 
-    # if 'application/vnd.wap.xhtml+xml' in bottle.request.headers.get('Accept', '').lower():
-        # return True
+# if 'application/vnd.wap.xhtml+xml' in bottle.request.headers.get('Accept', '').lower():
+# return True
 
-    # ua = bottle.request.headers.get('User-Agent', '').lower()
-    # ua_entries = parse.entries(ua)
-    # if 'windows' in ua_entries:
-        # return False
-    # if 'opera mini' in ua_entries:
-        # return True
-    # pattr = r'up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|ios|watchos'
-    # if re.search(pattr, ua):
-        # return True
+# ua = bottle.request.headers.get('User-Agent', '').lower()
+# ua_entries = parse.entries(ua)
+# if 'windows' in ua_entries:
+# return False
+# if 'opera mini' in ua_entries:
+# return True
+# pattr = r'up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|ios|watchos'
+# if re.search(pattr, ua):
+# return True
 
-    # ua_agent = ua[:4]
-    # mobile_agents = ['w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan',
-                     # 'benq', 'bird', 'blac', 'blaz', 'brew', 'cell', 'cldc',
-                     # 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno', 'ipaq',
-                     # 'java', 'jigs', 'kddi', 'keji', 'leno', 'lg-c', 'lg-d',
-                     # 'lg-g', 'lge-', 'maui', 'maxo', 'midp', 'mits', 'mmef',
-                     # 'mobi', 'mot-', 'moto', 'mwbp', 'nec-', 'newt', 'noki',
-                     # 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox',
-                     # 'qwap', 'sage', 'sams', 'sany', 'sch-', 'sec-', 'send',
-                     # 'seri', 'sgh-', 'shar', 'sie-', 'siem', 'smal', 'smar',
-                     # 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-', 'tosh',
-                     # 'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa',
-                     # 'wapi', 'wapp', 'wapr', 'webc', 'winw', 'winw', 'xda ',
-                     # 'xda-']
+# ua_agent = ua[:4]
+# mobile_agents = ['w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan',
+# 'benq', 'bird', 'blac', 'blaz', 'brew', 'cell', 'cldc',
+# 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno', 'ipaq',
+# 'java', 'jigs', 'kddi', 'keji', 'leno', 'lg-c', 'lg-d',
+# 'lg-g', 'lge-', 'maui', 'maxo', 'midp', 'mits', 'mmef',
+# 'mobi', 'mot-', 'moto', 'mwbp', 'nec-', 'newt', 'noki',
+# 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox',
+# 'qwap', 'sage', 'sams', 'sany', 'sch-', 'sec-', 'send',
+# 'seri', 'sgh-', 'shar', 'sie-', 'siem', 'smal', 'smar',
+# 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-', 'tosh',
+# 'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa',
+# 'wapi', 'wapp', 'wapr', 'webc', 'winw', 'winw', 'xda ',
+# 'xda-']
 
-    # if ua_agent in mobile_agents:
-        # return True
+# if ua_agent in mobile_agents:
+# return True
 
-    # return False
+# return False
 
 
 def ishostname(value):
@@ -71,7 +71,7 @@ def ishostname(value):
 
 def isonline(url, *args, **kwargs):
     online = True
-    url    = format.url(url)
+    url = format.url(url)
 
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
@@ -105,7 +105,8 @@ def isresource(url, *args, **kwargs):
         name = url_to_name(url)
         root, ext = os.path.splitext(name)
         if ext:
-            mime = mimetypes.guess_type(name, False)[0] or "application/octet-stream"
+            mime = mimetypes.guess_type(name, False)[
+                0] or "application/octet-stream"
 
     if 'html' not in mime:
         return True

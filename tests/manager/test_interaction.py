@@ -44,7 +44,6 @@ class TestInteractionManager(TestCase):
         self.assert_false(self.itm.get_tasks(self.USER))
         self.assert_false(self.itm.get_tasks(self.ADMIN, Interaction.Query))
 
-
     def test_captcha(self):
         t = self.itm.create_captcha_task("1", "png", "", owner=self.ADMIN)
 
@@ -62,21 +61,20 @@ class TestInteractionManager(TestCase):
         self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [t2])
         self.assert_is(self.itm.get_task_by_id(t2.iid), t2)
 
-
     def test_query(self):
-        t = self.itm.create_query_task(InputType.Text, "text", owner=self.ADMIN)
+        t = self.itm.create_query_task(
+            InputType.Text, "text", owner=self.ADMIN)
 
         self.assertEqual(t.description, "text")
-        self.assert_list_equal(self.itm.get_tasks(self.ADMIN, Interaction.Query), [t])
+        self.assert_list_equal(self.itm.get_tasks(
+            self.ADMIN, Interaction.Query), [t])
         self.assert_empty(self.itm.get_tasks(Interaction.Captcha))
-
 
     def test_clients(self):
         self.itm.get_tasks(self.ADMIN, Interaction.Captcha)
 
         self.assert_true(self.itm.is_client_connected(self.ADMIN))
         self.assert_false(self.itm.is_client_connected(self.USER))
-
 
     def test_users(self):
         t = self.itm.create_captcha_task("1", "png", "", owner=self.USER)

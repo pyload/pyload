@@ -9,8 +9,9 @@ MIN_RATE = 10240
 
 
 class Bucket(object):
+
     def __init__(self):
-        self.rate = 0 # bytes per second, maximum targeted throughput
+        self.rate = 0  # bytes per second, maximum targeted throughput
         self.tokens = 0
         self.timestamp = time()
 
@@ -25,7 +26,7 @@ class Bucket(object):
         Return the time the process has to sleep, after it consumed a specified amount.
         """
         if self.rate < MIN_RATE:
-            return 0 #May become unresponsive otherwise
+            return 0  # May become unresponsive otherwise
 
         self.calc_tokens()
         self.tokens -= amount

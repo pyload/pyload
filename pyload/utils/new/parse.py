@@ -43,7 +43,7 @@ def hash(value):
     if not m:
         return None, None
 
-    checksum  = m.group('H')
+    checksum = m.group('H')
     algorithm = m.group('D1') or m.group('D2')
     if algorithm == 'crc':
         algorithm = "crc32"
@@ -75,7 +75,7 @@ def number(value):
     t_tuple = [(w, i * 10) for i, w in enumerate(tens, 2)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens   = re.split(r'[\s-]+', value)
+    tokens = re.split(r'[\s-]+', value)
 
     numbers = filter(None, (numwords.get(word) for word in tokens))
     return sum(numbers) if numbers else None
@@ -124,9 +124,9 @@ def time(value):
     if m:
         res = to_midnight()
     else:
-        regex     = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
-        timemap   = {'day': 43200, 'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1}
-        seconds   = [(w in timewords or convert.to_int(i or w, 0) or number(w) or 1) *
-                     timemap.get(u, 1) for w, u, i in regex.findall(value)]
+        regex = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
+        timemap = {'day': 43200, 'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1}
+        seconds = [(w in timewords or convert.to_int(i or w, 0) or number(w) or 1) *
+                   timemap.get(u, 1) for w, u, i in regex.findall(value)]
         res = sum(seconds)
     return res

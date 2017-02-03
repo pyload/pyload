@@ -15,25 +15,31 @@ from pyload.remote.apitypes import *
 perm_map = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
+
+
 def require_perm(bits):
     class _Dec(object):
+
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
             return func
     return _Dec
 
-urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
+urlmatcher = re.compile(
+    r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
 state_map = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
-    DownloadState.Unfinished: None, # set below
+    DownloadState.Unfinished: None,  # set below
     DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
                                      DownloadStatus.NotPossible, DownloadStatus.FileMismatch)),
-    DownloadState.Unmanaged: None, #TODO
+    DownloadState.Unmanaged: None,  # TODO
 }
 
-state_map[DownloadState.Unfinished] = frozenset(state_map[DownloadState.All].difference(state_map[DownloadState.Finished]))
+state_map[DownloadState.Unfinished] = frozenset(
+    state_map[DownloadState.All].difference(state_map[DownloadState.Finished]))
+
 
 def state_string(state):
     return ",".join(str(x) for x in state_map[state])
@@ -63,12 +69,11 @@ class Api(Iface):
 
     @property
     def user(self):
-        return None #TODO return default user?
+        return None  # TODO return default user?
 
     @property
     def primary_uid(self):
         return self.user.primary if self.user else None
-
 
     def has_access(self, obj):
         """
@@ -85,9 +90,9 @@ class Api(Iface):
         # but will only work once when they are imported
         cls.EXTEND = True
         # Import all Api modules, they register themselves.
-        from pyload.api import *  #@NOTE: `SyntaxWarning: import * only allowed at module level`
+        # @NOTE: `SyntaxWarning: import * only allowed at module level`
+        from pyload.api import *
         # they will vanish from the namespace afterwards
-
 
     @classmethod
     def extend(cls, api):
@@ -117,13 +122,13 @@ class Api(Iface):
 
         if uid not in self.user_apis:
             user = self.pyload.db.get_user_data(uid=uid)
-            if not user:  #@TODO: anonymous user?
+            if not user:  # @TODO: anonymous user?
                 return None
 
-            self.user_apis[uid] = UserApi(self.pyload, User.from_user_data(self, user))
+            self.user_apis[uid] = UserApi(
+                self.pyload, User.from_user_data(self, user))
 
         return self.user_apis[uid]
-
 
     #############################
     #  Auth+User Information

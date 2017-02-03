@@ -20,6 +20,7 @@ def random_salt():
 
 
 class UserMethods(DatabaseMethods):
+
     @queue
     def add_user(self, user, password, role, permission):
         salt = random_salt()
@@ -78,7 +79,6 @@ class UserMethods(DatabaseMethods):
 
         return user
 
-
     @queue
     def check_auth(self, user, password):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
@@ -94,9 +94,10 @@ class UserMethods(DatabaseMethods):
         else:
             return None
 
-    @queue #TODO
+    @queue  # TODO
     def change_password(self, user, oldpw, newpw):
-        self.c.execute('SELECT rowid, name, password FROM users WHERE name=?', (user,))
+        self.c.execute(
+            'SELECT rowid, name, password FROM users WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
             return False
@@ -109,7 +110,8 @@ class UserMethods(DatabaseMethods):
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 
-            self.c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
+            self.c.execute(
+                "UPDATE users SET password=? WHERE name=?", (password, user))
             return True
 
         return False

@@ -15,6 +15,8 @@ from pyload.datatype.package import PyPackage, RootPackage
 from functools import reduce
 
 # invalidates the cache
+
+
 def invalidate(func):
     def new(*args):
         args[0].downloadstats = {}
@@ -41,12 +43,15 @@ class FileManager(object):
 
         # translations
         self.status_msg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
-                          _("finished"), _("skipped"), _("failed"), _("starting"), _("waiting"),
-                          _("downloading"), _("temp. offline"), _("aborted"), _("not possible"), _("missing"),
-                          _("file mismatch"), _("occupied"), _("decrypting"), _("processing"), _("custom"),
-                          _("unknown")]
+                           _("finished"), _("skipped"), _(
+                               "failed"), _("starting"), _("waiting"),
+                           _("downloading"), _("temp. offline"), _(
+                               "aborted"), _("not possible"), _("missing"),
+                           _("file mismatch"), _("occupied"), _(
+                               "decrypting"), _("processing"), _("custom"),
+                           _("unknown")]
 
-        self.files = {} # holds instances for files
+        self.files = {}  # holds instances for files
         self.packages = {}  # same for packages
 
         self.job_cache = {}
@@ -55,8 +60,8 @@ class FileManager(object):
         self.lock = ReadWriteLock()
         #self.lock._Verbose__verbose = True
 
-        self.downloadstats = {} # cached dl stats
-        self.queuestats = {} # cached queue stats
+        self.downloadstats = {}  # cached dl stats
+        self.queuestats = {}  # cached queue stats
 
         self.db = self.pyload.db
 
@@ -96,19 +101,17 @@ class FileManager(object):
         self.db.add_links(data, pid, owner)
         self.pyload.evm.fire("package:updated", pid)
 
-
     @invalidate
     def add_package(self, name, folder, root, password, site, comment, paused, owner):
         """
         Adds a package to database.
         """
         pid = self.db.add_package(name, folder, root, password, site, comment,
-                                 PackageStatus.Paused if paused else PackageStatus.Ok, owner)
+                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
         p = self.db.get_package_info(pid)
 
         self.pyload.evm.fire("package:inserted", pid, p.root, p.packageorder)
         return pid
-
 
     @lock
     def get_package(self, pid):
@@ -148,7 +151,7 @@ class FileManager(object):
             return None
 
         # todo: what does this todo mean?!
-        #todo: fill child packs and files
+        # todo: fill child packs and files
         packs = self.db.get_all_packages(root=pid)
         if pid in packs:
             del packs[pid]
@@ -197,7 +200,8 @@ class FileManager(object):
         root = pid if not full else None
 
         packs = self.db.get_all_packages(root, owner=owner)
-        files = self.db.get_all_files(package=root, state=state, search=search, owner=owner)
+        files = self.db.get_all_files(
+            package=root, state=state, search=search, owner=owner)
 
         # updating from cache
         for fid, f in self.files.items():
@@ -218,7 +222,7 @@ class FileManager(object):
             packs[self.ROOT_PACKAGE] = view.root
         elif pid in packs:
             view.root = packs[pid]
-        else: # package does not exists
+        else:  # package does not exists
             return view
 
         # linear traversal over all data
@@ -239,7 +243,6 @@ class FileManager(object):
             if p:
                 p.fids.append(fid)
 
-
         # cutting of tree is not good in runtime, only saves bandwidth
         # need to remove some entries
         if full and pid > -1:
@@ -259,13 +262,12 @@ class FileManager(object):
                 if f.package not in keep:
                     del files[fid]
 
-        #remove root
+        # remove root
         del packs[pid]
         view.files = files
         view.packages = packs
 
         return view
-
 
     @lock
     def get_jobs(self, occ):
@@ -273,7 +275,7 @@ class FileManager(object):
         # load jobs with file info
         if occ not in self.job_cache:
             self.job_cache[occ] = dict((k, self.get_file_info(fid)) for k, fid
-                                      in self.db.get_jobs(occ).items())
+                                       in self.db.get_jobs(occ).items())
 
         return self.job_cache[occ]
 
@@ -422,7 +424,8 @@ class FileManager(object):
         Checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting.
         """
 
-        # reset count so statistic will update (this is called when dl was processed)
+        # reset count so statistic will update (this is called when dl was
+        # processed)
         self.reset_count()
 
         # TODO: user context?
@@ -440,7 +443,8 @@ class FileManager(object):
         ids = self.db.get_unfinished(pyfile.packageid)
         if not ids or (pyfile.fid in ids and len(ids) == 1):
             if not pyfile.package().set_finished:
-                self.pyload.log.info(_("Package finished: {}").format(pyfile.package().name))
+                self.pyload.log.info(
+                    _("Package finished: {}").format(pyfile.package().name))
                 self.pyload.adm.package_finished(pyfile.package())
                 pyfile.package().set_finished = True
 
@@ -480,7 +484,6 @@ class FileManager(object):
         self.db.restart_file(fid)
         self.pyload.evm.fire("file:updated", fid)
 
-
     @lock
     @invalidate
     def order_package(self, pid, position):
@@ -514,7 +517,7 @@ class FileManager(object):
             raise Exception("Tried to reorder non continuous block of files")
 
         # minimum fileorder
-        f = reduce(lambda x,y: x if x.fileorder < y.fileorder else y, files)
+        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
         order = f.fileorder
 
         self.db.order_files(pid, fids, order, position)
@@ -585,7 +588,6 @@ class FileManager(object):
 
         return True
 
-
     @invalidate
     def re_check_package(self, pid):
         """
@@ -600,7 +602,6 @@ class FileManager(object):
                 urls.append((pyfile.url, pyfile.pluginname))
 
         self.pyload.thm.create_info_thread(urls, pid)
-
 
     @invalidate
     def restart_failed(self):

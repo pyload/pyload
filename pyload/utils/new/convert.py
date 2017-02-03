@@ -47,8 +47,8 @@ def accumulate(it, inv_map=None):
 
 def chunks(iterable, size):
     islice = itertools.islice
-    it     = iter(iterable)
-    item   = list(islice(it, size))
+    it = iter(iterable)
+    item = list(islice(it, size))
     while item:
         yield item
         item = list(islice(it, size))
@@ -63,7 +63,7 @@ def language(text, target=None, source=None):
     languages = gs.get_languages()
     if target not in languages:
         reverse = {value.lower(): key for key, value in languages.items()}
-        target  = reverse.get(target)
+        target = reverse.get(target)
 
     return gs.translate(text, target, source)
 
@@ -84,7 +84,7 @@ def size(value, in_unit, out_unit):
     """
     Convert file size.
     """
-    in_unit  = in_unit.strip()[0].upper()
+    in_unit = in_unit.strip()[0].upper()
     out_unit = out_unit.strip()[0].upper()
 
     if in_unit == out_unit:
@@ -108,10 +108,10 @@ def size(value, in_unit, out_unit):
 
     # return integer + decimal
 
-    in_unit  += "yte" if in_unit == 'B' else "iB"
+    in_unit += "yte" if in_unit == 'B' else "iB"
     out_unit += "yte" if out_unit == 'B' else "iB"
 
-    in_size  = getattr(bitmath, in_unit)
+    in_size = getattr(bitmath, in_unit)
     out_size = getattr(in_size, 'to_' + out_unit)()
     return out_size.value
 

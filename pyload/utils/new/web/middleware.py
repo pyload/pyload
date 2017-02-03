@@ -10,7 +10,7 @@ from wsgigzip import GzipMiddleware
 class PrefixMiddleware(object):
 
     def __init__(self, app, prefix=None):
-        self.app    = app
+        self.app = app
         self.prefix = prefix or "/pyload"
 
     def __call__(self, e, h):

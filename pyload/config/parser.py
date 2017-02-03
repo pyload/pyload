@@ -17,7 +17,8 @@ from pyload.config.default import make_config
 from pyload.config.convert import to_configdata, from_string
 
 CONF_VERSION = 2
-SectionTuple = namedtuple("SectionTuple", "label description explanation config")
+SectionTuple = namedtuple(
+    "SectionTuple", "label description explanation config")
 
 
 class ConfigParser(object):
@@ -98,7 +99,6 @@ class ConfigParser(object):
                     self.set(section, name, value, sync=False)
                 else:
                     print("Unrecognized option", section, name)
-
 
     def save(self):
         """

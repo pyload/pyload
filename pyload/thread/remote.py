@@ -8,6 +8,7 @@ from traceback import print_exc
 
 
 class BackendBase(Thread):
+
     def __init__(self, manager):
         Thread.__init__(self)
         self.manager = manager
@@ -20,7 +21,8 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as e:
-            self.pyload.log.error(_("Remote backend error: {}").format(e.message))
+            self.pyload.log.error(
+                _("Remote backend error: {}").format(e.message))
             if self.pyload.debug:
                 print_exc()
         finally:
@@ -39,5 +41,5 @@ class BackendBase(Thread):
         raise NotImplementedError
 
     def stop(self):
-        self.enabled = False# set flag and call shutdowm message, so thread can react
+        self.enabled = False  # set flag and call shutdowm message, so thread can react
         self.shutdown()

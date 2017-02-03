@@ -12,6 +12,7 @@ zero_stats = PackageStats(0, 0, 0, 0)
 
 
 class FileMethods(DatabaseMethods):
+
     @queue
     def filecount(self):
         """
@@ -26,7 +27,8 @@ class FileMethods(DatabaseMethods):
         Number of downloads and size.
         """
         if user is None:
-            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
         else:
             self.c.execute(
                 "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus != 0",
@@ -45,7 +47,8 @@ class FileMethods(DatabaseMethods):
 
         # status not in NA, finished, skipped
         if user is None:
-            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
         else:
             self.c.execute(
                 "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus NOT IN (0,5,6)",
@@ -53,7 +56,6 @@ class FileMethods(DatabaseMethods):
 
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
-
 
     # TODO: multi user?
     @queue
@@ -63,13 +65,15 @@ class FileMethods(DatabaseMethods):
         """
 
         # status in online, queued, starting, waiting, downloading
-        self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
+        self.c.execute(
+            "SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
         return self.c.fetchone()[0]
 
     @queue
     def processstats(self, user=None):
         if user is None:
-            self.c.execute("SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10)")
+            self.c.execute(
+                "SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10)")
         else:
             self.c.execute(
                 "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)",
@@ -104,8 +108,7 @@ class FileMethods(DatabaseMethods):
     @queue
     def add_package(self, name, folder, root, password, site, comment, status, owner):
         self.c.execute(
-            'INSERT INTO packages(name, folder, root, password, site, comment, status, owner) VALUES(?,?,?,?,?,?,?,?)'
-            , (name, folder, root, password, site, comment, status, owner))
+            'INSERT INTO packages(name, folder, root, password, site, comment, status, owner) VALUES(?,?,?,?,?,?,?,?)', (name, folder, root, password, site, comment, status, owner))
         return self.c.lastrowid
 
     @async
@@ -114,7 +117,8 @@ class FileMethods(DatabaseMethods):
         if owner is None:
             self.c.execute('DELETE FROM packages WHERE pid=?', (pid,))
         else:
-            self.c.execute('DELETE FROM packages WHERE pid=? AND owner=?', (pid, owner))
+            self.c.execute(
+                'DELETE FROM packages WHERE pid=? AND owner=?', (pid, owner))
 
     @async
     def delete_file(self, fid, order, package, owner=None):
@@ -126,7 +130,8 @@ class FileMethods(DatabaseMethods):
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
                            (order, package))
         else:
-            self.c.execute('DELETE FROM files WHERE fid=? AND owner=?', (fid, owner))
+            self.c.execute(
+                'DELETE FROM files WHERE fid=? AND owner=?', (fid, owner))
             self.c.execute('UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=? AND owner=?',
                            (order, package, owner))
 
@@ -170,8 +175,9 @@ class FileMethods(DatabaseMethods):
         data = OrderedDict()
         for r in self.c:
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
-            if r[11] > 0: # dl status != NA
-                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
+            if r[11] > 0:  # dl status != NA
+                f.download = DownloadInfo(
+                    r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
 
             data[r[0]] = f
 
@@ -213,14 +219,17 @@ class FileMethods(DatabaseMethods):
         else:
             stats = self.get_package_stats(root=root, owner=owner)
             if owner is None:
-                self.c.execute(qry.format(' WHERE root=? OR pid=?'), (root, root))
+                self.c.execute(qry.format(
+                    ' WHERE root=? OR pid=?'), (root, root))
             else:
-                self.c.execute(qry.format(' WHERE (root=? OR pid=?) AND owner=?'), (root, root, owner))
+                self.c.execute(qry.format(
+                    ' WHERE (root=? OR pid=?) AND owner=?'), (root, root, owner))
 
         data = OrderedDict()
         for r in self.c:
             data[r[0]] = PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], r[12],
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[
+                    8], r[9].split(","), r[10], r[11], r[12],
                 stats.get(r[0], zero_stats)
             )
 
@@ -237,7 +246,8 @@ class FileMethods(DatabaseMethods):
         # status in (finished, skipped, processing)
 
         if root is not None:
-            self.c.execute(qry.format("AND (p.root=:root OR p.pid=:root)"), locals())
+            self.c.execute(qry.format(
+                "AND (p.root=:root OR p.pid=:root)"), locals())
         elif pid is not None:
             self.c.execute(qry.format("AND p.pid=:pid"), locals())
         elif owner is not None:
@@ -274,7 +284,8 @@ class FileMethods(DatabaseMethods):
         else:
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
             if r[11] > 0 or force:
-                f.download = DownloadInfo(r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
+                f.download = DownloadInfo(
+                    r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
 
             return f
 
@@ -295,7 +306,8 @@ class FileMethods(DatabaseMethods):
             return None
         else:
             return PackageInfo(
-                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9].split(","), r[10], r[11], r[12],
+                r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[
+                    8], r[9].split(","), r[10], r[11], r[12],
                 stats.get(r[0], zero_stats) if stats else None
             )
 
@@ -307,7 +319,7 @@ class FileMethods(DatabaseMethods):
         """
 
         # inserts media type as n-1th arguments
-        data = [t[:-1] + (guess_type(t[0]), t[-1])  for t in data]
+        data = [t[:-1] + (guess_type(t[0]), t[-1]) for t in data]
 
         # status in (NA, Offline, Online, Queued, TempOffline)
         if data and len(data[0]) == 5:
@@ -328,7 +340,8 @@ class FileMethods(DatabaseMethods):
 
     @async
     def set_download_status(self, fid, status):
-        self.c.execute('UPDATE files SET dlstatus=? WHERE fid=?', (status, fid))
+        self.c.execute(
+            'UPDATE files SET dlstatus=? WHERE fid=?', (status, fid))
 
     @async
     def update_package(self, p):
@@ -336,40 +349,40 @@ class FileMethods(DatabaseMethods):
             'UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=?, shared=? WHERE pid=?',
             (p.name, p.folder, p.site, p.comment, p.password, ",".join(p.tags), p.status, p.shared, p.pid))
 
-    # TODO: most modifying methods needs owner argument to avoid checking beforehand
+    # TODO: most modifying methods needs owner argument to avoid checking
+    # beforehand
     @async
     def order_package(self, pid, root, oldorder, order):
-        if oldorder > order: # package moved upwards
+        if oldorder > order:  # package moved upwards
             self.c.execute(
-                'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND root=? AND packageorder >= 0'
-                , (order, oldorder, root))
-        elif oldorder < order: # moved downwards
+                'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND root=? AND packageorder >= 0', (order, oldorder, root))
+        elif oldorder < order:  # moved downwards
             self.c.execute(
-                'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND root=? AND packageorder >= 0'
-                , (order, oldorder, root))
+                'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND root=? AND packageorder >= 0', (order, oldorder, root))
 
-        self.c.execute('UPDATE packages SET packageorder=? WHERE pid=?', (order, pid))
+        self.c.execute(
+            'UPDATE packages SET packageorder=? WHERE pid=?', (order, pid))
 
     @async
     def order_files(self, pid, fids, oldorder, order):
         diff = len(fids)
         data = []
 
-        if oldorder > order: # moved upwards
-            self.c.execute('UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? AND fileorder < ? AND package=?'
-                , (diff, order, oldorder, pid))
+        if oldorder > order:  # moved upwards
+            self.c.execute(
+                'UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? AND fileorder < ? AND package=?', (diff, order, oldorder, pid))
             data = [(order + i, fid) for i, fid in enumerate(fids)]
         elif oldorder < order:
             self.c.execute(
-                'UPDATE files SET fileorder=fileorder-? WHERE fileorder <= ? AND fileorder >= ? AND package=?'
-                , (diff, order, oldorder + diff, pid))
+                'UPDATE files SET fileorder=fileorder-? WHERE fileorder <= ? AND fileorder >= ? AND package=?', (diff, order, oldorder + diff, pid))
             data = [(order - diff + i + 1, fid) for i, fid in enumerate(fids)]
 
         self.c.executemany('UPDATE files SET fileorder=? WHERE fid=?', data)
 
     @async
     def move_files(self, pid, fids, package):
-        self.c.execute('SELECT max(fileorder) FROM files WHERE package=?', (package,))
+        self.c.execute(
+            'SELECT max(fileorder) FROM files WHERE package=?', (package,))
         r = self.c.fetchone()
         order = (r[0] if r[0] else 0) + 1
 
@@ -377,23 +390,27 @@ class FileMethods(DatabaseMethods):
                        (len(fids), order, pid))
 
         data = [(package, order + i, fid) for i, fid in enumerate(fids)]
-        self.c.executemany('UPDATE files SET package=?, fileorder=? WHERE fid=?', data)
+        self.c.executemany(
+            'UPDATE files SET package=?, fileorder=? WHERE fid=?', data)
 
     @async
     def move_package(self, root, order, pid, dpid):
-        self.c.execute('SELECT max(packageorder) FROM packages WHERE root=?', (dpid,))
+        self.c.execute(
+            'SELECT max(packageorder) FROM packages WHERE root=?', (dpid,))
         r = self.c.fetchone()
         max = (r[0] if r[0] else 0) + 1
 
         self.c.execute('UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND root=?',
                        (order, root))
 
-        self.c.execute('UPDATE packages SET root=?, packageorder=? WHERE pid=?', (dpid, max, pid))
+        self.c.execute(
+            'UPDATE packages SET root=?, packageorder=? WHERE pid=?', (dpid, max, pid))
 
     @async
     def restart_file(self, fid):
         # status -> queued
-        self.c.execute('UPDATE files SET dlstatus=3, error="" WHERE fid=?', (fid,))
+        self.c.execute(
+            'UPDATE files SET dlstatus=3, error="" WHERE fid=?', (fid,))
 
     @async
     def restart_package(self, pid):
@@ -411,7 +428,6 @@ class FileMethods(DatabaseMethods):
         cmd = ("SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
                "WHERE f.owner=? AND f.plugin NOT IN {} AND f.dlstatus IN (2,3,16) AND p.status=0 "
                "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1").format(cmd)
-
 
         self.c.execute("SELECT uid FROM users")
         uids = self.c.fetchall()
@@ -432,13 +448,16 @@ class FileMethods(DatabaseMethods):
         """
 
         # status in finished, skipped, processing
-        self.c.execute("SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
+        self.c.execute(
+            "SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
         return [r[0] for r in self.c]
 
     @queue
     def restart_failed(self, owner=None):
-        # status=queued, where status in failed, aborted, temp offline, file mismatch
-        self.c.execute("UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
+        # status=queued, where status in failed, aborted, temp offline, file
+        # mismatch
+        self.c.execute(
+            "UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
 
     @queue
     def find_duplicates(self, id, folder, filename):
@@ -448,8 +467,7 @@ class FileMethods(DatabaseMethods):
 
         # TODO: also check root of package
         self.c.execute(
-            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?"
-            , (folder, id, filename))
+            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?", (folder, id, filename))
         return self.c.fetchone()
 
     @queue
@@ -458,7 +476,7 @@ class FileMethods(DatabaseMethods):
         self.c.execute("DELETE FROM files WHERE status == 1")
 
     @queue
-    def purge_all(self): # only used for debugging
+    def purge_all(self):  # only used for debugging
         self.c.execute("DELETE FROM packages")
         self.c.execute("DELETE FROM files")
         self.c.execute("DELETE FROM collector")

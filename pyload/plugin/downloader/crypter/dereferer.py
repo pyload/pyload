@@ -19,7 +19,9 @@ from __future__ import unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 import re
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from pyload.plugin.crypter import Crypter
 
@@ -35,4 +37,5 @@ class Dereferer(Crypter):
 
     def decrypt(self, pyfile):
         link = re.match(self.__pattern__, pyfile.url).group('url')
-        self.pyload.files.add_links([urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)
+        self.pyload.files.add_links(
+            [urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)

@@ -19,9 +19,9 @@ from itertools import islice
 from html.entities import name2codepoint
 
 # abstraction layer for json operations
-try: # since python 2.6
+try:  # since python 2.6
     import json
-except ImportError: #use system simplejson if available
+except ImportError:  # use system simplejson if available
     import simplejson as json
 
 json_loads = json.loads
@@ -60,7 +60,7 @@ def remove_chars(string, repl):
 
 def get_console_encoding(enc):
     if os.name == "nt":
-        if enc == "cp65001": # aka UTF-8
+        if enc == "cp65001":  # aka UTF-8
             print("WARNING: Windows codepage 65001 is not supported")
             enc = "cp850"
     else:
@@ -89,7 +89,7 @@ def compare_time(start, end):
 
 def to_list(value):
     return value if isinstance(value, list) else list(value) if isinstance(value, set) else (
-    [value] if value is not None else [])
+        [value] if value is not None else [])
 
 
 def format_size(bytes):
@@ -142,7 +142,7 @@ def parse_size(string, unit=None):
         else:
             traffic = string
 
-    #ignore case
+    # ignore case
     unit = unit.lower().strip()
 
     if unit in ("gb", "gig", "gbyte", "gigabyte", "gib", "g"):
@@ -155,7 +155,7 @@ def parse_size(string, unit=None):
     return traffic
 
 
-def uniqify(seq): #by Dave Kirby
+def uniqify(seq):  # by Dave Kirby
     """
     Removes duplicates from list, preserve order.
     """
@@ -220,7 +220,7 @@ def fixup(m):
         except KeyError:
             pass
 
-    return text # leave as is
+    return text  # leave as is
 
 
 def has_method(obj, name):

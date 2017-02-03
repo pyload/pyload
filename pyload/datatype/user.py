@@ -7,19 +7,18 @@ from pyload.api import UserData, Permission, Role
 from pyload.utils import bits_set
 
 
-#TODO: activate user
-#noinspection PyUnresolvedReferences
+# TODO: activate user
+# noinspection PyUnresolvedReferences
 class User(UserData):
 
     @staticmethod
     def from_user_data(api, user):
         return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
-            user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templatename)
+                    user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templatename)
 
     def __init__(self, api, *args, **kwargs):
         UserData.__init__(self, *args, **kwargs)
         self.api = api
-
 
     def to_user_data(self):
         # TODO

@@ -14,7 +14,7 @@ from pyload.config.parser import ConfigParser
 from pyload.manager.config import ConfigManager
 from pyload.utils import primary_uid
 
-admin_user  = primary_uid(admin_user)
+admin_user = primary_uid(admin_user)
 normal_user = primary_uid(normal_user)
 
 
@@ -36,10 +36,9 @@ class TestConfigManager(TestCase):
         # used by some tests, needs to be deleted
         self.config.delete("plugin", admin_user)
 
-
     def addConfig(self):
         self.config.add_config_section("plugin", "Name", "desc", "something",
-            [("value", "str", "label", "default")])
+                                       [("value", "str", "label", "default")])
 
     def test_db(self):
 
@@ -103,7 +102,7 @@ class TestConfigManager(TestCase):
         for name, config, values in self.config.iter_sections(admin_user):
             assert name == "plugin"
             assert values == {}
-            i +=1
+            i += 1
         assert i == 1
 
         assert self.config.set("plugin", "value", True, user=admin_user)
@@ -112,8 +111,8 @@ class TestConfigManager(TestCase):
         # now we assert the correct values
         for name, config, values in self.config.iter_sections(admin_user):
             assert name == "plugin"
-            assert values == {"value":True}
-            i +=1
+            assert values == {"value": True}
+            i += 1
         assert i == 1
 
     def test_get_section(self):

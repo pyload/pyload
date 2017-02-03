@@ -40,7 +40,6 @@ class HosterPluginTester(PluginTester):
             for f in listdir(report):
                 remove(join(report, f))
 
-
     @nottest
     def test_plugin(self, name, url, status):
         # Print to stdout to see whats going on
@@ -48,7 +47,8 @@ class HosterPluginTester(PluginTester):
         log(DEBUG, "{}: {}, {}".format(name, url.encode("utf8"), status))
 
         # url and plugin should be only important thing
-        pyfile = PyFile(self.pyload, -1, url, url, 0, 0, 0, 0, url, name, "", 0, 0, 0, 0)
+        pyfile = PyFile(self.pyload, -1, url, url, 0, 0,
+                        0, 0, url, name, "", 0, 0, 0, 0)
         pyfile.init_plugin()
 
         self.thread.pyfile = pyfile
@@ -65,7 +65,8 @@ class HosterPluginTester(PluginTester):
                 raise Exception("No offline Exception raised")
 
             if pyfile.name not in self.files:
-                raise Exception("Filename {} not recognized".format(pyfile.name))
+                raise Exception(
+                    "Filename {} not recognized".format(pyfile.name))
 
             if not exists(save_join(DL_DIR, pyfile.name)):
                 raise Exception("File {} does not exists".format(pyfile.name))
@@ -82,7 +83,7 @@ class HosterPluginTester(PluginTester):
                 log(DEBUG, "Hash is {}".format(hash.hexdigest()))
 
                 size = stat(f.name).st_size
-                if size < 1024 * 1024 * 10: # 10MB
+                if size < 1024 * 1024 * 10:  # 10MB
                     # Copy for debug report
                     log(DEBUG, "Downloaded file copied to report")
                     move(f.name, join("tmp", plugin, f.name))
@@ -148,7 +149,7 @@ for plugin, urls in plugins.items():
         # set test method
         setattr(_testerClass, sig, meta(plugin, url, tmp_status, sig))
 
-    #register class
+    # register class
     locals()[plugin] = _testerClass
     # remove from locals, or tested twice
     del _testerClass

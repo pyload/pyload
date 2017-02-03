@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 #
-#Copyright (C) 2009 kingzero, RaNaN
+# Copyright (C) 2009 kingzero, RaNaN
 #
-#This program is free software; you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation; either version 3 of the License,
-#or (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License,
+# or (at your option) any later version.
 #
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#See the GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
@@ -62,23 +62,25 @@ class OCR(object):
         """
         Run a command.
         """
-        popen = subprocess.Popen(command, bufsize = -1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen = subprocess.Popen(
+            command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         popen.wait()
         output = "{} | {}".format(popen.stdout.read(), popen.stderr.read())
         popen.stdout.close()
         popen.stderr.close()
-        self.log.debug("Tesseract ReturnCode {} Output: {}".format(popen.returncode, output))
+        self.log.debug("Tesseract ReturnCode {} Output: {}".format(
+            popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
         #self.log.debug("create tmp tif")
-
 
         #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         tmp = open(join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
         tmp.close()
         #self.log.debug("create tmp txt")
         #tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmp_txt = open(join("tmp", "tmp_txt_{}.txt".format(self.__name__)), "wb")
+        tmp_txt = open(
+            join("tmp", "tmp_txt_{}.txt".format(self.__name__)), "wb")
         tmp_txt.close()
 
         self.log.debug("save tiff")
@@ -89,7 +91,8 @@ class OCR(object):
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend([abspath(tmp.name), abspath(tmp_txt.name).replace(".txt", "")])
+        tessparams.extend([abspath(tmp.name), abspath(
+            tmp_txt.name).replace(".txt", "")])
 
         if subset and (digits or lowercase or uppercase):
             #self.log.debug("create temp subset config")
@@ -153,15 +156,16 @@ class OCR(object):
             for y in range(h):
                 if pixels[x, y] == 255:
                     continue
-                # no point in processing white pixels since we only want to remove black pixel
+                # no point in processing white pixels since we only want to
+                # remove black pixel
                 count = 0
 
                 try:
-                    if pixels[x-1, y-1] != 255:
+                    if pixels[x - 1, y - 1] != 255:
                         count += 1
-                    if pixels[x-1, y] != 255:
+                    if pixels[x - 1, y] != 255:
                         count += 1
-                    if pixels[x-1, y + 1] != 255:
+                    if pixels[x - 1, y + 1] != 255:
                         count += 1
                     if pixels[x, y + 1] != 255:
                         count += 1
@@ -169,9 +173,9 @@ class OCR(object):
                         count += 1
                     if pixels[x + 1, y] != 255:
                         count += 1
-                    if pixels[x + 1, y-1] != 255:
+                    if pixels[x + 1, y - 1] != 255:
                         count += 1
-                    if pixels[x, y-1] != 255:
+                    if pixels[x, y - 1] != 255:
                         count += 1
                 except Exception:
                     pass
@@ -216,7 +220,6 @@ class OCR(object):
                 for y in range(h):
                     if pixels[x, y] == 0:
                         pixels[x, y] = 255
-
 
             count = {}
 

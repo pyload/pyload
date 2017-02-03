@@ -50,7 +50,8 @@ class CherryPyWSGI(ServerAdapter):
             CherryPyWSGIServer.ssl_certificate = self.cert
             CherryPyWSGIServer.ssl_private_key = self.key
 
-        server = CherryPyWSGIServer((self.host, self.port), handler, numthreads=self.connection)
+        server = CherryPyWSGIServer(
+            (self.host, self.port), handler, numthreads=self.connection)
         server.start()
 
 
@@ -60,7 +61,7 @@ class FapwsServer(ServerAdapter):
     """
     NAME = "fapws"
 
-    def run(self, handler): # pragma: no cover
+    def run(self, handler):  # pragma: no cover
         import fapws._evwsgi as evwsgi
         from fapws import base, config
 
@@ -103,8 +104,10 @@ class TornadoServer(ServerAdapter):
     SSL = True
     NAME = "tornado"
 
-    def run(self, handler): # pragma: no cover
-        import tornado.wsgi, tornado.httpserver, tornado.ioloop
+    def run(self, handler):  # pragma: no cover
+        import tornado.wsgi
+        import tornado.httpserver
+        import tornado.ioloop
 
         container = tornado.wsgi.WSGIContainer(handler)
         server = tornado.httpserver.HTTPServer(container)
@@ -135,10 +138,11 @@ class EventletServer(ServerAdapter):
 
         try:
             wsgi.server(listen((self.host, self.port)), handler,
-                log_output=(not self.quiet))
+                        log_output=(not self.quiet))
         except TypeError:
             # Needed to ignore the log
             class NoopLog(object):
+
                 def write(self, *args):
                     pass
             # Fallback, if we have old version of eventlet
@@ -150,7 +154,7 @@ class FlupFCGIServer(ServerAdapter):
     SSL = False
     NAME = "flup"
 
-    def run(self, handler): # pragma: no cover
+    def run(self, handler):  # pragma: no cover
         import flup.server.fcgi
         from flup.server.threadedserver import ThreadedServer
 

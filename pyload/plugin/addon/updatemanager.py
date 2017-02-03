@@ -41,7 +41,8 @@ class UpdateManager(Hook):
             self.periodical = self.check_changes
             self.mtimes = {}  # recordes times
         else:
-            self.interval = max(self.get_config("interval") * 60, self.MIN_TIME)
+            self.interval = max(self.get_config(
+                "interval") * 60, self.MIN_TIME)
 
         self.updated = False
         self.reloaded = True
@@ -58,7 +59,8 @@ class UpdateManager(Hook):
 
         if self.updated and not self.reloaded:
             self.info['plugins'] = True
-            self.log_info(_("*** Plugins have been updated, please restart pyLoad ***"))
+            self.log_info(
+                _("*** Plugins have been updated, please restart pyLoad ***"))
         elif self.updated and self.reloaded:
             self.log_info(_("Plugins updated and reloaded"))
             self.updated = False
@@ -78,7 +80,8 @@ class UpdateManager(Hook):
         """
         try:
             if self.version == "None":  # No updated known
-                version_check = get_url(self.URL.format(self.pyload.api.get_server_version()).splitlines())
+                version_check = get_url(self.URL.format(
+                    self.pyload.api.get_server_version()).splitlines())
                 self.version = version_check[0]
 
                 # Still no updates, plugins will be checked
@@ -87,8 +90,10 @@ class UpdateManager(Hook):
                     return version_check[1:]
 
             self.info['pyload'] = True
-            self.log_info(_("***  New pyLoad Version {} available  ***").format(self.version))
-            self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
+            self.log_info(
+                _("***  New pyLoad Version {} available  ***").format(self.version))
+            self.log_info(
+                _("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
 
         except Exception:
             self.log_warning(_("Not able to connect server for updates"))
@@ -122,7 +127,7 @@ class UpdateManager(Hook):
             else:
                 name = filename.replace(".py", "")
 
-            #TODO: obsolete in 0.5.0
+            # TODO: obsolete in 0.5.0
             if prefix.endswith("s"):
                 type = prefix[:-1]
             else:
@@ -137,17 +142,20 @@ class UpdateManager(Hook):
             if name in IGNORE or (type, name) in IGNORE:
                 continue
 
-            self.log_info(_("New version of {}|{} : {:.2f}").format(type, name, version))
+            self.log_info(_("New version of {}|{} : {:.2f}").format(
+                type, name, version))
 
             try:
                 content = get_url(url.format(info))
             except Exception as e:
-                self.log_warning(_("Error when updating {}").format(filename), e.message)
+                self.log_warning(
+                    _("Error when updating {}").format(filename), e.message)
                 continue
 
             m = vre.search(content)
             if not m or m.group(2) != version:
-                self.log_warning(_("Error when updating {}").format(name), _("Version mismatch"))
+                self.log_warning(_("Error when updating {}").format(
+                    name), _("Version mismatch"))
                 continue
 
             with open(join("userplugins", prefix, filename), "wb") as f:
@@ -166,7 +174,7 @@ class UpdateManager(Hook):
             self.last_check = time()
 
         modules = [m for m in sys.modules.values() if m and (m.__name__.startswith("pyload.plugin.") or m.__name__.startswith(
-                "userplugins.")) and m.__name__.count(".") >= 2]
+            "userplugins.")) and m.__name__.count(".") >= 2]
 
         reloads = []
 

@@ -52,13 +52,13 @@ class SimpleCrypter(Crypter):
         if hasattr(self, 'PAGES_PATTERN') and hasattr(self, 'loadPage'):
             self.handle_multi_pages()
 
-        self.log_debug('Package has {:d} links'.format(len(self.package_links)))
+        self.log_debug('Package has {:d} links'.format(
+            len(self.package_links)))
 
         if self.package_links:
             return Package(package_name, self.package_links)
         else:
             self.fail(_('Could not extract any links'))
-
 
     def get_links(self):
         """

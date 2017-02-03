@@ -13,7 +13,7 @@ from tests.api.apiproxy import ApiProxy
 
 class ApiTester(object):
 
-    tester= []
+    tester = []
 
     @classmethod
     def register(cls, tester):
@@ -26,7 +26,8 @@ class ApiTester(object):
         """
         methods = []
         for t in cls.tester:
-            methods.extend(getattr(t, attr) for attr in dir(t) if attr.startswith("test_"))
+            methods.extend(getattr(t, attr)
+                           for attr in dir(t) if attr.startswith("test_"))
         return methods
 
     def __init__(self):

@@ -16,6 +16,7 @@ from pyload.utils import accumulate, to_int
 
 
 class CrypterPluginTester(PluginTester):
+
     @nottest
     def test_plugin(self, name, url, flag):
 
@@ -79,7 +80,8 @@ for plugin, urls in plugins.items():
             return _test
 
         sig = "test_LINK{:d}".format(i)
-        setattr(_testerClass, sig, meta(plugin, url, flags.get(url, None), sig))
+        setattr(_testerClass, sig, meta(
+            plugin, url, flags.get(url, None), sig))
         print(url)
 
     locals()[plugin] = _testerClass

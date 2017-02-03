@@ -11,27 +11,28 @@ from urllib.parse import urlparse
 endings = "\\.(3gp|7zip|7z|abr|ac3|aiff|aifc|aif|ai|au|avi|bin|bz2|cbr|cbz|ccf|cue|cvd|chm|dta|deb|divx|djvu|dlc|dmg|doc|docx|dot|eps|exe|ff|flv|f4v|gsd|gif|gz|iwd|iso|ipsw|java|jar|jpg|jpeg|jdeatme|load|mws|mw|m4v|m4a|mkv|mp2|mp3|mp4|mov|movie|mpeg|mpe|mpg|msi|msu|msp|nfo|npk|oga|ogg|ogv|otrkey|pkg|png|pdf|pptx|ppt|pps|ppz|pot|psd|qt|rmvb|rm|rar|ram|ra|rev|rnd|r\\d+|rpm|run|rsdf|rtf|sh(!?tml)|srt|snd|sfv|swf|tar|tif|tiff|ts|txt|viv|vivo|vob|wav|wmv|xla|xls|xpi|zeno|zip|z\\d+|_[_a-z]{2}|\\d+$)"
 
 rar_pats = [re.compile("(.*)(\\.|_|-)pa?r?t?\\.?[0-9]+.(rar|exe)$", re.I),
-           re.compile("(.*)(\\.|_|-)part\\.?[0]*[1].(rar|exe)$", re.I),
-           re.compile("(.*)\\.rar$", re.I),
-           re.compile("(.*)\\.r\\d+$", re.I),
-           re.compile("(.*)(\\.|_|-)\\d+$", re.I)]
+            re.compile("(.*)(\\.|_|-)part\\.?[0]*[1].(rar|exe)$", re.I),
+            re.compile("(.*)\\.rar$", re.I),
+            re.compile("(.*)\\.r\\d+$", re.I),
+            re.compile("(.*)(\\.|_|-)\\d+$", re.I)]
 
 zip_pats = [re.compile("(.*)\\.zip$", re.I),
-           re.compile("(.*)\\.z\\d+$", re.I),
-           re.compile("(?is).*\\.7z\\.[\\d]+$", re.I),
-           re.compile("(.*)\\.a.$", re.I)]
+            re.compile("(.*)\\.z\\d+$", re.I),
+            re.compile("(?is).*\\.7z\\.[\\d]+$", re.I),
+            re.compile("(.*)\\.a.$", re.I)]
 
 ffsj_pats = [re.compile("(.*)\\._((_[a-z])|([a-z]{2}))(\\.|$)"),
-            re.compile("(.*)(\\.|_|-)[\\d]+({}$)".format(endings), re.I)]
+             re.compile("(.*)(\\.|_|-)[\\d]+({}$)".format(endings), re.I)]
 
 isz_pats = [re.compile("(.*)\\.isz$", re.I),
-           re.compile("(.*)\\.i\\d{2}$", re.I)]
+            re.compile("(.*)\\.i\\d{2}$", re.I)]
 
 pat1 = re.compile("(\\.?CD\\d+)", re.I)
 pat2 = re.compile("(\\.?part\\d+)", re.I)
 
 pat3 = re.compile("(.+)[\\.\\-_]+$")
 pat4 = re.compile("(.+)\\.\\d+\\.xtm$")
+
 
 def match_first(string, *args):
     """
@@ -70,7 +71,7 @@ def parse_names(files):
         if len(split) > 1:
             name = split.pop(1)
 
-            #check if an already existing package may be ok for this file
+            # check if an already existing package may be ok for this file
         #        found = False
         #        for pack in packs:
         #            if pack in file:
@@ -80,7 +81,8 @@ def parse_names(files):
         #
         #        if found: continue
 
-        # unrar pattern, 7zip/zip and hjmerge pattern, isz pattern, FFSJ pattern
+        # unrar pattern, 7zip/zip and hjmerge pattern, isz pattern, FFSJ
+        # pattern
         before = name
         name = matchFirst(name, rar_pats, zip_pats, isz_pats, ffsj_pats)
         if before != name:

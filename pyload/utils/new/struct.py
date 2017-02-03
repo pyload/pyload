@@ -9,9 +9,9 @@ from pyload.utils.new.lib.decorator import lock
 from pyload.utils.new.lib.safe_threading import RLock
 
 
-################################################################################
-#: Types  ######################################################################
-################################################################################
+##########################################################################
+#: Types  ################################################################
+##########################################################################
 
 class LockObject(object):
 
@@ -24,6 +24,7 @@ class LockObject(object):
         attr = object.__getattribute__(self, name)
         if name.startswith('_') or not callable(attr):
             return attr
+
         @lock
         def wrapper(self, *args, **kwargs):
             return attr(*args, **kwargs)
@@ -33,19 +34,22 @@ class LockObject(object):
 class Info(MutableMapping):
 
     class ReadError(KeyError):
+
         def __str__(self):
             return """<ReadError {}>""".format(self.message)
 
     class WriteError(KeyError):
+
         def __str__(self):
             return """<WriteError {}>""".format(self.message)
 
     class DeleteError(KeyError):
+
         def __str__(self):
             return """<DeleteError {}>""".format(self.message)
 
-    __readable__   = True
-    __writeable__  = True
+    __readable__ = True
+    __writeable__ = True
     __updateable__ = True
     __deleteable__ = True
 
@@ -107,14 +111,14 @@ class Info(MutableMapping):
         return bool(self.__deleteable__)
 
     def lock(self, read=True, write=True, update=False, delete=False):
-        self.__readable__   = read
-        self.__writeable__  = write
+        self.__readable__ = read
+        self.__writeable__ = write
         self.__updateable__ = update
         self.__deleteable__ = delete
 
     def unlock(self):
-        self.__readable__   = True
-        self.__writeable__  = True
+        self.__readable__ = True
+        self.__writeable__ = True
         self.__updateable__ = True
         self.__deleteable__ = True
 
@@ -123,6 +127,7 @@ class InscDict(MutableMapping):
     """
     Improved version of the header dictionary from `requests.structures.CaseInsensitiveDict`.
     """
+
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)
 
@@ -185,12 +190,12 @@ class InscInfo(InscDict, Info):
 #@TODO: Move elsewhere...
 class SyncInfo(Info):
 
-    __local__  = None  #@NOTE: Refer to the internal __dict__ used by <Info> class
+    __local__ = None  # @NOTE: Refer to the internal __dict__ used by <Info> class
     __remote__ = None
 
     def __init__(self, remotedict, *args, **kwargs):
         Info.__init__(self, *args, **kwargs)
-        self.__local__  = self.__dict__
+        self.__local__ = self.__dict__
         self.__remote__ = remotedict
         self.sync()
 
