@@ -27,7 +27,7 @@ define(['jquery', 'backbone', 'underscore', 'utils/apitypes', 'app'],
         localStorage.removeItem('user');
       },
 
-      // TODO
+      // TODO:
       fetch: function(options) {
         options = App.apiRequest('todo', null, options);
 

@@ -86,7 +86,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
         return this;
       },
 
-      // TODO sorting ?!
+      // TODO: sorting ?!
       // Append a package to the list, index, animate it
       appendPackage: function(pack, i, animation) {
         var el = new PackageView({model: pack}).render().el;
@@ -143,7 +143,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'models/TreeCollection', 'col
       },
 
       failure: function() {
-        // TODO
+        // TODO:
       },
 
       show: function() {

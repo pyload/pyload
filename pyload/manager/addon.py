@@ -161,7 +161,7 @@ class AddonManager(object):
     def deactivate_addon(self, plugin):
         if plugin not in self.plugins:
             return
-        else:  # todo: multiple instances
+        else:  # TODO: multiple instances
             addon = self.plugins[plugin].instances[0]
 
         if addon.__internal__:
@@ -174,7 +174,7 @@ class AddonManager(object):
         self.pyload.log.debug("Removed callback {}".format(
             self.pyload.scheduler.cancel(addon.cb)))
 
-        # todo: only delete instances, meta data is lost otherwise
+        # TODO: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]
 
         # TODO: could be improved

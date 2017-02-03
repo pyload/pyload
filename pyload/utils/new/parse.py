@@ -51,7 +51,7 @@ def hash(value):
     return checksum, algorithm
 
 
-#@TODO: Recheck in 0.5.x
+# TODO: Recheck in 0.5.x
 @iterate
 @purge.args
 def name(value):

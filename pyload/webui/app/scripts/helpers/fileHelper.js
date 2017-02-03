@@ -39,7 +39,7 @@ define('helpers/fileHelper', ['handlebars', 'utils/apitypes', 'helpers/formatTim
       }
     }
 
-    // TODO rest of the states
+    // TODO: rest of the states
     function fileStatus(file, options) {
       var s;
       var msg = file.download.statusmsg;

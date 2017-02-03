@@ -12,7 +12,7 @@ First selection
 ---------------
 
 The first step was to take a short look at every webserver. For some it was not needed to further inspect them,
-since they don't meet our requirements.
+since they do not meet our requirements.
 
 ================== ==================================================================
 Disregarded server Reason
@@ -74,7 +74,7 @@ The included threaded server has all needed functions, including SSL, and is usa
 Threaded will be selected in case none of the other server is installed.
 
 Our auto-select will favor RAM usage over performance too choose the most lightweight server as possible.
-Activating SSL will decrease the options, many lightweight servers don't include SSL by choice.
+Activating SSL will decrease the options, many lightweight servers do not include SSL by choice.
 They suggest tools like pound [2]_, stunnel [3]_, or any other reverse proxy capable server. Also these that are capable
 of SSL suggest using other tools, their SSL performance was not tested here.
 

@@ -101,7 +101,7 @@ class InteractionManager(object):
 
         input = Input(type, data=[standard_b64encode(img), format, filename])
 
-        # todo: title desc plugin
+        # TODO: title desc plugin
         task = InteractionTask(self.ids, IA.Captcha, input,
                                _("Captcha request"), _("Please solve the captcha"), plugin, owner=owner)
 

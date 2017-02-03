@@ -116,7 +116,7 @@ class UserMethods(DatabaseMethods):
 
         return False
 
-    # TODO update methods
+    # TODO: update methods
     @async
     def remove_user_by_name(self, name):
         self.c.execute("SELECT uid FROM users WHERE name=?", (name,))

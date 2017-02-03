@@ -14,7 +14,7 @@ from pyload.utils.new import format
 from pyload.utils.new.web.convert import url_to_name
 
 
-#@TODO: Recheck
+# TODO: Recheck
 # def ismobile():
 # if 'mobile' in bottle.request.cookies:
 # return parse.boolean(bottle.request.cookies['mobile'])
@@ -114,7 +114,7 @@ def isresource(url, *args, **kwargs):
     return False
 
 
-#@TODO: Recheck in 0.5.x
+# TODO: Recheck in 0.5.x
 def isurl(url):
     url = format.url(url)
     try:

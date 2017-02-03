@@ -66,7 +66,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/StatusInfo',
           ws.onopen = function() {
             ws.send(JSON.stringify('start'));
           };
-          // TODO compare with polling
+          // TODO: compare with polling
           ws.onmessage = _.bind(this.onData, this);
           ws.onerror = function(error) {
             console.log(error);

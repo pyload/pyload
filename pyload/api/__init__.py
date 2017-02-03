@@ -69,7 +69,7 @@ class Api(Iface):
 
     @property
     def user(self):
-        return None  # TODO return default user?
+        return None  # TODO: return default user?
 
     @property
     def primary_uid(self):
@@ -90,7 +90,7 @@ class Api(Iface):
         # but will only work once when they are imported
         cls.EXTEND = True
         # Import all Api modules, they register themselves.
-        # @NOTE: `SyntaxWarning: import * only allowed at module level`
+        # NOTE: `SyntaxWarning: import * only allowed at module level`
         from pyload.api import *
         # they will vanish from the namespace afterwards
 
@@ -122,7 +122,7 @@ class Api(Iface):
 
         if uid not in self.user_apis:
             user = self.pyload.db.get_user_data(uid=uid)
-            if not user:  # @TODO: anonymous user?
+            if not user:  # TODO: anonymous user?
                 return None
 
             self.user_apis[uid] = UserApi(

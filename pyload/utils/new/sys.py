@@ -157,4 +157,4 @@ def shutdown():
             stop_method()
 
         except Exception:
-            call_cmd('stop -h now')  # @NOTE: Root privileges needed
+            call_cmd('stop -h now')  # NOTE: Root privileges needed

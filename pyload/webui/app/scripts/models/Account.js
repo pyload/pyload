@@ -94,7 +94,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', './ConfigIt
         self.trigger('destroy', self, self.collection, options);
       };
 
-      // TODO request is not dispatched
+      // TODO: request is not dispatched
 //      return Backbone.Model.prototype.destroy.call(this, options);
       return $.ajax(options);
     }

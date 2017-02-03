@@ -49,7 +49,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/dashboard/select'],
 
       get_packs: function() {
         if (!App.dashboard.tree.get('packages'))
-          return []; // TODO
+          return []; // TODO:
 
         return App.dashboard.tree.get('packages').where({selected: true});
       },

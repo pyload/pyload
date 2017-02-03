@@ -135,7 +135,7 @@ class InscDict(MutableMapping):
         return self.__dict__[key.lower()][-1]
 
     def __setitem__(self, key, value):
-        #@NOTE: Use the lowercased key for lookups, but store the actual key alongside the value
+        # NOTE: Use the lowercased key for lookups, but store the actual key alongside the value
         self.__dict__[key.lower()] = (key, value)
 
     def __delitem__(self, key):
@@ -187,10 +187,10 @@ class InscInfo(InscDict, Info):
         return """<InscInfo {}>""".format(self.__dict__)
 
 
-#@TODO: Move elsewhere...
+# TODO: Move elsewhere...
 class SyncInfo(Info):
 
-    __local__ = None  # @NOTE: Refer to the internal __dict__ used by <Info> class
+    __local__ = None  # NOTE: Refer to the internal __dict__ used by <Info> class
     __remote__ = None
 
     def __init__(self, remotedict, *args, **kwargs):
@@ -239,6 +239,6 @@ class HeadDict(InscDict):
             if fields:
                 header.append("{}: {}".format(key, fields))
             else:
-                #@NOTE: curl will remove this header
+                # NOTE: curl will remove this header
                 header.append("{}:".format(key))
         return header

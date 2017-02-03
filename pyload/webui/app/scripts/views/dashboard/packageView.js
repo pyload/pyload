@@ -58,7 +58,7 @@ define(['jquery', 'app', 'views/abstract/itemView', 'underscore', 'hbs!tpl/dashb
         App.vent.trigger('package:destroyed', this.model);
       },
 
-      // TODO
+      // TODO:
       // Toggle expanding of packages
       expand: function(e) {
         e.preventDefault();

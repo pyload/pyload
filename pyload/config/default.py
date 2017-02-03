@@ -54,7 +54,7 @@ def make_config(config):
         ("max_transfers", "int", _("Max parallel transfers"), 5),
         ("max_speed", "int", _("Max transfer speed (in KiB/s)"), -1),
         ("max_chunks", "int", _("Max connections for single transfer"), -1),
-        ("wait", "int", _("Active transfers while waiting"), 2),  # @TODO: Recheck
+        ("wait", "int", _("Active transfers while waiting"), 2),  # TODO: Recheck
         ("skip", "bool", _("Skip existing files"), False),
         ("interface", "str", _("Interface address to bind"), None),
         ("ipv6", "bool", _("Allow IPv6"), False)

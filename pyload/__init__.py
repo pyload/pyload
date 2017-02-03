@@ -97,8 +97,8 @@ def _list_pids():
     return sorted(pids)
 
 
-def status(profile=None):  # @NOTE: If not profile, then catch all pyLoad pids
-    # @NOTE: Include zombie pids
+def status(profile=None):  # NOTE: If not profile, then catch all pyLoad pids
+    # NOTE: Include zombie pids
     return [pid for pid in _list_pids() if psutil.pid_exists(pid)]
 
 
@@ -157,6 +157,6 @@ def restart(profile=None, configdir=None, refresh=0, remote=None, webui=None,
     return start(profile, configdir, refresh, remote, webui, debug, webdebug, daemon)
 
 
-#@TODO: Implement test suite
+# TODO: Implement test suite
 def test():
     raise NotImplementedError

@@ -19,7 +19,7 @@ import operator
 import sys
 
 import colorama
-# colorama.init(autoreset=True)  #@NOTE: Doesn't work on Windows...
+# colorama.init(autoreset=True)  # NOTE: Doesn't work on Windows...
 
 import pyload
 
@@ -44,7 +44,7 @@ def logo():
 
 
 def parse_args(argv=None):
-    #@NOTE: Workaround to `required subparsers` issue in Python 2
+    # NOTE: Workaround to `required subparsers` issue in Python 2
     if not argv:
         argv = sys.argv[1:]
     if not set(map(operator.itemgetter(0), sc)) & set(argv):

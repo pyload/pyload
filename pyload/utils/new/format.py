@@ -74,7 +74,7 @@ def path(*paths):
     filepath = unt + drive + sep + filename
 
     try:
-        length = len(filepath) - 259  # @NOTE: Max 260 chars fs indipendent
+        length = len(filepath) - 259  # NOTE: Max 260 chars fs indipendent
         if length < 1:
             return
 

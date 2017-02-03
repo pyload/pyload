@@ -33,11 +33,11 @@ def info():
 
     extras_require = {
         'Archive decompression': ['unrar'],
-        # @TODO: Fix `tesserocr` installation
+        # TODO: Fix `tesserocr` installation
         'Captcha recognition': ["Pillow >= 2.0"],
         'Colored log': ['colorlog'],
         'JavaScript evaluation': ['Js2Py'],
-        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  #@NOTE: Use `smart_import`
+        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  # NOTE: Use `smart_import`
         'pyLoad auto-update': ['pip'],
         'SSL connection': ['pyOpenSSL']
     }
@@ -79,7 +79,7 @@ def info():
         entry_points=entry_points,
         test_suite='nose.collector',
         tests_require=tests_require,
-        zip_safe=False,  # @TODO: Recheck...
+        zip_safe=False,  # TODO: Recheck...
         classifiers=classifiers
     )
 

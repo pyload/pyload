@@ -138,7 +138,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'utils/apitypes', 'models/Pac
       },
 
       updateName: function() {
-        // TODO
+        // TODO:
 //        this.ui.name.text(App.dashboard.package.get('name'));
       },
 

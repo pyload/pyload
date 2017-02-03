@@ -24,7 +24,7 @@ plugin is found it is selected to handle the url.
 
 For localization pyLoad supports gettext [3]_, to mark strings for translation surround them with ``_("...")``.
 
-You don't need to subclass :class:`Base <pyload.plugins.base.Base>` directly, but the
+You do not need to subclass :class:`Base <pyload.plugins.base.Base>` directly, but the
 intermediate type according to your plugin. As an example we choose a hoster plugin, but the same is true for all
 plugin types.
 

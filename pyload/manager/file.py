@@ -150,8 +150,8 @@ class FileManager(object):
         if not pack:
             return None
 
-        # todo: what does this todo mean?!
-        # todo: fill child packs and files
+        # TODO: what does this todo mean?!
+        # TODO: fill child packs and files
         packs = self.db.get_all_packages(root=pid)
         if pid in packs:
             del packs[pid]

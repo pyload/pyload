@@ -96,7 +96,7 @@ class MeinheldServer(ServerAdapter):
         server.run(handler)
 
 
-# todo:ssl
+# TODO: ssl
 class TornadoServer(ServerAdapter):
     """
     The super hyped asynchronous server by facebook. Untested.
@@ -127,7 +127,7 @@ class BjoernServer(ServerAdapter):
         run(handler, self.host, self.port)
 
 
-# todo: ssl
+# TODO: ssl
 class EventletServer(ServerAdapter):
 
     SSL = True

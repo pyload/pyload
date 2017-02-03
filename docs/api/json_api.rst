@@ -5,7 +5,7 @@ JSON API
 ========
 
 JSON [1]_ is a lightweight object notation and wrappers exists for nearly every programming language. Every
-modern browser is able to load JSON objects with JavaScript. Unlike other RPC methods you don't need to generate or precompile
+modern browser is able to load JSON objects with JavaScript. Unlike other RPC methods you do not need to generate or precompile
 any stub methods. The JSON :class:`Api <pyload.api.Api>` is ready to be used in most languages and most JSON libraries are lightweight
 enough to build very small and performant scripts. Because of the builtin support, JSON is the first choice for all browser
 applications.
@@ -21,7 +21,7 @@ you have to send your credentials ``username`` and ``password`` as
 POST parameter to ``http://pyload-core/api/login``.
 
 The result will be your session id. If you are using cookies, it will be set and you can use the API now.
-In case you don't have cookies enabled you can pass the session id as ``session`` POST parameter
+In case you do not have cookies enabled you can pass the session id as ``session`` POST parameter
 so pyLoad can authenticate you.
 
 
@@ -50,7 +50,7 @@ It is important that *all* arguments are in JSON format. So ``http://pyload-core
 ``http://pyload-core/api/getUserData/"username"/"password"``.
 
 Strings are wrapped in double qoutes, because `"username"` represents a string in JSON format. It's not limited to
-strings and integers, every container type like lists and dicts are possible. You usually don't have to convert them.
+strings and integers, every container type like lists and dicts are possible. You usually do not have to convert them.
 Just use a JSON encoder before using them in the HTTP request.
 
 Please note that the data has to be urlencoded at last. (Most libraries will do that automatically)

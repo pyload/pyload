@@ -3,7 +3,7 @@ define(['jquery', 'backbone', 'underscore', './inputView'], function($, Backbone
 
   return inputView.extend({
 
-    // TODO
+    // TODO:
     tagName: 'input',
     events: {
       'keyup': 'onChange',

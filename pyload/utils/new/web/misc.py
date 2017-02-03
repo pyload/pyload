@@ -141,7 +141,7 @@ def render_to_response(file, args={}, proc=[]):
     return env.get_template(file).render(**args)
 
 
-#@NOTE: Incomplete...
+# NOTE: Incomplete...
 # def select_language(langs):
     # accept = bottle.request.headers.get('Accept-Language', '')
     # return langs[0]

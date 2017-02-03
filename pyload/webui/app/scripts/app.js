@@ -85,7 +85,7 @@ define([
   };
 
   App.on('initialize:after', function() {
-//    TODO pushState variable
+// TODO: pushState variable
     Backbone.history.start({
       pushState: false,
       root: App.root

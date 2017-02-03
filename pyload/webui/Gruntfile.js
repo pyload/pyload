@@ -203,7 +203,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     src: [
-                        // TODO only main script needs a rev
+                        // TODO: only main script needs a rev
                         '<%= yeoman.dist %>/scripts/default.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css'
                     ]

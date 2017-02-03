@@ -177,7 +177,7 @@ class PluginLoader(object):
                 self.log.debug(e.message)
 
             if not hasattr(Base, "__{}__".format(m[0])):
-                # TODO remove type from all plugins, its not needed
+                # TODO: remove type from all plugins, its not needed
                 if m[0] != "type" and m[0] != "author_name":
                     self.log_debug(
                         folder, name, "Unknown attribute '{}'".format(m[0]))
@@ -232,7 +232,7 @@ class PluginLoader(object):
             except ValueError:
                 self.log_debug(
                     folder, name, "Invalid version {}".format(attrs['version']))
-                version = 9  # TODO remove when plugins are fixed, causing update loops
+                version = 9  # TODO: remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
 

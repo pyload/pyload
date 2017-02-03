@@ -195,7 +195,7 @@ class PyFile(object):
     def move(self, pid):
         raise NotImplementedError
 
-    #@TODO: Recheck
+    # TODO: Recheck
     def abort_download(self):
         """
         Abort pyfile if possible.

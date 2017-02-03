@@ -50,7 +50,7 @@ def forward(source, destination):
         destination.shutdown(socket.SHUT_WR)
 
 
-#@TODO: Recheck in 0.8.x
+# TODO: Recheck in 0.8.x
 def get_translation(domain, language, default=None):
     """
     Load language and return its translation object or None.

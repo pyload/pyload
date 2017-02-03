@@ -40,9 +40,9 @@ def i18n(lang=None):
 
     if lang is None:
         pass
-        # TODO use lang from PYLOAD.config or setup
+        # TODO: use lang from PYLOAD.config or setup
     else:
-        # TODO auto choose language
+        # TODO: auto choose language
         lang = select_language(("en",))
 
     return json_dumps({})

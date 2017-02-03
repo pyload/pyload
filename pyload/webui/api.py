@@ -82,7 +82,7 @@ def call_api(func, args=""):
         return error(404, "Not Found")
 
     # TODO: possible encoding
-    # TODO Better error codes on invalid input
+    # TODO: Better error codes on invalid input
 
     args = [loads(unquote(arg)) for arg in args.split("/")[1:]]
     kwargs = {}

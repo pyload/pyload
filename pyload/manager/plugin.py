@@ -216,7 +216,7 @@ class PluginManager(object):
             if not fullname.startswith(loader.package):
                 continue
 
-            # TODO not well tested
+            # TODO: not well tested
             offset = 1 - loader.package.count(".")
 
             split = fullname.split(".")

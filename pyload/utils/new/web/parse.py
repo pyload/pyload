@@ -13,7 +13,7 @@ from pyload.utils.new import format, web as webutils
 from pyload.utils.new.struct import HeadDict
 
 
-#@TODO: Recheck result format
+# TODO: Recheck result format
 def attr(html, name=None):
     pattr = r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'
     pattr = pattr.format(name or '\w+')
@@ -65,7 +65,7 @@ def form(html, name=None, inputs={}):
     return None, {}  #: No matching form found
 
 
-#@TODO: Rewrite...
+# TODO: Rewrite...
 def header(html):
     hdict = HeadDict()
     pattr = r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n'
@@ -82,7 +82,7 @@ def header(html):
     return hdict
 
 
-#@TODO: Recheck in 0.5.x
+# TODO: Recheck in 0.5.x
 def name(url, *args, **kwargs):
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)

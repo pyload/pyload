@@ -198,7 +198,7 @@ class Hoster(Base):
         20 - unknown error
         """
 
-        #@TODO checksum check addon
+        # TODO: checksum check addon
 
         return True, 10
 

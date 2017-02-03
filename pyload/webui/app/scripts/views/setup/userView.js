@@ -24,7 +24,7 @@ define(['jquery', 'backbone', 'underscore', 'app', 'hbs!tpl/setup/user'],
         var pw = this.ui.password.val();
         var pw2 = this.ui.password2.val();
 
-        // TODO more checks and error messages
+        // TODO: more checks and error messages
         if (pw !== pw2) {
           return;
         }

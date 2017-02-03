@@ -1,4 +1,4 @@
-# Set default behaviour, in case users don't have core.autocrlf set
+# Set default behaviour, in case users do not have core.autocrlf set
 * text=auto
 
 

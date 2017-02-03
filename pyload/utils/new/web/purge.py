@@ -31,7 +31,7 @@ def tags(value):
     return re.sub(r'\s*<.+?>\s*', " ", value, flags=re.S).strip()
 
 
-#@NOTE: No lower-case conversion
+# NOTE: No lower-case conversion
 @iterate
 def text(value):
     res = escape(value)

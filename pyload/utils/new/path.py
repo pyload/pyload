@@ -255,7 +255,7 @@ def remove(path, trash=True, ignore_errors=False):
 
 @iterate
 def which(name):
-    # return shutil.which(command)  #@NOTE: Available under Python 3 only
+    # return shutil.which(command)  # NOTE: Available under Python 3 only
     dirname, basename = split(name)
     if dirname:
         return name if isexec(name) else None

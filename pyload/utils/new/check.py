@@ -75,7 +75,7 @@ def ismodule(name, path=None):
         return False
 
 
-#@TODO: Recheck in 0.5.x
+# TODO: Recheck in 0.5.x
 def lookup(enc=None):
     if os.name != "nt":
         return 'utf-8'

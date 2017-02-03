@@ -33,7 +33,7 @@ from pyload.utils.new.path import makedirs, open, remove
 from pyload.utils.new.check import lookup
 
 
-#@TODO:
+# TODO:
 #  configurable auth system ldap/mysql
 #  cron job like scheduler
 #  plugin stack / multi decrypter
@@ -75,7 +75,7 @@ class Core(Process):
                     continue
         remove('tmp', trash=False, ignore_errors=True)
 
-    #@TODO: Extend `logging.Logger` like `pyload.plugin.Log`
+    # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
         # Init logger
         self.log = logging.getLogger("log")
@@ -175,7 +175,7 @@ class Core(Process):
 
         makedirs(profiledir)
         makedirs(tmpdir)
-        # @NOTE: pyLoad runs over configdir/profile for its entire process-life
+        # NOTE: pyLoad runs over configdir/profile for its entire process-life
         os.chdir(profiledir)
 
         self.config = self.cfg = Config(
@@ -200,7 +200,7 @@ class Core(Process):
         self.webdebug = bool(webdebug) or debug_webui
 
     def _start_interfaces(self, webui, remote):
-        #@TODO: Parse `remote`
+        # TODO: Parse `remote`
         if remote is not None or self.config.get('remote', 'activated'):
             self.log.debug("Activating remote interface ...")
             # self.rem.start_backends()
@@ -260,7 +260,7 @@ class Core(Process):
         self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager      = self.svm = ServerManager(self)
 
-    #@TODO: Remove?
+    # TODO: Remove?
     def _init_requests(self):
         from pyload.network.factory import RequestFactory
         self.request = self.req = RequestFactory(self)
@@ -288,10 +288,10 @@ class Core(Process):
 
     def __init__(self, profile=None, configdir=None, refresh=0, remote=None,
                  webui=None, debug=0, webdebug=0):
-        #@NOTE: Don't change the init order!
+        # NOTE: Don't change the init order!
         self._init_process(profile)
         self._init_debug(debug, webdebug)
-        # @NOTE: Logging level
+        # NOTE: Logging level
         self._init_logger(logging.DEBUG if self.debug else logging.INFO)
         self._init_translation()
         self._init_config(configdir)
@@ -329,7 +329,7 @@ class Core(Process):
         self._set_storage()
         self._set_process()
 
-        # @TODO: Move in accountmanager
+        # TODO: Move in accountmanager
         self.log.info(_("Activating accounts ..."))
         self.acm.get_account_infos()
         # self.scheduler.enter(0, 0, self.acm.get_account_infos)
@@ -360,7 +360,7 @@ class Core(Process):
         try:
             while not self._exiting:
                 self.dlm.work()
-                self.thm.work()  # @TODO: Rename `work` to `run`
+                self.thm.work()  # TODO: Rename `work` to `run`
                 self.itm.work()
                 self.scheduler.run()
         except Exception as e:
@@ -403,7 +403,7 @@ class Core(Process):
         self.evm.fire(
             'pyload:restarting' if self._restart else 'pyload:exiting')
         try:
-            #@TODO: quit webserver
+            # TODO: quit webserver
             self.dlm.shutdown()
             self.api.stop_all_downloads()
             self.adm.deactivate_addons()

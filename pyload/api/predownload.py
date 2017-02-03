@@ -49,7 +49,7 @@ class PreDownloadApi(BaseApi):
         """
         hoster, crypter = self.pyload.pgm.parse_urls(links)
 
-        #: TODO: withhold crypter, derypt or add later
+        # TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
         tmp = [(url, LinkStatus(url, url, -1, DS.Queued, pluginname))
                for url, pluginname in hoster]

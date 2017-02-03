@@ -116,7 +116,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
       },
 
       show: function() {
-        // TODO animations are bit sloppy
+        // TODO: animations are bit sloppy
         this.ui.content.css('display', 'block');
         var oldHeight = this.ui.content.height();
 
@@ -141,13 +141,13 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/ConfigHolder', './con
       },
 
       failure: function() {
-        // TODO
+        // TODO:
         this.config = null;
       },
 
       change_section: function(e) {
-        // TODO check for changes
-        // TODO move this into render?
+        // TODO: check for changes
+        // TODO: move this into render?
 
         var el = $(e.target).closest('li');
 
