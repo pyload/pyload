@@ -1,4 +1,4 @@
-include *.md CLA
+include *.md
 
 recursive-include locale *.mo *.pot
 
