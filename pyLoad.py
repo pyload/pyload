@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: vuolter
-#     ____________
-#    /       |    \
-#    |    ___/    |
-#    \___/  ______/
-#        |   o|
-#        \    /
-#         \  /
-#          \/
+#      ____________
+#   _ /       |    \ ___________ _ _______________ _ ___ _______________
+#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
+# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
+# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
+#  \______\    /______|_|___|__/________________________//______ /___/__/
+#          \  /
+#           \/
 
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -31,21 +31,16 @@ __all__ = ['logo', 'main', 'parse_args']
 
 
 def logo():
-    from colorama import Fore, Back, Style
-
-    ws = lambda x: " " * x
-    info = pyload.info()
-    logo = (
-        "{}{}{}{}{}".format(Fore.BLUE, ws(1), '________', Fore.YELLOW, "____"),
-        "{}{}{}{}{}{}{}".format(Fore.BLUE, '/', ws(7), '|', Fore.YELLOW, ws(4), "\\"),
-        "{}{}{}{}{}{}{}{}{}{}{}{}".format(Fore.BLUE, '|', ws(4), '___/', ws(4), Fore.YELLOW, "|", ws(7), Fore.BLUE, "__py", Fore.YELLOW, "Load__"),
-        "{}{}{}{}{}".format(Fore.BLUE,'\___/', ws(2), Fore.YELLOW, "______/"),
-        "{}{}{}{}{}{}{}{}{}v{}{}".format(Fore.YELLOW, ws(4), '|', ws(3), 'o|', ws(12), Style.BRIGHT, Back.BLUE, Fore.WHITE, info.version, Style.RESET_ALL),
-        "{}{}{}{}{}".format(Fore.YELLOW, ws(4), "\\", ws(4), "/"),
-        "{}{}{}{}{}{}{}{}".format(Fore.YELLOW, ws(5), "\\", ws(2), "/", ws(5), Fore.BLUE, "© 2009-2016 The pyLoad Team"),
-        "{}{}{}{}{}{}{}".format(Fore.YELLOW, ws(6), "\\/", ws(13), Fore.GREEN, info.url, Style.RESET_ALL),
-    )
-    return '\n'.join(ws(17) + i for i in logo)
+    return """
+      ____________
+   _ /       |    \ ___________ _ _______________ _ ___
+  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \
+ /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \
+ \       |   o|      | .__/\_, |____\___/\__,_\__,_|    /
+  \______\    /______|_|___|__/________________________/
+          \  /
+           \/  © 2009-2017 pyLoad Team <{}>
+""".format(pyload.info().url)
 
 
 def parse_args(argv=None):
@@ -140,7 +135,7 @@ def _set_console():
 
 
 def _open_browser(p):
-    webserver = p.servermanager.get('webui')
+    webserver = p.svm.get('webui')
     if not webserver or not webserver.active:
         return
     import webbrowser
@@ -151,6 +146,7 @@ def _open_browser(p):
 def main():
     _set_console()
 
+    emsg = None
     args = parse_args()
     func = getattr(pyload, args.command)
     kwgs = vars(args)
@@ -160,8 +156,14 @@ def main():
 
     if args.command in ('restart', 'start'):
         if not args.daemon:
-            _open_browser(p)
-            res.join()
+            # _open_browser(p)
+            try:
+                res.join()
+            except Exception as e:
+                emsg = e
+                res.terminate()
+            else:
+                res.shutdown()
 
     elif args.command in ('status', 'version'):
         print(' '.join(format.iter(res)))
@@ -169,7 +171,7 @@ def main():
     elif args.command == 'info':
         print('\n'.join(format.map(res)))
 
-    sys.exit()
+    sys.exit(emsg)
 
 
 if __name__ == "__main__":
