@@ -628,7 +628,7 @@ class Iface(object):
     def poll_results(self, rid):
         pass
 
-    def quit(self):
+    def shutdown(self):
         pass
 
     def recheck_package(self, pid):

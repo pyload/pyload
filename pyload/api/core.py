@@ -118,17 +118,17 @@ class CoreApi(BaseApi):
         """
         return free_space(self.pyload.config.get('general', 'storage_folder'))
 
-    def quit(self):
+    def shutdown(self):
         """
         Clean way to quit pyLoad.
         """
-        self.pyload.do_kill = True
+        self.pyload._shutdown = True
 
     def restart(self):
         """
         Restart pyload core.
         """
-        self.pyload.do_restart = True
+        self.pyload._restart = True
 
     def get_log(self, offset=0):
         """

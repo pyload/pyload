@@ -26,13 +26,25 @@ import colorlog
 import setproctitle
 
 from contextlib import closing
-from multiprocessing import Event, Process
+from multiprocessing import Process
 
 from pyload.utils.new import format, sys, misc
 from pyload.utils.new.path import makedirs, open, remove
 from pyload.utils.new.check import lookup
 
 
+class Restart(Exception):
+    
+    def __str__(self):
+        return """<RestartSignal {}>""".format(self.message)
+        
+        
+class Shutdown(Exception):
+    
+    def __str__(self):
+        return """<ShutdownSignal {}>""".format(self.message)
+        
+        
 # TODO:
 #  configurable auth system ldap/mysql
 #  cron job like scheduler
@@ -297,8 +309,8 @@ class Core(Process):
         self._init_config(configdir)
 
         self.log.debug("Initializing pyLoad ...")
-        self._exiting = Event()
-        self._restart = Event()
+        self._shutdown = False
+        self._restart  = False
         if refresh:
             self._clean()
         self._init_permissions()
@@ -358,36 +370,40 @@ class Core(Process):
 
         self.thm.pause = False
         try:
-            while not self._exiting:
+            while True:
                 self.dlm.work()
-                self.thm.work()  # TODO: Rename `work` to `run`
+                self.thm.work()
                 self.itm.work()
+                if self._restart:
+                    raise Restart
+                elif self._shutdown:
+                    raise Shutdown
                 self.scheduler.run()
+        except Restart:
+            self.restart()
+        except Shutdown:
+            self.shutdown()
         except Exception as e:
             self.log.critical(_("Critical error"), e.message)
             raise
-
-        # if self._restart:
-            # self.restart()
-        # else:
-            # self.shutdown()
 
     def _exit_logger(self):
         for handler in self.log.handlers:
             with closing(handler) as hdlr:
                 self.log.remove_handler(hdlr)
 
-    # def restart(self):
-        # self.log.info(_("Restarting pyLoad ..."))
-        # self._restart.set()
-        # self._stop()
-        # self.start()
+    def restart(self):        
+        self._stop()
+        self.log.info(_("Restarting pyLoad ..."))
+        self.evm.fire('pyload:restarting')
+        self.start()
 
     def shutdown(self):
         try:
             if self.is_alive():
                 self._stop()
         finally:
+            self.log.info(_("Exiting pyLoad ..."))
             return Process.shutdown(self)
 
     def terminate(self):
@@ -395,13 +411,12 @@ class Core(Process):
             self._stop()
         except Exception:
             pass
+        self.log.info(_("Exiting pyLoad ..."))
         return Process.terminate(self)
 
     def _stop(self):
         self.log.info(_("Stopping pyLoad ..."))
-        self._exiting.set()
-        self.evm.fire(
-            'pyload:restarting' if self._restart else 'pyload:exiting')
+        self.evm.fire('pyload:stopping')
         try:
             # TODO: quit webserver
             self.dlm.shutdown()
