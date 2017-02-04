@@ -6,7 +6,7 @@ from module.plugins.internal.XFSHoster import XFSHoster
 class UptoboxCom(XFSHoster):
     __name__    = "UptoboxCom"
     __type__    = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -29,7 +29,7 @@ class UptoboxCom(XFSHoster):
 
     LINK_PATTERN = r'"(https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/d)/.*?)"'
 
-    DL_LIMIT_PATTERN = r'>To give priority to premium users, you have to wait (.+) to launch a new download\.<'
+    DL_LIMIT_PATTERN = r'>or you can wait (.+) to launch a new download<'
 
 
     def setup(self):

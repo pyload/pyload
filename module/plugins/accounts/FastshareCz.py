@@ -9,16 +9,17 @@ from module.plugins.internal.misc import set_cookie
 class FastshareCz(Account):
     __name__    = "FastshareCz"
     __type__    = "account"
-    __version__ = "0.13"
+    __version__ = "0.15"
     __status__  = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it")]
+                       ("stickell", "l.stickell@yahoo.it"),
+                       ("ondrej", "git@ondrej.it")]
 
 
-    CREDIT_PATTERN = r'Credit\s*:\s*</td>\s*<td>(.+?)\s*<'
+    CREDIT_PATTERN = r'<a href="/user">.+<span>\(([\d\.]+) ([MGT]+B)\)</span></a>'
 
 
     def grab_info(self, user, password, data):
@@ -30,7 +31,7 @@ class FastshareCz(Account):
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m is not None:
-            trafficleft = self.parse_traffic(m.group(1))
+            trafficleft = self.parse_traffic(m.group(1), m.group(2))
 
         premium = bool(trafficleft)
 
@@ -42,7 +43,7 @@ class FastshareCz(Account):
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "fastshare.cz", "lang", "en")
 
-        self.load('http://www.fastshare.cz/login')  #@NOTE: Do not remove or it will not login
+        self.load('https://www.fastshare.cz/login')  #@NOTE: Do not remove or it will not login
 
         html = self.load("https://www.fastshare.cz/sql.php",
                          post={'login': user,

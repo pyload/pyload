@@ -13,7 +13,7 @@ from module.plugins.internal.misc import json
 class GoogledriveCom(Hoster):
     __name__    = "GoogledriveCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|(?:uc|open)\?.*id=)(?P<ID>[-\w]+)'
@@ -51,10 +51,22 @@ class GoogledriveCom(Hoster):
 
 
     def api_download(self):
-        self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
-                      get={'alt'             : "media",
-                           # 'acknowledgeAbuse': "true",
-                           'key'             : self.API_KEY})
+        try:
+            self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
+                          get={'alt'             : "media",
+                               # 'acknowledgeAbuse': "true",
+                               'key'             : self.API_KEY})
+
+        except BadHeader, e:
+            if e.code == 404:
+                self.offline()
+
+            elif e.code == 403:
+                self.temp_offline()
+
+            else:
+                raise
+
 
 
     def process(self, pyfile):

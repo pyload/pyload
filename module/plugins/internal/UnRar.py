@@ -12,14 +12,17 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.33"
+    __version__ = "1.35"
     __status__  = "testing"
+
+    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 
     __description__ = """RAR extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org"          ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("Immenz"        , "immenz@gmx.net"            ),
+                       ("GammaCode"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     CMD        = "unrar"
@@ -149,6 +152,9 @@ class UnRar(Extractor):
             elif self._RE_BADCRC.search(err):
                 raise CRCError(err)
 
+            elif self.config.get('ignore_warnings', False) and err.startswith("WARNING:"):
+                pass
+
             else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
@@ -159,14 +165,16 @@ class UnRar(Extractor):
 
 
     def chunks(self):
+        files = []
         dir, name = os.path.split(self.filename)
-
-        #: Actually extracted file
-        files = [self.filename]
 
         #: eventually Multipart Files
         files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
                      if re.sub(self._RE_PART, "", name) == re.sub(self._RE_PART, "", file))
+
+        #: Actually extracted file
+        if self.filename not in files:
+            files.append(self.filename)
 
         return files
 
@@ -191,8 +199,20 @@ class UnRar(Extractor):
                 if os.path.isfile(f):
                     result.add(fsjoin(self.dest, os.path.basename(f)))
         else:
-            for f in decode(out).splitlines():
-                result.add(fsjoin(self.dest, f.strip()))
+            if self.fullpath:
+                for f in decode(out).splitlines():
+                    # Unrar fails to list all directories for some archives
+                    f = f.strip()
+                    while f:
+                        fabs = fsjoin(self.dest, f)
+                        if fabs not in result:
+                            result.add(fabs)
+                            f = os.path.dirname(f)
+                        else:
+                            break
+            else:
+                for f in decode(out).splitlines():
+                    result.add(fsjoin(self.dest, f.strip()))
 
         self.files = list(result)
         return self.files

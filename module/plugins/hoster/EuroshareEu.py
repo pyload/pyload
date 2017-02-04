@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class EuroshareEu(SimpleHoster):
     __name__    = "EuroshareEu"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -27,7 +27,7 @@ class EuroshareEu(SimpleHoster):
     NAME_PATTERN    = r'<div class="main-panel__title">(?P<N>.+?)</div>'
     SIZE_PATTERN    = r'File size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
-    OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|<div class="container">FILE NOT FOUND</div>'
+    OFFLINE_PATTERN = ur'<h2>S.bor sa nena.iel</h2>|<div class="container">FILE NOT FOUND</div>|>&nbsp;File has been removed due to inactivity\.<'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$' #@TODO: find out the real TEMP_OFFLINE_PATTERN
 
     LINK_PATTERN = r'<a href="(http://\w+\.euroshare\.eu/file/.+?\?download_token=\w+)"'
@@ -50,6 +50,7 @@ class EuroshareEu(SimpleHoster):
 
         m = re.search(self.LINK_PATTERN, self.data)
         if m is None:
+            self.log_debug(self.data)
             self.error(_("LINK_PATTERN not found"))
 
         self.link = m.group(1)
