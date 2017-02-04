@@ -10,16 +10,12 @@ from module.plugins.internal.Account import Account
 class MegaCoNz(Account):
     __name__    = "MegaCoNz"
     __type__    = "account"
-    __version__ = "0.02"
+    __version__ = "0.04"
     __status__  = "testing"
 
     __description__ = """Mega.co.nz account plugin"""
     __license__     = "GPLv3"
     __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
-
-    def init(self):
-        self.info['mega_session_id'] = None
 
 
     def grab_info(self, user, password, data):
@@ -44,7 +40,7 @@ class MegaCoNz(Account):
 
         mega_session_cache = self.db.retrieve("mega_session_cache") or {}
         if user in mega_session_cache:
-            self.info['mega_session_id'] = mega_session_cache[user]
+            data['mega_session_id'] = mega_session_cache[user]
 
             res = mega.api_response(a="ug", xfer=1, pro=1)  #: ug is for user details
             if isinstance(res, dict) and res.get('email', None) == user:
@@ -54,7 +50,7 @@ class MegaCoNz(Account):
                 del mega_session_cache[user]
                 self.db.store("mega_session_cache", mega_session_cache)
 
-        self.info['mega_session_id'] = None
+        data['mega_session_id'] = None
 
         password_key = self.get_password_key(password)
         user_hash = self.get_user_hash(user, password_key)
@@ -88,7 +84,7 @@ class MegaCoNz(Account):
             sid = "".join([chr(int(sid[i: i+2], 16)) for i in xrange(0, len(sid), 2)])
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
 
-        self.info['mega_session_id'] = sid
+        data['mega_session_id'] = sid
         mega_session_cache[user] = sid
         self.db.store("mega_session_cache", mega_session_cache)
 

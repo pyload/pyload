@@ -202,9 +202,15 @@ class MegaClient(object):
         if self.node_id:
             get_params['n'] = self.node_id
 
-        mega_session_id = self.plugin.info.get('mega_session_id', None) or \
-                          (self.plugin.account.info.get('mega_session_id', None)
-                           if (hasattr(self.plugin, 'account') and self.plugin.account) else None)
+        if hasattr(self.plugin, 'account'):
+            if self.plugin.account:
+                mega_session_id = self.plugin.account.info['data'].get('mega_session_id', None)
+
+            else:
+                mega_session_id = None
+
+        else:
+            mega_session_id = self.plugin.info['data'].get('mega_session_id', None)
 
         if mega_session_id:
             get_params['sid'] = mega_session_id
@@ -248,7 +254,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
