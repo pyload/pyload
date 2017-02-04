@@ -12,14 +12,17 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.34"
+    __version__ = "1.35"
     __status__  = "testing"
+
+    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 
     __description__ = """RAR extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org"          ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("Immenz"        , "immenz@gmx.net"            ),
+                       ("GammaCode"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     CMD        = "unrar"
@@ -148,6 +151,9 @@ class UnRar(Extractor):
 
             elif self._RE_BADCRC.search(err):
                 raise CRCError(err)
+
+            elif self.config.get('ignore_warnings', False) and err.startswith("WARNING:"):
+                pass
 
             else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
