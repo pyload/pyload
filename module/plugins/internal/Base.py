@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -107,7 +107,12 @@ class Base(Plugin):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
-        #: Hide any password
+        #: Hide any user/password
+        try:
+            msg = msg.replace(self.account.user, self.account.user[:3] + "*******")
+        except Exception:
+            pass
+
         try:
             msg = msg.replace(self.account.info['login']['password'], "**********")
         except Exception:

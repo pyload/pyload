@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -68,7 +68,12 @@ class Account(Plugin):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
 
-        #: Hide any password
+        #: Hide any user/password
+        try:
+            msg = msg.replace(self.user, self.user[:3] + "*******")
+        except Exception:
+            pass
+
         try:
             msg = msg.replace(self.info['login']['password'], "**********")
         except Exception:
