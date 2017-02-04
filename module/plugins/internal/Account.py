@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -292,7 +292,7 @@ class Account(Plugin):
 
     @lock
     def add(self, user, password=None, options={}):
-        self.log_info(_("Adding user `%s`...") % user)
+        self.log_info(_("Adding user `%s`...") % (user[:3] + "*******"))
 
         if user in self.accounts:
             self.log_error(_("Error adding user `%s`") % user, _("User already exists"))
