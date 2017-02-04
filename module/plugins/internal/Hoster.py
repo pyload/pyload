@@ -3,7 +3,6 @@
 from __future__ import with_statement
 
 import __builtin__
-import hashlib
 import mimetypes
 import os
 import re
@@ -34,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__    = "Hoster"
     __type__    = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.60"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -184,11 +183,8 @@ class Hoster(Base):
                 location = self.fixurl(header.get('location'), url)
                 code     = header.get('code')
 
-                if code == 302:
-                    resource = location
-
-                elif code == 301 or resumable:
-                    self.log_debug("Redirect #%d to: %s" % (i, location))
+                if code in (301, 302) or resumable:
+                    self.log_debug(_("Redirect #%d to: %s") % (i, location))
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -231,6 +227,11 @@ class Hoster(Base):
             newname = self.req.httpDownload(url, file, get, post,
                                             ref, cookies, chunks, resume,
                                             self.pyfile.setProgress, disposition)
+
+        except IOError, e:
+            self.log_error(e.message)
+            self.fail(_("IOError %s") % e.errno)
+
         except BadHeader, e:
             self.req.http.code = e.code
             raise
@@ -348,7 +349,7 @@ class Hoster(Base):
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug("Content: %s" % content)
+        # self.log_debug(_("Content: %s") % content)
         for name, rule in rules.items():
             if isinstance(rule, basestring):
                 if rule in content:

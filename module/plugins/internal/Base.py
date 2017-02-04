@@ -27,7 +27,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__    = "Base"
     __type__    = "base"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -165,6 +165,7 @@ class Base(Plugin):
         self.setup_base()
         self.grab_info()
         self.setup()
+        self.check_status()
 
 
     def load_account(self):

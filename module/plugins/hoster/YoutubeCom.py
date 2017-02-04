@@ -40,10 +40,10 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__    = "YoutubeCom"
     __type__    = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.55"
     __status__  = "testing"
 
-    __pattern__ = r'https?://(?:[^/]*\.)?(youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)\w+'
+    __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
     __config__  = [("activated", "bool", "Activated", True),
                    ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
                    ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
@@ -140,9 +140,9 @@ class YoutubeCom(Hoster):
                 self.fail(e.message)
 
         #: Remove old records from cache
-        for _c in cache_info['cache'].iterkeys():
-            if time.time() >= cache_info['cache'][_c]['time'] + 24 * 60 * 60:
-                cache_info['cache'].pop(_c, None)
+        for _k in list(cache_info['cache'].iterkeys()):
+            if time.time() >= cache_info['cache'][_k]['time'] + 24 * 60 * 60:
+                cache_info['cache'].pop(_k, None)
                 cache_dirty = True
 
         if cache_dirty:
@@ -492,7 +492,7 @@ class JSInterpreter(object):
         return obj
 
     def extract_function(self, function_name):
-        func_m = re.search(r'(?x)(?:function\s+%s|[{;,]%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
+        func_m = re.search(r'(?x)(?:function\s+%s|[{;,]\s*%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
                            % (re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
         if func_m is None:
             raise JSInterpreterError('Could not find JS function %r' % function_name)

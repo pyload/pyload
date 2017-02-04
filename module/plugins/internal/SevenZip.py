@@ -11,7 +11,7 @@ from module.plugins.internal.misc import encode, fsjoin, renice
 class SevenZip(UnRar):
     __name__    = "SevenZip"
     __type__    = "extractor"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -21,7 +21,7 @@ class SevenZip(UnRar):
 
 
     CMD        = "7z"
-    EXTENSIONS = ["7z", "xz", "zip", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
+    EXTENSIONS = ["7z", "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
                   "tbz", "tar", "wim", "swm", "lzma", "rar", "cab", "arj", "z",
                   "taz", "cpio", "rpm", "deb", "lzh", "lha", "chm", "chw", "hxs",
                   "iso", "msi", "doc", "xls", "ppt", "dmg", "xar", "hfs", "exe",

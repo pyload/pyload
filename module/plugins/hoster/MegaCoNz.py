@@ -41,6 +41,7 @@ from module.plugins.internal.misc import decode, encode, exists, fsjoin, json
 # EWRITE              (-20): Write failed
 # EREAD               (-21): Read failed
 # EAPPKEY             (-22): Invalid application key; request not processed
+# ESSL                (-23): SSL verification failed
 
 
 class MegaCrypto(object):
@@ -67,8 +68,14 @@ class MegaCrypto(object):
 
 
     @staticmethod
+    def a32_to_base64(a):
+        return MegaCrypto.base64_encode(MegaCrypto.a32_to_str(a))
+
+
+    @staticmethod
     def base64_to_a32(s):
         return MegaCrypto.str_to_a32(MegaCrypto.base64_decode(s))
+
 
     @staticmethod
     def cbc_decrypt(data, key):
@@ -190,10 +197,27 @@ class MegaClient(object):
         Dispatch a call to the api, see https://mega.co.nz/#developers
         """
         uid = random.randint(10 << 9, 10 ** 10)  #: Generate a session id, no idea where to obtain elsewhere
+        get_params = {'id': uid}
+
+        if self.node_id:
+            get_params['n'] = self.node_id
+
+        if hasattr(self.plugin, 'account'):
+            if self.plugin.account:
+                mega_session_id = self.plugin.account.info['data'].get('mega_session_id', None)
+
+            else:
+                mega_session_id = None
+
+        else:
+            mega_session_id = self.plugin.info['data'].get('mega_session_id', None)
+
+        if mega_session_id:
+            get_params['sid'] = mega_session_id
 
         try:
             res = self.plugin.load(self.API_URL,
-                                   get={'id': uid, 'n': self.node_id},
+                                   get=get_params,
                                    post=json.dumps([kwargs]))
 
         except BadHeader, e:
@@ -203,7 +227,12 @@ class MegaClient(object):
                 raise
 
         self.plugin.log_debug(_("Api Response: ") + res)
-        return json.loads(res)
+
+        res = json.loads(res)
+        if isinstance(res, list):
+            res = res[0]
+
+        return res
 
 
     def check_error(self, code):
@@ -225,7 +254,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__    = "MegaCoNz"
     __type__    = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -307,9 +336,11 @@ class MegaCoNz(Hoster):
 
     def checksum_failed(self, local_file, msg):
         check_action = self.config.get("check_action", default="retry", plugin="Checksum")
+
         if check_action == "retry":
             max_tries = self.config.get("max_tries", default=2, plugin="Checksum")
             retry_action = self.config.get("retry_action", default="fail", plugin="Checksum")
+
             if all(_r < max_tries for _id, _r in self.retries.items()):
                 os.remove(local_file)
                 wait_time = self.config.get("wait_time", default=1, plugin="Checksum")
@@ -340,7 +371,7 @@ class MegaCoNz(Hoster):
                                name)
             if exists(dest_file):
                 self.pyfile.name = name
-                self.skip("File exists.")
+                self.skip(_("File exists."))
 
 
     def process(self, pyfile):
@@ -353,23 +384,29 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug(_("ID: %s") % id, _("Key: %s") % key, _("Type: %s") % ("public" if public else "node"), _("Owner: %s") % owner)
+        self.log_debug(_("ID: %s") % id,
+                       _("Key: %s") % key,
+                       _("Type: %s") % ("public" if public else "node"),
+                       _("Owner: %s") % owner)
 
         key = MegaCrypto.base64_to_a32(key)
+        if len(key) != 8:
+            self.log_error(_("Invalid key length"))
+            self.fail(_("Invalid key length"))
 
         mega = MegaClient(self, self.info['pattern']['OWNER'] or self.info['pattern']['ID'])
 
         #: G is for requesting a download url
         #: This is similar to the calls in the mega js app, documentation is very bad
         if public:
-            res = mega.api_response(a="g", g=1, p=id, ssl=1)[0]
+            res = mega.api_response(a="g", g=1, p=id, ssl=1)
         else:
-            res = mega.api_response(a="g", g=1, n=id, ssl=1)[0]
+            res = mega.api_response(a="g", g=1, n=id, ssl=1)
 
         if isinstance(res, int):
             mega.check_error(res)
-        elif "e" in res:
-            mega.check_error(res['e'])
+        elif isinstance(res, dict) and 'e' in res:
+                mega.check_error(res['e'])
 
         attr = MegaCrypto.decrypt_attr(res['at'], key)
         if not attr:
@@ -384,9 +421,22 @@ class MegaCoNz(Hoster):
         pyfile.name = name + self.FILE_SUFFIX
         pyfile.size = res['s']
 
+        time_left = res.get('tl', 0)
+        if time_left:
+            self.log_warning(_("Free download limit reached"))
+            self.retry(wait=time_left, msg=_("Free download limit reached"))
+
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
-        self.download(res['g'])
+        try:
+            self.download(res['g'])
+
+        except BadHeader, e:
+            if e.code == 509:
+                self.fail(_("Bandwidth Limit Exceeded"))
+
+            else:
+                raise
 
         self.decrypt_file(key)
 

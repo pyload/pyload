@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import time
 
@@ -11,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__    = "UploadedTo"
     __type__    = "hoster"
-    __version__ = "1.01"
+    __version__ = "1.05"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -33,7 +34,7 @@ class UploadedTo(SimpleHoster):
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
     OFFLINE_PATTERN      = r'>Page not found'
-    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance'
+    TEMP_OFFLINE_PATTERN = r'<title>uploaded\.net - Maintenance|Downloads have been blocked for today.<'
     PREMIUM_ONLY_PATTERN = r'This file exceeds the max\. filesize which can be downloaded by free users'
 
     LINK_FREE_PATTERN    = r"url:\s*'(.+?)'"
@@ -85,3 +86,13 @@ class UploadedTo(SimpleHoster):
 
         super(UploadedTo, self).handle_free(pyfile)
         self.check_errors()
+
+    def check_download(self):
+        check = self.scan_download({'dl_limit': self.DL_LIMIT_PATTERN})
+
+        if check == "dl_limit":
+            self.log_warning(_("Free download limit reached"))
+            os.remove(self.last_download)
+            self.retry(wait=10800, msg=_("Free download limit reached"))
+
+        return super(UploadedTo, self).check_download()

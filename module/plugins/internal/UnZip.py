@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class UnZip(Extractor):
     __name__    = "UnZip"
     __type__    = "extractor"
-    __version__ = "1.21"
+    __version__ = "1.22"
     __status__  = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -36,7 +36,8 @@ class UnZip(Extractor):
     def list(self, password=None):
         with zipfile.ZipFile(self.target, 'r') as z:
             z.setpassword(password)
-            return z.namelist()
+            self.files = z.namelist()
+        return self.files
 
 
     def verify(self, password=None):
@@ -63,6 +64,8 @@ class UnZip(Extractor):
             with zipfile.ZipFile(self.target, 'r') as z:
                 z.setpassword(password)
                 z.extractall(self.dest)
+                self.files = z.namelist()
+            return self.files
 
         except RuntimeError, e:
             raise ArchiveError(e)

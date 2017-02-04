@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class SolidfilesCom(SimpleHoster):
     __name__    = "SolidfilesCom"
     __type__    = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'
@@ -21,16 +21,29 @@ class SolidfilesCom(SimpleHoster):
 
     __description__ = """Solidfiles.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("sraedler", "simon.raedler@yahoo.de")]
+    __authors__     = [("sraedler" , "simon.raedler@yahoo.de"    ),
+                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
 
-    NAME_PATTERN    = r'<h1 title="(?P<N>.+?)"'
-    SIZE_PATTERN    = r'<p class="meta">(?P<S>[\d.,]+) (?P<U>[\w_^]+)'
+    NAME_PATTERN    = r'<i class="icon filetype-icon.+?</i>\s*<h1>\s*(?P<N>.+?)\s*</h1>'
+    SIZE_PATTERN    = r'copy-text="viewer\.node\.viewUrl"></copy-button>\s*(?P<S>[\d.,]+) (?P<U>[\w_^]+)'
     OFFLINE_PATTERN = r'<h1>404'
 
-    LINK_FREE_PATTERN = r'id="ddl-text" href="(.+?)"'
+    LINK_FREE_PATTERN = r'<a href="(https?://.*\.solidfilesusercontent\.com/.+?)"'
 
 
     def setup(self):
         self.multiDL    = True
         self.chunk_limit = 1
+
+
+    def handle_free(self, pyfile):
+        action, inputs = self.parse_html_form('action="/v/')
+        if not action or not inputs:
+            self.error(_("Free download form not found"))
+
+        self.data = self.load(self.fixurl(action), post=inputs)
+        
+        super(SolidfilesCom, self).handle_free(pyfile)
+
+

@@ -12,7 +12,7 @@ from module.plugins.internal.misc import encode
 class UnTar(Extractor):
     __name__    = "UnTar"
     __type__    = "extractor"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "stable"
 
     __description__ = """TAR extractor plugin"""
@@ -25,7 +25,10 @@ class UnTar(Extractor):
 
     @classmethod
     def isarchive(cls, filename):
-        return tarfile.is_tarfile(encode(filename))
+        try:
+            return tarfile.is_tarfile(encode(filename))
+        except:
+            return False
 
 
     @classmethod
@@ -35,7 +38,8 @@ class UnTar(Extractor):
 
     def list(self, password=None):
         with tarfile.open(self.target) as t:
-            return t.getnames()
+            self.files = t.getnames()
+        return self.files
 
 
     def verify(self, password=None):
@@ -53,11 +57,13 @@ class UnTar(Extractor):
 
 
     def extract(self, password=None):
-        self.verify()
+        self.verify(password)
 
         try:
             with tarfile.open(self.target, errorlevel=2) as t:
                 t.extractall(self.dest)
+                self.files = t.getnames()
+            return self.files
 
         except tarfile.ExtractError, e:
             self.log_warning(e)

@@ -12,19 +12,22 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__    = "UnRar"
     __type__    = "extractor"
-    __version__ = "1.31"
+    __version__ = "1.35"
     __status__  = "testing"
+
+    __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 
     __description__ = """RAR extractor plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.org" ),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
+    __authors__     = [("RaNaN"         , "RaNaN@pyload.org"          ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("Immenz"        , "immenz@gmx.net"            ),
+                       ("GammaCode"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     CMD        = "unrar"
-    EXTENSIONS = ["rar", "zip", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
-                  "bz2", "jar", "iso", "7z", "xz", "z"]
+    EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
+                  "bz2", "jar", "iso", "xz", "z"]
 
     _RE_PART    = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
@@ -123,7 +126,7 @@ class UnRar(Extractor):
                 break
             #: Reading a percentage sign -> set progress and restart
             if c == "%":
-                self.notifyprogress(int(s))
+                self.pyfile.setProgress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
             elif c not in string.digits:
@@ -149,22 +152,29 @@ class UnRar(Extractor):
             elif self._RE_BADCRC.search(err):
                 raise CRCError(err)
 
+            elif self.config.get('ignore_warnings', False) and err.startswith("WARNING:"):
+                pass
+
             else:  #: Raise error if anything is on stderr
                 raise ArchiveError(err)
 
         if p.returncode:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
+        return self.list(password)
+
 
     def chunks(self):
+        files = []
         dir, name = os.path.split(self.filename)
-
-        #: Actually extracted file
-        files = [self.filename]
 
         #: eventually Multipart Files
         files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
                      if re.sub(self._RE_PART, "", name) == re.sub(self._RE_PART, "", file))
+
+        #: Actually extracted file
+        if self.filename not in files:
+            files.append(self.filename)
 
         return files
 
@@ -189,10 +199,23 @@ class UnRar(Extractor):
                 if os.path.isfile(f):
                     result.add(fsjoin(self.dest, os.path.basename(f)))
         else:
-            for f in decode(out).splitlines():
-                result.add(fsjoin(self.dest, f.strip()))
+            if self.fullpath:
+                for f in decode(out).splitlines():
+                    # Unrar fails to list all directories for some archives
+                    f = f.strip()
+                    while f:
+                        fabs = fsjoin(self.dest, f)
+                        if fabs not in result:
+                            result.add(fabs)
+                            f = os.path.dirname(f)
+                        else:
+                            break
+            else:
+                for f in decode(out).splitlines():
+                    result.add(fsjoin(self.dest, f.strip()))
 
-        return list(result)
+        self.files = list(result)
+        return self.files
 
 
     def call_cmd(self, command, *xargs, **kwargs):
@@ -206,7 +229,7 @@ class UnRar(Extractor):
             args.append("-or")
 
         for word in self.excludefiles:
-            args.append("-x'%s'" % word.strip())
+            args.append("-x%s" % word.strip())
 
         #: Assume yes on all queries
         args.append("-y")

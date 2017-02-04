@@ -98,8 +98,8 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__    = "ExtractArchive"
     __type__    = "hook"
-    __version__ = "1.57"
-    __status__  = "broken"
+    __version__ = "1.60"
+    __status__  = "testing"
 
     __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
                   ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
@@ -274,19 +274,26 @@ class ExtractArchive(Addon):
 
             if not exists(out):
                 os.makedirs(out)
+            
+                if subfolder:
+                    self.set_permissions(out)
 
             matched   = False
             success   = True
-            files_ids = dict((fdata['name'], ((fsjoin(dl_folder, pypack.folder, fdata['name'])), fid, out)) for fid, fdata \
-                        in sorted(pypack.getChildren().values(), key=lambda k: k['name'])).items()  #: Remove duplicates
+            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(dl_folder, pypack.folder, fdata['name'])), out)) for fdata \
+                        in pypack.getChildren().values()).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
+                    files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
+
+                    #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                    #: This is important because, for example, UnRar ignores preceding parts in listing mode
+                    files_ids.sort(key=lambda file_id: file_id[1])
 
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
@@ -294,7 +301,7 @@ class ExtractArchive(Addon):
                         self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for fname, fid, fout in targets:
+                    for fid, fname, fout in targets:
                         name = os.path.basename(fname)
 
                         if not exists(fname):
@@ -304,18 +311,21 @@ class ExtractArchive(Addon):
                         self.log_info(name, _("Extract to: %s") % fout)
                         try:
                             pyfile  = self.pyload.files.getFile(fid)
-                            archive = Extractor(self,
+                            archive = Extractor(pyfile,
                                                 fname,
                                                 fout,
                                                 fullpath,
                                                 overwrite,
                                                 excludefiles,
                                                 priority,
-                                                keepbroken,
-                                                fid)
+                                                keepbroken)
 
                             thread.addActive(pyfile)
                             archive.init()
+
+                            #: Save for removal from file processing list, which happens after deletion.
+                            #: So archive.chunks() would just return an empty list.
+                            chunks = archive.chunks()
 
                             try:
                                 new_files = self._extract(pyfile, archive, pypack.password)
@@ -330,12 +340,12 @@ class ExtractArchive(Addon):
                             continue
 
                         #: Remove processed file and related multiparts from list
-                        files_ids = [(fname, fid, fout) for fname, fid, fout in files_ids \
-                                    if fname not in archive.items()]
+                        files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
+                                    if fname not in chunks]
                         self.log_debug("Extracted files: %s" % new_files)
 
-                        for file in new_files:
-                            self.set_permissions(file)
+                        for filename in new_files:
+                            self.set_permissions(filename)
 
                         for filename in new_files:
                             file = encode(fsjoin(os.path.dirname(archive.filename), filename))
@@ -344,7 +354,7 @@ class ExtractArchive(Addon):
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((filename, fid, os.path.dirname(filename)))  #: Append as new target
+                                new_files_ids.append((fid, filename, os.path.dirname(filename)))  #: Append as new target
 
                         self.manager.dispatchEvent("archive_extracted", pyfile, archive)
 
@@ -447,7 +457,7 @@ class ExtractArchive(Addon):
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
 
-            delfiles = archive.items()
+            delfiles = archive.chunks()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
             if self.config.get('delete'):
@@ -529,7 +539,12 @@ class ExtractArchive(Addon):
                     passwords.append(pw)
 
         except IOError, e:
-            self.log_error(e)
+            if e.errno == 2:
+                with open(file, "wb") as f:
+                    pass
+
+            else:
+                self.log_error(e)
 
         else:
             self.passwords = passwords

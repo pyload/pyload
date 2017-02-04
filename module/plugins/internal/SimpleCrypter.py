@@ -11,7 +11,7 @@ from module.plugins.internal.misc import parse_name, replace_patterns
 class SimpleCrypter(Crypter):
     __name__    = "SimpleCrypter"
     __type__    = "crypter"
-    __version__ = "0.84"
+    __version__ = "0.87"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -207,7 +207,8 @@ class SimpleCrypter(Crypter):
             self._preload()
             self.check_errors()
 
-            self.links.extend(self.get_links())
+            links = self.get_links()
+            self.links.extend(links)
 
             if self.PAGES_PATTERN:
                 self.handle_pages(pyfile)
@@ -249,7 +250,10 @@ class SimpleCrypter(Crypter):
             self.log_info(_("Decrypting as free link..."))
             self.handle_free(self.pyfile)
 
-        return self.links
+        links = self.links
+        self.links = []
+
+        return links
 
 
     def load_page(self, number):
@@ -263,9 +267,12 @@ class SimpleCrypter(Crypter):
         except Exception:
             pages = 1
 
+        links = self.links
         for p in xrange(2, pages + 1):
             self.data = self.load_page(p)
-            self.links.extend(self.get_links())
+            links.extend(self.get_links())
+
+        self.links = links
 
 
     def check_errors(self):

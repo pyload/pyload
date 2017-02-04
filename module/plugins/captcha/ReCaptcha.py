@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 
 import os
 import re
@@ -29,7 +29,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__    = 'ReCaptcha'
     __type__    = 'captcha'
-    __version__ = '0.27'
+    __version__ = '0.33'
     __status__  = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -40,7 +40,9 @@ class ReCaptcha(CaptchaService):
 
 
     KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w\-]+)'
-    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']:\s*["\'])([\w\-]+)'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])([\w\-]+)'
+
+    STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
 
     def detect_key(self, data=None):
@@ -56,18 +58,34 @@ class ReCaptcha(CaptchaService):
             return None
 
 
-    def challenge(self, key=None, data=None, version=None):
+    def detect_secure_token(self, data=None):
+        html = data or self.retrieve_data()
+
+        m = re.search(self.STOKEN_V2_PATTERN, html)
+        if m is not None:
+            self.secure_token = m.group(1).strip()
+            self.log_debug("Secure Token: %s" % self.secure_token)
+            return self.secure_token
+        else:
+            self.log_warning(_("Secure Token pattern not found"))
+            return None
+
+
+    def challenge(self, key=None, data=None, version=None, secure_token=None):
         key = key or self.retrieve_key(data)
+        secure_token = secure_token or self.detect_secure_token(data) if version == 2 else None
 
         if version in (1, 2):
-            return getattr(self, "_challenge_v%s" % version)(key)
+            return getattr(self, "_challenge_v%s" % version)(key, secure_token)
 
         else:
             return self.challenge(key,
-                                  version=2 if re.search(self.KEY_V2_PATTERN, data or self.retrieve_data()) else 1)
+                                  data,
+                                  version=2 if re.search(self.KEY_V2_PATTERN, data or self.retrieve_data()) else 1,
+                                  secure_token=secure_token)
 
 
-    def _challenge_v1(self, key):
+    def _challenge_v1(self, key, secure_token):  #: Currently secure_token is supported in ReCaptcha v2 only
         html = self.pyfile.plugin.load("http://www.google.com/recaptcha/api/challenge",
                                     get={'k': key})
         try:
@@ -236,8 +254,9 @@ class ReCaptcha(CaptchaService):
         return img
 
 
-    def _challenge_v2(self, key):
-        fallback_url = 'http://www.google.com/recaptcha/api/fallback?k=' + key
+    def _challenge_v2(self, key, secure_token=None):
+        fallback_url = "http://www.google.com/recaptcha/api/fallback?k=" + key \
+                       + ("&stoken=" + secure_token if secure_token else "")
 
         html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
 
@@ -275,10 +294,11 @@ class ReCaptcha(CaptchaService):
 
             try:
                 result = re.search(r'"this\.select\(\)">(.*?)</textarea>', html).group(1)
+                self.correct()
                 break
 
             except (AttributeError, IndexError):
-                pass
+                self.invalid()
 
         else:
             self.fail(_("Recaptcha max retries exceeded"))

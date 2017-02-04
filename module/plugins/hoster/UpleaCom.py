@@ -3,13 +3,23 @@
 import re
 import urlparse
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
-class UpleaCom(XFSHoster):
+def decode_cloudflare_email(value):
+    email = ""
+
+    key = int(value[:2], 16)
+    for i in xrange(2, len(value), 2):
+        email += chr(int(value[i:i+2], 16) ^ key)
+
+    return email
+
+
+class UpleaCom(SimpleHoster):
     __name__    = "UpleaCom"
     __type__    = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uplea\.com/dl/\w{15}'
@@ -38,6 +48,9 @@ class UpleaCom(XFSHoster):
     PREMIUM_ONLY_PATTERN = r'You need to have a Premium subscription to download this file'
     WAIT_PATTERN         = r'timeText: ?(\d+),'
     STEP_PATTERN         = r'<a href="(/step/.+)">'
+
+    NAME_REPLACEMENTS = [(r'(<a class="__cf_email__" .+? data-cfemail="(\w+?)".+)',
+                         lambda x: decode_cloudflare_email(x.group(2)))]
 
 
     def setup(self):

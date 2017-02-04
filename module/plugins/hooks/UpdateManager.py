@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threade
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.11"
+    __version__ = "1.15"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -33,7 +33,8 @@ class UpdateManager(Addon):
 
     _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
-    SERVER_URL     = "http://updatemanager.pyload.org"
+    # SERVER_URL     = "http://updatemanager.pyload.org"
+    SERVER_URL     = "http://updatemanager-spyload.rhcloud.com"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
 
@@ -170,11 +171,14 @@ class UpdateManager(Addon):
             self.log_info(_("pyLoad is up to date!"))
             exitcode = self.update_plugins()
 
-        else:
+        elif re.search(r'^\d+(?:\.\d+){0,3}[a-z]?$', newversion):
             self.log_info(_("***  New pyLoad %s available  ***") % newversion)
             self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
             self.info['pyload'] = True
             exitcode = 3
+
+        else:
+            exitcode = 0
 
         #: Exit codes:
         #:  -1 = No plugin updated, new pyLoad version available
@@ -252,8 +256,15 @@ class UpdateManager(Addon):
 
         if blacklist:
             #@NOTE: Protect UpdateManager from self-removing
-            blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
-                                   if plugin['name'] != self.classname and plugin['type'] != self.__type__]
+            if os.name == "nt":
+                #@NOTE: Windows filesystem is case insensitive, make sure we do not delete legitimate plugins
+                whitelisted_plugins = [(plugin['type'], plugin['name'].upper()) for plugin in updatelist]
+                blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
+                                       if not (plugin['name'] == self.classname and plugin['type'] == self.__type__) \
+                                          and (plugin['type'], plugin['name'].upper()) not in whitelisted_plugins]
+            else:
+                blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
+                                       if not (plugin['name'] == self.classname and plugin['type'] == self.__type__)]
 
             c = 1
             l = len(blacklisted_plugins)

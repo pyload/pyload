@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import re
 import time
 
 from module.plugins.internal.Account import Account
-from module.PyFile import PyFile
-from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.misc import json
 
 
 class NitroflareCom(Account):
-    __name__    = "NitroflareCom"
-    __type__    = "account"
-    __version__ = "0.15"
-    __status__  = "testing"
+    __name__ = "NitroflareCom"
+    __type__ = "account"
+    __version__ = "0.18"
+    __status__ = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__     = "GPLv3"
@@ -20,51 +18,21 @@ class NitroflareCom(Account):
                        ("GammaC0de",      "nitzo2001[AT]yahoo[DOT]com")]
 
 
-    VALID_UNTIL_PATTERN  = r'>Time Left</label><strong>(.+?)</'
-    TRAFFIC_LEFT_PATTERN = r'>Your Daily Limit</label><strong>(?P<S1>[\d.,]+) (?P<U1>[\w^_]+ )?/ (?P<S2>[\d.,]+) (?P<U2>[\w^_]+)'
-    LOGIN_FAIL_PATTERN   = r'<ul class="errors">\s*<li>'
-
-    TOKEN_PATTERN =   r'name="token" value="(.+?)"'
-
-
     def grab_info(self, user, password, data):
-        validuntil   = -1
-        trafficleft  = None
-        premium      = False
+        validuntil = -1
+        trafficleft = None
+        premium = False
 
-        html = self.load("https://nitroflare.com/member",
-                         get={'s': "premium"})
+        data = json.loads(self.load("https://nitroflare.com/api/v2/getKeyInfo",
+                                    get={'user'      : user,
+                                         'premiumKey': password}))
 
-        m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m is not None:
-            expiredate = m.group(1).strip()
-            self.log_debug("Time Left: " + expiredate)
+        if data['type'] == 'success':
+            trafficleft = self.parse_traffic(data['result']['trafficLeft'], "byte")
+            premium    = data['result']['status'] == "active"
 
-            try:
-                validuntil = sum(int(v) * {'day': 24 * 3600, 'hour': 3600, 'minute': 60}[u.lower()] for v, u in
-                                 re.findall(r'(\d+)\s*(day|hour|minute)', expiredate, re.I))
-
-            except Exception, e:
-                self.log_error(e, trace=True)
-
-            else:
-                self.log_debug("Valid until: %s" % validuntil)
-
-                if validuntil:
-                    validuntil += time.time()
-                    premium = True
-                else:
-                    validuntil = -1
-
-        m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m is not None:
-            try:
-                trafficleft = self.parse_traffic(m.group('S2'), m.group('U2')) - self.parse_traffic(m.group('S1'), m.group('U1') or "B")
-
-            except Exception, e:
-                self.log_error(e, trace=True)
-        else:
-            self.log_debug("TRAFFIC_LEFT_PATTERN not found")
+            if premium:
+                validuntil = time.mktime(time.strptime(data['result']['expiryDate'], '%Y-%m-%d %H:%M:%S'))
 
         return {'validuntil' : validuntil,
                 'trafficleft': trafficleft,
@@ -72,41 +40,9 @@ class NitroflareCom(Account):
 
 
     def signin(self, user, password, data):
-        login_url = "https://nitroflare.com/login"
-        post_data = {'login'   : "",
-                     'email'   : user,
-                     'password': password}
+        data = json.loads(self.load("https://nitroflare.com/api/v2/getKeyInfo",
+                              get={'user'      : user,
+                                   'premiumKey': password}))
 
-        self.data = self.load(login_url)
-
-        # dummy pyfile
-        pyfile = PyFile(self.pyload.files, -1, login_url, login_url, 0, 0, "", self.classname, -1, -1)
-        pyfile.plugin = self
-
-        self.captcha = ReCaptcha(pyfile)
-
-        captcha_key = self.captcha.detect_key()
-        if captcha_key:
-            response, challenge = self.captcha.challenge()
-            post_data['g-recaptcha-response'] = response
-
-        token = re.search(self.TOKEN_PATTERN, self.data).group(1)
-        post_data['token'] = token
-
-        self.data = self.load("https://nitroflare.com/login", post=post_data)
-
-        if re.search(self.LOGIN_FAIL_PATTERN, self.data):
+        if data['type'] != 'success' or data['result']['status'] == "banned":
             self.fail_login()
-
-    """
-     @NOTE: below are methods
-      necessary for captcha to work with account plugins
-    """
-    def check_status(self):
-        pass
-
-    def retry_captcha(self, attemps=10, wait=1, msg=_("Max captcha retries reached")):
-        self.captcha.invalid()
-        self.fail_login(msg="Invalid captcha")
-
-

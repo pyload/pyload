@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__    = "FastshareCz"
     __type__    = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
@@ -31,7 +31,7 @@ class FastshareCz(SimpleHoster):
     SIZE_PATTERN    = r'>Size\s*:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
-    LINK_FREE_PATTERN    = r'>Enter the code\s*:</em>\s*<span><img src="(.+?)"'
+    LINK_FREE_PATTERN    = r'id=form action=(.+?)>\s*<p><em>Enter the code\s*:</em>\s*<span><img src="(.+?)"'
     LINK_PREMIUM_PATTERN = r'(http://\w+\.fastshare\.cz/download\.php\?id=\d+&)'
 
     SLOT_ERROR   = "> 100% of FREE slots are full"
@@ -52,11 +52,11 @@ class FastshareCz(SimpleHoster):
 
 
     def handle_free(self, pyfile):
-        m = re.search(self.FREE_URL_PATTERN, self.data)
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             action, captcha_src = m.groups()
         else:
-            self.error(_("FREE_URL_PATTERN not found"))
+            self.error(_("LINK_FREE_PATTERN not found"))
 
         baseurl = "http://www.fastshare.cz"
         captcha = self.captcha.decrypt(urlparse.urljoin(baseurl, captcha_src))

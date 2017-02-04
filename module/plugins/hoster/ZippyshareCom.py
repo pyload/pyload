@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__    = "ZippyshareCom"
     __type__    = "hoster"
-    __version__ = "0.87"
+    __version__ = "0.90"
     __status__  = "testing"
 
     __pattern__ = r'http://www\d{0,3}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -24,9 +24,9 @@ class ZippyshareCom(SimpleHoster):
 
     __description__ = """Zippyshare.com hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
-                       ("sebdelsol", "seb.morin@gmail.com")]
-
+    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("sebdelsol"     , "seb.morin@gmail.com"       ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
     COOKIES = [("zippyshare.com", "ziplocale", "en")]
 
@@ -40,7 +40,7 @@ class ZippyshareCom(SimpleHoster):
 
     def setup(self):
         self.chunk_limit     = -1
-        self.multiDL        = True
+        self.multiDL         = True
         self.resume_download = True
 
 
@@ -66,7 +66,7 @@ class ZippyshareCom(SimpleHoster):
     def get_link(self):
         #: Get all the scripts inside the html body
         soup = BeautifulSoup.BeautifulSoup(self.data)
-        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript')]
+        scripts = [s.getText() for s in soup.body.findAll('script', type='text/javascript') if "('dlbutton').href =" in s.getText()]
 
         #: Emulate a document in JS
         inits = ['''
@@ -92,4 +92,5 @@ class ZippyshareCom(SimpleHoster):
 
         #: Get the file's url by evaluating all the scripts
         scripts = inits + scripts + ['document.dlbutton.href']
+
         return self.js.eval('\n'.join(scripts))

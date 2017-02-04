@@ -24,7 +24,7 @@ def get_all_link(data, container):
     videos = []
 
     for i in range(0, len(data["video_qualities"])):
-        if len(data["video_qualities"][i]["formats"][1]) and container == "webm":
+        if container == "webm" and len(data["video_qualities"][i]["formats"]) != 1:
             videos.append(data["video_qualities"][i]["formats"][1]["source"])
 
         else:
@@ -34,7 +34,7 @@ def get_all_link(data, container):
 
 
 def get_link_quality(videos, quality):
-    quality_index = ["240p", "360p", "480p", "720p", "1080p"]
+    quality_index = ["144p", "240p", "360p", "480p", "720p", "1080p"]
     quality = quality_index.index(quality)
 
     link = None
@@ -52,12 +52,12 @@ def get_link_quality(videos, quality):
 class StreamCz(SimpleHoster):
     __name__    = "StreamCz"
     __type__    = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+'
     __config__  = [("activated", "bool",                      "Activated", True),
-                   ("quality",   "240p;360p;480p;720p;1080p", "Quality",   "720p"),
+                   ("quality",   "144p;240p;360p;480p;720p;1080p", "Quality",   "720p"),
                    ("container", "mp4;webm",                  "Container", "mp4"),]
 
     __description__ = """Stream.cz hoster plugin"""

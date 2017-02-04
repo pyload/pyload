@@ -9,7 +9,7 @@ from module.plugins.captcha.ReCaptcha import ReCaptcha
 class CatShareNet(SimpleHoster):
     __name__    = "CatShareNet"
     __type__    = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__  = "testing"
 
     __pattern__ = r'http://(?:www\.)?catshare\.net/\w{15,16}'
@@ -21,12 +21,15 @@ class CatShareNet(SimpleHoster):
 
     __description__ = """CatShare.net hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("z00nx", "z00nx0@gmail.com"),
-                       ("prOq", None),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("z00nx",         "z00nx0@gmail.com"           ),
+                       ("prOq",           None                        ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de",      "nitzo2001[AT]yahoo[DOT]com")]
 
 
-    INFO_PATTERN = r'<title>(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)<'
+    NAME_PATTERN = r'(?:<div class="col-sm-8 col-xs-12 text-left">\s*<h3>|<title>)(?P<N>.+)(?:</h3>| \()'
+    SIZE_PATTERN = r'(?:<div class="col-sm-4 col-xs-12 text-right">\s*<h3>|<title>.+?\()(?P<S>[\d.,]+) (?P<U>[\w^_]+)(?:</h3>|\))'
+
     OFFLINE_PATTERN = r'<div class="alert alert-error"'
 
     IP_BLOCKED_PATTERN = ur'>Nasz serwis wykrył że Twój adres IP nie pochodzi z Polski.<'
@@ -37,7 +40,7 @@ class CatShareNet(SimpleHoster):
 
 
     def setup(self):
-        self.multiDL        = self.premium
+        self.multiDL         = self.premium
         self.resume_download = True
 
 
@@ -49,6 +52,12 @@ class CatShareNet(SimpleHoster):
                               post={'recaptcha_challenge_field': challenge,
                                     'recaptcha_response_field' : response})
 
+        m = re.search(self.LINK_FREE_PATTERN, self.data)
+        if m is not None:
+            self.link = m.group(1)
+
+
+    def handle_premium(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
