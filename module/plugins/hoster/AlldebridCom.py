@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-import urllib
-
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import json, parse_size
 
@@ -14,16 +11,17 @@ class AlldebridCom(MultiHoster):
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__  = [("activated"    , "bool", "Activated"                                        , True ),
+                   ("use_premium"  , "bool", "Use premium account if available"                 , True ),
+                   ("fallback"     , "bool", "Fallback to free download if premium fails"       , False),
+                   ("chk_filesize" , "bool", "Check file size"                                  , True ),
+                   ("max_wait"     , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
+                   ("revert_failed", "bool", "Revert to standard download if fails"             , True )]
 
     __description__ = """Alldebrid.com multi-hoster plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("Andy Voigt", "spamsales@online.de")]
+    __authors__     = [("Andy Voigt", "spamsales@online.de"       ),
+                       ("GammaC0de" , "nitzo2001[AT]yahoo[DOT]com")]
 
 
     def setup(self):
@@ -34,19 +32,27 @@ class AlldebridCom(MultiHoster):
         password = self.get_password()
 
         html = self.load("http://www.alldebrid.com/service.php",
-                         get={'link': pyfile.url, 'json': "true", 'pw': password})
-        data = json.loads(html)
+                         get={'link'    : pyfile.url,
+                              'json'    : "true",
+                              'pseudo'  : self.account.user,
+                              'password': self.account.info['login']['password'],
+                              'pw'      : password})
 
-        self.log_debug("Json data", data)
+        json_data = json.loads(html)
 
-        if data['error']:
-            if data['error'] == "This link isn't available on the hoster website.":
+        self.log_debug("Json data", json_data)
+
+        if json_data['error']:
+            if json_data['error'] == "This link isn't available on the hoster website.":
                 self.offline()
+
             else:
-                self.log_warning(data['error'])
+                self.log_warning(json_data['error'])
                 self.temp_offline()
+
         else:
             if pyfile.name and not pyfile.name.endswith('.tmp'):
-                pyfile.name = data['filename']
-            pyfile.size = parse_size(data['filesize'])
-            self.link = data['link']
+                pyfile.name = json_data['filename']
+
+            pyfile.size = parse_size(json_data['filesize'])
+            self.link = json_data['link']
