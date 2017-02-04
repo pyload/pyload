@@ -9,7 +9,7 @@ from module.plugins.internal.misc import encode
 class PremiumTo(MultiHoster):
     __name__    = "PremiumTo"
     __type__    = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -33,8 +33,8 @@ class PremiumTo(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.download("http://api.premium.to/api/getfile.php",
-                      get={'username': self.account.username,
-                           'password': self.account.password,
+                      get={'username': self.account.user,
+                           'password': self.account.info['login']['password'],
                            'link'    : pyfile.url},
                       disposition=True)
 

@@ -6,7 +6,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class PremiumTo(MultiAccount):
     __name__    = "PremiumTo"
     __type__    = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -20,6 +20,8 @@ class PremiumTo(MultiAccount):
                        ("stickell" , "l.stickell@yahoo.it"       ),
                        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    LOGIN_FAILED_PATTERN = r'wrong username'
+
     API_URL = "http://api.premium.to/api/"
 
     def api_response(self, method, user, password):
@@ -31,13 +33,13 @@ class PremiumTo(MultiAccount):
     def grab_hosters(self, user, password, data):
         html = self.api_response("hosters", user, password)
         return [x.strip() for x in html.replace("\"", "").split(";") if x] \
-            if "You entered a wrong username / password combination" not in html else []
+            if self.LOGIN_FAILED_PATTERN not in html else []
 
 
     def grab_info(self, user, password, data):
         traffic = self.api_response("straffic", user, password)
 
-        if "wrong username" not in traffic:
+        if self.LOGIN_FAILED_PATTERN not in traffic:
             trafficleft = sum(map(float, traffic.split(';'))) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
             return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
 
@@ -48,5 +50,5 @@ class PremiumTo(MultiAccount):
     def signin(self, user, password, data):
         authcode = self.api_response("getauthcode", user, password)
 
-        if "wrong username" in authcode:
+        if self.LOGIN_FAILED_PATTERN in authcode:
             self.fail_login()
