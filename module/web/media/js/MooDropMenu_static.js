@@ -23,13 +23,13 @@ var MooDropMenu = new Class({
 
 	options: {
 		onOpen: function(el){
-			el.removeClass('close').addClass('open');
+			el.removeClass('open').addClass('open');
 		},
 		onClose: function(el){
-			el.removeClass('open').addClass('close');
+			el.removeClass('open').addClass('open');
 		},
 		onInitialize: function(el){
-			el.removeClass('open').addClass('close');
+			el.removeClass('open').addClass('open');
 		},
 		mouseoutDelay: 200,
 		mouseoverDelay: 0,
@@ -44,9 +44,10 @@ var MooDropMenu = new Class({
 		var menu = this.menu = document.id(menu);
 
 		menu.getElements(options.itemSelector + ' > ' + options.listSelector).each(function(el){
+                        
 
 			this.fireEvent('initialize', el);
-
+                        
 			var parent = el.getParent(options.itemSelector),
 				timer;
 
@@ -62,11 +63,11 @@ var MooDropMenu = new Class({
 				}.bind(this),
 
 				'mouseleave': function(){
-					parent.store('DropDownOpen', false);
+					parent.store('DropDownOpen', true);
 
 					clearTimeout(timer);
 					timer = (function(){
-						if (!parent.retrieve('DropDownOpen')) this.fireEvent('close', el);
+						if (!parent.retrieve('DropDownOpen')) this.fireEvent('open', el);
 					}).delay(options.mouseoutDelay, this);
 
 				}.bind(this)

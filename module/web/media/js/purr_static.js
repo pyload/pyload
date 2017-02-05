@@ -32,14 +32,17 @@ var Purr = new Class({
 			'wrapper': {
 				'styles': {
 					'position': 'fixed',
-					'z-index': '9999'
+					'z-index': '9999',
+                                        'width': '40%',
+                                        'margin-top': '60px',
 				},
-				'class': 'purr-wrapper'
+				'class': '',
 			},
 			'alert': {
-				'class': 'purr-alert',
+				'class': 'alert alert-info',
 				'styles': {
-					'opacity': '.85'
+					'opacity': '.70',
+                                        'width': '',
 				}
 			},
 			'buttonWrapper': {
