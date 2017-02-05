@@ -1,0 +1,471 @@
+from __future__ import division
+import math
+import Image, ImageDraw
+from operator import itemgetter
+
+def cleanImage(im, pix):
+    imageheight = range(1,int(im.size[1]))
+    imagewidth = range(1,int(im.size[0]))
+    howmany = 0
+    curcolor = (255,255,255)
+    backcolor = (255,255,255)
+
+    for y in imageheight:
+        jump = True
+        howmany = 0
+        for x in imagewidth:
+            curpix = (pix[x,y][0], pix[x,y][1], pix[x,y][2])
+            #if jump == True:
+            if curpix == backcolor:
+                if howmany == 1:
+                    #clean pixel				
+                    pix[x-1,y] = backcolor
+                jump = False
+                howmany = 0	
+                curcolor = curpix		
+                #print (x, y), jump,2
+            else:
+                if curpix == curcolor or howmany == 0:
+                    #found pixel
+                    jump = True
+                    howmany = howmany + 1
+                    curcolor = curpix
+                    #print (x, y), jump,2
+                else:
+                    howmany = howmany + 1
+        if howmany == 1:
+            #clean pixel				
+            pix[x-1,y] = backcolor
+
+    for x in imagewidth:
+        jump = True
+        howmany = 0	
+        for y in imageheight:
+            curpix = (pix[x,y][0], pix[x,y][1], pix[x,y][2])
+            #if jump == True:
+            if curpix == backcolor:
+                if howmany == 1:
+                    #clean pixel				
+                    pix[x,y-1] = backcolor
+                jump = False	
+                howmany = 0	
+                curcolor = curpix
+                #print (x, y), jump
+            else:
+                if curpix == curcolor or howmany == 0:
+                    #found pixel
+                    jump = True
+                    howmany = howmany + 1
+                    curcolor = curpix
+                    #print (x, y), jump 
+                else:
+                    howmany = howmany + 1
+        if howmany == 1:
+            #clean pixel				
+            pix[x-1,y] = backcolor
+
+    #return -1
+
+def findNextPixelX(im, pix, curx, cury, color = -1):
+    imageheight = range(1,int(im.size[1]))
+    imagewidth = range(curx+1,int(im.size[0]))
+    jump = False
+    newx = -1,-1
+    for x in imagewidth:
+        curpix = pix[x,cury][0] * pix[x,cury][1] * pix[x,cury][2]
+        if jump == True:
+            if curpix == 255**3:
+                jump = False
+               
+        else:
+            if (curpix < 255**3 and color == -1) or (curpix == color and color > -1):
+                #found pixel
+                jump = True
+                curcolor = curpix
+                newx = x, curcolor
+               
+                break;
+        
+    return newx
+    
+def findNextPixelY(im, pix, curx, cury, color = -1):
+    imageheight = range(int(cury)+1,int(im.size[1]))
+    imagewidth = range(int(curx),int(im.size[0]))
+    jump = False
+    newy = -1,-1
+    
+    for y in imageheight:
+        curpix = pix[curx,y][0] * pix[curx,y][1] * pix[curx,y][2]
+        if jump == True:
+            if curpix == 255**3:
+                jump = False
+               
+        else:
+            if (curpix < 255**3 and color == -1) or (curpix == color and color > -1):
+                #found pixel
+                jump = True
+                newy = y, color
+              
+                break;
+    
+    return newy
+
+def findCircle(pix, x1, y1, x2, y2, x3, y3):
+    #trasposizione coordinate
+    #A(0,0) B(x2-x1,y2-y1) C(x3-x1,y3-y1)
+    #x**2+y**2+ax+bx+c=0
+    p1 = (0,0)
+    p2 = (x2-x1,y2-y1) 
+    p3 = (x3-x1,y3-y1)
+    
+    #1
+    c=0
+    #2
+    #p2[0]**2+a*p2[0]+c=0
+    #a*p2[0]=-1*(p2[0]**2-c)
+    #a=(-1*(p2[0]**2-c))/p2[0]
+    a=(-1*(p2[0]**2-c))/p2[0]
+    #3
+    #p3[0]**2+p3[1]**2+a*p3[0]+b*p3[1]+c=0
+    #b*p3[1]=-(p3[0]**2+p3[1]**2+a*p3[0]+c)
+    #b=(-1 * (p3[0]**2+p3[1]**2+a*p3[0]+c)) / p3[1]
+    b=(-1 * (p3[0]**2+p3[1]**2+a*p3[0]+c)) / p3[1]
+    
+    r=round(math.sqrt((-1*(a/2))**2+(-1*(b/2))**2))
+    cx=round((-1*(a/2))+x1)
+    cy=round((-1*(b/2))+y1)
+    
+    return cx,cy,r
+        
+
+def VerifyCircle(im, pix, c):
+    imageheight = range(int(c[1]-c[2]),int(c[1]+c[2]))
+    imagewidth = range(int(c[0]-c[2]),int(c[0]+c[2]))
+    
+    min_ray = 15
+    max_ray = 30
+    howmany = 0
+    missing = 0
+    missingconsecutive = 0
+    missinglist = []
+    exactfind = False
+    
+    pointsofcircle = []
+    
+    if (c[2] < min_ray) or (c[2] > max_ray):
+        return -1
+    
+    #check cardinal points (at least 3)
+    cardinalpoints = 0
+    if VerifyPoint(im, pix,c[0] + c[2],c[1],True) == True:
+        cardinalpoints = cardinalpoints + 1
+    if VerifyPoint(im, pix,c[0] - c[2],c[1],True) == True:
+        cardinalpoints = cardinalpoints + 1
+    if VerifyPoint(im, pix,c[0],c[1] + c[2],True) == True:
+        cardinalpoints = cardinalpoints + 1
+    if VerifyPoint(im, pix,c[0],c[1] - c[2],True) == True:
+        cardinalpoints = cardinalpoints + 1
+    if cardinalpoints < 3:
+        return -1;
+        
+    for x in imagewidth:
+        #Pitagora
+        y = int(round(c[1]- math.sqrt(c[2]**2-(c[0]-x)**2)))
+        y2= int(round(c[1]+ math.sqrt(c[2]**2-(c[0]-x)**2)))
+       
+        howmany = howmany + 2
+        if VerifyPoint(im, pix, x,y,exactfind) == False:
+            missing = missing + 1
+            missinglist.append((x,y))
+        else:
+            pointsofcircle.append((x,y))
+            
+        if VerifyPoint(im, pix, x,y2,exactfind) == False:
+            missing = missing + 1
+            missinglist.append((x,y2))
+        else:
+            pointsofcircle.append((x,y2))
+       
+    for y in imageheight:
+        #Pitagora
+        x = int(round(c[0]- math.sqrt(c[2]**2-(c[1]-y)**2)))
+        x2= int(round(c[0]+ math.sqrt(c[2]**2-(c[1]-y)**2)))
+        
+        howmany = howmany + 2
+        if VerifyPoint(im, pix, x,y,exactfind) == False:
+            missing = missing + 1
+            missinglist.append((x,y))
+        else:
+            pointsofcircle.append((x,y))
+                
+        if VerifyPoint(im, pix, x2,y,exactfind) == False:
+            missing = missing + 1
+            missinglist.append((x2,y))
+        else:
+            pointsofcircle.append((x2,y))
+    
+    for p in missinglist:
+        #pixcopy[p[0],p[1]] = (255,0,255)
+            #left and bottom
+        if (VerifyPoint(im, pix, p[0]-1, p[1],exactfind) == True and \
+            VerifyPoint(im, pix, p[0], p[1]+1,exactfind) == True):
+            missing = missing - 1
+        elif (VerifyPoint(im, pix, p[0]-1, p[1],exactfind) == True and \
+            VerifyPoint(im, pix, p[0], p[1]-1,exactfind) == True):
+            missing = missing - 1
+            #right and bottom
+        elif (VerifyPoint(im, pix, p[0]+1, p[1],exactfind) == True and \
+            VerifyPoint(im, pix, p[0], p[1]+1,exactfind) == True):
+            missing = missing - 1
+            #right and up
+        elif (VerifyPoint(im, pix, p[0]+1, p[1],exactfind) == True and \
+            VerifyPoint(im, pix, p[0], p[1]-1,exactfind) == True):
+            missing = missing - 1
+            
+        if (p[0], p[1]+1) in missinglist or \
+            (p[0], p[1]-1) in missinglist or \
+            (p[0]+1, p[1]) in missinglist or \
+            (p[0]-1, p[1]) in missinglist or \
+            (p[0]+1, p[1]+1) in missinglist or \
+            (p[0]-1, p[1]+1) in missinglist or \
+            (p[0]+1, p[1]-1) in missinglist or \
+            (p[0]-1, p[1]-1) in missinglist or \
+            VerifyPoint(im, pix, p[0], p[1],False) == True:
+            missingconsecutive = missingconsecutive + 1
+    
+    if missing / howmany > 0:
+        indice = c[2] * (missing / howmany)
+    else:
+        indice = 0
+        
+    #Assial Simmetric
+    if _DEBUG == True: 
+        print "Center: " + str(c)
+        print "Missing: " + str(missing)
+        print "Howmany: " + str(howmany)
+        print "Ratio: " + str(missing / howmany)
+        print "Missing consecutives: " + str(missingconsecutive)
+        print "Ratio without consecutives: " + str((missing - missingconsecutive) / howmany)
+        print "List missing: " + str(missinglist)
+        
+    if missing / howmany > 0.20 or \
+        missingconsecutive >= (howmany / 4) * 2 or \
+        howmany < 80:
+        return -1
+    #elif missing / howmany < 0.10:
+    elif missing == 0:
+        pointsofcirclefound.extend(pointsofcircle)
+        return 1
+    elif (missing - missingconsecutive) / howmany < 0.20:
+        return 0
+    else:
+        pointsofcirclefound.extend(pointsofcircle)
+        return 1
+    
+def VerifyPoint(im, pix, x,y,exact,color = -1):
+    #Verify point
+    result = False
+    background = (255,255,255)
+    
+    curpix = (pix[x,y][0], pix[x,y][1], pix[x,y][2])
+    if (curpix == color and color > -1) or (curpix != background and color == -1):
+        result = True
+    else:
+        if (exact == False):
+            if x < im.size[0]:
+                curpix = (pix[x+1,y][0], pix[x+1,y][1], pix[x+1,y][2])
+                if (curpix == color and color > -1) or (curpix != background and color == -1):
+                    result = True
+            if x > 0:
+                curpix = (pix[x-1,y][0], pix[x-1,y][1], pix[x-1,y][2])
+                if (curpix == color and color > -1) or (curpix != background and color == -1):
+                    result = True
+
+    return result
+    
+#Decrypt open circle captcha
+#Param: Loaded image with PIL library 
+def decrypt(im):
+	
+	pix = im.load()
+	
+	stepheight = range(1,im.size[1],2)
+	imagewidth = range(1,im.size[0])
+	lstPoints = [] # Declares an empty list for the points
+	lstX = [] # CoordinateX
+	lstY = [] # CoordinateY
+	lstColors = [] # Declares an empty list named lst
+	
+	if _DEBUG == True: 
+		imdebug = im.copy()		
+		draw = ImageDraw.Draw(imdebug)
+		pixcopy = imdebug.load()
+	
+	pointsofcirclefound = []
+	
+	#Clean image for powerfull search
+	cleanImage(im, pix)
+	
+	found = set()
+	findnewcircle = True
+	
+	#finding all the circles
+	for y1 in stepheight:
+		x1 = 1
+		curcolor = -1 
+		for k in range(1,100):	
+			findnewcircle = False
+			retval = findNextPixelX(im, pix, x1, y1)
+			x1 = retval[0]
+			curcolor = retval[1]
+			if _DEBUG == True: print "x1, y1 -> " + str((x1,y1))
+			if x1 == -1:
+				break
+			
+			if (x1,y1) in pointsofcirclefound:
+				if _DEBUG == True: print 'found ' + str((x1,y1))
+				continue;
+			
+			if _DEBUG == True: pixcopy[x1,y1] = (255,0,0,255)
+			#found 1 pixel, seeking x2,y2
+			x2 = x1
+			y2 = y1
+			for i in range(1,100):					
+				retval = findNextPixelX(im, pix, x2, y2)
+				x2 = retval[0]
+				if _DEBUG == True: print "x2, y2 -> " + str((x2,y1))
+				if x2 == -1:
+					break
+				if abs(x2 - x1) < 6:
+					continue
+				if abs(x2 - x1) > (im.size[1] * 2 / 3):
+					continue
+				
+				if _DEBUG == True: pixcopy[x2,y2] = (0,255,0,255)
+				#found 2 pixel, seeking x3,y3
+				#verify cord
+				
+				x3 = x2 - ((x2 - x1) / 2)
+				y3 = y1
+				for j in range(1,100):					
+					retval = findNextPixelY(im, pix, x3, y3)
+					y3 = retval[0]
+					if _DEBUG == True: print "x3, y3 -> " + str((x3,y3))
+					if y3 == -1:
+						break
+					#verify cord
+					if abs(y3 - y2) < 6:
+						continue;
+					if abs(y3 - y2) > (im.size[1] * 2 / 3):
+						continue;
+					
+					if _DEBUG == True: pixcopy[x3,y3] = (0,0,255,255)
+					#found 3 pixel. try circle
+					c = findCircle(pix, x1,y1,x2,y2,x3,y3)
+				   
+					if c[0] + c[2] >= im.size[0] or c[1] + c[2] >= im.size[1] or c[0] - c[2] <= 0 or c[1] - c[2] <= 0:
+						continue
+				
+					if _DEBUG == True: pixcopy[c[0],c[1]] = (0,0,0,255)
+					#(x-r, y-r, x+r, y+r)
+					verified = VerifyCircle(im, pix, c)
+					
+					if verified == -1:
+						verified = -1
+					elif verified == 0:
+						found.add(((c[0],c[1],c[2]),verified))
+						findnewcircle = True
+					elif verified == 1:
+						found.add(((c[0],c[1],c[2]),verified))
+						findnewcircle = True
+						
+					if _DEBUG == True: 
+						_pause = ""
+						#if verified == -1:
+							#draw.ellipse((c[0]-c[2],c[1]-c[2],c[0]+c[2],c[1]+c[2]),outline=(0,0,0))
+							#_pause = "NOTDOUND"
+						if verified == 0:
+							draw.ellipse((c[0]-c[2],c[1]-c[2],c[0]+c[2],c[1]+c[2]),outline=(128,128,128,255))
+							_pause = "OPENED"
+						if verified == 1:# or verified == -1:
+							draw.ellipse((c[0]-c[2],c[1]-c[2],c[0]+c[2],c[1]+c[2]),outline=(255,0,0,255))
+							_pause = "CLOSED"
+						
+						imdebug.save("output.png", "png")
+						if _pause != "":
+							valore = raw_input('Found ' + _pause + ' CIRCLE circle press [Enter] = continue / [q] for Quit: ' + str(verified))
+							if valore == 'q':
+								sys.exit();
+						
+					if findnewcircle == True:
+						break
+				if findnewcircle == True:
+					break
+	
+	if _DEBUG == True:		
+		print 'Howmany open circle? ' + str(len(found)) + ' ' + str(found)
+	
+	#clean results	
+	for c in found:
+		verify = c[1]
+		if verify == 0:
+			p = c[0]
+			if (
+				((p[0], p[1]+1,p[2]),1) in found or \
+				((p[0], p[1]-1,p[2]),1) in found or \
+				((p[0]+1, p[1],p[2]),1) in found or \
+				((p[0]-1, p[1],p[2]),1) in found or \
+				((p[0]+1, p[1]+1,p[2]),1) in found or \
+				((p[0]-1, p[1]+1,p[2]),1) in found or \
+				((p[0]+1, p[1]-1,p[2]),1) in found or \
+				((p[0]-1, p[1]-1,p[2]),1) in found \
+				):
+				
+				#delete nearly circle
+				verify = -1
+			if (
+				((p[0], p[1]+1,p[2]+1),1) in found or \
+				((p[0], p[1]-1,p[2]+1),1) in found or \
+				((p[0]+1, p[1],p[2]+1),1) in found or \
+				((p[0]-1, p[1],p[2]+1),1) in found or \
+				((p[0]+1, p[1]+1,p[2]+1),1) in found or \
+				((p[0]-1, p[1]+1,p[2]+1),1) in found or \
+				((p[0]+1, p[1]-1,p[2]+1),1) in found or \
+				((p[0]-1, p[1]-1,p[2]+1),1) in found \
+				):
+				
+				#delete nearly circle
+				verify = -1            
+			if (
+				((p[0], p[1]+1,p[2]-1),1) in found or \
+				((p[0], p[1]-1,p[2]-1),1) in found or \
+				((p[0]+1, p[1],p[2]-1),1) in found or \
+				((p[0]-1, p[1],p[2]-1),1) in found or \
+				((p[0]+1, p[1]+1,p[2]-1),1) in found or \
+				((p[0]-1, p[1]+1,p[2]-1),1) in found or \
+				((p[0]+1, p[1]-1,p[2]-1),1) in found or \
+				((p[0]-1, p[1]-1,p[2]-1),1) in found \
+				):
+				
+				#delete nearly circle
+				verify = -1
+					
+		if verify == 0:
+			if _DEBUG == True: pixcopy[c[0][0],c[0][1]] = (255,255,0)
+			return c[0][0],c[0][1]
+		elif verify == 1:
+			if _DEBUG == True: pixcopy[c[0][0],c[0][1]] = (255,0,0)
+		else:
+			if _DEBUG == True: pixcopy[c[0][0],c[0][1]] = (0,0,255)
+
+
+
+	#im.save("output.png", "png")
+	#imdebug.save("debug.png", "png")
+
+
+
+#Return coordinates of opened circle (eg (x,y))
+_DEBUG = False	
+coords = decrypt(Image.open("circlecaptcha_extend.png")); #Can be many different formats.
+print "Coords: " + str(coords)
