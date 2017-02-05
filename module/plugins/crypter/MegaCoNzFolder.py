@@ -8,7 +8,7 @@ from module.plugins.internal.Crypter import Crypter
 class MegaCoNzFolder(Crypter):
     __name__    = "MegaCoNzFolder"
     __type__    = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)'
@@ -33,7 +33,7 @@ class MegaCoNzFolder(Crypter):
         mega = MegaClient(self, id)
 
         #: F is for requesting folder listing (kind like a `ls` command)
-        res = mega.api_response(a="f", c=1, r=1, ca=1, ssl=1)[0]
+        res = mega.api_response(a="f", c=1, r=1, ca=1, ssl=1)
 
         if isinstance(res, int):
             mega.check_error(res)
