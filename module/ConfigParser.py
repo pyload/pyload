@@ -101,7 +101,7 @@ class ConfigParser:
             if "username" in homeconf["remote"]:
                 if "password" in homeconf["remote"]:
                     self.oldRemoteData = {"username": homeconf["remote"]["username"]["value"],
-                                          "password": homeconf["remote"]["username"]["value"]}
+                                          "password": homeconf["remote"]["password"]["value"]}
                     del homeconf["remote"]["password"]
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
