@@ -10,7 +10,7 @@ from module.plugins.internal.misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__    = "MultiAccount"
     __type__    = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__  = "testing"
 
     __config__ = [("activated"  , "bool"               , "Activated"                    , True ),
@@ -84,16 +84,14 @@ class MultiAccount(Account):
         for r in self.DOMAIN_REPLACEMENTS:
             pattern, repl = r
             regex = re.compile(pattern, re.I | re.U)
-            domains = [regex.sub(repl, domain) if regex.match(domain) else domain for domain in list]
+            list = [regex.sub(repl, domain) if regex.match(domain) else domain for domain in list]
 
-        return domains
+        return list
 
 
     def parse_domains(self, list):
-        regexp  = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
+        regexp  = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
                              re.I | re.U)
-
-        r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)'
 
         domains = [decode(domain).strip().lower() for url in list for domain in regexp.findall(url)]
         return self.replace_domains(uniqify(domains))
@@ -134,24 +132,28 @@ class MultiAccount(Account):
 
         hosters = self._grab_hosters()
 
-        self.log_debug("Hoster list for user `%s`: %s" % (self.user, hosters))
+        if hosters:
+            self.log_debug("Hoster list for user `%s`: %s" % (self.user, hosters))
 
-        old_supported = self.supported
+            old_supported = self.supported
 
-        self.supported    = []
-        self.newsupported = []
-        self.plugins      = []
+            self.supported    = []
+            self.newsupported = []
+            self.plugins      = []
 
-        self._override()
+            self._override()
 
-        old_supported = [plugin for plugin in old_supported if plugin not in self.supported]
+            old_supported = [plugin for plugin in old_supported if plugin not in self.supported]
 
-        if old_supported:
-            self.log_debug("Unload: %s" % ", ".join(old_supported))
-            for plugin in old_supported:
-                self.unload_plugin(plugin)
+            if old_supported:
+                self.log_debug("Unload: %s" % ", ".join(old_supported))
+                for plugin in old_supported:
+                    self.unload_plugin(plugin)
 
-        self.periodical.set_interval(self.config.get('mh_interval', 12) * 60 * 60)
+            self.periodical.set_interval(self.config.get('mh_interval', 12) * 60 * 60)
+
+        else:
+            self.log_error("Failed to load hoster list for user `%s`" % self.user)
 
 
     def _override(self):
@@ -214,7 +216,7 @@ class MultiAccount(Account):
 
         for _i in xrange(5):
             try:
-                plugin_set = set(self.grab_hosters(self.user, self.info['login']['password'], self.info['data']))
+                plugin_set = set(self._grab_hosters())
                 break
 
             except Exception, e:
@@ -277,4 +279,3 @@ class MultiAccount(Account):
     def removeAccount(self, user):
         self.deactivate()
         super(MultiAccount, self).removeAccount(user)
-

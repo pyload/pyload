@@ -9,7 +9,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class DebridItaliaCom(MultiAccount):
     __name__    = "DebridItaliaCom"
     __type__    = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -18,36 +18,42 @@ class DebridItaliaCom(MultiAccount):
 
     __description__ = """Debriditalia.com account plugin"""
     __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__     = [("stickell"      , "l.stickell@yahoo.it"       ),
+                       ("Walter Purcaro", "vuolter@gmail.com"         ),
+                       ("GammaC0de"     , "nitzo2001[AT]yahoo[DOT]com")]
 
 
-    WALID_UNTIL_PATTERN = r'Premium valid till: (.+?) \|'
+    API_URL = "https://debriditalia.com/api.php"
+
+
+    def api_response(self, method, **kwargs):
+        kwargs[method] = ""
+        return self.load(self.API_URL, get=kwargs)
 
 
     def grab_hosters(self, user, password, data):
-        return self.load("http://debriditalia.com/api.php", get={'hosts': ""}).replace('"', '').split(',')
+        return self.api_response("hosts").replace('"', '').split(',')
 
 
     def grab_info(self, user, password, data):
-        info = {'premium': False, 'validuntil': None, 'trafficleft': None}
-        html = self.load("http://debriditalia.com/")
+        validuntil  = None
 
-        if 'Account premium not activated' not in html:
-            m = re.search(self.WALID_UNTIL_PATTERN, html)
-            if m is not None:
-                validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y %H:%M"))
-                info = {'premium': True, 'validuntil': validuntil, 'trafficleft': -1}
-            else:
-                self.log_error(_("Unable to retrieve account information"))
+        html = self.api_response("check", u=user, p=password)
 
-        return info
+        m = re.search(r'<expiration>(.+?)</expiration>', html)
+        if m:
+            validuntil = int(m.group(1))
+
+        else:
+            self.log_error(_("Unable to retrieve account information"))
+
+        return {'validuntil' : validuntil,
+                'trafficleft': -1        ,
+                'premium'    : True       }
 
 
     def signin(self, user, password, data):
-        html = self.load("https://debriditalia.com/login.php",
-                         get={'u': user,
-                              'p': password})
+        html = self.api_response("check", u=user, p=password)
 
-        if 'NO' in html:
+        if "<status>valid</status>" not in html:
             self.fail_login()
