@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__    = "MegaDebridEu"
     __type__    = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -44,7 +44,7 @@ class MegaDebridEu(MultiAccount):
         hosters = self.api_response("getHosters")
 
         if hosters['response_code'] == "ok":
-            return [h for h in [x for x in hosters['hosters']]]
+            return reduce((lambda x, y: x + y), hosters['hosters'])
 
         else:
             self.log_error(_("Unable to retrieve hoster list"))
@@ -59,12 +59,14 @@ class MegaDebridEu(MultiAccount):
         res = self.api_response("connectUser", args(login=user, password=password))
 
         if res['response_code'] == "ok":
-            premium     = True
             validuntil  = float(res['vip_end'])
+            premium     = validuntil > 0
             trafficleft = -1
 
         else:
             self.log_error(res['response_text'])
+
+        data['token'] = res['token']
 
         return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
 
