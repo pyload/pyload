@@ -14,7 +14,6 @@ except:
     beaker_session = None
 
 
-
 class CacheMiddleware(object):
     cache = beaker_cache
 

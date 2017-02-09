@@ -15,7 +15,6 @@ from pyload.remote.json_converter import dumps, loads
 standard_library.install_aliases()
 
 
-
 class AbstractHandler(object):
     """
         Abstract Handler providing common methods shared across WebSocket handlers.

@@ -333,7 +333,7 @@ class CompressionExtensionProcessorBase(ExtensionProcessorInterface):
         if methods is None:
             return None
         # comression_processor = None
-        
+
         # The current implementation tries only the first method that matches
         # supported algorithm. Following methods aren't tried even if the
         # first one is rejected.

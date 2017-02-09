@@ -25,10 +25,6 @@ from pyload.utils.fs import abspath, exists, join, makedirs
 standard_library.install_aliases()
 
 
-
-
-
-
 class Setup(object):
     """
     pyLoads initial setup configuration assistant.

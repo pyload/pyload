@@ -135,7 +135,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         try:
             jk = "{} f()".format(jk)
             jk = js2py.eval_js(jk)
-        except NameError:    
+        except NameError:
             try:
                 jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
             except Exception:

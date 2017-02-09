@@ -12,7 +12,6 @@ from tests.helper import stubs
 PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
 
 
-
 class TestSyntax(TestCase):
     pass
 

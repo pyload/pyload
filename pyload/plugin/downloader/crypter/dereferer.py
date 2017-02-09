@@ -28,7 +28,6 @@ from pyload.plugin.crypter import Crypter
 standard_library.install_aliases()
 
 
-
 class Dereferer(Crypter):
     __name__ = "Dereferer"
     __type__ = "crypter"

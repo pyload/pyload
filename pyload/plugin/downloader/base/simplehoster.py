@@ -18,7 +18,6 @@ from pyload.utils import fixup, html_unescape, parse_size
 standard_library.install_aliases()
 
 
-
 def replace_patterns(string, ruleslist):
     for r in ruleslist:
         rf, rt = r

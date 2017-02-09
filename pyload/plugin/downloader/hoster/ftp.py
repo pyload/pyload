@@ -15,7 +15,6 @@ from pyload.plugin.hoster import Hoster
 standard_library.install_aliases()
 
 
-
 class Ftp(Hoster):
     __name__ = "Ftp"
     __version__ = "0.41"

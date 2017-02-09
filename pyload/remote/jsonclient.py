@@ -15,7 +15,6 @@ from pyload.remote.json_converter import dumps, loads
 standard_library.install_aliases()
 
 
-
 class JSONClient(object):
     URL = "http://localhost:8010/api"
 

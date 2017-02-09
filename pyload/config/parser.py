@@ -25,7 +25,7 @@ class Config(object):
 
         self.filename = file
         self.version  = version
-        
+
         # Meta data information
         self.config = OrderedDict()
         # The actual config values

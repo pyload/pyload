@@ -19,9 +19,6 @@ from pyload.plugin.request import Request, ResponseException
 standard_library.install_aliases()
 
 
-
-
-
 def myquote(url):
     return quote(url.encode('utf8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
 

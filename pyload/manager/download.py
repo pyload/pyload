@@ -23,11 +23,6 @@ from ReadWriteLock import ReadWriteLock
 standard_library.install_aliases()
 
 
-
-
-
-
-
 class DownloadManager(object):
     """
     Schedules and manages download and decrypter jobs.

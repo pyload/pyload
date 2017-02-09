@@ -15,7 +15,6 @@ from tests.helper.stubs import Core
 DatabaseBackend.async = DatabaseBackend.queue
 
 
-
 class TestDatabase(BenchmarkTest):
     bench = ["insert", "insert_links", "insert_many", "get_packages",
              "get_files", "get_files_queued", "get_package_childs", "get_package_files",

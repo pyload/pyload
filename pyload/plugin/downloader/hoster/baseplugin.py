@@ -15,7 +15,6 @@ from pyload.utils import html_unescape, remove_chars
 standard_library.install_aliases()
 
 
-
 class BasePlugin(Hoster):
     __name__ = "BasePlugin"
     __type__ = "hoster"

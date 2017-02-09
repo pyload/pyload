@@ -463,10 +463,6 @@ class Router(object):
         raise HTTPError(404, "Not found: " + repr(path))
 
 
-
-
-
-
 class Route(object):
     ''' This class wraps a route callback along with route specific metadata and
         configuration and applies Plugins on demand. It is also responsible for
@@ -1408,8 +1404,6 @@ class BaseRequest(object):
         self.environ['bottle.request.ext.%s'%name] = value
 
 
-
-
 def _hkey(s):
     return s.title().replace('_','-')
 
@@ -2005,7 +1999,6 @@ class WSGIHeaderDict(DictMixin):
     def __contains__(self, key): return self._ekey(key) in self.environ
 
 
-
 class ConfigDict(dict):
     ''' A dict-like configuration storage with additional support for
         namespaces, validators, meta-data, on_change listeners and more.
@@ -2208,7 +2201,6 @@ class ConfigDict(dict):
         depr('Calling ConfDict is deprecated. Use the update() method.') #0.12
         self.update(*a, **ka)
         return self
-
 
 
 class AppStack(list):
@@ -3135,7 +3127,6 @@ def run(app=None, server='wsgiref', host='127.0.0.1', port=8080,
             print_exc()
         time.sleep(interval)
         sys.exit(3)
-
 
 
 class FileCheckerThread(threading.Thread):

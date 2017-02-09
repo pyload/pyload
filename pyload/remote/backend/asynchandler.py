@@ -19,8 +19,6 @@ from queue import Empty, Queue
 standard_library.install_aliases()
 
 
-
-
 class Mode(object):
     STANDBY = 1
     RUNNING = 2

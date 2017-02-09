@@ -100,7 +100,7 @@ def addcrypted2():
     try:
         jk = "{} f()".format(jk)
         jk = js2py.eval_js(jk)
-    except NameError:    
+    except NameError:
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except Exception:
@@ -111,7 +111,7 @@ def addcrypted2():
                 jk = "".join(jk)
             # else:
                 # print("Could not decrypt key, please install py-spidermonkey or ossp-js")
-    
+
     try:
         Key = unhexlify(jk)
     except Exception:

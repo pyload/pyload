@@ -8,12 +8,6 @@ from bottle import HTTPError, redirect, request
 
 from pyload.webui.interface import PYLOAD, SETUP
 
-try:
-    import zlib
-except ImportError:
-    zlib = None
-
-
 
 def add_json_header(r):
     r.headers.replace("Content-type", "application/json")

@@ -20,8 +20,6 @@ from queue import Queue
 standard_library.install_aliases()
 
 
-
-
 class DownloadThread(BaseThread):
     """
     Thread for downloading files from 'real' hoster plugins.

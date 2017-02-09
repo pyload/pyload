@@ -33,7 +33,7 @@ class ConfigManager(Config):
         # No __init__ call to super class is needed!
 
         self.pyload = core
-        
+
         # The config parser, holding the core config
         self.parser = parser
 

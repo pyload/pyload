@@ -63,9 +63,7 @@ try:
 except ImportError:
     pass
 
-
-
-
+    
 def cache_region(region, *deco_args):
     """Decorate a function to cache itself using a cache region
 

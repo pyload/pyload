@@ -14,7 +14,6 @@ from websocket import create_connection
 standard_library.install_aliases()
 
 
-
 class WSClient(object):
     URL = "ws://localhost:7447/api"
 

@@ -16,7 +16,6 @@ from pyload.utils import lock, to_list
 standard_library.install_aliases()
 
 
-
 class ThreadManager(object):
     """
     Manages all non download related threads and jobs.
