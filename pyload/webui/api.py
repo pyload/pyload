@@ -19,31 +19,28 @@ from pyload.webui.utils import add_json_header, get_user_api, set_session
 standard_library.install_aliases()
 
 
-
-
-
 # used for gzip compression
 try:
     import gzip
 except ImportError:
-    gzip = None
-
-# gzips response if supported
+    pass
 
 
 def json_response(obj):
     accept = 'gzip' in request.headers.get('Accept-Encoding', '')
     result = dumps(obj)
     # do not compress small string
-    if gzip and accept and len(result) > 500:
-        response.headers['Vary'] = 'Accept-Encoding'
-        response.headers['Content-Encoding'] = 'gzip'
-        zbuf = StringIO()
+    if not accept or len(result) <= 500:
+        return result
+    response.headers['Vary'] = 'Accept-Encoding'
+    response.headers['Content-Encoding'] = 'gzip'
+    zbuf = StringIO()
+    try:
         with closing(gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)) as zfile:
             zfile.write(result)
-        return zbuf.getvalue()
-
-    return result
+    except NameError:
+        pass
+    return zbuf.getvalue()
 
 
 # returns http error

@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 
 from builtins import object
 
-from wsgigzip import GzipMiddleware
+
+# from wsgigzip import GzipMiddleware
 
 
 class PrefixMiddleware(object):

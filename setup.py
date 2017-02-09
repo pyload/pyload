@@ -24,24 +24,28 @@ def info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        "argparse", "Beaker >= 1.6", "bitmath", "bottle >= 0.10.0", "colorama",
-        "daemonize", "future", "goslate", "psutil", "pycurl", "requests >= 2.0",
-        "Send2Trash", "setproctitle", "tld", "validators", "watchdog", "wsgigzip"
+        "argparse", "Beaker >= 1.6", "bottle >= 0.10.0", "daemonize",
+        "future", "psutil", "pycurl", "requests >= 2.0", "tld", "validators"
     ]
-    
+
     extras_require = {
-        'Archive decompression': ['unrar'],
+        # 'Archive decompression': ['rarfile'],
         # TODO: Fix `tesserocr` installation
         'Captcha recognition': ["Pillow >= 2.0"],
-        'Colored log': ['colorlog'],
+        'Click\'n\'Load support': ['Js2Py', 'pycrypto'],
+        'Colored log': ['colorama', 'colorlog'],
         'JavaScript evaluation': ['Js2Py'],
+        'Lightweight webserver:sys_platform!="win32"': ['bjoern'],
         'pyLoad auto-update': ['pip'],
         'SSL connection': ['pyOpenSSL'],
-        'Additional features': ['beautifulsoup4', 'IPy', 'pycrypto']
+        'Text translation': ['goslate'],
+        'Trash support': ['Send2Trash'],
+        'Additional features': ['beautifulsoup4', 'bitmath', 'IPy', 'setproctitle'],
+        'Additional features:sys_platform!="win32"': ['dbus-python']
     }
-    if os.name != 'nt':
-        extras_require['Lightweight webserver'] = ['bjoern']
-        extras_require['Additional features'].append('dbus-python')
+    # if os.name != 'nt':
+        # extras_require['Lightweight webserver'] = ['bjoern']
+        # extras_require['Additional features'].append('dbus-python')
 
     entry_points = {
         'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]

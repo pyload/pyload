@@ -6,10 +6,14 @@ from __future__ import absolute_import, print_function, unicode_literals
 import gettext
 import os
 import socket
-import zlib
 
 from pyload.utils.new.lib import hashlib
 from pyload.utils.new.path import open
+
+try:
+    import zlib
+except ImportError:
+    pass
 
 
 def checksum(path, name, buffer=None):

@@ -8,11 +8,15 @@ import os
 import shutil
 from os.path import *
 
-import send2trash
-
 import ctypes
 from pyload.utils.new import clean
+from pyload.utils.new.check import ismodule
 
+try:
+    import send2trash
+except ImportError:
+    pass
+    
 
 @iterate
 def availspace(folder):
@@ -241,7 +245,7 @@ def mtime(path):
 def remove(path, trash=True, ignore_errors=False):
     if not exists(path):
         return
-    if trash:
+    if trash and ismodule('send2trash'):
         send2trash.send2trash(path)
     elif isdir(path):
         shutil.rmtree(path, ignore_errors)

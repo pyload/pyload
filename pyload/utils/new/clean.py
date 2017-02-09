@@ -7,17 +7,19 @@ import datetime
 import urllib.parse
 from builtins import map
 
-import bitmath
 from future import standard_library
 
 from pyload.utils.new import purge
 from pyload.utils.new.check import isiterable
 from pyload.utils.new.decorator import iterate
 
+try:
+    import bitmath
+except ImportError:
+    pass
+
+
 standard_library.install_aliases()
-
-
-
 
 
 def iter(obj, ignore=None):
@@ -93,13 +95,15 @@ def path(*paths):
 
 @iterate
 def size(value):
-    # for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
-        # if abs(value) < 1024.0:
-            # return "{:3.2f} {}".format(value, unit)
-        # else:
-            # value /= 1024.0
-    # return "{:.2f} {}".format(value, 'EiB')
-    return bitmath.Byte(value).best_prefix()
+    try:
+        return bitmath.Byte(value).best_prefix()
+    except NameError:
+        for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
+            if abs(value) < 1024.0:
+                return "{:3.2f} {}".format(value, unit)
+            else:
+                value /= 1024.0
+        return "{:.2f} {}".format(value, 'EiB')
 
 
 @iterate

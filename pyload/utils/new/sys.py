@@ -14,6 +14,11 @@ import psutil
 import ctypes
 from pyload.utils.new.lib.subprocess import PIPE, Popen
 
+try:
+    import dbus
+except ImportError:
+    pass
+
 
 def exec_cmd(command, *args, **kwargs):
     cmd = shlex.split(command)
@@ -142,16 +147,12 @@ def shutdown():
     else:
         #: See `http://stackoverflow.com/questions/23013274/shutting-down-computer-linux-using-python`
         try:
-            import dbus
-
             sys_bus = dbus.SystemBus()
             ck_srv = sys_bus.get_object('org.freedesktop.ConsoleKit',
                                         '/org/freedesktop/ConsoleKit/Manager')
             ck_iface = dbus.Interface(
                 ck_srv, 'org.freedesktop.ConsoleKit.Manager')
             stop_method = ck_iface.get_dbus_method("Stop")
-
             stop_method()
-
-        except Exception:
+        except NameError:
             call_cmd('stop -h now')  # NOTE: Root privileges needed

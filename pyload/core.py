@@ -24,10 +24,15 @@ from multiprocessing import Process
 
 from future import standard_library
 
-import setproctitle
 from pyload.utils.new import clean, misc, sys
 from pyload.utils.new.check import ismodule, lookup
 from pyload.utils.new.path import makedirs, open, remove
+
+try:
+    import setproctitle
+except ImportError:
+    pass
+
 
 standard_library.install_aliases()
 
@@ -36,23 +41,20 @@ try:
     import colorlog
 except ImportError:
     pass
-    
-
-
 
 
 class Restart(Exception):
-    
+
     def __str__(self):
         return """<RestartSignal {}>""".format(self.message)
-        
-        
+
+
 class Shutdown(Exception):
-    
+
     def __str__(self):
         return """<ShutdownSignal {}>""".format(self.message)
-        
-        
+
+
 # TODO:
 #  configurable auth system ldap/mysql
 #  cron job like scheduler
@@ -126,7 +128,7 @@ class Core(Process):
             fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
             datefmt = "%Y-%m-%d %H:%M:%S"
             consoleform = logging.Formatter(fmt, datefmt)
-        
+
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
         self.log.add_handler(consolehdlr)
@@ -330,8 +332,10 @@ class Core(Process):
 
     def _set_process(self):
         profile = os.path.basename(os.getcwd())
-        setproctitle.setproctitle('pyLoad-{}'.format(profile))
-
+        try:
+            setproctitle.setproctitle('pyLoad-{}'.format(profile))
+        except NameError:
+            pass
         niceness = self.config.get('general', 'niceness')
         sys.renice(niceness)
 
@@ -401,7 +405,7 @@ class Core(Process):
             with closing(handler) as hdlr:
                 self.log.remove_handler(hdlr)
 
-    def restart(self):        
+    def restart(self):
         self._stop()
         self.log.info(_("Restarting pyLoad ..."))
         self.evm.fire('pyload:restarting')

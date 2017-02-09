@@ -17,15 +17,14 @@ import argparse
 import operator
 import sys
 
-import colorama
-
 import pyload
 from pyload.utils.new import clean
 from pyload.utils.new.sys import set_console_icon, set_console_title
 
-# colorama.init(autoreset=True)  # NOTE: Doesn't work on Windows...
-
-
+try:
+    import colorama
+except ImportError:
+    pass
 
 
 __all__ = ['logo', 'main', 'parse_args']
@@ -51,8 +50,12 @@ def parse_args(argv=None):
     if not set(map(operator.itemgetter(0), sc)) & set(argv):
         argv.append('start')
 
-    color = lambda c, msg: getattr(
-        colorama.Fore, c) + msg + colorama.Style.RESET_ALL
+    try:
+        color = lambda c, msg: getattr(
+            colorama.Fore, c) + msg + colorama.Style.RESET_ALL
+    except NameError:
+        color = lambda c, msg: msg
+
     blue = lambda msg: color('BLUE', msg)
     green = lambda msg: color('GREEN', msg)
     red = lambda msg: color('RED', msg)

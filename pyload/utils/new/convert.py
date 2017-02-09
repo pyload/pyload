@@ -6,10 +6,16 @@ from __future__ import unicode_literals
 import re
 from builtins import bytes, map, str
 
-import bitmath
-import goslate
-
 from pyload.utils.new.check import isiterable, ismapping
+
+try:
+    import bitmath
+except ImportError:
+    pass
+try:
+    import goslate
+except ImportError:
+    pass
 
 
 def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
@@ -88,30 +94,32 @@ def size(value, in_unit, out_unit):
     if in_unit == out_unit:
         return value
 
-    # sizeunits = ('B', 'K', 'M', 'G', 'T', 'P', 'E')
-    # sizemap   = {u: i * 10 for i, u in enumerate(sizeunits)}
-
-    # in_magnitude  = sizemap[in_unit]
-    # out_magnitude = sizemap[out_unit]
-
-    # magnitude = in_magnitude - out_magnitude
-    # i, d = divmod(value, 1)
-
-    # decimal = int(d * (1024 ** (abs(magnitude) // 10)))
-    # if magnitude >= 0:
-        # integer = int(i) << magnitude
-    # else:
-        # integer = int(i) >> magnitude * -1
-        # decimal = -decimal
-
-    # return integer + decimal
-
     in_unit += "yte" if in_unit == 'B' else "iB"
     out_unit += "yte" if out_unit == 'B' else "iB"
 
-    in_size = getattr(bitmath, in_unit)
-    out_size = getattr(in_size, 'to_' + out_unit)()
-    return out_size.value
+    try:
+        in_size = getattr(bitmath, in_unit)
+        out_size = getattr(in_size, 'to_' + out_unit)()
+        return out_size.value
+
+    except NameError:
+        sizeunits = ('B', 'K', 'M', 'G', 'T', 'P', 'E')
+        sizemap   = {u: i * 10 for i, u in enumerate(sizeunits)}
+
+        in_magnitude  = sizemap[in_unit]
+        out_magnitude = sizemap[out_unit]
+
+        magnitude = in_magnitude - out_magnitude
+        i, d = divmod(value, 1)
+
+        decimal = int(d * (1024 ** (abs(magnitude) // 10)))
+        if magnitude >= 0:
+            integer = int(i) << magnitude
+        else:
+            integer = int(i) >> magnitude * -1
+            decimal = -decimal
+
+        return integer + decimal
 
 
 def to_bool(value, default=None):
