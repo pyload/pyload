@@ -6,7 +6,6 @@ from __future__ import division
 
 from builtins import object
 import socket
-import re
 
 from os import remove
 from os.path import exists

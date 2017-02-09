@@ -12,7 +12,8 @@ import socket
 import zlib
 
 from pyload.utils.new.lib import hashlib
-from pyload.utils.new.path import fsbsize, open
+from pyload.utils.new.path import fsbsize
+from pyload.utils.new.path import open
 
 
 def checksum(path, name, buffer=None):

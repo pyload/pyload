@@ -2,7 +2,9 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyload.api import Api, require_perm, Permission
+from pyload.api import Api
+from pyload.api import Permission
+from pyload.api import require_perm
 
 from pyload.api.base import BaseApi
 

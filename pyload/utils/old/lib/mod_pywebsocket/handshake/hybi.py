@@ -43,8 +43,6 @@ http://tools.ietf.org/html/rfc6455
 
 
 import base64
-import logging
-import os
 import re
 
 from mod_pywebsocket import common

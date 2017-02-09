@@ -43,7 +43,6 @@ http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 # writing/reading.
 
 
-import logging
 import re
 import struct
 

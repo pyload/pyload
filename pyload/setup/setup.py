@@ -11,7 +11,6 @@ from builtins import input
 from builtins import str
 from builtins import object
 from builtins import COREDIR
-import os
 import sys
 import socket
 import gettext
@@ -23,7 +22,11 @@ from sys import exit
 
 
 from pyload.api import Role
-from pyload.utils.fs import abspath, dirname, exists, join, makedirs
+from pyload.utils.fs import abspath
+from pyload.utils.fs import dirname
+from pyload.utils.fs import exists
+from pyload.utils.fs import join
+from pyload.utils.fs import makedirs
 from pyload.utils import get_console_encoding
 from pyload.thread.webui import WebServer
 

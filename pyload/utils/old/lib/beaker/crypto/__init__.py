@@ -1,7 +1,11 @@
 from warnings import warn
 
-from beaker.crypto.pbkdf2 import PBKDF2, strxor
-from beaker.crypto.util import hmac, sha1, hmac_sha1, md5
+from beaker.crypto.pbkdf2 import PBKDF2
+from beaker.crypto.pbkdf2 import strxor
+from beaker.crypto.util import hmac
+from beaker.crypto.util import hmac_sha1
+from beaker.crypto.util import md5
+from beaker.crypto.util import sha1
 from beaker import util
 
 keyLength = None
@@ -14,7 +18,9 @@ if util.jython:
         pass
 else:
     try:
-        from beaker.crypto.pycrypto import getKeyLength, aesEncrypt, aesDecrypt
+        from beaker.crypto.pycrypto import aesDecrypt
+        from beaker.crypto.pycrypto import aesEncrypt
+        from beaker.crypto.pycrypto import getKeyLength
         keyLength = getKeyLength()
     except ImportError:
         pass

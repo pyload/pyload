@@ -127,7 +127,6 @@ used outside a firewall.
 
 import BaseHTTPServer
 import CGIHTTPServer
-import SimpleHTTPServer
 import SocketServer
 import ConfigParser
 import base64

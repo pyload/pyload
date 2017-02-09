@@ -8,7 +8,6 @@ standard_library.install_aliases()
 import cStringIO
 import gzip
 import json
-import os
 
 import bottle
 

@@ -8,11 +8,11 @@ import os
 import pprint
 import sys
 import traceback
-import types
 
 from pyload.utils.new import convert
 from pyload.utils.new.check import proprieties
-from pyload.utils.new.path import makefile, open
+from pyload.utils.new.path import makefile
+from pyload.utils.new.path import open
 
 
 def report(value, path=None):

@@ -9,7 +9,6 @@ import re
 
 from os import listdir, makedirs
 from os.path import isfile, join, exists, basename
-from sys import version_info
 from time import time
 from collections import defaultdict
 from logging import getLogger

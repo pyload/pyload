@@ -9,7 +9,8 @@ from pyload.utils import json
 
 from pyload.config.parser import Config
 
-from pyload.config.convert import to_input, from_string
+from pyload.config.convert import from_string
+from pyload.config.convert import to_input
 
 
 def convertkeyerror(func):
