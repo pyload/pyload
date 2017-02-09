@@ -37,9 +37,9 @@ def info():
         'Captcha recognition': ["Pillow >= 2.0"],
         'Colored log': ['colorlog'],
         'JavaScript evaluation': ['Js2Py'],
-        # 'Plugin dependencies'  : ["beautifulsoup4", "pycrypto"],  # NOTE: Use `smart_import`
         'pyLoad auto-update': ['pip'],
-        'SSL connection': ['pyOpenSSL']
+        'SSL connection': ['pyOpenSSL'],
+        'Optionals': ['beautifulsoup4', 'IPy', 'pycrypto']
     }
     if os.name != 'nt':
         extras_require['Lightweight webserver'] = ['bjoern']
