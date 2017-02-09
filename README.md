@@ -3,7 +3,7 @@
 **pyLoad** is a Free and Open Source download manager written in Python and designed to be
 extremely lightweight, easily extensible and fully manageable via web.
 
-_Continue reading about **pyLoad** amazing features on <https://pyload.net/>. ;)_
+_Continue reading about **pyLoad** amazing features on <https://pyload.net> ._
 
 
 Table of contents
@@ -29,13 +29,13 @@ Table of contents
 - [Development](#development)
   - [Report an Issue](#report-an-issue)
   - [Submit a Code Contribution](#submit-a-code-contribution)
-  - [~~Coding Guidelines~~](coding-guidelines)
+  - [Coding Guidelines](#coding-guidelines)
   - [~~Localization~~](#localization)
-  - [Performances](#performances)
- - [Licensing](#licensing)
+  - [~~Performances~~](#performances)
+- [Licensing](#licensing)
   - [Main Program](#main-program)
   - [Plugins](#plugins)
- - [Credits](#credits)
+- [Credits](#credits)
 
 
 Supported Platforms
@@ -98,37 +98,36 @@ Package name | Min version | Notes
 ------------ | ----------- | ---------
 argparse     | *           |
 Beaker       | 1.6         |
-bitmath      | *           |
 bottle       | 0.10.0      |
-colorama     | *           |
 daemonize    | *           |
-dbus-python  | *           | Unix only
 future       | *           |
-goslate      | *           |
 psutil       | *           |
 pycurl       | *           |
 requests     | 2.0         |
-ruamel.yaml  | *           |
-Send2Trash   | *           |
-setproctitle | *           |
 tld          | *           |
 validators   | *           |
-watchdog     | *           |
-wsgigzip     | *           |
 
 ### Optional Packages
 
 Package name   | Min version | Purpose               | Notes
 -------------- | ----------- | --------------------- | ---------
-beautifulsoup4 | *           | Plugin dependencies   |
+beautifulsoup4 | *           | Additional features   |
+bitmath        | *           | Additional features   |
 bjoern         | *           | Lightweight webserver | Unix only
+colorama       | *           | Colored log           |
 colorlog       | *           | Colored log           |
+dbus-python    | *           | Additional features   | Unix only
+goslate        | *           | Text translation      |
+IPy            | *           | Additional features   |
 Js2Py          | *           | JavaScript evaluation |
 Pillow         | 2.0         | Captcha recognition   |
 pip            | *           | pyLoad auto-update    |
-pycrypto       | *           | Plugin dependencies   |
+pycrypto       | *           | Click'n'Load support  |
 pyOpenSSL      | *           | SSL connection        |
-unrar          | *           | Archive decompression |
+rarfile        | *           | Archive decompression |
+Send2Trash     | *           | Trash support         |
+setproctitle   | *           | Additional features   |
+watchdog       | *           | Additional features   |
 
 ### Test-suite Packages
 
@@ -142,9 +141,9 @@ websocket-client | 0.8.0       |
 Installation
 ------------
 
-> **Note:**
-> Before start, install **Python 2** (or **Python 3**) if missing.
-> See <https://www.python.org/> to learn how to.
+> **Notice:**
+> **Before start, make sure you have _Python_ installed on your system.**
+> To learn how to install it see <https://wiki.python.org/moin/BeginnersGuide/Download>.
 
 You can install **pyLoad** in several ways:
 - [PIP install](#pip-install) *(recommended on Unix based systems)*
@@ -153,17 +152,18 @@ You can install **pyLoad** in several ways:
 
 ### PIP Install
 
-> **Note:**
-> Before start, install **pip** if missing (and **setuptools** of course).
-> See <https://pip.pypa.io/en/stable/installing/> to learn how to.
+> **Notice:**
+> **Before start, make sure you have _pip_ (and _setuptools_) installed on your system.**
+> To learn how to install them see <https://pip.pypa.io/en/stable/installing/>.
 
-Type in your command shell ***with administrator/root privileges***:
+Type in your command shell **with _administrator/root_ privileges**:
 
-    pip install pyload-ng
+    pip install --upgrade pyload-ng
 
-If the above command fails, try typing:
+If the above command fails, consider using the `--user`
+[option](https://pip.pypa.io/en/latest/user_guide/#user-installs):
 
-    pip install --user pyload-ng
+    pip install --upgrade --user pyload-ng
 
 If that fails too, try the [Easy Install](#easy-install) procedure
 or at least the [Manually Install](#manually-install) procedure.
@@ -256,7 +256,7 @@ To run the built-in setup utility, type:
 > and `~/.pyload` otherwise.
 
 > **Note:**
-> To learn how change the config directory see the help list.
+> To learn how to change the config directory see the help list.
 
 
 Usage
@@ -264,7 +264,7 @@ Usage
 
 ### Basic Usage
 
-To start *pyLoad* in verbose (debug) mode, type:
+To start **pyLoad** in verbose (debug) mode, type:
 
     pyload --debug
 
@@ -272,7 +272,7 @@ To enable the webserver debugging as well, append:
 
     pyload --debug --webdebug
 
-To stop a *pyLoad* instance, type:
+To stop a pyLoad instance, type:
 
     pyload stop -p <profilename>
 
@@ -280,15 +280,15 @@ To stop a *pyLoad* instance, type:
 
     pyload stop
 
-To restart a **pyLoad** instance, type:
+To restart a pyLoad instance, type:
 
     pyload restart -p <profilename>
 
-To update the **pyLoad** core (plugins excluded), type:
+To update the pyLoad core (plugins excluded), type:
 
     pyload update
 
-To run the built-in test suite, type:
+~~To run the built-in test suite, type:~~
 
     pyload test
 
@@ -308,14 +308,14 @@ Available methods for the above `pyload` object are:
     - `profile` sets the profile name to use *(`default` if none entered)*.
     - `configdir` sets the config directory path to use *(`%appdata%\pyload` on Windows platforms
       or `~/.pyload` otherwise, if none entered)*.
-    - `refresh` sets refresh/restore mode *(0=off|1=removes compiled and temp files|
-      2=plus restore admin access `admin|pyload`)*.
+    - `refresh` sets refresh/restore mode *(0=off; 1=removes compiled and temp files;
+      2=plus restore default username `admin` and password `pyload`)*.
     - `remote` enables remote API interface at entered *`IP address:Port number`
       (use defaults if none entered)*.
     - `webui` enables web user interface at entered *`IP address:Port number`
       (use defaults if none entered)*.
-    - `debug` sets debug mode *(0=off|1=on|2=verbose)*.
-    - `webdebug` sets webserver debugging *(0=off|1=on)*.
+    - `debug` sets debug mode *(0=off; 1=on; 2=verbose)*.
+    - `webdebug` sets webserver debugging *(0=off; 1=on)*.
     - `daemon` daemonizes process.
 - `pyload.stop(profile=None, wait=300)`
   - **DESCRIPTION**: Terminate a process instance.
@@ -323,7 +323,7 @@ Available methods for the above `pyload` object are:
   - **ARGUMENTS**:
     - `profile` sets the profile name of the process to terminate
       *(terminate all the running processes if none entered)*.
-    - `wait` sets the timeout *(in seconds)* before force to *kill* the process.
+    - `wait` sets the timeout (in seconds) before force to *kill* the process.
 - `pyload.restart(profile=None, configdir=None, refresh=0, remote=None, webui=None, debug=0,
   webdebug=0, daemon=False)`
   - **DESCRIPTION**: Restart a process instance.
@@ -332,14 +332,14 @@ Available methods for the above `pyload` object are:
     - `profile` sets the profile name to use *(`default` if none entered)*.
     - `configdir` sets the config directory path to use *(`%appdata%\pyload` on Windows platforms
       or `~/.pyload` otherwise, if none entered)*.
-    - `refresh` sets refresh/restore mode *(0=off|1=removes compiled and temp files|
-      2=plus restore admin access `admin|pyload`)*.
+    - `refresh` sets refresh/restore mode *(0=off; 1=removes compiled and temp files;
+      2=plus restore default username `admin` and password `pyload`)*.
     - `remote` enables remote API interface at entered *`IP address:Port number`
       (use defaults if none entered)*.
     - `webui` enables web user interface at entered *`IP address:Port number`
       (use defaults if none entered)*.
-    - `debug` sets debug mode *(0=off|1=on|2=verbose)*.
-    - `webdebug` sets webserver debugging *(0=off|1=on)*.
+    - `debug` sets debug mode *(0=off; 1=on; 2=verbose)*.
+    - `webdebug` sets webserver debugging *(0=off; 1=on)*.
     - `daemon` daemonizes process.
 - `pyload.setup()`
   - **DESCRIPTION**: Setup the package.
@@ -366,7 +366,7 @@ Available methods for the above `pyload` object are:
   - **DESCRIPTION**: Show the package version info.
   - **RETURN**: Version tuple.
   - **ARGUMENTS**: None.
-- `pyload.test()`
+- ~~`pyload.test()`~~
   - **DESCRIPTION**: Run the test suite.
   - **RETURN**: None type.
   - **ARGUMENTS**: None.
@@ -376,7 +376,7 @@ Available methods for the above `pyload` object are:
 > not already fully running!
 
 > **Note:**
-> To stop a single **pyLoad** instance you MUST pass its profile name to the function `pyload.stop`,
+> To stop a single pyLoad instance you MUST pass its profile name to the function `pyload.stop`,
 > otherwise all the running instances of **pyLoad** will be terminated!
 
 > **Note:**
@@ -428,8 +428,7 @@ For further information see the [License Section](#license).
 
 ### Coding Guidelines
 
-> **Notice:**
-> **Coding Guidelines not yet available.**
+Please, follow the [PEP 8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
 
 ### Localization
 
@@ -446,7 +445,8 @@ To compile them, run the built-in setup utility *(see the [Configuration Section
 
 ### Performances
 
-No stats right now. :(
+> **Notice:**
+> **Stats not yet available.**
 
 
 Licensing
@@ -468,5 +468,5 @@ Credits
 Please refer to the included [CREDITS](/CREDITS.md) for the extended credits.
 
 
---------------------------------
-###### (c) 2009-2017 pyLoad Team
+------------------------------
+###### © 2009-2017 pyLoad Team
