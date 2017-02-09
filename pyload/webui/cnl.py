@@ -14,14 +14,17 @@ from traceback import print_exc
 
 from pyload.utils.fs import safe_filename
 
-import js2py
+try:
+    import js2py
+except ImportError:
+    pass
 
 from bottle import route, request, HTTPError
 from pyload.webui.interface import PYLOAD, DL_ROOT
 
 try:
     from Crypto.Cipher import AES
-except Exception:
+except ImportError:
     pass
 
 
@@ -92,19 +95,20 @@ def addcrypted2():
     jk = request.forms['jk']
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-    # try:
-        # jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-    # except Exception:
-        Test for some known js functions to decode
-        # if jk.find("dec") > -1 and jk.find("org") > -1:
-            # org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
-            # jk = reversed(org)
-            # jk = "".join(jk)
-        # else:
-            # print("Could not decrypt key, please install py-spidermonkey or ossp-js")
-    
-    jk = "{} f()".format(jk)
-    jk = js2py.eval_js(jk)
+    try:
+        jk = "{} f()".format(jk)
+        jk = js2py.eval_js(jk)
+    except NameError:    
+        try:
+            jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+        except Exception:
+            # Test for some known js functions to decode
+            if jk.find("dec") > -1 and jk.find("org") > -1:
+                org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+                jk = reversed(org)
+                jk = "".join(jk)
+            # else:
+                # print("Could not decrypt key, please install py-spidermonkey or ossp-js")
     
     try:
         Key = unhexlify(jk)

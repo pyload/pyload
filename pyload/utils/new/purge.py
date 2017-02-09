@@ -8,8 +8,8 @@ from builtins import bytes
 
 import re
 
-from pyload.utils.new import convert, web as webutils
-from pyload.utils.new.decorator import iterable
+from pyload.utils.new import convert
+from pyload.utils.new.decorator import iterate
 
 
 ##########################################################################
@@ -67,16 +67,18 @@ def uniqify(seq):
 ##########################################################################
 
 def args(func):
+    from pyload.utils.new.web import purge as webpurge
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
-        args = convert.convert(args, rule, func=webutils.purge.text)
+        args = convert.convert(args, rule, func=webpurge.text)
         return func(*args, **kwargs)
     return new
 
 
 def kwargs(func):
+    from pyload.utils.new.web import purge as webpurge
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
-        kwgs = convert.convert(kwargs, rule, func=webutils.purge.text)
+        kwgs = convert.convert(kwargs, rule, func=webpurge.text)
         return func(*args, **kwgs)
     return new

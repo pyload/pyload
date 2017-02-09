@@ -23,7 +23,7 @@ import colorama
 
 import pyload
 
-from pyload.utils.new import format
+from pyload.utils.new import clean
 from pyload.utils.new.sys import set_console_icon, set_console_title
 
 
@@ -171,10 +171,10 @@ def main():
                 res.shutdown()
 
     elif args.command in ('status', 'version'):
-        print(' '.join(format.iter(res)))
+        print(' '.join(clean.iter(res)))
 
     elif args.command == 'info':
-        print('\n'.join(format.map(res)))
+        print('\n'.join(clean.map(res)))
 
     sys.exit(emsg)
 

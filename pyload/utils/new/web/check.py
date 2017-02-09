@@ -3,16 +3,19 @@
 
 from __future__ import unicode_literals
 
-import IPy
+try:
+    import IPy
+except ImportError:
+    pass
+    
 import bottle
 import mimetypes
 import requests
 import validators
 
-from pyload.utils.new import format
+from pyload.utils.new import clean
 # from pyload.utils.new import parse
-from pyload.utils.new.web.convert import url_to_name
-
+from pyload.utils.new.web import convert as webconvert
 
 # TODO: Recheck
 # def ismobile():
@@ -61,7 +64,7 @@ def ishostname(value):
         return False
     try:
         IPy.IP(name)
-    except ValueError:
+    except (NameError, ValueError):
         pass
     else:
         return False
@@ -71,7 +74,7 @@ def ishostname(value):
 
 def isonline(url, *args, **kwargs):
     online = True
-    url = format.url(url)
+    url = clean.url(url)
 
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
@@ -88,7 +91,7 @@ def isonline(url, *args, **kwargs):
 
 
 def isresource(url, *args, **kwargs):
-    url = format.url(url)
+    url = clean.url(url)
 
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
@@ -102,7 +105,7 @@ def isresource(url, *args, **kwargs):
     if content:
         mime, delemiter, charset = content.rpartition("charset=")
     else:
-        name = url_to_name(url)
+        name = webconvert.url_to_name(url)
         root, ext = os.path.splitext(name)
         if ext:
             mime = mimetypes.guess_type(name, False)[
@@ -116,7 +119,7 @@ def isresource(url, *args, **kwargs):
 
 # TODO: Recheck in 0.5.x
 def isurl(url):
-    url = format.url(url)
+    url = clean.url(url)
     try:
         return validators.url(url)
     except validators.ValidationFailure:

@@ -12,7 +12,7 @@ import send2trash
 
 from os.path import *
 
-from pyload.utils.new import format
+from pyload.utils.new import clean
 from pyload.utils.new.check import isiterable
 
 
@@ -94,7 +94,7 @@ def filesize(path):
 
 
 def open(path, *args, **kwargs):
-    return codecs.open(format.path(path), *args, **kwargs)
+    return codecs.open(clean.path(path), *args, **kwargs)
 
 
 def flush(path):

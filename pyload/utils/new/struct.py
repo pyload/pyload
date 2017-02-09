@@ -4,8 +4,8 @@
 from __future__ import unicode_literals
 from builtins import map
 
+from pyload.utils.new.decorator import lock
 from pyload.utils.new.lib.collections import Mapping, MutableMapping, OrderedDict
-from pyload.utils.new.lib.decorator import lock
 from pyload.utils.new.lib.safe_threading import RLock
 
 

@@ -7,6 +7,8 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import sys
+
 from subprocess import *
 
 if sys.version_info[:2] < (2, 7) and os.name != "nt":

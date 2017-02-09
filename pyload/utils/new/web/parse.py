@@ -9,8 +9,9 @@ import urllib.parse
 import requests
 import tld
 
-from pyload.utils.new import format, web as webutils
+from pyload.utils.new import clean
 from pyload.utils.new.struct import HeadDict
+from pyload.utils.new.web import convert as webconvert, purge as webpurge
 
 
 # TODO: Recheck result format
@@ -22,7 +23,7 @@ def attr(html, name=None):
 
 
 def domain(url):
-    return tld.get_tld(format.url(url), fail_silently=True)
+    return tld.get_tld(clean.url(url), fail_silently=True)
 
 
 def form(html, name=None, inputs={}):
@@ -33,7 +34,7 @@ def form(html, name=None, inputs={}):
         formaction = attr(form.group('TAG'), "action")
 
         for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    webutils.purge.comments(
+                                    webpurge.comments(
                                         form.group('CONTENT')),
                                     re.I | re.S):
             tagname = attr(inputtag.group(1), "name")
@@ -88,4 +89,4 @@ def name(url, *args, **kwargs):
     kwargs.setdefault('verify', False)
     r = requests.head(url, *args, **kwargs)
     cd = r.headers.get('content-disposition')
-    return webutils.convert.url_to_name(cd or url)
+    return webconvert.url_to_name(cd or url)

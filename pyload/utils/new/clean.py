@@ -12,9 +12,9 @@ import urllib.parse
 
 import bitmath
 
-from pyload.utils.new import purge, web as webutils
+from pyload.utils.new import purge
 from pyload.utils.new.check import isiterable
-from pyload.utils.new.decorator import iterable
+from pyload.utils.new.decorator import iterate
 
 
 def iter(obj, ignore=None):
@@ -120,7 +120,8 @@ def time(value):
 
 @iterate
 def url(url):
+    from pyload.utils.new.web import webpurge
     url = urllib.parse.unquote(url.decode('unicode-escape'))
-    url = webutils.purge.text(url).lstrip('.').lower()
+    url = webpurge.text(url).lstrip('.').lower()
     url = re.sub(r'(?<!:)/{2,}', '/', url).rstrip('/')
     return url

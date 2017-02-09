@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 import multiprocessing
 
 from pyload.utils.new.check import isiterable
-from pyload.utils.new.debug import print_traceback
 from pyload.utils.new.lib.safe_threading import Thread
 
 # def deprecated(by=None):
@@ -61,6 +60,7 @@ def trycatch(callback):
     """
     Decorator that executes the function and returns the value or fallback on any exception.
     """
+    from pyload.utils.new.debug import print_traceback
     def wrapper(func):
         def new(self, *args, **kwargs):
             try:

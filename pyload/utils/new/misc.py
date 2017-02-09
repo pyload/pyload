@@ -11,7 +11,6 @@ import os
 import socket
 import zlib
 
-from pyload.utils.new import format
 from pyload.utils.new.lib import hashlib
 from pyload.utils.new.path import fsbsize, open
 

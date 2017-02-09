@@ -22,15 +22,19 @@ import signal
 import tempfile
 import time
 
-import colorlog
+try:
+    import colorlog
+except ImportError:
+    pass
+    
 import setproctitle
 
 from contextlib import closing
 from multiprocessing import Process
 
-from pyload.utils.new import format, sys, misc
+from pyload.utils.new import clean, sys, misc
 from pyload.utils.new.path import makedirs, open, remove
-from pyload.utils.new.check import lookup
+from pyload.utils.new.check import ismodule, lookup
 
 
 class Restart(Exception):
@@ -94,11 +98,7 @@ class Core(Process):
         self.log.setLevel(level)
 
         # Set console handler
-        if not self.config.get('log', 'color_console'):
-            fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
-            datefmt = "%Y-%m-%d %H:%M:%S"
-            consoleform = logging.Formatter(fmt, datefmt)
-        else:
+        if self.config.get('log', 'color_console') and ismodule('colorlog'):
             fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
             datefmt = "%Y-%m-%d  %H:%M:%S"
             log_colors = {
@@ -118,6 +118,11 @@ class Core(Process):
             }
             consoleform = colorlog.ColoredFormatter(fmt, datefmt, log_colors,
                                                     secondary_log_colors=log_colors_2)
+        else:
+            fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
+            datefmt = "%Y-%m-%d %H:%M:%S"
+            consoleform = logging.Formatter(fmt, datefmt)
+        
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
         self.log.add_handler(consolehdlr)
@@ -330,7 +335,7 @@ class Core(Process):
         storage_folder = self.config.get(
             'general', 'storage_folder') or "downloads"
         makedirs(storage_folder)
-        space_size = format.size(availspace(storage_folder))
+        space_size = clean.size(availspace(storage_folder))
         self.log.info(_("Available storage space: {}").format(space_size))
 
     def run(self):

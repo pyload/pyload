@@ -8,8 +8,7 @@ standard_library.install_aliases()
 import html.parser
 import re
 
-from pyload.utils.new import convert
-from pyload.utils.new.decorator import iterable
+from pyload.utils.new.decorator import iterate
 
 
 @iterate

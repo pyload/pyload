@@ -13,11 +13,13 @@ from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
-import js2py
-
+try:
+    import js2py
+except ImportError:
+    pass
 try:
     from Crypto.Cipher import AES
-except Exception:
+except ImportError:
     pass
 
 from pyload.thread.remote import BackendBase
@@ -128,8 +130,20 @@ class CNLHandler(BaseHTTPRequestHandler):
         jk = self.get_post("jk")
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-        jk = "{} f()".format(jk)
-        jk = js2py.eval_js(jk)
+        try:
+            jk = "{} f()".format(jk)
+            jk = js2py.eval_js(jk)
+        except NameError:    
+            try:
+                jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
+            except Exception:
+                # Test for some known js functions to decode
+                if jk.find("dec") > -1 and jk.find("org") > -1:
+                    org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
+                    jk = reversed(org)
+                    jk = "".join(jk)
+                # else:
+                    # print("Could not decrypt key, please install py-spidermonkey or ossp-js")
         Key = unhexlify(jk)
         IV = Key
 

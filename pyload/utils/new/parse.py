@@ -8,16 +8,14 @@ standard_library.install_aliases()
 import os
 import re
 
-from pyload.utils.new import convert, format, purge
+from pyload.utils.new import clean, convert, purge
 from pyload.utils.new.check import isiterable
 from pyload.utils.new.lib import hashlib
-from pyload.utils.new.web.check import isurl
-from pyload.utils.new.web.convert import url_to_name
 
 
 @iterate
 def alias(value):
-    chunks = re.split(r'[\d.-_]+', format.name(value))
+    chunks = re.split(r'[\d.-_]+', clean.name(value))
     return ''.join(word.capitalize() for word in chunks if word)
 
 
@@ -55,8 +53,10 @@ def hash(value):
 @iterate
 @purge.args
 def name(value):
-    if isurl(value):
-        return url_to_name(value)
+    from pyload.utils.new.web import check as webcheck
+    if webcheck.isurl(value):
+        from pyload.utils.new.web import convert as webconvert
+        return webconvert.url_to_name(value)
     else:
         return os.path.basename(value)
 
