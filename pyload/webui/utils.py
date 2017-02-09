@@ -67,11 +67,10 @@ def is_mobile():
         return True
     return False
 
-
+# TODO: Implement language selection...
 def select_language(langs):
+    # TODO: Use accept
     accept = request.headers.get('Accept-Language', '')
-    # TODO
-
     return langs[0]
 
 

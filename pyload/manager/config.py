@@ -10,7 +10,6 @@ from pyload.utils import json
 from pyload.config.parser import Config
 
 from pyload.config.convert import from_string
-from pyload.config.convert import to_input
 
 
 def convertkeyerror(func):
@@ -68,7 +67,7 @@ class ConfigManager(Config):
             try:
                 # Check if this config exists
                 # Configs without meta data can not be loaded!
-                data = self.config[section].config[option]
+                assert self.config[section].config[option]
                 return self.load_values(user, section)[option]
             except KeyError:
                 pass  # Returns default value later

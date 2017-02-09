@@ -7,7 +7,6 @@ from time import time
 from pyload.utils import json_dumps
 
 from bottle import HTTPError
-from bottle import redirect
 from bottle import request
 from bottle import response
 from bottle import route

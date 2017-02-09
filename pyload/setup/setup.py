@@ -23,7 +23,6 @@ from sys import exit
 
 from pyload.api import Role
 from pyload.utils.fs import abspath
-from pyload.utils.fs import dirname
 from pyload.utils.fs import exists
 from pyload.utils.fs import join
 from pyload.utils.fs import makedirs

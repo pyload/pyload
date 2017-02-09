@@ -39,8 +39,6 @@ import collections
 import copy
 import email
 import email.parser
-import logging
-import math
 import struct
 import threading
 import traceback

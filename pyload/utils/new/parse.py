@@ -9,7 +9,6 @@ import os
 import re
 
 from pyload.utils.new import clean, convert, purge
-from pyload.utils.new.check import isiterable
 from pyload.utils.new.lib import hashlib
 
 

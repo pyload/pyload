@@ -149,7 +149,7 @@ def flashgot():
     package = request.forms.get('package', None)
     urls = [x for x in request.forms['urls'].split("\n") if x != ""]
 
-    # TODO: folder?
+    # TODO: Use folder
     folder = request.forms.get('dir', None)
 
     if package:

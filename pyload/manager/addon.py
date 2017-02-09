@@ -20,7 +20,6 @@ from types import MethodType
 from pyload.api import AddonService, AddonInfo, ServiceException, ServiceDoesNotExist
 from pyload.thread.addon import AddonThread
 from pyload.utils import lock
-from pyload.utils import to_string
 
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 

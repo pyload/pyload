@@ -182,7 +182,7 @@ class TestFileManager(BenchmarkTest):
         v = self.assert_files_ordered(parent, fids, 0)
 
     def assert_files_ordered(self, parent, fids, pos):
-        fs = [self.m.get_file(choice(fids)) for i in range(5)]
+        assert [self.m.get_file(choice(fids)) for i in range(5)]
         self.m.order_files(fids, parent, pos)
         v = self.m.get_tree(parent, False, False)
         self.assert_ordered(fids, pos, pos + len(fids), v.root.fids, v.files)

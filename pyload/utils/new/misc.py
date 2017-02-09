@@ -6,13 +6,11 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import gettext
-import itertools
 import os
 import socket
 import zlib
 
 from pyload.utils.new.lib import hashlib
-from pyload.utils.new.path import fsbsize
 from pyload.utils.new.path import open
 
 

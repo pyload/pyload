@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from time import time
 
-from pyload.api import DownloadStatus
 from pyload.api import LinkStatus
 from pyload.api import ProgressInfo
 from pyload.api import ProgressType

@@ -77,7 +77,6 @@ number of requests and their responses, so we run a nested loop:
 """
 
 
-import base64
 import os
 import Queue
 import re

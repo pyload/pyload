@@ -32,10 +32,6 @@ import subprocess
 #import tempfile
 
 import Image
-import TiffImagePlugin
-import PngImagePlugin
-import GifImagePlugin
-import JpegImagePlugin
 
 
 class OCR(object):
@@ -54,7 +50,7 @@ class OCR(object):
         Delete all tmp images.
         """
         pass
-
+        
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
 

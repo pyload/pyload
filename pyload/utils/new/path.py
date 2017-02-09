@@ -13,7 +13,6 @@ import send2trash
 from os.path import *
 
 from pyload.utils.new import clean
-from pyload.utils.new.check import isiterable
 
 
 @iterate

@@ -9,10 +9,8 @@ import pprint
 import sys
 import traceback
 
-from pyload.utils.new import convert
 from pyload.utils.new.check import proprieties
 from pyload.utils.new.path import makefile
-from pyload.utils.new.path import open
 
 
 def report(value, path=None):

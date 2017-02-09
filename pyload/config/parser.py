@@ -10,8 +10,6 @@ from os.path import exists
 from gettext import gettext
 from new_collections import namedtuple, OrderedDict
 
-from pyload.api import Input
-from pyload.api import InputType
 from pyload.utils.fs import chmod
 
 from pyload.config.default import make_config

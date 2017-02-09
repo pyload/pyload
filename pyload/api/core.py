@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from pyload.api import Api, require_perm, Permission, StatusInfo, Interaction
 from pyload.utils.fs import join, free_space, exists
-from pyload.utils import compare_time
 
 from pyload.api.base import BaseApi
 
