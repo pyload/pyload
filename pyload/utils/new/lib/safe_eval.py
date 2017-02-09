@@ -3,9 +3,9 @@
 # http://code.activestate.com/recipes/286134/ (r3) (modified)
 
 from __future__ import unicode_literals
-from builtins import map
 
 import dis
+from builtins import map
 
 _const_codes = list(map(dis.opmap.__getitem__, [
     'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP',

@@ -3,12 +3,12 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from past.builtins import execfile
 
 import os
 
-import pyload
+from past.builtins import execfile
 
+import pyload
 
 __all__ = ['info', 'main', 'run_venv', 'setup']
 
@@ -24,13 +24,11 @@ def info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        "Beaker >= 1.6", "Send2Trash", "argparse", "bitmath", "bottle >= 0.10.0", "colorama",
-        "daemonize", "future", "goslate", "psutil", "pycurl", "requests >= 2.0", "setproctitle",
-        "tld", "validators", "watchdog", "wsgigzip"
+        "argparse", "Beaker >= 1.6", "bitmath", "bottle >= 0.10.0", "colorama",
+        "daemonize", "future", "goslate", "psutil", "pycurl", "requests >= 2.0",
+        "Send2Trash", "setproctitle", "tld", "validators", "watchdog", "wsgigzip"
     ]
-    if os.name != 'nt':
-        install_requires.append("dbus-python")
-
+    
     extras_require = {
         'Archive decompression': ['unrar'],
         # TODO: Fix `tesserocr` installation
@@ -39,10 +37,11 @@ def info():
         'JavaScript evaluation': ['Js2Py'],
         'pyLoad auto-update': ['pip'],
         'SSL connection': ['pyOpenSSL'],
-        'Optionals': ['beautifulsoup4', 'IPy', 'pycrypto']
+        'Additional features': ['beautifulsoup4', 'IPy', 'pycrypto']
     }
     if os.name != 'nt':
         extras_require['Lightweight webserver'] = ['bjoern']
+        extras_require['Additional features'].append('dbus-python')
 
     entry_points = {
         'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]

@@ -259,10 +259,11 @@ class OrderedDict(dict):
         return ItemsView(self)
 ## end of http://code.activestate.com/recipes/576693/ }}}
 
-## {{{ http://code.activestate.com/recipes/500261/ (r15)
-from operator import itemgetter as _itemgetter
-from keyword import iskeyword as _iskeyword
 import sys as _sys
+from operator import itemgetter as _itemgetter
+
+from keyword import iskeyword as _iskeyword
+
 
 def namedtuple(typename, field_names, verbose=False, rename=False):
     """Returns a new subclass of tuple with named fields.

@@ -7,8 +7,8 @@ import time
 
 import beaker.util as util
 from beaker.exceptions import CreationAbortedError, MissingCacheParameter
-from beaker.synchronization import _threading, file_synchronizer, \
-     mutex_synchronizer, NameLock, null_synchronizer
+from beaker.synchronization import (NameLock, _threading, file_synchronizer,
+                                    mutex_synchronizer, null_synchronizer)
 
 __all__ = ['Value', 'Container', 'ContainerContext',
            'MemoryContainer', 'DBMContainer', 'NamespaceManager',

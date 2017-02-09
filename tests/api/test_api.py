@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import range
-from unittest import TestCase
 from random import choice
+from unittest import TestCase
 
 from pyload.core import Core
-
 from tests.api.apitester import ApiTester
 
 

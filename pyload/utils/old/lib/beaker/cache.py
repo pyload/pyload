@@ -11,13 +11,12 @@ Advanced users can add new backends in beaker.backends
 import warnings
 
 import beaker.container as container
+import beaker.ext.database as database
+import beaker.ext.google as google
+import beaker.ext.memcached as memcached
+import beaker.ext.sqla as sqla
 import beaker.util as util
 from beaker.exceptions import BeakerException, InvalidCacheBackendError
-
-import beaker.ext.memcached as memcached
-import beaker.ext.database as database
-import beaker.ext.sqla as sqla
-import beaker.ext.google as google
 
 # Initialize the basic available backends
 clsmap = {

@@ -37,28 +37,22 @@ http://tools.ietf.org/html/draft-ietf-hybi-websocket-multiplexing-06
 
 import collections
 import copy
-import email
-import email.parser
 import struct
 import threading
 import traceback
 
-from mod_pywebsocket import common
-from mod_pywebsocket import handshake
-from mod_pywebsocket import util
-from mod_pywebsocket._stream_base import BadOperationException
-from mod_pywebsocket._stream_base import ConnectionTerminatedException
-from mod_pywebsocket._stream_base import InvalidFrameException
-from mod_pywebsocket._stream_hybi import Frame
-from mod_pywebsocket._stream_hybi import Stream
-from mod_pywebsocket._stream_hybi import StreamOptions
-from mod_pywebsocket._stream_hybi import create_binary_frame
-from mod_pywebsocket._stream_hybi import create_closing_handshake_body
-from mod_pywebsocket._stream_hybi import create_header
-from mod_pywebsocket._stream_hybi import create_length_header
-from mod_pywebsocket._stream_hybi import parse_frame
+import email
+import email.parser
+from mod_pywebsocket import common, handshake, util
+from mod_pywebsocket._stream_base import (BadOperationException,
+                                          ConnectionTerminatedException,
+                                          InvalidFrameException)
+from mod_pywebsocket._stream_hybi import (Frame, Stream, StreamOptions,
+                                          create_binary_frame,
+                                          create_closing_handshake_body,
+                                          create_header, create_length_header,
+                                          parse_frame)
 from mod_pywebsocket.handshake import hybi
-
 
 _CONTROL_CHANNEL_ID = 0
 _DEFAULT_CHANNEL_ID = 1

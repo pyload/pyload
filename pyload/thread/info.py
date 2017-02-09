@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from time import time
 
-from pyload.api import LinkStatus
-from pyload.api import ProgressInfo
-from pyload.api import ProgressType
-from pyload.utils.packagetools import parse_names
-from pyload.utils import has_method, accumulate
-
+from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.thread.base import BaseThread
 from pyload.thread.decrypter import DecrypterThread
+from pyload.utils import accumulate, has_method
+from pyload.utils.packagetools import parse_names
 
 
 class InfoThread(DecrypterThread):

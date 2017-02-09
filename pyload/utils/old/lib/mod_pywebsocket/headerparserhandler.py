@@ -38,12 +38,7 @@ function is called to handle WebSocket request.
 import logging
 
 from mod_python import apache
-
-from mod_pywebsocket import common
-from mod_pywebsocket import dispatch
-from mod_pywebsocket import handshake
-from mod_pywebsocket import util
-
+from mod_pywebsocket import common, dispatch, handshake, util
 
 # PythonOption to specify the handler root directory.
 _PYOPT_HANDLER_ROOT = 'mod_pywebsocket.handler_root'

@@ -1,25 +1,29 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-import builtins
+from __future__ import absolute_import, unicode_literals
 
+import builtins
+from builtins import object
+from collections import defaultdict
 from gettext import gettext
-from _thread import start_new_thread
 from threading import RLock
 
-from collections import defaultdict
+from _thread import start_new_thread
+from future import standard_library
+
 from new_collections import namedtuple
-
-from types import MethodType
-
-from pyload.api import AddonService, AddonInfo, ServiceException, ServiceDoesNotExist
+from pyload.api import (AddonInfo, AddonService, ServiceDoesNotExist,
+                        ServiceException)
 from pyload.thread.addon import AddonThread
 from pyload.utils import lock
+from types import MethodType
+
+standard_library.install_aliases()
+
+
+
+
 
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 

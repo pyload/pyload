@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 #@author: jeix
 
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import division, unicode_literals
 
-from builtins import object
 import socket
-
+import struct
+from builtins import object
+from contextlib import closing
 from os import remove
 from os.path import exists
-
-from contextlib import closing
-from time import time
-
-import struct
 from select import select
+from time import time
 
 from pyload.plugin import Abort
 

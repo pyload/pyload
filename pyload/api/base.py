@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from pyload.remote.apitypes import Iface
 
 # Workaround to let code-completion think, this is subclass of Iface

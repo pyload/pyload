@@ -2,14 +2,18 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 
 import os
 import re
 
+from future import standard_library
+
 from pyload.utils.new import clean, convert, purge
 from pyload.utils.new.lib import hashlib
+
+standard_library.install_aliases()
+
+
 
 
 @iterate

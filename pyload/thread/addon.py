@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from copy import copy
 from traceback import print_exc
 

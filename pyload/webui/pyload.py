@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import time
-from os.path import join, exists
+from os.path import exists, join
 
-from bottle import route, static_file, response, request, redirect, template
-
-from pyload.webui.interface import PYLOAD, APP_DIR, SETUP, UNAVAILALBE, PREFIX
-
-from pyload.webui.utils import login_required, add_json_header, select_language
+from bottle import redirect, request, response, route, static_file, template
 
 from pyload.utils import json_dumps
+from pyload.webui.interface import APP_DIR, PREFIX, PYLOAD, SETUP, UNAVAILALBE
+from pyload.webui.utils import add_json_header, login_required, select_language
 
 # Cache file names that are available gzipped
 GZIPPED = {}

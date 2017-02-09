@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import range
-from urllib.parse import urlparse
-from re import match, search
-from urllib.parse import unquote
 
-from pyload.plugin.request import ResponseException
+from builtins import range, str
+from re import match, search
+from urllib.parse import unquote, urlparse
+
+from future import standard_library
+
 from pyload.plugin.hoster import Hoster
+from pyload.plugin.request import ResponseException
 from pyload.utils import html_unescape, remove_chars
+
+standard_library.install_aliases()
+
 
 
 class BasePlugin(Hoster):

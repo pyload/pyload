@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
+
+import builtins
 import sys
+from builtins import object
+from logging import DEBUG, ERROR, INFO, WARN, log
 from os.path import join
 from time import strftime
 from traceback import format_exc
 
-import builtins
+from future import standard_library
+
+from pyload.api import Role
+from pyload.config.parser import ConfigParser
+from pyload.core import Core
+from pyload.datatype.user import User
+from pyload.thread.base import BaseThread
+
+standard_library.install_aliases()
+
 
 # from pyload.inithomedir import init_dir
 
 # init_dir(join("tests", "config"), True)
 
-from pyload.api import Role
-from pyload.core import Core
-from pyload.datatype.user import User
-from pyload.thread.base import BaseThread
-from pyload.config.parser import ConfigParser
 
-from logging import log, DEBUG, INFO, WARN, ERROR
 
 # Do nothing
 

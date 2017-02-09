@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+
 from time import time
+
 import http.cookies
+from future import standard_library
+
+standard_library.install_aliases()
 
 # monkey patch for 32 bit systems
 # def _getdate(future=0, weekdayname=http.cookies._weekdayname, monthname=http.cookies._monthname):

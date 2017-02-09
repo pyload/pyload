@@ -7,12 +7,16 @@ except ImportError:
     import dummy_thread as _thread
     import dummy_threading as _threading
 
-from datetime import datetime, timedelta
 import os
-import types
-import weakref
-import warnings
 import sys
+import warnings
+import weakref
+from datetime import datetime, timedelta
+from threading import local as _tlocal
+
+from beaker.converters import asbool
+
+import types
 
 py3k = getattr(sys, 'py3kwarning', False) or sys.version_info >= (3, 0)
 py24 = sys.version_info < (2,5)
@@ -23,8 +27,6 @@ if py3k or jython:
 else:
     import cPickle as pickle
 
-from beaker.converters import asbool
-from threading import local as _tlocal
 
 
 __all__  = ["ThreadLocal", "Registry", "WeakValuedRegistry", "SyncDict",

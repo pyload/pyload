@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 from builtins import str
-from os.path import dirname
-from logging import log, DEBUG
 from hashlib import md5
-from time import time
+from logging import DEBUG, log
+from os.path import dirname
 from shutil import move
+from time import time
 
 from nose.tools import nottest
-
-from tests.helper.stubs import Core
-from tests.helper.parser import parse_config
-from tests.helper.plugintester import PluginTester
-
 from pyload.datatype.file import PyFile, status_map
 from pyload.plugins.base import Fail
 from pyload.utils import accumulate
-from pyload.utils.fs import save_join, join, exists, listdir, remove, stat
+from pyload.utils.fs import exists, join, listdir, remove, save_join, stat
+from tests.helper.parser import parse_config
+from tests.helper.plugintester import PluginTester
+from tests.helper.stubs import Core
 
 DL_DIR = join("Downloads", "tmp")
 

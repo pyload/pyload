@@ -1,27 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
-from contextlib import closing
 from builtins import str
-from unittest import TestCase
+from contextlib import closing
+from glob import glob
+from json import loads
+from logging import DEBUG, log
 from os import makedirs, remove
-from os.path import exists, join, expanduser
+from os.path import exists, expanduser, join
 from shutil import move
 from sys import exc_clear, exc_info
-from logging import log, DEBUG
 from time import sleep, time
-from glob import glob
+from unittest import TestCase
 
-from pycurl import LOW_SPEED_TIME, FORM_FILE
-from json import loads
-
-from tests.helper.stubs import Thread, Core, noop
-
+from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.network.request import get_request
 from pyload.plugins.base import Abort, Fail
 from pyload.plugins.hoster import Hoster
+from tests.helper.stubs import Core, Thread, noop
 
 
 def _wait(self):

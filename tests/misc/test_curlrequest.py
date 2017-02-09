@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from tests.helper.stubs import Core
-from pyload.plugins.network.curlrequest import CurlRequest
 
 from unittest import TestCase
+
+from pyload.plugins.network.curlrequest import CurlRequest
+from tests.helper.stubs import Core
 
 
 class TestCurlRequest(TestCase):

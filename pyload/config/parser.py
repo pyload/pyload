@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import str
-from builtins import object
-from os.path import exists
+from __future__ import (absolute_import, print_function, unicode_literals,
+                        with_statement)
+
+from builtins import object, str
 from gettext import gettext
-from new_collections import namedtuple, OrderedDict
+from os.path import exists
 
-from pyload.utils.fs import chmod
-
+from new_collections import OrderedDict, namedtuple
+from pyload.config.convert import from_string, to_configdata
 from pyload.config.default import make_config
-from pyload.config.convert import to_configdata, from_string
+from pyload.utils.fs import chmod
 
 SectionTuple = namedtuple(
     "SectionTuple", "label description explanation config")

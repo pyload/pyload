@@ -36,28 +36,27 @@
 # Added api attribute to request
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-import http.server
-import http.server
-import SocketServer
+
 import base64
-import http.client
 import logging
 import os
 import re
 import select
 import socket
+import SocketServer
 import sys
 import threading
+from builtins import object
 
-from mod_pywebsocket import common
-from mod_pywebsocket import dispatch
-from mod_pywebsocket import handshake
-from mod_pywebsocket import http_header_util
-from mod_pywebsocket import memorizingfile
-from mod_pywebsocket import util
+import http.client
+import http.server
+from future import standard_library
+
+from mod_pywebsocket import (common, dispatch, handshake, http_header_util,
+                             memorizingfile, util)
+
+standard_library.install_aliases()
+
 
 
 _DEFAULT_LOG_MAX_BYTES = 1024 * 256

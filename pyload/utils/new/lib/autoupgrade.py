@@ -3,12 +3,12 @@
 from __future__ import unicode_literals
 
 import os
-import pkg_resources
 import re
 import sys
 import urllib.parse
 
 import pip
+import pkg_resources
 import requests
 
 from pyload.utils.new import convert

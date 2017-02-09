@@ -16,14 +16,17 @@
 """
 from __future__ import unicode_literals
 
-from future import standard_library
-standard_library.install_aliases()
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+
+from future import standard_library
 
 from pyload.plugin.crypter import Crypter
+
+standard_library.install_aliases()
+
 
 
 class Dereferer(Crypter):

@@ -2,16 +2,18 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+
+from builtins import object, range, str
+
 from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import str
-from builtins import object
+
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
-
 from pyload.api import UserData
-from pyload.remote.json_converter import loads, dumps
+from pyload.remote.json_converter import dumps, loads
+
+standard_library.install_aliases()
+
 
 
 class AbstractHandler(object):

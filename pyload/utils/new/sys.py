@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import map
+from __future__ import absolute_import, unicode_literals
 
-import ctypes
 import os
 import platform
 import shlex
+from builtins import map
+from sys import *
 
 import psutil
 
-from sys import *
-
+import ctypes
 from pyload.utils.new.lib.subprocess import PIPE, Popen
 
 

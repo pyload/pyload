@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from os.path import join
+from __future__ import absolute_import, print_function, unicode_literals
+
 import re
-from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
+from builtins import str
+from os.path import join
 from traceback import print_exc
+from urllib.parse import unquote
+
+from bottle import HTTPError, request, route
+from future import standard_library
 
 from pyload.utils.fs import safe_filename
+from pyload.webui.interface import DL_ROOT, PYLOAD
+
+standard_library.install_aliases()
+
 
 try:
     import js2py
 except ImportError:
     pass
 
-from bottle import route, request, HTTPError
-from pyload.webui.interface import PYLOAD, DL_ROOT
 
 try:
     from Crypto.Cipher import AES

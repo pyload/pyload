@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from builtins import object
-from nose.tools import raises, assertEqual
-
-from requests.auth import HTTPBasicAuth
-import requests
 
 import json
+from builtins import object
 
+import requests
+from requests.auth import HTTPBasicAuth
+
+from nose.tools import assertEqual, raises
 from pyload.remote.apitypes import Forbidden
 from pyload.remote.JSONClient import JSONClient
-
 from tests.helper.config import credentials, webaddress
 
 

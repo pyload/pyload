@@ -2,6 +2,7 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+
 from time import time
 
 from pyload.api import InteractionTask as BaseInteractionTask

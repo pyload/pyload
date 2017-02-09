@@ -1,22 +1,25 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+from __future__ import absolute_import, unicode_literals
+
+from sys import exc_clear
 from threading import Event
-from queue import Queue
 from time import sleep, time
 from traceback import print_exc
-from sys import exc_clear
-from pycurl import error
 
-from pyload.plugin import Fail, Retry, Abort
+from future import standard_library
+
+from pycurl import error
+from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.hoster import Reconnect, SkipDownload
 from pyload.plugin.request import ResponseException
-
 from pyload.thread.base import BaseThread
+from queue import Queue
+
+standard_library.install_aliases()
+
+
 
 
 class DownloadThread(BaseThread):

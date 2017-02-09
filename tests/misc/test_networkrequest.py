@@ -2,12 +2,12 @@
 
 from __future__ import unicode_literals
 
-from contextlib import closing
 from builtins import object
-from tests.helper.stubs import Core
+from contextlib import closing
 
-from pyload.plugins.network.curlrequest import CurlRequest
 from pyload.network.request import RequestFactory
+from pyload.plugins.network.curlrequest import CurlRequest
+from tests.helper.stubs import Core
 
 
 class TestRequestFactory(object):

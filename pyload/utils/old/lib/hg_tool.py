@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from subprocess import Popen, PIPE
-from time import time, gmtime, strftime
+from subprocess import PIPE, Popen
+from time import gmtime, strftime, time
 
 aliases = {"zoidber": "zoidberg", "zoidberg10": "zoidberg", "webmaster": "dhmh", "mast3rranan": "ranan",
            "ranan2": "ranan"}

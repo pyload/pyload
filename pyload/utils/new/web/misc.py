@@ -2,21 +2,25 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 
 import cStringIO
 import gzip
 import json
+from contextlib import closing
 
 import bottle
-
-from contextlib import closing
+from future import standard_library
 
 from pyload.api import ACCESS, AUTH, has_permission
 from pyload.utils.new import convert
 from pyload.utils.new.lib import beaker
 from pyload.webui import env
+
+standard_library.install_aliases()
+
+
+
+
 
 
 ##########################################################################

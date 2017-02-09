@@ -1,9 +1,9 @@
-from beaker.container import NamespaceManager, Container
-from beaker.exceptions import InvalidCacheBackendError, MissingCacheParameter
-from beaker.synchronization import file_synchronizer
-from beaker.synchronization import null_synchronizer
-from beaker.util import verify_directory, SyncDict
 import warnings
+
+from beaker.container import Container, NamespaceManager
+from beaker.exceptions import InvalidCacheBackendError, MissingCacheParameter
+from beaker.synchronization import file_synchronizer, null_synchronizer
+from beaker.util import SyncDict, verify_directory
 
 memcache = None
 

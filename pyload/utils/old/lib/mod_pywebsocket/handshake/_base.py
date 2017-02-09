@@ -33,8 +33,7 @@ processors.
 """
 
 
-from mod_pywebsocket import common
-from mod_pywebsocket import http_header_util
+from mod_pywebsocket import common, http_header_util
 
 
 class AbortedByUserException(Exception):

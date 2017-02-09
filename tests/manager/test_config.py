@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from unittest import TestCase
+
 from collections import defaultdict
+from unittest import TestCase
 
 from nose.tools import raises
-
-from tests.helper.stubs import Core, admin_user, normal_user
-
 from pyload.api import InvalidConfigSection
-from pyload.database import DatabaseBackend
 from pyload.config.parser import ConfigParser
+from pyload.database import DatabaseBackend
 from pyload.manager.config import ConfigManager
 from pyload.utils import primary_uid
+from tests.helper.stubs import Core, admin_user, normal_user
 
 admin_user = primary_uid(admin_user)
 normal_user = primary_uid(normal_user)

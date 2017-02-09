@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 import urllib.parse
+from builtins import map
 
 import bitmath
+from future import standard_library
 
 from pyload.utils.new import purge
 from pyload.utils.new.check import isiterable
 from pyload.utils.new.decorator import iterate
+
+standard_library.install_aliases()
+
+
+
 
 
 def iter(obj, ignore=None):

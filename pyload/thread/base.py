@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import sys
 
+import sys
 from contextlib import closing
-from threading import Thread
-from time import strftime, gmtime
-from types import MethodType
 from pprint import pformat
+from threading import Thread
+from time import gmtime, strftime
 from traceback import format_exc
 
-from pyload.utils import primary_uid
-from pyload.utils.fs import listdir, join, save_join, stat, exists
 from pyload.setup.system import get_system_info
+from pyload.utils import primary_uid
+from pyload.utils.fs import exists, join, listdir, save_join, stat
+from types import MethodType
 
 
 class BaseThread(Thread):

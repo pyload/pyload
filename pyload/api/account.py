@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from pyload.utils import to_bool
-from pyload.api import Api
-from pyload.api import Permission
-from pyload.api import require_perm
+from __future__ import absolute_import, unicode_literals
+
+from pyload.api import Api, Permission, require_perm
 from pyload.api.base import BaseApi
+from pyload.utils import to_bool
 
 
 class AccountApi(BaseApi):

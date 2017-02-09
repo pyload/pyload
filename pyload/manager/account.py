@@ -2,12 +2,13 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+
 from builtins import object
-from threading import Lock
 from random import choice
+from threading import Lock
 
 from pyload.api import AccountInfo
-from pyload.utils import lock, json
+from pyload.utils import json, lock
 
 
 class AccountManager(object):

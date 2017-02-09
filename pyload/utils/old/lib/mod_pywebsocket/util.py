@@ -34,6 +34,13 @@
 
 import array
 import errno
+import logging
+import os
+import re
+import socket
+import StringIO
+import traceback
+import zlib
 
 # Import hash classes from a module available and recommended for each Python
 # version and re-export those symbol. Use sha and md5 module in Python 2.4, and
@@ -48,13 +55,6 @@ except ImportError:
     md5_hash = md5.md5
     sha1_hash = sha.sha
 
-import StringIO
-import logging
-import os
-import re
-import socket
-import traceback
-import zlib
 
 try:
     from mod_pywebsocket import fast_masking

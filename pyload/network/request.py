@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import object
-from builtins import REQUEST
+from __future__ import absolute_import, unicode_literals
+
+from builtins import REQUEST, object
 from contextlib import closing
 
 from pyload.network.bucket import Bucket
-
-from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
+from pyload.plugin.network.defaultrequest import (DefaultDownload,
+                                                  DefaultRequest)
 
 
 class RequestFactory(object):

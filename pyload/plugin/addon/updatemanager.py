@@ -3,16 +3,16 @@
 
 from __future__ import unicode_literals
 
-from builtins import zip
-import sys
 import re
+import sys
+from builtins import zip
 from os import stat
-from os.path import join, exists
+from os.path import exists, join
 from time import time
 
 from pyload.config.parser import IGNORE
 from pyload.network.request import get_url
-from pyload.plugin.hook import threaded, Expose, Hook
+from pyload.plugin.hook import Expose, Hook, threaded
 
 
 class UpdateManager(Hook):

@@ -45,21 +45,16 @@ http://tools.ietf.org/html/rfc6455
 import base64
 import re
 
-from mod_pywebsocket import common
-from mod_pywebsocket import deflate_stream_extension
+from mod_pywebsocket import common, deflate_stream_extension, util
 from mod_pywebsocket.extensions import get_extension_processor
-from mod_pywebsocket.handshake._base import check_request_line
-from mod_pywebsocket.handshake._base import format_header
-from mod_pywebsocket.handshake._base import get_mandatory_header
-from mod_pywebsocket.handshake._base import HandshakeException
-from mod_pywebsocket.handshake._base import parse_token_list
-from mod_pywebsocket.handshake._base import validate_mandatory_header
-from mod_pywebsocket.handshake._base import validate_subprotocol
-from mod_pywebsocket.handshake._base import VersionException
-from mod_pywebsocket.stream import Stream
-from mod_pywebsocket.stream import StreamOptions
-from mod_pywebsocket import util
-
+from mod_pywebsocket.handshake._base import (HandshakeException,
+                                             VersionException,
+                                             check_request_line, format_header,
+                                             get_mandatory_header,
+                                             parse_token_list,
+                                             validate_mandatory_header,
+                                             validate_subprotocol)
+from mod_pywebsocket.stream import Stream, StreamOptions
 
 # Used to validate the value in the Sec-WebSocket-Key header strictly. RFC 4648
 # disallows non-zero padding, so the character right before == must be any of

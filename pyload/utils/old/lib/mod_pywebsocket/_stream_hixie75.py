@@ -37,13 +37,11 @@ Specification:
 """
 
 
-from mod_pywebsocket import common
-from mod_pywebsocket._stream_base import BadOperationException
-from mod_pywebsocket._stream_base import ConnectionTerminatedException
-from mod_pywebsocket._stream_base import InvalidFrameException
-from mod_pywebsocket._stream_base import StreamBase
-from mod_pywebsocket._stream_base import UnsupportedFrameException
-from mod_pywebsocket import util
+from mod_pywebsocket import common, util
+from mod_pywebsocket._stream_base import (BadOperationException,
+                                          ConnectionTerminatedException,
+                                          InvalidFrameException, StreamBase,
+                                          UnsupportedFrameException)
 
 
 class StreamHixie75(StreamBase):

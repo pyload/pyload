@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-from urllib.request import urlopen
-from urllib.parse import urlencode
-from http.client import UNAUTHORIZED, FORBIDDEN
+from __future__ import absolute_import, print_function, unicode_literals
 
-from pyload.remote.json_converter import loads, dumps
-from pyload.remote.apitypes import Unauthorized, Forbidden
+from builtins import object
+from urllib.parse import urlencode
+from urllib.request import urlopen
+
+from future import standard_library
+from http.client import FORBIDDEN, UNAUTHORIZED
+
+from pyload.remote.apitypes import Forbidden, Unauthorized
+from pyload.remote.json_converter import dumps, loads
+
+standard_library.install_aliases()
+
 
 
 class JSONClient(object):

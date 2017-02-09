@@ -2,14 +2,18 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import bytes
 
 import re
+from builtins import bytes
+
+from future import standard_library
 
 from pyload.utils.new import convert
 from pyload.utils.new.decorator import iterate
+
+standard_library.install_aliases()
+
+
 
 
 ##########################################################################

@@ -10,6 +10,9 @@ import os
 import sys
 import tempfile
 
+from beaker import util
+from beaker.exceptions import LockError
+
 try:
     import threading as _threading
 except ImportError:
@@ -26,8 +29,6 @@ except:
     except ImportError:
         has_flock = False
 
-from beaker import util
-from beaker.exceptions import LockError
 
 __all__  = ["file_synchronizer", "mutex_synchronizer", "null_synchronizer",
             "NameLock", "_threading"]

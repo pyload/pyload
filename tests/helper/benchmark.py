@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from builtins import str
-from builtins import range
-from builtins import object
+from __future__ import division, print_function, unicode_literals
+
+from builtins import object, range, str
 from time import time
 
 

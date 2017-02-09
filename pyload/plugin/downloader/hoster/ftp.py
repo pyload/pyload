@@ -2,15 +2,18 @@
 #@author: mkaay
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from urllib.parse import urlparse
-from urllib.parse import quote, unquote
-import pycurl
-import re
 
+import re
+from builtins import str
+from urllib.parse import quote, unquote, urlparse
+
+from future import standard_library
+
+import pycurl
 from pyload.plugin.hoster import Hoster
+
+standard_library.install_aliases()
+
 
 
 class Ftp(Hoster):

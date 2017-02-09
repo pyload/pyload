@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from pyload.api import AccountInfo
-from pyload.database import DatabaseMethods, queue, async
+from pyload.database import DatabaseMethods, async, queue
 
 
 class AccountMethods(DatabaseMethods):

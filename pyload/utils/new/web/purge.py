@@ -2,13 +2,17 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 
-import html.parser
 import re
 
+import html.parser
+from future import standard_library
+
 from pyload.utils.new.decorator import iterate
+
+standard_library.install_aliases()
+
+
 
 
 @iterate

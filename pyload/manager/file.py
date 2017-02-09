@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import object
+from functools import reduce
 from time import time
-from ReadWriteLock import ReadWriteLock
 
-from pyload.utils import lock, read_lock
-
-from pyload.api import PackageStatus, DownloadStatus as DS, TreeCollection, PackageDoesNotExist
+from pyload.api import DownloadStatus as DS
+from pyload.api import PackageDoesNotExist, PackageStatus, TreeCollection
 from pyload.datatype.file import PyFile
 from pyload.datatype.package import PyPackage, RootPackage
-from functools import reduce
+from pyload.utils import lock, read_lock
+from ReadWriteLock import ReadWriteLock
+
 
 # invalidates the cache
 

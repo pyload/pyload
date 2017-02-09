@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import object
+
 from pyload.remote.JSONClient import JSONClient
 from pyload.remote.WSClient import WSClient
-
-from tests.helper.config import webaddress, wsaddress
-
 from tests.api.apiproxy import ApiProxy
+from tests.helper.config import webaddress, wsaddress
 
 
 class ApiTester(object):

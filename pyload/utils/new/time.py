@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from builtins import map
+from __future__ import absolute_import, unicode_literals
 
 import datetime
-
+from builtins import map
 from time import *
 
 

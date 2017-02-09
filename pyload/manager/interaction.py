@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import absolute_import, division, unicode_literals
+
+from base64 import standard_b64encode
 from builtins import object
 from threading import Lock
 from time import time
-from base64 import standard_b64encode
 
 from new_collections import OrderedDict
-
-from pyload.utils import lock, bits_set
 from pyload.api import Interaction as IA
-from pyload.api import InputType, Input
-
+from pyload.api import Input, InputType
 from pyload.datatype.task import InteractionTask
+from pyload.utils import bits_set, lock
 
 
 class InteractionManager(object):

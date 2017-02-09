@@ -34,7 +34,6 @@
 
 from mod_pywebsocket import http_header_util
 
-
 # Additional log level definitions.
 LOGLEVEL_FINE = 9
 

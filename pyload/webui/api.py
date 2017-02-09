@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+from __future__ import absolute_import, print_function, unicode_literals
 
 from contextlib import closing
-from urllib.parse import unquote
-from traceback import format_exc, print_exc
 from io import StringIO
+from traceback import format_exc, print_exc
+from urllib.parse import unquote
 
-from bottle import route, request, response, HTTPError, parse_auth
-
-from pyload.webui.utils import set_session, get_user_api, add_json_header
-from pyload.webui.interface import PYLOAD, session
+from bottle import HTTPError, parse_auth, request, response, route
+from future import standard_library
 
 from pyload.api import ExceptionObject
-from pyload.remote.json_converter import loads, dumps, BaseEncoder
+from pyload.remote.json_converter import BaseEncoder, dumps, loads
 from pyload.utils import remove_chars
+from pyload.webui.interface import PYLOAD, session
+from pyload.webui.utils import add_json_header, get_user_api, set_session
+
+standard_library.install_aliases()
+
+
+
+
 
 # used for gzip compression
 try:

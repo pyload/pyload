@@ -35,13 +35,7 @@
 import os
 import re
 
-from mod_pywebsocket import common
-from mod_pywebsocket import handshake
-from mod_pywebsocket import msgutil
-from mod_pywebsocket import mux
-from mod_pywebsocket import stream
-from mod_pywebsocket import util
-
+from mod_pywebsocket import common, handshake, msgutil, mux, stream, util
 
 _SOURCE_PATH_PATTERN = re.compile(r'(?i)_wsh\.py$')
 _SOURCE_SUFFIX = '_wsh.py'

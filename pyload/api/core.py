@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from pyload.api import Api, require_perm, Permission, StatusInfo, Interaction
-from pyload.utils.fs import join, free_space, exists
+from __future__ import absolute_import, unicode_literals
 
+from pyload.api import Api, Interaction, Permission, StatusInfo, require_perm
 from pyload.api.base import BaseApi
+from pyload.utils.fs import exists, free_space, join
 
 
 class CoreApi(BaseApi):

@@ -28,10 +28,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from mod_pywebsocket import common
-from mod_pywebsocket import util
+from mod_pywebsocket import common, util
 from mod_pywebsocket.http_header_util import quote_if_necessary
-
 
 _available_processors = {}
 

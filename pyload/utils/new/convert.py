@@ -2,11 +2,9 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from builtins import bytes
-from builtins import str
-from builtins import map
 
 import re
+from builtins import bytes, map, str
 
 import bitmath
 import goslate

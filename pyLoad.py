@@ -10,8 +10,7 @@
 #          \  /
 #           \/
 
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
 import argparse
 # import multiprocessing
@@ -19,12 +18,14 @@ import operator
 import sys
 
 import colorama
-# colorama.init(autoreset=True)  # NOTE: Doesn't work on Windows...
 
 import pyload
-
 from pyload.utils.new import clean
 from pyload.utils.new.sys import set_console_icon, set_console_title
+
+# colorama.init(autoreset=True)  # NOTE: Doesn't work on Windows...
+
+
 
 
 __all__ = ['logo', 'main', 'parse_args']

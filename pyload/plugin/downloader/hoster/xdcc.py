@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 #@author: jeix
 
-from __future__ import print_function
-from __future__ import unicode_literals
-
-from builtins import range
-from os.path import join
-from os.path import exists
-from os import makedirs
-from contextlib import closing
+from __future__ import print_function, unicode_literals
 
 import re
-import sys
-import time
 import socket
 import struct
+import sys
+import time
+from builtins import range
+from contextlib import closing
+from os import makedirs
+from os.path import exists, join
 from select import select
 
-from pyload.utils import save_join
 from pyload.plugin.hoster import Hoster
+from pyload.utils import save_join
 
 
 class Xdcc(Hoster):

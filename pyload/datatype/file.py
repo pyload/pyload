@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import division, unicode_literals
+
 from builtins import object
 from time import sleep, time
-from ReadWriteLock import ReadWriteLock
 
-from pyload.api import ProgressInfo, ProgressType, DownloadProgress, FileInfo, DownloadInfo, DownloadStatus
+from pyload.api import (DownloadInfo, DownloadProgress, DownloadStatus,
+                        FileInfo, ProgressInfo, ProgressType)
 from pyload.utils import lock, read_lock, try_catch
-from pyload.utils.fs import safe_filename
 from pyload.utils.filetypes import guess_type
+from pyload.utils.fs import safe_filename
+from ReadWriteLock import ReadWriteLock
 
 status_map = {
     "none": 0,

@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-from threading import Thread, Event
+from threading import Event, Thread
 from traceback import print_exc
 
 

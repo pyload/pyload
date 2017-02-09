@@ -2,24 +2,30 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import sys
+from __future__ import absolute_import, unicode_literals
 
-from os.path import join, abspath, dirname, exists
+import sys
+from os.path import abspath, dirname, exists, join
+
+import bottle
+# Middlewares
+from beaker.middleware import SessionMiddleware
+from bottle import app, run
+
+from pyload.thread import webserver as ServerThread
+from pyload.utils.jsengine import JsEngine
+# Last routes to register,
+from pyload.webui import api, cnl, pyload, setup
+from pyload.webui.middlewares import PrefixMiddleware, StripPathMiddleware
 
 APP_DIR = abspath(join(dirname(__file__), 'app'))
 PYLOAD_DIR = abspath(join(APP_DIR, '..', '..', '..'))
 
-import bottle
-from bottle import run, app
 
-from pyload.webui.middlewares import StripPathMiddleware, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
 
-from pyload.thread import webserver as ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -31,7 +37,6 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from pyload.utils.jsengine import JsEngine
 JS = JsEngine()
 
 TEMPLATE = "default"
@@ -58,8 +63,6 @@ DEBUG = config.get(
 bottle.debug(DEBUG)
 
 
-# Middlewares
-from beaker.middleware import SessionMiddleware
 
 session_opts = {
     'session.type': 'file',
@@ -74,11 +77,6 @@ web = StripPathMiddleware(session)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-from pyload.webui import api
-from pyload.webui import cnl
-from pyload.webui import setup
-# Last routes to register,
-from pyload.webui import pyload
 
 # Server Adapter
 

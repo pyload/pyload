@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from time import time
 
+from bottle import HTTPError, request, response, route
+
 from pyload.utils import json_dumps
-
-from bottle import HTTPError
-from bottle import request
-from bottle import response
-from bottle import route
-
 from pyload.webui.interface import SETUP
-
 from pyload.webui.utils import add_json_header
+
 
 # returns http error
 

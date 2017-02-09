@@ -2,6 +2,7 @@
 
 # Test configuration
 from __future__ import unicode_literals
+
 credentials = ("TestUser", "pwhere")
 webport = 8921
 wsport = 7558

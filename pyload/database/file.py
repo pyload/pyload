@@ -2,10 +2,12 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
-from new_collections import OrderedDict
 
-from pyload.api import DownloadInfo, FileInfo, PackageInfo, PackageStats, DownloadState as DS, state_string
-from pyload.database import DatabaseMethods, queue, async, inner
+from new_collections import OrderedDict
+from pyload.api import DownloadState as DS
+from pyload.api import (DownloadInfo, FileInfo, PackageInfo, PackageStats,
+                        state_string)
+from pyload.database import DatabaseMethods, async, inner, queue
 from pyload.utils.filetypes import guess_type
 
 zero_stats = PackageStats(0, 0, 0, 0)

@@ -15,6 +15,30 @@ License: MIT (see LICENSE for details)
 
 from __future__ import with_statement
 
+import base64
+import functools
+import hmac
+import imp
+import itertools
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import warnings
+from datetime import date as datedate
+from datetime import datetime, timedelta
+from inspect import getargspec
+from tempfile import TemporaryFile
+from traceback import format_exc, print_exc
+from unicodedata import normalize
+
+import cgi
+import email.utils
+import mimetypes
+
 __author__ = 'Marcel Hellkamp'
 __version__ = '0.12.5'
 __license__ = 'MIT'
@@ -35,14 +59,7 @@ if __name__ == '__main__':
     if _cmd_options.server and _cmd_options.server.startswith('gevent'):
         import gevent.monkey; gevent.monkey.patch_all()
 
-import base64, cgi, email.utils, functools, hmac, imp, itertools, mimetypes,\
-        os, re, subprocess, sys, tempfile, threading, time, warnings
 
-from datetime import date as datedate, datetime, timedelta
-from tempfile import TemporaryFile
-from traceback import format_exc, print_exc
-from inspect import getargspec
-from unicodedata import normalize
 
 
 try: from simplejson import dumps as json_dumps, loads as json_lds

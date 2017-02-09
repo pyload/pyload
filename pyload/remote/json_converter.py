@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import str
+
+from pyload.remote import apitypes
+from pyload.remote.apitypes import BaseObject, ExceptionObject
+
 try:
     from pyload.utils import json
 except ImportError:
     import json
 
-from pyload.remote import apitypes
-from pyload.remote.apitypes import BaseObject
-from pyload.remote.apitypes import ExceptionObject
 
 # compact json separator
 separators = (',', ':')

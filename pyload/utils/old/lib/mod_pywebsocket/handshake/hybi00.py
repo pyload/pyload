@@ -46,17 +46,14 @@ http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 import re
 import struct
 
-from mod_pywebsocket import common
+from mod_pywebsocket import common, util
+from mod_pywebsocket.handshake._base import (HandshakeException,
+                                             check_request_line, format_header,
+                                             get_default_port,
+                                             get_mandatory_header,
+                                             parse_host_header,
+                                             validate_mandatory_header)
 from mod_pywebsocket.stream import StreamHixie75
-from mod_pywebsocket import util
-from mod_pywebsocket.handshake._base import HandshakeException
-from mod_pywebsocket.handshake._base import check_request_line
-from mod_pywebsocket.handshake._base import format_header
-from mod_pywebsocket.handshake._base import get_default_port
-from mod_pywebsocket.handshake._base import get_mandatory_header
-from mod_pywebsocket.handshake._base import parse_host_header
-from mod_pywebsocket.handshake._base import validate_mandatory_header
-
 
 _MANDATORY_HEADERS = [
     # key, expected value or None

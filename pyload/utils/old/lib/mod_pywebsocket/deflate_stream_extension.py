@@ -28,10 +28,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-from mod_pywebsocket import common
-from mod_pywebsocket.extensions import _available_processors
-from mod_pywebsocket.extensions import ExtensionProcessorInterface
-from mod_pywebsocket import util
+from mod_pywebsocket import common, util
+from mod_pywebsocket.extensions import (ExtensionProcessorInterface,
+                                        _available_processors)
 
 
 class DeflateStreamExtensionProcessor(ExtensionProcessorInterface):

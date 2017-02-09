@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import str
 from os.path import isabs
 
-from pyload.api import Api, require_perm, Permission, Role
-from pyload.utils.fs import join
-
+from pyload.api import Api, Permission, Role, require_perm
 from pyload.api.base import BaseApi
+from pyload.utils.fs import join
 
 
 class DownloadApi(BaseApi):

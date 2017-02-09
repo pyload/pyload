@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+from __future__ import absolute_import, unicode_literals
+
 from builtins import object
 from threading import RLock
 from time import time
 
+from future import standard_library
+
 from pyload.datatype.check import OnlineCheck
-from pyload.utils import lock, to_list
 from pyload.thread.info import InfoThread
+from pyload.utils import lock, to_list
+
+standard_library.install_aliases()
+
 
 
 class ThreadManager(object):

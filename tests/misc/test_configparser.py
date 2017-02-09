@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
-from builtins import object
+from __future__ import print_function, unicode_literals
+
+from builtins import object, str
+
 from nose.tools import raises
-
-from tests.helper.stubs import Core
-
 from pyload.config.parser import ConfigParser
+from tests.helper.stubs import Core
 
 
 class TestConfigParser(object):

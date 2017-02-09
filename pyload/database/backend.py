@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN, mkaay
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import range
-from builtins import object
-from threading import Thread, Event
-from shutil import move
+from __future__ import print_function, unicode_literals
 
-from queue import Queue
+from builtins import object, range, str
+from shutil import move
+from threading import Event, Thread
 from traceback import print_exc
 
+from future import standard_library
+
 from pyload.utils.fs import chmod, exists, remove
+from queue import Queue
+
+standard_library.install_aliases()
+
+
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

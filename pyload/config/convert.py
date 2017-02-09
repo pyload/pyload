@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from builtins import bytes
-from builtins import str
+
+from builtins import bytes, str
 from gettext import gettext
 
 from new_collections import namedtuple
-
 from pyload.api import Input, InputType
 from pyload.utils import decode, to_bool
 

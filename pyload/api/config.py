@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from pyload.api import Api, require_perm, Permission, ConfigHolder, ConfigItem, ConfigInfo
+from __future__ import absolute_import, unicode_literals
+
+from pyload.api import (Api, ConfigHolder, ConfigInfo, ConfigItem, Permission,
+                        require_perm)
+from pyload.api.base import BaseApi
 from pyload.utils import to_string
 
-from pyload.api.base import BaseApi
 
 # helper function to create a ConfigHolder
 

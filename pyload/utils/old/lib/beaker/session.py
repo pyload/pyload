@@ -2,16 +2,16 @@ import Cookie
 import os
 import random
 import time
+from base64 import b64decode, b64encode
 from datetime import datetime, timedelta
-
-from beaker.crypto import hmac as HMAC, hmac_sha1 as SHA1, md5
-from beaker.util import pickle
 
 from beaker import crypto
 from beaker.cache import clsmap
+from beaker.crypto import hmac as HMAC
+from beaker.crypto import hmac_sha1 as SHA1
+from beaker.crypto import md5
 from beaker.exceptions import BeakerException, InvalidCryptoBackendError
-from base64 import b64encode, b64decode
-
+from beaker.util import pickle
 
 __all__ = ['SignedCookie', 'Session']
 

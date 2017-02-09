@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from contextlib import closing
 from time import time
 
-from pyload.utils import remove_chars
-
 from pyload.plugin.account import Account
+from pyload.utils import remove_chars
 
 
 def normalize(domain):

@@ -1,5 +1,10 @@
 import warnings
 
+from beaker.cache import CacheManager
+from beaker.session import Session, SessionObject
+from beaker.util import (coerce_cache_params, coerce_session_params,
+                         parse_cache_config_options)
+
 try:
     from paste.registry import StackedObjectProxy
     beaker_session = StackedObjectProxy(name="Beaker Session")
@@ -8,10 +13,6 @@ except:
     beaker_cache = None
     beaker_session = None
 
-from beaker.cache import CacheManager
-from beaker.session import Session, SessionObject
-from beaker.util import coerce_cache_params, coerce_session_params, \
-    parse_cache_config_options
 
 
 class CacheMiddleware(object):

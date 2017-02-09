@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import bytes
-from builtins import str
-from builtins import range
-import pycurl
+from __future__ import print_function, unicode_literals
 
-from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib.parse import quote, urlencode
-from http.client import responses
+from builtins import bytes, range, str
+from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from io import StringIO
+from urllib.parse import quote, urlencode
 
-from pyload.plugin import Abort
+from future import standard_library
+from http.client import responses
+
+import pycurl
 from pyload.network.cookie import CookieJar
-
+from pyload.plugin import Abort
 from pyload.plugin.request import Request, ResponseException
+
+standard_library.install_aliases()
+
+
+
 
 
 def myquote(url):

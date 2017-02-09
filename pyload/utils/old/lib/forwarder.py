@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from sys import argv
-from sys import exit
-
 import socket
 import thread
-
+from sys import argv, exit
 from traceback import print_exc
+
 
 class Forwarder():
 

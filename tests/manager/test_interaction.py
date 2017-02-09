@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from builtins import range
 from unittest import TestCase
 
-from tests.helper.stubs import Core
-
 from pyload.api import InputType, Interaction
 from pyload.interaction.interactionmanager import InteractionManager
+from tests.helper.stubs import Core
 
 
 class TestInteractionManager(TestCase):

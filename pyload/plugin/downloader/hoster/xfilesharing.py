@@ -2,18 +2,23 @@
 #@author: zoidberg
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
+
 import re
+from builtins import range
 from random import random
-from urllib.parse import unquote
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
+
+from future import standard_library
+
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
-from pyload.plugin.internal.simplehoster import SimpleHoster, create_get_info, PluginParseError, replace_patterns
-from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
-from pyload.utils import html_unescape
 from pyload.network.request import get_url
+from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
+from pyload.plugin.internal.simplehoster import (PluginParseError,
+                                                 SimpleHoster, create_get_info,
+                                                 replace_patterns)
+from pyload.utils import html_unescape
+
+standard_library.install_aliases()
 
 
 class XFileSharingPro(SimpleHoster):

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from time import sleep
 
-from pyload.api import LinkStatus, DownloadStatus as DS, ProgressInfo, ProgressType
-from pyload.utils import uniqify, accumulate
-from pyload.plugin import Abort, Retry, Fail
+from pyload.api import DownloadStatus as DS
+from pyload.api import LinkStatus, ProgressInfo, ProgressType
+from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.crypter import Package
-
 from pyload.thread.base import BaseThread
+from pyload.utils import accumulate, uniqify
 
 
 class DecrypterThread(BaseThread):

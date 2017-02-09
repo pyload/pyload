@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import range
-from tests.helper.stubs import Core
-from tests.helper.benchmark import BenchmarkTest
+from __future__ import print_function, unicode_literals
 
-from pyload.api import DownloadState, PackageInfo, FileInfo
+from builtins import range
+from random import choice
+
+from pyload.api import DownloadState, FileInfo, PackageInfo
 from pyload.database import DatabaseBackend
+from tests.helper.benchmark import BenchmarkTest
+from tests.helper.stubs import Core
 
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
-from random import choice
 
 
 class TestDatabase(BenchmarkTest):

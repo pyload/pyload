@@ -10,9 +10,6 @@
 #           \/
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
 
 import logging
 import logging.handlers
@@ -21,20 +18,27 @@ import sched
 import signal
 import tempfile
 import time
+from builtins import map
+from contextlib import closing
+from multiprocessing import Process
+
+from future import standard_library
+
+import setproctitle
+from pyload.utils.new import clean, misc, sys
+from pyload.utils.new.check import ismodule, lookup
+from pyload.utils.new.path import makedirs, open, remove
+
+standard_library.install_aliases()
+
 
 try:
     import colorlog
 except ImportError:
     pass
     
-import setproctitle
 
-from contextlib import closing
-from multiprocessing import Process
 
-from pyload.utils.new import clean, sys, misc
-from pyload.utils.new.path import makedirs, open, remove
-from pyload.utils.new.check import ismodule, lookup
 
 
 class Restart(Exception):

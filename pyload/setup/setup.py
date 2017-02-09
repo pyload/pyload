@@ -2,35 +2,31 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import input
-from builtins import str
-from builtins import object
-from builtins import COREDIR
-import sys
-import socket
+from __future__ import absolute_import, print_function, unicode_literals
+
 import gettext
+import socket
+import sys
 import webbrowser
-
+from builtins import COREDIR, input, object, str
 from getpass import getpass
-from time import time
 from sys import exit
+from time import time
 
+from future import standard_library
 
 from pyload.api import Role
-from pyload.utils.fs import abspath
-from pyload.utils.fs import exists
-from pyload.utils.fs import join
-from pyload.utils.fs import makedirs
-from pyload.utils import get_console_encoding
-from pyload.thread.webui import WebServer
-
-from pyload.setup.system import get_system_info
 from pyload.setup.dependencies import deps
+from pyload.setup.system import get_system_info
+from pyload.thread.webui import WebServer
+from pyload.utils import get_console_encoding
+from pyload.utils.fs import abspath, exists, join, makedirs
+
+standard_library.install_aliases()
+
+
+
+
 
 
 class Setup(object):

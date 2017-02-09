@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #@author: zoidberg
 
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import division, unicode_literals
 
 import re
 from time import mktime, strptime
+
 from pyload.plugin.account import Account
 from pyload.plugin.internal.simplehoster import parse_html_form
 from pyload.utils import parse_size

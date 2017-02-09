@@ -35,7 +35,6 @@ in HTTP RFC http://www.ietf.org/rfc/rfc2616.txt.
 
 import urlparse
 
-
 _SEPARATORS = '()<>@,;:\\"/[]?={} \t'
 
 

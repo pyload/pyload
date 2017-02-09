@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 #@author: zoidberg
 
-from __future__ import unicode_literals
-from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
-from builtins import bytes
-from builtins import str
-from urllib.parse import urlparse
-import re
-from time import time
+from __future__ import division, unicode_literals
 
-from pyload.plugin.hoster import Hoster
-from pyload.utils import html_unescape, fixup, parse_size
-from pyload.network.request import get_url
+import re
+from builtins import bytes, str
+from time import time
+from urllib.parse import urlparse
+
+from future import standard_library
+
 from pyload.network.cookie import CookieJar
+from pyload.network.request import get_url
+from pyload.plugin.hoster import Hoster
+from pyload.utils import fixup, html_unescape, parse_size
+
+standard_library.install_aliases()
+
 
 
 def replace_patterns(string, ruleslist):

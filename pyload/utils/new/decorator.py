@@ -8,6 +8,7 @@ import multiprocessing
 from pyload.utils.new.check import isiterable
 from pyload.utils.new.lib.safe_threading import Thread
 
+
 # def deprecated(by=None):
 # new_func = by
 # def wrapper(old_func):

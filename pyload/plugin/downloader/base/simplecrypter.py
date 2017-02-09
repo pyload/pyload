@@ -3,12 +3,12 @@
 
 from __future__ import unicode_literals
 
-from builtins import range
 import re
+from builtins import range
 
 from pyload.plugin.crypter import Crypter, Package
-from pyload.utils import html_unescape
 from pyload.plugin.internal.simplehoster import replace_patterns
+from pyload.utils import html_unescape
 
 
 class SimpleCrypter(Crypter):

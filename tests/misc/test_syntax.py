@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from os import walk
 from os.path import abspath, dirname, join
-
 from unittest import TestCase
-
-PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
 
 # needed to register globals
 from tests.helper import stubs
+
+PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
+
 
 
 class TestSyntax(TestCase):

@@ -3,20 +3,17 @@
 
 from __future__ import unicode_literals
 
-from builtins import range
-from builtins import object
 import re
-
-from os import listdir, makedirs
-from os.path import isfile, join, exists, basename
-from time import time
+from builtins import object, range
 from collections import defaultdict
 from logging import getLogger
-
-from SafeEval import const_eval as literal_eval
-from pyload.plugin import Base
+from os import listdir, makedirs
+from os.path import basename, exists, isfile, join
+from time import time
 
 from new_collections import namedtuple
+from pyload.plugin import Base
+from SafeEval import const_eval as literal_eval
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 

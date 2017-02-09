@@ -1,6 +1,8 @@
 """JSON token scanner
 """
 import re
+
+
 def _import_c_make_scanner():
     try:
         from simplejson._speedups import make_scanner

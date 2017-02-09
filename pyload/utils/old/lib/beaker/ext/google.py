@@ -2,7 +2,7 @@ import cPickle
 import logging
 from datetime import datetime
 
-from beaker.container import OpenResourceNamespaceManager, Container
+from beaker.container import Container, OpenResourceNamespaceManager
 from beaker.exceptions import InvalidCacheBackendError
 from beaker.synchronization import null_synchronizer
 

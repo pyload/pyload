@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 import re
-from bottle import request, HTTPError, redirect
+
+from bottle import HTTPError, redirect, request
+
+from pyload.webui.interface import PYLOAD, SETUP
 
 try:
     import zlib
 except ImportError:
     zlib = None
 
-from pyload.webui.interface import PYLOAD, SETUP
 
 
 def add_json_header(r):

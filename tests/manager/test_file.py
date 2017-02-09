@@ -2,17 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from builtins import range
 from random import choice
 
-from tests.helper.stubs import Core, normal_user
-from tests.helper.benchmark import BenchmarkTest
-
+from pyload.api import DownloadState
 from pyload.database import DatabaseBackend
+from tests.helper.benchmark import BenchmarkTest
+from tests.helper.stubs import Core, normal_user
+
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue
 
-from pyload.api import DownloadState
 
 
 class TestFileManager(BenchmarkTest):

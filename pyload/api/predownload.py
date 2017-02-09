@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
+
 from builtins import str
 from itertools import chain
 
-from pyload.api import (Api, DownloadStatus as DS, require_perm, Permission, OnlineCheck,
-                        LinkStatus, urlmatcher)
+from pyload.api import DownloadStatus as DS
+from pyload.api import (Api, LinkStatus, OnlineCheck, Permission, require_perm,
+                        urlmatcher)
+from pyload.api.base import BaseApi
+from pyload.network.request import get_url
 from pyload.utils import uniqify
 from pyload.utils.fs import join
 from pyload.utils.packagetools import parse_names
-from pyload.network.request import get_url
-
-from pyload.api.base import BaseApi
 
 
 class PreDownloadApi(BaseApi):

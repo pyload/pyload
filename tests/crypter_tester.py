@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals
+
+from logging import DEBUG, log
 from os.path import dirname, join
+
 from nose.tools import nottest
-
-from logging import log, DEBUG
-
-from tests.helper.stubs import Core
-from tests.helper.plugintester import PluginTester
-
 from pyload.plugins.base import Fail
 from pyload.utils import accumulate, to_int
+from tests.helper.plugintester import PluginTester
+from tests.helper.stubs import Core
 
 
 class CrypterPluginTester(PluginTester):

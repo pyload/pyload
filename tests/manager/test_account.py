@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 from unittest import TestCase
 
-from tests.helper.stubs import Core, admin_user, normal_user
-
 from pyload.manager.account import AccountManager
+from tests.helper.stubs import Core, admin_user, normal_user
 
 
 class TestAccountManager(TestCase):

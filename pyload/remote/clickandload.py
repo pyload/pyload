@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import print_function
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
+from __future__ import absolute_import, print_function, unicode_literals
+
 import re
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from cgi import FieldStorage
-from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
+from urllib.parse import unquote
+
+from future import standard_library
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+from cgi import FieldStorage
+from pyload.thread.remote import BackendBase
+
+standard_library.install_aliases()
 
 try:
     import js2py
@@ -22,7 +25,6 @@ try:
 except ImportError:
     pass
 
-from pyload.thread.remote import BackendBase
 
 core = None
 

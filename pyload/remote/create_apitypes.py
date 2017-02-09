@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-import re
-import inspect
+from __future__ import print_function, unicode_literals
 
+import inspect
+import re
 from contextlib import nested
 from os.path import abspath, dirname, join
+
+from pyload import info
+from thrift.Thrift import TType
+from thriftgen.pyload import Pyload, ttypes
 
 path = dirname(abspath(__file__))
 root = abspath(join(path, "..", ".."))
 
-from thrift.Thrift import TType
-from thriftgen.pyload import ttypes
-from thriftgen.pyload import Pyload
 
-from pyload import info
 
 type_map = {
     TType.BOOL: 'bool',

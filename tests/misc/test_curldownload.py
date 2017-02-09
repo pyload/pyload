@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from os import stat
+from __future__ import print_function, unicode_literals
 
+from os import stat
 from unittest import TestCase
 
-from tests.helper.stubs import Core
 from pyload.network.bucket import Bucket
-from pyload.plugins.network.curlrequest import CurlRequest
 from pyload.plugins.network.curldownload import CurlDownload
+from pyload.plugins.network.curlrequest import CurlRequest
+from tests.helper.stubs import Core
 
 
 class TestCurlRequest(TestCase):

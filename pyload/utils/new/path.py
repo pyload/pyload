@@ -4,14 +4,13 @@
 from __future__ import unicode_literals
 
 import codecs
-import ctypes
 import os
 import shutil
+from os.path import *
 
 import send2trash
 
-from os.path import *
-
+import ctypes
 from pyload.utils.new import clean
 
 

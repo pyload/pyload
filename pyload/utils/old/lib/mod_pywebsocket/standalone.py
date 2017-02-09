@@ -125,12 +125,9 @@ It may execute arbitrary Python code or external programs. It should not be
 used outside a firewall.
 """
 
-import BaseHTTPServer
-import CGIHTTPServer
-import SocketServer
-import ConfigParser
 import base64
-import httplib
+import BaseHTTPServer
+import ConfigParser
 import logging
 import logging.handlers
 import optparse
@@ -138,17 +135,15 @@ import os
 import re
 import select
 import socket
+import SocketServer
 import sys
 import threading
 import time
 
-from mod_pywebsocket import common
-from mod_pywebsocket import dispatch
-from mod_pywebsocket import handshake
-from mod_pywebsocket import http_header_util
-from mod_pywebsocket import memorizingfile
-from mod_pywebsocket import util
-
+import CGIHTTPServer
+import httplib
+from mod_pywebsocket import (common, dispatch, handshake, http_header_util,
+                             memorizingfile, util)
 
 _DEFAULT_LOG_MAX_BYTES = 1024 * 256
 _DEFAULT_LOG_BACKUP_COUNT = 5

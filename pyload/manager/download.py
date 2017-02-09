@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-from builtins import COREDIR
+from __future__ import absolute_import, unicode_literals
+
+from builtins import COREDIR, object
 from collections import defaultdict
-from threading import Event
-from time import sleep
 from random import sample
 from subprocess import call
+from threading import Event
+from time import sleep
 
-from ReadWriteLock import ReadWriteLock
+from future import standard_library
 
 from pyload.api import DownloadStatus as DS
-
-from pyload.utils import lock, read_lock
-from pyload.utils.fs import exists, join, free_space
-
 from pyload.network import get_ip
-
-from pyload.thread.download import DownloadThread
 from pyload.thread.decrypter import DecrypterThread
+from pyload.thread.download import DownloadThread
+from pyload.utils import lock, read_lock
+from pyload.utils.fs import exists, free_space, join
+from ReadWriteLock import ReadWriteLock
+
+standard_library.install_aliases()
+
+
+
+
+
 
 
 class DownloadManager(object):

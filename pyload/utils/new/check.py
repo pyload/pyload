@@ -2,11 +2,10 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
-from builtins import map
-from builtins import range
 
 import imp
 import sys
+from builtins import map, range
 
 from pyload.utils.new.lib.collections import Iterable, Mapping
 

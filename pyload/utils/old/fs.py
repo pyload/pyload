@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 import os
 import sys
 from os.path import join
+
 from pyload.utils.old import decode, remove_chars
 
 # File System Encoding functions:

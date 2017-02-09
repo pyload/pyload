@@ -1,5 +1,6 @@
 import sys
 
+
 def rename_process(new_name):
     """ Renames the process calling the function to the given name. """
     if sys.platform != 'linux2':

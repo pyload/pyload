@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.plugin.crypter import Crypter, Package
+
 import re
+
+from pyload.plugin.crypter import Crypter, Package
 
 
 class XfilesharingProFolder(Crypter):

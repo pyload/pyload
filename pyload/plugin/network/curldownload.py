@@ -1,27 +1,23 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import division
+from __future__ import absolute_import, division, unicode_literals
 
-from contextlib import closing
 from builtins import range
+from contextlib import closing
 from os import remove
 from os.path import dirname
-from time import time
 from shutil import move
+from time import time
 
 import pycurl
-
 from pyload.api import Connection
-from pyload.plugin import Abort
 from pyload.network.cookie import CookieJar
-from pyload.utils.fs import save_join, fs_encode
-
+from pyload.plugin import Abort
 from pyload.plugin.download import Download
 from pyload.plugin.network.curlchunk import ChunkInfo, CurlChunk
 from pyload.plugin.network.curlrequest import ResponseException
+from pyload.utils.fs import fs_encode, save_join
 
 
 # TODO: save content-disposition for resuming

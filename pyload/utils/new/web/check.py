@@ -3,19 +3,20 @@
 
 from __future__ import unicode_literals
 
+import bottle
+import requests
+import validators
+
+import mimetypes
+from pyload.utils.new import clean
+from pyload.utils.new.web import convert as webconvert
+
 try:
     import IPy
 except ImportError:
     pass
     
-import bottle
-import mimetypes
-import requests
-import validators
 
-from pyload.utils.new import clean
-# from pyload.utils.new import parse
-from pyload.utils.new.web import convert as webconvert
 
 # TODO: Recheck
 # def ismobile():

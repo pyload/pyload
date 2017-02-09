@@ -1,6 +1,5 @@
 from beaker import util
 
-
 try:
     # Use PyCrypto (if available)
     from Crypto.Hash import HMAC as hmac

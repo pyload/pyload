@@ -2,8 +2,10 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+
 from builtins import str
-from pyload.api import UserData, Permission, Role
+
+from pyload.api import Permission, Role, UserData
 from pyload.utils import bits_set
 
 

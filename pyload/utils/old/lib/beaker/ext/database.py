@@ -3,11 +3,10 @@ import logging
 import pickle
 from datetime import datetime
 
-from beaker.container import OpenResourceNamespaceManager, Container
-from beaker.exceptions import InvalidCacheBackendError
-from beaker.exceptions import MissingCacheParameter
+from beaker.container import Container, OpenResourceNamespaceManager
+from beaker.exceptions import InvalidCacheBackendError, MissingCacheParameter
 from beaker.synchronization import file_synchronizer, null_synchronizer
-from beaker.util import verify_directory, SyncDict
+from beaker.util import SyncDict, verify_directory
 
 log = logging.getLogger(__name__)
 

@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals, with_statement
 
-from threading import Event
-from time import time, sleep
-
-import threading
 import logging
+import threading
+from threading import Event
+from time import sleep, time
 
 from pyload.utils.fs import exists
 

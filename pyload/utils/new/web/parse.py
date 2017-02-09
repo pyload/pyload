@@ -10,7 +10,8 @@ import tld
 
 from pyload.utils.new import clean
 from pyload.utils.new.struct import HeadDict
-from pyload.utils.new.web import convert as webconvert, purge as webpurge
+from pyload.utils.new.web import convert as webconvert
+from pyload.utils.new.web import purge as webpurge
 
 
 # TODO: Recheck result format

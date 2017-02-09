@@ -66,13 +66,14 @@
 
 __version__ = "1.1"
 
-from struct import pack
+from base64 import b64encode
 from binascii import b2a_hex
 from random import randint
+from struct import pack
 
-from base64 import b64encode
+from beaker.crypto.util import hmac as HMAC
+from beaker.crypto.util import hmac_sha1 as SHA1
 
-from beaker.crypto.util import hmac as HMAC, hmac_sha1 as SHA1
 
 def strxor(a, b):
     return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b)])

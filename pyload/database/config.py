@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from pyload.database import DatabaseMethods, queue, async
+
+from pyload.database import DatabaseMethods, async, queue
 
 
 class ConfigMethods(DatabaseMethods):
