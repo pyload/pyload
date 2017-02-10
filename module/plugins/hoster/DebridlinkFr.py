@@ -1,4 +1,4 @@
-f# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import pycurl
 import time
@@ -15,7 +15,7 @@ def args(**kwargs):
 class DebridlinkFr(MultiHoster):
     __name__    = "DebridlinkFr"
     __type__    = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -56,5 +56,8 @@ class DebridlinkFr(MultiHoster):
         res = self.api_request("/downloader/add", post=args(link=pyfile.url))
 
         if res['result'] == "OK":
-            self.link = res['value']['downloadLink']
+            self.link            = res['value']['downloadLink']
+            pyfile.name          = res['value'].get('filename', None) or pyfile.name
+            self.resume_download = res['value'].get('resume') or self.resume_download
+            self.chunk_limit     = res['value'].get('chunk') or self.chunk_limit
 
