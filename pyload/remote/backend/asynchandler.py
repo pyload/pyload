@@ -96,7 +96,8 @@ class AsyncHandler(AbstractHandler):
 
                 skip = False
                 for arg in args:
-                    if hasattr(arg, 'owner') and arg.owner != req.api.primary_uid:
+                    if hasattr(
+                            arg, 'owner') and arg.owner != req.api.primary_uid:
                         skip = True
                         break
 

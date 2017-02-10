@@ -22,9 +22,6 @@ from types import MethodType
 standard_library.install_aliases()
 
 
-
-
-
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 
 
@@ -79,7 +76,8 @@ class AddonManager(object):
         """
         Invokes a registered method.
         """
-        if plugin not in self.plugins and func_name not in self.plugins[plugin].handler:
+        if plugin not in self.plugins and func_name not in self.plugins[
+                plugin].handler:
             raise ServiceDoesNotExist(plugin, func_name)
 
         # TODO: choose correct instance
@@ -184,7 +182,8 @@ class AddonManager(object):
         # TODO: could be improved
         # remove event listener
         for f in dir(addon):
-            if f.startswith("__") or not isinstance(getattr(addon, f), MethodType):
+            if f.startswith("__") or not isinstance(
+                    getattr(addon, f), MethodType):
                 continue
             self.pyload.evm.remove_from_events(getattr(addon, f))
 
@@ -226,7 +225,8 @@ class AddonManager(object):
         """
         Returns all active plugins.
         """
-        return [p for x in self.plugins.values() for p in x.instances if p.is_activated()]
+        return [p for x in self.plugins.values()
+                for p in x.instances if p.is_activated()]
 
     def get_info(self, plugin):
         """
@@ -258,7 +258,8 @@ class AddonManager(object):
                 for inst in plugin.instances:
                     self.listen_to(event, getattr(inst, func))
 
-    def add_addon_handler(self, plugin, func, label, desc, args, package, media):
+    def add_addon_handler(self, plugin, func, label,
+                          desc, args, package, media):
         """
         Registers addon service description.
         """

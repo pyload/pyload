@@ -54,7 +54,8 @@ class Account(Base):
 
     __type__ = "account"
 
-    def __init__(self, manager, aid, loginname, owner, activated, shared, password, options):
+    def __init__(self, manager, aid, loginname, owner,
+                 activated, shared, password, options):
         Base.__init__(self, manager.pyload, owner)
 
         self.aid = aid

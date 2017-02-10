@@ -75,7 +75,6 @@ class Core(Process):
     __authors__ = (("Walter Purcaro", "vuolter@gmail.com     "),
                    ("Christian Rakow", "Mast3rRaNaN@hotmail.de"))
 
-
     def _clean(self):
         join = os.path.join
         remove = os.remove
@@ -95,7 +94,6 @@ class Core(Process):
                 except Exception:
                     continue
         remove('tmp', trash=False, ignore_errors=True)
-
 
     # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
@@ -159,11 +157,10 @@ class Core(Process):
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
 
-
     def _init_permissions(self):
-        if os.name == 'nt': 
+        if os.name == 'nt':
             return
-            
+
         change_group = self.config.get('permission', 'change_group')
         change_user = self.config.get('permission', 'change_user')
 
@@ -180,7 +177,6 @@ class Core(Process):
                 sys.set_process_user(user)
             except Exception as e:
                 self.log.error(_("Unable to change uid"), e.message)
-
 
     def _init_config(self, configdir):
         from pyload.config import Config
@@ -203,7 +199,6 @@ class Core(Process):
         configfile = self.profile + '.conf'
         self.config = self.cfg = Config(configfile, self.__version__)
 
-
     def _init_translation(self):
         language = self.config.get('general', 'language')
         try:
@@ -213,7 +208,6 @@ class Core(Process):
         else:
             translation.install(True)
 
-
     def _init_debug(self, debug, webdebug):
         debug_log = self.config.get('log', 'debug')
         verbose_log = self.config.get('log', 'verbose')
@@ -222,7 +216,6 @@ class Core(Process):
         self.debug = bool(debug) or debug_log
         self.debug_level = 2 if debug > 1 or verbose_log else 1
         self.webdebug = bool(webdebug) or debug_webui
-
 
     def _start_interfaces(self, webui, remote):
         # TODO: Parse `remote`
@@ -255,13 +248,11 @@ class Core(Process):
             # self.svm.add('webui', **kwgs)
             # self.svm.start()
 
-
     def _init_api(self):
         from pyload.api import Api
 
         Api.init_components()
         self.api = Api(self)
-
 
     def _init_database(self, restore):
         from pyload.database import DatabaseBackend
@@ -275,7 +266,6 @@ class Core(Process):
 
         if restore or not os.path.isfile("pyload.conf"):
             self.db.add_user("admin", "pyload")
-
 
     def _init_managers(self):
         from pyload.manager import (AccountManager, AddonManager, DownloadManager, EventManager,
@@ -293,11 +283,9 @@ class Core(Process):
         self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager = self.svm = ServerManager(self)
 
-
     def _init_network(self):
         from pyload.network.request import RequestFactory
         REQUEST = self.request = self.req = RequestFactory(self)
-
 
     def _init_process(self, profile):
         if not profile:
@@ -320,7 +308,6 @@ class Core(Process):
         signal.signal(signal.SIGTERM, lambda s, f: self.terminate())
         Process.__init__(self)
 
-
     def __init__(self, profile=None, configdir=None, refresh=0, remote=None,
                  webui=None, debug=0, webdebug=0):
         # NOTE: Don't change the init order!
@@ -333,7 +320,7 @@ class Core(Process):
 
         self.log.debug("Initializing pyLoad ...")
         self._shutdown = False
-        self._restart  = False
+        self._restart = False
         if refresh:
             self._clean()
         self._init_permissions()
@@ -342,7 +329,6 @@ class Core(Process):
         self._init_api()
         self._init_managers()
         self._start_interfaces(webui, remote)
-
 
     def _set_process(self):
         profile = os.path.basename(os.getcwd())
@@ -353,14 +339,12 @@ class Core(Process):
         niceness = self.config.get('general', 'niceness')
         sys.renice(niceness)
 
-
     def _set_storage(self):
         storage_folder = self.config.get(
             'general', 'storage_folder') or "downloads"
         makedirs(storage_folder)
         space_size = format.size(availspace(storage_folder))
         self.log.info(_("Available storage space: {}").format(space_size))
-
 
     def run(self):
         self.log.info(_("Starting pyLoad ..."))
@@ -416,19 +400,16 @@ class Core(Process):
             self.log.critical(_("Critical error"), e.message)
             raise
 
-
     def _exit_logger(self):
         for handler in self.log.handlers:
             with closing(handler) as hdlr:
                 self.log.removeHandler(hdlr)
-
 
     def restart(self):
         self.stop()
         self.log.info(_("Restarting pyLoad ..."))
         self.evm.fire('pyload:restarting')
         self.start()
-
 
     def shutdown(self):
         try:
@@ -437,7 +418,6 @@ class Core(Process):
         finally:
             self.log.info(_("Exiting pyLoad ..."))
             return Process.terminate(self)
-
 
     def stop(self):
         self.log.info(_("Stopping pyLoad ..."))

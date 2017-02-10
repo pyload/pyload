@@ -25,7 +25,8 @@ class CoreApi(BaseApi):
         if not self.pyload.config.get('ssl', 'activated'):
             return False
 
-        if not exists(self.pyload.config.get('ssl', 'cert')) or not exists(self.pyload.config.get('ssl', 'key')):
+        if not exists(self.pyload.config.get('ssl', 'cert')) or not exists(
+                self.pyload.config.get('ssl', 'key')):
             self.pyload.log.warning(_('SSL key or certificate not found'))
             return False
 
@@ -41,7 +42,8 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "{}://{{}}:{1:d}".format(ws, self.pyload.config.get('remote', 'port'))
+        return "{}://{{}}:{1:d}".format(ws,
+                                        self.pyload.config.get('remote', 'port'))
 
     @require_perm(Permission.All)
     def get_status_info(self):

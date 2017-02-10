@@ -50,8 +50,8 @@ def readlock(func):
             args.lock.release()
 
     return new
-    
-    
+
+
 def lock(func):
     def new(self, *args, **kwargs):
         with self.lock:
@@ -73,6 +73,7 @@ def trycatch(callback):
     Decorator that executes the function and returns the value or fallback on any exception.
     """
     from pyload.utils.debug import print_traceback
+
     def wrapper(func):
         def new(self, *args, **kwargs):
             try:

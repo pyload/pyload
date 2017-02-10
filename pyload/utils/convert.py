@@ -106,9 +106,9 @@ def size(value, in_unit, out_unit):
 
     except NameError:
         sizeunits = ('B', 'K', 'M', 'G', 'T', 'P', 'E')
-        sizemap   = {u: i * 10 for i, u in enumerate(sizeunits)}
+        sizemap = {u: i * 10 for i, u in enumerate(sizeunits)}
 
-        in_magnitude  = sizemap[in_unit]
+        in_magnitude = sizemap[in_unit]
         out_magnitude = sizemap[out_unit]
 
         magnitude = in_magnitude - out_magnitude

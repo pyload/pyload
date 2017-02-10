@@ -134,7 +134,8 @@ class InscDict(MutableMapping):
         return self.__dict__[key.lower()][-1]
 
     def __setitem__(self, key, value):
-        # NOTE: Use the lowercased key for lookups, but store the actual key alongside the value
+        # NOTE: Use the lowercased key for lookups, but store the actual key
+        # alongside the value
         self.__dict__[key.lower()] = (key, value)
 
     def __delitem__(self, key):
@@ -159,7 +160,8 @@ class InscDict(MutableMapping):
         """
         Like `items`, but with all lowercase keys.
         """
-        return ((lowerkey, val) for lowerkey, (key, val) in self.__dict__.items())
+        return ((lowerkey, val)
+                for lowerkey, (key, val) in self.__dict__.items())
 
     def copy(self):
         return InscDict(self.__dict__.values())

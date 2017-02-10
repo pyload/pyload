@@ -39,7 +39,8 @@ class AbtractExtractor(object):
         """
         raise NotImplementedError
 
-    def __init__(self, m, file, out, fullpath, overwrite, excludefiles, renice):
+    def __init__(self, m, file, out, fullpath,
+                 overwrite, excludefiles, renice):
         """
         Initialize extractor for specific file
 

@@ -61,7 +61,7 @@ class ReadWriteLock(object):
         self.__writercount = 0
         self.__upgradewritercount = 0
         self.__pendingwriters = []
-        
+
         # Initialize with no readers.
         self.__readers = {}
 
@@ -73,7 +73,7 @@ class ReadWriteLock(object):
             yield
         finally:
             self.release()
-            
+
     def acquire(self, blocking=True, timeout=None, shared=False):
         if shared:
             self.acquireread(timeout)
@@ -165,9 +165,11 @@ class ReadWriteLock(object):
                     # this except if one of us releases all his read locks.
                     # Signal this to user.
                     if timeout is not None:
-                        raise RuntimeError("Write lock upgrade would deadlock until timeout")
+                        raise RuntimeError(
+                            "Write lock upgrade would deadlock until timeout")
                     else:
-                        raise ValueError("Inevitable dead lock, denying write lock")
+                        raise ValueError(
+                            "Inevitable dead lock, denying write lock")
                 upgradewriter = True
                 self.__upgradewritercount = self.__readers.pop(me)
             else:

@@ -95,7 +95,8 @@ def serve_static(path):
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing
     gzipped = False
-    if GZIPPED[path] and "gzip" in request.get_header("Accept-Encoding", "") and path != "index.html":
+    if GZIPPED[path] and "gzip" in request.get_header(
+            "Accept-Encoding", "") and path != "index.html":
         gzipped = True
         path += ".gz"
 

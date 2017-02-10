@@ -26,7 +26,6 @@ APP_DIR = abspath(join(dirname(__file__), 'app'))
 PYLOAD_DIR = abspath(join(APP_DIR, '..', '..', '..'))
 
 
-
 SETUP = None
 PYLOAD = None
 
@@ -63,7 +62,6 @@ elif exists(join(APP_DIR, "dist", "index.html")):
 DEBUG = config.get(
     'webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
-
 
 
 session_opts = {

@@ -65,7 +65,8 @@ def require_auth(perm=None):
             s = bottle.request.environ.get('beaker.session')
             if s.get("name", None) and s.get("auth", False):
                 if perm and not parse_permissions(s).get(perm):
-                    if bottle.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    if bottle.request.headers.get(
+                            'X-Requested-With') == 'XMLHttpRequest':
                         res = bottle.HTTPError(403, "Forbidden")
                     else:
                         res = bottle.redirect("/nopermission")

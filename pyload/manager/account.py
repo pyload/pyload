@@ -93,7 +93,8 @@ class AccountManager(object):
         """
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
-                if acc.aid == aid and (not user or acc.owner == user.true_primary):
+                if acc.aid == aid and (
+                        not user or acc.owner == user.true_primary):
                     return acc
 
     @lock

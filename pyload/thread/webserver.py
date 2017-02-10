@@ -109,7 +109,9 @@ class WebServer(Thread):
                 else:
                     unavailable.append(server.NAME)
             except Exception as e:
-                log.error(_("Failed importing webserver: {}").format(e.message))
+                log.error(
+                    _("Failed importing webserver: {}").format(
+                        e.message))
 
         if unavailable:  # Just log whats not available to have some debug information
             log.debug("Unavailable webserver: {}".format(

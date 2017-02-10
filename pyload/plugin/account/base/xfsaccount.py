@@ -48,7 +48,8 @@ class XFSPAccount(Account):
                 else:
                     trafficleft = parse.size(trafficleft) // 1024
 
-        return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
+        return ({"validuntil": validuntil,
+                 "trafficleft": trafficleft, "premium": premium})
 
     def login(self, user, data, req):
         html = req.load('{}login.html'.format(self.MAIN_PAGE), decode=True)

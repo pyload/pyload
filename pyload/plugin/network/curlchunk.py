@@ -143,7 +143,8 @@ class CurlChunk(CurlRequest):
         self.n_last_size = 0
 
     def __repr__(self):
-        return "<CurlChunk id={:d}, size={:d}, arrived={:d}>".format(self.id, self.size, self.arrived)
+        return "<CurlChunk id={:d}, size={:d}, arrived={:d}>".format(
+            self.id, self.size, self.arrived)
 
     @property
     def cj(self):

@@ -20,7 +20,8 @@ standard_library.install_aliases()
 
 
 def myquote(url):
-    return quote(url.encode('utf8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf8') if isinstance(url, str)
+                 else url, safe="%/:=&?~#+!$,;'@()*[]")
 
 
 def myurlencode(data):
@@ -150,7 +151,8 @@ class CurlRequest(Request):
             if hasattr(pycurl, k):
                 self.c.setopt(getattr(pycurl, k), v)
 
-    def set_request_context(self, url, get, post, referer, cookies, multipart=False):
+    def set_request_context(self, url, get, post,
+                            referer, cookies, multipart=False):
         """
         Sets everything needed for the request.
         """
@@ -198,7 +200,8 @@ class CurlRequest(Request):
 
         self.c.setopt(pycurl.HTTPHEADER, self.headers.list())
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
+    def load(self, url, get={}, post={}, referer=True, cookies=True,
+             just_header=False, multipart=False, decode=False):
         """
         Load and returns a given page.
         """

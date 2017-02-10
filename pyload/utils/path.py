@@ -64,7 +64,8 @@ def copytree(src, dst, overwrite=None, preserve_metadata=True):
             dst_file = join(dst_dir, filename)
             try:
                 if isfile(dst_file):
-                    if overwrite is None and mtime(src_file) <= mtime(dst_file):
+                    if overwrite is None and mtime(
+                            src_file) <= mtime(dst_file):
                         continue
                     elif not overwrite:
                         continue
@@ -207,7 +208,8 @@ def movetree(src, dst, overwrite=None):
             dst_file = join(dst_dir, filename)
             try:
                 if isfile(dst_file):
-                    if overwrite is None and mtime(src_file) <= mtime(dst_file):
+                    if overwrite is None and mtime(
+                            src_file) <= mtime(dst_file):
                         continue
                     elif not overwrite:
                         continue

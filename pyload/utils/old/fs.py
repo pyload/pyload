@@ -79,7 +79,8 @@ def safe_join(*args):
     """
     Joins a path, encoding aware.
     """
-    return fs_encode(join(*[x if isinstance(x, str) else decode(x) for x in args]))
+    return fs_encode(
+        join(*[x if isinstance(x, str) else decode(x) for x in args]))
 
 
 def save_join(*args):

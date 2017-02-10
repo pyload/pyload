@@ -111,7 +111,8 @@ class DownloadManager(object):
         """
         All waiting downloads.
         """
-        return [x.active for x in self.working if x.active.has_status("waiting")]
+        return [
+            x.active for x in self.working if x.active.has_status("waiting")]
 
     @readlock
     def get_progress_list(self, uid):
@@ -155,7 +156,8 @@ class DownloadManager(object):
             return False
 
         # at least one thread want reconnect and we are supposed to wait
-        if self.pyload.config.get('reconnect', 'wait') and self.want_reconnect() > 1:
+        if self.pyload.config.get(
+                'reconnect', 'wait') and self.want_reconnect() > 1:
             return False
 
         self.assign_jobs()
@@ -257,7 +259,8 @@ class DownloadManager(object):
             return False
 
         if not exists(self.pyload.config.get('reconnect', 'script')):
-            if exists(join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
+            if exists(
+                    join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
                 self.pyload.config.set('reconnect', 'script', join(
                     COREDIR, self.pyload.config.get('reconnect', 'script')))
             else:

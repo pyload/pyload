@@ -102,13 +102,15 @@ class Setup(object):
         self.ask_lang()
 
         print(_("Welcome to the pyLoad Configuration Assistent"))
-        print(_("It will check your system and make a basic setup in order to run pyLoad"))
+        print(
+            _("It will check your system and make a basic setup in order to run pyLoad"))
         print("")
         print(_("The value in brackets [] always is the default value,"))
         print(_("in case you do not want to change it or you are unsure what to choose, just hit enter"))
         print(_("Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore"))
         print(_("If you have any problems with this assistent hit CTRL+C,"))
-        print(_("to abort and do not let him start with pyLoadCore automatically anymore"))
+        print(
+            _("to abort and do not let him start with pyLoadCore automatically anymore"))
         print("")
         print(_("When you are ready for system check, hit enter"))
         input()
@@ -196,14 +198,17 @@ class Setup(object):
         self.config.set('webui', 'host', self.ask(_("Address"), "localhost"))
         self.config.set('webui', 'port', self.ask(_("Port"), "8010"))
         print("")
-        print(_("pyLoad offers several server backends, now following a short explanation"))
+        print(
+            _("pyLoad offers several server backends, now following a short explanation"))
         print("threaded:", _(
             "Default server, this server offers SSL and is a good alternative to builtin"))
         print("fastcgi:", _(
             "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job"))
         print("lightweight:", _(
             "Very fast alternative written in C, requires libev and linux knowledge"))
-        print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
+        print(
+            "\t",
+            _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print()
@@ -302,7 +307,8 @@ class Setup(object):
                                               languages=[self.config.get('general', 'language'), "en"], fallback=True)
             translation.install(True)
 
-        print(_("Setting new configpath, current configuration will not be transferred!"))
+        print(
+            _("Setting new configpath, current configuration will not be transferred!"))
         path = self.ask(_("Config path"), abspath(""))
         try:
             path = join(COREDIR, path)
@@ -310,7 +316,8 @@ class Setup(object):
                 makedirs(path)
             with open(join(COREDIR, "pyload", "config", "configdir"), "wb") as f:
                 f.write(path)
-            print(_("Config path changed, setup will now close, please restart to go on"))
+            print(
+                _("Config path changed, setup will now close, please restart to go on"))
             print(_("Press Enter to exit"))
             input()
             exit()
@@ -380,7 +387,8 @@ class Setup(object):
 
             if bool:
                 # l10n yes, true,t are inputs for booleans with value true
-                if input.lower().strip() in [self.yes, _("yes"), _("true"), _("t"), "yes"]:
+                if input.lower().strip() in [self.yes, _(
+                        "yes"), _("true"), _("t"), "yes"]:
                     return True
                 # l10n no, false,f are inputs for booleans with value false
                 elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:

@@ -51,7 +51,8 @@ class InteractionManager(object):
             del self.tasks[v]
 
     @lock
-    def create_notification(self, title, content, desc="", plugin="", owner=None):
+    def create_notification(self, title, content,
+                            desc="", plugin="", owner=None):
         """
         Creates and queues a new Notification
 
@@ -83,7 +84,8 @@ class InteractionManager(object):
         return task
 
     @lock
-    def create_captcha_task(self, img, format, filename, plugin="", type=InputType.Text, owner=None):
+    def create_captcha_task(self, img, format, filename,
+                            plugin="", type=InputType.Text, owner=None):
         """
         Createss a new captcha task.
 

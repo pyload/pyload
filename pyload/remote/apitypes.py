@@ -12,7 +12,8 @@ class BaseObject(object):
     __slots__ = []
 
     def __str__(self):
-        return "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self, k)) for k in self.__slots__))
+        return "<{} {}>".format(self.__class__.__name__, ", ".join(
+            "{}={}".format(k, getattr(self, k)) for k in self.__slots__))
 
 
 class ExceptionObject(Exception):
@@ -139,7 +140,8 @@ class AccountInfo(BaseObject):
     __slots__ = ['aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
                  'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
 
-    def __init__(self, aid=None, plugin=None, loginname=None, owner=None, valid=None, validuntil=None, trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
+    def __init__(self, aid=None, plugin=None, loginname=None, owner=None, valid=None, validuntil=None,
+                 trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
         self.aid = aid
         self.plugin = plugin
         self.loginname = loginname
@@ -167,7 +169,8 @@ class AddonService(BaseObject):
     __slots__ = ['func_name', 'label',
                  'description', 'arguments', 'pack', 'media']
 
-    def __init__(self, func_name=None, label=None, description=None, arguments=None, pack=None, media=None):
+    def __init__(self, func_name=None, label=None, description=None,
+                 arguments=None, pack=None, media=None):
         self.__name__ = func_name
         self.label = label
         self.description = description
@@ -180,7 +183,8 @@ class ConfigHolder(BaseObject):
     __slots__ = ['name', 'label', 'description',
                  'explanation', 'items', 'info']
 
-    def __init__(self, name=None, label=None, description=None, explanation=None, items=None, info=None):
+    def __init__(self, name=None, label=None, description=None,
+                 explanation=None, items=None, info=None):
         self.name = name
         self.label = label
         self.description = description
@@ -193,7 +197,8 @@ class ConfigInfo(BaseObject):
     __slots__ = ['name', 'label', 'description',
                  'category', 'user_context', 'activated']
 
-    def __init__(self, name=None, label=None, description=None, category=None, user_context=None, activated=None):
+    def __init__(self, name=None, label=None, description=None,
+                 category=None, user_context=None, activated=None):
         self.name = name
         self.label = label
         self.description = description
@@ -205,7 +210,8 @@ class ConfigInfo(BaseObject):
 class ConfigItem(BaseObject):
     __slots__ = ['name', 'label', 'description', 'input', 'value']
 
-    def __init__(self, name=None, label=None, description=None, input=None, value=None):
+    def __init__(self, name=None, label=None,
+                 description=None, input=None, value=None):
         self.name = name
         self.label = label
         self.description = description
@@ -220,7 +226,8 @@ class Conflict(ExceptionObject):
 class DownloadInfo(BaseObject):
     __slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
 
-    def __init__(self, url=None, plugin=None, hash=None, status=None, statusmsg=None, error=None):
+    def __init__(self, url=None, plugin=None, hash=None,
+                 status=None, statusmsg=None, error=None):
         self.url = url
         self.plugin = plugin
         self.hash = hash
@@ -259,7 +266,8 @@ class FileInfo(BaseObject):
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
 
-    def __init__(self, fid=None, name=None, package=None, owner=None, size=None, status=None, media=None, added=None, fileorder=None, download=None):
+    def __init__(self, fid=None, name=None, package=None, owner=None, size=None,
+                 status=None, media=None, added=None, fileorder=None, download=None):
         self.fid = fid
         self.name = name
         self.package = package
@@ -288,7 +296,8 @@ class Input(BaseObject):
 class InteractionTask(BaseObject):
     __slots__ = ['iid', 'type', 'input', 'title', 'description', 'plugin']
 
-    def __init__(self, iid=None, type=None, input=None, title=None, description=None, plugin=None):
+    def __init__(self, iid=None, type=None, input=None,
+                 title=None, description=None, plugin=None):
         self.iid = iid
         self.type = type
         self.input = input
@@ -307,7 +316,8 @@ class InvalidConfigSection(ExceptionObject):
 class LinkStatus(BaseObject):
     __slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
-    def __init__(self, url=None, name=None, size=None, status=None, plugin=None, hash=None):
+    def __init__(self, url=None, name=None, size=None,
+                 status=None, plugin=None, hash=None):
         self.url = url
         self.name = name
         self.size = size
@@ -335,7 +345,8 @@ class PackageInfo(BaseObject):
     __slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password',
                  'added', 'tags', 'status', 'shared', 'packageorder', 'stats', 'fids', 'pids']
 
-    def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None, added=None, tags=None, status=None, shared=None, packageorder=None, stats=None, fids=None, pids=None):
+    def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None,
+                 added=None, tags=None, status=None, shared=None, packageorder=None, stats=None, fids=None, pids=None):
         self.pid = pid
         self.name = name
         self.folder = folder
@@ -357,7 +368,8 @@ class PackageInfo(BaseObject):
 class PackageStats(BaseObject):
     __slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
 
-    def __init__(self, linkstotal=None, linksdone=None, sizetotal=None, sizedone=None):
+    def __init__(self, linkstotal=None, linksdone=None,
+                 sizetotal=None, sizedone=None):
         self.linkstotal = linkstotal
         self.linksdone = linksdone
         self.sizetotal = sizetotal
@@ -368,7 +380,8 @@ class ProgressInfo(BaseObject):
     __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
                  'done', 'total', 'owner', 'type', 'download']
 
-    def __init__(self, plugin=None, name=None, statusmsg=None, eta=None, done=None, total=None, owner=None, type=None, download=None):
+    def __init__(self, plugin=None, name=None, statusmsg=None, eta=None,
+                 done=None, total=None, owner=None, type=None, download=None):
         self.plugin = plugin
         self.name = name
         self.statusmsg = statusmsg
@@ -399,7 +412,8 @@ class StatusInfo(BaseObject):
     __slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal',
                  'sizequeue', 'notifications', 'paused', 'download', 'reconnect', 'quota']
 
-    def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None, notifications=None, paused=None, download=None, reconnect=None, quota=None):
+    def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None,
+                 notifications=None, paused=None, download=None, reconnect=None, quota=None):
         self.speed = speed
         self.linkstotal = linkstotal
         self.linksqueue = linksqueue
@@ -429,7 +443,8 @@ class UserData(BaseObject):
     __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder',
                  'traffic', 'dllimit', 'dlquota', 'hddquota', 'user', 'templatename']
 
-    def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None, traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templatename=None):
+    def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None,
+                 traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templatename=None):
         self.uid = uid
         self.name = name
         self.email = email
@@ -483,7 +498,8 @@ class Iface(object):
     def create_account(self, plugin, loginname, password):
         pass
 
-    def create_package(self, name, folder, root, password, site, comment, paused):
+    def create_package(self, name, folder, root,
+                       password, site, comment, paused):
         pass
 
     def delete_config(self, plugin):

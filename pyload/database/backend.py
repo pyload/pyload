@@ -16,7 +16,6 @@ from queue import Queue
 standard_library.install_aliases()
 
 
-
 try:
     from pysqlite2 import dbapi2 as sqlite3
 except Exception:
@@ -97,7 +96,8 @@ class DatabaseJob(object):
         del frame
         del self.frame
 
-        return "DataBase Job {}:{}\n{}Result: {}".format(self.f.__name__, self.args[1:], output, self.result)
+        return "DataBase Job {}:{}\n{}Result: {}".format(
+            self.f.__name__, self.args[1:], output, self.result)
 
     def process_job(self):
         try:

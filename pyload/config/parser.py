@@ -24,7 +24,7 @@ class Config(object):
     def __init__(self, file, version):
 
         self.filename = file
-        self.version  = version
+        self.version = version
 
         # Meta data information
         self.config = OrderedDict()
@@ -70,7 +70,8 @@ class Config(object):
             line = line.strip()
 
             # comment line, different variants
-            if not line or line.startswith("#") or line.startswith("//") or line.startswith("|"):
+            if not line or line.startswith("#") or line.startswith(
+                    "//") or line.startswith("|"):
                 continue
 
             if line.startswith("["):
@@ -175,7 +176,8 @@ class Config(object):
         """
         Retrieves single config as tuple (section, values).
         """
-        return self.config[section], self.values[section] if section in self.values else {}
+        return self.config[section], self.values[
+            section] if section in self.values else {}
 
     def add_config_section(self, section, label, desc, expl, config):
         """

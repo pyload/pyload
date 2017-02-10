@@ -66,7 +66,8 @@ class PyPackage(object):
 
     def get_path(self, name=""):
         self.timestamp = time()
-        return join(self.manager.get_package(self.root).get_path(), self.folder, name)
+        return join(self.manager.get_package(
+            self.root).get_path(), self.folder, name)
 
     def sync(self):
         """
@@ -104,7 +105,8 @@ class RootPackage(PyPackage):
                            "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return join(self.manager.pyload.config.get('general', 'storage_folder'), name)
+        return join(self.manager.pyload.config.get(
+            'general', 'storage_folder'), name)
 
     # no database operations
     def sync(self):

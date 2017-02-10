@@ -21,7 +21,8 @@ class FileApi(BaseApi):
         """
 
         # TODO: shared?
-        return info and (not self.primary_uid or info.owner == self.primary_uid)
+        return info and (not self.primary_uid or info.owner ==
+                         self.primary_uid)
 
     @require_perm(Permission.All)
     def get_all_files(self):
@@ -47,7 +48,8 @@ class FileApi(BaseApi):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.get_tree(pid, full, DownloadState.All, self.primary_uid)
+        return self.pyload.files.get_tree(
+            pid, full, DownloadState.All, self.primary_uid)
 
     @require_perm(Permission.All)
     def get_filtered_file_tree(self, pid, full, state):
@@ -107,7 +109,8 @@ class FileApi(BaseApi):
 
     @require_perm(Permission.All)
     def find_files(self, pattern):
-        return self.pyload.files.get_tree(-1, True, DownloadState.All, self.primary_uid, pattern)
+        return self.pyload.files.get_tree(-1, True,
+                                          DownloadState.All, self.primary_uid, pattern)
 
     @require_perm(Permission.All)
     def search_suggestions(self, pattern):

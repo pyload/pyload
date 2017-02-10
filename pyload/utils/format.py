@@ -38,7 +38,8 @@ def items(obj, ignore=None):
         return ["{}={}".format(k, v) for k, v in obj.items()]
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        return ["{}={}".format(k, v) for k, v in obj.items() if k not in ignored]
+        return ["{}={}".format(k, v)
+                for k, v in obj.items() if k not in ignored]
 
 
 @iterate

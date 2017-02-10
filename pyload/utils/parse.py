@@ -30,7 +30,8 @@ def boolean(value):
 
 @iterate
 def entries(value):
-    return [entry for entry in re.sub(r'[;,\s]+', '|', value).split('|') if entry]
+    return [entry for entry in re.sub(
+        r'[;,\s]+', '|', value).split('|') if entry]
 
 
 @iterate

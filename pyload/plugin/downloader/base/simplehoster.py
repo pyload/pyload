@@ -46,7 +46,8 @@ def parse_html_form(attr_str, html, input_names=None):
                             html, re.S | re.I):
         inputs = {}
         action = parseHtmlTagAttrValue("action", form.group('tag'))
-        for inputtag in re.finditer(r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
+        for inputtag in re.finditer(
+                r'(<(input|textarea)[^>]*>)([^<]*(?=</\2)|)', form.group('content'), re.S | re.I):
             name = parseHtmlTagAttrValue("name", inputtag.group(1))
             if name:
                 value = parseHtmlTagAttrValue("value", inputtag.group(1))
@@ -59,7 +60,8 @@ def parse_html_form(attr_str, html, input_names=None):
             # check input attributes
             for key, val in input_names.items():
                 if key in inputs:
-                    if (isinstance(val, str) or isinstance(val, bytes)) and inputs[key] == val:
+                    if (isinstance(val, str) or isinstance(
+                            val, bytes)) and inputs[key] == val:
                         continue
                     elif isinstance(val, tuple) and inputs[key] in val:
                         continue
@@ -93,7 +95,8 @@ def parse_file_info(self, url='', html=''):
             if hasattr(self, "html"):
                 self.html = html
 
-        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(self.FILE_OFFLINE_PATTERN, html):
+        if hasattr(self, "FILE_OFFLINE_PATTERN") and re.search(
+                self.FILE_OFFLINE_PATTERN, html):
             # File offline
             info['status'] = 1
         else:
@@ -103,7 +106,8 @@ def parse_file_info(self, url='', html=''):
             except Exception:
                 pass
 
-            for pattern in ("FILE_INFO_PATTERN", "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
+            for pattern in ("FILE_INFO_PATTERN",
+                            "FILE_NAME_PATTERN", "FILE_SIZE_PATTERN"):
                 try:
                     info.update(
                         re.search(getattr(self, pattern), html).groupdict())
@@ -207,7 +211,8 @@ class SimpleHoster(Hoster):
         if not premium_only:  # Usually premium only pages does not show the file information
             self.get_file_info()
 
-        if self.premium and (not self.SH_CHECK_TRAFFIC or self.check_traffic_left()):
+        if self.premium and (
+                not self.SH_CHECK_TRAFFIC or self.check_traffic_left()):
             self.handle_premium()
         elif premium_only:
             self.fail(_("This link require a premium account"))
@@ -218,7 +223,8 @@ class SimpleHoster(Hoster):
                 pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handle_free()
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
+    def load(self, url, get={}, post={}, ref=True,
+             cookies=True, just_header=False, decode=False):
         if isinstance(url, str):
             url = url.encode('utf8')
         return Hoster.load(self, url=url, get=get, post=post, ref=ref, cookies=cookies,
@@ -226,7 +232,8 @@ class SimpleHoster(Hoster):
 
     def get_file_info(self):
         self.log_debug("URL: {}".format(self.pyfile.url))
-        if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(self.TEMP_OFFLINE_PATTERN, self.html):
+        if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(
+                self.TEMP_OFFLINE_PATTERN, self.html):
             self.temp_offline()
 
         name, size, status = parseFileInfo(self)[:3]

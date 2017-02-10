@@ -23,7 +23,8 @@ class CookieJar(http.cookies.SimpleCookie):
     def get_cookie(self, name):
         return self[name].value
 
-    def set_cookie(self, domain, name, value, path="/", exp=None, secure="FALSE"):
+    def set_cookie(self, domain, name, value,
+                   path="/", exp=None, secure="FALSE"):
         self[name] = value
         self[name]['domain'] = domain
         self[name]['path'] = path

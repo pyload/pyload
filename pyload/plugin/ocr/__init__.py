@@ -67,7 +67,8 @@ class OCR(object):
         self.log.debug("Tesseract ReturnCode {} Output: {}".format(
             popen.returncode, output))
 
-    def run_tesser(self, subset=False, digits=True, lowercase=True, uppercase=True):
+    def run_tesser(self, subset=False, digits=True,
+                   lowercase=True, uppercase=True):
         #self.log.debug("create tmp tif")
 
         #tmp = tempfile.NamedTemporaryFile(suffix=".tif")

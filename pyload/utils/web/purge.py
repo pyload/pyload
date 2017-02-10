@@ -13,8 +13,6 @@ from pyload.utils.decorator import iterate
 standard_library.install_aliases()
 
 
-
-
 @iterate
 def comments(value):
     return re.sub(r' *<!--.*?--> *', " ", value, flags=re.S).strip()

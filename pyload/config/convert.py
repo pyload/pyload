@@ -48,7 +48,8 @@ def to_configdata(entry):
         conf_label = label_desc
         conf_desc = ""
 
-    return conf_name, ConfigData(gettext(conf_label), gettext(conf_desc), _input)
+    return conf_name, ConfigData(
+        gettext(conf_label), gettext(conf_desc), _input)
 
 
 def from_string(value, typ=None):

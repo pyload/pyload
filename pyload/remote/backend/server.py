@@ -58,7 +58,6 @@ from mod_pywebsocket import (common, dispatch, handshake, http_header_util,
 standard_library.install_aliases()
 
 
-
 _DEFAULT_LOG_MAX_BYTES = 1024 * 256
 _DEFAULT_LOG_BACKUP_COUNT = 5
 

@@ -108,7 +108,8 @@ class FileMethods(DatabaseMethods):
         return self.c.lastrowid
 
     @queue
-    def add_package(self, name, folder, root, password, site, comment, status, owner):
+    def add_package(self, name, folder, root, password,
+                    site, comment, status, owner):
         self.c.execute(
             'INSERT INTO packages(name, folder, root, password, site, comment, status, owner) VALUES(?,?,?,?,?,?,?,?)', (name, folder, root, password, site, comment, status, owner))
         return self.c.lastrowid

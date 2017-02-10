@@ -48,8 +48,8 @@ def info():
         'Additional features:sys_platform!="win32"': ['dbus-python']
     }
     # if os.name != 'nt':
-        # extras_require['Lightweight webserver'] = ['bjoern']
-        # extras_require['Additional features'].append('dbus-python')
+    # extras_require['Lightweight webserver'] = ['bjoern']
+    # extras_require['Additional features'].append('dbus-python')
 
     entry_points = {
         'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]

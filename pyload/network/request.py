@@ -69,11 +69,13 @@ class RequestFactory(object):
                 type = "socks5"
 
             username = None
-            if self.pyload.config.get('proxy', 'username') and self.pyload.config.get('proxy', 'username').lower() != "none":
+            if self.pyload.config.get('proxy', 'username') and self.pyload.config.get(
+                    'proxy', 'username').lower() != "none":
                 username = self.pyload.config.get('proxy', 'username')
 
             pw = None
-            if self.pyload.config.get('proxy', 'password') and self.pyload.config.get('proxy', 'password').lower() != "none":
+            if self.pyload.config.get('proxy', 'password') and self.pyload.config.get(
+                    'proxy', 'password').lower() != "none":
                 pw = self.pyload.config.get('proxy', 'password')
 
             return {

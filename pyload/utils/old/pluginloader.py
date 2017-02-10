@@ -143,7 +143,8 @@ class PluginLoader(object):
             f.close()
 
         for f in listdir(pfolder):
-            if isfile(join(pfolder, f)) and f.endswith(".py") and not f.startswith("_"):
+            if isfile(join(pfolder, f)) and f.endswith(
+                    ".py") and not f.startswith("_"):
                 # replace suffix and version tag
                 name = f[:-3]
                 if name[-1] == ".":
@@ -163,7 +164,8 @@ class PluginLoader(object):
             content = f.read()
 
         attrs = BaseAttributes()
-        for m in self.BUILTIN.findall(content) + self.SINGLE.findall(content) + self.parse_multi_line(content):
+        for m in self.BUILTIN.findall(
+                content) + self.SINGLE.findall(content) + self.parse_multi_line(content):
             # replace gettext function and eval result
             try:
                 attrs[m[0]] = literal_eval(m[-1].replace("_(", "("))
@@ -254,7 +256,8 @@ class PluginLoader(object):
         if folder in ("internal", "account", "network"):
             return plugin
 
-        if folder == "addon" and "config" not in attrs and not attrs['internal']:
+        if folder == "addon" and "config" not in attrs and not attrs[
+                'internal']:
             attrs['config'] = (["activated", "bool", "Activated", False],)
 
         if "config" in attrs and attrs['config'] is not None:

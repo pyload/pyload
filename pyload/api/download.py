@@ -23,7 +23,8 @@ class DownloadApi(BaseApi):
             return self.pyload.db.get_user_data(role=Role.Admin).uid
 
     @require_perm(Permission.Add)
-    def create_package(self, name, folder, root, password="", site="", comment="", paused=False):
+    def create_package(self, name, folder, root, password="",
+                       site="", comment="", paused=False):
         """
         Create a new package.
 

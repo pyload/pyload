@@ -70,6 +70,7 @@ def uniqify(seq):
 
 def args(func):
     from pyload.utils.web import purge as webpurge
+
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
         args = convert.convert(args, rule, func=webpurge.text)
@@ -79,6 +80,7 @@ def args(func):
 
 def kwargs(func):
     from pyload.utils.web import purge as webpurge
+
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
         kwgs = convert.convert(kwargs, rule, func=webpurge.text)

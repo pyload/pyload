@@ -41,7 +41,8 @@ class AccountApi(BaseApi):
         account = self.pyload.acm.get_account(aid, plugin)
 
         # Admins can see and refresh accounts
-        if not account or (self.primary_uid and self.primary_uid != account.owner):
+        if not account or (
+                self.primary_uid and self.primary_uid != account.owner):
             return None
 
         if refresh:
@@ -57,7 +58,8 @@ class AccountApi(BaseApi):
 
         :return class:`AccountInfo`
         """
-        return self.pyload.acm.create_account(plugin, loginname, password, self.user.true_primary).to_info_data()
+        return self.pyload.acm.create_account(
+            plugin, loginname, password, self.user.true_primary).to_info_data()
 
     @require_perm(Permission.Accounts)
     def update_account(self, aid, plugin, loginname, password):
@@ -66,7 +68,8 @@ class AccountApi(BaseApi):
 
         :return: updated account info
         """
-        return self.pyload.acm.update_account(aid, plugin, loginname, password, self.user).to_info_data()
+        return self.pyload.acm.update_account(
+            aid, plugin, loginname, password, self.user).to_info_data()
 
     @require_perm(Permission.Accounts)
     def update_account_info(self, account):

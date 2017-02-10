@@ -13,6 +13,7 @@ from pyload.database.backend import DatabaseMethods, async, queue
 
 alphnum = letters + digits
 
+
 def random_salt():
     return "".join(choice(alphnum) for x in range(0, 5))
 

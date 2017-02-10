@@ -19,7 +19,6 @@ except ImportError:
     pass
 
 
-
 # TODO: Recheck
 # def ismobile():
 # if 'mobile' in bottle.request.cookies:

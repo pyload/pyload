@@ -103,7 +103,8 @@ class FileManager(object):
         self.pyload.evm.fire("package:updated", pid)
 
     @invalidate
-    def add_package(self, name, folder, root, password, site, comment, paused, owner):
+    def add_package(self, name, folder, root, password,
+                    site, comment, paused, owner):
         """
         Adds a package to database.
         """

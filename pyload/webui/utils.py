@@ -43,9 +43,11 @@ def is_mobile():
         return True
     if mobile_ua.find('windows') > 0:
         return False
-    if request.headers.get('Accept', '').lower().find('application/vnd.wap.xhtml+xml') > 0:
+    if request.headers.get('Accept', '').lower().find(
+            'application/vnd.wap.xhtml+xml') > 0:
         return True
-    if re.search('(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)', mobile_ua) is not None:
+    if re.search('(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)',
+                 mobile_ua) is not None:
         return True
     mobile_ua = mobile_ua[:4]
     mobile_agents = ['w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac', 'blaz', 'brew',
@@ -64,6 +66,8 @@ def is_mobile():
     return False
 
 # TODO: Implement language selection...
+
+
 def select_language(langs):
     # TODO: Use accept
     accept = request.headers.get('Accept-Language', '')
@@ -83,7 +87,8 @@ def login_required(perm=None):
             if api is not None:
                 if perm:
                     if api.user.has_permission(perm):
-                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        if request.headers.get(
+                                'X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
                             return redirect("/nopermission")

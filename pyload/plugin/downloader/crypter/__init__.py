@@ -60,7 +60,8 @@ class Package(object):
         return self.name == other.name and self.links == other.links
 
     def __repr__(self):
-        return "<CrypterPackage name={}, links={}, packs={}>".format(self.name, self.links, self.packs)
+        return "<CrypterPackage name={}, links={}, packs={}>".format(
+            self.name, self.links, self.packs)
 
     def __hash__(self):
         return hash(self.name) ^ hash(frozenset(self.links)) ^ hash(self.name)

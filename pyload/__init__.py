@@ -155,7 +155,8 @@ def start(profile=None, configdir=None, refresh=0, remote=None, webui=None,
 def restart(profile=None, configdir=None, refresh=0, remote=None, webui=None,
             debug=0, webdebug=0, daemon=False):
     stop(profile or 'default')
-    return start(profile, configdir, refresh, remote, webui, debug, webdebug, daemon)
+    return start(profile, configdir, refresh, remote,
+                 webui, debug, webdebug, daemon)
 
 
 # TODO: Implement test suite

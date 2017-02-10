@@ -247,7 +247,8 @@ def accumulate(it, inv_map=None):
 
 
 def to_string(value):
-    return str(value) if not isinstance(value, str) and not isinstance(value, bytes) else value
+    return str(value) if not isinstance(
+        value, str) and not isinstance(value, bytes) else value
 
 
 def to_bool(value):

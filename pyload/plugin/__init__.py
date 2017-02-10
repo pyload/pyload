@@ -228,7 +228,8 @@ class Base(object):
         if self.abort():
             raise Abort
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=False):
+    def load(self, url, get={}, post={}, ref=True,
+             cookies=True, just_header=False, decode=False):
         """
         Load content at url and returns it
 

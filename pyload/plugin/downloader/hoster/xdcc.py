@@ -163,7 +163,8 @@ class Xdcc(Hoster):
                         "text": msg[3][1:]
                     }
 
-                    if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg['action']:
+                    if nick == msg['target'][0:len(nick)] and "PRIVMSG" == msg[
+                            'action']:
                         if msg['text'] == "\x01VERSION\x01":
                             self.log_debug("XDCC: Sending CTCP VERSION")
                             sock.send("NOTICE {} :{}\r\n".format(
@@ -186,7 +187,8 @@ class Xdcc(Hoster):
                     if "You already requested that pack" in msg['text']:
                         retry = time.time() + 300
 
-                    if "you must be on a known channel to request a pack" in msg['text']:
+                    if "you must be on a known channel to request a pack" in msg[
+                            'text']:
                         self.fail(_("Wrong channel"))
 
                     m = re.match(

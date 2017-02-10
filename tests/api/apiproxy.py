@@ -48,7 +48,8 @@ class ApiProxy(object):
 
             # Struct - Api class
             elif hasattr(result, "__name__") and result.__name__ in classes:
-                for attr, atype in zip(result.__slots__, classes[result.__name__]):
+                for attr, atype in zip(result.__slots__, classes[
+                                       result.__name__]):
                     self.assert_type(getattr(result, attr), atype)
             else:  # simple object
                 assert isinstance(result, type)

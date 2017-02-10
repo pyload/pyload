@@ -219,7 +219,8 @@ if 'OrderedDict' not in globals():
             try:
                 if not self:
                     return '{}()'.format(self.__class__.__name__)
-                return '{}({:r})'.format(self.__class__.__name__, list(self.items()))
+                return '{}({:r})'.format(
+                    self.__class__.__name__, list(self.items()))
             finally:
                 del _repr_running[call_key]
 
@@ -254,7 +255,8 @@ if 'OrderedDict' not in globals():
 
             '''
             if isinstance(other, OrderedDict):
-                return len(self) == len(other) and self.items() == other.items()
+                return len(self) == len(
+                    other) and self.items() == other.items()
             return dict.__eq__(self, other)
 
         def __ne__(self, other):
@@ -308,38 +310,45 @@ if 'namedtuple' not in globals():
         """
 
         # Parse and validate the field names.  Validation serves two purposes,
-        # generating informative error messages and preventing template injection attacks.
+        # generating informative error messages and preventing template
+        # injection attacks.
         if isinstance(field_names, basestring):
-            field_names = field_names.replace(',', ' ').split() # names separated by whitespace and/or commas
+            # names separated by whitespace and/or commas
+            field_names = field_names.replace(',', ' ').split()
         field_names = tuple(map(str, field_names))
         if rename:
             names = list(field_names)
             seen = set()
             for i, name in enumerate(names):
-                if (not min(c.isalnum() or c=='_' for c in name) or _iskeyword(name)
+                if (not min(c.isalnum() or c == '_' for c in name) or _iskeyword(name)
                     or not name or name[0].isdigit() or name.startswith('_')
-                    or name in seen):
-                        names[i] = '_%d' % i
+                        or name in seen):
+                    names[i] = '_%d' % i
                 seen.add(name)
             field_names = tuple(names)
         for name in (typename,) + field_names:
-            if not min(c.isalnum() or c=='_' for c in name):
-                raise ValueError('Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
+            if not min(c.isalnum() or c == '_' for c in name):
+                raise ValueError(
+                    'Type names and field names can only contain alphanumeric characters and underscores: %r' % name)
             if _iskeyword(name):
-                raise ValueError('Type names and field names cannot be a keyword: %r' % name)
+                raise ValueError(
+                    'Type names and field names cannot be a keyword: %r' % name)
             if name[0].isdigit():
-                raise ValueError('Type names and field names cannot start with a number: %r' % name)
+                raise ValueError(
+                    'Type names and field names cannot start with a number: %r' % name)
         seen_names = set()
         for name in field_names:
             if name.startswith('_') and not rename:
-                raise ValueError('Field names cannot start with an underscore: %r' % name)
+                raise ValueError(
+                    'Field names cannot start with an underscore: %r' % name)
             if name in seen_names:
                 raise ValueError('Encountered duplicate field name: %r' % name)
             seen_names.add(name)
 
         # Create and fill-in the class template
         numfields = len(field_names)
-        argtxt = repr(field_names).replace("'", "")[1:-1]   # tuple repr without parens or quotes
+        # tuple repr without parens or quotes
+        argtxt = repr(field_names).replace("'", "")[1:-1]
         reprtxt = ', '.join('%s=%%r' % name for name in field_names)
         template = '''class %(typename)s(tuple):
             '%(typename)s(%(argtxt)s)' \n
@@ -377,7 +386,7 @@ if 'namedtuple' not in globals():
                          _property=property, _tuple=tuple)
         try:
             exec template in namespace
-        except SyntaxError, e:
+        except SyntaxError as e:
             raise SyntaxError(e.message + ':\n' + template)
         result = namespace[typename]
 
@@ -386,7 +395,8 @@ if 'namedtuple' not in globals():
         # sys._getframe is not defined (Jython for example) or sys._getframe is not
         # defined for arguments greater than 0 (IronPython).
         try:
-            result.__module__ = _sys._getframe(1).f_globals.get('__name__', '__main__')
+            result.__module__ = _sys._getframe(
+                1).f_globals.get('__name__', '__main__')
         except (AttributeError, ValueError):
             pass
 

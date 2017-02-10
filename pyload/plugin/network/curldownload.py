@@ -100,7 +100,8 @@ class CurlDownload(Download):
         except IOError:
             self.info = ChunkInfo(self.path)
 
-    def download(self, uri, path, get={}, post={}, referer=True, disposition=False, chunks=1, resume=False, cookies=True):
+    def download(self, uri, path, get={}, post={}, referer=True,
+                 disposition=False, chunks=1, resume=False, cookies=True):
         """
         Returns new filename or None.
         """
@@ -249,7 +250,10 @@ class CurlDownload(Download):
                         for chunk in to_clean:
                             self.close_chunk(chunk)
                             self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.get_chunk_name(chunk.id)))
+                            remove(
+                                fs_encode(
+                                    self.info.get_chunk_name(
+                                        chunk.id)))
 
                         # let first chunk load the rest and update the info
                         # file

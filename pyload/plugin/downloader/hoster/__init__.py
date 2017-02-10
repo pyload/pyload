@@ -12,7 +12,7 @@ if os.name != 'nt':
 
 from pyload.utils.convert import chunks as _chunks
 from pyload.utils.old.fs import (save_join, safe_filename, fs_encode, fs_decode, remove, makedirs,
-                             chmod, stat, exists, join)
+                                 chmod, stat, exists, join)
 
 from pyload.plugin import Base, Fail, Retry
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
@@ -124,7 +124,8 @@ class Hoster(Base):
     def get_chunk_count(self):
         if self.chunk_limit <= 0:
             return self.pyload.config.get('connection', 'max_chunks')
-        return min(self.pyload.config.get('connection', 'max_chunks'), self.chunk_limit)
+        return min(self.pyload.config.get(
+            'connection', 'max_chunks'), self.chunk_limit)
 
     def get_download_limit(self):
         if self.account:
@@ -249,7 +250,8 @@ class Hoster(Base):
         """
         raise Fail("temp. offline")
 
-    def retry(self, max_tries=3, wait_time=1, reason="", backoff=lambda x, y: x):
+    def retry(self, max_tries=3, wait_time=1,
+              reason="", backoff=lambda x, y: x):
         """
         Retries and begin again from the beginning
 
@@ -271,7 +273,8 @@ class Hoster(Base):
 
         raise Retry(reason)
 
-    def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
+    def download(self, url, get={}, post={}, ref=True,
+                 cookies=True, disposition=False):
         """
         Downloads the content at url to download folder
 
@@ -292,7 +295,8 @@ class Hoster(Base):
             makedirs(location, int(self.pyload.config.get(
                 'permission', 'foldermode'), 8))
 
-            if self.pyload.config.get('permission', 'change_fileowner') and os.name != 'nt':
+            if self.pyload.config.get(
+                    'permission', 'change_fileowner') and os.name != 'nt':
                 try:
                     uid = getpwnam(self.pyload.config.get(
                         'permission', 'user'))[2]
@@ -334,7 +338,8 @@ class Hoster(Base):
             chmod(fs_filename, int(self.pyload.config.get(
                 'permission', 'filemode'), 8))
 
-        if self.pyload.config.get('permission', 'change_fileowner') and os.name != 'nt':
+        if self.pyload.config.get(
+                'permission', 'change_fileowner') and os.name != 'nt':
             try:
                 uid = getpwnam(self.pyload.config.get('permission', 'user'))[2]
                 gid = getgrnam(self.pyload.config.get(
@@ -348,7 +353,8 @@ class Hoster(Base):
         self.last_download = filename
         return self.last_download
 
-    def check_download(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
+    def check_download(self, rules, api_size=0,
+                       max_size=50000, delete=True, read_size=0):
         """
         Checks the content of the last downloaded file, re match is saved to `last_check`
 
@@ -408,7 +414,8 @@ class Hoster(Base):
         pack = self.pyfile.package()
 
         for pyfile in self.pyload.files.cached_files():
-            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
+            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package(
+            ).folder == pack.folder:
                 if pyfile.status in (0, 12):  # finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (
@@ -418,7 +425,8 @@ class Hoster(Base):
         download_folder = self.pyload.config.get('general', 'storage_folder')
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.pyload.config.get('connection', 'skip') and exists(location):
+        if starting and self.pyload.config.get(
+                'connection', 'skip') and exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists")

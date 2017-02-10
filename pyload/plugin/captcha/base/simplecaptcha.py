@@ -91,4 +91,5 @@ class SolveMedia(CaptchaService):
         return challenge, result
 
     def result(self, challenge):
-        return self.plugin.decrypt_captcha("http://api.solvemedia.com/papi/media?c={}".format(challenge), imgtype="gif")
+        return self.plugin.decrypt_captcha(
+            "http://api.solvemedia.com/papi/media?c={}".format(challenge), imgtype="gif")

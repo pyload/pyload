@@ -169,7 +169,8 @@ class UpdateManager(Hook):
 
     def check_changes(self):
 
-        if self.last_check + max(self.get_config("interval") * 60, self.MIN_TIME) < time():
+        if self.last_check + \
+                max(self.get_config("interval") * 60, self.MIN_TIME) < time():
             self.old_periodical()
             self.last_check = time()
 
