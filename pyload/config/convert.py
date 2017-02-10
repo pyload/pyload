@@ -5,8 +5,8 @@ from __future__ import unicode_literals
 from builtins import bytes, str
 from gettext import gettext
 
-from pyload.utils.lib.collections import namedtuple
 from pyload.api import Input, InputType
+from pyload.utils.lib.collections import namedtuple
 from pyload.utils.old import decode, to_bool
 
 ConfigData = namedtuple("ConfigData", "label description input")

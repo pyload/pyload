@@ -10,8 +10,8 @@ from future import standard_library
 
 from pyload.plugin.hoster import Hoster
 from pyload.plugin.request import ResponseException
-from pyload.utils.web import purge as webpurge
 from pyload.utils import purge
+from pyload.utils.web import purge as webpurge
 
 standard_library.install_aliases()
 

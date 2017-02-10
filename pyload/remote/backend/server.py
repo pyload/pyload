@@ -45,7 +45,6 @@ import select
 import socket
 import SocketServer
 import sys
-from pyload.utils.lib.threading import Event
 from builtins import object
 
 import http.client
@@ -54,6 +53,7 @@ from future import standard_library
 
 from mod_pywebsocket import (common, dispatch, handshake, http_header_util,
                              memorizingfile, util)
+from pyload.utils.lib.threading import Event
 
 standard_library.install_aliases()
 

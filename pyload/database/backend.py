@@ -5,11 +5,11 @@ from __future__ import print_function, unicode_literals
 
 from builtins import object, range, str
 from shutil import move
-from pyload.utils.lib.threading import Event, Thread
 from traceback import print_exc
 
 from future import standard_library
 
+from pyload.utils.lib.threading import Event, Thread
 from pyload.utils.old.fs import chmod, exists, remove
 from queue import Queue
 

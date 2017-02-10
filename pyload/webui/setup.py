@@ -2,13 +2,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import json
 from time import time
 
 from bottle import HTTPError, request, response, route
 
-import json
-from pyload.webui.utils import add_json_header
 from pyload.webui.interface import SETUP
+from pyload.webui.utils import add_json_header
 
 
 # returns http error

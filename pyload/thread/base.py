@@ -5,13 +5,14 @@ from __future__ import unicode_literals
 import sys
 from contextlib import closing
 from pprint import pformat
-from pyload.utils.lib.threading import Thread
 from time import gmtime, strftime
 from traceback import format_exc
 
-from ..setup.system import get_system_info
+from pyload.utils.lib.threading import Thread
 from pyload.utils.old.fs import exists, join, listdir, save_join, stat
 from types import MethodType
+
+from ..setup.system import get_system_info
 
 
 class BaseThread(Thread):

@@ -13,8 +13,8 @@ from future import standard_library
 from pyload.network.cookie import CookieJar
 from pyload.network.request import get_url
 from pyload.plugin.hoster import Hoster
-from pyload.utils.old import fixup
 from pyload.utils import parse
+from pyload.utils.old import fixup
 from pyload.utils.web import purge as webpurge
 
 standard_library.install_aliases()

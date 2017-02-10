@@ -4,6 +4,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import datetime
+import os
+import re
 import urllib.parse
 from builtins import map
 
@@ -12,9 +14,6 @@ from future import standard_library
 from pyload.utils import purge
 from pyload.utils.check import isiterable
 from pyload.utils.decorator import iterate
-
-import os
-import re
 
 try:
     import bitmath

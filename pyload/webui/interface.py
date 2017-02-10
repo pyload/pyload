@@ -8,19 +8,14 @@ import sys
 from os.path import abspath, dirname, exists, join
 
 import bottle
-
 # Middlewares
 from beaker.middleware import SessionMiddleware
 from bottle import app, run
 
 from pyload.thread import webserver as ServerThread
-
-# Last routes to register
-from pyload.webui import api
-from pyload.webui import cnl
-from pyload.webui import pyload
-from pyload.webui import setup
 from pyload.utils.web.middleware import PrefixMiddleware, StripPathMiddleware
+# Last routes to register
+from pyload.webui import api, cnl, pyload, setup
 
 APP_DIR = abspath(join(dirname(__file__), 'app'))
 PYLOAD_DIR = abspath(join(APP_DIR, '..', '..', '..'))

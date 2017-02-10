@@ -16,11 +16,12 @@ from time import time
 from future import standard_library
 
 from pyload.api import Role
-from .dependencies import deps
-from .system import get_system_info
 from pyload.thread.webserver import WebServer
 from pyload.utils.old import get_console_encoding
 from pyload.utils.old.fs import abspath, exists, join, makedirs
+
+from .dependencies import deps
+from .system import get_system_info
 
 standard_library.install_aliases()
 

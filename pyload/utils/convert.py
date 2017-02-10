@@ -3,12 +3,11 @@
 
 from __future__ import unicode_literals
 
+import itertools
 import re
 from builtins import bytes, map, str
 
 from pyload.utils.check import isiterable, ismapping
-
-import itertools
 
 try:
     import bitmath

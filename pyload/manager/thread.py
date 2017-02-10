@@ -4,15 +4,15 @@
 from __future__ import absolute_import, unicode_literals
 
 from builtins import object
-from pyload.utils.lib.threading import RLock
 from time import time
 
 from future import standard_library
 
 from pyload.datatype.check import OnlineCheck
 from pyload.thread.info import InfoThread
-from pyload.utils.old import to_list
 from pyload.utils.decorator import lock
+from pyload.utils.lib.threading import RLock
+from pyload.utils.old import to_list
 
 standard_library.install_aliases()
 

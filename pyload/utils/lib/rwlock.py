@@ -13,8 +13,9 @@ http://code.activestate.com/recipes/502283-read-write-lock-class-rlock-like/
 # -------
 
 from contextlib import contextmanager
-from pyload.utils.lib.threading import Condition, Lock, currentThread
 from time import time
+
+from pyload.utils.lib.threading import Condition, Lock, currentThread
 
 
 # Read write lock

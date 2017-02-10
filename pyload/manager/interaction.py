@@ -5,15 +5,15 @@ from __future__ import absolute_import, division, unicode_literals
 
 from base64 import standard_b64encode
 from builtins import object
-from pyload.utils.lib.threading import Lock
 from time import time
 
-from pyload.utils.lib.collections import OrderedDict
 from pyload.api import Interaction as IA
 from pyload.api import Input, InputType
 from pyload.datatype.task import InteractionTask
 from pyload.utils.check import bitset
 from pyload.utils.decorator import lock
+from pyload.utils.lib.collections import OrderedDict
+from pyload.utils.lib.threading import Lock
 
 
 class InteractionManager(object):

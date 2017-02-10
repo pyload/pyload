@@ -3,14 +3,13 @@
 
 from __future__ import unicode_literals
 
+import json
 from builtins import object
 from random import choice
-from pyload.utils.lib.threading import Lock
-
-import json
 
 from pyload.api import AccountInfo
 from pyload.utils.decorator import lock
+from pyload.utils.lib.threading import Lock
 
 
 class AccountManager(object):

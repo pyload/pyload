@@ -3,9 +3,9 @@
 from __future__ import absolute_import, unicode_literals, with_statement
 
 import logging
-from pyload.utils.lib.threading import Thread
 from time import sleep, time
 
+from pyload.utils.lib.threading import Thread
 from pyload.utils.old.fs import exists
 
 core = None

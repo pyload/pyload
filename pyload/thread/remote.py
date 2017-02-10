@@ -3,8 +3,9 @@
 
 from __future__ import unicode_literals
 
-from pyload.utils.lib.threading import Event, Thread
 from traceback import print_exc
+
+from pyload.utils.lib.threading import Event, Thread
 
 
 class BackendBase(Thread):

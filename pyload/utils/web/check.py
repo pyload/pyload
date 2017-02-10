@@ -3,12 +3,13 @@
 
 from __future__ import unicode_literals
 
+import os
+import re
+
 import bottle
 import requests
 import validators
 
-import os
-import re
 import mimetypes
 from pyload.utils import format
 from pyload.utils.web import convert as webconvert

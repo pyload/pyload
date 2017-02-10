@@ -4,9 +4,8 @@
 
 from __future__ import unicode_literals
 
-from builtins import PACKDIR
-
 import os
+from builtins import PACKDIR
 
 from past.builtins import execfile
 

@@ -6,8 +6,6 @@ from __future__ import absolute_import, unicode_literals
 from builtins import COREDIR, object
 from collections import defaultdict
 from random import sample
-from pyload.utils.lib.subprocess import call
-from pyload.utils.lib.threading import Event
 from time import sleep
 
 from future import standard_library
@@ -17,8 +15,10 @@ from pyload.network import get_ip
 from pyload.thread.decrypter import DecrypterThread
 from pyload.thread.download import DownloadThread
 from pyload.utils.decorator import lock, readlock
-from pyload.utils.old.fs import exists, free_space, join
 from pyload.utils.lib.rwlock import ReadWriteLock
+from pyload.utils.lib.subprocess import call
+from pyload.utils.lib.threading import Event
+from pyload.utils.old.fs import exists, free_space, join
 
 standard_library.install_aliases()
 

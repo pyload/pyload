@@ -12,13 +12,12 @@
 
 from __future__ import print_function, unicode_literals
 
-from builtins import PACKDIR
-
-import os
 import argparse
 # from multiprocessing import freeze_support
 import operator
+import os
 import sys
+from builtins import PACKDIR
 
 import pyload
 from pyload.utils import format

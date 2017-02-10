@@ -2,13 +2,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import json
 from builtins import str
 
 from pyload.remote import apitypes
 from pyload.remote.apitypes import BaseObject, ExceptionObject
-
-import json
-
 
 # compact json separator
 separators = (',', ':')

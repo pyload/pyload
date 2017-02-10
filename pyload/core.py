@@ -11,6 +11,7 @@
 
 from __future__ import unicode_literals
 
+import builtins
 import logging
 import logging.handlers
 import os
@@ -18,10 +19,7 @@ import sched
 import signal
 import tempfile
 import time
-from builtins import COREDIR
-from builtins import REQUEST
-from builtins import USERDIR
-from builtins import map
+from builtins import COREDIR, USERDIR, map
 from contextlib import closing
 from multiprocessing import Process
 
@@ -30,7 +28,6 @@ from future import standard_library
 from pyload.utils import format, misc, sys
 from pyload.utils.check import ismodule, lookup
 from pyload.utils.path import availspace, makedirs, open, remove
-
 
 standard_library.install_aliases()
 
@@ -285,7 +282,7 @@ class Core(Process):
 
     def _init_network(self):
         from pyload.network.request import RequestFactory
-        REQUEST = self.request = self.req = RequestFactory(self)
+        builtins.REQUEST = self.request = self.req = RequestFactory(self)
 
     def _init_process(self, profile):
         if not profile:

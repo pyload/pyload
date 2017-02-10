@@ -9,9 +9,9 @@ from time import sleep, time
 from pyload.api import (DownloadInfo, DownloadProgress, DownloadStatus,
                         FileInfo, ProgressInfo, ProgressType)
 from pyload.utils.decorator import lock, readlock, trycatch
+from pyload.utils.lib.rwlock import ReadWriteLock
 from pyload.utils.old.filetypes import guess_type
 from pyload.utils.old.fs import safe_filename
-from pyload.utils.lib.rwlock import ReadWriteLock
 
 status_map = {
     "none": 0,

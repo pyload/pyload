@@ -3,12 +3,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import json
 import time
 from os.path import exists, join
 
 from bottle import redirect, request, response, route, static_file, template
-
-import json
 
 from pyload.webui.interface import APP_DIR, PREFIX, PYLOAD, SETUP, UNAVAILALBE
 from pyload.webui.utils import add_json_header, login_required, select_language

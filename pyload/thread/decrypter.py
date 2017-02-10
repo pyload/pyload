@@ -9,8 +9,8 @@ from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.downloader.crypter import Package
 from pyload.thread.base import BaseThread
-from pyload.utils.purge import uniqify
 from pyload.utils.convert import accumulate
+from pyload.utils.purge import uniqify
 
 
 class DecrypterThread(BaseThread):

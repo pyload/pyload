@@ -7,8 +7,8 @@ from os.path import dirname, join
 
 from nose.tools import nottest
 from pyload.plugins.base import Fail
-from pyload.utils.old import to_int
 from pyload.utils.convert import accumulate
+from pyload.utils.old import to_int
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
 

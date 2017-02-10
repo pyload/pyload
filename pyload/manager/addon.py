@@ -3,20 +3,20 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import ADDONMANAGER
+import builtins
 from builtins import object
 from collections import defaultdict
 from gettext import gettext
-from pyload.utils.lib.threading import RLock
 
 from _thread import start_new_thread
 from future import standard_library
 
-from pyload.utils.lib.collections import namedtuple
 from pyload.api import (AddonInfo, AddonService, ServiceDoesNotExist,
                         ServiceException)
 from pyload.thread.addon import AddonThread
 from pyload.utils.decorator import lock
+from pyload.utils.lib.collections import namedtuple
+from pyload.utils.lib.threading import RLock
 from types import MethodType
 
 standard_library.install_aliases()
@@ -33,7 +33,7 @@ class AddonManager(object):
     def __init__(self, core):
         self.pyload = core
 
-        ADDONMANAGER = self  # needed to let addons register themselves
+        builtins.ADDONMANAGER = self  # needed to let addons register themselves
 
         # TODO: multiuser addons
 

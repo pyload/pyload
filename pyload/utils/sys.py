@@ -4,9 +4,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
-from platform import platform
 import shlex
 from builtins import map
+from platform import platform
 from sys import *
 
 import psutil

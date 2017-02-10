@@ -4,9 +4,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import sys as _sys
 from collections import *
+from operator import itemgetter as _itemgetter
 
 from future import standard_library
+
+from keyword import iskeyword as _iskeyword
 
 standard_library.install_aliases()
 
@@ -276,11 +280,6 @@ if 'OrderedDict' not in globals():
             "od.viewitems() -> a set-like object providing a view on od's items"
             return ItemsView(self)
 
-
-import sys as _sys
-from operator import itemgetter as _itemgetter
-
-from keyword import iskeyword as _iskeyword
 
 # http://code.activestate.com/recipes/500261/
 if 'namedtuple' not in globals():

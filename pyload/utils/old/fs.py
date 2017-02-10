@@ -6,8 +6,8 @@ import os
 import sys
 from os.path import join
 
-from pyload.utils.old import decode
 from pyload.utils import purge
+from pyload.utils.old import decode
 
 # File System Encoding functions:
 # Use fs_encode before accessing files on disk, it will encode the string

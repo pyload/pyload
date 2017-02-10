@@ -4,7 +4,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from sys import exc_clear
-from pyload.utils.lib.threading import Event
 from time import sleep, time
 from traceback import print_exc
 
@@ -15,6 +14,7 @@ from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.downloader.hoster import Reconnect, SkipDownload
 from pyload.plugin.request import ResponseException
 from pyload.thread.base import BaseThread
+from pyload.utils.lib.threading import Event
 from queue import Queue
 
 standard_library.install_aliases()

@@ -4,7 +4,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from builtins import str
-from pyload.utils.lib.hashlib import md5
 from logging import DEBUG, log
 from os.path import dirname
 from shutil import move
@@ -14,6 +13,7 @@ from nose.tools import nottest
 from pyload.datatype.file import PyFile, status_map
 from pyload.plugins.base import Fail
 from pyload.utils.convert import accumulate
+from pyload.utils.lib.hashlib import md5
 from pyload.utils.old.fs import exists, join, listdir, remove, save_join, stat
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester

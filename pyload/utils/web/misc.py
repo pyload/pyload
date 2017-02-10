@@ -15,7 +15,6 @@ from pyload.api import ACCESS, AUTH, has_permission
 from pyload.utils import convert
 from pyload.webui import env
 
-
 standard_library.install_aliases()
 
 

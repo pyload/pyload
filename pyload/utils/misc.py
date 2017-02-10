@@ -3,11 +3,10 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from builtins import PACKDIR
-
 import gettext
 import os
 import socket
+from builtins import PACKDIR
 
 from pyload.utils.lib import hashlib
 from pyload.utils.path import bufsize, open
