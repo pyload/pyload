@@ -8,7 +8,7 @@ import re
 import requests
 import tld
 
-from pyload.utils.new import clean
+from pyload.utils.new import format
 from pyload.utils.new.struct import HeadDict
 from pyload.utils.new.web import convert as webconvert
 from pyload.utils.new.web import purge as webpurge
@@ -23,7 +23,7 @@ def attr(html, name=None):
 
 
 def domain(url):
-    return tld.get_tld(clean.url(url), fail_silently=True)
+    return tld.get_tld(format.url(url), fail_silently=True)
 
 
 def form(html, name=None, inputs={}):

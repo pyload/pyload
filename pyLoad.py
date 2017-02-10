@@ -18,7 +18,7 @@ import operator
 import sys
 
 import pyload
-from pyload.utils.new import clean
+from pyload.utils.new import format
 from pyload.utils.new.sys import set_console_icon, set_console_title
 
 try:
@@ -175,10 +175,10 @@ def main():
                 res.shutdown()
 
     elif args.command in ('status', 'version'):
-        print(' '.join(clean.iter(res)))
+        print(' '.join(format.iter(res)))
 
     elif args.command == 'info':
-        print('\n'.join(clean.map(res)))
+        print('\n'.join(format.map(res)))
 
     sys.exit(emsg)
 

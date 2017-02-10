@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 
 import urllib.parse
 
-from pyload.utils.new import clean
+from pyload.utils.new import format
 
 
 def code_to_status(code):
@@ -22,11 +22,11 @@ def code_to_status(code):
 
 
 def url_to_name(url):
-    url = clean.url(url)
+    url = format.url(url)
     url_p = urllib.parse.urlparse(url)
     name = url_p.path.split('/')[-1]
     if not name:
         name = url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
     if not name:
         name = url_p.netloc.split('.', 1)[0]
-    return clean.name(name)
+    return format.name(name)

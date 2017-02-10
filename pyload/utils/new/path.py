@@ -9,14 +9,14 @@ import shutil
 from os.path import *
 
 import ctypes
-from pyload.utils.new import clean
+from pyload.utils.new import format
 from pyload.utils.new.check import ismodule
 
 try:
     import send2trash
 except ImportError:
     pass
-    
+
 
 @iterate
 def availspace(folder):
@@ -96,7 +96,7 @@ def filesize(path):
 
 
 def open(path, *args, **kwargs):
-    return codecs.open(clean.path(path), *args, **kwargs)
+    return codecs.open(format.path(path), *args, **kwargs)
 
 
 def flush(path):

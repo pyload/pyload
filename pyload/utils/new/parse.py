@@ -8,7 +8,7 @@ import re
 
 from future import standard_library
 
-from pyload.utils.new import clean, convert, purge
+from pyload.utils.new import convert, format, purge
 from pyload.utils.new.lib import hashlib
 
 standard_library.install_aliases()
@@ -18,7 +18,7 @@ standard_library.install_aliases()
 
 @iterate
 def alias(value):
-    chunks = re.split(r'[\d.-_]+', clean.name(value))
+    chunks = re.split(r'[\d.-_]+', format.name(value))
     return ''.join(word.capitalize() for word in chunks if word)
 
 

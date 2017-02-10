@@ -8,7 +8,7 @@ import requests
 import validators
 
 import mimetypes
-from pyload.utils.new import clean
+from pyload.utils.new import format
 from pyload.utils.new.web import convert as webconvert
 
 try:
@@ -75,7 +75,7 @@ def ishostname(value):
 
 def isonline(url, *args, **kwargs):
     online = True
-    url = clean.url(url)
+    url = format.url(url)
 
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
@@ -92,7 +92,7 @@ def isonline(url, *args, **kwargs):
 
 
 def isresource(url, *args, **kwargs):
-    url = clean.url(url)
+    url = format.url(url)
 
     kwargs.setdefault('allow_redirects', True)
     kwargs.setdefault('verify', False)
@@ -120,7 +120,7 @@ def isresource(url, *args, **kwargs):
 
 # TODO: Recheck in 0.5.x
 def isurl(url):
-    url = clean.url(url)
+    url = format.url(url)
     try:
         return validators.url(url)
     except validators.ValidationFailure:
