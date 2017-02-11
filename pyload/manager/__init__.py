@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from pyload.manager.account import AccountManager
 from pyload.manager.addon import AddonManager
 from pyload.manager.config import ConfigManager

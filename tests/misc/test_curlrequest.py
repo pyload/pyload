@@ -2,10 +2,10 @@
 
 from __future__ import unicode_literals
 
-from unittest2 import TestCase
-
 from pyload.plugin.network.curlrequest import CurlRequest
-from tests.helper.stubs import Core
+# needed to register globals
+from tests.helper import stubs
+from unittest2 import TestCase
 
 
 class TestCurlRequest(TestCase):

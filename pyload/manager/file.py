@@ -9,8 +9,7 @@ from time import time
 
 from pyload.api import DownloadStatus as DS
 from pyload.api import PackageDoesNotExist, PackageStatus, TreeCollection
-from pyload.datatype import PyFile
-from pyload.datatype import PyPackage, RootPackage
+from pyload.datatype import PyFile, PyPackage, RootPackage
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.lib.rwlock import ReadWriteLock
 

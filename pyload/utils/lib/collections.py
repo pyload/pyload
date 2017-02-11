@@ -5,6 +5,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import sys as _sys
+from builtins import map
 from collections import *
 from operator import itemgetter as _itemgetter
 
@@ -224,7 +225,7 @@ if 'OrderedDict' not in globals():
                 if not self:
                     return '{}()'.format(self.__class__.__name__)
                 return '{}({:r})'.format(
-                    self.__class__.__name__, list(self.items()))
+                    self.__class__.__name__, self.items())
             finally:
                 del _repr_running[call_key]
 
@@ -311,7 +312,7 @@ if 'namedtuple' not in globals():
         # Parse and validate the field names.  Validation serves two purposes,
         # generating informative error messages and preventing template
         # injection attacks.
-        if isinstance(field_names, basestring):
+        if isinstance(field_names, str):
             # names separated by whitespace and/or commas
             field_names = field_names.replace(',', ' ').split()
         field_names = tuple(map(str, field_names))

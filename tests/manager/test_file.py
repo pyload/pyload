@@ -104,7 +104,7 @@ class TestFileManager(BenchmarkTest):
 
         assert len(view.packages) == len(self.pids)
 
-        p = choice(list(view.packages.values()))
+        p = choice(view.packages.values())
         assert len(p.fids) == self.count
         assert p.stats.linkstotal == self.count
 
@@ -138,12 +138,12 @@ class TestFileManager(BenchmarkTest):
         v = self.m.get_tree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
-        pid = list(v.packages.keys())[0]
+        pid = v.packages.keys()[0]
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 4)
-        pid = list(v.packages.keys())[2]
+        pid = v.packages.keys()[2]
         self.assert_pack_ordered(parent, pid, 4)
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 2)

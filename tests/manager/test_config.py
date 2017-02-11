@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from collections import defaultdict
-from unittest2 import TestCase
 
 from nose.tools import raises
 from pyload.api import InvalidConfigSection
@@ -11,6 +10,7 @@ from pyload.config import Config
 from pyload.database import DatabaseBackend
 from pyload.manager import ConfigManager
 from tests.helper.stubs import Core, admin_user, normal_user
+from unittest2 import TestCase
 
 admin_user = admin_user.primary if admin_user else None
 normal_user = normal_user.primary if normal_user else None

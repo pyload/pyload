@@ -2,10 +2,9 @@
 
 from __future__ import unicode_literals
 
-from unittest2 import TestCase
-
 from pyload.manager import AccountManager
 from tests.helper.stubs import Core, admin_user, normal_user
+from unittest2 import TestCase
 
 
 class TestAccountManager(TestCase):

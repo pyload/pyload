@@ -3,6 +3,8 @@
 
 from __future__ import unicode_literals
 
+from builtins import object
+
 from pyload.utils.decorator import lock
 from pyload.utils.lib.collections import Mapping, MutableMapping
 from pyload.utils.lib.threading import RLock

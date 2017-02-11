@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+from builtins import map
 
 import bottle
 import requests

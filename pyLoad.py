@@ -17,7 +17,7 @@ import argparse
 import operator
 import os
 import sys
-from builtins import PACKDIR
+from builtins import PACKDIR, map
 
 import pyload
 from pyload.utils import format

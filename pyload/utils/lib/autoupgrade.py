@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import urllib.parse
+from builtins import map, object
 
 import pip
 import pkg_resources

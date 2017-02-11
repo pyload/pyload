@@ -4,10 +4,10 @@ from __future__ import absolute_import, unicode_literals
 
 from builtins import range
 from random import choice
-from unittest2 import TestCase
 
 from pyload.core import Core
 from tests.api.apitester import ApiTester
+from unittest2 import TestCase
 
 
 class TestAPI(TestCase):

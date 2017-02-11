@@ -70,13 +70,13 @@ def get_console_encoding(enc):
 
 
 def compare_time(start, end):
-    start = list(map(int, start))
-    end = list(map(int, end))
+    start = tuple(map(int, start))
+    end = tuple(map(int, end))
 
     if start == end:
         return True
 
-    now = list(time.localtime()[3:5])
+    now = time.localtime()[3:5]
     if start < now < end:
         return True
     elif start > end and (now > start or now < end):

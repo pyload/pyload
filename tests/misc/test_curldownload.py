@@ -3,12 +3,13 @@
 from __future__ import print_function, unicode_literals
 
 from os import stat
-from unittest2 import TestCase
 
 from pyload.network.bucket import Bucket
 from pyload.plugin.network.curldownload import CurlDownload
 from pyload.plugin.network.curlrequest import CurlRequest
-from tests.helper.stubs import Core
+# needed to register globals
+from tests.helper import stubs
+from unittest2 import TestCase
 
 
 class TestCurlRequest(TestCase):

@@ -5,8 +5,8 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 from pyload.api import InvalidConfigSection
-from pyload.config.convert import from_string
 from pyload.config import Config
+from pyload.config.convert import from_string
 from pyload.utils.lib.collections import OrderedDict
 
 

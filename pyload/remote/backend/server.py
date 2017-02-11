@@ -43,7 +43,6 @@ import os
 import re
 import select
 import socket
-import SocketServer
 import sys
 from builtins import object
 
@@ -51,6 +50,7 @@ import http.client
 import http.server
 from future import standard_library
 
+import socketserver
 from mod_pywebsocket import (common, dispatch, handshake, http_header_util,
                              memorizingfile, util)
 from pyload.utils.lib.threading import Event
@@ -286,7 +286,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
                 logging.error(e.message)
 
 
-class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
+class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
     """
     HTTPServer specialized for WebSocket.
     """
@@ -310,7 +310,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
         self.__ws_is_shut_down = Event()
         self.__ws_serving = False
 
-        SocketServer.BaseServer.__init__(
+        socketserver.BaseServer.__init__(
             self, (options.server_host, options.port), WebSocketRequestHandler)
 
         # Expose the options object to allow handler objects access it. We name

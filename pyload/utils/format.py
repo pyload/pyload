@@ -7,7 +7,7 @@ import datetime
 import os
 import re
 import urllib.parse
-from builtins import map
+from builtins import map, str
 
 from future import standard_library
 
@@ -26,7 +26,7 @@ standard_library.install_aliases()
 
 def attributes(obj, ignore=None):
     if ignore is None:
-        return map(str, obj)
+        return list(map(str, obj))
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
         return [str(x) for x in obj if x not in ignored]

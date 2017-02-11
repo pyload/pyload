@@ -94,7 +94,7 @@ class Setup(object):
         if not opened:
             print("Please point your browser to the url above")
 
-        input()
+        eval(input())
 
         return True
 
@@ -114,7 +114,7 @@ class Setup(object):
             _("to abort and do not let him start with pyLoadCore automatically anymore"))
         print("")
         print(_("When you are ready for system check, hit enter"))
-        input()
+        eval(input())
 
         # TODO: new system check + deps
 
@@ -155,7 +155,7 @@ class Setup(object):
         print("")
         print(_("Setup finished successfully"))
         print(_("Hit enter to exit and restart pyLoad"))
-        input()
+        eval(input())
         return True
 
     def conf_basic(self):
@@ -248,7 +248,7 @@ class Setup(object):
                 print(_("2 - List users"))
                 print(_("3 - Remove user"))
                 print(_("4 - Quit"))
-                action = input("[1]/2/3/4: ")
+                action = eval(input("[1]/2/3/4: "))
                 if not action in ("1", "2", "3", "4"):
                     continue
                 elif action == "1":
@@ -320,7 +320,7 @@ class Setup(object):
             print(
                 _("Config path changed, setup will now close, please restart to go on"))
             print(_("Press Enter to exit"))
-            input()
+            eval(input())
             exit()
         except Exception as e:
             print(_("Setting config path failed: {}").format(e.message))
@@ -380,7 +380,7 @@ class Setup(object):
                     print(_("Passwords did not match"))
 
         while True:
-            input = input(qst + " {}: ".format(info))
+            input = eval(input(qst + " {}: ".format(info)))
             input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":

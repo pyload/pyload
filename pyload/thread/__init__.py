@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from pyload.thread.addon import AddonThread
 from pyload.thread.decrypter import DecrypterThread
 from pyload.thread.download import DownloadThread

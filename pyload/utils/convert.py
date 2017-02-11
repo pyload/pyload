@@ -211,6 +211,6 @@ def ver_to_tuple(value, default=None):
     """
     try:
         values = map(to_int, re.split(r'([\d.,]+)', value))
-        return tuple(filter(None, values))
+        return tuple(_f for _f in values if _f)
     except Exception:
         return default

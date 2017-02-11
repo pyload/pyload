@@ -12,13 +12,13 @@ from os.path import exists, expanduser, join
 from shutil import move
 from sys import exc_clear, exc_info
 from time import sleep, time
-from unittest2 import TestCase
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.network.request import get_request
 from pyload.plugin import Abort, Fail
 from pyload.plugin.downloader.hoster import Hoster
 from tests.helper.stubs import Core, Thread, noop
+from unittest2 import TestCase
 
 
 def _wait(self):
@@ -47,7 +47,7 @@ Hoster.wait = _wait
 
 
 def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, imgtype='jpg',
-                   result_type='textual'):
+                    result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
     id = "{:.2f}".format(time())[-6:].replace(".", "")

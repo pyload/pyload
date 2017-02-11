@@ -5,8 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from time import time
 
 from pyload.api import LinkStatus, ProgressInfo, ProgressType
-from pyload.thread import PluginThread
-from pyload.thread import DecrypterThread
+from pyload.thread import DecrypterThread, PluginThread
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import accumulate
 from pyload.utils.old.packagetools import parse_names

@@ -53,7 +53,11 @@ def info():
     entry_points = {
         'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]
     }
-    tests_require = ['nose', 'requests >= 1.2.2', 'unittest2', 'websocket-client >= 0.8.0']
+    tests_require = [
+        'nose',
+        'requests >= 1.2.2',
+        'unittest2',
+        'websocket-client >= 0.8.0']
     classifiers = [
         "Development Status :: {}".format(info.status),
         "Environment :: Web Environment",

@@ -4,10 +4,10 @@ from __future__ import unicode_literals
 
 from os import walk
 from os.path import abspath, dirname, join
-from unittest2 import TestCase
 
 # needed to register globals
 from tests.helper import stubs
+from unittest2 import TestCase
 
 PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
 

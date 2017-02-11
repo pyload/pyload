@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from pyload.datatype.check import OnlineCheck
 from pyload.datatype.file import PyFile
 from pyload.datatype.package import PyPackage, RootPackage

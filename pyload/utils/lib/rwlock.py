@@ -8,14 +8,17 @@ Released under the BSD-license.
 
 http://code.activestate.com/recipes/502283-read-write-lock-class-rlock-like/
 """
+from __future__ import unicode_literals
 
-# Imports
-# -------
-
+from builtins import object
 from contextlib import contextmanager
 from time import time
 
 from pyload.utils.lib.threading import Condition, Lock, currentThread
+
+
+# Imports
+# -------
 
 
 # Read write lock

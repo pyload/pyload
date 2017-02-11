@@ -353,10 +353,12 @@ class Base(object):
                 elif task.error:
                     self.fail(task.error)
                 elif not task.result:
-                    self.fail(_("No captcha result obtained in appropriate time"))
+                    self.fail(
+                        _("No captcha result obtained in appropriate time"))
 
                 result = task.result
-                self.pyload.log.debug("Received captcha result: {}".format(result))
+                self.pyload.log.debug(
+                    "Received captcha result: {}".format(result))
 
             if not self.pyload.debug:
                 try:

@@ -81,7 +81,7 @@ def number(value):
     numwords = dict(o_tuple + t_tuple)
     tokens = re.split(r'[\s-]+', value)
 
-    numbers = filter(None, (numwords.get(word) for word in tokens))
+    numbers = [_f for _f in (numwords.get(word) for word in tokens) if _f]
     return sum(numbers) if numbers else None
 
 

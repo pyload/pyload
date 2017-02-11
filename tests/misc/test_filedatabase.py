@@ -73,7 +73,7 @@ class TestDatabase(BenchmarkTest):
         assert n == len(self.pids) - 1
 
         print("Fetched {:d} packages".format(n))
-        self.assert_pack(choice(list(packs.values())))
+        self.assert_pack(choice(packs.values()))
 
     def test_get_files(self):
         files = self.db.get_all_files()
@@ -81,7 +81,7 @@ class TestDatabase(BenchmarkTest):
         assert n >= len(self.pids)
 
         print("Fetched {:d} files".format(n))
-        self.assert_file(choice(list(files.values())))
+        self.assert_file(choice(files.values()))
 
     def test_get_files_queued(self):
         files = self.db.get_all_files(state=DownloadState.Unfinished)
@@ -97,14 +97,14 @@ class TestDatabase(BenchmarkTest):
         packs = self.db.get_all_packages(root=pid)
 
         print("Package {:d} has {:d} packages".format(pid, len(packs)))
-        self.assert_pack(choice(list(packs.values())))
+        self.assert_pack(choice(packs.values()))
 
     def test_get_package_files(self):
         pid = choice(self.pids)
         files = self.db.get_all_files(package=pid)
 
         print("Package {:d} has {:d} files".format(pid, len(files)))
-        self.assert_file(choice(list(files.values())))
+        self.assert_file(choice(files.values()))
 
     def test_get_package_data(self, stats=False):
         pid = choice(self.pids)
@@ -122,7 +122,7 @@ class TestDatabase(BenchmarkTest):
     def test_find_files(self):
         files = self.db.get_all_files(search="1")
         print("Found {} files".format(len(files)))
-        f = choice(list(files.values()))
+        f = choice(files.values())
 
         assert "1" in f.name
         names = self.db.get_matching_filenames("1")
@@ -197,7 +197,7 @@ class TestDatabase(BenchmarkTest):
             assert f is not None
             assert isinstance(f, FileInfo)
             self.assert_in(f, ("fid", "status", "size", "media",
-                                "fileorder", "added", "package", "owner"))
+                               "fileorder", "added", "package", "owner"))
             assert f.status in range(5)
             assert f.owner == self.owner
             assert f.media in range(1024)
@@ -212,7 +212,7 @@ class TestDatabase(BenchmarkTest):
             assert p is not None
             assert isinstance(p, PackageInfo)
             self.assert_in(p, ("pid", "root", "added",
-                                "status", "packageorder", "owner"))
+                               "status", "packageorder", "owner"))
             assert p.pid in self.pids
             assert p.owner == self.owner
             assert p.status in range(5)

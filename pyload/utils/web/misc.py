@@ -3,8 +3,8 @@
 
 from __future__ import unicode_literals
 
-import cStringIO
 import gzip
+import io
 import json
 from contextlib import closing
 
@@ -121,7 +121,7 @@ def json_response(obj):
     if len(result) > 500:
         bottle.response.set_header("Vary", "Accept-Encoding")
         bottle.response.set_header("Content-Encoding", "gzip")
-        with closing(cStringIO.StringIO()) as s:
+        with closing(io.StringIO()) as s:
             with gzip.GzipFile(mode='wb', compresslevel=6, fileobj=s) as f:
                 f.write(result)
             return s.getvalue()

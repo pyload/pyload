@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from paver.easy import *
-from paver.doctools import cog
+from __future__ import division, print_function, unicode_literals
 
 import fnmatch
 import os
+import re
+import shutil
+import sys
+from glob import glob
+from subprocess import Popen, call
+from tempfile import mkdtemp
+
+from paver.easy import *
+from pyload import info
+
 
 # patch to let it support list of patterns
 
@@ -24,17 +30,10 @@ def new_fnmatch(self, pattern):
 
 path.fnmatch = new_fnmatch
 
-import sys
-import shutil
-import re
-from glob import glob
-from tempfile import mkdtemp
-from subprocess import call, Popen
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
 
-from pyload import info
 
 options = environment.options
 options(

@@ -12,8 +12,7 @@ from future import standard_library
 
 from pyload.api import DownloadStatus as DS
 from pyload.network import get_ip
-from pyload.thread import DecrypterThread
-from pyload.thread import DownloadThread
+from pyload.thread import DecrypterThread, DownloadThread
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.lib.rwlock import ReadWriteLock
 from pyload.utils.lib.subprocess import call

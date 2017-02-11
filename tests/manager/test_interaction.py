@@ -3,11 +3,11 @@
 from __future__ import unicode_literals
 
 from builtins import range
-from unittest2 import TestCase
 
 from pyload.api import InputType, Interaction
 from pyload.manager import InteractionManager
 from tests.helper.stubs import Core
+from unittest2 import TestCase
 
 
 class TestInteractionManager(TestCase):

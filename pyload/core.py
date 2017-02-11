@@ -304,8 +304,14 @@ class Core(Process):
         #: register exit signal
         try:
             if os.name == 'nt':
-                signal.signal(signal.CTRL_C_EVENT, lambda s, f: self.shutdown())
-                signal.signal(signal.CTRL_BREAK_EVENT, lambda s, f: self.shutdown())
+                signal.signal(
+                    signal.CTRL_C_EVENT,
+                    lambda s,
+                    f: self.shutdown())
+                signal.signal(
+                    signal.CTRL_BREAK_EVENT,
+                    lambda s,
+                    f: self.shutdown())
             else:
                 signal.signal(signal.SIGTERM, lambda s, f: self.terminate())
                 signal.signal(signal.SIGINT, lambda s, f: self.shutdown())
@@ -317,7 +323,8 @@ class Core(Process):
 
         Process.__init__(self)
 
-    def __init__(self, profile=None, configdir=None, refresh=0, debug=0, webdebug=0):
+    def __init__(self, profile=None, configdir=None,
+                 refresh=0, debug=0, webdebug=0):
         # NOTE: Do not change init order!
         self._init_process(profile)
         self._init_debug(debug, webdebug)
@@ -327,10 +334,10 @@ class Core(Process):
 
         self._shutdown = False
         self._restart = False
-        
-        self.log.debug("Initializing pyLoad ...")        
+
+        self.log.debug("Initializing pyLoad ...")
         if refresh:
-            self._clean()            
+            self._clean()
         self._init_permissions()
         self._init_database(refresh > 1)
         self._init_network()
