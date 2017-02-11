@@ -7,7 +7,7 @@ import re
 from builtins import range
 
 from pyload.plugin.downloader.crypter import Crypter, Package
-from pyload.plugin.internal.simplehoster import replace_patterns
+from pyload.plugin.downloader.hoster.base.simplehoster import replace_patterns
 from pyload.utils.web import purge as webpurge
 
 

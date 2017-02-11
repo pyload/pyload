@@ -12,7 +12,7 @@ from time import time
 
 from pyload.config.parser import IGNORE
 from pyload.network.request import get_url
-from pyload.plugin.hook import Expose, Hook, threaded
+from pyload.plugin.addon import Expose, Hook, threaded
 
 
 class UpdateManager(Hook):

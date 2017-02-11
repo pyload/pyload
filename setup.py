@@ -25,8 +25,8 @@ def info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        "argparse", "daemonize", "future", "psutil", "pycurl", "requests >= 2.0",
-        "tld", "validators"
+        "argparse", "configparser", "daemonize", "future", "psutil", "pycurl",
+        "requests >= 2.0", "tld", "validators"
     ]
 
     extras_require = {

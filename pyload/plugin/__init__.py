@@ -205,16 +205,6 @@ class Base(object):
         """
         self.pyload.db.del_storage(self.__name__, key)
 
-    def shell(self):
-        """
-        Open ipython shell.
-        """
-        if self.pyload.debug:
-            from IPython import embed
-            # noinspection PyUnresolvedReferences
-            sys.stdout = sys._stdout
-            embed()
-
     def abort(self):
         """
         Check if plugin is in an abort state, is overwritten by subtypes.
@@ -329,50 +319,50 @@ class Base(object):
         with open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
             f.write(img)
 
-        name = "{}OCR".format(self.__name__)
-        has_plugin = name in self.pyload.pgm.get_plugins("internal")
+            name = "{}OCR".format(self.__name__)
+            has_plugin = name in self.pyload.pgm.get_plugins("internal")
 
-        if self.pyload.captcha:
-            OCR = self.pyload.pgm.load_class("internal", name)
-        else:
-            OCR = None
+            if self.pyload.captcha:
+                OCR = self.pyload.pgm.load_class("internal", name)
+            else:
+                OCR = None
 
-        if OCR and not forceuser:
-            sleep(randint(3000, 5000) // 1000.0)
-            self.check_abort()
+            if OCR and not forceuser:
+                sleep(randint(3000, 5000) // 1000.0)
+                self.check_abort()
 
-            ocr = OCR()
-            result = ocr.get_captcha(temp_file.name)
-        else:
-            task = self.pyload.itm.create_captcha_task(
-                img, imgtype, temp_file.name, self.__name__, result_type)
-            self.task = task
+                ocr = OCR()
+                result = ocr.get_captcha(f.name)
+            else:
+                task = self.pyload.itm.create_captcha_task(
+                    img, imgtype, f.name, self.__name__, result_type)
+                self.task = task
 
-            while task.is_waiting():
-                if self.abort():
-                    self.pyload.itm.remove_task(task)
-                    raise Abort
-                sleep(1)
+                while task.is_waiting():
+                    if self.abort():
+                        self.pyload.itm.remove_task(task)
+                        raise Abort
+                    sleep(1)
 
-            # TODO: task handling
-            self.pyload.itm.remove_task(task)
+                # TODO: task handling
+                self.pyload.itm.remove_task(task)
 
-            if task.error and has_plugin:  # ignore default error message since the user could use OCR
-                self.fail(
-                    _("Pil and tesseract not installed and no Client connected for captcha decrypting"))
-            elif task.error:
-                self.fail(task.error)
-            elif not task.result:
-                self.fail(_("No captcha result obtained in appropriate time"))
+                if task.error and has_plugin:  # ignore default error message since the user could use OCR
+                    self.fail(
+                        _("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+                elif task.error:
+                    self.fail(task.error)
+                elif not task.result:
+                    self.fail(_("No captcha result obtained in appropriate time"))
 
-            result = task.result
-            self.pyload.log.debug("Received captcha result: {}".format(result))
+                result = task.result
+                self.pyload.log.debug("Received captcha result: {}".format(result))
 
-        if not self.pyload.debug:
-            try:
-                remove(temp_file.name)
-            except Exception:
-                pass
+            if not self.pyload.debug:
+                try:
+                    remove(f.name)
+                except Exception:
+                    pass
 
         return result
 

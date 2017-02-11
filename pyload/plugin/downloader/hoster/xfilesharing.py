@@ -13,7 +13,7 @@ from future import standard_library
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from pyload.network.request import get_url
 from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
-from pyload.plugin.internal.simplehoster import (PluginParseError,
+from pyload.plugin.downloader.hoster.base.simplehoster import (PluginParseError,
                                                  SimpleHoster, create_get_info,
                                                  replace_patterns)
 from pyload.utils.web import purge as webpurge

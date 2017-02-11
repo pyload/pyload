@@ -10,7 +10,7 @@ from pyload.utils.lib.threading import RLock
 from pyload.api import AccountInfo, ConfigItem
 from pyload.network.cookie import CookieJar
 from pyload.config.convert import from_string, to_configdata
-from pyload.utils.old import to_string,
+from pyload.utils.old import to_string
 from pyload.utils import format, parse, time
 from pyload.utils.decorator import lock
 

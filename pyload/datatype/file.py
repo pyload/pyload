@@ -202,7 +202,6 @@ class PyFile(object):
         Abort pyfile if possible.
         """
         while self.fid in self.manager.pyload.dlm.processing_ids():
-
             self.lock.acquire(shared=True)
             self.abort = True
             if self.plugin and self.plugin.req:
