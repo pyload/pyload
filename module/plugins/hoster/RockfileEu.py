@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__    = "RockfileEu"
     __type__    = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/\w{12}.html'
@@ -27,6 +27,8 @@ class RockfileEu(SimpleHoster):
 
     WAIT_PATTERN      = r'<span id="countdown_str".+?>(\d+)</span>'
     DL_LIMIT_PATTERN  = r'You have to wait (?:<b>)?(.+?)(?:</b>)? until you can start another download'
+
+    TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error"
 
     LINK_FREE_PATTERN = r'href="(http://.+?\.rfservers\.eu.+?)"'
 
