@@ -214,7 +214,7 @@ class Core(Process):
         self.debug_level = 2 if debug > 1 or verbose_log else 1
         self.webdebug = bool(webdebug) or debug_webui
 
-    def _start_interfaces(self, webui, remote):
+    def _start_interface(self, webui, remote):
         # TODO: Parse `remote`
         if remote or self.config.get('remote', 'activated'):
             self.log.debug("Activating remote interface ...")
@@ -302,32 +302,42 @@ class Core(Process):
             f.write(os.getpid())
 
         #: register exit signal
-        signal.signal(signal.SIGTERM, lambda s, f: self.terminate())
+        try:
+            if os.name == 'nt':
+                signal.signal(signal.CTRL_C_EVENT, lambda s, f: self.shutdown())
+                signal.signal(signal.CTRL_BREAK_EVENT, lambda s, f: self.shutdown())
+            else:
+                signal.signal(signal.SIGTERM, lambda s, f: self.terminate())
+                signal.signal(signal.SIGINT, lambda s, f: self.shutdown())
+                signal.signal(signal.SIGQUIT, lambda s, f: self.shutdown())
+                signal.signal(signal.SIGTSTP, lambda s, f: self.stop())
+                signal.signal(signal.SIGCONT, lambda s, f: self.start())
+        except Exception:
+            pass
+
         Process.__init__(self)
 
-    def __init__(self, profile=None, configdir=None, refresh=0, remote=None,
-                 webui=None, debug=0, webdebug=0):
-        # NOTE: Don't change the init order!
+    def __init__(self, profile=None, configdir=None, refresh=0, debug=0, webdebug=0):
+        # NOTE: Do not change init order!
         self._init_process(profile)
         self._init_debug(debug, webdebug)
-        # NOTE: Logging level
         self._init_logger(logging.DEBUG if self.debug else logging.INFO)
         self._init_translation()
         self._init_config(configdir)
 
-        self.log.debug("Initializing pyLoad ...")
         self._shutdown = False
         self._restart = False
+        
+        self.log.debug("Initializing pyLoad ...")        
         if refresh:
-            self._clean()
+            self._clean()            
         self._init_permissions()
         self._init_database(refresh > 1)
         self._init_network()
         self._init_api()
         self._init_managers()
-        self._start_interfaces(webui, remote)
 
-    def _set_process(self):
+    def _check_process(self):
         profile = os.path.basename(os.getcwd())
         try:
             sys.set_process_title(profile)
@@ -336,20 +346,26 @@ class Core(Process):
         niceness = self.config.get('general', 'niceness')
         sys.renice(niceness)
 
-    def _set_storage(self):
+    def _check_storage(self):
         storage_folder = self.config.get(
             'general', 'storage_folder') or "downloads"
         makedirs(storage_folder)
         space_size = format.size(availspace(storage_folder))
         self.log.info(_("Available storage space: {}").format(space_size))
 
+    def start(self, webui=None, remote=None):
+        self.__web = webui
+        self.__rpc = remote
+        return Process.start(self)
+
     def run(self):
         self.log.info(_("Starting pyLoad ..."))
         self.log.info(_("Version: {}").format(self.__version__))
         self.log.info(_("Profile: {}").format(os.path.abspath(os.getcwd())))
 
-        self._set_storage()
-        self._set_process()
+        self._start_interface(self.__web, self.__rpc)
+        self._check_storage()
+        self._check_process()
 
         # TODO: Move in accountmanager
         self.log.info(_("Activating accounts ..."))
