@@ -10,33 +10,34 @@
 #           \/
 
 from __future__ import unicode_literals
-from future import standard_library
-standard_library.install_aliases()
 
 import builtins
 import codecs
 import os
-import sys
 import tempfile
 
 import daemonize
 import psutil
+from future import standard_library
 
 from pyload.core import Core
-from pyload.utils.new import convert, path
-from pyload.utils.new.check import lookup
+from pyload.utils import convert, path, sys
+from pyload.utils.check import lookup
+
+standard_library.install_aliases()
 
 
 __all__ = ['info', 'restart', 'setup', 'start', 'status', 'stop',
            'update', 'version']
 
 
-builtins.PACKDIR = os.path.abspath(
+builtins.PACKDIR = PACKDIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), ".."))
-builtins.COREDIR = os.path.join(builtins.PACKDIR, 'pyload')
-builtins.USERDIR = os.getenv(
+builtins.COREDIR = COREDIR = os.path.join(PACKDIR, 'pyload')
+builtins.USERDIR = USERDIR = os.getenv(
     'APPDATA') if os.name == 'nt' else os.path.expanduser('~')
-
+builtins.REQUEST = None  # TODO: Remove
+builtins.ADDONMANAGER = None  # TODO: Remove
 
 # Before changing the cwd, the abspath of the module must be manifested
 if 'pyload' in sys.modules:
@@ -53,7 +54,7 @@ sys.stdout = writer(sys.stdout, errors="replace")
 
 
 def info():
-    from pyload.utils.new.struct import Info
+    from pyload.utils.struct import Info
 
     file = os.path.join(os.path.dirname(__file__), "..", "README.md")
     with path.open(file) as f:
@@ -106,13 +107,14 @@ def version():
 
 
 def setup():
-    from .. import setup
-    setup.main()
+    # TODO: Move setup into the pyload package, then call it from setup.py
+    from pyload.setup import main
+    main()
 
 
 def update(dependencies=True, reinstall=False, prerelease=False):
     try:
-        from pyload.utils.new.lib import autoupgrade
+        from pyload.utils.lib import autoupgrade
     except ImportError:
         return
     au = autoupgrade.AutoUpgrade(info().name, verbose=True)
@@ -125,7 +127,7 @@ def update(dependencies=True, reinstall=False, prerelease=False):
 def stop(profile=None, wait=300):
     for pid in status(profile):
         try:
-            sys.pkill(pid, wait)
+            sys.kill_process(pid, wait)
         except Exception:
             continue
 

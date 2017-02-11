@@ -5,13 +5,13 @@ from __future__ import unicode_literals
 import os
 from time import time
 
-if os.name != "nt":
-    from pyload.utils.fs import chown
+if os.name != 'nt':
+    from pyload.utils.old.fs import chown
     from pwd import getpwnam
     from grp import getgrnam
 
-from pyload.utils import chunks as _chunks
-from pyload.utils.fs import (save_join, safe_filename, fs_encode, fs_decode, remove, makedirs,
+from pyload.utils.convert import chunks as _chunks
+from pyload.utils.old.fs import (save_join, safe_filename, fs_encode, fs_decode, remove, makedirs,
                              chmod, stat, exists, join)
 
 from pyload.plugin import Base, Fail, Retry
@@ -292,7 +292,7 @@ class Hoster(Base):
             makedirs(location, int(self.pyload.config.get(
                 'permission', 'foldermode'), 8))
 
-            if self.pyload.config.get('permission', 'change_fileowner') and os.name != "nt":
+            if self.pyload.config.get('permission', 'change_fileowner') and os.name != 'nt':
                 try:
                     uid = getpwnam(self.pyload.config.get(
                         'permission', 'user'))[2]
@@ -334,7 +334,7 @@ class Hoster(Base):
             chmod(fs_filename, int(self.pyload.config.get(
                 'permission', 'filemode'), 8))
 
-        if self.pyload.config.get('permission', 'change_fileowner') and os.name != "nt":
+        if self.pyload.config.get('permission', 'change_fileowner') and os.name != 'nt':
             try:
                 uid = getpwnam(self.pyload.config.get('permission', 'user'))[2]
                 gid = getgrnam(self.pyload.config.get(

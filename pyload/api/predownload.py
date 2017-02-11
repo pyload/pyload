@@ -10,9 +10,9 @@ from pyload.api import (Api, LinkStatus, OnlineCheck, Permission, require_perm,
                         urlmatcher)
 from pyload.api.base import BaseApi
 from pyload.network.request import get_url
-from pyload.utils import uniqify
-from pyload.utils.fs import join
-from pyload.utils.packagetools import parse_names
+from pyload.utils.purge import uniqify
+from pyload.utils.old.fs import join
+from pyload.utils.old.packagetools import parse_names
 
 
 class PreDownloadApi(BaseApi):
@@ -72,7 +72,7 @@ class PreDownloadApi(BaseApi):
             'general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
-        return self.check_links([th.name])
+            return self.check_links([f.name])
 
     @require_perm(Permission.Add)
     def check_html(self, html, url):

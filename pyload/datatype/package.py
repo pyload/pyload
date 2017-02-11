@@ -7,7 +7,7 @@ from builtins import object
 from time import time
 
 from pyload.api import PackageInfo, PackageStatus
-from pyload.utils.fs import join
+from pyload.utils.old.fs import join
 
 
 class PyPackage(object):

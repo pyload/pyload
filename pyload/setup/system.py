@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-from new_collections import OrderedDict
+from pyload.utils.lib.collections import OrderedDict
 
 # gettext decorator, translated only when needed
 _ = lambda x: x

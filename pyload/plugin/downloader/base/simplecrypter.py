@@ -8,7 +8,7 @@ from builtins import range
 
 from pyload.plugin.crypter import Crypter, Package
 from pyload.plugin.internal.simplehoster import replace_patterns
-from pyload.utils import html_unescape
+from pyload.utils.web import purge as webpurge
 
 
 class SimpleCrypter(Crypter):
@@ -71,7 +71,7 @@ class SimpleCrypter(Crypter):
         if hasattr(self, 'TITLE_PATTERN'):
             m = re.search(self.TITLE_PATTERN, self.html)
             if m:
-                name = html_unescape(m.group('title').strip())
+                name = webpurge.escape(m.group('title').strip())
                 self.log_debug("Found name [{}] in package info".format(name))
                 return name
 

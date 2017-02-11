@@ -8,7 +8,8 @@ from os.path import exists, join
 
 from bottle import redirect, request, response, route, static_file, template
 
-from pyload.utils import json_dumps
+import json
+
 from pyload.webui.interface import APP_DIR, PREFIX, PYLOAD, SETUP, UNAVAILALBE
 from pyload.webui.utils import add_json_header, login_required, select_language
 
@@ -43,7 +44,7 @@ def i18n(lang=None):
         # TODO: auto choose language
         lang = select_language(("en",))
 
-    return json_dumps({})
+    return json.dumps({})
 
 
 @route('/')

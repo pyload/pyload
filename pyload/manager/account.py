@@ -5,10 +5,12 @@ from __future__ import unicode_literals
 
 from builtins import object
 from random import choice
-from threading import Lock
+from pyload.utils.lib.threading import Lock
+
+import json
 
 from pyload.api import AccountInfo
-from pyload.utils import json, lock
+from pyload.utils.decorator import lock
 
 
 class AccountManager(object):

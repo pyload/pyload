@@ -3,12 +3,12 @@
 
 from __future__ import unicode_literals
 
-from new_collections import OrderedDict
+from pyload.utils.lib.collections import OrderedDict
 from pyload.api import DownloadState as DS
 from pyload.api import (DownloadInfo, FileInfo, PackageInfo, PackageStats,
                         state_string)
 from pyload.database import DatabaseMethods, async, inner, queue
-from pyload.utils.filetypes import guess_type
+from pyload.utils.old.filetypes import guess_type
 
 zero_stats = PackageStats(0, 0, 0, 0)
 
@@ -175,7 +175,7 @@ class FileMethods(DatabaseMethods):
         self.c.execute(qry + "ORDER BY package, fileorder", arg)
 
         data = OrderedDict()
-        for r in self.c:
+        for r in self.c.fetchall():
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
             if r[11] > 0:  # dl status != NA
                 f.download = DownloadInfo(
@@ -197,7 +197,7 @@ class FileMethods(DatabaseMethods):
             args.append(owner)
 
         self.c.execute(qry, args)
-        return [r[0] for r in self.c]
+        return [r[0] for r in self.c.fetchall()]
 
     @queue
     def get_all_packages(self, root=None, owner=None, tags=None):
@@ -228,7 +228,7 @@ class FileMethods(DatabaseMethods):
                     ' WHERE (root=? OR pid=?) AND owner=?'), (root, root, owner))
 
         data = OrderedDict()
-        for r in self.c:
+        for r in self.c.fetchall():
             data[r[0]] = PackageInfo(
                 r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[
                     8], r[9].split(","), r[10], r[11], r[12],
@@ -258,7 +258,7 @@ class FileMethods(DatabaseMethods):
             self.c.execute(qry.format(""))
 
         data = {}
-        for r in self.c:
+        for r in self.c.fetchall():
             data[r[0]] = PackageStats(
                 r[2] if r[2] else 0,
                 r[4] if r[4] else 0,
@@ -452,7 +452,7 @@ class FileMethods(DatabaseMethods):
         # status in finished, skipped, processing
         self.c.execute(
             "SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
-        return [r[0] for r in self.c]
+        return [r[0] for r in self.c.fetchall()]
 
     @queue
     def restart_failed(self, owner=None):

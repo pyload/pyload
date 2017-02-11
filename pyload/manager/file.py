@@ -11,8 +11,8 @@ from pyload.api import DownloadStatus as DS
 from pyload.api import PackageDoesNotExist, PackageStatus, TreeCollection
 from pyload.datatype.file import PyFile
 from pyload.datatype.package import PyPackage, RootPackage
-from pyload.utils import lock, read_lock
-from ReadWriteLock import ReadWriteLock
+from pyload.utils.decorator import lock, readlock
+from pyload.utils.lib.rwlock import ReadWriteLock
 
 
 # invalidates the cache
@@ -72,7 +72,7 @@ class FileManager(object):
         """
         self.db.commit()
 
-    @read_lock
+    @readlock
     def sync_save(self):
         """
         Saves all data to backend and waits until all data are written.
@@ -135,7 +135,7 @@ class FileManager(object):
 
             return pack
 
-    @read_lock
+    @readlock
     def get_package_info(self, pid):
         """
         Returns dict with package information.
@@ -179,7 +179,7 @@ class FileManager(object):
             self.files[fid] = f
             return f
 
-    @read_lock
+    @readlock
     def get_file_info(self, fid):
         """
         Returns dict with file information.
@@ -189,7 +189,7 @@ class FileManager(object):
 
         return self.db.get_file_info(fid)
 
-    @read_lock
+    @readlock
     def get_tree(self, pid, full, state, owner=None, search=None):
         """
         Return a TreeCollection and fill the info data of containing packages.
@@ -379,7 +379,7 @@ class FileManager(object):
         self.pyload.evm.fire("file:updated", pyfile)
 
     @invalidate
-    @read_lock
+    @readlock
     def set_download_status(self, fid, status):
         """
         Sets a download status for a file.
@@ -452,7 +452,7 @@ class FileManager(object):
     def reset_count(self):
         self.queuecount = -1
 
-    @read_lock
+    @readlock
     @invalidate
     def restart_package(self, pid):
         """
@@ -469,7 +469,7 @@ class FileManager(object):
 
         self.pyload.evm.fire("package:updated", pid)
 
-    @read_lock
+    @readlock
     @invalidate
     def restart_file(self, fid):
         """
@@ -550,7 +550,7 @@ class FileManager(object):
 
         self.pyload.evm.fire("file:reordered", pid)
 
-    @read_lock
+    @readlock
     @invalidate
     def move_package(self, pid, root):
         """
@@ -573,7 +573,7 @@ class FileManager(object):
 
         return True
 
-    @read_lock
+    @readlock
     @invalidate
     def move_files(self, fids, pid):
         """

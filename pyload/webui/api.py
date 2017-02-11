@@ -12,7 +12,7 @@ from future import standard_library
 
 from pyload.api import ExceptionObject
 from pyload.remote.json_converter import BaseEncoder, dumps, loads
-from pyload.utils import remove_chars
+from pyload.utils import purge
 from pyload.webui.interface import PYLOAD, session
 from pyload.webui.utils import add_json_header, get_user_api, set_session
 
@@ -61,7 +61,7 @@ def call_api(func, args=""):
     auth = parse_auth(request.get_header('Authorization', ''))
     if 'session' in request.POST or 'session' in request.GET:
         # removes "' so it works on json strings
-        s = s.get_by_id(remove_chars(request.params.get('session'), "'\""))
+        s = s.get_by_id(purge.chars(request.params.get('session'), "'\""))
     elif auth:
         user = PYLOAD.check_auth(
             auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
@@ -129,8 +129,8 @@ def call_api(func, args=""):
 def login():
     add_json_header(response)
 
-    username = request.params.get("username")
-    password = request.params.get("password")
+    username = request.params.get('username')
+    password = request.params.get('password')
 
     user = PYLOAD.check_auth(
         username, password, request.environ.get('REMOTE_ADDR', None))
@@ -151,7 +151,7 @@ def login():
     result['session'] = sid
 
     # Return full user information if needed
-    if request.params.get('user', None):
+    if request.params.get('user'):
         return dumps(result)
 
     return json_response(sid)

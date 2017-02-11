@@ -10,11 +10,10 @@ from pyload.api import InvalidConfigSection
 from pyload.config.parser import ConfigParser
 from pyload.database import DatabaseBackend
 from pyload.manager.config import ConfigManager
-from pyload.utils import primary_uid
 from tests.helper.stubs import Core, admin_user, normal_user
 
-admin_user = primary_uid(admin_user)
-normal_user = primary_uid(normal_user)
+admin_user = admin_user.primary if admin_user else None
+normal_user = normal_user.primary if normal_user else None
 
 
 class TestConfigManager(TestCase):

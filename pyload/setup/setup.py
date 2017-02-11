@@ -16,11 +16,11 @@ from time import time
 from future import standard_library
 
 from pyload.api import Role
-from pyload.setup.dependencies import deps
-from pyload.setup.system import get_system_info
-from pyload.thread.webui import WebServer
-from pyload.utils import get_console_encoding
-from pyload.utils.fs import abspath, exists, join, makedirs
+from .dependencies import deps
+from .system import get_system_info
+from pyload.thread.webserver import WebServer
+from pyload.utils.old import get_console_encoding
+from pyload.utils.old.fs import abspath, exists, join, makedirs
 
 standard_library.install_aliases()
 
@@ -133,16 +133,14 @@ class Setup(object):
         print(_("Do you want to configure login data and basic settings?"))
         print(_("This is recommend for first run"))
         con = self.ask(_("Make basic setup?"), self.yes, bool=True)
-
         if con:
             self.conf_basic()
 
+        print("")
+        print(_("Do you want to configure ssl?"))
+        ssl = self.ask(_("Configure ssl?"), self.no, bool=True)
         if ssl:
-            print("")
-            print(_("Do you want to configure ssl?"))
-            ssl = self.ask(_("Configure ssl?"), self.no, bool=True)
-            if ssl:
-                self.conf_ssl()
+            self.conf_ssl()
 
         print("")
         print(_("Do you want to configure the Web UI?"))

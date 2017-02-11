@@ -10,8 +10,6 @@ Iface = object
 
 class BaseApi(Iface):
 
-    __slots__ = []
-
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
         from pyload import Core

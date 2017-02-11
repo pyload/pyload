@@ -2,11 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from new_collections import OrderedDict
+import json
+
+from pyload.utils.lib.collections import OrderedDict
 from pyload.api import InvalidConfigSection
 from pyload.config.convert import from_string
 from pyload.config.parser import Config
-from pyload.utils import json
 
 
 def convertkeyerror(func):

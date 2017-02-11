@@ -7,7 +7,7 @@ from os.path import isabs
 
 from pyload.api import Api, Permission, Role, require_perm
 from pyload.api.base import BaseApi
-from pyload.utils.fs import join
+from pyload.utils.old.fs import join
 
 
 class DownloadApi(BaseApi):
@@ -114,8 +114,7 @@ class DownloadApi(BaseApi):
             'general', 'storage_folder'), "tmp_{}".format(filename))
         with open(file, "wb") as f:
             f.write(str(data))
-
-        return self.add_package(th.name, [th.name])
+        return self.add_package(f.name, [f.name])
 
     @require_perm(Permission.Delete)
     def remove_files(self, fids):

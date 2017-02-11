@@ -5,13 +5,14 @@ from __future__ import unicode_literals
 from __future__ import division
 
 from contextlib import closing
-from time import time
-from threading import RLock
+from pyload.utils.lib.threading import RLock
 
 from pyload.api import AccountInfo, ConfigItem
 from pyload.network.cookie import CookieJar
 from pyload.config.convert import from_string, to_configdata
-from pyload.utils import to_string, compare_time, format_size, parse_size, lock
+from pyload.utils.old import to_string,
+from pyload.utils import format, parse, time
+from pyload.utils.decorator import lock
 
 from pyload.plugin import Base
 
@@ -139,7 +140,7 @@ class Account(Base):
     @lock
     def _login(self, req):
         # set timestamp for login
-        self.login_ts = time()
+        self.login_ts = time.time()
 
         try:
             try:
@@ -216,7 +217,7 @@ class Account(Base):
         :param name: username
         :param force: reloads cached account information
         """
-        if force or self.timestamp + self.info_threshold * 60 < time():
+        if force or self.timestamp + self.info_threshold * 60 < time.time():
 
             # make sure to login
             with closing(self.get_account_request()) as req:
@@ -243,7 +244,7 @@ class Account(Base):
                         self.log_debug("Unknown attribute {}={}".format(k, v))
 
             self.log_debug("Account Info: {}".format(infos))
-            self.timestamp = time()
+            self.timestamp = time.time()
             self.pyload.evm.fire("account:loaded", self.to_info_data())
 
     # TODO: remove user
@@ -291,13 +292,13 @@ class Account(Base):
             try:
                 time_data = self.options['time']
                 start, end = time_data.split("-")
-                if not compare_time(start.split(":"), end.split(":")):
+                if not time.compare(start.split(":"), end.split(":")):
                     return False
             except Exception:
                 self.log_warning(
                     _("Your Time {} has a wrong format, use: 1:22-3:44").format(time_data))
 
-        if 0 <= self.validuntil < time():
+        if 0 <= self.validuntil < time.time():
             return False
         if self.trafficleft is 0:  # test explicitly for 0
             return False
@@ -305,12 +306,12 @@ class Account(Base):
         return True
 
     def parse_traffic(self, string):  # returns kbyte
-        return parse_size(string) // 1024
+        return parse.size(string) // 1024
 
     def format_trafficleft(self):
         if self.trafficleft is None:
             self.get_account_info(force=True)
-        return format_size(self.trafficleft * 1024)
+        return format.size(self.trafficleft * 1024)
 
     def wrong_password(self):
         raise WrongPassword
@@ -332,7 +333,7 @@ class Account(Base):
         self.log_warning(
             _("Account {} is expired, checking again in 1h").format(user))
 
-        self.validuntil = time() - 1
+        self.validuntil = time.time() - 1
         self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):
@@ -348,7 +349,7 @@ class Account(Base):
         """
         Checks if the user is still logged in.
         """
-        if self.login_ts + self.login_timeout * 60 < time():
+        if self.login_ts + self.login_timeout * 60 < time.time():
             if self.login_ts:  # separate from fresh login to have better debug logs
                 self.log_debug(
                     "Reached login timeout for {}".format(self.loginname))

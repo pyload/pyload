@@ -12,7 +12,7 @@ from urllib.parse import unquote
 from bottle import HTTPError, request, route
 from future import standard_library
 
-from pyload.utils.fs import safe_filename
+from pyload.utils.old.fs import safe_filename
 from pyload.webui.interface import DL_ROOT, PYLOAD
 
 standard_library.install_aliases()
@@ -25,7 +25,7 @@ except ImportError:
 
 
 try:
-    from Crypto.Cipher import AES
+    from Cryptodome.Cipher import AES
 except ImportError:
     pass
 

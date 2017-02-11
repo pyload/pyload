@@ -6,14 +6,14 @@ from contextlib import closing
 from time import time
 
 from pyload.plugin.account import Account
-from pyload.utils import remove_chars
+from pyload.utils import purge
 
 
 def normalize(domain):
     """
     Normalize domain/plugin name, so they are comparable.
     """
-    return remove_chars(domain.strip().lower(), "-.")
+    return purge.chars(domain.strip().lower(), "-.")
 
 
 # noinspection PyUnresolvedReferences

@@ -17,7 +17,7 @@ class RemoteManager(object):
         if self.pyload.remote:
             self.available.append("WebSocketBackend")
 
-    def start_backends(self):
+    def start(self):
         host = self.pyload.config.get('remote', 'host')
         port = self.pyload.config.get('remote', 'port')
 

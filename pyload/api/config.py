@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from pyload.api import (Api, ConfigHolder, ConfigInfo, ConfigItem, Permission,
                         require_perm)
 from pyload.api.base import BaseApi
-from pyload.utils import to_string
+from pyload.utils.old import to_string
 
 
 # helper function to create a ConfigHolder
@@ -55,7 +55,7 @@ class ConfigApi(BaseApi):
         """
         data = {}
         for section, config, values in self.pyload.config.iter_core_sections():
-            data[section] = toConfigHolder(section, config, values)
+            data[section] = to_config_holder(section, config, values)
         return data
 
     def get_core_config(self):
@@ -123,7 +123,7 @@ class ConfigApi(BaseApi):
         # requires at least plugin permissions, but only admin can load core
         # config
         config, values = self.pyload.config.get_section(name, self.primary_uid)
-        return toConfigHolder(name, config, values)
+        return to_config_holder(name, config, values)
 
     @require_perm(Permission.Plugins)
     def save_config(self, config):

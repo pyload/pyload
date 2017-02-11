@@ -15,7 +15,7 @@ from os.path import exists, join
 from select import select
 
 from pyload.plugin.hoster import Hoster
-from pyload.utils import save_join
+from pyload.utils.old import save_join
 
 
 class Xdcc(Hoster):

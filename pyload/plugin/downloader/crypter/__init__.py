@@ -5,8 +5,10 @@ from __future__ import unicode_literals
 from builtins import str
 from builtins import object
 from pyload.api import LinkStatus, DownloadStatus as DS
-from pyload.utils import to_list, has_method, uniqify
-from pyload.utils.fs import exists, remove, fs_encode
+from pyload.utils.purge import uniqify
+from pyload.utils.old import to_list
+from pyload.utils.check import hasmethod
+from pyload.utils.old.fs import exists, remove, fs_encode
 from pyload.plugin import Base, Retry
 
 
@@ -230,7 +232,7 @@ class Crypter(Base):
         content, urls = self.get_local_content(urls)
         result = []
 
-        if urls and has_method(cls, "decrypt"):
+        if urls and hasmethod(cls, "decrypt"):
             self.log_debug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:

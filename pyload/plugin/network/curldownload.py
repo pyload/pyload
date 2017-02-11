@@ -17,7 +17,7 @@ from pyload.plugin import Abort
 from pyload.plugin.download import Download
 from pyload.plugin.network.curlchunk import ChunkInfo, CurlChunk
 from pyload.plugin.network.curlrequest import ResponseException
-from pyload.utils.fs import fs_encode, save_join
+from pyload.utils.old.fs import fs_encode, save_join
 
 
 # TODO: save content-disposition for resuming

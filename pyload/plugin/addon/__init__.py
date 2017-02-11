@@ -5,7 +5,8 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
 from builtins import ADDONMANAGER
-from pyload.utils import has_method, to_list
+from pyload.utils.old import to_list
+from pyload.utils.check import hasmethod
 
 from pyload.plugin import Base
 
@@ -188,7 +189,7 @@ class Addon(Base):
         """
         Used to activate the addon.
         """
-        if has_method(self.__class__, "core_ready"):
+        if hasmethod(self.__class__, "core_ready"):
             self.log_debug(
                 "Deprecated method .core_ready() use activate() instead")
             self.pyload_ready()

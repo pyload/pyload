@@ -28,7 +28,7 @@ import os
 from os.path import join
 from os.path import abspath
 import logging
-import subprocess
+from pyload.utils.lib.subprocess import PIPE, Popen
 #import tempfile
 
 import Image
@@ -58,8 +58,8 @@ class OCR(object):
         """
         Run a command.
         """
-        popen = subprocess.Popen(
-            command, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        popen = Popen(
+            command, bufsize=-1, stdout=PIPE, stderr=PIPE)
         popen.wait()
         output = "{} | {}".format(popen.stdout.read(), popen.stderr.read())
         popen.stdout.close()
@@ -82,7 +82,7 @@ class OCR(object):
         self.log.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
-        if os.name == "nt":
+        if os.name == 'nt':
             tessparams = [join(COREDIR, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']

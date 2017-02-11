@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from pyload.api import Api, Permission, require_perm
 from pyload.api.base import BaseApi
-from pyload.utils import to_bool
+from pyload.utils.old import to_bool
 
 
 class AccountApi(BaseApi):

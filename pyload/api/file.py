@@ -6,7 +6,7 @@ from pyload.api import PackageStatus as PS
 from pyload.api import (Api, DownloadState, FileDoesNotExist,
                         PackageDoesNotExist, Permission, require_perm)
 from pyload.api.base import BaseApi
-from pyload.utils import uniqify
+from pyload.utils.purge import uniqify
 
 
 # TODO: user context

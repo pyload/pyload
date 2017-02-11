@@ -7,10 +7,7 @@ from builtins import str
 from pyload.remote import apitypes
 from pyload.remote.apitypes import BaseObject, ExceptionObject
 
-try:
-    from pyload.utils import json
-except ImportError:
-    import json
+import json
 
 
 # compact json separator

@@ -11,9 +11,9 @@ from os.path import exists
 from time import sleep
 
 import pycurl
-from pyload.network.headerdict import HeaderDict
+from pyload.utils.struct import HeaderDict
 from pyload.plugin.network.curlrequest import CurlRequest
-from pyload.utils.fs import fs_decode, fs_encode, safe_filename
+from pyload.utils.old.fs import fs_decode, fs_encode, safe_filename
 
 
 class ChunkInfo(object):

@@ -13,7 +13,9 @@ from future import standard_library
 from pyload.network.cookie import CookieJar
 from pyload.network.request import get_url
 from pyload.plugin.hoster import Hoster
-from pyload.utils import fixup, html_unescape, parse_size
+from pyload.utils.old import fixup
+from pyload.utils import parse
+from pyload.utils.web import purge as webpurge
 
 standard_library.install_aliases()
 
@@ -118,11 +120,11 @@ def parse_file_info(self, url='', html=''):
                 if 'S' in info:
                     size = replace_patterns(info['S'] + info['U'] if 'U' in info else info['S'],
                                             self.FILE_SIZE_REPLACEMENTS)
-                    info['size'] = parse_size(size)
+                    info['size'] = parse.size(size)
                 elif isinstance(info['size'], str):
                     if 'units' in info:
                         info['size'] += info['units']
-                    info['size'] = parse_size(info['size'])
+                    info['size'] = parse.size(info['size'])
 
     if hasattr(self, "file_info"):
         self.file_info = info
@@ -238,7 +240,7 @@ class SimpleHoster(Hoster):
         if name:
             self.pyfile.name = name
         else:
-            self.pyfile.name = html_unescape(
+            self.pyfile.name = webpurge.escape(
                 urlparse(self.pyfile.url).path.split("/")[-1])
 
         if size:

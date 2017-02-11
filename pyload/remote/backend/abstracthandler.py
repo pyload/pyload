@@ -75,7 +75,7 @@ class AbstractHandler(object):
         raise NotImplementedError
 
     def transfer_data(self, req):
-        raise NotImplemented
+        raise NotImplementedError
 
     def handle_call(self, msg, req):
         """

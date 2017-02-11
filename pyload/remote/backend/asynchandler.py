@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from builtins import object
-from threading import Lock
+from pyload.utils.lib.threading import Lock
 from time import time
 
 from future import standard_library
@@ -13,7 +13,7 @@ from future import standard_library
 from mod_pywebsocket.msgutil import receive_message
 from pyload.api import EventInfo, Interaction
 from pyload.remote.backend.abstracthandler import AbstractHandler
-from pyload.utils import lock
+from pyload.utils.decorator import lock
 from queue import Empty, Queue
 
 standard_library.install_aliases()

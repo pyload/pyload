@@ -6,7 +6,8 @@ import os
 import sys
 from os.path import join
 
-from pyload.utils.old import decode, remove_chars
+from pyload.utils.old import decode
+from pyload.utils import purge
 
 # File System Encoding functions:
 # Use fs_encode before accessing files on disk, it will encode the string
@@ -65,9 +66,9 @@ def listdir(path):
 def safe_filename(name):
     # remove some chars
     if os.name == 'nt':
-        return remove_chars(name, '/\\?%*:;|"<>,')
+        return purge.chars(name, '/\\?%*:;|"<>,')
     else:
-        return remove_chars(name, '/\\"')
+        return purge.chars(name, '/\\"')
 
 
 def stat(name):
@@ -88,7 +89,7 @@ def save_join(*args):
 def free_space(folder):
     folder = fs_encode(folder)
 
-    if os.name == "nt":
+    if os.name == 'nt':
         import ctypes
 
         free_bytes = ctypes.c_ulonglong(0)
@@ -106,7 +107,7 @@ def get_bsize(path):
     """
     path = fs_encode(path)
 
-    if os.name == "nt":
+    if os.name == 'nt':
         import ctypes
 
         drive = "{}\\".format(os.path.splitdrive(path)[0])

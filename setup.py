@@ -4,6 +4,8 @@
 
 from __future__ import unicode_literals
 
+from builtins import PACKDIR
+
 import os
 
 from past.builtins import execfile
@@ -14,7 +16,7 @@ __all__ = ['info', 'main', 'run_venv', 'setup']
 
 
 def info():
-    from pyload.utils.new.struct import Info
+    from pyload.utils.struct import Info
 
     info = pyload.info()
 
@@ -24,22 +26,24 @@ def info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        "argparse", "Beaker >= 1.6", "bottle >= 0.10.0", "daemonize",
-        "future", "psutil", "pycurl", "requests >= 2.0", "tld", "validators"
+        "argparse", "daemonize", "future", "psutil", "pycurl", "requests >= 2.0",
+        "tld", "validators"
     ]
 
     extras_require = {
         # 'Archive decompression': ['rarfile'],
         # TODO: Fix `tesserocr` installation
         'Captcha recognition': ["Pillow >= 2.0"],
-        'Click\'n\'Load support': ['Js2Py', 'pycrypto'],
+        'Click\'n\'Load support': ['Js2Py', 'pycryptodomex'],
         'Colored log': ['colorama', 'colorlog'],
         'JavaScript evaluation': ['Js2Py'],
         'Lightweight webserver:sys_platform!="win32"': ['bjoern'],
         'pyLoad auto-update': ['pip'],
+        'Remote API support': ['mod_pywebsocket', 'thrift'],
         'SSL connection': ['pyOpenSSL'],
         'Text translation': ['goslate'],
         'Trash support': ['Send2Trash'],
+        'Web User Interface': ['Beaker >= 1.6', 'bottle >= 0.10.0', 'pycryptodomex'],
         'Additional features': ['beautifulsoup4', 'bitmath', 'IPy', 'setproctitle'],
         'Additional features:sys_platform!="win32"': ['dbus-python']
     }
@@ -101,7 +105,7 @@ def _activate_venv(env_dir):
 
 
 def run_venv():
-    venv = os.path.join(ROOTDIR, "venv")
+    venv = os.path.join(PACKDIR, "venv")
     _create_venv(venv)
     _activate_venv(venv)
 
@@ -110,7 +114,7 @@ def _set_win_env():
     if os.name != 'nt':
         return
     try:
-        os.system('SETX path "%PATH%;{}"'.format(ROOTDIR))
+        os.system('SETX path "%PATH%;{}"'.format(PACKDIR))
     except Exception:
         pass
 

@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from pyload.api import Api, Interaction, Permission, StatusInfo, require_perm
 from pyload.api.base import BaseApi
-from pyload.utils.fs import exists, free_space, join
+from pyload.utils.old.fs import exists, free_space, join
 
 
 class CoreApi(BaseApi):
@@ -41,7 +41,7 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "{}://%{}:{:d}".format(ws, self.pyload.config.get('remote', 'port'))
+        return "{}://{{}}:{1:d}".format(ws, self.pyload.config.get('remote', 'port'))
 
     @require_perm(Permission.All)
     def get_status_info(self):

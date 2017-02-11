@@ -10,7 +10,8 @@ from future import standard_library
 
 from pyload.plugin.hoster import Hoster
 from pyload.plugin.request import ResponseException
-from pyload.utils import html_unescape, remove_chars
+from pyload.utils.web import purge as webpurge
+from pyload.utils import purge
 
 standard_library.install_aliases()
 
@@ -102,7 +103,7 @@ class BasePlugin(Hoster):
             else:
                 break
 
-        name = html_unescape(unquote(urlparse(url).path.split("/")[-1]))
+        name = webpurge.escape(unquote(urlparse(url).path.split("/")[-1]))
 
         if 'content-disposition' in header:
             self.log_debug(
@@ -114,7 +115,7 @@ class BasePlugin(Hoster):
                 self.log_debug(disp)
                 if not disp['enc']:
                     disp['enc'] = 'utf-8'
-                name = remove_chars(disp['name'], "\"';").strip()
+                name = purge.chars(disp['name'], "\"';").strip()
                 name = str(unquote(name), disp['enc'])
 
         if not name:

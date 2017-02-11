@@ -8,10 +8,10 @@ from time import sleep, time
 
 from pyload.api import (DownloadInfo, DownloadProgress, DownloadStatus,
                         FileInfo, ProgressInfo, ProgressType)
-from pyload.utils import lock, read_lock, try_catch
-from pyload.utils.filetypes import guess_type
-from pyload.utils.fs import safe_filename
-from ReadWriteLock import ReadWriteLock
+from pyload.utils.decorator import lock, readlock, trycatch
+from pyload.utils.old.filetypes import guess_type
+from pyload.utils.old.fs import safe_filename
+from pyload.utils.lib.rwlock import ReadWriteLock
 
 status_map = {
     "none": 0,
@@ -42,10 +42,10 @@ class PyFile(object):
     """
     Represents a file object at runtime.
     """
-    __slots__ = ("m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
+    __slots__ = ["m", "fid", "_name", "_size", "filestatus", "media", "added", "fileorder",
                  "url", "pluginname", "hash", "status", "error", "packageid", "owner",
                  "lock", "plugin", "waitUntil", "abort", "statusname",
-                 "reconnected", "pluginclass")
+                 "reconnected", "pluginclass"]
 
     @staticmethod
     def from_info_data(m, info):
@@ -136,7 +136,7 @@ class PyFile(object):
                 "hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
-    @read_lock
+    @readlock
     def has_plugin(self):
         """
         Thread safe way to determine this file has initialized plugin attribute.
@@ -234,14 +234,14 @@ class PyFile(object):
     def check_if_processed(self):
         self.manager.check_all_links_processed(self.id)
 
-    @try_catch(0)
+    @trycatch(0)
     def get_speed(self):
         """
         Calculates speed.
         """
         return self.plugin.dl.speed
 
-    @try_catch(0)
+    @trycatch(0)
     def get_eta(self):
         """
         Gets estimated time of arrival / or waiting time.
@@ -251,14 +251,14 @@ class PyFile(object):
 
         return self.get_bytes_left() // self.get_speed()
 
-    @try_catch(0)
+    @trycatch(0)
     def get_bytes_arrived(self):
         """
         Gets bytes arrived.
         """
         return self.plugin.dl.arrived
 
-    @try_catch(0)
+    @trycatch(0)
     def get_bytes_left(self):
         """
         Gets bytes left.
@@ -277,7 +277,7 @@ class PyFile(object):
         except Exception:
             return self.size
 
-    @try_catch(0)
+    @trycatch(0)
     def get_flags(self):
         return self.plugin.dl.flags
 

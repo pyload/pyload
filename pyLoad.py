@@ -12,14 +12,17 @@
 
 from __future__ import print_function, unicode_literals
 
+from builtins import PACKDIR
+
+import os
 import argparse
-# import multiprocessing
+# from multiprocessing import freeze_support
 import operator
 import sys
 
 import pyload
-from pyload.utils.new import format
-from pyload.utils.new.sys import set_console_icon, set_console_title
+from pyload.utils import format
+from pyload.utils.sys import set_console_icon, set_console_title
 
 try:
     import colorama
@@ -44,12 +47,6 @@ def logo():
 
 
 def parse_args(argv=None):
-    # NOTE: Workaround to `required subparsers` issue in Python 2
-    if not argv:
-        argv = sys.argv[1:]
-    if not set(map(operator.itemgetter(0), sc)) & set(argv):
-        argv.append('start')
-
     try:
         color = lambda c, msg: getattr(
             colorama.Fore, c) + msg + colorama.Style.RESET_ALL
@@ -131,6 +128,10 @@ def parse_args(argv=None):
     sp_update.add_argument(
         '-f', '--force', action='store_true', help=force_help)
 
+    # NOTE: Workaround to `required subparsers` issue in Python 2
+    if not set(map(operator.itemgetter(0), sc)) & set(argv):
+        argv.append('start')
+
     print(logo() + '\n')
     return ap.parse_args(argv)
 
@@ -138,25 +139,30 @@ def parse_args(argv=None):
 def _set_console():
     try:
         set_console_title("pyLoad console")
-        set_console_icon(os.path.join(ROOTDIR, 'media', 'favicon.ico'))
+        set_console_icon(os.path.join(PACKDIR, 'media', 'favicon.ico'))
     except Exception:
         pass
 
 
-def _open_browser(p):
-    webserver = p.svm.get('webui')
-    if not webserver or not webserver.active:
-        return
-    import webbrowser
-    url = '{}:{}'.format(webserver.host, webserver.port)
-    webbrowser.open_new_tab(url)
+# TODO: Recheck...
+# def _open_browser(p):
+    # webserver = p.svm.get('webui')
+    # if not webserver or not webserver.active:
+        # return
+    # import webbrowser
+    # url = '{}:{}'.format(webserver.host, webserver.port)
+    # webbrowser.open_new_tab(url)
 
 
 def main():
     _set_console()
 
     emsg = None
-    args = parse_args()
+
+    args = parse_args(sys.argv[1:])
+
+    # TODO: Handle --help output
+
     func = getattr(pyload, args.command)
     kwgs = vars(args)
     kwgs.pop('command', None)
@@ -170,19 +176,17 @@ def main():
                 res.join()
             except Exception as e:
                 emsg = e
-                res.terminate()
-            else:
-                res.shutdown()
+            res.shutdown()
 
     elif args.command in ('status', 'version'):
-        print(' '.join(format.iter(res)))
+        print(' '.join(format.attributes(res)))
 
     elif args.command == 'info':
-        print('\n'.join(format.map(res)))
+        print('\n'.join(format.items(res)))
 
     sys.exit(emsg)
 
 
 if __name__ == "__main__":
-    # multiprocessing.freeze_support()
+    # freeze_support()
     main()

@@ -9,8 +9,8 @@ import sys
 from time import time, sleep
 from random import randint
 
-from pyload.utils import decode
-from pyload.utils.fs import exists, makedirs, join, remove
+from pyload.utils.old import decode
+from pyload.utils.old.fs import exists, makedirs, join, remove
 
 
 # TODO

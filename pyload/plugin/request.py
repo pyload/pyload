@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from builtins import object
 
-from pyload.network.headerdict import HeaderDict
+from pyload.utils.struct import HeaderDict
 
 
 class ResponseException(Exception):

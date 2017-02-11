@@ -7,8 +7,9 @@ from time import time
 from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.thread.base import BaseThread
 from pyload.thread.decrypter import DecrypterThread
-from pyload.utils import accumulate, has_method
-from pyload.utils.packagetools import parse_names
+from pyload.utils.check import hasmethod
+from pyload.utils.convert import accumulate
+from pyload.utils.old.packagetools import parse_names
 
 
 class InfoThread(DecrypterThread):
@@ -66,10 +67,10 @@ class InfoThread(DecrypterThread):
             plugin = self.manager.pyload.pgm.load_module("hoster", pluginname)
             klass = self.manager.pyload.pgm.get_plugin_class(
                 "hoster", pluginname, overwrite=False)
-            if has_method(klass, "get_info"):
+            if hasmethod(klass, "get_info"):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
-            elif has_method(plugin, "get_info"):
+            elif hasmethod(plugin, "get_info"):
                 self.pyload.log.debug(
                     "Deprecated .get_info() method on module level, use staticmethod instead")
                 self.fetch_for_plugin(plugin, urls, cb)

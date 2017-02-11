@@ -11,9 +11,9 @@ from os import listdir, makedirs
 from os.path import basename, exists, isfile, join
 from time import time
 
-from new_collections import namedtuple
+from pyload.utils.lib.collections import namedtuple
 from pyload.plugin import Base
-from SafeEval import const_eval as literal_eval
+from pyload.utils.lib.eval import const_eval as literal_eval
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 

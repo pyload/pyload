@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from builtins import object
-from threading import Lock
+from pyload.utils.lib.threading import Lock
 
 
 class EventManager(object):

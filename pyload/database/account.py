@@ -14,7 +14,7 @@ class AccountMethods(DatabaseMethods):
             'SELECT aid, plugin, loginname, owner, activated, shared, password, options FROM accounts')
 
         return [(AccountInfo(r[0], r[1], r[2], r[3], activated=r[4] is 1, shared=r[5] is 1), r[6], r[7]) for r in
-                self.c]
+                self.c.fetchall()]
 
     @queue
     def create_account(self, plugin, loginname, password, owner):

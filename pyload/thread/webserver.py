@@ -3,22 +3,21 @@
 from __future__ import absolute_import, unicode_literals, with_statement
 
 import logging
-import threading
-from threading import Event
+from pyload.utils.lib.threading import Thread
 from time import sleep, time
 
-from pyload.utils.fs import exists
+from pyload.utils.old.fs import exists
 
 core = None
 setup = None
 log = logging.getLogger("log")
 
 
-class WebServer(threading.Thread):
+class WebServer(Thread):
 
     def __init__(self, pycore=None, pysetup=None):
         global core, setup
-        threading.Thread.__init__(self)
+        Thread.__init__(self)
 
         if pycore:
             core = pycore
@@ -45,9 +44,8 @@ class WebServer(threading.Thread):
         self.running = Event()
         self.running.set()
 
-        from pyload.webui import webinterface
-
         global webinterface
+        from pyload.webui import interface as webinterface
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):

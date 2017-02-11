@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from builtins import range
-from hashlib import sha1
+from pyload.utils.lib.hashlib import sha1
 from random import choice
 from string import digits, letters
 
@@ -72,7 +72,7 @@ class UserMethods(DatabaseMethods):
         self.c.execute('SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
                        'hddquota, user, template FROM "users"')
         user = {}
-        for r in self.c:
+        for r in self.c.fetchall():
             user[r[0]] = UserData(*r)
 
         return user

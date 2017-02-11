@@ -16,7 +16,7 @@ from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.plugin.internal.simplehoster import (PluginParseError,
                                                  SimpleHoster, create_get_info,
                                                  replace_patterns)
-from pyload.utils import html_unescape
+from pyload.utils.web import purge as webpurge
 
 standard_library.install_aliases()
 
@@ -84,7 +84,7 @@ class XFileSharingPro(SimpleHoster):
             self.location = self.get_direct_download_link()
 
             if not self.file_info:
-                pyfile.name = html_unescape(unquote(urlparse(
+                pyfile.name = webpurge.escape(unquote(urlparse(
                     self.location if self.location else pyfile.url).path.split("/")[-1]))
 
             if self.location:
@@ -325,7 +325,7 @@ class XFileSharingPro(SimpleHoster):
                     captcha_div = found.group(1)
                     self.log_debug(captcha_div)
                     numerals = re.findall(
-                        r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', html_unescape(captcha_div))
+                        r'<span.*?padding-left\s*:\s*(\d+).*?>(\d)</span>', webpurge.escape(captcha_div))
                     inputs['code'] = "".join(a[1] for a in sorted(
                         numerals, key=lambda num: int(num[0])))
                     self.log_debug("CAPTCHA", inputs['code'], numerals)

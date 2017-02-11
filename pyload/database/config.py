@@ -36,7 +36,7 @@ class ConfigMethods(DatabaseMethods):
     def load_all_configs(self):
         self.c.execute('SELECT user, plugin, config FROM settings')
         configs = {}
-        for r in self.c:
+        for r in self.c.fetchall():
             if r[0] in configs:
                 configs[r[0]][r[1]] = r[2]
             else:
@@ -51,7 +51,7 @@ class ConfigMethods(DatabaseMethods):
         self.c.execute(
             'SELECT plugin, config FROM settings WHERE user=?', (user,))
         configs = {}
-        for r in self.c:
+        for r in self.c.fetchall():
             configs[r[0]] = r[1]
 
         return configs

@@ -5,12 +5,12 @@ from __future__ import print_function, unicode_literals
 
 from builtins import object, range, str
 from shutil import move
-from threading import Event, Thread
+from pyload.utils.lib.threading import Event, Thread
 from traceback import print_exc
 
 from future import standard_library
 
-from pyload.utils.fs import chmod, exists, remove
+from pyload.utils.old.fs import chmod, exists, remove
 from queue import Queue
 
 standard_library.install_aliases()

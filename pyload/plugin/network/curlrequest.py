@@ -196,7 +196,7 @@ class CurlRequest(Request):
         if "auth" in self.options:
             self.c.setopt(pycurl.USERPWD, bytes(self.options['auth']))
 
-        self.c.setopt(pycurl.HTTPHEADER, self.headers.to_headerlist())
+        self.c.setopt(pycurl.HTTPHEADER, self.headers.list())
 
     def load(self, url, get={}, post={}, referer=True, cookies=True, just_header=False, multipart=False, decode=False):
         """

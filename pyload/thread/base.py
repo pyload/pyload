@@ -5,13 +5,12 @@ from __future__ import unicode_literals
 import sys
 from contextlib import closing
 from pprint import pformat
-from threading import Thread
+from pyload.utils.lib.threading import Thread
 from time import gmtime, strftime
 from traceback import format_exc
 
-from pyload.setup.system import get_system_info
-from pyload.utils import primary_uid
-from pyload.utils.fs import exists, join, listdir, save_join, stat
+from ..setup.system import get_system_info
+from pyload.utils.old.fs import exists, join, listdir, save_join, stat
 from types import MethodType
 
 
@@ -31,7 +30,7 @@ class BaseThread(Thread):
 
     @property
     def user(self):
-        return primary_uid(self.owner)
+        return self.owner.primary if self.owner else None
 
     def finished(self):
         """
@@ -111,7 +110,7 @@ class BaseThread(Thread):
                                                            frame.f_lineno)
 
             for key, value in frame.f_locals.items():
-                dump += "\t%20s = ".format(key)
+                dump += "\t{:20} = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
@@ -127,7 +126,7 @@ class BaseThread(Thread):
         for name in dir(plugin):
             attr = getattr(plugin, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = ".format(name)
+                dump += "\t{:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
@@ -142,7 +141,7 @@ class BaseThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = ".format(name)
+                dump += "\t{:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:

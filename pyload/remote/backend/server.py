@@ -45,7 +45,7 @@ import select
 import socket
 import SocketServer
 import sys
-import threading
+from pyload.utils.lib.threading import Event
 from builtins import object
 
 import http.client
@@ -308,7 +308,7 @@ class WebSocketServer(SocketServer.ThreadingMixIn, http.server.HTTPServer):
         self._logger = logging.getLogger("log")
 
         self.request_queue_size = options.request_queue_size
-        self.__ws_is_shut_down = threading.Event()
+        self.__ws_is_shut_down = Event()
         self.__ws_serving = False
 
         SocketServer.BaseServer.__init__(

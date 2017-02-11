@@ -6,8 +6,8 @@ from __future__ import absolute_import, unicode_literals
 from builtins import COREDIR, object
 from collections import defaultdict
 from random import sample
-from subprocess import call
-from threading import Event
+from pyload.utils.lib.subprocess import call
+from pyload.utils.lib.threading import Event
 from time import sleep
 
 from future import standard_library
@@ -16,9 +16,9 @@ from pyload.api import DownloadStatus as DS
 from pyload.network import get_ip
 from pyload.thread.decrypter import DecrypterThread
 from pyload.thread.download import DownloadThread
-from pyload.utils import lock, read_lock
-from pyload.utils.fs import exists, free_space, join
-from ReadWriteLock import ReadWriteLock
+from pyload.utils.decorator import lock, readlock
+from pyload.utils.old.fs import exists, free_space, join
+from pyload.utils.lib.rwlock import ReadWriteLock
 
 standard_library.install_aliases()
 
@@ -99,21 +99,21 @@ class DownloadManager(object):
         self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
                                               info.fid, info.package, info.owner))
 
-    @read_lock
+    @readlock
     def active_downloads(self, uid=None):
         """
         Retrieve pyfiles of running downloads.
         """
         return [x.active for x in self.working if uid is None or x.active.owner == uid]
 
-    @read_lock
+    @readlock
     def waiting_downloads(self):
         """
         All waiting downloads.
         """
         return [x.active for x in self.working if x.active.has_status("waiting")]
 
-    @read_lock
+    @readlock
     def get_progress_list(self, uid):
         """
         Progress of all running downloads.
@@ -129,7 +129,7 @@ class DownloadManager(object):
         """
         return [x.fid for x in self.active_downloads(None)]
 
-    @read_lock
+    @readlock
     def shutdown(self):
         """
         End all threads.
@@ -242,7 +242,7 @@ class DownloadManager(object):
 
         return False
 
-    @read_lock
+    @readlock
     def try_reconnect(self):
         """
         Checks if reconnect needed.
@@ -298,7 +298,7 @@ class DownloadManager(object):
 
         self.reconnecting.clear()
 
-    @read_lock
+    @readlock
     def want_reconnect(self):
         """
         Number of downloads that are waiting for reconnect.
@@ -307,7 +307,7 @@ class DownloadManager(object):
         ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
         return active.count(True)
 
-    @read_lock
+    @readlock
     def get_remaining_plugin_slots(self):
         """
         Dict of plugin names mapped to remaining dls.

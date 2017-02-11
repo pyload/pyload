@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 from builtins import str
 
 from pyload.api import Permission, Role, UserData
-from pyload.utils import bits_set
+from pyload.utils.check import bitset
 
 
 # TODO: activate user
@@ -33,7 +33,7 @@ class User(UserData):
         if isinstance(perms, str) and hasattr(Permission, perms):
             perms = getattr(Permission, perms)
 
-        return bits_set(perms, self.permission)
+        return bitset(perms, self.permission)
 
     def has_role(self, role):
         if isinstance(role, str) and hasattr(Role, role):

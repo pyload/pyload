@@ -8,7 +8,7 @@ from time import mktime, strptime
 
 from pyload.plugin.account import Account
 from pyload.plugin.internal.simplehoster import parse_html_form
-from pyload.utils import parse_size
+from pyload.utils import parse
 
 
 class XFSPAccount(Account):
@@ -46,7 +46,7 @@ class XFSPAccount(Account):
                 if "Unlimited" in trafficleft:
                     premium = True
                 else:
-                    trafficleft = parse_size(trafficleft) // 1024
+                    trafficleft = parse.size(trafficleft) // 1024
 
         return ({"validuntil": validuntil, "trafficleft": trafficleft, "premium": premium})
 

@@ -5,14 +5,15 @@ from __future__ import absolute_import, division, unicode_literals
 
 from base64 import standard_b64encode
 from builtins import object
-from threading import Lock
+from pyload.utils.lib.threading import Lock
 from time import time
 
-from new_collections import OrderedDict
+from pyload.utils.lib.collections import OrderedDict
 from pyload.api import Interaction as IA
 from pyload.api import Input, InputType
 from pyload.datatype.task import InteractionTask
-from pyload.utils import bits_set, lock
+from pyload.utils.check import bitset
+from pyload.utils.decorator import lock
 
 
 class InteractionManager(object):
@@ -123,7 +124,7 @@ class InteractionManager(object):
 
         # filter current mode
         tasks = [t for t in self.tasks.values() if mode ==
-                 IA.All or bits_set(t.type, mode)]
+                 IA.All or bitset(t.type, mode)]
         # filter correct user / or shared
         tasks = [t for t in tasks if user is None or user == t.owner or t.shared]
 

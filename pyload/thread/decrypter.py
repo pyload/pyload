@@ -7,9 +7,10 @@ from time import sleep
 from pyload.api import DownloadStatus as DS
 from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.plugin import Abort, Fail, Retry
-from pyload.plugin.crypter import Package
+from pyload.plugin.downloader.crypter import Package
 from pyload.thread.base import BaseThread
-from pyload.utils import accumulate, uniqify
+from pyload.utils.purge import uniqify
+from pyload.utils.convert import accumulate
 
 
 class DecrypterThread(BaseThread):

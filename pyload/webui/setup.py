@@ -6,16 +6,16 @@ from time import time
 
 from bottle import HTTPError, request, response, route
 
-from pyload.utils import json_dumps
-from pyload.webui.interface import SETUP
+import json
 from pyload.webui.utils import add_json_header
+from pyload.webui.interface import SETUP
 
 
 # returns http error
 
 
 def error(code, msg):
-    return HTTPError(code, json_dumps(msg), **dict(response.headers))
+    return HTTPError(code, json.dumps(msg), **dict(response.headers))
 
 
 def setup_required(func):
@@ -50,7 +50,7 @@ timestamp = time()
 def setup():
     add_json_header(response)
 
-    return json_dumps({
+    return json.dumps({
         "system": SETUP.check_system(),
         "deps": SETUP.check_deps()
     })
@@ -63,8 +63,8 @@ def setup_done():
     add_json_header(response)
 
     SETUP.add_user(
-        request.params['user'],
-        request.params['password']
+        request.params.get('user'),
+        request.params.get('password')
     )
 
     SETUP.save()
