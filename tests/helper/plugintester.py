@@ -12,12 +12,12 @@ from os.path import exists, expanduser, join
 from shutil import move
 from sys import exc_clear, exc_info
 from time import sleep, time
-from unittest import TestCase
+from unittest2 import TestCase
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.network.request import get_request
-from pyload.plugins.base import Abort, Fail
-from pyload.plugins.hoster import Hoster
+from pyload.plugin import Abort, Fail
+from pyload.plugin.downloader.hoster import Hoster
 from tests.helper.stubs import Core, Thread, noop
 
 
@@ -46,7 +46,7 @@ def _wait(self):
 Hoster.wait = _wait
 
 
-def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, imgtype='jpg',
+def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, imgtype='jpg',
                    result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
@@ -69,7 +69,7 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
                             post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
                                   "username": f.readline().strip(),
                                   "password": f.readline().strip(),
-                                  "value": (FORM_FILE, temp_file.name),
+                                  "value": (FORM_FILE, f.name),
                                   "type": "file"}, multipart=True)
 
     response = loads(json)
@@ -80,19 +80,19 @@ def decryptCaptcha(self, url, get={}, post={}, cookies=False, forceuser=False, i
 
     return result
 
-Hoster.decrypt_captcha = decryptCaptcha
+Hoster.decrypt_captcha = decrypt_captcha
 
 
-def invalidCaptcha(self):
+def invalid_captcha(self):
     log(DEBUG, "Captcha invalid")
 
-Hoster.invalid_captcha = invalidCaptcha
+Hoster.invalid_captcha = invalid_captcha
 
 
-def correctCaptcha(self):
+def correct_captcha(self):
     log(DEBUG, "Captcha correct")
 
-Hoster.correct_captcha = correctCaptcha
+Hoster.correct_captcha = correct_captcha
 
 Hoster.check_for_same_files = noop
 

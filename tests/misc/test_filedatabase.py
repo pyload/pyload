@@ -196,7 +196,7 @@ class TestDatabase(BenchmarkTest):
         try:
             assert f is not None
             assert isinstance(f, FileInfo)
-            self.assert_int(f, ("fid", "status", "size", "media",
+            self.assert_in(f, ("fid", "status", "size", "media",
                                 "fileorder", "added", "package", "owner"))
             assert f.status in range(5)
             assert f.owner == self.owner
@@ -211,7 +211,7 @@ class TestDatabase(BenchmarkTest):
         try:
             assert p is not None
             assert isinstance(p, PackageInfo)
-            self.assert_int(p, ("pid", "root", "added",
+            self.assert_in(p, ("pid", "root", "added",
                                 "status", "packageorder", "owner"))
             assert p.pid in self.pids
             assert p.owner == self.owner
@@ -224,7 +224,7 @@ class TestDatabase(BenchmarkTest):
             print(p)
             raise
 
-    def assert_int(self, obj, list):
+    def assert_in(self, obj, list):
         for attr in list:
             assert isinstance(getattr(obj, attr), int)
 

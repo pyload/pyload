@@ -13,7 +13,7 @@ class BaseApi(Iface):
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
         from pyload import Core
-        from pyload.datatype.user import User
+        from pyload.datatype import User
         assert isinstance(core, Core)
         assert issubclass(BaseApi, Iface)
         self.pyload = core

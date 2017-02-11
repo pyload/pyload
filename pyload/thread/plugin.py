@@ -15,7 +15,7 @@ from types import MethodType
 from ..setup.system import get_system_info
 
 
-class BaseThread(Thread):
+class PluginThread(Thread):
     """
     Abstract base class for thread types.
     """

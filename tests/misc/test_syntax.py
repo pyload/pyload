@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from os import walk
 from os.path import abspath, dirname, join
-from unittest import TestCase
+from unittest2 import TestCase
 
 # needed to register globals
 from tests.helper import stubs

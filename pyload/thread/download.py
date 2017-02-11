@@ -13,14 +13,14 @@ from pycurl import error
 from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.downloader.hoster import Reconnect, SkipDownload
 from pyload.plugin.request import ResponseException
-from pyload.thread.base import BaseThread
+from pyload.thread import PluginThread
 from pyload.utils.lib.threading import Event
 from queue import Queue
 
 standard_library.install_aliases()
 
 
-class DownloadThread(BaseThread):
+class DownloadThread(PluginThread):
     """
     Thread for downloading files from 'real' hoster plugins.
     """
@@ -29,7 +29,7 @@ class DownloadThread(BaseThread):
         """
         Constructor.
         """
-        BaseThread.__init__(self, manager)
+        PluginThread.__init__(self, manager)
 
         self.is_working = Event()
         self.is_working.clear()

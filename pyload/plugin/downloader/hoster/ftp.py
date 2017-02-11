@@ -10,7 +10,7 @@ from urllib.parse import quote, unquote, urlparse
 from future import standard_library
 
 import pycurl
-from pyload.plugin.hoster import Hoster
+from pyload.plugin.downloader.hoster import Hoster
 
 standard_library.install_aliases()
 

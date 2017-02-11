@@ -6,7 +6,7 @@ import json
 
 from pyload.api import InvalidConfigSection
 from pyload.config.convert import from_string
-from pyload.config.parser import Config
+from pyload.config import Config
 from pyload.utils.lib.collections import OrderedDict
 
 

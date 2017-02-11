@@ -8,7 +8,7 @@ from urllib.parse import unquote, urlparse
 
 from future import standard_library
 
-from pyload.plugin.hoster import Hoster
+from pyload.plugin.downloader.hoster import Hoster
 from pyload.plugin.request import ResponseException
 from pyload.utils import purge
 from pyload.utils.web import purge as webpurge

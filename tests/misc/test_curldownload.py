@@ -3,11 +3,11 @@
 from __future__ import print_function, unicode_literals
 
 from os import stat
-from unittest import TestCase
+from unittest2 import TestCase
 
 from pyload.network.bucket import Bucket
-from pyload.plugins.network.curldownload import CurlDownload
-from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.plugin.network.curldownload import CurlDownload
+from pyload.plugin.network.curlrequest import CurlRequest
 from tests.helper.stubs import Core
 
 
@@ -50,7 +50,7 @@ class TestCurlRequest(TestCase):
         self.assertEqual(len(cookies), len(dl.context))
         for c in cookies:
             k, v = c.strip().split(":")
-            self.assert_int(k, req.cj)
+            self.assertIn(k, req.cj)
 
     def test_attributes(self):
         assert self.dl.size == 0

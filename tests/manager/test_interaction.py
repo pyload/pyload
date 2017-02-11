@@ -3,10 +3,10 @@
 from __future__ import unicode_literals
 
 from builtins import range
-from unittest import TestCase
+from unittest2 import TestCase
 
 from pyload.api import InputType, Interaction
-from pyload.interaction.interactionmanager import InteractionManager
+from pyload.manager import InteractionManager
 from tests.helper.stubs import Core
 
 
@@ -14,7 +14,7 @@ class TestInteractionManager(TestCase):
     ADMIN = None
     USER = 1
 
-    def assertEmpty(self, list1):
+    def assert_empty(self, list1):
         return self.assert_list_equal(list1, [])
 
     @classmethod

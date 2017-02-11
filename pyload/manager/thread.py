@@ -8,8 +8,8 @@ from time import time
 
 from future import standard_library
 
-from pyload.datatype.check import OnlineCheck
-from pyload.thread.info import InfoThread
+from pyload.datatype import OnlineCheck
+from pyload.thread import InfoThread
 from pyload.utils.decorator import lock
 from pyload.utils.lib.threading import RLock
 from pyload.utils.old import to_list

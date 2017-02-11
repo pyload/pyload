@@ -13,7 +13,7 @@ from future import standard_library
 
 from pyload.api import (AddonInfo, AddonService, ServiceDoesNotExist,
                         ServiceException)
-from pyload.thread.addon import AddonThread
+from pyload.thread import AddonThread
 from pyload.utils.decorator import lock
 from pyload.utils.lib.collections import namedtuple
 from pyload.utils.lib.threading import RLock

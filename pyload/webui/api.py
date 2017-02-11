@@ -11,7 +11,7 @@ from bottle import HTTPError, parse_auth, request, response, route
 from future import standard_library
 
 from pyload.api import ExceptionObject
-from pyload.remote.json_converter import BaseEncoder, dumps, loads
+from pyload.remote.jsonconverter import BaseEncoder, dumps, loads
 from pyload.utils import purge
 from pyload.webui.interface import PYLOAD, session
 from pyload.webui.utils import add_json_header, get_user_api, set_session

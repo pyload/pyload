@@ -3,13 +3,13 @@
 from __future__ import unicode_literals
 
 from collections import defaultdict
-from unittest import TestCase
+from unittest2 import TestCase
 
 from nose.tools import raises
 from pyload.api import InvalidConfigSection
-from pyload.config.parser import ConfigParser
+from pyload.config import Config
 from pyload.database import DatabaseBackend
-from pyload.manager.config import ConfigManager
+from pyload.manager import ConfigManager
 from tests.helper.stubs import Core, admin_user, normal_user
 
 admin_user = admin_user.primary if admin_user else None
@@ -25,7 +25,7 @@ class TestConfigManager(TestCase):
         cls.core.db = cls.db
         cls.db.manager = cls.core
         cls.db.manager.status_msg = defaultdict(lambda: "statusmsg")
-        cls.parser = ConfigParser()
+        cls.parser = Config()
         cls.config = ConfigManager(cls.core, cls.parser)
         cls.db.setup()
 
@@ -34,7 +34,7 @@ class TestConfigManager(TestCase):
         # used by some tests, needs to be deleted
         self.config.delete("plugin", admin_user)
 
-    def addConfig(self):
+    def add_config(self):
         self.config.add_config_section("plugin", "Name", "desc", "something",
                                        [("value", "str", "label", "default")])
 

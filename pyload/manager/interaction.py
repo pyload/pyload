@@ -9,7 +9,7 @@ from time import time
 
 from pyload.api import Interaction as IA
 from pyload.api import Input, InputType
-from pyload.datatype.task import InteractionTask
+from pyload.datatype import InteractionTask
 from pyload.utils.check import bitset
 from pyload.utils.decorator import lock
 from pyload.utils.lib.collections import OrderedDict

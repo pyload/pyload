@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from mod_pywebsocket import util
-from pyload.thread.remote import BackendBase
+from pyload.thread import RemoteBackend
 
 
 def get_class_logger(o=None):
@@ -16,7 +16,7 @@ def get_class_logger(o=None):
 util.get_class_logger = get_class_logger
 
 
-class WebSocketBackend(BackendBase):
+class WebSocketBackend(RemoteBackend):
 
     def setup(self, host, port):
 

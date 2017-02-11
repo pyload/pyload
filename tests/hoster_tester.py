@@ -10,8 +10,9 @@ from shutil import move
 from time import time
 
 from nose.tools import nottest
-from pyload.datatype.file import PyFile, status_map
-from pyload.plugins.base import Fail
+from pyload.datatype import PyFile
+from pyload.datatype.file import status_map
+from pyload.plugin import Fail
 from pyload.utils.convert import accumulate
 from pyload.utils.lib.hashlib import md5
 from pyload.utils.old.fs import exists, join, listdir, remove, save_join, stat
@@ -26,7 +27,7 @@ class HosterPluginTester(PluginTester):
     files = {}
 
     def setUp(self):
-        PluginTester.set_up(self)
+        PluginTester.setUp(self)
         for f in self.files:
             if exists(save_join(DL_DIR, f)):
                 remove(save_join(DL_DIR, f))

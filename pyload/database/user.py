@@ -8,7 +8,7 @@ from random import choice
 from string import digits, letters
 
 from pyload.api import UserData
-from pyload.database.backend import DatabaseMethods, async, queue
+from pyload.database import DatabaseMethods, async, queue
 from pyload.utils.lib.hashlib import sha1
 
 alphnum = letters + digits

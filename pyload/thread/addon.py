@@ -6,10 +6,10 @@ from copy import copy
 from traceback import print_exc
 
 from pyload.api import ProgressInfo, ProgressType
-from pyload.thread.base import BaseThread
+from pyload.thread import PluginThread
 
 
-class AddonThread(BaseThread):
+class AddonThread(PluginThread):
     """
     Thread for addons.
     """
@@ -18,7 +18,7 @@ class AddonThread(BaseThread):
         """
         Constructor.
         """
-        BaseThread.__init__(self, m)
+        PluginThread.__init__(self, m)
 
         self.f = function
         self.args = args

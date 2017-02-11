@@ -5,17 +5,17 @@ from __future__ import print_function, unicode_literals
 from builtins import object, str
 
 from nose.tools import raises
-from pyload.config.parser import ConfigParser
+from pyload.config import Config
 from tests.helper.stubs import Core
 
 
-class TestConfigParser(object):
+class TestConfig(object):
 
     @classmethod
     def setUpClass(cls):
         # Only needed to get imports right
         cls.core = Core()
-        cls.config = ConfigParser()
+        cls.config = Config()
 
     def test_dict(self):
 

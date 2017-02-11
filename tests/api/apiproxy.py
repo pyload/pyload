@@ -71,7 +71,7 @@ class ApiProxy(object):
 
 if __name__ == "__main__":
 
-    from pyload.remote.JSONClient import JSONClient
+    from pyload.remote.jsonclient import JSONClient
 
     api = ApiProxy(JSONClient(), "User", "test")
     api.get_server_version()

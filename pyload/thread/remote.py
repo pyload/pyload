@@ -8,7 +8,7 @@ from traceback import print_exc
 from pyload.utils.lib.threading import Event, Thread
 
 
-class BackendBase(Thread):
+class RemoteBackend(Thread):
 
     def __init__(self, manager):
         Thread.__init__(self)

@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from builtins import range
 from random import choice
-from unittest import TestCase
+from unittest2 import TestCase
 
 from pyload.core import Core
 from tests.api.apitester import ApiTester
@@ -23,7 +23,6 @@ class TestAPI(TestCase):
         from tests.api.test_noargs import TestNoArgs
 
         cls.core = Core()
-        cls.core.start(False, False, True)
         for Test in (TestNoArgs,):
             t = Test()
             t.enable_json()

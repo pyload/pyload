@@ -10,7 +10,7 @@ from future import standard_library
 from mod_pywebsocket.msgutil import send_message
 from mod_pywebsocket.util import get_class_logger
 from pyload.api import UserData
-from pyload.remote.json_converter import dumps, loads
+from pyload.remote.jsonconverter import dumps, loads
 
 standard_library.install_aliases()
 

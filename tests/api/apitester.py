@@ -4,8 +4,8 @@ from __future__ import absolute_import, unicode_literals
 
 from builtins import object
 
-from pyload.remote.JSONClient import JSONClient
-from pyload.remote.WSClient import WSClient
+from pyload.remote.jsonclient import JSONClient
+from pyload.remote.wsclient import WSClient
 from tests.api.apiproxy import ApiProxy
 from tests.helper.config import webaddress, wsaddress
 
@@ -36,8 +36,8 @@ class ApiTester(object):
     def set_api(self, api):
         self.api = api
 
-    def enableJSON(self):
+    def enable_json(self):
         self.api = ApiProxy(JSONClient(webaddress))
 
-    def enableWS(self):
+    def enable_ws(self):
         self.api = ApiProxy(WSClient(wsaddress))

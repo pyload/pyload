@@ -2,9 +2,9 @@
 
 from __future__ import unicode_literals
 
-from unittest import TestCase
+from unittest2 import TestCase
 
-from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.plugin.network.curlrequest import CurlRequest
 from tests.helper.stubs import Core
 
 
@@ -31,11 +31,11 @@ class TestCurlRequest(TestCase):
         cookies = dict(c.strip().split(":") for c in self.req.load(
             self.cookie_url + "/cookies.php").splitlines())
         for k, v in cookies.items():
-            self.assert_int(k, self.req.cj)
+            self.assertIn(k, self.req.cj)
             self.assertEqual(v, self.req.cj[k].value)
 
         for c in self.req.cj:
-            self.assert_int(c, cookies)
+            self.assertIn(c, cookies)
 
         cookies = self.req.load(
             self.cookie_url + "/cookies.php", cookies=False)

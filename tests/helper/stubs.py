@@ -13,10 +13,10 @@ from traceback import format_exc
 from future import standard_library
 
 from pyload.api import Role
-from pyload.config.parser import ConfigParser
+from pyload.config import Config
 from pyload.core import Core
-from pyload.datatype.user import User
-from pyload.thread.base import BaseThread
+from pyload.datatype import User
+from pyload.thread import PluginThread
 
 standard_library.install_aliases()
 
@@ -39,7 +39,7 @@ class NoopClass(object):
         return noop
 
 
-ConfigParser.save = noop
+Config.save = noop
 
 
 class LogStub(object):
@@ -60,8 +60,7 @@ class LogStub(object):
 class TestCore(Core):
 
     def __init__(self):
-        super(TestCore, self).__init__()
-        self.start(tests=True)
+        Core.__init__(self)
 
         self.db.get_user_data = self.get_user_data
         self.log = LogStub()
@@ -76,7 +75,7 @@ class TestCore(Core):
     def print_exc(self, force=False):
         log(ERROR, format_exc())
 
-    def getUserData(self, uid):
+    def get_user_data(self, uid):
         if uid == 0:
             return admin_user
         elif uid == 1:
@@ -85,18 +84,18 @@ class TestCore(Core):
         return other_user
 
 
-class Thread(BaseThread):
+class Thread(PluginThread):
 
     def __init__(self, core):
-        BaseThread.__init__(self, core)
+        PluginThread.__init__(self, core)
         self.plugin = None
 
-    def writeDebugReport(self):
+    def write_debug_report(self):
         if hasattr(self, "pyfile"):
-            dump = BaseThread.write_debug_report(
+            dump = PluginThread.write_debug_report(
                 self, self.plugin.__name__, pyfile=self.pyfile)
         else:
-            dump = BaseThread.write_debug_report(
+            dump = PluginThread.write_debug_report(
                 self, self.plugin.__name__, plugin=self.plugin)
 
         return dump

@@ -8,18 +8,18 @@ from pyload.api import DownloadStatus as DS
 from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.plugin import Abort, Fail, Retry
 from pyload.plugin.downloader.crypter import Package
-from pyload.thread.base import BaseThread
+from pyload.thread import PluginThread
 from pyload.utils.convert import accumulate
 from pyload.utils.purge import uniqify
 
 
-class DecrypterThread(BaseThread):
+class DecrypterThread(PluginThread):
     """
     Thread for decrypting.
     """
 
     def __init__(self, manager, data, fid, pid, owner):
-        BaseThread.__init__(self, manager, owner)
+        PluginThread.__init__(self, manager, owner)
         # [...(url, plugin)...]
         self.data = data
         self.fid = fid

@@ -14,7 +14,7 @@ from os import makedirs
 from os.path import exists, join
 from select import select
 
-from pyload.plugin.hoster import Hoster
+from pyload.plugin.downloader.hoster import Hoster
 from pyload.utils.old import save_join
 
 

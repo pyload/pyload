@@ -44,7 +44,7 @@ state_map[DownloadState.Unfinished] = frozenset(
 def state_string(state):
     return ",".join(str(x) for x in state_map[state])
 
-from pyload.datatype.user import User
+from pyload.datatype import User
 
 
 class Api(Iface):

@@ -12,7 +12,7 @@ from future import standard_library
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from cgi import FieldStorage
-from pyload.thread.remote import BackendBase
+from pyload.thread import RemoteBackend
 
 standard_library.install_aliases()
 
@@ -29,7 +29,7 @@ except ImportError:
 core = None
 
 
-class ClickAndLoadBackend(BackendBase):
+class ClickAndLoadBackend(RemoteBackend):
 
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)

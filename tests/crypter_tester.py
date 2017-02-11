@@ -6,7 +6,7 @@ from logging import DEBUG, log
 from os.path import dirname, join
 
 from nose.tools import nottest
-from pyload.plugins.base import Fail
+from pyload.plugin import Fail
 from pyload.utils.convert import accumulate
 from pyload.utils.old import to_int
 from tests.helper.plugintester import PluginTester

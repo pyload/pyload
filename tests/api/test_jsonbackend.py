@@ -10,7 +10,7 @@ from requests.auth import HTTPBasicAuth
 
 from nose.tools import assertEqual, raises
 from pyload.remote.apitypes import Forbidden
-from pyload.remote.JSONClient import JSONClient
+from pyload.remote.jsonclient import JSONClient
 from tests.helper.config import credentials, webaddress
 
 

@@ -23,7 +23,7 @@ import urllib.request
 
 from future import standard_library
 
-from pyload.plugin.crypter import Crypter
+from pyload.plugin.downloader.crypter import Crypter
 
 standard_library.install_aliases()
 

@@ -6,7 +6,7 @@ from builtins import object
 
 from nose.tools import raises
 from pyload.remote.apitypes import Forbidden
-from pyload.remote.WSClient import WSClient
+from pyload.remote.wsclient import WSClient
 from tests.helper.config import credentials, wsaddress
 
 

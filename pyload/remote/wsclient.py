@@ -8,7 +8,7 @@ from future import standard_library
 from http.client import FORBIDDEN, UNAUTHORIZED
 
 from pyload.remote.apitypes import Forbidden, Unauthorized
-from pyload.remote.json_converter import dumps, loads
+from pyload.remote.jsonconverter import dumps, loads
 from websocket import create_connection
 
 standard_library.install_aliases()

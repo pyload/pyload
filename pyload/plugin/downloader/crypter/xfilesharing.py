@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import re
 
-from pyload.plugin.crypter import Crypter, Package
+from pyload.plugin.downloader.crypter import Crypter, Package
 
 
 class XfilesharingProFolder(Crypter):
