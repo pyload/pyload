@@ -10,7 +10,7 @@ define([
   'backbone',
   'handlebars',
   'utils/animations',
-  'utils/lazyRequire',
+  'utils/lazyrequire',
   'utils/dialogs',
   'marionette',
   'bootstrap',

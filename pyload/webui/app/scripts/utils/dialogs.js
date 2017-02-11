@@ -1,5 +1,5 @@
 // Loads all helper and set own handlebars rules
-define(['jquery', 'underscore', 'views/abstract/modalView'], function($, _, Modal) {
+define(['jquery', 'underscore', 'views/abstract/modalview'], function($, _, Modal) {
   'use strict';
 
   // Shows the confirm dialog for given context

@@ -5,15 +5,15 @@ define([
   'underscore',
 
   // Views
-  'views/headerView',
+  'views/headerview',
   'hbs!tpl/header/blank',
-  'views/notificationView',
-  'views/dashboard/dashboardView',
-  'views/dashboard/selectionView',
-  'views/dashboard/filterView',
-  'views/loginView',
-  'views/settings/settingsView',
-  'views/accounts/accountListView'
+  'views/notificationview',
+  'views/dashboard/dashboardview',
+  'views/dashboard/selectionview',
+  'views/dashboard/filterview',
+  'views/loginview',
+  'views/settings/settingsview',
+  'views/accounts/accountlistview'
 ], function(
   App, Backbone, $, _, HeaderView, blankHeader, NotificationView, DashboardView, SelectionView, FilterView, LoginView, SettingsView, AccountListView) {
   'use strict';

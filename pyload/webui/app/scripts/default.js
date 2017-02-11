@@ -1,5 +1,5 @@
 define('default', ['require', 'backbone', 'jquery', 'app', 'router',
-  'models/UserSession', 'models/addon_handler', 'collections/ProgressList'],
+  'models/usersession', 'models/addon_handler', 'collections/progresslist'],
   function(require, Backbone, $, App, Router, UserSession, addon_handler, ProgressList) {
     'use strict';
 

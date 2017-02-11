@@ -8,7 +8,7 @@ define([
   'app',
 
   // Views
-  'views/setup/setupView'
+  'views/setup/setupview'
 ],
   function(Backbone, Marionette, App, SetupView) {
     'use strict';
