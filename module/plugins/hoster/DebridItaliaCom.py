@@ -8,7 +8,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class DebridItaliaCom(MultiHoster):
     __name__    = "DebridItaliaCom"
     __type__    = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__  = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?debriditalia\.com/dl/\d+'
@@ -36,11 +36,12 @@ class DebridItaliaCom(MultiHoster):
     def handle_premium(self, pyfile):
         self.data = self.api_response("generate", link=pyfile.url, u=self.account.user, p=self.account.info['login']['password'])
 
-        if "ERROR:" not in self.data:
+        m = re.search(r'ERROR:(.*)', self.data)
+        if m is None:
             self.link = self.data
 
         else:
-            error = re.search(r'ERROR:(.*)', self.data).group(1).strip()
+            error = m.group(1).strip()
 
             if error in ("not_available", "not_supported"):
                 self.offline()
