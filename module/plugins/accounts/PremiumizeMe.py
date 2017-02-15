@@ -7,7 +7,7 @@ from module.plugins.internal.misc import json
 class PremiumizeMe(MultiAccount):
     __name__    = "PremiumizeMe"
     __type__    = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -19,7 +19,7 @@ class PremiumizeMe(MultiAccount):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com"  ),
                        ("GammaC0de"      , "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://api.premiumize.me/pm-api/v1.php"
+    API_URL = "http://api.premiumize.me/pm-api/v1.php"  #@TODO: Revert to `https` in 0.4.10
 
 
     def api_respond(self, method, user, password, **kwargs):

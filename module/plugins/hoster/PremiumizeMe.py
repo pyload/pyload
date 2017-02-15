@@ -7,7 +7,7 @@ from module.plugins.internal.misc import json
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -23,7 +23,7 @@ class PremiumizeMe(MultiHoster):
     __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com"  ),
                        ("GammaC0de"      , "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://api.premiumize.me/pm-api/v1.php"
+    API_URL = "http://api.premiumize.me/pm-api/v1.php"  #@TODO: Revert to `https` in 0.4.10
 
 
     def api_respond(self, method, user, password, **kwargs):
