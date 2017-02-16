@@ -33,7 +33,7 @@ class AddonManager(object):
     def __init__(self, core):
         self.pyload = core
 
-        builtins.ADDONMANAGER = self  # needed to let addons register themselves
+        builtins.ADDONMANAGER = self  #: needed to let addons register themselves
 
         # TODO: multiuser addons
 

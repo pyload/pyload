@@ -21,7 +21,7 @@ try:
 except ImportError:
     pass
 try:
-    from Cryptodome.Cipher import AES
+    from Crypto.Cipher import AES
 except ImportError:
     pass
 

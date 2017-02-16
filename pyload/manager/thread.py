@@ -10,9 +10,9 @@ from future import standard_library
 
 from pyload.datatype import OnlineCheck
 from pyload.thread import InfoThread
+from pyload.utils.convert import to_list
 from pyload.utils.decorator import lock
 from pyload.utils.lib.threading import RLock
-from pyload.utils.old import to_list
 
 standard_library.install_aliases()
 
@@ -28,7 +28,7 @@ class ThreadManager(object):
         """
         self.pyload = core
 
-        self.thread = []  # thread list
+        self.thread = []  #: thread list
 
         self.lock = RLock()
 

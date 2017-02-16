@@ -3,14 +3,16 @@
 
 from __future__ import print_function, unicode_literals
 
+import io
+import os
+import shutil
 from builtins import object, range, str
-from shutil import move
 from traceback import print_exc
 
 from future import standard_library
 
 from pyload.utils.lib.threading import Event, Thread
-from pyload.utils.old.fs import chmod, exists, remove
+from pyload.utils.path import remove
 from queue import Queue
 
 standard_library.install_aliases()
@@ -85,13 +87,13 @@ class DatabaseJob(object):
     #        self.frame = inspect.currentframe()
 
     def __repr__(self):
-        from os.path import basename
+        import os
 
         frame = self.frame.f_back
         output = ""
         for i in range(5):
             output += "\t{}:{}, {}\n".format(
-                basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+                os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
         del self.frame
@@ -128,7 +130,7 @@ class DatabaseBackend(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.pyload = core
-        self.manager = None  # set later
+        self.manager = None  #: set later
         self.error = None
         self.running = Event()
 
@@ -150,7 +152,7 @@ class DatabaseBackend(Thread):
         version = self._check_version()
 
         self.conn = sqlite3.connect(self.DB_FILE)
-        chmod(self.DB_FILE, 0o600)
+        os.chmod(self.DB_FILE, 0o600)
 
         self.c = self.conn.cursor()
 
@@ -169,12 +171,12 @@ class DatabaseBackend(Thread):
                     print("Database was deleted due to incompatible version")
 
                 remove(self.VERSION_FILE)
-                move(self.DB_FILE, self.DB_FILE + ".backup")
-                with open(self.VERSION_FILE, "wb") as f:
+                shutil.move(self.DB_FILE, self.DB_FILE + ".backup")
+                with io.open(self.VERSION_FILE, "wb") as f:
                     f.write(str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
-                chmod(self.DB_FILE, 0o600)
+                os.chmod(self.DB_FILE, 0o600)
                 self.c = self.conn.cursor()
 
         self._create_tables()
@@ -208,12 +210,12 @@ class DatabaseBackend(Thread):
         """
         Get db version.
         """
-        if not exists(self.VERSION_FILE):
-            with open(self.VERSION_FILE, "wb") as f:
+        if not os.path.exists(self.VERSION_FILE):
+            with io.open(self.VERSION_FILE, "wb") as f:
                 f.write(str(DB_VERSION))
             return
 
-        with open(self.VERSION_FILE, "rb") as f:
+        with io.open(self.VERSION_FILE, "rb") as f:
             v = int(f.read().strip())
 
         return v
@@ -243,11 +245,11 @@ class DatabaseBackend(Thread):
             '"site" TEXT DEFAULT "" NOT NULL, '
             '"comment" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT DEFAULT "" NOT NULL, '
-            '"added" INTEGER DEFAULT 0 NOT NULL,'  # set by trigger
+            '"added" INTEGER DEFAULT 0 NOT NULL,'  #: set by trigger
             '"status" INTEGER DEFAULT 0 NOT NULL,'
             '"tags" TEXT DEFAULT "" NOT NULL,'
             '"shared" INTEGER DEFAULT 0 NOT NULL,'
-            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  # incremented by trigger
+            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  #: incremented by trigger
             '"root" INTEGER DEFAULT -1 NOT NULL, '
             '"owner" INTEGER NOT NULL, '
             'FOREIGN KEY(owner) REFERENCES users(uid), '
@@ -344,7 +346,7 @@ class DatabaseBackend(Thread):
             '"dlquota" TEXT DEFAULT "" NOT NULL, '
             '"hddquota" INTEGER DEFAULT -1 NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL, '
-            '"user" INTEGER DEFAULT -1 NOT NULL, '  # set by trigger to self
+            '"user" INTEGER DEFAULT -1 NOT NULL, '  #: set by trigger to self
             'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )

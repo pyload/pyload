@@ -93,7 +93,7 @@ class UserMethods(DatabaseMethods):
         else:
             return None
 
-    @queue  # TODO
+    @queue
     def change_password(self, user, oldpw, newpw):
         self.c.execute(
             'SELECT rowid, name, password FROM users WHERE name=?', (user,))

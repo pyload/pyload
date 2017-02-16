@@ -14,7 +14,6 @@ from pyload.network.cookie import CookieJar
 from pyload.network.request import get_url
 from pyload.plugin.downloader.hoster import Hoster
 from pyload.utils import parse
-from pyload.utils.old import fixup
 from pyload.utils.web import purge as webpurge
 
 standard_library.install_aliases()
@@ -67,16 +66,16 @@ def parse_html_form(attr_str, html, input_names=None):
                         continue
                     elif hasattr(val, "search") and re.match(val, inputs[key]):
                         continue
-                    break  # attibute value does not match
+                    break  #: attibute value does not match
                 else:
-                    break  # attibute name does not match
+                    break  #: attibute name does not match
             else:
-                return action, inputs  # passed attribute check
+                return action, inputs  #: passed attribute check
         else:
             # no attribute check
             return action, inputs
 
-    return {}, None  # no matching form found
+    return {}, None  #: no matching form found
 
 
 def parse_file_info(self, url='', html=''):
@@ -182,13 +181,13 @@ class SimpleHoster(Hoster):
     You can also define a PREMIUM_ONLY_PATTERN to detect links that can be downloaded only with a premium account
     """
     FILE_SIZE_REPLACEMENTS = []
-    FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
+    # FILE_NAME_REPLACEMENTS = [("&#?\w+;", fixup)]
     FILE_URL_REPLACEMENTS = []
 
     # Set to True or encoding name if encoding in http header is not correct
     SH_BROKEN_ENCODING = False
-    SH_COOKIES = True  # or False or list of tuples [(domain, name, value)]
-    SH_CHECK_TRAFFIC = False  # True = force check traffic left for a premium account
+    SH_COOKIES = True  #: or False or list of tuples [(domain, name, value)]
+    SH_CHECK_TRAFFIC = False  #: True = force check traffic left for a premium account
 
     def init(self):
         self.file_info = {}
@@ -208,7 +207,7 @@ class SimpleHoster(Hoster):
             pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(
             self.PREMIUM_ONLY_PATTERN, self.html)
-        if not premium_only:  # Usually premium only pages does not show the file information
+        if not premium_only:  #: Usually premium only pages does not show the file information
             self.get_file_info()
 
         if self.premium and (

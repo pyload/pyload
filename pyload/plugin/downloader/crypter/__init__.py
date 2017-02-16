@@ -1,14 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
+import io
 from __future__ import unicode_literals
+
+import io
+
+import os
+
 from builtins import str
 from builtins import object
 from pyload.api import LinkStatus, DownloadStatus as DS
 from pyload.utils.purge import uniqify
-from pyload.utils.old import to_list
+from pyload.utils.convert import to_list
 from pyload.utils.check import hasmethod
-from pyload.utils.old.fs import exists, remove, fs_encode
+from pyload.utils.fs import fs_encode
+from pyload.utils.path import remove
 from pyload.plugin import Base, Retry
 
 
@@ -142,9 +150,9 @@ class Crypter(Base):
         ret = []
 
         for url_or_pack in result:
-            if isinstance(url_or_pack, Package):  # package
+            if isinstance(url_or_pack, Package):  #: package
                 ret.extend(url_or_pack.get_all_urls())
-            elif isinstance(url_or_pack, LinkStatus):  # link
+            elif isinstance(url_or_pack, LinkStatus):  #: link
                 ret.append(url_or_pack.url)
             else:
                 core.log.debug(
@@ -197,7 +205,7 @@ class Crypter(Base):
         :param url: url to decrypt
         :return: See :class:`Crypter` Documentation
         """
-        if url.startswith("http"):  # basic method to redirect
+        if url.startswith("http"):  #: basic method to redirect
             return self.decrypt_file(self.load(url))
         else:
             self.fail(_("Not existing file or unsupported protocol"))
@@ -280,13 +288,13 @@ class Crypter(Base):
             remote = []
             for url in urls:
                 path = None
-                if url.startswith("http"):  # skip urls directly
+                if url.startswith("http"):  #: skip urls directly
                     pass
                 elif url.startswith(self.CONTENT_PREFIX):
                     path = url
-                elif exists(url):
+                elif os.path.exists(url):
                     path = url
-                elif exists(self.pyload.path(url)):
+                elif os.path.exists(self.pyload.path(url)):
                     path = self.pyload.path(url)
 
                 if path:
@@ -295,7 +303,7 @@ class Crypter(Base):
                             content.append(
                                 ("", path[len(self.CONTENT_PREFIX)]))
                         else:
-                            with open(fs_encode(path), "rb") as f:
+                            with io.open(fs_encode(path), "rb") as f:
                                 content.append((f.name, f.read()))
                     except IOError as e:
                         self.log_error(_("IOError"), e.message)

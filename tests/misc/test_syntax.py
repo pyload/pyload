@@ -2,27 +2,26 @@
 
 from __future__ import unicode_literals
 
-from os import walk
-from os.path import abspath, dirname, join
+import os
 
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
 
-PATH = abspath(join(dirname(abspath(__file__)), "..", "..", ""))
+PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ""))
 
 
 class TestSyntax(TestCase):
     pass
 
 
-for path, dirs, files in walk(join(PATH, "pyload")):
+for path, dirs, files in os.walk(os.path.join(PATH, "pyload")):
 
     for f in files:
         if not f.endswith(".py") or f.startswith("__"):
             continue
-        fpath = join(path, f)
-        pack = fpath.replace(PATH, "")[1:-3]  # replace / and  .py
+        fpath = os.path.join(path, f)
+        pack = fpath.replace(PATH, "")[1:-3]  #: replace / and  .py
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)

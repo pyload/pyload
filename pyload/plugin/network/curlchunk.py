@@ -4,15 +4,16 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import codecs
+import io
+import os
 import re
 from builtins import object, range
-from os import fsync, remove, stat
-from os.path import exists
 from time import sleep
 
 import pycurl
 from pyload.plugin.network.curlrequest import CurlRequest
-from pyload.utils.old.fs import fs_decode, fs_encode, safe_filename
+from pyload.utils.fs import fs_decode, fs_encode, safe_filename
+from pyload.utils.path import remove
 from pyload.utils.struct import HeaderDict
 
 
@@ -63,7 +64,7 @@ class ChunkInfo(object):
     @staticmethod
     def load(name):
         fs_name = fs_encode("{}.chunks".format(name))
-        if not exists(fs_name):
+        if not os.path.exists(fs_name):
             raise IOError
         with codecs.open(fs_name, "r", "utf_8") as f:
             name = f.readline()[:-1]
@@ -77,7 +78,7 @@ class ChunkInfo(object):
             ci.loaded = True
             ci.set_size(size)
             while True:
-                if not f.readline():  # skip line
+                if not f.readline():  #: skip line
                     break
                 name = f.readline()[1:-1]
                 range = f.readline()[1:-1]
@@ -92,8 +93,7 @@ class ChunkInfo(object):
 
     def remove(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        if exists(fs_name):
-            remove(fs_name)
+        remove(fs_name)
 
     def get_count(self):
         return len(self.chunks)
@@ -114,8 +114,8 @@ class CurlChunk(CurlRequest):
         self.set_context(*parent.get_context())
 
         self.id = id
-        self.p = parent  # CurlDownload instance
-        self.range = range  # tuple (start, end)
+        self.p = parent  #: CurlDownload instance
+        self.range = range  #: tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -126,14 +126,14 @@ class CurlChunk(CurlRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.header_parsed = False  # indicates if the header has been processed
+        self.header_parsed = False  #: indicates if the header has been processed
         self.headers = HeaderDict()
 
-        self.fp = None  # file handle
+        self.fp = None  #: file handle
 
         self.init_context()
 
-        self.BOMChecked = False  # check and remove byte order mark
+        self.BOMChecked = False  #: check and remove byte order mark
 
         self.rep = None
 
@@ -164,10 +164,10 @@ class CurlChunk(CurlRequest):
 
         fs_name = fs_encode(self.p.info.get_chunk_name(self.id))
         if self.resume:
-            self.fp = open(fs_name, "ab")
+            self.fp = io.open(fs_name, "ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
-                self.arrived = stat(fs_name).st_size
+                self.arrived = os.stat(fs_name).st_size
 
             if self.range:
                 # do nothing if chunk already finished
@@ -189,7 +189,7 @@ class CurlChunk(CurlRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1:  # see above
+                if self.id == len(self.p.info.chunks) - 1:  #: see above
                     range = "{:d}-".format(self.range[0])
                 else:
                     range = "{:d}-{:d}".format(self.range[0],
@@ -198,7 +198,7 @@ class CurlChunk(CurlRequest):
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
 
-            self.fp = open(fs_name, "wb")
+            self.fp = io.open(fs_name, "wb")
 
         return self.c
 
@@ -250,7 +250,7 @@ class CurlChunk(CurlRequest):
             sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  # close if we have enough data
+            return 0  #: close if we have enough data
 
     def parse_header(self):
         """
@@ -296,8 +296,8 @@ class CurlChunk(CurlRequest):
         Flush and close file.
         """
         self.fp.flush()
-        fsync(self.fp.fileno())  # make sure everything was written to disk
-        self.fp.close()  # needs to be closed, or merging chunks will fail
+        os.fsync(self.fp.fileno())  #: make sure everything was written to disk
+        self.fp.close()  #: needs to be closed, or merging chunks will fail
 
     def close(self):
         """

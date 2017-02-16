@@ -5,20 +5,21 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import gettext
+import io
+import os
 import socket
 import sys
 import webbrowser
 from builtins import COREDIR, input, object, str
 from getpass import getpass
-from sys import exit
 from time import time
 
 from future import standard_library
 
 from pyload.api import Role
 from pyload.thread.webserver import WebServer
-from pyload.utils.old import get_console_encoding
-from pyload.utils.old.fs import abspath, exists, join, makedirs
+from pyload.utils.path import makedirs
+from pyload.utils.sys import console_encoding
 
 from .dependencies import deps
 from .system import get_system_info
@@ -59,7 +60,7 @@ class Setup(object):
     def __init__(self, path, config):
         self.path = path
         self.config = config
-        self.stdin_encoding = get_console_encoding(sys.stdin.encoding)
+        self.stdin_encoding = console_encoding(sys.stdin.encoding)
         self.lang = None
         self.db = None
 
@@ -125,7 +126,7 @@ class Setup(object):
 
         print("")
         print(_("Do you want to change the config path? Current is {}").format(
-            abspath("")))
+            os.path.abspath("")))
         print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it"))
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
@@ -235,7 +236,7 @@ class Setup(object):
             _("Activate SSL?"), self.yes, bool=True))
 
     def set_user(self):
-        translation = gettext.translation("setup", join(self.path, "locale"),
+        translation = gettext.translation("setup", os.path.join(self.path, "locale"),
                                           languages=[self.config.get('general', 'language'), "en"], fallback=True)
         translation.install(True)
 
@@ -304,18 +305,18 @@ class Setup(object):
 
     def conf_path(self, trans=False):
         if trans:
-            translation = gettext.translation("setup", join(self.path, "locale"),
+            translation = gettext.translation("setup", os.path.join(self.path, "locale"),
                                               languages=[self.config.get('general', 'language'), "en"], fallback=True)
             translation.install(True)
 
         print(
             _("Setting new configpath, current configuration will not be transferred!"))
-        path = self.ask(_("Config path"), abspath(""))
+        path = self.ask(_("Config path"), os.path.abspath(""))
         try:
-            path = join(COREDIR, path)
-            if not exists(path):
+            path = os.path.join(COREDIR, path)
+            if not os.path.exists(path):
                 makedirs(path)
-            with open(join(COREDIR, "pyload", "config", "configdir"), "wb") as f:
+            with io.open(os.path.join(COREDIR, "pyload", "config", "configdir"), "wb") as f:
                 f.write(path)
             print(
                 _("Config path changed, setup will now close, please restart to go on"))
@@ -330,7 +331,7 @@ class Setup(object):
             "general", "language").type.split(";")
         self.lang = self.ask(
             u"Choose your Language / Wähle deine Sprache", "en", langs)
-        translation = gettext.translation("setup", join(
+        translation = gettext.translation("setup", os.path.join(
             self.path, "locale"), languages=[self.lang, "en"], fallback=True)
         translation.install(True)
 
@@ -409,5 +410,5 @@ class Setup(object):
 
 
 # if __name__ == "__main__":
-    # test = Setup(join(abspath(dirname(__file__)), ".."), None)
+    # test = Setup(os.path.join(os.path.abspath(dirname(__file__)), ".."), None)
     # test.start()

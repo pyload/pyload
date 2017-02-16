@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 
-import codecs
+import io
 import os
 import shutil
 from os.path import *
@@ -97,19 +97,19 @@ def filesize(path):
     return os.stat(path).st_size
 
 
-def open(path, *args, **kwargs):
-    return codecs.open(format.path(path), *args, **kwargs)
+# def open(path, *args, **kwargs):
+    # return io.open(format.path(path), *args, **kwargs)
 
 
 def flush(path):
     if not exists(path):
         return
     if isfile(path):
-        with open(path) as f:
+        with io.open(path) as f:
             f.flush()
         os.fsync(f.fileno())
     elif isdir(path):
-        remove(os.listdir(path), trash=False)
+        remove(os.listdir(path))
     else:
         raise TypeError(path)
 
@@ -142,8 +142,8 @@ def isexec(path):
 
 def merge(dstfile, srcfile):
     buf = bufsize(srcfile)
-    with open(dstfile, 'ab') as df:
-        with open(srcfile, 'rb') as sf:
+    with io.open(dstfile, 'ab') as df:
+        with io.open(srcfile, 'rb') as sf:
             for chunk in iter(lambda: sf.read(buf), b''):
                 df.write(chunk)
 
@@ -152,12 +152,12 @@ def mkfile(path, opened=None):
     if exists(path):
         raise FileExistsError(path)
     mode = 'wb'
-    f = open(path, mode)
+    f = io.open(path, mode)
     if not opened:
         f.close()
     elif opened != mode:
         f.close()
-        f = open(path, opened)
+        f = io.open(path, opened)
     return f
 
 
@@ -171,10 +171,7 @@ def makedirs(path, mode=0o700, exist_ok=True):
 
 def makefile(path, opened=None, dirmode=0o700):
     dirname, basename = os.path.split(path)
-    try:
-        os.makedirs(dirname, dirmode)
-    except OSError:
-        pass
+    makedirs(dirname, dirmode)
     return mkfile(basename, opened)
 
 
@@ -245,7 +242,7 @@ def mtime(path):
     return max(0, 0, *mtimes)
 
 
-def remove(path, trash=True, ignore_errors=False):
+def remove(path, trash=False, ignore_errors=False):
     if not exists(path):
         return
     if trash and ismodule('send2trash'):

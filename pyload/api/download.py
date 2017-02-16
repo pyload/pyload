@@ -2,12 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
+import os
 from builtins import str
-from os.path import isabs
 
 from pyload.api import Api, Permission, Role, require_perm
 from pyload.api.base import BaseApi
-from pyload.utils.old.fs import join
 
 
 class DownloadApi(BaseApi):
@@ -37,7 +37,7 @@ class DownloadApi(BaseApi):
         :param paused: No downloads will be started when True
         :return: pid of newly created package
         """
-        if isabs(folder):
+        if os.path.isabs(folder):
             folder = folder.replace("/", "_")
 
         folder = folder.replace(
@@ -111,9 +111,9 @@ class DownloadApi(BaseApi):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        file = join(self.pyload.config.get(
+        file = os.path.join(self.pyload.config.get(
             'general', 'storage_folder'), "tmp_{}".format(filename))
-        with open(file, "wb") as f:
+        with io.open(file, "wb") as f:
             f.write(str(data))
         return self.add_package(f.name, [f.name])
 

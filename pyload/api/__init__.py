@@ -31,10 +31,10 @@ urlmatcher = re.compile(
 state_map = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
-    DownloadState.Unfinished: None,  # set below
+    DownloadState.Unfinished: None,  #: set below
     DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
                                      DownloadStatus.NotPossible, DownloadStatus.FileMismatch)),
-    DownloadState.Unmanaged: None,  # TODO
+    DownloadState.Unmanaged: None,
 }
 
 state_map[DownloadState.Unfinished] = frozenset(
@@ -60,8 +60,8 @@ class Api(Iface):
     These can be configured via web interface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission
     """
-    EXTERNAL = Iface  # let the json api know which methods are external
-    EXTEND = False  # only extendable when set too true
+    EXTERNAL = Iface  #: let the json api know which methods are external
+    EXTEND = False  #: only extendable when set too true
 
     def __init__(self, core):
         self.pyload = core

@@ -3,6 +3,7 @@
 from __future__ import division, print_function, unicode_literals
 
 import fnmatch
+import io
 import os
 import re
 import shutil
@@ -192,9 +193,9 @@ def upload_translations(options):
             shutil.copy(f, os.path.join(tmp, 'pyLoad'))
 
     config = os.path.join(tmp, 'crowdin.yaml')
-    content = open(config, 'rb').read()
+    content = io.open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
+    f = io.open(config, 'wb')
     f.write(content)
     f.close()
 
@@ -220,9 +221,9 @@ def download_translations(options):
             shutil.copy(f, os.path.join(tmp, 'pyLoad'))
 
     config = os.path.join(tmp, 'crowdin.yaml')
-    content = open(config, 'rb').read()
+    content = io.open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
-    f = open(config, 'wb')
+    f = io.open(config, 'wb')
     f.write(content)
     f.close()
 
@@ -298,7 +299,7 @@ def replace_module_imports():
     for root, dirnames, filenames in os.walk('pyload/plugins'):
         for filename in fnmatch.filter(filenames, '*.py'):
             path = os.path.join(root, filename)
-            f = open(path, 'r')
+            f = io.open(path, 'r')
             content = f.read()
             f.close()
             for rule in module_replace:
@@ -310,7 +311,7 @@ def replace_module_imports():
                     'self.accounts[user]["password"]', 'self.password')
                 content = content.replace(
                     "self.accounts[user]['password']", 'self.password')
-            f = open(path, 'w')
+            f = io.open(path, 'w')
             f.write(content)
             f.close()
 
@@ -337,7 +338,7 @@ def walk_trans(path, excludes, endings=[".py"]):
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     print("Generate {}.pot".format(domain))
 
-    f = open("includes.txt", "wb")
+    f = io.open("includes.txt", "wb")
     if includes:
         f.write(includes)
 
@@ -350,13 +351,13 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
           "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
-    with open("{}.po".format(domain), "rb") as f:
+    with io.open("{}.po".format(domain), "rb") as f:
         content = f.read()
 
     path("{}.po".format(domain)).remove()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
-    with open("locale/{}.pot".format(domain), "wb") as f:
+    with io.open("locale/{}.pot".format(domain), "wb") as f:
         f.write(content)
 
 
@@ -365,7 +366,7 @@ def makehtml(domain, p):
 
     pot = path("locale") / "{}.pot".format(domain)
 
-    with open(pot, 'rb') as f:
+    with io.open(pot, 'rb') as f:
         content = f.readlines()
 
     msgids = {}
@@ -383,7 +384,7 @@ def makehtml(domain, p):
     for f in p.walkfiles():
         if not f.endswith("html"):
             continue
-        with open(f, "rb") as html:
+        with io.open(f, "rb") as html:
             for i, line in enumerate(html.readlines()):
                 key = None
                 nmessage = plural.search(line)
@@ -413,7 +414,7 @@ def makehtml(domain, p):
                     content.insert(msgids[key], "#: {}:{:d}\n".format(f, i))
                     msgids[key] += 1
 
-        with open(pot, 'wb') as f:
+        with io.open(pot, 'wb') as f:
             f.writelines(content)
 
     print("Parsed html files")

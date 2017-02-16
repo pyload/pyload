@@ -22,7 +22,6 @@ from future import standard_library
 
 from pyload.core import Core
 from pyload.utils import convert, path, sys
-from pyload.utils.check import lookup
 
 standard_library.install_aliases()
 
@@ -49,7 +48,9 @@ if 'pyload' in sys.modules:
 sys.path.append(PACKDIR)
 sys.path.append(USERDIR)
 
-writer = codecs.getwriter(lookup(sys.stdout.encoding))
+# import codecs
+# codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+writer = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))
 sys.stdout = writer(sys.stdout, errors="replace")
 
 

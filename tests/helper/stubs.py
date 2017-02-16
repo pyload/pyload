@@ -3,10 +3,10 @@
 from __future__ import unicode_literals
 
 import builtins
+import os
 import sys
 from builtins import object
 from logging import DEBUG, ERROR, INFO, WARN, log
-from os.path import join
 from time import strftime
 from traceback import format_exc
 
@@ -23,7 +23,7 @@ standard_library.install_aliases()
 
 # from pyload.inithomedir import init_dir
 
-# init_dir(join("tests", "config"), True)
+# init_dir(os.path.join("tests", "config"), True)
 
 
 # Do nothing
@@ -114,4 +114,4 @@ for name, m in sys.modules.items():
     if not name.startswith("tests") or not m or not hasattr(m, "__path__"):
         continue
 
-    m.__path__[0] = join("..", "..", m.__path__[0])
+    m.__path__[0] = os.path.join("..", "..", m.__path__[0])

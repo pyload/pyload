@@ -38,6 +38,7 @@
 from __future__ import unicode_literals
 
 import base64
+import io
 import logging
 import os
 import re
@@ -271,7 +272,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
         dispatcher: dispatch.Dispatcher instance
         websock_handler_map_file: alias map file
     """
-    with open(websock_handlers_map_file) as f:
+    with io.open(websock_handlers_map_file) as f:
         for line in f:
             if line[0] == '#' or line.isspace():
                 continue
@@ -599,7 +600,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
                 self, request, client_address, server)
         except socket.error as e:
             # Broken pipe, let it pass
-            errno = e.args[0]  # errno on py < 2.6
+            errno = e.args[0]  #: errno on py < 2.6
             if errno != 32:
                 raise
             self._logger.debug("WS: Broken pipe")

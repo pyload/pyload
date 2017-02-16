@@ -62,6 +62,12 @@ def call_cmd(command, *args, **kwargs):
         return returncode, stdoutdata, stderrdata
 
 
+def console_encoding(enc):
+    if os.name != 'nt':
+        return 'utf-8'
+    return "cp850" if enc == "cp65001" else enc  #: aka UTF-8 under Windows
+
+
 def get_info():
     """
     Returns system information as dict.

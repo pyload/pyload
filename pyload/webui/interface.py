@@ -4,21 +4,20 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import os
 import sys
-from os.path import abspath, dirname, exists, join
 
 import bottle
 # Middlewares
 from beaker.middleware import SessionMiddleware
-from bottle import app, run
 
 from pyload.thread import webserver as ServerThread
 from pyload.utils.web.middleware import PrefixMiddleware, StripPathMiddleware
 # Last routes to register
 from pyload.webui import api, cnl, pyload, setup
 
-APP_DIR = abspath(join(dirname(__file__), 'app'))
-PYLOAD_DIR = abspath(join(APP_DIR, '..', '..', '..'))
+APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app'))
+PYLOAD_DIR = os.path.abspath(os.path.join(APP_DIR, '..', '..', '..'))
 
 
 SETUP = None
@@ -48,9 +47,9 @@ if PREFIX:
 UNAVAILALBE = True
 
 # webui build is available
-if exists(join(APP_DIR, "modules")):
+if os.path.exists(os.path.join(APP_DIR, "modules")):
     UNAVAILALBE = False
-elif exists(join(APP_DIR, "dist", "index.html")):
+elif os.path.exists(os.path.join(APP_DIR, "dist", "index.html")):
     # APP_PATH = "dist"
     UNAVAILALBE = False
 
@@ -66,7 +65,7 @@ session_opts = {
     'session.auto': False
 }
 
-session = SessionMiddleware(app(), session_opts)
+session = SessionMiddleware(bottle.app(), session_opts)
 web = StripPathMiddleware(session)
 
 if PREFIX:
@@ -77,8 +76,8 @@ if PREFIX:
 
 
 def run_server(host, port, server):
-    run(app=web, host=host, port=port, quiet=True, server=server)
+    bottle.run(app=web, host=host, port=port, quiet=True, server=server)
 
 
 if __name__ == "__main__":
-    run(app=web, port=8010)
+    bottle.run(app=web, port=8010)

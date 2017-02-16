@@ -51,7 +51,7 @@ class ApiProxy(object):
                 for attr, atype in zip(result.__slots__, classes[
                                        result.__name__]):
                     self.assert_type(getattr(result, attr), atype)
-            else:  # simple object
+            else:  #: simple object
                 assert isinstance(result, type)
         except AssertionError:
             print("Assertion for {} as {} failed".format(result, type))

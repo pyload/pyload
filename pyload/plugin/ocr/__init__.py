@@ -18,18 +18,27 @@
 #
 ###
 from __future__ import with_statement
+
+import io
 from __future__ import print_function
+
+import io
 from __future__ import unicode_literals
+
+import io
 from __future__ import division
+
+import io
 from builtins import range
 from builtins import object
 from builtins import COREDIR
 import os
-from os.path import join
-from os.path import abspath
+import os
+import os
 import logging
 from pyload.utils.lib.subprocess import PIPE, Popen
-#import tempfile
+from pyload.utils.path import remove
+# import tempfile
 
 import Image
 
@@ -69,32 +78,32 @@ class OCR(object):
 
     def run_tesser(self, subset=False, digits=True,
                    lowercase=True, uppercase=True):
-        #self.log.debug("create tmp tif")
+        # self.log.debug("create tmp tif")
 
-        #tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = open(join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
+        # tmp = tempfile.NamedTemporaryFile(suffix=".tif")
+        tmp = io.open(os.path.join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
         tmp.close()
-        #self.log.debug("create tmp txt")
-        #tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmp_txt = open(
-            join("tmp", "tmp_txt_{}.txt".format(self.__name__)), "wb")
+        # self.log.debug("create tmp txt")
+        # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
+        tmp_txt = io.open(
+            os.path.join("tmp", "tmp_txt_{}.txt".format(self.__name__)), "wb")
         tmp_txt.close()
 
         self.log.debug("save tiff")
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == 'nt':
-            tessparams = [join(COREDIR, "tesseract", "tesseract.exe")]
+            tessparams = [os.path.join(COREDIR, "tesseract", "tesseract.exe")]
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend([abspath(tmp.name), abspath(
+        tessparams.extend([os.path.abspath(tmp.name), os.path.abspath(
             tmp_txt.name).replace(".txt", "")])
 
         if subset and (digits or lowercase or uppercase):
-            #self.log.debug("create temp subset config")
-            #tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(join("tmp", "tmp_sub_{}.subset".format(self.__name__)), "wb") as tmp_sub:
+            # self.log.debug("create temp subset config")
+            # tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
+            with io.open(os.path.join("tmp", "tmp_sub_{}.subset".format(self.__name__)), "wb") as tmp_sub:
                 tmp_sub.write("tessedit_char_whitelist ")
                 if digits:
                     tmp_sub.write("0123456789")
@@ -104,24 +113,24 @@ class OCR(object):
                     tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
                 tmp_sub.write("\n")
                 tessparams.append("nobatch")
-                tessparams.append(abspath(tmp_sub.name))
+                tessparams.append(os.path.abspath(tmp_sub.name))
 
         self.log.debug("run tesseract")
         self.run(tessparams)
         self.log.debug("read txt")
 
         try:
-            with open(tmp_txt.name, 'r') as f:
+            with io.open(tmp_txt.name, 'r') as f:
                 self.result_captcha = f.read().replace("\n", "")
         except Exception:
             self.result_captcha = ""
 
         self.log.debug(self.result_captcha)
         try:
-            os.remove(tmp.name)
-            os.remove(tmp_txt.name)
+            remove(tmp.name)
+            remove(tmp_txt.name)
             if subset and (digits or lowercase or uppercase):
-                os.remove(tmp_sub.name)
+                remove(tmp_sub.name)
         except Exception:
             pass
 

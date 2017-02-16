@@ -2,15 +2,22 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+
+import io
 from __future__ import division
+
+import io
 from builtins import str
 from builtins import object
+
+import os
 import sys
+
 from time import time, sleep
 from random import randint
 
-from pyload.utils.old import decode
-from pyload.utils.old.fs import exists, makedirs, join, remove
+from pyload.utils.convert import to_str
+from pyload.utils.path import makedirs, remove
 
 
 # TODO
@@ -134,10 +141,8 @@ class Base(object):
         for obj in args:
             if isinstance(obj, str):
                 strings.append(obj)
-            elif isinstance(obj, str):
-                strings.append(decode(obj))
             else:
-                strings.append(str(obj))
+                strings.append(to_str(obj))
 
         getattr(self.log, level)("{}: {}".format(
             self.__name__, sep.join(strings)))
@@ -244,13 +249,13 @@ class Base(object):
             from inspect import currentframe
 
             frame = currentframe()
-            if not exists(join("tmp", self.__name__)):
-                makedirs(join("tmp", self.__name__))
+            if not os.path.exists(os.path.join("tmp", self.__name__)):
+                makedirs(os.path.join("tmp", self.__name__))
 
-            file = join("tmp", self.__name__, "{}_line{}.dump.html".format(
+            file = os.path.join("tmp", self.__name__, "{}_line{}.dump.html".format(
                 frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-            with open(file, "wb") as f:
-                del frame  # delete the frame or it wont be cleaned
+            with io.open(file, "wb") as f:
+                del frame  #: delete the frame or it wont be cleaned
                 try:
                     tmp = res.encode("utf8")
                 except Exception:
@@ -316,7 +321,7 @@ class Base(object):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
-        with open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
+        with io.open(os.path.join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
             f.write(img)
 
             name = "{}OCR".format(self.__name__)
@@ -347,7 +352,7 @@ class Base(object):
                 # TODO: task handling
                 self.pyload.itm.remove_task(task)
 
-                if task.error and has_plugin:  # ignore default error message since the user could use OCR
+                if task.error and has_plugin:  #: ignore default error message since the user could use OCR
                     self.fail(
                         _("Pil and tesseract not installed and no Client connected for captcha decrypting"))
                 elif task.error:

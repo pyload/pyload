@@ -3,11 +3,11 @@
 
 from __future__ import unicode_literals
 
+import os
 import sys
 from builtins import COREDIR, object
-from os.path import abspath, join
 
-from pyload.utils.old.pluginloader import LoaderFactory, PluginLoader
+from pyload.utils.pluginloader import LoaderFactory, PluginLoader
 
 
 class PluginMatcher(object):
@@ -47,9 +47,9 @@ class PluginManager(object):
         sys.meta_path.append(self)
 
         # add to path, so we can import from userplugins
-        sys.path.append(abspath(""))
-        self.loader = LoaderFactory(PluginLoader(abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    PluginLoader(abspath(join(COREDIR, "pyload", "plugin")), self.ROOT,
+        sys.path.append(os.path.abspath(""))
+        self.loader = LoaderFactory(PluginLoader(os.path.abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
+                                    PluginLoader(os.path.abspath(os.path.join(COREDIR, "pyload", "plugin")), self.ROOT,
                                                  self.pyload.config))
 
         self.loader.check_versions()
@@ -81,7 +81,7 @@ class PluginManager(object):
         """
         Parse plugins for given list of urls, separate to crypter and hoster.
         """
-        res = {"hoster": [], "crypter": []}  # tupels of (url, plugin)
+        res = {"hoster": [], "crypter": []}  #: tupels of (url, plugin)
 
         for url in urls:
             if not isinstance(url, str):
@@ -96,10 +96,10 @@ class PluginManager(object):
                 if self.loader.get_plugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
-                    break  # need to exit this loop first
+                    break  #: need to exit this loop first
 
-            if found:  # found match
-                if self.history[0] != found:  # update history
+            if found:  #: found match
+                if self.history[0] != found:  #: update history
                     self.history.remove(found)
                     self.history.insert(0, found)
                 continue

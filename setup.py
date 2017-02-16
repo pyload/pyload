@@ -33,7 +33,7 @@ def info():
         # 'Archive decompression': ['rarfile'],
         # TODO: Fix `tesserocr` installation
         'Captcha recognition': ["Pillow >= 2.0"],
-        'Click\'n\'Load support': ['Js2Py', 'pycryptodomex'],
+        'Click\'n\'Load support': ['Js2Py', 'pycryptodome'],
         'Colored log': ['colorama', 'colorlog'],
         'JavaScript evaluation': ['Js2Py'],
         'Lightweight webserver:sys_platform!="win32"': ['bjoern'],
@@ -42,7 +42,7 @@ def info():
         'SSL connection': ['pyOpenSSL'],
         'Text translation': ['goslate'],
         'Trash support': ['Send2Trash'],
-        'Web User Interface': ['Beaker >= 1.6', 'bottle >= 0.10.0', 'pycryptodomex'],
+        'Web User Interface': ['Beaker >= 1.6', 'bottle >= 0.10.0', 'pycryptodome'],
         'Additional features': ['beautifulsoup4', 'bitmath', 'IPy', 'setproctitle'],
         'Additional features:sys_platform!="win32"': ['dbus-python']
     }

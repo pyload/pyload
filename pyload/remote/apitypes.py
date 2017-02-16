@@ -517,7 +517,7 @@ class Iface(object):
     def find_packages(self, tags):
         pass
 
-    def free_space(self):
+    def avail_space(self):
         pass
 
     def generate_download_link(self, fid, timeout):

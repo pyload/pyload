@@ -38,7 +38,7 @@ class WSClient(object):
 
         if kwargs:
             self.ws.send(dumps([func, args, kwargs]))
-        else:  # omit kwargs
+        else:  #: omit kwargs
             self.ws.send(dumps([func, args]))
 
         code, result = loads(self.ws.recv())

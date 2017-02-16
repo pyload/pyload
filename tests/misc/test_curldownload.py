@@ -2,7 +2,8 @@
 
 from __future__ import print_function, unicode_literals
 
-from os import stat
+import io
+import os
 
 from pyload.network.bucket import Bucket
 from pyload.plugin.network.curldownload import CurlDownload
@@ -31,7 +32,7 @@ class TestCurlRequest(TestCase):
 
         print(self.dl.size, self.dl.arrived)
         assert self.dl.size == self.dl.arrived > 0
-        assert stat("/tmp/random.bin").st_size == self.dl.size
+        assert os.stat("/tmp/random.bin").st_size == self.dl.size
 
     def test_cookies(self):
 
@@ -45,7 +46,7 @@ class TestCurlRequest(TestCase):
         assert req.context is dl.context is not None
 
         dl.download(self.cookie_url + "/cookies.php", "cookies.txt")
-        with open("cookies.txt", "rb") as f:
+        with io.open("cookies.txt", "rb") as f:
             cookies = f.read().splitlines()
 
         self.assertEqual(len(cookies), len(dl.context))

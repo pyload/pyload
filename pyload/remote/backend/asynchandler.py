@@ -53,19 +53,19 @@ class AsyncHandler(AbstractHandler):
         req.events = self.EVENT_PATTERN
         req.interaction = self.INTERACTION
         req.mode = Mode.STANDBY
-        req.t = time()  # time when update should be pushed
+        req.t = time()  #: time when update should be pushed
         self.clients.append(req)
 
     @lock
     def on_close(self, req):
         try:
             del req.queue
-        except AttributeError:  # connection could be uninitialized
+        except AttributeError:  #: connection could be uninitialized
             pass
 
         try:
             self.clients.remove(req)
-        except ValueError:  # ignore when not in list
+        except ValueError:  #: ignore when not in list
             pass
 
     @lock
@@ -115,7 +115,7 @@ class AsyncHandler(AbstractHandler):
             if req.mode == Mode.STANDBY:
                 try:
                     line = receive_message(req)
-                except TypeError as e:  # connection closed
+                except TypeError as e:  #: connection closed
                     self.pyload.log.debug("WS Error: {}".format(e.message))
                     return self.passive_closing_handshake(req)
 
@@ -130,7 +130,7 @@ class AsyncHandler(AbstractHandler):
         """
         func, args, kwargs = self.handle_call(msg, req)
         if not func:
-            return  # Result was already sent
+            return  #: Result was already sent
 
         if func == 'login':
             return self.do_login(req, args, kwargs)

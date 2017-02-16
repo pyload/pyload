@@ -4,12 +4,13 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import gettext
+import io
 import os
 import socket
 from builtins import PACKDIR
 
 from pyload.utils.lib import hashlib
-from pyload.utils.path import bufsize, open
+from pyload.utils.path import bufsize
 
 try:
     import zlib
@@ -24,7 +25,7 @@ def checksum(path, name, buffer=None):
     if name in ('adler32', 'crc32'):
         last = 0
         call = getattr(zlib, name)
-        with open(path, 'rb') as f:
+        with io.open(path, 'rb') as f:
             for chunk in iter(lambda: f.read(buf), b''):
                 last = call(chunk, last)
         res = "{:x}".format(last & 0xffffffff)
@@ -32,7 +33,7 @@ def checksum(path, name, buffer=None):
     elif name in hashlib.algorithms_available:
         h = hashlib.new(name)
         buf *= h.block_size
-        with open(path, 'rb') as f:
+        with io.open(path, 'rb') as f:
             for chunk in iter(lambda: f.read(buf), b''):
                 h.update(chunk)
         res = h.hexdigest()
@@ -40,13 +41,12 @@ def checksum(path, name, buffer=None):
     return res
 
 
-def forward(source, destination):
+def forward(source, destination, buffer=1024):
     try:
-        bufsize = 1024
-        bufdata = source.recv(bufsize)
-        while bufdata:
-            destination.sendall(bufdata)
-            bufdata = source.recv(bufsize)
+        rawdata = source.recv(buffer)
+        while rawdata:
+            destination.sendall(rawdata)
+            rawdata = source.recv(buffer)
     finally:
         destination.shutdown(socket.SHUT_WR)
 

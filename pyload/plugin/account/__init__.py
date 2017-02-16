@@ -10,7 +10,7 @@ from pyload.utils.lib.threading import RLock
 from pyload.api import AccountInfo, ConfigItem
 from pyload.network.cookie import CookieJar
 from pyload.config.convert import from_string, to_configdata
-from pyload.utils.old import to_string
+from pyload.utils.convert import to_str
 from pyload.utils import format, parse, time
 from pyload.utils.decorator import lock
 
@@ -70,7 +70,7 @@ class Account(Base):
 
         self.lock = RLock()
         self.timestamp = 0
-        self.login_ts = 0  # timestamp for login
+        self.login_ts = 0  #: timestamp for login
         self.cj = CookieJar()
         self.error = None
 
@@ -87,7 +87,7 @@ class Account(Base):
                            self.maxtraffic, self.premium, self.activated, self.shared, self.options)
 
         info.config = [ConfigItem(name, item.label, item.description, item.input,
-                                  to_string(self.get_config(name))) for name, item in
+                                  to_str(self.get_config(name))) for name, item in
                        self.config_data.items()]
         return info
 
@@ -177,7 +177,7 @@ class Account(Base):
         """
         if password != self.password or loginname != self.loginname:
             self.login_ts = 0
-            self.valid = True  # set valid, so the login will be retried
+            self.valid = True  #: set valid, so the login will be retried
 
             self.loginname = loginname
             self.password = password
@@ -236,8 +236,8 @@ class Account(Base):
                     infos = {"error": e.message}
                     self.log_error(_("Error: {}").format(e.message))
 
-            self.restore_defaults()  # reset to initial state
-            if isinstance(infos, dict):  # copy result from dict to class
+            self.restore_defaults()  #: reset to initial state
+            if isinstance(infos, dict):  #: copy result from dict to class
                 for k, v in infos.items():
                     if hasattr(self, k):
                         setattr(self, k, v)
@@ -301,12 +301,12 @@ class Account(Base):
 
         if 0 <= self.validuntil < time.time():
             return False
-        if self.trafficleft is 0:  # test explicitly for 0
+        if self.trafficleft is 0:  #: test explicitly for 0
             return False
 
         return True
 
-    def parse_traffic(self, string):  # returns kbyte
+    def parse_traffic(self, string):  #: returns kbyte
         return parse.size(string) // 1024
 
     def format_trafficleft(self):
@@ -351,7 +351,7 @@ class Account(Base):
         Checks if the user is still logged in.
         """
         if self.login_ts + self.login_timeout * 60 < time.time():
-            if self.login_ts:  # separate from fresh login to have better debug logs
+            if self.login_ts:  #: separate from fresh login to have better debug logs
                 self.log_debug(
                     "Reached login timeout for {}".format(self.loginname))
             else:

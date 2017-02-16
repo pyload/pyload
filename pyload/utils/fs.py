@@ -4,10 +4,9 @@ from __future__ import unicode_literals
 
 import os
 import sys
-from os.path import join
 
 from pyload.utils import purge
-from pyload.utils.old import decode
+from pyload.utils.convert import to_str
 
 # File System Encoding functions:
 # Use fs_encode before accessing files on disk, it will encode the string
@@ -20,10 +19,10 @@ if sys.getfilesystemencoding().startswith('ANSI'):
         else:
             return string
 
-    fs_decode = decode  # decode utf8
+    fs_decode = decode  #: decode utf8
 
 else:
-    fs_encode = fs_decode = lambda x: x  # do nothing
+    fs_encode = fs_decode = lambda x: x  #: do nothing
 
 # FS utilities
 
@@ -80,11 +79,7 @@ def safe_join(*args):
     Joins a path, encoding aware.
     """
     return fs_encode(
-        join(*[x if isinstance(x, str) else decode(x) for x in args]))
-
-
-def save_join(*args):
-    return safe_join(*args)
+        os.path.join(*[x if isinstance(x, str) else to_str(x) for x in args]))
 
 
 def free_space(folder):

@@ -3,17 +3,18 @@
 
 from __future__ import unicode_literals
 
+import io
+import os
 import re
 from builtins import object, range
 from collections import defaultdict
 from logging import getLogger
-from os import listdir, makedirs
-from os.path import basename, exists, isfile, join
 from time import time
 
 from pyload.plugin import Base
 from pyload.utils.lib.collections import namedtuple
 from pyload.utils.lib.eval import const_eval as literal_eval
+from pyload.utils.path import makedirs
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 
@@ -115,10 +116,10 @@ class PluginLoader(object):
         """
         Create information for all plugins available.
         """
-        if not exists(self.path):
+        if not os.path.exists(self.path):
             makedirs(self.path)
-        if not exists(join(self.path, "__init__.py")):
-            f = open(join(self.path, "__init__.py"), "wb")
+        if not os.path.exists(os.path.join(self.path, "__init__.py")):
+            f = io.open(os.path.join(self.path, "__init__.py"), "wb")
             f.close()
 
         a = time()
@@ -135,22 +136,22 @@ class PluginLoader(object):
         Analyze and parses all plugins in folder.
         """
         plugins = {}
-        pfolder = join(self.path, folder)
-        if not exists(pfolder):
+        pfolder = os.path.join(self.path, folder)
+        if not os.path.exists(pfolder):
             makedirs(pfolder)
-        if not exists(join(pfolder, "__init__.py")):
-            f = open(join(pfolder, "__init__.py"), "wb")
+        if not os.path.exists(os.path.join(pfolder, "__init__.py")):
+            f = io.open(os.path.join(pfolder, "__init__.py"), "wb")
             f.close()
 
-        for f in listdir(pfolder):
-            if isfile(join(pfolder, f)) and f.endswith(
+        for f in os.listdir(pfolder):
+            if os.path.isfile(os.path.join(pfolder, f)) and f.endswith(
                     ".py") and not f.startswith("_"):
                 # replace suffix and version tag
                 name = f[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
 
-                plugin = self.parse_plugin(join(pfolder, f), folder, name)
+                plugin = self.parse_plugin(os.path.join(pfolder, f), folder, name)
                 if plugin:
                     plugins[name] = plugin
 
@@ -160,7 +161,7 @@ class PluginLoader(object):
         """
         Parse attribute dict from plugin.
         """
-        with open(filename, "rb") as f:
+        with io.open(filename, "rb") as f:
             content = f.read()
 
         attrs = BaseAttributes()
@@ -272,7 +273,7 @@ class PluginLoader(object):
                 for item in config:
                     if item[0] == "activated":
                         break
-                else:  # activated flag missing
+                else:  #: activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
 
             try:
@@ -360,7 +361,7 @@ class PluginLoader(object):
         """
         plugins = self.plugins[type]
         # convert path to python recognizable import
-        path = basename(plugins[name].path).replace(
+        path = os.path.basename(plugins[name].path).replace(
             ".pyc", "").replace(".py", "")
         module = __import__("{}.{}.{}".format(
             self.package, type, path), globals(), locals(), path)

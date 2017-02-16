@@ -4,8 +4,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
+import os
 import time
-from os.path import exists, join
 
 from bottle import redirect, request, response, route, static_file, template
 
@@ -89,7 +89,7 @@ def index():
 def serve_static(path):
     # save if this resource is available as gz
     if path not in GZIPPED:
-        GZIPPED[path] = exists(join(APP_DIR, path + ".gz"))
+        GZIPPED[path] = os.path.exists(os.path.join(APP_DIR, path + ".gz"))
 
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing

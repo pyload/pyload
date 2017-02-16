@@ -30,10 +30,10 @@ class InteractionManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
-        self.tasks = OrderedDict()  # task store, for all outgoing tasks
+        self.tasks = OrderedDict()  #: task store, for all outgoing tasks
 
         self.last_clients = {}
-        self.ids = 0  # uniue interaction ids
+        self.ids = 0  #: uniue interaction ids
 
     def is_client_connected(self, user):
         return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time()

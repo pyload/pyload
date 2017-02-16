@@ -3,11 +3,11 @@
 
 from __future__ import unicode_literals
 
+import io
+import os
 import re
 import sys
 from builtins import zip
-from os import stat
-from os.path import exists, join
 from time import time
 
 from pyload.config.parser import IGNORE
@@ -26,7 +26,7 @@ class UpdateManager(Hook):
     __author_mail__ = "ranan@pyload.net"
 
     URL = "http://get.pyload.net/check2/{}/"
-    MIN_TIME = 3 * 60 * 60  # 3h minimum check interval
+    MIN_TIME = 3 * 60 * 60  #: 3h minimum check interval
 
     @property
     def debug(self):
@@ -36,10 +36,10 @@ class UpdateManager(Hook):
         if self.debug:
             self.log_debug("Monitoring file changes")
             self.interval = 4
-            self.last_check = 0  # timestamp of updatecheck
+            self.last_check = 0  #: timestamp of updatecheck
             self.old_periodical = self.periodical
             self.periodical = self.check_changes
-            self.mtimes = {}  # recordes times
+            self.mtimes = {}  #: recordes times
         else:
             self.interval = max(self.get_config(
                 "interval") * 60, self.MIN_TIME)
@@ -79,7 +79,7 @@ class UpdateManager(Hook):
         Checks if an update is available, return result.
         """
         try:
-            if self.version == "None":  # No updated known
+            if self.version == "None":  #: No updated known
                 version_check = get_url(self.URL.format(
                     self.pyload.api.get_server_version()).splitlines())
                 self.version = version_check[0]
@@ -98,7 +98,7 @@ class UpdateManager(Hook):
         except Exception:
             self.log_warning(_("Not able to connect server for updates"))
 
-        return None  # Nothing will be done
+        return None  #: Nothing will be done
 
     def check_plugins(self, updates):
         """
@@ -158,7 +158,7 @@ class UpdateManager(Hook):
                     name), _("Version mismatch"))
                 continue
 
-            with open(join("userplugins", prefix, filename), "wb") as f:
+            with io.open(os.path.join("userplugins", prefix, filename), "wb") as f:
                 f.write(content)
 
             self.updated = True
@@ -184,10 +184,10 @@ class UpdateManager(Hook):
             id = (type, name)
             if type in self.pyload.pgm.plugins:
                 f = m.__file__.replace(".pyc", ".py")
-                if not exists(f):
+                if not os.path.exists(f):
                     continue
 
-                mtime = stat(f).st_mtime
+                mtime = os.stat(f).st_mtime
 
                 if id not in self.mtimes:
                     self.mtimes[id] = mtime

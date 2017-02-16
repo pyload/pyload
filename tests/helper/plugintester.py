@@ -2,21 +2,22 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
+import os
+import shutil
+import sys
 from builtins import str
 from contextlib import closing
 from glob import glob
 from json import loads
 from logging import DEBUG, log
-from os import makedirs, remove
-from os.path import exists, expanduser, join
-from shutil import move
-from sys import exc_clear, exc_info
 from time import sleep, time
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.network.request import get_request
 from pyload.plugin import Abort, Fail
 from pyload.plugin.downloader.hoster import Hoster
+from pyload.utils.path import makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
 
@@ -51,16 +52,16 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
     img = self.load(url, get=get, post=post, cookies=cookies)
 
     id = "{:.2f}".format(time())[-6:].replace(".", "")
-    with open(join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
+    with io.open(os.path.join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
         f.write(img)
 
     log(DEBUG, "Using ct for captcha")
     # put username and passkey into two lines in ct.conf
-    conf = join(expanduser("~"), "ct.conf")
-    if not exists(conf):
+    conf = os.path.join(os.path.expanduser("~"), "ct.conf")
+    if not os.path.exists(conf):
         raise Exception("CaptchaService config {} not found".format(conf))
 
-    with open(conf, "rb") as f:
+    with io.open(conf, "rb") as f:
         with closing(get_request()) as req:
             # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
@@ -103,24 +104,24 @@ class PluginTester(TestCase):
     def setUpClass(cls):
         cls.core = Core()
         name = "{}.{}".format(cls.__module__, cls.__name__)
-        for f in glob(join(name, "debug_*")):
-            remove(f)
+        for f in glob(os.path.join(name, "debug_*")):
+            remove(f, trash=True)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
         name = "{}.{}".format(cls.__module__, cls.__name__)
-        if not exists(name):
+        if not os.path.exists(name):
             makedirs(name)
         for f in glob("debug_*"):
-            move(f, join(name, f))
+            shutil.move(f, os.path.join(name, f))
 
     def setUp(self):
         self.thread = Thread(self.pyload)
-        exc_clear()
+        sys.exc_clear()
 
     def tearDown(self):
-        exc = exc_info()
+        exc = sys.exc_info()
         if exc != (None, None, None):
             debug = self.thread.write_debug_report()
             log(DEBUG, debug)

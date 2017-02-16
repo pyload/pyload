@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import os
 from builtins import COREDIR, object
 from collections import defaultdict
 from random import sample
@@ -17,7 +18,7 @@ from pyload.utils.decorator import lock, readlock
 from pyload.utils.lib.rwlock import ReadWriteLock
 from pyload.utils.lib.subprocess import call
 from pyload.utils.lib.threading import Event
-from pyload.utils.old.fs import exists, free_space, join
+from pyload.utils.path import availspace
 
 standard_library.install_aliases()
 
@@ -144,7 +145,7 @@ class DownloadManager(object):
         """
         self.try_reconnect()
 
-        if (free_space(self.pyload.config.get('general', 'storage_folder')) / 1024 / 1024 <
+        if (availspace(self.pyload.config.get('general', 'storage_folder')) / 1024 / 1024 <
                 self.pyload.config.get('general', 'min_storage_size')):
             self.pyload.log.warning(_("Not enough space left on device"))
             self.paused = True
@@ -257,10 +258,10 @@ class DownloadManager(object):
         if not (0 < self.want_reconnect() == len(self.working)):
             return False
 
-        if not exists(self.pyload.config.get('reconnect', 'script')):
-            if exists(
-                    join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
-                self.pyload.config.set('reconnect', 'script', join(
+        if not os.path.exists(self.pyload.config.get('reconnect', 'script')):
+            if os.path.exists(
+                    os.path.join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
+                self.pyload.config.set('reconnect', 'script', os.path.join(
                     COREDIR, self.pyload.config.get('reconnect', 'script')))
             else:
                 self.pyload.config.set('reconnect', 'activated', False)

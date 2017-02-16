@@ -202,7 +202,7 @@ class TestDatabase(BenchmarkTest):
             assert f.owner == self.owner
             assert f.media in range(1024)
             assert f.package in self.pids
-            assert f.added > 10 ** 6  # date is usually big integer
+            assert f.added > 10 ** 6  #: date is usually big integer
         except Exception:
             print(f)
             raise

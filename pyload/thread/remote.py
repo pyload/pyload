@@ -42,5 +42,5 @@ class RemoteBackend(Thread):
         raise NotImplementedError
 
     def stop(self):
-        self.enabled = False  # set flag and call shutdowm message, so thread can react
+        self.enabled = False  #: set flag and call shutdowm message, so thread can react
         self.shutdown()

@@ -3,6 +3,7 @@
 
 from __future__ import print_function, unicode_literals
 
+import os
 import re
 import socket
 import struct
@@ -10,12 +11,11 @@ import sys
 import time
 from builtins import range
 from contextlib import closing
-from os import makedirs
-from os.path import exists, join
 from select import select
 
 from pyload.plugin.downloader.hoster import Hoster
-from pyload.utils.old import save_join
+from pyload.utils import format
+from pyload.utils.path import makedirs
 
 
 class Xdcc(Hoster):
@@ -32,7 +32,7 @@ class Xdcc(Hoster):
     __author_mail__ = "jeix@hasnomail.com"
 
     def setup(self):
-        self.debug = 0  # 0,1,2
+        self.debug = 0  #: 0,1,2
         self.timeout = 30
         self.multi_dl = False
 
@@ -67,12 +67,12 @@ class Xdcc(Hoster):
         self.fail(_("Server blocked our ip, retry again later manually"))
 
     def do_download(self, url):
-        self.pyfile.set_status("waiting")  # real link
+        self.pyfile.set_status("waiting")  #: real link
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
-        location = join(download_folder, self.pyfile.package(
+        location = os.path.join(download_folder, self.pyfile.package(
         ).folder.decode(sys.getfilesystemencoding()))
-        if not exists(location):
+        if not os.path.exists(location):
             makedirs(location)
 
         m = re.match(r'xdcc://(.*?)/#?(.*?)/(.*?)/#?(\d+)/?', url)
@@ -174,7 +174,7 @@ class Xdcc(Hoster):
                             sock.send("NOTICE {} :{:d}\r\n".format(
                                 msg['origin'], time.time()))
                         elif msg['text'] == "\x01LAG\x01":
-                            pass  # do not know how to answer
+                            pass  #: do not know how to answer
 
                     if not (bot == msg['origin'][0:len(bot)]
                             and nick == msg['target'][0:len(nick)]
@@ -206,7 +206,7 @@ class Xdcc(Hoster):
                 self.req.filesize = int(m.group(4))
 
             self.pyfile.name = packname
-            filename = save_join(location, packname)
+            filename = format.path(location, packname)
             self.log_info(
                 _("XDCC: Downloading {} from {}:{:d}").format(packname, ip, port))
 

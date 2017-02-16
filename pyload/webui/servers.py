@@ -62,7 +62,7 @@ class FapwsServer(ServerAdapter):
     """
     NAME = "fapws"
 
-    def run(self, handler):  # pragma: no cover
+    def run(self, handler):  #: pragma: no cover
         import fapws._evwsgi as evwsgi
         from fapws import base, config
 
@@ -105,7 +105,7 @@ class TornadoServer(ServerAdapter):
     SSL = True
     NAME = "tornado"
 
-    def run(self, handler):  # pragma: no cover
+    def run(self, handler):  #: pragma: no cover
         import tornado.wsgi
         import tornado.httpserver
         import tornado.ioloop
@@ -155,7 +155,7 @@ class FlupFCGIServer(ServerAdapter):
     SSL = False
     NAME = "flup"
 
-    def run(self, handler):  # pragma: no cover
+    def run(self, handler):  #: pragma: no cover
         import flup.server.fcgi
         from flup.server.threadedserver import ThreadedServer
 

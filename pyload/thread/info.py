@@ -8,7 +8,7 @@ from pyload.api import LinkStatus, ProgressInfo, ProgressType
 from pyload.thread import DecrypterThread, PluginThread
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import accumulate
-from pyload.utils.old.packagetools import parse_names
+from pyload.utils.packagetools import parse_names
 
 
 class InfoThread(DecrypterThread):
@@ -19,7 +19,7 @@ class InfoThread(DecrypterThread):
         # [...(url, plugin)...]
         self.data = data
         self.pid = pid
-        self.oc = oc  # online check
+        self.oc = oc  #: online check
         # urls that already have a package name
         self.names = {}
 
@@ -125,8 +125,8 @@ class InfoThread(DecrypterThread):
         # final number of links to be checked
         done = self.progress.done + len(urls)
         try:
-            cached = []  # results loaded from cache
-            process = []  # urls to process
+            cached = []  #: results loaded from cache
+            process = []  #: urls to process
             for url in urls:
                 if url in self.manager.info_cache:
                     cached.append(self.manager.info_cache[url])

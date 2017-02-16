@@ -2,13 +2,13 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import io
+import os
 from logging import DEBUG, log
-from os.path import dirname, join
 
 from nose.tools import nottest
 from pyload.plugin import Fail
-from pyload.utils.convert import accumulate
-from pyload.utils.old import to_int
+from pyload.utils.convert import accumulate, to_int
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
 
@@ -42,7 +42,7 @@ class CrypterPluginTester(PluginTester):
 
 c = Core()
 
-with open(join(dirname(__file__), "crypterlinks.txt")) as f:
+with io.open(os.path.join(os.path.dirname(__file__), "crypterlinks.txt")) as f:
     links = [x.strip() for x in f.readlines()]
 urls = []
 flags = {}

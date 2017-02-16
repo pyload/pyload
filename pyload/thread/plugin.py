@@ -2,14 +2,15 @@
 
 from __future__ import unicode_literals
 
+import io
 import sys
 from contextlib import closing
 from pprint import pformat
 from time import gmtime, strftime
 from traceback import format_exc
 
+from pyload.utils.fs import safe_join
 from pyload.utils.lib.threading import Thread
-from pyload.utils.old.fs import exists, join, listdir, save_join, stat
 from types import MethodType
 
 from ..setup.system import get_system_info
@@ -23,7 +24,7 @@ class PluginThread(Thread):
     def __init__(self, manager, owner=None):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.manager = manager  # thread manager
+        self.manager = manager  #: thread manager
         self.pyload = manager.pyload
 
         #: Owner of the thread, every type should set it or overwrite user
@@ -62,25 +63,25 @@ class PluginThread(Thread):
         try:
             import zipfile
             with closing(zipfile.ZipFile(dump_name, "w")) as zip:
-                if exists(join("tmp", name)):
-                    for f in listdir(join("tmp", name)):
+                if os.path.exists(os.path.join("tmp", name)):
+                    for f in os.listdir(os.path.join("tmp", name)):
                         try:
                             # avoid encoding errors
-                            zip.write(join("tmp", name, f), save_join(name, f))
+                            zip.write(os.path.join("tmp", name, f), safe_join(name, f))
                         except Exception:
                             pass
 
                 info = zipfile.ZipInfo(
-                    save_join(name, "debug_Report.txt"), gmtime())
-                info.external_attr = 0o644 << 16  # change permissions
+                    safe_join(name, "debug_Report.txt"), gmtime())
+                info.external_attr = 0o644 << 16  #: change permissions
                 zip.writestr(info, dump)
 
                 info = zipfile.ZipInfo(
-                    save_join(name, "system_Report.txt"), gmtime())
+                    safe_join(name, "system_Report.txt"), gmtime())
                 info.external_attr = 0o644 << 16
                 zip.writestr(info, self.get_system_dump())
 
-            if not stat(dump_name).st_size:
+            if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
@@ -88,7 +89,7 @@ class PluginThread(Thread):
                 "Error creating zip file: {}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
-            with open(dump_name, "wb") as f:
+            with io.open(dump_name, "wb") as f:
                 f.write(dump)
 
         self.pyload.log.info(_("Debug Report written to {}").format(dump_name))
@@ -120,7 +121,7 @@ class PluginThread(Thread):
 
             del frame
 
-        del stack  # delete it just to be sure...
+        del stack  #: delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 

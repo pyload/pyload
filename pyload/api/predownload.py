@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
+import os
 from builtins import str
 from itertools import chain
 
@@ -10,8 +12,7 @@ from pyload.api import (Api, LinkStatus, OnlineCheck, Permission, require_perm,
                         urlmatcher)
 from pyload.api.base import BaseApi
 from pyload.network.request import get_url
-from pyload.utils.old.fs import join
-from pyload.utils.old.packagetools import parse_names
+from pyload.utils.packagetools import parse_names
 from pyload.utils.purge import uniqify
 
 
@@ -68,9 +69,9 @@ class PreDownloadApi(BaseApi):
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        file = join(self.pyload.config.get(
+        file = os.path.join(self.pyload.config.get(
             'general', 'storage_folder'), "tmp_{}".format(filename))
-        with open(file, "wb") as f:
+        with io.open(file, "wb") as f:
             f.write(str(data))
             return self.check_links([f.name])
 

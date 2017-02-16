@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
+import io
 from __future__ import unicode_literals
+
+import io
+
 import os
+
 from time import time
 
 if os.name != 'nt':
-    from pyload.utils.old.fs import chown
-    from pwd import getpwnam
-    from grp import getgrnam
+    import grp
+    import pwd
 
+from pyload.utils.path import makedirs, remove
 from pyload.utils.convert import chunks as _chunks
-from pyload.utils.old.fs import (save_join, safe_filename, fs_encode, fs_decode, remove, makedirs,
-                                 chmod, stat, exists, join)
+from pyload.utils.fs import safe_join, safe_filename, fs_encode, fs_decode
 
 from pyload.plugin import Base, Fail, Retry
 from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
@@ -71,7 +76,7 @@ class Hoster(Base):
         #: plugin is waiting
         self.waiting = False
 
-        self.ocr = None  # captcha reader instance
+        self.ocr = None  #: captcha reader instance
         #: account handler instance, see :py:class:`Account`
         self.account = self.pyload.acm.select_account(
             self.__name__, self.owner)
@@ -93,15 +98,15 @@ class Hoster(Base):
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
-        self.thread = None  # holds thread in future
+        self.thread = None  #: holds thread in future
 
         #: location where the last call to download was saved
         self.last_download = ""
         #: re match of the last call to `check_download`
         self.last_check = None
 
-        self.retries = 0  # amount of retries already made
-        self.html = None  # some plugins store html code here
+        self.retries = 0  #: amount of retries already made
+        self.html = None  #: some plugins store html code here
 
         self.init()
 
@@ -132,7 +137,7 @@ class Hoster(Base):
             limit = self.account.options.get("limitDL", 0)
             if limit == "":
                 limit = 0
-            if self.limit_dl > 0:  # a limit is already set, we use the minimum
+            if self.limit_dl > 0:  #: a limit is already set, we use the minimum
                 return min(int(limit), self.limit_dl)
             else:
                 return int(limit)
@@ -289,21 +294,21 @@ class Hoster(Base):
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
 
-        location = save_join(download_folder, self.pyfile.package().folder)
+        location = safe_join(download_folder, self.pyfile.package().folder)
 
-        if not exists(location):
+        if not os.path.exists(location):
             makedirs(location, int(self.pyload.config.get(
                 'permission', 'foldermode'), 8))
 
             if self.pyload.config.get(
                     'permission', 'change_fileowner') and os.name != 'nt':
                 try:
-                    uid = getpwnam(self.pyload.config.get(
+                    uid = pwd.getpwnam(self.pyload.config.get(
                         'permission', 'user'))[2]
-                    gid = getgrnam(self.pyload.config.get(
+                    gid = grp.getgrnam(self.pyload.config.get(
                         'permission', 'group'))[2]
 
-                    chown(location, uid, gid)
+                    os.chown(location, uid, gid)
                 except Exception as e:
                     self.pyload.log.warning(
                         _("Setting User and Group failed: {}").format(e.message))
@@ -312,7 +317,7 @@ class Hoster(Base):
         location = fs_decode(location)
         name = self.pyfile.name
 
-        filename = join(location, name)
+        filename = os.path.join(location, name)
 
         self.pyload.adm.fire("download:start", self.pyfile, url, filename)
 
@@ -327,25 +332,25 @@ class Hoster(Base):
             self.dl.close()
             self.pyfile.size = self.dl.size
 
-        if disposition and newname and newname != name:  # triple check, just to be sure
+        if disposition and newname and newname != name:  #: triple check, just to be sure
             self.pyload.log.info(_("{} saved as {}").format(name, newname))
             self.pyfile.name = newname
-            filename = join(location, newname)
+            filename = os.path.join(location, newname)
 
         fs_filename = fs_encode(filename)
 
         if self.pyload.config.get('permission', 'change_filemode'):
-            chmod(fs_filename, int(self.pyload.config.get(
+            os.chmod(fs_filename, int(self.pyload.config.get(
                 'permission', 'filemode'), 8))
 
         if self.pyload.config.get(
                 'permission', 'change_fileowner') and os.name != 'nt':
             try:
-                uid = getpwnam(self.pyload.config.get('permission', 'user'))[2]
-                gid = getgrnam(self.pyload.config.get(
+                uid = pwd.getpwnam(self.pyload.config.get('permission', 'user'))[2]
+                gid = grp.getgrnam(self.pyload.config.get(
                     'permission', 'group'))[2]
 
-                chown(fs_filename, uid, gid)
+                os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.pyload.log.warning(
                     _("Setting User and Group failed: {}").format(e.message))
@@ -366,10 +371,10 @@ class Hoster(Base):
         :return: dictionary key of the first rule that matched
         """
         last_download = fs_encode(self.last_download)
-        if not exists(last_download):
+        if not os.path.exists(last_download):
             return None
 
-        size = stat(last_download)
+        size = os.stat(last_download)
         size = size.st_size
 
         if api_size and api_size <= size:
@@ -377,7 +382,7 @@ class Hoster(Base):
         elif size > max_size and not read_size:
             return None
         self.pyload.log.debug("Download Check triggered")
-        with open(last_download, "rb") as f:
+        with io.open(last_download, "rb") as f:
             content = f.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         #self.pyload.log.debug("Content: {}".format(content))
@@ -385,13 +390,13 @@ class Hoster(Base):
             if isinstance(rule, str):
                 if rule in content:
                     if delete:
-                        remove(last_download)
+                        remove(last_download, trash=True)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(last_download)
+                        remove(last_download, trash=True)
                     self.last_check = m
                     return name
 
@@ -416,17 +421,17 @@ class Hoster(Base):
         for pyfile in self.pyload.files.cached_files():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package(
             ).folder == pack.folder:
-                if pyfile.status in (0, 12):  # finished or downloading
+                if pyfile.status in (0, 12):  #: finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif pyfile.status in (
-                        5, 7) and starting:  # a download is waiting/starting and was apparently started before
+                        5, 7) and starting:  #: a download is waiting/starting and was apparently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
-        location = save_join(download_folder, pack.folder, self.pyfile.name)
+        location = safe_join(download_folder, pack.folder, self.pyfile.name)
 
         if starting and self.pyload.config.get(
-                'connection', 'skip') and exists(location):
+                'connection', 'skip') and os.path.exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists")
@@ -434,7 +439,7 @@ class Hoster(Base):
         pyfile = self.pyload.db.find_duplicates(
             self.pyfile.fid, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
-            if exists(location):
+            if os.path.exists(location):
                 raise SkipDownload(pyfile[0])
 
             self.pyload.log.debug(

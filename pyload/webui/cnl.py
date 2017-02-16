@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
+import io
+import os
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
 from builtins import str
-from os.path import join
 from traceback import print_exc
 from urllib.parse import unquote
 
 from bottle import HTTPError, request, route
 from future import standard_library
 
-from pyload.utils.old.fs import safe_filename
+from pyload.utils.fs import safe_filename
 from pyload.webui.interface import DL_ROOT, PYLOAD
 
 standard_library.install_aliases()
@@ -25,7 +26,7 @@ except ImportError:
 
 
 try:
-    from Cryptodome.Cipher import AES
+    from Crypto.Cipher import AES
 except ImportError:
     pass
 
@@ -76,8 +77,8 @@ def addcrypted():
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, safe_filename(package) + ".dlc")
-    with open(dlc_path, "wb") as f:
+    dlc_path = os.path.join(DL_ROOT, safe_filename(package) + ".dlc")
+    with io.open(dlc_path, "wb") as f:
         f.write(dlc)
 
     try:

@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import object
 from builtins import ADDONMANAGER
-from pyload.utils.old import to_list
+from pyload.utils.convert import to_list
 from pyload.utils.check import hasmethod
 
 from pyload.plugin import Base

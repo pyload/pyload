@@ -2,8 +2,8 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import io
 from contextlib import closing
-from io import StringIO
 from traceback import format_exc, print_exc
 from urllib.parse import unquote
 
@@ -34,7 +34,7 @@ def json_response(obj):
         return result
     response.headers['Vary'] = 'Accept-Encoding'
     response.headers['Content-Encoding'] = 'gzip'
-    zbuf = StringIO()
+    zbuf = io.StringIO()
     try:
         with closing(gzip.GzipFile(mode='wb', compresslevel=6, fileobj=zbuf)) as zfile:
             zfile.write(result)
@@ -93,7 +93,7 @@ def call_api(func, args=""):
     # file upload, reads whole file into memory
     for name, f in request.files.items():
         kwargs['filename'] = f.filename
-        with closing(StringIO()) as content:
+        with closing(io.StringIO()) as content:
             f.save(content)
             kwargs[name] = content.getvalue()
 

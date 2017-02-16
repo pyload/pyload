@@ -191,7 +191,7 @@ if 'OrderedDict' not in globals():
             for key, value in kwds.items():
                 self[key] = value
 
-        __update = update  # let subclasses override update without breaking __init__
+        __update = update  #: let subclasses override update without breaking __init__
 
         __marker = object()
 

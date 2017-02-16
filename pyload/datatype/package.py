@@ -3,11 +3,11 @@
 
 from __future__ import unicode_literals
 
+import os
 from builtins import object
 from time import time
 
 from pyload.api import PackageInfo, PackageStatus
-from pyload.utils.old.fs import join
 
 
 class PyPackage(object):
@@ -66,7 +66,7 @@ class PyPackage(object):
 
     def get_path(self, name=""):
         self.timestamp = time()
-        return join(self.manager.get_package(
+        return os.path.join(self.manager.get_package(
             self.root).get_path(), self.folder, name)
 
     def sync(self):
@@ -105,7 +105,7 @@ class RootPackage(PyPackage):
                            "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return join(self.manager.pyload.config.get(
+        return os.path.join(self.manager.pyload.config.get(
             'general', 'storage_folder'), name)
 
     # no database operations

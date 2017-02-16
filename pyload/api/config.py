@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from pyload.api import (Api, ConfigHolder, ConfigInfo, ConfigItem, Permission,
                         require_perm)
 from pyload.api.base import BaseApi
-from pyload.utils.old import to_string
+from pyload.utils.convert import to_str
 
 
 # helper function to create a ConfigHolder
@@ -15,7 +15,7 @@ def to_config_holder(section, config, values):
     holder = ConfigHolder(section, config.label,
                           config.description, config.explanation)
     holder.items = [ConfigItem(option, x.label, x.description, x.input,
-                               to_string(values.get(option, x.input.default_value))) for option, x in
+                               to_str(values.get(option, x.input.default_value))) for option, x in
                     config.config.items()]
     return holder
 
@@ -35,7 +35,7 @@ class ConfigApi(BaseApi):
         :return: config value as string
         """
         value = self.pyload.config.get(section, option, self.primary_uid)
-        return to_string(value)
+        return to_str(value)
 
     def set_config_value(self, section, option, value):
         """

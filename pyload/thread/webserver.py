@@ -3,10 +3,10 @@
 from __future__ import absolute_import, unicode_literals, with_statement
 
 import logging
+import os
 from time import sleep, time
 
 from pyload.utils.lib.threading import Thread
-from pyload.utils.old.fs import exists
 
 core = None
 setup = None
@@ -48,7 +48,7 @@ class WebServer(Thread):
         from pyload.webui import interface as webinterface
 
         if self.https:
-            if not exists(self.cert) or not exists(self.key):
+            if not os.path.exists(self.cert) or not os.path.exists(self.key):
                 log.warning(_("SSL certificates not found"))
                 self.https = False
 
@@ -89,14 +89,14 @@ class WebServer(Thread):
         for server in all_server:
 
             if self.force_server and self.force_server == server.NAME:
-                break  # Found server
+                break  #: Found server
             # When force_server is set, no further checks have to be made
             elif self.force_server:
                 continue
 
             if prefer and prefer == server.NAME:
-                break  # found prefered server
-            elif prefer:  # prefer is similar to force, but force has precedence
+                break  #: found prefered server
+            elif prefer:  #: prefer is similar to force, but force has precedence
                 continue
 
             # Filter for server that offer ssl if needed
@@ -105,7 +105,7 @@ class WebServer(Thread):
 
             try:
                 if server.find():
-                    break  # Found a server
+                    break  #: Found a server
                 else:
                     unavailable.append(server.NAME)
             except Exception as e:
@@ -113,12 +113,12 @@ class WebServer(Thread):
                     _("Failed importing webserver: {}").format(
                         e.message))
 
-        if unavailable:  # Just log whats not available to have some debug information
+        if unavailable:  #: Just log whats not available to have some debug information
             log.debug("Unavailable webserver: {}".format(
                 ", ".join(unavailable)))
 
         if not server and self.force_server:
-            server = self.force_server  # just return the name
+            server = self.force_server  #: just return the name
 
         return server
 
@@ -132,16 +132,16 @@ class WebServer(Thread):
                 log.warning(
                     _("This server offers no SSL, please consider using threaded instead"))
             elif not self.https:
-                self.cert = self.key = None  # This implicitly disables SSL
+                self.cert = self.key = None  #: This implicitly disables SSL
                 # there is no extra argument for the server adapter
                 # TODO: check for openSSL ?
 
             # Now instantiate the serverAdapter
             server = server(self.host, self.port, self.key,
-                            self.cert, 6, self.debug)  # todo, num_connections
+                            self.cert, 6, self.debug)  #: todo, num_connections
             name = server.NAME
 
-        else:  # server is just a string
+        else:  #: server is just a string
             name = server
 
         log.info(_("Starting {} webserver: {}:{:d}").format(

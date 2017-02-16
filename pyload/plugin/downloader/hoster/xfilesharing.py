@@ -198,7 +198,7 @@ class XFileSharingPro(SimpleHoster):
             self.parse_error(_('DIRECT LINK (OVR)'))
         self.pyfile.url = found.group(1)
         header = self.load(self.pyfile.url, just_header=True)
-        if 'location' in header:  # Direct link
+        if 'location' in header:  #: Direct link
             self.start_download(self.pyfile.url)
         else:
             self.retry()

@@ -35,7 +35,7 @@ class AbstractHandler(object):
 
     def do_extra_handshake(self, req):
         self.log.debug("WS Connected: {}".format(req))
-        req.api = None  # when api is set client is logged in
+        req.api = None  #: when api is set client is logged in
 
         # allow login via session when webinterface is active
         cookie = req.headers_in.getheader('Cookie')
@@ -86,7 +86,7 @@ class AbstractHandler(object):
         """
         try:
             o = loads(msg)
-        except ValueError as e:  # invalid json object
+        except ValueError as e:  #: invalid json object
             self.log.debug("Invalid Request: {}".format(e.message))
             self.send_result(req, self.ERROR, "No JSON request")
             return None, None, None
@@ -100,7 +100,7 @@ class AbstractHandler(object):
         # called only with name, no args
         if isinstance(o, str):
             return o, [], {}
-        elif len(o) == 1:  # arguments omitted
+        elif len(o) == 1:  #: arguments omitted
             return o[0], [], {}
         elif len(o) == 2:
             func, args = o

@@ -22,7 +22,7 @@ for name in dir(Iface):
 
     spec = inspect.getargspec(getattr(Iface, name))
     if len(spec.args) == 1 and (not spec.varargs or len(spec.varargs) == 0):
-        def meta_test(name):  # retain local scope
+        def meta_test(name):  #: retain local scope
             def test(self):
                 getattr(self.api, name)()
             test.__name__ = "test_{}".format(name)

@@ -3,10 +3,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import io
+import os
+import shutil
 from builtins import str
 from logging import DEBUG, log
-from os.path import dirname
-from shutil import move
 from time import time
 
 from nose.tools import nottest
@@ -14,13 +15,14 @@ from pyload.datatype import PyFile
 from pyload.datatype.file import status_map
 from pyload.plugin import Fail
 from pyload.utils.convert import accumulate
+from pyload.utils.fs import safe_join
 from pyload.utils.lib.hashlib import md5
-from pyload.utils.old.fs import exists, join, listdir, remove, save_join, stat
+from pyload.utils.path import remove
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
 
-DL_DIR = join("Downloads", "tmp")
+DL_DIR = os.path.join("Downloads", "tmp")
 
 
 class HosterPluginTester(PluginTester):
@@ -29,14 +31,14 @@ class HosterPluginTester(PluginTester):
     def setUp(self):
         PluginTester.setUp(self)
         for f in self.files:
-            if exists(save_join(DL_DIR, f)):
-                remove(save_join(DL_DIR, f))
+            if os.path.exists(safe_join(DL_DIR, f)):
+                remove(safe_join(DL_DIR, f), trash=True)
 
         # folder for reports
-        report = join("tmp", self.__class__.__name__)
-        if exists(report):
-            for f in listdir(report):
-                remove(join(report, f))
+        report = os.path.join("tmp", self.__class__.__name__)
+        if os.path.exists(report):
+            for f in os.listdir(report):
+                remove(os.path.join(report, f), trash=True)
 
     @nottest
     def test_plugin(self, name, url, status):
@@ -66,11 +68,11 @@ class HosterPluginTester(PluginTester):
                 raise Exception(
                     "Filename {} not recognized".format(pyfile.name))
 
-            if not exists(save_join(DL_DIR, pyfile.name)):
+            if not os.path.exists(safe_join(DL_DIR, pyfile.name)):
                 raise Exception("File {} does not exists".format(pyfile.name))
 
             hash = md5()
-            with open(save_join(DL_DIR, pyfile.name), "rb") as f:
+            with io.open(safe_join(DL_DIR, pyfile.name), "rb") as f:
                 while True:
                     buf = f.read(4096)
                     if not buf:
@@ -80,11 +82,11 @@ class HosterPluginTester(PluginTester):
             if hash.hexdigest() != self.files[pyfile.name]:
                 log(DEBUG, "Hash is {}".format(hash.hexdigest()))
 
-                size = stat(f.name).st_size
-                if size < 1024 * 1024 * 10:  # 10MB
+                size = os.stat(f.name).st_size
+                if size < 1024 * 1024 * 10:  #: 10MB
                     # Copy for debug report
                     log(DEBUG, "Downloaded file copied to report")
-                    move(f.name, join("tmp", plugin, f.name))
+                    shutil.move(f.name, os.path.join("tmp", plugin, f.name))
 
                 raise Exception("Hash does not match")
 
@@ -99,7 +101,7 @@ class HosterPluginTester(PluginTester):
 # setup methods
 c = Core()
 
-sections = parse_config(join(dirname(__file__), "hosterlinks.txt"))
+sections = parse_config(os.path.join(os.path.dirname(__file__), "hosterlinks.txt"))
 
 for f in sections['files']:
     name, hash = f.rsplit(" ", 1)

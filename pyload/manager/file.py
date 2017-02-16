@@ -51,8 +51,8 @@ class FileManager(object):
                                "decrypting"), _("processing"), _("custom"),
                            _("unknown")]
 
-        self.files = {}  # holds instances for files
-        self.packages = {}  # same for packages
+        self.files = {}  #: holds instances for files
+        self.packages = {}  #: same for packages
 
         self.job_cache = {}
 
@@ -60,8 +60,8 @@ class FileManager(object):
         self.lock = ReadWriteLock()
         #self.lock._Verbose__verbose = True
 
-        self.downloadstats = {}  # cached dl stats
-        self.queuestats = {}  # cached queue stats
+        self.downloadstats = {}  #: cached dl stats
+        self.queuestats = {}  #: cached queue stats
 
         self.db = self.pyload.db
 
@@ -223,7 +223,7 @@ class FileManager(object):
             packs[self.ROOT_PACKAGE] = view.root
         elif pid in packs:
             view.root = packs[pid]
-        else:  # package does not exists
+        else:  #: package does not exists
             return view
 
         # linear traversal over all data

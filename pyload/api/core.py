@@ -2,9 +2,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
+import os
+
 from pyload.api import Api, Interaction, Permission, StatusInfo, require_perm
 from pyload.api.base import BaseApi
-from pyload.utils.old.fs import exists, free_space, join
 
 
 class CoreApi(BaseApi):
@@ -25,7 +27,7 @@ class CoreApi(BaseApi):
         if not self.pyload.config.get('ssl', 'activated'):
             return False
 
-        if not exists(self.pyload.config.get('ssl', 'cert')) or not exists(
+        if not os.path.exists(self.pyload.config.get('ssl', 'cert')) or not os.path.exists(
                 self.pyload.config.get('ssl', 'key')):
             self.pyload.log.warning(_('SSL key or certificate not found'))
             return False
@@ -60,7 +62,7 @@ class CoreApi(BaseApi):
                                    total[1], queue[1],
                                    self.is_interaction_waiting(
                                        Interaction.All),
-                                   not self.pyload.dlm.paused,  # and self.is_time_download(),
+                                   not self.pyload.dlm.paused,  #: and self.is_time_download(),
                                    self.pyload.dlm.paused,
                                    # and self.is_time_reconnect(),
                                    self.pyload.config.get(
@@ -68,7 +70,7 @@ class CoreApi(BaseApi):
                                    self.get_quota())
 
         for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
-            server_status.speed += pyfile.get_speed()  # bytes/s
+            server_status.speed += pyfile.get_speed()  #: bytes/s
 
         return server_status
 
@@ -112,11 +114,11 @@ class CoreApi(BaseApi):
         self.pyload.config['reconnect']['activated'] ^= True
         return self.pyload.config.get('reconnect', 'activated')
 
-    def free_space(self):
+    def avail_space(self):
         """
         Available free space at download directory in bytes.
         """
-        return free_space(self.pyload.config.get('general', 'storage_folder'))
+        return availspace(self.pyload.config.get('general', 'storage_folder'))
 
     def shutdown(self):
         """
@@ -137,10 +139,10 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config.get(
+        filename = os.path.join(self.pyload.config.get(
             'log', 'logfile_folder'), 'log.txt')
         try:
-            with open(filename, "r") as f:
+            with io.open(filename, "r") as f:
                 lines = f.readlines()
             if offset >= len(lines):
                 return []

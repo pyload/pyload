@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from sys import exc_clear
+import sys
 from time import sleep, time
 from traceback import print_exc
 
@@ -34,7 +34,7 @@ class DownloadThread(PluginThread):
         self.is_working = Event()
         self.is_working.clear()
 
-        self.queue = Queue()  # job queue
+        self.queue = Queue()  #: job queue
         self.active = None
 
         self.start()
@@ -223,7 +223,7 @@ class DownloadThread(PluginThread):
             finally:
                 self.pyload.files.save()
                 pyfile.check_if_processed()
-                exc_clear()
+                sys.exc_clear()
                 # manager could still be waiting for it
                 self.is_working.set()
 

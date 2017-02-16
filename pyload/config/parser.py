@@ -3,14 +3,14 @@
 from __future__ import (absolute_import, print_function, unicode_literals,
                         with_statement)
 
+import io
+import os
 from builtins import object, str
 from gettext import gettext
-from os.path import exists
 
 from pyload.config.convert import from_string, to_configdata
 from pyload.config.default import make_config
 from pyload.utils.lib.collections import OrderedDict, namedtuple
-from pyload.utils.old.fs import chmod
 
 SectionTuple = namedtuple(
     "SectionTuple", "label description explanation config")
@@ -43,24 +43,24 @@ class Config(object):
         """
         Determines if config needs to be deleted.
         """
-        if exists(self.filename):
-            with open(self.filename, "rb") as f:
+        if os.path.exists(self.filename):
+            with io.open(self.filename, "rb") as f:
                 v = f.readline()
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < self.version:
-                with open(self.filename, "wb") as f:
+                with io.open(self.filename, "wb") as f:
                     f.write("version: {}".format(self.version))
                 print("Old version of {} deleted".format(self.filename))
         else:
-            with open(self.filename, "wb") as f:
+            with io.open(self.filename, "wb") as f:
                 f.write("version: {}".format(self.version))
 
     def parse_values(self, filename):
         """
         Read config values from file.
         """
-        with open(filename, "rb") as f:
+        with io.open(filename, "rb") as f:
             config = f.readlines()[1:]
 
         # save the current section
@@ -100,9 +100,9 @@ class Config(object):
         Saves config to filename.
         """
         configs = []
-        with open(self.filename, "wb") as f:
+        with io.open(self.filename, "wb") as f:
             configs.append(f)
-            chmod(self.filename, 0o600)
+            os.chmod(self.filename, 0o600)
             f.write("version: {:d}\n\n".format(self.version))
 
             for section, data in self.config.items():

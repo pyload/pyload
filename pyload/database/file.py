@@ -7,8 +7,8 @@ from pyload.api import DownloadState as DS
 from pyload.api import (DownloadInfo, FileInfo, PackageInfo, PackageStats,
                         state_string)
 from pyload.database import DatabaseMethods, async, inner, queue
+from pyload.utils.filetypes import guess_type
 from pyload.utils.lib.collections import OrderedDict
-from pyload.utils.old.filetypes import guess_type
 
 zero_stats = PackageStats(0, 0, 0, 0)
 
@@ -178,7 +178,7 @@ class FileMethods(DatabaseMethods):
         data = OrderedDict()
         for r in self.c.fetchall():
             f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
-            if r[11] > 0:  # dl status != NA
+            if r[11] > 0:  #: dl status != NA
                 f.download = DownloadInfo(
                     r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
 
@@ -356,10 +356,10 @@ class FileMethods(DatabaseMethods):
     # beforehand
     @async
     def order_package(self, pid, root, oldorder, order):
-        if oldorder > order:  # package moved upwards
+        if oldorder > order:  #: package moved upwards
             self.c.execute(
                 'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND root=? AND packageorder >= 0', (order, oldorder, root))
-        elif oldorder < order:  # moved downwards
+        elif oldorder < order:  #: moved downwards
             self.c.execute(
                 'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND root=? AND packageorder >= 0', (order, oldorder, root))
 
@@ -371,7 +371,7 @@ class FileMethods(DatabaseMethods):
         diff = len(fids)
         data = []
 
-        if oldorder > order:  # moved upwards
+        if oldorder > order:  #: moved upwards
             self.c.execute(
                 'UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? AND fileorder < ? AND package=?', (diff, order, oldorder, pid))
             data = [(order + i, fid) for i, fid in enumerate(fids)]
@@ -479,7 +479,7 @@ class FileMethods(DatabaseMethods):
         self.c.execute("DELETE FROM files WHERE status == 1")
 
     @queue
-    def purge_all(self):  # only used for debugging
+    def purge_all(self):  #: only used for debugging
         self.c.execute("DELETE FROM packages")
         self.c.execute("DELETE FROM files")
         self.c.execute("DELETE FROM collector")

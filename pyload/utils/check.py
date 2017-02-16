@@ -75,15 +75,6 @@ def ismodule(name, path=None):
         return False
 
 
-# TODO: Recheck in 0.5.x
-def lookup(enc=None):
-    if os.name != 'nt':
-        return 'utf-8'
-    if not enc:
-        enc = sys.stdout.encoding
-    return "cp850" if enc == "cp65001" else enc  #: aka UTF-8 under Windows
-
-
 def missingitems(iterable, start=None, end=None):
     iter_seq = set(map(int, iterable))
     min_val = start or min(iter_seq)

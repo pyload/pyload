@@ -12,6 +12,7 @@
 from __future__ import unicode_literals
 
 import builtins
+import io
 import logging
 import logging.handlers
 import os
@@ -21,13 +22,14 @@ import tempfile
 import time
 from builtins import COREDIR, USERDIR, map
 from contextlib import closing
+from locale import getpreferredencoding
 from multiprocessing import Process
 
 from future import standard_library
 
 from pyload.utils import format, misc, sys
-from pyload.utils.check import ismodule, lookup
-from pyload.utils.path import availspace, makedirs, open, remove
+from pyload.utils.check import ismodule
+from pyload.utils.path import availspace, makedirs, remove
 
 standard_library.install_aliases()
 
@@ -80,17 +82,17 @@ class Core(Process):
                 if dirname != '__pycache__':
                     continue
                 dir = join(dir, dirname)
-                remove(dir, trash=False, ignore_errors=True)
+                remove(dir, ignore_errors=True)
                 break
             for filename in filenames:
                 if not filename[-4:] in ('.pyc', '.pyo'):
                     continue
                 file = join(dir, filename)
                 try:
-                    remove(file)
+                    remove(file, trash=True)
                 except Exception:
                     continue
-        remove('tmp', trash=False, ignore_errors=True)
+        remove('tmp', ignore_errors=True)
 
     # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
@@ -147,9 +149,9 @@ class Core(Process):
             filehdlr = logging.handlers.RotatingFileHandler(logfile,
                                                             maxBytes=logfile_size,
                                                             backupCount=max_logfiles,
-                                                            encoding=lookup)
+                                                            encoding=getpreferredencoding())
         else:
-            filehdlr = logging.FileHandler(logfile, encoding='utf-8')
+            filehdlr = logging.FileHandler(logfile, encoding=getpreferredencoding())
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
@@ -298,7 +300,7 @@ class Core(Process):
         self.pidfile = os.path.join(tmpdir, pidname)
         self.profile = profile
 
-        with open(self.pidfile, 'wb') as f:
+        with io.open(self.pidfile, 'wb') as f:
             f.write(os.getpid())
 
         #: register exit signal
@@ -450,7 +452,7 @@ class Core(Process):
 
         finally:
             self.evm.fire('pyload:stopped')
-            remove(self.pidfile, trash=False)
+            remove(self.pidfile, ignore_errors=True)
             self.files.sync_save()
             self.db.shutdown()
             self._exit_logger()

@@ -3,16 +3,17 @@
 
 from __future__ import division, unicode_literals
 
+import io
+import os
 import socket
 import struct
 from builtins import object
 from contextlib import closing
-from os import remove
-from os.path import exists
 from select import select
 from time import time
 
 from pyload.plugin import Abort
+from pyload.utils.path import remove
 
 
 # TODO: This must be adapted to the new request interfaces
@@ -58,7 +59,7 @@ class XDCCRequest(object):
             dccsock.settimeout(self.timeout)
             dccsock.connect((ip, port))
 
-            if exists(filename):
+            if os.path.exists(filename):
                 i = 0
                 name_parts = filename.rpartition(".")
                 while True:
@@ -66,16 +67,16 @@ class XDCCRequest(object):
                         name_parts[0], i, name_parts[1], name_parts[2])
                     i += 1
 
-                    if not exists(newfilename):
+                    if not os.path.exists(newfilename):
                         filename = newfilename
                         break
 
-            with open(filename, "wb") as f:
+            with io.open(filename, "wb") as f:
                 # recv loop for dcc socket
                 while True:
                     if self.abort:
                         # dccsock.close()
-                        remove(filename)
+                        remove(filename, trash=True)
                         raise Abort
 
                     self._keep_alive(irc, ircbuffer)

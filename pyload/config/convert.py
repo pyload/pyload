@@ -6,8 +6,8 @@ from builtins import bytes, str
 from gettext import gettext
 
 from pyload.api import Input, InputType
+from pyload.utils.convert import to_bool, to_str
 from pyload.utils.lib.collections import namedtuple
-from pyload.utils.old import decode, to_bool
 
 ConfigData = namedtuple("ConfigData", "label description input")
 
@@ -61,7 +61,7 @@ def from_string(value, typ=None):
     if not isinstance(value, str) and not isinstance(value, bytes):
         return value
 
-    value = decode(value)
+    value = to_str(value)
 
     if typ == InputType.Int:
         return int(value)

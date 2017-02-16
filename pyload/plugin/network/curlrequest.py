@@ -3,9 +3,9 @@
 
 from __future__ import print_function, unicode_literals
 
+import io
 from builtins import bytes, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
-from io import StringIO
 from urllib.parse import quote, urlencode
 
 from future import standard_library
@@ -48,7 +48,7 @@ class CurlRequest(Request):
         self.c = pycurl.Curl()
         Request.__init__(self, *args, **kwargs)
 
-        self.rep = StringIO()
+        self.rep = io.StringIO()
         self.last_url = None
         self.last_effective_url = None
         self.header = ""
@@ -168,7 +168,7 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
                 if isinstance(post, str):
-                    post = str(post)  # unicode not allowed
+                    post = str(post)  #: unicode not allowed
                 elif isinstance(post, str):
                     pass
                 else:
@@ -278,7 +278,7 @@ class CurlRequest(Request):
             return ""
         value = self.rep.getvalue()
         self.rep.close()
-        self.rep = StringIO()
+        self.rep = io.StringIO()
         return value
 
     def decode_response(self, rep):
@@ -286,7 +286,7 @@ class CurlRequest(Request):
         Decode with correct encoding, relies on header.
         """
         header = self.header.splitlines()
-        encoding = "utf8"  # default encoding
+        encoding = "utf8"  #: default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")
@@ -326,7 +326,7 @@ class CurlRequest(Request):
             rep = self.get_response()
             if self.do_abort:
                 raise Abort
-            with open("response.dump", "wb") as f:
+            with io.open("response.dump", "wb") as f:
                 f.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
