@@ -4,14 +4,15 @@
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
 # http://bugs.python.org/issue1731717
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import sys
 from subprocess import *
+
+from future import standard_library
+
+standard_library.install_aliases()
 
 if sys.version_info[:2] < (2, 7) and os.name != 'nt':
     import errno

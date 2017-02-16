@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division, print_function, unicode_literals
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import fnmatch
 import io
 import os
@@ -15,8 +13,12 @@ from glob import glob
 from subprocess import Popen, call
 from tempfile import mkdtemp
 
+from future import standard_library
+
 from paver.easy import *
 from pyload import info
+
+standard_library.install_aliases()
 
 
 # patch to let it support list of patterns

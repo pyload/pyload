@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import re
+from builtins import object, str
+
+from future import standard_library
+
+from pyload.datatype import User
+from pyload.remote.apitypes import *
 from types import MethodType
 
-from pyload.remote.apitypes import *
+standard_library.install_aliases()
+
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -47,8 +49,6 @@ state_map[DownloadState.Unfinished] = frozenset(
 
 def state_string(state):
     return ",".join(str(x) for x in state_map[state])
-
-from pyload.datatype import User
 
 
 class Api(Iface):

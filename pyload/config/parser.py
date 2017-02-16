@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
-from __future__ import (absolute_import, print_function, unicode_literals,
-                        with_statement)
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals, with_statement)
 
 import io
 import os
-from builtins import object, str
+from builtins import int, object, str
 from gettext import gettext
+
+from future import standard_library
 
 from pyload.config.convert import from_string, to_configdata
 from pyload.config.default import make_config
 from pyload.utils.lib.collections import OrderedDict, namedtuple
+
+standard_library.install_aliases()
+
 
 SectionTuple = namedtuple(
     "SectionTuple", "label description explanation config")

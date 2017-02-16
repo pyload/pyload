@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import os
 import sys
 
+from future import standard_library
+
 from pyload.utils import purge
 from pyload.utils.convert import to_str
+
+standard_library.install_aliases()
+
 
 # File System Encoding functions:
 # Use fs_encode before accessing files on disk, it will encode the string
@@ -92,7 +93,6 @@ def free_space(folder):
 
     if os.name == 'nt':
         import ctypes
-
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(
             ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
@@ -110,7 +110,6 @@ def get_bsize(path):
 
     if os.name == 'nt':
         import ctypes
-
         drive = "{}\\".format(os.path.splitdrive(path)[0])
         cluster_sectors, sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive), ctypes.pointer(

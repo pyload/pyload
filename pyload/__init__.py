@@ -9,16 +9,14 @@
 #          \  /
 #           \/
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import builtins
 import codecs
 import os
 import tempfile
+from builtins import int
 
 import daemonize
 import psutil
@@ -52,7 +50,6 @@ if 'pyload' in sys.modules:
 sys.path.append(PACKDIR)
 sys.path.append(USERDIR)
 
-# import codecs
 # codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
 writer = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))
 sys.stdout = writer(sys.stdout, errors="replace")

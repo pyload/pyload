@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
+from builtins import dict, object
 from functools import reduce
 from time import time
+
+from future import standard_library
 
 from pyload.api import DownloadStatus as DS
 from pyload.api import PackageDoesNotExist, PackageStatus, TreeCollection
 from pyload.datatype import PyFile, PyPackage, RootPackage
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.lib.rwlock import ReadWriteLock
+
+standard_library.install_aliases()
 
 
 # invalidates the cache

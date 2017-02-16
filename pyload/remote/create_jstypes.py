@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
+from builtins import dict
+
+from future import standard_library
 
 from pyload.remote import apitypes
 from pyload.remote.apitypes_debug import enums
+
+standard_library.install_aliases()
+
 
 path = os.path.dirname(os.path.abspath(__file__))
 module = os.path.join(path, "..")

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from future import standard_library
-standard_library.install_aliases()
+
 from mod_pywebsocket.msgutil import receive_message
 from pyload.api import ExceptionObject
 from pyload.remote.backend.abstracthandler import AbstractHandler
+
+standard_library.install_aliases()
 
 
 class ApiHandler(AbstractHandler):

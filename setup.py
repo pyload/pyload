@@ -2,20 +2,19 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import os
-from builtins import PACKDIR
+from builtins import PACKDIR, dict
 
+from future import standard_library
 from past.builtins import execfile
 
 import pyload
+
+standard_library.install_aliases()
+
 
 __all__ = ['info', 'main', 'run_venv', 'setup']
 
@@ -57,7 +56,7 @@ def info():
     # extras_require['Additional features'].append('dbus-python')
 
     entry_points = {
-        'console_scripts': ['{} = {}:main'.format(info.title.lower(), info.title)]
+        'console_scripts': ['pyload = pyLoad:main']
     }
     tests_require = [
         'nose',
@@ -88,7 +87,7 @@ def info():
 
     return Info(
         keywords=keywords,
-        packages=[info.title.lower()],
+        packages=['pyload'],
         include_package_data=True,
         install_requires=install_requires,
         extras_require=extras_require,
@@ -131,7 +130,7 @@ def _set_win_env():
 def _pre_setup():
     info = pyload.info()
     setupinfo = {
-        'name': info.title,
+        'name': "pyload-ng",
         'version': info.version,
         'url': info.url
     }

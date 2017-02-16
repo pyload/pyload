@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import gettext
 import io
 import os
 import socket
 import sys
 import webbrowser
-from builtins import COREDIR, input, object, str
+from builtins import COREDIR, input, int, object, str
 from getpass import getpass
 from time import time
 

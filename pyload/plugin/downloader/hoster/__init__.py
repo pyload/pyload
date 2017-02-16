@@ -1,31 +1,29 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
-
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
-import io
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import io
-
 import os
-
+from builtins import int
 from time import time
+
+from future import standard_library
+
+from pyload.plugin import Base, Fail, Retry
+from pyload.plugin.network.defaultrequest import (DefaultDownload,
+                                                  DefaultRequest)
+from pyload.utils.convert import chunks as _chunks
+from pyload.utils.fs import fs_decode, fs_encode, safe_join
+from pyload.utils.path import makedirs, remove
+
+standard_library.install_aliases()
+
 
 if os.name != 'nt':
     import grp
     import pwd
 
-from pyload.utils.path import makedirs, remove
-from pyload.utils.convert import chunks as _chunks
-from pyload.utils.fs import safe_join, safe_filename, fs_encode, fs_decode
-
-from pyload.plugin import Base, Fail, Retry
-from pyload.plugin.network.defaultrequest import DefaultRequest, DefaultDownload
 
 # Import for Hoster Plugins
 chunks = _chunks

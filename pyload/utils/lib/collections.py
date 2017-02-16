@@ -2,13 +2,11 @@
 #
 # Collections legacy patch
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
 import sys as _sys
-from builtins import map
+from builtins import dict, map
 from collections import *
 from operator import itemgetter as _itemgetter
 
@@ -388,7 +386,7 @@ if 'namedtuple' not in globals():
         namespace = dict(_itemgetter=_itemgetter, __name__='namedtuple_%s' % typename,
                          _property=property, _tuple=tuple)
         try:
-            exec template in namespace
+            exec(template) in namespace
         except SyntaxError as e:
             raise SyntaxError(e.message + ':\n' + template)
         result = namespace[typename]

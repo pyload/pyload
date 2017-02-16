@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 #@author: zoidberg
 
-from __future__ import division, unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import re
 from time import mktime, strptime
+
+from future import standard_library
 
 from pyload.plugin.account import Account
 from pyload.plugin.downloader.hoster.base.simplehoster import parse_html_form
 from pyload.utils import parse
+
+standard_library.install_aliases()
 
 
 class XFSPAccount(Account):

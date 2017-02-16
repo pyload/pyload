@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from builtins import range
 
 from future import standard_library
-standard_library.install_aliases()
-from builtins import range
 
 from pyload.api import InputType, Interaction
 from pyload.manager import InteractionManager
 from tests.helper.stubs import Core
 from unittest2 import TestCase
+
+standard_library.install_aliases()
 
 
 class TestInteractionManager(TestCase):

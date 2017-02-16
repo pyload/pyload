@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import division, unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
+from builtins import int, object
 from time import sleep, time
+
+from future import standard_library
 
 from pyload.api import (DownloadInfo, DownloadProgress, DownloadStatus,
                         FileInfo, ProgressInfo, ProgressType)
@@ -17,6 +15,9 @@ from pyload.utils.decorator import lock, readlock, trycatch
 from pyload.utils.filetypes import guess_type
 from pyload.utils.fs import safe_filename
 from pyload.utils.lib.rwlock import ReadWriteLock
+
+standard_library.install_aliases()
+
 
 status_map = {
     "none": 0,

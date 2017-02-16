@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from time import sleep
 
 from future import standard_library
-standard_library.install_aliases()
-from time import sleep
 
 from pyload.api import DownloadStatus as DS
 from pyload.api import LinkStatus, ProgressInfo, ProgressType
@@ -15,6 +14,8 @@ from pyload.plugin.downloader.crypter import Package
 from pyload.thread import PluginThread
 from pyload.utils.convert import accumulate
 from pyload.utils.purge import uniqify
+
+standard_library.install_aliases()
 
 
 class DecrypterThread(PluginThread):

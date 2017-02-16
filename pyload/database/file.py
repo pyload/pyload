@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from builtins import int
+
 from future import standard_library
-standard_library.install_aliases()
+
 from pyload.api import DownloadState as DS
 from pyload.api import (DownloadInfo, FileInfo, PackageInfo, PackageStats,
                         state_string)
 from pyload.database import DatabaseMethods, async, inner, queue
 from pyload.utils.filetypes import guess_type
 from pyload.utils.lib.collections import OrderedDict
+
+standard_library.install_aliases()
 
 zero_stats = PackageStats(0, 0, 0, 0)
 

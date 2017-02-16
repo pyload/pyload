@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
-from __future__ import print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import shutil
 from builtins import range
 from contextlib import closing
 from time import time
+
+from future import standard_library
 
 import pycurl
 from pyload.api import Connection
@@ -22,6 +22,8 @@ from pyload.plugin.network.curlchunk import ChunkInfo, CurlChunk
 from pyload.plugin.network.curlrequest import ResponseException
 from pyload.utils.fs import fs_encode, safe_join
 from pyload.utils.path import remove
+
+standard_library.install_aliases()
 
 
 # TODO: save content-disposition for resuming

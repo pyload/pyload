@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import logging
 
 from future import standard_library
-standard_library.install_aliases()
-import logging
 
 from mod_pywebsocket import util
 from pyload.thread import RemoteBackend
+
+standard_library.install_aliases()
 
 
 def get_class_logger(o=None):

@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 #@author: jeix
 
-from __future__ import division, unicode_literals
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import socket
@@ -16,8 +13,12 @@ from contextlib import closing
 from select import select
 from time import time
 
+from future import standard_library
+
 from pyload.plugin import Abort
 from pyload.utils.path import remove
+
+standard_library.install_aliases()
 
 
 # TODO: This must be adapted to the new request interfaces

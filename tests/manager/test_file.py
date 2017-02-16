@@ -1,20 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 from builtins import range
 from random import choice
+
+from future import standard_library
 
 from pyload.api import DownloadState
 from pyload.database import DatabaseBackend
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core, normal_user
+
+standard_library.install_aliases()
+
 
 # disable asyncronous queries
 DatabaseBackend.async = DatabaseBackend.queue

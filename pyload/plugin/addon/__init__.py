@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 #from functools import wraps
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from builtins import ADDONMANAGER, object
+
 from future import standard_library
-standard_library.install_aliases()
-from builtins import object
-from builtins import ADDONMANAGER
-from pyload.utils.convert import to_list
-from pyload.utils.check import hasmethod
 
 from pyload.plugin import Base
+from pyload.utils.check import hasmethod
+from pyload.utils.convert import to_list
+
+standard_library.install_aliases()
 
 
 def class_name(p):

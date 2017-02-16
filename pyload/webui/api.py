@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
 import io
+from builtins import dict
 from contextlib import closing
 from traceback import format_exc, print_exc
 from urllib.parse import unquote

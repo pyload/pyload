@@ -1,27 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import io
+import os
+from builtins import object, str
 
 from future import standard_library
-standard_library.install_aliases()
-import io
-from __future__ import unicode_literals
 
-import io
-
-import os
-
-from builtins import str
-from builtins import object
-from pyload.api import LinkStatus, DownloadStatus as DS
-from pyload.utils.purge import uniqify
-from pyload.utils.convert import to_list
+from pyload.api import DownloadStatus as DS
+from pyload.api import LinkStatus
+from pyload.plugin import Base, Retry
 from pyload.utils.check import hasmethod
+from pyload.utils.convert import to_list
 from pyload.utils.fs import fs_encode
 from pyload.utils.path import remove
-from pyload.plugin import Base, Retry
+from pyload.utils.purge import uniqify
+
+standard_library.install_aliases()
 
 
 # represent strings as LinkStatus

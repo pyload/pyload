@@ -2,15 +2,15 @@
 #
 # http://code.activestate.com/recipes/286134/
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import dis
 from builtins import map
+
+from future import standard_library
+
+standard_library.install_aliases()
 
 _const_codes = list(map(dis.opmap.__getitem__, [
     'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP',

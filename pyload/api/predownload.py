@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 from builtins import str
 from itertools import chain
+
+from future import standard_library
 
 from pyload.api import DownloadStatus as DS
 from pyload.api import (Api, LinkStatus, OnlineCheck, Permission, require_perm,
@@ -18,6 +17,8 @@ from pyload.api.base import BaseApi
 from pyload.network.request import get_url
 from pyload.utils.packagetools import parse_names
 from pyload.utils.purge import uniqify
+
+standard_library.install_aliases()
 
 
 class PreDownloadApi(BaseApi):

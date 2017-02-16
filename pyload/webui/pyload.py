@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import json
 import os
 import time
 
 from bottle import redirect, request, response, route, static_file, template
+from future import standard_library
 
 from pyload.webui.interface import APP_DIR, PREFIX, PYLOAD, SETUP, UNAVAILALBE
 from pyload.webui.utils import add_json_header, login_required, select_language
+
+standard_library.install_aliases()
+
 
 # Cache file names that are available gzipped
 GZIPPED = {}

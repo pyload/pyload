@@ -2,23 +2,24 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import os
 import sys
 
 import bottle
 # Middlewares
 from beaker.middleware import SessionMiddleware
+from future import standard_library
 
 from pyload.thread import webserver as ServerThread
 from pyload.utils.web.middleware import PrefixMiddleware, StripPathMiddleware
 # Last routes to register
 from pyload.webui import api, cnl, pyload, setup
+
+standard_library.install_aliases()
+
 
 APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app'))
 PYLOAD_DIR = os.path.abspath(os.path.join(APP_DIR, '..', '..', '..'))

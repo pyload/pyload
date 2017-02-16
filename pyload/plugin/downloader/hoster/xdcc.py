@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 #@author: jeix
 
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
 import os
 import re
 import socket
 import struct
 import sys
 import time
-from builtins import range
+from builtins import int, range
 from contextlib import closing
 from select import select
+
+from future import standard_library
 
 from pyload.plugin.downloader.hoster import Hoster
 from pyload.utils import format
 from pyload.utils.path import makedirs
+
+standard_library.install_aliases()
 
 
 class Xdcc(Hoster):

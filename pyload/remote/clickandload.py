@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
+from builtins import int
 from urllib.parse import unquote
 
 from future import standard_library

@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from builtins import object, zip
 
 from future import standard_library
-standard_library.install_aliases()
-from builtins import object, zip
 
 from pyload.remote.apitypes_debug import classes, methods
 from tests.helper.config import credentials
+
+standard_library.install_aliases()
 
 
 class ApiProxy(object):

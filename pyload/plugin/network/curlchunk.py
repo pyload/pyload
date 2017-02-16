@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
-from __future__ import print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
 import codecs
 import io
 import os
 import re
-from builtins import object, range
+from builtins import int, object, range
 from time import sleep
+
+from future import standard_library
 
 import pycurl
 from pyload.plugin.network.curlrequest import CurlRequest
 from pyload.utils.fs import fs_decode, fs_encode, safe_filename
 from pyload.utils.path import remove
 from pyload.utils.struct import HeaderDict
+
+standard_library.install_aliases()
 
 
 class ChunkInfo(object):

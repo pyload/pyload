@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 from logging import DEBUG, log
+
+from future import standard_library
 
 from nose.tools import nottest
 from pyload.plugin import Fail
 from pyload.utils.convert import accumulate, to_int
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
+
+standard_library.install_aliases()
 
 
 class CrypterPluginTester(PluginTester):

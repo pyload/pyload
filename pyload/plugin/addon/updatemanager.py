@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import re
 import sys
-from builtins import zip
+from builtins import dict, zip
 from time import time
+
+from future import standard_library
 
 from pyload.config.parser import IGNORE
 from pyload.network.request import get_url
 from pyload.plugin.addon import Expose, Hook, threaded
+
+standard_library.install_aliases()
 
 
 class UpdateManager(Hook):

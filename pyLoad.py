@@ -10,12 +10,9 @@
 #          \  /
 #           \/
 
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import argparse
 # from multiprocessing import freeze_support
 import operator
@@ -23,9 +20,14 @@ import os
 import sys
 from builtins import PACKDIR, map
 
+from future import standard_library
+
 import pyload
 from pyload.utils import format
 from pyload.utils.sys import set_console_icon, set_console_title
+
+standard_library.install_aliases()
+
 
 try:
     import colorama

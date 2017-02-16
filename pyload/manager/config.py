@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import json
 
 from future import standard_library
-standard_library.install_aliases()
-import json
 
 from pyload.api import InvalidConfigSection
 from pyload.config import Config
 from pyload.config.convert import from_string
 from pyload.utils.lib.collections import OrderedDict
+
+standard_library.install_aliases()
 
 
 def convertkeyerror(func):

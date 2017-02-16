@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import os
 import shlex
-from builtins import map
+from builtins import dict, map
 from platform import platform
 from sys import *
 
 import psutil
+from future import standard_library
 
-import ctypes
 from pyload.utils.lib.subprocess import PIPE, Popen
+
+standard_library.install_aliases()
+
 
 try:
     import dbus
@@ -140,6 +139,8 @@ def set_console_icon(filepath):
     if not os.path.isfile(filepath):
         return
 
+    import ctypes
+
     IMAGE_ICON = 1
     LR_LOADFROMFILE = 0x00000010
     LR_DEFAULTSIZE = 0x00000040
@@ -155,6 +156,7 @@ def set_console_icon(filepath):
 def set_console_title(value):
     title = value.encode('utf-8')
     if os.name == 'nt':
+        import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
         stdout.write("\x1b]2;{}\x07".format(title))

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import json
+from builtins import dict
 from time import time
 
 from bottle import HTTPError, request, response, route
+from future import standard_library
 
 from pyload.webui.interface import SETUP
 from pyload.webui.utils import add_json_header
+
+standard_library.install_aliases()
 
 
 # returns http error

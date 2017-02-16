@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
-from builtins import bytes, str
+from builtins import bytes, int, str
 from gettext import gettext
+
+from future import standard_library
 
 from pyload.api import Input, InputType
 from pyload.utils.convert import to_bool, to_str
 from pyload.utils.lib.collections import namedtuple
+
+standard_library.install_aliases()
+
 
 ConfigData = namedtuple("ConfigData", "label description input")
 

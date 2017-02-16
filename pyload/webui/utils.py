@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import re
 
 from bottle import HTTPError, redirect, request
+from future import standard_library
 
 from pyload.webui.interface import PYLOAD, SETUP
+
+standard_library.install_aliases()
 
 
 def add_json_header(r):

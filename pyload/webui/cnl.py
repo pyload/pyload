@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import io
 import os
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
-from builtins import str
+from builtins import int, str
 from traceback import print_exc
 from urllib.parse import unquote
 

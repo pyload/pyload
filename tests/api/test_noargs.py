@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import inspect
 
 from future import standard_library
-standard_library.install_aliases()
-import inspect
 
 from pyload.remote.apitypes import Iface
 from tests.api.apitester import ApiTester
+
+standard_library.install_aliases()
+
 
 IGNORE = ('quit', 'restart')
 

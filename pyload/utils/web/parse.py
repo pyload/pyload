@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import re
 
 import requests
 import tld
+from future import standard_library
 
 from pyload.utils import format
 from pyload.utils.struct import HeaderDict
 from pyload.utils.web import convert as webconvert
 from pyload.utils.web import purge as webpurge
+
+standard_library.install_aliases()
 
 
 # TODO: Recheck result format

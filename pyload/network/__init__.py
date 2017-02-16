@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
 import re
+from builtins import range
 from random import choice
 from time import sleep
 
+from future import standard_library
+
 from pyload.network.request import get_url
+
+standard_library.install_aliases()
 
 
 def get_ip(n=10):

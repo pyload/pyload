@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+from collections import defaultdict
 
 from future import standard_library
-standard_library.install_aliases()
-from collections import defaultdict
 
 from nose.tools import raises
 from pyload.api import InvalidConfigSection
@@ -16,6 +14,9 @@ from pyload.database import DatabaseBackend
 from pyload.manager import ConfigManager
 from tests.helper.stubs import Core, admin_user, normal_user
 from unittest2 import TestCase
+
+standard_library.install_aliases()
+
 
 admin_user = admin_user.primary if admin_user else None
 normal_user = normal_user.primary if normal_user else None

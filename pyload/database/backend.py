@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN, mkaay
 
-from __future__ import print_function, unicode_literals
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import io
 import os
 import shutil
-from builtins import object, range, str
+from builtins import int, object, range, str
 from traceback import print_exc
 
 from future import standard_library
@@ -90,8 +88,6 @@ class DatabaseJob(object):
     #        self.frame = inspect.currentframe()
 
     def __repr__(self):
-        import os
-
         frame = self.frame.f_back
         output = ""
         for i in range(5):

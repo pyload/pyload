@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import os
 import re
 from builtins import map
@@ -15,10 +11,14 @@ from builtins import map
 import bottle
 import requests
 import validators
+from future import standard_library
 
 import mimetypes
 from pyload.utils import format
 from pyload.utils.web import convert as webconvert
+
+standard_library.install_aliases()
+
 
 try:
     import IPy

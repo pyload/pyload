@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
@@ -15,6 +9,8 @@ import shutil
 from builtins import str
 from logging import DEBUG, log
 from time import time
+
+from future import standard_library
 
 from nose.tools import nottest
 from pyload.datatype import PyFile
@@ -27,6 +23,9 @@ from pyload.utils.path import remove
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
+
+standard_library.install_aliases()
+
 
 DL_DIR = os.path.join("Downloads", "tmp")
 

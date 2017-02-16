@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import re
@@ -16,10 +12,15 @@ from collections import defaultdict
 from logging import getLogger
 from time import time
 
+from future import standard_library
+
 from pyload.plugin import Base
 from pyload.utils.lib.collections import namedtuple
 from pyload.utils.lib.eval import const_eval as literal_eval
 from pyload.utils.path import makedirs
+
+standard_library.install_aliases()
+
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")
 

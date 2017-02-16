@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
 import datetime
 import os
 import re
 import urllib.parse
-from builtins import map, str
+from builtins import int, map, str
 
 from future import standard_library
 

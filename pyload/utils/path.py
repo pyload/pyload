@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from builtins import int
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import shutil
+from builtins import int
 from os.path import *
 
-import ctypes
-from pyload.utils import format
+from future import standard_library
+
 from pyload.utils.check import ismodule
 from pyload.utils.decorator import iterate
+
+standard_library.install_aliases()
+
 
 try:
     import send2trash
@@ -31,6 +30,7 @@ def availspace(folder):
         stat = os.statvfs(folder)
         res = stat.f_frsize * stat.f_bavail
     else:
+        import ctypes
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder),
                                                    None,
@@ -128,6 +128,7 @@ def bufsize(path):
     if os.name != 'nt':
         res = os.statvfs(path).f_bsize
     else:
+        import ctypes
         drive = "{}\\".format(splitdrive(abspath(path))[0])
         cluster_sectors = ctypes.c_longlong(0)
         sector_size = ctypes.c_longlong(0)

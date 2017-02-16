@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 #@author: vuolter
 
-from __future__ import absolute_import, print_function, unicode_literals
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import gettext
 import io
 import os
 import socket
 from builtins import PACKDIR
 
+from future import standard_library
+
 from pyload.utils.lib import hashlib
 from pyload.utils.path import bufsize
+
+standard_library.install_aliases()
+
 
 try:
     import zlib

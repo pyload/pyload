@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, unicode_literals
-from __future__ import print_function
-from __future__ import division
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from future import standard_library
-standard_library.install_aliases()
 import io
 import os
 import shutil
@@ -17,6 +14,8 @@ from json import loads
 from logging import DEBUG, log
 from time import sleep, time
 
+from future import standard_library
+
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.network.request import get_request
 from pyload.plugin import Abort, Fail
@@ -24,6 +23,8 @@ from pyload.plugin.downloader.hoster import Hoster
 from pyload.utils.path import makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
+
+standard_library.install_aliases()
 
 
 def _wait(self):

@@ -13,37 +13,29 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 #
+
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-from __future__ import with_statement
-from __future__ import absolute_import
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals, with_statement)
+
+import io
+import logging
+import os
+from builtins import COREDIR, object, range
 
 from future import standard_library
-standard_library.install_aliases()
-import io
-from __future__ import print_function
-
-import io
-from __future__ import unicode_literals
-
-import io
-from __future__ import division
-
-import io
-from builtins import range
-from builtins import object
-from builtins import COREDIR
-import os
-import os
-import os
-import logging
-from pyload.utils.lib.subprocess import PIPE, Popen
-from pyload.utils.path import remove
-# import tempfile
 
 import Image
+from pyload.utils.lib.subprocess import PIPE, Popen
+from pyload.utils.path import remove
+
+standard_library.install_aliases()
+
+
+# import tempfile
 
 
 class OCR(object):
