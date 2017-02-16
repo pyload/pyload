@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import division
 
+from builtins import dict
+from future import standard_library
+standard_library.install_aliases()
 import io
 import os
 

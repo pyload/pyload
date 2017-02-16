@@ -9,7 +9,12 @@ Released under the BSD-license.
 http://code.activestate.com/recipes/502283-read-write-lock-class-rlock-like/
 """
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
 from builtins import object
 from contextlib import contextmanager
 from time import time

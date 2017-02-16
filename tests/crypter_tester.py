@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
 import io
 import os
 from logging import DEBUG, log

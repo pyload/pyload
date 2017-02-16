@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from __future__ import print_function
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
 from pyload.api import PackageStatus as PS
 from pyload.api import (Api, DownloadState, FileDoesNotExist,
                         PackageDoesNotExist, Permission, require_perm)

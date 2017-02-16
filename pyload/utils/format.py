@@ -2,7 +2,10 @@
 #@author: vuolter
 
 from __future__ import absolute_import, unicode_literals
+from __future__ import print_function
+from __future__ import division
 
+from builtins import int
 import datetime
 import os
 import re

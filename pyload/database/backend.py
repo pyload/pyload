@@ -2,7 +2,10 @@
 #@author: RaNaN, mkaay
 
 from __future__ import print_function, unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import int
 import io
 import os
 import shutil

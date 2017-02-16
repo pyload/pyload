@@ -2,7 +2,11 @@
 #@author: zoidberg
 
 from __future__ import division, unicode_literals
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import int
+from builtins import super
 import re
 from builtins import bytes, str
 from time import time

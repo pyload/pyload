@@ -2,7 +2,11 @@
 #@author: mkaay
 
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import int
 import re
 from builtins import str
 from urllib.parse import quote, unquote, urlparse

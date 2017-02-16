@@ -10,6 +10,9 @@
 #           \/
 
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 import builtins
 import io
@@ -348,7 +351,7 @@ class Core(Process):
         self._init_managers()
 
     def _check_process(self):
-        profile = os.path.basename(os.getcwd())
+        profile = os.path.basename(os.getcwdu())
         try:
             sys.set_process_title(profile)
         except NameError:
@@ -371,7 +374,7 @@ class Core(Process):
     def run(self):
         self.log.info(_("Starting pyLoad ..."))
         self.log.info(_("Version: {}").format(self.__version__))
-        self.log.info(_("Profile: {}").format(os.path.abspath(os.getcwd())))
+        self.log.info(_("Profile: {}").format(os.path.abspath(os.getcwdu())))
 
         self._start_interface(self.__web, self.__rpc)
         self._check_storage()

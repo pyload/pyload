@@ -2,7 +2,9 @@
 #@author: RaNaN
 
 from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import division
 
+from builtins import int
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify

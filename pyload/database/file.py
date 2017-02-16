@@ -2,7 +2,13 @@
 #@author: RaNaN
 
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 from pyload.api import DownloadState as DS
 from pyload.api import (DownloadInfo, FileInfo, PackageInfo, PackageStats,
                         state_string)

@@ -2,7 +2,10 @@
 #@author: RaNaN
 
 from __future__ import absolute_import, division, unicode_literals
+from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
 import io
 import os
 import shutil

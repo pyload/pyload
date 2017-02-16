@@ -2,7 +2,11 @@
 #@author: RaNaN
 
 from __future__ import print_function, unicode_literals
+from __future__ import division
+from __future__ import absolute_import
 
+from builtins import int
+from builtins import dict
 import io
 from builtins import bytes, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup

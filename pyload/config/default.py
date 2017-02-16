@@ -4,12 +4,17 @@
 Configuration layout for default base config.
 """
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 
 # TODO: write tooltips and descriptions
 # TODO: use apis config related classes
 
 
+from future import standard_library
+standard_library.install_aliases()
 def make_config(config):
     # Check if gettext is installed
     _ = lambda x: x

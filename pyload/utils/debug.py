@@ -2,7 +2,12 @@
 #@author: vuolter
 
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
 import inspect
 import os
 import pprint
@@ -49,7 +54,7 @@ def print_dump(obj, file=None):
     text = format_dump(obj)
     if file:
         return file.write(text)
-    print text
+    print(text)
 
 
 def _format_framestack(frame=None, limit=None):
@@ -102,7 +107,7 @@ def print_framestack(frame=None, limit=None, file=None):
     text = format_framestack(frame, limit)
     if file:
         return file.write(text)
-    print text
+    print(text)
 
 
 def _format_traceback(frame=None, limit=None, offset=None):
@@ -146,4 +151,4 @@ def print_traceback(frame=None, limit=None, file=None):
     text = format_traceback(frame, limit, offset=1)
     if file:
         return file.write(text)
-    print text
+    print(text)
