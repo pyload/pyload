@@ -346,7 +346,9 @@ class Hoster(Base):
         if self.pyload.config.get(
                 'permission', 'change_fileowner') and os.name != 'nt':
             try:
-                uid = pwd.getpwnam(self.pyload.config.get('permission', 'user'))[2]
+                uid = pwd.getpwnam(
+                    self.pyload.config.get(
+                        'permission', 'user'))[2]
                 gid = grp.getgrnam(self.pyload.config.get(
                     'permission', 'group'))[2]
 

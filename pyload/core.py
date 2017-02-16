@@ -151,7 +151,8 @@ class Core(Process):
                                                             backupCount=max_logfiles,
                                                             encoding=getpreferredencoding())
         else:
-            filehdlr = logging.FileHandler(logfile, encoding=getpreferredencoding())
+            filehdlr = logging.FileHandler(
+                logfile, encoding=getpreferredencoding())
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)

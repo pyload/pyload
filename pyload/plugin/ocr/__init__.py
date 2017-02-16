@@ -81,7 +81,12 @@ class OCR(object):
         # self.log.debug("create tmp tif")
 
         # tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp = io.open(os.path.join("tmp", "tmpTif_{}.tif".format(self.__name__)), "wb")
+        tmp = io.open(
+            os.path.join(
+                "tmp",
+                "tmpTif_{}.tif".format(
+                    self.__name__)),
+            "wb")
         tmp.close()
         # self.log.debug("create tmp txt")
         # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")

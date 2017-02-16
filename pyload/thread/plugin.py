@@ -67,7 +67,10 @@ class PluginThread(Thread):
                     for f in os.listdir(os.path.join("tmp", name)):
                         try:
                             # avoid encoding errors
-                            zip.write(os.path.join("tmp", name, f), safe_join(name, f))
+                            zip.write(
+                                os.path.join(
+                                    "tmp", name, f), safe_join(
+                                    name, f))
                         except Exception:
                             pass
 

@@ -101,7 +101,10 @@ class HosterPluginTester(PluginTester):
 # setup methods
 c = Core()
 
-sections = parse_config(os.path.join(os.path.dirname(__file__), "hosterlinks.txt"))
+sections = parse_config(
+    os.path.join(
+        os.path.dirname(__file__),
+        "hosterlinks.txt"))
 
 for f in sections['files']:
     name, hash = f.rsplit(" ", 1)

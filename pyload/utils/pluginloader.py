@@ -151,7 +151,8 @@ class PluginLoader(object):
                 if name[-1] == ".":
                     name = name[:-4]
 
-                plugin = self.parse_plugin(os.path.join(pfolder, f), folder, name)
+                plugin = self.parse_plugin(
+                    os.path.join(pfolder, f), folder, name)
                 if plugin:
                     plugins[name] = plugin
 
