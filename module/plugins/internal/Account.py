@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.78"
+    __version__ = "0.79"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -281,7 +281,9 @@ class Account(Plugin):
         if force:
             self.init_accounts()  #@TODO: Recheck in 0.4.10
 
-        return [self.getAccountData(user, force) for user in self.accounts]
+        # @NOTE: `init_accounts()` already calls getAccountData(user, True), avoid calling `get_info()` twice
+        # @NOTE: So force=False always here
+        return [self.getAccountData(user, False) for user in self.accounts]
 
 
     #@TODO: Remove in 0.4.10
@@ -312,6 +314,7 @@ class Account(Plugin):
 
         u = self.accounts[user] = d
         result = u['plugin'].choose(user)
+        u['plugin'].get_info()
 
         return result
 
