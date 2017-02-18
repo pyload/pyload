@@ -10,7 +10,7 @@ from module.plugins.internal.misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__    = "MultiAccount"
     __type__    = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__  = "testing"
 
     __config__ = [("activated"  , "bool"               , "Activated"                    , True ),
@@ -74,7 +74,7 @@ class MultiAccount(Account):
             self.pluginclass  = self.pyload.pluginManager.loadClass(self.plugintype, self.classname)
 
             interval = self.config.get('mh_interval', 12) * 60 * 60
-            self.periodical.start(interval, threaded=True)
+            self.periodical.start(interval, threaded=True, delay=2)
 
         else:
             self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
@@ -122,6 +122,10 @@ class MultiAccount(Account):
 
 
     def periodical_task(self):
+        if self.info['login']['valid'] != True:
+            self.periodical.set_interval(10)
+            return
+
         if not self.info['data'].get('hosters'):
             self.log_info(_("Loading hoster list for user `%s`...") % self.user)
         else:
