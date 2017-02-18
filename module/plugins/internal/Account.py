@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.77"
+    __version__ = "0.78"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -302,7 +302,7 @@ class Account(Plugin):
              'maxtraffic' : None,
              'options'    : options or {'limitdl': ['0']},
              'password'   : password or "",
-             'plugin'     : self.__class__(self.manager, self.accounts),
+             'plugin'     : self.pyload.accountManager.getAccountPlugin(self.classname),
              'premium'    : None,
              'timestamp'  : 0,
              'trafficleft': None,
@@ -312,7 +312,6 @@ class Account(Plugin):
 
         u = self.accounts[user] = d
         result = u['plugin'].choose(user)
-        u['plugin'].get_info()
 
         return result
 
