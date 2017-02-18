@@ -15,7 +15,7 @@ def args(**kwargs):
 class DebridlinkFr(MultiAccount):
     __name__    = "DebridlinkFr"
     __type__    = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -49,13 +49,12 @@ class DebridlinkFr(MultiAccount):
 
 
     def grab_hosters(self, user, password, data):
-        res = self.api_request("/downloader/status")
+        res = self.api_request("/downloader/hostnames")
 
         if res['result'] == "OK":
-            return reduce((lambda x,y: x + y), [h['hosts'] for h in res['value']['hosters'] if h])
+            return res['value']
 
         else:
-            self.log_error(_("Unable to retrieve hoster list"), res['ERR'])
             return []
 
 
