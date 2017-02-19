@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import urlparse
+
 from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import json
 
@@ -7,7 +9,7 @@ from module.plugins.internal.misc import json
 class PremiumizeMe(MultiHoster):
     __name__    = "PremiumizeMe"
     __type__    = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__  = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -45,7 +47,12 @@ class PremiumizeMe(MultiHoster):
         if status == 200:
             self.pyfile.name = res['result']['filename']
             self.pyfile.size = res['result']['filesize']
-            self.link        = res['result']['location']
+
+            #@NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
+            urlp = urlparse.urlparse(res['result']['location'])
+            urlq = urlparse.parse_qsl(urlp.query)
+            self.download("%s://%s%s" % (urlp.scheme, urlp.netloc, urlp.path), get=urlq)
+            # self.link        = res['result']['location']
 
         elif status == 400:
             self.fail(_("Invalid url"))
