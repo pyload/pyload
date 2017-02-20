@@ -50,7 +50,6 @@ class NewLinkDock(QDockWidget):
         self.widget.box.setPlainText(result)
     
     def closeEvent(self, event):
-        self.widget.box.clear()
         self.hide()
         event.ignore()
 
@@ -116,6 +115,7 @@ class NewLinkWindow(QWidget):
 class PlainTextEdit(QPlainTextEdit):
     def __init__(self):
         QPlainTextEdit.__init__(self)
+        self.setMinimumHeight(30)
     
     def dropEvent(self, event):
         if not self.toPlainText().isEmpty():

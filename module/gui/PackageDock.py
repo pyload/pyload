@@ -61,9 +61,6 @@ class NewPackageDock(QDockWidget):
         self.widget.box.setPlainText(result)
     
     def closeEvent(self, event):
-        self.widget.nameInput.setText("")
-        self.widget.passwordInput.setText("")
-        self.widget.box.clear()
         self.hide()
         event.ignore()
 
@@ -73,7 +70,7 @@ class NewPackageWindow(QWidget):
         self.log = logging.getLogger("guilog")
         self.dock = dock
         
-        self.setLayout(QGridLayout())
+        self.setLayout(QVBoxLayout())
         layout = self.layout()
         
         nameLabel = QLabel(_("Name"))
@@ -109,16 +106,18 @@ class NewPackageWindow(QWidget):
         hbox.addWidget(self.msg)
         hbox.addWidget(self.save)
         
-        layout.addWidget(nameLabel, 0, 0)
-        layout.addWidget(nameInput, 0, 1)
-        layout.addWidget(passwordLabel, 1, 0)
-        layout.addWidget(passwordInput, 1, 1)
-        layout.addWidget(linksLabel, 2, 0, 1, 2)
-        layout.addWidget(self.box, 3, 0, 1, 2)
-        layout.addWidget(self.clear, 4, 0, 1, 2)
-        layout.addWidget(self.filter, 5, 0, 1, 2)
-        layout.addLayout(destBtnLayout, 6, 0, 1, 2)
-        layout.addLayout(hbox, 7, 0, 1, 2)
+        grid = QGridLayout()
+        grid.addWidget(nameLabel, 0, 0)
+        grid.addWidget(nameInput, 0, 1)
+        grid.addWidget(passwordLabel, 1, 0)
+        grid.addWidget(passwordInput, 1, 1)
+        layout.addLayout(grid)
+        layout.addWidget(linksLabel)
+        layout.addWidget(self.box)
+        layout.addWidget(self.clear)
+        layout.addWidget(self.filter)
+        layout.addLayout(destBtnLayout)
+        layout.addLayout(hbox)
         
         self.adjustSize()
         self.msg.setFixedHeight(self.save.height())
@@ -142,6 +141,7 @@ class NewPackageWindow(QWidget):
 class PlainTextEdit(QPlainTextEdit):
     def __init__(self):
         QPlainTextEdit.__init__(self)
+        self.setMinimumHeight(30)
     
     def dropEvent(self, event):
         if not self.toPlainText().isEmpty():

@@ -11,12 +11,16 @@
     <mainWindow>
         <state></state>
         <geometry></geometry>
+        <geometryMaximize></geometryMaximize>
         <optionsNotifications></optionsNotifications>
         <optionsLogging></optionsLogging>
         <optionsClickNLoadForwarder></optionsClickNLoadForwarder>
         <optionsAutomaticReloading></optionsAutomaticReloading>
+        <geometryCaptcha></geometryCaptcha>
+        <optionsCaptcha></optionsCaptcha>
         <optionsFonts></optionsFonts>
         <optionsTray></optionsTray>
+        <optionsOther></optionsOther>
         <visibilitySpeedLimit></visibilitySpeedLimit>
         <stateQueue></stateQueue>
         <stateCollector></stateCollector>

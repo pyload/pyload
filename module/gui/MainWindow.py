@@ -26,7 +26,7 @@ from os.path import join
 
 from module.gui.PackageDock import *
 from module.gui.LinkDock import *
-from module.gui.CaptchaDock import CaptchaDock
+from module.gui.CaptchaDialog import CaptchaDialog
 from module.gui.SettingsWidget import SettingsWidget
 from module.gui.Collector import CollectorView, Package, Link
 from module.gui.Queue import QueueView
@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
             set up main window
         """
         QMainWindow.__init__(self)
+        self.setEnabled(False)
         self.log = logging.getLogger("guilog")
         self.corePermissions = corePermissions
         self.connector = connector
@@ -51,7 +52,9 @@ class MainWindow(QMainWindow):
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("pyLoad Client"))
         self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
-        self.resize(1000,600)
+        self.resize(100 ,100)
+        self.move(200 ,200)
+        self.initPaintEventHook()
         
         #layout version
         self.version = 3
@@ -61,9 +64,7 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
         self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
-        self.captchaDock = CaptchaDock()
-        self.connect(self.captchaDock, SIGNAL("visibilityChanged(bool)"), self.slotCaptchaDockVisibilityChanged)
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.captchaDock)
+        self.captchaDialog = CaptchaDialog()
         self.newLinkDock = NewLinkDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
@@ -169,19 +170,20 @@ class MainWindow(QMainWindow):
                          "logging": QAction(_("Client Log"), self.menus["options"]),
                          "cnlfwding": QAction(_("ClickNLoad Forwarding"), self.menus["options"]),
                          "autoreloading": QAction(_("Automatic Reloading"), self.menus["options"]),
+                         "captcha": QAction(_("Captcha Solving"), self.menus["options"]),
                          "fonts": QAction(_("Fonts"), self.menus["options"]),
-                         "tray": QAction(_("Tray"), self.menus["options"]),
+                         "tray": QAction(_("Tray Icon"), self.menus["options"]),
+                         "other": QAction(_("Other"), self.menus["options"]),
                          "language": QAction(_("Language"), self.menus["options"]),
                          "reload": QAction(_("Reload"), self.menus["view"]),
+                         "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
-                         "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "about": QAction(_("About pyLoad Client"), self.menus["help"])}
         
         self.mactions["showtoolbar"].setCheckable(True)
         self.mactions["showspeedlimit"].setCheckable(True)
         self.mactions["showspeedlimit"].setChecked(True)
-        self.mactions["showcaptcha"].setCheckable(True)
 
         #add menu actions
         self.menus["file"].addAction(self.mactions["manager"])
@@ -195,14 +197,16 @@ class MainWindow(QMainWindow):
         self.menus["options"].addAction(self.mactions["logging"])
         self.menus["options"].addAction(self.mactions["cnlfwding"])
         self.menus["options"].addAction(self.mactions["autoreloading"])
+        self.menus["options"].addAction(self.mactions["captcha"])
         self.menus["options"].addAction(self.mactions["fonts"])
         self.menus["options"].addAction(self.mactions["tray"])
+        self.menus["options"].addAction(self.mactions["other"])
         self.menus["options"].addAction(self.mactions["language"])
         self.menus["view"].addAction(self.mactions["reload"])
+        self.menus["view"].addAction(self.mactions["showcaptcha"])
         self.menus["view"].addSeparator()
         self.menus["view"].addAction(self.mactions["showtoolbar"])
         self.menus["view"].addAction(self.mactions["showspeedlimit"])
-        self.menus["view"].addAction(self.mactions["showcaptcha"])
         self.menus["help"].addAction(self.mactions["about"])
         
         #toolbar
@@ -245,17 +249,19 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["logging"], SIGNAL("triggered()"), self.slotShowLoggingOptions)
         self.connect(self.mactions["cnlfwding"], SIGNAL("triggered()"), self.slotShowClickNLoadForwarderOptions)
         self.connect(self.mactions["autoreloading"], SIGNAL("triggered()"), self.slotShowAutomaticReloadingOptions)
+        self.connect(self.mactions["captcha"], SIGNAL("triggered()"), self.slotShowCaptchaOptions)
         self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
         self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
+        self.connect(self.mactions["other"], SIGNAL("triggered()"), self.slotShowOtherOptions)
         self.connect(self.mactions["language"], SIGNAL("triggered()"), self.slotShowLanguageOptions)
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
         self.connect(self.mactions["coreperms"], SIGNAL("triggered()"), self.slotShowCorePermissions)
         self.connect(self.mactions["quitcore"], SIGNAL("triggered()"), self.slotQuitCore)
         self.connect(self.mactions["restartcore"], SIGNAL("triggered()"), self.slotRestartCore)
+        self.connect(self.mactions["reload"], SIGNAL("triggered()"), self.slotReload)
+        self.connect(self.mactions["showcaptcha"], SIGNAL("triggered()"), self.slotShowCaptcha)
         self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
         self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
-        self.connect(self.mactions["showcaptcha"], SIGNAL("toggled(bool)"), self.slotToggleCaptchaDock)
-        self.connect(self.mactions["reload"], SIGNAL("triggered()"), self.slotReload)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
@@ -266,8 +272,7 @@ class MainWindow(QMainWindow):
         
         self.notificationOptions = NotificationOptions()
         self.trayOptions = TrayOptions()
-    
-        self.setFocus()
+        self.otherOptions = OtherOptions()
     
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -277,7 +282,8 @@ class MainWindow(QMainWindow):
         self.tabs["overview"]["w"].setEnabled(corePermissions["LIST"])
         self.tabs["collector"]["view"].setCorePermissions(corePermissions)
         self.tabs["collector"]["w"].setEnabled(corePermissions["LIST"])
-        self.mactions["reload"].setEnabled(corePermissions["LIST"])
+        self.mactions["reload"].setEnabled(corePermissions["LIST"])         # main menu entry: View -> Reload
+        self.mactions["autoreloading"].setEnabled(corePermissions["LIST"])  # main menu entry: Options -> Automatic Reloading
         
         self.tabs["queue"]["b"].setEnabled(corePermissions["MODIFY"])
         self.tabs["collector"]["b"].setEnabled(corePermissions["MODIFY"])
@@ -306,6 +312,10 @@ class MainWindow(QMainWindow):
         
         # Api.pauseServer and Api.unpauseServer
         self.actions["toggle_status"].setEnabled(corePermissions["STATUS"])
+        
+        # Api.getCaptchaTask, Api.getCaptchaTaskStatus, Api.isCaptchaWaiting and Api.setCaptchaResult
+        self.mactions["captcha"].setEnabled(corePermissions["STATUS"])  # main menu entry: Options -> Captcha
+        self.captchaDialog.setEnabled(corePermissions["STATUS"])
         
         # 'Abort All' toolbar button
         if not corePermissions["MODIFY"]:
@@ -344,8 +354,8 @@ class MainWindow(QMainWindow):
         self.actions["add"].setDisabled(disableAdd)
         
         # admin permissions
-        self.mactions["quitcore"].setEnabled(corePermissions["admin"])
-        self.mactions["restartcore"].setEnabled(corePermissions["admin"])
+        self.mactions["quitcore"].setEnabled(corePermissions["admin"])      # main menu entry: File -> Quit pyLoad Server
+        self.mactions["restartcore"].setEnabled(corePermissions["admin"])   # main menu entry: File -> Restart pyLoad Server
     
     def createPopupMenu(self):
         """
@@ -526,8 +536,8 @@ class MainWindow(QMainWindow):
         self.queueContext.addSeparator()
         self.queueContext.buttons["add"] = self.queueContext.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
         self.queueContext.buttons["add_package"] = self.queueContext.buttons["add"].addAction(_("Package"))
-        self.queueContext.buttons["add_container"] = self.queueContext.buttons["add"].addAction(_("Container"))
         self.queueContext.buttons["add_links"] = self.queueContext.buttons["add"].addAction(_("Links"))
+        self.queueContext.buttons["add_container"] = self.queueContext.buttons["add"].addAction(_("Container"))
         self.queueContext.addAction(self.queueContext.buttons["edit"])
         self.queueContext.addAction(self.queueContext.buttons["abort"])
         self.queueContext.addAction(self.queueContext.buttons["restart"])
@@ -541,8 +551,8 @@ class MainWindow(QMainWindow):
         self.queueContext.addAction(self.queueContext.buttons["collapse"])
         self.connect(self.queueContext.buttons["pull"], SIGNAL("triggered()"), self.slotPullOutPackages)
         self.connect(self.queueContext.buttons["add_package"], SIGNAL("triggered()"), self.slotShowAddPackage)
-        self.connect(self.queueContext.buttons["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
         self.connect(self.queueContext.buttons["add_links"], SIGNAL("triggered()"), self.slotShowAddLinks)
+        self.connect(self.queueContext.buttons["add_container"], SIGNAL("triggered()"), self.slotShowAddContainer)
         self.connect(self.queueContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditPackages)
         self.connect(self.queueContext.buttons["abort"], SIGNAL("triggered()"), self.slotAbortDownloads)
         self.connect(self.queueContext.buttons["restart"], SIGNAL("triggered()"), self.slotRestartDownloads)
@@ -606,6 +616,68 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
+    def initPaintEventHook(self):
+        self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
+        self.paintEventLastMax = False
+    
+    def paintEvent(self, event):
+        geo = self.geometry()
+        if (geo.topLeft() != self.moveEventPos) or (geo.size() != self.resizeEventSize):
+            self.log.debug3("MainWindow.paintEvent: Bad geometry")
+            return
+        if (geo.topLeft() == self.paintEventLastGeo.topLeft()) or (geo.size() == self.paintEventLastGeo.size()):
+            return
+        # got new geometry, size and position
+        max = bool(self.windowState() & Qt.WindowMaximized)
+        maxChanged = (max != self.paintEventLastMax)
+        if not maxChanged:
+            return
+        # got maximize flag toggled
+        if max:
+            if self.log.isEnabledFor(logging.DEBUG3):
+                self.log.debug3("MainWindow.paintEvent: maximized\t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
+                mrogeo = QRect(self.moveEventOldPos, self.resizeEventOldSize)
+                self.log.debug3("MainWindow.paintEvent:          \t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[mrogeo]" % (mrogeo.topLeft().x(), mrogeo.topLeft().y(), mrogeo.size().width(), mrogeo.size().height()))
+            self.emit(SIGNAL("maximizeDone"))
+        else:
+            self.log.debug3("MainWindow.paintEvent: unmaximized\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
+            self.emit(SIGNAL("unmaximizeDone"))
+        self.paintEventLastGeo = geo
+        self.paintEventLastMax = max
+    
+    def moveEvent(self, event):
+        self.moveEventOldPos = event.oldPos()
+        self.moveEventPos = event.pos()
+        self.log.debug3("MainWindow.moveEvent:\t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))
+    
+    def resizeEvent(self, event):
+        self.resizeEventOldSize = event.oldSize()
+        self.resizeEventSize = event.size()
+        self.log.debug3("MainWindow.resizeEvent:\t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" % (event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
+    
+    def changeEvent(self, event):
+        if (event.type() == QEvent.WindowStateChange):
+            if (self.windowState() & Qt.WindowMinimized):
+                if not (event.oldState() & Qt.WindowMinimized):
+                    self.emit(SIGNAL("minimizeToggled"), True)
+            elif (event.oldState() & Qt.WindowMinimized):
+                self.emit(SIGNAL("minimizeToggled"), False)
+    
+    def closeEvent(self, event):
+        """
+            somebody wants to close me!
+        """
+        event.ignore()
+        # quit when the option to minimize is disabled
+        if not (self.trayOptions.settings["EnableTray"] and self.trayOptions.settings["Close2Tray"]):
+            self.emit(SIGNAL("Quit"))
+        # quit when no tray is available (Connection Manager)
+        elif not QSystemTrayIcon.isSystemTrayAvailable():
+            self.emit(SIGNAL("Quit"))
+        # hide in tray
+        else:
+            self.emit(SIGNAL("hideInTray"))
+    
     def slotShowAbout(self):
         """
             show the about-box
@@ -666,29 +738,20 @@ class MainWindow(QMainWindow):
         self.actions["speedlimit_rate"].setEnabled(False)
         self.actions["speedlimit_rate"].setVisible(checked)
     
-    def slotCaptchaDockVisibilityChanged(self, visible):
-        """
-            set the captcha dock checkbox in view-menu (mainmenu)
-        """
-        self.mactions["showcaptcha"].setChecked(visible)
-    
-    def slotToggleCaptchaDock(self, checked):
-        """
-            toggle from view-menu (mainmenu)
-            show/hide captcha dock
-        """
-        if checked:
-            self.captchaDock.show()
-        else:
-            self.captchaDock.hide()
-    
     def slotReload(self):
         """
-            toggle from view-menu (mainmenu)
+            from view-menu (mainmenu)
             force reload queue and collector tab 
         """
         self.emit(SIGNAL("reloadQueue"))
         self.emit(SIGNAL("reloadCollector"))
+    
+    def slotShowCaptcha(self):
+        """
+            from view-menu (mainmenu)
+            show captcha
+        """
+        self.emit(SIGNAL("showCaptcha"))
     
     def slotToggleStatus(self, status):
         """
@@ -736,6 +799,9 @@ class MainWindow(QMainWindow):
             self.newPackDock.widget.destQueue.setChecked(True)
         else:
             self.newPackDock.widget.destCollector.setChecked(True)
+        self.newPackDock.widget.nameInput.setText("")
+        self.newPackDock.widget.passwordInput.setText("")
+        self.newPackDock.widget.box.clear()
         self.newPackDock.show()
     
     def slotShowAddLinks(self):
@@ -747,6 +813,7 @@ class MainWindow(QMainWindow):
             self.newLinkDock.widget.destQueue.setChecked(True)
         else:
             self.newLinkDock.widget.destCollector.setChecked(True)
+        self.newLinkDock.widget.box.clear()
         self.newLinkDock.show()
     
     def slotShowConnector(self):
@@ -830,67 +897,6 @@ class MainWindow(QMainWindow):
             let main do it
         """
         self.emit(SIGNAL("pushPackagesToQueue"))
-    
-    def saveWindow(self):
-        """
-            get window state/geometry
-            pass data to main
-        """
-        state_raw = self.saveState(self.version)
-        geo_raw = self.saveGeometry()
-        
-        state = str(state_raw.toBase64())
-        geo = str(geo_raw.toBase64())
-        
-        self.emit(SIGNAL("saveMainWindow"), state, geo)
-    
-    def closeEvent(self, event):
-        """
-            somebody wants to close me!
-            let me first save my state
-        """
-        self.saveWindow()
-        event.ignore()
-        self.hide()
-        self.emit(SIGNAL("hidden"))
-        
-        # quit when the option to minimize is disabled
-        if not self.trayOptions.settings["Close2Tray"]:
-            self.emit(SIGNAL("Quit"))
-        
-        # quit when no tray is available (Connection Manager)
-        elif not QSystemTrayIcon.isSystemTrayAvailable():
-            self.emit(SIGNAL("Quit"))
-    
-    def restoreWindow(self, state, geo, stateQueue, stateCollector, stateAccounts, optionsNotifications, optionsTray, visibilitySpeedLimit):
-        """
-            restore window state/geometry
-        """
-        state = QByteArray(state)
-        geo = QByteArray(geo)
-        
-        state_raw = QByteArray.fromBase64(state)
-        geo_raw = QByteArray.fromBase64(geo)
-        
-        self.restoreState(state_raw, self.version)
-        self.restoreGeometry(geo_raw)
-        self.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
-        self.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
-        self.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
-        if optionsNotifications:
-            self.notificationOptions.settings = eval(str(QByteArray.fromBase64(optionsNotifications)))
-            self.notificationOptions.dict2checkBoxStates()
-        if optionsTray:
-            self.trayOptions.settings = eval(str(QByteArray.fromBase64(optionsTray)))
-            self.trayOptions.dict2checkBoxStates()
-            if self.trayOptions.settings["ShowTrayIcon"]:
-                self.emit(SIGNAL("showTrayIcon"))
-            else:
-                self.emit(SIGNAL("hideTrayIcon"))
-        if visibilitySpeedLimit:
-            visible =  eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
-            self.mactions["showspeedlimit"].setChecked(not visible)
-            self.mactions["showspeedlimit"].setChecked(visible)
     
     def slotQueueContextMenu(self, pos):
         """
@@ -1069,15 +1075,6 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("collapseAll"))
     
-    # TODO disabled because changing desktop on linux, main window disappears
-    #def changeEvent(self, e):
-    #    if e.type() == QEvent.WindowStateChange and self.isMinimized():
-    #        e.ignore()
-    #        self.hide()
-    #        self.emit(SIGNAL("hidden"))
-    #    else:
-    #        super(MainWindow, self).changeEvent(e)
-    
     def slotTabChanged(self, index):
         # currentIndex
         if index == 3:
@@ -1186,6 +1183,12 @@ class MainWindow(QMainWindow):
         """
         self.emit(SIGNAL("showAutomaticReloadingOptions"))
     
+    def slotShowCaptchaOptions(self):
+        """
+            popup the captcha options dialog
+        """
+        self.emit(SIGNAL("showCaptchaOptions"))
+    
     def slotShowFontOptions(self):
         """
             popup the font options dialog
@@ -1207,11 +1210,19 @@ class MainWindow(QMainWindow):
         self.trayOptions.dict2checkBoxStates()
         if self.trayOptions.exec_() == QDialog.Accepted:
             self.trayOptions.checkBoxStates2dict()
-            if self.trayOptions.settings["ShowTrayIcon"]:
+            if self.trayOptions.settings["EnableTray"]:
                 self.emit(SIGNAL("showTrayIcon"))
             else:
                 self.emit(SIGNAL("hideTrayIcon"))
-
+    
+    def slotShowOtherOptions(self):
+        """
+            popup the other options dialog
+        """
+        self.otherOptions.dict2checkBoxStates()
+        if self.otherOptions.exec_() == QDialog.Accepted:
+            self.otherOptions.checkBoxStates2dict()
+    
     def slotShowLanguageOptions(self):
         """
             popup the language options dialog
@@ -1220,7 +1231,7 @@ class MainWindow(QMainWindow):
 
 class SpinBox(QSpinBox):
     """
-        QSpinBox that supports ESCAPE key and that loses focus on ENTER key
+        a spinbox that supports 'escape' key and loses focus when the 'enter' key is pressed
         for the toolbar speed limit setting
     """
     def __init__(self):
@@ -1262,6 +1273,7 @@ class NotificationOptions(QDialog):
         self.cbTempOffline     = QCheckBox(_("Download Temporarily Offline"))
         self.cbFailed          = QCheckBox(_("Download Failed"))
         self.cbAborted         = QCheckBox(_("Download Aborted"))
+        self.cbCaptcha         = QCheckBox(_("Captcha Arrived"))
         
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbPackageFinished)
@@ -1271,6 +1283,7 @@ class NotificationOptions(QDialog):
         vboxCb.addWidget(self.cbTempOffline)
         vboxCb.addWidget(self.cbFailed)
         vboxCb.addWidget(self.cbAborted)
+        vboxCb.addWidget(self.cbCaptcha)
         
         self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications"))
         self.cbEnableNotify.setCheckable(True)
@@ -1302,6 +1315,7 @@ class NotificationOptions(QDialog):
         self.cbTempOffline.setChecked(True)
         self.cbFailed.setChecked(True)
         self.cbAborted.setChecked(False)
+        self.cbCaptcha.setChecked(False)
         self.checkBoxStates2dict()
     
     def checkBoxStates2dict(self):
@@ -1313,6 +1327,7 @@ class NotificationOptions(QDialog):
         self.settings["TempOffline"]     = self.cbTempOffline.isChecked()
         self.settings["Failed"]          = self.cbFailed.isChecked()
         self.settings["Aborted"]         = self.cbAborted.isChecked()
+        self.settings["Captcha"]         = self.cbCaptcha.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbEnableNotify.setChecked    (self.settings["EnableNotify"])
@@ -1323,6 +1338,7 @@ class NotificationOptions(QDialog):
         self.cbTempOffline.setChecked     (self.settings["TempOffline"])
         self.cbFailed.setChecked          (self.settings["Failed"])
         self.cbAborted.setChecked         (self.settings["Aborted"])
+        self.cbCaptcha.setChecked         (self.settings["Captcha"])
 
 class TrayOptions(QDialog):
     """
@@ -1340,15 +1356,18 @@ class TrayOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
         
-        self.cbShowIcon   = QCheckBox(_("Show Tray Icon"))
-        self.cbClose2Tray = QCheckBox(_("Close Button minimizes to Tray"))
+        self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
+        self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
+        self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
         
         vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbShowIcon)
+        vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
+        vboxCb.addWidget(self.cbAltMethod)
         
-        self.gb = QGroupBox(_("Tray"))
-        self.gb.setLayout(vboxCb)
+        self.cbEnableTray = QGroupBox(_("Enable") + " " + _("Tray Icon"))
+        self.cbEnableTray.setCheckable(True)
+        self.cbEnableTray.setLayout(vboxCb)
         
         self.buttons = QDialogButtonBox(Qt.Horizontal, self)
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
@@ -1357,7 +1376,7 @@ class TrayOptions(QDialog):
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
         
         vbox = QVBoxLayout()
-        vbox.addWidget(self.gb)
+        vbox.addWidget(self.cbEnableTray)
         vbox.addWidget(self.buttons)
         self.setLayout(vbox)
         
@@ -1367,28 +1386,75 @@ class TrayOptions(QDialog):
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
         
-        self.connect(self.cbShowIcon, SIGNAL("toggled(bool)"), self.cbShowIconToggled)
-                
         # default settings
-        self.cbShowIcon.setChecked(False)
-        self.cbClose2Tray.setChecked(False)
-        self.checkBoxStates2dict()
-    
-    def cbShowIconToggled(self, checked):
-        if checked:
-            self.cbClose2Tray.setEnabled(True)
-        else:
-            self.cbClose2Tray.setEnabled(False)
-            self.cbClose2Tray.setChecked(False)
+        self.settings["EnableTray"]    = True
+        self.settings["Minimize2Tray"] = False
+        self.settings["Close2Tray"]    = False
+        self.settings["AltMethod"]     = False
+        self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
-        if not self.cbShowIcon.isChecked() and self.cbClose2Tray.isChecked():
-            raise RuntimeError("Invalid dialog state")
-        self.settings["ShowTrayIcon"] = self.cbShowIcon.isChecked()
-        self.settings["Close2Tray"]   = self.cbClose2Tray.isChecked()
+        self.settings["EnableTray"]    = self.cbEnableTray.isChecked()
+        self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
+        self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
+        self.settings["AltMethod"]     = self.cbAltMethod.isChecked()
     
     def dict2checkBoxStates(self):
-        if not self.settings["ShowTrayIcon"] and self.settings["Close2Tray"]:
-            raise RuntimeError("Invalid settings")
-        self.cbShowIcon.setChecked(self.settings["ShowTrayIcon"])
-        self.cbClose2Tray.setChecked(self.settings["Close2Tray"])
+        self.cbEnableTray.setChecked    (self.settings["EnableTray"])
+        self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
+        self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
+        self.cbAltMethod.setChecked     (self.settings["AltMethod"])
+
+class OtherOptions(QDialog):
+    """
+        other options dialog
+    """
+    
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+        
+        self.settings = {}
+        
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        
+        self.cbUnmaximze = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
+        whatsThis = (self.cbUnmaximze.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maxmized window."))
+        self.cbUnmaximze.setWhatsThis(whatsThisFormat(*whatsThis))
+        
+        vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbUnmaximze)
+        
+        self.cbEnableUnmax = QGroupBox(_("Other"))
+        self.cbEnableUnmax.setCheckable(False)
+        self.cbEnableUnmax.setLayout(vboxCb)
+        
+        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+        
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.cbEnableUnmax)
+        vbox.addWidget(self.buttons)
+        self.setLayout(vbox)
+        
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())
+        
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        
+        # default settings
+        self.settings["Unmaximize"] = False
+        self.dict2checkBoxStates()
+    
+    def checkBoxStates2dict(self):
+        self.settings["Unmaximize"] = self.cbUnmaximze.isChecked()
+    
+    def dict2checkBoxStates(self):
+        self.cbUnmaximze.setChecked(self.settings["Unmaximize"])

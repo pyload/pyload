@@ -89,6 +89,7 @@ class main(QObject):
         """
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
+        self.app.setQuitOnLastWindowClosed(False)
         self.defAppFont = QApplication.font()
         self.path = pypath
         self.homedir = abspath("")
@@ -186,6 +187,7 @@ class main(QObject):
         """
             set main things up
         """
+        self.tray = None
         self.guiLogMutex = QMutex()
 
         self.parser = XMLParser(join(self.homedir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
@@ -222,12 +224,14 @@ class main(QObject):
         self.connector = Connector(first)
         self.inSlotToolbarSpeedLimitEdited = False
         self.mainWindow = MainWindow(self.corePermissions, self.connector)
+        self.initMaxiUnmaxiWait()
         self.packageEdit = PackageEdit()
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
         self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions()
         self.automaticReloadingOptions = AutomaticReloadingOptions()
         self.languageOptions = LanguageOptions()
+        self.captchaOptions = CaptchaOptions()
         self.connWindow = ConnectionManager()
         self.clickNLoadForwarder = ClickNLoadForwarder()
         self.mainloop = self.Loop(self)
@@ -236,21 +240,10 @@ class main(QObject):
         self.checkClipboard = False
         conn = self.refreshConnections(self.cmdLineConnection)
         self.connData = None
-        self.captchaProcessing = False
         self.serverStatus = {"freespace":0}
 
         self.core = None # pyLoadCore if started
         self.connectionLost = False
-
-        if True: # when used if first, minimizing not working correctly..
-            self.tray = TrayIcon()
-            self.notification = Notification(self.tray)
-            self.connect(self, SIGNAL("showMessage"), self.notification.showMessage)
-            self.connect(self.tray.exitAction, SIGNAL("triggered()"), self.slotQuit)
-            self.connect(self.tray.showAction, SIGNAL("toggled(bool)"), self.mainWindow.setVisible)
-            self.connect(self.mainWindow, SIGNAL("showTrayIcon"), self.tray.show)
-            self.connect(self.mainWindow, SIGNAL("hideTrayIcon"), self.tray.hide)
-            self.connect(self.mainWindow, SIGNAL("hidden"), self.tray.mainWindowHidden)
 
         if not first:
             self.connWindow.emit(SIGNAL("setCurrentItem"), self.lastConnection)
@@ -343,7 +336,7 @@ class main(QObject):
         """
             start all refresh threads and show main window
         """
-        self.restoreMainWindow()
+        self.loadOptionsFromConfig()
         if not self.connector.connectProxy():
             self.init()
             return
@@ -353,31 +346,68 @@ class main(QObject):
         self.initClickNLoadForwarder()
         if self.connector.isSSLConnection():
             self.mainWindow.setWindowTitle(self.mainWindow.windowTitle() + " SSL")
+        self.mainWindow.newPackDock.hide()
+        self.mainWindow.newLinkDock.hide()
+        self.mainWindow.newPackDock.setFloating(False)
+        self.mainWindow.newLinkDock.setFloating(False)
         self.mainWindow.show()
+        self.loadWindowFromConfig() # geometry/state
+        if self.geoMaximizeConfig:
+            self.mainWindow.showMaximized()
         self.initQueue()
         self.initCollector()
-        self.mainloop.start()
         self.clipboard = self.app.clipboard()
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
-
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
         self.mainWindow.tabs["settings"]["w"].loadConfig()
-        self.tray.showAction.setDisabled(False)
+        self.createTrayIcon()
+        if self.mainWindow.trayOptions.settings["EnableTray"]:
+            self.tray.show()
+        else:
+            self.tray.hide()
+        self.mainloop.start()
+        self.allowUserActions(True)
+        self.mainWindow.raise_()
+        self.mainWindow.activateWindow()
+        self.mainWindow.tabw.setFocus(Qt.OtherFocusReason)
 
     def stopMain(self):
         """
-            stop all refresh threads and hide main window
+            stop all refresh threads, save and hide main window
         """
-        self.tray.showAction.setDisabled(True)
+        self.allowUserActions(False)
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
         self.clickNLoadForwarder.stop()
         self.mainloop.stop()
-        self.mainWindow.saveWindow()
-        self.mainWindow.hide()
         self.queue.stop()
+        self.prepareForSaveOptionsAndWindow(self.stopMain_continue)
+
+    def stopMain_continue(self):
+        self.saveOptionsAndWindowToConfig()
         self.connector.disconnectProxy()
+        if self.connectionLost:
+            msg = _("Lost connection to the server!")
+            self.log.error(msg)
+            self.msgBoxOk(msg, "C")
+        self.deleteTrayIcon()
+        self.init()
+
+    def allowUserActions(self, enabled):
+        """
+            enable/disable mainWindow, tray icon click and tray icon menu except 'Exit'
+        """
+        self.mainWindow.setEnabled(enabled)
+        self.tray.showAction.setEnabled(enabled)
+        if enabled and not self.mainWindow.captchaDialog.isFree():
+            self.tray.captchaAction.setEnabled(True)
+        else:
+            self.tray.captchaAction.setEnabled(False)
+        if enabled and self.trayState["hiddenInTray"]:
+            self.tray.contextAddMenu.setEnabled(self.corePermissions["ADD"])
+        else:
+            self.tray.contextAddMenu.setEnabled(False)
 
     def initCorePermissions(self):
         """
@@ -448,6 +478,7 @@ class main(QObject):
         self.connect(self.connWindow,          SIGNAL("saveAllConnections"), self.slotSaveAllConnections)
         self.connect(self.connWindow,          SIGNAL("removeConnection"), self.slotRemoveConnection)
         self.connect(self.connWindow,          SIGNAL("connect"), self.slotConnect)
+        self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
         self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
         self.connect(self.mainWindow,          SIGNAL("showCorePermissions"), self.slotShowCorePermissions)
         self.connect(self.mainWindow,          SIGNAL("quitCore"), self.slotQuitCore)
@@ -455,6 +486,8 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("showLoggingOptions"), self.slotShowLoggingOptions)
         self.connect(self.mainWindow,          SIGNAL("showClickNLoadForwarderOptions"), self.slotShowClickNLoadForwarderOptions)
         self.connect(self.mainWindow,          SIGNAL("showAutomaticReloadingOptions"), self.slotShowAutomaticReloadingOptions)
+        self.connect(self.mainWindow,          SIGNAL("showCaptchaOptions"), self.slotShowCaptchaOptions)
+        self.connect(self.mainWindow,          SIGNAL("showCaptcha"), self.slotShowCaptcha)
         self.connect(self.mainWindow,          SIGNAL("showFontOptions"), self.slotShowFontOptions)
         self.connect(self.mainWindow,          SIGNAL("showLanguageOptions"), self.slotShowLanguageOptions)
         self.connect(self.mainWindow,          SIGNAL("reloadQueue"), self.slotReloadQueue)
@@ -462,7 +495,6 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("addPackage"), self.slotAddPackage)
         self.connect(self.mainWindow,          SIGNAL("addLinksToPackage"), self.slotAddLinksToPackage)
         self.connect(self.mainWindow,          SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
-        self.connect(self.mainWindow,          SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
         self.connect(self.mainWindow,          SIGNAL("pushPackagesToQueue"), self.slotPushPackagesToQueue)
         self.connect(self.mainWindow,          SIGNAL("restartDownloads"), self.slotRestartDownloads)
         self.connect(self.mainWindow,          SIGNAL("removeDownloads"), self.slotRemoveDownloads)
@@ -482,9 +514,335 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("Quit"), self.slotQuit)
 
         self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
-        self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
+        self.connect(self.mainWindow.captchaDialog, SIGNAL("done"), self.slotCaptchaDone)
 
         self.packageEdit.connect(self.packageEdit.saveBtn, SIGNAL("clicked()"), self.slotEditPackageSave)
+
+    def createTrayIcon(self):
+        self.trayState = {"p": {"f": False, "h": False, "f&!h": False}, "l": {"f": False, "h": False, "f&!h": False}}
+        self.trayState["hiddenInTray"] = False
+        self.trayState["ignoreMinimizeToggled"] = False
+        self.tray = TrayIcon()
+        self.notification = Notification(self.tray)
+        self.connect(self, SIGNAL("showMessage"),           self.notification.showMessage)
+        self.connect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray, Qt.QueuedConnection)
+        self.connect(self, SIGNAL("traySetShowActionText"), self.tray.setShowActionText)
+        self.connect(self.tray,                     SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.tray.clicked)
+        self.connect(self.tray.showAction,          SIGNAL("triggered()"), self.slotToggleShowFromHideInTray)
+        self.connect(self.tray.captchaAction,       SIGNAL("triggered()"), self.slotShowCaptcha)
+        self.connect(self.tray.addPackageAction,    SIGNAL("triggered()"), self.slotShowAddPackageFromTray)
+        self.connect(self.tray.addContainerAction,  SIGNAL("triggered()"), self.mainWindow.slotShowAddContainer)
+        self.connect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
+        self.connect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
+        if self.log.isEnabledFor(logging.DEBUG9):
+            self.connect(self.tray.debugTrayAction, SIGNAL("triggered()"), self.debugTray)
+        self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
+        self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
+        self.connect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
+        self.connect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
+
+    def deleteTrayIcon(self):
+        self.disconnect(self, SIGNAL("showMessage"),           self.notification.showMessage)
+        self.disconnect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray)
+        self.disconnect(self, SIGNAL("traySetShowActionText"), self.tray.setShowActionText)
+        self.disconnect(self.tray,                     SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.tray.clicked)
+        self.disconnect(self.tray.showAction,          SIGNAL("triggered()"), self.slotToggleShowFromHideInTray)
+        self.disconnect(self.tray.captchaAction,       SIGNAL("triggered()"), self.slotShowCaptcha)
+        self.disconnect(self.tray.addPackageAction,    SIGNAL("triggered()"), self.slotShowAddPackageFromTray)
+        self.disconnect(self.tray.addContainerAction,  SIGNAL("triggered()"), self.mainWindow.slotShowAddContainer)
+        self.disconnect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
+        self.disconnect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
+        if self.log.isEnabledFor(logging.DEBUG9):
+            self.disconnect(self.tray.debugTrayAction, SIGNAL("triggered()"), self.debugTray)
+        self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
+        self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
+        self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
+        self.disconnect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
+        self.tray.contextMenu.deleteLater()
+        self.tray.setContextMenu(None)
+        self.tray.deleteLater()
+        self.tray = None
+
+    def slotToggleShowFromHideInTray(self):
+        """
+            triggered from tray icon showAction
+        """
+        if self.trayState["hiddenInTray"]:
+            self.showFromTray()
+        elif self.mainWindow.isMinimized():
+            # mainWindow is minimized in the taskbar
+            self.mainWindow.show()
+            self.mainWindow.raise_()
+            self.mainWindow.activateWindow()
+        else:
+            self.hideInTray()
+
+    def hideInTray(self):
+        """
+            hide main window and docks in the tray
+            - called from slotToggleShowFromHideInTray()
+            - called from slotMinimize2Tray()
+            - emitted from main window on close button hit
+        """
+        if self.trayState["hiddenInTray"]:
+            self.log.error("main.hideInTray: Already hidden in tray")
+            return
+        self.log.debug4("main.hideInTray: triggered")
+        self.allowUserActions(False)
+        self.trayState["maximized"] = self.mainWindow.isMaximized()
+        if self.mainWindow.otherOptions.settings["Unmaximize"] and self.trayState["maximized"]:
+            self.unmaximizeWait(self.hideInTray_continue)
+        else:
+            self.hideInTray_continue()
+
+    def hideInTray_continue(self):
+        s = self.trayState
+        s["geo"] = self.mainWindow.saveGeometry()
+        s["state"] = self.mainWindow.saveState()
+        s["p"]["f"] = self.mainWindow.newPackDock.isFloating()
+        s["p"]["h"] = self.mainWindow.newPackDock.isHidden()
+        s["p"]["f&!h"] = s["p"]["f"] and not s["p"]["h"]
+        s["l"]["f"] = self.mainWindow.newLinkDock.isFloating()
+        s["l"]["h"] = self.mainWindow.newLinkDock.isHidden()
+        s["l"]["f&!h"] = s["l"]["f"] and not s["l"]["h"]
+        self.trayState["ignoreMinimizeToggled"] = True
+        self.mainWindow.hide()
+        self.mainWindow.newPackDock.hide()
+        self.mainWindow.newLinkDock.hide()
+        self.trayState["ignoreMinimizeToggled"] = False
+        self.emit(SIGNAL("traySetShowActionText"), True)
+        self.trayState["hiddenInTray"] = True   # must be updated before allowUserActions(True)
+        self.allowUserActions(True)
+
+    def showFromTray(self, prepForSave=False):
+        """
+            restore main window and docks from hidden in the tray
+            - called from slotToggleShowFromHideInTray()
+            - called from prepareForSaveOptionsAndWindow()
+        """
+        if not self.trayState["hiddenInTray"]:
+            self.log.error("main.showFromTray: Not hidden in tray")
+            return
+        self.log.debug4("main.showFromTray: triggered, prepForSave: %s" % prepForSave)
+        self.allowUserActions(False)
+        s = self.trayState
+        pe = self.app.processEvents
+        # hide and dock in case they were shown via the tray icon menu
+        pe(); self.mainWindow.newPackDock.hide()
+        pe(); self.mainWindow.newLinkDock.hide()
+        pe(); self.mainWindow.newPackDock.setFloating(False)
+        pe(); self.mainWindow.newLinkDock.setFloating(False)
+        pe(); self.mainWindow.show()
+        if not self.mainWindow.trayOptions.settings["AltMethod"]:
+            pe(); self.mainWindow.restoreState(s["state"]) # docks
+            pe(); self.mainWindow.restoreGeometry(s["geo"])
+        else: # alternative method
+            pe(); self.mainWindow.newPackDock.setHidden(s["p"]["h"])
+            pe(); self.mainWindow.newLinkDock.setHidden(s["l"]["h"])
+            pe(); self.mainWindow.newPackDock.setFloating(s["p"]["f"])
+            pe(); self.mainWindow.newLinkDock.setFloating(s["l"]["f"])
+            pe(); self.mainWindow.restoreGeometry(s["geo"])
+        if prepForSave:
+            pe(); self.mainWindow.show()    # an extra show
+            self.emit(SIGNAL("traySetShowActionText"), False)
+            self.trayState["hiddenInTray"] = False
+            pe(); return
+        if self.mainWindow.otherOptions.settings["Unmaximize"] and s["maximized"]:
+            pe(); self.maximizeWait(self.showFromTray_continue)
+        else:
+            pe(); self.mainWindow.show()    # an extra show
+            self.showFromTray_continue()
+
+    def showFromTray_continue(self):
+        pe = self.app.processEvents
+        pe(); self.mainWindow.raise_()
+        pe(); self.mainWindow.activateWindow()
+        pe(); self.mainWindow.tabw.setFocus(Qt.OtherFocusReason)
+        pe(); self.emit(SIGNAL("traySetShowActionText"), False)
+        self.trayState["hiddenInTray"] = False  # must be updated before allowUserActions(True)
+        self.allowUserActions(True)
+
+    def slotMinimizeToggled(self, minimized):
+        """
+            emitted from main window in changeEvent()
+        """
+        if not self.mainWindow.trayOptions.settings["EnableTray"] or self.trayState["hiddenInTray"] or self.trayState["ignoreMinimizeToggled"]:
+            return
+        self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
+        if minimized:   # minimized flag was set
+            if self.mainWindow.trayOptions.settings["Minimize2Tray"]:
+                self.emit(SIGNAL("minimize2Tray"))   # queued connection
+        else:           # minimized flag was unset
+            pass
+
+    def slotMinimize2Tray(self):
+        """
+            emitted from slotMinimizeToggled()
+        """
+        if self.trayState["hiddenInTray"]:
+            self.log.error("main.slotMinimize2Tray: Already hidden in tray")
+            return
+        self.log.debug4("main.slotMinimize2Tray: triggered")
+        self.hideInTray()
+
+    def debugTray(self):
+        self.log.debug9("mainWindow:")
+        self.log.debug9("  hidden    %s" % self.mainWindow.isHidden())
+        self.log.debug9("  visible   %s" % self.mainWindow.isVisible())
+        self.log.debug9("  minimized %s" % self.mainWindow.isMinimized())
+        self.log.debug9("  maximized %s" % self.mainWindow.isMaximized())
+        self.log.debug9("  enabled   %s" % self.mainWindow.isEnabled())
+        self.log.debug9("  activated %s" % self.mainWindow.isActiveWindow())
+        self.log.debug9("newPackDock:")
+        self.log.debug9("  floating  %s" % self.mainWindow.newPackDock.isFloating())
+        self.log.debug9("  hidden    %s" % self.mainWindow.newPackDock.isHidden())
+        self.log.debug9("  visible   %s" % self.mainWindow.newPackDock.isVisible())
+        self.log.debug9("  minimized %s" % self.mainWindow.newPackDock.isMinimized())
+        self.log.debug9("  maximized %s" % self.mainWindow.newPackDock.isMaximized())
+        self.log.debug9("  enabled   %s" % self.mainWindow.newPackDock.isEnabled())
+        self.log.debug9("  activated %s" % self.mainWindow.newPackDock.isActiveWindow())
+        self.log.debug9("newLinkDock:")
+        self.log.debug9("  floating  %s" % self.mainWindow.newLinkDock.isFloating())
+        self.log.debug9("  hidden    %s" % self.mainWindow.newLinkDock.isHidden())
+        self.log.debug9("  visible   %s" % self.mainWindow.newLinkDock.isVisible())
+        self.log.debug9("  minimized %s" % self.mainWindow.newLinkDock.isMinimized())
+        self.log.debug9("  maximized %s" % self.mainWindow.newLinkDock.isMaximized())
+        self.log.debug9("  enabled   %s" % self.mainWindow.newLinkDock.isEnabled())
+        self.log.debug9("  activated %s" % self.mainWindow.newLinkDock.isActiveWindow())
+
+    def initMaxiUnmaxiWait(self):
+        self.initMaximizeWait()
+        self.initUnmaximizeWait()
+
+    def initMaximizeWait(self):
+        timeoutError   = 7000   # milliseconds, integer multiple of updateInterval
+        updateInterval = 350    # milliseconds
+        self.maxiWait = {}
+        self.maxiWait["timer"] = QTimer()
+        self.maxiWait["timer"].setInterval(updateInterval)
+        self.maxiWait["timerCountDownStartVal"] = timeoutError / updateInterval
+
+    def maximizeWait(self, contFunc):
+        """
+            maximize mainWindow and call contFunc() when its done
+        """
+        # sanity checks
+        if self.mainWindow.isHidden():
+            self.log.error("main.maximizeWait: mainWindow is hidden"); contFunc(); return
+        if self.mainWindow.isMaximized():
+            self.log.error("main.maximizeWait: mainWindow is already maximized"); contFunc(); return
+        self.maxiWait["contFunc"] = contFunc
+        self.connect(self.mainWindow, SIGNAL("maximizeDone"), self.slotMaximizeWaitDone, Qt.QueuedConnection)
+        self.mainWindow.showMaximized()
+        self.maxiWait["timerCountDown"] = self.maxiWait["timerCountDownStartVal"]
+        self.maxiWait["timer"].connect(self.maxiWait["timer"], SIGNAL("timeout()"), self.slotMaximizeWaitTimer)
+        self.maxiWait["timer"].start()
+
+    def slotMaximizeWaitTimer(self):
+        self.maxiWait["timerCountDown"] -= 1
+        if self.maxiWait["timerCountDown"] > 0:
+            self.log.debug4("main.slotMaximizeWaitTimer: update, schedule a paintEvent")
+            self.mainWindow.update()
+        else:
+            self.disconnect(self.mainWindow, SIGNAL("maximizeDone"), self.slotMaximizeWaitDone)
+            self.maxiWait["timer"].stop()
+            self.maxiWait["timer"].disconnect(self.maxiWait["timer"], SIGNAL("timeout()"), self.slotMaximizeWaitTimer)
+            text  = _("Timeout detecting main window maximize state") + ".\n\n"
+            text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
+            text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
+            self.msgBoxOk(text, "C")
+            self.maxiWait["contFunc"]()
+
+    def slotMaximizeWaitDone(self):
+        self.maxiWait["timer"].stop()
+        self.maxiWait["timer"].disconnect(self.maxiWait["timer"], SIGNAL("timeout()"), self.slotMaximizeWaitTimer)
+        self.disconnect(self.mainWindow, SIGNAL("maximizeDone"), self.slotMaximizeWaitDone)
+        self.log.debug4("main.slotMaximizeWaitDone: done")
+        self.maxiWait["contFunc"]()
+
+    def initUnmaximizeWait(self):
+        timeoutError   = 7000   # milliseconds, integer multiple of updateInterval
+        updateInterval = 350    # milliseconds
+        self.unmaxiWait = {}
+        self.unmaxiWait["timer"] = QTimer()
+        self.unmaxiWait["timer"].setInterval(updateInterval)
+        self.unmaxiWait["timerCountDownStartVal"] = timeoutError / updateInterval
+
+    def unmaximizeWait(self, contFunc):
+        """
+            unmaximize mainWindow and call contFunc() when its done
+        """
+        # sanity checks
+        if self.mainWindow.isHidden():
+            self.log.error("main.unmaximizeWait: mainWindow is hidden"); contFunc(); return
+        if not self.mainWindow.isMaximized():
+            self.log.error("main.unmaximizeWait: mainWindow is not maximized"); contFunc(); return
+        self.unmaxiWait["contFunc"] = contFunc
+        self.connect(self.mainWindow, SIGNAL("unmaximizeDone"), self.slotUnmaximizeWaitDone, Qt.QueuedConnection)
+        self.mainWindow.showNormal()
+        self.unmaxiWait["timerCountDown"] = self.unmaxiWait["timerCountDownStartVal"]
+        self.unmaxiWait["timer"].connect(self.unmaxiWait["timer"], SIGNAL("timeout()"), self.slotUnmaximizeWaitTimer)
+        self.unmaxiWait["timer"].start()
+
+    def slotUnmaximizeWaitTimer(self):
+        self.unmaxiWait["timerCountDown"] -= 1
+        if self.unmaxiWait["timerCountDown"] > 0:
+            self.log.debug4("main.slotUnmaximizeWaitTimer: update, schedule a paintEvent")
+            self.mainWindow.update()
+        else:
+            self.disconnect(self.mainWindow, SIGNAL("unmaximizeDone"), self.slotUnmaximizeWaitDone)
+            self.unmaxiWait["timer"].stop()
+            self.unmaxiWait["timer"].disconnect(self.unmaxiWait["timer"], SIGNAL("timeout()"), self.slotUnmaximizeWaitTimer)
+            text  = _("Timeout detecting main window unmaximize state") + ".\n\n"
+            text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
+            text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
+            self.msgBoxOk(text, "C")
+            self.unmaxiWait["contFunc"]()
+
+    def slotUnmaximizeWaitDone(self):
+        self.unmaxiWait["timer"].stop()
+        self.unmaxiWait["timer"].disconnect(self.unmaxiWait["timer"], SIGNAL("timeout()"), self.slotUnmaximizeWaitTimer)
+        self.disconnect(self.mainWindow, SIGNAL("unmaximizeDone"), self.slotUnmaximizeWaitDone)
+        self.log.debug4("main.slotUnmaximizeWaitDone: done")
+        self.unmaxiWait["contFunc"]()
+
+    def slotShowAddPackageFromTray(self):
+        """
+            triggered from tray icon (context menu)
+            show floating new-package dock when the application is hidden in the systemtray
+        """
+        if not self.trayState["hiddenInTray"]:
+            self.log.error("main.slotShowAddPackageFromTray: Not hidden in tray")
+            return
+        pe = self.app.processEvents
+        pe(); self.mainWindow.newLinkDock.setFloating(False)
+        pe(); self.mainWindow.newPackDock.setFloating(True)
+        pe(); self.mainWindow.newPackDock.show()
+        pe(); self.mainWindow.newPackDock.raise_()
+        pe(); self.mainWindow.newPackDock.activateWindow()
+
+    def slotShowAddLinksFromTray(self):
+        """
+            triggered from tray icon (context menu)
+            show floating new-links dock when the application is hidden in the systemtray
+        """
+        if not self.trayState["hiddenInTray"]:
+            self.log.error("main.slotShowAddLinksFromTray: Not hidden in tray")
+            return
+        pe = self.app.processEvents
+        pe(); self.mainWindow.newPackDock.setFloating(False)
+        pe(); self.mainWindow.newLinkDock.setFloating(True)
+        pe(); self.mainWindow.newLinkDock.show()
+        pe(); self.mainWindow.newLinkDock.raise_()
+        pe(); self.mainWindow.newLinkDock.activateWindow()
+
+    def slotShowCaptcha(self):
+        """
+            from main window (menu)
+            from tray icon (context menu)
+            show captcha
+        """
+        self.mainWindow.captchaDialog.emit(SIGNAL("show"))
 
     def slotShowAbout(self):
         """
@@ -502,7 +860,6 @@ class main(QObject):
         """
         self.quitInternal()
         self.stopMain()
-        self.init()
 
     def slotShowCorePermissions(self):
         """
@@ -607,29 +964,32 @@ class main(QObject):
         """
             notifications
         """
-        nsettings = self.mainWindow.notificationOptions.settings
-        if nsettings["EnableNotify"]:
+        s = self.mainWindow.notificationOptions.settings
+        if s["EnableNotify"]:
             if status == 100:
-                if nsettings["PackageFinished"]:
+                if s["PackageFinished"]:
                     self.emit(SIGNAL("showMessage"), _("Package download finished") + ": %s" % name)
             elif status == DownloadStatus.Finished:
-                if nsettings["Finished"]:
+                if s["Finished"]:
                     self.emit(SIGNAL("showMessage"), _("Download finished") + ": %s" % name)
             elif status == DownloadStatus.Offline:
-                if nsettings["Offline"]:
+                if s["Offline"]:
                     self.emit(SIGNAL("showMessage"), _("Download offline") + ": %s" % name)
             elif status == DownloadStatus.Skipped:
-                if nsettings["Skipped"]:
+                if s["Skipped"]:
                     self.emit(SIGNAL("showMessage"), _("Download skipped") + ": %s" % name)
             elif status == DownloadStatus.TempOffline:
-                if nsettings["TempOffline"]:
+                if s["TempOffline"]:
                     self.emit(SIGNAL("showMessage"), _("Download temporarily offline") + ": %s" % name)
             elif status == DownloadStatus.Failed:
-                if nsettings["Failed"]:
+                if s["Failed"]:
                     self.emit(SIGNAL("showMessage"), _("Download failed") + ": %s" % name)
             elif status == DownloadStatus.Aborted:
-                if nsettings["Aborted"]:
+                if s["Aborted"]:
                     self.emit(SIGNAL("showMessage"), _("Download aborted") + ": %s" % name)
+            elif status == 101:
+                if s["Captcha"]:
+                    self.emit(SIGNAL("showMessage"), _("Captcha arrived"))
 
     def initCollector(self):
         """
@@ -1079,14 +1439,48 @@ class main(QObject):
         fh.close()
         self.connector.proxy.uploadContainer(filename, content)
 
-    def slotSaveMainWindow(self, state, geo):
+    def prepareForSaveOptionsAndWindow(self, contFunc):
         """
-            save the window geometry and toolbar/dock position to config file
+            restore main window and dock windows, unmaximize main window if desired
+            before saving their state to the config file and disconnecting from server
         """
+        if self.mainWindow.trayOptions.settings["EnableTray"] and self.trayState["hiddenInTray"]:
+            self.log.debug4("main.prepareForSaveOptionsAndWindow: showFromTray()")
+            self.geoMaximizeConfig = self.trayState["maximized"]
+            self.showFromTray(True)
+            QTimer.singleShot(0, contFunc)
+        elif self.mainWindow.otherOptions.settings["Unmaximize"] and self.mainWindow.isMaximized():
+            self.log.debug4("main.prepareForSaveOptionsAndWindow: unmaximizeWait()")
+            self.geoMaximizeConfig = True
+            self.unmaximizeWait(contFunc)
+        else:
+            self.log.debug4("main.prepareForSaveOptionsAndWindow: contFunc()")
+            self.geoMaximizeConfig = self.mainWindow.isMaximized()
+            QTimer.singleShot(0, contFunc)
+
+    def saveOptionsAndWindowToConfig(self):
+        """
+            save options, window geometry and state to the config file
+        """
+        if self.mainWindow.isHidden():
+            self.log.error("main.saveOptionsAndWindowToConfig: mainWindow is hidden")
+
+        state_raw = self.mainWindow.saveState(self.mainWindow.version)
+        geo_raw = self.mainWindow.saveGeometry()
+
+        # hide everything, we are about to quit or to go back to connection manager
+        self.mainWindow.captchaDialog.hide()
+        self.mainWindow.newPackDock.setFloating(False)
+        self.mainWindow.newLinkDock.setFloating(False)
+        self.mainWindow.hide()
+
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
             mainWindowNode = self.parser.xml.createElement("mainWindow")
             self.parser.root.appendChild(mainWindowNode)
+        state = str(state_raw.toBase64())
+        geo = str(geo_raw.toBase64())
+        geoMaximize = str(self.geoMaximizeConfig)
         stateQueue = str(self.mainWindow.tabs["queue"]["view"].header().saveState().toBase64())
         stateCollector = str(self.mainWindow.tabs["collector"]["view"].header().saveState().toBase64())
         stateAccounts = str(self.mainWindow.tabs["accounts"]["view"].header().saveState().toBase64())
@@ -1094,12 +1488,16 @@ class main(QObject):
         optionsLogging = str(QByteArray(str(self.loggingOptions.settings)).toBase64())
         optionsClickNLoadForwarder = str(self.clickNLoadForwarderOptions.settings["fromPort"])
         optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
+        geoCaptcha = str(self.mainWindow.captchaDialog.geo.toBase64())
+        optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
         optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
         optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
+        optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
         visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
         language = str(self.lang)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
         geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
+        geoMaximizeNode = mainWindowNode.toElement().elementsByTagName("geometryMaximize").item(0)
         stateQueueNode = mainWindowNode.toElement().elementsByTagName("stateQueue").item(0)
         stateCollectorNode = mainWindowNode.toElement().elementsByTagName("stateCollector").item(0)
         stateAccountsNode = mainWindowNode.toElement().elementsByTagName("stateAccounts").item(0)
@@ -1107,12 +1505,16 @@ class main(QObject):
         optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
         optionsClickNLoadForwarderNode = mainWindowNode.toElement().elementsByTagName("optionsClickNLoadForwarder").item(0)
         optionsAutomaticReloadingNode = mainWindowNode.toElement().elementsByTagName("optionsAutomaticReloading").item(0)
+        geoCaptchaNode = mainWindowNode.toElement().elementsByTagName("geometryCaptcha").item(0)
+        optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
         optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
+        optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
         visibilitySpeedLimitNode = mainWindowNode.toElement().elementsByTagName("visibilitySpeedLimit").item(0)
         languageNode = self.parser.xml.elementsByTagName("language").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
         newGeoNode = self.parser.xml.createTextNode(geo)
+        newGeoMaximizeNode = self.parser.xml.createTextNode(geoMaximize)
         newStateQueueNode = self.parser.xml.createTextNode(stateQueue)
         newStateCollectorNode = self.parser.xml.createTextNode(stateCollector)
         newStateAccountsNode = self.parser.xml.createTextNode(stateAccounts)
@@ -1120,14 +1522,19 @@ class main(QObject):
         newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
         newOptionsClickNLoadForwarderNode = self.parser.xml.createTextNode(optionsClickNLoadForwarder)
         newOptionsAutomaticReloadingNode = self.parser.xml.createTextNode(optionsAutomaticReloading)
+        newGeoCaptchaNode = self.parser.xml.createTextNode(geoCaptcha)
+        newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
         newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
+        newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
         newVisibilitySpeedLimitNode = self.parser.xml.createTextNode(visibilitySpeedLimit)
         newLanguageNode = self.parser.xml.createTextNode(language)
         stateNode.removeChild(stateNode.firstChild())
-        geoNode.removeChild(geoNode.firstChild())
         stateNode.appendChild(newStateNode)
+        geoNode.removeChild(geoNode.firstChild())
         geoNode.appendChild(newGeoNode)
+        geoMaximizeNode.removeChild(geoMaximizeNode.firstChild())
+        geoMaximizeNode.appendChild(newGeoMaximizeNode)
         stateQueueNode.removeChild(stateQueueNode.firstChild())
         stateQueueNode.appendChild(newStateQueueNode)
         stateCollectorNode.removeChild(stateCollectorNode.firstChild())
@@ -1142,30 +1549,31 @@ class main(QObject):
         optionsClickNLoadForwarderNode.appendChild(newOptionsClickNLoadForwarderNode)
         optionsAutomaticReloadingNode.removeChild(optionsAutomaticReloadingNode.firstChild())
         optionsAutomaticReloadingNode.appendChild(newOptionsAutomaticReloadingNode)
+        geoCaptchaNode.removeChild(geoCaptchaNode.firstChild())
+        geoCaptchaNode.appendChild(newGeoCaptchaNode)
+        optionsCaptchaNode.removeChild(optionsCaptchaNode.firstChild())
+        optionsCaptchaNode.appendChild(newOptionsCaptchaNode)
         optionsFontsNode.removeChild(optionsFontsNode.firstChild())
         optionsFontsNode.appendChild(newOptionsFontsNode)
         optionsTrayNode.removeChild(optionsTrayNode.firstChild())
         optionsTrayNode.appendChild(newOptionsTrayNode)
+        optionsOtherNode.removeChild(optionsOtherNode.firstChild())
+        optionsOtherNode.appendChild(newOptionsOtherNode)
         visibilitySpeedLimitNode.removeChild(visibilitySpeedLimitNode.firstChild())
         visibilitySpeedLimitNode.appendChild(newVisibilitySpeedLimitNode)
         languageNode.removeChild(languageNode.firstChild())
         languageNode.appendChild(newLanguageNode)
         self.parser.saveData()
+        self.log.debug4("main.saveOptionsAndWindowToConfig: done")
 
-    def restoreMainWindow(self):
+    def loadOptionsFromConfig(self):
         """
-            load and restore main window geometry and toolbar/dock position from config
+            load options from the config file
         """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
             return
         nodes = self.parser.parseNode(mainWindowNode, "dict")
-        if not nodes.get("stateQueue"):
-            mainWindowNode.appendChild(self.parser.xml.createElement("stateQueue"))
-        if not nodes.get("stateCollector"):
-            mainWindowNode.appendChild(self.parser.xml.createElement("stateCollector"))
-        if not nodes.get("stateAccounts"):
-            mainWindowNode.appendChild(self.parser.xml.createElement("stateAccounts"))
         if not nodes.get("optionsNotifications"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsNotifications"))
         if not nodes.get("optionsLogging"):
@@ -1174,27 +1582,30 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsClickNLoadForwarder"))
         if not nodes.get("optionsAutomaticReloading"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsAutomaticReloading"))
+        if not nodes.get("optionsCaptcha"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("optionsCaptcha"))
         if not nodes.get("optionsFonts"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsFonts"))
         if not nodes.get("optionsTray"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsTray"))
+        if not nodes.get("optionsOther"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("optionsOther"))
         if not nodes.get("visibilitySpeedLimit"):
             mainWindowNode.appendChild(self.parser.xml.createElement("visibilitySpeedLimit"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
 
-        state = str(nodes["state"].text())
-        geo = str(nodes["geometry"].text())
-        stateQueue = str(nodes["stateQueue"].text())
-        stateCollector = str(nodes["stateCollector"].text())
-        stateAccounts = str(nodes["stateAccounts"].text())
         optionsNotifications = str(nodes["optionsNotifications"].text())
         optionsLogging = str(nodes["optionsLogging"].text())
         optionsClickNLoadForwarder = str(nodes["optionsClickNLoadForwarder"].text())
         optionsAutomaticReloading = str(nodes["optionsAutomaticReloading"].text())
+        optionsCaptcha = str(nodes["optionsCaptcha"].text())
         optionsFonts = str(nodes["optionsFonts"].text())
         optionsTray = str(nodes["optionsTray"].text())
+        optionsOther = str(nodes["optionsOther"].text())
         visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
-        self.mainWindow.restoreWindow(state, geo, stateQueue, stateCollector, stateAccounts, optionsNotifications, optionsTray, visibilitySpeedLimit)
+        if optionsNotifications:
+            self.mainWindow.notificationOptions.settings = eval(str(QByteArray.fromBase64(optionsNotifications)))
+            self.mainWindow.notificationOptions.dict2checkBoxStates()
         if optionsLogging:
             self.loggingOptions.settings = eval(str(QByteArray.fromBase64(optionsLogging)))
             self.loggingOptions.dict2dialogState()
@@ -1204,11 +1615,61 @@ class main(QObject):
         if optionsAutomaticReloading:
             self.automaticReloadingOptions.settings = eval(str(QByteArray.fromBase64(optionsAutomaticReloading)))
             self.automaticReloadingOptions.dict2dialogState()
+        if optionsCaptcha:
+            self.captchaOptions.settings = eval(str(QByteArray.fromBase64(optionsCaptcha)))
+            self.captchaOptions.dict2dialogState()
+            self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
         if optionsFonts:
             self.fontOptions.settings = eval(str(QByteArray.fromBase64(optionsFonts)))
             self.fontOptions.dict2dialogState()
             self.fontOptions.applySettings()
-        self.mainWindow.captchaDock.hide()
+        if optionsTray:
+            self.mainWindow.trayOptions.settings = eval(str(QByteArray.fromBase64(optionsTray)))
+            self.mainWindow.trayOptions.dict2checkBoxStates()
+        if optionsOther:
+            self.mainWindow.otherOptions.settings = eval(str(QByteArray.fromBase64(optionsOther)))
+            self.mainWindow.otherOptions.dict2checkBoxStates()
+        if visibilitySpeedLimit:
+            visible =  eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
+            self.mainWindow.mactions["showspeedlimit"].setChecked(not visible)
+            self.mainWindow.mactions["showspeedlimit"].setChecked(visible)
+
+    def loadWindowFromConfig(self):
+        """
+            load window geometry and state from the config file
+        """
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            return
+        nodes = self.parser.parseNode(mainWindowNode, "dict")
+        if not nodes.get("geometryMaximize"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("geometryMaximize"))
+        if not nodes.get("stateQueue"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("stateQueue"))
+        if not nodes.get("stateCollector"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("stateCollector"))
+        if not nodes.get("stateAccounts"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("stateAccounts"))
+        if not nodes.get("geometryCaptcha"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("geometryCaptcha"))
+        nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
+
+        state = str(nodes["state"].text())
+        geo = str(nodes["geometry"].text())
+        if True if str(nodes["geometryMaximize"].text()).lower() in ("1","true", "on", "an","yes") else False:
+            self.geoMaximizeConfig = True
+        else:
+            self.geoMaximizeConfig = False
+        stateQueue = str(nodes["stateQueue"].text())
+        stateCollector = str(nodes["stateCollector"].text())
+        stateAccounts = str(nodes["stateAccounts"].text())
+        geoCaptcha = str(nodes["geometryCaptcha"].text())
+        self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
+        self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
+        self.mainWindow.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
+        self.mainWindow.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
+        self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
+        self.mainWindow.captchaDialog.geo = QByteArray.fromBase64(geoCaptcha)
 
     def slotPushPackagesToQueue(self):
         """
@@ -1404,30 +1865,24 @@ class main(QObject):
                 self.connector.proxy.pullFromQueue(pid)
 
     def checkCaptcha(self):
-        if not self.corePermissions["STATUS"]:
+        if not (self.corePermissions["STATUS"] and self.captchaOptions.settings["Enabled"]):
             return
-        if self.connector.proxy.isCaptchaWaiting() and self.mainWindow.captchaDock.isFree():
+        if self.connector.proxy.isCaptchaWaiting() and self.mainWindow.captchaDialog.isFree():
             t = self.connector.proxy.getCaptchaTask(False)
-            if self.mainWindow.captchaDock.isFloating():
-                self.mainWindow.captchaDock.show()
-                self.mainWindow.captchaDock.raise_()
-                self.mainWindow.captchaDock.activateWindow()
-            else:
-                self.mainWindow.show()
-                self.mainWindow.raise_()
-                self.mainWindow.activateWindow()
-            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), t.tid, b64decode(t.data), t.type, t.resultType)
-        elif not self.mainWindow.captchaDock.isFree():
-            status = self.connector.proxy.getCaptchaTaskStatus(self.mainWindow.captchaDock.currentID)
+            self.mainWindow.captchaDialog.emit(SIGNAL("setTask"), t.tid, b64decode(t.data), t.type, t.resultType)
+            self.tray.captchaAction.setEnabled(True)
+            self.slotNotificationMessage(101, None)
+        elif not self.mainWindow.captchaDialog.isFree():
+            status = self.connector.proxy.getCaptchaTaskStatus(self.mainWindow.captchaDialog.currentID)
             if not (status == "user" or status == "shared-user"):
-                self.mainWindow.captchaDock.hide()
-                self.mainWindow.captchaDock.processing = False
-                self.mainWindow.captchaDock.currentID = None
+                self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
+                self.tray.captchaAction.setEnabled(False)
 
     def slotCaptchaDone(self, cid, result):
         if not self.corePermissions["STATUS"]:
             return
         self.connector.proxy.setCaptchaResult(cid, str(result))
+        self.tray.captchaAction.setEnabled(False)
 
     def slotEditPackages(self, queue):
         """
@@ -1452,7 +1907,7 @@ class main(QObject):
             self.packageEdit.password.setPlainText(password)
             if self.packageEdit.exec_() == self.packageEdit.CANCELALL:
                 break
-    
+
     def slotEditPackageSave(self):
         """
             apply changes made in the package edit dialog (save button hit)
@@ -1530,7 +1985,7 @@ class main(QObject):
             et = "File"
         elif event.type == ElementType.Package:
            data = None
-           try: 
+           try:
                data = self.connector.proxy.getPackageData(event.id)   # links, full link infos
            #   data = self.connector.proxy.getPackageInfo(event.id)   # fids only
                et = "Package"
@@ -1570,9 +2025,17 @@ class main(QObject):
         self.mainWindow.tabs["accounts"]["view"].model.reloadData(force)
 
     def slotQuit(self):
-        self.mainWindow.saveWindow()
-        self.tray.hide()
+        self.allowUserActions(False)
+        self.prepareForSaveOptionsAndWindow(self.slotQuit_continue)
+
+    def slotQuit_continue(self):
+        self.saveOptionsAndWindowToConfig()
         self.quitInternal()
+        self.log.info("pyLoad Client quit")
+        self.removeLogger()
+        self.app.quit()
+
+    def slotQuitConnWindow(self):
         self.log.info("pyLoad Client quit")
         self.removeLogger()
         self.app.quit()
@@ -1584,25 +2047,24 @@ class main(QObject):
                 if self.core.shuttedDown:
                     break
                 sleep(0.5)
-    
+
     def slotConnectionLost(self):
         if not self.connectionLost:
             self.connectionLost = True
-            errorDuringConnect = False
             try:
-                self.stopMain()
                 self.quitInternal()
+                self.stopMain()
+                return
             except:
-                errorDuringConnect = True
-            msg = _("Lost connection to the server!")
-            self.log.error(msg)
-            self.msgBoxOk(msg, "C")
-            if not errorDuringConnect:
-                self.init()
-            else:
-                self.removeLogger()
-                exit()
-    
+                pass
+            self.log.error("main.slotConnectionLost: Unexpected error while trying to connect to the server.")
+            self.log.error("                         If this happens again and this is your default connection,")
+            self.log.error("                         use command line argument '-c' with a nonexistent connection-name")
+            self.log.error("                         to get in the Connection Manager, e.g. 'pyLoadGui.py -c foobar'.")
+            self.log.info("pyLoad Client quit")
+            self.removeLogger()
+            exit()
+
     class Loop():
         def __init__(self, parent):
             self.log = logging.getLogger("guilog")
@@ -1693,6 +2155,18 @@ class main(QObject):
         self.automaticReloadingOptions.dict2dialogState()
         if self.automaticReloadingOptions.exec_() == QDialog.Accepted:
             self.automaticReloadingOptions.dialogState2dict()
+
+    def slotShowCaptchaOptions(self):
+        """
+            popup the captcha options dialog
+        """
+        self.captchaOptions.dict2dialogState()
+        if self.captchaOptions.exec_() == QDialog.Accepted:
+            self.captchaOptions.dialogState2dict()
+            if not self.captchaOptions.settings["Enabled"]:
+                self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
+                self.tray.captchaAction.setEnabled(False)
+            self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
 
     def slotShowFontOptions(self):
         """
@@ -2070,6 +2544,61 @@ class InfoCorePermissions(QDialog):
             plist.append((name, p, "(%s)"%k, wt1, wt2))
         plist = sorted(plist, key=lambda d: d[0])
         return (admin, plist)
+
+class CaptchaOptions(QDialog):
+    """
+        captcha options dialog
+    """
+
+    def __init__(self):
+        QDialog.__init__(self)
+        self.log = logging.getLogger("guilog")
+
+        self.settings = {}
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+
+        self.cbAdjSize = QCheckBox(_("Adjust dialog box size to its content"))
+
+        vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbAdjSize)
+
+        self.cbEnableDialog = QGroupBox(_("Enable") + " " + _("Captcha Solving"))
+        self.cbEnableDialog.setCheckable(True)
+        self.cbEnableDialog.setLayout(vboxCb)
+
+        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.cbEnableDialog)
+        vbox.addWidget(self.buttons)
+        self.setLayout(vbox)
+
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())
+
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+
+        # default settings
+        self.settings["Enabled"] = True
+        self.settings["AdjSize"] = True
+        self.dict2dialogState()
+
+    def dialogState2dict(self):
+        self.settings["Enabled"] = self.cbEnableDialog.isChecked()
+        self.settings["AdjSize"] = self.cbAdjSize.isChecked()
+
+    def dict2dialogState(self):
+        self.cbEnableDialog.setChecked (self.settings["Enabled"])
+        self.cbAdjSize.setChecked      (self.settings["AdjSize"])
 
 class LoggingOptions(QDialog):
     """
@@ -2860,24 +3389,40 @@ class TrayIcon(QSystemTrayIcon):
         self.log = logging.getLogger("guilog")
 
         self.contextMenu = QMenu()
-        self.showAction = QAction(_("Show"), self.contextMenu)
-        self.showAction.setCheckable(True)
-        self.showAction.setChecked(True)
-        self.showAction.setDisabled(True)
+        self.showAction = QAction("show/hide", self.contextMenu)
+        self.showAction.setIcon(QIcon(join(pypath, "icons", "logo.png")))
+        self.setShowActionText(False)
         self.contextMenu.addAction(self.showAction)
+        self.captchaAction = QAction(_("Waiting Captcha"), self.contextMenu)
+        self.contextMenu.addAction(self.captchaAction)
+        self.contextAddMenu = self.contextMenu.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
+        self.addPackageAction = self.contextAddMenu.addAction(_("Package"))
+        self.addLinksAction = self.contextAddMenu.addAction(_("Links"))
+        self.addContainerAction = self.contextAddMenu.addAction(_("Container"))
+        self.contextMenu.addSeparator()
         self.exitAction = QAction(QIcon(join(pypath, "icons", "close.png")), _("Exit"), self.contextMenu)
         self.contextMenu.addAction(self.exitAction)
         self.setContextMenu(self.contextMenu)
+        if self.log.isEnabledFor(logging.DEBUG9):
+            self.contextMenu.addSeparator()
+            self.contextDebugMenu = self.contextMenu.addMenu("debug")
+            self.debugTrayAction = self.contextDebugMenu.addAction(_("tray"))
 
-        self.connect(self, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.clicked)
+        # disable/greyout menu entries
+        self.showAction.setEnabled(False)
+        self.captchaAction.setEnabled(False)
+        self.contextAddMenu.setEnabled(False)
 
-    def mainWindowHidden(self):
-        self.showAction.setChecked(False)
+    def setShowActionText(self, show):
+        if show:
+            self.showAction.setText(_("Show") + " " + _("pyLoad Client"))
+        else:
+            self.showAction.setText(_("Hide") + " " + _("pyLoad Client"))
 
     def clicked(self, reason):
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.Trigger:
-                self.showAction.toggle()
+                self.showAction.trigger()
 
 class PackageEdit(QDialog):
     """

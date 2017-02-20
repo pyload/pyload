@@ -199,6 +199,11 @@ class ConnectionManager(QDialog):
         data = self.edit.getData()
         data["default"] = state
         self.emit(SIGNAL("saveConnection"), data)
+    
+    def closeEvent(self, event):
+        event.ignore()
+        self.emit(SIGNAL("quitConnWindow"))
+
 
     class ListWidget(QListWidget):
         def __init__(self):
@@ -208,6 +213,7 @@ class ConnectionManager(QDialog):
         def dropEvent(self, event):
             QListWidget.dropEvent(self, event)
             self.emit(SIGNAL("saveAll"))
+
 
     class EditWindow(QDialog):
         def __init__(self):
