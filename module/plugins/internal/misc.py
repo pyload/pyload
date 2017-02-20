@@ -38,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__    = "misc"
     __type__    = "plugin"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -554,12 +554,23 @@ def parse_name(value, safechar=True):
 
 
 def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r'([\d.,]+)\s*([\w^_]*)', str(value).lower())
+    m = re.match(r'((?:[\d.,]*)\d)\s*([\w^_]*)', str(value).lower())
 
     if m is None:
         return 0
 
-    size = float(m.group(1).replace(',', '.'))
+    if re.match(r'\d{1,3}(?:,\d{3})+(?:\.\d+)?$', m.group(1)):
+        size = float(m.group(1).replace(',', ''))
+
+    elif re.match(r'\d+,\d{2}$', m.group(1)):
+        size = float(m.group(1).replace(',', '.'))
+
+    elif re.match(r'\d+(?:\.\d+)?$', m.group(1)):
+        size = float(m.group(1))
+
+    else:
+        return 0  #: Unknown format
+
     unit = (unit.strip().lower() or m.group(2) or "byte")[0]
 
     if unit == "b":
