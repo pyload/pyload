@@ -9,7 +9,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__    = "AlldebridCom"
     __type__    = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__  = "testing"
 
     __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
@@ -48,5 +48,8 @@ class AlldebridCom(MultiAccount):
     def signin(self, user, password, data):
         html = self.api_response("info_user", login=user, pw=password)
 
-        if any (x in html for x in ["login fail", "banned"]):
+        if "banned" in html:
+            self.fail_login("Your IP is banned")
+
+        elif "login fail" in html:
             self.fail_login()
