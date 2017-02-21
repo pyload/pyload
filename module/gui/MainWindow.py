@@ -270,9 +270,9 @@ class MainWindow(QMainWindow):
         
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
         
-        self.notificationOptions = NotificationOptions()
-        self.trayOptions = TrayOptions()
-        self.otherOptions = OtherOptions()
+        self.notificationOptions = NotificationOptions(self)
+        self.trayOptions = TrayOptions(self)
+        self.otherOptions = OtherOptions(self)
     
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -1255,8 +1255,8 @@ class NotificationOptions(QDialog):
         notification options dialog
     """
     
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         
         self.settings = {}
@@ -1345,8 +1345,8 @@ class TrayOptions(QDialog):
         tray options dialog
     """
     
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         
         self.settings = {}
@@ -1410,8 +1410,8 @@ class OtherOptions(QDialog):
         other options dialog
     """
     
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         
         self.settings = {}

@@ -225,13 +225,14 @@ class main(QObject):
         self.inSlotToolbarSpeedLimitEdited = False
         self.mainWindow = MainWindow(self.corePermissions, self.connector)
         self.initMaxiUnmaxiWait()
+        self.loggingOptions.setParent(self.mainWindow, self.loggingOptions.windowFlags())
         self.packageEdit = PackageEdit()
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
-        self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions()
-        self.automaticReloadingOptions = AutomaticReloadingOptions()
-        self.languageOptions = LanguageOptions()
-        self.captchaOptions = CaptchaOptions()
+        self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions(self.mainWindow)
+        self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
+        self.languageOptions = LanguageOptions(self.mainWindow)
+        self.captchaOptions = CaptchaOptions(self.mainWindow)
         self.connWindow = ConnectionManager()
         self.clickNLoadForwarder = ClickNLoadForwarder()
         self.mainloop = self.Loop(self)
@@ -2550,8 +2551,8 @@ class CaptchaOptions(QDialog):
         captcha options dialog
     """
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
         self.settings = {}
@@ -2704,7 +2705,7 @@ class FontOptions(QDialog):
     """
 
     def __init__(self, defAppFont, mainWindow):
-        QDialog.__init__(self)
+        QDialog.__init__(self, mainWindow)
         self.defaultApplicationFont = QFont(defAppFont)
         self.mainWindow = mainWindow
         self.log = logging.getLogger("guilog")
@@ -2980,8 +2981,8 @@ class AutomaticReloadingOptions(QDialog):
         automatic reloading options dialog
     """
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
         wt = _(
@@ -3060,8 +3061,8 @@ class ClickNLoadForwarderOptions(QDialog):
         ClickNLoad port forwarder options dialog
     """
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
         self.settings = {}
@@ -3318,8 +3319,8 @@ class LanguageOptions(QDialog):
         language options dialog
     """
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
         self.settings = {}
