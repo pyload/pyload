@@ -33,8 +33,7 @@ class MegaDebridEu(MultiAccount):
     def api_response(self, action, get={}, post={}):
         get['action'] = action
         self.req.http.c.setopt(pycurl.USERAGENT, encode(self.config.get("useragent",
-                                                                        default="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:51.0) Gecko/20100101 Firefox/51.0",
-                                                                        plugin="UserAgentSwitcher")))
+                                                                        default="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:51.0) Gecko/20100101 Firefox/51.0")))
         json_data = self.load(self.API_URL, get=get, post=post)
 
         return json.loads(json_data)
