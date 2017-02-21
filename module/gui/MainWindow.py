@@ -1091,7 +1091,7 @@ class MainWindow(QMainWindow):
         
         types = self.connector.proxy.getAccountTypes()
         types = sorted(types, key=lambda p: p)
-        self.accountEdit = AccountEdit.newAccount(types)
+        self.accountEdit = AccountEdit.newAccount(self, types)
         
         #TODO make more easy n1, n2, n3 
         def save(data):
@@ -1119,7 +1119,7 @@ class MainWindow(QMainWindow):
         
         data = data[0].internalPointer()
         
-        self.accountEdit = AccountEdit.editAccount(types, data)
+        self.accountEdit = AccountEdit.editAccount(self, types, data)
         
         #TODO make more easy n1, n2, n3
         #TODO reload accounts tab after insert of edit account

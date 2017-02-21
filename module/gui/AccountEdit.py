@@ -27,8 +27,8 @@ class AccountEdit(QDialog):
         account editor widget
     """
     
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -87,11 +87,11 @@ class AccountEdit(QDialog):
         self.emit(SIGNAL("done"), data)
     
     @staticmethod
-    def newAccount(types):
+    def newAccount(parent, types):
         """
             create empty editor instance
         """
-        w = AccountEdit()
+        w = AccountEdit(parent)
         w.setWindowTitle(_("Create Account"))
         w.passwordLabel.setText(_("Password"))
         
@@ -103,11 +103,11 @@ class AccountEdit(QDialog):
         return w
     
     @staticmethod
-    def editAccount(types, base):
+    def editAccount(parent, types, base):
         """
             create editor instance with given data
         """
-        w = AccountEdit()
+        w = AccountEdit(parent)
         w.setWindowTitle(_("Edit Account"))
         w.passwordLabel.setText(_("New Password"))
         

@@ -226,7 +226,7 @@ class main(QObject):
         self.mainWindow = MainWindow(self.corePermissions, self.connector)
         self.initMaxiUnmaxiWait()
         self.loggingOptions.setParent(self.mainWindow, self.loggingOptions.windowFlags())
-        self.packageEdit = PackageEdit()
+        self.packageEdit = PackageEdit(self.mainWindow)
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
         self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions(self.mainWindow)
@@ -850,7 +850,7 @@ class main(QObject):
             emitted from main window (menu)
             show the about-box
         """
-        ab = AboutBox()
+        ab = AboutBox(self.mainWindow)
         ab.exec_(CURRENT_VERSION, CURRENT_INTERNAL_VERSION)
 
     def slotShowConnector(self):
@@ -868,7 +868,7 @@ class main(QObject):
             show permissions info-box
         """
         perms = self.getCorePermissions(False)
-        info = InfoCorePermissions(perms, self.corePermissions)
+        info = InfoCorePermissions(self.mainWindow, perms, self.corePermissions)
         info.exec_()
 
     def slotQuitCore(self):
@@ -2300,8 +2300,8 @@ class AboutBox(QDialog):
         about-box
     """
 
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
 
         self.setAttribute(Qt.WA_DeleteOnClose, True)
@@ -2398,8 +2398,8 @@ class InfoCorePermissions(QDialog):
     """
         permissions info box
     """
-    def __init__(self, perms, activeperms):
-        QDialog.__init__(self)
+    def __init__(self, parent, perms, activeperms):
+        QDialog.__init__(self, parent)
         self.log = logging.getLogger("guilog")
         self.perms = perms
         self.activeperms = activeperms
@@ -3430,7 +3430,7 @@ class PackageEdit(QDialog):
         package edit dialog
     """
 
-    def __init__(self):
+    def __init__(self, parent):
         self.log = logging.getLogger("guilog")
 
         self.id = None
@@ -3443,7 +3443,7 @@ class PackageEdit(QDialog):
         self.CANCEL = 101
         self.CANCELALL = 102
 
-        QDialog.__init__(self)
+        QDialog.__init__(self, parent)
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Edit Package"))
