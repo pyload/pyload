@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
+from functools import reduce
 
+import pycurl
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.misc import encode, json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):
@@ -12,23 +13,22 @@ def args(**kwargs):
 
 
 class MegaDebridEu(MultiAccount):
-    __name__    = "MegaDebridEu"
-    __type__    = "account"
+    __name__ = "MegaDebridEu"
+    __type__ = "account"
     __version__ = "0.28"
-    __status__  = "testing"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in minutes", 60)]
 
     __description__ = """Mega-debrid.eu account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de"          ),
-                       ("GammaC0de"      , "nitzo2001[AT]yahoo[DOT]com"  ),
-                       ("FoxyDarnec"     , "goupildavid[AT]gmail[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+                   ("FoxyDarnec", "goupildavid[AT]gmail[DOT]com")]
 
     API_URL = "https://www.mega-debrid.eu/api.php"
-
 
     def api_response(self, action, get={}, post={}):
         get['action'] = action
@@ -38,7 +38,6 @@ class MegaDebridEu(MultiAccount):
         json_data = self.load(self.API_URL, get=get, post=post)
 
         return json.loads(json_data)
-
 
     def grab_hosters(self, user, password, data):
         hosters = self.api_response("getHosters")
@@ -50,17 +49,18 @@ class MegaDebridEu(MultiAccount):
             self.log_error(_("Unable to retrieve hoster list"))
             return []
 
-
     def grab_info(self, user, password, data):
-        validuntil  = None
+        validuntil = None
         trafficleft = None
-        premium     = False
+        premium = False
 
-        res = self.api_response("connectUser", args(login=user, password=password))
+        res = self.api_response(
+            "connectUser", args(
+                login=user, password=password))
 
         if res['response_code'] == "ok":
-            validuntil  = float(res['vip_end'])
-            premium     = validuntil > 0
+            validuntil = float(res['vip_end'])
+            premium = validuntil > 0
             trafficleft = -1
 
         else:
@@ -68,14 +68,16 @@ class MegaDebridEu(MultiAccount):
 
         data['token'] = res['token']
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
-
+        return {'validuntil': validuntil,
+                'trafficleft': trafficleft, 'premium': premium}
 
     def signin(self, user, password, data):
         try:
-            res = self.api_response("connectUser", args(login=user, password=password))
+            res = self.api_response(
+                "connectUser", args(
+                    login=user, password=password))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 401:
                 self.fail_login()
 

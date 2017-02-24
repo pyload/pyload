@@ -5,40 +5,37 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
+from module.plugins.internal.Extractor import (ArchiveError, CRCError,
+                                               Extractor, PasswordError)
 from module.plugins.internal.misc import encode
 
 
 class UnZip(Extractor):
-    __name__    = "UnZip"
-    __type__    = "extractor"
+    __name__ = "UnZip"
+    __type__ = "extractor"
     __version__ = "1.22"
-    __status__  = "stable"
+    __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    VERSION = "%s.%s.%s" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
-
+    VERSION = "%s.%s.%s" % (sys.version_info[0], sys.version_info[
+                            1], sys.version_info[2])
 
     @classmethod
     def isarchive(cls, filename):
         return zipfile.is_zipfile(encode(filename))
 
-
     @classmethod
     def find(cls):
         return sys.version_info[:2] >= (2, 6)
-
 
     def list(self, password=None):
         with zipfile.ZipFile(self.target, 'r') as z:
             z.setpassword(password)
             self.files = z.namelist()
         return self.files
-
 
     def verify(self, password=None):
         try:
@@ -47,15 +44,14 @@ class UnZip(Extractor):
                 if z.testzip():
                     raise CRCError(badfile)
 
-        except (zipfile.BadZipfile, zipfile.LargeZipFile), e:
+        except (zipfile.BadZipfile, zipfile.LargeZipFile) as e:
             raise ArchiveError(e)
 
-        except RuntimeError, e:
+        except RuntimeError as e:
             if "encrypted" in e.args[0] or "Bad password" in e.args[0]:
                 raise PasswordError(e)
             else:
                 raise CRCError(e)
-
 
     def extract(self, password=None):
         self.verify(password)
@@ -67,5 +63,5 @@ class UnZip(Extractor):
                 self.files = z.namelist()
             return self.files
 
-        except RuntimeError, e:
+        except RuntimeError as e:
             raise ArchiveError(e)

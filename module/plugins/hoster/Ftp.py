@@ -1,36 +1,34 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import urlparse
 
+import pycurl
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import parse_name
 
 
 class Ftp(Hoster):
-    __name__    = "Ftp"
-    __type__    = "hoster"
+    __name__ = "Ftp"
+    __type__ = "hoster"
     __version__ = "0.60"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Download from ftp directory"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.com"),
-                       ("mkaay", "mkaay@mkaay.de"),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.com"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
     def setup(self):
-        self.chunk_limit     = -1
+        self.chunk_limit = -1
         self.resume_download = True
 
-
     def process(self, pyfile):
-        p_url  = urlparse.urlparse(pyfile.url)
+        p_url = urlparse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
         pyfile.name = parse_name(p_url.path.rpartition('/')[2])
@@ -57,7 +55,7 @@ class Ftp(Hoster):
         try:
             headers = self.load(pyfile.url, just_header=True)
 
-        except pycurl.error, e:
+        except pycurl.error as e:
             if "530" in e.args[1]:
                 self.fail(_("Authorization required"))
             else:
@@ -74,7 +72,8 @@ class Ftp(Hoster):
             #: Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
-                pkgname = "/".join([pyfile.package().name, urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
+                pkgname = "/".join([pyfile.package().name,
+                                    urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
 
                 pyfile.url += '/'
 

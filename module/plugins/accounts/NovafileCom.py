@@ -4,14 +4,13 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class NovafileCom(XFSAccount):
-    __name__    = "NovafileCom"
-    __type__    = "account"
+    __name__ = "NovafileCom"
+    __type__ = "account"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Novafile.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     PLUGIN_DOMAIN = "novafile.com"

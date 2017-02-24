@@ -7,25 +7,23 @@ from module.plugins.internal.Account import Account
 
 
 class CatShareNet(Account):
-    __name__    = "CatShareNet"
-    __type__    = "account"
+    __name__ = "CatShareNet"
+    __type__ = "account"
     __version__ = "0.14"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Catshare.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq",      None                        ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("prOq", None),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-
-    PREMIUM_PATTERN      = r'<span class="hidden-xs">Premium</span>'
-    VALID_UNTIL_PATTERN  = r'<span class="hidden-xs">Premium</span> <b>(.*?)</b>'
+    PREMIUM_PATTERN = r'<span class="hidden-xs">Premium</span>'
+    VALID_UNTIL_PATTERN = r'<span class="hidden-xs">Premium</span> <b>(.*?)</b>'
     TRAFFIC_LEFT_PATTERN = r'<span class="hidden-xs">Premium</span>.*?\( (-?)(?P<S>[\d.,]+) (?P<U>[kMG]B) \)'
 
-
     def grab_info(self, user, password, data):
-        premium     = False
-        validuntil  = -1
+        premium = False
+        validuntil = -1
         trafficleft = -1
 
         html = self.load("http://catshare.net/")
@@ -39,14 +37,16 @@ class CatShareNet(Account):
             if m:
                 validuntil = time.time()
                 for n, u in m:
-                    validuntil += float(n) * 60 * 60 * {'tydzień': 168, 'dni': 24, 'godzin': 1}[u]
+                    validuntil += float(n) * 60 * 60 * \
+                        {'tydzień': 168, 'dni': 24, 'godzin': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m:
-            trafficleft = 0 if m.group(1) else self.parse_traffic(m.group(2), m.group(3))
+            trafficleft = 0 if m.group(
+                1) else self.parse_traffic(m.group(2), m.group(3))
 
-        return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
-
+        return {'premium': premium, 'trafficleft': trafficleft,
+                'validuntil': validuntil}
 
     def signin(self, user, password, data):
         html = self.load("http://catshare.net/")
@@ -54,11 +54,11 @@ class CatShareNet(Account):
         if '<a href="/logout">Wyloguj</a>' in html:
             self.skip_login()
 
-        html = self.load("http://catshare.net/login",  #@TODO: Revert to `https` in 0.4.10
-                         post={'user_email'    : user,
-                               'user_password' : password,
+        html = self.load("http://catshare.net/login",  # @TODO: Revert to `https` in 0.4.10
+                         post={'user_email': user,
+                               'user_password': password,
                                'remindPassword': 0,
-                               'user[submit]'  : "Login"})
+                               'user[submit]': "Login"})
 
         if not '<a href="/logout">Wyloguj</a>' in html:
             self.fail_login()

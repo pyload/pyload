@@ -1,38 +1,37 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.misc import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class PremiumizeMe(MultiAccount):
-    __name__    = "PremiumizeMe"
-    __type__    = "account"
+    __name__ = "PremiumizeMe"
+    __type__ = "account"
     __version__ = "0.26"
-    __status__  = "testing"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in minutes", 60)]
 
     __description__ = """Premiumize.me account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com"  ),
-                       ("GammaC0de"      , "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "http://api.premiumize.me/pm-api/v1.php"  #@TODO: Revert to `https` in 0.4.10
-
+    # @TODO: Revert to `https` in 0.4.10
+    API_URL = "http://api.premiumize.me/pm-api/v1.php"
 
     def api_respond(self, method, user, password, **kwargs):
-        get_params = {'method'       : method,
+        get_params = {'method': method,
                       'params[login]': user,
-                      'params[pass]' : password}
-        for key, val in kwargs.iteritems():
+                      'params[pass]': password}
+        for key, val in kwargs.items():
             get_params["params[%s]" % key] = val
 
         json_data = self.load(self.API_URL, get=get_params)
 
         return json.loads(json_data)
-
 
     def grab_hosters(self, user, password, data):
         res = self.api_respond("hosterlist", user, password)
@@ -42,25 +41,24 @@ class PremiumizeMe(MultiAccount):
 
         return res['result']['tldlist']
 
-
     def grab_info(self, user, password, data):
-        validuntil  = None
+        validuntil = None
         trafficleft = None
-        premium     = False
+        premium = False
 
         res = self.api_respond("accountstatus", user, password)
 
         if res['status'] == 200:
-            validuntil  = float(res['result']['expires'])
-            trafficleft = max(0, res['result']['trafficleft_bytes'] / 1024)  #@TODO: Remove `/ 1024` in 0.4.10
+            validuntil = float(res['result']['expires'])
+            # @TODO: Remove `/ 1024` in 0.4.10
+            trafficleft = max(0, res['result']['trafficleft_bytes'] / 1024)
 
             if res['result']['type'] != 'free':
                 premium = True
 
-        return {'validuntil' : validuntil ,
+        return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
-                'premium'    : premium    }
-
+                'premium': premium}
 
     def signin(self, user, password, data):
         res = self.api_respond("accountstatus", user, password)

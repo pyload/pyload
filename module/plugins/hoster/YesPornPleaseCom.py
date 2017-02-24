@@ -6,24 +6,24 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class YesPornPleaseCom(Hoster):
-    __name__    = "YesPornPleaseCom"
-    __type__    = "hoster"
+    __name__ = "YesPornPleaseCom"
+    __type__ = "hoster"
     __version__ = "0.01"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?yespornplease\.com/view/(\d+)'
-    __config__  = [("activated", "bool",                      "Activated", True),
-                   ("quality",   "240p;360p;480p;720p", "Quality",   "720p")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("quality", "240p;360p;480p;720p", "Quality", "720p")]
 
     __description__ = """YesPornPlease.Com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("ondrej", "git@ondrej.it")]
+    __license__ = "GPLv3"
+    __authors__ = [("ondrej", "git@ondrej.it")]
 
     NAME_PATTERN = r'<title>(.+) watch online for free'
 
     def setup(self):
         self.resume_download = True
-        self.multiDL         = True
+        self.multiDL = True
 
     def process(self, pyfile):
         resp = self.load(pyfile.url)

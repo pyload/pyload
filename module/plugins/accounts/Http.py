@@ -4,15 +4,14 @@ from module.plugins.internal.Account import Account
 
 
 class Http(Account):
-    __name__    = "Http"
-    __type__    = "account"
+    __name__ = "Http"
+    __type__ = "account"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Http dummy account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     info_threshold = 1000000
     login_timeout = 1000000

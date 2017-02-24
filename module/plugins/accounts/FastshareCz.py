@@ -7,25 +7,23 @@ from module.plugins.internal.misc import set_cookie
 
 
 class FastshareCz(Account):
-    __name__    = "FastshareCz"
-    __type__    = "account"
+    __name__ = "FastshareCz"
+    __type__ = "account"
     __version__ = "0.15"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("ondrej", "git@ondrej.it")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("ondrej", "git@ondrej.it")]
 
     CREDIT_PATTERN = r'<a href="/user">.+<span>\(([\d\.]+) ([MGT]+B)\)</span></a>'
 
-
     def grab_info(self, user, password, data):
-        validuntil  = -1
+        validuntil = -1
         trafficleft = None
-        premium     = False
+        premium = False
 
         html = self.load("http://www.fastshare.cz/user")
 
@@ -35,15 +33,15 @@ class FastshareCz(Account):
 
         premium = bool(trafficleft)
 
-        return {'validuntil' : validuntil,
+        return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
-                'premium'    : premium}
-
+                'premium': premium}
 
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "fastshare.cz", "lang", "en")
 
-        self.load('https://www.fastshare.cz/login')  #@NOTE: Do not remove or it will not login
+        # @NOTE: Do not remove or it will not login
+        self.load('https://www.fastshare.cz/login')
 
         html = self.load("https://www.fastshare.cz/sql.php",
                          post={'login': user,

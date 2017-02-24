@@ -3,9 +3,8 @@
 import os
 import re
 
-from module.PyFile import PyFile
-from module.plugins.internal.Plugin import Plugin
 from module.plugins.internal.misc import encode
+from module.plugins.internal.Plugin import Plugin
 
 
 class ArchiveError(Exception):
@@ -21,32 +20,28 @@ class PasswordError(Exception):
 
 
 class Extractor(Plugin):
-    __name__    = "Extractor"
-    __type__    = "extractor"
+    __name__ = "Extractor"
+    __type__ = "extractor"
     __version__ = "0.43"
-    __status__  = "stable"
+    __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Immenz", "immenz@gmx.net")]
 
     EXTENSIONS = []
-    REPAIR     = False
-    VERSION    = None
-
+    REPAIR = False
+    VERSION = None
 
     @classmethod
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
         return any(name.endswith('.' + ext) for ext in cls.EXTENSIONS)
 
-
     @classmethod
     def ismultipart(cls, filename):
         return False
-
 
     @classmethod
     def find(cls):
@@ -55,7 +50,6 @@ class Extractor(Plugin):
         """
         pass
 
-
     @classmethod
     def get_targets(cls, files_ids):
         """
@@ -63,7 +57,7 @@ class Extractor(Plugin):
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        targets   = []
+        targets = []
         processed = []
 
         for id, fname, fout in files_ids:
@@ -83,7 +77,6 @@ class Extractor(Plugin):
 
         return targets
 
-
     def __init__(self, pyfile, filename, out,
                  fullpath=True,
                  overwrite=False,
@@ -95,29 +88,26 @@ class Extractor(Plugin):
         """
         self._init(pyfile.m.core)
 
-        self.pyfile       = pyfile
-        self.filename     = filename
-        self.name         = os.path.basename(filename)
-        self.out          = out
-        self.fullpath     = fullpath
-        self.overwrite    = overwrite
+        self.pyfile = pyfile
+        self.filename = filename
+        self.name = os.path.basename(filename)
+        self.out = out
+        self.fullpath = fullpath
+        self.overwrite = overwrite
         self.excludefiles = excludefiles
-        self.priority     = priority
-        self.keepbroken   = keepbroken
-        self.files        = None
+        self.priority = priority
+        self.keepbroken = keepbroken
+        self.files = None
 
         self.init()
-
 
     @property
     def target(self):
         return encode(self.filename)
 
-
     @property
     def dest(self):
         return encode(self.out)
-
 
     def verify(self, password=None):
         """
@@ -126,10 +116,8 @@ class Extractor(Plugin):
         """
         pass
 
-
     def repair(self):
         pass
-
 
     def extract(self, password=None):
         """
@@ -138,13 +126,11 @@ class Extractor(Plugin):
         """
         raise NotImplementedError
 
-
     def chunks(self):
         """
         Return list of archive parts
         """
         return [self.filename]
-
 
     def list(self, password=None):
         """

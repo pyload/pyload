@@ -6,23 +6,23 @@ from module.plugins.internal.Hoster import Hoster
 
 
 class PornovkaCz(Hoster):
-    __name__    = "PornovkaCz"
-    __type__    = "hoster"
+    __name__ = "PornovkaCz"
+    __type__ = "hoster"
     __version__ = "0.01"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?pornovka\.cz/(.+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pornovka.cz hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("ondrej", "git@ondrej.it")]
+    __license__ = "GPLv3"
+    __authors__ = [("ondrej", "git@ondrej.it")]
 
     NAME_PATTERN = r'<h1>([^<]+)'
 
     def setup(self):
         self.resume_download = True
-        self.multiDL         = True
+        self.multiDL = True
 
     def process(self, pyfile):
         pornovka_resp = self.load(pyfile.url)

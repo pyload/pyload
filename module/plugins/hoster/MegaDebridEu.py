@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-
-from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import encode, json
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 def args(**kwargs):
@@ -11,25 +10,28 @@ def args(**kwargs):
 
 
 class MegaDebridEu(MultiHoster):
-    __name__    = "MegaDebridEu"
-    __type__    = "hoster"
+    __name__ = "MegaDebridEu"
+    __type__ = "hoster"
     __version__ = "0.54"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+'
-    __config__  = [("activated"    , "bool", "Activated"                                        , True ),
-                   ("use_premium"  , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"     , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize" , "bool", "Check file size"                                  , True ),
-                   ("max_wait"     , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revert_failed", "bool", "Revert to standard download if fails"             , True )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback",
+                   "bool",
+                   "Fallback to free download if premium fails",
+                   False),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Mega-debrid.eu multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Devirex Hazzard", "naibaf_11@yahoo.de"          ),
-                       ("GammaC0de"      , "nitzo2001[AT]yahoo[DOT]com"  ),
-                       ("FoxyDarnec"     , "goupildavid[AT]gmail[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+                   ("FoxyDarnec", "goupildavid[AT]gmail[DOT]com")]
 
     API_URL = "https://www.mega-debrid.eu/api.php"
 
@@ -42,10 +44,10 @@ class MegaDebridEu(MultiHoster):
 
         return json.loads(json_data)
 
-
     def handle_premium(self, pyfile):
         res = self.api_response("getLink",
-                                args(token=pyfile.plugin.account.info['data']['token']),
+                                args(
+                                    token=pyfile.plugin.account.info['data']['token']),
                                 args(link=pyfile.url))
 
         if res['response_code'] == "ok":

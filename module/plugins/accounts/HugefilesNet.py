@@ -4,14 +4,13 @@ from module.plugins.internal.XFSAccount import XFSAccount
 
 
 class HugefilesNet(XFSAccount):
-    __name__    = "HugefilesNet"
-    __type__    = "account"
+    __name__ = "HugefilesNet"
+    __type__ = "account"
     __version__ = "0.06"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Hugefiles.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     PLUGIN_DOMAIN = "hugefiles.net"

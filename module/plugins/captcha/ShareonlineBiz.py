@@ -4,15 +4,14 @@ from module.plugins.internal.OCR import OCR
 
 
 class ShareonlineBiz(OCR):
-    __name__    = "ShareonlineBiz"
-    __type__    = "ocr"
+    __name__ = "ShareonlineBiz"
+    __type__ = "ocr"
     __version__ = "0.16"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """Shareonline.biz ocr plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
     #: Tesseract at 60%
     def recognize(self, image):
