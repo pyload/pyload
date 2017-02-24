@@ -24,8 +24,7 @@ class XFileSharingFolder(XFSCrypter):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
-        return super(XFileSharingFolder, self)._log(
-            level, plugintype, pluginname, messages)
+        return XFSCrypter._log(self, level, plugintype, pluginname, messages)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[
@@ -40,7 +39,7 @@ class XFileSharingFolder(XFSCrypter):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
-        super(XFileSharingFolder, self).setup_base()
+        XFSCrypter.setup_base(self)
 
         if self.account:
             self.req = self.pyload.requestFactory.getRequest(
@@ -55,5 +54,5 @@ class XFileSharingFolder(XFSCrypter):
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)
-        super(XFileSharingFolder, self).load_account()
+        XFSCrypter.load_account(self)
         self.__class__.__name__ = class_name

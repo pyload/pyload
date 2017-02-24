@@ -11,7 +11,7 @@ from module.plugins.internal.Crypter import Crypter
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __version__ = "1.41"
+    __version__ = "1.42"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'
@@ -208,7 +208,7 @@ class NCryptIn(Crypter):
         if link_source_type == "cnl2":
             return self.handle_CNL2()
         elif link_source_type in ("rsdf", "ccf", "dlc"):
-            return self.handle_container(link_source_type)
+            return self.handle_container()
         elif link_source_type == "web":
             return self.handle_web_links()
         else:
@@ -240,7 +240,7 @@ class NCryptIn(Crypter):
 
         return pack_links
 
-    def handle_containers(self):
+    def handle_container(self):
         self.log_debug("Handling Container links")
         pack_links = []
 

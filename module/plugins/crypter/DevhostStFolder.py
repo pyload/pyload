@@ -12,7 +12,7 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 class DevhostStFolder(SimpleCrypter):
     __name__ = "DevhostStFolder"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'
@@ -30,6 +30,7 @@ class DevhostStFolder(SimpleCrypter):
     LINK_PATTERN = r'(?:/> |;">)<a href="(.+?)"(?!>Back to \w+<)'
     OFFLINE_PATTERN = r'"/cHP">test\.png<'
 
+    # TODO: Rewrite
     def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
             self.log_debug("File info (BEFORE): %s" % self.info)
@@ -38,7 +39,7 @@ class DevhostStFolder(SimpleCrypter):
 
         try:
             if self.info['pattern']['ID'] == "0":
-                raise
+                raise Exception
 
             p = r'href="(.+?)">Back to \w+<'
             m = re.search(p, self.data)

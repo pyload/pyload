@@ -9,7 +9,7 @@ from module.plugins.internal.misc import json
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
@@ -24,7 +24,7 @@ class MediafireComFolder(Crypter):
     FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'
     LINK_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
 
-    def _get_url(url):
+    def _get_url(self, url):
         try:
             for _i in range(3):
                 header = self.load(url, just_header=True)
