@@ -27,6 +27,6 @@ class TNTVillageScambioeticoOrg(SimpleCrypter):
     def get_links(self):
         for p in self.LINK_PATTERNS:
             self.LINK_PATTERN = p
-            links = super(TNTVillageScambioeticoOrg, self).getLinks()
+            links = SimpleCrypter.get_links(self)
             if links:
                 return links

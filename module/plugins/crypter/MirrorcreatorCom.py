@@ -10,7 +10,7 @@ from module.plugins.internal.misc import replace_patterns
 class MirrorcreatorCom(Crypter):
     __name__ = "MirrorcreatorCom"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})'
@@ -116,4 +116,5 @@ class MirrorcreatorCom(Crypter):
             return pack_name, pack_name
 
         else:  # Fallback to defaults
-            return self.package.name, self.package.folder
+            pack = self.pyfile.package()
+            return pack.name, pack.folder
