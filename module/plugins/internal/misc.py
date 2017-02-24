@@ -353,8 +353,8 @@ def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001":  #: aka UTF-8
             enc = "cp850"
-            # print "WARNING: Windows codepage 65001 (UTF-8) is not supported,
-            # used `%s` instead" % enc
+            # print("WARNING: Windows codepage 65001 (UTF-8) is not supported,
+            # used `%s` instead") % enc
     else:
         enc = "utf8"
 

@@ -23,7 +23,7 @@ class UlozTo(OCR):
 
     def recognize(self, audio):
         """ Audio decoding - more info could be found at https://launchpad.net/adecaptcha """
-        # print "!!!CAPTCHA :", audio
+        # print("!!!CAPTCHA :", audio)
         try:
             cfg_file = os.path.join(
                 os.path.split(

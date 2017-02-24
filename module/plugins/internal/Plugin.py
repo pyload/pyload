@@ -110,7 +110,7 @@ class Plugin(object):
     def _print_exc(self):
         frame = inspect.currentframe()
         try:
-            print format_exc(frame.f_back)
+            print(format_exc(frame.f_back))
         finally:
             del frame
 
