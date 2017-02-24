@@ -3,7 +3,6 @@
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import parse_time
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

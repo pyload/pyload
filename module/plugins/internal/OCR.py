@@ -9,14 +9,10 @@ from module.plugins.internal.misc import encode, fsjoin
 from module.plugins.internal.Plugin import Plugin
 
 try:
-    from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
+    from PIL import Image
 
 except ImportError:
     import Image
-    import GifImagePlugin
-    import JpegImagePlugin
-    import PngImagePlugin
-    import TiffImagePlugin
 
 # import tempfile
 
@@ -51,7 +47,7 @@ class OCR(Plugin):
         Delete all tmp images
         """
         pass
-        
+
     def threshold(self, value):
         self.img = self.img.point(lambda a: a * value + 10)
 

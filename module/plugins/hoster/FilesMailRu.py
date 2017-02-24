@@ -2,9 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import chunks
 
 
 class FilesMailRu(Hoster):

@@ -3,7 +3,6 @@
 import re
 import time
 
-import pycurl
 from module.plugins.internal.Account import Account
 
 

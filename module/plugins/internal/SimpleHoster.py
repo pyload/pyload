@@ -9,7 +9,6 @@ from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import (encode, parse_name, parse_size,
                                           parse_time, replace_patterns)
-from module.plugins.internal.Plugin import Fail
 
 
 class SimpleHoster(Hoster):

@@ -10,14 +10,12 @@ from module.plugins.internal.CaptchaService import CaptchaService
 
 try:
     no_pil = False
-    from PIL import _imaging
     from PIL import Image
     from PIL import ImageDraw
     from PIL import ImageFont
 
 except ImportError:
     try:
-        import _imaging
         import Image
         import ImageDraw
         import ImageFont

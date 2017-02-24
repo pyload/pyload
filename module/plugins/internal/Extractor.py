@@ -5,7 +5,6 @@ import re
 
 from module.plugins.internal.misc import encode
 from module.plugins.internal.Plugin import Plugin
-from module.PyFile import PyFile
 
 
 class ArchiveError(Exception):

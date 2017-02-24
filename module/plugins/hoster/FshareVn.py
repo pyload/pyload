@@ -4,8 +4,6 @@ import re
 import time
 import urlparse
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Base import parse_fileInfo
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
