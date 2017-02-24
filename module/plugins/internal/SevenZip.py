@@ -12,7 +12,7 @@ from module.plugins.internal.UnRar import (ArchiveError, CRCError,
 class SevenZip(UnRar):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -44,7 +44,7 @@ class SevenZip(UnRar):
             p = subprocess.Popen([cls.CMD],
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-            out, err = map(str.strip, p.communicate())
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         except OSError:
             return False
@@ -59,7 +59,7 @@ class SevenZip(UnRar):
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", self.filename)
-        out, err = map(str.strip, p.communicate())
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if self._RE_BADPWD.search(out):
             raise PasswordError
@@ -84,7 +84,7 @@ class SevenZip(UnRar):
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        out, err = map(str.strip, p.communicate())
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -103,7 +103,7 @@ class SevenZip(UnRar):
         command = "l" if self.fullpath else "l"
 
         p = self.call_cmd(command, self.filename, password=password)
-        out, err = map(str.strip, p.communicate())
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if "Can not open" in err:
             raise ArchiveError(_("Cannot open file"))
