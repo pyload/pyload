@@ -11,7 +11,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
@@ -68,15 +68,14 @@ class FilepostCom(SimpleHoster):
         if 'var is_pass_exists = true;' in self.data:
             #: Solve password
             password = self.get_password()
-
             if password:
                 self.log_info(
                     _("Password protected link, trying ") +
-                    file_pass)
+                    password)
 
                 get_dict['JsHttpRequest'] = str(
                     int(time.time() * 10000)) + '-xml'
-                post_dict['file_pass'] = file_pass
+                post_dict['file_pass'] = password
 
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 

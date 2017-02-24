@@ -18,7 +18,7 @@ def clean_json(json_expr):
 class XHamsterCom(Hoster):
     __name__ = "XHamsterCom"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
@@ -107,7 +107,7 @@ class XHamsterCom(Hoster):
             name = re.search(pattern, self.data)
             if name is None:
                 pattern = r'http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?'
-                name = re.match(file_name_pattern, self.pyfile.url)
+                name = re.match(pattern, self.pyfile.url)
                 if name is None:
                     pattern = r'<div id="element_str_id" style="display:none;">(.*)</div>'
                     name = re.search(pattern, self.data)

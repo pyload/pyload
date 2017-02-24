@@ -9,7 +9,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __version__ = "1.09"
+    __version__ = "1.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'
@@ -105,7 +105,7 @@ class CzshareCom(SimpleHoster):
         #: Get download ticket and parse html
         self.data = self.load(parsed_url)
         if re.search(self.MULTIDL_PATTERN, self.data):
-            self.wait(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, _("Download limit reached"))
 
         try:
             form = re.search(self.FREE_FORM_PATTERN, self.data, re.S).group(1)
@@ -125,7 +125,7 @@ class CzshareCom(SimpleHoster):
             self.retry_captcha()
 
         elif re.search(self.MULTIDL_PATTERN, self.data):
-            self.wait(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, _("Download limit reached"))
 
         else:
             self.captcha.correct()
@@ -162,7 +162,7 @@ class CzshareCom(SimpleHoster):
             self.restart(premium=False)
 
         elif check == "multi-dl":
-            self.wait(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, _("Download limit reached"))
 
         elif check == "captcha":
             self.retry_captcha()
