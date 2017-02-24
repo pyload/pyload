@@ -34,7 +34,7 @@ class YadiSk(SimpleHoster):
         if html:
             if 'idclient' not in info:
                 info['idclient'] = ""
-                for _i in xrange(32):
+                for _i in range(32):
                     info['idclient'] += random.choice('0123456abcdef')
 
             m = re.search(

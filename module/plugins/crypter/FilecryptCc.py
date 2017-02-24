@@ -212,7 +212,7 @@ class FilecryptCc(Crypter):
                 '<input type="hidden" name="crypted" value="(.*)">',
                 self.site_with_links)
 
-            for i in xrange(len(vcrypted)):
+            for i in range(len(vcrypted)):
                 self.urls.extend(self._get_links(vcrypted[i], vjk[i]))
 
         except Exception as e:

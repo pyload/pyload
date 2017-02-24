@@ -37,7 +37,7 @@ class XDCC(Hoster):
         self.req = self.pyload.requestFactory.getRequest(
             self.classname, type="XDCC")
 
-        for _i in xrange(0, 3):
+        for _i in range(0, 3):
             try:
                 nmn = self.do_download(pyfile.url)
                 self.log_info("Download of %s finished." % nmn)

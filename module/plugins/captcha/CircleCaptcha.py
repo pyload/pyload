@@ -47,8 +47,8 @@ class CircleCaptcha(OCR):
     def clean_image(self, im, pix):
         cleandeep = 1
 
-        imageheight = xrange(1, int(im.size[1]))
-        imagewidth = xrange(1, int(im.size[0]))
+        imageheight = range(1, int(im.size[1]))
+        imagewidth = range(1, int(im.size[0]))
         howmany = 0
         curcolor = self.BACKGROUND
 
@@ -61,7 +61,7 @@ class CircleCaptcha(OCR):
                 if curpix > self.BACKGROUND:
                     if howmany <= cleandeep and howmany > 0:
                         #: Clean pixel
-                        for ic in xrange(1, cleandeep + 1):
+                        for ic in range(1, cleandeep + 1):
                             if x - ic > 0:
                                 pix[x - ic, y] = self.BACKGROUND
                     jump = False
@@ -91,7 +91,7 @@ class CircleCaptcha(OCR):
                 if curpix > self.BACKGROUND:
                     if howmany <= cleandeep and howmany > 0:
                         #: Clean pixel
-                        for ic in xrange(1, cleandeep + 1):
+                        for ic in range(1, cleandeep + 1):
                             #: raw_input('2'+str(ic))
                             if y - ic > 0:
                                 pix[x, y - ic] = self.BACKGROUND
@@ -116,8 +116,8 @@ class CircleCaptcha(OCR):
 
     def find_first_pixel_x(self, im, pix, curx, cury,
                            color=-1, ExitWithBlack=False):
-        imageheight = xrange(1, int(im.size[1]))
-        imagewidth = xrange(curx + 1, int(im.size[0]))
+        imageheight = range(1, int(im.size[1]))
+        imagewidth = range(curx + 1, int(im.size[0]))
         jump = True
         newx = (-1, -1)
         blackfound = 0
@@ -148,8 +148,8 @@ class CircleCaptcha(OCR):
 
     def find_last_pixel_x(self, im, pix, curx, cury,
                           color=-1, ExitWithBlack=False):
-        imageheight = xrange(1, int(im.size[1]))
-        imagewidth = xrange(curx + 1, int(im.size[0]))
+        imageheight = range(1, int(im.size[1]))
+        imagewidth = range(curx + 1, int(im.size[0]))
         newx = (-1, -1)
         blackfound = 0
         for x in imagewidth:
@@ -178,10 +178,10 @@ class CircleCaptcha(OCR):
     def find_last_pixel_y(self, im, pix, curx, cury,
                           DownToUp, color=-1, ExitWithBlack=False):
         if DownToUp is False:
-            imageheight = xrange(int(cury) + 1, int(im.size[1]) - 1)
+            imageheight = range(int(cury) + 1, int(im.size[1]) - 1)
         else:
-            imageheight = xrange(int(cury) - 1, 1, -1)
-        imagewidth = xrange(int(curx), int(im.size[0]))
+            imageheight = range(int(cury) - 1, 1, -1)
+        imagewidth = range(int(curx), int(im.size[0]))
         newy = (-1, -1)
         blackfound = 0
         for y in imageheight:
@@ -243,8 +243,8 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-        imageheight = xrange(int(c[1] - c[2]), int(c[1] + c[2]))
-        imagewidth = xrange(int(c[0] - c[2]), int(c[0] + c[2]))
+        imageheight = range(int(c[1] - c[2]), int(c[1] + c[2]))
+        imagewidth = range(int(c[0] - c[2]), int(c[0] + c[2]))
 
         min_ray = 15
         max_ray = 30
@@ -328,8 +328,8 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-        imageheight = xrange(int(c[1] - c[2]), int(c[1] + c[2]))
-        imagewidth = xrange(int(c[0] - c[2]), int(c[0] + c[2]))
+        imageheight = range(int(c[1] - c[2]), int(c[1] + c[2]))
+        imagewidth = range(int(c[0] - c[2]), int(c[0] + c[2]))
 
         min_ray = 15
         max_ray = 30
@@ -567,9 +567,9 @@ class CircleCaptcha(OCR):
 
             pix = im.load()
 
-            stepheight = xrange(1, im.size[1], 2)
-            #: stepheight = xrange(45, 47)
-            imagewidth = xrange(1, im.size[0])
+            stepheight = range(1, im.size[1], 2)
+            #: stepheight = range(45, 47)
+            imagewidth = range(1, im.size[0])
             lstPoints = []  # Declares an empty list for the points
             lstX = []  # CoordinateX
             lstY = []  # CoordinateY
@@ -593,7 +593,7 @@ class CircleCaptcha(OCR):
             for y1 in stepheight:
                 x1 = 1
                 curcolor = -1
-                for k in xrange(1, 100):
+                for k in range(1, 100):
                     findnewcircle = False
                     retval = self.find_first_pixel_x(
                         im, pix, x1, y1, -1, False)
@@ -617,7 +617,7 @@ class CircleCaptcha(OCR):
                     #: found 1 pixel, seeking x2, y2
                     x2 = x1
                     y2 = y1
-                    for i in xrange(1, 100):
+                    for i in range(1, 100):
                         retval = self.find_last_pixel_x(
                             im, pix, x2, y2, -1, True)
                         x2 = retval[0]
@@ -641,10 +641,10 @@ class CircleCaptcha(OCR):
                         #: found 2 pixel, seeking x3, y3
                         #: Verify cord
 
-                        for invert in xrange(0, 2):
+                        for invert in range(0, 2):
                             x3 = math.floor(x2 - ((x2 - x1) / 2))
                             y3 = y1
-                            for j in xrange(1, 50):
+                            for j in range(1, 50):
                                 retval = self.find_last_pixel_y(
                                     im, pix, x3, y3, True if invert == 1 else False, -1, True)
                                 # self.log_debug(x3, y3, retval[0], invert)

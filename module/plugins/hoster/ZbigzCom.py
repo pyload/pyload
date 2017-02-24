@@ -46,7 +46,7 @@ class ZbigzCom(Hoster):
         return json.loads(m.group(1)) if m else None
 
     def sleep(self, sec):
-        for _i in xrange(sec):
+        for _i in range(sec):
             if self.pyfile.abort:
                 break
             time.sleep(1)
@@ -63,7 +63,7 @@ class ZbigzCom(Hoster):
             self.fail("Hash not found")
 
         file_id = m.group(1)
-        call_id = "".join([random.choice("0123456789") for _x in xrange(20)])
+        call_id = "".join([random.choice("0123456789") for _x in range(20)])
 
         self.pyfile.setCustomStatus("torrent")
         self.pyfile.setProgress(0)

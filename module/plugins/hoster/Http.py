@@ -27,7 +27,7 @@ class Http(Hoster):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
 
-        for _i in xrange(2):
+        for _i in range(2):
             self.download(url, ref=False, disposition=True)
 
             if self.req.code in (404, 410):

@@ -31,7 +31,7 @@ class LinksaveIn(OCR):
         frame_nr = 0
 
         lut = im.resize((256, 1))
-        lut.putdata(xrange(256))
+        lut.putdata(range(256))
         lut = list(lut.convert("RGB").getdata())
 
         new = Image.new("RGB", im.size)
@@ -43,8 +43,8 @@ class LinksaveIn(OCR):
                 break
             frame = im.copy()
             pix = frame.load()
-            for x in xrange(frame.size[0]):
-                for y in xrange(frame.size[1]):
+            for x in range(frame.size[0]):
+                for y in range(frame.size[1]):
                     if lut[pix[x, y]] != (0, 0, 0):
                         npix[x, y] = lut[pix[x, y]]
             frame_nr += 1
@@ -62,17 +62,17 @@ class LinksaveIn(OCR):
             bg = Image.open(bgpath)
 
             bglut = bg.resize((256, 1))
-            bglut.putdata(xrange(256))
+            bglut.putdata(range(256))
             bglut = list(bglut.convert("RGB").getdata())
 
             lut = img.resize((256, 1))
-            lut.putdata(xrange(256))
+            lut.putdata(range(256))
             lut = list(lut.convert("RGB").getdata())
 
             bgpix = bg.load()
             pix = img.load()
-            for x in xrange(bg.size[0]):
-                for y in xrange(bg.size[1]):
+            for x in range(bg.size[0]):
+                for y in range(bg.size[1]):
                     rgb_bg = bglut[bgpix[x, y]]
                     rgb_c = lut[pix[x, y]]
                     try:
@@ -96,18 +96,18 @@ class LinksaveIn(OCR):
         img = self.img.convert("P")
 
         bglut = bg.resize((256, 1))
-        bglut.putdata(xrange(256))
+        bglut.putdata(range(256))
         bglut = list(bglut.convert("RGB").getdata())
 
         lut = img.resize((256, 1))
-        lut.putdata(xrange(256))
+        lut.putdata(range(256))
         lut = list(lut.convert("RGB").getdata())
 
         bgpix = bg.load()
         pix = img.load()
         orgpix = self.img.load()
-        for x in xrange(bg.size[0]):
-            for y in xrange(bg.size[1]):
+        for x in range(bg.size[0]):
+            for y in range(bg.size[1]):
                 rgb_bg = bglut[bgpix[x, y]]
                 rgb_c = lut[pix[x, y]]
                 if rgb_c == rgb_bg:
@@ -118,8 +118,8 @@ class LinksaveIn(OCR):
         pix = new.load()
         orgpix = self.img.load()
         thresh = 4
-        for x in xrange(new.size[0]):
-            for y in xrange(new.size[1]):
+        for x in range(new.size[0]):
+            for y in range(new.size[1]):
                 rgb = orgpix[x, y]
                 r, g, b = rgb
                 pix[x, y] = (255, 255, 255)

@@ -143,7 +143,7 @@ class YoutubeCom(Hoster):
                 #: Since Youtube just scrambles the order of the characters in the signature
                 #: and does not change any byte value, we can store just a transformation map as a cached function
                 decrypt_map = [ord(c) for c in decrypt_func(
-                    ''.join(map(unichr, xrange(len(encrypted_sig)))))]
+                    ''.join(map(unichr, range(len(encrypted_sig)))))]
                 cache_info['cache'][player_url] = {'decrypt_map': decrypt_map,
                                                    'time': time.time()}
                 cache_dirty = True

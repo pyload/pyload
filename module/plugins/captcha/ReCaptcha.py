@@ -175,8 +175,8 @@ class ReCaptcha(CaptchaService):
             'height': draw.textsize('0')[1]}
 
         margin = 2
-        for x in xrange(3):
-            for y in xrange(3):
+        for x in range(3):
+            for y in range(3):
                 tile_index_pos = {
                     'x': x * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
                     'y': y * tile_size['height']
@@ -259,7 +259,7 @@ class ReCaptcha(CaptchaService):
         if os.name == 'nt':
             draw.text((3, margin), message, fill='black', font=font)
         else:
-            for i in xrange(len(lines)):
+            for i in range(len(lines)):
                 draw.text(
                     (3,
                      i *
@@ -284,7 +284,7 @@ class ReCaptcha(CaptchaService):
 
         html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
 
-        for i in xrange(10):
+        for i in range(10):
             try:
                 challenge = re.search(
                     r'name="c"\s+value=\s*"([^"]+)', html).group(1)

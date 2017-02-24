@@ -169,7 +169,7 @@ class Hoster(Base):
 
         header = self.load(url, just_header=True)
 
-        for i in xrange(1, maxredirs):
+        for i in range(1, maxredirs):
             if not redirect or header.get('connection') == "close":
                 resumable = False
 

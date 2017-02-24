@@ -47,7 +47,7 @@ class RockfileEu(SimpleHoster):
 
         self.data = self.load(pyfile.url, post=inputs)
 
-        for _i in xrange(5):
+        for _i in range(5):
             self.check_errors()
 
             url, inputs = self.parse_html_form('name="F1"')

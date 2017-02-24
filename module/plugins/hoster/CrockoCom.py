@@ -40,7 +40,7 @@ class CrockoCom(SimpleHoster):
         if "You need Premium membership to download this file." in self.data:
             self.fail(_("You need Premium membership to download this file"))
 
-        for _i in xrange(5):
+        for _i in range(5):
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:
                 url = urlparse.urljoin("http://crocko.com/", m.group(1))

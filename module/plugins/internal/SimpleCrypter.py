@@ -265,7 +265,7 @@ class SimpleCrypter(Crypter):
             pages = 1
 
         links = self.links
-        for p in xrange(2, pages + 1):
+        for p in range(2, pages + 1):
             self.data = self.load_page(p)
             links.extend(self.get_links())
 

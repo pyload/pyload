@@ -120,7 +120,7 @@ class Captcha9Kw(Addon):
                      'file-upload-01': base64.b64encode(data),
                      'action': "usercaptchaupload"}
 
-        for _i in xrange(5):
+        for _i in range(5):
             try:
                 res = self.load(self.API_URL, post=post_data)
 
@@ -139,7 +139,7 @@ class Captcha9Kw(Addon):
 
         task.data['ticket'] = res
 
-        for _i in xrange(int(self.config.get('timeout') / 5)):
+        for _i in range(int(self.config.get('timeout') / 5)):
             result = self.load(self.API_URL,
                                get={'apikey': self.config.get('passkey'),
                                     'id': res,
@@ -182,7 +182,7 @@ class Captcha9Kw(Addon):
         timeout = min(max(self.config.get('timeout'), 300), 3999)
         pluginname = re.search(r'_(.+?)_\d+.\w+', task.captchaFile).group(1)
 
-        for _i in xrange(5):
+        for _i in range(5):
             servercheck = self.load("http://www.9kw.eu/grafik/servercheck.txt")
             if queue < re.search(r'queue=(\d+)', servercheck).group(1):
                 break
@@ -225,7 +225,7 @@ class Captcha9Kw(Addon):
 
         passkey = self.config.get('passkey')
 
-        for _i in xrange(3):
+        for _i in range(3):
             res = self.load(self.API_URL,
                             get={'action': "usercaptchacorrectback",
                                  'apikey': passkey,

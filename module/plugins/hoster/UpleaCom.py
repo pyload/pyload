@@ -10,7 +10,7 @@ def decode_cloudflare_email(value):
     email = ""
 
     key = int(value[:2], 16)
-    for i in xrange(2, len(value), 2):
+    for i in range(2, len(value), 2):
         email += chr(int(value[i:i + 2], 16) ^ key)
 
     return email

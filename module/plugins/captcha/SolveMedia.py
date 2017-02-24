@@ -36,7 +36,7 @@ class SolveMedia(CaptchaService):
         html = self.pyfile.plugin.load("http://api.solvemedia.com/papi/challenge.noscript",
                                        get={'k': key})
 
-        for i in xrange(1, 11):
+        for i in range(1, 11):
             try:
                 magic = re.search(r'name="magic" value="(.+?)"', html).group(1)
 

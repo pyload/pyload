@@ -54,7 +54,7 @@ class OneFichierCom(SimpleHoster):
     @classmethod
     def get_info(cls, url="", html=""):
         redirect = url
-        for i in xrange(10):
+        for i in range(10):
             try:
                 headers = dict((k.lower(), v) for k, v in re.findall(
                     r'(?P<name>.+?): (?P<value>.+?)\r?\n', get_url(redirect, just_header=True)))

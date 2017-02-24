@@ -26,7 +26,7 @@ class MediafireComFolder(Crypter):
 
     def _get_url(url):
         try:
-            for _i in xrange(3):
+            for _i in range(3):
                 header = self.load(url, just_header=True)
 
                 for line in header.splitlines():

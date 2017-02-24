@@ -28,7 +28,7 @@ class UlozToFolder(Crypter):
         html = self.load(pyfile.url)
 
         new_links = []
-        for i in xrange(1, 100):
+        for i in range(1, 100):
             self.log_info(_("Fetching links from page %i") % i)
             m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:

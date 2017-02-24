@@ -251,7 +251,7 @@ class MultiAccount(Account):
         if self.plugins:
             return self.plugins
 
-        for _i in xrange(5):
+        for _i in range(5):
             try:
                 plugin_set = set(self._grab_hosters())
                 break

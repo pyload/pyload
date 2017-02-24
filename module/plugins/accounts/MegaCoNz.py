@@ -73,7 +73,7 @@ class MegaCoNz(Account):
                     res['privk'], master_key))
             rsa_private_key = [0, 0, 0, 0]
 
-            for i in xrange(4):
+            for i in range(4):
                 l = ((ord(privk[0]) * 256 + ord(privk[1]) + 7) / 8) + 2
                 rsa_private_key[i] = self.mpi_to_int(privk[:l])
                 privk = privk[l:]
@@ -90,7 +90,7 @@ class MegaCoNz(Account):
             sid = "%x" % rsa.key._decrypt(encrypted_sid)
             sid = '0' * (-len(sid) % 2) + sid
             sid = "".join([chr(int(sid[i: i + 2], 16))
-                           for i in xrange(0, len(sid), 2)])
+                           for i in range(0, len(sid), 2)])
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
 
         data['mega_session_id'] = sid
@@ -101,10 +101,10 @@ class MegaCoNz(Account):
         password_key = MegaCrypto.a32_to_str(
             [0x93C467E3, 0x7DB0C7A4, 0xD1BE3F81, 0x0152CB56])
         password_a32 = MegaCrypto.str_to_a32(password)
-        for c in xrange(0x10000):
-            for j in xrange(0, len(password_a32), 4):
+        for c in range(0x10000):
+            for j in range(0, len(password_a32), 4):
                 key = [0, 0, 0, 0]
-                for i in xrange(4):
+                for i in range(4):
                     if i + j < len(password_a32):
                         key[i] = password_a32[i + j]
                 password_key = MegaCrypto.cbc_encrypt(password_key, key)
@@ -114,11 +114,11 @@ class MegaCoNz(Account):
     def get_user_hash(self, user, password_key):
         user_a32 = MegaCrypto.str_to_a32(user)
         user_hash = [0, 0, 0, 0]
-        for i in xrange(len(user_a32)):
+        for i in range(len(user_a32)):
             user_hash[i % 4] ^= user_a32[i]
 
         user_hash = MegaCrypto.a32_to_str(user_hash)
-        for i in xrange(0x4000):
+        for i in range(0x4000):
             user_hash = MegaCrypto.cbc_encrypt(user_hash, password_key)
 
         user_hash = MegaCrypto.str_to_a32(user_hash)
@@ -128,4 +128,4 @@ class MegaCoNz(Account):
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
         return int("".join("%02x" % ord(s[2:][x])
-                           for x in xrange(0, len(s[2:]))), 16)
+                           for x in range(0, len(s[2:]))), 16)

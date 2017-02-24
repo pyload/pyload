@@ -44,7 +44,7 @@ class TusfilesNetFolder(XFSCrypter):
             return
 
         links = self.links
-        for p in xrange(2, pages + 1):
+        for p in range(2, pages + 1):
             self.data = self.load_page(p)
             links.append(self.get_links())
 

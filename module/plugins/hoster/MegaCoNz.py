@@ -125,7 +125,7 @@ class MegaCrypto(object):
         """
         data = MegaCrypto.base64_decode(data)
         return sum((MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[_i:_i + 16], key))
-                    for _i in xrange(0, len(data), 16)), ())
+                    for _i in range(0, len(data), 16)), ())
 
     @staticmethod
     def get_chunks(size):
@@ -160,7 +160,7 @@ class MegaCrypto(object):
         def update(self, chunk):
             cbc = Crypto.Cipher.AES.new(
                 self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv)
-            for j in xrange(0, len(chunk), 16):
+            for j in range(0, len(chunk), 16):
                 block = chunk[j:j + 16].ljust(16, '\0')
                 hash = cbc.encrypt(block)
 

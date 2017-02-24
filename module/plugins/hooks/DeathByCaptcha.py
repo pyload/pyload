@@ -142,7 +142,7 @@ class DeathByCaptcha(Addon):
             raise DeathByCaptchaException(res)
         ticket = res['captcha']
 
-        for _i in xrange(24):
+        for _i in range(24):
             time.sleep(5)
             res = self.api_response("captcha/%d" % ticket, False)
             if res['text'] and res['is_correct']:
