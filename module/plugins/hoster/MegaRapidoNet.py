@@ -17,13 +17,13 @@ def random_with_n_digits(n):
     if not_zero > 0:
         return rand
     else:
-        return random_with_N_digits(n)
+        return random_with_n_digits(n)
 
 
 class MegaRapidoNet(MultiHoster):
     __name__ = "MegaRapidoNet"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
@@ -48,7 +48,7 @@ class MegaRapidoNet(MultiHoster):
 
     def handle_premium(self, pyfile):
         self.data = self.load("http://megarapido.net/gerar.php",
-                              post={'rand': random_with_N_digits(16),
+                              post={'rand': random_with_n_digits(16),
                                     'urllist': pyfile.url,
                                     'links': pyfile.url,
                                     'exibir': "normal",

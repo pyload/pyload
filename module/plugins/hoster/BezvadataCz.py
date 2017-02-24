@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
@@ -72,7 +72,7 @@ class BezvadataCz(SimpleHoster):
     def check_errors(self):
         if 'images/button-download-disable.png' in self.data:
             #: Parallel dl limit
-            self.wait(5 * 60, 24, _("Download limit reached"))
+            self.retry(5 * 60, 24, _("Download limit reached"))
         elif '<div class="infobox' in self.data:
             self.temp_offline()
         else:

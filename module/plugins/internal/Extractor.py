@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -67,7 +67,7 @@ class Extractor(Plugin):
                 continue
 
             if cls.ismultipart(fname):
-                pname = self._RE_PART.sub("", fname)
+                pname = cls._RE_PART.sub("", fname)
 
             pname = os.path.splitext(fname)[0]
             if pname in processed:
