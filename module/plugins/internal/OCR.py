@@ -22,7 +22,6 @@ except ImportError:
 # import tempfile
 
 
-
 class OCR(Plugin):
     __name__ = "OCR"
     __type__ = "ocr"

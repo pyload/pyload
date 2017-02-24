@@ -18,7 +18,6 @@ except ImportError:
     import Image
 
 
-
 class CaptchaBrotherhoodException(Exception):
 
     def __init__(self, err):

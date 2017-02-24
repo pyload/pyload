@@ -13,7 +13,6 @@ except ImportError:
     pass
 
 
-
 #@TODO: IPv6 support
 class ClickNLoad(Addon):
     __name__ = "ClickNLoad"

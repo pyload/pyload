@@ -21,7 +21,6 @@ if os.name != "nt":
     import pwd
 
 
-
 # @NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 _decode = decode
 

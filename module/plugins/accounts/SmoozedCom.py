@@ -25,7 +25,6 @@ except ImportError:
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 
-
 class SmoozedCom(MultiAccount):
     __name__ = "SmoozedCom"
     __type__ = "account"

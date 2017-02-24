@@ -56,7 +56,6 @@ except ImportError:
     pass
 
 
-
 class ArchiveQueue(object):
 
     def __init__(self, plugin, storage):

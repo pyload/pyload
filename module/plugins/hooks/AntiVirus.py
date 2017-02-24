@@ -14,7 +14,6 @@ except ImportError:
     pass
 
 
-
 class AntiVirus(Addon):
     __name__ = "AntiVirus"
     __type__ = "hook"

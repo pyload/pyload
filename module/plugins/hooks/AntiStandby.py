@@ -16,7 +16,6 @@ except ImportError:
     pass
 
 
-
 class Kernel32(object):
     ES_AWAYMODE_REQUIRED = 0x00000040
     ES_CONTINUOUS = 0x80000000
