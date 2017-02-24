@@ -4,8 +4,8 @@ import os
 import re
 import urllib
 import urlparse
-
 from StringIO import StringIO
+
 from module.plugins.internal.CaptchaService import CaptchaService
 
 try:

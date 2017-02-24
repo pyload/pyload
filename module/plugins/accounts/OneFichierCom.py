@@ -4,9 +4,8 @@ import re
 import time
 
 import pycurl
-
-from module.plugins.internal.Account import Account
 from module.network.HTTPRequest import BadHeader
+from module.plugins.internal.Account import Account
 
 
 class OneFichierCom(Account):

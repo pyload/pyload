@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SoundcloudCom(SimpleHoster):

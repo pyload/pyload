@@ -2,8 +2,8 @@
 
 import re
 
+from module.plugins.internal.misc import json, parse_name, timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import json, timestamp, parse_name
 
 
 def convert_decimal_prefix(m):

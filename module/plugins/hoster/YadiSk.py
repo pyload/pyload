@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
 import random
+import re
 
 from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster

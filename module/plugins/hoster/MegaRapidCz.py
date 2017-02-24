@@ -3,7 +3,6 @@
 import re
 
 import pycurl
-
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Base import parse_fileInfo

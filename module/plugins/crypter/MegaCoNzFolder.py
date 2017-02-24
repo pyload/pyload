@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
-
 from module.plugins.internal.Crypter import Crypter
 
 

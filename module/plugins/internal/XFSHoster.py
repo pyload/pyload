@@ -6,8 +6,9 @@ import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
+from module.plugins.internal.misc import (html_unescape, parse_time,
+                                          seconds_to_midnight, set_cookie)
 from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import html_unescape, parse_time, seconds_to_midnight, set_cookie
 
 
 class XFSHoster(SimpleHoster):

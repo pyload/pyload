@@ -3,8 +3,8 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class Go4UpCom(SimpleCrypter):

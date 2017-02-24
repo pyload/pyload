@@ -3,9 +3,9 @@
 import os
 import re
 
-from module.PyFile import PyFile
-from module.plugins.internal.Plugin import Plugin
 from module.plugins.internal.misc import encode
+from module.plugins.internal.Plugin import Plugin
+from module.PyFile import PyFile
 
 
 class ArchiveError(Exception):

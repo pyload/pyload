@@ -4,7 +4,6 @@ import binascii
 import re
 
 import Crypto.Cipher.AES
-
 from module.plugins.internal.Crypter import Crypter
 
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.misc import json, set_cookie
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class SimplyPremiumCom(MultiAccount):

@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.misc import json, seconds_to_midnight
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.misc import json, seconds_to_midnight
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

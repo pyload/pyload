@@ -7,6 +7,9 @@ import time
 import urllib
 
 import pycurl
+from module.network.RequestFactory import getRequest as get_request
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import threaded
 
 try:
     from PIL import Image
@@ -14,9 +17,6 @@ try:
 except ImportError:
     import Image
 
-from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
 
 
 class CaptchaBrotherhoodException(Exception):

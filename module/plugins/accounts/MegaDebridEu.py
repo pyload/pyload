@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
-
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import encode, json
 from functools import reduce
+
+import pycurl
+from module.network.HTTPRequest import BadHeader
+from module.plugins.internal.misc import encode, json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):

@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
 from module.plugins.internal.misc import json, uniqify
+from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class ImgurCom(SimpleCrypter):

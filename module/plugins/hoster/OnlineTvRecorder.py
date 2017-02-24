@@ -2,8 +2,9 @@
 
 import re
 
-from module.plugins.hoster.Http import Http
 from module.network.HTTPRequest import BadHeader
+from module.plugins.hoster.Http import Http
+
 
 # Support onlinetvrecorder.com
 

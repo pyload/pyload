@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import urllib
 import re
+import urllib
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.misc import json

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.PyFile import PyFile
 from module.plugins.internal.Addon import Addon
+from module.PyFile import PyFile
 
 
 class UnSkipOnFail(Addon):

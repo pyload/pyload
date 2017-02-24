@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.internal.misc import parse_size
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class CzshareCom(SimpleHoster):

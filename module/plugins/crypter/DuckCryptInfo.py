@@ -3,7 +3,6 @@
 import re
 
 import BeautifulSoup
-
 from module.plugins.internal.Crypter import Crypter
 
 

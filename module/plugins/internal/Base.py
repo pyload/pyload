@@ -7,9 +7,11 @@ import time
 import urlparse
 
 from module.plugins.internal.Captcha import Captcha
-from module.plugins.internal.Plugin import Plugin, Abort, Fail, Reconnect, Retry, Skip
-from module.plugins.internal.misc import (decode, encode, fixurl, format_size, format_time,
-                                          parse_html_form, parse_name, replace_patterns)
+from module.plugins.internal.misc import (decode, encode, fixurl, format_size,
+                                          format_time, parse_html_form,
+                                          parse_name, replace_patterns)
+from module.plugins.internal.Plugin import (Abort, Fail, Plugin, Reconnect,
+                                            Retry, Skip)
 
 
 #@TODO: Recheck in 0.4.10

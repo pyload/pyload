@@ -4,7 +4,6 @@ import random
 import re
 
 import pycurl
-
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon

@@ -4,7 +4,7 @@ import os
 import subprocess
 
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, Expose
+from module.plugins.internal.misc import Expose, encode
 
 
 class ExternalScripts(Addon):

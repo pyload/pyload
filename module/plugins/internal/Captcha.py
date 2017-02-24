@@ -5,8 +5,8 @@ from __future__ import with_statement
 import os
 import time
 
-from module.plugins.internal.Plugin import Plugin
 from module.plugins.internal.misc import encode
+from module.plugins.internal.Plugin import Plugin
 
 
 class Captcha(Plugin):

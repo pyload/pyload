@@ -2,8 +2,8 @@
 
 import hashlib
 
-from module.plugins.internal.MultiAccount import MultiAccount
 from module.plugins.internal.misc import json
+from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class LinksnappyCom(MultiAccount):

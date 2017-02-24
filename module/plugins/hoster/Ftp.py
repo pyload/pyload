@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import pycurl
 import re
 import urlparse
 
+import pycurl
 from module.plugins.internal.Hoster import Hoster
 from module.plugins.internal.misc import parse_name
 

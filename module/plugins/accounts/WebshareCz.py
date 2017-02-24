@@ -5,7 +5,6 @@ import re
 import time
 
 import passlib.hash
-
 from module.plugins.internal.Account import Account
 
 

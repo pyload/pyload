@@ -3,7 +3,7 @@
 import time
 
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, Expose, isiterable
+from module.plugins.internal.misc import Expose, encode, isiterable
 
 
 class Notifier(Addon):

@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.internal.misc import html_unescape
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class LolabitsEs(SimpleHoster):

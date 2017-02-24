@@ -3,6 +3,9 @@
 import hashlib
 import time
 
+from module.plugins.internal.misc import json
+from module.plugins.internal.MultiAccount import MultiAccount
+
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 
@@ -21,8 +24,6 @@ except ImportError:
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.MultiAccount import MultiAccount
 
 
 class SmoozedCom(MultiAccount):

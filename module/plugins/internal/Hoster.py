@@ -3,15 +3,15 @@
 from __future__ import with_statement
 
 import __builtin__
-import mimetypes
 import os
 import re
 
+import mimetypes
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Base import Base
+from module.plugins.internal.misc import (compute_checksum, encode, exists,
+                                          fixurl, fsjoin, parse_name, safejoin)
 from module.plugins.internal.Plugin import Fail, Retry
-from module.plugins.internal.misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, safejoin
-
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
 if not hasattr(__builtin__.property, "setter"):

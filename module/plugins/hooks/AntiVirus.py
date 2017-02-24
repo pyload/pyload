@@ -4,13 +4,15 @@ import os
 import shutil
 import subprocess
 
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import (Expose, encode, exists, fsjoin,
+                                          threaded)
+
 try:
     import send2trash
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, exists, fsjoin, Expose, threaded
 
 
 class AntiVirus(Addon):

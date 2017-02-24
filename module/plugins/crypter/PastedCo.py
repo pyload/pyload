@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
-
 import re
+
+from module.plugins.internal.Crypter import Crypter
 
 
 class PastedCo(Crypter):

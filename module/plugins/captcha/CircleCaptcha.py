@@ -4,13 +4,13 @@
 
 from __future__ import division
 
-import Image
-import ImageDraw
 import cStringIO
 import math
 import operator
 import urllib
 
+import Image
+import ImageDraw
 from module.plugins.internal.OCR import OCR
 
 

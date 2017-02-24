@@ -7,9 +7,8 @@ import os
 import re
 
 import Crypto.Cipher.AES
-
-from module.plugins.internal.Captcha import Captcha
 from module.plugins.captcha.SolveMedia import SolveMedia
+from module.plugins.internal.Captcha import Captcha
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import fsjoin, replace_patterns
 

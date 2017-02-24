@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
 import os
 import time
-import hashlib
 import urlparse
 
 from module.plugins.internal.misc import json

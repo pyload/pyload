@@ -4,13 +4,14 @@ import socket
 import threading
 import time
 
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import forward, lock, threaded
+
 try:
     import ssl
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import forward, lock, threaded
 
 
 #@TODO: IPv6 support

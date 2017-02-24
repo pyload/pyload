@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.CaptchaService import CaptchaService
+from module.plugins.internal.misc import json
 
 
 class AdYouLike(CaptchaService):

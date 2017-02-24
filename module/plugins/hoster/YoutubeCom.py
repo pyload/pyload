@@ -6,13 +6,14 @@ import re
 import subprocess
 import time
 import urllib
-
-from module.plugins.Plugin import Abort
-from module.network.HTTPRequest import HTTPRequest
-from module.network.CookieJar import CookieJar
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import html_unescape, json, replace_patterns, which
 from functools import reduce
+
+from module.network.CookieJar import CookieJar
+from module.network.HTTPRequest import HTTPRequest
+from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.misc import (html_unescape, json,
+                                          replace_patterns, which)
+from module.plugins.Plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

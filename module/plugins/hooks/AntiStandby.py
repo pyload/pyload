@@ -3,17 +3,18 @@
 from __future__ import with_statement
 
 import os
-import time
 import subprocess
 import sys
+import time
+
+from module.plugins.internal.Addon import Addon
+from module.plugins.internal.misc import Expose, encode, fsjoin
 
 try:
     import caffeine
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, Expose, fsjoin
 
 
 class Kernel32(object):

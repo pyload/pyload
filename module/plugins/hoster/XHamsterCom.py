@@ -3,8 +3,8 @@
 import re
 import urllib
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.misc import json
 
 
 def clean_json(json_expr):

@@ -4,19 +4,23 @@ from __future__ import with_statement
 
 import inspect
 import os
-import pycurl
 import re
+
+import pycurl
+from module.network.RequestFactory import getRequest as get_request
+from module.plugins.internal.misc import (DB, Config, decode, encode, exists,
+                                          fixurl, format_exc, fsjoin,
+                                          html_unescape, parse_html_header,
+                                          remove, set_cookies)
+from module.plugins.Plugin import SkipDownload as Skip
+# @TODO: Remove in 0.4.10
+from module.plugins.Plugin import Abort, Fail, Reconnect, Retry
 
 if os.name != "nt":
     import grp
     import pwd
 
 
-from module.network.RequestFactory import getRequest as get_request
-# @TODO: Remove in 0.4.10
-from module.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload as Skip
-from module.plugins.internal.misc import (Config, DB, decode, encode, exists, fixurl, fsjoin,
-                                          format_exc, html_unescape, parse_html_header, remove, set_cookies)
 
 # @NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 _decode = decode

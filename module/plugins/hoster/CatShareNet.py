@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
 from module.plugins.captcha.ReCaptcha import ReCaptcha
+from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class CatShareNet(SimpleHoster):

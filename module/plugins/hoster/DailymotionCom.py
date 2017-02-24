@@ -2,10 +2,10 @@
 
 import re
 
-from module.PyFile import statusMap
-from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
+from module.plugins.internal.misc import json
+from module.PyFile import statusMap
 
 
 def get_info(urls):

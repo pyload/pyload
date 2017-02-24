@@ -2,6 +2,13 @@
 
 from __future__ import with_statement
 
+import logging
+import os
+import subprocess
+
+from module.plugins.internal.misc import encode, fsjoin
+from module.plugins.internal.Plugin import Plugin
+
 try:
     from PIL import Image, GifImagePlugin, JpegImagePlugin, PngImagePlugin, TiffImagePlugin
 
@@ -12,13 +19,8 @@ except ImportError:
     import PngImagePlugin
     import TiffImagePlugin
 
-import logging
-import os
-import subprocess
 # import tempfile
 
-from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import encode, fsjoin
 
 
 class OCR(Plugin):

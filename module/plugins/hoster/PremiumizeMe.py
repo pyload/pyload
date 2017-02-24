@@ -2,8 +2,8 @@
 
 import urlparse
 
-from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import json
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):

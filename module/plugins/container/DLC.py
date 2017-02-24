@@ -6,7 +6,6 @@ import re
 import xml.dom.minidom
 
 import Crypto.Cipher.AES
-
 from module.plugins.internal.Container import Container
 from module.plugins.internal.misc import decode, encode
 

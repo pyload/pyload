@@ -5,7 +5,7 @@ from __future__ import with_statement
 import sys
 import tarfile
 
-from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError
+from module.plugins.internal.Extractor import ArchiveError, CRCError, Extractor
 from module.plugins.internal.misc import encode
 
 

@@ -5,8 +5,9 @@ import re
 import threading
 import time
 
+from module.plugins.internal.misc import (Periodical, compare_time, decode,
+                                          isiterable, lock, parse_size)
 from module.plugins.internal.Plugin import Plugin, Skip
-from module.plugins.internal.misc import Periodical, compare_time, decode, isiterable, lock, parse_size
 
 
 class Account(Plugin):

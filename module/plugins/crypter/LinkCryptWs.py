@@ -5,7 +5,6 @@ import re
 
 import Crypto.Cipher.AES
 import pycurl
-
 from module.plugins.internal.Crypter import Crypter
 from module.plugins.internal.misc import html_unescape, set_cookie
 

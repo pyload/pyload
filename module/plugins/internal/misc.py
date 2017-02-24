@@ -7,7 +7,6 @@ from __future__ import with_statement
 # import HTMLParser  #@TODO: Use in 0.4.10
 import datetime
 import hashlib
-import htmlentitydefs
 import itertools
 import os
 import re
@@ -21,6 +20,8 @@ import urllib
 import urlparse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
+
+import htmlentitydefs
 
 try:
     import simplejson as json

@@ -4,8 +4,9 @@ import re
 import time
 import urlparse
 
+from module.plugins.internal.misc import (parse_html_form, parse_time,
+                                          set_cookie)
 from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import parse_html_form, parse_time, set_cookie
 
 
 class XFSAccount(MultiAccount):

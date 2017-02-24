@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster
 from module.plugins.internal.misc import seconds_to_midnight
+from module.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplyPremiumCom(MultiHoster):

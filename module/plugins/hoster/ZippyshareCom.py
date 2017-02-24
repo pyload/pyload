@@ -4,7 +4,6 @@ import re
 import urllib
 
 import BeautifulSoup
-
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

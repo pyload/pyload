@@ -4,8 +4,9 @@ import os
 import re
 import subprocess
 
-from module.plugins.internal.UnRar import UnRar, ArchiveError, CRCError, PasswordError
 from module.plugins.internal.misc import encode, fsjoin, renice
+from module.plugins.internal.UnRar import (ArchiveError, CRCError,
+                                           PasswordError, UnRar)
 
 
 class SevenZip(UnRar):

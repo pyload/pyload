@@ -3,17 +3,15 @@
 import re
 import select
 import socket
-import ssl
 import time
 import traceback
-
-import pycurl
-
 from threading import Thread
 
-from module.Api import PackageDoesNotExists, FileDoesNotExists
-from module.plugins.internal.Notifier import Notifier
+import pycurl
+import ssl
+from module.Api import FileDoesNotExists, PackageDoesNotExists
 from module.plugins.internal.misc import format_size
+from module.plugins.internal.Notifier import Notifier
 
 
 class IRC(Thread, Notifier):
