@@ -18,7 +18,7 @@ class DeadCrypter(Crypter):
 
     @classmethod
     def get_info(cls, *args, **kwargs):
-        info = super(DeadCrypter, cls).get_info(*args, **kwargs)
+        info = Crypter.get_info(cls, *args, **kwargs)
         info['status'] = 1
         return info
 
