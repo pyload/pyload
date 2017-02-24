@@ -7,32 +7,31 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DateiTo(SimpleHoster):
-    __name__    = "DateiTo"
-    __type__    = "hoster"
+    __name__ = "DateiTo"
+    __type__ = "hoster"
     __version__ = "0.13"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?datei\.to/datei/(?P<ID>\w+)\.html'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Datei.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-
-    NAME_PATTERN    = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
-    SIZE_PATTERN    = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
+    NAME_PATTERN = r'Dateiname:</td>\s*<td colspan="2"><strong>(?P<N>.*?)</'
+    SIZE_PATTERN = r'Dateigr&ouml;&szlig;e:</td>\s*<td colspan="2">(?P<S>.*?)</'
     OFFLINE_PATTERN = r'>Datei wurde nicht gefunden<|>Bitte wähle deine Datei aus... <'
 
-    WAIT_PATTERN    = r'countdown\({seconds: (\d+)'
+    WAIT_PATTERN = r'countdown\({seconds: (\d+)'
     DOWNLOAD_PATTERN = r'>Du lädst bereits eine Datei herunter'
 
     DATA_PATTERN = r'url: "(.*?)", data: "(.*?)",'
-
 
     def handle_free(self, pyfile):
         url = 'http://datei.to/ajax/download.php'
@@ -59,12 +58,12 @@ class DateiTo(SimpleHoster):
             data = dict(x.split('=') for x in m.group(2).split('&'))
 
             if url.endswith('self.captcha.php'):
-                data['recaptcha_response_field'], data['recaptcha_challenge_field'] = self.captcha.challenge()
+                data['recaptcha_response_field'], data[
+                    'recaptcha_challenge_field'] = self.captcha.challenge()
         else:
             return
 
         self.link = self.data
-
 
     def do_wait(self):
         m = re.search(self.WAIT_PATTERN, self.data)

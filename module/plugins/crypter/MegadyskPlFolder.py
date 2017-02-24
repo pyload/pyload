@@ -11,25 +11,26 @@ from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 def xor_decrypt(data, key):
     data = base64.b64decode(data)
-    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0] % len(key)])), [(i, c) for i, c in enumerate(data)]))
+    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0] % len(key)])), [
+                   (i, c) for i, c in enumerate(data)]))
 
 
 class MegadyskPlFolder(SimpleCrypter):
-    __name__    = "MegadyskPlFolder"
-    __type__    = "crypter"
+    __name__ = "MegadyskPlFolder"
+    __type__ = "crypter"
     __version__ = "0.02"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?megadysk\.pl/(?:f|s)/.+'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No",
+                   "Create folder for each package", "Default"),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Megadysk.pl folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     @classmethod
     def api_info(cls, url):
@@ -54,7 +55,7 @@ class MegadyskPlFolder(SimpleCrypter):
 
         key = m.group(1)
 
-        res = xor_decrypt(encrypted_info , key)
+        res = xor_decrypt(encrypted_info, key)
         json_data = json.loads(urllib.unquote(res))
 
         if json_data['app']['maintenance']:
@@ -69,7 +70,6 @@ class MegadyskPlFolder(SimpleCrypter):
 
         return info
 
-
     def decrypt(self, pyfile):
         if 'entities' not in self.info:
             self.error(_("Missing JSON data"))
@@ -78,5 +78,5 @@ class MegadyskPlFolder(SimpleCrypter):
                       if _l['downloadUrl'].startswith('/dl/')]
 
         if pack_links:
-            self.packages.append((pyfile.package().name, pack_links, pyfile.package().folder))
-
+            self.packages.append(
+                (pyfile.package().name, pack_links, pyfile.package().folder))

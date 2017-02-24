@@ -6,22 +6,22 @@ from module.plugins.internal.XFSHoster import XFSHoster
 
 
 class NosuploadCom(XFSHoster):
-    __name__    = "NosuploadCom"
-    __type__    = "hoster"
+    __name__ = "NosuploadCom"
+    __type__ = "hoster"
     __version__ = "0.36"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Nosupload.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("igel", "igelkun@myopera.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("igel", "igelkun@myopera.com")]
 
     PLUGIN_DOMAIN = "nosupload.com"
 
@@ -30,7 +30,6 @@ class NosuploadCom(XFSHoster):
 
     WAIT_PATTERN = r'Please wait.*?>(\d+)</span>'
 
-
     def get_download_link(self):
         #: Stage1: press the "Free Download" button
         data = self.get_post_parameters()
@@ -38,7 +37,10 @@ class NosuploadCom(XFSHoster):
 
         #: Stage2: wait some time and press the "Download File" button
         data = self.get_post_parameters()
-        wait_time = re.search(self.WAIT_PATTERN, self.data, re.M | re.S).group(1)
+        wait_time = re.search(
+            self.WAIT_PATTERN,
+            self.data,
+            re.M | re.S).group(1)
         self.log_debug("Hoster told us to wait %s seconds" % wait_time)
         self.wait(wait_time)
         self.data = self.load(self.pyfile.url, post=data)

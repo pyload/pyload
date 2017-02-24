@@ -10,19 +10,17 @@ from module.network.HTTPRequest import BadHeader
 
 
 class OneFichierCom(Account):
-    __name__    = "OneFichierCom"
-    __type__    = "account"
+    __name__ = "OneFichierCom"
+    __type__ = "account"
     __version__ = "0.22"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """1fichier.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     VALID_UNTIL_PATTERN = r'Your Premium offer subscription is valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)'
-
 
     def grab_info(self, user, password, data):
         validuntil = None
@@ -39,31 +37,33 @@ class OneFichierCom(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(e, trace=True)
 
             else:
                 premium = True
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium or False}
-
+        return {'validuntil': validuntil,
+                'trafficleft': trafficleft, 'premium': premium or False}
 
     def signin(self, user, password, data):
-        self.req.http.c.setopt(pycurl.REFERER, "https://1fichier.com/login.pl?lg=en")
+        self.req.http.c.setopt(
+            pycurl.REFERER,
+            "https://1fichier.com/login.pl?lg=en")
 
         try:
             html = self.load("https://1fichier.com/login.pl?lg=en",
-                             post={'mail'   : user,
-                                   'pass'   : password,
-                                   'It'     : "on",
-                                   'purge'  : "off",
+                             post={'mail': user,
+                                   'pass': password,
+                                   'It': "on",
+                                   'purge': "off",
                                    'valider': "Send"})
 
             if any(_x in html for _x in
                    ('>Invalid username or Password', '>Invalid email address', '>Invalid password')):
                 self.fail_login()
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 403:
                 self.fail_login()
             else:

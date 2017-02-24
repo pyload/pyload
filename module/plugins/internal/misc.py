@@ -19,7 +19,7 @@ import time
 import traceback
 import urllib
 import urlparse
-import xml.sax.saxutils  #@TODO: Remove in 0.4.10
+import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
 
 try:
@@ -36,24 +36,23 @@ except ImportError:
 
 #@TODO: Remove in 0.4.10
 class misc(object):
-    __name__    = "misc"
-    __type__    = "plugin"
+    __name__ = "misc"
+    __type__ = "plugin"
     __version__ = "0.38"
-    __status__  = "stable"
+    __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = []
+    __config__ = []
 
     __description__ = """Dummy utils class"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
 
 class Config(object):
 
     def __init__(self, plugin):
         self.plugin = plugin
-
 
     def set(self, option, value, plugin=None):
         """
@@ -63,8 +62,8 @@ class Config(object):
         :param value:
         :return:
         """
-        self.plugin.pyload.api.setConfigValue(plugin or self.plugin.classname, option, value, section="plugin")
-
+        self.plugin.pyload.api.setConfigValue(
+            plugin or self.plugin.classname, option, value, section="plugin")
 
     def get(self, option, default=None, plugin=None):
         """
@@ -74,10 +73,13 @@ class Config(object):
         :return:
         """
         try:
-            return self.plugin.pyload.config.getPlugin(plugin or self.plugin.classname, option)
+            return self.plugin.pyload.config.getPlugin(
+                plugin or self.plugin.classname, option)
 
         except KeyError:
-            self.plugin.log_debug("Config option `%s` not found, use default `%s`" % (option, default))  #@TODO: Restore to `log_warning` in 0.4.10
+            self.plugin.log_debug(
+                "Config option `%s` not found, use default `%s`" %
+                (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
             return default
 
 
@@ -86,14 +88,12 @@ class DB(object):
     def __init__(self, plugin):
         self.plugin = plugin
 
-
     def store(self, key, value):
         """
         Saves a value persistently to the database
         """
         entry = json.dumps(value, ensure_ascii=False).encode('base64')
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
-
 
     def retrieve(self, key=None, default=None):
         """
@@ -110,10 +110,10 @@ class DB(object):
             if not entry:
                 value = default
             else:
-                value = dict((k, json.loads(v.decode('base64'))) for k, v in value.items())
+                value = dict((k, json.loads(v.decode('base64')))
+                             for k, v in value.items())
 
         return value
-
 
     def delete(self, key):
         """
@@ -134,11 +134,10 @@ class Expose(object):
 class Periodical(object):
 
     def __init__(self, plugin, task=lambda x: x, interval=None):
-        self.plugin   = plugin
-        self.task     = task
-        self.cb       = None
+        self.plugin = plugin
+        self.task = task
+        self.cb = None
         self.interval = interval
-
 
     def set_interval(self, value):
         newinterval = max(0, value)
@@ -151,19 +150,17 @@ class Periodical(object):
 
         return True
 
-
     def start(self, interval=None, threaded=False, delay=0):
         if interval is not None and self.set_interval(interval) is False:
             return False
         else:
-            self.cb = self.plugin.pyload.scheduler.addJob(max(1, delay), self._task, [threaded], threaded=threaded)
+            self.cb = self.plugin.pyload.scheduler.addJob(
+                max(1, delay), self._task, [threaded], threaded=threaded)
             return True
-
 
     def restart(self, *args, **kwargs):
         self.stop()
         return self.start(*args, **kwargs)
-
 
     def stop(self):
         try:
@@ -175,12 +172,11 @@ class Periodical(object):
         finally:
             self.cb = None
 
-
     def _task(self, threaded):
         try:
             self.task()
 
-        except Exception, e:
+        except Exception as e:
             self.plugin.log_error(_("Error performing periodical task"), e)
 
         self.restart(threaded=threaded, delay=self.interval)
@@ -189,21 +185,17 @@ class Periodical(object):
 class SimpleQueue(object):
 
     def __init__(self, plugin, storage="queue"):
-        self.plugin  = plugin
+        self.plugin = plugin
         self.storage = storage
-
 
     def get(self):
         return self.plugin.db.retrieve(self.storage, default=[])
 
-
     def set(self, value):
         return self.plugin.db.store(self.storage, value)
 
-
     def delete(self):
         return self.plugin.db.delete(self.storage)
-
 
     def add(self, item):
         queue = self.get()
@@ -211,7 +203,6 @@ class SimpleQueue(object):
             return self.set(queue + [item])
         else:
             return True
-
 
     def remove(self, item):
         queue = self.get()
@@ -247,7 +238,8 @@ def threaded(fn):
 
 
 def format_time(value):
-    dt   = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=abs(int(value)))
+    dt = datetime.datetime(1, 1, 1) + \
+        datetime.timedelta(seconds=abs(int(value)))
     days = ("%d days and " % (dt.day - 1)) if dt.day > 1 else ""
     return days + ", ".join("%d %ss" % (getattr(dt, attr), attr)
                             for attr in ("hour", "minute", "second")
@@ -266,7 +258,7 @@ def format_size(value):
 
 def compare_time(start, end):
     start = map(int, start)
-    end   = map(int, end)
+    end = map(int, end)
 
     if start == end:
         return True
@@ -278,7 +270,7 @@ def compare_time(start, end):
             return True
 
     elif now > start or now < end:
-            return True
+        return True
 
     return False
 
@@ -312,7 +304,8 @@ def fsbsize(path):
         cluster_sectors, sector_size = ctypes.c_longlong(0)
 
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),
-                                                 ctypes.pointer(cluster_sectors),
+                                                 ctypes.pointer(
+                                                     cluster_sectors),
                                                  ctypes.pointer(sector_size),
                                                  None,
                                                  None)
@@ -360,7 +353,8 @@ def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001":  #: aka UTF-8
             enc = "cp850"
-            # print "WARNING: Windows codepage 65001 (UTF-8) is not supported, used `%s` instead" % enc
+            # print "WARNING: Windows codepage 65001 (UTF-8) is not supported,
+            # used `%s` instead" % enc
     else:
         enc = "utf8"
 
@@ -378,10 +372,12 @@ def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
     """
-    if type(value) is str:
-        res = unicode(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
+    if isinstance(value, str):
+        res = unicode(
+            value, encoding or get_console_encoding(
+                sys.stdout.encoding), errors)
 
-    elif type(value) is unicode:
+    elif isinstance(value, unicode):
         res = value
 
     else:
@@ -404,10 +400,10 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
-    if type(value) is unicode:
+    if isinstance(value, unicode):
         res = value.encode(encoding, errors)
 
-    elif type(value) is str:
+    elif isinstance(value, str):
         decoding = get_console_encoding(sys.stdin.encoding)
         if encoding == decoding:
             res = value
@@ -461,15 +457,15 @@ def remove_chars(value, repl):
     """
     Remove all chars in repl from string
     """
-    if type(repl) is unicode:
+    if isinstance(repl, unicode):
         for badc in list(repl):
             value = value.replace(badc, "")
         return value
 
-    elif type(value) is unicode:
+    elif isinstance(value, unicode):
         return value.translate(dict((ord(s), None) for s in repl))
 
-    elif type(value) is str:
+    elif isinstance(value, str):
         return value.translate(string.maketrans("", ""), repl)
 
 
@@ -508,7 +504,8 @@ def safepath(value):
     else:
         unt = ""
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(os.sep if os.path.isabs(filename) else "", *map(safename, filename.split(os.sep)))
+    filename = os.path.join(os.sep if os.path.isabs(
+        filename) else "", *map(safename, filename.split(os.sep)))
     path = unt + drive + filename
 
     try:
@@ -525,6 +522,7 @@ def safepath(value):
 
     finally:
         return path
+
 
 def safejoin(*args):
     """
@@ -543,11 +541,11 @@ def safename(value):
 
 
 def parse_name(value, safechar=True):
-    path  = fixurl(decode(value), unquote=False)
+    path = fixurl(decode(value), unquote=False)
     url_p = urlparse.urlparse(path.rstrip('/'))
-    name  = (url_p.path.split('/')[-1] or
-             url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-             url_p.netloc.split('.', 1)[0])
+    name = (url_p.path.split('/')[-1] or
+            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
+            url_p.netloc.split('.', 1)[0])
 
     name = urllib.unquote(name)
     return safename(name) if safechar else name
@@ -577,10 +575,10 @@ def parse_size(value, unit=""):  #: returns bytes
         return int(size)
 
     sizeunits = ['b', 'k', 'm', 'g', 't', 'p', 'e']
-    sizemap   = dict((u, i * 10) for i, u in enumerate(sizeunits))
+    sizemap = dict((u, i * 10) for i, u in enumerate(sizeunits))
     magnitude = sizemap[unit]
 
-    i, d    = divmod(size, 1)
+    i, d = divmod(size, 1)
     integer = int(i) << magnitude
     decimal = int(d * (1024 ** (magnitude / 10)))
 
@@ -603,7 +601,7 @@ def str2int(value):
     t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens   = re.split(r'[\s\-]+', value.lower())
+    tokens = re.split(r'[\s\-]+', value.lower())
 
     try:
         return sum(numwords[word] for word in tokens)
@@ -616,9 +614,10 @@ def parse_time(value):
         seconds = seconds_to_midnight()
 
     else:
-        regex   = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
+        regex = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
         seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1, '': 1}[u.lower()]
+                      {'hr': 3600, 'hour': 3600, 'min': 60,
+                          'sec': 1, '': 1}[u.lower()]
                       for v, u in regex.findall(value))
     return seconds
 
@@ -685,12 +684,17 @@ def format_exc(frame=None):
     if exc_info[0] is not None:
         exception_callstack = traceback.extract_tb(exc_info[2])
 
-        if callstack[-1][0] == exception_callstack[0][0]:  #@NOTE: Does this exception belongs to us?
+        # @NOTE: Does this exception belongs to us?
+        if callstack[-1][0] == exception_callstack[0][0]:
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
-            exc_desc = decode("".join(traceback.format_exception_only(exc_info[0], exc_info[1])))
+            exc_desc = decode(
+                "".join(
+                    traceback.format_exception_only(
+                        exc_info[0],
+                        exc_info[1])))
 
-    msg  = u"Traceback (most recent call last):\n"
+    msg = u"Traceback (most recent call last):\n"
     msg += decode("".join(traceback.format_list(callstack)))
     msg += exc_desc
 
@@ -699,17 +703,21 @@ def format_exc(frame=None):
 
 def seconds_to_nexthour(strict=False):
     now = datetime.datetime.today()
-    nexthour = now.replace(minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(hours=1)
+    nexthour = now.replace(minute=0 if strict else 1,
+                           second=0, microsecond=0) + datetime.timedelta(hours=1)
     return (nexthour - now).seconds
 
 
 def seconds_to_midnight(utc=None, strict=False):
-    if type(utc) is int:
+    if isinstance(utc, int):
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
     else:
         now = datetime.datetime.today()
 
-    midnight = now.replace(hour=0, minute=0 if strict else 1, second=0, microsecond=0) + datetime.timedelta(days=1)
+    midnight = now.replace(hour=0,
+                           minute=0 if strict else 1,
+                           second=0,
+                           microsecond=0) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -729,7 +737,8 @@ def replace_patterns(value, rules):
 
 
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path='/', exp=time.time() + 180 * 24 * 3600):
+def set_cookie(cj, domain, name, value, path='/',
+               exp=time.time() + 180 * 24 * 3600):
     args = map(encode, [domain, name, value, path]) + [int(exp)]
     return cj.setCookie(*args)
 
@@ -746,14 +755,14 @@ def set_cookies(cj, cookies):
 
 
 def parse_html_header(header):
-    hdict  = {}
+    hdict = {}
     regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
     for key, value in re.findall(regexp, header):
         key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
-            if type(header_key) is list:
+            if isinstance(header_key, list):
                 header_key.append(value)
             else:
                 hdict[key] = [header_key, value]
@@ -764,7 +773,9 @@ def parse_html_header(header):
 
 
 def parse_html_tag_attr_value(attr_name, tag):
-    m = re.search(r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' % attr_name, tag, re.I)
+    m = re.search(
+        r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' %
+        attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
@@ -775,7 +786,12 @@ def parse_html_form(attr_str, html, input_names={}):
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
         for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    re.sub(re.compile(r'<!--.+?-->', re.I | re.S), "", form.group('CONTENT')),
+                                    re.sub(
+                                        re.compile(
+                                            r'<!--.+?-->',
+                                            re.I | re.S),
+                                        "",
+                                        form.group('CONTENT')),
                                     re.I | re.S):
 
             name = parse_html_tag_attr_value("name", inputtag.group(1))
@@ -850,7 +866,7 @@ def compute_checksum(filename, hashtype):
     buf = fsbsize()
 
     if hashtype in ("adler32", "crc32"):
-        hf   = getattr(zlib, hashtype)
+        hf = getattr(zlib, hashtype)
         last = 0
 
         with open(file, "rb") as f:
@@ -875,7 +891,7 @@ def compute_checksum(filename, hashtype):
 def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
     pmode = preserve_metadata or overwrite is None
     mtime = os.path.getmtime
-    copy  = shutil.copy2 if pmode else shutil.copy
+    copy = shutil.copy2 if pmode else shutil.copy
 
     if preserve_metadata and not exists(dst):
         return shutil.copytree(src, dst)
@@ -889,7 +905,8 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
                 shutil.copystat(src_dir, dst_dir)
 
         elif pmode:
-            if overwrite or overwrite is None and mtime(src_dir) > mtime(dst_dir):
+            if overwrite or overwrite is None and mtime(
+                    src_dir) > mtime(dst_dir):
                 shutil.copystat(src_dir, dst_dir)
 
         for filename in files:
@@ -897,7 +914,8 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(
+                        src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue
@@ -927,7 +945,8 @@ def move_tree(src, dst, overwrite=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(
+                        src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue

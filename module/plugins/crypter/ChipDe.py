@@ -6,20 +6,19 @@ from module.plugins.internal.Crypter import Crypter
 
 
 class ChipDe(Crypter):
-    __name__    = "ChipDe"
-    __type__    = "crypter"
+    __name__ = "ChipDe"
+    __type__ = "crypter"
     __version__ = "0.15"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?chip\.de/video/.+\.html'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
 
     __description__ = """Chip.de decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("4Christopher", "4Christopher@gmx.de")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("4Christopher", "4Christopher@gmx.de")]
 
     def decrypt(self, pyfile):
         self.data = self.load(pyfile.url)

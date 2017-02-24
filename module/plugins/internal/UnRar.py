@@ -10,32 +10,33 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 
 
 class UnRar(Extractor):
-    __name__    = "UnRar"
-    __type__    = "extractor"
+    __name__ = "UnRar"
+    __type__ = "extractor"
     __version__ = "1.35"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 
     __description__ = """RAR extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN"         , "RaNaN@pyload.org"          ),
-                       ("Walter Purcaro", "vuolter@gmail.com"         ),
-                       ("Immenz"        , "immenz@gmx.net"            ),
-                       ("GammaCode"     , "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Immenz", "immenz@gmx.net"),
+                   ("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]
 
-
-    CMD        = "unrar"
+    CMD = "unrar"
     EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
                   "bz2", "jar", "iso", "xz", "z"]
 
-    _RE_PART    = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
+    _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FIXNAME = re.compile(r'Building (.+)')
-    _RE_FILES = re.compile(r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}', re.I | re.M)
-    _RE_BADPWD  = re.compile(r'password', re.I)
-    _RE_BADCRC  = re.compile(r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
+    _RE_FILES = re.compile(
+        r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}',
+        re.I | re.M)
+    _RE_BADPWD = re.compile(r'password', re.I)
+    _RE_BADCRC = re.compile(
+        r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
     _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
-
 
     @classmethod
     def find(cls):
@@ -45,7 +46,9 @@ class UnRar(Extractor):
             else:
                 cls.CMD = "rar"
 
-            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([cls.CMD],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
             out, err = p.communicate()
             # cls.__name__ = "RAR"
             cls.REPAIR = True
@@ -57,7 +60,9 @@ class UnRar(Extractor):
                 else:
                     cls.CMD = "unrar"
 
-                p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([cls.CMD],
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
                 out, err = p.communicate()
 
             except OSError:
@@ -69,11 +74,9 @@ class UnRar(Extractor):
 
         return True
 
-
     @classmethod
     def ismultipart(cls, filename):
         return True if cls._RE_PART.search(filename) else False
-
 
     def verify(self, password=None):
         p = self.call_cmd("l", "-v", self.target, password=password)
@@ -89,7 +92,6 @@ class UnRar(Extractor):
         for attr in self._RE_FILES.findall(out):
             if attr[0].startswith("*"):
                 raise PasswordError
-
 
     def repair(self):
         p = self.call_cmd("rc", self.target)
@@ -109,13 +111,12 @@ class UnRar(Extractor):
                 return False
 
             else:
-                dir  = os.path.dirname(filename)
+                dir = os.path.dirname(filename)
                 name = _RE_FIXNAME.search(out).group(1)
 
                 self.filename = os.path.join(dir, name)
 
         return True
-
 
     def progress(self, process):
         s = ""
@@ -134,7 +135,6 @@ class UnRar(Extractor):
             #: Add digit to progressstring
             else:
                 s += c
-
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
@@ -163,7 +163,6 @@ class UnRar(Extractor):
 
         return self.list(password)
 
-
     def chunks(self):
         files = []
         dir, name = os.path.split(self.filename)
@@ -177,7 +176,6 @@ class UnRar(Extractor):
             files.append(self.filename)
 
         return files
-
 
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
@@ -217,7 +215,6 @@ class UnRar(Extractor):
         self.files = list(result)
         return self.files
 
-
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
@@ -250,7 +247,10 @@ class UnRar(Extractor):
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = map(encode, call)
-        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            call,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
 

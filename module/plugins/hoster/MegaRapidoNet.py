@@ -21,37 +21,39 @@ def random_with_n_digits(n):
 
 
 class MegaRapidoNet(MultiHoster):
-    __name__    = "MegaRapidoNet"
-    __type__    = "hoster"
+    __name__ = "MegaRapidoNet"
+    __type__ = "hoster"
     __version__ = "0.09"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback",
+                   "bool",
+                   "Fallback to free download if premium fails",
+                   False),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("revertfailed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """MegaRapido.net multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Kagenoshin", "kagenoshin@gmx.ch")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Kagenoshin", "kagenoshin@gmx.ch")]
 
     LINK_PREMIUM_PATTERN = r'<\s*?a[^>]*?title\s*?=\s*?["\'].*?download["\'][^>]*?href=["\']([^"\']+)'
 
     ERROR_PATTERN = r'<\s*?div[^>]*?class\s*?=\s*?["\']?alert-message error.*?>([^<]*)'
 
-
     def handle_premium(self, pyfile):
         self.data = self.load("http://megarapido.net/gerar.php",
-                              post={'rand'     :random_with_N_digits(16),
-                                    'urllist'  : pyfile.url,
-                                    'links'    : pyfile.url,
-                                    'exibir'   : "normal",
-                                    'usar'     : "premium",
-                                    'user'     : self.account.get_data('sid'),
+                              post={'rand': random_with_N_digits(16),
+                                    'urllist': pyfile.url,
+                                    'links': pyfile.url,
+                                    'exibir': "normal",
+                                    'usar': "premium",
+                                    'user': self.account.get_data('sid'),
                                     'autoreset': ""})
 
         if "desloga e loga novamente para gerar seus links" in self.data.lower():

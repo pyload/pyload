@@ -4,18 +4,17 @@ from module.plugins.hoster.FileserveCom import FileserveCom
 
 
 class FilejungleCom(FileserveCom):
-    __name__    = "FilejungleCom"
-    __type__    = "hoster"
+    __name__ = "FilejungleCom"
+    __type__ = "hoster"
     __version__ = "0.56"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Filejungle.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     URLS = ["http://www.filejungle.com/f/", "http://www.filejungle.com/check_links.php",
             "http://www.filejungle.com/checkReCaptcha.php"]

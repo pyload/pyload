@@ -9,18 +9,17 @@ from module.plugins.internal.misc import encode, fsjoin, renice
 
 
 class SevenZip(UnRar):
-    __name__    = "SevenZip"
-    __type__    = "extractor"
+    __name__ = "SevenZip"
+    __type__ = "extractor"
     __version__ = "0.21"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Michael Nowak" , None               )]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Michael Nowak", None)]
 
-
-    CMD        = "7z"
+    CMD = "7z"
     EXTENSIONS = ["7z", "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
                   "tbz", "tar", "wim", "swm", "lzma", "rar", "cab", "arj", "z",
                   "taz", "cpio", "rpm", "deb", "lzh", "lha", "chm", "chw", "hxs",
@@ -28,11 +27,12 @@ class SevenZip(UnRar):
                   "ntfs", "fat", "vhd", "mbr", "squashfs", "cramfs", "scap"]
 
     #@NOTE: there are some more uncovered 7z formats
-    _RE_FILES   = re.compile(r'([\d\:]+)\s+([\d\:]+)\s+([\w\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
-    _RE_BADPWD  = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
-    _RE_BADCRC  = re.compile(r'CRC Failed|Can not open file', re.I)
+    _RE_FILES = re.compile(
+        r'([\d\:]+)\s+([\d\:]+)\s+([\w\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
+    _RE_BADPWD = re.compile(
+        r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
+    _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
     _RE_VERSION = re.compile(r'7-Zip\s(?:\[64\]\s)?(\d+\.\d+)', re.I)
-
 
     @classmethod
     def find(cls):
@@ -40,7 +40,9 @@ class SevenZip(UnRar):
             if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
-            p = subprocess.Popen([cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen([cls.CMD],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE)
             out, err = p.communicate()
 
         except OSError:
@@ -52,7 +54,6 @@ class SevenZip(UnRar):
                 cls.VERSION = m.group(1)
 
             return True
-
 
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
@@ -71,11 +72,14 @@ class SevenZip(UnRar):
         elif self._RE_BADCRC.search(err):
             raise CRCError(err)
 
-
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, '-o' + self.dest, self.target, password=password)
+        p = self.call_cmd(
+            command,
+            '-o' + self.dest,
+            self.target,
+            password=password)
 
         #: Communicate and retrieve stderr
         self.progress(p)
@@ -93,7 +97,6 @@ class SevenZip(UnRar):
 
         if p.returncode > 1:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
-
 
     def list(self, password=None):
         command = "l" if self.fullpath else "l"
@@ -113,7 +116,6 @@ class SevenZip(UnRar):
             result.add(fsjoin(self.dest, f))
 
         return list(result)
-
 
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
@@ -135,7 +137,10 @@ class SevenZip(UnRar):
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = map(encode, call)
-        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            call,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
 

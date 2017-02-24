@@ -7,22 +7,22 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UnibytesCom(SimpleHoster):
-    __name__    = "UnibytesCom"
-    __type__    = "hoster"
+    __name__ = "UnibytesCom"
+    __type__ = "hoster"
     __version__ = "0.19"
-    __status__  = "testing"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """UniBytes.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     PLUGIN_DOMAIN = "unibytes.com"
 
@@ -30,7 +30,6 @@ class UnibytesCom(SimpleHoster):
 
     WAIT_PATTERN = r'Wait for <span id="slowRest">(\d+)</span> sec'
     LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
-
 
     def handle_free(self, pyfile):
         domain = "http://www.%s/" % self.PLUGIN_DOMAIN
@@ -68,4 +67,5 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.captcha.decrypt(urlparse.urljoin(domain, "captcha.jpg"))
+                post_data['captcha'] = self.captcha.decrypt(
+                    urlparse.urljoin(domain, "captcha.jpg"))
