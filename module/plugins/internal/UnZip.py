@@ -13,7 +13,7 @@ from module.plugins.internal.misc import encode
 class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.22"
+    __version__ = "1.23"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -32,16 +32,17 @@ class UnZip(Extractor):
         return sys.version_info[:2] >= (2, 6)
 
     def list(self, password=None):
-        with zipfile.ZipFile(self.target, 'r') as z:
+        with zipfile.ZipFile(self.filename, 'r') as z:
             z.setpassword(password)
             self.files = z.namelist()
         return self.files
 
     def verify(self, password=None):
         try:
-            with zipfile.ZipFile(self.target, 'r') as z:
+            with zipfile.ZipFile(self.filename, 'r') as z:
                 z.setpassword(password)
-                if z.testzip():
+                badfile = z.testzip()
+                if badfile is not None:
                     raise CRCError(badfile)
 
         except (zipfile.BadZipfile, zipfile.LargeZipFile), e:
@@ -57,7 +58,7 @@ class UnZip(Extractor):
         self.verify(password)
 
         try:
-            with zipfile.ZipFile(self.target, 'r') as z:
+            with zipfile.ZipFile(self.filename, 'r') as z:
                 z.setpassword(password)
                 z.extractall(self.dest)
                 self.files = z.namelist()

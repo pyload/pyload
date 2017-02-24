@@ -5,13 +5,13 @@ import re
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import parse_name, replace_patterns
+from module.plugins.internal.misc import parse_name, parse_time, replace_patterns
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

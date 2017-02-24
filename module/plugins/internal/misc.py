@@ -13,6 +13,7 @@ import re
 import shutil
 import socket
 import string
+import subprocess
 import sys
 import time
 import traceback
@@ -37,7 +38,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -862,7 +863,7 @@ def compute_checksum(filename, hashtype):
     if not exists(file):
         return None
 
-    buf = fsbsize()
+    buf = fsbsize(filename)
 
     if hashtype in ("adler32", "crc32"):
         hf = getattr(zlib, hashtype)

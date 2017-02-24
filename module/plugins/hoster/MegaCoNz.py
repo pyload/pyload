@@ -128,6 +128,15 @@ class MegaCrypto(object):
                     for _i in range(0, len(data), 16)), ())
 
     @staticmethod
+    def encrypt_key(data, key):
+        """
+        Encrypt a decrypted key
+        """
+        data = MegaCrypto.base64_decode(data)
+        return sum((MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[_i:_i + 16], key))
+                    for _i in range(0, len(data), 16)), ())
+
+    @staticmethod
     def get_chunks(size):
         """
         Calculate chunks for a given encrypted file size
@@ -259,7 +268,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__ = "MegaCoNz"
     __type__ = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'

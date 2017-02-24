@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -236,7 +236,7 @@ class Hoster(Base):
 
         else:
             if self.req.code in (404, 410):
-                bad_file = fsjoin(dl_dirname, newname)
+                bad_file = fsjoin(os.path.dirname(filename), newname)
                 if self.remove(bad_file):
                     return ""
             else:

@@ -45,7 +45,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__ = "DeathByCaptcha"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -172,7 +172,7 @@ class DeathByCaptcha(Addon):
             self.get_status()
             self.get_credits()
         except DeathByCaptchaException, e:
-            self.log_error(e.getDesc())
+            self.log_error(e.message)
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
@@ -194,7 +194,7 @@ class DeathByCaptcha(Addon):
                     task.data['ticket'], True)
 
             except DeathByCaptchaException, e:
-                self.log_error(e.getDesc())
+                self.log_error(e.message)
 
             except Exception, e:
                 self.log_error(e, trace=True)
@@ -206,7 +206,7 @@ class DeathByCaptcha(Addon):
             ticket, result = self.submit(c)
         except DeathByCaptchaException, e:
             task.error = e.get_code()
-            self.log_error(e.getDesc())
+            self.log_error(e.message)
             return
 
         task.data['ticket'] = ticket

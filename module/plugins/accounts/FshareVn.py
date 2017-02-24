@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -27,7 +27,7 @@ class FshareVn(Account):
 
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")
-            trafficleft = self.get_traffic_left()
+            trafficleft = self.get_traffic_left(html)
             return {'validuntil': -1,
                     'trafficleft': trafficleft, 'premium': True}
 
@@ -38,7 +38,7 @@ class FshareVn(Account):
                 time.strptime(
                     m.group(1),
                     '%I:%M:%S %p %d-%m-%Y'))
-            trafficleft = self.get_traffic_left()
+            trafficleft = self.get_traffic_left(html)
         else:
             premium = False
             validuntil = None
@@ -57,6 +57,6 @@ class FshareVn(Account):
         if not re.search(r'<img\s+alt="VIP"', html):
             self.fail_login()
 
-    def get_traffic_left(self):
+    def get_traffic_left(self, html):
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         return self.parse_traffic(m.group(1), m.group(2)) if m else 0
