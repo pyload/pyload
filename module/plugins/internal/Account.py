@@ -12,7 +12,7 @@ from module.plugins.internal.misc import Periodical, compare_time, decode, isite
 class Account(Plugin):
     __name__    = "Account"
     __type__    = "account"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__  = "stable"
 
     __description__ = """Base account plugin"""
@@ -412,10 +412,10 @@ class Account(Plugin):
             user = self.select()[0]
 
         elif user not in self.accounts:
-            self.log_error(_("Error choosing user `%s`") % user, _("User not exists"))
+            self.log_error(_("Error choosing user `%s`") % user, _("User does not exists"))
             return False
 
-        if self.req and user is self.user:
+        if self.req and user == self.user:
             return True
 
         self.user = user
