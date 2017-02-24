@@ -15,7 +15,7 @@ from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threade
 class UpdateManager(Addon):
     __name__    = "UpdateManager"
     __type__    = "hook"
-    __version__ = "1.15"
+    __version__ = "1.16"
     __status__  = "testing"
 
     __config__ = [("activated"    , "bool", "Activated"                                , True ),
@@ -207,7 +207,11 @@ class UpdateManager(Addon):
                 self.info['plugins'] = True
                 exitcode = 2
 
+            paused = self.pyload.threadManager.pause
+            self.pyload.api.pauseServer()
             self.manager.dispatchEvent("plugin_updated", updated)
+            if not paused:
+                self.pyload.api.unpauseServer()
         else:
             self.log_info(_("All plugins are up to date!"))
             exitcode = 0
