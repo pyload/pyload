@@ -4,7 +4,6 @@ from __future__ import with_statement
 
 import inspect
 import os
-import re
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
@@ -14,7 +13,10 @@ from module.plugins.internal.misc import (DB, Config, decode, encode, exists,
                                           remove, set_cookies)
 from module.plugins.Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
-from module.plugins.Plugin import Abort, Fail, Reconnect, Retry
+from module.plugins.Plugin import Abort
+from module.plugins.Plugin import Fail
+from module.plugins.Plugin import Reconnect
+from module.plugins.Plugin import Retry
 
 if os.name != "nt":
     import grp

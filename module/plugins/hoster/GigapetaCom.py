@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import random
-import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

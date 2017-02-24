@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import urlparse
 
 from module.plugins.internal.Crypter import Crypter

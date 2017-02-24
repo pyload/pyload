@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-import os
 import re
 import time
 import urlparse
@@ -137,7 +136,7 @@ class Base(Plugin):
         Setup for enviroment and other things, called before downloading (possibly more than one time)
         """
         pass
-
+        
     def _setup(self):
         #@TODO: Remove in 0.4.10
         self.pyfile.error = ""

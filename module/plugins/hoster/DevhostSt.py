@@ -3,7 +3,6 @@
 # Test links:
 #   http://d-h.st/mM8
 
-import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

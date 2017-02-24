@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
-import urllib
 
 from module.plugins.internal.misc import json
 from module.plugins.internal.MultiHoster import MultiHoster

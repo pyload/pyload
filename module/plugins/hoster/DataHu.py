@@ -3,7 +3,6 @@
 # Test links:
 # http://data.hu/get/6381232/random.bin
 
-import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

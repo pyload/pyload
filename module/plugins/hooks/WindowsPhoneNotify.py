@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import time
 
 import httplib
 from module.plugins.internal.Notifier import Notifier

@@ -1,4 +1,3 @@
-import re
 
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 

@@ -2,7 +2,6 @@
 
 from __future__ import with_statement
 
-import logging
 import os
 import subprocess
 
@@ -52,7 +51,7 @@ class OCR(Plugin):
         Delete all tmp images
         """
         pass
-
+        
     def threshold(self, value):
         self.img = self.img.point(lambda a: a * value + 10)
 

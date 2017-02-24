@@ -21,7 +21,6 @@ import urlparse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
 
-import htmlentitydefs
 
 try:
     import simplejson as json

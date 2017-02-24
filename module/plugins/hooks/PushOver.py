@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import time
 
 from module.plugins.internal.Notifier import Notifier
 

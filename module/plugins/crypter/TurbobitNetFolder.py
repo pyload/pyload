@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleCrypter import SimpleCrypter

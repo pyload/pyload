@@ -3,7 +3,6 @@
 # Test links:
 #   http://forum.xda-developers.com/devdb/project/dl/?id=10885
 
-import re
 
 from module.plugins.internal.SimpleHoster import SimpleHoster
 

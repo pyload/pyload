@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.hoster.Http import Http

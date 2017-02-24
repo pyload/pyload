@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 from module.plugins.internal.MultiHoster import MultiHoster
 

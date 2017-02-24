@@ -3,7 +3,6 @@
 from __future__ import with_statement
 
 import binascii
-import os
 import re
 
 import Crypto.Cipher.AES
