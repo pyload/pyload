@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from module.plugins.internal.Base import Base
-from module.plugins.internal.misc import parse_name, safename
+from module.plugins.internal.misc import parse_name, safepath
 
 
 class Crypter(Base):
     __name__    = "Crypter"
     __type__    = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__  = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -86,7 +86,7 @@ class Crypter(Base):
                 self.pyload.api.setPackageData(pid, {'password': pack_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safename(x or "")})
+            set_folder = lambda x: self.pyload.api.setPackageData(pid, {'folder': safepath(x or "")})
 
             if not folder_per_package:
                 folder = pack_folder
