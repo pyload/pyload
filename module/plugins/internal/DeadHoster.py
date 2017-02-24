@@ -18,7 +18,7 @@ class DeadHoster(Hoster):
 
     @classmethod
     def get_info(cls, *args, **kwargs):
-        info = super(DeadHoster, cls).get_info(*args, **kwargs)
+        info = Hoster.get_info(cls, *args, **kwargs)
         info['status'] = 1
         return info
 
