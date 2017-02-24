@@ -190,7 +190,7 @@ class CloudFlareDdos(Addon):
 
     def deactivate(self):
         while len(self.stubs):
-            stub = self.stubs.itervalues().next()
+            stub = next(self.stubs.itervalues())
             self._unoverride_preload(stub.owner_plugin)
 
         self._unoverride_get_url()

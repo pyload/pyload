@@ -127,7 +127,7 @@ class Expose(object):
     Used for decoration to declare rpc services
     """
     def __new__(cls, fn, *args, **kwargs):
-        hookManager.addRPC(fn.__module__, fn.func_name, fn.func_doc)
+        hookManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
         return fn
 
 
