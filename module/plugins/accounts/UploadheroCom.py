@@ -10,7 +10,7 @@ from module.plugins.internal.Account import Account
 class UploadheroCom(Account):
     __name__ = "UploadheroCom"
     __type__ = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __description__ = """Uploadhero.co account plugin"""
@@ -28,7 +28,7 @@ class UploadheroCom(Account):
                 datetime.timedelta(
                 days=int(
                     premium_pattern.search(html).group(1)))
-            end_date = time.mktime(future.timetuple())
+            end_date = time.mktime(end_date.timetuple())
             account_info = {
                 'validuntil': end_date,
                 'trafficleft': -1,

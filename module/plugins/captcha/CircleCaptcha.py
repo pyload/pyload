@@ -7,6 +7,7 @@ from __future__ import division
 import cStringIO
 import math
 import operator
+import sys
 import urllib
 
 import Image
@@ -31,7 +32,7 @@ class ImageSequence:
 class CircleCaptcha(OCR):
     __name__ = "CircleCaptcha"
     __type__ = "ocr"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__ = "testing"
 
     __description__ = """Circle captcha ocr plugin"""
