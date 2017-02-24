@@ -155,7 +155,7 @@ class YoutubeCom(Hoster):
                 self.fail(e.message)
 
         #: Remove old records from cache
-        for _k in list(cache_info['cache'].iterkeys()):
+        for _k in list(cache_info['cache'].keys()):
             if time.time() >= cache_info['cache'][_k]['time'] + 24 * 60 * 60:
                 cache_info['cache'].pop(_k, None)
                 cache_dirty = True
