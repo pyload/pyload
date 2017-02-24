@@ -30,6 +30,7 @@ from os.path import join
 
 from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
+from module.gui.Tools import MessageBox
 
 class Connector(QObject):
     """
@@ -112,9 +113,8 @@ class Connector(QObject):
                 return False
             err = _("No response from host, wait longer?")
             err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            msgb = QMessageBox()
-            self.emit(SIGNAL("setupMsgBoxYesNo"), msgb, err, "W")
-            if msgb.exec_() == QMessageBox.No:
+            msgb = MessageBox(None, err, "W", "YES_NO")
+            if not msgb.exec_():
                 return False
         # login
         while True:

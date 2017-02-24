@@ -61,6 +61,7 @@ from module.gui.Overview import *
 from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
+from module.gui.Tools import MessageBox
 
 from module.lib.rename_process import renameProcess
 from module.utils import formatSize, formatSpeed
@@ -168,19 +169,19 @@ class main(QObject):
         defaultGuiFile = join(self.path, "module", "config", "gui_default.xml")
         defaultGuiFileFound = os.path.isfile(defaultGuiFile) and os.access(defaultGuiFile, os.R_OK)
         if not guiFileFound:
-            global _; _ = str # language translation dummy for the message box function
             text  = "Cannot find the configuration file:"
             text += "\n" + guiFile
             text += "\n\nDo you want to create a new one?"
-            if not self.msgBoxYesNo(text, "W"):
+            msgb = MessageBox(None, text, "W", "YES_NO", True)
+            if not msgb.exec_():
                 return False
             if not defaultGuiFileFound:
                 text  = "Cannot create the configuration file!"
                 text += "\n\nBecause the default configuration file neither can be found:"
                 text += "\n" + defaultGuiFile
-                self.msgBoxOk(text, "C")
+                msgb = MessageBox(None, text, "C", "OK", True)
+                msgb.exec_()
                 return False
-            del _ # delete language translation dummy
         return True
 
     def init(self, first=False):
@@ -473,7 +474,6 @@ class main(QObject):
             signal and slot stuff, yay!
         """
         self.connect(self.connector,           SIGNAL("msgBoxError"), self.slotMsgBoxError)
-        self.connect(self.connector,           SIGNAL("setupMsgBoxYesNo"), self.slotSetupMsgBoxYesNo)
         self.connect(self.clickNLoadForwarder, SIGNAL("msgBoxError"), self.slotMsgBoxError)
         self.connect(self.connWindow,          SIGNAL("saveConnection"), self.slotSaveConnection)
         self.connect(self.connWindow,          SIGNAL("saveAllConnections"), self.slotSaveAllConnections)
@@ -536,7 +536,8 @@ class main(QObject):
         self.connect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
         self.connect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.connect(self.tray.debugTrayAction, SIGNAL("triggered()"), self.debugTray)
+            self.connect(self.tray.debugTrayAction,   SIGNAL("triggered()"), self.debugTray)
+            self.connect(self.tray.debugMsgboxAction, SIGNAL("triggered()"), self.debugMsgBoxTest)
         self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.connect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
@@ -554,7 +555,8 @@ class main(QObject):
         self.disconnect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
         self.disconnect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.disconnect(self.tray.debugTrayAction, SIGNAL("triggered()"), self.debugTray)
+            self.disconnect(self.tray.debugTrayAction,   SIGNAL("triggered()"), self.debugTray)
+            self.disconnect(self.tray.debugMsgboxAction, SIGNAL("triggered()"), self.debugMsgBoxTest)
         self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
@@ -917,37 +919,23 @@ class main(QObject):
         """
         sys.exit(self.app.exec_())
 
-    def setupMsgBox(self, msgb, text, icon, buttons):
-        qi = { "N":QMessageBox.NoIcon, "I":QMessageBox.Information, "W":QMessageBox.Warning, "C":QMessageBox.Critical }
-        title = _("pyLoad Client")
-        if icon == "W":
-            title += " - " + _("Warning")
-        elif icon == "C":
-            title += " - " + _("Error")
-        msgb_minwidth = "                                                                                \n"
-        msgb.setIcon(qi[icon])
-        msgb.setWindowTitle(title)
-        msgb.setText(msgb_minwidth + text)
-        msgb.setStandardButtons(buttons)
-        msgb.setButtonText(QMessageBox.Ok,  _("OK"))
-        msgb.setButtonText(QMessageBox.Yes, _("Yes"))
-        msgb.setButtonText(QMessageBox.No,  _("No"))
-        msgb.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
-
-    def msgBox(self, text, icon, buttons):
-        msgb = QMessageBox()
-        self.setupMsgBox(msgb, text, icon, buttons)
+    def msgBox(self, text, icon, btnSet):
+        if self.mainWindow.isMinimized() and (self.tray is None or not self.trayState["hiddenInTray"]):
+            if self.mainWindow.isMaximized():
+                self.mainWindow.showMaximized()
+            else:
+                self.mainWindow.showNormal()
+        msgb = MessageBox(self.mainWindow, text, icon, btnSet)
         return msgb.exec_()
 
-    def msgBoxOk(self, text, icon="N"):
-        self.msgBox(text, icon, QMessageBox.Ok)
-        return
+    def msgBoxOk(self, text, icon):
+        self.msgBox(text, icon, "OK")
 
-    def msgBoxYesNo(self, text, icon="N"):
-        if self.msgBox(text, icon, QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes:
-            return True
-        else:
-            return False
+    def msgBoxOkCancel(self, text, icon):
+        return self.msgBox(text, icon, "OK_CANCEL")
+
+    def msgBoxYesNo(self, text, icon):
+        return self.msgBox(text, icon, "YES_NO")
 
     def slotMsgBoxError(self, text):
         """
@@ -955,11 +943,33 @@ class main(QObject):
         """
         self.msgBoxOk(text, "C")
 
-    def slotSetupMsgBoxYesNo(self, msgb, text, icon):
-        """
-            setup a message box with 'Yes' and 'No' buttons
-        """
-        self.setupMsgBox(msgb, text, icon, QMessageBox.Yes | QMessageBox.No)
+    def debugMsgBoxTest(self):
+        def msgboxes(line):
+            l = line + "1"
+            self.msgBox(l, icon, btnSet)
+            for n in range(1, 5):
+                l += "\n" + line + str(n + 1)
+                self.msgBox(l, icon, btnSet)
+        def tests():
+            line = "Line"
+            msgboxes(line)
+            line = "LongXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
+            msgboxes(line)
+            line = "WrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
+            msgboxes(line)
+            line = "3xWrappedXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLine"
+            msgboxes(line)
+        self.msgBox("!", "Q", "OK")
+        self.msgBox("!", "I", "OK")
+        self.msgBox("!", "W", "OK")
+        self.msgBox("!", "C", "OK_CANCEL")
+        self.msgBox("!", "N", "YES_NO")
+        icon = "C"
+        btnSet = "OK"
+        tests()
+        icon = "N"
+        btnSet = "YES_NO"
+        tests()
 
     def slotNotificationMessage(self, status, name):
         """
@@ -3406,8 +3416,9 @@ class TrayIcon(QSystemTrayIcon):
         self.setContextMenu(self.contextMenu)
         if self.log.isEnabledFor(logging.DEBUG9):
             self.contextMenu.addSeparator()
-            self.contextDebugMenu = self.contextMenu.addMenu("debug")
-            self.debugTrayAction = self.contextDebugMenu.addAction(_("tray"))
+            self.contextDebugMenu = self.contextMenu.addMenu("Debug")
+            self.debugTrayAction = self.contextDebugMenu.addAction(_("Tray"))
+            self.debugMsgboxAction = self.contextDebugMenu.addAction(_("MessageBox Test"))
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)
