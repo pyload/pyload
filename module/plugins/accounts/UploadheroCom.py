@@ -18,16 +18,16 @@ class UploadheroCom(Account):
     __authors__ = [("mcmyst", "mcmyst@hotmail.fr")]
 
     def grab_info(self, user, password, data):
-        premium_pattern = re.compile(
+        _re_premium = re.compile(
             'Il vous reste <span class="bleu">(\d+)</span> jours premium')
 
         html = self.load("http://uploadhero.co/my-account")
 
-        if premium_pattern.search(html):
+        if _re_premium.search(html):
             end_date = datetime.date.today() + \
                 datetime.timedelta(
                 days=int(
-                    premium_pattern.search(html).group(1)))
+                    _re_premium.search(html).group(1)))
             end_date = time.mktime(end_date.timetuple())
             account_info = {
                 'validuntil': end_date,

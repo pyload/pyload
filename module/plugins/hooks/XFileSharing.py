@@ -23,10 +23,10 @@ class XFileSharing(Addon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    regexp = {'hoster': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
-                         r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-              'crypter': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                          r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
+    _regexmap = {'hoster': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                            r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
+                 'crypter': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                             r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS = [  # WORKING HOSTERS:
         "ani-stream.com", "backin.net", "cloudshares.net", "cloudsix.me",
@@ -75,7 +75,7 @@ class XFileSharing(Addon):
                 return
 
             match_list = '|'.join(sorted(plugin_set)).replace('.', '\.')
-            pattern = self.regexp[type][1] % match_list
+            pattern = self._regexmap[type][1] % match_list
 
             self.log_info(_("Handle %d %s%s: %s") %
                           (len(plugin_set),
@@ -102,9 +102,9 @@ class XFileSharing(Addon):
 
             if plugin_list:
                 unmatch_list = '|'.join(sorted(plugin_list)).replace('.', '\.')
-                pattern = self.regexp[type][0] % unmatch_list
+                pattern = self._regexmap[type][0] % unmatch_list
             else:
-                pattern = self.regexp[type][0]
+                pattern = self._regexmap[type][0]
 
             self.log_info(_("Auto-discover new %ss") % type)
 
