@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 import urlparse
 
-import json
 from module.plugins.internal.MultiHoster import MultiHoster
 
 

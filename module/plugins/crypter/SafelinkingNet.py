@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.Crypter import Crypter
-import json
 
 
 class SafelinkingNet(Crypter):

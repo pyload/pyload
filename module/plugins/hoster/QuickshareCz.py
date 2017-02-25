@@ -70,7 +70,7 @@ class QuickshareCz(SimpleHoster):
         self.link = header.get('location')
         if not self.link:
             self.fail(_("File not found"))
-            
+
         self.log_debug("FREE URL2:" + self.link)
 
         #: Check errors

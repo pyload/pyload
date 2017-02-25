@@ -3,7 +3,6 @@
 import pyxmpp
 import pyxmpp.all
 import pyxmpp.interfaces
-
 from module.plugins.hooks.IRC import IRC
 from pyxmpp.jabber.client import JabberClient
 

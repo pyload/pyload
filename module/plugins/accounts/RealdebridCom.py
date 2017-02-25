@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 
 from module.network.HTTPRequest import BadHeader
-import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 

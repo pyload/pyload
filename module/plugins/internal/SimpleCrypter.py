@@ -5,7 +5,8 @@ import re
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import parse_name, parse_time, replace_patterns
+from module.plugins.internal.misc import (parse_name, parse_time,
+                                          replace_patterns)
 
 
 class SimpleCrypter(Crypter):

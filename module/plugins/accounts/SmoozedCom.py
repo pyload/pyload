@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import time
 
-import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 try:

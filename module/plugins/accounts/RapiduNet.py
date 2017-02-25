@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import time
 
 from module.plugins.internal.Account import Account
-import json
 
 
 class RapiduNet(Account):

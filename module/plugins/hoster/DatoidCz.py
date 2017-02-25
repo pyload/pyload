@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 import urlparse
 
-import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

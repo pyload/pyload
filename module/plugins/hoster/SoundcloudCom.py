@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
-import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
