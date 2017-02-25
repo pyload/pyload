@@ -107,7 +107,7 @@ class OneFichierCom(SimpleHoster):
         self.data = self.load(url, post=inputs)
 
         m = re.search(self.LINK_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
     def handle_premium(self, pyfile):

@@ -43,7 +43,7 @@ class MirrorcreatorCom(Crypter):
         self.data = self.load(pyfile.url)
 
         m = re.search(self.OFFLINE_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.offline()
 
         pack_name, pack_folder = self.get_package_info()
@@ -62,7 +62,7 @@ class MirrorcreatorCom(Crypter):
             m = re.search(
                 r'<a href="(/showlink\.php\?uid=%s.+?)".*&hname=(\w+)' %
                 self.info['pattern']['ID'], _tr, re.S)
-            if m:
+            if m is not None:
                 hosters_data[m.group(2)] = m.group(1)
 
         choosen_hosters = []
@@ -104,7 +104,7 @@ class MirrorcreatorCom(Crypter):
         m = re.search(
             r'<title>Download links for ([^<]+) - Mirrorcreator',
             self.data)
-        if m:
+        if m is not None:
             pack_name = m.group(1)
 
             # We remove file extension from package name

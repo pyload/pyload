@@ -80,5 +80,5 @@ class RockfileEu(SimpleHoster):
             self.fail(_("Max captcha retries reached"))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.link = m.group(1)

@@ -32,16 +32,16 @@ class CatShareNet(Account):
             premium = True
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m:
+        if m is not None:
             m = re.findall(r'(\d+) (tydzień|dni|godzin)', m.group(1))
-            if m:
+            if m is not None:
                 validuntil = time.time()
                 for n, u in m:
                     validuntil += float(n) * 60 * 60 * \
                         {'tydzień': 168, 'dni': 24, 'godzin': 1}[u]
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        if m:
+        if m is not None:
             trafficleft = 0 if m.group(
                 1) else self.parse_traffic(m.group(2), m.group(3))
 
