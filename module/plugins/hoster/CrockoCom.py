@@ -61,5 +61,5 @@ class CrockoCom(SimpleHoster):
             'recaptcha_challenge_field'] = self.captcha.challenge()
         self.download(action, post=inputs)
 
-        if self.scan_download({'captcha': self.captcha.KEY_AJAX_PATTERN}):
+        if self.scan_download({'captcha': self.captcha.KEY_V1_PATTERN}):
             self.retry_captcha()

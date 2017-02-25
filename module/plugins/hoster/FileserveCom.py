@@ -2,9 +2,10 @@
 
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 
 class FileserveCom(Hoster):
@@ -60,8 +61,7 @@ class FileserveCom(Hoster):
         return file_info
 
     def process(self, pyfile):
-        pyfile.name, pyfile.size, status, self.url = self._get_info(self, self.url)[
-            0]
+        pyfile.name, pyfile.size, status, self.url = self._get_info(self, self.url)
         if status != 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))
