@@ -3,7 +3,7 @@
 import time
 import urlparse
 
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

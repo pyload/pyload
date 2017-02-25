@@ -3,6 +3,7 @@
 from __future__ import with_statement
 
 import base64
+import json
 import re
 import time
 
@@ -10,7 +11,7 @@ import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import json, threaded
+from module.plugins.internal.misc import threaded
 
 
 class DeathByCaptchaException(Exception):

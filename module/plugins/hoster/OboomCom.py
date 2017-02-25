@@ -7,7 +7,7 @@ import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json
+import json
 
 
 class OboomCom(Hoster):

@@ -4,7 +4,7 @@ import time
 
 import Crypto.Hash.SHA
 import pycurl
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 

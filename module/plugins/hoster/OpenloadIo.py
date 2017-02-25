@@ -3,7 +3,7 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

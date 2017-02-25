@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

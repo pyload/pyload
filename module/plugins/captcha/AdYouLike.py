@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.CaptchaService import CaptchaService
-from module.plugins.internal.misc import json
+import json
 
 
 class AdYouLike(CaptchaService):

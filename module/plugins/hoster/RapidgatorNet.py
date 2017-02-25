@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 import pycurl
+
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.AdsCaptcha import AdsCaptcha
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

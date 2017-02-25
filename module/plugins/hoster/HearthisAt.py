@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json
+import json
 
 
 class HearthisAt(Hoster):
