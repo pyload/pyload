@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'
@@ -49,13 +49,13 @@ class MultishareCz(SimpleHoster):
             post={
                 'link': pyfile.url})
 
-        self.update_info()
+        infodata = self.account.get_data()
 
         if self.out_of_traffic():
             self.fail(_("Not enough credit left to download file"))
 
         self.download("http://dl%d.mms.multishare.cz/html/mms_process.php" % round(random.random() * 10000 * random.random()),
-                      get={'u_ID': self.acc_info['u_ID'],
-                           'u_hash': self.acc_info['u_hash'],
+                      get={'u_ID': infodata['u_ID'],
+                           'u_hash': infodata['u_hash'],
                            'link': pyfile.url},
                       disposition=True)
