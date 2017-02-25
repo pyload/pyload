@@ -58,7 +58,7 @@ class TurbobitNet(Account):
         self.data = self.load("http://turbobit.net/user/login", post=inputs)
 
         if "<a href='/user/logout'" in self.data:
-            self.log_debug(_("Login successful"))
+            self.log_debug("Login successful")
 
         elif re.search(self.LOGIN_FAIL_PATTERN, self.data):
             self.fail_login()

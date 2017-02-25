@@ -181,7 +181,7 @@ class Hoster(Base):
                 code = header.get('code')
 
                 if code in (301, 302) or resumable:
-                    self.log_debug(_("Redirect #%d to: %s") % (i, location))
+                    self.log_debug("Redirect #%d to: %s" % (i, location))
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -349,7 +349,7 @@ class Hoster(Base):
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug(_("Content: %s") % content)
+        # self.log_debug("Content: %s" % content)
         for name, rule in rules.items():
             if isinstance(rule, basestring):
                 if rule in content:

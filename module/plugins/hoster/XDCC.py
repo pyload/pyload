@@ -163,13 +163,13 @@ class XDCC(Hoster):
                 if msg['target'][0:len(nick)] == nick and msg[
                         'action'] == "PRIVMSG":
                     if msg['text'] == "\x01VERSION\x01":
-                        self.log_debug(_("Sending CTCP VERSION"))
+                        self.log_debug("Sending CTCP VERSION")
                         sock.send(
                             "NOTICE %s :%s\r\n" %
                             (msg['origin'], ctcp_version))
 
                     elif msg['text'] == "\x01TIME\x01":
-                        self.log_debug(_("Sending CTCP TIME"))
+                        self.log_debug("Sending CTCP TIME")
                         sock.send(
                             "NOTICE %s :%d\r\n" %
                             (msg['origin'], time.time()))
@@ -182,8 +182,8 @@ class XDCC(Hoster):
                         or msg['action'] not in ("PRIVMSG", "NOTICE"):
                     continue
 
-                self.log_debug(_("PrivMsg: <%s> - %s" %
-                                 (msg['origin'], msg['text'])))
+                self.log_debug("PrivMsg: <%s> - %s" % 
+                                (msg['origin'], msg['text']))
 
                 if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300

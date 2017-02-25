@@ -79,7 +79,7 @@ class SafelinkingNet(Crypter):
 
             if link_info['security'].get('usePassword', False):
                 if self.package_password:
-                    self.log_debug(_("Using package password"))
+                    self.log_debug("Using package password")
                     post_data['password'] = self.package_password
 
                 else:

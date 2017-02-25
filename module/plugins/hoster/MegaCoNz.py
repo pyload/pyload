@@ -238,7 +238,7 @@ class MegaClient(object):
             else:
                 raise
 
-        self.plugin.log_debug(_("Api Response: ") + res)
+        self.plugin.log_debug("Api Response: " + res)
 
         res = json.loads(res)
         if isinstance(res, list):
@@ -408,7 +408,7 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug(_("ID: %s") % id,
+        self.log_debug("ID: %s" % id,
                        _("Key: %s") % key,
                        _("Type: %s") % ("public" if public else "node"),
                        _("Owner: %s") % owner)
@@ -437,7 +437,7 @@ class MegaCoNz(Hoster):
         if not attr:
             self.fail(_("Decryption failed"))
 
-        self.log_debug(_("Decrypted Attr: %s") % decode(attr))
+        self.log_debug("Decrypted Attr: %s" % decode(attr))
 
         name = attr['n']
 

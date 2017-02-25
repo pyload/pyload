@@ -59,7 +59,7 @@ class ImgurCom(SimpleCrypter):
                            for e in embedded_json['album_images']['images']])
 
             self.log_debug(
-                _("Found %s of %s expected links in embedded JSON") %
+                "Found %s of %s expected links in embedded JSON" %
                 (len(images), self.total_num_images))
 
             # Depeding on the gallery, the embedded JSON may not contain all image information, then we also try the external JSON
@@ -75,18 +75,18 @@ class ImgurCom(SimpleCrypter):
                     images = dict([(e['hash'], e['ext'])
                                    for e in external_json['data']['images']])
                     self.log_debug(
-                        _("Found %s of %s expected links in external JSON") %
+                        "Found %s of %s expected links in external JSON" %
                         (len(images), self.total_num_images))
 
                 except (KeyError, TypeError):
                     self.log_debug(
-                        _("Could not extract links from external JSON"))
+                        "Could not extract links from external JSON")
                     # It is possible that the returned JSON contains an empty
                     # 'data' section. We ignore it then.
 
             return images
 
-        self.log_debug(_("Could not find embedded JSON"))
+        self.log_debug("Could not find embedded JSON")
 
         return {}
 
@@ -125,8 +125,7 @@ class ImgurCom(SimpleCrypter):
         try:
             indirect_links = self.get_indirect_links(direct_links)
             self.log_debug(
-                _("Found %s additional links") %
-                (len(indirect_links)))
+                "Found %s additional links" % (len(indirect_links)))
 
         except (TypeError, KeyError, ValueError) as e:
             # Fail gracefull as we already had some success
