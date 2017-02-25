@@ -29,14 +29,16 @@ class SimplydebridCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         #: Fix the links for simply-debrid.com!
-        self.link = replace_patterns(pyfile.url, [("clz.to", "cloudzer.net/file")
-                                                  ("http://share-online",
-                                                   "http://www.share-online")
-                                                  ("ul.to", "uploaded.net/file")
-                                                  ("uploaded.com", "uploaded.net")
-                                                  ("filerio.com", "filerio.in")
-                                                  ("lumfile.com", "lumfile.se")])
-
+        rules = [
+            ("clz.to", "cloudzer.net/file"),
+            ("http://share-online", "http://www.share-online"),
+            ("ul.to", "uploaded.net/file"),
+            ("uploaded.com", "uploaded.net"),
+            ("filerio.com", "filerio.in"),
+            ("lumfile.com", "lumfile.se")
+        ]
+        self.link = replace_patterns(pyfile.url, rules)
+        
         if 'fileparadox' in self.link:
             self.link = self.link.replace("http://", "https://")
 

@@ -88,13 +88,13 @@ class FshareVn(SimpleHoster):
         m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.log_info(_("Wait until %s ICT") % m.group(1))
-            wait_until = time.mktime.time(
-                time.strptime.time(
+            wait_until = time.mktime(
+                time.strptime(
                     m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(
                 wait_until -
-                time.mktime.time(
-                    time.gmtime.time()) -
+                time.mktime(
+                    time.gmtime()) -
                 7 *
                 60 *
                 60,

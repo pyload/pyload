@@ -46,7 +46,7 @@ class MegaRapidCz(SimpleHoster):
             self.link = m.group(1)
 
         elif re.search(self.ERR_LOGIN_PATTERN, self.data):
-            self.relogin()
+            self.account.relogin()
             self.retry(wait=60, msg=_("User login failed"))
 
         elif re.search(self.ERR_CREDIT_PATTERN, self.data):

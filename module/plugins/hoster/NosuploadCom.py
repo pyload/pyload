@@ -32,11 +32,11 @@ class NosuploadCom(XFSHoster):
 
     def get_download_link(self):
         #: Stage1: press the "Free Download" button
-        data = self.get_post_parameters()
+        data = self._post_parameters()
         self.data = self.load(self.pyfile.url, post=data)
 
         #: Stage2: wait some time and press the "Download File" button
-        data = self.get_post_parameters()
+        data = self._post_parameters()
         wait_time = re.search(
             self.WAIT_PATTERN,
             self.data,
