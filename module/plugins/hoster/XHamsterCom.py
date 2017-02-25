@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import urllib
 
 from module.plugins.internal.Hoster import Hoster
-import json
 
 
 def clean_json(json_expr):

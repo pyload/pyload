@@ -4,7 +4,6 @@ import json
 import re
 
 import pycurl
-
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.AdsCaptcha import AdsCaptcha
 from module.plugins.captcha.ReCaptcha import ReCaptcha

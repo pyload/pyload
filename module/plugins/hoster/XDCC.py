@@ -182,8 +182,8 @@ class XDCC(Hoster):
                         or msg['action'] not in ("PRIVMSG", "NOTICE"):
                     continue
 
-                self.log_debug("PrivMsg: <%s> - %s" % 
-                                (msg['origin'], msg['text']))
+                self.log_debug("PrivMsg: <%s> - %s" %
+                               (msg['origin'], msg['text']))
 
                 if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300

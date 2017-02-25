@@ -62,7 +62,8 @@ class FileserveCom(Hoster):
         return file_info
 
     def process(self, pyfile):
-        pyfile.name, pyfile.size, status, self.url = self._get_info(self, self.url)
+        pyfile.name, pyfile.size, status, self.url = self._get_info(
+            self, self.url)
         if status != 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))

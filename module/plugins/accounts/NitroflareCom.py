@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 
 from module.plugins.internal.Account import Account
-import json
 
 
 class NitroflareCom(Account):

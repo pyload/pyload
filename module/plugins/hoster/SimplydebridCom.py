@@ -38,7 +38,7 @@ class SimplydebridCom(MultiHoster):
             ("lumfile.com", "lumfile.se")
         ]
         self.link = replace_patterns(pyfile.url, rules)
-        
+
         if 'fileparadox' in self.link:
             self.link = self.link.replace("http://", "https://")
 

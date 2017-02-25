@@ -2,6 +2,7 @@
 
 
 import json
+
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

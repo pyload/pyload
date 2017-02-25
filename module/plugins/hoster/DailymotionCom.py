@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-import json
 from module.PyFile import statusMap
 
 

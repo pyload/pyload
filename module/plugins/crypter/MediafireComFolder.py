@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.plugins.internal.Crypter import Crypter
-import json
 
 
 class MediafireComFolder(Crypter):
