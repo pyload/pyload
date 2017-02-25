@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
@@ -36,7 +37,7 @@ class DatafileCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(r'<span class="time">([\d:]+)<', self.data)
-        if m:
+        if m is not None:
             wait_time = sum(
                 int(_d) * 60 ** _i for _i,
                 _d in enumerate(
@@ -84,7 +85,7 @@ class DatafileCom(SimpleHoster):
             m = re.search(
                 r'error\.html\?code=(\d+)',
                 self.req.lastEffectiveURL)
-            if m:
+            if m is not None:
                 error_code = int(m.group(1))
                 if error_code in (2, 3):
                     self.offline()

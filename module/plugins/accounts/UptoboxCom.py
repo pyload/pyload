@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import urlparse
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.XFSAccount import XFSAccount
 
 

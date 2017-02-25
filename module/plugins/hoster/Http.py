@@ -9,7 +9,7 @@ from module.plugins.internal.Hoster import Hoster
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -37,7 +37,7 @@ class Http(Hoster):
                 self.log_debug(
                     "Auth required",
                     "Received HTTP status code: %d" %
-                    e.code)
+                    self.req.code)
 
                 #@TODO: Recheck in 0.4.10
                 if self.account:

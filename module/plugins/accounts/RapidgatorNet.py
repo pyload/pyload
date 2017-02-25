@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import urlparse
 
 from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import json
 
 
 class RapidgatorNet(Account):

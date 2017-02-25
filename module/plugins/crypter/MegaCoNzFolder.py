@@ -25,11 +25,9 @@ class MegaCoNzFolder(Crypter):
         master_key = self.info['pattern']['KEY']
 
         self.log_debug(
-            _("ID: %s") %
-            id,
-            _("Key: %s") %
-            master_key,
-            _("Type: public folder"))
+            "ID: %s" % id,
+            "Key: %s" % master_key,
+            "Type: public folder")
 
         master_key = MegaCrypto.base64_to_a32(master_key)
 

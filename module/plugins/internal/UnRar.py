@@ -13,7 +13,7 @@ from module.plugins.internal.misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.35"
+    __version__ = "1.37"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
@@ -50,7 +50,7 @@ class UnRar(Extractor):
             p = subprocess.Popen([cls.CMD],
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-            out, err = p.communicate()
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
             # cls.__name__ = "RAR"
             cls.REPAIR = True
 
@@ -64,7 +64,7 @@ class UnRar(Extractor):
                 p = subprocess.Popen([cls.CMD],
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE)
-                out, err = p.communicate()
+                out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
             except OSError:
                 return False
@@ -80,8 +80,8 @@ class UnRar(Extractor):
         return True if cls._RE_PART.search(filename) else False
 
     def verify(self, password=None):
-        p = self.call_cmd("l", "-v", self.target, password=password)
-        out, err = p.communicate()
+        p = self.call_cmd("l", "-v", self.filename, password=password)
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if self._RE_BADPWD.search(err):
             raise PasswordError
@@ -95,25 +95,25 @@ class UnRar(Extractor):
                 raise PasswordError
 
     def repair(self):
-        p = self.call_cmd("rc", self.target)
+        p = self.call_cmd("rc", self.filename)
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        err = p.stderr.read().strip()
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if err or p.returncode:
-            p = self.call_cmd("r", self.target)
+            p = self.call_cmd("r", self.filename)
 
             # communicate and retrieve stderr
             self.progress(p)
-            err = p.stderr.read().strip()
+            out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
             if err or p.returncode:
                 return False
 
             else:
-                dir = os.path.dirname(filename)
-                name = _RE_FIXNAME.search(out).group(1)
+                dir = os.path.dirname(self.filename)
+                name = self._RE_FIXNAME.search(out).group(1)
 
                 self.filename = os.path.join(dir, name)
 
@@ -140,11 +140,11 @@ class UnRar(Extractor):
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(command, self.target, self.dest, password=password)
+        p = self.call_cmd(command, self.filename, self.dest, password=password)
 
         #: Communicate and retrieve stderr
         self.progress(p)
-        err = p.stderr.read().strip()
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if err:
             if self._RE_BADPWD.search(err):
@@ -170,7 +170,7 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
-                     if re.sub(self._RE_PART, "", name) == re.sub(self._RE_PART, "", file))
+                     if self._RE_PART.sub("", name) == self._RE_PART.sub("", file))
 
         #: Actually extracted file
         if self.filename not in files:
@@ -181,14 +181,14 @@ class UnRar(Extractor):
     def list(self, password=None):
         command = "vb" if self.fullpath else "lb"
 
-        p = self.call_cmd(command, "-v", self.target, password=password)
-        out, err = p.communicate()
+        p = self.call_cmd(command, "-v", self.filename, password=password)
+        out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         if "Cannot open" in err:
             raise ArchiveError(_("Cannot open file"))
 
-        if err.strip():  #: Only log error at this point
-            self.log_error(err.strip())
+        if err:  #: Only log error at this point
+            self.log_error(err)
 
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):

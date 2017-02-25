@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'
@@ -43,7 +43,7 @@ class EuroshareEu(SimpleHoster):
 
     def handle_free(self, pyfile):
         if re.search(self.DL_LIMIT_PATTERN, self.data):
-            self.wait(5 * 60, 12, _("Download limit reached"))
+            self.retry(5 * 60, 12, _("Download limit reached"))
 
         self.data = self.load(pyfile.url, get={'download': "true"})
 

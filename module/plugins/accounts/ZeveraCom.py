@@ -8,8 +8,8 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
-    __version__ = "0.32"
-    __status__ = "testing"
+    __version__ = "0.33"
+    __status__ = "broken"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
@@ -28,7 +28,7 @@ class ZeveraCom(MultiAccount):
 
     def __init__(self, manager, accounts):  # @TODO: remove in 0.4.10
         self.init()
-        return super(ZeveraCom, self).__init__(manager, accounts)
+        ZeveraCom.__init__(self, manager, accounts)
 
     def init(self):
         if not self.PLUGIN_DOMAIN:

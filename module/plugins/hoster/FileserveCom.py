@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
+from module.network.RequestFactory import getURL as get_url
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import parse_size, seconds_to_midnight
 
 
 class FileserveCom(Hoster):
     __name__ = "FileserveCom"
     __type__ = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.70"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/file/(?P<ID>[^/]+)'
@@ -33,6 +35,9 @@ class FileserveCom(Hoster):
     DL_LIMIT_PATTERN = r'Your daily download limit has been reached'
     NOT_LOGGED_IN_PATTERN = r'<form (name="loginDialogBoxForm"|id="login_form")|<li><a href="/login\.php">Login</a></li>'
 
+    LINKCHECK_TR = r'<tr>\s*(<td>http://www\.fileserve\.com/file/.*?)</tr>'
+    LINKCHECK_TD = r'<td>(?:<.*?>|&nbsp;)*([^<]*)'
+
     def setup(self):
         self.resume_download = self.multiDL = self.premium
         self.file_id = re.match(self.__pattern__, self.pyfile.url).group('ID')
@@ -40,9 +45,25 @@ class FileserveCom(Hoster):
 
         self.log_debug("File ID: %s URL: %s" % (self.file_id, self.url))
 
+    def _get_info(self, url):
+        html = get_url(self.URLS[1], post={'urls': url})
+        file_info = []
+        for li in re.finditer(self.LINKCHECK_TR, html, re.S):
+            try:
+                cols = re.findall(self.LINKCHECK_TD, li.group(1))
+                if cols:
+                    file_info.append((
+                        cols[1] if cols[1] != '--' else cols[0],
+                        parse_size(cols[2]) if cols[2] != '--' else 0,
+                        2 if cols[3].startswith('Available') else 1,
+                        cols[0]))
+            except Exception:
+                continue
+        return file_info
+
     def process(self, pyfile):
-        pyfile.name, pyfile.size, status, self.url = check_file(self, [self.url])[
-            0]
+        pyfile.name, pyfile.size, status, self.url = self._get_info(
+            self, self.url)
         if status != 2:
             self.offline()
         self.log_debug("File Name: %s Size: %d" % (pyfile.name, pyfile.size))

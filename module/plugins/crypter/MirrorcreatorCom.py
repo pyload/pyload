@@ -10,7 +10,7 @@ from module.plugins.internal.misc import replace_patterns
 class MirrorcreatorCom(Crypter):
     __name__ = "MirrorcreatorCom"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})'
@@ -43,7 +43,7 @@ class MirrorcreatorCom(Crypter):
         self.data = self.load(pyfile.url)
 
         m = re.search(self.OFFLINE_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.offline()
 
         pack_name, pack_folder = self.get_package_info()
@@ -62,14 +62,14 @@ class MirrorcreatorCom(Crypter):
             m = re.search(
                 r'<a href="(/showlink\.php\?uid=%s.+?)".*&hname=(\w+)' %
                 self.info['pattern']['ID'], _tr, re.S)
-            if m:
+            if m is not None:
                 hosters_data[m.group(2)] = m.group(1)
 
         choosen_hosters = []
         # priority hosters goes first
         for _h in hosters_priority:
             if _h in hosters_data and _h not in ignored_hosters:
-                self.log_debug(_("Adding '%s' link") % _h)
+                self.log_debug("Adding '%s' link" % _h)
                 choosen_hosters.append(_h)
                 if not self.config.get('grab_all'):
                     break
@@ -79,7 +79,7 @@ class MirrorcreatorCom(Crypter):
                 not self.config.get('grab_all') and not choosen_hosters):
             for _h in hosters_data:
                 if _h not in ignored_hosters and _h not in choosen_hosters:
-                    self.log_debug(_("Adding '%s' link") % _h)
+                    self.log_debug("Adding '%s' link" % _h)
                     choosen_hosters.append(_h)
                     if not self.config.get('grab_all'):
                         break
@@ -104,7 +104,7 @@ class MirrorcreatorCom(Crypter):
         m = re.search(
             r'<title>Download links for ([^<]+) - Mirrorcreator',
             self.data)
-        if m:
+        if m is not None:
             pack_name = m.group(1)
 
             # We remove file extension from package name
@@ -116,4 +116,5 @@ class MirrorcreatorCom(Crypter):
             return pack_name, pack_name
 
         else:  # Fallback to defaults
-            return self.package.name, self.package.folder
+            pack = self.pyfile.package()
+            return pack.name, pack.folder

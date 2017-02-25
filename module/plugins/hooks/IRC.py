@@ -202,8 +202,7 @@ class IRC(Thread, Notifier):
             self.sock.send("PRIVMSG %s :%s\r\n" %
                            (origin.split("!", 1)[0], msg))
 
-        # Events
-
+    # Events
     def event_pass(self, args):
         return []
 

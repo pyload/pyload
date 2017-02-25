@@ -8,7 +8,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'
@@ -43,7 +43,7 @@ class QuickshareCz(SimpleHoster):
             if 'UU_prihlasen' in self.jsvars:
                 if self.jsvars['UU_prihlasen'] == "0":
                     self.log_warning(_("User not logged in"))
-                    self.relogin()
+                    self.account.relogin()
                     self.retry()
                 elif float(self.jsvars['UU_kredit']) < float(self.jsvars['kredit_odecet']):
                     self.log_warning(_("Not enough credit left"))
@@ -56,7 +56,7 @@ class QuickshareCz(SimpleHoster):
 
         if self.scan_download(
                 {'error': re.compile(r'\AChyba!')}, read_size=100):
-            self.fail(_("File not m or plugin defect"))
+            self.fail(_("File not found or plugin defect"))
 
     def handle_free(self, pyfile):
         #: Get download url
@@ -67,12 +67,10 @@ class QuickshareCz(SimpleHoster):
         self.log_debug("FREE URL1:" + download_url, data)
 
         header = self.load(download_url, post=data, just_header=True)
-
         self.link = header.get('location')
         if not self.link:
-            elf.fail(_("File not found"))
+            self.fail(_("File not found"))
 
-        self.link = m.group(1)
         self.log_debug("FREE URL2:" + self.link)
 
         #: Check errors

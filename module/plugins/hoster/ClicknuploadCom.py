@@ -49,5 +49,5 @@ class ClicknuploadCom(SimpleHoster):
         self.data = self.load(pyfile.url, post=inputs)
 
         m = re.search(self.LINK_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.link = m.group(1)

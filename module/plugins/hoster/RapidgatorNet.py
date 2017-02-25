@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 import pycurl
@@ -7,7 +8,7 @@ from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.AdsCaptcha import AdsCaptcha
 from module.plugins.captcha.ReCaptcha import ReCaptcha
 from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.misc import json, seconds_to_midnight
+from module.plugins.internal.misc import seconds_to_midnight
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
@@ -104,7 +105,7 @@ class RapidgatorNet(SimpleHoster):
     def check_errors(self):
         super(RapidgatorNet, self).check_errors()
         m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.log_warning(m.group(0))
             if m.group(1) == "daily":
                 wait_time = seconds_to_midnight()

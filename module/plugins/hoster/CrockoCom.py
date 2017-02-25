@@ -10,7 +10,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(crocko|easy-share)\.com/\w+'
@@ -61,5 +61,5 @@ class CrockoCom(SimpleHoster):
             'recaptcha_challenge_field'] = self.captcha.challenge()
         self.download(action, post=inputs)
 
-        if self.scan_download({'captcha': self.captcha.KEY_AJAX_PATTERN}):
+        if self.scan_download({'captcha': self.captcha.KEY_V1_PATTERN}):
             self.retry_captcha()

@@ -48,7 +48,7 @@ class Addon(Plugin):
     #@TODO: Remove in 0.4.10
     def _log(self, level, plugintype, pluginname, messages):
         plugintype = "addon" if plugintype == "hook" else plugintype
-        return super(Addon, self)._log(level, plugintype, pluginname, messages)
+        return Plugin._log(self, level, plugintype, pluginname, messages)
 
     #@TODO: Remove in 0.4.10
     def _init_events(self):

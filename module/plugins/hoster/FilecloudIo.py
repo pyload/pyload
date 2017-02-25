@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
@@ -38,14 +38,14 @@ class FilecloudIo(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(r'__requestUrl\s*=\s*\'(.+)\';', self.data)
-        if not m:
+        if m is None:
             self.error(_("requestUrl not found"))
 
         post_url = m.group(1)
 
         m = re.search(
             r'\$\.ajax\(.*data:\s*(\{.+?\})\s*\}\)\.done\(function', self.data, re.S)
-        if not m:
+        if m is None:
             self.error(_("post parameters pattern not found"))
 
         post_data = dict(re.findall(r"'(\w+)'\s*:\s*'(\w+)'", m.group(1)))

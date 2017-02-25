@@ -3,6 +3,7 @@
 from __future__ import with_statement
 
 import base64
+import json
 import re
 import time
 
@@ -10,7 +11,7 @@ import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import json, threaded
+from module.plugins.internal.misc import threaded
 
 
 class DeathByCaptchaException(Exception):
@@ -45,7 +46,7 @@ class DeathByCaptchaException(Exception):
 class DeathByCaptcha(Addon):
     __name__ = "DeathByCaptcha"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -172,7 +173,7 @@ class DeathByCaptcha(Addon):
             self.get_status()
             self.get_credits()
         except DeathByCaptchaException as e:
-            self.log_error(e.getDesc())
+            self.log_error(e.message)
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
@@ -194,7 +195,7 @@ class DeathByCaptcha(Addon):
                     task.data['ticket'], True)
 
             except DeathByCaptchaException as e:
-                self.log_error(e.getDesc())
+                self.log_error(e.message)
 
             except Exception as e:
                 self.log_error(e, trace=True)
@@ -206,7 +207,7 @@ class DeathByCaptcha(Addon):
             ticket, result = self.submit(c)
         except DeathByCaptchaException as e:
             task.error = e.get_code()
-            self.log_error(e.getDesc())
+            self.log_error(e.message)
             return
 
         task.data['ticket'] = ticket

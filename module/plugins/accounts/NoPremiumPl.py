@@ -2,9 +2,9 @@
 
 import datetime
 import hashlib
+import json
 import time
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.plugins.internal.CaptchaService import CaptchaService
-from module.plugins.internal.misc import json
 
 
 class AdYouLike(CaptchaService):

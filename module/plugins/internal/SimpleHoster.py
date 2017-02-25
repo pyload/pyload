@@ -137,7 +137,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = super(SimpleHoster, cls).get_info(url)
+        info = Hoster.get_info(cls, url)
         info.update(cls.api_info(url))
 
         if not html and info['status'] != 2:
@@ -296,7 +296,7 @@ class SimpleHoster(Hoster):
             self.download(self.link, disposition=self.DISPOSITION)
 
     def _check_download(self):
-        super(SimpleHoster, self)._check_download()
+        Hoster._check_download(self)
         self.check_download()
 
     def check_download(self):

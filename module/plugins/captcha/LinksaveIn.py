@@ -15,7 +15,7 @@ from module.plugins.internal.OCR import OCR
 class LinksaveIn(OCR):
     __name__ = "LinksaveIn"
     __type__ = "ocr"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Linksave.in ocr plugin"""
@@ -148,7 +148,7 @@ class LinksaveIn(OCR):
         final = ""
         for n, letter in enumerate(letters):
             self.img = letter
-            self.img.save(ocr.data_dir + "letter%d.png" % n)
+            self.img.save(self.data_dir + "letter%d.png" % n)
             self.run_tesser(True, True, False, False)
             final += self.result_captcha
 

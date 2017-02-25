@@ -60,13 +60,13 @@ class Checksum(Addon):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("stickell", "l.stickell@yahoo.it")]
 
-    methods = {'sfv': 'crc32',
-               'crc': 'crc32',
-               'hash': 'md5'}
-    regexps = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
-               'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
-               'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
-               'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
+    _methodmap = {'sfv': 'crc32',
+                  'crc': 'crc32',
+                  'hash': 'md5'}
+    _regexmap = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
+                 'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
+                 'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
+                 'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
 
     def activate(self):
         if not self.config.get('check_checksum'):
@@ -203,13 +203,13 @@ class Checksum(Addon):
             with open(hash_file) as f:
                 text = f.read()
 
-            for m in re.finditer(self.regexps.get(
-                    file_type, self.regexps['default']), text):
+            for m in re.finditer(self._regexmap.get(
+                    file_type, self._regexmap['default']), text):
                 data = m.groupdict()
                 self.log_debug(fdata['name'], data)
 
                 local_file = encode(fsjoin(dl_folder, data['NAME']))
-                algorithm = self.methods.get(file_type, file_type)
+                algorithm = self._methodmap.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 
                 if checksum == data['HASH']:

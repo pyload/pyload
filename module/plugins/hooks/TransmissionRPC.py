@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import random
 import re
 
@@ -7,7 +8,6 @@ import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
 from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import json
 
 
 class TransmissionRPC(Addon):
@@ -28,9 +28,8 @@ class TransmissionRPC(Addon):
         self.event_map = {'linksAdded': "links_added"}
 
     def links_added(self, links, pid):
-        pattern = re.compile(self.__pattern__)
-        urls = [link for link in links if pattern.match(link)]
-
+        _re_link = re.compile(self.__pattern__)
+        urls = [link for link in links if _re_link.match(link)]
         for url in urls:
             self.log_debug("Sending link: %s" % url)
             self.send_to_transmission(url)

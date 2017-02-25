@@ -50,7 +50,7 @@ class Ftp(Hoster):
                     self.log_debug("Logging on to %s" % netloc)
                     self.req.addAuth(pwd)
                 else:
-                    self.log_debug(_("Using anonymous logon"))
+                    self.log_debug("Using anonymous logon")
 
         try:
             headers = self.load(pyfile.url, just_header=True)

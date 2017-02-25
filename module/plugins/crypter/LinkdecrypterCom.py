@@ -8,7 +8,7 @@ from module.plugins.internal.MultiCrypter import MultiCrypter
 class LinkdecrypterCom(MultiCrypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
-    __version__ = "0.36"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -65,10 +65,11 @@ class LinkdecrypterCom(MultiCrypter):
                 retries -= 1
 
             elif self.PASSWORD_PATTERN in self.data:
-                if self.password:
+                password = self.get_password()
+                if password:
                     self.log_info(_("Password protected link"))
                     self.data = self.load('http://linkdecrypter.com/',
-                                          post={'password': self.get_password()})
+                                          post={'password': password})
                 else:
                     self.fail(_("Missing password"))
 

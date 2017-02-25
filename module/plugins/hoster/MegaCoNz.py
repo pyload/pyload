@@ -128,6 +128,15 @@ class MegaCrypto(object):
                     for _i in range(0, len(data), 16)), ())
 
     @staticmethod
+    def encrypt_key(data, key):
+        """
+        Encrypt a decrypted key
+        """
+        data = MegaCrypto.base64_decode(data)
+        return sum((MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[_i:_i + 16], key))
+                    for _i in range(0, len(data), 16)), ())
+
+    @staticmethod
     def get_chunks(size):
         """
         Calculate chunks for a given encrypted file size
@@ -229,7 +238,7 @@ class MegaClient(object):
             else:
                 raise
 
-        self.plugin.log_debug(_("Api Response: ") + res)
+        self.plugin.log_debug("Api Response: " + res)
 
         res = json.loads(res)
         if isinstance(res, list):
@@ -259,7 +268,7 @@ class MegaClient(object):
 class MegaCoNz(Hoster):
     __name__ = "MegaCoNz"
     __type__ = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
@@ -399,7 +408,7 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug(_("ID: %s") % id,
+        self.log_debug("ID: %s" % id,
                        _("Key: %s") % key,
                        _("Type: %s") % ("public" if public else "node"),
                        _("Owner: %s") % owner)
@@ -428,7 +437,7 @@ class MegaCoNz(Hoster):
         if not attr:
             self.fail(_("Decryption failed"))
 
-        self.log_debug(_("Decrypted Attr: %s") % decode(attr))
+        self.log_debug("Decrypted Attr: %s" % decode(attr))
 
         name = attr['n']
 

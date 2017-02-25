@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import json
 
 
 class SafelinkingNet(Crypter):
@@ -79,7 +80,7 @@ class SafelinkingNet(Crypter):
 
             if link_info['security'].get('usePassword', False):
                 if self.package_password:
-                    self.log_debug(_("Using package password"))
+                    self.log_debug("Using package password")
                     post_data['password'] = self.package_password
 
                 else:

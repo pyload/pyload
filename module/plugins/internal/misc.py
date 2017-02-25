@@ -8,11 +8,13 @@ from __future__ import with_statement
 import datetime
 import hashlib
 import itertools
+import json
 import os
 import re
 import shutil
 import socket
 import string
+import subprocess
 import sys
 import time
 import traceback
@@ -20,12 +22,6 @@ import urllib
 import urlparse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
-
-try:
-    import simplejson as json
-
-except ImportError:
-    import json
 
 try:
     import send2trash
@@ -37,7 +33,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.38"
+    __version__ = "0.40"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -613,11 +609,11 @@ def parse_time(value):
         seconds = seconds_to_midnight()
 
     else:
-        regex = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
+        _re = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
         seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
                       {'hr': 3600, 'hour': 3600, 'min': 60,
                           'sec': 1, '': 1}[u.lower()]
-                      for v, u in regex.findall(value))
+                      for v, u in _re.findall(value))
     return seconds
 
 
@@ -755,9 +751,9 @@ def set_cookies(cj, cookies):
 
 def parse_html_header(header):
     hdict = {}
-    regexp = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
+    _re = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
 
-    for key, value in re.findall(regexp, header):
+    for key, value in re.findall(_re, header):
         key = key.lower()
         if key in hdict:
             header_key = hdict.get(key)
@@ -862,7 +858,7 @@ def compute_checksum(filename, hashtype):
     if not exists(file):
         return None
 
-    buf = fsbsize()
+    buf = fsbsize(filename)
 
     if hashtype in ("adler32", "crc32"):
         hf = getattr(zlib, hashtype)

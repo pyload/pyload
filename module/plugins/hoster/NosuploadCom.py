@@ -8,7 +8,7 @@ from module.plugins.internal.XFSHoster import XFSHoster
 class NosuploadCom(XFSHoster):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?nosupload\.com/\?d=\w{12}'
@@ -32,11 +32,11 @@ class NosuploadCom(XFSHoster):
 
     def get_download_link(self):
         #: Stage1: press the "Free Download" button
-        data = self.get_post_parameters()
+        data = self._post_parameters()
         self.data = self.load(self.pyfile.url, post=data)
 
         #: Stage2: wait some time and press the "Download File" button
-        data = self.get_post_parameters()
+        data = self._post_parameters()
         wait_time = re.search(
             self.WAIT_PATTERN,
             self.data,

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import random
 import re
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

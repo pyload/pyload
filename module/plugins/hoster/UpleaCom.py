@@ -69,7 +69,7 @@ class UpleaCom(SimpleHoster):
                 m.group(1)))
 
         m = re.search(self.WAIT_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.wait(m.group(1), True)
             self.retry()
 
@@ -80,5 +80,5 @@ class UpleaCom(SimpleHoster):
         self.link = m.group(1)
 
         m = re.search(r".ulCounter\({'timer':(\d+)}\)", self.data)
-        if m:
+        if m is not None:
             self.wait(m.group(1))

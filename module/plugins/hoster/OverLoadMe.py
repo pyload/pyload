@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 
-from module.plugins.internal.misc import json, parse_size
+from module.plugins.internal.misc import parse_size
 from module.plugins.internal.MultiHoster import MultiHoster
 
 

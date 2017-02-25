@@ -31,7 +31,7 @@ class DatafileComFolder(Crypter):
         links = re.findall(self.LINK_PATTERN, self.data)
 
         m = re.search(self.NAME_PATTERN, self.data)
-        if m:
+        if m is not None:
             name = m.group('N')
             self.packages.append((name, links, name))
 

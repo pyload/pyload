@@ -94,18 +94,18 @@ class MultiAccount(Account):
     def replace_domains(self, list):
         for r in self.DOMAIN_REPLACEMENTS:
             pattern, repl = r
-            regex = re.compile(pattern, re.I | re.U)
-            list = [regex.sub(repl, domain) if regex.match(
+            _re = re.compile(pattern, re.I | re.U)
+            list = [_re.sub(repl, domain) if _re.match(
                 domain) else domain for domain in list]
 
         return list
 
     def parse_domains(self, list):
-        regexp = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
-                            re.I | re.U)
+        _re = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
+                         re.I | re.U)
 
         domains = [decode(domain).strip().lower()
-                   for url in list for domain in regexp.findall(url)]
+                   for url in list for domain in _re.findall(url)]
         return self.replace_domains(uniqify(domains))
 
     def _grab_hosters(self):
@@ -147,8 +147,7 @@ class MultiAccount(Account):
         hosters = self._grab_hosters()
         if hosters:
             self.log_debug(
-                _("Hoster list for user `%s`: %s") %
-                (self.user, hosters))
+                "Hoster list for user `%s`: %s" % (self.user, hosters))
 
             self._override()
 
@@ -203,7 +202,7 @@ class MultiAccount(Account):
         removed = [
             plugin for plugin in prev_supported if plugin not in self.supported]
         if removed:
-            self.log_debug(_("Unload: %s") % ", ".join(removed))
+            self.log_debug("Unload: %s" % ", ".join(removed))
             for plugin in removed:
                 self.unload_plugin(plugin)
 
@@ -212,7 +211,7 @@ class MultiAccount(Account):
             return
 
         #: Inject plugin plugin
-        self.log_debug(_("Overwritten %ss: %s") %
+        self.log_debug("Overwritten %ss: %s" %
                        (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
@@ -230,22 +229,21 @@ class MultiAccount(Account):
             plugins = sorted(newsupported)
 
             self.log_debug(
-                _("New %ss: %s") %
-                (self.plugintype, ", ".join(plugins)))
+                "New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             #: Create new regexp
-            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
-                                                      for x in plugins)
+            pattern = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
+                                                       for x in plugins)
             if hasattr(self.pluginclass, "__pattern__") and isinstance(
                     self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
-                regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
+                pattern = r'%s|%s' % (self.pluginclass.__pattern__, pattern)
 
-            self.log_debug(_("Regexp: %s") % regexp)
+            self.log_debug("Pattern: %s" % pattern)
 
             hdict = self.pyload.pluginManager.plugins[
                 self.plugintype][self.classname]
-            hdict['pattern'] = regexp
-            hdict['re'] = re.compile(regexp)
+            hdict['pattern'] = pattern
+            hdict['re'] = re.compile(pattern)
 
     def plugins_cached(self):
         if self.plugins:
@@ -312,7 +310,7 @@ class MultiAccount(Account):
             "plugin_updated", self.plugins_updated)
         self.periodical.stop()
 
-        self.log_debug(_("Unload: %s") % ", ".join(self.supported))
+        self.log_debug("Unload: %s" % ", ".join(self.supported))
         for plugin in self.supported:
             self.unload_plugin(plugin)
 
@@ -328,4 +326,4 @@ class MultiAccount(Account):
 
     def removeAccount(self, user):
         self.deactivate()
-        super(MultiAccount, self).removeAccount(user)
+        Account.removeAccount(self, user)

@@ -46,4 +46,4 @@ class XFSCrypter(SimpleCrypter):
         if self.COOKIES:
             self._set_xfs_cookie()
 
-        super(XFSCrypter, self)._prepare()
+        SimpleCrypter._prepare(self)

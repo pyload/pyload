@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 
 import Crypto.Hash.SHA
 import pycurl
-from module.plugins.internal.misc import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 

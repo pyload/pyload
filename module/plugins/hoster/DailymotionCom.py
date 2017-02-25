@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json
 from module.PyFile import statusMap
 
 
 def get_info(urls):
     result = []
-    regex = re.compile(DailymotionCom.__pattern__)
+    _re = re.compile(DailymotionCom.__pattern__)
     apiurl = "https://api.dailymotion.com/video/%s"
     request = {'fields': "access_error,status,title"}
 
     for url in urls:
-        id = regex.match(url).group('ID')
+        id = _re.match(url).group('ID')
         html = get_url(apiurl % id, get=request)
         info = json.loads(html)
 

@@ -26,7 +26,7 @@ class DataHuFolder(SimpleCrypter):
     NAME_PATTERN = ur'<title>(?P<N>.+?) Let\xf6lt\xe9se</title>'
 
     def _prepare(self):
-        super(DataHuFolder, self)._prepare()
+        SimpleCrypter._prepare(self)
 
         if u'K\xe9rlek add meg a jelsz\xf3t' in self.data:  #: Password protected
             password = self.get_password()

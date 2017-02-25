@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
-from module.plugins.hoster.MegaCoNz import MegaCoNz
-from module.plugins.internal.misc import json
+from module.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
 
 
 class MegacrypterCom(MegaCoNz):
     __name__ = "MegacrypterCom"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+'
@@ -45,7 +45,7 @@ class MegacrypterCom(MegaCoNz):
         # if info['pass'] is True:
         # crypted_file_key, md5_file_key = info['key'].split("#")
 
-        key = self.b64_decode(info['key'])
+        key = MegaCrypto.base64_decode(info['key'])
 
         pyfile.name = info['name'] + self.FILE_SUFFIX
 

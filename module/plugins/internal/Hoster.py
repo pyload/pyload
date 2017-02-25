@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -90,7 +90,7 @@ class Hoster(Base):
             self.account = False
             self.user = None  # @TODO: Remove in 0.4.10
         else:
-            super(Hoster, self).load_account()
+            Base.load_account(self)
             # self.restart_free = False
 
     def _process(self, thread):
@@ -181,7 +181,7 @@ class Hoster(Base):
                 code = header.get('code')
 
                 if code in (301, 302) or resumable:
-                    self.log_debug(_("Redirect #%d to: %s") % (i, location))
+                    self.log_debug("Redirect #%d to: %s" % (i, location))
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -236,7 +236,7 @@ class Hoster(Base):
 
         else:
             if self.req.code in (404, 410):
-                bad_file = fsjoin(dl_dirname, newname)
+                bad_file = fsjoin(os.path.dirname(filename), newname)
                 if self.remove(bad_file):
                     return ""
             else:
@@ -349,7 +349,7 @@ class Hoster(Base):
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug(_("Content: %s") % content)
+        # self.log_debug("Content: %s" % content)
         for name, rule in rules.items():
             if isinstance(rule, basestring):
                 if rule in content:

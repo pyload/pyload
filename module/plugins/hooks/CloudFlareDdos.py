@@ -34,18 +34,16 @@ class CloudFlare(object):
     def handle_function(addon_plugin, owner_plugin,
                         func_name, orig_func, args):
         addon_plugin.log_debug(
-            _("Calling %s() of %s") %
-            (func_name, plugin_id(owner_plugin)))
+            "Calling %s() of %s" % (func_name, plugin_id(owner_plugin)))
 
         try:
             data = orig_func(*args[0], **args[1])
-            addon_plugin.log_debug(_("%s() returned successfully") % func_name)
+            addon_plugin.log_debug("%s( returned successfully" % func_name)
             return data
 
         except BadHeader as e:
             addon_plugin.log_debug(
-                _("%s(): got BadHeader exception %s") %
-                (func_name, e.code))
+                "%s(): got BadHeader exception %s" % (func_name, e.code))
 
             header = parse_html_header(get_plugin_last_header(owner_plugin))
 
@@ -198,8 +196,7 @@ class CloudFlareDdos(Addon):
     def _unoverride_preload(self, plugin):
         if id(plugin) in self.stubs:
             self.log_debug(
-                _("Unoverriding _preload() for %s") %
-                plugin_id(plugin))
+                "Unoverriding _preload() for %s" % plugin_id(plugin))
 
             stub = self.stubs.pop(id(plugin))
             stub.owner_plugin._preload = stub.old_preload
@@ -215,8 +212,7 @@ class CloudFlareDdos(Addon):
             self.stubs[id(plugin)] = stub
 
             self.log_debug(
-                _("Overriding _preload() for %s") %
-                plugin_id(plugin))
+                "Overriding _preload() for %s" % plugin_id(plugin))
             plugin._preload = stub.my_preload
 
         else:
@@ -225,13 +221,13 @@ class CloudFlareDdos(Addon):
                 plugin_id(plugin))
 
     def _override_get_url(self):
-        self.log_debug(_("Overriding get_url()"))
+        self.log_debug("Overriding get_url(")
 
         self.old_get_url = self.pyload.requestFactory.getURL
         self.pyload.requestFactory.getURL = self.my_get_url
 
     def _unoverride_get_url(self):
-        self.log_debug(_("Unoverriding get_url()"))
+        self.log_debug("Unoverriding get_url(")
 
         self.pyload.requestFactory.getURL = self.old_get_url
 
@@ -258,7 +254,7 @@ class CloudFlareDdos(Addon):
     def download_preparing(self, pyfile):
         #: Only SimpleHoster and SimpleCrypter based plugins are supported
         if not is_simple_plugin(pyfile.plugin):
-            self.log_debug(_("Skipping plugin %s") % plugin_id(pyfile.plugin))
+            self.log_debug("Skipping plugin %s" % plugin_id(pyfile.plugin))
             return
 
         attr = getattr(pyfile.plugin, "_preload", None)

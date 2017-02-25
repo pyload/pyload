@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import os
 import time
 import urlparse
 
-from module.plugins.internal.misc import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

@@ -14,7 +14,7 @@ def double_decode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?fshare\.vn/file/.+'
@@ -39,7 +39,8 @@ class FshareVn(SimpleHoster):
 
     def preload(self):
         self.data = self.load("http://www.fshare.vn/check_link.php",
-                              post={'action': "check_link", 'arrlinks': pyfile.url})
+                              post={'action': "check_link",
+                                    'arrlinks': self.pyfile.url})
 
     def handle_free(self, pyfile):
         self.data = self.load(pyfile.url)
@@ -87,13 +88,13 @@ class FshareVn(SimpleHoster):
         m = re.search(self.WAIT_PATTERN, self.data)
         if m is not None:
             self.log_info(_("Wait until %s ICT") % m.group(1))
-            wait_until = time.mktime.time(
-                time.strptime.time(
+            wait_until = time.mktime(
+                time.strptime(
                     m.group(1), "%d/%m/%Y %H:%M"))
             self.wait(
                 wait_until -
-                time.mktime.time(
-                    time.gmtime.time()) -
+                time.mktime(
+                    time.gmtime()) -
                 7 *
                 60 *
                 60,

@@ -22,7 +22,7 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
-    __version__ = "0.43"
+    __version__ = "0.45"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
@@ -33,6 +33,8 @@ class Extractor(Plugin):
     EXTENSIONS = []
     REPAIR = False
     VERSION = None
+
+    _RE_PART = re.compile(r'')
 
     @classmethod
     def isarchive(cls, filename):
@@ -65,10 +67,9 @@ class Extractor(Plugin):
                 continue
 
             if cls.ismultipart(fname):
-                pname = re.sub(cls._RE_PART, "", fname)
-            else:
-                pname = os.path.splitext(fname)[0]
+                pname = cls._RE_PART.sub("", fname)
 
+            pname = os.path.splitext(fname)[0]
             if pname in processed:
                 continue
 

@@ -16,7 +16,7 @@ from module.plugins.internal.SimpleHoster import SimpleHoster
 class TurbobitNet(SimpleHoster):
     __name__ = "TurbobitNet"
     __type__ = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/(?:download/free/)?(?P<ID>\w+)'
@@ -93,7 +93,7 @@ class TurbobitNet(SimpleHoster):
 
         self.log_debug(inputs)
 
-        self.data = self.load(self.url, post=inputs)
+        self.data = self.load(self.link, post=inputs)
 
         if '<div class="captcha-error">Incorrect, try again' in self.data:
             self.retry_captcha()
@@ -126,7 +126,7 @@ class TurbobitNet(SimpleHoster):
         return rtUpdate
 
     def get_download_url(self, rtUpdate):
-        self.req.http.lastURL = self.url
+        self.req.http.lastURL = self.link
 
         m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.data)
         if m is not None:

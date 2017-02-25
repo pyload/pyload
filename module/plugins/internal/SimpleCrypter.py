@@ -5,13 +5,14 @@ import re
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import parse_name, replace_patterns
+from module.plugins.internal.misc import (parse_name, parse_time,
+                                          replace_patterns)
 
 
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.87"
+    __version__ = "0.88"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -87,7 +88,7 @@ class SimpleCrypter(Crypter):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = super(SimpleCrypter, cls).get_info(url)
+        info = Crypter.get_info(cls, url)
 
         info.update(cls.api_info(url))
 
@@ -142,13 +143,13 @@ class SimpleCrypter(Crypter):
             self.req = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
 
-        super(SimpleCrypter, self).setup_base()
+        Crypter.setup_base(self)
 
     #@TODO: Remove in 0.4.10
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]
-        super(SimpleCrypter, self).load_account()
+        Crypter.load_account(self)
         self.__class__.__name__ = class_name
 
     def handle_direct(self, pyfile):
