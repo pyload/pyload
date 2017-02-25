@@ -69,7 +69,7 @@ class MirrorcreatorCom(Crypter):
         # priority hosters goes first
         for _h in hosters_priority:
             if _h in hosters_data and _h not in ignored_hosters:
-                self.log_debug(_("Adding '%s' link") % _h)
+                self.log_debug("Adding '%s' link" % _h)
                 choosen_hosters.append(_h)
                 if not self.config.get('grab_all'):
                     break
@@ -79,7 +79,7 @@ class MirrorcreatorCom(Crypter):
                 not self.config.get('grab_all') and not choosen_hosters):
             for _h in hosters_data:
                 if _h not in ignored_hosters and _h not in choosen_hosters:
-                    self.log_debug(_("Adding '%s' link") % _h)
+                    self.log_debug("Adding '%s' link" % _h)
                     choosen_hosters.append(_h)
                     if not self.config.get('grab_all'):
                         break

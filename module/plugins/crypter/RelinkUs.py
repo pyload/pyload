@@ -165,7 +165,7 @@ class RelinkUs(Crypter):
             solvemedia = SolveMedia(self.pyfile)
             captcha_key = solvemedia.detect_key()
             if captcha_key:
-                self.log_debug(_("Request SolveMedia captcha resolving"))
+                self.log_debug("Request SolveMedia captcha resolving")
                 response, challenge = solvemedia.challenge()
 
                 post_data = {'adcopy_response': response,
@@ -194,7 +194,7 @@ class RelinkUs(Crypter):
             if not self.FILE_NOTITLE in title:
                 name = folder = title
                 self.log_debug(
-                    _("Found name [%s] and folder [%s] in package info") %
+                    "Found name [%s] and folder [%s] in package info" %
                     (name, folder))
 
         #: Fallback to defaults
@@ -202,7 +202,7 @@ class RelinkUs(Crypter):
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                _("Package info not found, defaulting to pyfile name [%s] and folder [%s]") %
+                "Package info not found, defaulting to pyfile name [%s] and folder [%s]" %
                 (name, folder))
 
         #: Return package info
@@ -229,7 +229,7 @@ class RelinkUs(Crypter):
             self.error(_('Unknown source type "%s"') % source)
 
     def handle_CNL2Links(self):
-        self.log_debug(_("Search for CNL2 links"))
+        self.log_debug("Search for CNL2 links")
         pack_links = []
         m = re.search(self.CNL2_FORM_PATTERN, self.data, re.S)
         if m is not None:
@@ -240,19 +240,18 @@ class RelinkUs(Crypter):
                     pack_links.extend(self._get_links(crypted, jk))
 
             except Exception:
-                self.log_debug(_("Unable to decrypt CNL2 links", trace=True))
+                self.log_debug("Unable to decrypt CNL2 links", trace=True)
 
         return pack_links
 
     def handle_DLC_links(self):
-        self.log_debug(_("Search for DLC links"))
+        self.log_debug("Search for DLC links")
         pack_links = []
         m = re.search(self.DLC_LINK_PATTERN, self.data)
         if m is not None:
             container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.file_id
             self.log_debug(
-                _("Downloading DLC container link [%s]") %
-                container_url)
+                "Downloading DLC container link [%s]" % container_url)
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.file_id + ".dlc"
@@ -271,20 +270,19 @@ class RelinkUs(Crypter):
         return pack_links
 
     def handle_WEB_links(self):
-        self.log_debug(_("Search for WEB links"))
+        self.log_debug("Search for WEB links")
 
         pack_links = []
         params = re.findall(self.WEB_FORWARD_PATTERN, self.data)
 
-        self.log_debug(_("Decrypting %d Web links") % len(params))
+        self.log_debug("Decrypting %d Web links" % len(params))
 
         for index, param in enumerate(params):
             try:
                 url = self.WEB_FORWARD_URL + "?%s" % param
 
                 self.log_debug(
-                    _("Decrypting Web link %d, %s") %
-                    (index + 1, url))
+                    "Decrypting Web link %d, %s" % (index + 1, url))
 
                 res = self.load(url)
                 link = re.search(self.WEB_LINK_PATTERN, res).group(1)
@@ -293,8 +291,7 @@ class RelinkUs(Crypter):
 
             except Exception, detail:
                 self.log_debug(
-                    _("Error decrypting Web link %s, %s") %
-                    (index, detail))
+                    "Error decrypting Web link %s, %s" % (index, detail))
 
             self.wait(4)
 
@@ -310,13 +307,13 @@ class RelinkUs(Crypter):
         vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         #: Log and return
-        self.log_debug(_("Detected %d crypted blocks") % len(vcrypted))
+        self.log_debug("Detected %d crypted blocks" % len(vcrypted))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
         jreturn = self.js.eval("%s f()" % jk)
-        self.log_debug(_("JsEngine returns value [%s]") % jreturn)
+        self.log_debug("JsEngine returns value [%s]" % jreturn)
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -330,5 +327,5 @@ class RelinkUs(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug(_("Package has %d links") % len(links))
+        self.log_debug("Package has %d links" % len(links))
         return links

@@ -159,8 +159,7 @@ class MultiAccount(Account):
         hosters = self._grab_hosters()
         if hosters:
             self.log_debug(
-                _("Hoster list for user `%s`: %s") %
-                (self.user, hosters))
+                "Hoster list for user `%s`: %s" % (self.user, hosters))
 
             self._override()
 
@@ -215,7 +214,7 @@ class MultiAccount(Account):
         removed = [
             plugin for plugin in prev_supported if plugin not in self.supported]
         if removed:
-            self.log_debug(_("Unload: %s") % ", ".join(removed))
+            self.log_debug("Unload: %s" % ", ".join(removed))
             for plugin in removed:
                 self.unload_plugin(plugin)
 
@@ -224,7 +223,7 @@ class MultiAccount(Account):
             return
 
         #: Inject plugin plugin
-        self.log_debug(_("Overwritten %ss: %s") %
+        self.log_debug("Overwritten %ss: %s" %
                        (self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
@@ -242,8 +241,7 @@ class MultiAccount(Account):
             plugins = sorted(newsupported)
 
             self.log_debug(
-                _("New %ss: %s") %
-                (self.plugintype, ", ".join(plugins)))
+                "New %ss: %s" % (self.plugintype, ", ".join(plugins)))
 
             #: Create new regexp
             pattern = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
@@ -252,7 +250,7 @@ class MultiAccount(Account):
                     self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
                 pattern = r'%s|%s' % (self.pluginclass.__pattern__, pattern)
 
-            self.log_debug(_("Pattern: %s") % pattern)
+            self.log_debug("Pattern: %s" % pattern)
 
             hdict = self.pyload.pluginManager.plugins[
                 self.plugintype][self.classname]
@@ -324,7 +322,7 @@ class MultiAccount(Account):
             "plugin_updated", self.plugins_updated)
         self.periodical.stop()
 
-        self.log_debug(_("Unload: %s") % ", ".join(self.supported))
+        self.log_debug("Unload: %s" % ", ".join(self.supported))
         for plugin in self.supported:
             self.unload_plugin(plugin)
 

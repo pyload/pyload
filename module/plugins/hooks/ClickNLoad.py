@@ -71,7 +71,7 @@ class ClickNLoad(Addon):
 
             self.exit_done.wait(10)
             if self.exit_done.isSet():
-                self.log_debug(_("Server exited successfully"))
+                self.log_debug("Server exited successfully")
             else:
                 self.log_warning(
                     _("Server was not exited gracefully, shutdown forced"))
@@ -111,7 +111,7 @@ class ClickNLoad(Addon):
                 client_socket, client_addr = dock_socket.accept()
 
                 if not self.do_exit:
-                    self.log_debug(_("Connection from %s:%s") % client_addr)
+                    self.log_debug("Connection from %s:%s" % client_addr)
 
                     server_socket = socket.socket(
                         socket.AF_INET, socket.SOCK_STREAM)
@@ -148,7 +148,7 @@ class ClickNLoad(Addon):
             self.exit_done.set()
 
         except socket.timeout:
-            self.log_debug(_("Connection timed out, retrying..."))
+            self.log_debug("Connection timed out, retrying...")
             return self._server()
 
         except socket.error, e:
