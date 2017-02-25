@@ -43,7 +43,7 @@ class UgouploadNet(SimpleHoster):
         self.check_errors()
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m:
+        if m is not None:
             recaptcha = ReCaptcha(self)
             response, challenge = recaptcha.challenge(self.RECAPTCHA_KEY)
 

@@ -39,7 +39,7 @@ class CryptCat(SimpleCrypter):
 
         elif "Enter Captcha" in self.data:
             m = re.search(r'<img src="(.+?)"', self.data)
-            if m:
+            if m is not None:
                 captcha_code = self.captcha.decrypt(
                     m.group(1), input_type="jpeg")
                 inputs['security_code'] = captcha_code

@@ -44,7 +44,7 @@ class ImgurCom(SimpleCrypter):
         # Greedy re should match the closing bracket of json assuming JSON data
         # is placed on a single line
         m = re.search(r"\simage\s+:\s+({.*})", self.data)
-        if m:
+        if m is not None:
             embedded_json = json.loads(m.group(1))
 
             # Extract some metadata (ID, Title, NumImages)

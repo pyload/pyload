@@ -26,7 +26,7 @@ class PornhubCom(Hoster):
         html = self.load(pyfile.url)
 
         m = re.findall(r'var player_quality_(\d+)\w+? = \'(.+?)\'', html)
-        if not m:
+        if m is None:
             self.error(_("video quality pattern not found"))
 
         urls = dict(m)

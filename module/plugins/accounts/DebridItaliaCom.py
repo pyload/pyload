@@ -36,7 +36,7 @@ class DebridItaliaCom(MultiAccount):
         html = self.api_response("check", u=user, p=password)
 
         m = re.search(r'<expiration>(.+?)</expiration>', html)
-        if m:
+        if m is not None:
             validuntil = int(m.group(1))
 
         else:

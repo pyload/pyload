@@ -404,7 +404,7 @@ class JSInterpreter(object):
             m = re.match(
                 r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' %
                 (self._VARNAME_PATTERN, re.escape(op)), expr)
-            if not m:
+            if m is None:
                 continue
             right_val = self.interpret_expression(
                 m.group('expr'), local_vars, allow_recursion - 1)
@@ -441,7 +441,7 @@ class JSInterpreter(object):
         m = re.match(
             r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' %
             self._VARNAME_PATTERN, expr)
-        if m:
+        if m is not None:
             variable = m.group('var')
             member = m.group('member')
             arg_str = m.group('args')
@@ -497,7 +497,7 @@ class JSInterpreter(object):
         m = re.match(
             r'(?P<in>%s)\[(?P<idx>.+)\]$' %
             self._VARNAME_PATTERN, expr)
-        if m:
+        if m is not None:
             val = local_vars[m.group('in')]
             idx = self.interpret_expression(
                 m.group('idx'), local_vars, allow_recursion - 1)
@@ -505,7 +505,7 @@ class JSInterpreter(object):
 
         for op, opfunc in self._OPERATORS:
             m = re.match(r'(?P<x>.+?)%s(?P<y>.+)' % re.escape(op), expr)
-            if not m:
+            if m is None:
                 continue
 
             x, abort = self.interpret_statement(
@@ -527,7 +527,7 @@ class JSInterpreter(object):
         m = re.match(
             r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' %
             self._VARNAME_PATTERN, expr)
-        if m:
+        if m is not None:
             fname = m.group('func')
             argvals = tuple([int(v) if v.isdigit() else local_vars[v]
                              for v in m.group('args').split(',')])

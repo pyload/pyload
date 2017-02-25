@@ -141,7 +141,7 @@ class RelinkUs(Crypter):
 
     def unlock_captcha_protection(self):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.log_debug("Request circle captcha resolving")
             captcha_id = m.group(1)
 
