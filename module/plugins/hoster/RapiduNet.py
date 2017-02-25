@@ -4,7 +4,7 @@ import time
 
 import pycurl
 from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

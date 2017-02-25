@@ -2,7 +2,7 @@
 
 import hashlib
 
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.MultiAccount import MultiAccount
 
 

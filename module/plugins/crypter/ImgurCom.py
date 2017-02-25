@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
-from module.plugins.internal.misc import json, uniqify
+from module.plugins.internal.misc import uniqify
 from module.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

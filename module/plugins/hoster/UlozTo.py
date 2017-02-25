@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
-from module.plugins.internal.misc import json, parse_name, timestamp
+from module.plugins.internal.misc import parse_name, timestamp
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 

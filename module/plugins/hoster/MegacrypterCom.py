@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
-from module.plugins.internal.misc import json
+import json
 
 
 class MegacrypterCom(MegaCoNz):

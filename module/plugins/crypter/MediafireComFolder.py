@@ -3,7 +3,7 @@
 import re
 
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import json
+import json
 
 
 class MediafireComFolder(Crypter):

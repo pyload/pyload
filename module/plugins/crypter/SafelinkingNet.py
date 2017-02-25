@@ -4,7 +4,7 @@ import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.plugins.captcha.SolveMedia import SolveMedia
 from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import json
+import json
 
 
 class SafelinkingNet(Crypter):
