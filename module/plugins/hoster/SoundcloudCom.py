@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.misc import json
+import json
 from module.plugins.internal.SimpleHoster import SimpleHoster
 
 
@@ -46,9 +46,9 @@ class SoundcloudCom(SimpleHoster):
                          get={'client_id': client_id})
         streams = json.loads(html)
 
-        regex = re.compile(r'[^\d]')
+        _re = re.compile(r'[^\d]')
         http_streams = sorted([(key, value) for key, value in streams.items() if key.startswith('http_')],
-                              key=lambda t: regex.sub(t[0], ''),
+                              key=lambda t: _re.sub(t[0], ''),
                               reverse=True)
 
         self.log_debug("Streams found: %s" % (http_streams or "None"))

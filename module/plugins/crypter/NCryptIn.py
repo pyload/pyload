@@ -95,7 +95,7 @@ class NCryptIn(Crypter):
 
     def is_online(self):
         if "Your folder does not exist" in self.cleaned_html:
-            self.log_debug("File not m")
+            self.log_debug("File not found")
             return False
         return True
 
@@ -126,7 +126,7 @@ class NCryptIn(Crypter):
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not m, defaulting to pyfile name [%s] and folder [%s]" %
+                "Package info not found, defaulting to pyfile name [%s] and folder [%s]" %
                 (name, folder))
         return name, folder
 

@@ -94,18 +94,18 @@ class MultiAccount(Account):
     def replace_domains(self, list):
         for r in self.DOMAIN_REPLACEMENTS:
             pattern, repl = r
-            regex = re.compile(pattern, re.I | re.U)
-            list = [regex.sub(repl, domain) if regex.match(
+            _re = re.compile(pattern, re.I | re.U)
+            list = [_re.sub(repl, domain) if _re.match(
                 domain) else domain for domain in list]
 
         return list
 
     def parse_domains(self, list):
-        regexp = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
-                            re.I | re.U)
+        _re = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
+                         re.I | re.U)
 
         domains = [decode(domain).strip().lower()
-                   for url in list for domain in regexp.findall(url)]
+                   for url in list for domain in _re.findall(url)]
         return self.replace_domains(uniqify(domains))
 
     def _grab_hosters(self):
@@ -234,18 +234,18 @@ class MultiAccount(Account):
                 (self.plugintype, ", ".join(plugins)))
 
             #: Create new regexp
-            regexp = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
-                                                      for x in plugins)
+            pattern = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
+                                                       for x in plugins)
             if hasattr(self.pluginclass, "__pattern__") and isinstance(
                     self.pluginclass.__pattern__, basestring) and "://" in self.pluginclass.__pattern__:
-                regexp = r'%s|%s' % (self.pluginclass.__pattern__, regexp)
+                pattern = r'%s|%s' % (self.pluginclass.__pattern__, pattern)
 
-            self.log_debug(_("Regexp: %s") % regexp)
+            self.log_debug(_("Pattern: %s") % pattern)
 
             hdict = self.pyload.pluginManager.plugins[
                 self.plugintype][self.classname]
-            hdict['pattern'] = regexp
-            hdict['re'] = re.compile(regexp)
+            hdict['pattern'] = pattern
+            hdict['re'] = re.compile(pattern)
 
     def plugins_cached(self):
         if self.plugins:

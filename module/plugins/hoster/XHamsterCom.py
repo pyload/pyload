@@ -4,7 +4,7 @@ import re
 import urllib
 
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json
+import json
 
 
 def clean_json(json_expr):
@@ -52,8 +52,8 @@ class XHamsterCom(Hoster):
         if not self.data:
             self.download_html()
 
-        flashvar_pattern = re.compile('flashvars = ({.*?});', re.S)
-        json_flashvar = flashvar_pattern.search(self.data)
+        _re_flashvar = re.compile('flashvars = ({.*?});', re.S)
+        json_flashvar = _re_flashvar.search(self.data)
 
         if not json_flashvar:
             self.error(_("flashvar not found"))
