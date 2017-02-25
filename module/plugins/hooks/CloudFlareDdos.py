@@ -38,7 +38,7 @@ class CloudFlare(object):
 
         try:
             data = orig_func(*args[0], **args[1])
-            addon_plugin.log_debug("%s( returned successfully") % func_name)
+            addon_plugin.log_debug("%s( returned successfully" % func_name)
             return data
 
         except BadHeader, e:
@@ -221,13 +221,13 @@ class CloudFlareDdos(Addon):
                 plugin_id(plugin))
 
     def _override_get_url(self):
-        self.log_debug("Overriding get_url("))
+        self.log_debug("Overriding get_url(")
 
         self.old_get_url = self.pyload.requestFactory.getURL
         self.pyload.requestFactory.getURL = self.my_get_url
 
     def _unoverride_get_url(self):
-        self.log_debug("Unoverriding get_url("))
+        self.log_debug("Unoverriding get_url(")
 
         self.pyload.requestFactory.getURL = self.old_get_url
 
