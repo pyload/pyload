@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -194,10 +194,12 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if not redirect:
-            req.http.c.setopt(pycurl.FOLLOWLOCATION, 0)
+            # @NOTE: req can be a HTTPRequest or a Browser object
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         elif isinstance(redirect, int):
-            req.http.c.setopt(pycurl.MAXREDIRS, redirect)
+            # @NOTE: req can be a HTTPRequest or a Browser object
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(ref, basestring):
@@ -215,7 +217,8 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         if not redirect:
-            req.http.c.setopt(pycurl.FOLLOWLOCATION, 1)
+            # @NOTE: req can be a HTTPRequest or a Browser object
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif isinstance(redirect, int):
             maxredirs = int(
@@ -223,7 +226,8 @@ class Plugin(object):
                     "UserAgentSwitcher",
                     "maxredirs",
                     "plugin")) or 5  # @TODO: Remove `int` in 0.4.10
-            req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
+            # @NOTE: req can be a HTTPRequest or a Browser object
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10
         if decode:
@@ -240,11 +244,8 @@ class Plugin(object):
 
         #@TODO: Move to network in 0.4.10
         header = {'code': req.code, 'url': req.lastEffectiveURL}
-        header.update(
-            parse_html_header(
-                req.http.header if hasattr(
-                    req,
-                    "http") else req.header))  # @NOTE: req can be a HTTPRequest or a Browser object
+        # @NOTE: req can be a HTTPRequest or a Browser object
+        header.update(parse_html_header(req.http.header if hasattr(req, "http") else req.header))
 
         self.last_header = header
 
