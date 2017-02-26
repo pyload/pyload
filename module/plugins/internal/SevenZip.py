@@ -12,7 +12,7 @@ from module.plugins.internal.UnRar import (ArchiveError, CRCError,
 class SevenZip(UnRar):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -124,6 +124,10 @@ class SevenZip(UnRar):
         #: Overwrite flag
         if self.overwrite:
             args.append("-y")
+
+        #: Exclude files
+        for word in self.excludefiles:
+            args.append("-x!%s" % word.strip())
 
         #: Set a password
         password = kwargs.get('password')
