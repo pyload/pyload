@@ -9,7 +9,7 @@ from module.plugins.internal.Account import Account
 class CatShareNet(Account):
     __name__ = "CatShareNet"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """Catshare.net account plugin"""
@@ -51,14 +51,13 @@ class CatShareNet(Account):
     def signin(self, user, password, data):
         html = self.load("http://catshare.net/")
 
-        if '<a href="/logout">Wyloguj</a>' in html:
+        if re.search(r'/logout".*>Wyloguj</a>', html) is not None:
             self.skip_login()
 
         html = self.load("http://catshare.net/login",  # @TODO: Revert to `https` in 0.4.10
                          post={'user_email': user,
-                               'user_password': password,
-                               'remindPassword': 0,
-                               'user[submit]': "Login"})
+                               'user_password': password},
+                         redirect=20)
 
-        if not '<a href="/logout">Wyloguj</a>' in html:
+        if re.search(r'/logout".*>Wyloguj</a>', html) is None:
             self.fail_login()
