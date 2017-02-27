@@ -10,7 +10,7 @@ from module.plugins.internal.misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -82,6 +82,12 @@ class MultiAccount(Account):
                 _("Multi-hoster feature will be deactivated due missing plugin reference"))
 
     def plugins_updated(self, type_plugins):
+        if not self.info['login']['valid']:
+            self.log_error(_("Could not %s hoster list - invalid account, retry in 5 minutes") %
+                           ("reload" if self.info['data'].get('hosters') else "load"))
+            self.periodical.set_interval(5 * 60)
+            return
+
         if not self.logged:
             if not self.relogin():
                 self.log_error(_("Could not %s hoster list - login failed, retry in 5 minutes") %
@@ -135,7 +141,13 @@ class MultiAccount(Account):
 
     def periodical_task(self):
         self.log_info(_("%s hoster list for user `%s`...") %
-                      (self.user, "Reloading" if self.info['data'].get('hosters') else "Loading"))
+                      ("Reloading" if self.info['data'].get('hosters') else "Loading", self.user))
+
+        if not self.info['login']['valid']:
+            self.log_error(_("Could not %s hoster list - invalid account, retry in 5 minutes") %
+                           ("reload" if self.info['data'].get('hosters') else "load"))
+            self.periodical.set_interval(5 * 60)
+            return
 
         if not self.logged:
             if not self.relogin():
