@@ -44,7 +44,7 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -127,10 +127,13 @@ class YoutubeCom(Hoster):
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
-            player_data = self.load(player_url)
+            player_data = self.load(self.fixurl(player_url))
+
+            m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
+
             try:
-                function_name = re.search(
-                    r'\.sig\|\|([a-zA-Z0-9$]+)\(', player_data).group(1)
+                function_name = m.group('sig')
 
             except (AttributeError, IndexError):
                 self.fail(_("Signature decode function name not found"))
