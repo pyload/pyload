@@ -7,7 +7,7 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__ = "NoPremiumPl"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
@@ -42,19 +42,11 @@ class NoPremiumPl(MultiHoster):
                    15: "Hosting no longer supported",
                    80: "Too many incorrect login attempts, account blocked for 24h"}
 
-    def _prepare(self):
-        super(NoPremiumPl, self)._prepare()
-
-        data = self.account.get_data()
-
-        self.usr = data['usr']
-        self.pwd = data['pwd']
-
     def run_file_query(self, url, mode=None):
         query = self.API_QUERY.copy()
 
-        query['username'] = self.usr
-        query['password'] = self.pwd
+        query['username'] = self.account.info['login']['usr']
+        query['password'] = self.account.info['login']['pwd']
         query['url'] = url
 
         if mode == "fileinfo":
@@ -65,7 +57,7 @@ class NoPremiumPl(MultiHoster):
 
         return self.load(self.API_URL, post=query)
 
-    def handle_free(self, pyfile):
+    def handle_premium(self, pyfile):
         try:
             data = self.run_file_query(pyfile.url, 'fileinfo')
 

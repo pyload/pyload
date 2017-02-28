@@ -11,16 +11,17 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class NoPremiumPl(MultiAccount):
     __name__ = "NoPremiumPl"
     __type__ = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in minutes", 60)]
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = "NoPremium.pl account plugin"
     __license__ = "GPLv3"
-    __authors__ = [("goddie", "dev@nopremium.pl")]
+    __authors__ = [("goddie", "dev@nopremium.pl"),
+                   ("GammaC0de", "nitzo2001[AT]yahho[DOT]com")]
 
     API_URL = "http://crypt.nopremium.pl"
     API_QUERY = {'site': "nopremium",
@@ -49,11 +50,9 @@ class NoPremiumPl(MultiAccount):
             #@TODO: return or let it be thrown?
             return
 
-        premium = False
         valid_untill = -1
 
-        if "expire" in result.keys() and result['expire']:
-            premium = True
+        if result.get('expire'):
             valid_untill = time.mktime(datetime.datetime.fromtimestamp(
                 int(result['expire'])).timetuple())
 
@@ -61,7 +60,7 @@ class NoPremiumPl(MultiAccount):
 
         return {'validuntil': valid_untill,
                 'trafficleft': traffic_left,
-                'premium': premium}
+                'premium': True}
 
     def signin(self, user, password, data):
         data['usr'] = user
@@ -71,8 +70,8 @@ class NoPremiumPl(MultiAccount):
         try:
             response = json.loads(self.run_auth_query())
 
-        except Exception:
-            self.fail_login()
+        except Exception as e:
+            self.fail_login(e.message)
 
         if "errno" in response.keys():
             self.fail_login()
@@ -85,4 +84,5 @@ class NoPremiumPl(MultiAccount):
 
     def run_auth_query(self):
         return self.load(self.API_URL,
-                         post=self.create_auth_query())
+                         post=self.create_auth_query(),
+                         redirect=20)
