@@ -11,7 +11,7 @@ from module.plugins.internal.MultiAccount import MultiAccount
 class NoPremiumPl(MultiAccount):
     __name__ = "NoPremiumPl"
     __type__ = "account"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -63,8 +63,7 @@ class NoPremiumPl(MultiAccount):
                 'premium': True}
 
     def signin(self, user, password, data):
-        data['usr'] = user
-        data['pwd'] = hashlib.sha1(
+        data['hash_password'] = hashlib.sha1(
             hashlib.md5(password).hexdigest()).hexdigest()
 
         try:
@@ -78,8 +77,8 @@ class NoPremiumPl(MultiAccount):
 
     def create_auth_query(self):
         query = self.API_QUERY
-        query['username'] = self.info['data']['usr']
-        query['password'] = self.info['data']['pwd']
+        query['username'] = self.user
+        query['password'] = self.info['data']['hash_password']
         return query
 
     def run_auth_query(self):

@@ -7,20 +7,16 @@ from module.plugins.internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__ = "NoPremiumPl"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback",
-                   "bool",
-                   "Fallback to free download if premium fails",
-                   False),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
-                  ("revertfailed", "bool", "Revert to standard download if fails", True)]
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """NoPremium.pl multi-hoster plugin"""
     __license__ = "GPLv3"
@@ -45,8 +41,8 @@ class NoPremiumPl(MultiHoster):
     def run_file_query(self, url, mode=None):
         query = self.API_QUERY.copy()
 
-        query['username'] = self.account.info['login']['usr']
-        query['password'] = self.account.info['login']['pwd']
+        query['username'] = self.account.user
+        query['password'] = self.account.info['data']['hash_password']
         query['url'] = url
 
         if mode == "fileinfo":
@@ -55,14 +51,15 @@ class NoPremiumPl(MultiHoster):
 
         self.log_debug(query)
 
-        return self.load(self.API_URL, post=query)
+        return self.load(self.API_URL, post=query, redirect=20)
 
     def handle_premium(self, pyfile):
+        self.log_debug("handle_premium")
         try:
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.temp_offline("Query error #1")
+            self.fail("Query error #1")
 
         try:
             parsed = json.loads(data)
@@ -94,4 +91,4 @@ class NoPremiumPl(MultiHoster):
             self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.temp_offline("Query error #2")
+            self.fail("Query error #2")
