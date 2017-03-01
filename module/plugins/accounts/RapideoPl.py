@@ -33,11 +33,11 @@ class RapideoPl(MultiAccount):
     def grab_hosters(self, user, password, data):
         html = self.load("https://www.rapideo.pl/clipboard.php?json=3").strip()
         hostings = json.loads(html)
-        hostings_domains = [domain for row in hostings for domain in row[
-            'domains'] if row['sdownload'] == "0"]
-
+        hostings_domains = [
+            domain for row in hostings for domain in row['domains']
+            if row['sdownload'] == "0"
+        ]
         self.log_debug(hostings_domains)
-
         return hostings_domains
 
     def grab_info(self, user, password, data):

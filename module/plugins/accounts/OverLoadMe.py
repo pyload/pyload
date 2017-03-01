@@ -37,8 +37,9 @@ class OverLoadMe(MultiAccount):
         if data['membership'] == "Free":
             return {'premium': False, 'validuntil': None, 'trafficleft': None}
         else:
-            return {'premium': True, 'validuntil': data[
-                'expirationunix'], 'trafficleft': -1}
+            return {'premium': True,
+                    'validuntil': data['expirationunix'],
+                    'trafficleft': -1}
 
     def signin(self, user, password, data):
         html = self.load("https://api.over-load.me/account.php",

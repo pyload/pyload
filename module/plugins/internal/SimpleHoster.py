@@ -171,8 +171,7 @@ class SimpleHoster(Hoster):
                         attr = getattr(cls, pattern)
                         pdict = re.search(attr, html).groupdict()
 
-                        if all(True for k in pdict if k not in info[
-                               'pattern']):
+                        if all(True for k in pdict if k not in info['pattern']):
                             info['pattern'].update(pdict)
 
                     except Exception:

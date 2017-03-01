@@ -46,7 +46,6 @@ class OverLoadMe(MultiHoster):
             self.temp_offline()
         else:
             self.link = data['downloadlink']
-            if pyfile.name and pyfile.name.endswith('.tmp') and data[
-                    'filename']:
+            if pyfile.name and pyfile.name.endswith('.tmp') and data['filename']:
                 pyfile.name = data['filename']
                 pyfile.size = parse_size(data['filesize'])

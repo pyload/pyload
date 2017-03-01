@@ -107,15 +107,13 @@ class Base(Plugin):
         #: Hide any user/password
         try:
             msg = msg.replace(
-                self.account.user,
-                self.account.user[
-                    :3] + "*******")
+                self.account.user, self.account.user[:3] + "*******")
         except Exception:
             pass
 
         try:
-            msg = msg.replace(self.account.info['login'][
-                              'password'], "**********")
+            msg = msg.replace(
+                self.account.info['login']['password'], "**********")
         except Exception:
             pass
 

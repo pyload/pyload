@@ -65,8 +65,10 @@ class OneFichierCom(SimpleHoster):
                     if 'content-type' in headers and headers[
                             'content-type'] == "application/octet-stream":
                         if "filename=" in headers.get('content-disposition'):
-                            name = dict(_i.split("=") for _i in map(str.strip, headers[
-                                        'content-disposition'].split(";"))[1:])['filename'].strip("\"'")
+                            _name = dict(
+                                _i.split("=") for _i in map(str.strip, headers[
+                                'content-disposition'].split(";"))[1:])
+                            name = _name['filename'].strip("\"'")
                         else:
                             name = url
 

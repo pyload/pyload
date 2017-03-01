@@ -10,7 +10,7 @@ from module.plugins.internal.misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -189,16 +189,9 @@ class MultiAccount(Account):
         else:
             plugin_map = {}
             account_list = [
-                name[
-                    ::-
-                    1].replace(
-                    "Folder"[
-                        ::-
-                        1],
-                    "",
-                    1).lower()[
-                    ::-
-                    1] for name in self.pyload.pluginManager.crypterPlugins.keys()]
+                name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
+                for name in self.pyload.pluginManager.crypterPlugins.keys()
+            ]
 
         for plugin in self.plugins_cached():
             name = remove_chars(plugin, "-.")
