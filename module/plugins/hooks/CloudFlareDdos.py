@@ -39,7 +39,7 @@ class CloudFlare(object):
 
         try:
             data = orig_func(*args[0], **args[1])
-            addon_plugin.log_debug("%s( returned successfully" % func_name)
+            addon_plugin.log_debug("%s() returned successfully" % func_name)
             return data
 
         except BadHeader, e:
@@ -59,7 +59,7 @@ class CloudFlare(object):
 
                 else:
                     addon_plugin.log_warning(
-                        _("Unknown CloudFlare response code %s") % e.code)
+                        "Unknown CloudFlare response code %s" % e.code)
                     raise
 
                 if data is None:
@@ -75,7 +75,7 @@ class CloudFlare(object):
     def _solve_cf_ddos_challenge(addon_plugin, owner_plugin, data):
         try:
             addon_plugin.log_info(
-                _("Detected CloudFlare's DDoS protection page"))
+                "Detected CloudFlare's DDoS protection page")
             # Cloudflare requires a delay before solving the challenge
             owner_plugin.set_wait(5)
 
@@ -104,7 +104,7 @@ class CloudFlare(object):
                 # This may indicate CloudFlare has changed their anti-bot
                 # technique.
                 owner_plugin.log_error(
-                    _("Unable to parse CloudFlare's DDoS protection page"))
+                    "Unable to parse CloudFlare's DDoS protection page")
                 return None  # Tell the exception handler to re-throw the exception
 
             # Safely evaluate the Javascript expression
@@ -131,7 +131,7 @@ class CloudFlare(object):
             captcha_key = captcha.detect_key(data)
             if captcha_key:
                 addon_plugin.log_info(
-                    _("Detected CloudFlare's security check page"))
+                    "Detected CloudFlare's security check page")
 
                 response, challenge = captcha.challenge(captcha_key, data)
                 return owner_plugin.load(owner_plugin.fixurl("/cdn-cgi/l/chk_captcha"),
@@ -141,7 +141,7 @@ class CloudFlare(object):
 
             else:
                 addon_plugin.log_warning(
-                    _("Got unexpected CloudFlare html page"))
+                    "Got unexpected CloudFlare html page")
                 return None  # Tell the exception handler to re-throw the exception
 
         except Exception, e:
@@ -174,7 +174,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
@@ -204,7 +204,7 @@ class CloudFlareDdos(Addon):
 
         else:
             self.log_warning(
-                _("No _preload() override found for %s, cannot un-override>") %
+                "No _preload() override found for %s, cannot un-override>" %
                 plugin_id(plugin))
 
     def _override_preload(self, plugin):
@@ -218,17 +218,17 @@ class CloudFlareDdos(Addon):
 
         else:
             self.log_warning(
-                _("Already overrided _preload() for %s") %
+                "Already overrided _preload() for %s" %
                 plugin_id(plugin))
 
     def _override_get_url(self):
-        self.log_debug("Overriding get_url(")
+        self.log_debug("Overriding get_url()")
 
         self.old_get_url = self.pyload.requestFactory.getURL
         self.pyload.requestFactory.getURL = self.my_get_url
 
     def _unoverride_get_url(self):
-        self.log_debug("Unoverriding get_url(")
+        self.log_debug("Unoverriding get_url()")
 
         self.pyload.requestFactory.getURL = self.old_get_url
 
@@ -261,9 +261,8 @@ class CloudFlareDdos(Addon):
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
             self.log_error(
-                _("%s is missing _preload() function, cannot override!") %
-                plugin_id(
-                    pyfile.plugin))
+                "%s is missing _preload() function, cannot override!" %
+                plugin_id(pyfile.plugin))
             return
 
         self._override_preload(pyfile.plugin)
