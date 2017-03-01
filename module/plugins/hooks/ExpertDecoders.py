@@ -8,6 +8,7 @@ import uuid
 import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
+
 from ..internal.Addon import Addon
 from ..internal.misc import threaded
 

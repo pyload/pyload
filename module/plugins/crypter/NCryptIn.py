@@ -4,6 +4,7 @@ import binascii
 import re
 
 import Crypto.Cipher.AES
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.Crypter import Crypter
 

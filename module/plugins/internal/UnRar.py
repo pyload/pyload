@@ -5,8 +5,7 @@ import re
 import string
 import subprocess
 
-from .Extractor import (ArchiveError, CRCError,
-                                               Extractor, PasswordError)
+from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 from .misc import decode, encode, fsjoin, renice
 
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import random
 import re
 
+from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
 

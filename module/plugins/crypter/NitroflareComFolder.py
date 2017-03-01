@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from ..internal.misc import json
-
 from ..internal.SimpleCrypter import SimpleCrypter
 
 

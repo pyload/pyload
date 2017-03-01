@@ -2,6 +2,7 @@
 
 
 import pycurl
+
 from ..internal.Crypter import Crypter
 
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
+
 from ..internal.misc import encode, json
 from ..internal.MultiHoster import MultiHoster
 

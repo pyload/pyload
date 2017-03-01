@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
-
-from ..internal.misc import parse_size
+from ..internal.misc import json, parse_size
 from ..internal.MultiHoster import MultiHoster
 
 

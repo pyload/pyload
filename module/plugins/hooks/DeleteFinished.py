@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from module.database import style
+
 from ..internal.Addon import Addon
 
 

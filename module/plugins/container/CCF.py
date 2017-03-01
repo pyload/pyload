@@ -6,6 +6,7 @@ import re
 import urllib2
 
 import MultipartPostHandler
+
 from ..internal.Container import Container
 from ..internal.misc import encode, fsjoin
 

@@ -7,6 +7,7 @@ import re
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
+
 from ..internal.Addon import Addon
 from ..internal.misc import threaded
 

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import base64
-from ..internal.misc import json
 import re
 import urllib
 
 from module.network.RequestFactory import getURL as get_url
+
+from ..internal.misc import json
 from ..internal.SimpleCrypter import SimpleCrypter
 
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import Crypto.PublicKey.RSA
+
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
 from ..internal.Account import Account
 
@@ -89,7 +90,8 @@ class MegaCoNz(Account):
                  rsa_private_key[1]))
             sid = "%x" % rsa.key._decrypt(encrypted_sid)
             sid = '0' * (-len(sid) % 2) + sid
-            sid = "".join(chr(int(sid[i: i + 2], 16)) for i in range(0, len(sid), 2))
+            sid = "".join(chr(int(sid[i: i + 2], 16))
+                          for i in range(0, len(sid), 2))
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
 
         data['mega_session_id'] = sid

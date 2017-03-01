@@ -3,6 +3,7 @@
 import re
 
 import pycurl
+
 from ..internal.SimpleHoster import SimpleHoster
 
 

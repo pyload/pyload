@@ -2,6 +2,7 @@
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
+
 from ..internal.Notifier import Notifier
 
 

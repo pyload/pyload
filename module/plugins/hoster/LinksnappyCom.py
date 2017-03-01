@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 import urlparse
 
+from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
 
 

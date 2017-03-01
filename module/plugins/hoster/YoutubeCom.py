@@ -10,9 +10,9 @@ from functools import reduce
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
+
 from ..internal.Hoster import Hoster
-from ..internal.misc import (html_unescape, json,
-                                          replace_patterns, which)
+from ..internal.misc import html_unescape, json, replace_patterns, which
 from ..Plugin import Abort
 
 
@@ -130,7 +130,8 @@ class YoutubeCom(Hoster):
             player_data = self.load(self.fixurl(player_url))
 
             m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
-                re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
+                re.search(
+                    r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
 
             try:
                 function_name = m.group('sig')
@@ -238,7 +239,7 @@ class YoutubeCom(Hoster):
 
         fmt_dict = dict([(x[0], x[1:])
                          for x in streams if self.formats[x[0]][4] == use3d]
-                         or streams)
+                        or streams)
 
         self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
                        (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],

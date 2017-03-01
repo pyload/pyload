@@ -5,8 +5,7 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from .Extractor import (ArchiveError, CRCError,
-                                               Extractor, PasswordError)
+from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 from .misc import encode
 
 

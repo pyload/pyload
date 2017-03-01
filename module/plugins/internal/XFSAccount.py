@@ -4,8 +4,7 @@ import re
 import time
 import urlparse
 
-from .misc import (parse_html_form, parse_time,
-                                          set_cookie)
+from .misc import parse_html_form, parse_time, set_cookie
 from .MultiAccount import MultiAccount
 
 

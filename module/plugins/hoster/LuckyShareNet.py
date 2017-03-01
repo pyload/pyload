@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
 

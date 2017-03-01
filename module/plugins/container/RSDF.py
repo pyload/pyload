@@ -6,6 +6,7 @@ import binascii
 import re
 
 import Crypto.Cipher.AES
+
 from ..internal.Container import Container
 from ..internal.misc import encode
 

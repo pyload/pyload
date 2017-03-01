@@ -6,9 +6,9 @@ import re
 
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getURL as get_url
+
 from .Hoster import Hoster
-from .misc import (encode, parse_name, parse_size,
-                                          parse_time, replace_patterns)
+from .misc import encode, parse_name, parse_size, parse_time, replace_patterns
 
 
 class SimpleHoster(Hoster):
@@ -171,7 +171,8 @@ class SimpleHoster(Hoster):
                         attr = getattr(cls, pattern)
                         pdict = re.search(attr, html).groupdict()
 
-                        if all(True for k in pdict if k not in info['pattern']):
+                        if all(True for k in pdict if k not in info[
+                               'pattern']):
                             info['pattern'].update(pdict)
 
                     except Exception:

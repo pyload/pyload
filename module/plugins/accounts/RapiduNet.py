@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 import time
 
 from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class RapiduNet(Account):

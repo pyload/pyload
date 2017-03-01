@@ -9,8 +9,7 @@ import sys
 import time
 
 from ..internal.Addon import Addon
-from ..internal.misc import (Expose, encode, exists, fsjoin,
-                                          threaded)
+from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 
 
 class UpdateManager(Addon):

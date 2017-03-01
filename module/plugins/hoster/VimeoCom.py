@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from ..internal.misc import json
-
 from ..internal.SimpleHoster import SimpleHoster
 
 
@@ -59,7 +58,8 @@ class VimeoCom(SimpleHoster):
 
         json_data = json.loads(json_data)
 
-        videos = dict((v['quality'], v['url']) for v in json_data['request']['files']['progressive'])
+        videos = dict((v['quality'], v['url'])
+                      for v in json_data['request']['files']['progressive'])
 
         quality = self.config.get('quality')
         if quality == "Highest":

@@ -2,8 +2,9 @@
 
 import re
 
-from ..internal.Addon import Addon
 from module.PyFile import PyFile
+
+from ..internal.Addon import Addon
 
 
 class SkipRev(Addon):

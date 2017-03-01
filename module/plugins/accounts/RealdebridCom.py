@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import time
 
 from module.network.HTTPRequest import BadHeader
+
+from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount
 
 

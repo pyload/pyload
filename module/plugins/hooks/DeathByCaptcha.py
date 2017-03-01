@@ -3,15 +3,15 @@
 from __future__ import with_statement
 
 import base64
-from ..internal.misc import json
 import re
 import time
 
 import pycurl
 from module.network.HTTPRequest import BadHeader
 from module.network.RequestFactory import getRequest as get_request
+
 from ..internal.Addon import Addon
-from ..internal.misc import threaded
+from ..internal.misc import json, threaded
 
 
 class DeathByCaptchaException(Exception):

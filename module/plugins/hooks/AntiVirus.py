@@ -5,8 +5,7 @@ import shutil
 import subprocess
 
 from ..internal.Addon import Addon
-from ..internal.misc import (Expose, encode, exists, fsjoin,
-                                          threaded)
+from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 
 try:
     import send2trash

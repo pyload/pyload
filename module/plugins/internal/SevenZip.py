@@ -5,8 +5,7 @@ import re
 import subprocess
 
 from .misc import encode, fsjoin, renice
-from .UnRar import (ArchiveError, CRCError,
-                                           PasswordError, UnRar)
+from .UnRar import ArchiveError, CRCError, PasswordError, UnRar
 
 
 class SevenZip(UnRar):

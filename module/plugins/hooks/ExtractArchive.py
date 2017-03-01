@@ -6,10 +6,8 @@ import os
 import sys
 
 from ..internal.Addon import Addon
-from ..internal.Extractor import (ArchiveError, CRCError,
-                                               PasswordError)
-from ..internal.misc import (Expose, encode, exists, fsjoin,
-                                          threaded, uniqify)
+from ..internal.Extractor import ArchiveError, CRCError, PasswordError
+from ..internal.misc import Expose, encode, exists, fsjoin, threaded, uniqify
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
@@ -224,7 +222,6 @@ class ExtractArchive(Addon):
         if not ids:
             return False
 
-        processed = []
         extracted = []
         failed = []
 

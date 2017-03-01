@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-from ..internal.misc import json
 
+from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount
 
 

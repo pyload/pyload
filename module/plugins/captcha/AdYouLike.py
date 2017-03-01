@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
 from ..internal.CaptchaService import CaptchaService
+from ..internal.misc import json
 
 
 class AdYouLike(CaptchaService):

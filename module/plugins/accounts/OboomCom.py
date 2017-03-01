@@ -18,9 +18,8 @@ except ImportError:
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from ..internal.misc import json
-
 from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class OboomCom(Account):

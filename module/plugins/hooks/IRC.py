@@ -10,6 +10,7 @@ from threading import Thread
 import pycurl
 import ssl
 from module.Api import FileDoesNotExists, PackageDoesNotExists
+
 from ..internal.misc import format_size
 from ..internal.Notifier import Notifier
 
@@ -328,8 +329,6 @@ class IRC(Thread, Notifier):
         pack = args[0].strip()
         links = [x.strip() for x in args[1:]]
 
-        count_added = 0
-        count_failed = 0
         try:
             id = int(pack)
             pack = self.pyload.api.getPackageData(id)
@@ -370,7 +369,7 @@ class IRC(Thread, Notifier):
 
         id = int(args[0])
         try:
-            info = self.pyload.api.getPackageInfo(id)
+            self.pyload.api.getPackageInfo(id)
         except PackageDoesNotExists:
             return ["ERROR: Package #%d does not exist." % id]
 

@@ -2,6 +2,7 @@
 
 import pycurl
 from module.network.HTTPRequest import HTTPRequest
+
 from ..internal.Addon import Addon
 from ..internal.misc import encode
 

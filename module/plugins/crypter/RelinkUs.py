@@ -6,6 +6,7 @@ import binascii
 import re
 
 import Crypto.Cipher.AES
+
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Captcha import Captcha
 from ..internal.Crypter import Crypter

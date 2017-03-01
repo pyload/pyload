@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import urlparse
 
 from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class RapidgatorNet(Account):

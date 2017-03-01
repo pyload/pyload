@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
 from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 class HearthisAt(Hoster):

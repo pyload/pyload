@@ -12,6 +12,7 @@ import urllib
 
 import Image
 import ImageDraw
+
 from ..internal.OCR import OCR
 
 
@@ -51,10 +52,8 @@ class CircleCaptcha(OCR):
         imageheight = range(1, int(im.size[1]))
         imagewidth = range(1, int(im.size[0]))
         howmany = 0
-        curcolor = self.BACKGROUND
 
         for y in imageheight:
-            jump = True
             howmany = 0
             for x in imagewidth:
                 curpix = pix[x, y]
@@ -65,16 +64,12 @@ class CircleCaptcha(OCR):
                         for ic in range(1, cleandeep + 1):
                             if x - ic > 0:
                                 pix[x - ic, y] = self.BACKGROUND
-                    jump = False
                     howmany = 0
-                    curcolor = curpix
                     # self.log_debug(x, y, jump, 2)
                 else:
                     if howmany == 0:
                         #: Found pixel
-                        jump = True
                         howmany = howmany + 1
-                        curcolor = curpix
                         # self.log_debug(x, y, jump, 2)
                     else:
                         howmany = howmany + 1
@@ -82,9 +77,7 @@ class CircleCaptcha(OCR):
                 #: Clean pixel
                 pix[x - 1, y] = self.BACKGROUND
 
-        curcolor = self.BACKGROUND
         for x in imagewidth:
-            jump = True
             howmany = 0
             for y in imageheight:
                 curpix = pix[x, y]
@@ -96,16 +89,12 @@ class CircleCaptcha(OCR):
                             #: raw_input('2'+str(ic))
                             if y - ic > 0:
                                 pix[x, y - ic] = self.BACKGROUND
-                    jump = False
                     howmany = 0
-                    curcolor = curpix
                     # self.log_debug(x, y, jump)
                 else:
                     if howmany == 0:
                         #: Found pixel
-                        jump = True
                         howmany = howmany + 1
-                        curcolor = curpix
                         # self.log_debug(x, y, jump)
                     else:
                         howmany = howmany + 1
@@ -117,7 +106,6 @@ class CircleCaptcha(OCR):
 
     def find_first_pixel_x(self, im, pix, curx, cury,
                            color=-1, ExitWithBlack=False):
-        imageheight = range(1, int(im.size[1]))
         imagewidth = range(curx + 1, int(im.size[0]))
         jump = True
         newx = (-1, -1)
@@ -149,7 +137,6 @@ class CircleCaptcha(OCR):
 
     def find_last_pixel_x(self, im, pix, curx, cury,
                           color=-1, ExitWithBlack=False):
-        imageheight = range(1, int(im.size[1]))
         imagewidth = range(curx + 1, int(im.size[0]))
         newx = (-1, -1)
         blackfound = 0
@@ -182,7 +169,6 @@ class CircleCaptcha(OCR):
             imageheight = range(int(cury) + 1, int(im.size[1]) - 1)
         else:
             imageheight = range(int(cury) - 1, 1, -1)
-        imagewidth = range(int(curx), int(im.size[0]))
         newy = (-1, -1)
         blackfound = 0
         for y in imageheight:
@@ -203,7 +189,6 @@ class CircleCaptcha(OCR):
             if (curpix < self.BACKGROUND and color == -
                     1) or (curpix == color and color > -1):
                 #: Found pixel
-                curcolor = curpix
                 newy = y, color
 
         return newy
@@ -212,7 +197,6 @@ class CircleCaptcha(OCR):
         #: Trasposizione coordinate
         #: A(0, 0) B(x2-x1, y2-y1) C(x3-x1, y3-y1)
         #: x**2+y**2+ax+bx+c=0
-        p1 = (0, 0)
         p2 = (x2 - x1, y2 - y1)
         p3 = (x3 - x1, y3 - y1)
 
@@ -244,7 +228,6 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-        imageheight = range(int(c[1] - c[2]), int(c[1] + c[2]))
         imagewidth = range(int(c[0] - c[2]), int(c[0] + c[2]))
 
         min_ray = 15
@@ -253,13 +236,7 @@ class CircleCaptcha(OCR):
 
         howmany = 0
         missing = 0
-        missingconsecutive = 0
         missinglist = []
-
-        minX = 0
-        maxX = 0
-        minY = 0
-        maxY = 0
 
         pointsofcircle = []
 
@@ -459,11 +436,6 @@ class CircleCaptcha(OCR):
             # else:
             #     pix[p[0], p[1]] = 0
 
-        if missing / howmany > 0:
-            indice = c[2] * (missing / howmany)
-        else:
-            indice = 0
-
         if len(missinglist) > 0:
             minX = min(missinglist, key=operator.itemgetter(0))[0]
             maxX = max(missinglist, key=operator.itemgetter(0))[0]
@@ -570,7 +542,6 @@ class CircleCaptcha(OCR):
 
             stepheight = range(1, im.size[1], 2)
             #: stepheight = range(45, 47)
-            imagewidth = range(1, im.size[0])
             lstPoints = []  # Declares an empty list for the points
             lstX = []  # CoordinateX
             lstY = []  # CoordinateY
@@ -593,13 +564,11 @@ class CircleCaptcha(OCR):
             #: Finding all the circles
             for y1 in stepheight:
                 x1 = 1
-                curcolor = -1
                 for k in range(1, 100):
                     findnewcircle = False
                     retval = self.find_first_pixel_x(
                         im, pix, x1, y1, -1, False)
                     x1 = retval[0]
-                    curcolor = retval[1]
                     if x1 == -2:
                         break
                     if x1 == -1:

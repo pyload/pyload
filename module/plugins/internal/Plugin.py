@@ -7,13 +7,13 @@ import os
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
-from .misc import (DB, Config, decode, encode, exists,
-                                          fixurl, format_exc, fsjoin,
-                                          html_unescape, parse_html_header,
-                                          remove, set_cookies)
+
 from ..Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
 from ..Plugin import Abort, Fail, Reconnect, Retry
+from .misc import (DB, Config, decode, encode, exists, fixurl, format_exc,
+                   fsjoin, html_unescape, parse_html_header, remove,
+                   set_cookies)
 
 if os.name != "nt":
     import grp
@@ -131,9 +131,6 @@ class Plugin(object):
         if not exists(path):
             return
 
-        file_perms = False
-        dl_perms = False
-
         if self.pyload.config.get('permission', "change_file"):
             permission = self.pyload.config.get(
                 'permission', "folder" if os.path.isdir(path) else "file")
@@ -195,11 +192,13 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 0)
+            (req.http if hasattr(req, "http") else req).c.setopt(
+                pycurl.FOLLOWLOCATION, 0)
 
         elif isinstance(redirect, int):
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, redirect)
+            (req.http if hasattr(req, "http") else req).c.setopt(
+                pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(ref, basestring):
@@ -218,7 +217,8 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 1)
+            (req.http if hasattr(req, "http") else req).c.setopt(
+                pycurl.FOLLOWLOCATION, 1)
 
         elif isinstance(redirect, int):
             maxredirs = int(
@@ -227,7 +227,8 @@ class Plugin(object):
                     "maxredirs",
                     "plugin")) or 5  # @TODO: Remove `int` in 0.4.10
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, maxredirs)
+            (req.http if hasattr(req, "http") else req).c.setopt(
+                pycurl.MAXREDIRS, maxredirs)
 
         #@TODO: Move to network in 0.4.10
         if decode:
@@ -245,7 +246,8 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         header = {'code': req.code, 'url': req.lastEffectiveURL}
         # @NOTE: req can be a HTTPRequest or a Browser object
-        header.update(parse_html_header(req.http.header if hasattr(req, "http") else req.header))
+        header.update(parse_html_header(
+            req.http.header if hasattr(req, "http") else req.header))
 
         self.last_header = header
 

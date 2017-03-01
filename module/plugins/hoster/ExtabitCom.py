@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
 from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.misc import seconds_to_midnight
+from ..internal.misc import json, seconds_to_midnight
 from ..internal.SimpleHoster import SimpleHoster
 
 

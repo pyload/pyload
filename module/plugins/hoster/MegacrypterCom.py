@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
+from ..internal.misc import json
 from .MegaCoNz import MegaCoNz, MegaCrypto
 
 

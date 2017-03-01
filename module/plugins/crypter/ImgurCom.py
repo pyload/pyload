@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
-from ..internal.misc import uniqify
+from ..internal.misc import json, uniqify
 from ..internal.SimpleCrypter import SimpleCrypter
 
 
@@ -55,7 +54,8 @@ class ImgurCom(SimpleCrypter):
             self.total_num_images = int(embedded_json['num_images'])
 
             # Extract images
-            images = dict((e['hash'], e['ext']) for e in embedded_json['album_images']['images'])
+            images = dict((e['hash'], e['ext'])
+                          for e in embedded_json['album_images']['images'])
 
             self.log_debug(
                 "Found %s of %s expected links in embedded JSON" %
@@ -71,7 +71,8 @@ class ImgurCom(SimpleCrypter):
                         gallery_id))
 
                 try:
-                    images = dict((e['hash'], e['ext']) for e in external_json['data']['images'])
+                    images = dict((e['hash'], e['ext'])
+                                  for e in external_json['data']['images'])
                     self.log_debug(
                         "Found %s of %s expected links in external JSON" %
                         (len(images), self.total_num_images))

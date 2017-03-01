@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
-
 from ..internal.Account import Account
-from ..internal.misc import set_cookie
+from ..internal.misc import json, set_cookie
 
 
 class FilecloudIo(Account):

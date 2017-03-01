@@ -3,8 +3,9 @@
 import pyxmpp
 import pyxmpp.all
 import pyxmpp.interfaces
-from .IRC import IRC
 from pyxmpp.jabber.client import JabberClient
+
+from .IRC import IRC
 
 
 class XMPP(IRC, JabberClient):
@@ -137,7 +138,6 @@ class XMPP(IRC, JabberClient):
 
         # j = pyxmpp.all.JID()
         to_name = to_jid.as_utf8()
-        from_name = from_jid.as_utf8()
 
         names = self.config.get('owners').split(";")
 

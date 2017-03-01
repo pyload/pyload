@@ -3,6 +3,7 @@
 import re
 
 from module.network.HTTPRequest import BadHeader
+
 from ..internal.Crypter import Crypter
 
 

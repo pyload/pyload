@@ -5,6 +5,7 @@ import re
 import urlparse
 
 from module.network.HTTPRequest import BadHeader
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.Addon import Addon
 from ..internal.misc import parse_html_header

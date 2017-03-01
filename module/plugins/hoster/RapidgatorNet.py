@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.misc import json
 import re
 
 import pycurl
 from module.network.HTTPRequest import BadHeader
+
 from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
-from ..internal.misc import seconds_to_midnight
+from ..internal.misc import json, seconds_to_midnight
 from ..internal.SimpleHoster import SimpleHoster
 
 
@@ -76,18 +76,18 @@ class RapidgatorNet(SimpleHoster):
             self.log_debug("API:%s" % cmd, html, "SID: %s" % self.sid)
             json_data = json.loads(html)
             status = json_data['response_status']
-            msg = json_data['response_details']
+            message = json_data['response_details']
 
         except BadHeader, e:
             self.log_error("API: %s" % cmd, e, "SID: %s" % self.sid)
             status = e.code
-            msg = e
+            message = e.message
 
         if status == 200:
             return json_data['response']
 
         elif status == 423:
-            self.restart(msg=json_data['response_details'], premium=False)
+            self.restart(message, premium=False)
 
         else:
             self.account.relogin()
