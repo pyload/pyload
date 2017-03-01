@@ -14,7 +14,7 @@ from module.plugins.internal.misc import (encode, parse_name, parse_size,
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.22"
+    __version__ = "2.23"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -137,7 +137,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = Hoster.get_info(cls, url)
+        info = Hoster.get_info(url)
         info.update(cls.api_info(url))
 
         if not html and info['status'] != 2:

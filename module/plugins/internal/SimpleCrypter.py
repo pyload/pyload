@@ -12,7 +12,7 @@ from module.plugins.internal.misc import (parse_name, parse_time,
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.88"
+    __version__ = "0.89"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -88,7 +88,7 @@ class SimpleCrypter(Crypter):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = Crypter.get_info(cls, url)
+        info = Crypter.get_info(url)
 
         info.update(cls.api_info(url))
 
