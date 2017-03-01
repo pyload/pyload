@@ -48,4 +48,4 @@ class PromptfileCom(SimpleHoster):
         self.data = self.load(pyfile.url, post=payload)
 
         #: STAGE 2: get the direct link
-        return super(PromptfileCom, self).handle_free(pyfile)
+        return SimpleHoster.handle_free(self, pyfile)

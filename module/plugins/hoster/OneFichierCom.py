@@ -76,7 +76,7 @@ class OneFichierCom(SimpleHoster):
                                 'url': url}
 
                     else:
-                        info = super(OneFichierCom, cls).get_info(url, html)
+                        info = SimpleHoster.get_info(url, html)
 
                     break
 

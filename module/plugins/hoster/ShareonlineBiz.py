@@ -109,7 +109,7 @@ class ShareonlineBiz(SimpleHoster):
         elif check == "fail":
             self.retry_captcha(5, 5 * 60, _("Download failed"))
 
-        return super(ShareonlineBiz, self).check_download()
+        return SimpleHoster.check_download(self)
 
     #: Should be working better loading (account) api internally
     def handle_premium(self, pyfile):

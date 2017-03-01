@@ -78,4 +78,4 @@ class FilefactoryCom(SimpleHoster):
         elif check == "error":
             self.error(_("Unknown error"))
 
-        return super(FilefactoryCom, self).check_download()
+        return SimpleHoster.check_download(self)

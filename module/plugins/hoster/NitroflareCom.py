@@ -93,7 +93,7 @@ class NitroflareCom(SimpleHoster):
         if "The captcha wasn't entered correctly" in self.data:
             self.retry_captcha()
 
-        return super(NitroflareCom, self).handle_free(pyfile)
+        return SimpleHoster.handle_free(self, pyfile)
 
     def handle_premium(self, pyfile):
         data = json.loads(self.load("https://nitroflare.com/api/v2/getDownloadLink",

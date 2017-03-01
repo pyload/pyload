@@ -41,4 +41,4 @@ class SolidfilesCom(SimpleHoster):
 
         self.data = self.load(self.fixurl(action), post=inputs)
 
-        super(SolidfilesCom, self).handle_free(pyfile)
+        SimpleHoster.handle_free(self, pyfile)

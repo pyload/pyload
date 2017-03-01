@@ -36,7 +36,7 @@ class TusfilesNet(XFSHoster):
 
     def download(self, url, *args, **kwargs):
         try:
-            return super(TusfilesNet, self).download(url, *args, **kwargs)
+            return XFSHoster.download(self, url, *args, **kwargs)
 
         except BadHeader, e:
             if e.code == 503:

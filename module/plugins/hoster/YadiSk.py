@@ -29,7 +29,7 @@ class YadiSk(SimpleHoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = super(YadiSk, cls).get_info(url, html)
+        info = SimpleHoster.get_info(url, html)
 
         if html:
             if 'idclient' not in info:

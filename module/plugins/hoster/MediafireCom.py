@@ -83,4 +83,4 @@ class MediafireCom(SimpleHoster):
                 if self.PASSWORD_PATTERN in self.data:
                     self.fail(_("Wrong password"))
 
-        return super(MediafireCom, self).handle_free(pyfile)
+        return SimpleHoster.handle_free(self, pyfile)

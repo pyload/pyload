@@ -34,4 +34,4 @@ class GamefrontCom(SimpleHoster):
     def handle_free(self, pyfile):
         self.data = self.load("http://www.gamefront.com/files/service/thankyou",
                               get={'id': self.info['pattern']['ID']})
-        return super(GamefrontCom, self).handle_free(pyfile)
+        return SimpleHoster.handle_free(self, pyfile)

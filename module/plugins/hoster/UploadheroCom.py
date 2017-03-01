@@ -74,4 +74,4 @@ class UploadheroCom(SimpleHoster):
             self.wait(wait_time, True)
             self.retry()
 
-        return super(UploadheroCom, self).check_errors()
+        return SimpleHoster.check_errors(self)

@@ -103,7 +103,7 @@ class RapidgatorNet(SimpleHoster):
         self.link = self.api_response('download')['url']
 
     def check_errors(self):
-        super(RapidgatorNet, self).check_errors()
+        SimpleHoster.check_errors(self)
         m = re.search(self.DOWNLOAD_LIMIT_ERROR_PATTERN, self.data)
         if m is not None:
             self.log_warning(m.group(0))

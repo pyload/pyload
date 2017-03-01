@@ -174,7 +174,7 @@ class UlozTo(SimpleHoster):
         if re.search(self.VIPLINK_PATTERN, self.data):
             self.data = self.load(self.pyfile.url, get={'disclaimer': "1"})
 
-        return super(UlozTo, self).check_errors()
+        return SimpleHoster.check_errors(self)
 
     def check_download(self):
         check = self.scan_download({
@@ -205,4 +205,4 @@ class UlozTo(SimpleHoster):
         elif check == "not_found":
             self.fail(_("Server error, file not downloadable"))
 
-        return super(UlozTo, self).check_download()
+        return SimpleHoster.check_download(self)

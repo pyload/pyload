@@ -32,4 +32,4 @@ class ExashareCom(XFSHoster):
         self.resume_download = self.premium
 
     def handle_free(self, pyfile):
-        return super(ExashareCom, self).handle_free(pyfile)
+        return XFSHoster.handle_free(self, pyfile)

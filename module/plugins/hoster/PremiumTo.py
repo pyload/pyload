@@ -57,4 +57,4 @@ class PremiumTo(MultiHoster):
         if err:
             self.fail(err)
 
-        return super(PremiumTo, self).check_download()
+        return MultiHoster.check_download(self)

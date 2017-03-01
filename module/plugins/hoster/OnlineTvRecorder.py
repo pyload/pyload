@@ -32,7 +32,7 @@ class OnlineTvRecorder(Http):
 
     def process(self, pyfile):
         try:
-            return super(OnlineTvRecorder, self).process(pyfile)
+            return Http.process(self, pyfile)
 
         except BadHeader, e:
             self.log_debug("OnlineTvRecorder httpcode: %d" % e.code)

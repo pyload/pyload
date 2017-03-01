@@ -84,4 +84,4 @@ class FastshareCz(SimpleHoster):
         elif check == "credit":
             self.restart(premium=False)
 
-        return super(FastshareCz, self).check_download()
+        return SimpleHoster.check_download(self)

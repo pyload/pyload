@@ -36,7 +36,7 @@ class VimeoCom(SimpleHoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = super(VimeoCom, cls).get_info(url, html)
+        info = SimpleHoster.get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
         if 'name' in info:

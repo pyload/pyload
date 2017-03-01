@@ -167,4 +167,4 @@ class CzshareCom(SimpleHoster):
         elif check == "captcha":
             self.retry_captcha()
 
-        return super(CzshareCom, self).check_download()
+        return SimpleHoster.check_download(self)

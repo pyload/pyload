@@ -83,7 +83,7 @@ class UploadedTo(SimpleHoster):
                                     'recaptcha_response_field': response})
         self.check_errors()
 
-        super(UploadedTo, self).handle_free(pyfile)
+        SimpleHoster.handle_free(self, pyfile)
         self.check_errors()
 
     def check_download(self):
@@ -94,4 +94,4 @@ class UploadedTo(SimpleHoster):
             os.remove(self.last_download)
             self.retry(wait=10800, msg=_("Free download limit reached"))
 
-        return super(UploadedTo, self).check_download()
+        return SimpleHoster.check_download(self)

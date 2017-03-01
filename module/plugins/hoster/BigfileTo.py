@@ -84,4 +84,4 @@ class BigfileTo(SimpleHoster):
             self.wait(60 * 60, True)
             self.retry()
 
-        return super(BigfileTo, self).check_download()
+        return SimpleHoster.check_download(self)

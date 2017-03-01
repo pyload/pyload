@@ -27,8 +27,8 @@ class XFileSharing(XFSHoster):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
-        return super(XFileSharing, self)._log(
-            level, plugintype, pluginname, messages)
+        return XFSHoster._log(
+            self, level, plugintype, pluginname, messages)
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.hosterPlugins[
@@ -48,7 +48,7 @@ class XFileSharing(XFSHoster):
 
     #@TODO: Recheck in 0.4.10
     def setup_base(self):
-        super(XFileSharing, self).setup_base()
+        XFSHoster.setup_base(self)
 
         if self.account:
             self.req = self.pyload.requestFactory.getRequest(
@@ -63,5 +63,5 @@ class XFileSharing(XFSHoster):
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)
-        super(XFileSharing, self).load_account()
+        XFSHoster.load_account(self)
         self.__class__.__name__ = class_name

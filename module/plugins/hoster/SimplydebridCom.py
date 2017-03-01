@@ -59,4 +59,4 @@ class SimplydebridCom(MultiHoster):
                 {'error': "No address associated with hostname"}):
             self.retry(24, 3 * 60, _("Bad file downloaded"))
 
-        return super(SimplydebridCom, self).check_download()
+        return MultiHoster.check_download(self)

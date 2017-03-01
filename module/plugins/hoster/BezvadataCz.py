@@ -76,4 +76,4 @@ class BezvadataCz(SimpleHoster):
         elif '<div class="infobox' in self.data:
             self.temp_offline()
         else:
-            return super(BezvadataCz, self).check_errors()
+            return SimpleHoster.check_errors(self)

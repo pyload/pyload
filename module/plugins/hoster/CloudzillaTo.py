@@ -39,7 +39,7 @@ class CloudzillaTo(SimpleHoster):
         if re.search(self.PASSWORD_PATTERN, self.data):
             self.retry(msg="Wrong password")
         else:
-            return super(CloudzillaTo, self).check_errors()
+            return SimpleHoster.check_errors(self)
 
     def handle_free(self, pyfile):
         self.data = self.load("http://www.cloudzilla.to/generateticket/",

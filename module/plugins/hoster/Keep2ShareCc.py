@@ -73,7 +73,7 @@ class Keep2ShareCc(SimpleHoster):
             self.retry(wait=wait_time, msg="Please wait to download this file")
 
         self.info.pop('error', None)
-        # super(Keep2ShareCc, self).check_errors()
+        # SimpleHoster.check_errors(self)
 
     def handle_free(self, pyfile):
         m = re.search(
