@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from ..network.RequestFactory import getRequest as get_request
+from module.network.RequestFactory import getRequest as get_request
 from ..internal.Notifier import Notifier
 
 

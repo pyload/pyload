@@ -9,7 +9,7 @@ from threading import Thread
 
 import pycurl
 import ssl
-from ..Api import FileDoesNotExists, PackageDoesNotExists
+from module.Api import FileDoesNotExists, PackageDoesNotExists
 from ..internal.misc import format_size
 from ..internal.Notifier import Notifier
 

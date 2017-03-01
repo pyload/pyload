@@ -5,7 +5,7 @@ from ..internal.misc import json
 import re
 import urllib
 
-from ..network.RequestFactory import getURL as get_url
+from module.network.RequestFactory import getURL as get_url
 from ..internal.SimpleCrypter import SimpleCrypter
 
 

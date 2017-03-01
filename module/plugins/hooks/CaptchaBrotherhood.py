@@ -7,7 +7,7 @@ import time
 import urllib
 
 import pycurl
-from ..network.RequestFactory import getRequest as get_request
+from module.network.RequestFactory import getRequest as get_request
 from ..internal.Addon import Addon
 from ..internal.misc import threaded
 

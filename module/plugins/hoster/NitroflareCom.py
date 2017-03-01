@@ -3,7 +3,7 @@
 from ..internal.misc import json
 import re
 
-from ..network.RequestFactory import getURL as get_url
+from module.network.RequestFactory import getURL as get_url
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
 

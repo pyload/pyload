@@ -7,7 +7,7 @@ import os
 import re
 
 import mimetypes
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from .Base import Base
 from .misc import (compute_checksum, encode, exists,
                                           fixurl, fsjoin, parse_name, safejoin)

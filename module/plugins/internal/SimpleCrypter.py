@@ -2,8 +2,8 @@
 
 import re
 
-from ..network.HTTPRequest import BadHeader
-from ..network.RequestFactory import getURL as get_url
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL as get_url
 from .Crypter import Crypter
 from .misc import (parse_name, parse_time,
                                           replace_patterns)

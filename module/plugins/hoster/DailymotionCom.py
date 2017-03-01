@@ -3,9 +3,9 @@
 from ..internal.misc import json
 import re
 
-from ..network.RequestFactory import getURL as get_url
+from module.network.RequestFactory import getURL as get_url
 from ..internal.Hoster import Hoster
-from ..PyFile import statusMap
+from module.PyFile import statusMap
 
 
 def get_info(urls):

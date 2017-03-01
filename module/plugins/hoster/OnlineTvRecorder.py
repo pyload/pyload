@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from .Http import Http
 
 

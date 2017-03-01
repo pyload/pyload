@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from ..network.HTTPRequest import HTTPRequest
+from module.network.HTTPRequest import HTTPRequest
 from ..internal.Addon import Addon
 from ..internal.misc import encode
 

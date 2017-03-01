@@ -3,7 +3,7 @@
 import re
 
 from ..internal.Addon import Addon
-from ..PyFile import PyFile
+from module.PyFile import PyFile
 
 
 class SkipRev(Addon):

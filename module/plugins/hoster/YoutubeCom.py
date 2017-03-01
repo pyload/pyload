@@ -8,8 +8,8 @@ import time
 import urllib
 from functools import reduce
 
-from ..network.CookieJar import CookieJar
-from ..network.HTTPRequest import HTTPRequest
+from module.network.CookieJar import CookieJar
+from module.network.HTTPRequest import HTTPRequest
 from ..internal.Hoster import Hoster
 from ..internal.misc import (html_unescape, json,
                                           replace_patterns, which)

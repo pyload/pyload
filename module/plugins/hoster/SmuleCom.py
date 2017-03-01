@@ -2,7 +2,7 @@
 
 import re
 
-from ..common.JsEngine import JsEngine
+from module.common.JsEngine import JsEngine
 from ..internal.SimpleHoster import SimpleHoster
 
 

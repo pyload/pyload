@@ -3,7 +3,7 @@
 from functools import reduce
 
 import pycurl
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..internal.misc import encode, json
 from ..internal.MultiAccount import MultiAccount
 

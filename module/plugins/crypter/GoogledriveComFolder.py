@@ -2,7 +2,7 @@
 
 from ..internal.misc import json
 
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..internal.Crypter import Crypter
 
 

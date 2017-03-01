@@ -3,7 +3,7 @@
 from ..internal.misc import json
 import time
 
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..internal.MultiAccount import MultiAccount
 
 

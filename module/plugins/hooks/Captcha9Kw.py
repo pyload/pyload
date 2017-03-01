@@ -6,7 +6,7 @@ import base64
 import re
 import time
 
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..internal.Addon import Addon
 from ..internal.misc import threaded
 

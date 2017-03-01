@@ -3,7 +3,7 @@
 from ..internal.misc import json
 
 import pycurl
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Crypter import Crypter
 

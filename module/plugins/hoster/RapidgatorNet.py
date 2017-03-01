@@ -4,7 +4,7 @@ from ..internal.misc import json
 import re
 
 import pycurl
-from ..network.HTTPRequest import BadHeader
+from module.network.HTTPRequest import BadHeader
 from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia

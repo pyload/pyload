@@ -6,7 +6,7 @@ import inspect
 import os
 
 import pycurl
-from ..network.RequestFactory import getRequest as get_request
+from module.network.RequestFactory import getRequest as get_request
 from .misc import (DB, Config, decode, encode, exists,
                                           fixurl, format_exc, fsjoin,
                                           html_unescape, parse_html_header,

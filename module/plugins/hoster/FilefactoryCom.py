@@ -2,7 +2,7 @@
 
 import re
 
-from ..network.RequestFactory import getURL as get_url
+from module.network.RequestFactory import getURL as get_url
 from ..internal.Base import parse_fileInfo
 from ..internal.SimpleHoster import SimpleHoster
 

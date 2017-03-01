@@ -8,8 +8,8 @@ import re
 import time
 
 import pycurl
-from ..network.HTTPRequest import BadHeader
-from ..network.RequestFactory import getRequest as get_request
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getRequest as get_request
 from ..internal.Addon import Addon
 from ..internal.misc import threaded
 
