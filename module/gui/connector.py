@@ -104,17 +104,12 @@ class Connector(QObject):
         if gaierror:
             if firstAttempt:
                 return False
-            err = _("Invalid host name or address!")
-            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            self.emit(SIGNAL("msgBoxError"), err)
+            self.messageBox_01(self.host, self.port)
             return False
         if timeout:
             if firstAttempt:
                 return False
-            err = _("No response from host, wait longer?")
-            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            msgb = MessageBox(None, err, "W", "YES_NO")
-            if not msgb.exec_():
+            if not self.messageBox_02(self.host, self.port):
                 return False
         # login
         while True:
@@ -125,31 +120,27 @@ class Connector(QObject):
             except WrongLogin:
                 errlogin = True
             except NoSSL:
-                err = _("No SSL support!")
+                err = "nossl"
             except NoConnection:
-                err = _("Can't connect to host!")
+                err = "noconn"
             
             if not errlogin:
                 break
             
             # user and password popup
-            pwboxtxt = _("Please enter correct login credentials for")
-            pwboxtxt += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            self.pwBox.textLabel.setText(pwboxtxt)
-            self.pwBox.userLE.setText(self.user)
-            self.pwBox.passwordLE.setText(self.password)
-            self.pwBox.okBtn.setFocus(Qt.OtherFocusReason)
-            if self.pwBox.exec_() == QDialog.Rejected:
+            if self.messageBox_03(self.host, self.port, self.user, self.password) == QDialog.Rejected:
                 return False
             self.user = str(self.pwBox.userLE.text())
             self.password = str(self.pwBox.passwordLE.text())
             sleep(1) # some delay to let the dialog fade out
         
-        if err:
+        if err is not None:
             if firstAttempt:
                 return False
-            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            self.emit(SIGNAL("msgBoxError"), err)
+            if err == "nossl":
+                self.messageBox_04(self.host, self.port)
+            elif err == "noconn":
+                self.messageBox_05(self.host, self.port)
             return False
         
         self.ssl = client.isSSLConnection() # remember if we are connected with SSL
@@ -162,9 +153,7 @@ class Connector(QObject):
         if not server_version == SERVER_VERSION:
             if firstAttempt:
                 return False
-            err = (_("Host server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
-            err += "\n" + _("Host") + ": " + self.host + ":" + str(self.port)
-            self.emit(SIGNAL("msgBoxError"), err)
+            self.messageBox_06(server_version, self.host, self.port)
             return False
         
         return True
@@ -185,6 +174,41 @@ class Connector(QObject):
             return
         self.proxy.server.close()
         self.proxy = self.Dummy()
+    
+    def messageBox_01(self, host, port):
+        err = _("Invalid host name or address!")
+        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        self.emit(SIGNAL("msgBoxError"), err)
+    
+    def messageBox_02(self, host, port):
+        err = _("No response from host, wait longer?")
+        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        msgb = MessageBox(None, err, "W", "YES_NO")
+        return msgb.exec_()
+    
+    def messageBox_03(self, host, port, user, password):
+        pwboxtxt = _("Please enter correct login credentials for")
+        pwboxtxt += "\n" + _("Host") + ": " + host + ":" + str(port)
+        self.pwBox.textLabel.setText(pwboxtxt)
+        self.pwBox.userLE.setText(user)
+        self.pwBox.passwordLE.setText(password)
+        self.pwBox.okBtn.setFocus(Qt.OtherFocusReason)
+        return self.pwBox.exec_()
+    
+    def messageBox_04(self, host, port):
+        err = _("No SSL support!")
+        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        self.emit(SIGNAL("msgBoxError"), err)
+    
+    def messageBox_05(self, host, port):
+        err = _("Can't connect to host!")
+        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        self.emit(SIGNAL("msgBoxError"), err)
+    
+    def messageBox_06(self, server_version, host, port):
+        err = (_("Host server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
+        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        self.emit(SIGNAL("msgBoxError"), err)
     
     def __getattr__(self, attr):
         """

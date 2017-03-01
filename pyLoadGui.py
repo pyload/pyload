@@ -322,7 +322,7 @@ class main(QObject):
     def getClickNLoadPortFromCoreSettings(self):
         port = -1
         if not self.corePermissions["SETTINGS"]:
-            self.slotMsgBoxError(_("Failed to start ClickNLoad port forwarding.\nInsufficient server permissions for 'Get Remote Port from Server Settings'."))
+            self.messageBox_07()
             return port
         pcfg = self.connector.proxy.getPluginConfig()
         for k, section in pcfg.iteritems():
@@ -333,6 +333,9 @@ class main(QObject):
                         break
                 break
         return port
+
+    def messageBox_07(self):
+        self.slotMsgBoxError(_("Failed to start ClickNLoad port forwarding.\nInsufficient server permissions for 'Get Remote Port from Server Settings'."))
 
     def startMain(self):
         """
@@ -390,11 +393,14 @@ class main(QObject):
         self.saveOptionsAndWindowToConfig()
         self.connector.disconnectProxy()
         if self.connectionLost:
-            msg = _("Lost connection to the server!")
-            self.log.error(msg)
-            self.msgBoxOk(msg, "C")
+            self.log.error("main.stopMain_continue: Lost connection to the server")
+            self.messageBox_08()
         self.deleteTrayIcon()
         self.init()
+
+    def messageBox_08(self):
+        msg = _("Lost connection to the server!")
+        self.msgBoxOk(msg, "C")
 
     def allowUserActions(self, enabled):
         """
@@ -433,15 +439,7 @@ class main(QObject):
                 perms["admin"] = (userdata.role == ROLE.ADMIN)
             else:
                 if warn:
-                    text = _(
-                    "Could not get information about our permissions for this remote login!\n\n"
-                    "This happens when the server is running on the localhost\n"
-                    "with 'No authentication on local connections' enabled\n"
-                    "and you try to login with invalid username/password.\n\n"
-                    "Let us assume we have administrator permissions,\n"
-                    "since we were allowed to login."
-                    )
-                    self.msgBoxOk(text, "W")
+                    self.messageBox_09()
                 perms["admin"] = True
         else:
             perms["admin"] = True
@@ -465,6 +463,17 @@ class main(QObject):
         self.log.debug9("    SETTINGS %s" % perms["SETTINGS"])
         self.log.debug9("    STATUS   %s" % perms["STATUS"])
         return perms
+
+    def messageBox_09(self):
+        text = _(
+        "Could not get information about our permissions for this remote login!\n\n"
+        "This happens when the server is running on the localhost\n"
+        "with 'No authentication on local connections' enabled\n"
+        "and you try to login with invalid username/password.\n\n"
+        "Let us assume we have administrator permissions,\n"
+        "since we were allowed to login."
+        )
+        self.msgBoxOk(text, "W")
 
     def setCorePermissions(self):
         self.mainWindow.setCorePermissions(self.corePermissions)
@@ -765,11 +774,14 @@ class main(QObject):
             self.disconnect(self.mainWindow, SIGNAL("maximizeDone"), self.slotMaximizeWaitDone)
             self.maxiWait["timer"].stop()
             self.maxiWait["timer"].disconnect(self.maxiWait["timer"], SIGNAL("timeout()"), self.slotMaximizeWaitTimer)
-            text  = _("Timeout detecting main window maximize state") + ".\n\n"
-            text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
-            text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
-            self.msgBoxOk(text, "C")
+            self.messageBox_10()
             self.maxiWait["contFunc"]()
+
+    def messageBox_10(self):
+        text  = _("Timeout detecting main window maximize state") + ".\n\n"
+        text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
+        text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
+        self.msgBoxOk(text, "C")
 
     def slotMaximizeWaitDone(self):
         self.maxiWait["timer"].stop()
@@ -811,11 +823,14 @@ class main(QObject):
             self.disconnect(self.mainWindow, SIGNAL("unmaximizeDone"), self.slotUnmaximizeWaitDone)
             self.unmaxiWait["timer"].stop()
             self.unmaxiWait["timer"].disconnect(self.unmaxiWait["timer"], SIGNAL("timeout()"), self.slotUnmaximizeWaitTimer)
-            text  = _("Timeout detecting main window unmaximize state") + ".\n\n"
-            text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
-            text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
-            self.msgBoxOk(text, "C")
+            self.messageBox_11()
             self.unmaxiWait["contFunc"]()
+
+    def messageBox_11(self):
+        text  = _("Timeout detecting main window unmaximize state") + ".\n\n"
+        text += _("The option") + " '" + self.mainWindow.otherOptions.cbUnmaximze.text() + "' " + _("failed") + ". "
+        text += _("If this happens again, you may turn it off from the") + " '" + _("Options") + " -> " + _("Other") + "' " + _("menu") + "."
+        self.msgBoxOk(text, "C")
 
     def slotUnmaximizeWaitDone(self):
         self.unmaxiWait["timer"].stop()
@@ -899,11 +914,14 @@ class main(QObject):
         """
         if not self.corePermissions["admin"]:
             return
-        text = _("Do you really want to quit the pyLoad server?")
-        if self.msgBoxYesNo(text, "I"):
+        if self.messageBox_12():
             self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
             self.connector.proxy.kill()
             self.slotShowConnector()
+
+    def messageBox_12(self):
+        text = _("Do you really want to quit the pyLoad server?")
+        return self.msgBoxYesNo(text, "I")
 
     def slotRestartCore(self):
         """
@@ -912,11 +930,14 @@ class main(QObject):
         """
         if not self.corePermissions["admin"]:
             return
-        text = _("Do you really want to restart the pyLoad server?")
-        if self.msgBoxYesNo(text, "I"):
+        if self.messageBox_13():
             self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
             self.connector.proxy.restart()
             self.slotShowConnector()
+
+    def messageBox_13(self):
+        text = _("Do you really want to restart the pyLoad server?")
+        return self.msgBoxYesNo(text, "I")
 
     def slotReloadQueue(self):
         """
@@ -1354,24 +1375,24 @@ class main(QObject):
                 try:
                     self.core = Core_()
                 except:
-                    return self.errorInternalCoreStartup(_("Internal server init failed!"))
+                    return self.errorInternalCoreStartup(self.messageBox_14)
                 self.core.startedInGui = True
                 if os.path.isfile(self.core.pidfile):
                     f = open(self.core.pidfile, "rb")
                     pid = f.read().strip()
                     f.close()
-                    return self.errorInternalCoreStartup(_("pyLoad server already running with pid %d!") % int(pid))
+                    return self.errorInternalCoreStartup(self.messageBox_15, pid)
                 try:
                     thread.start_new_thread(self.core.start, (False, False))
                 except:
-                    return self.errorInternalCoreStartup(_("Failed to start internal server thread!"))
+                    return self.errorInternalCoreStartup(self.messageBox_16)
                 # wait max 15sec for startup
                 for t in range(0, 150):
                     if self.core.running:
                         break
                     sleep(0.1)
                 if not self.core.running:
-                    return self.errorInternalCoreStartup(_("Failed to start internal server!"))
+                    return self.errorInternalCoreStartup(self.messageBox_17)
 
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
@@ -1383,10 +1404,29 @@ class main(QObject):
         
         self.startMain()
 
-    def errorInternalCoreStartup(self, text):
-        self.msgBoxOk(text, "C")
+    def errorInternalCoreStartup(self, mb, arg=None):
+        if arg is None:
+            mb()
+        else:
+            mb(arg)
         self.init()
         return
+
+    def messageBox_14(self):
+        text = _("Internal server init failed!")
+        self.msgBoxOk(text, "C")
+
+    def messageBox_15(self, pid):
+        text = _("pyLoad server already running with pid %d!") % int(pid)
+        self.msgBoxOk(text, "C")
+
+    def messageBox_16(self):
+        text = _("Failed to start internal server thread!")
+        self.msgBoxOk(text, "C")
+
+    def messageBox_17(self):
+        text = _("Failed to start internal server!")
+        self.msgBoxOk(text, "C")
 
     def refreshConnections(self, name=None):
         """
@@ -1980,9 +2020,12 @@ class main(QObject):
             try:
                 self.connector.proxy.setPackageData(pid, data)
             except PackageDoesNotExists:
-                text  = _("The package to edit does not exist anymore!")
-                text += "\n\n" + _("Package") + " " + _("ID") + ": %d" % pid
-                self.msgBoxOk(text, "W")
+                self.messageBox_18(pid)
+
+    def messageBox_18(self, pid):
+        text  = _("The package to edit does not exist anymore!")
+        text += "\n\n" + _("Package") + " " + _("ID") + ": %d" % int(pid)
+        self.msgBoxOk(text, "W")
 
     def pullEvents(self):
         """
@@ -3223,7 +3266,8 @@ class ClickNLoadForwarder(QObject):
         self.doStop  = False
         self.running = False
         self.error   = False
-        self.connect(self, SIGNAL("mBoxErr"), self.mBoxErr)
+        self.connect(self, SIGNAL("messageBox_19"), self.messageBox_19)
+        self.connect(self, SIGNAL("messageBox_20"), self.messageBox_20)
 
     def start(self, localIp, localPort, extIp, extPort):
         if self.running:
@@ -3249,7 +3293,7 @@ class ClickNLoadForwarder(QObject):
             sleep(0.1)
         if self.running:
             self.log.error("ClickNLoadForwarder.stop: Failed to stop port forwarding.")
-            self.emit(SIGNAL("mBoxErr"), _("Failed to stop ClickNLoad port forwarding."))
+            self.emit(SIGNAL("messageBox_19"))
         else:
             self.log.info("ClickNLoadForwarder: Port forwarder stopped.")
 
@@ -3333,7 +3377,7 @@ class ClickNLoadForwarder(QObject):
         self.error = True
         self.running = False
         self.log.error("ClickNLoadForwarder.exitOnForwardError: Port forwarding stopped.")
-        self.emit(SIGNAL("mBoxErr"), _("ClickNLoad port forwarding stopped."))
+        self.emit(SIGNAL("messageBox_20"))
         thread.exit()
 
     def onRaise(self):
@@ -3341,7 +3385,7 @@ class ClickNLoadForwarder(QObject):
         self.error = True
         self.running = False
         self.log.error("ClickNLoadForwarder.onRaise: Port forwarding stopped.")
-        self.emit(SIGNAL("mBoxErr"), _("ClickNLoad port forwarding stopped."))
+        self.emit(SIGNAL("messageBox_20"))
 
     def closeSockets(self):
         try:    self.server_socket.shutdown(socket.SHUT_RD)
@@ -3363,9 +3407,11 @@ class ClickNLoadForwarder(QObject):
         try:    self.dock_socket.close()
         except: pass
 
-    def mBoxErr(self, text):
-        self.emit(SIGNAL("msgBoxError"), text)
-        return
+    def messageBox_19(self):
+        self.emit(SIGNAL("msgBoxError"), _("Failed to stop ClickNLoad port forwarding."))
+
+    def messageBox_20(self):
+        self.emit(SIGNAL("msgBoxError"), _("ClickNLoad port forwarding stopped."))
 
 class LanguageOptions(QDialog):
     """
