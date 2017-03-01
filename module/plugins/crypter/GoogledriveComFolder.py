@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 
-import json
+from module.plugins.internal.misc import json
 
 from module.network.HTTPRequest import BadHeader
 from module.plugins.internal.Crypter import Crypter

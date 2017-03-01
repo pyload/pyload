@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+from module.plugins.internal.misc import json
 import urlparse
 
 from module.plugins.internal.Account import Account

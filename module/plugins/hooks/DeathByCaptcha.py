@@ -3,7 +3,7 @@
 from __future__ import with_statement
 
 import base64
-import json
+from module.plugins.internal.misc import json
 import re
 import time
 

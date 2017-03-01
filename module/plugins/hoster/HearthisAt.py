@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+from module.plugins.internal.misc import json
 import re
 
 from module.plugins.internal.Hoster import Hoster

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+from module.plugins.internal.misc import json
 
 from module.plugins.internal.Account import Account
 from module.plugins.internal.misc import set_cookie

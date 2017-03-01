@@ -3,7 +3,7 @@
 # Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
-import json
+from module.plugins.internal.misc import json
 import re
 
 from module.plugins.captcha.ReCaptcha import ReCaptcha

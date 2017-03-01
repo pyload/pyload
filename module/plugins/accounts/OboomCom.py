@@ -18,7 +18,7 @@ except ImportError:
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-import json
+from module.plugins.internal.misc import json
 
 from module.plugins.internal.Account import Account
 

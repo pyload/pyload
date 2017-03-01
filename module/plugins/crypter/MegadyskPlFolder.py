@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import json
+from module.plugins.internal.misc import json
 import re
 import urllib
 
