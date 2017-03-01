@@ -47,6 +47,7 @@ class MainWindow(QMainWindow):
         self.log = logging.getLogger("guilog")
         self.corePermissions = corePermissions
         self.connector = connector
+        self.numOfOpenModalDialogs = 0
         
         #window stuff
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
@@ -1104,7 +1105,9 @@ class MainWindow(QMainWindow):
         
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
         self.tabw.setCurrentIndex(3)
+        self.numOfOpenModalDialogs += 1
         self.accountEdit.exec_()
+        self.numOfOpenModalDialogs -= 1
 
     def slotEditAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
@@ -1132,7 +1135,9 @@ class MainWindow(QMainWindow):
             self.connector.proxy.updateAccount(n1, n2, n3, None)
         
         self.accountEdit.connect(self.accountEdit, SIGNAL("done"), save)
+        self.numOfOpenModalDialogs += 1
         self.accountEdit.exec_()
+        self.numOfOpenModalDialogs -= 1
     
     def slotRemoveAccount(self):
         if not self.corePermissions["ACCOUNTS"]:
@@ -1200,7 +1205,10 @@ class MainWindow(QMainWindow):
             popup the notification options dialog
         """
         self.notificationOptions.dict2checkBoxStates()
-        if self.notificationOptions.exec_() == QDialog.Accepted:
+        self.numOfOpenModalDialogs += 1
+        retval = self.notificationOptions.exec_()
+        self.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.notificationOptions.checkBoxStates2dict()
     
     def slotShowTrayOptions(self):
@@ -1208,7 +1216,10 @@ class MainWindow(QMainWindow):
             popup the tray options dialog
         """
         self.trayOptions.dict2checkBoxStates()
-        if self.trayOptions.exec_() == QDialog.Accepted:
+        self.numOfOpenModalDialogs += 1
+        retval = self.trayOptions.exec_()
+        self.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.trayOptions.checkBoxStates2dict()
             if self.trayOptions.settings["EnableTray"]:
                 self.emit(SIGNAL("showTrayIcon"))
@@ -1220,7 +1231,10 @@ class MainWindow(QMainWindow):
             popup the other options dialog
         """
         self.otherOptions.dict2checkBoxStates()
-        if self.otherOptions.exec_() == QDialog.Accepted:
+        self.numOfOpenModalDialogs += 1
+        retval = self.otherOptions.exec_()
+        self.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.otherOptions.checkBoxStates2dict()
     
     def slotShowLanguageOptions(self):

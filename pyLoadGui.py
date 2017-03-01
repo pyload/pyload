@@ -669,11 +669,26 @@ class main(QObject):
         """
             emitted from main window in changeEvent()
         """
-        if not self.mainWindow.trayOptions.settings["EnableTray"] or self.trayState["hiddenInTray"] or self.trayState["ignoreMinimizeToggled"]:
+        if self.tray is None:
+            return
+        if not self.mainWindow.trayOptions.settings["EnableTray"]:
+            return
+        if self.trayState["hiddenInTray"]:
+            return
+        if self.trayState["ignoreMinimizeToggled"]:
+            return
+        # sanity check
+        if self.mainWindow.numOfOpenModalDialogs < 0:
+            self.log.error("main.slotMinimizeToggled: numOfOpenModalDialogs < 0")
             return
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
-            if self.mainWindow.trayOptions.settings["Minimize2Tray"]:
+            if self.mainWindow.numOfOpenModalDialogs > 0:
+                if self.mainWindow.isMaximized():
+                    QTimer.singleShot(100, self.mainWindow.showMaximized)
+                else:
+                    QTimer.singleShot(100, self.mainWindow.showNormal)
+            elif self.mainWindow.trayOptions.settings["Minimize2Tray"]:
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
         else:           # minimized flag was unset
             pass
@@ -853,7 +868,9 @@ class main(QObject):
             show the about-box
         """
         ab = AboutBox(self.mainWindow)
+        self.mainWindow.numOfOpenModalDialogs += 1
         ab.exec_(CURRENT_VERSION, CURRENT_INTERNAL_VERSION)
+        self.mainWindow.numOfOpenModalDialogs -= 1
 
     def slotShowConnector(self):
         """
@@ -871,7 +888,9 @@ class main(QObject):
         """
         perms = self.getCorePermissions(False)
         info = InfoCorePermissions(self.mainWindow, perms, self.corePermissions)
+        self.mainWindow.numOfOpenModalDialogs += 1
         info.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
 
     def slotQuitCore(self):
         """
@@ -926,7 +945,10 @@ class main(QObject):
             else:
                 self.mainWindow.showNormal()
         msgb = MessageBox(self.mainWindow, text, icon, btnSet)
-        return msgb.exec_()
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = msgb.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        return retval 
 
     def msgBoxOk(self, text, icon):
         self.msgBox(text, icon, "OK")
@@ -1916,7 +1938,10 @@ class main(QObject):
             self.packageEdit.folder.setText(folder)
             self.packageEdit.folder.home(True)
             self.packageEdit.password.setPlainText(password)
-            if self.packageEdit.exec_() == self.packageEdit.CANCELALL:
+            self.mainWindow.numOfOpenModalDialogs += 1
+            retval = self.packageEdit.exec_() 
+            self.mainWindow.numOfOpenModalDialogs -= 1
+            if retval == self.packageEdit.CANCELALL:
                 break
 
     def slotEditPackageSave(self):
@@ -2122,7 +2147,10 @@ class main(QObject):
         """
         self.loggingOptions.dict2dialogState()
         oldsettings = self.loggingOptions.settings.copy()
-        if self.loggingOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.loggingOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             QMutexLocker(self.guiLogMutex)
             self.loggingOptions.dialogState2dict()
             if self.loggingOptions.settings != oldsettings:
@@ -2144,7 +2172,10 @@ class main(QObject):
         """
         self.clickNLoadForwarderOptions.settings["enabled"] = self.clickNLoadForwarder.running
         self.clickNLoadForwarderOptions.dict2dialogState(self.clickNLoadForwarder.error)
-        if self.clickNLoadForwarderOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.clickNLoadForwarderOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.clickNLoadForwarderOptions.dialogState2dict()
             settings = self.clickNLoadForwarderOptions.settings
             if self.clickNLoadForwarder.running:
@@ -2164,7 +2195,10 @@ class main(QObject):
             popup the automatic reloading options dialog
         """
         self.automaticReloadingOptions.dict2dialogState()
-        if self.automaticReloadingOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.automaticReloadingOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.automaticReloadingOptions.dialogState2dict()
 
     def slotShowCaptchaOptions(self):
@@ -2172,7 +2206,10 @@ class main(QObject):
             popup the captcha options dialog
         """
         self.captchaOptions.dict2dialogState()
-        if self.captchaOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.captchaOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.captchaOptions.dialogState2dict()
             if not self.captchaOptions.settings["Enabled"]:
                 self.mainWindow.captchaDialog.emit(SIGNAL("setFree"))
@@ -2185,7 +2222,10 @@ class main(QObject):
         """
         self.fontOptions.dict2dialogState()
         oldsettings = copy.deepcopy(self.fontOptions.settings)
-        if self.fontOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.fontOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.fontOptions.dialogState2dict()
             if self.fontOptions.settings != oldsettings:
                 self.fontOptions.applySettings()
@@ -2222,7 +2262,10 @@ class main(QObject):
         self.languageOptions.settings["languageList"] = getLanguageList()
         self.languageOptions.settings["language"] = self.lang
         self.languageOptions.dict2dialogState()
-        if self.languageOptions.exec_() == QDialog.Accepted:
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.languageOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
             self.languageOptions.dialogState2dict()
             if self.languageOptions.settings["language"] != self.lang:
                 self.lang = self.languageOptions.settings["language"]
