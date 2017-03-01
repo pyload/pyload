@@ -31,7 +31,7 @@ class RedtubeCom(Hoster):
             self.error(_("sources pattern not found"))
 
         sources = json.loads(m.group(1))
-        quality = str(max([int(q) for q in sources.keys()]))
+        quality = str(max(int(q) for q in sources.keys()))
 
         link = sources[quality]
 

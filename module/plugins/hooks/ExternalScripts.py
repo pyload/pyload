@@ -113,7 +113,7 @@ class ExternalScripts(Addon):
         call = map(encode, [command] + list(args))
 
         self.log_debug(
-            "EXECUTE " + " ".join(['"' + _arg + '"' if ' ' in _arg else _arg for _arg in call]))
+            "EXECUTE " + " ".join('"' + _arg + '"' if ' ' in _arg else _arg for _arg in call))
 
         p = subprocess.Popen(call, bufsize=-1)  # @NOTE: output goes to pyload
 

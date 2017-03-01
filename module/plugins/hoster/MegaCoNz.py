@@ -186,8 +186,7 @@ class MegaCrypto(object):
             """
             Return the **printable** CBC-MAC of the message that has been authenticated so far.
             """
-            return "".join(["%02x" % ord(x)
-                            for x in MegaCrypto.a32_to_str(self.digest())])
+            return "".join("%02x" % ord(x) for x in MegaCrypto.a32_to_str(self.digest()))
 
         @staticmethod
         def new(key):

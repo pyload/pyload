@@ -31,7 +31,7 @@ class PornhubCom(Hoster):
 
         urls = dict(m)
 
-        quality = str(max([int(q) for q in urls.keys()]))
+        quality = str(max(int(q) for q in urls.keys()))
 
         m = re.search(self.NAME_PATTERN, html)
         if m is None:

@@ -468,8 +468,8 @@ class JSInterpreter(object):
             if arg_str == '':
                 argvals = tuple()
             else:
-                argvals = tuple([self.interpret_expression(
-                    v, local_vars, allow_recursion) for v in arg_str.split(',')])
+                argvals = tuple(self.interpret_expression(
+                    v, local_vars, allow_recursion) for v in arg_str.split(','))
 
             if member == 'split':
                 assert argvals == ('',)
@@ -533,8 +533,8 @@ class JSInterpreter(object):
             self._VARNAME_PATTERN, expr)
         if m is not None:
             fname = m.group('func')
-            argvals = tuple([int(v) if v.isdigit() else local_vars[v]
-                             for v in m.group('args').split(',')])
+            argvals = tuple(int(v) if v.isdigit() else local_vars[v]
+                            for v in m.group('args').split(','))
             if fname not in self._functions:
                 self._functions[fname] = self.extract_function(fname)
             return self._functions[fname](argvals)

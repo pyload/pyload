@@ -54,9 +54,9 @@ class RockfileEu(SimpleHoster):
             if not inputs:
                 self.error("Form F1 not found")
 
-            captcha_code = "".join([chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
-                                    sorted(re.findall(r'<span style=[\'"]color:#5d5d5d; text-shadow: 1px 1px #f2f2f2;.+?padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data),
-                                           key=lambda _i:int(_i[0]))])
+            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
+                                   sorted(re.findall(r'<span style=[\'"]color:#5d5d5d; text-shadow: 1px 1px #f2f2f2;.+?padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data),
+                                          key=lambda _i:int(_i[0])))
 
             if not captcha_code:
                 self.error("Captcha not found")
