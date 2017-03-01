@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Addon import Addon
+from ..internal.Addon import Addon
 
 
 class LinkdecrypterComHook(Addon):

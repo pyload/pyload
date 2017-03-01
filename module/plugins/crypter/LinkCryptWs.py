@@ -5,8 +5,8 @@ import re
 
 import Crypto.Cipher.AES
 import pycurl
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import html_unescape, set_cookie
+from ..internal.Crypter import Crypter
+from ..internal.misc import html_unescape, set_cookie
 
 
 class LinkCryptWs(Crypter):

@@ -7,8 +7,8 @@ import os
 import re
 import zlib
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, fsjoin
+from ..internal.Addon import Addon
+from ..internal.misc import encode, fsjoin
 
 
 def compute_checksum(local_file, algorithm):

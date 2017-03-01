@@ -6,7 +6,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class DevhostStFolder(SimpleCrypter):

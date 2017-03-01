@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Crypter import Crypter
+from ..network.HTTPRequest import BadHeader
+from ..internal.Crypter import Crypter
 
 
 class GoogledriveComFolder(Crypter):

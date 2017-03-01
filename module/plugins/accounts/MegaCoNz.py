@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import Crypto.PublicKey.RSA
-from module.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
-from module.plugins.internal.Account import Account
+from ..hoster.MegaCoNz import MegaClient, MegaCrypto
+from ..internal.Account import Account
 
 
 class MegaCoNz(Account):

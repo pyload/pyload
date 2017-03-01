@@ -4,7 +4,7 @@ import base64
 import re
 import time
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):

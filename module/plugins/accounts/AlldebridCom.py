@@ -3,7 +3,7 @@
 import time
 import xml.dom.minidom as dom
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 
 class AlldebridCom(MultiAccount):

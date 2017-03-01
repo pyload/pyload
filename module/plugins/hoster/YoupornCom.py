@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class YoupornCom(Hoster):

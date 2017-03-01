@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Notifier import Notifier
+from ..internal.Notifier import Notifier
 
 
 class AndroidPhoneNotify(Notifier):

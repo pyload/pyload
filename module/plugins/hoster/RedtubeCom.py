@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import os
 import re
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class RedtubeCom(Hoster):

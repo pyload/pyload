@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Captcha import Captcha
+from .Captcha import Captcha
 
 
 class CaptchaService(Captcha):

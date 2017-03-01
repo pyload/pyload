@@ -2,8 +2,8 @@
 
 import re
 
-from module.common.JsEngine import JsEngine
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..common.JsEngine import JsEngine
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class SmuleCom(SimpleHoster):

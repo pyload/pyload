@@ -2,9 +2,9 @@
 
 import re
 
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import seconds_to_midnight
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Hoster import Hoster
+from ..internal.misc import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):

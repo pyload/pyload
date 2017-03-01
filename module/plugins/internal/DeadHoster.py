@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Hoster import Hoster
+from .Hoster import Hoster
 
 
 class DeadHoster(Hoster):

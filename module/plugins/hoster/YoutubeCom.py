@@ -8,12 +8,12 @@ import time
 import urllib
 from functools import reduce
 
-from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import (html_unescape, json,
+from ..network.CookieJar import CookieJar
+from ..network.HTTPRequest import HTTPRequest
+from ..internal.Hoster import Hoster
+from ..internal.misc import (html_unescape, json,
                                           replace_patterns, which)
-from module.plugins.Plugin import Abort
+from ..Plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

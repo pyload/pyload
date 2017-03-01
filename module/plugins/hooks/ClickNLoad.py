@@ -4,8 +4,8 @@ import socket
 import threading
 import time
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import forward, lock, threaded
+from ..internal.Addon import Addon
+from ..internal.misc import forward, lock, threaded
 
 try:
     import ssl

@@ -5,8 +5,8 @@ from __future__ import with_statement
 import os
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import encode, exists
+from .Crypter import Crypter
+from .misc import encode, exists
 
 
 class Container(Crypter):

@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class FiledropperCom(SimpleHoster):

@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.CaptchaService import CaptchaService
-from module.plugins.internal.Plugin import Fail
+from ..internal.CaptchaService import CaptchaService
+from ..internal.Plugin import Fail
 
 
 class SolveMedia(CaptchaService):

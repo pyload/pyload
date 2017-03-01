@@ -12,7 +12,7 @@ import urllib
 
 import Image
 import ImageDraw
-from module.plugins.internal.OCR import OCR
+from ..internal.OCR import OCR
 
 
 class ImageSequence:

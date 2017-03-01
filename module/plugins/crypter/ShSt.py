@@ -2,7 +2,7 @@
 
 
 import pycurl
-from module.plugins.internal.Crypter import Crypter
+from ..internal.Crypter import Crypter
 
 
 class ShSt(Crypter):

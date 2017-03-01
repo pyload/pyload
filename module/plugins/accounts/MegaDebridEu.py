@@ -3,9 +3,9 @@
 from functools import reduce
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.misc import encode, json
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..network.HTTPRequest import BadHeader
+from ..internal.misc import encode, json
+from ..internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):

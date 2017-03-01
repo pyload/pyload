@@ -2,8 +2,8 @@
 
 import datetime
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import seconds_to_nexthour
+from ..internal.Addon import Addon
+from ..internal.misc import seconds_to_nexthour
 
 
 class LogMarker(Addon):

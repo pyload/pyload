@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.accounts.ZeveraCom import ZeveraCom
+from .ZeveraCom import ZeveraCom
 
 
 class MultihostersCom(ZeveraCom):

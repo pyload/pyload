@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Hoster import Hoster
-from module.PyFile import statusMap
+from ..network.RequestFactory import getURL as get_url
+from ..internal.Hoster import Hoster
+from ..PyFile import statusMap
 
 
 def get_info(urls):

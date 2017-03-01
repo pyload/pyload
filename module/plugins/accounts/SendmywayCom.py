@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class SendmywayCom(XFSAccount):

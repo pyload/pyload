@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import parse_size, seconds_to_midnight
+from ..network.RequestFactory import getURL as get_url
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Hoster import Hoster
+from ..internal.misc import parse_size, seconds_to_midnight
 
 
 class FileserveCom(Hoster):

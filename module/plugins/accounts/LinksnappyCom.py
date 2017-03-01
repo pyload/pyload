@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 
 class LinksnappyCom(MultiAccount):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import set_cookie
+from ..internal.Account import Account
+from ..internal.misc import set_cookie
 
 
 class ShareonlineBiz(Account):

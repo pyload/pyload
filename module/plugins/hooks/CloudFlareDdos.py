@@ -4,10 +4,10 @@ import inspect
 import re
 import urlparse
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import parse_html_header
+from ..network.HTTPRequest import BadHeader
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Addon import Addon
+from ..internal.misc import parse_html_header
 
 
 def plugin_id(plugin):

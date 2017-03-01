@@ -8,9 +8,9 @@ import urllib
 
 import Crypto.Cipher.ARC4
 import pycurl
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import timestamp
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import timestamp
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class TurbobitNet(SimpleHoster):

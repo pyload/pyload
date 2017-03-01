@@ -5,10 +5,10 @@ from __future__ import with_statement
 import os
 import sys
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.Extractor import (ArchiveError, CRCError,
+from ..internal.Addon import Addon
+from ..internal.Extractor import (ArchiveError, CRCError,
                                                PasswordError)
-from module.plugins.internal.misc import (Expose, encode, exists, fsjoin,
+from ..internal.misc import (Expose, encode, exists, fsjoin,
                                           threaded, uniqify)
 
 # monkey patch bug in python 2.6 and lower

@@ -4,8 +4,8 @@ import re
 import urlparse
 
 import pycurl
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import parse_name
+from ..internal.Hoster import Hoster
+from ..internal.misc import parse_name
 
 
 class Ftp(Hoster):

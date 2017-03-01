@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 class RapideoPl(MultiHoster):

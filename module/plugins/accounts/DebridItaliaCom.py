@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 
 class DebridItaliaCom(MultiAccount):

@@ -5,9 +5,9 @@ import re
 import string
 import subprocess
 
-from module.plugins.internal.Extractor import (ArchiveError, CRCError,
+from .Extractor import (ArchiveError, CRCError,
                                                Extractor, PasswordError)
-from module.plugins.internal.misc import decode, encode, fsjoin, renice
+from .misc import decode, encode, fsjoin, renice
 
 
 class UnRar(Extractor):

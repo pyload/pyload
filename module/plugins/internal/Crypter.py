@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Base import Base
-from module.plugins.internal.misc import parse_name, safename
+from .Base import Base
+from .misc import parse_name, safename
 
 
 class Crypter(Base):

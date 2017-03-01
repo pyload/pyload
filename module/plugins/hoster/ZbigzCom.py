@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import random
 import re
 import time
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class ZbigzCom(Hoster):

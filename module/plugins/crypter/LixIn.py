@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
+from ..internal.Crypter import Crypter
 
 
 class LixIn(Crypter):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.FileserveCom import FileserveCom
+from .FileserveCom import FileserveCom
 
 
 class FilejungleCom(FileserveCom):

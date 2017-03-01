@@ -6,9 +6,9 @@ import base64
 import re
 import time
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
+from ..network.HTTPRequest import BadHeader
+from ..internal.Addon import Addon
+from ..internal.misc import threaded
 
 
 class Captcha9Kw(Addon):

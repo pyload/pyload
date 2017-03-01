@@ -2,10 +2,10 @@
 
 import datetime
 import hashlib
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import time
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 
 class NoPremiumPl(MultiAccount):

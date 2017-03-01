@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
-from module.plugins.captcha.AdsCaptcha import AdsCaptcha
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.misc import seconds_to_midnight
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.HTTPRequest import BadHeader
+from ..captcha.AdsCaptcha import AdsCaptcha
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.misc import seconds_to_midnight
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class RapidgatorNet(SimpleHoster):

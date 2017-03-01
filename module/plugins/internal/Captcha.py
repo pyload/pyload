@@ -5,7 +5,7 @@ from __future__ import with_statement
 import os
 import time
 
-from module.plugins.internal.Plugin import Plugin
+from .Plugin import Plugin
 
 
 class Captcha(Plugin):

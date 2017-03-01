@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.OCR import OCR
+from ..internal.OCR import OCR
 
 
 class NetloadIn(OCR):

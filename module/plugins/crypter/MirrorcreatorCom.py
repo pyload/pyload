@@ -3,8 +3,8 @@
 import os
 import re
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import replace_patterns
+from ..internal.Crypter import Crypter
+from ..internal.misc import replace_patterns
 
 
 class MirrorcreatorCom(Crypter):

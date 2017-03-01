@@ -8,9 +8,9 @@ import struct
 
 import Crypto.Cipher.AES
 import Crypto.Util.Counter
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import decode, encode, exists, fsjoin, json
+from ..network.HTTPRequest import BadHeader
+from ..internal.Hoster import Hoster
+from ..internal.misc import decode, encode, exists, fsjoin, json
 
 
 ############################ General errors ###################################

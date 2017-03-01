@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import time
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..network.HTTPRequest import BadHeader
+from ..internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):

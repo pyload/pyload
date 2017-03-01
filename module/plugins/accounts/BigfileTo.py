@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class BigfileTo(Account):

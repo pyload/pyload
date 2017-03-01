@@ -3,8 +3,8 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import decode, remove_chars, uniqify
+from .Account import Account
+from .misc import decode, remove_chars, uniqify
 
 
 class MultiAccount(Account):

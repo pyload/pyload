@@ -4,10 +4,10 @@ from __future__ import with_statement
 
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import (encode, parse_name, parse_size,
+from ..network.HTTPRequest import BadHeader
+from ..network.RequestFactory import getURL as get_url
+from .Hoster import Hoster
+from .misc import (encode, parse_name, parse_size,
                                           parse_time, replace_patterns)
 
 

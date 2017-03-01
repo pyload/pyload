@@ -5,8 +5,8 @@ from __future__ import with_statement
 import sys
 import tarfile
 
-from module.plugins.internal.Extractor import ArchiveError, CRCError, Extractor
-from module.plugins.internal.misc import encode
+from .Extractor import ArchiveError, CRCError, Extractor
+from .misc import encode
 
 
 class UnTar(Extractor):

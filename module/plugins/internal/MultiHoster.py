@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.Plugin import Fail
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from .Plugin import Fail
+from .SimpleHoster import SimpleHoster
 
 
 class MultiHoster(SimpleHoster):

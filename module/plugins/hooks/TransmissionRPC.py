@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import random
 import re
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon
+from ..network.HTTPRequest import BadHeader
+from ..network.RequestFactory import getRequest as get_request
+from ..internal.Addon import Addon
 
 
 class TransmissionRPC(Addon):

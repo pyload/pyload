@@ -8,9 +8,9 @@ import re
 import urlparse
 
 import Crypto.Cipher.AES
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.Crypter import Crypter
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.Crypter import Crypter
 
 
 class FilecryptCc(Crypter):

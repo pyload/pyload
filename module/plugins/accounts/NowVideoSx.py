@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class NowVideoSx(Account):

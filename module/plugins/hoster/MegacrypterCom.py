@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
+from .MegaCoNz import MegaCoNz, MegaCrypto
 
 
 class MegacrypterCom(MegaCoNz):

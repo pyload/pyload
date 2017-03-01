@@ -4,7 +4,7 @@ import re
 import time
 import urlparse
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class FilejungleCom(Account):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.Http import Http
+from .Http import Http
 
 
 class BasePlugin(Http):

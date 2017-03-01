@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
+from .Crypter import Crypter
 
 
 class DeadCrypter(Crypter):

@@ -4,8 +4,8 @@ import os
 import shutil
 import subprocess
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import (Expose, encode, exists, fsjoin,
+from ..internal.Addon import Addon
+from ..internal.misc import (Expose, encode, exists, fsjoin,
                                           threaded)
 
 try:

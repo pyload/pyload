@@ -4,11 +4,11 @@ import operator
 import random
 import re
 
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.misc import (html_unescape, parse_time,
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from .misc import (html_unescape, parse_time,
                                           seconds_to_midnight, set_cookie)
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from .SimpleHoster import SimpleHoster
 
 
 class XFSHoster(SimpleHoster):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 class ZeveraCom(MultiHoster):

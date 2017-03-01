@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import urlparse
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):

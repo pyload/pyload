@@ -2,8 +2,8 @@
 
 import threading
 
-from module.plugins.internal.misc import Periodical, isiterable
-from module.plugins.internal.Plugin import Plugin
+from .misc import Periodical, isiterable
+from .Plugin import Plugin
 
 
 class Addon(Plugin):

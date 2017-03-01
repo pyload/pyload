@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class EasybytezCom(XFSAccount):

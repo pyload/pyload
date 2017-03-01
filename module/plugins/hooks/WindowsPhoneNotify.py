@@ -2,7 +2,7 @@
 
 
 import httplib
-from module.plugins.internal.Notifier import Notifier
+from ..internal.Notifier import Notifier
 
 
 class WindowsPhoneNotify(Notifier):

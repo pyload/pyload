@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class MediafireCom(SimpleHoster):

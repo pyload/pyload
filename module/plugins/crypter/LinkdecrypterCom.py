@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.MultiCrypter import MultiCrypter
+from ..internal.MultiCrypter import MultiCrypter
 
 
 class LinkdecrypterCom(MultiCrypter):

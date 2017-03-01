@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import html_unescape
+from ..internal.Hoster import Hoster
+from ..internal.misc import html_unescape
 
 
 class MyvideoDe(Hoster):

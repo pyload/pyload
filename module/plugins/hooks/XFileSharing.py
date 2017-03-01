@@ -3,7 +3,7 @@
 import inspect
 import re
 
-from module.plugins.internal.Addon import Addon
+from ..internal.Addon import Addon
 
 
 class XFileSharing(Addon):

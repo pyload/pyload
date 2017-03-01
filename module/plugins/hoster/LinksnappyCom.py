@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 import urlparse
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 class LinksnappyCom(MultiHoster):

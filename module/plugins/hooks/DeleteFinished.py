@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.database import style
-from module.plugins.internal.Addon import Addon
+from ..database import style
+from ..internal.Addon import Addon
 
 
 class DeleteFinished(Addon):

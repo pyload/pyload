@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.Crypter import Crypter
+from ..internal.Crypter import Crypter
 
 
 class JDlist(Crypter):

@@ -2,8 +2,8 @@
 
 from __future__ import with_statement
 
-from module.plugins.internal.misc import encode
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.misc import encode
+from ..internal.MultiHoster import MultiHoster
 
 
 class PremiumTo(MultiHoster):

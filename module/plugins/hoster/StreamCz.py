@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import os
 import time
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def get_api_password(episode):

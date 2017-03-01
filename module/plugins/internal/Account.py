@@ -4,9 +4,9 @@ import random
 import threading
 import time
 
-from module.plugins.internal.misc import (Periodical, compare_time, decode,
+from .misc import (Periodical, compare_time, decode,
                                           isiterable, lock, parse_size)
-from module.plugins.internal.Plugin import Plugin, Skip
+from .Plugin import Plugin, Skip
 
 
 class Account(Plugin):

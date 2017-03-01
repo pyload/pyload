@@ -4,7 +4,7 @@
 #   http://d-h.st/mM8
 
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class DevhostSt(SimpleHoster):

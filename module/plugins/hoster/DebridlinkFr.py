@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import time
 
 import Crypto.Hash.SHA
 import pycurl
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 def args(**kwargs):

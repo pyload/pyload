@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class TurbobitNetFolder(SimpleCrypter):

@@ -6,7 +6,7 @@ import urllib
 import urlparse
 from StringIO import StringIO
 
-from module.plugins.internal.CaptchaService import CaptchaService
+from ..internal.CaptchaService import CaptchaService
 
 try:
     no_pil = False

@@ -2,8 +2,8 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.RequestFactory import getURL as get_url
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class WebshareCz(SimpleHoster):

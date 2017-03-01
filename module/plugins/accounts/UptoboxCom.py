@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 import urlparse
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):

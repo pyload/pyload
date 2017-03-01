@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from ..internal.XFSCrypter import XFSCrypter
 
 
 class XFileSharingFolder(XFSCrypter):

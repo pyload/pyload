@@ -9,7 +9,7 @@ except ImportError:
 import glob
 import os
 
-from module.plugins.internal.OCR import OCR
+from ..internal.OCR import OCR
 
 
 class LinksaveIn(OCR):

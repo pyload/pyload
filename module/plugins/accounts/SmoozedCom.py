@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import time
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 try:
     from beaker.crypto.pbkdf2 import PBKDF2

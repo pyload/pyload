@@ -5,9 +5,9 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from module.plugins.internal.Extractor import (ArchiveError, CRCError,
+from .Extractor import (ArchiveError, CRCError,
                                                Extractor, PasswordError)
-from module.plugins.internal.misc import encode
+from .misc import encode
 
 
 class UnZip(Extractor):

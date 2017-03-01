@@ -3,9 +3,9 @@
 import re
 import time
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.RequestFactory import getURL as get_url
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class ShareonlineBiz(SimpleHoster):

@@ -4,10 +4,10 @@
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Hoster import Hoster
+from ..network.HTTPRequest import BadHeader
+from ..internal.Hoster import Hoster
 
 
 class GoogledriveCom(Hoster):

@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from ..internal.DeadHoster import DeadHoster
 
 
 class FreeWayMe(DeadHoster):

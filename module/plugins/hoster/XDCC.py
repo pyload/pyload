@@ -7,8 +7,8 @@ import socket
 import struct
 import time
 
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import exists, fsjoin
+from ..internal.Hoster import Hoster
+from ..internal.misc import exists, fsjoin
 
 
 class XDCC(Hoster):

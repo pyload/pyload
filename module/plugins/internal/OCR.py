@@ -5,8 +5,8 @@ from __future__ import with_statement
 import os
 import subprocess
 
-from module.plugins.internal.misc import encode, fsjoin
-from module.plugins.internal.Plugin import Plugin
+from .misc import encode, fsjoin
+from .Plugin import Plugin
 
 try:
     from PIL import Image

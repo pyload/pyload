@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Notifier import Notifier
+from ..network.RequestFactory import getRequest as get_request
+from ..internal.Notifier import Notifier
 
 
 class PushBullet(Notifier):

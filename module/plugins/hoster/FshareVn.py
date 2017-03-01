@@ -4,7 +4,7 @@ import re
 import time
 import urlparse
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def double_decode(m):

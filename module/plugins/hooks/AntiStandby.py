@@ -7,8 +7,8 @@ import subprocess
 import sys
 import time
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import Expose, encode, fsjoin
+from ..internal.Addon import Addon
+from ..internal.misc import Expose, encode, fsjoin
 
 try:
     import caffeine

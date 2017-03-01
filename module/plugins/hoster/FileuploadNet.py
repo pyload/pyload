@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class FileuploadNet(SimpleHoster):

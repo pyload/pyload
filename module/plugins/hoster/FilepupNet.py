@@ -6,7 +6,7 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class FilepupNet(SimpleHoster):

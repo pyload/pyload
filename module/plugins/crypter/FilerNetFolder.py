@@ -1,5 +1,5 @@
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class FilerNetFolder(SimpleCrypter):

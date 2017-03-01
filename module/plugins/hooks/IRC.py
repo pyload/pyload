@@ -9,9 +9,9 @@ from threading import Thread
 
 import pycurl
 import ssl
-from module.Api import FileDoesNotExists, PackageDoesNotExists
-from module.plugins.internal.misc import format_size
-from module.plugins.internal.Notifier import Notifier
+from ..Api import FileDoesNotExists, PackageDoesNotExists
+from ..internal.misc import format_size
+from ..internal.Notifier import Notifier
 
 
 class IRC(Thread, Notifier):

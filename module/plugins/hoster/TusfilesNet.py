@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Plugin import Retry
-from module.plugins.internal.XFSHoster import XFSHoster
+from ..network.HTTPRequest import BadHeader
+from ..internal.Plugin import Retry
+from ..internal.XFSHoster import XFSHoster
 
 
 class TusfilesNet(XFSHoster):

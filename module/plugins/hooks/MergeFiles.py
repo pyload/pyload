@@ -5,8 +5,8 @@ from __future__ import with_statement
 import os
 import re
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import fsjoin, threaded
+from ..internal.Addon import Addon
+from ..internal.misc import fsjoin, threaded
 
 
 class MergeFiles(Addon):

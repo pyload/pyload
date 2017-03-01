@@ -6,14 +6,14 @@ import inspect
 import os
 
 import pycurl
-from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.misc import (DB, Config, decode, encode, exists,
+from ..network.RequestFactory import getRequest as get_request
+from .misc import (DB, Config, decode, encode, exists,
                                           fixurl, format_exc, fsjoin,
                                           html_unescape, parse_html_header,
                                           remove, set_cookies)
-from module.plugins.Plugin import SkipDownload as Skip
+from ..Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
-from module.plugins.Plugin import Abort, Fail, Reconnect, Retry
+from ..Plugin import Abort, Fail, Reconnect, Retry
 
 if os.name != "nt":
     import grp

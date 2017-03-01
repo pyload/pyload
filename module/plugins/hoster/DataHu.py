@@ -4,7 +4,7 @@
 # http://data.hu/get/6381232/random.bin
 
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class DataHu(SimpleHoster):

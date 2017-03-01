@@ -3,8 +3,8 @@
 import re
 import urlparse
 
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class Keep2ShareCc(SimpleHoster):

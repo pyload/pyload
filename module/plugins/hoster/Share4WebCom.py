@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.hoster.UnibytesCom import UnibytesCom
+from .UnibytesCom import UnibytesCom
 
 
 class Share4WebCom(UnibytesCom):

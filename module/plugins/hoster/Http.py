@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class Http(Hoster):

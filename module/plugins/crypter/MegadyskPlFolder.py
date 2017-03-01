@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import base64
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 import urllib
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..network.RequestFactory import getURL as get_url
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 def xor_decrypt(data, key):

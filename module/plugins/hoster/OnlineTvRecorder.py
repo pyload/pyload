@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.hoster.Http import Http
+from ..network.HTTPRequest import BadHeader
+from .Http import Http
 
 
 # Support onlinetvrecorder.com

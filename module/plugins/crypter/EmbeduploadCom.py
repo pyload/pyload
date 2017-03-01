@@ -2,8 +2,8 @@
 
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Crypter import Crypter
+from ..network.HTTPRequest import BadHeader
+from ..internal.Crypter import Crypter
 
 
 class EmbeduploadCom(Crypter):

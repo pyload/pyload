@@ -5,7 +5,7 @@ import re
 import time
 
 import passlib.hash
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class WebshareCz(Account):

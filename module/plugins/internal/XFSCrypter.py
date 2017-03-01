@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import set_cookie
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from .misc import set_cookie
+from .SimpleCrypter import SimpleCrypter
 
 
 class XFSCrypter(SimpleCrypter):

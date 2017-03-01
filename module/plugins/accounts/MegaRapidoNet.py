@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
 
 
 class MegaRapidoNet(MultiAccount):

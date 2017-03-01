@@ -2,8 +2,8 @@
 
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import fsjoin, json
+from ..internal.Crypter import Crypter
+from ..internal.misc import fsjoin, json
 
 
 class DailymotionComFolder(Crypter):

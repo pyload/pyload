@@ -3,7 +3,7 @@
 import re
 import urlparse
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class UlozTo(Account):

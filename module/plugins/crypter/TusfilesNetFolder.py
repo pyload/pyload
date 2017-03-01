@@ -4,7 +4,7 @@ import math
 import re
 import urlparse
 
-from module.plugins.internal.XFSCrypter import XFSCrypter
+from ..internal.XFSCrypter import XFSCrypter
 
 
 class TusfilesNetFolder(XFSCrypter):

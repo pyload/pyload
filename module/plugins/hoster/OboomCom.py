@@ -3,11 +3,11 @@
 # Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Hoster import Hoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Hoster import Hoster
 
 
 class OboomCom(Hoster):

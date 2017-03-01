@@ -2,9 +2,9 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.misc import format_exc
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.RequestFactory import getURL as get_url
+from ..internal.misc import format_exc
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class OneFichierCom(SimpleHoster):

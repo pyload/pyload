@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class EuroshareEu(Account):

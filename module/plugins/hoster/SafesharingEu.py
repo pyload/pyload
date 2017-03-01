@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from ..internal.XFSHoster import XFSHoster
 
 
 class SafesharingEu(XFSHoster):

@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.XFSHoster import XFSHoster
+from ..internal.XFSHoster import XFSHoster
 
 
 class NosuploadCom(XFSHoster):

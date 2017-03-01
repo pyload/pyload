@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from module.plugins.internal.misc import encode, json
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.misc import encode, json
+from ..internal.MultiHoster import MultiHoster
 
 
 def args(**kwargs):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.plugins.internal.misc import parse_name, timestamp
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.misc import parse_name, timestamp
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def convert_decimal_prefix(m):

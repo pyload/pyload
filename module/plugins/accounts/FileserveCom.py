@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class FileserveCom(Account):

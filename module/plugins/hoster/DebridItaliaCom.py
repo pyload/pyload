@@ -2,7 +2,7 @@
 
 import re
 
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.MultiHoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):

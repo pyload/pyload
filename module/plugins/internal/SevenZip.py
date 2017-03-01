@@ -4,8 +4,8 @@ import os
 import re
 import subprocess
 
-from module.plugins.internal.misc import encode, fsjoin, renice
-from module.plugins.internal.UnRar import (ArchiveError, CRCError,
+from .misc import encode, fsjoin, renice
+from .UnRar import (ArchiveError, CRCError,
                                            PasswordError, UnRar)
 
 

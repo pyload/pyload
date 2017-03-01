@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from module.plugins.internal.misc import replace_patterns
-from module.plugins.internal.MultiHoster import MultiHoster
+from ..internal.misc import replace_patterns
+from ..internal.MultiHoster import MultiHoster
 
 
 class SimplydebridCom(MultiHoster):

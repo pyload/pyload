@@ -2,9 +2,9 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Base import parse_fileInfo
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.RequestFactory import getURL as get_url
+from ..internal.Base import parse_fileInfo
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):

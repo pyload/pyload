@@ -2,8 +2,8 @@
 
 import re
 
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class KingfilesNet(SimpleHoster):

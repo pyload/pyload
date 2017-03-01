@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..network.RequestFactory import getURL as get_url
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class OpenloadIo(SimpleHoster):

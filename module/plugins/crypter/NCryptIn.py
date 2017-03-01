@@ -4,8 +4,8 @@ import binascii
 import re
 
 import Crypto.Cipher.AES
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.Crypter import Crypter
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Crypter import Crypter
 
 
 class NCryptIn(Crypter):

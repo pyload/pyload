@@ -6,9 +6,9 @@ import base64
 import re
 
 import pycurl
-from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
+from ..network.RequestFactory import getRequest as get_request
+from ..internal.Addon import Addon
+from ..internal.misc import threaded
 
 
 class ImageTyperzException(Exception):

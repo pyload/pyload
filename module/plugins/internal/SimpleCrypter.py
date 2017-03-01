@@ -2,10 +2,10 @@
 
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import (parse_name, parse_time,
+from ..network.HTTPRequest import BadHeader
+from ..network.RequestFactory import getURL as get_url
+from .Crypter import Crypter
+from .misc import (parse_name, parse_time,
                                           replace_patterns)
 
 

@@ -3,7 +3,7 @@
 import random
 import re
 
-from module.plugins.internal.CaptchaService import CaptchaService
+from ..internal.CaptchaService import CaptchaService
 
 
 class AdsCaptcha(CaptchaService):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.misc import json
+from ..internal.misc import json
 import re
 
-from module.plugins.internal.misc import uniqify
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.misc import uniqify
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class ImgurCom(SimpleCrypter):
