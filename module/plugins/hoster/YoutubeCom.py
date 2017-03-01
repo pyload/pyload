@@ -153,7 +153,7 @@ class YoutubeCom(Hoster):
 
                 decrypted_sig = decrypt_func(encrypted_sig)
 
-            except (JSInterpreterError, AssertionError) as e:
+            except (JSInterpreterError, AssertionError), e:
                 self.log_error(_("Signature decode failed"), e)
                 self.fail(e.message)
 

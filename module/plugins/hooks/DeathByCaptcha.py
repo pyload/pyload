@@ -88,7 +88,7 @@ class DeathByCaptcha(Addon):
             elif "status" not in res:
                 raise DeathByCaptchaException(str(res))
 
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 403:
                 raise DeathByCaptchaException('not-logged-in')
 
@@ -171,7 +171,7 @@ class DeathByCaptcha(Addon):
         try:
             self.get_status()
             self.get_credits()
-        except DeathByCaptchaException as e:
+        except DeathByCaptchaException, e:
             self.log_error(e.getDesc())
             return False
 
@@ -193,10 +193,10 @@ class DeathByCaptcha(Addon):
                     "captcha/%d/report" %
                     task.data['ticket'], True)
 
-            except DeathByCaptchaException as e:
+            except DeathByCaptchaException, e:
                 self.log_error(e.getDesc())
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e, trace=True)
 
     @threaded
@@ -204,7 +204,7 @@ class DeathByCaptcha(Addon):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except DeathByCaptchaException as e:
+        except DeathByCaptchaException, e:
             task.error = e.get_code()
             self.log_error(e.getDesc())
             return

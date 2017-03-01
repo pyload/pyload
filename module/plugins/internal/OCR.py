@@ -98,7 +98,7 @@ class OCR(Plugin):
                 "wb")
             tmpTxt.close()
 
-        except IOError as e:
+        except IOError, e:
             self.log_error(e)
             return
 

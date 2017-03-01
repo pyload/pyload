@@ -43,7 +43,7 @@ class XDCC(Hoster):
                 self.log_info("Download of %s finished." % nmn)
                 return
 
-            except socket.error as e:
+            except socket.error, e:
                 if hasattr(e, "errno") and e.errno is not None:
                     err_no = e.errno
 

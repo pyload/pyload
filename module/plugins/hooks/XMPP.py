@@ -87,7 +87,7 @@ class XMPP(IRC, JabberClient):
         try:
             self.loop()
 
-        except Exception as ex:
+        except Exception, ex:
             self.log_error(ex)
 
     def stream_state_changed(self, state, arg):
@@ -169,7 +169,7 @@ class XMPP(IRC, JabberClient):
 
                     messages.append(m)
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e, trace=True)
 
             return messages

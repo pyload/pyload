@@ -42,7 +42,7 @@ class CloudFlare(object):
             addon_plugin.log_debug(_("%s() returned successfully") % func_name)
             return data
 
-        except BadHeader as e:
+        except BadHeader, e:
             addon_plugin.log_debug(
                 _("%s(): got BadHeader exception %s") %
                 (func_name, e.code))
@@ -118,7 +118,7 @@ class CloudFlare(object):
                                      get=get_params,
                                      ref=last_url)
 
-        except Exception as e:
+        except Exception, e:
             addon_plugin.log_error(e)
             return None  # Tell the exception handler to re-throw the exception
 
@@ -145,7 +145,7 @@ class CloudFlare(object):
                     _("Got unexpected CloudFlare html page"))
                 return None  # Tell the exception handler to re-throw the exception
 
-        except Exception as e:
+        except Exception, e:
             addon_plugin.log_error(e)
             return None  # Tell the exception handler to re-throw the exception
 

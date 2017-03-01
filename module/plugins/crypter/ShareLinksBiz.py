@@ -244,7 +244,7 @@ class ShareLinksBiz(Crypter):
 
                 pack_links.append(dl_link)
 
-            except Exception as detail:
+            except Exception, detail:
                 self.log_debug(
                     _("Error decrypting Web link [%s], %s") %
                     (ID, detail))

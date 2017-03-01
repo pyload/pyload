@@ -68,7 +68,7 @@ class MultiHoster(SimpleHoster):
         try:
             super(MultiHoster, self)._process(thread)
 
-        except Fail as e:
+        except Fail, e:
             if self.config.get('revert_failed', True) and \
                self.pyload.pluginManager.hosterPlugins.get(self.classname).get('new_module'):
                 hdict = self.pyload.pluginManager.hosterPlugins.get(

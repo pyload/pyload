@@ -38,7 +38,7 @@ class TusfilesNet(XFSHoster):
         try:
             return super(TusfilesNet, self).download(url, *args, **kwargs)
 
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 503:
                 self.multiDL = False
                 raise Retry("503")

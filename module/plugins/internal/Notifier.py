@@ -136,7 +136,7 @@ class Notifier(Addon):
         try:
             self.send(event, msg, key)
 
-        except Exception as e:
+        except Exception, e:
             self.log_error(_("Error sending notification"), e)
             return False
 

@@ -96,5 +96,5 @@ class ExpertDecoders(Addon):
                                 post={'action': "refund", 'key': self.config.get('passkey'), 'gen_task_id': task.data['ticket']})
                 self.log_info(_("Request refund"), res)
 
-            except BadHeader as e:
+            except BadHeader, e:
                 self.log_error(_("Could not send refund request"), e)

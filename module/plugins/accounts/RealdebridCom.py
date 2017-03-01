@@ -50,7 +50,7 @@ class RealdebridCom(MultiAccount):
         try:
             account = self.api_response("/user", args(auth_token=password))
 
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 401:
                 self.fail_login()
 

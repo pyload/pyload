@@ -42,7 +42,7 @@ class RSDF(Container):
             with open(fs_filename, 'r') as rsdf:
                 data = rsdf.read()
 
-        except IOError as e:
+        except IOError, e:
             self.fail(e.message)
 
         if re.search(r'<title>404 - Not Found</title>', data):

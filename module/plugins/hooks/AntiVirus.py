@@ -109,7 +109,7 @@ class AntiVirus(Addon):
                                 pyfile.setCustomStatus(_("file moving"))
                                 shutil.move(file, self.config.get('quardir'))
 
-                            except Exception as e:
+                            except Exception, e:
                                 self.log_warning(
                                     _("Unable to move file to trash: %s, moving to quarantine instead") %
                                     e.message)
@@ -124,7 +124,7 @@ class AntiVirus(Addon):
                         pyfile.setCustomStatus(_("file moving"))
                         shutil.move(file, self.config.get('quardir'))
 
-                except (IOError, shutil.Error) as e:
+                except (IOError, shutil.Error), e:
                     self.log_error(target_repr, action + " action failed!", e)
 
             elif not err:

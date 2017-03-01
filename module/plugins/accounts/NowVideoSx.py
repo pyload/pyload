@@ -33,7 +33,7 @@ class NowVideoSx(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%b-%d"))
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e, trace=True)
 
             else:

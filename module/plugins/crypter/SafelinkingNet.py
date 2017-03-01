@@ -34,7 +34,7 @@ class SafelinkingNet(Crypter):
         try:
             res = json.loads(self.load(url, post=json.dumps(post_data)))
 
-        except (BadHeader, ValueError) as e:
+        except (BadHeader, ValueError), e:
             self.log_error(e.message)
             self.fail(e.message)
 

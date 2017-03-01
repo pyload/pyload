@@ -105,7 +105,7 @@ class AntiStandby(Addon):
             self.log_warning(_("Unable to change power state"),
                              _("caffeine lib not found"))
 
-        except Exception as e:
+        except Exception, e:
             self.log_warning(_("Unable to change power state"), e)
 
     @Expose
@@ -118,7 +118,7 @@ class AntiStandby(Addon):
             elif not self.pid:
                 self.pid = subprocess.Popen(["caffeine"])
 
-        except Exception as e:
+        except Exception, e:
             self.log_warning(_("Unable to change system power state"), e)
 
         try:
@@ -127,7 +127,7 @@ class AntiStandby(Addon):
             else:
                 subprocess.call(["xset", "-dpms", "s", "off"])
 
-        except Exception as e:
+        except Exception, e:
             self.log_warning(_("Unable to change display power state"), e)
 
     @Expose

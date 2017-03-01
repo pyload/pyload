@@ -101,7 +101,7 @@ class SimpleCrypter(Crypter):
                     html = get_url(
                         url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
-                except BadHeader as e:
+                except BadHeader, e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
                 except Exception:

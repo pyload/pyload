@@ -77,7 +77,7 @@ class MegaDebridEu(MultiAccount):
                 "connectUser", args(
                     login=user, password=password))
 
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 401:
                 self.fail_login()
 

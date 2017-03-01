@@ -23,7 +23,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
             try:
                 return func(*args)
 
-            except OSError as e:
+            except OSError, e:
                 if e.errno == errno.EINTR:
                     continue
                 raise
@@ -38,7 +38,7 @@ if sys.version_info < (2, 7) and os.name != "nt":
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
 
-            except OSError as e:
+            except OSError, e:
                 if e.errno != errno.ECHILD:
                     raise
                 #: This happens if SIGCLD is set to be ignored or waiting
@@ -147,13 +147,13 @@ class ExtractArchive(Addon):
                 if klass.REPAIR:
                     self.repair = self.config.get('repair')
 
-            except OSError as e:
+            except OSError, e:
                 if e.errno == 2:
                     self.log_warning(_("No %s installed") % p)
                 else:
                     self.log_warning(_("Could not activate: %s") % p, e)
 
-            except Exception as e:
+            except Exception, e:
                 self.log_warning(_("Could not activate: %s") % p, e)
 
         if self.extractors:
@@ -341,7 +341,7 @@ class ExtractArchive(Addon):
                                 pyfile.setProgress(100)
                                 thread.finishFile(pyfile)
 
-                        except Exception as e:
+                        except Exception, e:
                             self.log_error(name, e)
                             success = False
                             continue
@@ -422,7 +422,7 @@ class ExtractArchive(Addon):
                         self.log_info(name, _("Password protected"))
                         encrypted = True
 
-                except CRCError as e:
+                except CRCError, e:
                     self.log_debug(name, e)
                     self.log_info(name, _("CRC Error"))
 
@@ -443,7 +443,7 @@ class ExtractArchive(Addon):
                             self.add_password(pw)
                             break
 
-                except ArchiveError as e:
+                except ArchiveError, e:
                     raise ArchiveError(e)
 
                 else:
@@ -499,7 +499,7 @@ class ExtractArchive(Addon):
                             self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
                                              _("Send2Trash lib not found"))
 
-                        except Exception as e:
+                        except Exception, e:
                             self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
                                              e.message)
 
@@ -518,13 +518,13 @@ class ExtractArchive(Addon):
                 name, _(
                     "Wrong password" if password else "No password found"))
 
-        except CRCError as e:
+        except CRCError, e:
             self.log_error(name, _("CRC mismatch"), e)
 
-        except ArchiveError as e:
+        except ArchiveError, e:
             self.log_error(name, _("Archive error"), e)
 
-        except Exception as e:
+        except Exception, e:
             self.log_error(name, _("Unknown error"), e)
 
         self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
@@ -558,7 +558,7 @@ class ExtractArchive(Addon):
                 for pw in f.read().splitlines():
                     passwords.append(pw)
 
-        except IOError as e:
+        except IOError, e:
             if e.errno == 2:
                 with open(file, "wb") as f:
                     pass
@@ -590,5 +590,5 @@ class ExtractArchive(Addon):
                 for pw in self.passwords:
                     f.write(pw + '\n')
 
-        except IOError as e:
+        except IOError, e:
             self.log_error(e)

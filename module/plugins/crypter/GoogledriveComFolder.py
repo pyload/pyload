@@ -42,7 +42,7 @@ class GoogledriveComFolder(Crypter):
             self.log_debug("API response: %s" % json_data)
             return json_data
 
-        except BadHeader as e:
+        except BadHeader, e:
             self.log_error(
                 "API Error: %s" %
                 cmd,

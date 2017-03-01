@@ -336,7 +336,7 @@ class UpdateManager(Addon):
                 else:
                     raise Exception(_("Version mismatch"))
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(
                     _("Error updating plugin: %s %s") %
                     (plugin_type.rstrip('s').upper(),
@@ -376,7 +376,7 @@ class UpdateManager(Addon):
                     try:
                         self.manager.deactivateHook(plugin_name)
 
-                    except Exception as e:
+                    except Exception, e:
                         self.log_debug(e, trace=True)
 
                 for filename in (py_filename, pyc_filename):
@@ -386,7 +386,7 @@ class UpdateManager(Addon):
                     try:
                         os.remove(filename)
 
-                    except OSError as e:
+                    except OSError, e:
                         self.log_warning(
                             _("Error removing `%s`") %
                             filename, e)

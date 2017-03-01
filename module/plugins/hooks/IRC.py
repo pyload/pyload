@@ -103,7 +103,7 @@ class IRC(Thread, Notifier):
         try:
             self.main_loop()
 
-        except IRCError as ex:
+        except IRCError, ex:
             self.sock.send("QUIT :byebye\r\n")
             if self.pyload.debug:
                 traceback.print_exc()
@@ -191,7 +191,7 @@ class IRC(Thread, Notifier):
             for line in res:
                 self.response(line, msg['origin'])
 
-        except Exception as e:
+        except Exception, e:
             self.log_error(e, trace=True)
 
     def response(self, msg, origin=""):

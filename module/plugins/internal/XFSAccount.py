@@ -93,7 +93,7 @@ class XFSAccount(MultiAccount):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%d %B %Y"))
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e)
 
             else:
@@ -131,7 +131,7 @@ class XFSAccount(MultiAccount):
 
                     trafficleft = self.parse_traffic(size + unit)
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e)
         else:
             self.log_debug("TRAFFIC LEFT PATTERN not found")
@@ -161,7 +161,7 @@ class XFSAccount(MultiAccount):
 
                         leechtraffic += self.parse_traffic(size + unit)
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e)
         else:
             self.log_debug("LEECH TRAFFIC PATTERN not found")

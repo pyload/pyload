@@ -127,7 +127,7 @@ class ImgurCom(SimpleCrypter):
                 _("Found %s additional links") %
                 (len(indirect_links)))
 
-        except (TypeError, KeyError, ValueError) as e:
+        except (TypeError, KeyError, ValueError), e:
             # Fail gracefull as we already had some success
             self.log_error(
                 _("Processing of additional links unsuccessful - %s: %s") %

@@ -142,7 +142,7 @@ class ImageTyperz(Addon):
         c = task.captchaFile
         try:
             ticket, result = self.submit(c)
-        except ImageTyperzException as e:
+        except ImageTyperzException, e:
             task.error = e.get_code()
             return
 

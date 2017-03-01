@@ -200,7 +200,7 @@ class FilecryptCc(Crypter):
                     res2 = self.load(link2.group(1), just_header=True)
                     self.urls.append(res2['location'])
 
-        except Exception as e:
+        except Exception, e:
             self.log_debug("Error decrypting weblinks: %s" % e)
 
     def handle_CNL(self):
@@ -215,7 +215,7 @@ class FilecryptCc(Crypter):
             for i in range(len(vcrypted)):
                 self.urls.extend(self._get_links(vcrypted[i], vjk[i]))
 
-        except Exception as e:
+        except Exception, e:
             self.log_debug("Error decrypting CNL: %s" % e)
 
     def _get_links(self, crypted, jk):

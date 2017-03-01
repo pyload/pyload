@@ -115,7 +115,7 @@ class Account(Plugin):
                 self.info['login']['password'],
                 self.info['data'])
 
-        except Skip as e:
+        except Skip, e:
             self.log_warning(_("Skipped login user `%s`") % self.user, e)
             self.info['login']['valid'] = True
 
@@ -123,7 +123,7 @@ class Account(Plugin):
             if self.TUNE_TIMEOUT and new_timeout > self.timeout:
                 self.timeout = new_timeout
 
-        except Exception as e:
+        except Exception, e:
             self.log_error(_("Could not login user `%s`") % self.user, e)
             self.info['login']['valid'] = False
 
@@ -233,7 +233,7 @@ class Account(Plugin):
             if data and isinstance(data, dict):
                 self.info['data'].update(data)
 
-        except Exception as e:
+        except Exception, e:
             self.log_warning(
                 _("Error loading info for user `%s`") %
                 self.user, e)

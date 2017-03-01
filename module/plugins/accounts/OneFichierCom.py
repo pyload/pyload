@@ -36,7 +36,7 @@ class OneFichierCom(Account):
             try:
                 validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d"))
 
-            except Exception as e:
+            except Exception, e:
                 self.log_error(e, trace=True)
 
             else:
@@ -62,7 +62,7 @@ class OneFichierCom(Account):
                    ('>Invalid username or Password', '>Invalid email address', '>Invalid password')):
                 self.fail_login()
 
-        except BadHeader as e:
+        except BadHeader, e:
             if e.code == 403:
                 self.fail_login()
             else:

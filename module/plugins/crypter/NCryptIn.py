@@ -275,7 +275,7 @@ class NCryptIn(Crypter):
             link = self.load(url, just_header=True)['location']
             return link
 
-        except Exception as detail:
+        except Exception, detail:
             self.log_debug("Error decrypting link %s, %s" % (link, detail))
 
     def _get_cipher_params(self):

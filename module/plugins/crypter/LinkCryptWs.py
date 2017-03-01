@@ -206,7 +206,7 @@ class LinkCryptWs(Crypter):
                 link2 = html_unescape(link2)
                 pack_links.append(link2)
 
-            except Exception as detail:
+            except Exception, detail:
                 self.log_debug(
                     _("Error decrypting Web link %s, %s") %
                     (weblink_id, detail))
