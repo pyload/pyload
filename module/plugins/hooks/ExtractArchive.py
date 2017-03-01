@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.60"
+    __version__ = "1.61"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -473,6 +473,8 @@ class ExtractArchive(Addon):
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
 
+            extracted_files = archive.files or archive.list()
+
             delfiles = archive.chunks()
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
@@ -506,7 +508,6 @@ class ExtractArchive(Addon):
                                 os.path.basename(f))
 
             self.log_info(name, _("Extracting finished"))
-            extracted_files = archive.files or archive.list()
 
             return extracted_files
 

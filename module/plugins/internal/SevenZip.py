@@ -11,7 +11,7 @@ from .UnRar import ArchiveError, CRCError, PasswordError, UnRar
 class SevenZip(UnRar):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -32,7 +32,7 @@ class SevenZip(UnRar):
     _RE_BADPWD = re.compile(
         r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
     _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
-    _RE_VERSION = re.compile(r'7-Zip\s(?:\[64\]\s)?(\d+\.\d+)', re.I)
+    _RE_VERSION = re.compile(r'7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)', re.I)
 
     @classmethod
     def find(cls):
@@ -104,18 +104,20 @@ class SevenZip(UnRar):
         p = self.call_cmd(command, self.filename, password=password)
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
-        if "Can not open" in err:
+        if any([_e in err for _e in ("Can not open", "cannot find the file")]):
             raise ArchiveError(_("Cannot open file"))
 
         if p.returncode > 1:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
-        result = set()
+        files = set()
         for groups in self._RE_FILES.findall(out):
             f = groups[-1].strip()
-            result.add(fsjoin(self.dest, f))
+            files.add(fsjoin(self.dest, f))
 
-        return list(result)
+        self.files = list(files)
+
+        return self.files
 
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
@@ -126,7 +128,7 @@ class SevenZip(UnRar):
 
         #: Exclude files
         for word in self.excludefiles:
-            args.append("-x!%s" % word.strip())
+            args.append("-xr!%s" % word.strip())
 
         #: Set a password
         password = kwargs.get('password')
