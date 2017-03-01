@@ -178,7 +178,7 @@ class SettingsWidget(QWidget):
                         elif not item.type.find(";") == -1:
                             i.setCurrentIndex(i.findText(item.value))
                         elif item.type == "bool":
-                            if True if item.value.lower() in ("1","true", "on", "an","yes") else False:
+                            if True if item.value.lower() in ("1", "true", "on", "an", "yes") else False:
                                 i.setCurrentIndex(0)
                             else:
                                 i.setCurrentIndex(1)
@@ -218,7 +218,7 @@ class SettingsWidget(QWidget):
                             if i.currentText() != item.value:
                                 self.connector.proxy.setConfigValue(cat, opt, str(i.currentText()), sec)
                         elif item.type == "bool":            # QComboBox
-                            if (True if item.value.lower() in ("1","true", "on", "an","yes") else False) ^ (not i.currentIndex()):
+                            if (True if item.value.lower() in ("1", "true", "on", "an", "yes") else False) ^ (not i.currentIndex()):
                                 self.connector.proxy.setConfigValue(cat, opt, str(not i.currentIndex()), sec)
                         else:
                             if i.text() != item.value:       # QLineEdit
@@ -241,7 +241,7 @@ class SettingsWidget(QWidget):
                                 if item.name in widget.inputs:
                                     err1 = False
                                     i = widget.inputs[item.name]
-                                    if True if enab.lower() in ("1","true", "on", "an","yes") else False:
+                                    if True if enab.lower() in ("1", "true", "on", "an", "yes") else False:
                                         i.setCurrentIndex(0)
                                     else:
                                         i.setCurrentIndex(1)
@@ -389,7 +389,7 @@ class Section(QGroupBox):
                 i = QComboBox(self)
                 i.addItem("Yes", QVariant(True))
                 i.addItem("No", QVariant(False))
-                if True if option.value.lower() in ("1","true", "on", "an","yes") else False:
+                if True if option.value.lower() in ("1", "true", "on", "an", "yes") else False:
                     i.setCurrentIndex(0)
                 else:
                     i.setCurrentIndex(1)

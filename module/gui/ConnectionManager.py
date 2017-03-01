@@ -32,7 +32,7 @@ class ConnectionManager(QDialog):
         
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Connection Manager"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         mainLayout   = QHBoxLayout()
         boxLayout    = QVBoxLayout()
@@ -222,7 +222,7 @@ class ConnectionManager(QDialog):
             
             self.setAttribute(Qt.WA_DeleteOnClose, False)
             self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
-            self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+            self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
             
             grid1 = QGridLayout()
             

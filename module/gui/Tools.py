@@ -44,7 +44,7 @@ class MessageBox(QDialog):
 
         self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.setContentsMargins(9, 9, 9, 9)
 
         if noTranslation:

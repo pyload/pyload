@@ -1313,14 +1313,14 @@ class main(QObject):
         self.connWindow.hide()
         self.lastConnection = data.copy()
 
-        if data["type"] not in ("remote","internal"):
+        if data["type"] not in ("remote", "internal"):
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
                 self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous")
                 title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:7227]"
             else:
-                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote","port"), "anonymous", "anonymous")
-                title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:" + str(coreparser.get("remote","port")) + "]"
+                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote", "port"), "anonymous", "anonymous")
+                title = _("pyLoad Client") + " - " + data["name"] + " [127.0.0.1:" + str(coreparser.get("remote", "port")) + "]"
             self.mainWindow.setWindowTitle(title)
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
 
@@ -1689,7 +1689,7 @@ class main(QObject):
 
         state = str(nodes["state"].text())
         geo = str(nodes["geometry"].text())
-        if True if str(nodes["geometryMaximize"].text()).lower() in ("1","true", "on", "an","yes") else False:
+        if True if str(nodes["geometryMaximize"].text()).lower() in ("1", "true", "on", "an", "yes") else False:
             self.geoMaximizeConfig = True
         else:
             self.geoMaximizeConfig = False
@@ -2360,11 +2360,11 @@ class AboutBox(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("About pyLoad Client"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.logo = QLabel()
         self.logo.setAlignment(Qt.AlignTop)
-        pix = QPixmap(join(pypath, "icons","logo-gui.png"))
+        pix = QPixmap(join(pypath, "icons", "logo-gui.png"))
         self.logo.setPixmap(pix)
         self.text1 = QLabel()
         self.text1.setAlignment(Qt.AlignTop)
@@ -2460,7 +2460,7 @@ class InfoCorePermissions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Information"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         wt_width = 500  # QWhatsThis box width
         tabP = "&nbsp;&nbsp;"
@@ -2613,7 +2613,7 @@ class CaptchaOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.cbAdjSize = QCheckBox(_("Adjust dialog box size to its content"))
 
@@ -2668,7 +2668,7 @@ class LoggingOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.cbEnableFileLog = QGroupBox(_("Enable File Log"))
         self.cbEnableFileLog.setCheckable(True)
@@ -2785,7 +2785,7 @@ class FontOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.cbEnableCustomFonts = QGroupBox(_("Enable Custom Fonts"))
         self.cbEnableCustomFonts.setCheckable(True)
@@ -3053,7 +3053,7 @@ class AutomaticReloadingOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         lbl1 = QLabel(_("Every"))
         self.sbInterval = QSpinBox()
@@ -3124,7 +3124,7 @@ class ClickNLoadForwarderOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.cbEnable = QCheckBox(_("Enable"))
         lblFrom = QLabel(_("Local Port"))
@@ -3382,7 +3382,7 @@ class LanguageOptions(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.combo = QComboBox()
         self.noteLbl = QLabel()
@@ -3449,7 +3449,7 @@ class TrayIcon(QSystemTrayIcon):
         self.contextMenu.addAction(self.showAction)
         self.captchaAction = QAction(_("Waiting Captcha"), self.contextMenu)
         self.contextMenu.addAction(self.captchaAction)
-        self.contextAddMenu = self.contextMenu.addMenu(QIcon(join(pypath, "icons","add_small.png")), _("Add"))
+        self.contextAddMenu = self.contextMenu.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
         self.addPackageAction = self.contextAddMenu.addAction(_("Package"))
         self.addLinksAction = self.contextAddMenu.addAction(_("Links"))
         self.addContainerAction = self.contextAddMenu.addAction(_("Container"))
@@ -3501,7 +3501,7 @@ class PackageEdit(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Edit Package"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         vbox = QVBoxLayout()
         spacing = 15

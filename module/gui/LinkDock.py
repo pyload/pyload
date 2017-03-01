@@ -77,7 +77,7 @@ class NewLinkWindow(QWidget):
         self.filter = QPushButton(_("Filter URLs"))
         
         self.save = QPushButton(_("Add"))
-        self.save.setIcon(QIcon(join(pypath, "icons","add_small.png")))
+        self.save.setIcon(QIcon(join(pypath, "icons", "add_small.png")))
         self.msg = QLabel("ERROR")
         lsp = self.msg.sizePolicy()
         lsp.setHorizontalPolicy(QSizePolicy.Ignored)

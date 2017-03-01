@@ -217,7 +217,7 @@ class AskForUserAndPassword(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("pyLoad Client"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         grid = QGridLayout()
         

@@ -32,7 +32,7 @@ class AccountEdit(QDialog):
         self.log = logging.getLogger("guilog")
         
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         self.setLayout(QGridLayout())
         l = self.layout()

@@ -45,7 +45,7 @@ class CaptchaDialog(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Captcha"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.imgLabel  = QLabel()
         self.infoLabel = QLabel()
