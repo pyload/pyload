@@ -6,7 +6,7 @@ from ..internal.Addon import Addon
 class EventMapper(Addon):
     __name__ = "EventMapper"
     __type__ = "hook"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]

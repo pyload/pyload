@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class FreevideoCz(DeadHoster):
     __name__ = "FreevideoCz"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?freevideo\.cz/vase-videa/.+'

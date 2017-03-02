@@ -8,7 +8,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class FreetexthostCom(SimpleCrypter):
     __name__ = "FreetexthostCom"
     __type__ = "crypter"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?freetexthost\.com/\w+'

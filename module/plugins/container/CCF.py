@@ -14,7 +14,7 @@ from ..internal.misc import encode, fsjoin
 class CCF(Container):
     __name__ = "CCF"
     __type__ = "container"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r'.+\.ccf$'

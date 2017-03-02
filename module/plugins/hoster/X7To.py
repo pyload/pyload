@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class X7To(DeadHoster):
     __name__ = "X7To"
     __type__ = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?x7\.to/'

@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DlFreeFr(SimpleHoster):
     __name__ = "DlFreeFr"
     __type__ = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?dl\.free\.fr/(getfile\.pl\?file=/|[a-z])(?P<ID>\w+)'

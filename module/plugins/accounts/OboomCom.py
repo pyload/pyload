@@ -25,7 +25,7 @@ from ..internal.misc import json
 class OboomCom(Account):
     __name__ = "OboomCom"
     __type__ = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __description__ = """Oboom.com account plugin"""

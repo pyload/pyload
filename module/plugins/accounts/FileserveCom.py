@@ -9,7 +9,7 @@ from ..internal.misc import json
 class FileserveCom(Account):
     __name__ = "FileserveCom"
     __type__ = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __description__ = """Fileserve.com account plugin"""

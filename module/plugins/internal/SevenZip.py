@@ -11,7 +11,7 @@ from .UnRar import ArchiveError, CRCError, PasswordError, UnRar
 class SevenZip(UnRar):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""

@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FileboomMe(SimpleHoster):
     __name__ = "FileboomMe"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r'https?://f(?:ile)?boom\.me/file/(?P<ID>\w+)'

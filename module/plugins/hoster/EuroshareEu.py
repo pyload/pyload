@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class EuroshareEu(SimpleHoster):
     __name__ = "EuroshareEu"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?euroshare\.(eu|sk|cz|hu|pl)/file/.+'

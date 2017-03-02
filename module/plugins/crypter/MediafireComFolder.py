@@ -9,7 +9,7 @@ from ..internal.misc import json
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'

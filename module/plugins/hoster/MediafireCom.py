@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __version__ = "0.95"
+    __version__ = "0.96"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'

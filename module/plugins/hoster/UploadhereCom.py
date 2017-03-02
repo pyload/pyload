@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class UploadhereCom(DeadHoster):
     __name__ = "UploadhereCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadhere\.com/\w{10}'

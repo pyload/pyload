@@ -6,7 +6,7 @@ from ..internal.Account import Account
 class BigfileTo(Account):
     __name__ = "BigfileTo"
     __type__ = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __description__ = """bigfile.to account plugin"""

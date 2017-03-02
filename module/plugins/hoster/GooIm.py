@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class GooIm(SimpleHoster):
     __name__ = "GooIm"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?goo\.im/.+'

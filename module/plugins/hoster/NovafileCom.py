@@ -10,7 +10,7 @@ from ..internal.XFSHoster import XFSHoster
 class NovafileCom(XFSHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?novafile\.com/\w{12}'

@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SolidfilesCom(SimpleHoster):
     __name__ = "SolidfilesCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?solidfiles\.com\/d/\w+'

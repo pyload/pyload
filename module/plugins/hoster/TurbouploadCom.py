@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class TurbouploadCom(DeadHoster):
     __name__ = "TurbouploadCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?turboupload\.com/(\w+)'

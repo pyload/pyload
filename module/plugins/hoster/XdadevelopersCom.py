@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class XdadevelopersCom(SimpleHoster):
     __name__ = "XdadevelopersCom"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?forum\.xda-developers\.com/devdb/project/dl/\?id=\d+'

@@ -6,7 +6,7 @@ from ..internal.DeadCrypter import DeadCrypter
 class SecuredIn(DeadCrypter):
     __name__ = "SecuredIn"
     __type__ = "crypter"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+\-\w{8}\.html'

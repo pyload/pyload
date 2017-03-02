@@ -9,7 +9,7 @@ from ..internal.XFSHoster import XFSHoster
 class FileomCom(XFSHoster):
     __name__ = "FileomCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fileom\.com/\w{12}'

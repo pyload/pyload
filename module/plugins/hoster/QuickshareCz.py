@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class QuickshareCz(SimpleHoster):
     __name__ = "QuickshareCz"
     __type__ = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:[^/]*\.)?quickshare\.cz/stahnout-soubor/.+'

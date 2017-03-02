@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

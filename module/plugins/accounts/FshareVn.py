@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""

@@ -8,7 +8,7 @@ from ..internal.Addon import Addon
 class LinkdecrypterComHook(Addon):
     __name__ = "LinkdecrypterComHook"
     __type__ = "hook"
-    __version__ = "1.09"
+    __version__ = "1.1"
     __status__ = "broken"
 
     __config__ = [("activated", "bool", "Activated", False),

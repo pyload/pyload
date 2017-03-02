@@ -13,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __version__ = "1.06"
+    __version__ = "1.07"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'

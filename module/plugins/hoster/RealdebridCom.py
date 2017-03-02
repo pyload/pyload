@@ -11,7 +11,7 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.74"
+    __version__ = "0.75"
     __status__ = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'

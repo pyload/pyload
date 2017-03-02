@@ -11,7 +11,7 @@ from .IRC import IRC
 class XMPP(IRC, JabberClient):
     __name__ = "XMPP"
     __type__ = "hook"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

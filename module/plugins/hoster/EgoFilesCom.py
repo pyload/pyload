@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class EgoFilesCom(DeadHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?egofiles\.com/\w+'

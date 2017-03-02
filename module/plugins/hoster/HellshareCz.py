@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class HellshareCz(SimpleHoster):
     __name__ = "HellshareCz"
     __type__ = "hoster"
-    __version__ = "0.89"
+    __version__ = "0.9"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?hellshare\.(?:cz|com|sk|hu|pl)/[^?]*/\d+'

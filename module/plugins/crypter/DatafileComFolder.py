@@ -8,7 +8,7 @@ from ..internal.Crypter import Crypter
 class DatafileComFolder(Crypter):
     __name__ = "DatafileComFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?datafile\.com/f/\w{12}'

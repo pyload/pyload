@@ -6,7 +6,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class FilecloudIoFolder(SimpleCrypter):
     __name__ = "FilecloudIoFolder"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(filecloud\.io|ifile\.it)/_\w+'

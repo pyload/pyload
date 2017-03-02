@@ -10,7 +10,7 @@ from ..internal.XFSAccount import XFSAccount
 class UptoboxCom(XFSAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""

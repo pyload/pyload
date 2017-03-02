@@ -7,7 +7,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class NitroflareComFolder(SimpleCrypter):
     __name__ = "NitroflareComFolder"
     __type__ = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/folder/(?P<USER>\d+)/(?P<ID>[\w=]+)'

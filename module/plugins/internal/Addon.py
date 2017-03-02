@@ -9,7 +9,7 @@ from .Plugin import Plugin
 class Addon(Plugin):
     __name__ = "Addon"
     __type__ = "hook"  # @TODO: Change to `addon` in 0.4.10
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "stable"
 
     __threaded__ = []  # @TODO: Remove in 0.4.10

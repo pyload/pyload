@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class HellspyCz(DeadHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?(?:hellspy\.(?:cz|com|sk|hu|pl)|sciagaj\.pl)(/\S+/\d+)'

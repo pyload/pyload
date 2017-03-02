@@ -23,7 +23,7 @@ def random_with_n_digits(n):
 class MegaRapidoNet(MultiHoster):
     __name__ = "MegaRapidoNet"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?\w+\.megarapido\.net/\?file=\w+'

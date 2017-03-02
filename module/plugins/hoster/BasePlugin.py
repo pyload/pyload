@@ -6,7 +6,7 @@ from .Http import Http
 class BasePlugin(Http):
     __name__ = "BasePlugin"
     __type__ = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

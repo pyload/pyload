@@ -13,7 +13,7 @@ from ..internal.misc import json
 class GoogledriveCom(Hoster):
     __name__ = "GoogledriveCom"
     __type__ = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|(?:uc|open)\?.*id=)(?P<ID>[-\w]+)'

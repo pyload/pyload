@@ -8,7 +8,7 @@ from ..internal.Hoster import Hoster
 class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.4"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?files\.mail\.ru/.+'

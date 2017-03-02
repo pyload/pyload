@@ -8,7 +8,7 @@ from ..internal.Account import Account
 class DatoidCz(Account):
     __name__ = "DatoidCz"
     __type__ = "account"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __description__ = """Datoid.cz account plugin"""

@@ -5,7 +5,7 @@ from ..internal.Addon import Addon
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

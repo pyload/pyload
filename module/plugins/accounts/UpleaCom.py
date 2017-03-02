@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class UpleaCom(Account):
     __name__ = "UpleaCom"
     __type__ = "account"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __description__ = """UpleaCom account plugin"""

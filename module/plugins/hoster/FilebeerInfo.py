@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class FilebeerInfo(DeadHoster):
     __name__ = "FilebeerInfo"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?filebeer\.info/(?!\d*~f)(?P<ID>\w+)'

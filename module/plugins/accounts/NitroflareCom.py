@@ -9,7 +9,7 @@ from ..internal.misc import json
 class NitroflareCom(Account):
     __name__ = "NitroflareCom"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Nitroflare.com account plugin"""

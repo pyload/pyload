@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class VkCom(SimpleHoster):
     __name__ = "VkCom"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?vk\.com/video_ext\.php/\?.+'

@@ -10,7 +10,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class Go4UpCom(SimpleCrypter):
     __name__ = "Go4UpCom"
     __type__ = "crypter"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r'http://go4up\.com/(dl/\w{12}|rd/\w{12}/\d+)'

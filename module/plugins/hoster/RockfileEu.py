@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/\w{12}.html'

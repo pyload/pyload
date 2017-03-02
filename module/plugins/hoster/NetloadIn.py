@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class NetloadIn(DeadHoster):
     __name__ = "NetloadIn"
     __type__ = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?netload\.(in|me)/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'

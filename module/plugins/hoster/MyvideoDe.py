@@ -9,7 +9,7 @@ from ..internal.misc import html_unescape
 class MyvideoDe(Hoster):
     __name__ = "MyvideoDe"
     __type__ = "hoster"
-    __version__ = "0.95"
+    __version__ = "0.96"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?myvideo\.de/watch/'

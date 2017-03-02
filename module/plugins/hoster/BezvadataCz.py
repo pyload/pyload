@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class BezvadataCz(SimpleHoster):
     __name__ = "BezvadataCz"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'

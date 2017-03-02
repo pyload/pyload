@@ -7,7 +7,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+'

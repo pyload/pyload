@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
     __type__ = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __description__ = """Filefactory.com account plugin"""

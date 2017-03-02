@@ -12,7 +12,7 @@ from ..internal.Account import Account
 class WebshareCz(Account):
     __name__ = "WebshareCz"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""

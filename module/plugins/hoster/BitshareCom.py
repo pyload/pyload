@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class BitshareCom(DeadHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)'

@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.69"
+    __version__ = "0.7"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]

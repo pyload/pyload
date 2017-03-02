@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DatoidCz(SimpleHoster):
     __name__ = "DatoidCz"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?datoid\.(?:cz|sk|pl)/(?!slozka)\w{6}'

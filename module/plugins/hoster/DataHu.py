@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DataHu(SimpleHoster):
     __name__ = "DataHu"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?data\.hu/get/\w+'

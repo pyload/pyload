@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class WarserverCz(DeadHoster):
     __name__ = "WarserverCz"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'

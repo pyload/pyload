@@ -9,7 +9,7 @@ from .MegaCoNz import MegaCoNz, MegaCrypto
 class MegacrypterCom(MegaCoNz):
     __name__ = "MegacrypterCom"
     __type__ = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+'

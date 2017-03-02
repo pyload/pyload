@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapiduNet(SimpleHoster):
     __name__ = "RapiduNet"
     __type__ = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})'

@@ -16,7 +16,7 @@ from ..internal.misc import fsjoin, replace_patterns
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
-    __version__ = "3.20"
+    __version__ = "3.21"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.(?:us|to)/(f/|((view|go)\.php\?id=))(?P<ID>.+)'

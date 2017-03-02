@@ -8,7 +8,7 @@ from ..internal.MultiAccount import MultiAccount
 class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "broken"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

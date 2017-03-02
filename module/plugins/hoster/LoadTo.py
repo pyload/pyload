@@ -13,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?load\.to/\w+'

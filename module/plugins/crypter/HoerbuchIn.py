@@ -10,7 +10,7 @@ from ..internal.Crypter import Crypter
 class HoerbuchIn(Crypter):
     __name__ = "HoerbuchIn"
     __type__ = "crypter"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?hoerbuch\.us/(wp/horbucher/\d+/|tp/out\.php\?.+|protection/folder_\d+\.html)'

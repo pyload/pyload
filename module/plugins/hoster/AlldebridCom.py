@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'

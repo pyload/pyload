@@ -9,7 +9,7 @@ from ..internal.XFSHoster import XFSHoster
 class TusfilesNet(XFSHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/\w{12}'

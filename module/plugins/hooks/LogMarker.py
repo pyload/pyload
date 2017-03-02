@@ -9,7 +9,7 @@ from ..internal.misc import seconds_to_nexthour
 class LogMarker(Addon):
     __name__ = "LogMarker"
     __type__ = "hook"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

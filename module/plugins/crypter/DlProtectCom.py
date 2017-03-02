@@ -10,7 +10,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class DlProtectCom(SimpleCrypter):
     __name__ = "DlProtectCom"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect\.com/((en|fr)/)?\w+'

@@ -8,7 +8,7 @@ from ..internal.XFSCrypter import XFSCrypter
 class XFileSharingFolder(XFSCrypter):
     __name__ = "XFileSharingFolder"
     __type__ = "crypter"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

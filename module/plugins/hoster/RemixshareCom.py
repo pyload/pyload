@@ -16,7 +16,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RemixshareCom(SimpleHoster):
     __name__ = "RemixshareCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "testing"
 
     __pattern__ = r'https?://remixshare\.com/(download|dl)/\w+'

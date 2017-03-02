@@ -8,7 +8,7 @@ from ..internal.XFSAccount import XFSAccount
 class EasybytezCom(XFSAccount):
     __name__ = "EasybytezCom"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("mh_activated", "bool", "Use multihoster feature", True),

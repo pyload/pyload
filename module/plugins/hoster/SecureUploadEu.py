@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class SecureUploadEu(XFSHoster):
     __name__ = "SecureUploadEu"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?secureupload\.eu/\w{12}'

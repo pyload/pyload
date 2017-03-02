@@ -7,7 +7,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilejokerNet(XFSHoster):
     __name__ = "FilejokerNet"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filejoker\.net/\w{12}'

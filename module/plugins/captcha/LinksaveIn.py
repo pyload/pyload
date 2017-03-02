@@ -15,7 +15,7 @@ from ..internal.OCR import OCR
 class LinksaveIn(OCR):
     __name__ = "LinksaveIn"
     __type__ = "ocr"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __description__ = """Linksave.in ocr plugin"""

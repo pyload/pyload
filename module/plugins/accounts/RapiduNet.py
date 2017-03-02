@@ -10,7 +10,7 @@ from ..internal.misc import json
 class RapiduNet(Account):
     __name__ = "RapiduNet"
     __type__ = "account"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __description__ = """Rapidu.net account plugin"""

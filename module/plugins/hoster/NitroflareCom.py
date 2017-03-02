@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'

@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SoundcloudCom(SimpleHoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'

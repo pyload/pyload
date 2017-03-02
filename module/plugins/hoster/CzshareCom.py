@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class CzshareCom(SimpleHoster):
     __name__ = "CzshareCom"
     __type__ = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(czshare|sdilej)\.(com|cz)/(\d+/|download\.php\?).+'

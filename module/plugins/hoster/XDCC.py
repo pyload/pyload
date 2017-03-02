@@ -14,7 +14,7 @@ from ..internal.misc import exists, fsjoin
 class XDCC(Hoster):
     __name__ = "XDCC"
     __type__ = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'

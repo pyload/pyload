@@ -14,7 +14,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'

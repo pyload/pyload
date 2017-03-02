@@ -10,7 +10,7 @@ from ..internal.XFSCrypter import XFSCrypter
 class TusfilesNetFolder(XFSCrypter):
     __name__ = "TusfilesNetFolder"
     __type__ = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tusfiles\.net/go/(?P<ID>\w+)'

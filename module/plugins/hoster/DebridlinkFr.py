@@ -16,7 +16,7 @@ def args(**kwargs):
 class DebridlinkFr(MultiHoster):
     __name__ = "DebridlinkFr"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

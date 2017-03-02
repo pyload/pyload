@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class FilerioCom(XFSHoster):
     __name__ = "FilerioCom"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}'

@@ -14,7 +14,7 @@ from ..internal.misc import decode, encode
 class DLC(Container):
     __name__ = "DLC"
     __type__ = "container"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'

@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class UploadStationCom(DeadHoster):
     __name__ = "UploadStationCom"
     __type__ = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadstation\.com/file/(?P<ID>\w+)'

@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})'

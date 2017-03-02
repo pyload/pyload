@@ -10,7 +10,7 @@ from ..internal.Account import Account
 class UploadheroCom(Account):
     __name__ = "UploadheroCom"
     __type__ = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __description__ = """Uploadhero.co account plugin"""

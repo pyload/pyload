@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class MegasharesCom(Account):
     __name__ = "MegasharesCom"
     __type__ = "account"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "testing"
 
     __description__ = """Megashares.com account plugin"""

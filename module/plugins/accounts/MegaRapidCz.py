@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class MegaRapidCz(Account):
     __name__ = "MegaRapidCz"
     __type__ = "account"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __description__ = """MegaRapid.cz account plugin"""

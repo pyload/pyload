@@ -7,7 +7,7 @@ from ..internal.XFSHoster import XFSHoster
 class StreamcloudEu(XFSHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?streamcloud\.eu/\w{12}'

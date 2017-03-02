@@ -7,7 +7,7 @@ from ..internal.Notifier import Notifier
 class PushOver(Notifier):
     __name__ = "PushOver"
     __type__ = "hook"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

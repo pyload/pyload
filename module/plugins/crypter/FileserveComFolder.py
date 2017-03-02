@@ -8,7 +8,7 @@ from ..internal.Crypter import Crypter
 class FileserveComFolder(Crypter):
     __name__ = "FileserveComFolder"
     __type__ = "crypter"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'

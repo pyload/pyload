@@ -8,7 +8,7 @@ from ..internal.Crypter import Crypter
 class UlozToFolder(Crypter):
     __name__ = "UlozToFolder"
     __type__ = "crypter"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl)/(m|soubory)/.+'

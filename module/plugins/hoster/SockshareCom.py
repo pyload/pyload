@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class SockshareCom(DeadHoster):
     __name__ = "SockshareCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?sockshare\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'

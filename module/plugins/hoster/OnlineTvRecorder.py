@@ -12,7 +12,7 @@ from .Http import Http
 class OnlineTvRecorder(Http):
     __name__ = "OnlineTvRecorder"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     # RIPE Database:

@@ -7,7 +7,7 @@ from .SimpleCrypter import SimpleCrypter
 class XFSCrypter(SimpleCrypter):
     __name__ = "XFSCrypter"
     __type__ = "crypter"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

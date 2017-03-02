@@ -8,7 +8,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'

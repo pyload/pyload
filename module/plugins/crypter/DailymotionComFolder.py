@@ -9,7 +9,7 @@ from ..internal.misc import fsjoin, json
 class DailymotionComFolder(Crypter):
     __name__ = "DailymotionComFolder"
     __type__ = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'

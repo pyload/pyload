@@ -6,7 +6,7 @@ from ..internal.Notifier import Notifier
 class AndroidPhoneNotify(Notifier):
     __name__ = "AndroidPhoneNotify"
     __type__ = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

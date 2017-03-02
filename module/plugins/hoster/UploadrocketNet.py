@@ -8,7 +8,7 @@ from ..internal.XFSHoster import XFSHoster
 class UploadrocketNet(XFSHoster):
     __name__ = "UploadrocketNet"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadrocket\.net/\w{12}'

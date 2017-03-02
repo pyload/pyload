@@ -9,7 +9,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

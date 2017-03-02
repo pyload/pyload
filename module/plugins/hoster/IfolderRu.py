@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class IfolderRu(SimpleHoster):
     __name__ = "IfolderRu"
     __type__ = "hoster"
-    __version__ = "0.43"
+    __version__ = "0.44"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www)?(files\.)?(ifolder\.ru|metalarea\.org|rusfolder\.(com|net|ru))/(files/)?(?P<ID>\d+)'

@@ -19,7 +19,7 @@ def xor_decrypt(data, key):
 class MegadyskPlFolder(SimpleCrypter):
     __name__ = "MegadyskPlFolder"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?megadysk\.pl/(?:f|s)/.+'

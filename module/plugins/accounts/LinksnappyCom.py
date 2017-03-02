@@ -9,7 +9,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

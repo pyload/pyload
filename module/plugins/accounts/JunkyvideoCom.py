@@ -6,7 +6,7 @@ from ..internal.XFSAccount import XFSAccount
 class JunkyvideoCom(XFSAccount):
     __name__ = "JunkyvideoCom"
     __type__ = "account"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __description__ = """Junkyvideo.com account plugin"""

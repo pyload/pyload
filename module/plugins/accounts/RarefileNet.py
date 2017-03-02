@@ -6,7 +6,7 @@ from ..internal.XFSAccount import XFSAccount
 class RarefileNet(XFSAccount):
     __name__ = "RarefileNet"
     __type__ = "account"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __description__ = """RareFile.net account plugin"""

@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class HellshareCz(Account):
     __name__ = "HellshareCz"
     __type__ = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """Hellshare.cz account plugin"""

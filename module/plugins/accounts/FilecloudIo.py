@@ -7,7 +7,7 @@ from ..internal.misc import json, set_cookie
 class FilecloudIo(Account):
     __name__ = "FilecloudIo"
     __type__ = "account"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __description__ = """FilecloudIo account plugin"""

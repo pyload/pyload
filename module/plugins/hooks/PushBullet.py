@@ -9,7 +9,7 @@ from ..internal.Notifier import Notifier
 class PushBullet(Notifier):
     __name__ = "PushBullet"
     __type__ = "hook"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

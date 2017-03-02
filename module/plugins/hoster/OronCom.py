@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class OronCom(DeadHoster):
     __name__ = "OronCom"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?oron\.com/\w{12}'

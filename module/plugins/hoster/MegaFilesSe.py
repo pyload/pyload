@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class MegaFilesSe(DeadHoster):
     __name__ = "MegaFilesSe"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?megafiles\.se/\w{12}'

@@ -15,7 +15,7 @@ from ..internal.misc import threaded
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
     __type__ = "hook"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

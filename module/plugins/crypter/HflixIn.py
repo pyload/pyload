@@ -8,7 +8,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class HflixIn(SimpleCrypter):
     __name__ = "HflixIn"
     __type__ = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'http://(www\.)?hflix\.in/\w+'

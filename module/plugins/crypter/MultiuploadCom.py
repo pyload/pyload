@@ -6,7 +6,7 @@ from ..internal.DeadCrypter import DeadCrypter
 class MultiuploadCom(DeadCrypter):
     __name__ = "MultiuploadCom"
     __type__ = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?multiupload\.(com|nl)/\w+'

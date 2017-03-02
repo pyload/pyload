@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DevhostSt(SimpleHoster):
     __name__ = "DevhostSt"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/(?!users/)\w{3}'

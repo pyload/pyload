@@ -12,7 +12,7 @@ from .misc import decode, encode, fsjoin, renice
 class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
-    __version__ = "1.37"
+    __version__ = "1.38"
     __status__ = "testing"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]

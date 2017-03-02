@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class PremiumTo(MultiHoster):
     __name__ = "PremiumTo"
     __type__ = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

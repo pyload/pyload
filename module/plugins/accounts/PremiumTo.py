@@ -6,7 +6,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

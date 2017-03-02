@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class SimplyPremiumCom(MultiHoster):
     __name__ = "SimplyPremiumCom"
     __type__ = "hoster"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'https?://.+simply-premium\.com'

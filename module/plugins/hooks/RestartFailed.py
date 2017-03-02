@@ -6,7 +6,7 @@ from ..internal.Addon import Addon
 class RestartFailed(Addon):
     __name__ = "RestartFailed"
     __type__ = "hook"
-    __version__ = "1.64"
+    __version__ = "1.65"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

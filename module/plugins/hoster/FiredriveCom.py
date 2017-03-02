@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class FiredriveCom(DeadHoster):
     __name__ = "FiredriveCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/(mobile/)?(file|embed)/(?P<ID>\w+)'

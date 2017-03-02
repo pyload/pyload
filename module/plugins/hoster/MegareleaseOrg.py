@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class MegareleaseOrg(DeadHoster):
     __name__ = "MegareleaseOrg"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?megarelease\.org/\w{12}'

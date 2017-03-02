@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class AndroidfilehostCom(SimpleHoster):
     __name__ = "AndroidfilehostCom"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'

@@ -6,7 +6,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class LinkSaveIn(SimpleCrypter):
     __name__ = "LinkSaveIn"
     __type__ = "crypter"
-    __version__ = "2.09"
+    __version__ = "2.1"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?linksave\.in/\w+'

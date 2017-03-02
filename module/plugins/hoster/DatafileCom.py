@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DatafileCom(SimpleHoster):
     __name__ = "DatafileCom"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?datafile\.com/d/(?P<ID>\w{17})'

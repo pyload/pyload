@@ -8,7 +8,7 @@ from ..internal.MultiHoster import MultiHoster
 class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
     __type__ = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'https?://.+rpnet\.biz'

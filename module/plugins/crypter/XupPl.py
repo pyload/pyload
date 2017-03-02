@@ -6,7 +6,7 @@ from ..internal.Crypter import Crypter
 class XupPl(Crypter):
     __name__ = "XupPl"
     __type__ = "crypter"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?xup\.pl/.+'

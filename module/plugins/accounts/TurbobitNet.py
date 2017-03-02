@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form, set_cookie
 class TurbobitNet(Account):
     __name__ = "TurbobitNet"
     __type__ = "account"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __description__ = """TurbobitNet account plugin"""

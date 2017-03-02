@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class SmoozedCom(MultiHoster):
     __name__ = "SmoozedCom"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate

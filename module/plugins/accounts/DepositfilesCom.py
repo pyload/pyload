@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class DepositfilesCom(Account):
     __name__ = "DepositfilesCom"
     __type__ = "account"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __description__ = """Depositfiles.com account plugin"""

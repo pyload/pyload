@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class IfileIt(DeadHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

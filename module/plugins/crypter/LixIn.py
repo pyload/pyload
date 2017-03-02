@@ -9,7 +9,7 @@ from ..internal.Crypter import Crypter
 class LixIn(Crypter):
     __name__ = "LixIn"
     __type__ = "crypter"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'

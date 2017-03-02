@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NarodRu(SimpleHoster):
     __name__ = "NarodRu"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+\-narod\.yandex\.ru)/(?P<ID>\d+)/.+'

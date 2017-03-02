@@ -6,7 +6,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class TinyurlCom(SimpleCrypter):
     __name__ = "TinyurlCom"
     __type__ = "crypter"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(preview\.)?tinyurl\.com/[\w\-]+'

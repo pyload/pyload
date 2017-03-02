@@ -14,7 +14,7 @@ from ..internal.misc import encode
 class RSDF(Container):
     __name__ = "RSDF"
     __type__ = "container"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __pattern__ = r'.+\.rsdf$'

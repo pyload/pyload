@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SpeedyshareCom(SimpleHoster):
     __name__ = "SpeedyshareCom"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(speedyshare\.com|speedy\.sh)/\w+'

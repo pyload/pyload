@@ -16,7 +16,7 @@ def args(**kwargs):
 class DebridlinkFr(MultiAccount):
     __name__ = "DebridlinkFr"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

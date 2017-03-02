@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?uploadhero\.com?/dl/\w+'

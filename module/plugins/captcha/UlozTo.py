@@ -13,7 +13,7 @@ except ImportError:
 class UlozTo(OCR):
     __name__ = "UlozTo"
     __type__ = "captcha"
-    __version__ = "0.03"
+    __version__ = "0.04"
     __status__ = "testing"
 
     __description__ = """UlozTo audio captcha service plugin"""

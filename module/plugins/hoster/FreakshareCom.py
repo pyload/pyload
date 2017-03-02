@@ -10,7 +10,7 @@ from ..internal.misc import seconds_to_midnight
 class FreakshareCom(Hoster):
     __name__ = "FreakshareCom"
     __type__ = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'

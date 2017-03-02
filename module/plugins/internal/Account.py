@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""

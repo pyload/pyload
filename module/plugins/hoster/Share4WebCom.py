@@ -6,7 +6,7 @@ from .UnibytesCom import UnibytesCom
 class Share4WebCom(UnibytesCom):
     __name__ = "Share4WebCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?share4web\.com/get/\w+'

@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class EpicShareNet(DeadHoster):
     __name__ = "EpicShareNet"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?epicshare\.net/\w{12}'

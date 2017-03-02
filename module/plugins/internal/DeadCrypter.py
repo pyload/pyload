@@ -6,7 +6,7 @@ from .Crypter import Crypter
 class DeadCrypter(Crypter):
     __name__ = "DeadCrypter"
     __type__ = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumizeMe(MultiAccount):
     __name__ = "PremiumizeMe"
     __type__ = "account"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

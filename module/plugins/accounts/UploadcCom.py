@@ -6,7 +6,7 @@ from ..internal.XFSAccount import XFSAccount
 class UploadcCom(XFSAccount):
     __name__ = "UploadcCom"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __description__ = """Uploadc.com account plugin"""

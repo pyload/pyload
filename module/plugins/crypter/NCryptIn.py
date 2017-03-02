@@ -12,7 +12,7 @@ from ..internal.Crypter import Crypter
 class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
-    __version__ = "1.42"
+    __version__ = "1.43"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)'

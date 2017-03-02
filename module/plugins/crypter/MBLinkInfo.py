@@ -6,7 +6,7 @@ from ..internal.DeadCrypter import DeadCrypter
 class MBLinkInfo(DeadCrypter):
     __name__ = "MBLinkInfo"
     __type__ = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?mblink\.info/?\?id=(\d+)'

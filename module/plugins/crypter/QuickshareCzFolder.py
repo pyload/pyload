@@ -8,7 +8,7 @@ from ..internal.Crypter import Crypter
 class QuickshareCzFolder(Crypter):
     __name__ = "QuickshareCzFolder"
     __type__ = "crypter"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?quickshare\.cz/slozka-\d+'

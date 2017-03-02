@@ -10,7 +10,7 @@ from ..internal.Crypter import Crypter
 class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
     __type__ = "crypter"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'

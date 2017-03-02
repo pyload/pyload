@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class CyberlockerCh(DeadHoster):
     __name__ = "CyberlockerCh"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?cyberlocker\.ch/\w+'

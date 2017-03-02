@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class PotloadCom(DeadHoster):
     __name__ = "PotloadCom"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?potload\.com/\w{12}'

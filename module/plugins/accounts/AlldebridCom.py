@@ -9,7 +9,7 @@ from ..internal.MultiAccount import MultiAccount
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

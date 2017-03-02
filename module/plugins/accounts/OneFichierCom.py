@@ -12,7 +12,7 @@ from ..internal.Account import Account
 class OneFichierCom(Account):
     __name__ = "OneFichierCom"
     __type__ = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __description__ = """1fichier.com account plugin"""

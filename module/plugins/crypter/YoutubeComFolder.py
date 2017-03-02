@@ -10,7 +10,7 @@ from ..internal.misc import fsjoin, json
 class YoutubeComFolder(Crypter):
     __name__ = "YoutubeComFolder"
     __type__ = "crypter"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|m\.)?youtube\.com/(?P<TYPE>user|playlist|view_play_list)(/|.*?[?&](?:list|p)=)(?P<ID>[\w\-]+)'

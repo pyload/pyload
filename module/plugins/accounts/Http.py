@@ -6,7 +6,7 @@ from ..internal.Account import Account
 class Http(Account):
     __name__ = "Http"
     __type__ = "account"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "testing"
 
     __description__ = """Http dummy account plugin"""

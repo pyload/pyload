@@ -8,7 +8,7 @@ from ..internal.misc import set_cookie
 class ShareonlineBiz(Account):
     __name__ = "ShareonlineBiz"
     __type__ = "account"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __description__ = """Share-online.biz account plugin"""

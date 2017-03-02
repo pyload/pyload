@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class IcyFilesCom(DeadHoster):
     __name__ = "IcyFilesCom"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?icyfiles\.com/(.+)'

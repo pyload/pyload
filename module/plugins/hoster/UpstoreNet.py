@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)'

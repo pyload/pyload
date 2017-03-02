@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class CramitIn(XFSHoster):
     __name__ = "CramitIn"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?cramit\.in/\w{12}'

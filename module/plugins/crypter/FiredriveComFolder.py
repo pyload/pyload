@@ -6,7 +6,7 @@ from ..internal.DeadCrypter import DeadCrypter
 class FiredriveComFolder(DeadCrypter):
     __name__ = "FiredriveComFolder"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(firedrive|putlocker)\.com/share/.+'

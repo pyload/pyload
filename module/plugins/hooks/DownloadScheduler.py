@@ -9,7 +9,7 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

@@ -9,7 +9,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class MultiUpOrg(SimpleCrypter):
     __name__ = "MultiUpOrg"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?multiup\.org/(en/|fr/)?(?P<TYPE>project|download|mirror)/\w+(/\w+)?'

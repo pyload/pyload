@@ -6,7 +6,7 @@ from .Hoster import Hoster
 class DeadHoster(Hoster):
     __name__ = "DeadHoster"
     __type__ = "hoster"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

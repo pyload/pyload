@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DataportCz(SimpleHoster):
     __name__ = "DataportCz"
     __type__ = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?dataport\.cz/file/(.+)'

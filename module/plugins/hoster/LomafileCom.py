@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class LomafileCom(DeadHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "stable"
 
     __pattern__ = r'http://lomafile\.com/\w{12}'

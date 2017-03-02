@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class FilesonicCom(DeadHoster):
     __name__ = "FilesonicCom"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.4"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?filesonic\.com/file/\w+'

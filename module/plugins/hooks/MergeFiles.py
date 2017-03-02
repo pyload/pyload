@@ -12,7 +12,7 @@ from ..internal.misc import fsjoin, threaded
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __type__ = "hook"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]

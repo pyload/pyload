@@ -10,7 +10,7 @@ from ..internal.misc import replace_patterns
 class MirrorcreatorCom(Crypter):
     __name__ = "MirrorcreatorCom"
     __type__ = "crypter"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})'

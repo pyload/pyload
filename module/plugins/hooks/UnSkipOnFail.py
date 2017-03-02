@@ -8,7 +8,7 @@ from ..internal.Addon import Addon
 class UnSkipOnFail(Addon):
     __name__ = "UnSkipOnFail"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]

@@ -9,7 +9,7 @@ from ..internal.misc import encode
 class TXT(Container):
     __name__ = "TXT"
     __type__ = "container"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'

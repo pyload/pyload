@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class MegauploadCom(DeadHoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+'

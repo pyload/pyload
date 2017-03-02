@@ -12,7 +12,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class DevhostStFolder(SimpleCrypter):
     __name__ = "DevhostStFolder"
     __type__ = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?d-h\.st/users/(?P<USER>\w+)(/\?fld_id=(?P<ID>\d+))?'

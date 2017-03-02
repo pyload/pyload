@@ -9,7 +9,7 @@ from ..internal.misc import json
 class AdYouLike(CaptchaService):
     __name__ = "AdYouLike"
     __type__ = "captcha"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""

@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MystoreTo(SimpleHoster):
     __name__ = "MystoreTo"
     __type__ = "hoster"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mystore\.to/dl/.+'

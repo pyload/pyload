@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)'

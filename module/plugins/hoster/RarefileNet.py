@@ -7,7 +7,7 @@ from ..internal.XFSHoster import XFSHoster
 class RarefileNet(XFSHoster):
     __name__ = "RarefileNet"
     __type__ = "hoster"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?rarefile\.net/\w{12}'

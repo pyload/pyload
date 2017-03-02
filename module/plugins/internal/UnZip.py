@@ -12,7 +12,7 @@ from .misc import encode
 class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.23"
+    __version__ = "1.24"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""

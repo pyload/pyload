@@ -10,7 +10,7 @@ from ..internal.misc import encode
 class UserAgentSwitcher(Addon):
     __name__ = "UserAgentSwitcher"
     __type__ = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),

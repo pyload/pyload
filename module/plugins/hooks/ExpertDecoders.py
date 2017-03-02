@@ -16,7 +16,7 @@ from ..internal.misc import threaded
 class ExpertDecoders(Addon):
     __name__ = "ExpertDecoders"
     __type__ = "hook"
-    __version__ = "0.09"
+    __version__ = "0.1"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

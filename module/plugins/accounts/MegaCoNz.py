@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class MegaCoNz(Account):
     __name__ = "MegaCoNz"
     __type__ = "account"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __description__ = """Mega.co.nz account plugin"""

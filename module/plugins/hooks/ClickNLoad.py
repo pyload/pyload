@@ -17,7 +17,7 @@ except ImportError:
 class ClickNLoad(Addon):
     __name__ = "ClickNLoad"
     __type__ = "hook"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),

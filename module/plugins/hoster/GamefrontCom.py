@@ -6,7 +6,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class GamefrontCom(SimpleHoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)'

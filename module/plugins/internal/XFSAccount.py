@@ -11,7 +11,7 @@ from .MultiAccount import MultiAccount
 class XFSAccount(MultiAccount):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),

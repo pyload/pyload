@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class UptoboxCom(XFSHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.29"
+    __version__ = "0.3"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'

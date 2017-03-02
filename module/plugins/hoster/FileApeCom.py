@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class FileApeCom(DeadHoster):
     __name__ = "FileApeCom"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'

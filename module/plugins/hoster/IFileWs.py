@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class IFileWs(DeadHoster):
     __name__ = "IFileWs"
     __type__ = "hoster"
-    __version__ = "0.06"
+    __version__ = "0.07"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?ifile\.ws/\w{12}'

@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class SpeedfileCz(DeadHoster):
     __name__ = "SpeedFileCz"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?speedfile\.cz/.+'

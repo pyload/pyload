@@ -8,7 +8,7 @@ from ..internal.Addon import Addon
 class DeleteFinished(Addon):
     __name__ = "DeleteFinished"
     __type__ = "hook"
-    __version__ = "1.18"
+    __version__ = "1.19"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

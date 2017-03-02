@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class HighWayMe(MultiHoster):
     __name__ = "HighWayMe"
     __type__ = "hoster"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'https?://.+high-way\.my'

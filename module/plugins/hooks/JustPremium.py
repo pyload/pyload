@@ -8,7 +8,7 @@ from ..internal.Addon import Addon
 class JustPremium(Addon):
     __name__ = "JustPremium"
     __type__ = "hook"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

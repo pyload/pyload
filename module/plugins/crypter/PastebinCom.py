@@ -6,7 +6,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class PastebinCom(SimpleCrypter):
     __name__ = "PastebinCom"
     __type__ = "crypter"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https://(?:www\.)?pastebin\.com/(.+i=)?(?P<ID>\w{8})'

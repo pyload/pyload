@@ -9,7 +9,7 @@ from ..internal.CaptchaService import CaptchaService
 class AdsCaptcha(CaptchaService):
     __name__ = "AdsCaptcha"
     __type__ = "captcha"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """AdsCaptcha captcha service plugin"""

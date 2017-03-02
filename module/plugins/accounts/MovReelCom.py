@@ -6,7 +6,7 @@ from ..internal.XFSAccount import XFSAccount
 class MovReelCom(XFSAccount):
     __name__ = "MovReelCom"
     __type__ = "account"
-    __version__ = "0.07"
+    __version__ = "0.08"
     __status__ = "testing"
 
     __description__ = """Movreel.com account plugin"""
