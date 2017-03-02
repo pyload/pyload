@@ -8,7 +8,7 @@ import os
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
 
-from ..Plugin import SkipDownload as Skip
+from module.plugins.Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
 from ..Plugin import Abort, Fail, Reconnect, Retry
 from .misc import (DB, Config, decode, encode, exists, fixurl, format_exc,
@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.7"
+    __version__ = "0.71"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
