@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UnibytesCom(SimpleHoster):
     __name__ = "UnibytesCom"
     __type__ = "hoster"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B'

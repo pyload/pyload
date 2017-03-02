@@ -7,7 +7,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DropboxCom(SimpleHoster):
     __name__ = "DropboxCom"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dropbox\.com/.+'

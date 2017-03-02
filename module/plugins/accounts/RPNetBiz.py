@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class RPNetBiz(MultiAccount):
     __name__ = "RPNetBiz"
     __type__ = "account"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

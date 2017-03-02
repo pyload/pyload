@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class NowVideoSx(Account):
     __name__ = "NowVideoSx"
     __type__ = "account"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __description__ = """NowVideo.at account plugin"""

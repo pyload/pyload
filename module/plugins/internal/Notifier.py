@@ -9,7 +9,7 @@ from .misc import Expose, encode, isiterable
 class Notifier(Addon):
     __name__ = "Notifier"
     __type__ = "hook"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),

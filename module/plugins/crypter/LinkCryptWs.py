@@ -13,7 +13,7 @@ from ..internal.misc import html_unescape, set_cookie
 class LinkCryptWs(Crypter):
     __name__ = "LinkCryptWs"
     __type__ = "crypter"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?linkcrypt\.ws/(dir|container)/(?P<ID>\w+)'

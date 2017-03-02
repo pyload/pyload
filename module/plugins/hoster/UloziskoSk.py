@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
-    __version__ = "0.3"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?ulozisko\.sk/.+'

@@ -8,7 +8,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class CloudzillaToFolder(SimpleCrypter):
     __name__ = "CloudzillaToFolder"
     __type__ = "crypter"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)'

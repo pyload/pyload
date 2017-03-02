@@ -6,7 +6,7 @@ from ..internal.DeadHoster import DeadHoster
 class CloudzerNet(DeadHoster):
     __name__ = "CloudzerNet"
     __type__ = "hoster"
-    __version__ = "0.1"
+    __version__ = "0.11"
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?(cloudzer\.net/file/|clz\.to/(file/)?)\w+'

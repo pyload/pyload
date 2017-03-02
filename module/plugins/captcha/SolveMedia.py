@@ -9,7 +9,7 @@ from ..internal.Plugin import Fail
 class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
     __type__ = "captcha"
-    __version__ = "0.2"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""
