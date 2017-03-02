@@ -9,7 +9,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.62"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -40,7 +40,7 @@ class MultiHoster(SimpleHoster):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
-        return SimpleHoster._log(self, level, plugintype, pluginname, messages)
+        return super(MultiHoster, self)._log(level, plugintype, pluginname, messages)
 
     def setup(self):
         self.chunk_limit = 1
@@ -52,10 +52,10 @@ class MultiHoster(SimpleHoster):
         klass = self.pyload.pluginManager.loadClass("hoster", self.classname)
         self.get_info = klass.get_info
 
-        SimpleHoster.setup_base(self)
+        super(MultiHoster, self).setup_base()
 
     def _prepare(self):
-        SimpleHoster._prepare(self)
+        super(MultiHoster, self)._prepare()
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(
@@ -65,7 +65,7 @@ class MultiHoster(SimpleHoster):
 
     def _process(self, thread):
         try:
-            SimpleHoster._process(self, thread)
+            super(MultiHoster, self)._process(thread)
 
         except Fail, e:
             if self.config.get('revert_failed', True) and \

@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -331,4 +331,4 @@ class MultiAccount(Account):
 
     def removeAccount(self, user):
         self.deactivate()
-        Account.removeAccount(self, user)
+        super(MultiAccount, self).removeAccount(user)

@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -91,7 +91,7 @@ class Hoster(Base):
             self.account = False
             self.user = None  # @TODO: Remove in 0.4.10
         else:
-            Base.load_account(self)
+            super(Hoster, self).load_account()
             # self.restart_free = False
 
     def _process(self, thread):

@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -485,7 +485,7 @@ class Base(Plugin):
 
     def load(self, *args, **kwargs):
         self.check_status()
-        return Plugin.load(self, *args, **kwargs)
+        return super(Base, self).load(*args, **kwargs)
 
     def parse_html_form(self, attr_str="", input_names={}):
         return parse_html_form(attr_str, self.data, input_names)
@@ -500,7 +500,7 @@ class Base(Plugin):
         """
         Clean everything and remove references
         """
-        Plugin.clean(self)
+        super(Base, self).clean()
         for attr in ("account", "html", "pyfile", "thread"):
             if hasattr(self, attr):
                 setattr(self, attr, None)

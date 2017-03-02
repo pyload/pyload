@@ -14,7 +14,7 @@ from .misc import encode, parse_name, parse_size, parse_time, replace_patterns
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.24"
+    __version__ = "2.25"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -137,7 +137,7 @@ class SimpleHoster(Hoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = Hoster.get_info(url)
+        info = super(SimpleHoster, cls).get_info(url)
         info.update(cls.api_info(url))
 
         if not html and info['status'] != 2:
@@ -296,7 +296,7 @@ class SimpleHoster(Hoster):
             self.download(self.link, disposition=self.DISPOSITION)
 
     def _check_download(self):
-        Hoster._check_download(self)
+        super(SimpleHoster, self)._check_download()
         self.check_download()
 
     def check_download(self):
