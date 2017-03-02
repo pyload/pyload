@@ -48,7 +48,7 @@ class MessageBox(QDialog):
         self.setContentsMargins(9, 9, 9, 9)
 
         if noTranslation:
-            self.log.debug9("MessageBox.__init__: without language translation")
+            self.log.debug8("MessageBox.__init__: without language translation")
             global _; _ = str   # language translation dummy
 
         # icon and window title
@@ -153,10 +153,10 @@ class MessageBox(QDialog):
         self.adjustSize()
         if (self.width() + addWidth) > minWidth:
             self.setMinimumWidth(self.width() + addWidth)
-            self.log.debug9("MessageBox.__init__: addWidth applied")
+            self.log.debug8("MessageBox.__init__: addWidth applied")
         else:
             self.setMinimumWidth(minWidth)
-            self.log.debug9("MessageBox.__init__: minWidth applied")
+            self.log.debug8("MessageBox.__init__: minWidth applied")
 
         # line wrap
         if self.width() > maxWidth:
@@ -168,7 +168,7 @@ class MessageBox(QDialog):
             self.textEdit.clear()
             self.textEdit.setText(text) # setText again to update the document geometry
             self.textEdit.setFixedHeight(self.textEdit.document().size().height() + self.textEdit.contentsMargins().top() + self.textEdit.contentsMargins().bottom())
-            self.log.debug9("MessageBox.__init__: maxWidth exceeded, using line wrap mode")
+            self.log.debug8("MessageBox.__init__: maxWidth exceeded, using line wrap mode")
 
         self.adjustSize()
         self.setFixedSize(self.size())  # disallow resizing/maximizing

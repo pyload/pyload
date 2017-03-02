@@ -545,8 +545,9 @@ class main(QObject):
         self.connect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
         self.connect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.connect(self.tray.debugTrayAction,   SIGNAL("triggered()"), self.debugTray)
-            self.connect(self.tray.debugMsgboxAction, SIGNAL("triggered()"), self.debugMsgBoxTest)
+            self.connect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.debugTray)
+            self.connect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
+            self.connect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
         self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.connect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
@@ -564,8 +565,9 @@ class main(QObject):
         self.disconnect(self.tray.addLinksAction,      SIGNAL("triggered()"), self.slotShowAddLinksFromTray)
         self.disconnect(self.tray.exitAction,          SIGNAL("triggered()"), self.slotQuit)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.disconnect(self.tray.debugTrayAction,   SIGNAL("triggered()"), self.debugTray)
-            self.disconnect(self.tray.debugMsgboxAction, SIGNAL("triggered()"), self.debugMsgBoxTest)
+            self.disconnect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.debugTray)
+            self.disconnect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
+            self.disconnect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
         self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
@@ -986,7 +988,7 @@ class main(QObject):
         """
         self.msgBoxOk(text, "C")
 
-    def debugMsgBoxTest(self):
+    def debugMsgBoxTest1(self):
         def msgboxes(line):
             l = line + "1"
             self.msgBox(l, icon, btnSet)
@@ -1013,6 +1015,39 @@ class main(QObject):
         icon = "N"
         btnSet = "YES_NO"
         tests()
+
+    def debugMsgBoxTest2(self):
+        def dm(n):
+            self.log.debug9("main.debugMsgBoxTest2: showing messageBox_%s" % n)
+        # Connector
+        host = "looooooooooooooooooooooooong.hostname.com"
+        port = 66666
+        user = "BananaJoe"
+        password = "tomato"
+        server_version = '42'
+        dm("01"); self.connector.messageBox_01(host, port)
+        dm("02"); self.connector.messageBox_02(host, port)                          # no explicit parent
+        dm("03"); self.connector.messageBox_03(host, port, user, password)          # no explicit parent, class AskForUserAndPassword
+        dm("04"); self.connector.messageBox_04(host, port)
+        dm("05"); self.connector.messageBox_05(host, port)
+        dm("06"); self.connector.messageBox_06(server_version, host, port)
+        # main
+        pid = 536485
+        dm("07"); self.messageBox_07()
+        dm("08"); self.messageBox_08()
+        dm("09"); self.messageBox_09()
+        dm("10"); self.messageBox_10()
+        dm("11"); self.messageBox_11()
+        dm("12"); self.messageBox_12()
+        dm("13"); self.messageBox_13()
+        dm("14"); self.messageBox_14()
+        dm("15"); self.messageBox_15(pid)
+        dm("16"); self.messageBox_16()
+        dm("17"); self.messageBox_17()
+        dm("18"); self.messageBox_18(pid)
+        # ClickNLoadForwarder
+        dm("19"); self.clickNLoadForwarder.messageBox_19()
+        dm("20"); self.clickNLoadForwarder.messageBox_20()
 
     def slotNotificationMessage(self, status, name):
         """
@@ -3507,7 +3542,8 @@ class TrayIcon(QSystemTrayIcon):
             self.contextMenu.addSeparator()
             self.contextDebugMenu = self.contextMenu.addMenu("Debug")
             self.debugTrayAction = self.contextDebugMenu.addAction(_("Tray"))
-            self.debugMsgboxAction = self.contextDebugMenu.addAction(_("MessageBox Test"))
+            self.debugMsgBoxTest1Action = self.contextDebugMenu.addAction(_("MessageBox Test 1"))
+            self.debugMsgBoxTest2Action = self.contextDebugMenu.addAction(_("MessageBox Test 2"))
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)
