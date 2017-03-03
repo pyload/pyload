@@ -384,6 +384,7 @@ class main(QObject):
         self.allowUserActions(False)
         self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+        self.mainWindow.tabs["accounts"]["view"].model.timer.stop()
         self.clickNLoadForwarder.stop()
         self.mainloop.stop()
         self.queue.stop()
