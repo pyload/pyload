@@ -3148,7 +3148,7 @@ class AutomaticReloadingOptions(QDialog):
         hboxCb.addWidget(lbl2)
         hboxCb.addStretch(1)
 
-        self.cbEnabled = QGroupBox(_("Automatic Reloading"))
+        self.cbEnabled = QGroupBox(_("Enable") + " " + _("Automatic Reloading"))
         self.cbEnabled.setCheckable(True)
         self.cbEnabled.setLayout(hboxCb)
 
