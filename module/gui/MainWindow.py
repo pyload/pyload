@@ -355,8 +355,9 @@ class MainWindow(QMainWindow):
         self.actions["add"].setDisabled(disableAdd)
         
         # admin permissions
-        self.mactions["quitcore"].setEnabled(corePermissions["admin"])      # main menu entry: File -> Quit pyLoad Server
-        self.mactions["restartcore"].setEnabled(corePermissions["admin"])   # main menu entry: File -> Restart pyLoad Server
+        if not corePermissions["admin"]:
+            self.mactions["quitcore"].setEnabled(False)      # main menu entry: File -> Quit pyLoad Server
+            self.mactions["restartcore"].setEnabled(False)   # main menu entry: File -> Restart pyLoad Server
     
     def createPopupMenu(self):
         """
