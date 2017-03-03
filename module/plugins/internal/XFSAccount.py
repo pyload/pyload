@@ -5,13 +5,13 @@ import time
 import urlparse
 
 from .misc import parse_html_form, parse_time, set_cookie
-from .MultiAccount import MultiAccount
+from .Account import Account
 
 
-class XFSAccount(MultiAccount):
+class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "stable"
 
     __config__ = [("activated", "bool", "Activated", True),

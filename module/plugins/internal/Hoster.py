@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -158,15 +158,11 @@ class Hoster(Base):
         if resumable is None:
             resumable = self.resume_download
 
-        if isinstance(redirect, int):
+        if type(redirect) == int:
             maxredirs = max(redirect, 1)
 
         elif redirect:
-            maxredirs = int(
-                self.pyload.api.getConfigValue(
-                    "UserAgentSwitcher",
-                    "maxredirs",
-                    "plugin")) or maxredirs  # @TODO: Remove `int` in 0.4.10
+            maxredirs = int(self.config.get("maxredirs", plugin="UserAgentSwitcher")) or maxredirs  # @TODO: Remove `int` in 0.4.10
 
         header = self.load(url, just_header=True)
 
