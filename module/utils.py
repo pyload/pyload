@@ -106,6 +106,11 @@ def freeSpace(folder):
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
         return free_bytes.value
+    elif sys.platform.startswith("freebsd"):
+        from os import statvfs
+
+        s = statvfs(folder)
+        return s.f_frsize * s.f_bavail
     else:
         from os import statvfs
 
