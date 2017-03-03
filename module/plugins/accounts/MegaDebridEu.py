@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from functools import reduce
-
 import pycurl
 from module.network.HTTPRequest import BadHeader
 
-from ..internal.misc import encode, json
+from ..internal.misc import encode, json, reduce
 from ..internal.MultiAccount import MultiAccount
 
 
@@ -16,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

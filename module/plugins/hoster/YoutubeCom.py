@@ -6,13 +6,12 @@ import re
 import subprocess
 import time
 import urllib
-from functools import reduce
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import html_unescape, json, replace_patterns, which
+from ..internal.misc import html_unescape, json, replace_patterns, which, reduce
 from ..Plugin import Abort
 
 
@@ -44,7 +43,7 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.57"
+    __version__ = "0.58"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'

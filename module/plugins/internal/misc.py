@@ -28,16 +28,20 @@ except ImportError:
     import json
 
 try:
+    from functools import reduce
+except ImportError:
+    reduce = reduce
+
+try:
     import send2trash
 except ImportError:
     pass
-
 
 #@TODO: Remove in 0.4.10
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
