@@ -3538,7 +3538,7 @@ class TrayIcon(QSystemTrayIcon):
         self.addLinksAction = self.contextAddMenu.addAction(_("Links"))
         self.addContainerAction = self.contextAddMenu.addAction(_("Container"))
         self.contextMenu.addSeparator()
-        self.exitAction = QAction(QIcon(join(pypath, "icons", "close.png")), _("Exit"), self.contextMenu)
+        self.exitAction = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Exit"), self.contextMenu)
         self.contextMenu.addAction(self.exitAction)
         self.setContextMenu(self.contextMenu)
         if self.log.isEnabledFor(logging.DEBUG9):
