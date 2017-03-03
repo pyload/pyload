@@ -91,6 +91,7 @@ class main(QObject):
         QObject.__init__(self)
         self.app = QApplication(sys.argv)
         self.app.setQuitOnLastWindowClosed(False)
+        self.app.setAttribute(Qt.AA_DontShowIconsInMenus, False)
         self.defAppFont = QApplication.font()
         self.path = pypath
         self.homedir = abspath("")
