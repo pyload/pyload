@@ -176,19 +176,20 @@ class Connector(QObject):
         self.proxy = self.Dummy()
     
     def messageBox_01(self, host, port):
-        err = _("Invalid host name or address!")
-        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        err = _("Invalid hostname or address:")
+        err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_02(self, host, port):
-        err = _("No response from host, wait longer?")
-        err += "\n" + _("Host") + ": " + host + ":" + str(port)
-        msgb = MessageBox(None, err, "W", "YES_NO")
+        err = _("No response from host:")
+        err += "\n" + host + ":" + str(port)
+        err += "\n\n" + _("Wait longer?")
+        msgb = MessageBox(None, err, "Q", "YES_NO")
         return msgb.exec_()
     
     def messageBox_03(self, host, port, user, password):
-        pwboxtxt = _("Please enter correct login credentials for")
-        pwboxtxt += "\n" + _("Host") + ": " + host + ":" + str(port)
+        pwboxtxt = _("Please enter correct login credentials for host:")
+        pwboxtxt += "\n" + host + ":" + str(port)
         self.pwBox.textLabel.setText(pwboxtxt)
         self.pwBox.userLE.setText(user)
         self.pwBox.passwordLE.setText(password)
@@ -196,18 +197,19 @@ class Connector(QObject):
         return self.pwBox.exec_()
     
     def messageBox_04(self, host, port):
-        err = _("No SSL support!")
-        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        err = _("No SSL support to connect to host:")
+        err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_05(self, host, port):
-        err = _("Can't connect to host!")
-        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        err = _("Cannot connect to host:")
+        err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_06(self, server_version, host, port):
-        err = (_("Host server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
-        err += "\n" + _("Host") + ": " + host + ":" + str(port)
+        err = _("Cannot connect to server:")
+        err += "\n" + host + ":" + str(port)
+        err += "\n" + (_("Server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION
         self.emit(SIGNAL("msgBoxError"), err)
     
     def __getattr__(self, attr):
