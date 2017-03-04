@@ -22,7 +22,7 @@ from PyQt4.QtGui import *
 import logging
 from time import time
 from module.PyFile import statusMap
-from module.utils import formatSize
+from module.utils import formatSize, formatSpeed
 from module.gui.Tools import whatsThisFormat
 
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, PackageDoesNotExists, ElementType, DownloadStatus
@@ -560,6 +560,22 @@ class CollectorModel(QAbstractItemModel):
                 self.log.debug2("%s.updateEvent: Package not found, pid:%d" % (self.cname, event.id))
                 self.setDirty(False)
     
+    def getStatus(self, item, speed):
+        """
+            return status str
+        """
+        status = DownloadStatus.Finished
+        if isinstance(item, Package):
+            for child in item.children:
+                if child.data["status"] > status:
+                    status = child.data["status"]
+        else:
+            status = item.data["status"]
+        if speed is None or status == DownloadStatus.Starting or status == DownloadStatus.Decrypting or status == DownloadStatus.Waiting:
+            return self.translateStatus(statusMapReverse[status])
+        else:
+            return "%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed))
+    
     def data(self, index, role=Qt.DisplayRole):
         """
             return cell data
@@ -581,14 +597,7 @@ class CollectorModel(QAbstractItemModel):
                 return QVariant(", ".join(plugins))
             elif index.column() == 2: #Status
                 item = index.internalPointer()
-                status = DownloadStatus.Finished
-                if isinstance(item, Package):
-                    for child in item.children:
-                        if child.data["status"] > status:
-                            status = child.data["status"]
-                else:
-                    status = item.data["status"]
-                return QVariant(self.translateStatus(statusMapReverse[status]))
+                return QVariant(self.getStatus(item, None))
             elif index.column() == 3: #Size
                 item = index.internalPointer()
                 if isinstance(item, Link):

@@ -67,23 +67,22 @@ class OverviewModel(QAbstractListModel):
                 ms += s
             return ms, cs
         
-        def getProgress(p):
-            for c in p.children:
-                if c.data["status"] == DownloadStatus.Processing:
-                    pass # TODO return _("Unpacking"), int(c.data["progress"])
-            return _("Downloading"), self.queue.getProgress(p)
+        #def getProgress(p):
+        #    for c in p.children:
+        #        if c.data["status"] == DownloadStatus.Processing:
+        #            pass # TODO return _("Unpacking"), int(c.data["progress"])
+        #   return _("Downloading"), self.queue.getProgress(p)
         
         d = self.queue._data
         for p in d:
-            status, progress = getProgress(p)
+            progress = self.queue.getProgress(p)
+            status = self.queue.getStatus(p, None)
             maxsize, currentsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
                 eta = (maxsize - (maxsize * (progress/100.0)))/speed
             else:
                 eta = 0
-            if not speed and not progress:
-                status = _("Queued")
             info = {
                 OverviewModel.PackageName: p.data["name"],
                 OverviewModel.Progress: progress,
@@ -154,12 +153,11 @@ class OverviewDelegate(QItemDelegate):
             return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
         
         statusline = QString(_("Parts") + ": %s/%s" % (partsf, parts))
-        if partsf == parts:
-            speedline = _("Finished")
-        elif not status == _("Downloading"):
-            speedline = QString(status)
-        else:
+        if status == _("downloading"):
             speedline = QString(formatEta(eta) + "     " + _("Speed") + ": %s" % formatSpeed(speed))
+        else:
+            speedline = QString(status)
+            speedline.replace(0, 1, speedline.at(0).toTitleCase()) # first letter uppercase
         
         if progress in (0,100):
             sizeline = QString(_("Size") + ": %s" % formatSize(maxSize))

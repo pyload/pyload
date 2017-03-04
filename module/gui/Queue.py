@@ -323,19 +323,8 @@ class QueueModel(CollectorModel):
                 return QVariant(", ".join(plugins))
             elif index.column() == 2: #Status
                 item = index.internalPointer()
-                status = DownloadStatus.Finished
                 speed = self.getSpeed(item)
-                if isinstance(item, Package):
-                    for child in item.children:
-                        if child.data["status"] > status:
-                            status = child.data["status"]
-                else:
-                    status = item.data["status"]
-                
-                if speed is None or status == DownloadStatus.Starting or status == DownloadStatus.Decrypting or status == DownloadStatus.Waiting:
-                    return QVariant(self.translateStatus(statusMapReverse[status]))
-                else:
-                    return QVariant("%s (%s)" % (self.translateStatus(statusMapReverse[status]), formatSpeed(speed)))
+                return QVariant(self.getStatus(item, speed))
             elif index.column() == 3: #Size
                 item = index.internalPointer()
                 if isinstance(item, Link):
