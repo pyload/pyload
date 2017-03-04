@@ -3654,20 +3654,20 @@ class Notification(QObject):
         self.usePynotify = False
 
         try:
-            self.usePynotify = pynotify.init("icon-summary-body")
+            self.usePynotify = pynotify.init(_("pyLoad Client"))
         except:
             self.log.error("Notification: Pynotify initialization failed")
 
     def showMessage(self, body):
         if self.usePynotify:
-            n = pynotify.Notification("pyLoad", body, join(pypath, "icons", "logo.png"))
+            n = pynotify.Notification(_("pyLoad Client"), body, join(pypath, "icons", "logo.png"))
             try:
                 n.set_hint_string("x-canonical-append", "")
             except:
                 pass
             n.show()
         else:
-            self.tray.showMessage("pyLoad", body)
+            self.tray.showMessage(_("pyLoad Client"), body)
 
 if __name__ == "__main__":
     renameProcess('pyLoadGui')
