@@ -1503,10 +1503,11 @@ class main(QObject):
         """
         if not self.corePermissions["ADD"]:
             return
+        nm = name if (name and name.strip()) else "Unnamed Package"
         if queue:
-            pack = self.connector.proxy.addPackage(name, links, Destination.Queue)
+            pack = self.connector.proxy.addPackage(nm, links, Destination.Queue)
         else:
-            pack = self.connector.proxy.addPackage(name, links, Destination.Collector)
+            pack = self.connector.proxy.addPackage(nm, links, Destination.Collector)
         if self.corePermissions["MODIFY"] and password:
             data = {"password": password}
             self.connector.proxy.setPackageData(pack, data)
