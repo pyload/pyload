@@ -721,6 +721,7 @@ class MainWindow(QMainWindow):
             set the toolbar checkbox in view-menu (mainmenu)
         """
         self.mactions["showtoolbar"].setChecked(visible)
+        self.mactions["showspeedlimit"].setEnabled(visible) # disable/greyout menu entry
     
     def slotToggleToolbar(self, checked):
         """
