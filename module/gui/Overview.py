@@ -118,6 +118,7 @@ class OverviewView(QListView):
         self.model = OverviewModel(self, queue)
         self.setModel(self.model)
         
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setAlternatingRowColors(True)
         self.delegate = OverviewDelegate(self)
         self.setItemDelegate(self.delegate)
@@ -170,7 +171,7 @@ class OverviewDelegate(QItemDelegate):
         f.setBold(True)
         painter.setFont(f)
         
-        r = option.rect.adjusted(4, 4, -4, -4)
+        r = option.rect.adjusted(4, 4, -6, -4)
         painter.drawText(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         newr = painter.boundingRect(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
         
@@ -184,7 +185,7 @@ class OverviewDelegate(QItemDelegate):
         newr = painter.boundingRect(r.left(), newr.bottom()+2, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
         newr.setTop(newr.bottom()+8)
         newr.setBottom(newr.top()+20)
-        newr.setRight(self.parent.width()-25)
+        newr.setRight(self.parent.width()-27)
         
         f.setPointSize(10)
         painter.setFont(f)
