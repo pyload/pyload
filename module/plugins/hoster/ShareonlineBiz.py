@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ShareonlineBiz(SimpleHoster):
     __name__ = "ShareonlineBiz"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(share-online\.biz|egoshare\.com)/(download\.php\?id=|dl/)(?P<ID>\w+)'
@@ -69,7 +69,7 @@ class ShareonlineBiz(SimpleHoster):
 
     def handle_captcha(self):
         self.captcha = ReCaptcha(self.pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY, version=1)
 
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
