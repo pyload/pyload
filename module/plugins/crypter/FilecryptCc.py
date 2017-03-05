@@ -17,7 +17,7 @@ from ..internal.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -196,7 +196,7 @@ class FilecryptCc(Crypter):
                         self.pyfile.url,
                         "/Link/%s.html" %
                         _link))
-                link2 = re.search('<iframe noresize src="(.*)"></iframe>', res)
+                link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
                 if link2:
                     res2 = self.load(link2.group(1), just_header=True)
                     self.urls.append(res2['location'])
