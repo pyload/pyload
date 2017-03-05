@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class DatafileCom(SimpleHoster):
     __name__ = "DatafileCom"
     __type__ = "hoster"
-    __version__ = "0.04"
+    __version__ = "0.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?datafile\.com/d/(?P<ID>\w{17})'
@@ -46,7 +46,7 @@ class DatafileCom(SimpleHoster):
         captcha_key = self.captcha.detect_key()
 
         if captcha_key:
-            response, challenge = self.captcha.challenge(captcha_key, version=1)
+            response, challenge = self.captcha.challenge(captcha_key)
 
             post_data = {'doaction': "validateCaptcha",
                          'recaptcha_challenge_field': challenge,
