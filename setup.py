@@ -14,11 +14,9 @@ from __future__ import absolute_import, division, unicode_literals
 
 import os
 import subprocess
-from builtins import dict
 
 import setuptools.command.build_py
-from future import standard_library
-from past.builtins import execfile
+
 from setuptools import setup as _setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
@@ -27,8 +25,6 @@ from setuptools.command.sdist import sdist
 import distutils.cmd
 import distutils.log
 from distutils.cmd import Command
-
-standard_library.install_aliases()
 
 
 __all__ = ['info', 'setup']
@@ -53,7 +49,7 @@ class import_cldr(Command):
 
     # def run(self):
         # subprocess.check_call(
-            # [sys.executable, 'scripts/download_import_cldr.py'])
+        # [sys.executable, 'scripts/download_import_cldr.py'])
 
 
 class Build(setuptools.command.build_py.build_py):
@@ -126,7 +122,7 @@ class Sdist(sdist):
     """
 
     def run(self):
-        compile_webui()
+        # compile_webui()
         self.run_command('compile_catalog')
         sdist.run(self)
 
@@ -142,7 +138,8 @@ def _gen_info():
         'pycurl', 'requests >= 2.0', 'tld', 'validators'
     ]
     tests_require = [
-        'nose', 'requests >= 1.2.2', 'unittest2', 'websocket-client >= 0.8'
+        'future', 'nose', 'requests >= 1.2.2', 'unittest2',
+        'websocket-client >= 0.8'
     ]
     setup_requires = [
         'Babel', 'readme_renderer', 'sphinx >= 1.5'
@@ -169,9 +166,9 @@ def _gen_info():
         'console_scripts': ['pyload = pyLoad:main']
     }
     cmdclass = {
-        'build_py': Build,
-        'develop': Develop,
-        'install': Install,
+        # 'build_py': Build,
+        # 'develop': Develop,
+        # 'install': Install,
         'sdist': Sdist
     }
     message_extractors = {
@@ -179,12 +176,12 @@ def _gen_info():
             ('**.py', 'python', None),
             ('webui/app/scripts/**.js', 'javascript', None)
         ]
-    },
+    }
     classifiers = [
-        "Development Status :: {}".format(STATUS),
+        "Development Status :: {0}".format(STATUS),
         "Environment :: Web Environment",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: {}".format(LICENSE),
+        "License :: OSI Approved :: {0}".format(LICENSE),
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2",
@@ -259,7 +256,7 @@ def _set_win_env():
     if os.name != 'nt':
         return None
     try:
-        subprocess.call('SETX path "%PATH%;{}"'.format(PACKDIR), shell=True)
+        subprocess.call('SETX path "%PATH%;{0}"'.format(PACKDIR), shell=True)
     except Exception:
         pass
 
