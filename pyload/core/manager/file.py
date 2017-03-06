@@ -460,7 +460,7 @@ class FileManager(object):
         if not ids or (pyfile.fid in ids and len(ids) == 1):
             if not pyfile.package().set_finished:
                 self.pyload.log.info(
-                    _("Package finished: {}").format(pyfile.package().name))
+                    _("Package finished: {0}").format(pyfile.package().name))
                 self.pyload.adm.package_finished(pyfile.package())
                 pyfile.package().set_finished = True
 

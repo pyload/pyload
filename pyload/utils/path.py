@@ -137,7 +137,7 @@ def bufsize(path):
         res = os.statvfs(path).f_bsize
     else:
         import ctypes
-        drive = "{}\\".format(splitdrive(abspath(path))[0])
+        drive = "{0}\\".format(splitdrive(abspath(path))[0])
         cluster_sectors = ctypes.c_longlong(0)
         sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),

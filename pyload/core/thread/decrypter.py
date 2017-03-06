@@ -53,7 +53,7 @@ class DecrypterThread(PluginThread):
 
         if links:
             self.pyload.log.info(
-                _("Decrypted {:d} links into package {}").format(len(links), pack.name))
+                _("Decrypted {0:d} links into package {1}").format(len(links), pack.name))
             api.add_links(self.pid, [l.url for l in links])
 
         for p in packages:
@@ -76,7 +76,7 @@ class DecrypterThread(PluginThread):
 
             # updating progress
             self.progress.plugin = name
-            self.progress.name = _("Decrypting {} links").format(
+            self.progress.name = _("Decrypting {0} links").format(
                 len(urls) if len(urls) > 1 else urls[0])
 
             # TODO: dependency check, there is a new error code for this
@@ -87,7 +87,7 @@ class DecrypterThread(PluginThread):
                     plugin_result.extend(LinkStatus(
                         url, url, -1, DownloadStatus.NotPossible, name) for url in urls)
                 self.pyload.log.debug(
-                    "Plugin '{}' for decrypting was not loaded".format(name))
+                    "Plugin '{0}' for decrypting was not loaded".format(name))
             else:
                 try:
                     plugin = klass(self.pyload, password)

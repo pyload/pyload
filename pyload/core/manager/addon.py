@@ -71,7 +71,7 @@ class AddonManager(object):
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.log_error(_("Error when executing {}".format(f)), e.message)
+            plugin.log_error(_("Error when executing {0}".format(f)), e.message)
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -115,18 +115,18 @@ class AddonManager(object):
                         active.append(pluginclass.__name__)
                     else:
                         self.pyload.log.debug(
-                            "Loaded internal plugin: {}".format(pluginclass.__name__))
+                            "Loaded internal plugin: {0}".format(pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 
             except Exception:
                 self.pyload.log.warning(
-                    _("Failed activating {}").format(pluginname))
+                    _("Failed activating {0}").format(pluginname))
                 # self.pyload.print_exc()
 
         self.pyload.log.info(
-            _("Activated addons: {}").format(", ".join(sorted(active))))
-        self.pyload.log.info(_("Deactivated addons: {}").format(
+            _("Activated addons: {0}").format(", ".join(sorted(active))))
+        self.pyload.log.info(_("Deactivated addons: {0}").format(
             ", ".join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
@@ -152,7 +152,7 @@ class AddonManager(object):
         if not pluginclass:
             return None
 
-        self.pyload.log.debug("Plugin loaded: {}".format(plugin))
+        self.pyload.log.debug("Plugin loaded: {0}".format(plugin))
 
         plugin = pluginclass(self.pyload, self)
         self.plugins[pluginclass.__name__].instances.append(plugin)
@@ -172,10 +172,10 @@ class AddonManager(object):
             return None
 
         self.call(addon, "deactivate")
-        self.pyload.log.debug("Plugin deactivated: {}".format(plugin))
+        self.pyload.log.debug("Plugin deactivated: {0}".format(plugin))
 
         # remove periodic call
-        self.pyload.log.debug("Removed callback {}".format(
+        self.pyload.log.debug("Removed callback {0}".format(
             self.pyload.scheduler.cancel(addon.cb)))
 
         # TODO: only delete instances, meta data is lost otherwise

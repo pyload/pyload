@@ -51,7 +51,7 @@ class DownloadApi(BaseApi):
             "http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.pyload.log.info(
-            _("Added package {} as folder {}").format(name, folder))
+            _("Added package {0} as folder {1}").format(name, folder))
         pid = self.pyload.files.add_package(
             name, folder, root, password, site, comment, paused, self.true_primary())
 
@@ -107,7 +107,7 @@ class DownloadApi(BaseApi):
             self.pyload.thm.create_info_thread(hoster, pid)
 
         self.pyload.log.info(
-            (_("Added {:d} links to package") + " #{:d}".format(pid)).format(len(hoster + crypter)))
+            (_("Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()
 
     @requireperm(Permission.Add)
@@ -119,7 +119,7 @@ class DownloadApi(BaseApi):
         :param data: file content
         """
         file = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{}".format(filename))
+            'general', 'storage_folder'), "tmp_{0}".format(filename))
         with io.open(file, mode='wb') as fp:
             fp.write(str(data))
         return self.add_package(fp.name, [fp.name])

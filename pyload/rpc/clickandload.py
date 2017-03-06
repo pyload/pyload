@@ -70,18 +70,18 @@ class CNLHandler(BaseHTTPRequestHandler):
         path = self.path.strip("/").lower()
         # self.wfile.write(path+"\n")
 
-        self.map = [(r"add$", self.add),
-                    (r"addcrypted$", self.addcrypted),
-                    (r"addcrypted2$", self.addcrypted2),
-                    (r"flashgot", self.flashgot),
-                    (r"crossdomain\.xml", self.crossdomain),
-                    (r"checkSupportForUrl", self.checksupport),
-                    (r"jdcheck.js", self.jdcheck),
-                    (r"", self.flash)]
+        self.map = [(r'add$', self.add),
+                    (r'addcrypted$', self.addcrypted),
+                    (r'addcrypted2$', self.addcrypted2),
+                    (r'flashgot', self.flashgot),
+                    (r'crossdomain\.xml', self.crossdomain),
+                    (r'checkSupportForUrl', self.checksupport),
+                    (r'jdcheck.js', self.jdcheck),
+                    (r'', self.flash)]
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?{}".format(r), path):
+            if re.match(r"(flash(got)?/?)?{0}".format(r), path):
                 func = f
                 break
 
@@ -134,7 +134,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
         try:
-            jk = "{} f()".format(jk)
+            jk = "{0} f()".format(jk)
             jk = js2py.eval_js(jk)
         except NameError:
             try:

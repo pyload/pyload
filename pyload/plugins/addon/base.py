@@ -69,7 +69,7 @@ def addon_property(name, desc, default=None, fire_event=True):
     """
 
     # generated name for the attribute
-    h = "__Property{}".format(hash(name) ^ hash(desc))
+    h = "__Property{0}".format(hash(name) ^ hash(desc))
 
     ADDONMANAGER.add_info_property(h, name, desc)
 
@@ -162,7 +162,7 @@ class Addon(Base):
                 self.periodical()
         except Exception as e:
             self.pyload.log.error(
-                _("Error executing addon: {}").format(e.message))
+                _("Error executing addon: {0}").format(e.message))
             # self.pyload.print_exc()
 
         if self.cb:
@@ -170,7 +170,7 @@ class Addon(Base):
                 self.interval, 2, self._periodical)
 
     def __repr__(self):
-        return "<Addon {}>".format(self.__name__)
+        return "<Addon {0}>".format(self.__name__)
 
     def is_activated(self):
         """

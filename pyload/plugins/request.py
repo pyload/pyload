@@ -16,7 +16,7 @@ class ResponseException(Exception):
 
     def __init__(self, code, content=""):
         Exception.__init__(
-            self, "Server response error: {} {}".format(code, content))
+            self, "Server response error: {0} {1}".format(code, content))
         self.code = code
 
 
@@ -91,7 +91,7 @@ class Request(object):
         """
         Adds authentication information to the request.
         """
-        self.options['auth'] = "{}:{}".format(user, pwd)
+        self.options['auth'] = "{0}:{1}".format(user, pwd)
 
     def remove_auth(self):
         """

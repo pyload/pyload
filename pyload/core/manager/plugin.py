@@ -80,7 +80,7 @@ class PluginManager(object):
         """
         if not isinstance(matcher, PluginMatcher):
             raise TypeError(
-                "Expected type of PluginMatcher, got '{}' instead".format(type(matcher)))
+                "Expected type of PluginMatcher, got '{0}' instead".format(type(matcher)))
 
         if matcher in self.matcher:
             self.matcher.remove(matcher)
@@ -103,7 +103,7 @@ class PluginManager(object):
         for url in urls:
             if not isinstance(url, str):
                 self.pyload.log.debug(
-                    "Parsing invalid type {}".format(type(url)))
+                    "Parsing invalid type {0}".format(type(url)))
                 continue
 
             found = False
@@ -210,7 +210,7 @@ class PluginManager(object):
                     return module
                 except Exception as e:
                     self.pyload.log.error(
-                        _("Error importing {}: {}").format(name, e.message))
+                        _("Error importing {0}: {1}").format(name, e.message))
                     # self.pyload.print_exc()
 
     def load_class(self, type_, name):
@@ -223,7 +223,7 @@ class PluginManager(object):
                 return getattr(module, name)
         except AttributeError:
             self.pyload.log.error(
-                _("Plugin does not define class '{}'").format(name))
+                _("Plugin does not define class '{0}'").format(name))
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necessary

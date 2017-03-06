@@ -315,7 +315,7 @@ class Hoster(Base):
                     os.chown(location, uid, gid)
                 except Exception as e:
                     self.pyload.log.warning(
-                        _("Setting User and Group failed: {}").format(e.message))
+                        _("Setting User and Group failed: {0}").format(e.message))
 
         name = self.pyfile.name
 
@@ -335,7 +335,7 @@ class Hoster(Base):
             self.pyfile.size = self.dl.size
 
         if disposition and newname and newname != name:  #: triple check, just to be sure
-            self.pyload.log.info(_("{} saved as {}").format(name, newname))
+            self.pyload.log.info(_("{0} saved as {1}").format(name, newname))
             self.pyfile.name = newname
             filename = os.path.join(location, newname)
 
@@ -357,7 +357,7 @@ class Hoster(Base):
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.pyload.log.warning(
-                    _("Setting User and Group failed: {}").format(e.message))
+                    _("Setting User and Group failed: {0}").format(e.message))
 
         self.last_download = fs_filename
         return self.last_download
@@ -388,7 +388,7 @@ class Hoster(Base):
         with io.open(self.last_download, mode='rb') as fp:
             content = fp.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
-        #self.pyload.log.debug("Content: {}".format(content))
+        #self.pyload.log.debug("Content: {0}".format(content))
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
@@ -446,7 +446,7 @@ class Hoster(Base):
                 raise SkipDownload(pyfile[0])
 
             self.pyload.log.debug(
-                "File {} not skipped, because it does not exists".format(self.pyfile.name))
+                "File {0} not skipped, because it does not exists".format(self.pyfile.name))
 
     def clean(self):
         """

@@ -173,7 +173,7 @@ class PyFile(BaseObject):
     name = property(get_name, set_name)
 
     def __repr__(self):
-        return "<PyFile {}: {}@{}>".format(self.id, self.name, self.pluginname)
+        return "<PyFile {0}: {1}@{2}>".format(self.id, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):

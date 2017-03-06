@@ -135,7 +135,7 @@ class CurlRequest(Request):
             self.c.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:
-                userpwd = "{}:{}".format(proxy['username'], proxy['password'])
+                userpwd = "{0}:{1}".format(proxy['username'], proxy['password'])
                 self.c.setopt(
                     pycurl.PROXYUSERPWD,
                     convert.to_bytes(
@@ -171,7 +171,7 @@ class CurlRequest(Request):
 
         if get:
             get = urlencode(get)
-            url = "{}?{}".format(url, get)
+            url = "{0}?{1}".format(url, get)
 
         self.c.setopt(pycurl.URL, url)
 
@@ -311,7 +311,7 @@ class CurlRequest(Request):
                     encoding = charset[0]
 
         try:
-            #self.pyload.log.debug("Decoded {}".format(encoding))
+            #self.pyload.log.debug("Decoded {0}".format(encoding))
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 
@@ -321,10 +321,10 @@ class CurlRequest(Request):
             # TODO: html_unescape as default
 
         except LookupError:
-            self.pyload.log.debug("No Decoder found for {}".format(encoding))
+            self.pyload.log.debug("No Decoder found for {0}".format(encoding))
         except Exception:
             self.pyload.log.debug(
-                "Error when decoding string from {}".format(encoding))
+                "Error when decoding string from {0}".format(encoding))
 
         return rep
 

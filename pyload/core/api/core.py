@@ -54,7 +54,7 @@ class CoreApi(BaseApi):
         else:
             ws = "ws"
 
-        return "{}://{{}}:{1:d}".format(ws,
+        return "{0}://{{0}}:{1:d}".format(ws,
                                         self.pyload.config.get('rpc', 'port'))
 
     @requireperm(Permission.All)

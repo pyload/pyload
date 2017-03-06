@@ -48,7 +48,7 @@ class WSClient(object):
         if code == 404:
             raise AttributeError("Unknown Method")
         elif code == 500:
-            raise Exception("Remote Exception: {}".format(result))
+            raise Exception("Remote Exception: {0}".format(result))
         elif code == UNAUTHORIZED:
             raise Unauthorized
         elif code == FORBIDDEN:

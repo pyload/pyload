@@ -64,10 +64,10 @@ class SetupAssistant(object):
         if error:  # TODO: errno 44 port already in use
             print(error)
 
-        url = "http://{}:{:d}/".format(
+        url = "http://{0}:{1:d}/".format(
             socket.gethostbyname(socket.gethostname()), web.port)
 
-        print("Setup is running at {}".format(url))
+        print("Setup is running at {0}".format(url))
 
         opened = webbrowser.open_new_tab(url)
         if not opened:
@@ -102,7 +102,7 @@ class SetupAssistant(object):
             return False
 
         print("")
-        print(_("Do you want to change the config path? Current is {}").format(
+        print(_("Do you want to change the config path? Current is {0}").format(
             os.path.abspath("")))
         print(_("If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it"))
         path = self.ask(_("Change config path?"), self.no, bool=True)
@@ -301,7 +301,7 @@ class SetupAssistant(object):
             eval(input())
             exit()
         except Exception as e:
-            print(_("Setting config path failed: {}").format(e.message))
+            print(_("Setting config path failed: {0}").format(e.message))
 
     def ask_lang(self):
         langs = self.config.get_meta_data(
@@ -325,16 +325,16 @@ class SetupAssistant(object):
             info = "("
             for i, answer in enumerate(answers):
                 info += (", " if i != 0 else "") + str((answer ==
-                                                        default and "[{}]".format(answer)) or answer)
+                                                        default and "[{0}]".format(answer)) or answer)
 
             info += ")"
         elif bool:
             if default == self.yes:
-                info = "([{}]/{})".format(self.yes, self.no)
+                info = "([{0}]/{1})".format(self.yes, self.no)
             else:
-                info = "({}/[{}])".format(self.yes, self.no)
+                info = "({0}/[{1}])".format(self.yes, self.no)
         else:
-            info = "[{}]".format(default)
+            info = "[{0}]".format(default)
 
         if password:
             p1 = True
@@ -358,7 +358,7 @@ class SetupAssistant(object):
                     print(_("Passwords did not match"))
 
         while True:
-            input = eval(input(qst + " {}: ".format(info)))
+            input = eval(input(qst + " {0}: ".format(info)))
             input = input.decode(self.stdin_encoding)
 
             if input.strip() == "":

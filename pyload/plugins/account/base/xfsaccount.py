@@ -58,7 +58,7 @@ class XFSPAccount(Account):
                  'premium': premium})
 
     def login(self, user, data, req):
-        html = req.load('{}login.html'.format(self.MAIN_PAGE), decode=True)
+        html = req.load("{0}login.html".format(self.MAIN_PAGE), decode=True)
 
         action, inputs = parse_html_form('name="FL"', html)
         if not inputs:

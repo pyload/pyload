@@ -42,7 +42,7 @@ class InscDict(MutableMapping):
         return iter(key for key, val in self.__dict__.values())
 
     def __str__(self):
-        return """<InscDict {}>""".format(self.__dict__)
+        return """<InscDict {0}>""".format(self.__dict__)
 
     def __eq__(self, other):
         if not isinstance(other, Mapping):
@@ -69,7 +69,7 @@ class HeaderDict(InscDict):
         InscDict.__setitem__(self, key, value.split(','))
 
     def __str__(self):
-        return """<Header {}>""".format(self.__dict__)
+        return """<Header {0}>""".format(self.__dict__)
 
     def list(self):
         """
@@ -79,8 +79,8 @@ class HeaderDict(InscDict):
         for key, val in self.__dict__.values():
             fields = ','.join(val)
             if fields:
-                header.append("{}: {}".format(key, fields))
+                header.append("{0}: {1}".format(key, fields))
             else:
                 # NOTE: curl will remove this header
-                header.append("{}:".format(key))
+                header.append("{0}:".format(key))
         return header

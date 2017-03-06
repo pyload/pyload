@@ -61,7 +61,7 @@ class TestCore(Core):
         self.log = LogStub()
 
     def get_server_version(self):
-        return "TEST_RUNNER on {}".format(strftime("%d %h %Y"))
+        return "TEST_RUNNER on {0}".format(strftime("%d %h %Y"))
 
     def init_logger(self, level):
         # init with empty logger

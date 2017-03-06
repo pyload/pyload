@@ -49,18 +49,18 @@ def get_spec(spec, optional=False):
             ttype = spec[3][1][0].__name__
         else:
             ttype = type_map[spec[3][0]]
-        return "(list, {})".format(ttype)
+        return "(list, {0})".format(ttype)
     elif spec[1] == TType.MAP:
         if spec[3][2] == TType.STRUCT:
             ttype = spec[3][3][0].__name__
         else:
             ttype = type_map[spec[3][2]]
 
-        return "(dict, {}, {})".format(type_map[spec[3][0]], ttype)
+        return "(dict, {0}, {1})".format(type_map[spec[3][0]], ttype)
     else:
         return type_map[spec[1]]
 
-optional_re = "{:d}: +optional +[a-z0-9<>_-]+ +{}"
+optional_re = "{0:d}: +optional +[a-z0-9<>_-]+ +{1}"
 
 
 def main():
@@ -99,7 +99,7 @@ class BaseObject(object):
 \t__slots__ = []
 
 \tdef __str__(self):
-\t\treturn "<{} {}>".format(self.__class__.__name__, ", ".join("{}={}".format(k, getattr(self, k)) for k in self.__slots__))
+\t\treturn "<{0} {1}>".format(self.__class__.__name__, ", ".join("{0}={1}".format(k, getattr(self, k)) for k in self.__slots__))
 
 
 class ExceptionObject(Exception):
@@ -119,14 +119,14 @@ from pyload.core.datatype import *\n
         # generate enums
         for enum in enums:
             name = enum.__name__
-            fp.write("class {}:\n".format(name))
+            fp.write("class {0}:\n".format(name))
 
             for attr in sorted(dir(enum), key=lambda x: getattr(enum, x)):
                 if attr.startswith("_") or attr in ("read", "write"):
                     continue
-                fp.write("\t{} = {}\n".format(attr, getattr(enum, attr)))
+                fp.write("\t{0} = {1}\n".format(attr, getattr(enum, attr)))
 
-            dev.write('\t"{}",\n'.format(name))
+            dev.write("\t"{0}",\n".format(name))
             fp.write("\n")
 
         dev.write("]\n\n")
@@ -137,23 +137,23 @@ from pyload.core.datatype import *\n
             name = klass.__name__
             base = "ExceptionObject" if issubclass(
                 klass, ttypes.TExceptionBase) else "BaseObject"
-            fp.write("class {}({}):\n".format(name, base))
+            fp.write("class {0}({1}):\n".format(name, base))
 
             # No attributes, do not write further info
             if not klass.__slots__:
                 fp.write("\tpass\n\n")
                 continue
 
-            fp.write("\t__slots__ = {}\n\n".format(klass.__slots__))
-            dev.write("\t'{}' : [".format(name))
+            fp.write("\t__slots__ = {0}\n\n".format(klass.__slots__))
+            dev.write("\t'{0}' : [".format(name))
 
             # create init
-            args = ['self'] + ["{}=None".format(x) for x in klass.__slots__]
+            args = ['self'] + ["{0}=None".format(x) for x in klass.__slots__]
             specs = []
 
-            fp.write("\tdef __init__({}):\n".format(", ".join(args)))
+            fp.write("\tdef __init__({0}):\n".format(", ".join(args)))
             for i, attr in enumerate(klass.__slots__):
-                fp.write("\t\tself.{} = {}\n".format(attr, attr))
+                fp.write("\t\tself.{0} = {1}\n".format(attr, attr))
 
                 spec = klass.thrift_spec[i + 1]
                 # assert correct order, so the list of types is enough for
@@ -165,7 +165,7 @@ from pyload.core.datatype import *\n
                     optional_re.format(
                         i + 1, attr), tf, flags=re.I)
                 if optional:
-                    specs.append("(None, {})".format(get_spec(spec)))
+                    specs.append("(None, {0})".format(get_spec(spec)))
                 else:
                     specs.append(get_spec(spec))
 
@@ -183,15 +183,15 @@ from pyload.core.datatype import *\n
 
             func = inspect.getargspec(getattr(Pyload.Iface, name))
 
-            fp.write("\tdef {}({}):\n\t\tpass\n".format(
+            fp.write("\tdef {0}({1}):\n\t\tpass\n".format(
                 name, ", ".join(func.args)))
 
-            spec = getattr(Pyload, "{}_result".format(name)).thrift_spec
+            spec = getattr(Pyload, "{0}_result".format(name)).thrift_spec
             if not spec or not spec[0]:
-                dev.write("\t'{}': None,\n".format(name))
+                dev.write("\t'{0}': None,\n".format(name))
             else:
                 spec = spec[0]
-                dev.write("\t'{}': {},\n".format(name, get_spec(spec)))
+                dev.write("\t'{0}': {1},\n".format(name, get_spec(spec)))
 
         fp.write("\n")
         dev.write("}\n")

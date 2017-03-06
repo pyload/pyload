@@ -15,7 +15,7 @@ for tag, reset, _, _ in list_tags():
     if not tag:
         continue
     globals()[tag] = lambda msg: Color(
-        '{{{}}}{}{{{}}}'.format(tag, msg, reset))
+        "{{{0}}}{1}{{{2}}}".format(tag, msg, reset))
 
 if os.name == 'nt':
     Windows.enable(auto_colors=True, reset_atexit=True)

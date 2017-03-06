@@ -43,5 +43,5 @@ for dir, dirnames, filenames in os.walk(os.path.join(PACKDIR, "pyload")):
             return _test
 
         # generate test methods
-        sig = "test_{}_{}".format(packages[-2], packages[-1])
+        sig = "test_{0}_{1}".format(packages[-2], packages[-1])
         setattr(TestSyntax, sig, meta(imp, sig))

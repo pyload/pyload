@@ -35,7 +35,7 @@ define([], function() {
             enum = getattr(datatype, name)
             values = dict((attr, getattr(enum, attr))
                           for attr in dir(enum) if not attr.startswith("_"))
-            fp.write("\t\t{}: {},\n".format(name, values))
+            fp.write("\t\t{0}: {1},\n".format(name, values))
         fp.write("\t};\n});")
 
 

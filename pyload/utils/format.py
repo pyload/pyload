@@ -46,10 +46,10 @@ def attributes(obj, ignore=None):
 
 def items(obj, ignore=None):
     if ignore is None:
-        return ["{}={}".format(k, v) for k, v in obj.items()]
+        return ["{0}={1}".format(k, v) for k, v in obj.items()]
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        return ["{}={}".format(k, v)
+        return ["{0}={1}".format(k, v)
                 for k, v in obj.items() if k not in ignored]
 
 
@@ -121,10 +121,10 @@ def size(s):
     except NameError:
         for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB'):
             if abs(s) < 1024.0:
-                return "{:3.2f} {}".format(s, unit)
+                return "{0:3.2f} {1}".format(s, unit)
             else:
                 s /= 1024.0
-        return "{:.2f} {}".format(s, 'YiB')
+        return "{0:.2f} {1}".format(s, 'YiB')
 
 
 @iterate
@@ -139,11 +139,11 @@ def time(s):
     days = dt.day - 1 if dt.day else 0
 
     attrlist = ("hour", "minute", "second")
-    timelist = ["{:d} {}s".format(getattr(dt, attr), attr)
+    timelist = ["{0:d} {1}s".format(getattr(dt, attr), attr)
                 for attr in attrlist if getattr(dt, attr)]
     timemsg = ", ".join(timelist)
 
-    return "{} days and {}".format(days, timemsg) if days else timemsg
+    return "{0} days and {1}".format(days, timemsg) if days else timemsg
 
 
 _re_url = re.compile(r'(?<!:)/{2,}')

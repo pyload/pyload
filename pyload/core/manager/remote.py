@@ -27,7 +27,7 @@ class RemoteManager(object):
 
         for b in self.available:
             klass = getattr(
-                __import__("pyload.rpc.{}".format(b.lower()),
+                __import__("pyload.rpc.{0}".format(b.lower()),
                            globals(), locals(), [b.lower()], -1), b
             )
             backend = klass(self)
@@ -36,10 +36,10 @@ class RemoteManager(object):
             try:
                 backend.setup(host, port)
                 self.pyload.log.info(
-                    _("Starting {}: {}:{}").format(b, host, port))
+                    _("Starting {0}: {1}:{2}").format(b, host, port))
             except Exception as e:
                 self.pyload.log.error(
-                    _("Failed loading backend {} | {}").format(b, e.message))
+                    _("Failed loading backend {0} | {1}").format(b, e.message))
                 if self.pyload.debug:
                     print_exc()
             else:

@@ -20,8 +20,8 @@ class CaptchaService(object):
 
 
 class ReCaptcha(object):
-    RECAPTCHA_KEY_PATTERN = r"https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<key>\w+)"
-    RECAPTCHA_KEY_AJAX_PATTERN = r"Recaptcha\.create\s*\(\s*[\"'](?P<key>\w+)[\"']\s*,"
+    RECAPTCHA_KEY_PATTERN = r'https?://(?:www\.)?google\.com/recaptcha/api/challenge\?k=(?P<key>\w+)'
+    RECAPTCHA_KEY_AJAX_PATTERN = r'Recaptcha\.create\s*\(\s*["\'](?P<key>\w+)["\']\s*,'
 
     recaptcha_key = None
 
@@ -57,7 +57,7 @@ class ReCaptcha(object):
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decrypt_captcha("{}image".format(server), get={'c': challenge},
+        return self.plugin.decrypt_captcha("{0}image".format(server), get={'c': challenge},
                                            cookies=True, forceuser=True, imgtype="jpg")
 
 
@@ -76,7 +76,7 @@ class AdsCaptcha(CaptchaService):
         return challenge, result
 
     def result(self, server, challenge):
-        return self.plugin.decrypt_captcha("{}Challenge.aspx".format(server), get={'cid': challenge, 'dummy': random.random()},
+        return self.plugin.decrypt_captcha("{0}Challenge.aspx".format(server), get={'cid': challenge, 'dummy': random.random()},
                                            cookies=True, imgtype="jpg")
 
 
@@ -84,7 +84,7 @@ class SolveMedia(CaptchaService):
 
     def challenge(self, src):
         html = self.plugin.req.load(
-            "http://api.solvemedia.com/papi/challenge.noscript?k={}".format(src), cookies=True)
+            "http://api.solvemedia.com/papi/challenge.noscript?k={0}".format(src), cookies=True)
         try:
             challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="([^"]+)">',
                                   html).group(1)
@@ -96,4 +96,4 @@ class SolveMedia(CaptchaService):
 
     def result(self, challenge):
         return self.plugin.decrypt_captcha(
-            "http://api.solvemedia.com/papi/media?c={}".format(challenge), imgtype="gif")
+            "http://api.solvemedia.com/papi/media?c={0}".format(challenge), imgtype="gif")

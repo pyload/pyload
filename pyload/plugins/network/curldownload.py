@@ -75,7 +75,7 @@ class CurlDownload(Download):
                     # input file
                     fo.seek(
                         self.info.get_chunk_range(i - 1)[1] + 1)  #: seek to beginning of chunk, to get rid of overlapping chunks
-                    fname = format.path("{}.chunk{:d}".format(self.path, i))
+                    fname = format.path("{0}.chunk{1:d}".format(self.path, i))
                     buf = 32 << 10
                     with io.open(fname, mode='rb') as fi:
                         while True:  #: copy in chunks, consumes less memory
@@ -147,7 +147,7 @@ class CurlDownload(Download):
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.add_chunk("{}.chunk0".format(
+            self.info.add_chunk("{0}.chunk0".format(
                 self.path), (0, 0))  #: create an initial entry
 
         self.chunks = []
@@ -216,7 +216,7 @@ class CurlDownload(Download):
                         chunk.verify_header()
                     except ResponseException as e:
                         self.pyload.log.debug(
-                            "Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
+                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -230,14 +230,14 @@ class CurlDownload(Download):
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.pyload.log.debug(
-                            "Chunk {:d} failed: {}".format(chunk.id + 1, ex))
+                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, ex))
                         continue
 
                     try:  #: check if the header implies success, else add it to failed list
                         chunk.verify_header()
                     except ResponseException as e:
                         self.pyload.log.debug(
-                            "Chunk {:d} failed: {}".format(chunk.id + 1, e.message))
+                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, e.message))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -249,7 +249,7 @@ class CurlDownload(Download):
                     # downloaded with initial connection
                     if failed and init not in failed and init.c not in chunks_done:
                         self.pyload.log.error(
-                            _("Download chunks failed, fallback to single connection | {}".format(ex)))
+                            _("Download chunks failed, fallback to single connection | {0}".format(ex)))
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -265,7 +265,7 @@ class CurlDownload(Download):
                         # file
                         init.reset_range()
                         self.info.clear()
-                        self.info.add_chunk("{}.chunk0".format(
+                        self.info.add_chunk("{0}.chunk0".format(
                             self.path), (0, self.size))
                         self.info.save()
                     elif failed:
@@ -317,7 +317,7 @@ class CurlDownload(Download):
         try:
             self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
-            self.pyload.log.debug("Error removing chunk: {}".format(e.message))
+            self.pyload.log.debug("Error removing chunk: {0}".format(e.message))
         finally:
             chunk.close()
 

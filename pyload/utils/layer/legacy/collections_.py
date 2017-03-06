@@ -220,8 +220,8 @@ if sys.version_info[:2] < (2, 7):
             _repr_running[call_key] = 1
             try:
                 if not self:
-                    return '{}()'.format(self.__class__.__name__)
-                return '{}({:r})'.format(
+                    return "{0}()".format(self.__class__.__name__)
+                return '{0}({1:r})'.format(
                     self.__class__.__name__, self.items())
             finally:
                 del _repr_running[call_key]

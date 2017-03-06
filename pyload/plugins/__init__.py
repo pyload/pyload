@@ -56,7 +56,7 @@ class Base(object):
     # Type of the plugin, will be inherited and should not be set!
     __type__ = ""
     #: Regexp pattern which will be matched for download/crypter plugins
-    __pattern__ = r""
+    __pattern__ = r''
     #: Internal addon plugin which is always loaded
     __internal__ = False
     #: When True this addon can be enabled by every user
@@ -115,7 +115,7 @@ class Base(object):
         """
         Retrieves meta data attribute.
         """
-        return getattr(self, "__{}__".format(item))
+        return getattr(self, "__{0}__".format(item))
 
     def log_info(self, *args, **kwargs):
         """
@@ -137,7 +137,7 @@ class Base(object):
 
     def _log(self, level, *args, **kwargs):
         if "sep" in kwargs:
-            sep = "{}".format(kwargs['sep'])
+            sep = "{0}".format(kwargs['sep'])
         else:
             sep = " | "
 
@@ -145,7 +145,7 @@ class Base(object):
         for obj in args:
             strings.append(to_str(obj, obj))
 
-        getattr(self.log, level)("{}: {}".format(
+        getattr(self.log, level)("{0}: {1}".format(
             self.__name__, sep.join(strings)))
 
     def get_name(self):
@@ -259,7 +259,7 @@ class Base(object):
                         'dumps',
                         self.__name__))
 
-            file = os.path.join(self.pyload.profiledir, 'crashes', 'dumps', self.__name__, "{}_line{}.dump.html".format(
+            file = os.path.join(self.pyload.profiledir, 'crashes', 'dumps', self.__name__, "{0}_line{1}.dump.html".format(
                 frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             with io.open(file, mode='wb') as fp:
                 del frame  #: delete the frame or it wont be cleaned
@@ -323,11 +323,11 @@ class Base(object):
         """
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = "{:.2f}".format(time.time())[-6:].replace(".", "")
-        with io.open(os.path.join("tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+        id = "{0:.2f}".format(time.time())[-6:].replace(".", "")
+        with io.open(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
             fp.write(img)
 
-            name = "{}OCR".format(self.__name__)
+            name = "{0}OCR".format(self.__name__)
             has_plugin = name in self.pyload.pgm.get_plugins("internal")
 
             if self.pyload.captcha:
@@ -366,7 +366,7 @@ class Base(object):
 
                 result = task.result
                 self.pyload.log.debug(
-                    "Received captcha result: {}".format(result))
+                    "Received captcha result: {0}".format(result))
 
             if not self.pyload.debug:
                 try:

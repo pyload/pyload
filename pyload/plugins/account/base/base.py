@@ -79,7 +79,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.log_error(_("Invalid config: {}").format(e.message))
+            self.log_error(_("Invalid config: {0}").format(e.message))
             self.config_data = {}
 
         self.init()
@@ -156,12 +156,12 @@ class Account(Base):
             self.valid = True
         except WrongPassword:
             self.log_warning(
-                _("Could not login with account {} | {}").format(self.loginname, _("Wrong Password")))
+                _("Could not login with account {0} | {1}").format(self.loginname, _("Wrong Password")))
             self.valid = False
 
         except Exception as e:
             self.log_warning(
-                _("Could not login with account {} | {}").format(self.loginname, e.message))
+                _("Could not login with account {0} | {1}").format(self.loginname, e.message))
             self.valid = False
             # self.pyload.print_exc()
 
@@ -226,7 +226,7 @@ class Account(Base):
             with closing(self.get_account_request()) as req:
                 self.check_login(req)
                 self.log_info(
-                    _("Get Account Info for {}").format(self.loginname))
+                    _("Get Account Info for {0}").format(self.loginname))
                 try:
                     try:
                         infos = self.load_account_info(req)
@@ -236,7 +236,7 @@ class Account(Base):
                         infos = self.load_account_info(self.loginname, req)
                 except Exception as e:
                     infos = {'error': e.message}
-                    self.log_error(_("Error: {}").format(e.message))
+                    self.log_error(_("Error: {0}").format(e.message))
 
             self.restore_defaults()  #: reset to initial state
             if isinstance(infos, dict):  #: copy result from dict to class
@@ -244,9 +244,9 @@ class Account(Base):
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:
-                        self.log_debug("Unknown attribute {}={}".format(k, v))
+                        self.log_debug("Unknown attribute {0}={1}".format(k, v))
 
-            self.log_debug("Account Info: {}".format(infos))
+            self.log_debug("Account Info: {0}".format(infos))
             self.timestamp = time.time()
             self.pyload.evm.fire("account:loaded", self.to_info_data())
 
@@ -299,7 +299,7 @@ class Account(Base):
                     return False
             except Exception:
                 self.log_warning(
-                    _("Your Time {} has a wrong format, use: 1:22-3:44").format(time_data))
+                    _("Your Time {0} has a wrong format, use: 1:22-3:44").format(time_data))
 
         if 0 <= self.validuntil < time.time():
             return False
@@ -324,7 +324,7 @@ class Account(Base):
             self.log_debug("Deprecated argument user for .empty()", user)
 
         self.log_warning(
-            _("Account {} has not enough traffic, checking again in 30min").format(self.login))
+            _("Account {0} has not enough traffic, checking again in 30min").format(self.login))
 
         self.trafficleft = 0
         self.schedule_refresh(30 * 60)
@@ -334,7 +334,7 @@ class Account(Base):
             self.log_debug("Deprecated argument user for .expired()", user)
 
         self.log_warning(
-            _("Account {} is expired, checking again in 1h").format(user))
+            _("Account {0} is expired, checking again in 1h").format(user))
 
         self.validuntil = time.time() - 1
         self.schedule_refresh(60 * 60)
@@ -343,7 +343,7 @@ class Account(Base):
         """
         Add a task for refreshing the account info to the scheduler.
         """
-        self.log_debug("Scheduled Account refresh for {} in {} seconds".format(
+        self.log_debug("Scheduled Account refresh for {0} in {1} seconds".format(
             self.loginname, time))
         self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
@@ -355,9 +355,9 @@ class Account(Base):
         if self.login_ts + self.login_timeout * 60 < time.time():
             if self.login_ts:  #: separate from fresh login to have better debug logs
                 self.log_debug(
-                    "Reached login timeout for {}".format(self.loginname))
+                    "Reached login timeout for {0}".format(self.loginname))
             else:
-                self.log_info(_("Login with {}").format(self.loginname))
+                self.log_info(_("Login with {0}").format(self.loginname))
 
             self._login(req)
             return False

@@ -95,12 +95,12 @@ class DatabaseJob(object):
         # frame = self.frame.f_back
         output = ""
         # for i in range(5):
-        # output += "\t{}:{}, {}\n".format(
+        # output += "\t{0}:{1}, {2}\n".format(
         # os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
         # frame = frame.f_back
         # del frame
         # del self.frame
-        return "DataBase Job {}:{}\n{}Result: {}".format(
+        return "DataBase Job {0}:{1}\n{2}Result: {3}".format(
             self.fn.__name__, self.args[1:], output, self.result)
 
     def process_job(self):
@@ -236,7 +236,7 @@ class DatabaseBackend(Thread):
 
     def _convert_db(self, v):
         try:
-            return getattr(self, "_convertV{:d}".format(v))()
+            return getattr(self, "_convertV{0:d}".format(v))()
         except Exception:
             return False
 

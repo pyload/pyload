@@ -100,7 +100,7 @@ def addcrypted2():
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     try:
-        jk = "{} f()".format(jk)
+        jk = "{0} f()".format(jk)
         jk = js2py.eval_js(jk)
     except NameError:
         try:

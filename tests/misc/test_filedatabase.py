@@ -63,13 +63,13 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert_links(self):
         for i in range(10000):
-            fid = self.db.add_link("url {}".format(
+            fid = self.db.add_link("url {0}".format(
                 i), "name", "plugin", random.choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.add_links((("url {}".format(i), "plugin")
+            self.db.add_links((("url {0}".format(i), "plugin")
                                for i in range(50)), pid, self.owner)
 
     def test_get_packages(self):
@@ -77,7 +77,7 @@ class TestDatabase(BenchmarkTest):
         n = len(packs)
         assert n == len(self.pids) - 1
 
-        print("Fetched {:d} packages".format(n))
+        print("Fetched {0:d} packages".format(n))
         self.assert_pack(random.choice(packs.values()))
 
     def test_get_files(self):
@@ -85,12 +85,12 @@ class TestDatabase(BenchmarkTest):
         n = len(files)
         assert n >= len(self.pids)
 
-        print("Fetched {:d} files".format(n))
+        print("Fetched {0:d} files".format(n))
         self.assert_file(random.choice(files.values()))
 
     def test_get_files_queued(self):
         files = self.db.get_all_files(state=DownloadState.Unfinished)
-        print("Fetched {:d} files queued".format(len(files)))
+        print("Fetched {0:d} files queued".format(len(files)))
 
     def test_delete(self):
         pid = random.choice(self.pids)
@@ -101,14 +101,14 @@ class TestDatabase(BenchmarkTest):
         pid = random.choice(self.pids)
         packs = self.db.get_all_packages(root=pid)
 
-        print("Package {:d} has {:d} packages".format(pid, len(packs)))
+        print("Package {0:d} has {1:d} packages".format(pid, len(packs)))
         self.assert_pack(random.choice(packs.values()))
 
     def test_get_package_files(self):
         pid = random.choice(self.pids)
         files = self.db.get_all_files(package=pid)
 
-        print("Package {:d} has {:d} files".format(pid, len(files)))
+        print("Package {0:d} has {1:d} files".format(pid, len(files)))
         self.assert_file(random.choice(files.values()))
 
     def test_get_package_data(self, stats=False):
@@ -126,7 +126,7 @@ class TestDatabase(BenchmarkTest):
 
     def test_find_files(self):
         files = self.db.get_all_files(search="1")
-        print("Found {} files".format(len(files)))
+        print("Found {0} files".format(len(files)))
         f = random.choice(files.values())
 
         assert "1" in f.name

@@ -24,7 +24,7 @@ __all__ = ['args', 'chars', 'kwargs', 'pattern', 'truncate', 'uniqify']
 
 @iterate
 def chars(s, chars, repl=''):
-    return re.sub(r'[{}]+'.format(chars), repl, s)
+    return re.sub(r"[{0}]+".format(chars), repl, s)
 
 
 @iterate
@@ -44,7 +44,7 @@ def truncate(s, offset):
     if offset > max_trunc:
         raise ValueError("String too short")
     trunc = (len(s) - offset) // 3
-    return "{}~{}".format(s[:trunc * 2], s[-trunc:])
+    return "{0}~{1}".format(s[:trunc * 2], s[-trunc:])
 
 
 def uniqify(seq):

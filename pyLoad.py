@@ -155,7 +155,7 @@ def _set_console():
     # if not webserver or not webserver.active:
         # return None
     # import webbrowser
-    # url = '{}:{}'.format(webserver.host, webserver.port)
+    # url = "{0}:{1}".format(webserver.host, webserver.port)
     # webbrowser.open_new_tab(url)
 
 

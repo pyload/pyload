@@ -34,7 +34,7 @@ class ApiHandler(AbstractHandler):
             try:
                 line = receive_message(req)
             except TypeError as e:  #: connection closed
-                self.pyload.log.debug("WS Error: {}".format(e.message))
+                self.pyload.log.debug("WS Error: {0}".format(e.message))
                 return self.passive_closing_handshake(req)
 
             self.handle_message(line, req)

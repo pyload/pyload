@@ -60,7 +60,7 @@ class ConfigParser(object):
         if not os.path.exists(self.filename):
             with io.open(self.filename, mode='wb') as fp:
                 fp.write(
-                    "version: {}".format(
+                    "version: {0}".format(
                         convert.from_version(
                             self.version)))
             return None
@@ -74,10 +74,10 @@ class ConfigParser(object):
             pass
 
         if not self.version or version[:-1] != self.version[:-1]:
-            os.rename(self.filename, "{}.old".format(self.filename))
+            os.rename(self.filename, "{0}.old".format(self.filename))
 
         with io.open(self.filename, mode='wb') as fp:
-            fp.write("version: {}".format(convert.from_version(self.version)))
+            fp.write("version: {0}".format(convert.from_version(self.version)))
 
     def parse(self, filename):
         """
@@ -125,16 +125,16 @@ class ConfigParser(object):
             configs.append(fp)
             os.chmod(self.filename, 0o600)
             fp.write(
-                "version: {}\n\n".format(
+                "version: {0}\n\n".format(
                     convert.from_version(
                         self.version)))
 
             for section, data in self.config.items():
-                fp.write("[{}]\n".format(section))
+                fp.write("[{0}]\n".format(section))
 
                 for option, data in data.config.items():
                     value = self.get(section, option)
-                    fp.write('{} = {}\n'.format(option, value))
+                    fp.write("{0} = {1}\n".format(option, value))
 
                 fp.write("\n")
 

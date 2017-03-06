@@ -67,7 +67,7 @@ class XDCCRequest(object):
                 i = 0
                 name_parts = filename.rpartition(".")
                 while True:
-                    newfilename = "{}-{:d}{}{}".format(
+                    newfilename = "{0}-{1:d}{2}{3}".format(
                         name_parts[0], i, name_parts[1], name_parts[2])
                     i += 1
 
@@ -124,7 +124,7 @@ class XDCCRequest(object):
             line = line.rstrip()
             first = line.split()
             if first[0] == "PING":
-                sock.send("PONG {}\r\n".format(first[1]))
+                sock.send("PONG {0}\r\n".format(first[1]))
 
     def abort_downloads(self):
         self.abort = True

@@ -22,19 +22,19 @@ __all__ = [
 class ReadError(KeyError):
 
     def __str__(self):
-        return """<ReadError {}>""".format(self.message)
+        return """<ReadError {0}>""".format(self.message)
 
 
 class WriteError(KeyError):
 
     def __str__(self):
-        return """<WriteError {}>""".format(self.message)
+        return """<WriteError {0}>""".format(self.message)
 
 
 class DeleteError(KeyError):
 
     def __str__(self):
-        return """<DeleteError {}>""".format(self.message)
+        return """<DeleteError {0}>""".format(self.message)
 
 
 class Info(MutableMapping):
@@ -90,7 +90,7 @@ class Info(MutableMapping):
         return iter(self.__dict__)
 
     def __str__(self):
-        return """<Info {}>""".format(self.__dict__)
+        return """<Info {0}>""".format(self.__dict__)
 
     @property
     def readable(self):
@@ -141,7 +141,7 @@ class InscInfo(InscDict, Info):
         InscDict.__delitem__(self, key)
 
     def __str__(self):
-        return """<InscInfo {}>""".format(self.__dict__)
+        return """<InscInfo {0}>""".format(self.__dict__)
 
 
 class SyncInfo(Info):

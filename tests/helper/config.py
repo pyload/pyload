@@ -10,5 +10,5 @@ credentials = ("TestUser", "pwhere")
 webport = 8921
 wsport = 7558
 
-webaddress = "http://localhost:{:d}/api".format(webport)
-wsaddress = "ws://localhost:{:d}/api".format(wsport)
+webaddress = "http://localhost:{0:d}/api".format(webport)
+wsaddress = "ws://localhost:{0:d}/api".format(wsport)

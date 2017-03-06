@@ -23,8 +23,8 @@ class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
 
-        print("{}: {}".format(name, url))
-        log(DEBUG, "{}: {}".format(name, url))
+        print("{0}: {1}".format(name, url))
+        log(DEBUG, "{0}: {1}".format(name, url))
 
         plugin = self.pyload.pgm.get_plugin_class("crypter", name)
         p = plugin(self.pyload, None, "")
@@ -82,7 +82,7 @@ for plugin, urls in plugins.items():
             _test.__name__ = sig
             return _test
 
-        sig = "test_LINK{:d}".format(i)
+        sig = "test_LINK{0:d}".format(i)
         setattr(_testerClass, sig, meta(
             plugin, url, flags.get(url, None), sig))
         print(url)

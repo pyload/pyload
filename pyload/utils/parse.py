@@ -164,7 +164,7 @@ _re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
 def time(value):
     value = value.lower()
     timewords = ("this", "a", "an", "next")
-    pattr = r'({})\s+day|today|daily'.format('|'.join(timewords))
+    pattr = r'({0})\s+day|today|daily'.format('|'.join(timewords))
     m = re.search(pattr, value)
     if m:
         res = to_midnight()

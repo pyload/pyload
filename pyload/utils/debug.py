@@ -25,7 +25,7 @@ __all__ = ['_format_dump', '_format_framestack', '_format_traceback',
 def report(value, path=None):
     frame = inspect.currentframe()
     try:
-        name = "{}_line{}.report".format(
+        name = "{0}_line{1}.report".format(
             frame.f_back.f_code.co_name, frame.f_back.f_lineno)
         file = os.path.join(path or "reports", name)
         with makefile(file, 'wb') as fp:
@@ -42,16 +42,16 @@ def _format_dump(obj):
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
         except Exception as e:
-            attr_dump = "<ERROR WHILE PRINTING VALUE> {}".format(e.message)
+            attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(e.message)
         dump.append((attr_name, attr_dump))
     return dump
 
 
 def format_dump(obj):
-    title = "DUMP {!r}:".format(obj)
-    body = '\n'.join("\t{:20} = {}".format(attr_name, attr_dump)
+    title = "DUMP {0!r}:".format(obj)
+    body = '\n'.join("\t{0:20} = {1}".format(attr_name, attr_dump)
                      for attr_name, attr_dump in _format_dump(obj))
-    return "{}\n{}\n".format(title, body)
+    return "{0}\n{1}\n".format(title, body)
 
 
 def print_dump(obj, file=None):
@@ -72,7 +72,7 @@ def _format_framestack(frame=None, limit=None):
 
         dump = []
         for frame in stack[1:limit]:
-            msg = "Frame {} in {} at line {}"
+            msg = "Frame {0} in {1} at line {2}"
             frame_name = msg.format(frame.f_code.co_name,
                                     frame.f_code.co_filename,
                                     frame.f_lineno)
@@ -81,7 +81,7 @@ def _format_framestack(frame=None, limit=None):
                 try:
                     attr_dump = pprint.pformat(value)
                 except Exception as e:
-                    attr_dump = "<ERROR WHILE PRINTING VALUE> {}".format(
+                    attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(
                         e.message)
                 frame_dump.append((attr_name, attr_dump))
 
@@ -98,13 +98,13 @@ def format_framestack(frame=None, limit=None):
     framestack = _format_framestack(frame, limit)
     stack_desc = []
     for frame_name, frame_dump in framestack:
-        dump = '\n'.join("\t{:20} = {}".format(attr_name, attr_dump)
+        dump = '\n'.join("\t{0:20} = {1}".format(attr_name, attr_dump)
                          for attr_name, attr_dump in frame_dump)
-        stack_desc.append('{}\n{}'.format(frame_name, dump))
+        stack_desc.append("{0}\n{1}".format(frame_name, dump))
 
-    title = "FRAMESTACK {!r}:".format(frame)
+    title = "FRAMESTACK {0!r}:".format(frame)
     body = '\n\n'.join(stack_desc)
-    return "{}\n{}\n".format(title, body)
+    return "{0}\n{1}\n".format(title, body)
 
 
 def print_framestack(frame=None, limit=None, file=None):
@@ -148,7 +148,7 @@ def format_traceback(frame=None, limit=None, offset=None):
     stack, exception = _format_traceback(frame, limit, offset)
     title = "Traceback (most recent call last):"
     body = ''.join(stack + exception)
-    return "{}\n{}\n".format(title, body)
+    return "{0}\n{1}\n".format(title, body)
 
 
 def print_traceback(frame=None, limit=None, file=None):

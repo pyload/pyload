@@ -14,7 +14,7 @@ standard_library.install_aliases()
 class XfilesharingProFolder(Crypter):
     __name__ = "XfilesharingProFolder"
     __type__ = "crypter"
-    __pattern__ = r"http://(?:www\.)?((easybytez|turboupload|uploadville|file4safe|fileband|filebeep|grupload|247upload)\.com|(muchshare|annonhost).net|bzlink.us)/users/.*"
+    __pattern__ = r'http://(?:www\.)?((easybytez|turboupload|uploadville|file4safe|fileband|filebeep|grupload|247upload)\.com|(muchshare|annonhost).net|bzlink.us)/users/.*'
     __version__ = "0.01"
     __description__ = """Generic XfilesharingPro Folder Plugin"""
     __author_name__ = ("zoidberg")
@@ -35,7 +35,7 @@ class XfilesharingProFolder(Crypter):
         # self.log_debug(subfolders)
         for (url, name) in subfolders:
             if self.package:
-                name = "{}/{}".format(self.package.name, name)
+                name = "{0}/{1}".format(self.package.name, name)
             new_links.append(Package(name, [url]))
 
         if not new_links:

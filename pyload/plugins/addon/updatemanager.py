@@ -96,7 +96,7 @@ class UpdateManager(Hook):
 
             self.info['pyload'] = True
             self.log_info(
-                _("***  New pyLoad Version {} available  ***").format(self.version))
+                _("***  New pyLoad Version {0} available  ***").format(self.version))
             self.log_info(
                 _("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
 
@@ -138,7 +138,7 @@ class UpdateManager(Hook):
             else:
                 _type = prefix
 
-            plugins = getattr(self.pyload.pgm, "{}Plugins".format(_type))
+            plugins = getattr(self.pyload.pgm, "{0}Plugins".format(_type))
 
             if name in plugins:
                 if float(plugins[name]['v']) >= float(version):
@@ -147,19 +147,19 @@ class UpdateManager(Hook):
             if name in IGNORE or (_type, name) in IGNORE:
                 continue
 
-            self.log_info(_("New version of {}|{} : {:.2f}").format(
+            self.log_info(_("New version of {0}|{1} : {2:.2f}").format(
                 _type, name, version))
 
             try:
                 content = get_url(url.format(info))
             except Exception as e:
                 self.log_warning(
-                    _("Error when updating {}").format(filename), e.message)
+                    _("Error when updating {0}").format(filename), e.message)
                 continue
 
             m = vre.search(content)
             if not m or m.group(2) != version:
-                self.log_warning(_("Error when updating {}").format(
+                self.log_warning(_("Error when updating {0}").format(
                     name), _("Version mismatch"))
                 continue
 

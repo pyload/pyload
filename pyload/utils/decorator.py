@@ -28,11 +28,11 @@ __all__ = [
 # def wrapper(old_func):
 # def new(self, *args, **kargs):
 # if new_func:
-# self.pyload.log.debug('`{}` has been deprecated, use `{}` instead'.format(
+# self.pyload.log.debug("`{0}` has been deprecated, use `{1}` instead".format(
 # old_func.__name__, new_func.__name__))
 # return new_func(self, *args, **kargs)
 # else:
-# self.pyload.log.error(_('`{}` has been removed').format(old_func.__name__))
+# self.pyload.log.error(_("`{0}` has been removed").format(old_func.__name__))
 # print_traceback()
 # return new
 # return wrapper
@@ -104,7 +104,7 @@ def trycatch(callback):
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
-                msg = 'Error executing `{}` | {}'.format(
+                msg = "Error executing `{0}` | {1}".format(
                     func.__name__, e.message)
                 self.pyload.log.debug(msg)
                 if self.pyload.debug:

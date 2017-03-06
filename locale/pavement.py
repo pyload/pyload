@@ -61,7 +61,7 @@ options(
 # xgettext args
 xargs = ["--language=Python", "--add-comments=L10N",
          "--from-code=utf-8", "--copyright-holder=The pyLoad Team", "--package-name=pyload",
-         "--package-version={}".format(info().version), "--msgid-bugs-address='dev@pyload.net'"]
+         "--package-version={0}".format(info().version), "--msgid-bugs-address='dev@pyload.net'"]
 
 # Modules replace rules
 module_replace = [
@@ -232,7 +232,7 @@ def download_translations(options):
             continue
 
         target = os.path.join(path('locale'), language.basename())
-        print("Copy language {}".format(target))
+        print("Copy language {0}".format(target))
         if target.exists():
             shutil.rmtree(target)
 
@@ -249,7 +249,7 @@ def compile_translations():
             continue
 
         for f in glob(language / 'LC_MESSAGES' / '*.po'):
-            print("Compiling {}".format(f))
+            print("Compiling {0}".format(f))
             call(['msgfmt', '-o', f.replace('.po', '.mo'), f])
 
 
@@ -273,7 +273,7 @@ def virtualenv(options):
 
     call([options.virtual, "--no-site-packages",
           "--python", options.python, options.dir])
-    print("$ source {}/bin/activate".format(options.dir))
+    print("$ source {0}/bin/activate".format(options.dir))
 
 
 @task
@@ -327,14 +327,14 @@ def walk_trans(path, excludes, endings=[".py"]):
 
         for e in endings:
             if f.name.endswith(e):
-                result += "./{}\n".format(f.relpath())
+                result += "./{0}\n".format(f.relpath())
                 break
 
     return result
 
 
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print("Generate {}.pot".format(domain))
+    print("Generate {0}.pot".format(domain))
 
     fp = io.open("includes.txt", "wb")
     if includes:
@@ -346,23 +346,23 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     fp.close()
 
     call(["xgettext", "--files-from=includes.txt",
-          "--default-domain={}".format(domain)] + xargs + xxargs)
+          "--default-domain={0}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
-    with io.open("{}.po".format(domain), "rb") as fp:
+    with io.open("{0}.po".format(domain), "rb") as fp:
         content = fp.read()
 
-    path("{}.po".format(domain)).remove()
+    path("{0}.po".format(domain)).remove()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
-    with io.open("locale/{}.pot".format(domain), "wb") as fp:
+    with io.open("locale/{0}.pot".format(domain), "wb") as fp:
         fp.write(content)
 
 
 def makehtml(domain, p):
     """ Parses entries from html and append them to existing pot file"""
 
-    pot = path("locale") / "{}.pot".format(domain)
+    pot = path("locale") / "{0}.pot".format(domain)
 
     with io.open(pot, 'rb') as fp:
         content = fp.readlines()
@@ -393,8 +393,8 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append('msgid "{}"\n'.format(key))
-                        content.append('msgid_plural "{}"\n'.format(keyp))
+                        content.append("msgid "{0}"\n".format(key))
+                        content.append("msgid_plural "{0}"\n".format(keyp))
                         content.append('msgstr[0] ""\n')
                         content.append('msgstr[1] ""\n')
                         msgids[key] = len(content) - 4
@@ -404,12 +404,12 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append('msgid "{}"\n'.format(key))
+                        content.append("msgid "{0}"\n".format(key))
                         content.append('msgstr ""\n')
                         msgids[key] = len(content) - 2
 
                 if key:
-                    content.insert(msgids[key], "#: {}:{:d}\n".format(f, i))
+                    content.insert(msgids[key], "#: {0}:{1:d}\n".format(f, i))
                     msgids[key] += 1
 
         with io.open(pot, 'wb') as fp:

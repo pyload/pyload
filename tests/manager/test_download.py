@@ -52,8 +52,8 @@ class TestDownloadManager(BenchmarkTest):
         for user in (admin_user, normal_user):
             for i in range(self.PACKAGES):
                 pid = self.files.add_package(
-                    "name {:d}", "folder", -1, "", "", "", False, user.uid)
-                self.files.add_links((("url{:d}".format(i), "plugin{:d}".format(
+                    "name {0:d}", "folder", -1, "", "", "", False, user.uid)
+                self.files.add_links((("url{0:d}".format(i), "plugin{0:d}".format(
                     i % self.PLUGINS)) for i in range(self.LINKS)), pid, user.uid)
 
     def test_simple(self):
@@ -62,7 +62,7 @@ class TestDownloadManager(BenchmarkTest):
 
     def test_empty(self):
         assert not self.db.get_jobs(
-            "plugin{:d}".format(i) for i in range(self.PLUGINS))
+            "plugin{0:d}".format(i) for i in range(self.PLUGINS))
 
 
 if __name__ == '__main__':

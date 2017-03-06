@@ -233,7 +233,7 @@ class DownloadManager(object):
         # this plugin does not exits
         if plugin is None:
             self.pyload.log.error(
-                _("Plugin '{}' does not exists").format(info.download.plugin))
+                _("Plugin '{0}' does not exists").format(info.download.plugin))
             self.pyload.files.set_download_status(
                 info.fid, DownloadStatus.Failed)
             return False
@@ -250,7 +250,7 @@ class DownloadManager(object):
             self.start_decrypter_thread(info)
         else:
             self.pyload.log.error(
-                _("Plugin type '{}' can't be used for downloading").format(plugin))
+                _("Plugin type '{0}' can't be used for downloading").format(plugin))
 
         return False
 
@@ -289,7 +289,7 @@ class DownloadManager(object):
         old_ip = local_addr()
 
         self.pyload.evm.fire("reconnect:before", old_ip)
-        self.pyload.log.debug("Old IP: {}".format(old_ip))
+        self.pyload.log.debug("Old IP: {0}".format(old_ip))
 
         try:
             subprocess.call(
@@ -311,7 +311,7 @@ class DownloadManager(object):
         if not old_ip or old_ip == ip:
             self.pyload.log.warning(_("Reconnect not successful"))
         else:
-            self.pyload.log.info(_("Reconnected, new IP: {}").format(ip))
+            self.pyload.log.info(_("Reconnected, new IP: {0}").format(ip))
 
         self.reconnecting.clear()
 

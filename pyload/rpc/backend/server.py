@@ -197,7 +197,7 @@ class _StandaloneRequest(object):
 
         if drained_data:
             self._logger.debug(
-                'Drained data following close frame: {!r}'.format(drained_data))
+                'Drained data following close frame: {0!r}'.format(drained_data))
 
 
 def _import_ssl():
@@ -278,7 +278,7 @@ def _alias_handlers(dispatcher, websock_handlers_map_file):
                 continue
             m = re.match('(\S+)\s+(\S+)', line)
             if not m:
-                logging.warning(_('Wrong format in map file: {}').format(line))
+                logging.warning(_("Wrong format in map file: {0}").format(line))
                 continue
             try:
                 dispatcher.add_resource_path_alias(
@@ -347,7 +347,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
             try:
                 socket_ = socket.socket(family, socktype)
             except Exception as e:
-                self._logger.info(_('Skip by failure: {}').format(e.message))
+                self._logger.info(_("Skip by failure: {0}").format(e.message))
                 continue
             server_options = self.websocket_server_options
             if server_options.use_tls:
@@ -384,7 +384,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
             try:
                 socket_.bind(self.server_address)
             except Exception as e:
-                self._logger.info(_('Skip by failure: {}').format(e.message))
+                self._logger.info(_("Skip by failure: {0}").format(e.message))
                 socket_.close()
                 failed_sockets.append(socketinfo)
             if self.server_address[1] == 0:
@@ -396,7 +396,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
                     self.server_name, socket_.getsockname()[1])
                 self.server_port = self.server_address[1]
                 self._logger.info(
-                    _('Port {:d} is assigned').format(self.server_port))
+                    _('Port {0:d} is assigned').format(self.server_port))
 
         for socketinfo in failed_sockets:
             self._sockets.remove(socketinfo)
@@ -410,11 +410,11 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 
         for socketinfo in self._sockets:
             socket_, addrinfo = socketinfo
-            self._logger.debug('Listen on: {}'.format(addrinfo))
+            self._logger.debug("Listen on: {0}".format(addrinfo))
             try:
                 socket_.listen(self.request_queue_size)
             except Exception as e:
-                self._logger.info(_('Skip by failure: {}').format(e.message))
+                self._logger.info(_("Skip by failure: {0}").format(e.message))
                 socket_.close()
                 failed_sockets.append(socketinfo)
 
@@ -432,7 +432,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         """
         for socketinfo in self._sockets:
             socket_, addrinfo = socketinfo
-            self._logger.info(_('Close on: {}').format(addrinfo))
+            self._logger.info(_("Close on: {0}").format(addrinfo))
             socket_.close()
 
     def fileno(self):
@@ -448,7 +448,7 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
         Override SocketServer.handle_error.
         """
         self._logger.error(
-            'Exception in processing request from: {}\n{}'.format(
+            "Exception in processing request from: {0}\n{1}".format(
                 client_address, util.get_stack_trace())
         )
 
@@ -467,13 +467,13 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
                 try:
                     accepted_socket.do_handshake()
                 except ssl.SSLError as e:
-                    self._logger.debug('{}'.format(e.message))
+                    self._logger.debug("{0}".format(e.message))
                     raise
 
                 # Print cipher in use. Handshake is done on accept.
-                self._logger.debug('Cipher: {}'.format(
+                self._logger.debug("Cipher: {0}".format(
                     accepted_socket.cipher()))
-                self._logger.debug('Client cert: {}'.format(
+                self._logger.debug("Client cert: {0}".format(
                     accepted_socket.getpeercert()))
             elif server_options.tls_module == _TLS_BY_PYOPENSSL:
                 # We cannot print(the cipher in use. pyOpenSSL does not provide)
@@ -509,11 +509,11 @@ class WebSocketServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
                 except OpenSSL.SSL.Error as e:
                     # Set errno part to 1 (SSL_ERROR_SSL) like the ssl module
                     # does.
-                    self._logger.debug('{!r}'.format(e))
+                    self._logger.debug('{0!r}'.format(e))
                     raise socket.error(1, repr(e))
                 cert = accepted_socket.get_peer_certificate()
                 self._logger.debug(
-                    'Client cert subject: {}'.format(
+                    "Client cert subject: {0}".format(
                         cert.get_subject().get_components())
                 )
                 accepted_socket = _StandaloneSSLConnection(accepted_socket)
@@ -642,7 +642,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
 
         host, port, resource = http_header_util.parse_uri(self.path)
         if resource is None:
-            self._logger.info(_('Invalid URI: {}').format(self.path))
+            self._logger.info(_("Invalid URI: {0}").format(self.path))
             self._logger.info(_('Fallback to CGIHTTPRequestHandler'))
             return False
         server_options = self.server.websocket_server_options
@@ -650,14 +650,14 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
             validation_host = server_options.validation_host
             if validation_host is not None and host != validation_host:
                 self._logger.info(
-                    _('Invalid host: {:d} (expected: {})').format(host, validation_host))
+                    _('Invalid host: {0:d} (expected: {1})').format(host, validation_host))
                 self._logger.info(_('Fallback to CGIHTTPRequestHandler'))
                 return False
         if port is not None:
             validation_port = server_options.validation_port
             if validation_port is not None and port != validation_port:
                 self._logger.info(
-                    _('Invalid port: {:d} (expected: {})').format(port, validation_port))
+                    _('Invalid port: {0:d} (expected: {1})').format(port, validation_port))
                 self._logger.info(_('Fallback to CGIHTTPRequestHandler'))
                 return False
         self.path = resource
@@ -669,12 +669,12 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
             # we do not have request handlers.
             if not self._options.dispatcher.get_handler_suite(self.path):
                 self._logger.info(
-                    _('No handler for resource: {}').format(self.path))
+                    _("No handler for resource: {0}").format(self.path))
                 self._logger.info(_('Fallback to CGIHTTPRequestHandler'))
                 return False
         except dispatch.DispatchException as e:
             self._logger.info(
-                _('Dispatch failed for error: {}').format(e.message))
+                _("Dispatch failed for error: {0}").format(e.message))
             self.send_error(e.status)
             return False
 
@@ -691,7 +691,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
                     strict=self._options.strict)
             except handshake.VersionException as e:
                 self._logger.info(
-                    _('Handshake failed for version error: {}').format(e.message))
+                    _("Handshake failed for version error: {0}").format(e.message))
                 self.send_response(common.HTTP_STATUS_BAD_REQUEST)
                 self.send_header(common.SEC_WEBSOCKET_VERSION_HEADER,
                                  e.supported_versions)
@@ -700,21 +700,21 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
             except handshake.HandshakeException as e:
                 # Handshake for ws(s) failed.
                 self._logger.info(
-                    _('Handshake failed for error: {}').format(e.message))
+                    _("Handshake failed for error: {0}").format(e.message))
                 self.send_error(e.status)
                 return False
 
             request._dispatcher = self._options.dispatcher
             self._options.dispatcher.transfer_data(request)
         except handshake.AbortedByUserException as e:
-            self._logger.info(_('Aborted: {}').format(e.message))
+            self._logger.info(_("Aborted: {0}").format(e.message))
         return False
 
     def log_request(self, code='-', size='-'):
         """
         Override BaseHTTPServer.log_request.
         """
-        self._logger.info(_('"{}" {} {}').format(self.requestline, code, size))
+        self._logger.info(_("\"{0}\" {1} {2}").format(self.requestline, code, size))
 
     def log_error(self, *args):
         """
@@ -724,7 +724,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
         # Despite the name, this method is for warnings than for errors.
         # For example, HTTP status code is logged by this method.
         self._logger.warning(
-            _('{} - {}').format(self.address_string(), args[0] % args[1:]))
+            _("{0} - {1}").format(self.address_string(), args[0] % args[1:]))
 
     def is_cgi(self):
         """
@@ -751,7 +751,7 @@ class WebSocketRequestHandler(http.server.CGIHTTPRequestHandler):
 
 
 def _get_logger_from_class(c):
-    return logging.getLogger('{}.{}'.format(c.__module__, c.__name__))
+    return logging.getLogger("{0}.{1}".format(c.__module__, c.__name__))
 
 
 def _configure_logging(options):
@@ -871,7 +871,7 @@ def _main(args=None):
                 sys.exit(1)
         else:
             logging.critical(
-                _('Invalid --tls-module option: {}').format(options.tls_module))
+                _("Invalid --tls-module option: {0}").format(options.tls_module))
             sys.exit(1)
 
         if not options.private_key or not options.certificate:
@@ -904,7 +904,7 @@ def _main(args=None):
         options.scan_dir = options.websock_handlers
 
     if options.use_basic_auth:
-        options.basic_auth_credential = 'Basic {}'.format(
+        options.basic_auth_credential = "Basic {0}".format(
             base64.b64encode(options.basic_auth_credential)
         )
 
@@ -917,8 +917,8 @@ def _main(args=None):
         server = WebSocketServer(options)
         server.serve_forever()
     except Exception as e:
-        logging.critical(_('mod_pywebsocket: {}').format(e.message))
-        logging.critical(_('mod_pywebsocket: {}').format(
+        logging.critical(_("mod_pywebsocket: {0}").format(e.message))
+        logging.critical(_("mod_pywebsocket: {0}").format(
             util.get_stack_trace()))
         sys.exit(1)
 

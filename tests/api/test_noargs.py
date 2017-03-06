@@ -30,9 +30,9 @@ for name in dir(AbstractApi):
         def meta_test(name):  #: retain local scope
             def test(self):
                 getattr(self.api, name)()
-            test.__name__ = "test_{}".format(name)
+            test.__name__ = "test_{0}".format(name)
             return test
 
-        setattr(TestNoArgs, "test_{}".format(name), meta_test(name))
+        setattr(TestNoArgs, "test_{0}".format(name), meta_test(name))
 
         del meta_test

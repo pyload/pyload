@@ -21,8 +21,8 @@ class Input(object):
         self.data = data
 
     def __str__(self):
-        return "<{} {}>".format(self.__class__.__name__, ", ".join(
-            "{}={}".format(k, getattr(self, k)) for k in self.__slots__))
+        return "<{0} {1}>".format(self.__class__.__name__, ", ".join(
+            "{0}={1}".format(k, getattr(self, k)) for k in self.__slots__))
 
 
 class InputType(IntFlag):

@@ -164,7 +164,7 @@ class FileMethods(DatabaseMethods):
         arg = []
 
         if state is not None and state != DownloadState.All:
-            qry += 'dlstatus IN ({}) AND '.format(statestring(state))
+            qry += "dlstatus IN ({0}) AND ".format(statestring(state))
         if owner is not None:
             qry += 'owner=? AND '
             arg.append(owner)
@@ -173,7 +173,7 @@ class FileMethods(DatabaseMethods):
             arg.append(package)
             qry += 'package=? AND '
         if search is not None:
-            search = "%%{}%%".format(search.strip("%"))
+            search = "%%{0}%%".format(search.strip("%"))
             arg.append(search)
             qry += "name LIKE ? "
 
@@ -202,7 +202,7 @@ class FileMethods(DatabaseMethods):
         Return matching file names for pattern, useful for search suggestions.
         """
         qry = 'SELECT name FROM files WHERE name LIKE ?'
-        args = ["%%{}%%".format(pattern.strip("%"))]
+        args = ["%%{0}%%".format(pattern.strip("%"))]
         if owner:
             qry += " AND owner=?"
             args.append(owner)
@@ -435,7 +435,7 @@ class FileMethods(DatabaseMethods):
         """
         Return pyfile ids, which are suitable for download and do not use a occupied plugin.
         """
-        cmd = "({})".format(", ".join("'{}'".format(x) for x in occ))
+        cmd = "({0})".format(", ".join("'{0}'".format(x) for x in occ))
 
         # dlstatus in online, queued, occupied | package status = ok
         cmd = ("SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "

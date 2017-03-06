@@ -170,7 +170,7 @@ def set_console_title(value):
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
-        stdout.write("\x1b]2;{}\x07".format(title))
+        stdout.write("\x1b]2;{0}\x07".format(title))
 
 
 def set_process_group(value):

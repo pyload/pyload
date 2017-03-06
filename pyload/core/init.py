@@ -71,14 +71,14 @@ class Restart(Exception):
     __slots__ = []
 
     def __str__(self):
-        return """<RestartSignal {}>""".format(self.message)
+        return """<RestartSignal {0}>""".format(self.message)
 
 
 class Shutdown(Exception):
     __slots__ = []
 
     def __str__(self):
-        return """<ShutdownSignal {}>""".format(self.message)
+        return """<ShutdownSignal {0}>""".format(self.message)
 
 
 # TODO:
@@ -226,7 +226,7 @@ class Core(Process):
             install_translation('core', localedir, [language])
         except (IOError, OSError):
             self.log.warning(
-                _("Unable to load `{}` language, use default").format(language))
+                _("Unable to load `{0}` language, use default").format(language))
             install_translation('core', localedir, fallback=True)
 
     def _init_debug(self, debug):
@@ -323,7 +323,7 @@ class Core(Process):
                 fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError as e:
             if e.errno != errno.EAGAIN:
-                e = 'A pyLoad instance using profile `{}` is already running'.format(
+                e = "A pyLoad instance using profile `{0}` is already running".format(
                     self.profiledir)
             raise IOError(e)
 
@@ -409,10 +409,10 @@ class Core(Process):
         storage_folder = self.config.get('general', 'storage_folder')
         if not storage_folder:
             storage_folder = os.path.join(USERDIR, 'Downloads')
-        self.log.debug("Storage: {}".format(storage_folder))
+        self.log.debug("Storage: {0}".format(storage_folder))
         makedirs(storage_folder)
         space_size = format.size(availspace(storage_folder))
-        self.log.info(_("Available storage space: {}").format(space_size))
+        self.log.info(_("Available storage space: {0}").format(space_size))
 
     def _workloop(self):
         self.thm.pause = False  # NOTE: Recheck...
@@ -445,11 +445,11 @@ class Core(Process):
         try:
             self.log.info(_("Starting pyLoad ..."))
             self.log.info(
-                _("Version: {}").format(
+                _("Version: {0}").format(
                     convert.from_version(
                         self.version)))
-            self.log.info(_("Profile: {}").format(self.profiledir))
-            self.log.debug("Tempdir: {}".format(self.tmpdir))
+            self.log.info(_("Profile: {0}").format(self.profiledir))
+            self.log.debug("Tempdir: {0}".format(self.tmpdir))
 
             self._start_interface(webui, rpc)
             self._init_storage()

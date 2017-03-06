@@ -129,7 +129,7 @@ class InfoThread(DecrypterThread):
         pluginname = plugin.__name__.split(".")[-1]
 
         self.progress.plugin = pluginname
-        self.progress.name = _("Checking {:d} links").format(len(urls))
+        self.progress.name = _("Checking {0:d} links").format(len(urls))
 
         # final number of links to be checked
         done = self.progress.done + len(urls)
@@ -144,13 +144,13 @@ class InfoThread(DecrypterThread):
 
             if cached:
                 self.manager.log.debug(
-                    "Fetched {:d} links from cache for {}".format(len(cached), pluginname))
+                    "Fetched {0:d} links from cache for {1}".format(len(cached), pluginname))
                 self.progress.done += len(cached)
                 cb(cached)
 
             if process:
                 self.manager.log.debug(
-                    "Run Info Fetching for {}".format(pluginname))
+                    "Run Info Fetching for {0}".format(pluginname))
                 for result in plugin.get_info(process):
                     # result = [ .. (name, size, status, url) .. ]
                     if not isinstance(result, list):
@@ -169,7 +169,7 @@ class InfoThread(DecrypterThread):
                                 res[1]), res[2], pluginname, res[4]))
                         else:
                             self.manager.log.debug(
-                                "Invalid get_info result: {}".format(result))
+                                "Invalid get_info result: {0}".format(result))
 
                     # put them on the cache
                     for link in links:
@@ -179,10 +179,10 @@ class InfoThread(DecrypterThread):
                     cb(links)
 
             self.manager.log.debug(
-                "Finished Info Fetching for {}".format(pluginname))
+                "Finished Info Fetching for {0}".format(pluginname))
         except Exception as e:
             self.manager.log.warning(
-                _("Info Fetching for {} failed | {}").format(pluginname, e.message))
+                _("Info Fetching for {0} failed | {1}").format(pluginname, e.message))
             # self.pyload.print_exc()
         finally:
             self.progress.done = done

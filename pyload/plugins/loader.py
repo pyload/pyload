@@ -29,7 +29,7 @@ class BaseAttributes(defaultdict):
     """
 
     def __missing__(self, key):
-        attr = "__{}__".format(key)
+        attr = "__{0}__".format(key)
         if not hasattr(Base, attr):
             return defaultdict.__missing__(self, key)
 
@@ -116,7 +116,7 @@ class PluginLoader(object):
         self.create_index()
 
     def log_debug(self, plugin, name, msg):
-        self.log.debug("Plugin {} | {}: {}".format(plugin, name, msg))
+        self.log.debug("Plugin {0} | {1}: {2}".format(plugin, name, msg))
 
     def create_index(self):
         """
@@ -133,7 +133,7 @@ class PluginLoader(object):
             self.plugins[_type] = self.parse(_type)
 
         self.log.debug(
-            "Created index of plugins for {} in {:.2f} ms".format(
+            "Created index of plugins for {0} in {1:.2f} ms".format(
                 self.path, (time() - a) * 1000)
         )
 
@@ -179,14 +179,14 @@ class PluginLoader(object):
                 attrs[m[0]] = ast.literal_eval(m[-1].replace("_(", "("))
             except Exception as e:
                 self.log_debug(
-                    folder, name, "Error when parsing: {}".format(m[-1]))
+                    folder, name, "Error when parsing: {0}".format(m[-1]))
                 self.log.debug(e.message)
 
-            if not hasattr(Base, "__{}__".format(m[0])):
+            if not hasattr(Base, "__{0}__".format(m[0])):
                 # TODO: remove type from all plugins, its not needed
                 if m[0] != "type" and m[0] != "author_name":
                     self.log_debug(
-                        folder, name, "Unknown attribute '{}'".format(m[0]))
+                        folder, name, "Unknown attribute '{0}'".format(m[0]))
 
         return attrs
 
@@ -237,7 +237,7 @@ class PluginLoader(object):
                 version = float(attrs['version'])
             except ValueError:
                 self.log_debug(
-                    folder, name, "Invalid version {}".format(attrs['version']))
+                    folder, name, "Invalid version {0}".format(attrs['version']))
                 version = 9  # TODO: remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
@@ -247,7 +247,7 @@ class PluginLoader(object):
                 re_plugin = re.compile(attrs['pattern'], flags=re.I)
             except Exception:
                 self.log_debug(
-                    folder, name, "Invalid regexp pattern '{}'".format(attrs['pattern']))
+                    folder, name, "Invalid regexp pattern '{0}'".format(attrs['pattern']))
                 re_plugin = self.RE_NO_MATCH
         else:
             re_plugin = self.RE_NO_MATCH
@@ -287,7 +287,7 @@ class PluginLoader(object):
                 self.config.add_config_section(name, name, desc, expl, config)
             except Exception:
                 self.log_debug(
-                    folder, name, "Invalid config  {}".format(config))
+                    folder, name, "Invalid config  {0}".format(config))
 
         return plugin
 
@@ -369,7 +369,7 @@ class PluginLoader(object):
         # convert path to python recognizable import
         path = os.path.basename(plugins[name].path).replace(
             ".pyc", "").replace(".py", "")
-        module = __import__("{}.{}.{}".format(
+        module = __import__("{0}.{1}.{2}".format(
             self.package, type_, path), globals(), locals(), path)
         return module
 

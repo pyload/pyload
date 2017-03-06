@@ -33,12 +33,12 @@ def _wait(self):
     self.waiting = True
 
     waittime = self.pyfile.wait_until - time.time()
-    log(DEBUG, "waiting {}s".format(waittime))
+    log(DEBUG, "waiting {0}s".format(waittime))
 
     if self.want_reconnect and waittime > 300:
-        raise Fail("Would wait for reconnect {}s".format(waittime))
+        raise Fail("Would wait for reconnect {0}s".format(waittime))
     elif waittime > 300:
-        raise Fail("Would wait {}s".format(waittime))
+        raise Fail("Would wait {0}s".format(waittime))
 
     while self.pyfile.wait_until > time.time():
         time.sleep(1)
@@ -55,15 +55,15 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
                     result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
-    id = "{:.2f}".format(time.time())[-6:].replace(".", "")
-    with io.open(os.path.join("tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+    id = "{0:.2f}".format(time.time())[-6:].replace(".", "")
+    with io.open(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
         fp.write(img)
 
     log(DEBUG, "Using ct for captcha")
     # put username and passkey into two lines in ct.conf
     conf = os.path.join(os.path.expanduser("~"), "ct.conf")
     if not os.path.exists(conf):
-        raise Exception("CaptchaService config {} not found".format(conf))
+        raise Exception("CaptchaService config {0} not found".format(conf))
 
     with io.open(conf, mode='rb') as fp:
         with closing(get_request()) as req:
@@ -107,14 +107,14 @@ class PluginTester(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        name = "{}.{}".format(cls.__module__, cls.__name__)
+        name = "{0}.{1}".format(cls.__module__, cls.__name__)
         for f in glob(os.path.join(name, "debug_*")):
             remove(f, trash=True)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
-        name = "{}.{}".format(cls.__module__, cls.__name__)
+        name = "{0}.{1}".format(cls.__module__, cls.__name__)
         if not os.path.exists(name):
             makedirs(name)
         for f in glob("debug_*"):

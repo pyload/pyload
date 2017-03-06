@@ -82,7 +82,7 @@ class PreDownloadApi(BaseApi):
         :return: :class:`OnlineCheck`
         """
         file = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{}".format(filename))
+            'general', 'storage_folder'), "tmp_{0}".format(filename))
         with io.open(file, mode='wb') as fp:
             fp.write(str(data))
             return self.check_links([fp.name])

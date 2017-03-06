@@ -33,7 +33,7 @@ def checksum(path, name, buffer=None):
         with io.open(path, mode='rb') as fp:
             for chunk in iter(lambda: fp.read(buf), b''):
                 last = call(chunk, last)
-        res = "{:x}".format(last & 0xffffffff)
+        res = "{0:x}".format(last & 0xffffffff)
 
     elif name in hashlib.algorithms_available:
         h = hashlib.new(name)

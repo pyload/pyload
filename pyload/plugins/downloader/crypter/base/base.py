@@ -156,7 +156,7 @@ class Crypter(Base):
                 ret.append(url_or_pack.url)
             else:
                 core.log.debug(
-                    "Invalid decrypter result: {}".format(url_or_pack))
+                    "Invalid decrypter result: {0}".format(url_or_pack))
 
         return uniqify(ret)
 
@@ -270,7 +270,7 @@ class Crypter(Base):
                 if f.startswith("tmp_"):
                     remove(f)
             except IOError:
-                self.log_warning(_("Could not delete file '{}'").format(f))
+                self.log_warning(_("Could not delete file '{0}'").format(f))
                 # self.pyload.print_exc()
 
         return to_link_list(result)

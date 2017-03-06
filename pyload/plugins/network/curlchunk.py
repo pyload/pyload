@@ -30,9 +30,9 @@ class ChunkInfo(object):
         self.chunks = []
 
     def __repr__(self):
-        ret = "ChunkInfo: {}, {}\n".format(self.name, self.size)
+        ret = "ChunkInfo: {0}, {1}\n".format(self.name, self.size)
         for i, c in enumerate(self.chunks):
-            ret += "{}# {}\n".format(i, c[1])
+            ret += "{0}# {1}\n".format(i, c[1])
 
         return ret
 
@@ -52,22 +52,22 @@ class ChunkInfo(object):
         current = 0
         for i in range(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
-            self.add_chunk("{}.chunk{}".format(self.name, i), (current, end))
+            self.add_chunk("{0}.chunk{1}".format(self.name, i), (current, end))
             current += chunk_size + 1
 
     def save(self):
-        fs_name = format.path("{}.chunks".format(self.name))
+        fs_name = format.path("{0}.chunks".format(self.name))
         with io.open(fs_name, mode='w') as fp:
-            fp.write("name:{}\n".format(self.name))
-            fp.write("size:{}\n".format(self.size))
+            fp.write("name:{0}\n".format(self.name))
+            fp.write("size:{0}\n".format(self.size))
             for i, c in enumerate(self.chunks):
-                fp.write("#{:d}:\n".format(i))
-                fp.write("\tname:{}\n".format(c[0]))
-                fp.write("\trange:{:d}-{:d}\n".format(*c[1]))
+                fp.write("#{0:d}:\n".format(i))
+                fp.write("\tname:{0}\n".format(c[0]))
+                fp.write("\trange:{0:d}-{1:d}\n".format(*c[1]))
 
     @staticmethod
     def load(name):
-        fs_name = format.path("{}.chunks".format(name))
+        fs_name = format.path("{0}.chunks".format(name))
         if not os.path.exists(fs_name):
             raise IOError
         with io.open(fs_name) as fp:
@@ -96,7 +96,7 @@ class ChunkInfo(object):
         return ci
 
     def remove(self):
-        fs_name = format.path("{}.chunks".format(self.name))
+        fs_name = format.path("{0}.chunks".format(self.name))
         remove(fs_name)
 
     def get_count(self):
@@ -148,7 +148,7 @@ class CurlChunk(CurlRequest):
         self.n_last_size = 0
 
     def __repr__(self):
-        return "<CurlChunk id={:d}, size={:d}, arrived={:d}>".format(
+        return "<CurlChunk id={0:d}, size={1:d}, arrived={2:d}>".format(
             self.id, self.size, self.arrived)
 
     @property
@@ -181,26 +181,26 @@ class CurlChunk(CurlRequest):
 
                 # as last chunk dont set end range, so we get everything
                 if self.id == len(self.p.info.chunks) - 1:
-                    range = b"{:d}-".format(self.arrived + self.range[0])
+                    range = b"{0:d}-".format(self.arrived + self.range[0])
                 else:
-                    range = b"{:d}-{:d}".format(self.arrived + self.range[
+                    range = b"{0:d}-{1:d}".format(self.arrived + self.range[
                                                 0], min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked resume with range {}".format(range))
+                self.log.debug("Chunked resume with range {0}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
             else:
-                self.log.debug("Resume File from {:d}".format(self.arrived))
+                self.log.debug("Resume File from {0:d}".format(self.arrived))
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
                 if self.id == len(self.p.info.chunks) - 1:  #: see above
-                    range = "{:d}-".format(self.range[0])
+                    range = "{0:d}-".format(self.range[0])
                 else:
-                    range = "{:d}-{:d}".format(self.range[0],
+                    range = "{0:d}-{1:d}".format(self.range[0],
                                                min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked with range {}".format(range))
+                self.log.debug("Chunked with range {0}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
 
             self.fp = io.open(fs_name, mode='wb')
@@ -272,7 +272,7 @@ class CurlChunk(CurlRequest):
                 if m:
                     name = format.name(m.groupdict()['name'])
                     self.p._name = name
-                    self.log.debug("Content-Disposition: {}".format(name))
+                    self.log.debug("Content-Disposition: {0}".format(name))
 
             if not self.resume and line.startswith("content-length"):
                 self.p._size = int(line.split(":")[1])

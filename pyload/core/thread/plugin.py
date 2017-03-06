@@ -55,7 +55,7 @@ class PluginThread(Thread):
         """
         Writes a debug report to disk.
         """
-        dump_name = "debug_{}_{}.zip".format(
+        dump_name = "debug_{0}_{1}.zip".format(
             name, strftime("%d-%m-%Y_%H-%M-%S"))
         if pyfile:
             dump = self.get_plugin_dump(pyfile.plugin) + "\n"
@@ -98,17 +98,17 @@ class PluginThread(Thread):
 
         except Exception as e:
             self.pyload.log.debug(
-                "Error creating zip file: {}".format(e.message))
+                "Error creating zip file: {0}".format(e.message))
 
             dump_name = dump_name.replace(".zip", ".txt")
             with io.open(dump_name, mode='wb') as fp:
                 fp.write(dump)
 
-        self.pyload.log.info(_("Debug Report written to {}").format(dump_name))
+        self.pyload.log.info(_("Debug Report written to {0}").format(dump_name))
         return dump_name
 
     def get_plugin_dump(self, plugin):
-        dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
+        dump = "pyLoad {0} Debug Report of {1} {2} \n\nTRACEBACK:\n {3} \n\nFRAMESTACK:\n".format(
             self.manager.pyload.api.get_server_version(
             ), plugin.__name__, plugin.__version__, format_exc()
         )
@@ -119,16 +119,16 @@ class PluginThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            dump += "\nFrame {} in {} at line {}\n".format(frame.f_code.co_name,
+            dump += "\nFrame {0} in {1} at line {2}\n".format(frame.f_code.co_name,
                                                            frame.f_code.co_filename,
                                                            frame.f_lineno)
 
             for key, value in frame.f_locals.items():
-                dump += "\t{:20} = ".format(key)
+                dump += "\t{0:20} = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
                         e.message)
 
             del frame
@@ -140,11 +140,11 @@ class PluginThread(Thread):
         for name in dir(plugin):
             attr = getattr(plugin, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{:20} = ".format(name)
+                dump += "\t{0:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
                         e.message)
 
         return dump
@@ -155,11 +155,11 @@ class PluginThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{:20} = ".format(name)
+                dump += "\t{0:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(
+                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
                         e.message)
 
         return dump
@@ -167,6 +167,6 @@ class PluginThread(Thread):
     def get_system_dump(self):
         dump = "SYSTEM:\n\n"
         for k, v in sys.get_info().items():
-            dump += "{}: {}\n".format(k, v)
+            dump += "{0}: {1}\n".format(k, v)
 
         return dump
