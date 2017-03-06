@@ -1,21 +1,22 @@
 sudo: required
 language: python
 branches:
-  only: "1.0.0"
+  only: master
 python:
-  - "2"
   - "2.6"
   - "2.7"
-  - "3"
   - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7"
+  - "nightly"
+  # PyPy versions
   - "pypy"
   - "pypy3"
 matrix:
   allow_failures:
+    - "2.6"
+    - "nightly"
     - "pypy"
     - "pypy3"
   fast_finish: true
@@ -30,9 +31,7 @@ before_install:
 install:
   - pip install coveralls
   - pip install tox-travis
-  - pip install xenon
 script:
   - tox
-  - xenon -bB -mA -aA pyload
 after_success:
   - coveralls
