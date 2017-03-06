@@ -4,7 +4,7 @@
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
 # http://bugs.python.org/issue1731717
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import sys
 from subprocess import *

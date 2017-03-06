@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
+from builtins import int
 from logging import DEBUG, log
 
 from future import standard_library

@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, unicode_literals
 import io
 import os
 import shutil
-from builtins import int
+from builtins import int, next
 from os.path import *
 
 import psutil
@@ -280,7 +280,7 @@ def pyclean(path, recursive=True):
     remove = os.remove
     walkpath = os.walk(path)
     if not recursive:
-        walkpath = (walkpath.next(),)
+        walkpath = (next(walkpath),)
     for dir, dirnames, filenames in walkpath:
         dir = join(dir, '__pycache__')
         try:

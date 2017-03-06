@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+from __future__ import absolute_import, division, unicode_literals
+
+from future import standard_library
+
 from ..layer.legacy.collections_ import MutableMapping
 from .init import InscDict
+
+standard_library.install_aliases()
 
 __all__ = [
     'DeleteError',

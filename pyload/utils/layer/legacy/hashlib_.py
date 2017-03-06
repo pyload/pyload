@@ -3,9 +3,10 @@
 #
 # Hashlib legacy patch
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, division, unicode_literals
 
 import sys
+from builtins import bytes, chr, int, range
 from hashlib import *
 
 from future import standard_library
@@ -91,7 +92,7 @@ if sys.version_info[:2] < (2, 7):
             while len(dkey) < dklen:
                 prev = prf(salt + struct.pack(b'>I', loop))
                 rkey = int(binascii.hexlify(prev), 16)
-                for i in xrange(iterations - 1):
+                for i in range(iterations - 1):
                     prev = prf(prev)
                     rkey ^= int(binascii.hexlify(prev), 16)
                 loop += 1

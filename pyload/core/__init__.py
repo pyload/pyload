@@ -11,6 +11,8 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import builtins
 import codecs
 import os
