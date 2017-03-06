@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
+import random
 from builtins import range
-from random import choice
 
 from future import standard_library
 
-from pyload.api import DownloadState, FileInfo, PackageInfo
-from pyload.database import DatabaseBackend
+from pyload.core.database import DatabaseBackend
+from pyload.core.datatype import DownloadState, FileInfo, PackageInfo
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core
 
@@ -58,14 +57,14 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert(self, n=200):
         for i in range(n):
-            pid = self.db.add_package("name", "folder", choice(self.pids), "password", "site", "comment", self.pstatus,
+            pid = self.db.add_package("name", "folder", random.choice(self.pids), "password", "site", "comment", self.pstatus,
                                       self.owner)
             self.pids.append(pid)
 
     def test_insert_links(self):
         for i in range(10000):
             fid = self.db.add_link("url {}".format(
-                i), "name", "plugin", choice(self.pids), self.owner)
+                i), "name", "plugin", random.choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
@@ -79,7 +78,7 @@ class TestDatabase(BenchmarkTest):
         assert n == len(self.pids) - 1
 
         print("Fetched {:d} packages".format(n))
-        self.assert_pack(choice(packs.values()))
+        self.assert_pack(random.choice(packs.values()))
 
     def test_get_files(self):
         files = self.db.get_all_files()
@@ -87,33 +86,33 @@ class TestDatabase(BenchmarkTest):
         assert n >= len(self.pids)
 
         print("Fetched {:d} files".format(n))
-        self.assert_file(choice(files.values()))
+        self.assert_file(random.choice(files.values()))
 
     def test_get_files_queued(self):
         files = self.db.get_all_files(state=DownloadState.Unfinished)
         print("Fetched {:d} files queued".format(len(files)))
 
     def test_delete(self):
-        pid = choice(self.pids)
+        pid = random.choice(self.pids)
         self.db.delete_package(pid)
         self.pids.remove(pid)
 
     def test_get_package_childs(self):
-        pid = choice(self.pids)
+        pid = random.choice(self.pids)
         packs = self.db.get_all_packages(root=pid)
 
         print("Package {:d} has {:d} packages".format(pid, len(packs)))
-        self.assert_pack(choice(packs.values()))
+        self.assert_pack(random.choice(packs.values()))
 
     def test_get_package_files(self):
-        pid = choice(self.pids)
+        pid = random.choice(self.pids)
         files = self.db.get_all_files(package=pid)
 
         print("Package {:d} has {:d} files".format(pid, len(files)))
-        self.assert_file(choice(files.values()))
+        self.assert_file(random.choice(files.values()))
 
     def test_get_package_data(self, stats=False):
-        pid = choice(self.pids)
+        pid = random.choice(self.pids)
         p = self.db.get_package_info(pid, stats)
         self.assert_pack(p)
         # test again with stat
@@ -121,14 +120,14 @@ class TestDatabase(BenchmarkTest):
             self.test_get_package_data(True)
 
     def test_get_file_data(self):
-        fid = choice(self.fids)
+        fid = random.choice(self.fids)
         f = self.db.get_file_info(fid)
         self.assert_file(f)
 
     def test_find_files(self):
         files = self.db.get_all_files(search="1")
         print("Found {} files".format(len(files)))
-        f = choice(files.values())
+        f = random.choice(files.values())
 
         assert "1" in f.name
         names = self.db.get_matching_filenames("1")
@@ -234,5 +233,5 @@ class TestDatabase(BenchmarkTest):
         for attr in list:
             assert isinstance(getattr(obj, attr), int)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     TestDatabase.benchmark()

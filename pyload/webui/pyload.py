@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 import os
@@ -11,8 +10,8 @@ import time
 from bottle import redirect, request, response, route, static_file, template
 from future import standard_library
 
-from pyload.webui.interface import APP_DIR, PREFIX, PYLOAD, SETUP, UNAVAILALBE
-from pyload.webui.utils import add_json_header, login_required, select_language
+from .interface import API, APPDIR, PREFIX, SETUP, UNAVAILALBE
+from .utils import add_json_header, login_required, select_language
 
 standard_library.install_aliases()
 
@@ -43,7 +42,7 @@ def i18n(lang=None):
 
     if lang is None:
         pass
-        # TODO: use lang from PYLOAD.config or setup
+        # TODO: use lang from API.config or setup
     else:
         # TODO: auto choose language
         lang = select_language(("en",))
@@ -64,11 +63,11 @@ def index():
     resp = serve_static('index.html')
     # set variable depending on setup mode
     setup = 'false' if SETUP is None else 'true'
-    ws = PYLOAD.get_ws_address() if PYLOAD else False
-    external = PYLOAD.get_config_value('webui', 'external') if PYLOAD else None
+    ws = API.get_ws_address() if API else False
+    external = API.get_config_value('webui', 'external') if API else None
     web = None
-    if PYLOAD:
-        web = PYLOAD.get_config_value('webui', 'port')
+    if API:
+        web = API.get_config_value('webui', 'port')
     elif SETUP:
         web = SETUP.config.get('webui', 'port')
 
@@ -94,7 +93,7 @@ def index():
 def serve_static(path):
     # save if this resource is available as gz
     if path not in GZIPPED:
-        GZIPPED[path] = os.path.exists(os.path.join(APP_DIR, path + ".gz"))
+        GZIPPED[path] = os.path.exists(os.path.join(APPDIR, path + ".gz"))
 
     # gzipped and clients accepts it
     # TODO: index.html is not gzipped, because of template processing
@@ -104,7 +103,7 @@ def serve_static(path):
         gzipped = True
         path += ".gz"
 
-    resp = static_file(path, root=APP_DIR)
+    resp = static_file(path, root=APPDIR)
 
     if path.endswith(".html") or path.endswith(".html.gz"):
         # tell the browser all html files must be revalidated

@@ -1,38 +1,43 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
+import os
 from builtins import bytes, int, str
 from gettext import gettext
 
 from future import standard_library
 
-from pyload.api import Input, InputType
-from pyload.utils.convert import to_bool, to_str
-from pyload.utils.lib.collections import namedtuple
+from pyload.utils import convert, parse
+from pyload.utils.layer.legacy.collections_ import namedtuple
+
+from .types import Input, InputType
 
 standard_library.install_aliases()
 
 
-ConfigData = namedtuple("ConfigData", "label description input")
+__all__ = ['from_string', 'to_configdata', 'to_input']
+
 
 # Maps old config formats to new values
 input_dict = {
-    "int": InputType.Int,
-    "bool": InputType.Bool,
-    "time": InputType.Time,
-    "file": InputType.File,
-    "list": InputType.List,
-    "folder": InputType.Folder
+    'int': InputType.Int,
+    'bool': InputType.Bool,
+    'time': InputType.Time,
+    'file': InputType.File,
+    'list': InputType.List,
+    'folder': InputType.Folder
 }
 
 
-def to_input(typ):
+def to_input(type_):
     """
     Converts old config format to input type.
     """
-    return input_dict.get(typ, InputType.Text)
+    return input_dict.get(type_, InputType.Text)
+
+
+ConfigData = namedtuple("ConfigData", "label description input")
 
 
 def to_configdata(entry):
@@ -58,26 +63,30 @@ def to_configdata(entry):
         gettext(conf_label), gettext(conf_desc), _input)
 
 
-def from_string(value, typ=None):
+# TODO: Rewrite...
+def from_string(value, type_=None):
     """
     Cast value to given type, unicode for strings.
     """
-
-    # value is no string
-    if not isinstance(value, str) and not isinstance(value, bytes):
+    if not isinstance(value, str):
         return value
-
-    value = to_str(value)
-
-    if typ == InputType.Int:
-        return int(value)
-    elif typ == InputType.Bool:
-        return to_bool(value)
-    elif typ == InputType.Time:
+    res = value = value.strip()
+    if type_ == InputType.File:
+        res = os.path.abspath(os.path.expanduser(value)) if value else None
+    elif type_ == InputType.Folder:
+        res = os.path.abspath(
+            os.path.dirname(
+                os.path.expanduser(value))) if value else None
+    elif type_ == InputType.Int:
+        res = convert.to_int(value, 0)
+    elif type_ == InputType.Port:
+        res = convert.to_int(value)
+    elif type_ == InputType.Bool:
+        res = parse.boolean(value)
+    elif type_ == InputType.Time:
         if not value:
             value = "0:00"
-        if not ":" in value:
+        if ":" not in value:
             value += ":00"
-        return value
-    else:
-        return value
+        res = value
+    return res

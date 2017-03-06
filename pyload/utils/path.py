@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
@@ -10,14 +9,18 @@ import shutil
 from builtins import int
 from os.path import *
 
+import psutil
 from future import standard_library
 
-from pyload.utils.check import ismodule
-from pyload.utils.decorator import iterate
+from .check import ismodule
+from .decorator import iterate
 
 standard_library.install_aliases()
 
-
+try:
+    import magic
+except ImportError:
+    from filetype import guess_mime
 try:
     import send2trash
 except ImportError:
@@ -25,14 +28,14 @@ except ImportError:
 
 
 @iterate
-def availspace(folder):
+def availspace(path):
     if os.name != 'nt':
-        stat = os.statvfs(folder)
+        stat = os.statvfs(path)
         res = stat.f_frsize * stat.f_bavail
     else:
         import ctypes
         free_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder),
+        ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(path),
                                                    None,
                                                    None,
                                                    ctypes.pointer(free_bytes))
@@ -40,13 +43,13 @@ def availspace(folder):
     return res
 
 
-def copytree(src, dst, overwrite=None, preserve_metadata=True):
+def copy(src, dst, overwrite=None, preserve_metadata=True):
     NT = os.name == 'nt'
     copy = shutil.copy2 if preserve_metadata else shutil.copy
     copytree = shutil.copytree
-    # isdir    = os.path.isdir
-    # isfile   = os.path.isfile
-    # join     = os.path.join
+    isdir = os.path.isdir
+    isfile = os.path.isfile
+    join = os.path.join
     mtime = os.path.getmtime
     remove = os.remove
 
@@ -85,11 +88,11 @@ def copytree(src, dst, overwrite=None, preserve_metadata=True):
 
 
 @iterate
-def exists(path, case_sensitive=False):
+def exists(path, sensitive=False):
     """
     Case-sensitive os.path.exists.
     """
-    if not case_sensitive:
+    if not sensitive:
         return os.path.exists(path)
     if os.path.exists(path):
         dir, name = os.path.split(path)
@@ -103,21 +106,26 @@ def filesize(path):
     return os.stat(path).st_size
 
 
-# def open(path, *args, **kwargs):
-    # return io.open(format.path(path), *args, **kwargs)
+@iterate
+def filetype(path):
+    try:
+        return magic.from_file(path, mime=True)
+    except NameError:
+        pass
+    return guess_mime(path)
 
 
 def flush(path):
-    if not exists(path):
-        return
-    if isfile(path):
-        with io.open(path) as f:
-            f.flush()
-        os.fsync(f.fileno())
-    elif isdir(path):
+    if not os.path.exists(path):
+        raise OSError("Path not exists")
+    if os.path.isfile(path):
+        with io.open(path) as fp:
+            fp.flush()
+            os.fsync(fp.fileno())
+    elif os.path.isdir(path):
         remove(os.listdir(path))
     else:
-        raise TypeError(path)
+        raise TypeError
 
 
 @iterate
@@ -144,49 +152,66 @@ def bufsize(path):
 
 @iterate
 def isexec(path):
-    return isfile(path) and os.access(path, os.X_OK)
+    return os.path.isfile(path) and os.access(path, os.X_OK)
 
 
 def merge(dstfile, srcfile):
     buf = bufsize(srcfile)
-    with io.open(dstfile, 'ab') as df:
-        with io.open(srcfile, 'rb') as sf:
-            for chunk in iter(lambda: sf.read(buf), b''):
-                df.write(chunk)
+    with io.open(dstfile, mode='ab') as dfp:
+        with io.open(srcfile, mode='rb') as sfp:
+            for chunk in iter(lambda: sfp.read(buf), b''):
+                dfp.write(chunk)
 
 
-def mkfile(path, opened=None):
-    if exists(path):
-        raise FileExistsError(path)
+@iterate
+def mountpoint(path):
+    path = os.path.realpath(os.path.abspath(path))
+    while path != os.sep:
+        if os.path.ismount(path):
+            return path
+        path = os.path.abspath(os.path.join(path, os.pardir))
+    return path
+
+
+@iterate
+def filesystem(path):
+    mp = mountpoint(path)
+    fs = {part.mountpoint: part.fstype for part in psutil.disk_partitions()}
+    return fs.get(mp)
+
+
+def mkfile(path, opened=None, size=None):
+    if os.path.exists(path):
+        raise OSError
     mode = 'wb'
-    f = io.open(path, mode)
+    with io.open(path, mode) as fp:
+        if size and os.name == 'nt':
+            fp.truncate(size)
+    fp = io.open(path, opened if isinstance(opened, str) else mode)
     if not opened:
-        f.close()
-    elif opened != mode:
-        f.close()
-        f = io.open(path, opened)
-    return f
+        fp.close()
+    return fp
 
 
 def makedirs(path, mode=0o700, exist_ok=True):
     try:
         os.makedirs(path, mode)
     except OSError as e:
-        if not exist_ok or not isdir(path):
+        if not exist_ok or not os.path.isdir(path):
             raise OSError(e)
 
 
-def makefile(path, opened=None, dirmode=0o700):
+def makefile(path, dirmode=0o700, opened=None, size=None):
     dirname, basename = os.path.split(path)
     makedirs(dirname, dirmode)
-    return mkfile(basename, opened)
+    return mkfile(basename, opened, size)
 
 
-def movetree(src, dst, overwrite=None):
+def move(src, dst, overwrite=None):
     NT = os.name == 'nt'
-    # isdir      = os.path.isdir
-    # isfile     = os.path.isfile
-    # join       = os.path.join
+    isdir = os.path.isdir
+    isfile = os.path.isfile
+    join = os.path.join
     move = shutil.move
     mtime = os.path.getmtime
     remove = os.remove
@@ -236,40 +261,81 @@ def movetree(src, dst, overwrite=None):
 
 @iterate
 def mtime(path):
-    # getmtime = os.path.getmtime
-    # join     = os.path.join
+    getmtime = os.path.getmtime
+    join = os.path.join
 
-    if not isdir(path):
+    if not os.path.isdir(path):
         return getmtime(path)
 
-    mtimes = [getmtime(join(dirpath, file))
-              for dirpath, dirnames, filenames in os.walk(path)
+    mtimes = [getmtime(join(dir, file))
+              for dir, dirnames, filenames in os.walk(path)
               for file in filenames]
 
     return max(0, 0, *mtimes)
 
 
+@iterate
+def pyclean(path, recursive=True):
+    join = os.path.join
+    remove = os.remove
+    walkpath = os.walk(path)
+    if not recursive:
+        walkpath = (walkpath.next(),)
+    for dir, dirnames, filenames in walkpath:
+        dir = join(dir, '__pycache__')
+        try:
+            remove(dir)
+        except Exception:
+            pass
+        for filename in filenames:
+            if filename[-4:] not in ('.pyc', '.pyo', '.pyd'):
+                continue
+            file = join(dir, filename)
+            try:
+                remove(file)
+            except Exception:
+                continue
+
+
 def remove(path, trash=False, ignore_errors=False):
-    if not exists(path):
-        return
+    if not os.path.exists(path):
+        if ignore_errors:
+            return None
+        raise OSError("Path not exists")
     if trash and ismodule('send2trash'):
         send2trash.send2trash(path)
-    elif isdir(path):
+    elif os.path.isdir(path):
         shutil.rmtree(path, ignore_errors)
-    elif isfile(path):
+    elif os.path.isfile(path):
         os.remove(path)
     else:
-        raise TypeError(path)
+        raise TypeError
 
 
 @iterate
-def which(name):
-    # return shutil.which(command)  # NOTE: Available under Python 3 only
-    dirname, basename = split(name)
+def which(path):
+    try:
+        return shutil.which(path)  # NOTE: Available only under Python 3
+    except AttributeError:
+        pass
+
+    dirname, basename = split(path)
     if dirname:
-        return name if isexec(name) else None
+        return path if isexec(path) else None
 
     for envpath in os.environ['PATH'].split(os.pathsep):
-        filepath = join(envpath.strip('"'), name)
-        if isexec(filepath):
-            return filepath
+        path = join(envpath.strip('"'), path)
+        if isexec(path):
+            return path
+
+
+# Cleanup
+del int, io, ismodule, iterate, os, psutil, shutil
+try:
+    del magic
+except NameError:
+    del guess_mime
+try:
+    del send2trash
+except NameError:
+    pass

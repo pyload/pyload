@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import dict
 
 from future import standard_library
 
-from pyload.plugin.network.curlrequest import CurlRequest
+from pyload.plugins.network.curlrequest import CurlRequest
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase

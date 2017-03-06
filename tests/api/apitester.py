@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import object
 
 from future import standard_library
 
-from pyload.remote.jsonclient import JSONClient
-from pyload.remote.wsclient import WSClient
+from pyload.rpc.jsonclient import JSONClient
+from pyload.rpc.wsclient import WSClient
 from tests.api.apiproxy import ApiProxy
 from tests.helper.config import webaddress, wsaddress
 

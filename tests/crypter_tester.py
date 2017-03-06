@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
@@ -10,7 +9,7 @@ from logging import DEBUG, log
 from future import standard_library
 
 from nose.tools import nottest
-from pyload.plugin import Fail
+from pyload.plugins import Fail
 from pyload.utils.convert import accumulate, to_int
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
@@ -23,8 +22,8 @@ class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
 
-        print("{}: {}".format(name, url.encode("utf8")))
-        log(DEBUG, "{}: {}".format(name, url.encode("utf8")))
+        print("{}: {}".format(name, url))
+        log(DEBUG, "{}: {}".format(name, url))
 
         plugin = self.pyload.pgm.get_plugin_class("crypter", name)
         p = plugin(self.pyload, None, "")
@@ -34,7 +33,7 @@ class CrypterPluginTester(PluginTester):
             result = p._decrypt([url])
 
             if to_int(flag):
-                assert to_int(flag) == len(result)
+                assert int(flag) == len(result)
 
         except Exception as e:
             if isinstance(e, Fail) and flag == "fail":
@@ -47,8 +46,8 @@ class CrypterPluginTester(PluginTester):
 
 c = Core()
 
-with io.open(os.path.join(os.path.dirname(__file__), "crypterlinks.txt")) as f:
-    links = [x.strip() for x in f.readlines()]
+with io.open(os.path.join(os.path.dirname(__file__), "crypterlinks.txt")) as fp:
+    links = [x.strip() for x in fp.readlines()]
 urls = []
 flags = {}
 

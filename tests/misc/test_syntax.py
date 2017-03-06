@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 
@@ -14,26 +13,19 @@ from unittest2 import TestCase
 standard_library.install_aliases()
 
 
-PATH = os.path.abspath(
-    os.path.join(
-        os.path.dirname(
-            os.path.abspath(__file__)),
-        "..",
-        "..",
-        ""))
+PACKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 class TestSyntax(TestCase):
     pass
 
 
-for path, dirs, files in os.walk(os.path.join(PATH, "pyload")):
-
-    for f in files:
-        if not f.endswith(".py") or f.startswith("__"):
+for dir, dirnames, filenames in os.walk(os.path.join(PACKDIR, "pyload")):
+    for filename in filenames:
+        if not filename.endswith(".py") or filename.startswith("__"):
             continue
-        fpath = os.path.join(path, f)
-        pack = fpath.replace(PATH, "")[1:-3]  #: replace / and  .py
+        file = os.path.join(PACKDIR, filename)
+        pack = file.replace(PACKDIR, "")[1:-3]  #: replace / and  .py
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)

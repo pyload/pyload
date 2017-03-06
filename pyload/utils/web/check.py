@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import re
@@ -13,17 +12,24 @@ import requests
 import validators
 from future import standard_library
 
-import mimetypes
-from pyload.utils import format
-from pyload.utils.web import convert as webconvert
+from . import convert as webconvert
+from .. import format, parse
 
 standard_library.install_aliases()
-
 
 try:
     import IPy
 except ImportError:
     pass
+
+
+__all__ = [
+    'ishostname',
+    'isonline',
+    'isresource',
+    'isurl',
+    'local_addr',
+    'remote_addr']
 
 
 # TODO: Recheck
@@ -65,8 +71,14 @@ except ImportError:
 # return False
 
 
+_re_ish = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
+
+
 def ishostname(value):
-    name = value.encode('idna')
+    try:
+        name = value.encode('idna')
+    except AttributeError:
+        name = value
     if name.endswith('.'):
         name = name[:-1]
     if len(name) < 1 or len(name) > 253:
@@ -77,8 +89,7 @@ def ishostname(value):
         pass
     else:
         return False
-    regex = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', re.I)
-    return all(map(regex.match, name.split('.')))
+    return all(map(_re_ish.match, name.split('.')))
 
 
 def isonline(url, *args, **kwargs):
@@ -117,8 +128,7 @@ def isresource(url, *args, **kwargs):
         name = webconvert.url_to_name(url)
         root, ext = os.path.splitext(name)
         if ext:
-            mime = mimetypes.guess_type(name, False)[
-                0] or "application/octet-stream"
+            mime = parse.mime(name) or "application/octet-stream"
 
     if 'html' not in mime:
         return True

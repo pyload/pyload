@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import fnmatch
 import io
@@ -37,8 +36,7 @@ def new_fnmatch(self, pattern):
 path.fnmatch = new_fnmatch
 
 
-PROJECT_DIR = path(__file__).dirname()
-sys.path.append(PROJECT_DIR)
+PACKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 options = environment.options
@@ -67,8 +65,6 @@ xargs = ["--language=Python", "--add-comments=L10N",
 
 # Modules replace rules
 module_replace = [
-    ('from pyload.plugins.hoster import Hoster',
-     'from pyload.plugins.hoster import Hoster'),
     ('from pyload.plugins.hook import threaded, Expose, Hook',
      'from pyload.plugins.addon import threaded, Expose, Addon'),
     ('from pyload.plugins.hook import Hook',
@@ -89,9 +85,6 @@ module_replace = [
     ('from pyload.utils import fs_encode', 'from pyload.utils.fs import fs_encode'),
     ('from pyload.unescape import unescape',
      'from pyload.utils import html_unescape as unescape'),
-    ('from pyload.lib.BeautifulSoup import BeautifulSoup',
-     'from BeautifulSoup import BeautifulSoup'),
-    ('from pyload.lib import feedparser', 'import feedparser'),
     ('self.account.get_account_info(self.user, ',
      'self.account.get_account_data('),
     ('self.account.get_account_info(self.user)', 'self.account.get_account_data()'),
@@ -118,7 +111,7 @@ def html():
 def apitypes(options):
     """ Generate data types stubs """
 
-    outdir = PROJECT_DIR / "pyload" / "remote"
+    outdir = PACKDIR / "pyload" / "remote"
 
     if (os.path.join(outdir, "gen-py")).exists():
         (os.path.join(outdir, "gen-py")).rmtree()
@@ -147,7 +140,7 @@ def apitypes(options):
 def webapp():
     """ Builds the pyload web app. Nodejs and npm must be installed """
 
-    os.chdir(PROJECT_DIR / "pyload" / "web")
+    os.chdir(PACKDIR / "pyload" / "web")
 
     # Preserve exit codes
     ret = call(["npm", "install", "--no-color"])
@@ -200,9 +193,9 @@ def upload_translations(options):
     config = os.path.join(tmp, 'crowdin.yaml')
     content = io.open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
-    f = io.open(config, 'wb')
-    f.write(content)
-    f.close()
+    fp = io.open(config, 'wb')
+    fp.write(content)
+    fp.close()
 
     call(['crowdin-cli', '-c', config, 'upload', 'source'])
 
@@ -229,7 +222,7 @@ def download_translations(options):
     content = io.open(config, 'rb').read()
     content = content.format(key=options.key, tmp=tmp)
     f = io.open(config, 'wb')
-    f.write(content)
+    fp.write(content)
     f.close()
 
     call(['crowdin-cli', '-c', config, 'download'])
@@ -304,9 +297,9 @@ def replace_module_imports():
     for root, dirnames, filenames in os.walk('pyload/plugins'):
         for filename in fnmatch.filter(filenames, '*.py'):
             path = os.path.join(root, filename)
-            f = io.open(path, 'r')
-            content = f.read()
-            f.close()
+            fp = io.open(path)
+            content = fp.read()
+            fp.close()
             for rule in module_replace:
                 content = content.replace(rule[0], rule[1])
             if '/addon/' in path:
@@ -317,8 +310,8 @@ def replace_module_imports():
                 content = content.replace(
                     "self.accounts[user]['password']", 'self.password')
             f = io.open(path, 'w')
-            f.write(content)
-            f.close()
+            fp.write(content)
+            fp.close()
 
 
 # helper functions
@@ -343,27 +336,27 @@ def walk_trans(path, excludes, endings=[".py"]):
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
     print("Generate {}.pot".format(domain))
 
-    f = io.open("includes.txt", "wb")
+    fp = io.open("includes.txt", "wb")
     if includes:
-        f.write(includes)
+        fp.write(includes)
 
     if p:
-        f.write(walk_trans(path(p), excludes, endings))
+        fp.write(walk_trans(path(p), excludes, endings))
 
-    f.close()
+    fp.close()
 
     call(["xgettext", "--files-from=includes.txt",
           "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
-    with io.open("{}.po".format(domain), "rb") as f:
-        content = f.read()
+    with io.open("{}.po".format(domain), "rb") as fp:
+        content = fp.read()
 
     path("{}.po".format(domain)).remove()
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
-    with io.open("locale/{}.pot".format(domain), "wb") as f:
-        f.write(content)
+    with io.open("locale/{}.pot".format(domain), "wb") as fp:
+        fp.write(content)
 
 
 def makehtml(domain, p):
@@ -371,8 +364,8 @@ def makehtml(domain, p):
 
     pot = path("locale") / "{}.pot".format(domain)
 
-    with io.open(pot, 'rb') as f:
-        content = f.readlines()
+    with io.open(pot, 'rb') as fp:
+        content = fp.readlines()
 
     msgids = {}
     # parse existing ids and line
@@ -419,7 +412,7 @@ def makehtml(domain, p):
                     content.insert(msgids[key], "#: {}:{:d}\n".format(f, i))
                     msgids[key] += 1
 
-        with io.open(pot, 'wb') as f:
-            f.writelines(content)
+        with io.open(pot, 'wb') as fp:
+            fp.writelines(content)
 
     print("Parsed html files")

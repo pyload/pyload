@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
 import shutil
 import sys
+import time
 from builtins import str
 from contextlib import closing
 from glob import glob
 from json import loads
 from logging import DEBUG, log
-from time import sleep, time
 
 from future import standard_library
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-from pyload.network.request import get_request
-from pyload.plugin import Abort, Fail
-from pyload.plugin.downloader.hoster import Hoster
+from pyload.core.network import get_request
+from pyload.plugins import Abort, Fail
+from pyload.plugins.downloader.hoster import Hoster
 from pyload.utils.path import makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
@@ -33,7 +32,7 @@ def _wait(self):
     """
     self.waiting = True
 
-    waittime = self.pyfile.wait_until - time()
+    waittime = self.pyfile.wait_until - time.time()
     log(DEBUG, "waiting {}s".format(waittime))
 
     if self.want_reconnect and waittime > 300:
@@ -41,8 +40,8 @@ def _wait(self):
     elif waittime > 300:
         raise Fail("Would wait {}s".format(waittime))
 
-    while self.pyfile.wait_until > time():
-        sleep(1)
+    while self.pyfile.wait_until > time.time():
+        time.sleep(1)
         if self.pyfile.abort:
             raise Abort
 
@@ -56,9 +55,9 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
                     result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
-    id = "{:.2f}".format(time())[-6:].replace(".", "")
-    with io.open(os.path.join("tmp", "tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb") as f:
-        f.write(img)
+    id = "{:.2f}".format(time.time())[-6:].replace(".", "")
+    with io.open(os.path.join("tmp_captcha_{}_{}.{}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+        fp.write(img)
 
     log(DEBUG, "Using ct for captcha")
     # put username and passkey into two lines in ct.conf
@@ -66,17 +65,17 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
     if not os.path.exists(conf):
         raise Exception("CaptchaService config {} not found".format(conf))
 
-    with io.open(conf, "rb") as f:
+    with io.open(conf, mode='rb') as fp:
         with closing(get_request()) as req:
             # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
 
             json = req.load("http://captchatrader.com/api/submit",
-                            post={"api_key": "9f65e7f381c3af2b076ea680ae96b0b7",
-                                  "username": f.readline().strip(),
-                                  "password": f.readline().strip(),
-                                  "value": (FORM_FILE, f.name),
-                                  "type": "file"}, multipart=True)
+                            post={'api_key': "9f65e7f381c3af2b076ea680ae96b0b7",
+                                  'username': fp.readline().strip(),
+                                  'password': fp.readline().strip(),
+                                  'value': (FORM_FILE, fp.name),
+                                  'type': "file"}, multipart=True)
 
     response = loads(json)
     log(DEBUG, str(response))

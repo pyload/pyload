@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 from builtins import dict
@@ -12,11 +11,12 @@ from urllib.parse import unquote
 from bottle import HTTPError, parse_auth, request, response, route
 from future import standard_library
 
-from pyload.api import ExceptionObject
-from pyload.remote.jsonconverter import BaseEncoder, dumps, loads
+from pyload.core.datatype import ExceptionObject
+from pyload.rpc.jsonconverter import BaseEncoder, dumps, loads
 from pyload.utils import purge
-from pyload.webui.interface import PYLOAD, session
-from pyload.webui.utils import add_json_header, get_user_api, set_session
+
+from .interface import API, session
+from .utils import add_json_header, get_user_api, set_session
 
 standard_library.install_aliases()
 
@@ -65,7 +65,7 @@ def call_api(func, args=""):
         # removes "' so it works on json strings
         s = s.get_by_id(purge.chars(request.params.get('session'), "'\""))
     elif auth:
-        user = PYLOAD.check_auth(
+        user = API.check_auth(
             auth[0], auth[1], request.environ.get('REMOTE_ADDR', None))
         # if auth is correct create a pseudo session
         if user:
@@ -75,10 +75,10 @@ def call_api(func, args=""):
     if not api:
         return error(401, "Unauthorized")
 
-    if not PYLOAD.is_authorized(func, api.user):
+    if not API.is_authorized(func, api.user):
         return error(403, "Forbidden")
 
-    if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
+    if not hasattr(API.EXTERNAL, func) or func.startswith("_"):
         print("Invalid API call", func)
         return error(404, "Not Found")
 
@@ -123,7 +123,7 @@ def call_api(func, args=""):
         return error(400, e.message)
     except Exception as e:
         print_exc()
-        return error(500, {"error": e.message, "traceback": format_exc()})
+        return error(500, {'error': e.message, 'traceback': format_exc()})
 
 
 @route("/api/login")
@@ -134,7 +134,7 @@ def login():
     username = request.params.get('username')
     password = request.params.get('password')
 
-    user = PYLOAD.check_auth(
+    user = API.check_auth(
         username, password, request.environ.get('REMOTE_ADDR', None))
 
     if not user:

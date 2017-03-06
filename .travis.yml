@@ -1,0 +1,38 @@
+sudo: required
+language: python
+branches:
+  only: "1.0.0"
+python:
+  - "2"
+  - "2.6"
+  - "2.7"
+  - "3"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "pypy"
+  - "pypy3"
+matrix:
+  allow_failures:
+    - "pypy"
+    - "pypy3"
+  fast_finish: true
+cache:
+  pip: true
+  directories:
+    - pyload/webui/app/modules
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y python-crypto
+  - sudo apt-get install -y python-pycurl
+install:
+  - pip install coveralls
+  - pip install tox-travis
+  - pip install xenon
+script:
+  - tox
+  - xenon -bB -mA -aA pyload
+after_success:
+  - coveralls

@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
 import shutil
 from builtins import str
+from hashlib import md5
 from logging import DEBUG, log
 from time import time
 
 from future import standard_library
 
 from nose.tools import nottest
-from pyload.datatype import PyFile
-from pyload.datatype.file import status_map
-from pyload.plugin import Fail
+from pyload.core.datatype import PyFile
+from pyload.core.datatype.file import statusmap
+from pyload.plugins import Fail
 from pyload.utils.convert import accumulate
-from pyload.utils.fs import safe_join
-from pyload.utils.lib.hashlib import md5
 from pyload.utils.path import remove
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
@@ -27,7 +25,7 @@ from tests.helper.stubs import Core
 standard_library.install_aliases()
 
 
-DL_DIR = os.path.join("Downloads", "tmp")
+DL_DIR = "Storage"
 
 
 class HosterPluginTester(PluginTester):
@@ -36,11 +34,12 @@ class HosterPluginTester(PluginTester):
     def setUp(self):
         PluginTester.setUp(self)
         for f in self.files:
-            if os.path.exists(safe_join(DL_DIR, f)):
-                remove(safe_join(DL_DIR, f), trash=True)
+            file = os.path.join(DL_DIR, f)
+            if os.path.exists(file):
+                remove(file, trash=True)
 
         # folder for reports
-        report = os.path.join("tmp", self.__class__.__name__)
+        report = os.path.join(self.__class__.__name__)
         if os.path.exists(report):
             for f in os.listdir(report):
                 remove(os.path.join(report, f), trash=True)
@@ -48,8 +47,8 @@ class HosterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, status):
         # Print to stdout to see whats going on
-        print("{}: {}, {}".format(name, url.encode("utf8"), status))
-        log(DEBUG, "{}: {}, {}".format(name, url.encode("utf8"), status))
+        print("{}: {}, {}".format(name, url, status))
+        log(DEBUG, "{}: {}, {}".format(name, url, status))
 
         # url and plugin should be only important thing
         pyfile = PyFile(self.pyload, -1, url, url, 0, 0,
@@ -64,7 +63,7 @@ class HosterPluginTester(PluginTester):
             pyfile.plugin.preprocessing(self.thread)
 
             log(DEBUG, "downloading took {:d}s".format(time() - a))
-            log(DEBUG, "size {:d} KiB".format(pyfile.size // 1024))
+            log(DEBUG, "size {:d} KiB".format(pyfile.size >> 10))
 
             if status == "offline":
                 raise Exception("No offline Exception raised")
@@ -73,13 +72,15 @@ class HosterPluginTester(PluginTester):
                 raise Exception(
                     "Filename {} not recognized".format(pyfile.name))
 
-            if not os.path.exists(safe_join(DL_DIR, pyfile.name)):
+            hash = md5()
+            file = os.path.join(DL_DIR, pyfile.name)
+
+            if not os.path.exists(file):
                 raise Exception("File {} does not exists".format(pyfile.name))
 
-            hash = md5()
-            with io.open(safe_join(DL_DIR, pyfile.name), "rb") as f:
+            with io.open(file, mode='rb') as fp:
                 while True:
-                    buf = f.read(4096)
+                    buf = fp.read(4096)
                     if not buf:
                         break
                     hash.update(buf)
@@ -88,10 +89,10 @@ class HosterPluginTester(PluginTester):
                 log(DEBUG, "Hash is {}".format(hash.hexdigest()))
 
                 size = os.stat(f.name).st_size
-                if size < 1024 * 1024 * 10:  #: 10MB
+                if size < 10 << 20:  #: 10MB
                     # Copy for debug report
                     log(DEBUG, "Downloaded file copied to report")
-                    shutil.move(f.name, os.path.join("tmp", plugin, f.name))
+                    shutil.move(f.name, os.path.join(plugin, f.name))
 
                 raise Exception("Hash does not match")
 
@@ -107,9 +108,8 @@ class HosterPluginTester(PluginTester):
 c = Core()
 
 sections = parse_config(
-    os.path.join(
-        os.path.dirname(__file__),
-        "hosterlinks.txt"))
+    os.path.join(os.path.dirname(__file__), "hosterlinks.txt")
+)
 
 for f in sections['files']:
     name, hash = f.rsplit(" ", 1)
@@ -121,7 +121,7 @@ urls = []
 status = {}
 
 for k, v in sections.items():
-    if k not in status_map:
+    if k not in statusmap:
         print("Unknown status {}".format(k))
     for url in v:
         urls.append(url)

@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import object
 
 from future import standard_library
 
 from nose.tools import raises
-from pyload.remote.apitypes import Forbidden
-from pyload.remote.wsclient import WSClient
+from pyload.core.datatype import Forbidden
+from pyload.rpc.wsclient import WSClient
 from tests.helper.config import credentials, wsaddress
 
 standard_library.install_aliases()

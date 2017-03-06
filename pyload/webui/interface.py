@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import sys
@@ -13,7 +12,7 @@ import bottle
 from beaker.middleware import SessionMiddleware
 from future import standard_library
 
-from pyload.thread import webserver as ServerThread
+from pyload.core.thread import webserver as ServerThread  # TODO: Recheck...
 from pyload.utils.web.middleware import PrefixMiddleware, StripPathMiddleware
 # Last routes to register
 from pyload.webui import api, cnl, pyload, setup
@@ -21,12 +20,9 @@ from pyload.webui import api, cnl, pyload, setup
 standard_library.install_aliases()
 
 
-APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app'))
-PYLOAD_DIR = os.path.abspath(os.path.join(APP_DIR, '..', '..', '..'))
-
-
+APPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app'))
 SETUP = None
-PYLOAD = None
+API = None
 
 
 if not ServerThread.core:
@@ -36,7 +32,7 @@ if not ServerThread.core:
     else:
         raise Exception("Could not access pyLoad Core")
 else:
-    PYLOAD = ServerThread.core.api
+    API = ServerThread.core.api
     config = ServerThread.core.config
 
 TEMPLATE = "default"
@@ -52,9 +48,9 @@ if PREFIX:
 UNAVAILALBE = True
 
 # webui build is available
-if os.path.exists(os.path.join(APP_DIR, "modules")):
+if os.path.exists(os.path.join(APPDIR, "modules")):
     UNAVAILALBE = False
-elif os.path.exists(os.path.join(APP_DIR, "dist", "index.html")):
+elif os.path.exists(os.path.join(APPDIR, "dist", "index.html")):
     # APP_PATH = "dist"
     UNAVAILALBE = False
 
@@ -78,11 +74,9 @@ if PREFIX:
 
 
 # Server Adapter
-
-
 def run_server(host, port, server):
     bottle.run(app=web, host=host, port=port, quiet=True, server=server)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     bottle.run(app=web, port=8010)

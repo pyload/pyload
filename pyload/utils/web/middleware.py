@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import object
 
@@ -11,14 +10,16 @@ from future import standard_library
 standard_library.install_aliases()
 
 
-# from wsgigzip import GzipMiddleware
+__all__ = ['PrefixMiddleware', 'StripPathMiddleware']
 
 
 class PrefixMiddleware(object):
 
-    def __init__(self, app, prefix=None):
+    __slots__ = ['app', 'prefix']
+
+    def __init__(self, app, prefix="/pyload"):
         self.app = app
-        self.prefix = prefix or "/pyload"
+        self.prefix = prefix
 
     def __call__(self, e, h):
         path = e['PATH_INFO']
@@ -28,6 +29,8 @@ class PrefixMiddleware(object):
 
 
 class StripPathMiddleware(object):
+
+    __slots__ = ['app']
 
     def __init__(self, app):
         self.app = app

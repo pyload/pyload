@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
+import random
 from builtins import range
-from random import choice
 
 from future import standard_library
 
-from pyload.api import DownloadState
-from pyload.database import DatabaseBackend
+from pyload.core.database import DatabaseBackend
+from pyload.core.datatype import DownloadState
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core, normal_user
 
@@ -54,7 +53,7 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_packages(self):
         for i in range(100):
-            pid = self.m.add_package("name", "folder", choice(
+            pid = self.manager.add_package("name", "folder", random.choice(
                 self.pids), "", "", "", False, normal_user.uid)
             self.pids.append(pid)
 
@@ -63,59 +62,60 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_files(self):
         for pid in self.pids:
-            self.m.add_links((("plugin {:d}".format(i), "url {}".format(
+            self.manager.add_links((("plugin {:d}".format(i), "url {}".format(
                 i)) for i in range(self.count)), pid, normal_user.uid)
 
-        count = self.m.get_queue_stats()[0]
+        count = self.manager.get_queue_stats()[0]
         files = self.count * len(self.pids)
         # in test runner files get added twice
         assert count == files or count == files * 2
 
     def test_get(self):
-        info = self.m.get_package_info(choice(self.pids))
+        info = self.manager.get_package_info(random.choice(self.pids))
         assert info.stats.linkstotal == self.count
 
-        fid = choice(info.fids)
-        f = self.m.get_file(fid)
-        assert f.fid in self.m.files
+        fid = random.choice(info.fids)
+        f = self.manager.get_file(fid)
+        assert f.fid in self.manager.files
 
         f.name = "new name"
         f.sync()
-        finfo = self.m.get_file_info(fid)
+        finfo = self.manager.get_file_info(fid)
         assert finfo is not None
         assert finfo.name == "new name"
 
-        p = self.m.get_package(choice(self.pids))
+        p = self.manager.get_package(random.choice(self.pids))
         assert p is not None
-        assert p.pid in self.m.packages
+        assert p.pid in self.manager.packages
         p.sync()
 
         p.delete()
 
-        self.m.get_tree(-1, True, None)
+        self.manager.get_tree(-1, True, None)
 
     def test_get_filtered(self):
-        all = self.m.get_tree(-1, True, None)
-        finished = self.m.get_tree(-1, True, DownloadState.Finished)
-        unfinished = self.m.get_tree(-1, True, DownloadState.Unfinished)
+        all = self.manager.get_tree(-1, True, None)
+        finished = self.manager.get_tree(-1, True, DownloadState.Finished)
+        unfinished = self.manager.get_tree(-1, True, DownloadState.Unfinished)
 
         assert len(finished.files) + \
-            len(unfinished.files) == len(all.files) == self.m.db.filecount()
+            len(unfinished.files) == len(
+                all.files) == self.manager.db.filecount()
 
     def test_get_files_root(self):
-        view = self.m.get_tree(-1, True, None)
+        view = self.manager.get_tree(-1, True, None)
 
         for pid in self.pids:
             assert pid in view.packages
 
         assert len(view.packages) == len(self.pids)
 
-        p = choice(view.packages.values())
+        p = random.choice(view.packages.values())
         assert len(p.fids) == self.count
         assert p.stats.linkstotal == self.count
 
     def test_get_package_content(self):
-        view = self.m.get_tree(choice(self.pids), False, None)
+        view = self.manager.get_tree(random.choice(self.pids), False, None)
         p = view.root
 
         assert len(view.packages) == len(p.pids)
@@ -123,25 +123,25 @@ class TestFileManager(BenchmarkTest):
             assert pid in view.packages
 
     def test_get_package_tree(self):
-        view = self.m.get_tree(choice(self.pids), True, None)
+        view = self.manager.get_tree(random.choice(self.pids), True, None)
         for pid in view.root.pids:
             assert pid in view.packages
         for fid in view.root.fids:
             assert fid in view.files
 
     def test_delete(self):
-        self.m.remove_file(self.count * 5)
-        self.m.remove_package(choice(self.pids))
+        self.manager.remove_file(self.count * 5)
+        self.manager.remove_package(random.choice(self.pids))
 
     def test_order_package(self):
-        parent = self.m.add_package(
+        parent = self.manager.add_package(
             "order", "", -1, "", "", "", False, normal_user.uid)
-        self.m.add_links((("url", "plugin")
-                          for i in range(100)), parent, normal_user.uid)
+        self.manager.add_links((("url", "plugin")
+                                for i in range(100)), parent, normal_user.uid)
 
-        pids = [self.m.add_package(
+        pids = [self.manager.add_package(
             "c", "", parent, "", "", "", False, normal_user.uid) for i in range(5)]
-        v = self.m.get_tree(parent, False, None)
+        v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
         pid = v.packages.keys()[0]
@@ -155,19 +155,19 @@ class TestFileManager(BenchmarkTest):
         self.assert_pack_ordered(parent, pid, 2)
 
     def test_order_files(self):
-        parent = self.m.add_package(
+        parent = self.manager.add_package(
             "order", "", -1, "", "", "", False, normal_user.uid)
-        self.m.add_links((("url", "plugin")
-                          for i in range(100)), parent, normal_user.uid)
-        v = self.m.get_tree(parent, False, None)
+        self.manager.add_links((("url", "plugin")
+                                for i in range(100)), parent, normal_user.uid)
+        v = self.manager.get_tree(parent, False, None)
 
         fids = v.root.fids[10:20]
         v = self.assert_files_ordered(parent, fids, 0)
 
         fids = v.root.fids[20:30]
 
-        self.m.order_files(fids, parent, 99)
-        v = self.m.get_tree(parent, False, None)
+        self.manager.order_files(fids, parent, 99)
+        v = self.manager.get_tree(parent, False, None)
         assert fids[-1] == v.root.fids[-1]
         assert fids[0] == v.root.fids[90]
         self.assert_ordered(fids, 90, 100, v.root.fids, v.files)
@@ -175,29 +175,29 @@ class TestFileManager(BenchmarkTest):
         fids = v.root.fids[80:]
         v = self.assert_files_ordered(parent, fids, 20)
 
-        self.m.order_files(fids, parent, 80)
-        v = self.m.get_tree(parent, False, None)
+        self.manager.order_files(fids, parent, 80)
+        v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(fids, 61, 81, v.root.fids, v.files)
 
         fids = v.root.fids[50:51]
-        self.m.order_files(fids, parent, 99)
-        v = self.m.get_tree(parent, False, None)
+        self.manager.order_files(fids, parent, 99)
+        v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(fids, 99, 100, v.root.fids, v.files)
 
         fids = v.root.fids[50:51]
         v = self.assert_files_ordered(parent, fids, 0)
 
     def assert_files_ordered(self, parent, fids, pos):
-        assert [self.m.get_file(choice(fids)) for i in range(5)]
-        self.m.order_files(fids, parent, pos)
-        v = self.m.get_tree(parent, False, False)
+        assert [self.manager.get_file(random.choice(fids)) for i in range(5)]
+        self.manager.order_files(fids, parent, pos)
+        v = self.manager.get_tree(parent, False, False)
         self.assert_ordered(fids, pos, pos + len(fids), v.root.fids, v.files)
 
         return v
 
     def assert_pack_ordered(self, parent, pid, pos):
-        self.m.order_package(pid, pos)
-        v = self.m.get_tree(parent, False, False)
+        self.manager.order_package(pid, pos)
+        v = self.manager.get_tree(parent, False, False)
         self.assert_ordered([pid], pos, pos + 1, v.root.pids, v.packages, True)
 
     # assert that ordering is total, complete with no gaps
@@ -219,22 +219,22 @@ class TestFileManager(BenchmarkTest):
         pid = self.pids[-1]
         pid2 = self.pids[1]
 
-        self.m.move_package(pid, -1)
-        v = self.m.get_tree(-1, False, False)
+        self.manager.move_package(pid, -1)
+        v = self.manager.get_tree(-1, False, False)
 
         assert pid in v.root.pids
         assert sorted(p.packageorder for p in v.packages.values()
                       ) == list(range(len(v.packages)))
 
-        v = self.m.get_tree(pid, False, False)
+        v = self.manager.get_tree(pid, False, False)
         fids = v.root.fids[10:20]
-        self.m.move_files(fids, pid2)
-        v = self.m.get_tree(pid2, False, False)
+        self.manager.move_files(fids, pid2)
+        v = self.manager.get_tree(pid2, False, False)
 
         assert sorted(f.fileorder for f in v.files.values()
                       ) == list(range(len(v.files)))
         assert len(v.files) == self.count + len(fids)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     TestFileManager.benchmark()

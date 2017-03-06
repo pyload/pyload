@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import os
@@ -14,8 +13,9 @@ from urllib.parse import unquote
 from bottle import HTTPError, request, route
 from future import standard_library
 
-from pyload.utils.fs import safe_filename
-from pyload.webui.interface import DL_ROOT, PYLOAD
+from pyload.utils import format
+
+from .interface import API, DL_ROOT
 
 standard_library.install_aliases()
 
@@ -33,9 +33,9 @@ except ImportError:
 
 
 def generate_and_add(urls, paused):
-    packs = PYLOAD.generate_packages(urls)
+    packs = API.generate_packages(urls)
     for name, urls in packs.items():
-        PYLOAD.add_package(name, urls, paused=paused)
+        API.add_package(name, urls, paused=paused)
 
 
 def local_check(function):
@@ -64,7 +64,7 @@ def add(request):
     urls = [x for x in request.POST['urls'].split("\n") if x != ""]
 
     if package:
-        PYLOAD.add_package(package, urls, paused=True)
+        API.add_package(package, urls, paused=True)
     else:
         generate_and_add(urls, True)
 
@@ -78,12 +78,12 @@ def addcrypted():
     package = request.forms.get('referer', 'ClickAndLoad Package')
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = os.path.join(DL_ROOT, safe_filename(package) + ".dlc")
-    with io.open(dlc_path, "wb") as f:
-        f.write(dlc)
+    dlc_path = os.path.join(DL_ROOT, format.name(package) + ".dlc")
+    with io.open(dlc_path, mode='wb') as fp:
+        fp.write(dlc)
 
     try:
-        PYLOAD.add_package(package, [dlc_path], paused=True)
+        API.add_package(package, [dlc_path], paused=True)
     except Exception:
         return HTTPError()
     else:
@@ -130,7 +130,7 @@ def addcrypted2():
 
     try:
         if package:
-            PYLOAD.add_package(package, result, paused=True)
+            API.add_package(package, result, paused=True)
         else:
             generate_and_add(result, True)
     except Exception:
@@ -158,7 +158,7 @@ def flashgot():
     folder = request.forms.get('dir', None)
 
     if package:
-        PYLOAD.add_package(package, urls, paused=autostart)
+        API.add_package(package, urls, paused=autostart)
     else:
         generate_and_add(urls, autostart)
     return ""
@@ -180,7 +180,7 @@ def crossdomain():
 def checksupport():
 
     url = request.GET.get("url")
-    res = PYLOAD.check_urls([url])
+    res = API.check_urls([url])
     supported = (not res[0][1] is None)
 
     return str(supported).lower()

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import builtins
 import os
@@ -13,23 +12,18 @@ from traceback import format_exc
 
 from future import standard_library
 
-from pyload.api import Role
-from pyload.config import Config
+from pyload.config import ConfigParser
 from pyload.core import Core
-from pyload.datatype import User
-from pyload.thread import PluginThread
+from pyload.core.datatype import Role, User
+from pyload.core.thread import PluginThread
 
 standard_library.install_aliases()
 
 
-# from pyload.inithomedir import init_dir
-
+# from pyload.core.inithomedir import init_dir
 # init_dir(os.path.join("tests", "config"), True)
 
-
 # Do nothing
-
-
 def noop(*args, **kwargs):
     pass
 
@@ -40,7 +34,7 @@ class NoopClass(object):
         return noop
 
 
-Config.save = noop
+ConfigParser.save = noop
 
 
 class LogStub(object):

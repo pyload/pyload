@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import re
 
 from bottle import HTTPError, redirect, request
 from future import standard_library
 
-from pyload.webui.interface import PYLOAD, SETUP
+from .interface import API, SETUP
 
 standard_library.install_aliases()
 
@@ -31,8 +30,8 @@ def set_session(request, user):
 def get_user_api(s):
     if s:
         uid = s.get("uid", None)
-        if (uid is not None) and (PYLOAD is not None):
-            return PYLOAD.with_user_context(uid)
+        if (uid is not None) and (API is not None):
+            return API.with_user_context(uid)
     return None
 
 
@@ -69,9 +68,8 @@ def is_mobile():
         return True
     return False
 
+
 # TODO: Implement language selection...
-
-
 def select_language(langs):
     # TODO: Use accept
     accept = request.headers.get('Accept-Language', '')

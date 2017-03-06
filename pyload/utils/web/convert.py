@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import urllib.parse
 from builtins import int
@@ -12,6 +11,9 @@ from future import standard_library
 from pyload.utils import format
 
 standard_library.install_aliases()
+
+
+__all__ = ['code_to_status', 'url_to_name']
 
 
 def code_to_status(code):
@@ -27,7 +29,7 @@ def code_to_status(code):
     return status
 
 
-def url_to_name(url):
+def url_to_name(url, strict=False):
     url = format.url(url)
     url_p = urllib.parse.urlparse(url)
     name = url_p.path.split('/')[-1]
@@ -35,4 +37,4 @@ def url_to_name(url):
         name = url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
     if not name:
         name = url_p.netloc.split('.', 1)[0]
-    return format.name(name)
+    return name.strip() if strict else format.name(name)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 from builtins import dict
@@ -10,15 +9,13 @@ from time import time
 from bottle import HTTPError, request, response, route
 from future import standard_library
 
-from pyload.webui.interface import SETUP
-from pyload.webui.utils import add_json_header
+from .interface import SETUP
+from .utils import add_json_header
 
 standard_library.install_aliases()
 
 
 # returns http error
-
-
 def error(code, msg):
     return HTTPError(code, json.dumps(msg), **dict(response.headers))
 
@@ -56,8 +53,8 @@ def setup():
     add_json_header(response)
 
     return json.dumps({
-        "system": SETUP.check_system(),
-        "deps": SETUP.check_deps()
+        'system': SETUP.check_system(),
+        'deps': SETUP.check_deps()
     })
 
 

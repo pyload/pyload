@@ -1,35 +1,44 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals, with_statement)
+from __future__ import (absolute_import, division, unicode_literals,
+                        with_statement)
 
 import io
 import os
+import re
 from builtins import int, object, str
 from gettext import gettext
 
 from future import standard_library
 
-from pyload.config.convert import from_string, to_configdata
-from pyload.config.default import make_config
-from pyload.utils.lib.collections import OrderedDict, namedtuple
+from pyload.utils import convert
+from pyload.utils.layer.legacy.collections_ import OrderedDict, namedtuple
+from pyload.utils.path import bufsize
+
+from .convert import from_string, to_configdata
+from .default import make_config
 
 standard_library.install_aliases()
+
+
+__all__ = ['ConfigParser', 'ConfigSection']
 
 
 SectionTuple = namedtuple(
     "SectionTuple", "label description explanation config")
 
 
-class Config(object):
+class ConfigParser(object):
     """
     Holds and manages the configuration + meta data for config read from file.
     """
+    __slots__ = ['_RE_VERSION', 'config', 'filename', 'values', 'version']
+
+    _RE_VERSION = re.compile(r'\s*version\s*:\s*(\d+\.\d+\.\d+)', flags=re.I)
 
     def __init__(self, file, version):
-
         self.filename = file
-        self.version = version
+        self.version = convert.to_version(version, version)
 
         # Meta data information
         self.config = OrderedDict()
@@ -39,7 +48,7 @@ class Config(object):
         self.check_version()
 
         self.load_default()
-        self.parse_values(self.filename)
+        self.parse(self.filename)
 
     def load_default(self):
         make_config(self)
@@ -48,87 +57,92 @@ class Config(object):
         """
         Determines if config needs to be deleted.
         """
-        if os.path.exists(self.filename):
-            with io.open(self.filename, "rb") as f:
-                v = f.readline()
-            v = v[v.find(":") + 1:].strip()
+        if not os.path.exists(self.filename):
+            with io.open(self.filename, mode='wb') as fp:
+                fp.write(
+                    "version: {}".format(
+                        convert.from_version(
+                            self.version)))
+            return None
 
-            if not v or int(v) < self.version:
-                with io.open(self.filename, "wb") as f:
-                    f.write("version: {}".format(self.version))
-                print("Old version of {} deleted".format(self.filename))
-        else:
-            with io.open(self.filename, "wb") as f:
-                f.write("version: {}".format(self.version))
+        version = None
+        try:
+            with io.open(self.filename, mode='rb') as fp:
+                m = self._RE_VERSION.match(fp.readline())
+                version = convert.to_version(m.group(1))
+        except (AttributeError, TypeError):
+            pass
 
-    def parse_values(self, filename):
+        if not self.version or version[:-1] != self.version[:-1]:
+            os.rename(self.filename, "{}.old".format(self.filename))
+
+        with io.open(self.filename, mode='wb') as fp:
+            fp.write("version: {}".format(convert.from_version(self.version)))
+
+    def parse(self, filename):
         """
         Read config values from file.
         """
-        with io.open(filename, "rb") as f:
-            config = f.readlines()[1:]
+        with io.open(filename, mode='rb') as fp:
+            # save the current section
+            section = ""
+            fp.readline()
+            for line in iter(fp.readline, ""):
+                line = line.strip()
 
-        # save the current section
-        section = ""
-
-        for line in config:
-            line = line.strip()
-
-            # comment line, different variants
-            if not line or line.startswith("#") or line.startswith(
-                    "//") or line.startswith("|"):
-                continue
-
-            if line.startswith("["):
-                section = line.replace("[", "").replace("]", "")
-
-                if section not in self.config:
-                    print("Unrecognized section", section)
-                    section = ""
-
-            else:
-                name, non, value = line.rpartition("=")
-                name = name.strip()
-                value = value.strip()
-
-                if not section:
-                    print("Value without section", name)
+                # comment line, different variants
+                if not line or line.startswith("#") or line.startswith(
+                        "//") or line.startswith("|"):
                     continue
 
-                if name in self.config[section].config:
-                    self.set(section, name, value, sync=False)
+                if line.startswith("["):
+                    section = line.replace("[", "").replace("]", "")
+
+                    if section not in self.config:
+                        print("Unrecognized section", section)
+                        section = ""
+
                 else:
-                    print("Unrecognized option", section, name)
+                    name, non, value = line.rpartition("=")
+                    name = name.strip()
+                    value = value.strip()
+
+                    if not section:
+                        print("Value without section", name)
+                        continue
+
+                    if name in self.config[section].config:
+                        self.set(section, name, value, sync=False)
+                    else:
+                        print("Unrecognized option", section, name)
 
     def save(self):
         """
         Saves config to filename.
         """
         configs = []
-        with io.open(self.filename, "wb") as f:
-            configs.append(f)
+        with io.open(self.filename, mode='wb') as fp:
+            configs.append(fp)
             os.chmod(self.filename, 0o600)
-            f.write("version: {:d}\n\n".format(self.version))
+            fp.write(
+                "version: {}\n\n".format(
+                    convert.from_version(
+                        self.version)))
 
             for section, data in self.config.items():
-                f.write("[{}]\n".format(section))
+                fp.write("[{}]\n".format(section))
 
                 for option, data in data.config.items():
                     value = self.get(section, option)
-                    if isinstance(value, str):
-                        value = value.encode("utf8")
-                    else:
-                        value = str(value)
+                    fp.write('{} = {}\n'.format(option, value))
 
-                    f.write('{} = {}\n'.format(option, value))
-
-                f.write("\n")
+                fp.write("\n")
 
     def __getitem__(self, section):
         """
         Provides dictionary like access: c['section']['option'].
         """
-        return Section(self, section)
+        return ConfigSection(self, section)
 
     def __contains__(self, section):
         """
@@ -200,10 +214,11 @@ class Config(object):
         self.config[section] = data
 
 
-class Section(object):
+class ConfigSection(object):
     """
     Provides dictionary like access for configparser.
     """
+    __slots__ = ['parser', 'section']
 
     def __init__(self, parser, section):
         """

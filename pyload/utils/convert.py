@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import itertools
 import re
@@ -10,7 +9,7 @@ from builtins import bytes, int, map, str
 
 from future import standard_library
 
-from pyload.utils.check import isiterable, ismapping
+from .check import isiterable, ismapping
 
 standard_library.install_aliases()
 
@@ -23,6 +22,11 @@ try:
     import goslate
 except ImportError:
     pass
+
+
+__all__ = ['accumulate', 'chunks', 'convert', 'from_version', 'language',
+           'merge', 'size', 'to_bool', 'to_bytes', 'to_dict', 'to_float',
+           'to_int', 'to_list', 'to_str', 'to_version']
 
 
 def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
@@ -40,7 +44,8 @@ def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
             res = obj
     except Exception as e:
         if callable(fallback):
-            return fallback(obj, *cvargs[-1])
+            fbargs = cvargs[:-1] + (e,)
+            return fallback(obj, *fbargs)
         raise
     return res
 
@@ -129,17 +134,17 @@ def size(value, in_unit, out_unit):
         return integer + decimal
 
 
-def to_bool(value, default=None):
+def to_bool(value, default=None, exc=Exception):
     """
     Convert value to boolean or return default.
     """
     try:
         return bool(value)
-    except Exception:
+    except exc:
         return default
 
 
-def to_bytes(value, default=None):
+def to_bytes(value, default=None, exc=Exception):
     """
     Convert value to bytes or return default.
     """
@@ -148,57 +153,61 @@ def to_bytes(value, default=None):
             return value.encode('utf-8')
         except Exception:
             return bytes(value)
-    except Exception:
+    except exc:
         return default
 
 
-def to_dict(obj, default=None):
+def to_dict(obj, default=None, exc=Exception):
     """
     Convert object to dictionary or return default.
     """
     try:
         return {attr: getattr(obj, attr) for attr in obj.__slots__}
-    except Exception:
+    except exc:
         return default
 
 
-def to_float(value, default=None):
+def to_float(value, default=None, exc=Exception):
     """
     Convert value to fractional or return default.
     """
     try:
         return float(value)
-    except Exception:
+    except exc:
         return default
 
 
-def to_int(value, default=None):
+def to_int(value, default=None, exc=Exception):
     """
     Convert value to integer or return default.
     """
     try:
         return int(value)
-    except Exception:
+    except exc:
         return default
 
 
-def to_list(value, default=None):
+def to_list(value, default=None, exc=Exception):
     """
     Convert value to a list with value inside or return default.
     """
-    res = default
-    if isinstance(value, list):
-        res = value
-    elif ismapping(value):
-        res = list(value.items())
-    elif isiterable(value):
-        res = list(value)
-    elif value is not None:
-        res = [value]
+    try:
+        if isinstance(value, list):
+            res = value
+        elif ismapping(value):
+            res = list(value.items())
+        elif isiterable(value, strict=False):
+            res = list(value)
+        elif value is not None:
+            res = [value]
+        else:
+            res = list(value)
+    except exc:
+        return default
     return res
 
 
-def to_str(value, default=None):
+def to_str(value, default=None, exc=Exception):
     """
     Convert value to unicode or return default.
     """
@@ -207,16 +216,28 @@ def to_str(value, default=None):
             return value.decode('utf-8')
         except Exception:
             return str(value)
-    except Exception:
+    except exc:
         return default
 
 
-def ver_to_tuple(value, default=None):
+def from_version(value, default=None, exc=Exception):
     """
-    Convert version like string to a tuple of integers or return default.
+    Convert version tuple to version like string or return default.
     """
     try:
-        values = map(to_int, re.split(r'([\d.,]+)', value))
-        return tuple(_f for _f in values if _f)
-    except Exception:
+        return '.'.join(to_str(num, num) for num in value)
+    except exc:
+        return default
+
+
+_re_vtt = re.compile(r'\D+')
+
+
+def to_version(value, default=None, exc=Exception):
+    """
+    Convert version like string to a version tuple of integers or return default.
+    """
+    try:
+        return tuple(int(_f) for _f in _re_vtt.split(value) if _f)
+    except exc:
         return default

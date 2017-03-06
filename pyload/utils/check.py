@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import imp
 from builtins import map, range
 
 from future import standard_library
 
-from pyload.utils.lib.collections import Iterable, Mapping
+from .layer.legacy.collections_ import Iterable, Mapping
 
 standard_library.install_aliases()
+
+
+__all__ = [
+    'bitset',
+    'hasmethod',
+    'haspropriety',
+    'isiterable',
+    'ismapping',
+    'ismodule',
+    'methods',
+    'missing',
+    'proprieties']
 
 
 def bitset(bits, compare):
@@ -55,7 +66,7 @@ def isiterable(obj, strict=False):
     Check if object is iterable (`<type 'str'>` excluded if strict=False).
     """
     return (isinstance(obj, Iterable)
-            and (strict or not isinstance(obj, str)))
+            and (strict or not (isinstance(obj, str) or isinstance(obj, bytes))))
 
 
 def ismapping(obj):
@@ -70,15 +81,15 @@ def ismodule(name, path=None):
     Check if exists a module with given name.
     """
     try:
-        f, filename, desc = imp.find_module(name, path)
-        if f is not None:
-            f.close()
+        fp, filename, desc = imp.find_module(name, path)
+        if fp is not None:
+            fp.close()
         return True
     except ImportError:
         return False
 
 
-def missingitems(iterable, start=None, end=None):
+def missing(iterable, start=None, end=None):
     iter_seq = set(map(int, iterable))
     min_val = start or min(iter_seq)
     max_val = end or max(iter_seq)

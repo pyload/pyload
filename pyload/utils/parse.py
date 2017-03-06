@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import re
@@ -10,30 +9,53 @@ from builtins import dict
 
 from future import standard_library
 
+import mimetypes
 from pyload.utils import convert, format, purge
-from pyload.utils.decorator import iterate
-from pyload.utils.lib import hashlib
-from pyload.utils.time import to_midnight
+
+from .decorator import iterate
+from .layer.legacy import hashlib_ as hashlib
+from .time import to_midnight
 
 standard_library.install_aliases()
 
 
+__all__ = [
+    'alias',
+    'boolean',
+    'entries',
+    'hash',
+    'mime',
+    'name',
+    'number',
+    'packs',
+    'size',
+    'time']
+
+
+_re_alias = re.compile(r'[\d.-_]+')
+
+
 @iterate
 def alias(value):
-    chunks = re.split(r'[\d.-_]+', format.name(value))
+    chunks = _re_alias.split(format.name(value))
     return ''.join(word.capitalize() for word in chunks if word)
+
+
+_re_boolean = re.compile(r'1|y|true', flags=re.I)
 
 
 @iterate
 @purge.args
 def boolean(value):
-    return re.match(r'1|y|true', value, re.I) is not None
+    return _re_boolean.match(value) is not None
+
+
+_re_entries = re.compile(r'[;,\s]+')
 
 
 @iterate
 def entries(value):
-    return [entry for entry in re.sub(
-        r'[;,\s]+', '|', value).split('|') if entry]
+    return [entry for entry in _re_entries.sub('|', value).split('|') if entry]
 
 
 @iterate
@@ -59,12 +81,21 @@ def hash(value):
 @iterate
 @purge.args
 def name(value):
-    from pyload.utils.web import check as webcheck
+    from .web import check as webcheck
     if webcheck.isurl(value):
-        from pyload.utils.web import convert as webconvert
+        from .web import convert as webconvert
         return webconvert.url_to_name(value)
     else:
         return os.path.basename(value)
+
+
+@iterate
+@purge.args
+def mime(value):
+    return mimetypes.guess_type(name, strict=False)[0]
+
+
+_re_number = re.compile(r'[\s-]+')
 
 
 @iterate
@@ -81,20 +112,22 @@ def number(value):
     t_tuple = [(w, i * 10) for i, w in enumerate(tens, 2)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens = re.split(r'[\s-]+', value)
+    tokens = _re_number.split(value)
 
     numbers = [_f for _f in (numwords.get(word) for word in tokens) if _f]
     return sum(numbers) if numbers else None
 
 
+_re_packs = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
+
+
 @purge.args
-def packages(packages):
+def packs(nameurls):
     packs = {}
-    regex = re.compile(r'[^a-zA-Z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
-    for urlname, url in packages:
+    for urlname, url in nameurls:
         urlname = name(urlname)
         urlname = os.path.splitext(urlname)[0].strip()
-        urlname = regex.sub('_', urlname).strip('_')
+        urlname = _re_packs.sub('_', urlname).strip('_')
 
         if not urlname:
             urlname = "Unknown"
@@ -104,10 +137,13 @@ def packages(packages):
     return packs
 
 
+_re_size = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
+
+
 @iterate
 @purge.args
 def size(value, unit=None):  #: returns integer bytes
-    m = re.match(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)', value)
+    m = _re_size.match(value)
     if not m:
         return None
 
@@ -120,6 +156,9 @@ def size(value, unit=None):  #: returns integer bytes
     return convert.size(size, unit, 'byte')
 
 
+_re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
+
+
 @iterate
 @purge.args
 def time(value):
@@ -130,9 +169,8 @@ def time(value):
     if m:
         res = to_midnight()
     else:
-        regex = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
         timemap = {'day': 43200, 'hr': 3600, 'hour': 3600, 'min': 60, 'sec': 1}
         seconds = [(w in timewords or convert.to_int(i or w, 0) or number(w) or 1) *
-                   timemap.get(u, 1) for w, u, i in regex.findall(value)]
+                   timemap.get(u, 1) for w, u, i in _re_time.findall(value)]
         res = sum(seconds)
     return res

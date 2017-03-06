@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
@@ -10,36 +10,40 @@
 #          \  /
 #           \/
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import argparse
-# from multiprocessing import freeze_support
 import operator
 import os
 import sys
-from builtins import PACKDIR, map
+from builtins import map
 
 from future import standard_library
 
-import pyload
-from pyload.utils import format
+import pyload.core
+from pyload.utils import convert, format
 from pyload.utils.sys import set_console_icon, set_console_title
 
-standard_library.install_aliases()
+# from multiprocessing import freeze_support
 
 
 try:
-    import colorama
+    from pyload.utils.layer.mycolorclass import (autoblue, autogreen, autored,
+                                                 autowhite, autoyellow)
 except ImportError:
-    pass
+    autoblue = autogreen = autored = autowhite = autoyellow = lambda msg: msg
+
+standard_library.install_aliases()
 
 
 __all__ = ['logo', 'main', 'parse_args']
 
 
-def logo():
-    return """
+PACKDIR = os.path.abspath(os.path.dirname(__file__))
+
+
+def _gen_logo():
+    text = """
       ____________
    _ /       |    \ ___________ _ _______________ _ ___
   /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \
@@ -48,48 +52,40 @@ def logo():
   \______\    /______|_|___|__/________________________/
           \  /
            \/  © 2009-2017 pyLoad Team <{}>
-""".format(pyload.info().url)
+""".format(pyload.core.info().url)
+    return autowhite(text)
+
+logo = _gen_logo()
 
 
 def parse_args(argv=None):
-    try:
-        color = lambda c, msg: getattr(
-            colorama.Fore, c) + msg + colorama.Style.RESET_ALL
-    except NameError:
-        color = lambda c, msg: msg
-
-    blue = lambda msg: color('BLUE', msg)
-    green = lambda msg: color('GREEN', msg)
-    red = lambda msg: color('RED', msg)
-    yellow = lambda msg: color('YELLOW', msg)
-
-    prog = blue("py") + yellow("Load")
-    desc = red(pyload.info().description)
-    epilog = green(
-        "*** Please refer to the included `README.md` for further info ***")
+    prog = autoblue("py") + autoyellow("Load")
+    desc = autored(pyload.core.info().description)
+    epilog = autogreen(
+        "*** Please refer to the included `README.md` for further details ***")
 
     ap = argparse.ArgumentParser(prog=prog,
                                  description=desc,
                                  epilog=epilog,
                                  add_help=False)
-    pg = ap.add_argument_group(green("Optional arguments"))
-    sp = ap.add_subparsers(title=green("Commands"),
+    pg = ap.add_argument_group(autogreen("Optional arguments"))
+    sp = ap.add_subparsers(title=autogreen("Commands"),
                            dest='command',
-                           help=red("Available sub-commands (") +
-                                yellow("`COMMAND --help`") +
-                                red(" for detailed help)"))
+                           help=autored("Available sub-commands (") +
+                                autoyellow("`COMMAND --help`") +
+                                autored(" for detailed help)"))
 
     sc = (('start', "Start process instance"),
-          ('stop', "Terminate process instance"),
+          ('quit', "Terminate process instance"),
           ('restart', "Restart process instance"),
           ('setup', "Setup package"),
-          ('update', "Update package"),
+          ('upgrade', "Update package"),
           ('status', "Show process PID"),
           ('version', "Show package version"),
           ('info', "Show package info"))
 
     for prog, desc in sc:
-        desc = red(desc)
+        desc = autored(desc)
         p = sp.add_parser(prog, description=desc,
                           epilog=epilog, help=desc, add_help=False)
         globals()['sp_' + prog] = p
@@ -97,47 +93,51 @@ def parse_args(argv=None):
     for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_update, sp_setup, sp_version:
         p.add_argument('-h', '--help',
                        action='help',
-                       help=red("Show this help message and exit"))
+                       help=autored("Show this help message and exit"))
 
-    for p in pg, sp_start, sp_stop, sp_restart, sp_status:
-        profile_help = red("Config profile to use (") + yellow("`default`") + \
-            red(" if missing)")
+    for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup:
+        profile_help = autored("Config profile to use (") + autoyellow("`default`") + \
+            autored(" if missing)")
+        configdir_help = autored("Change path of config directory")
         p.add_argument('-p', '--profile', help=profile_help)
+        p.add_argument('-c', '--configdir', help=configdir_help)
 
     for p in pg, sp_start, sp_restart:
-        configdir_help = red("Change path of config directory")
-        refresh_help   = red("Remove compiled files and tmp config (") + \
-            yellow("`-rr`") + red(" to restore admin access ") + \
-            yellow("`admin|pyload`") + red(")")
-        remote_help    = red("Enable remote api interface at entered ") + \
-            yellow("`IP address:Port number`") + \
-            red(" (use defaults if missing)")
-        webui_help     = red("Enable webui interface at entered ") + \
-            yellow("`IP address:Port number`") + \
-            red(" (use defaults if missing)")
-        debug_help     = red("Enable debug mode (") + yellow("`-dd`") + \
-            red(" for extended debug)")
-        webdebug_help = red("Enable webserver debugging")
-        daemon_help = red("Run as daemon")
-
-        p.add_argument('-c', '--configdir', help=configdir_help)
+        debug_help = autored("Enable debug mode (") + autoyellow("`-dd`") + \
+            autored(" for extended debug)")
+        # webdebug_help = autored("Enable webserver debugging")
+        refresh_help = autored("Remove compiled files and temp folder (") + \
+            autoyellow("`-rr`") + autored(" to restore default login credentials ") + \
+            autoyellow("`admin|pyload`") + autored(")")
+        webui_help = autored("Enable webui interface at entered ") + \
+            autoyellow("`IP address:Port number`") + \
+            autored(" (use defaults if missing)")
+        remote_help = autored("Enable remote api interface at entered ") + \
+            autoyellow("`IP address:Port number`") + \
+            autored(" (use defaults if missing)")
+        daemon_help = autored("Run as daemon")
+        p.add_argument('-d', '--debug', action='count', help=debug_help)
+        # p.add_argument('-w', '--webdebug', action='count', help=webdebug_help)
         p.add_argument('-r', '--refresh', '--restore',
                        action='count', help=refresh_help)
-        p.add_argument('-a', '--remote', help=remote_help)
         p.add_argument('-u', '--webui', help=webui_help)
-        p.add_argument('-d', '--debug', action='count', help=debug_help)
-        p.add_argument('-w', '--webdebug', action='count', help=webdebug_help)
+        p.add_argument('-a', '--rpc', help=remote_help)
         p.add_argument('-D', '--daemon', action='store_true', help=daemon_help)
 
-    force_help = red("Force package installation")
+    wait_help = autored("Timeout for graceful exit (in seconds)")
+    sp_stop.add_argument('--wait', help=wait_help)
+
+    force_help = autored("Force package installation")
+    pre_help = autored("Upgrade to pre-release if available")
     sp_update.add_argument(
         '-f', '--force', action='store_true', help=force_help)
+    sp_update.add_argument('--pre', action='store_true', help=pre_help)
 
     # NOTE: Workaround to `required subparsers` issue in Python 2
     if not set(map(operator.itemgetter(0), sc)) & set(argv):
         argv.append('start')
 
-    print(logo() + '\n')
+    print(logo + '\n')
     return ap.parse_args(argv)
 
 
@@ -153,7 +153,7 @@ def _set_console():
 # def _open_browser(p):
     # webserver = p.svm.get('webui')
     # if not webserver or not webserver.active:
-        # return
+        # return None
     # import webbrowser
     # url = '{}:{}'.format(webserver.host, webserver.port)
     # webbrowser.open_new_tab(url)
@@ -162,13 +162,13 @@ def _set_console():
 def main():
     _set_console()
 
-    emsg = None
+    exc = None
 
     args = parse_args(sys.argv[1:])
 
     # TODO: Handle --help output
 
-    func = getattr(pyload, args.command)
+    func = getattr(pyload.core, args.command)
     kwgs = vars(args)
     kwgs.pop('command', None)
 
@@ -180,18 +180,20 @@ def main():
             try:
                 res.join()
             except Exception as e:
-                emsg = e
-            res.shutdown()
+                exc = e
 
-    elif args.command in ('status', 'version'):
-        print(' '.join(format.attributes(res)))
+    elif args.command == 'status':
+        print(res if res is not None else "")
+
+    elif args.command == 'version':
+        print(convert.from_version(res))
 
     elif args.command == 'info':
         print('\n'.join(format.items(res)))
 
-    sys.exit(emsg)
+    sys.exit(exc)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # freeze_support()
     main()

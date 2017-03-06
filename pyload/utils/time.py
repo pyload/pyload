@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import datetime
+import time as _time
 from time import *
 
 from future import standard_library
@@ -16,7 +16,7 @@ def compare(start, end):
     if start == end:
         return True
 
-    now = list(localtime()[3:5])
+    now = list(_time.localtime()[3:5])
     if (start < now < end or
         start < now > end < start or
             start > end and (now > start or now < end)):
@@ -40,3 +40,6 @@ def to_nexthour():
     nexthour = now.replace(
         minute=1, second=0, microsecond=0) + datetime.timedelta(hours=1)
     return (nexthour - now).seconds
+
+# Cleanup
+del _time, datetime

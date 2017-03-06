@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import range
 
 from future import standard_library
 
-from pyload.api import InputType, Interaction
-from pyload.manager import InteractionManager
+from pyload.core.datatype import InputType, Interaction
+from pyload.core.manager import InteractionManager
 from tests.helper.stubs import Core
 from unittest2 import TestCase
 

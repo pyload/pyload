@@ -1,9 +1,5 @@
 include *.md
 
+recursive-include lib *
 recursive-include locale *.mo *.pot
-
-recursive-include pyload/remote *
-recursive-exclude pyload/remote *.py[cod]
-
-recursive-include pyload/webui *
-prune pyload/webui/app/modules
+recursive-exclude pyload/rpc *.py[cod]

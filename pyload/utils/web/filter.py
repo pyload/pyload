@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 
@@ -21,7 +20,7 @@ except Exception:
         Return a relative version of a path.
         """
         if not path:
-            raise ValueError("no path specified")
+            raise ValueError("No path specified")
         start_list = os.path.abspath(start).split(sep)
         path_list = os.path.abspath(path).split(sep)
         # Work out how much of the filepath is shared by start and path.
@@ -30,6 +29,15 @@ except Exception:
         if not rel_list:
             return curdir
         return os.path.join(*rel_list)
+
+
+__all__ = [
+    'date',
+    'path_make_absolute',
+    'path_make_relative',
+    'quotepath',
+    'truncate',
+    'unquotepath']
 
 
 QUOTECHAR = "::/"

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import json
 from builtins import object
@@ -11,8 +10,8 @@ from future import standard_library
 from requests.auth import HTTPBasicAuth
 
 from nose.tools import assertEqual, raises
-from pyload.remote.apitypes import Forbidden
-from pyload.remote.jsonclient import JSONClient
+from pyload.core.datatype import Forbidden
+from pyload.rpc.jsonclient import JSONClient
 from tests.helper.config import credentials, webaddress
 
 standard_library.install_aliases()

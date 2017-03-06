@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from collections import defaultdict
 
 from future import standard_library
 
 from nose.tools import raises
-from pyload.api import InvalidConfigSection
-from pyload.config import Config
-from pyload.database import DatabaseBackend
-from pyload.manager import ConfigManager
+from pyload.core.database import DatabaseBackend, InvalidConfigSection
+from pyload.core.manager import ConfigManager
 from tests.helper.stubs import Core, admin_user, normal_user
 from unittest2 import TestCase
 
@@ -31,7 +28,7 @@ class TestConfigManager(TestCase):
         cls.core.db = cls.db
         cls.db.manager = cls.core
         cls.db.manager.status_msg = defaultdict(lambda: "statusmsg")
-        cls.parser = Config()
+        cls.parser = cls.core.config
         cls.config = ConfigManager(cls.core, cls.parser)
         cls.db.setup()
 
@@ -115,7 +112,7 @@ class TestConfigManager(TestCase):
         # now we assert the correct values
         for name, config, values in self.config.iter_sections(admin_user):
             assert name == "plugin"
-            assert values == {"value": True}
+            assert values == {'value': True}
             i += 1
         assert i == 1
 

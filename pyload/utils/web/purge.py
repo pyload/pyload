@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import re
 
 import html.parser
 from future import standard_library
 
-from pyload.utils.decorator import iterate
+from ..decorator import iterate
 
 standard_library.install_aliases()
 
 
+__all__ = ['comments', 'escape', 'tags', 'text']
+
+
+_re_comments = re.compile(r' *<!--.*?--> *', flags=re.S)
+
+
 @iterate
 def comments(value):
-    return re.sub(r' *<!--.*?--> *', " ", value, flags=re.S).strip()
+    return _re_comments.sub(" ", value).strip()
 
 
 @iterate
@@ -28,9 +33,12 @@ def escape(text):
     return h.unescape(text)
 
 
+_re_tags = re.compile(r'\s*<.+?>\s*', flags=re.S)
+
+
 @iterate
 def tags(value):
-    return re.sub(r'\s*<.+?>\s*', " ", value, flags=re.S).strip()
+    return _re_tags.sub(" ", value).strip()
 
 
 # NOTE: No lower-case conversion

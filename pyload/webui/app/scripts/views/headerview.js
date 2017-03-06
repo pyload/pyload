@@ -104,7 +104,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/statusinfo',
           },
           xaxis: { ticks: [] },
           yaxis: { ticks: [], min: 1, autoscaleMargin: 0.1, tickFormatter: function(data) {
-            return formatsize(data * 1024);
+            return formatsize(data << 10);
           }, position: 'right' },
           grid: {
             show: true,
@@ -132,7 +132,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/statusinfo',
         var status = this.status.toJSON();
         status.maxspeed = _.max(this.speeds, function(speed) {
           return speed[1];
-        })[1] * 1024;
+        })[1] << 10;
         this.$('.status-block').html(
           templateStatus(status)
         );
@@ -204,7 +204,7 @@ define(['jquery', 'underscore', 'backbone', 'app', 'models/statusinfo',
             this.notificationView.tasks.fetch();
 
           this.speeds = this.speeds.slice(1);
-          this.speeds.push([this.speeds[this.speeds.length - 1][0] + 1, Math.floor(data.speed / 1024)]);
+          this.speeds.push([this.speeds[this.speeds.length - 1][0] + 1, Math.floor(data.speed >> 10)]);
 
           // TODO: if everything is 0 re-render is not needed
           this.speedgraph.setData([this.speeds]);

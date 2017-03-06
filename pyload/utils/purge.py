@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import re
 from builtins import bytes
@@ -10,9 +9,13 @@ from builtins import bytes
 from future import standard_library
 
 from pyload.utils import convert
-from pyload.utils.decorator import iterate
+
+from .decorator import iterate
 
 standard_library.install_aliases()
+
+
+__all__ = ['args', 'chars', 'kwargs', 'pattern', 'truncate', 'uniqify']
 
 
 ##########################################################################
@@ -20,40 +23,28 @@ standard_library.install_aliases()
 ##########################################################################
 
 @iterate
-def chars(value, chars):
-    return re.sub(r'[{}]+'.format(chars), '', value)
+def chars(s, chars, repl=''):
+    return re.sub(r'[{}]+'.format(chars), repl, s)
 
 
 @iterate
-def pattern(value, rules):
+def pattern(s, rules):
     for rule in rules:
         try:
             pattr, repl, flags = rule
         except ValueError:
             pattr, repl = rule
             flags = 0
-        value = re.sub(pattr, repl, value, flags)
-
-    return value
-
-
-@iterate
-def replace(value, old, new, count=None):
-    return value.replace(old, new, count)
+        s = re.sub(pattr, repl, s, flags)
+    return s
 
 
-@iterate
-def strip(value, chars=None):
-    return value.strip(chars)
-
-
-@iterate
-def truncate(name, length):
-    max_trunc = len(name) // 2
-    if length > max_trunc:
-        raise ValueError("File name too short")
-    trunc = (len(name) - length) // 3
-    return "{}~{}".format(name[:trunc * 2], name[-trunc:])
+def truncate(s, offset):
+    max_trunc = len(s) // 2
+    if offset > max_trunc:
+        raise ValueError("String too short")
+    trunc = (len(s) - offset) // 3
+    return "{}~{}".format(s[:trunc * 2], s[-trunc:])
 
 
 def uniqify(seq):
@@ -70,7 +61,7 @@ def uniqify(seq):
 ##########################################################################
 
 def args(func):
-    from pyload.utils.web import purge as webpurge
+    from .web import purge as webpurge
 
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
@@ -80,7 +71,7 @@ def args(func):
 
 
 def kwargs(func):
-    from pyload.utils.web import purge as webpurge
+    from .web import purge as webpurge
 
     def new(*args, **kwargs):
         rule = lambda x: isinstance(x, str) or isinstance(x, bytes)

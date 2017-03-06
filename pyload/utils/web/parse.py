@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import re
 
@@ -10,19 +9,22 @@ import requests
 import tld
 from future import standard_library
 
-from pyload.utils import format
-from pyload.utils.struct import HeaderDict
-from pyload.utils.web import convert as webconvert
-from pyload.utils.web import purge as webpurge
+from . import convert as webconvert
+from . import purge as webpurge
+from .. import format
+from ..struct import HeaderDict
 
 standard_library.install_aliases()
+
+
+__all__ = ['attr', 'domain', 'form', 'header', 'name']
 
 
 # TODO: Recheck result format
 def attr(html, name=None):
     pattr = r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'
     pattr = pattr.format(name or '\w+')
-    m = re.search(pattr, html, re.I)
+    m = re.search(pattr, html, flags=re.I)
     return m.group(2) if m else None
 
 
@@ -30,17 +32,20 @@ def domain(url):
     return tld.get_tld(format.url(url), fail_silently=True)
 
 
+_re_form = re.compile(
+    r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
+    flags=re.I | re.S)
+
+
 def form(html, name=None, inputs={}):
     pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
     pattr = pattr.format(name or "")
-    for form in re.finditer(pattr, html, re.I | re.S):
+    for form in re.finditer(pattr, html, flags=re.I | re.S):
         taginputs = {}
         formaction = attr(form.group('TAG'), "action")
 
-        for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    webpurge.comments(
-                                        form.group('CONTENT')),
-                                    re.I | re.S):
+        for inputtag in _re_form.finditer(
+                webpurge.comments(form.group('CONTENT'))):
             tagname = attr(inputtag.group(1), "name")
             if not tagname:
                 continue
@@ -70,11 +75,14 @@ def form(html, name=None, inputs={}):
     return None, {}  #: No matching form found
 
 
+_re_header = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
+
 # TODO: Rewrite...
+
+
 def header(html):
     hdict = HeaderDict()
-    pattr = r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n'
-    for key, value in re.findall(pattr, html):
+    for key, value in _re_header.findall(html):
         key = key.lower()
         if key not in hdict:
             hdict[key] = value

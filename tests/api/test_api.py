@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
+import random
 from builtins import range
-from random import choice
 
 from future import standard_library
 
@@ -44,7 +43,7 @@ class TestAPI(TestCase):
 
     def test_random(self, n=10000):
         for i in range(n):
-            func = choice(self.methods)
+            func = random.choice(self.methods)
             func()
 
     def test_random2(self, n):

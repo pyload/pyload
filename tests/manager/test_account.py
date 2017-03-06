@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from future import standard_library
 
-from pyload.manager import AccountManager
+from pyload.core.manager import AccountManager
 from tests.helper.stubs import Core, admin_user, normal_user
 from unittest2 import TestCase
 

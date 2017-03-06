@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 import os
 import shlex
+import sys as _sys
 from builtins import dict, map
-from platform import platform
 from sys import *
 
 import psutil
 from future import standard_library
 
-from pyload.utils.lib.subprocess import PIPE, Popen
+from pyload.utils import convert
+
+from .layer.legacy.subprocess_ import PIPE, Popen
 
 standard_library.install_aliases()
-
 
 try:
     import dbus
 except ImportError:
     pass
 try:
-    from setproctitle import setproctitle
+    import setproctitle
 except ImportError:
     pass
 try:
@@ -36,9 +36,10 @@ except ImportError:
     pass
 
 
+# TODO: Recheck...
 def exec_cmd(command, *args, **kwargs):
     cmd = shlex.split(command)
-    cmd.extend(x.encode('uft-8') for x in args)
+    cmd.extend(convert.to_bytes(x, x) for x in args)
     xargs = {'bufsize': -1,
              'stdout': PIPE,
              'stderr': PIPE}
@@ -46,18 +47,19 @@ def exec_cmd(command, *args, **kwargs):
     return Popen(cmd, **xargs)
 
 
+# TODO: Recheck...
 def call_cmd(command, *args, **kwargs):
-    ignore_except = kwargs.pop('ignore_errors', False)
+    ignore_errors = kwargs.pop('ignore_errors', False)
     try:
         p = exec_cmd(command, *args, **kwargs)
 
-    except Exception as e:
-        if not ignore_except:
+    except Exception as exc:
+        if not ignore_errors:
             raise
         else:
             returncode = 1
             stdoutdata = ""
-            stderrdata = e.message().strip()
+            stderrdata = exc.message.strip()
     else:
         returncode = p.returncode
         stdoutdata, stderrdata = map(str.strip, p.communicate())
@@ -76,11 +78,11 @@ def get_info():
     """
     Returns system information as dict.
     """
-    return dict(platform=platform(),
-                version=version,
+    return dict(platform=_sys.platform,
+                version=_sys.version,
                 path=os.path.abspath(''),
-                encoding=getdefaultencoding(),
-                fs_encoding=getfilesystemencoding())
+                encoding=_sys.getdefaultencoding(),
+                fs_encoding=_sys.getfilesystemencoding())
 
 
 def get_process_id(name):
@@ -132,12 +134,21 @@ def renice(value, pid=None):
     p.nice(value)
 
 
-def set_console_icon(filepath):
-    if os.name != 'nt':
-        return
+def ionice(ioclass=None, value=None, pid=None):
+    """
+    Unix notation process I/O nicener.
+    """
+    if os.name == 'nt':
+        ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
+    p = psutil.Process(pid)
+    p.ionice(ioclass, value)
 
-    if not os.path.isfile(filepath):
-        return
+
+def set_console_icon(iconpath):
+    if os.name != 'nt':
+        raise NotImplementedError
+    if not os.path.isfile(iconpath):
+        raise TypeError
 
     import ctypes
 
@@ -145,7 +156,7 @@ def set_console_icon(filepath):
     LR_LOADFROMFILE = 0x00000010
     LR_DEFAULTSIZE = 0x00000040
 
-    file = os.path.abspath(filepath)
+    file = os.path.abspath(iconpath)
     flags = LR_LOADFROMFILE | LR_DEFAULTSIZE
     hicon = ctypes.windll.kernel32.LoadImageW(
         None, file, IMAGE_ICON, 0, 0, flags)
@@ -154,7 +165,7 @@ def set_console_icon(filepath):
 
 
 def set_console_title(value):
-    title = value.encode('utf-8')
+    title = convert.to_bytes(value, value)
     if os.name == 'nt':
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
@@ -167,8 +178,8 @@ def set_process_group(value):
     os.setgid(gid)
 
 
-def set_process_title(value):
-    setproctitle('pyLoad-{}'.format(value))
+def set_process_name(value):
+    setproctitle.setproctitle(value)
 
 
 def set_process_user(value):
@@ -180,7 +191,7 @@ def shutdown():
     if os.name == 'nt':
         call_cmd('rundll32.exe user.exe,ExitWindows')
 
-    elif platform() == "darwin":
+    elif _sys.platform == "darwin":
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
@@ -195,3 +206,23 @@ def shutdown():
             stop_method()
         except NameError:
             call_cmd('stop -h now')  # NOTE: Root privileges needed
+
+
+# Cleanup
+del _sys, PIPE, Popen, convert, dict, map, os, psutil, shlex
+try:
+    del dbus
+except NameError:
+    pass
+try:
+    del setproctitle
+except NameError:
+    pass
+try:
+    del grp
+except NameError:
+    pass
+try:
+    del pwd
+except NameError:
+    pass

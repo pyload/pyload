@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
-#@author: vuolter
+# @author: vuolter
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from multiprocessing import Process
 
 from future import standard_library
 
-from pyload.utils.check import isiterable
-from pyload.utils.lib.threading import Thread
+from .check import isiterable
+from .layer.safethreading import Thread
 
 standard_library.install_aliases()
+
+
+__all__ = [
+    'fork',
+    'iterate',
+    'lock',
+    'readlock',
+    'singleton',
+    'threaded',
+    'trycatch']
 
 
 # def deprecated(by=None):
@@ -39,10 +48,10 @@ def fork(func, daemon=True):
 
 
 def iterate(func):
-    def new(value, *args, **kwargs):
-        values = value if isiterable(value) else (value,)
-        for v in values:
-            yield func(v, *args, **kwargs)
+    def new(seq, *args, **kwargs):
+        if isiterable(seq):
+            return type(seq)(func(val, *args, **kwargs) for val in seq)
+        return func(seq, *args, **kwargs)
     return new
 
 
@@ -64,6 +73,17 @@ def lock(func):
     return new
 
 
+# NOTE: Don't use this if you can use the metaclass struct.abc.Singleton
+def singleton(klass):
+    inst = {}
+
+    def get_inst(*args, **kwargs):
+        if klass not in inst:
+            inst[klass] = klass(*args, **kwargs)
+        return inst[klass]
+    return get_inst
+
+
 def threaded(func, daemon=True):
     def new(self, *args, **kwargs):
         t = Thread(target=func, args=args, kwargs=kwargs)
@@ -77,7 +97,7 @@ def trycatch(callback):
     """
     Decorator that executes the function and returns the value or fallback on any exception.
     """
-    from pyload.utils.debug import print_traceback
+    from .debug import print_traceback
 
     def wrapper(func):
         def new(self, *args, **kwargs):

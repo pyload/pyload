@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, unicode_literals
 
 from builtins import object, str
 
-from bottle import ServerAdapter as BaseAdapter
+from bottle import ServerAdapter as _ServerAdapter
 from future import standard_library
 
 standard_library.install_aliases()
 
 
-class ServerAdapter(BaseAdapter):
+class ServerAdapter(_ServerAdapter):
+
+    __slots__ = ['NAME', 'SSL', 'cert', 'connection', 'debug', 'key']
+
     SSL = False
     NAME = ""
 
     def __init__(self, host, port, key, cert, connections, debug, **kwargs):
-        BaseAdapter.__init__(self, host, port, **kwargs)
+        _ServerAdapter.__init__(self, host, port, **kwargs)
         self.key = key
         self.cert = cert
         self.connection = connections
@@ -41,6 +43,9 @@ class ServerAdapter(BaseAdapter):
 
 
 class CherryPyWSGI(ServerAdapter):
+
+    __slots__ = ['NAME', 'SSL']
+
     SSL = True
     NAME = "threaded"
 
@@ -54,7 +59,6 @@ class CherryPyWSGI(ServerAdapter):
         if self.cert and self.key:
             CherryPyWSGIServer.ssl_certificate = self.cert
             CherryPyWSGIServer.ssl_private_key = self.key
-
         server = CherryPyWSGIServer(
             (self.host, self.port), handler, numthreads=self.connection)
         server.start()
@@ -64,6 +68,8 @@ class FapwsServer(ServerAdapter):
     """
     Does not work very good currently.
     """
+    __slots__ = ['NAME']
+
     NAME = "fapws"
 
     def run(self, handler):  #: pragma: no cover
@@ -87,6 +93,9 @@ class FapwsServer(ServerAdapter):
 
 # TODO: ssl
 class MeinheldServer(ServerAdapter):
+
+    __slots__ = ['NAME', 'SSL']
+
     SSL = True
     NAME = "meinheld"
 
@@ -106,6 +115,8 @@ class TornadoServer(ServerAdapter):
     """
     The super hyped asynchronous server by facebook. Untested.
     """
+    __slots__ = ['NAME', 'SSL']
+
     SSL = True
     NAME = "tornado"
 
@@ -124,16 +135,19 @@ class BjoernServer(ServerAdapter):
     """
     Fast server written in C: https://github.com/jonashaag/bjoern.
     """
+    __slots__ = ['NAME']
+
     NAME = "bjoern"
 
     def run(self, handler):
         from bjoern import run
-
         run(handler, self.host, self.port)
 
 
 # TODO: ssl
 class EventletServer(ServerAdapter):
+
+    __slots__ = ['NAME', 'SSL']
 
     SSL = True
     NAME = "eventlet"
@@ -147,6 +161,7 @@ class EventletServer(ServerAdapter):
         except TypeError:
             # Needed to ignore the log
             class NoopLog(object):
+                __slots__ = []
 
                 def write(self, *args):
                     pass
@@ -155,6 +170,8 @@ class EventletServer(ServerAdapter):
 
 
 class FlupFCGIServer(ServerAdapter):
+
+    __slots__ = ['NAME', 'SSL']
 
     SSL = False
     NAME = "flup"
@@ -171,6 +188,7 @@ class FlupFCGIServer(ServerAdapter):
 
         self.options.setdefault('bindAddress', (self.host, self.port))
         flup.server.fcgi.WSGIServer(handler, **self.options).run()
+
 
 # Order is important and gives every server precedence over others!
 all_server = [TornadoServer, EventletServer, CherryPyWSGI]
