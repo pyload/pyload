@@ -64,6 +64,7 @@ from module.gui.CoreConfigParser import ConfigParser
 from module.gui.Tools import MessageBox
 
 from module.lib.rename_process import renameProcess
+from module.lib.SafeEval import const_eval as literal_eval
 from module.utils import formatSize, formatSpeed
 
 from module.remote.thriftbackend.ThriftClient import DownloadStatus
@@ -183,6 +184,7 @@ class main(QObject):
                 msgb = MessageBox(None, text, "C", "OK", True)
                 msgb.exec_()
                 return False
+        self.newConfigFile = not guiFileFound
         return True
 
     def init(self, first=False):
@@ -208,8 +210,11 @@ class main(QObject):
         self.loggingOptions = LoggingOptions()
         optlog = self.parser.xml.elementsByTagName("optionsLogging").item(0).toElement().text()
         if optlog:
-            self.loggingOptions.settings = eval(str(QByteArray.fromBase64(str(optlog))))
-            self.loggingOptions.dict2dialogState()
+            try:
+                self.loggingOptions.settings = literal_eval(str(QByteArray.fromBase64(str(optlog))))
+                self.loggingOptions.dict2dialogState()
+            except:
+                self.loggingOptions.defaultSettings()
         self.initLogging(first)
 
         self.log.info("====================================================================================================")
@@ -392,7 +397,8 @@ class main(QObject):
         self.prepareForSaveOptionsAndWindow(self.stopMain_continue)
 
     def stopMain_continue(self):
-        self.saveOptionsAndWindowToConfig()
+        self.saveWindowToConfig()
+        self.saveOptionsToConfig()
         self.connector.disconnectProxy()
         if self.connectionLost:
             self.log.error("main.stopMain_continue: Lost connection to the server")
@@ -1035,6 +1041,7 @@ class main(QObject):
         dm("06"); self.connector.messageBox_06(server_version, host, port)
         # main
         pid = 536485
+        optCat = "FooBar"
         dm("07"); self.messageBox_07()
         dm("08"); self.messageBox_08()
         dm("09"); self.messageBox_09()
@@ -1047,6 +1054,7 @@ class main(QObject):
         dm("16"); self.messageBox_16()
         dm("17"); self.messageBox_17()
         dm("18"); self.messageBox_18(pid)
+        dm("21"); self.messageBox_21(optCat)
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
@@ -1571,13 +1579,63 @@ class main(QObject):
             self.geoMaximizeConfig = self.mainWindow.isMaximized()
             QTimer.singleShot(0, contFunc)
 
-    def saveOptionsAndWindowToConfig(self):
+    def saveOptionsToConfig(self):
         """
-            save options, window geometry and state to the config file
+            save options to the config file
+        """
+        mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
+        if mainWindowNode.isNull():
+            mainWindowNode = self.parser.xml.createElement("mainWindow")
+            self.parser.root.appendChild(mainWindowNode)
+        optionsNotifications = str(QByteArray(str(self.mainWindow.notificationOptions.settings)).toBase64())
+        optionsLogging = str(QByteArray(str(self.loggingOptions.settings)).toBase64())
+        optionsClickNLoadForwarder = str(self.clickNLoadForwarderOptions.settings["fromPort"])
+        optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
+        optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
+        optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
+        optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
+        optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
+        optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
+        optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
+        optionsClickNLoadForwarderNode = mainWindowNode.toElement().elementsByTagName("optionsClickNLoadForwarder").item(0)
+        optionsAutomaticReloadingNode = mainWindowNode.toElement().elementsByTagName("optionsAutomaticReloading").item(0)
+        optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
+        optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
+        optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
+        optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
+        newOptionsNotificationsNode = self.parser.xml.createTextNode(optionsNotifications)
+        newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
+        newOptionsClickNLoadForwarderNode = self.parser.xml.createTextNode(optionsClickNLoadForwarder)
+        newOptionsAutomaticReloadingNode = self.parser.xml.createTextNode(optionsAutomaticReloading)
+        newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
+        newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
+        newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
+        newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
+        optionsNotificationsNode.removeChild(optionsNotificationsNode.firstChild())
+        optionsNotificationsNode.appendChild(newOptionsNotificationsNode)
+        optionsLoggingNode.removeChild(optionsLoggingNode.firstChild())
+        optionsLoggingNode.appendChild(newOptionsLoggingNode)
+        optionsClickNLoadForwarderNode.removeChild(optionsClickNLoadForwarderNode.firstChild())
+        optionsClickNLoadForwarderNode.appendChild(newOptionsClickNLoadForwarderNode)
+        optionsAutomaticReloadingNode.removeChild(optionsAutomaticReloadingNode.firstChild())
+        optionsAutomaticReloadingNode.appendChild(newOptionsAutomaticReloadingNode)
+        optionsCaptchaNode.removeChild(optionsCaptchaNode.firstChild())
+        optionsCaptchaNode.appendChild(newOptionsCaptchaNode)
+        optionsFontsNode.removeChild(optionsFontsNode.firstChild())
+        optionsFontsNode.appendChild(newOptionsFontsNode)
+        optionsTrayNode.removeChild(optionsTrayNode.firstChild())
+        optionsTrayNode.appendChild(newOptionsTrayNode)
+        optionsOtherNode.removeChild(optionsOtherNode.firstChild())
+        optionsOtherNode.appendChild(newOptionsOtherNode)
+        self.parser.saveData()
+        self.log.debug4("main.saveOptionsToConfig: done")
+
+    def saveWindowToConfig(self):
+        """
+            save window geometry and state to the config file
         """
         if self.mainWindow.isHidden():
-            self.log.error("main.saveOptionsAndWindowToConfig: mainWindow is hidden")
-
+            self.log.error("main.saveWindowToConfig: mainWindow is hidden")
         state_raw = self.mainWindow.saveState(self.mainWindow.version)
         geo_raw = self.mainWindow.saveGeometry()
 
@@ -1597,16 +1655,8 @@ class main(QObject):
         stateQueue = str(self.mainWindow.tabs["queue"]["view"].header().saveState().toBase64())
         stateCollector = str(self.mainWindow.tabs["collector"]["view"].header().saveState().toBase64())
         stateAccounts = str(self.mainWindow.tabs["accounts"]["view"].header().saveState().toBase64())
-        optionsNotifications = str(QByteArray(str(self.mainWindow.notificationOptions.settings)).toBase64())
-        optionsLogging = str(QByteArray(str(self.loggingOptions.settings)).toBase64())
-        optionsClickNLoadForwarder = str(self.clickNLoadForwarderOptions.settings["fromPort"])
-        optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
-        geoCaptcha = str(self.mainWindow.captchaDialog.geo.toBase64())
-        optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
-        optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
-        optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
-        optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
         visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
+        geoCaptcha = str(self.mainWindow.captchaDialog.geo.toBase64())
         language = str(self.lang)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
         geoNode = mainWindowNode.toElement().elementsByTagName("geometry").item(0)
@@ -1614,16 +1664,8 @@ class main(QObject):
         stateQueueNode = mainWindowNode.toElement().elementsByTagName("stateQueue").item(0)
         stateCollectorNode = mainWindowNode.toElement().elementsByTagName("stateCollector").item(0)
         stateAccountsNode = mainWindowNode.toElement().elementsByTagName("stateAccounts").item(0)
-        optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
-        optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
-        optionsClickNLoadForwarderNode = mainWindowNode.toElement().elementsByTagName("optionsClickNLoadForwarder").item(0)
-        optionsAutomaticReloadingNode = mainWindowNode.toElement().elementsByTagName("optionsAutomaticReloading").item(0)
-        geoCaptchaNode = mainWindowNode.toElement().elementsByTagName("geometryCaptcha").item(0)
-        optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
-        optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
-        optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
-        optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
         visibilitySpeedLimitNode = mainWindowNode.toElement().elementsByTagName("visibilitySpeedLimit").item(0)
+        geoCaptchaNode = mainWindowNode.toElement().elementsByTagName("geometryCaptcha").item(0)
         languageNode = self.parser.xml.elementsByTagName("language").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
         newGeoNode = self.parser.xml.createTextNode(geo)
@@ -1631,16 +1673,8 @@ class main(QObject):
         newStateQueueNode = self.parser.xml.createTextNode(stateQueue)
         newStateCollectorNode = self.parser.xml.createTextNode(stateCollector)
         newStateAccountsNode = self.parser.xml.createTextNode(stateAccounts)
-        newOptionsNotificationsNode = self.parser.xml.createTextNode(optionsNotifications)
-        newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
-        newOptionsClickNLoadForwarderNode = self.parser.xml.createTextNode(optionsClickNLoadForwarder)
-        newOptionsAutomaticReloadingNode = self.parser.xml.createTextNode(optionsAutomaticReloading)
-        newGeoCaptchaNode = self.parser.xml.createTextNode(geoCaptcha)
-        newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
-        newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
-        newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
-        newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
         newVisibilitySpeedLimitNode = self.parser.xml.createTextNode(visibilitySpeedLimit)
+        newGeoCaptchaNode = self.parser.xml.createTextNode(geoCaptcha)
         newLanguageNode = self.parser.xml.createTextNode(language)
         stateNode.removeChild(stateNode.firstChild())
         stateNode.appendChild(newStateNode)
@@ -1654,30 +1688,14 @@ class main(QObject):
         stateCollectorNode.appendChild(newStateCollectorNode)
         stateAccountsNode.removeChild(stateAccountsNode.firstChild())
         stateAccountsNode.appendChild(newStateAccountsNode)
-        optionsNotificationsNode.removeChild(optionsNotificationsNode.firstChild())
-        optionsNotificationsNode.appendChild(newOptionsNotificationsNode)
-        optionsLoggingNode.removeChild(optionsLoggingNode.firstChild())
-        optionsLoggingNode.appendChild(newOptionsLoggingNode)
-        optionsClickNLoadForwarderNode.removeChild(optionsClickNLoadForwarderNode.firstChild())
-        optionsClickNLoadForwarderNode.appendChild(newOptionsClickNLoadForwarderNode)
-        optionsAutomaticReloadingNode.removeChild(optionsAutomaticReloadingNode.firstChild())
-        optionsAutomaticReloadingNode.appendChild(newOptionsAutomaticReloadingNode)
-        geoCaptchaNode.removeChild(geoCaptchaNode.firstChild())
-        geoCaptchaNode.appendChild(newGeoCaptchaNode)
-        optionsCaptchaNode.removeChild(optionsCaptchaNode.firstChild())
-        optionsCaptchaNode.appendChild(newOptionsCaptchaNode)
-        optionsFontsNode.removeChild(optionsFontsNode.firstChild())
-        optionsFontsNode.appendChild(newOptionsFontsNode)
-        optionsTrayNode.removeChild(optionsTrayNode.firstChild())
-        optionsTrayNode.appendChild(newOptionsTrayNode)
-        optionsOtherNode.removeChild(optionsOtherNode.firstChild())
-        optionsOtherNode.appendChild(newOptionsOtherNode)
         visibilitySpeedLimitNode.removeChild(visibilitySpeedLimitNode.firstChild())
         visibilitySpeedLimitNode.appendChild(newVisibilitySpeedLimitNode)
+        geoCaptchaNode.removeChild(geoCaptchaNode.firstChild())
+        geoCaptchaNode.appendChild(newGeoCaptchaNode)
         languageNode.removeChild(languageNode.firstChild())
         languageNode.appendChild(newLanguageNode)
         self.parser.saveData()
-        self.log.debug4("main.saveOptionsAndWindowToConfig: done")
+        self.log.debug4("main.saveWindowToConfig: done")
 
     def loadOptionsFromConfig(self):
         """
@@ -1703,9 +1721,12 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsTray"))
         if not nodes.get("optionsOther"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsOther"))
-        if not nodes.get("visibilitySpeedLimit"):
-            mainWindowNode.appendChild(self.parser.xml.createElement("visibilitySpeedLimit"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
+
+        if self.newConfigFile:
+            self.saveOptionsToConfig()
+            self.newConfigFile = False
+            return
 
         optionsNotifications = str(nodes["optionsNotifications"].text())
         optionsLogging = str(nodes["optionsLogging"].text())
@@ -1715,37 +1736,73 @@ class main(QObject):
         optionsFonts = str(nodes["optionsFonts"].text())
         optionsTray = str(nodes["optionsTray"].text())
         optionsOther = str(nodes["optionsOther"].text())
-        visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
-        if optionsNotifications:
-            self.mainWindow.notificationOptions.settings = eval(str(QByteArray.fromBase64(optionsNotifications)))
-            self.mainWindow.notificationOptions.dict2checkBoxStates()
-        if optionsLogging:
-            self.loggingOptions.settings = eval(str(QByteArray.fromBase64(optionsLogging)))
-            self.loggingOptions.dict2dialogState()
-        if optionsClickNLoadForwarder:
-            self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder)
-            self.clickNLoadForwarderOptions.dict2dialogState(True)
-        if optionsAutomaticReloading:
-            self.automaticReloadingOptions.settings = eval(str(QByteArray.fromBase64(optionsAutomaticReloading)))
-            self.automaticReloadingOptions.dict2dialogState()
-        if optionsCaptcha:
-            self.captchaOptions.settings = eval(str(QByteArray.fromBase64(optionsCaptcha)))
-            self.captchaOptions.dict2dialogState()
-            self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
-        if optionsFonts:
-            self.fontOptions.settings = eval(str(QByteArray.fromBase64(optionsFonts)))
-            self.fontOptions.dict2dialogState()
-            self.fontOptions.applySettings()
-        if optionsTray:
-            self.mainWindow.trayOptions.settings = eval(str(QByteArray.fromBase64(optionsTray)))
-            self.mainWindow.trayOptions.dict2checkBoxStates()
-        if optionsOther:
-            self.mainWindow.otherOptions.settings = eval(str(QByteArray.fromBase64(optionsOther)))
-            self.mainWindow.otherOptions.dict2checkBoxStates()
-        if visibilitySpeedLimit:
-            visible =  eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
-            self.mainWindow.mactions["showspeedlimit"].setChecked(not visible)
-            self.mainWindow.mactions["showspeedlimit"].setChecked(visible)
+        reset = False
+
+        def base64ToDict(b64):
+            try:
+                d = literal_eval(str(QByteArray.fromBase64(b64)))
+            except:
+                d = None
+            if d and (type(d) is not dict):
+                d = None
+            return d
+
+        # Desktop Notifications
+        d = base64ToDict(optionsNotifications)
+        if d is not None:
+            try:    self.mainWindow.notificationOptions.settings = d; self.mainWindow.notificationOptions.dict2checkBoxStates()
+            except: self.mainWindow.notificationOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Desktop Notifications")); reset = True
+        # Client Log
+        d = base64ToDict(optionsLogging)
+        if d is not None:
+            try:    self.loggingOptions.settings = d; self.loggingOptions.dict2dialogState()
+            except: self.loggingOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Client Log")); reset = True
+        # ClickNLoad Forwarding -> Local Port
+        err = False
+        try:    self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder); self.clickNLoadForwarderOptions.dict2dialogState(True)
+        except: self.clickNLoadForwarderOptions.defaultFromPort(); err = True
+        if err: self.messageBox_21(_("ClickNLoad Forwarding") + " -> " + _("Local Port")); reset = True
+        # Automatic Reloading
+        d = base64ToDict(optionsAutomaticReloading)
+        if d is not None:
+            try:    self.automaticReloadingOptions.settings = d; self.automaticReloadingOptions.dict2dialogState()
+            except: self.automaticReloadingOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Automatic Reloading")); reset = True
+        # Captcha Solving
+        d = base64ToDict(optionsCaptcha)
+        if d is not None:
+            try:    self.captchaOptions.settings = d; self.captchaOptions.dict2dialogState()
+            except: self.captchaOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Captcha Solving")); reset = True
+        self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
+        # Fonts
+        d = base64ToDict(optionsFonts)
+        if d is not None:
+            try:    self.fontOptions.settings = d; self.fontOptions.dict2dialogState()
+            except: self.fontOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Fonts")); reset = True
+        self.fontOptions.applySettings()
+        # Tray Icon
+        d = base64ToDict(optionsTray)
+        if d is not None:
+            try:    self.mainWindow.trayOptions.settings = d; self.mainWindow.trayOptions.dict2checkBoxStates()
+            except: self.mainWindow.trayOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Tray Icon")); reset = True
+        # Other
+        d = base64ToDict(optionsOther)
+        if d is not None:
+            try:    self.mainWindow.otherOptions.settings = d; self.mainWindow.otherOptions.dict2checkBoxStates()
+            except: self.mainWindow.otherOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("Other")); reset = True
+
+        if reset:
+            self.saveOptionsToConfig()
+
+    def messageBox_21(self, optCat):
+        text = _("The following options had to be reset:") + "\n" + optCat
+        self.msgBoxOk(text, "W")
 
     def loadWindowFromConfig(self):
         """
@@ -1763,6 +1820,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("stateCollector"))
         if not nodes.get("stateAccounts"):
             mainWindowNode.appendChild(self.parser.xml.createElement("stateAccounts"))
+        if not nodes.get("visibilitySpeedLimit"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("visibilitySpeedLimit"))
         if not nodes.get("geometryCaptcha"):
             mainWindowNode.appendChild(self.parser.xml.createElement("geometryCaptcha"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
@@ -1776,12 +1835,19 @@ class main(QObject):
         stateQueue = str(nodes["stateQueue"].text())
         stateCollector = str(nodes["stateCollector"].text())
         stateAccounts = str(nodes["stateAccounts"].text())
+        visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
         geoCaptcha = str(nodes["geometryCaptcha"].text())
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
         self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
         self.mainWindow.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
         self.mainWindow.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
         self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
+        try:
+            visSpeed = literal_eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
+        except:
+            visSpeed = True
+        self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
+        self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
         self.mainWindow.captchaDialog.geo = QByteArray.fromBase64(geoCaptcha)
 
     def slotPushPackagesToQueue(self):
@@ -2148,7 +2214,8 @@ class main(QObject):
         self.prepareForSaveOptionsAndWindow(self.slotQuit_continue)
 
     def slotQuit_continue(self):
-        self.saveOptionsAndWindowToConfig()
+        self.saveWindowToConfig()
+        self.saveOptionsToConfig()
         self.quitInternal()
         self.log.info("pyLoad Client quit")
         self.removeLogger()
@@ -2723,8 +2790,10 @@ class CaptchaOptions(QDialog):
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.defaultSettings()
 
-        # default settings
+    def defaultSettings(self):
+        self.settings.clear()
         self.settings["Enabled"] = True
         self.settings["AdjSize"] = True
         self.dict2dialogState()
@@ -2802,15 +2871,7 @@ class LoggingOptions(QDialog):
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-
-        # default settings
-        self.cbEnableFileLog.setChecked(True)
-        self.leFolder.setText("Logs")
-        self.cbRotate.setChecked(True)
-        self.sbSize.setValue(100)
-        self.sbCount.setValue(5)
-        self.cbException.setChecked(True)
-        self.dialogState2dict()
+        self.defaultSettings()
 
     def exec_(self):
         # It does not resize very well when the font size has changed
@@ -2818,6 +2879,16 @@ class LoggingOptions(QDialog):
             self.lastFont = self.font()
             self.adjustSize()
         return QDialog.exec_(self)
+
+    def defaultSettings(self):
+        self.settings.clear()
+        self.cbEnableFileLog.setChecked(False)
+        self.leFolder.setText("Logs")
+        self.cbRotate.setChecked(True)
+        self.sbSize.setValue(100)
+        self.sbCount.setValue(5)
+        self.cbException.setChecked(True)
+        self.dialogState2dict()
 
     def dialogState2dict(self):
         self.settings["file_log"]   = self.cbEnableFileLog.isChecked()
@@ -3057,6 +3128,10 @@ class FontOptions(QDialog):
         self.settings["Log"]        ["font"] = str(self.defaultApplicationFont.toString())
         self.dict2dialogState()
 
+    def defaultSettings(self):
+        self.settings.clear()
+        self.slotResetBtn()
+
     def dialogState2dict(self):
         self.settings["ECF"]["enabled"]         = self.cbEnableCustomFonts.isChecked()
         self.settings["Application"]["enabled"] = self.cbApplication.isChecked()
@@ -3171,11 +3246,7 @@ class AutomaticReloadingOptions(QDialog):
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-
-        # default settings
-        self.settings["enabled"]  = False
-        self.settings["interval"] = 300
-        self.dict2dialogState()
+        self.defaultSettings()
 
     def exec_(self):
         # It does not resize very well when the font size has changed
@@ -3183,6 +3254,12 @@ class AutomaticReloadingOptions(QDialog):
             self.lastFont = self.font()
             self.adjustSize()
         return QDialog.exec_(self)
+
+    def defaultSettings(self):
+        self.settings.clear()
+        self.settings["enabled"]  = False
+        self.settings["interval"] = 300
+        self.dict2dialogState()
 
     def dialogState2dict(self):
         self.settings["enabled"] = self.cbEnabled.isChecked()
@@ -3263,11 +3340,10 @@ class ClickNLoadForwarderOptions(QDialog):
         # default settings
         self.settings["enabled"]  = False
         self.settings["fromIP"]   = "127.0.0.1"
-        self.settings["fromPort"] = 9666
         self.settings["toIP"]     = "999.999.999.999"
         self.settings["toPort"]   = 9666
         self.settings["getPort"]  = False
-        self.dict2dialogState(True)
+        self.defaultFromPort()
 
     def exec_(self):
         # It does not resize very well when the font size has changed
@@ -3275,6 +3351,10 @@ class ClickNLoadForwarderOptions(QDialog):
             self.lastFont = self.font()
             self.adjustSize()
         return QDialog.exec_(self)
+
+    def defaultFromPort(self):
+        self.settings["fromPort"] = 9666
+        self.dict2dialogState(True)
 
     def dialogState2dict(self):
         self.settings["enabled"]  = self.cbEnable.isChecked()
@@ -3284,7 +3364,11 @@ class ClickNLoadForwarderOptions(QDialog):
 
     def dict2dialogState(self, error):
         self.cbEnable.setChecked(self.settings["enabled"])
+        if (self.settings["fromPort"] < self.sbFromPort.minimum()) or (self.settings["fromPort"] > self.sbFromPort.maximum()):
+            raise ValueError("fromPort out of range") # this is catched by main.loadOptionsFromConfig()
         self.sbFromPort.setValue(self.settings["fromPort"])
+        #if (self.settings["toPort"] < self.sbToPort.minimum()) or (self.settings["toPort"] > self.sbToPort.maximum()):
+        #    raise ValueError("toPort out of range")
         self.sbToPort.setValue(self.settings["toPort"])
         self.cbGetPort.setChecked(self.settings["getPort"])
         if not error:

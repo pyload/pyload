@@ -1321,8 +1321,10 @@ class NotificationOptions(QDialog):
         
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        
-        # default settings
+        self.defaultSettings()
+    
+    def defaultSettings(self):
+        self.settings.clear()
         self.cbEnableNotify.setChecked(False)
         self.cbPackageFinished.setChecked(False)
         self.cbFinished.setChecked(False)
@@ -1401,8 +1403,10 @@ class TrayOptions(QDialog):
         
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        
-        # default settings
+        self.defaultSettings()
+    
+    def defaultSettings(self):
+        self.settings.clear()
         self.settings["EnableTray"]    = True
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
@@ -1464,8 +1468,10 @@ class OtherOptions(QDialog):
         
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        
-        # default settings
+        self.defaultSettings()
+    
+    def defaultSettings(self):
+        self.settings.clear()
         self.settings["Unmaximize"] = False
         self.dict2checkBoxStates()
     
