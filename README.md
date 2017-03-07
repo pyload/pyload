@@ -5,6 +5,7 @@ extremely lightweight, easily extensible and fully manageable via web.
 
 _Continue reading about **pyLoad** amazing features on <https://pyload.net> ._
 
+Communication can be done in the [![https://gitter.im/pyload/Lobby](https://badges.gitter.im/pyload/Lobby.svg)](https://gitter.im/pyload/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) or old school [![IRC Network](https://img.shields.io/badge/irc-freenode-blue.svg "IRC Freenode")](https://kiwiirc.com/client/irc.freenode.com/#pyload)
 
 Table of contents
 -----------------
