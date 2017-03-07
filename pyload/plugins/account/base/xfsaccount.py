@@ -11,7 +11,7 @@ from future import standard_library
 from pyload.plugins.downloader.hoster.base.simplehoster import parse_html_form
 from pyload.utils import parse
 
-from .. import Account
+from .init import Account
 
 standard_library.install_aliases()
 

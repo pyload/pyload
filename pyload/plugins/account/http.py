@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 from future import standard_library
 
-from . import Account
+from .base.init import Account
 
 standard_library.install_aliases()
 

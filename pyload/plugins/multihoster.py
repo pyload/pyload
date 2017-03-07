@@ -9,7 +9,7 @@ from future import standard_library
 
 from pyload.utils import purge
 
-from .account import Account
+from .account.base.init import Account
 
 standard_library.install_aliases()
 

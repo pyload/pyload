@@ -14,7 +14,7 @@ from future import standard_library
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.layer.legacy import subprocess_ as subprocess
 from pyload.utils.layer.safethreading import Event
-from pyload.utils.misc.lock import ReadWriteLock
+from pyload.utils.struct.lock import ReadWriteLock
 from pyload.utils.path import availspace
 from pyload.utils.web.check import local_addr
 

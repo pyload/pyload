@@ -134,7 +134,9 @@ def _gen_info():
         "upload-station", "uploader"
     ]
     install_requires = [
-        'argparse', 'configparser', 'daemonize', 'enum34', 'future', 'psutil',
+        'argparse ; python_version < "2.7"',
+        'configparser ; python_version < "3.5"', 'daemonize',
+        'enum34 ; python_version < "3.4"', 'future', 'psutil',
         'pycurl', 'requests >= 2.0', 'tld', 'validators'
     ]
     tests_require = [
@@ -142,7 +144,9 @@ def _gen_info():
         'websocket-client >= 0.8'
     ]
     setup_requires = [
-        'Babel', 'readme_renderer', 'sphinx >= 1.5'
+        'Babel', 'readme_renderer',
+        'sphinx <= 1.4 ; python_version in ("2.6", "3.3")',
+        'sphinx > 1.4 ; python_version not in ("2.6", "3.3")',
     ]
     extras_require = {
         # 'Archive decompression': ['rarfile'],
@@ -151,16 +155,18 @@ def _gen_info():
         'Click\'n\'Load support': ['Js2Py', 'pycryptodome'],
         'Colored log': ['colorclass', 'colorlog'],
         'JavaScript evaluation': ['Js2Py'],
-        'Lightweight webserver:sys_platform!="win32"': ['bjoern'],
+        'Lightweight webserver:os_name!="nt"': ['bjoern'],
         'Remote API support': ['mod_pywebsocket', 'thrift'],
         'SSL connection': ['pyOpenSSL'],
         'Text translation': ['goslate'],
         'Trash support': ['Send2Trash'],
-        'Web User Interface': ['Beaker >= 1.6', 'bottle >= 0.10.0', 'pycryptodome'],
+        'Web User Interface': ['Beaker >= 1.6', 'bottle >= 0.10', 'pycryptodome'],
         'pyLoad auto-update': ['autoupgrade-ng'],
         'pyLoad test-suite': tests_require,
-        'Additional features': ['beautifulsoup4', 'bitmath', 'IPy', 'setproctitle'],
-        'Additional features:sys_platform!="win32"': ['dbus-python']
+        'Additional features': [
+            'beautifulsoup4', 'bitmath', 'dbus-python ; os_name != "nt"',
+            'IPy', 'setproctitle'
+        ],
     }
     entry_points = {
         'console_scripts': ['pyload = pyLoad:main']

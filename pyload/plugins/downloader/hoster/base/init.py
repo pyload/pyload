@@ -35,7 +35,7 @@ class Reconnect(Exception):
     __slots__ = []
 
 
-class SkipDownload(Exception):
+class Skip(Exception):
     """
     Raised when download should be skipped.
     """
@@ -417,7 +417,7 @@ class Hoster(Base):
         Checks if same file was/is downloaded within same package
 
         :param starting: indicates that the current download is going to start
-        :raises SkipDownload:
+        :raises Skip:
         """
         pack = self.pyfile.package()
 
@@ -425,10 +425,10 @@ class Hoster(Base):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package(
             ).folder == pack.folder:
                 if pyfile.status in (0, 12):  #: finished or downloading
-                    raise SkipDownload(pyfile.pluginname)
+                    raise Skip(pyfile.pluginname)
                 elif pyfile.status in (
                         5, 7) and starting:  #: a download is waiting/starting and was apparently started before
-                    raise SkipDownload(pyfile.pluginname)
+                    raise Skip(pyfile.pluginname)
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
         location = os.path.join(download_folder, pack.folder, self.pyfile.name)
@@ -437,13 +437,13 @@ class Hoster(Base):
                 'connection', 'skip') and os.path.exists(location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
-                raise SkipDownload("File exists")
+                raise Skip("File exists")
 
         pyfile = self.pyload.db.find_duplicates(
             self.pyfile.fid, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if os.path.exists(location):
-                raise SkipDownload(pyfile[0])
+                raise Skip(pyfile[0])
 
             self.pyload.log.debug(
                 "File {0} not skipped, because it does not exists".format(self.pyfile.name))

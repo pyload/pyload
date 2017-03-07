@@ -128,19 +128,19 @@ class Crypter(Base):
     QUEUE_DECRYPT = False
 
     @classmethod
-    def decrypt(cls, core, url_or_urls, password=None):
+    def decrypt(cls, core, urls, password=None):
         """
         Static method to decrypt urls or content. Can be used by other plugins.
         To decrypt file content prefix the string with ``CONTENT_PREFIX `` as seen above.
 
         :param core: pyLoad `Core`, needed in decrypt context
-        :param url_or_urls: List of urls or single url/ file content
+        :param urls: List of urls or single url/ file content
         :param password: optional password used for decrypting
 
         :raises Exception: No decryption errors are cascaded
         :return: List of decrypted urls, all package info removed
         """
-        urls = to_list(url_or_urls, [])
+        urls = to_list(urls, [])
         p = cls(core, password)
         try:
             result = p._decrypt(urls)

@@ -11,7 +11,7 @@ from future import standard_library
 
 from pycurl import error
 from pyload.plugins import Abort, Fail, Retry
-from pyload.plugins.downloader.hoster import Reconnect, SkipDownload
+from pyload.plugins.downloader.hoster.base import Reconnect, Skip
 from pyload.plugins.request import ResponseException
 from pyload.utils.layer.safethreading import Event
 from queue import Queue
@@ -185,7 +185,7 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except SkipDownload as e:
+            except Skip as e:
                 pyfile.set_status("skipped")
 
                 self.pyload.log.info(

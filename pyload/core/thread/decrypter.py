@@ -7,7 +7,7 @@ import time
 from future import standard_library
 
 from pyload.plugins import Abort, Fail, Retry
-from pyload.plugins.downloader.crypter import Package
+from pyload.plugins.downloader.crypter.base import Package
 from pyload.utils.convert import accumulate
 from pyload.utils.purge import uniqify
 

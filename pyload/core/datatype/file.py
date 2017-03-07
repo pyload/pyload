@@ -12,7 +12,7 @@ from future import standard_library
 
 from pyload.utils import format
 from pyload.utils.decorator import lock, readlock, trycatch
-from pyload.utils.misc.lock import ReadWriteLock
+from pyload.utils.struct.lock import ReadWriteLock
 
 from .init import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)

@@ -10,7 +10,7 @@ from time import time
 from future import standard_library
 
 from pyload.utils.decorator import lock, readlock
-from pyload.utils.misc.lock import ReadWriteLock
+from pyload.utils.struct.lock import ReadWriteLock
 
 from ..datatype.file import PyFile
 from ..datatype.init import DownloadStatus, TreeCollection

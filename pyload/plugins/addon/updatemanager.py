@@ -15,7 +15,7 @@ from future import standard_library
 from pyload.config.parser import IGNORE
 from pyload.core.network import get_url
 
-from . import Expose, Hook, threaded
+from .base.init import Expose, Hook, threaded
 
 standard_library.install_aliases()
 

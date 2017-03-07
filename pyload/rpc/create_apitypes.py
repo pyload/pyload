@@ -126,7 +126,7 @@ from pyload.core.datatype import *\n
                     continue
                 fp.write("\t{0} = {1}\n".format(attr, getattr(enum, attr)))
 
-            dev.write("\t"{0}",\n".format(name))
+            dev.write("\t\"{0}\",\n".format(name))
             fp.write("\n")
 
         dev.write("]\n\n")

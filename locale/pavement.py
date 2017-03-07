@@ -393,8 +393,8 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append("msgid "{0}"\n".format(key))
-                        content.append("msgid_plural "{0}"\n".format(keyp))
+                        content.append("msgid \"{0}\"\n".format(key))
+                        content.append("msgid_plural \"{0}\"\n".format(keyp))
                         content.append('msgstr[0] ""\n')
                         content.append('msgstr[1] ""\n')
                         msgids[key] = len(content) - 4
@@ -404,7 +404,7 @@ def makehtml(domain, p):
 
                     if key not in msgids:
                         content.append("\n")
-                        content.append("msgid "{0}"\n".format(key))
+                        content.append("msgid \"{0}\"\n".format(key))
                         content.append('msgstr ""\n')
                         msgids[key] = len(content) - 2
 
