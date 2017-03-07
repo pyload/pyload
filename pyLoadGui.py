@@ -2770,7 +2770,7 @@ class CaptchaOptions(QDialog):
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbAdjSize)
 
-        self.cbEnableDialog = QGroupBox(_("Enable") + " " + _("Captcha Solving"))
+        self.cbEnableDialog = QGroupBox(_("Enable Captcha Solving"))
         self.cbEnableDialog.setCheckable(True)
         self.cbEnableDialog.setLayout(vboxCb)
 
@@ -3630,9 +3630,9 @@ class TrayIcon(QSystemTrayIcon):
         if self.log.isEnabledFor(logging.DEBUG9):
             self.contextMenu.addSeparator()
             self.contextDebugMenu = self.contextMenu.addMenu("Debug")
-            self.debugTrayAction = self.contextDebugMenu.addAction(_("Tray"))
-            self.debugMsgBoxTest1Action = self.contextDebugMenu.addAction(_("MessageBox Test 1"))
-            self.debugMsgBoxTest2Action = self.contextDebugMenu.addAction(_("MessageBox Test 2"))
+            self.debugTrayAction = self.contextDebugMenu.addAction("Tray")
+            self.debugMsgBoxTest1Action = self.contextDebugMenu.addAction("MessageBox Test 1")
+            self.debugMsgBoxTest2Action = self.contextDebugMenu.addAction("MessageBox Test 2")
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)
@@ -3641,9 +3641,9 @@ class TrayIcon(QSystemTrayIcon):
 
     def setShowActionText(self, show):
         if show:
-            self.showAction.setText(_("Show") + " " + _("pyLoad Client"))
+            self.showAction.setText(_("Show pyLoad Client"))
         else:
-            self.showAction.setText(_("Hide") + " " + _("pyLoad Client"))
+            self.showAction.setText(_("Hide pyLoad Client"))
 
     def clicked(self, reason):
         if self.showAction.isEnabled():

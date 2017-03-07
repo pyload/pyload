@@ -151,7 +151,7 @@ class CaptchaDialog(QDialog):
         pix = QApplication.style().standardIcon(QStyle.SP_MessageBoxInformation).pixmap(64, 64)
         self.imgLabel.setPixmap(pix)
         self.imgLabel.show()
-        self.infoLabel.setText("<b>There is no captcha waiting.</b>")
+        self.infoLabel.setText("<b>" + _("There is no captcha waiting.") + "</b>")
         self.infoLabel.show()
         self.lineEdit.hide()
         self.submitBtn.hide()

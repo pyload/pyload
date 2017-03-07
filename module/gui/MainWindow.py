@@ -1383,7 +1383,7 @@ class TrayOptions(QDialog):
         vboxCb.addWidget(self.cbClose2Tray)
         vboxCb.addWidget(self.cbAltMethod)
         
-        self.cbEnableTray = QGroupBox(_("Enable") + " " + _("Tray Icon"))
+        self.cbEnableTray = QGroupBox(_("Enable Tray Icon"))
         self.cbEnableTray.setCheckable(True)
         self.cbEnableTray.setLayout(vboxCb)
         
