@@ -2,6 +2,8 @@
 # @author: vuolter
 
 from __future__ import absolute_import, division, unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 
 import builtins
 import errno
@@ -15,14 +17,19 @@ import sched
 import signal
 import tempfile
 import time
+
 from builtins import DATADIR, PACKDIR, REQUEST, TMPDIR, USERDIR, int, map
 from contextlib import closing
 from locale import getpreferredencoding
 from multiprocessing import Event, Process
 
+import autoupgrade
 import daemonize
 import psutil
-from future import standard_library
+try:
+    import colorlog
+except ImportError:
+    pass
 
 from pyload.config import ConfigParser
 from pyload.setup import SetupAssistant
@@ -32,19 +39,20 @@ from pyload.utils.misc import install_translation
 from pyload.utils.path import availspace, makedirs, pyclean, remove
 from pyload.utils.struct.info import Info
 
-try:
-    import autoupgrade
-except ImportError:
-    pass
-try:
-    import colorlog
-except ImportError:
-    pass
 
-standard_library.install_aliases()
+def _get_setup_map():
+    """
+    Load info dict from `setup.py`.
+    """
+    fp, filename, desc = imp.find_module('setup', PACKDIR)
+    module = imp.load_module('_setup', fp, filename, desc)
+    return module.SETUP_MAP
+
+__setup_map = _get_setup_map()
+__core_version = convert.to_version(__setup_map['version'])
 
 
-def _profiledir(profile, configdir):
+def _gen_profiledir(profile=None, configdir=None):
     if not profile:
         profile = 'default'
     if configdir:
@@ -52,21 +60,11 @@ def _profiledir(profile, configdir):
     else:
         configdir = os.path.join(
             DATADIR, 'pyLoad' if os.name == 'nt' else '.pyload')
-    return os.path.abspath(os.path.join(configdir, profile))
-
-
-def _gen_info():
-    """
-    Load info dict from `setup.py`.
-    """
-    fp, filename, desc = imp.find_module('setup', PACKDIR)
-    module = imp.load_module('_setup', fp, filename, desc)
-    return module.info
-
-_info = _gen_info()
-_version = convert.to_version(_info['version'])
-
-
+    profiledir = os.path.abspath(os.path.join(configdir, profile))
+    makedirs(profiledir)
+    return profiledir
+    
+    
 class Restart(Exception):
     __slots__ = []
 
@@ -93,19 +91,18 @@ class Shutdown(Exception):
 class Core(Process):
 
     __slots__ = [
-        '__version', '_cleanup', '_restart', '_shutdown', '_rpc', '_webui',
-        'accountmanager', 'acm', 'addonmanager', 'adm', 'api', 'configdir',
-        'configfile', 'db', 'debug', 'debug_level', 'dlm', 'downloadmanager',
-        'eventmanager', 'evm', 'filemanager', 'files', 'interactionmanager',
-        'itm', 'log', 'pgm', 'pid', 'pidfile', 'pluginmanager', 'profile',
-        'profiledir', 'rem', 'remotemanager', 'req', 'request', 'running',
-        'scheduler', 'thm', 'threadmanager', 'tmpdir', 'version', 'webserver'
+        '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
+        'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db', 
+        'debug', 'debug_level', 'dlm', 'downloadmanager', 'eventmanager', 'evm',
+        'filemanager', 'files', 'interactionmanager', 'itm', 'log', 'pgm',
+        'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
+        'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm', 
+        'threadmanager', 'tmpdir', 'version', 'webserver'
     ]
-    __version = _version
 
     @property
     def version(self):
-        return self.__version
+        return self.__core_version
 
     # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
@@ -328,10 +325,8 @@ class Core(Process):
             raise IOError(e)
 
     def _init_config(self, profile, configdir):
-        self.profiledir = _profiledir(profile, configdir)
+        self.profiledir = _gen_profiledir(profile, configdir)
         self.configdir, self.profile = os.path.split(self.profiledir)
-
-        makedirs(self.profiledir)
 
         tmproot = os.path.join(TMPDIR, os.path.basename(self.configdir))
         makedirs(tmproot)
@@ -536,15 +531,15 @@ class Core(Process):
 
 
 def info():
-    return Info(_info)
+    return Info(__setup_map)
 
 
 def version():
-    return version
+    return __core_version
 
 
 def status(profile=None, configdir=None):
-    profiledir = _profiledir(profile, configdir)
+    profiledir = _gen_profiledir(profile, configdir)
     pidfile = os.path.join(profiledir, 'pyload.session')
     try:
         with io.open(pidfile, mode='rb') as fp:
@@ -554,18 +549,14 @@ def status(profile=None, configdir=None):
 
 
 def setup(profile=None, configdir=None):
-    profiledir = _profiledir(profile, configdir)
+    profiledir = _gen_profiledir(profile, configdir)
     configfile = os.path.join(profiledir, 'pyload.conf')
     return SetupAssistant(configfile, version()).start()
 
 
 def upgrade(dependencies=True, force=False, prerelease=False):
     autoupgrade.upgrade(
-        _info['name'],
-        dependencies,
-        prerelease,
-        force,
-        restart=True)
+        __setup_map['name'], dependencies, prerelease, force, restart=True)
 
 
 def quit(profile=None, configdir=None, wait=300):

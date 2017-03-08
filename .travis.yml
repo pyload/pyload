@@ -20,18 +20,16 @@ matrix:
     - "pypy"
     - "pypy3"
   fast_finish: true
-cache:
-  pip: true
-  directories:
-    - pyload/webui/app/modules
+cache: pip
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y python-crypto
   - sudo apt-get install -y python-pycurl
 install:
+  - pip install -U setuptools
   - pip install coveralls
   - pip install tox-travis
 script:
-  - tox
+  - tox --develop --skip-missing-interpreters
 after_success:
   - coveralls

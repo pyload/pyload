@@ -4,19 +4,19 @@
     "description" : "pyLoad next-gen web user interface",
     "scripts" : {
         "test" : "echo \"Error : no test specified\" && exit 1",
-        "postinstall" : "node app/modules/grunt build"
+        "postinstall" : "node app/modules/grunt build && npm prune --production"
     },
     "author" : "Christian Rakow <Mast3rRaNaN@hotmail.de>",
     "contributors" : [
         "Walter Purcaro <vuolter@gmail.com>"
     ],
     "license" : "AGPL-3.0",
-    "repository" : "pyload/pyload",
+    "repository" : "pyload/webui",
     "bugs" : {
-        "url" : "https://github.com/pyload/pyload/issues",
+        "url" : "https://github.com/pyload/webui/issues",
         "email" : "dev@pyload.net"
     },
-    "homepage" : "https://github.com/pyload/pyload",
+    "homepage" : "https://github.com/pyload/webui",
     "dependencies" : {
         "bootstrap": "^3.3.7",
         "font-awesome": "^4.7.0",

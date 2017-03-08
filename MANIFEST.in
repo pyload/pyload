@@ -1,5 +1,13 @@
-include *.md
+global-exclude *.py[co]
 
+global-include *.md *.py
+
+graft pyload
+
+prune docs/build
+prune pyload/webui/app/modules
+
+recursive-include docs *.rst *.py
 recursive-include lib *
 recursive-include locale *.mo *.pot
-recursive-exclude pyload/rpc *.py[cod]
+recursive-include tests *.org *.py *.sh *.txt
