@@ -17,7 +17,7 @@ from ..internal.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -77,7 +77,7 @@ class FilecryptCc(Crypter):
             self.site_with_links = self.site_with_links + self.load(i)
 
     def handle_password_protection(self):
-        if '<input type="password" name="password"' not in self.data:
+        if re.search(r'div class="input">\s*<input type="password" name="password" id="p4assw0rt"', self.data) is None:
             return
 
         self.log_info(_("Folder is password protected"))
