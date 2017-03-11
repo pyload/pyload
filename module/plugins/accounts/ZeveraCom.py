@@ -8,7 +8,7 @@ from ..internal.MultiAccount import MultiAccount
 class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -23,8 +23,8 @@ class ZeveraCom(MultiAccount):
 
     API_URL = "http://api.zevera.com/jDownloader.ashx"
 
-    def api_response(self, user, password=None, **kwargs):
-        get_data = {'cmd': "accountinfo",
+    def api_response(self, method, user, password=None, **kwargs):
+        get_data = {'cmd': method,
                     'login': user,
                     'pass': password}
 
@@ -43,7 +43,7 @@ class ZeveraCom(MultiAccount):
             return res
 
     def grab_hosters(self, user, password, data):
-        res = self.api_response(user, password, cmd="gethosters")
+        res = self.api_response("gethosters", user, password)
         return [x.strip() for x in res.split(',')]
 
     def grab_info(self, user, password, data):
@@ -51,7 +51,7 @@ class ZeveraCom(MultiAccount):
         trafficleft = None
         premium = False
 
-        res = self.api_response(user, password)
+        res = self.api_response("accountinfo", user, password)
 
         if "No trafic" not in res:
             if res['endsubscriptiondate'] == "Expired!":
@@ -67,6 +67,6 @@ class ZeveraCom(MultiAccount):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        if self.api_response(user, password) == "No trafic":
+        if self.api_response("accountinfo", user, password) == "No trafic":
             self.fail_login()
 
