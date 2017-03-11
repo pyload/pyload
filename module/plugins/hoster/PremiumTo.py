@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class PremiumTo(MultiHoster):
     __name__ = "PremiumTo"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -45,7 +45,7 @@ class PremiumTo(MultiHoster):
             self.retry(60, 5 * 60, "No premium account available")
 
         err = ""
-        if self.req.http.code == "420":
+        if self.req.http.code == 420:
             #: Custom error code sent - fail
             file = encode(self.last_download)
 
