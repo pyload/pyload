@@ -9,21 +9,21 @@ from ..internal.Plugin import Fail
 class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
     __type__ = "captcha"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
-    KEY_PATTERN = r'api\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
+    KEY_PATTERN = r'api(-secure)?\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
 
         m = re.search(self.KEY_PATTERN, html)
         if m is not None:
-            self.key = m.group(1).strip()
+            self.key = m.group(2).strip()
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
