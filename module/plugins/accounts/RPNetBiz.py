@@ -7,12 +7,12 @@ from ..internal.MultiAccount import MultiAccount
 class RPNetBiz(MultiAccount):
     __name__ = "RPNetBiz"
     __type__ = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in minutes", 60)]
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """RPNet.biz account plugin"""
     __license__ = "GPLv3"

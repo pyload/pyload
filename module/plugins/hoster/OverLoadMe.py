@@ -7,20 +7,16 @@ from ..internal.MultiHoster import MultiHoster
 class OverLoadMe(MultiHoster):
     __name__ = "OverLoadMe"
     __type__ = "hoster"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __pattern__ = r'https?://.*overload\.me/.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback",
-                   "bool",
-                   "Fallback to free download if premium fails",
-                   False),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
-                  ("revertfailed", "bool", "Revert to standard download if fails", True)]
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Over-Load.me multi-hoster plugin"""
     __license__ = "GPLv3"

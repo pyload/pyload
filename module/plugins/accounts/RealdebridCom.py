@@ -15,12 +15,12 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in minutes", 60)]
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """Real-Debrid.com account plugin"""
     __license__ = "GPLv3"

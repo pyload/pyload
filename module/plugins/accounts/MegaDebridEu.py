@@ -14,12 +14,12 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
                   ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in minutes", 60)]
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """Mega-debrid.eu account plugin"""
     __license__ = "GPLv3"
