@@ -17,7 +17,7 @@ from ..internal.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -37,11 +37,10 @@ class FilecryptCc(Crypter):
     WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
 
     CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
-    INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" src="(.+?)"'
+    INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" .* src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
-    SOLVE_MEDIA_PATTERN = r'<script type="text/javascript" src="(http://api\.solvemedia\.com/papi/challenge.+?)"'
-
+    SOLVE_MEDIA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
     MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     def setup(self):
@@ -98,14 +97,13 @@ class FilecryptCc(Crypter):
             m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
 
             if m1:  #: Normal captcha
-                self.log_debug(
-                    "Internal Captcha URL: %s" %
-                    urlparse.urljoin(
-                        self.pyfile.url,
-                        m1.group(1)))
+                captcha_url = urlparse.urljoin(self.pyfile.url, m1.group(1))
 
-                captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, m1.group(1)),
-                                                    ref=True, input_type="gif")
+                self.log_debug("Internal Captcha URL: %s" % captcha_url)
+
+                captcha_code = self.captcha.decrypt(captcha_url,
+                                                    ref=True,
+                                                    input_type="gif")
 
                 self.site_with_links = self.load(self.pyfile.url,
                                                  post={'recaptcha_response_field': captcha_code})
