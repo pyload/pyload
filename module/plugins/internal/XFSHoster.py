@@ -80,7 +80,7 @@ class XFSHoster(SimpleHoster):
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
             self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
 
-        super(XFSHoster, self)._prepare()
+        SimpleHoster._prepare(self)
 
         if self.DIRECT_LINK is None:
             self.direct_dl = self.premium

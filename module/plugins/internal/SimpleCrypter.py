@@ -143,13 +143,13 @@ class SimpleCrypter(Crypter):
             self.req = self.pyload.requestFactory.getRequest(account_name)
             self.premium = False
 
-        super(SimpleCrypter, self).setup_base()
+        Crypter.setup_base(self)
 
     #@TODO: Remove in 0.4.10
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]
-        super(SimpleCrypter, self).load_account()
+        Crypter.load_account(self)
         self.__class__.__name__ = class_name
 
     def handle_direct(self, pyfile):

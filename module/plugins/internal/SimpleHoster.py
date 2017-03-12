@@ -296,7 +296,7 @@ class SimpleHoster(Hoster):
             self.download(self.link, disposition=self.DISPOSITION)
 
     def _check_download(self):
-        super(SimpleHoster, self)._check_download()
+        Hoster._check_download(self)
         self.check_download()
 
     def check_download(self):

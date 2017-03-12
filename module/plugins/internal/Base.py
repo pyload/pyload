@@ -485,7 +485,7 @@ class Base(Plugin):
 
     def load(self, *args, **kwargs):
         self.check_status()
-        return super(Base, self).load(*args, **kwargs)
+        return Plugin.load(self, *args, **kwargs)
 
     def parse_html_form(self, attr_str="", input_names={}):
         return parse_html_form(attr_str, self.data, input_names)
@@ -500,7 +500,7 @@ class Base(Plugin):
         """
         Clean everything and remove references
         """
-        super(Base, self).clean()
+        Plugin.clean(self)
         for attr in ("account", "html", "pyfile", "thread"):
             if hasattr(self, attr):
                 setattr(self, attr, None)

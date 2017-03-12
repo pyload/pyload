@@ -91,7 +91,7 @@ class Hoster(Base):
             self.account = False
             self.user = None  # @TODO: Remove in 0.4.10
         else:
-            super(Hoster, self).load_account()
+            Base.load_account(self)
             # self.restart_free = False
 
     def _process(self, thread):

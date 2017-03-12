@@ -331,4 +331,4 @@ class MultiAccount(Account):
 
     def removeAccount(self, user):
         self.deactivate()
-        super(MultiAccount, self).removeAccount(user)
+        Account.removeAccount(self, user)
