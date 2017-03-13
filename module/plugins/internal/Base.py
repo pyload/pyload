@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'

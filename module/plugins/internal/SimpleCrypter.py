@@ -12,7 +12,7 @@ from .misc import parse_name, parse_time, replace_patterns
 class SimpleCrypter(Crypter):
     __name__ = "SimpleCrypter"
     __type__ = "crypter"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'

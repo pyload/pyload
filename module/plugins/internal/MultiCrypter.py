@@ -6,7 +6,7 @@ from .SimpleCrypter import SimpleCrypter
 class MultiCrypter(SimpleCrypter):
     __name__ = "MultiCrypter"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
