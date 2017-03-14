@@ -1,0 +1,24 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+        - python
+  fixme:
+    enabled: true
+    config:
+      strings:        
+        - BUG
+        - CUSTOM
+        - FIXME
+  radon:
+    enabled: true
+    config: 
+      threshold: "D"
+ratings:
+  paths:
+    - "**.js"
+    - "**.py"
+exclude_paths:
+  - tests/
