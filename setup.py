@@ -12,15 +12,17 @@
 
 from __future__ import absolute_import, division
 
+import io
 import os
+import shutil
 import subprocess
 
 from itertools import chain
+
 from setuptools import Command, setup
-from setuptools.command.build_py import build_py
-from setuptools.command.develop import develop
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
+from setuptools.distutils import log
 
 
 def _setx_path():
@@ -31,18 +33,8 @@ def _setx_path():
         subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
     except Exception:
         pass
-
-
-class Build(build_py):
-    """
-    Custom ``build`` command
-    """
-    def run(self):
-        self.run_command('compile_webui')
-        # self.run_command('compile_catalog')
-        build_py.run(self)
-
-
+        
+              
 class CompileWebui(Command):
     """
     Compile the web user interface
@@ -57,51 +49,96 @@ class CompileWebui(Command):
         pass
 
     def run(self):
-        return subprocess.call("cd pyload/webui/app && npm install @modules", shell=True)
-
-
-class Develop(develop):
+        try:
+            # if os.name == 'nt':
+                # # : Required by npm package `grunt-contrib-compress` under Windows
+                # subprocess.check_call(
+                    # 'npm install --global windows-build-tools', shell=True)
+            subprocess.check_call(
+                'cd pyload/webui && npm install --only=dev', shell=True)
+            subprocess.check_call(
+                'cd pyload/webui && node node_modules/grunt-cli/bin/grunt build',
+                shell=True)
+        except subprocess.CalledProcessError:
+            log.warn("Failed to compile webui")
+        shutil.rmtree('pyload/webui/node_modules', ignore_errors=True)
+        return subprocess.call(
+            'cd pyload/webui && npm install --production', shell=True)
+        
+        
+class Configure(Command):
     """
-    Custom ``develop`` command
+    Configure the package
     """
+    description = 'configure the package'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+        
     def run(self):
         self.run_command('compile_webui')
-        develop.run(self)
+        try:
+            os.mkdir('locale')
+        except OSError:
+            pass
+        self.run_command('extract_messages')
+        self.run_command('init_catalog')
+        # self.run_command('get_catalog')
+        self.run_command('compile_catalog')
+        
+        
+class GetCatalog(Command):
+    """
+    Download the translation catalog from the remote repository
+    """
+    description = 'download the translation catalog from the remote repository'
+    user_options = []
 
+    def initialize_options(self):
+        pass
 
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        raise NotImplementedError
+                       
+          
 class Install(install):
     """
     Custom ``install`` command
     """
     def run(self):
-        self.run_command('compile_webui')
         install.run(self)
         _setx_path()
 
-
+        
 class Sdist(sdist):
     """
     Custom ``sdist`` command
     """
     def run(self):
-        self.run_command('compile_webui')
-        # self.run_command('compile_catalog')
+        self.run_command('configure')
         sdist.run(self)
-
-
+        
+        
 NAME = "pyload-ng"
-VERSION = "0.5.0"
+VERSION = "1.0.0"
 STATUS = "3 - Alpha"
 DESC = """Free and Open Source download manager written in pure Python and
 designed to be extremely lightweight, easily extensible and fully manageable
 via web"""
-LONG_DESC="README.rst"
+LONG_DESC=io.open("README.md").read()
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
     "upload-station", "uploader"
 ]
-URL = "https://pyload.net/"
+URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/pyload/releases"
 LICENSE = "AGPLv3"
 AUTHOR = "Walter Purcaro"
@@ -109,9 +146,6 @@ AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
 PACKAGES = ['pyload', 'pyload/config', 'pyload/core', 'pyload/plugins','pyload/rpc', 'pyload/setup', 'pyload/utils', 'pyload/webui']
 INCLUDE_PACKAGE_DATA = True
-EXCLUDE_PACKAGE_DATA = {
-    'pyload': ['docs*', 'tests*']
-}
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = [
     'argparse;python_version<"2.7"', 'autoupgrade-ng',
@@ -143,15 +177,15 @@ EXTRAS_REQUIRE = {
         'dbus-python;os_name!="nt"', 'goslate', 'setproctitle'
     ]
 }
-EXTRAS_REQUIRE['full'] = list(chain(*EXTRAS_REQUIRE.values()))
+EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 ENTRY_POINTS = {
     'console_scripts': ['pyload = pyLoad:main']
 }
 CMDCLASS = {
-    'build_py': Build,
     'compile_webui': CompileWebui,
-    'develop': Develop,
+    'configure': Configure,
+    'get_catalog': GetCatalog,
     'install': Install,
     'sdist': Sdist
 }
@@ -177,6 +211,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Topic :: Communications",
     "Topic :: Communications :: File Sharing",
     "Topic :: Internet",
@@ -186,7 +221,6 @@ CLASSIFIERS = [
 SETUP_MAP = dict(
     name=NAME,
     version=VERSION,
-    status=STATUS,
     description=DESC,
     long_description=LONG_DESC,
     keywords=KEYWORDS,
@@ -198,7 +232,6 @@ SETUP_MAP = dict(
     platforms=PLATFORMS,
     packages=PACKAGES,
     include_package_data=INCLUDE_PACKAGE_DATA,
-    exclude_package_data=EXCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
