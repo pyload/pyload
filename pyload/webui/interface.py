@@ -52,7 +52,7 @@ if os.path.exists(os.path.join(WEBDIR, "node_modules")):
     UNAVAILALBE = False
 if os.path.exists(os.path.join(WEBDIR, "min", "index.html")):
     APPDIR = os.path.join(WEBDIR, 'min')
-    
+
 DEBUG = config.get(
     'webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)

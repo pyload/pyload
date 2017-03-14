@@ -50,4 +50,3 @@ addons:
     notification_email: dev@pyload.net
     build_command: python setup.py configure
     branch_pattern: coverity_scan
-    

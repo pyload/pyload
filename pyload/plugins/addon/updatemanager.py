@@ -132,7 +132,7 @@ class UpdateManager(Hook):
             else:
                 name = filename.replace(".py", "")
 
-            # TODO: obsolete in 0.5.0
+            # TODO: obsolete in 1.0.0
             if prefix.endswith("s"):
                 _type = prefix[:-1]
             else:

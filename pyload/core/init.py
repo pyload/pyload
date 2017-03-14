@@ -63,8 +63,8 @@ def _gen_profiledir(profile=None, configdir=None):
     profiledir = os.path.abspath(os.path.join(configdir, profile))
     makedirs(profiledir)
     return profiledir
-    
-    
+
+
 class Restart(Exception):
     __slots__ = []
 
@@ -92,11 +92,11 @@ class Core(Process):
 
     __slots__ = [
         '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
-        'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db', 
+        'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db',
         'debug', 'debug_level', 'dlm', 'downloadmanager', 'eventmanager', 'evm',
         'filemanager', 'files', 'interactionmanager', 'itm', 'log', 'pgm',
         'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
-        'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm', 
+        'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm',
         'threadmanager', 'tmpdir', 'version', 'webserver'
     ]
 
@@ -483,7 +483,7 @@ class Core(Process):
 
     def update(self):
         autoupgrade.upgrade(__setup_map['name'], dependencies=True, restart=True)
-        
+
     def restart(self):
         self._stop()
         self.log.info(_("Restarting pyLoad ..."))

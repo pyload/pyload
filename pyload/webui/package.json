@@ -38,18 +38,18 @@
     "devDependencies" : {
         "connect-livereload" : "^0.3.0",
         "grunt" : "^1.0.1",
-        "grunt-cli" : "^1.2.0",        
+        "grunt-cli" : "^1.2.0",
         "grunt-concurrent" : "*",
         "grunt-contrib-clean" : "*",
-        "grunt-contrib-concat" : "*",        
+        "grunt-contrib-concat" : "*",
         "grunt-contrib-connect" : "*",
-        "grunt-contrib-copy" : "*", 
+        "grunt-contrib-copy" : "*",
         "grunt-contrib-cssmin" : "*",
         "grunt-contrib-htmlmin" : "*",
         "grunt-contrib-imagemin" : "*",
         "grunt-contrib-jshint" : "*",
         "grunt-contrib-less" : "*",
-        "grunt-contrib-requirejs" : "*",   
+        "grunt-contrib-requirejs" : "*",
         "grunt-contrib-uglify" : "*",
         "grunt-contrib-watch" : "*",
         "grunt-mocha" : "*",
@@ -58,7 +58,7 @@
         "grunt-svgmin" : "*",
         "grunt-usemin" : "*",
         "matchdep" : "^1.0.1",
-        "rjs-build-analysis" : "^0.0.3"        
+        "rjs-build-analysis" : "^0.0.3"
     },
     "peerDependencies" : {
         "grunt" : "^1.0.1"

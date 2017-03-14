@@ -19,10 +19,9 @@ import subprocess
 
 from itertools import chain
 
-from setuptools import Command, setup
+from setuptools import Command, distutils, setup
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
-from setuptools.distutils import log
 
 
 def _setx_path():
@@ -33,8 +32,8 @@ def _setx_path():
         subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
     except Exception:
         pass
-        
-              
+
+
 class CompileWebui(Command):
     """
     Compile the web user interface
@@ -60,12 +59,12 @@ class CompileWebui(Command):
                 'cd pyload/webui && node node_modules/grunt-cli/bin/grunt build',
                 shell=True)
         except subprocess.CalledProcessError:
-            log.warn("Failed to compile webui")
+            distutils.log.warn("Failed to compile webui")
         shutil.rmtree('pyload/webui/node_modules', ignore_errors=True)
         return subprocess.call(
             'cd pyload/webui && npm install --production', shell=True)
-        
-        
+
+
 class Configure(Command):
     """
     Configure the package
@@ -78,7 +77,7 @@ class Configure(Command):
 
     def finalize_options(self):
         pass
-        
+
     def run(self):
         self.run_command('compile_webui')
         try:
@@ -89,8 +88,8 @@ class Configure(Command):
         self.run_command('init_catalog')
         # self.run_command('get_catalog')
         self.run_command('compile_catalog')
-        
-        
+
+
 class GetCatalog(Command):
     """
     Download the translation catalog from the remote repository
@@ -106,8 +105,8 @@ class GetCatalog(Command):
 
     def run(self):
         raise NotImplementedError
-                       
-          
+
+
 class Install(install):
     """
     Custom ``install`` command
@@ -116,7 +115,7 @@ class Install(install):
         install.run(self)
         _setx_path()
 
-        
+
 class Sdist(sdist):
     """
     Custom ``sdist`` command
@@ -124,8 +123,8 @@ class Sdist(sdist):
     def run(self):
         self.run_command('configure')
         sdist.run(self)
-        
-        
+
+
 NAME = "pyload-ng"
 VERSION = "1.0.0"
 STATUS = "3 - Alpha"

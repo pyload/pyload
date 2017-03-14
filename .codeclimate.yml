@@ -8,13 +8,13 @@ engines:
   fixme:
     enabled: true
     config:
-      strings:        
+      strings:
         - BUG
         - CUSTOM
         - FIXME
   radon:
     enabled: true
-    config: 
+    config:
       threshold: "D"
 ratings:
   paths:
