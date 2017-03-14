@@ -5,32 +5,32 @@ require.config({
   deps: ['default'],
 
   paths: {
-    jquery: '../modules/jquery/dist/jquery.min',
-    flot: '../modules/Flot/jquery.flot',
-    transit: '../modules/jquery.transit/jquery.transit',
-    animate: '../modules/jQuery-Animate-Enhanced/jquery.animate-enhanced.min',
-    cookie: '../modules/jquery.cookie/jquery.cookie',
+    jquery: '../../node_modules/jquery/dist/jquery.min',
+    flot: '../../node_modules/Flot/jquery.flot',
+    transit: '../../node_modules/jquery.transit/jquery.transit',
+    animate: '../../node_modules/jQuery-Animate-Enhanced/jquery.animate-enhanced.min',
+    cookie: '../../node_modules/jquery.cookie/jquery.cookie',
     omniwindow: 'vendor/jquery.omniwindow',
-    select2: '../modules/select2/select2',
-    bootstrap: '../modules/bootstrap/dist/js/bootstrap.min',
-    underscore: '../modules/underscore/underscore-min',
-    backbone: '../modules/backbone/backbone-min',
-    marionette: '../modules/backbone.marionette/lib/backbone.marionette.min',
+    select2: '../../node_modules/select2/select2',
+    bootstrap: '../../node_modules/bootstrap/dist/js/bootstrap.min',
+    underscore: '../../node_modules/underscore/underscore-min',
+    backbone: '../../node_modules/backbone/backbone-min',
+    marionette: '../../node_modules/backbone.marionette/lib/backbone.marionette.min',
     // version must be tested carefully, many are broken for amd
-    handlebars: '../modules/handlebars.js/dist/handlebars',
-    jed: '../modules/jed/jed',
-    moment: '../modules/moment/moment',
+    handlebars: '../../node_modules/handlebars.js/dist/handlebars',
+    jed: '../../node_modules/jed/jed',
+    moment: '../../node_modules/moment/moment',
 
     // TODO: Two hbs dependencies could be replaced
-    // i18nprecompile: '../modules/require-handlebars-plugin/hbs/i18nprecompile',
-    json2: '../modules/require-handlebars-plugin/hbs/json2',
+    // i18nprecompile: '../../node_modules/require-handlebars-plugin/hbs/i18nprecompile',
+    json2: '../../node_modules/require-handlebars-plugin/hbs/json2',
 
     // Plugins
-    // text: '../modules/requirejs-text/text',
-    hbs: '../modules/require-handlebars-plugin/hbs',
+    // text: '../../node_modules/requirejs-text/text',
+    hbs: '../../node_modules/require-handlebars-plugin/hbs',
 
     // Shortcut
-    tpl: '../templates/default'
+    tpl: '../templates'
   },
 
   map: {

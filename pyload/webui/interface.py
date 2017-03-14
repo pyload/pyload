@@ -19,11 +19,11 @@ from pyload.webui import api, cnl, pyload, setup
 
 standard_library.install_aliases()
 
+WEBDIR = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+APPDIR = os.path.join(WEBDIR, 'app')
 
-APPDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'app'))
 SETUP = None
 API = None
-
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -48,12 +48,11 @@ if PREFIX:
 UNAVAILALBE = True
 
 # webui build is available
-if os.path.exists(os.path.join(APPDIR, "modules")):
+if os.path.exists(os.path.join(WEBDIR, "node_modules")):
     UNAVAILALBE = False
-elif os.path.exists(os.path.join(APPDIR, "dist", "index.html")):
-    # APP_PATH = "dist"
-    UNAVAILALBE = False
-
+if os.path.exists(os.path.join(WEBDIR, "min", "index.html")):
+    APPDIR = os.path.join(WEBDIR, 'min')
+    
 DEBUG = config.get(
     'webui', 'debug') or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)

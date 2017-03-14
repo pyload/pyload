@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'app/dist',
+        dist: 'min',
         banner: '/* Copyright(c) 2009-2017 The pyLoad Team */\n',
         protocol: 'http'
     };
@@ -296,17 +296,17 @@ module.exports = function(grunt) {
                 src: ['**/*.js', '!*.min.js']
             }
         },
-        compress: {
-            main: {
-                options: {
-                    mode: 'gzip'
-                },
-                expand: true,
-                cwd: '<%= yeoman.dist %>',
-                dest: '<%= yeoman.dist %>',
-                src: ['**/*.{js,css,html}']
-            }
-        },
+        // compress: {
+            // main: {
+                // options: {
+                    // mode: 'gzip'
+                // },
+                // expand: true,
+                // cwd: '<%= yeoman.dist %>',
+                // dest: '<%= yeoman.dist %>',
+                // src: ['**/*.{js,css,html}']
+            // }
+        // },
 
         // Put files not handled in other tasks here
         copy: {
@@ -335,7 +335,7 @@ module.exports = function(grunt) {
                     }
                     // {
                         // expand: true,
-                        // cwd: '<%= yeoman.app %>/modules/pyload-common',
+                        // cwd: '<%= yeoman.app %>/node_modules/pyload-common',
                         // dest: '.tmp',
                         // src: [
                             // 'favicon.ico',
@@ -428,7 +428,7 @@ module.exports = function(grunt) {
         'uglify', // minify js
         'rev',
         'usemin',
-        'compress'
+        // 'compress'
     ]);
 
     grunt.registerTask('default', [
