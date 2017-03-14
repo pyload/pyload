@@ -175,5 +175,5 @@ class SyncInfo(Info):
         self.__remote__.update(self.copy())
 
     def synclocal(self):
-        d = {k: v for k, v in self.__remote__.items() if k in self}
+        d = dict((k, v) for k, v in self.__remote__.items() if k in self)
         self.update(d)

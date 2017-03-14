@@ -36,8 +36,8 @@ def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
         if rule(obj):
             res = func(obj, *fn_args, **fn_kwgs)
         elif ismapping(obj):
-            res = {convert(k, *cvargs): convert(v, *cvargs)
-                   for k, v in obj.items()}
+            res = dict((convert(k, *cvargs), convert(v, *cvargs))
+                       for k, v in obj.items())
         elif isiterable(obj):
             res = type(obj)(convert(i, *cvargs) for i in obj)
         else:
@@ -78,7 +78,7 @@ def language(text, target=None, source=None):
 
     languages = gs.get_languages()
     if target not in languages:
-        reverse = {value.lower(): key for key, value in languages.items()}
+        reverse = dict((value.lower(), key) for key, value in languages.items())
         target = reverse.get(target)
 
     return gs.translate(text, target, source)
@@ -116,7 +116,7 @@ def size(value, in_unit, out_unit):
 
     except NameError:
         sizeunits = ('B', 'K', 'M', 'G', 'T', 'P', 'E')
-        sizemap = {u: i * 10 for i, u in enumerate(sizeunits)}
+        sizemap = dict((u, i * 10) for i, u in enumerate(sizeunits))
 
         in_magnitude = sizemap[in_unit]
         out_magnitude = sizemap[out_unit]
@@ -162,7 +162,7 @@ def to_dict(obj, default=None, exc=Exception):
     Convert object to dictionary or return default.
     """
     try:
-        return {attr: getattr(obj, attr) for attr in obj.__slots__}
+        return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
     except exc:
         return default
 

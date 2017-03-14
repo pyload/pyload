@@ -176,7 +176,7 @@ def mountpoint(path):
 @iterate
 def filesystem(path):
     mp = mountpoint(path)
-    fs = {part.mountpoint: part.fstype for part in psutil.disk_partitions()}
+    fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
     return fs.get(mp)
 
 
