@@ -42,7 +42,7 @@ from . import manager
 from . import network
 from . import thread
 from .init import (Core, Restart, Shutdown, info, quit, restart, setup, start,
-                   status, upgrade, version)
+                   status, version)
 
 # Cleanup
 del builtins, codecs, os, sys, tempfile

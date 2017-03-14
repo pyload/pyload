@@ -102,7 +102,7 @@ class Core(Process):
 
     @property
     def version(self):
-        return self.__core_version
+        return __core_version
 
     # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
@@ -481,6 +481,9 @@ class Core(Process):
             with closing(handler) as hdlr:
                 self.log.removeHandler(hdlr)
 
+    def update(self):
+        autoupgrade.upgrade(__setup_map['name'], dependencies=True, restart=True)
+        
     def restart(self):
         self._stop()
         self.log.info(_("Restarting pyLoad ..."))
@@ -554,11 +557,6 @@ def setup(profile=None, configdir=None):
     return SetupAssistant(configfile, version()).start()
 
 
-def upgrade(dependencies=True, force=False, prerelease=False):
-    autoupgrade.upgrade(
-        __setup_map['name'], dependencies, prerelease, force, restart=True)
-
-
 def quit(profile=None, configdir=None, wait=300):
     pid = status(profile, configdir)
     try:
@@ -568,12 +566,8 @@ def quit(profile=None, configdir=None, wait=300):
 
 
 def start(profile=None, configdir=None, debug=0,
-          refresh=0, webui=None, rpc=None, daemon=False):
-    #: Use virtualenv
-    # from .. import setup
-    # setup.run_venv()
-
-    p = Core(profile, configdir, debug, refresh, webui, rpc)
+          refresh=0, webui=None, rpc=None, update=True, daemon=False):
+    p = Core(profile, configdir, debug, refresh, webui, rpc, update)
     p.start()
 
     if daemon:

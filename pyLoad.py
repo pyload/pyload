@@ -79,7 +79,6 @@ def parse_args(argv=None):
           ('quit', "Terminate process instance"),
           ('restart', "Restart process instance"),
           ('setup', "Setup package"),
-          ('upgrade', "Update package"),
           ('status', "Show process PID"),
           ('version', "Show package version"),
           ('info', "Show package info"))
@@ -90,7 +89,7 @@ def parse_args(argv=None):
                           epilog=epilog, help=desc, add_help=False)
         globals()['sp_' + prog] = p
 
-    for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_update, sp_setup, sp_version:
+    for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup, sp_version:
         p.add_argument('-h', '--help',
                        action='help',
                        help=autored("Show this help message and exit"))
@@ -127,14 +126,8 @@ def parse_args(argv=None):
     wait_help = autored("Timeout for graceful exit (in seconds)")
     sp_stop.add_argument('--wait', help=wait_help)
 
-    force_help = autored("Force package installation")
-    pre_help = autored("Upgrade to pre-release if available")
-    sp_update.add_argument(
-        '-f', '--force', action='store_true', help=force_help)
-    sp_update.add_argument('--pre', action='store_true', help=pre_help)
-
     # NOTE: Workaround to `required subparsers` issue in Python 2
-    if not set(map(operator.itemgetter(0), sc)) & set(argv):
+    if not set(map(operator.itemgetter(0), sc)).intersection(argv):
         argv.append('start')
 
     print(logo + '\n')
