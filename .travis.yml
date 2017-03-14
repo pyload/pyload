@@ -16,13 +16,13 @@ python:
   - "3.6"
   - "nightly"
   - "pypy"
-  - "pypy3"
+  # - "pypy3"
 matrix:
   allow_failures:
     - "2.6"
     - "nightly"
     - "pypy"
-    - "pypy3"
+    # - "pypy3"
   fast_finish: true
 cache: pip
 before_install:
@@ -41,12 +41,13 @@ script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then tox -v --develop --skip-miss
   # - coveralls
   # - codeclimate-test-reporter
 addons:
-  code_climate:
-    repo_token: ba38fbb8f3c0d63f3686500479cc5d195ef638d4f854e791fcf3c6fd157f7c29
+  # code_climate:
+    # repo_token: ba38fbb8f3c0d63f3686500479cc5d195ef638d4f854e791fcf3c6fd157f7c29
   coverity_scan:
     project:
       name: "pyload/pyload"
       description: "Free and Open Source download manager written in Pure Python and designed to be extremely lightweight, fully customizable and remotely manageable"
     notification_email: dev@pyload.net
-    build_command: python setup.py configure
+    build_command_prepend: ""
+    build_command: "python setup.py configure"
     branch_pattern: coverity_scan
