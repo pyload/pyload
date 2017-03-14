@@ -1,13 +1,14 @@
 global-exclude *.py[co]
 
-global-include *.md *.py
+graft pyload/webui/app
+graft pyload/webui/node_modules
 
-graft pyload
+include *.md *.rst pyLoad.py
 
 prune docs/build
-prune pyload/webui/app/modules
 
-recursive-include docs *.rst *.py
+recursive-include docs *.py *.rst
 recursive-include lib *
 recursive-include locale *.mo *.pot
+recursive-include pyload *.py
 recursive-include tests *.org *.py *.sh *.txt
