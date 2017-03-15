@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 from socket import error
 from os.path import dirname, abspath, join
@@ -47,8 +48,12 @@ class ThriftClient:
 
         try:
             correct = self.client.login(user, password)
-        except error, e:
-            if e.args and e.args[0] == 104:
+        #except error, e:
+        except (error, TTransport.TTransportException), e:
+            # TTransport.TTransportException.END_OF_FILE, this seems to work for MS Windows 10 x64, with python x32
+            winConnectionClosed = True if (os.name == "nt" and e.args and e.args[0] == "TSocket read 0 bytes") else False
+            #if e.args and e.args[0] == 104:
+            if (e.args and e.args[0] == 104) or winConnectionClosed:
                 #connection reset by peer, probably wants ssl
                 try:
                     self.ssl = True
