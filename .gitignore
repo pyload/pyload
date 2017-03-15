@@ -164,7 +164,7 @@ typings/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[codi]
 *$py.class
 
 # C extensions

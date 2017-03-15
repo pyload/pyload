@@ -1,4 +1,4 @@
-global-exclude *.py[co]
+global-exclude *.py[coi]
 
 graft pyload/webui/app
 graft pyload/webui/node_modules
