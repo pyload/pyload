@@ -20,7 +20,9 @@
 CURRENT_VERSION = '0.4.9'
 CURRENT_INTERNAL_VERSION = '2017-03-07'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
-import gtk
+import os
+if not os.name == "nt":
+    import gtk
 import sys
 
 from sys import argv
