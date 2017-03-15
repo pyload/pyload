@@ -479,8 +479,9 @@ def fixurl(url, unquote=None):
     if unquote is None:
         unquote = url is old
 
-    url = html_unescape(decode(url).decode('unicode-escape'))
+    url = html_unescape(decode(url))
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
+    url = encode(url)
 
     if not unquote:
         url = urllib.quote(url)
@@ -551,6 +552,7 @@ def parse_name(value, safechar=True):
             url_p.netloc.split('.', 1)[0])
 
     name = urllib.unquote(name)
+    name = decode(name)
     return safename(name) if safechar else name
 
 
