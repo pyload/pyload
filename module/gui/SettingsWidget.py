@@ -222,7 +222,7 @@ class SettingsWidget(QWidget):
                                 self.connector.proxy.setConfigValue(cat, opt, str(not i.currentIndex()), sec)
                         else:
                             if i.text() != item.value:       # QLineEdit
-                                self.connector.proxy.setConfigValue(cat, opt, str(i.text()), sec)
+                                self.connector.proxy.setConfigValue(cat, opt, unicode(i.text()), sec)
 
     def setSpeedLimitFromToolbar(self, enab, rate):
         if not self.corePermissions["SETTINGS"]:

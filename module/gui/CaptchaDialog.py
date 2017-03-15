@@ -121,7 +121,7 @@ class CaptchaDialog(QDialog):
                     self.submitBtn.hide()
                     self.imgLabel.setCursor(Qt.CrossCursor)
                 else:
-                    errMsg = "setupCaptcha: Unknown resultType '" + str(self.currentResultType) + "'"
+                    errMsg = "setupCaptcha: Unknown resultType '" + unicode(self.currentResultType) + "'"
                     self.imgAnimation.stop()
                     self.imgDataBuffer.close()
             else:
@@ -169,7 +169,7 @@ class CaptchaDialog(QDialog):
         self.activateWindow()
 
     def slotSubmitText(self):
-        text = str(self.lineEdit.text())
+        text = unicode(self.lineEdit.text())
         if not text: # empty string, ignored by api or core
             return
         tid = self.currentID

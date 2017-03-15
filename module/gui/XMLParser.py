@@ -66,7 +66,7 @@ class XMLParser():
                 break
             else:
                 if ret_type == "dict":
-                    childNodes[str(n.tagName())] = n
+                    childNodes[unicode(n.tagName())] = n
                 else:
                     childNodes.append(n)
             child = child.nextSibling()

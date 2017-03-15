@@ -34,8 +34,8 @@ class NewPackageDock(QDockWidget):
         self.hide()
     
     def slotDone(self):
-        text = str(self.widget.box.toPlainText())
-        pw   = str(self.widget.passwordInput.text())
+        text = unicode(self.widget.box.toPlainText())
+        pw   = unicode(self.widget.passwordInput.text())
         if not pw:
             pw = None
         lines = []
@@ -48,13 +48,13 @@ class NewPackageDock(QDockWidget):
             self.widget.slotMsgShow("<b>" + _("Error, no URLs given.") + "</b>")
             return
         queue = self.widget.destQueue.isChecked()
-        self.emit(SIGNAL("done"), str(self.widget.nameInput.text()), lines, queue, pw)
+        self.emit(SIGNAL("done"), unicode(self.widget.nameInput.text()), lines, queue, pw)
         self.widget.nameInput.setText("")
         self.widget.passwordInput.setText("")
         self.widget.box.clear()
     
     def parseUri(self):
-        text = str(self.widget.box.toPlainText())
+        text = unicode(self.widget.box.toPlainText())
         self.emit(SIGNAL("parseUri"), "packagedock", text)
     
     def parseUriResult(self, result):

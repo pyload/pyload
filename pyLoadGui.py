@@ -142,6 +142,9 @@ class main(QObject):
         self.fileLogIsEnabled = None
         if not self.checkConfigFiles():
             exit()
+        QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
+        QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF-8"))
+        QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
         self.init(True)
 
     def print_help(self):
@@ -204,10 +207,7 @@ class main(QObject):
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(self.lang), "en"], fallback=True)
-        try:
-            translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
-        except:
-            translation.install(unicode=False)
+        translation.install(unicode=True)
 
         self.loggingOptions = LoggingOptions()
         optlog = self.parser.xml.elementsByTagName("optionsLogging").item(0).toElement().text()
@@ -1257,17 +1257,17 @@ class main(QObject):
                 data["default"] = False
             subs = self.parser.parseNode(conn, "dict")
             if not subs.has_key("name"):
-                data["name"] = str(_("Unnamed"))
+                data["name"] = unicode("- unnamed -")
             else:
-                data["name"] = str(subs["name"].text())
+                data["name"] = unicode(subs["name"].text())
             if data["type"] == "remote":
                 if not subs.has_key("server"):
                     continue
                 else:
-                    data["host"] = str(subs["server"].text())
-                    data["user"] = str(subs["server"].attribute("user", "admin"))
+                    data["host"] = unicode(subs["server"].text())
+                    data["user"] = unicode(subs["server"].attribute("user", "admin"))
                     data["port"] = int(subs["server"].attribute("port", "7227"))
-                    data["password"] = str(subs["server"].attribute("password", ""))
+                    data["password"] = unicode(subs["server"].attribute("password", ""))
                     data["cnlpf"] = str(subs["server"].attribute("cnlpf", "False"))
                     if data["cnlpf"] == "True":
                         data["cnlpf"] = True
@@ -2096,9 +2096,9 @@ class main(QObject):
         """
             apply changes made in the package edit dialog (save button hit)
         """
-        name = str(self.packageEdit.name.text())
-        folder = str(self.packageEdit.folder.text())
-        password = str(self.packageEdit.password.toPlainText())
+        name = unicode(self.packageEdit.name.text())
+        folder = unicode(self.packageEdit.folder.text())
+        password = unicode(self.packageEdit.password.toPlainText())
         try: # keep the dialog open if something goes wrong
             if name == self.packageEdit.old_name:
                 name = None
@@ -2894,7 +2894,7 @@ class LoggingOptions(QDialog):
 
     def dialogState2dict(self):
         self.settings["file_log"]   = self.cbEnableFileLog.isChecked()
-        self.settings["log_folder"] = str(self.leFolder.text())
+        self.settings["log_folder"] = unicode(self.leFolder.text())
         self.settings["log_rotate"] = self.cbRotate.isChecked()
         self.settings["log_size"]   = self.sbSize.value()
         self.settings["log_count"]  = self.sbCount.value()

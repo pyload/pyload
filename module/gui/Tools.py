@@ -6,9 +6,9 @@ from os.path import join
 import logging
 
 def whatsThisFormat(title, text):
-     #html = "<b>" + title + "</b><br><br>" + text
-     html = "<table><tr><td><b>" + title + "</b></td></tr></table>" + "<table><tr><td>" + text + "</td></tr></table>"
-     return html
+    #html = "<b>" + title + "</b><br><br>" + text
+    html = "<table><tr><td><b>" + title + "</b></td></tr></table>" + "<table><tr><td>" + text + "</td></tr></table>"
+    return html
 
 class LineView(QLineEdit):
     def __init__(self, contents=""):
@@ -49,7 +49,7 @@ class MessageBox(QDialog):
 
         if noTranslation:
             self.log.debug8("MessageBox.__init__: without language translation")
-            global _; _ = str   # language translation dummy
+            global _; _ = unicode   # language translation dummy
 
         # icon and window title
         title = _("pyLoad Client")

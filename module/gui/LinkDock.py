@@ -34,7 +34,7 @@ class NewLinkDock(QDockWidget):
         self.hide()
     
     def slotDone(self):
-        text = str(self.widget.box.toPlainText())
+        text = unicode(self.widget.box.toPlainText())
         lines = text.splitlines()
         if not lines:
             self.widget.slotMsgShow("<b>" + _("Error, no URLs given.") + "</b>")
@@ -43,7 +43,7 @@ class NewLinkDock(QDockWidget):
         self.emit(SIGNAL("done"), lines, queue)
     
     def parseUri(self):
-        text = str(self.widget.box.toPlainText())
+        text = unicode(self.widget.box.toPlainText())
         self.emit(SIGNAL("parseUri"), "linkdock", text)
     
     def parseUriResult(self, result):

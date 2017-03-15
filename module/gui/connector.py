@@ -130,8 +130,8 @@ class Connector(QObject):
             # user and password popup
             if self.messageBox_03(self.host, self.port, self.user, self.password) == QDialog.Rejected:
                 return False
-            self.user = str(self.pwBox.userLE.text())
-            self.password = str(self.pwBox.passwordLE.text())
+            self.user = unicode(self.pwBox.userLE.text())
+            self.password = unicode(self.pwBox.passwordLE.text())
             sleep(1) # some delay to let the dialog fade out
         
         if err is not None:

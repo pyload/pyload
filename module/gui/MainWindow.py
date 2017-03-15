@@ -892,7 +892,7 @@ class MainWindow(QMainWindow):
         ])
         fileNames = QFileDialog.getOpenFileNames(self, _("Open Container"), "", typeStr)
         for name in fileNames:
-            self.emit(SIGNAL("addContainer"), str(name))
+            self.emit(SIGNAL("addContainer"), unicode(name))
     
     def slotPushPackagesToQueue(self):
         """

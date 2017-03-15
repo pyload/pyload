@@ -135,7 +135,7 @@ class ConnectionManager(QDialog):
         tmp = {}
         for k, d in data.items():
             if type(d) == QString:
-                tmp[str(k)] = str(d)    # get rid of QString asap
+                tmp[str(k)] = unicode(d)    # get rid of QString asap
             else:
                 tmp[str(k)] = d
         return tmp
@@ -347,7 +347,7 @@ class ConnectionManager(QDialog):
             elif data["type"] == "remote":
                 self.controls["typeRemote"].setChecked(True)
             else:
-                raise ValueError("Invalid connection type: '%s'" % str(data["type"]))
+                raise ValueError("Invalid connection type: '%s'" % unicode(data["type"]))
             if data["type"] == "local" or data["type"] == "internal":
                 self.controls["host"].setText("")
                 self.controls["port"].setValue(1)
@@ -394,17 +394,17 @@ class ConnectionManager(QDialog):
             d = {}
             d["id"]           = str(self.id)
             d["default"]      = bool(self.default)
-            d["name"]         = str(self.controls["name"].text())
+            d["name"]         = unicode(self.controls["name"].text())
             if self.controls["typeLocal"].isChecked():
                 d["type"]     = str("local")
             elif self.controls["typeInternal"].isChecked():
                 d["type"]     = str("internal")
             else:
                 d["type"]     = str("remote")
-            d["host"]         = str(self.controls["host"].text())
+            d["host"]         = unicode(self.controls["host"].text())
             d["port"]         = int(self.controls["port"].value())
-            d["user"]         = str(self.controls["user"].text())
-            d["password"]     = str(self.controls["password"].text())
+            d["user"]         = unicode(self.controls["user"].text())
+            d["password"]     = unicode(self.controls["password"].text())
             d["cnlpf"]        = bool(self.controls["cnlpf"].isChecked())
             d["cnlpfPort"]    = int(self.controls["cnlpfPort"].value())
             d["cnlpfGetPort"] = bool(self.controls["cnlpfGetPort"].isChecked())
