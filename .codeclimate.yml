@@ -26,12 +26,11 @@ engines:
     config:
       python_version: 3
       threshold: "D"
-  stylelint:
-    enabled: true
+  # stylelint:
+    # enabled: true
 ratings:
   paths:
     - "**.js"
-    - "**.less"
     - "**.md"
     - "**.py"
 exclude_paths:
