@@ -3,7 +3,7 @@ engines:
     enabled: true
     config:
       languages:
-        - javascript
+        javascript: true
         python:
           python_version: 3
   # eslint:
