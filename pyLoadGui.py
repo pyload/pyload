@@ -73,9 +73,10 @@ from module.remote.thriftbackend.ThriftClient import DownloadStatus
 from module.Api import has_permission, PERMS, ROLE
 
 try:
+    havePynotify = True
     import pynotify
 except ImportError:
-    print "pynotify not installed, falling back to qt tray notification"
+    havePynotify = False
 
 class main(QObject):
     def pyLoadGuiExcepthook(self, type, value, tback):
@@ -3738,11 +3739,16 @@ class Notification(QObject):
         self.tray = tray
 
         self.usePynotify = False
-
-        try:
-            self.usePynotify = pynotify.init(_("pyLoad Client"))
-        except:
-            self.log.error("Notification: Pynotify initialization failed")
+        if not os.name == "nt":
+            if not havePynotify:
+                self.log.info("Notification: Pynotify not installed, falling back to qt tray notification")
+                return
+            try:
+                self.usePynotify = pynotify.init(_("pyLoad Client"))
+            except:
+                self.usePynotify = False
+            if not self.usePynotify:
+                self.log.error("Notification: Pynotify initialization failed")
 
     def showMessage(self, body):
         if self.usePynotify:
