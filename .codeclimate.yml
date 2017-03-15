@@ -4,7 +4,10 @@ engines:
     config:
       languages:
         - javascript
-        - python
+        python:
+          python_version: 3
+  # eslint:
+    # enabled: true
   fixme:
     enabled: true
     config:
@@ -12,13 +15,24 @@ engines:
         - BUG
         - CUSTOM
         - FIXME
+  markdownlint:
+    enabled: true
+  # nodesecurity:
+    # enabled: true
+  pep8:
+    enabled: true
   radon:
     enabled: true
     config:
+      python_version: 3
       threshold: "D"
+  stylelint:
+    enabled: true
 ratings:
   paths:
     - "**.js"
+    - "**.less"
+    - "**.md"
     - "**.py"
 exclude_paths:
   - tests/

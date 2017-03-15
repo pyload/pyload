@@ -153,7 +153,7 @@ INSTALL_REQUIRES = [
     'requests>=2.0', 'tld', 'validators'
 ]
 SETUP_REQUIRES = [
-    'Babel', 'readme_renderer',
+    'Babel', 'readme_renderer', 'recommonmark',
     'sphinx<=1.4;python_version=="2.6" or python_version=="3.3"',
     'sphinx>1.4;python_version=="2.7" or python_version>"3.3"'
 ]
