@@ -23,8 +23,16 @@ engines:
         - XXX
   markdownlint:
     enabled: true
+    config:
+      style: "ordered"
     checks:
+      MD001:
+        enabled: false
+      MD003:
+        enabled: false
       MD012:
+        enabled: false
+      MD028:
         enabled: false
   # nodesecurity:
     # enabled: true
@@ -34,7 +42,7 @@ engines:
     enabled: true
     config:
       python_version: 3
-      threshold: "D"
+      threshold: "E"
   # stylelint:
     # enabled: true
 ratings:
