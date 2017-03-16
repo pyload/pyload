@@ -1561,7 +1561,9 @@ class main(QObject):
         fh = open(path, "r")
         content = fh.read()
         fh.close()
-        self.connector.proxy.uploadContainer(filename, content)
+        # the core doesn't like unicode filenames here
+        fn = QString(filename).toLatin1()
+        self.connector.proxy.uploadContainer(str(fn), content)
 
     def prepareForSaveOptionsAndWindow(self, contFunc):
         """

@@ -883,12 +883,13 @@ class MainWindow(QMainWindow):
             action from add-menu
             show file selector, emit upload
         """
+        # native file dialog defined by OS, so better don't use language translating in typeStr
         typeStr = ";;".join([
-            _("All Container Types (%s)") % "*.dlc *.ccf *.rsdf *.txt",
+            "All Container Types (%s)" % "*.dlc *.ccf *.rsdf *.txt",
             "DLC (%s)" % "*.dlc",
             "CCF (%s)" % "*.ccf",
             "RSDF (%s)" % "*.rsdf",
-            _("Text Files (%s)") % "*.txt"
+            "Text Files (%s)" % "*.txt"
         ])
         fileNames = QFileDialog.getOpenFileNames(self, _("Open Container"), "", typeStr)
         for name in fileNames:
