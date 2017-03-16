@@ -477,7 +477,7 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if not wait is None:
-                opts.text = QString(_("waiting %d seconds") % (wait,))
+                opts.text = QString(_("waiting %d seconds") % wait)
             else:
                 opts.text = QString.number(opts.progress) + "%"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)

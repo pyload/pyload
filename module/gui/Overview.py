@@ -147,14 +147,14 @@ class OverviewDelegate(QItemDelegate):
         status = index.data(OverviewModel.Status).toString()
         
         def formatEta(seconds): #TODO add to utils
-            if seconds <= 0: return ""
+            if seconds <= 0: return unicode("")
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
             return _("ETA") + ": %.2i:%.2i:%.2i" % (hours, minutes, seconds)
         
         statusline = QString(_("Parts") + ": %s/%s" % (partsf, parts))
         if status == _("downloading"):
-            speedline = QString(formatEta(eta) + "     " + _("Speed") + ": %s" % formatSpeed(speed))
+            speedline = QString(formatEta(eta) + "     " + _("Speed") + ": " + formatSpeed(speed))
         else:
             speedline = QString(status)
             speedline.replace(0, 1, speedline.at(0).toTitleCase()) # first letter uppercase
