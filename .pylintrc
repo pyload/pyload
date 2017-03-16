@@ -232,7 +232,8 @@ logging-modules=logging
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-notes=BUG,FIXME,HACK,NOTE,TODO,XXX
+#notes=BUG,FIXME,HACK,NOTE,TODO,XXX
+notes=BUG,FIXME,HACK,XXX
 
 
 [SIMILARITIES]

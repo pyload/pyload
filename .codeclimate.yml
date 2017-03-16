@@ -1,14 +1,14 @@
 engines:
   duplication:
     enabled: true
-    checks:
-      Similar Code:
-        enabled: false
     config:
       languages:
         javascript: true
         python:
           python_version: 3
+    checks:
+      Similar code:
+        enabled: false
   # eslint:
     # enabled: true
   fixme:
@@ -18,11 +18,14 @@ engines:
         - BUG
         - FIXME
         - HACK
-        - NOTE
-        - TODO
+        # - NOTE
+        # - TODO
         - XXX
   markdownlint:
     enabled: true
+    checks:
+      MD012:
+        enabled: false
   # nodesecurity:
     # enabled: true
   # pep8:
