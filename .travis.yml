@@ -36,7 +36,7 @@ install:
   # - pip install codeclimate-test-reporter
   # - pip install coveralls
   - pip install tox-travis
-script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then tox -v --develop --skip-missing-interpreters ; fi
+script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then tox --develop --skip-missing-interpreters ; fi
 # after_success:
   # - coveralls
   # - codeclimate-test-reporter

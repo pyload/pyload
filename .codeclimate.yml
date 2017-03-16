@@ -1,6 +1,9 @@
 engines:
   duplication:
     enabled: true
+    checks:
+      Similar Code:
+        enabled: false
     config:
       languages:
         javascript: true
@@ -13,8 +16,11 @@ engines:
     config:
       strings:
         - BUG
-        - CUSTOM
         - FIXME
+        - HACK
+        - NOTE
+        - TODO
+        - XXX
   markdownlint:
     enabled: true
   # nodesecurity:
@@ -30,7 +36,6 @@ engines:
     # enabled: true
 ratings:
   paths:
-    - "**.js"
     - "**.md"
     - "**.py"
 exclude_paths:
