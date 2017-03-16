@@ -17,7 +17,7 @@ def make_config(config):
     Configuration layout for default base config.
     """
     config.add_config_section('general', _('General'), _('Description'), _('Long description'),
-                              [
+    [
         ('language', 'en|de|fr|it|es|nl|sv|ru|pl|cs|sr|pt', _('Language'), 'en'),
         ('storage_folder', 'folder', _('Storage folder'), ''),
         ('min_storage_size', 'int', _('Min storage space (in MiB)'), '1024'),
@@ -28,7 +28,7 @@ def make_config(config):
     ])
 
     config.add_config_section('log', _('Logging'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'True'),
         ('syslog', 'no|remote|local', _('Sent log to syslog'), 'no'),
         ('syslog_folder', 'folder', _('Syslog local folder'), ''),
@@ -45,7 +45,7 @@ def make_config(config):
     ])
 
     config.add_config_section('permission', _('Permissions'), _('Description'), _('Long description'),
-                              [
+    [
         ('user', 'str', _('Username'), 'user'),
         ('group', 'str', _('Groupname'), 'users'),
         ('foldermode', 'str', _('Folder mode'), '0o755'),
@@ -58,7 +58,7 @@ def make_config(config):
     ])
 
     config.add_config_section('connection', _('Connections'), _('Description'), _('Long description'),
-                              [
+    [
         ('max_transfers', 'int', _('Max parallel transfers'), '5'),
         ('max_speed', 'int', _('Max transfer speed (in KiB/s)'), '-1'),
         ('max_chunks', 'int', _('Max connections for single transfer'), '-1'),
@@ -70,21 +70,21 @@ def make_config(config):
     ])
 
     config.add_config_section('ssl', _('SSL'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'False'),
         ('cert', 'file', _('Cert file'), 'ssl.crt'),
         ('key', 'file', _('Key file'), 'ssl.key')
     ])
 
     config.add_config_section('reconnect', _('Reconnection'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'False'),
         ('script', 'str', _('Script file'), ''),
         ('wait', 'str', _('Don\'t reconnect while waiting'), 'False')
     ])
 
     config.add_config_section('proxy', _('Proxy'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'False'),
         ('type', 'http|socks4|socks5', _('Protocol'), 'http'),
         ('host', 'str', _('IP address'), 'localhost'),
@@ -94,7 +94,7 @@ def make_config(config):
     ])
 
     config.add_config_section('webui', _('Web User Interface'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'True'),
         ('server', 'auto|threaded|fallback|fastcgi', _('Webserver'), 'auto'),
         ('host', 'str', _('IP address'), 'localhost'),
@@ -106,14 +106,14 @@ def make_config(config):
     ])
 
     config.add_config_section('rpc', _('REST API Interface'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'False'),
         ('host', 'str', _('IP address'), '0.0.0.0'),
         ('port', 'port', _('Port'), '7227')
     ])
 
     config.add_config_section('update', _('Updates'), _('Description'), _('Long description'),
-                              [
+    [
         ('activated', 'bool', _('Activated'), 'True'),
         ('nodebug', 'bool', _('Don\'t update in debug mode'), 'False'),
         ('periodical', 'bool', _('Check for updates on schedule'), 'True'),

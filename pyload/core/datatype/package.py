@@ -70,7 +70,8 @@ class PyPackage(BaseObject):
     """
     __slots__ = ['added', 'comment', 'comment', 'folder', 'manager', 'name',
                  'ownerid', 'packageorder', 'password', 'password', 'pid',
-                 'root', 'shared', 'site', 'site', 'status', 'tags', 'timestamp']
+                 'root', 'set_finished', 'shared', 'site', 'site', 'status',
+                 'tags', 'timestamp']
 
     @staticmethod
     def from_info_data(m, info):
@@ -103,9 +104,10 @@ class PyPackage(BaseObject):
         return self.timestamp + 30 * 60 > time()
 
     def to_info_data(self):
-        return PackageInfo(self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
-                           self.comment, self.password, self.added, self.tags, self.status, self.shared, self.packageorder
-                           )
+        return PackageInfo(
+            self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
+            self.comment, self.password, self.added, self.tags, self.status,
+            self.shared, self.packageorder)
 
     def update_from_info_data(self, pack):
         """

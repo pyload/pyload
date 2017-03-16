@@ -44,6 +44,7 @@ class FileManager(object):
         'lock',
         'packages',
         'pyload',
+        'queuecount',
         'queuestats',
         'status_msg']
 

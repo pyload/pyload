@@ -362,7 +362,7 @@ class Core(Process):
             pass
 
     def __init__(self, profile=None, configdir=None, debug=None,
-                 refresh=None, webui=None, rpc=None):
+                 refresh=None, webui=None, rpc=None, update=None):
         self.running = Event()
 
         self._cleanup = bool(refresh)
@@ -410,7 +410,7 @@ class Core(Process):
         self.log.info(_("Available storage space: {0}").format(space_size))
 
     def _workloop(self):
-        self.thm.pause = False  # NOTE: Recheck...
+        self.dlm.pause = False  # NOTE: Recheck...
         self.running.set()
         try:
             while True:

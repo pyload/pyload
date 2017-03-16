@@ -98,7 +98,7 @@ class PyFile(BaseObject):
     __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid', 'fileorder',
                  'filestatus', 'hash', 'lock', 'manager', 'media', 'owner',
                  'packageid', 'plugin', 'pluginclass', 'pluginname',
-                 'reconnected', 'status', 'statusname', 'url', 'waitUntil']
+                 'reconnected', 'status', 'statusname', 'url', 'wait_until']
 
     @staticmethod
     def from_info_data(m, info):

@@ -41,7 +41,7 @@ class DownloadManager(object):
         self.pyload = core
 
         #: won't start download when true
-        self.paused = True
+        self.pause = True
 
         #: each thread is in exactly one category
         self.free = []
@@ -144,7 +144,7 @@ class DownloadManager(object):
         """
         End all threads.
         """
-        self.paused = True
+        self.pause = True
         for thread in self.working + self.free:
             thread.put("quit")
 
@@ -157,11 +157,11 @@ class DownloadManager(object):
         if (availspace(self.pyload.config.get('general', 'storage_folder')) <
                 self.pyload.config.get('general', 'min_storage_size') << 20):
             self.pyload.log.warning(_("Not enough space left on device"))
-            self.paused = True
+            self.pause = True
 
-        # if self.paused or not self.pyload.api.is_time_download():
+        # if self.pause or not self.pyload.api.is_time_download():
             # return False
-        if self.paused:
+        if self.pause:
             return False
 
         # at least one thread want reconnect and we are supposed to wait

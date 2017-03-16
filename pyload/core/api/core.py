@@ -72,8 +72,8 @@ class CoreApi(BaseApi):
                                    total[1], queue[1],
                                    self.is_interaction_waiting(
                                        Interaction.All),
-                                   not self.pyload.dlm.paused,  #: and self.is_time_download(),
-                                   self.pyload.dlm.paused,
+                                   not self.pyload.dlm.pause,  #: and self.is_time_download(),
+                                   self.pyload.dlm.pause,
                                    # and self.is_time_reconnect(),
                                    self.pyload.config.get(
                                        'reconnect', 'activated'),
@@ -98,13 +98,13 @@ class CoreApi(BaseApi):
         """
         Pause server: It won't start any new downloads, but nothing gets aborted.
         """
-        self.pyload.dlm.paused = True
+        self.pyload.dlm.pause = True
 
     def unpause_server(self):
         """
         Unpause server: New Downloads will be started.
         """
-        self.pyload.dlm.paused = False
+        self.pyload.dlm.pause = False
 
     def toggle_pause(self):
         """
@@ -112,8 +112,8 @@ class CoreApi(BaseApi):
 
         :return: new pause state
         """
-        self.pyload.dlm.paused ^= True
-        return self.pyload.dlm.paused
+        self.pyload.dlm.pause ^= True
+        return self.pyload.dlm.pause
 
     def toggle_reconnect(self):
         """
