@@ -2224,6 +2224,10 @@ class main(QObject):
         self.quitInternal()
         self.log.info("pyLoad Client quit")
         self.removeLogger()
+        try:
+            self.tray.deleteLater()
+        except:
+            pass
         self.app.quit()
 
     def slotQuitConnWindow(self):
