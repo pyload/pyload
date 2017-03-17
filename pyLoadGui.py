@@ -596,6 +596,7 @@ class main(QObject):
             self.showFromTray()
         elif self.mainWindow.isMinimized():
             # mainWindow is minimized in the taskbar
+            self.unminimize()   # needed on windows os
             self.mainWindow.show()
             self.mainWindow.raise_()
             self.mainWindow.activateWindow()
@@ -632,6 +633,7 @@ class main(QObject):
         s["l"]["f&!h"] = s["l"]["f"] and not s["l"]["h"]
         self.trayState["ignoreMinimizeToggled"] = True
         self.mainWindow.hide()
+        self.unminimize()   # needed on windows os
         self.mainWindow.newPackDock.hide()
         self.mainWindow.newLinkDock.hide()
         self.trayState["ignoreMinimizeToggled"] = False
@@ -851,6 +853,12 @@ class main(QObject):
         self.disconnect(self.mainWindow, SIGNAL("unmaximizeDone"), self.slotUnmaximizeWaitDone)
         self.log.debug4("main.slotUnmaximizeWaitDone: done")
         self.unmaxiWait["contFunc"]()
+
+    def unminimize(self):
+        """
+            unminimize mainWindow
+        """
+        self.mainWindow.setWindowState(self.mainWindow.windowState() & ~Qt.WindowMinimized)
 
     def slotShowAddPackageFromTray(self):
         """
