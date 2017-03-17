@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.05"
+    __version__ = "1.06"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -54,7 +54,6 @@ class OneFichierCom(SimpleHoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
-        print("OneFichierCom::get_info")
         redirect = url
         for i in range(10):
             try:
