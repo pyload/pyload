@@ -1058,6 +1058,7 @@ class main(QObject):
         dm("17"); self.messageBox_17()
         dm("18"); self.messageBox_18(pid)
         dm("21"); self.messageBox_21(optCat)
+        dm("22"); self.messageBox_22()
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
@@ -1403,9 +1404,16 @@ class main(QObject):
             self.mainWindow.setWindowTitle(title)
 
         elif data["type"] == "internal":
-            from pyLoadCore import Core
-            from module.ConfigParser import ConfigParser as CoreConfig
+            if self.configdir:
+                pyloadConf = self.homedir + sep + "pyload.conf"
+            else:
+                pyloadConf = abspath("pyload.conf")
+            if not (os.path.isfile(pyloadConf) and os.access(pyloadConf, os.R_OK)):
+                self.messageBox_22()
+                self.init()
+                return
 
+            from pyLoadCore import Core
             if not self.core:
                 class Core_(Core):
                     """
@@ -1449,7 +1457,7 @@ class main(QObject):
             self.mainWindow.mactions["restartcore"].setEnabled(False)
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
             self.mainWindow.setWindowTitle(_("pyLoad Client") + " - " + data["name"] + " [via API]")
-        
+
         self.startMain()
 
     def errorInternalCoreStartup(self, mb, arg=None):
@@ -1459,6 +1467,12 @@ class main(QObject):
             mb(arg)
         self.init()
         return
+
+    def messageBox_22(self):
+        text = _("Cannot start the internal server because the server is not configured.\n"
+        "Please run the server setup from console, respectively from\ncommand prompt if you are on Windows OS.\n\nFor example:\n"
+        ) + "pyLoadCore.py -s"
+        self.msgBoxOk(text, "C")
 
     def messageBox_14(self):
         text = _("Internal server initialization failed.")
