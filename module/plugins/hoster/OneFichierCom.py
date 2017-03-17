@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.04"
+    __version__ = "1.05"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -54,6 +54,7 @@ class OneFichierCom(SimpleHoster):
 
     @classmethod
     def get_info(cls, url="", html=""):
+        print("OneFichierCom::get_info")
         redirect = url
         for i in range(10):
             try:
@@ -79,7 +80,7 @@ class OneFichierCom(SimpleHoster):
                                 'url': url}
 
                     else:
-                        info = SimpleHoster.get_info(url, html)
+                        info = super(OneFichierCom, cls).get_info(url, html)
 
                     break
 
@@ -96,6 +97,7 @@ class OneFichierCom(SimpleHoster):
         return info
 
     def handle_free(self, pyfile):
+        return
         url, inputs = self.parse_html_form(
             'action="https://1fichier.com/\?[\w^_]+')
 
