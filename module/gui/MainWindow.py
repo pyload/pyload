@@ -891,7 +891,7 @@ class MainWindow(QMainWindow):
             "RSDF (%s)" % "*.rsdf",
             "Text Files (%s)" % "*.txt"
         ])
-        fileNames = QFileDialog.getOpenFileNames(self, _("Open Container"), "", typeStr)
+        fileNames = QFileDialog.getOpenFileNames(self, "Open Container", "", typeStr)
         for name in fileNames:
             self.emit(SIGNAL("addContainer"), unicode(name))
     
