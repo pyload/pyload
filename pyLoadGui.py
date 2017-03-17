@@ -424,9 +424,9 @@ class main(QObject):
         else:
             self.tray.captchaAction.setEnabled(False)
         if enabled and self.trayState["hiddenInTray"]:
-            self.tray.contextAddMenu.setEnabled(self.corePermissions["ADD"])
+            self.tray.menuAdd.setEnabled(self.corePermissions["ADD"])
         else:
-            self.tray.contextAddMenu.setEnabled(False)
+            self.tray.menuAdd.setEnabled(False)
 
     def initCorePermissions(self):
         """
@@ -583,7 +583,7 @@ class main(QObject):
         self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
         self.disconnect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
-        self.tray.contextMenu.deleteLater()
+        self.tray.menu.deleteLater()
         self.tray.setContextMenu(None)
         self.tray.deleteLater()
         self.tray = None
@@ -3621,32 +3621,32 @@ class TrayIcon(QSystemTrayIcon):
         QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo-gui.png")))
         self.log = logging.getLogger("guilog")
 
-        self.contextMenu = QMenu()
-        self.showAction = QAction("show/hide", self.contextMenu)
+        self.menu = QMenu()
+        self.showAction = QAction("show/hide", self.menu)
         self.showAction.setIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.setShowActionText(False)
-        self.contextMenu.addAction(self.showAction)
-        self.captchaAction = QAction(_("Waiting Captcha"), self.contextMenu)
-        self.contextMenu.addAction(self.captchaAction)
-        self.contextAddMenu = self.contextMenu.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
-        self.addPackageAction = self.contextAddMenu.addAction(_("Package"))
-        self.addLinksAction = self.contextAddMenu.addAction(_("Links"))
-        self.addContainerAction = self.contextAddMenu.addAction(_("Container"))
-        self.contextMenu.addSeparator()
-        self.exitAction = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Exit"), self.contextMenu)
-        self.contextMenu.addAction(self.exitAction)
-        self.setContextMenu(self.contextMenu)
+        self.menu.addAction(self.showAction)
+        self.captchaAction = QAction(_("Waiting Captcha"), self.menu)
+        self.menu.addAction(self.captchaAction)
+        self.menuAdd = self.menu.addMenu(QIcon(join(pypath, "icons", "add_small.png")), _("Add"))
+        self.addPackageAction = self.menuAdd.addAction(_("Package"))
+        self.addLinksAction = self.menuAdd.addAction(_("Links"))
+        self.addContainerAction = self.menuAdd.addAction(_("Container"))
+        self.menu.addSeparator()
+        self.exitAction = QAction(QIcon(join(pypath, "icons", "abort_small.png")), _("Exit"), self.menu)
+        self.menu.addAction(self.exitAction)
+        self.setContextMenu(self.menu)
         if self.log.isEnabledFor(logging.DEBUG9):
-            self.contextMenu.addSeparator()
-            self.contextDebugMenu = self.contextMenu.addMenu("Debug")
-            self.debugTrayAction = self.contextDebugMenu.addAction("Tray")
-            self.debugMsgBoxTest1Action = self.contextDebugMenu.addAction("MessageBox Test 1")
-            self.debugMsgBoxTest2Action = self.contextDebugMenu.addAction("MessageBox Test 2")
+            self.menu.addSeparator()
+            self.menuDebug = self.menu.addMenu("Debug")
+            self.debugTrayAction = self.menuDebug.addAction("Tray")
+            self.debugMsgBoxTest1Action = self.menuDebug.addAction("MessageBox Test 1")
+            self.debugMsgBoxTest2Action = self.menuDebug.addAction("MessageBox Test 2")
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)
         self.captchaAction.setEnabled(False)
-        self.contextAddMenu.setEnabled(False)
+        self.menuAdd.setEnabled(False)
 
     def setShowActionText(self, show):
         if show:
@@ -3655,6 +3655,22 @@ class TrayIcon(QSystemTrayIcon):
             self.showAction.setText(_("Hide pyLoad Client"))
 
     def clicked(self, reason):
+        # forbid all actions when a modal dialog is visible, this is mainly for ms windows os
+        if QApplication.activeModalWidget() is not None:
+            if self.contextMenu() is not None:
+                self.menu.hide()
+                self.setContextMenu(None)
+                self.log.debug4("TrayIcon.clicked: context menu deactivated")
+            self.log.debug4("TrayIcon.clicked: click ignored")
+            return
+        elif self.contextMenu() is None:
+            self.setContextMenu(self.menu)
+            self.log.debug4("TrayIcon.clicked: context menu reactivated")
+            if reason == QSystemTrayIcon.Context:
+                self.menu.show()
+                self.log.debug4("TrayIcon.clicked: show reactivated context menu")
+                return
+
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.Trigger:
                 self.showAction.trigger()
