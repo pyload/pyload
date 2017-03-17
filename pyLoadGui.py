@@ -1043,6 +1043,7 @@ class main(QObject):
         dm("05"); self.connector.messageBox_05(host, port)
         dm("06"); self.connector.messageBox_06(server_version, host, port)
         # main
+        pidfile = "/tmp/pyload.pid"
         pid = 536485
         optCat = "FooBar"
         dm("07"); self.messageBox_07()
@@ -1053,7 +1054,7 @@ class main(QObject):
         dm("12"); self.messageBox_12()
         dm("13"); self.messageBox_13()
         dm("14"); self.messageBox_14()
-        dm("15"); self.messageBox_15(pid)
+        dm("15"); self.messageBox_15((pidfile, pid))
         dm("16"); self.messageBox_16()
         dm("17"); self.messageBox_17()
         dm("18"); self.messageBox_18(pid)
@@ -1437,7 +1438,11 @@ class main(QObject):
                     f = open(self.core.pidfile, "rb")
                     pid = f.read().strip()
                     f.close()
-                    return self.errorInternalCoreStartup(self.messageBox_15, pid)
+                    if self.configdir:
+                        pf = self.homedir + sep + self.core.pidfile
+                    else:
+                        pf = abspath(self.core.pidfile) 
+                    return self.errorInternalCoreStartup(self.messageBox_15, (pf, pid))
                 try:
                     thread.start_new_thread(self.core.start, (False, False))
                 except:
@@ -1478,9 +1483,10 @@ class main(QObject):
         text = _("Internal server initialization failed.")
         self.msgBoxOk(text, "C")
 
-    def messageBox_15(self, pid):
+    def messageBox_15(self, (pidfile, pid)):
         text =  _("Cannot start the internal server.")
-        text += "\n" + _("A pyLoad server for this configuration is already running on this machine.")
+        text += "\n" + _("A pyLoad server for this configuration is already running.")
+        text += "\n" + "PID-file: " + unicode(pidfile)
         text += "\n" + "PID: %d" % int(pid)
         self.msgBoxOk(text, "C")
 
