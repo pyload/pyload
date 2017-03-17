@@ -2591,17 +2591,24 @@ class AboutBox(QDialog):
         clipboard.setText(txt)
 
     def exec_(self, version, internalversion):
+        import platform
+        import os
+        import struct
+        from PyQt4.QtCore import QT_VERSION_STR
         txt1 = _("pyLoad Client") + " v" + version
         self.text1.setText(txt1)
         txt2 = "2008-2016 the pyLoad Team"
         self.text2.setText(txt2)
         txt3  = "Version: " + version
         txt3 += "\nInternal version: " + internalversion
-        import platform
-        from PyQt4.QtCore import QT_VERSION_STR
         txt3 += "\n\nPlatform: " + platform.platform()
+        if os.name == "nt":
+            if "PROGRAMFILES(X86)" in os.environ:
+                txt3 += " (64bit)"
+            else:
+                txt3 += " (32bit)"
+        txt3 += "\nPython version: " + platform.python_version() + " (%dbit)" % (struct.calcsize("P") * 8)
         txt3 += "\nQt version: " + QT_VERSION_STR
-        txt3 += "\nPython version: " + platform.python_version()
         try:
             from PyQt4.pyqtconfig import Configuration
             cfg = Configuration()
