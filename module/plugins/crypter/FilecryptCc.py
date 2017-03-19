@@ -17,7 +17,7 @@ from ..internal.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -204,15 +204,9 @@ class FilecryptCc(Crypter):
 
     def handle_CNL(self):
         try:
-            vjk = re.findall(
-                '<input type="hidden" name="jk" value="function f\(\){ return \'(.*)\';}">',
-                self.site_with_links)
-            vcrypted = re.findall(
-                '<input type="hidden" name="crypted" value="(.*)">',
-                self.site_with_links)
-
-            for i in range(len(vcrypted)):
-                self.urls.extend(self._get_links(vcrypted[i], vjk[i]))
+            CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',self.site_with_links)
+            for index in CNLdata:
+                self.urls.extend(self._get_links(index[2], index[1]))
 
         except Exception, e:
             self.log_debug("Error decrypting CNL: %s" % e)
@@ -222,9 +216,9 @@ class FilecryptCc(Crypter):
         key = binascii.unhexlify(str(jk))
 
         #: Decrypt
-        Key = key
-        IV = key
-        obj = Crypto.Cipher.AES.new(Key, Crypto.Cipher.AES.MODE_CBC, IV)
+        #Key = key
+        #IV = key
+        obj = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, key)
         text = obj.decrypt(crypted.decode('base64'))
 
         #: Extract links
