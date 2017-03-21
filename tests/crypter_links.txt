@@ -1,5 +1,0 @@
-# -*- coding: utf-8 -*-
-
-# Crypter links, append ||fail or ||#N to mark error or number of expected results (single links+packages)
-
-http://www.ddlstorage.com/folder/EmkJPLTYJp||4
