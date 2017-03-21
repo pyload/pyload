@@ -18,7 +18,7 @@
     @author: mkaay
 """
 CURRENT_VERSION = '0.4.9'
-CURRENT_INTERNAL_VERSION = '2017-03-17'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
+CURRENT_INTERNAL_VERSION = '2017-03-21'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
 import os
 if not os.name == "nt":
@@ -3453,7 +3453,6 @@ class ClickNLoadForwarder(QObject):
         if not self.running:
             return
         self.doStop = True
-        self.dock_socket.shutdown(socket.SHUT_RD) # abort blocking call, do this work on any OS?
         # wait max 10sec
         for t in range(0, 100):
             if not self.running:
@@ -3470,6 +3469,7 @@ class ClickNLoadForwarder(QObject):
         self.forwardError = False
         try:
             self.dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.dock_socket.settimeout(0.2)
             self.dock_socket.bind((self.localIp, self.localPort))
             self.dock_socket.listen(5)
         except socket.error, x:
@@ -3488,6 +3488,8 @@ class ClickNLoadForwarder(QObject):
                 self.exitOnForwardError()
             try:
                 self.client_socket = self.dock_socket.accept()[0] # blocking call
+            except socket.timeout:
+                continue
             except socket.error:
                 if self.doStop:
                     self.log.debug9("ClickNLoadForwarder.server: stopped (2)")
@@ -3522,17 +3524,23 @@ class ClickNLoadForwarder(QObject):
                 self.log.debug9("ClickNLoadForwarder.forward: thread aborted")
                 thread.exit()
             try:
-                string = source.recv(1024)
+                string = source.recv(1024) # throws EWOULDBLOCK when there is no data to read yet
                 if string:
                     destination.sendall(string)
                 else:
                     #source.shutdown(socket.SHUT_RD)
                     destination.shutdown(socket.SHUT_WR)
+            except socket.error, x:
+                if x.args[0] == errno.EWOULDBLOCK:
+                    sleep(0.2)
+                    continue
+                elif not self.forwardError:
+                    self.forwardError = True
+                    self.log.error("ClickNLoadForwarder.forward: Unexpected socket error")
             except:
                 if not self.forwardError:
                     self.forwardError = True
-                    self.log.error("ClickNLoadForwarder.forward: Unexpected Error")
-                    self.dock_socket.shutdown(socket.SHUT_RD) # abort blocking call
+                    self.log.error("ClickNLoadForwarder.forward: Unexpected error")
 
     def exitOnStop(self):
         self.closeSockets()
