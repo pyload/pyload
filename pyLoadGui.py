@@ -21,7 +21,7 @@ CURRENT_VERSION = '0.4.9'
 CURRENT_INTERNAL_VERSION = '2017-03-21'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
 import os
-if not os.name == "nt":
+if os.name != "nt":
     import gtk
 import sys
 
@@ -102,13 +102,14 @@ class main(QObject):
 
         self.cmdLineConnection = None
         self.configdir = ""
+        self.noConsole = False
         self.pidfile = "pyloadgui.pid"
         self.debugLogLevel = None
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vc:p:hd:',
+                options, args = getopt(argv[1:], 'vc:np:hd:',
                     ["configdir=", "version", "connection=",
-                      "pidfile=", "help", "debug="])
+                     "noconsole", "pidfile=", "help", "debug="])
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad Client", CURRENT_VERSION
@@ -117,6 +118,12 @@ class main(QObject):
                         self.cmdLineConnection = argument
                     elif option in ("--configdir"):
                         self.configdir = argument
+                    if option in ("-n", "--noconsole"):
+                        if os.name == "nt":
+                            self.noConsole = True
+                        else:
+                            print "Error: The noconsole option works only on Windows OS"
+                            exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
                         print "Error: The pidfile option is not implemented"
@@ -143,6 +150,8 @@ class main(QObject):
         self.fileLogIsEnabled = None
         if not self.checkConfigFiles():
             exit()
+        if self.noConsole:
+            self.hideWindowsCommandPrompt()
         QTextCodec.setCodecForTr(QTextCodec.codecForName("UTF-8"))
         QTextCodec.setCodecForLocale(QTextCodec.codecForName("UTF-8"))
         QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
@@ -164,6 +173,7 @@ class main(QObject):
         print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
         print "  -c, --connection=<name>", " " * 0, "Use connection <name>"
         print "                               of the Connection Manager"
+        print "  -n, --noconsole", " " * 8, "Hide Command Prompt on Windows OS"
         #print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
@@ -192,6 +202,17 @@ class main(QObject):
                 return False
         self.newConfigFile = not guiFileFound
         return True
+
+    def hideWindowsCommandPrompt(self, hide=True):
+        if os.name == "nt":
+            import ctypes
+            hWnd = ctypes.windll.kernel32.GetConsoleWindow()
+            if hWnd:
+                if hide:
+                    nCmdShow = 0 # SW_HIDE
+                else:
+                    nCmdShow = 4 # SW_SHOWNOACTIVATE
+                ctypes.windll.user32.ShowWindow(hWnd, nCmdShow)
 
     def init(self, first=False):
         """
@@ -3804,7 +3825,7 @@ class Notification(QObject):
         self.tray = tray
 
         self.usePynotify = False
-        if not os.name == "nt":
+        if os.name != "nt":
             if not havePynotify:
                 self.log.info("Notification: Pynotify not installed, falling back to qt tray notification")
                 return
