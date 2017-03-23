@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
+
 from builtins import bytes, int, str
+
 from gettext import gettext
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import convert, parse
 from pyload.utils.layer.legacy.collections_ import namedtuple
 
 from .types import Input, InputType
-
-standard_library.install_aliases()
 
 
 __all__ = ['from_string', 'to_configdata', 'to_input']

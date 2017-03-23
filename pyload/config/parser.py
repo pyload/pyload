@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, unicode_literals,
-                        with_statement)
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
 import re
+
 from builtins import int, object, str
+
 from gettext import gettext
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import convert
 from pyload.utils.layer.legacy.collections_ import OrderedDict, namedtuple
@@ -17,8 +19,6 @@ from pyload.utils.path import bufsize
 
 from .convert import from_string, to_configdata
 from .default import make_config
-
-standard_library.install_aliases()
 
 
 __all__ = ['ConfigParser', 'ConfigSection']
