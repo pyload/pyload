@@ -2280,6 +2280,7 @@ class main(QObject):
         self.app.quit()
 
     def slotQuitConnWindow(self):
+        self.connWindow = None # odd fix for python/pyqt crash on windows 7 when exiting the application
         self.log.info("pyLoad Client quit")
         self.removeLogger()
         self.app.quit()
