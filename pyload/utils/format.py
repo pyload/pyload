@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 import os
@@ -11,6 +11,7 @@ import urllib.parse
 from builtins import int, map, str
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import purge
 
@@ -21,8 +22,6 @@ try:
     import bitmath
 except ImportError:
     pass
-
-standard_library.install_aliases()
 
 
 __all__ = [

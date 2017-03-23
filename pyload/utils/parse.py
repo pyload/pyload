@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import re
 from builtins import dict
 
 from future import standard_library
+standard_library.install_aliases()
 
 import mimetypes
 from pyload.utils import convert, format, purge
@@ -15,8 +16,6 @@ from pyload.utils import convert, format, purge
 from .decorator import iterate
 from .layer.legacy import hashlib_ as hashlib
 from .time import to_midnight
-
-standard_library.install_aliases()
 
 
 __all__ = [

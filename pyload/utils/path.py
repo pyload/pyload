@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -11,11 +11,11 @@ from os.path import *
 
 import psutil
 from future import standard_library
+standard_library.install_aliases()
 
 from .check import ismodule
 from .decorator import iterate
 
-standard_library.install_aliases()
 
 try:
     import magic

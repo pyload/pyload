@@ -7,12 +7,11 @@ import re
 from builtins import bytes
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import convert
 
 from .decorator import iterate
-
-standard_library.install_aliases()
 
 
 __all__ = ['args', 'chars', 'kwargs', 'pattern', 'truncate', 'uniqify']

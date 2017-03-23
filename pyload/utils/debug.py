@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import inspect
 import os
@@ -10,11 +10,10 @@ import sys
 import traceback
 
 from future import standard_library
+standard_library.install_aliases()
 
 from .check import proprieties
 from .path import makefile
-
-standard_library.install_aliases()
 
 
 __all__ = ['_format_dump', '_format_framestack', '_format_traceback',

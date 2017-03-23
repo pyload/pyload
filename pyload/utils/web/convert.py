@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import urllib.parse
 from builtins import int
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import format
-
-standard_library.install_aliases()
 
 
 __all__ = ['code_to_status', 'url_to_name']

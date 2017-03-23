@@ -3,14 +3,13 @@
 #
 # Hashlib legacy patch
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import sys
 from builtins import bytes, chr, int, range
 from hashlib import *
 
 from future import standard_library
-
 standard_library.install_aliases()
 
 

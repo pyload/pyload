@@ -11,12 +11,12 @@ from sys import *
 
 import psutil
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import convert
 
 from .layer.legacy.subprocess_ import PIPE, Popen
 
-standard_library.install_aliases()
 
 try:
     import dbus

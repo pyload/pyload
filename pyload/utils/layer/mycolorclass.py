@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 
 from colorclass import *
 from future import standard_library
-
 standard_library.install_aliases()
 
 

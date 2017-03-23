@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import object
 from contextlib import contextmanager
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from ..decorator import lock
 from ..layer.safethreading import Condition, Lock, RLock, currentThread
-
-standard_library.install_aliases()
 
 
 __all__ = ['LockObject', 'ReadWriteLock']

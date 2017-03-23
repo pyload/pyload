@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import re
@@ -11,11 +11,11 @@ import bottle
 import requests
 import validators
 from future import standard_library
+standard_library.install_aliases()
 
 from . import convert as webconvert
 from .. import format, parse
 
-standard_library.install_aliases()
 
 try:
     import IPy
