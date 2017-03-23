@@ -10,16 +10,13 @@
 #          \  /
 #           \/
 
-from __future__ import absolute_import, division
-
 import io
 import os
-import shutil
 import subprocess
 
 from itertools import chain
 
-from setuptools import Command, distutils, setup
+from setuptools import Command, setup
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 
@@ -32,37 +29,6 @@ def _setx_path():
         subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
     except Exception:
         pass
-
-
-class CompileWebui(Command):
-    """
-    Compile the web user interface
-    """
-    description = 'compile the web user interface'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            # if os.name == 'nt':
-                # # : Required by npm package `grunt-contrib-compress` under Windows
-                # subprocess.check_call(
-                    # 'npm install --global windows-build-tools', shell=True)
-            subprocess.check_call(
-                'cd pyload/webui && npm install --only=dev', shell=True)
-            subprocess.check_call(
-                'cd pyload/webui && node node_modules/grunt-cli/bin/grunt build',
-                shell=True)
-        except subprocess.CalledProcessError:
-            distutils.log.warn("Failed to compile webui")
-        shutil.rmtree('pyload/webui/node_modules', ignore_errors=True)
-        return subprocess.call(
-            'cd pyload/webui && npm install --production', shell=True)
 
 
 class Configure(Command):
@@ -79,7 +45,6 @@ class Configure(Command):
         pass
 
     def run(self):
-        self.run_command('compile_webui')
         try:
             os.mkdir('locale')
         except OSError:
@@ -125,13 +90,13 @@ class Sdist(sdist):
         sdist.run(self)
 
 
-NAME = "pyload-ng"
+NAME = "pyload.core"
 VERSION = "1.0.0"
-STATUS = "3 - Alpha"
+STATUS = "2 - Pre-Alpha"
 DESC = """Free and Open Source download manager written in pure Python and
 designed to be extremely lightweight, easily extensible and fully manageable
 via web"""
-LONG_DESC=io.open("README.md").read()
+LONG_DESC='\n\n'.join(io.open("README.md").read(), io.open("HISTORY.md").read())
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
@@ -143,19 +108,19 @@ LICENSE = "AGPLv3"
 AUTHOR = "Walter Purcaro"
 AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
-PACKAGES = ['pyload', 'pyload/config', 'pyload/core', 'pyload/plugins','pyload/rpc', 'pyload/setup', 'pyload/utils', 'pyload/webui']
+PACKAGES = ['pyload', 'pyload/core', 'pyload/plugins']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = [
-    'argparse;python_version<"2.7"', 'autoupgrade-ng',
-    'configparser;python_version<"3.5"', 'daemonize',
-    'enum34;python_version<"3.4"', 'future', 'psutil', 'pycurl',
-    'requests>=2.0', 'tld', 'validators'
+    'argparse;python_version<"2.7"', 'autoupgrade-ng', 'daemonize',
+    'enum34;python_version<"3.4"', 'future', 'pycurl', 'pyload.config',
+    'pyload.utils'
+    # 'requests>=2.0'
 ]
 SETUP_REQUIRES = [
-    'Babel', 'readme_renderer', 'recommonmark',
-    'sphinx<=1.4;python_version=="2.6" or python_version=="3.3"',
-    'sphinx>1.4;python_version=="2.7" or python_version>"3.3"'
+    'Babel', 'readme_renderer', 'recommonmark'
+    # 'sphinx<=1.4;python_version=="2.6" or python_version=="3.3"',
+    # 'sphinx>1.4;python_version=="2.7" or python_version>"3.3"'
 ]
 TEST_SUITE = 'nose.collector'
 TESTS_REQUIRE = [
@@ -163,18 +128,10 @@ TESTS_REQUIRE = [
     'websocket-client>=0.8'
 ]
 EXTRAS_REQUIRE = {
-    # 'unrar': ['rarfile'],
-    # TODO: Fix `tesserocr` installation
-    'cnl': ['Js2Py', 'pycryptodome'],
-    'colorlog': ['colorclass', 'colorlog'],
-    'ocr': ['Pillow>=2.0'],
-    'rpc': ['mod_pywebsocket', 'thrift'],
-    'trash': ['Send2Trash'],
-    'webui': ['Beaker>=1.6', 'bottle>=0.10', 'pycryptodome'],
-    'extra': [
-        'IPy', 'bitmath', 'bjoern;os_name!="nt"',
-        'dbus-python;os_name!="nt"', 'goslate', 'setproctitle'
-    ]
+    'colorlog': ['colorlog'],
+    'rpc': ['pyload.rpc'],
+    'setup': ['pyload.setup'],
+    'webui': ['pyload.webui']
 }
 EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
@@ -182,17 +139,13 @@ ENTRY_POINTS = {
     'console_scripts': ['pyload = pyLoad:main']
 }
 CMDCLASS = {
-    'compile_webui': CompileWebui,
     'configure': Configure,
     'get_catalog': GetCatalog,
     'install': Install,
     'sdist': Sdist
 }
 MESSAGE_EXTRACTORS = {
-    'pyload': [
-        ('**.py', 'python', None),
-        ('webui/app/scripts/**.js', 'javascript', None)
-    ]
+    'pyload': [('**.py', 'python', None)]
 }
 ZIP_SAFE = False
 CLASSIFIERS = [
