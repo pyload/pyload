@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>
 """
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import re
 import urllib.error
@@ -22,10 +22,9 @@ import urllib.parse
 import urllib.request
 
 from future import standard_library
+standard_library.install_aliases()
 
 from . import Crypter
-
-standard_library.install_aliases()
 
 
 class Dereferer(Crypter):

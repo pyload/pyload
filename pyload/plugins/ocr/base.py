@@ -18,8 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import (absolute_import, division, unicode_literals,
-                        with_statement)
+from __future__ import absolute_import, division, unicode_literals
 
 import io
 import logging
@@ -27,12 +26,11 @@ import os
 from builtins import COREDIR, object, range
 
 from future import standard_library
+standard_library.install_aliases()
 
 import Image
 from pyload.utils.layer.legacy.subprocess_ import PIPE, Popen
 from pyload.utils.path import remove
-
-standard_library.install_aliases()
 
 
 # import tempfile

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import int
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import parse
 from pyload.utils.check import hasmethod
@@ -14,8 +15,6 @@ from pyload.utils.convert import accumulate
 from ..datatype.init import LinkStatus, ProgressInfo, ProgressType
 from .decrypter import DecrypterThread
 from .plugin import PluginThread
-
-standard_library.install_aliases()
 
 
 class InfoThread(DecrypterThread):

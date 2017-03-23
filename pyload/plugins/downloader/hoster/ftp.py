@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import re
 from builtins import int, str
 from urllib.parse import quote, unquote, urlparse
 
 from future import standard_library
+standard_library.install_aliases()
 
 import pycurl
 
 from . import Hoster
-
-standard_library.install_aliases()
 
 
 class Ftp(Hoster):

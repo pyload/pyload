@@ -13,11 +13,10 @@ from select import select
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins import Abort
 from pyload.utils.path import remove
-
-standard_library.install_aliases()
 
 
 # TODO: This must be adapted to the new request interfaces

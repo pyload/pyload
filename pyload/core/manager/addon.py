@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import builtins
 from builtins import object
@@ -10,6 +10,7 @@ from gettext import gettext
 
 from _thread import start_new_thread
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.decorator import lock
 from pyload.utils.layer.legacy.collections_ import namedtuple
@@ -19,8 +20,6 @@ from types import MethodType
 from ..datatype.init import (AddonInfo, AddonService, ServiceDoesNotExist,
                              ServiceException)
 from ..thread import AddonThread
-
-standard_library.install_aliases()
 
 
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')

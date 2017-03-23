@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import str
 
 from enum import IntFlag
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.check import bitset
 
 from .init import BaseObject, ExceptionObject, Permission
-
-standard_library.install_aliases()
 
 
 class Role(IntFlag):

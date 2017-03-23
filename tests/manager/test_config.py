@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from collections import defaultdict
 
 from future import standard_library
+standard_library.install_aliases()
 
 from nose.tools import raises
 from pyload.core.database import DatabaseBackend, InvalidConfigSection
 from pyload.core.manager import ConfigManager
 from tests.helper.stubs import Core, admin_user, normal_user
 from unittest2 import TestCase
-
-standard_library.install_aliases()
 
 
 admin_user = admin_user.primary if admin_user else None

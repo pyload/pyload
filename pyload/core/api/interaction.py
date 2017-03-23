@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
+standard_library.install_aliases()
 
 from ..datatype.init import Permission
 from ..datatype.task import Interaction
 from .base import BaseApi
 from .init import Api, requireperm
-
-standard_library.install_aliases()
 
 
 class UserInteractionApi(BaseApi):

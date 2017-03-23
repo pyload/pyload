@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import range, str
 from re import match, search
 from urllib.parse import unquote, urlparse
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins.request import ResponseException
 from pyload.utils import purge
 from pyload.utils.web import purge as webpurge
 
 from . import Hoster
-
-standard_library.install_aliases()
 
 
 class BasePlugin(Hoster):

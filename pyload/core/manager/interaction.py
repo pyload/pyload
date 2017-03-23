@@ -8,6 +8,7 @@ from builtins import object
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.check import bitset
 from pyload.utils.decorator import lock
@@ -16,8 +17,6 @@ from pyload.utils.layer.safethreading import Lock
 
 from ..datatype.init import Input, InputType
 from ..datatype.task import Interaction, InteractionTask
-
-standard_library.install_aliases()
 
 
 class InteractionManager(object):

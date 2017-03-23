@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -11,6 +11,7 @@ from logging import DEBUG, log
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from nose.tools import nottest
 from pyload.core.datatype import PyFile
@@ -21,8 +22,6 @@ from pyload.utils.path import remove
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
-
-standard_library.install_aliases()
 
 
 DL_DIR = "Storage"

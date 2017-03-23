@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import sys
 from builtins import COREDIR, object
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins.loader import LoaderFactory, PluginLoader
-
-standard_library.install_aliases()
 
 
 class PluginMatcher(object):

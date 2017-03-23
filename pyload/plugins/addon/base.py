@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import ADDONMANAGER, object
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins import Base
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
-
-standard_library.install_aliases()
 
 
 def class_name(p):

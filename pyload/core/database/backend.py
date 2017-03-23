@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -10,12 +10,11 @@ from builtins import int, object, range, str
 from traceback import print_exc
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.layer.safethreading import Event, Thread
 from pyload.utils.path import remove
 from queue import Queue
-
-standard_library.install_aliases()
 
 
 try:

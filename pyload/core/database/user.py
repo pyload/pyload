@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import random
 from builtins import range
@@ -9,11 +9,10 @@ from hashlib import sha1
 from string import digits, letters
 
 from future import standard_library
+standard_library.install_aliases()
 
 from ..datatype.user import UserData
 from .backend import DatabaseMethods, async, queue
-
-standard_library.install_aliases()
 
 
 alphnum = letters + digits

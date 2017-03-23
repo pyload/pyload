@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # @author: zoidberg
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import re
 from builtins import int, range
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins.hoster.base.simplehoster import replace_patterns
 from pyload.utils.web import purge as webpurge
 
 from .. import Crypter, Package
-
-standard_library.install_aliases()
 
 
 class SimpleCrypter(Crypter):

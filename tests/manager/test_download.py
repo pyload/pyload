@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import range
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.core.database import DatabaseBackend
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core, admin_user, normal_user, other_user
-
-standard_library.install_aliases()
 
 
 # disable asyncronous queries

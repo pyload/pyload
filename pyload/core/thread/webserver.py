@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import (absolute_import, division, unicode_literals,
-                        with_statement)
+from __future__ import absolute_import, unicode_literals
 
 import logging
 import os
 import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.layer.safethreading import Event, Thread
-
-standard_library.install_aliases()
 
 
 core = None

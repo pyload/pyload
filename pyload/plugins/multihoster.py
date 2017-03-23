@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from contextlib import closing
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import purge
 
 from .account.base.init import Account
-
-standard_library.install_aliases()
 
 
 def normalize(domain):

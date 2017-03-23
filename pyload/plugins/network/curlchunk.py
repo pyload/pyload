@@ -10,6 +10,7 @@ import time
 from builtins import int, object, range
 
 from future import standard_library
+standard_library.install_aliases()
 
 import pycurl
 from pyload.utils import format
@@ -17,8 +18,6 @@ from pyload.utils.path import remove
 from pyload.utils.struct import HeaderDict
 
 from .curlrequest import CurlRequest
-
-standard_library.install_aliases()
 
 
 class ChunkInfo(object):

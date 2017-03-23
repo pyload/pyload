@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -8,6 +8,7 @@ from builtins import int
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.plugins import Base, Fail, Retry
 from pyload.plugins.network.defaultrequest import (DefaultDownload,
@@ -15,8 +16,6 @@ from pyload.plugins.network.defaultrequest import (DefaultDownload,
 from pyload.utils import format
 from pyload.utils.convert import chunks as _chunks
 from pyload.utils.path import makedirs, remove
-
-standard_library.install_aliases()
 
 
 if os.name != 'nt':

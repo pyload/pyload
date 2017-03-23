@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -11,12 +11,11 @@ from time import gmtime, strftime
 from traceback import format_exc
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import sys
 from pyload.utils.layer.safethreading import Thread
 from types import MethodType
-
-standard_library.install_aliases()
 
 
 class PluginThread(Thread):

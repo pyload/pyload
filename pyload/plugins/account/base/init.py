@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import dict
 from contextlib import closing
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.config.convert import from_string, to_configdata
 from pyload.core.datatype import AccountInfo, ConfigItem
@@ -15,8 +16,6 @@ from pyload.utils import format, parse, time
 from pyload.utils.convert import to_str
 from pyload.utils.decorator import lock
 from pyload.utils.layer.safethreading import RLock
-
-standard_library.install_aliases()
 
 
 class WrongPassword(Exception):

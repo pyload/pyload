@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: jeix
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import re
@@ -14,13 +14,12 @@ from contextlib import closing
 from select import select
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import format
 from pyload.utils.path import makedirs
 
 from . import Hoster
-
-standard_library.install_aliases()
 
 
 class Xdcc(Hoster):

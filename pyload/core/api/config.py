@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.convert import to_str
 
 from ..datatype.init import ConfigHolder, ConfigInfo, ConfigItem, Permission
 from .base import BaseApi
 from .init import Api, requireperm
-
-standard_library.install_aliases()
 
 
 # @TODO: Recheck...

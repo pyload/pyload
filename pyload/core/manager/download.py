@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import random
@@ -10,6 +10,7 @@ from builtins import COREDIR, object
 from collections import defaultdict
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.layer.legacy import subprocess_ as subprocess
@@ -20,8 +21,6 @@ from pyload.utils.web.check import local_addr
 
 from ..datatype.init import DownloadStatus
 from ..thread import DecrypterThread, DownloadThread
-
-standard_library.install_aliases()
 
 
 class DownloadManager(object):

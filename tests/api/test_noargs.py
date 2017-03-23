@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import inspect
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.core.api import AbstractApi
 from tests.api.apitester import ApiTester
-
-standard_library.install_aliases()
 
 
 IGNORE = ('quit', 'restart')

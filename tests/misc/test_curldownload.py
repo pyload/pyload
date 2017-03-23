@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.core.network import Bucket
 from pyload.plugins.network.curldownload import CurlDownload
@@ -13,8 +14,6 @@ from pyload.plugins.network.curlrequest import CurlRequest
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
-
-standard_library.install_aliases()
 
 
 class TestCurlRequest(TestCase):

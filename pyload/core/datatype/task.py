@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import int
 from time import time
 
 from enum import IntFlag
 from future import standard_library
+standard_library.install_aliases()
 
 from .init import BaseObject, InputType
-
-standard_library.install_aliases()
 
 
 class Interaction(IntFlag):

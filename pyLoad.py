@@ -10,7 +10,7 @@
 #          \  /
 #           \/
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import argparse
 import operator
@@ -19,6 +19,7 @@ import sys
 from builtins import map
 
 from future import standard_library
+standard_library.install_aliases()
 
 import pyload.core
 from pyload.utils import convert, format
@@ -32,8 +33,6 @@ try:
                                                  autowhite, autoyellow)
 except ImportError:
     autoblue = autogreen = autored = autowhite = autoyellow = lambda msg: msg
-
-standard_library.install_aliases()
 
 
 __all__ = ['logo', 'main', 'parse_args']

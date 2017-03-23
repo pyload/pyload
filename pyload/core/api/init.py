@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import object, str
 
 from future import standard_library
+standard_library.install_aliases()
 
 from types import MethodType
 
 from ..datatype.init import DownloadState, DownloadStatus, Permission
 from ..datatype.user import User
 from .base import AbstractApi
-
-standard_library.install_aliases()
 
 
 # contains function names mapped to their permissions

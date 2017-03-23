@@ -9,6 +9,7 @@ from builtins import int, object
 
 from enum import IntFlag
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.utils import format
 from pyload.utils.decorator import lock, readlock, trycatch
@@ -16,8 +17,6 @@ from pyload.utils.struct.lock import ReadWriteLock
 
 from .init import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
-
-standard_library.install_aliases()
 
 
 statusmap = {

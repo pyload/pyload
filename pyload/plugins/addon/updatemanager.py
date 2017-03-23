@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -11,13 +11,12 @@ from builtins import dict, zip
 from time import time
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.config.parser import IGNORE
 from pyload.core.network import get_url
 
 from .base.init import Expose, Hook, threaded
-
-standard_library.install_aliases()
 
 
 class UpdateManager(Hook):
