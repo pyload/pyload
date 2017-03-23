@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 from builtins import bytes, dict, int, range, str
@@ -9,6 +9,7 @@ from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from urllib.parse import quote, urlencode
 
 from future import standard_library
+standard_library.install_aliases()
 from http.client import responses
 
 import pycurl
@@ -17,8 +18,6 @@ from pyload.plugins import Abort
 from pyload.utils import convert
 
 from .request import Request, ResponseException
-
-standard_library.install_aliases()
 
 
 def myquote(url):
@@ -268,7 +267,7 @@ class CurlRequest(Request):
             domain, flag, path, secure, expires, name, value = c.split("\t")
             # http only was added in py 2.6
             domain = domain.replace("#HttpOnly_", "")
-            self.cj.set_cookie(domain, name, value, path, expires, secure)
+            self.cj.set(domain, name, value, path, expires, secure)
 
     def verify_header(self):
         """

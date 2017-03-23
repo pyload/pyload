@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from builtins import int
 from time import time
 
 import http.cookies
-from future import standard_library
 
+from future import standard_library
 standard_library.install_aliases()
+
 
 # monkey patch for 32 bit systems
 # def _getdate(future=0, weekdayname=http.cookies._weekdayname, monthname=http.cookies._monthname):
@@ -21,27 +22,15 @@ standard_library.install_aliases()
 
 class CookieJar(http.cookies.SimpleCookie):
 
-    __slots__ = []
+    __slots__ = ['EXPIRE_TIME']
 
-    def get_cookie(self, name):
-        return self[name].value
+    EXPIRE_TIME = 180 * 24 * 3600
 
-    def set_cookie(self, domain, name, value,
-                   path="/", exp=None, secure="FALSE"):
-        self[name] = value
-        self[name]['domain'] = domain
-        self[name]['path'] = path
-
-        # Value of expires should be integer if possible
-        # otherwise the cookie won't be used
-        if not exp:
-            expires = time() + 3600 * 24 * 180
-        else:
-            try:
-                expires = int(exp)
-            except ValueError:
-                expires = exp
-
-        self[name]['expires'] = expires
-        if secure == "TRUE":
-            self[name]['secure'] = secure
+    def set(self, domain, name, value, path='/', expires=None, secure=False,
+            tailmatch=False):
+        self.__dict__[name] = str(value)
+        self.__dict__[name]['domain'] = str(domain)
+        self.__dict__[name]['tailmatch'] = 'TRUE' if tailmatch else 'FALSE'
+        self.__dict__[name]['path'] = str(path)
+        self.__dict__[name]['secure'] = 'TRUE' if secure else 'FALSE'
+        self.__dict__[name]['expires'] = int(expires or time.time() + self.EXPIRE_TIME)

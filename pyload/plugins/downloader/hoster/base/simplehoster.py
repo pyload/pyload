@@ -9,14 +9,13 @@ from time import time
 from urllib.parse import urlparse
 
 from future import standard_library
+standard_library.install_aliases()
 
 from pyload.core.network import CookieJar, get_url
 from pyload.utils import parse
 from pyload.utils.web import purge as webpurge
 
 from .. import Hoster
-
-standard_library.install_aliases()
 
 
 def replace_patterns(string, ruleslist):
@@ -31,7 +30,7 @@ def set_cookies(cj, cookies):
     for cookie in cookies:
         if isinstance(cookie, tuple) and len(cookie) == 3:
             domain, name, value = cookie
-            cj.set_cookie(domain, name, value)
+            cj.set(domain, name, value)
 
 
 def parse_html_tag_attr_value(attr_name, tag):
