@@ -33,16 +33,14 @@ before_install:
 before_install: echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 install:
   - pip install -U setuptools
-  # - pip install codeclimate-test-reporter
   # - pip install coveralls
+  # - pip install scrutinizer-ocular
   - pip install tox-travis
-script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then tox --develop --skip-missing-interpreters ; fi
+script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then tox --skip-missing-interpreters ; fi
 # after_success:
   # - coveralls
-  # - codeclimate-test-reporter
+  # - ocular
 addons:
-  # code_climate:
-    # repo_token: ba38fbb8f3c0d63f3686500479cc5d195ef638d4f854e791fcf3c6fd157f7c29
   coverity_scan:
     project:
       name: "pyload/pyload"
@@ -51,3 +49,13 @@ addons:
     build_command_prepend: ""
     build_command: "python setup.py configure"
     branch_pattern: coverity_scan
+# deploy:
+  # provider: pypi
+  # distributions: sdist bdist_wheel
+  # user: vuolter
+  # password:
+    # secure:
+  # on:
+    # tags: true
+    # repo: pyload/pyload
+    # condition:
