@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 
@@ -32,7 +32,6 @@ except ImportError:
     pass
 
 from pyload.config import ConfigParser
-from pyload.setup import SetupAssistant
 from pyload.utils import convert, format, sys
 from pyload.utils.check import ismodule
 from pyload.utils.misc import install_translation
@@ -552,6 +551,7 @@ def status(profile=None, configdir=None):
 
 
 def setup(profile=None, configdir=None):
+    from pyload.setup import SetupAssistant
     profiledir = _gen_profiledir(profile, configdir)
     configfile = os.path.join(profiledir, 'pyload.conf')
     return SetupAssistant(configfile, version()).start()
