@@ -1,0 +1,182 @@
+# Set default behaviour, in case users do not have core.autocrlf set
+* text=auto
+
+
+# Explicitly declare text files we want to always be normalized and converted
+# to native line endings on checkout
+
+# C sources
+*.c            text
+
+# Config
+*.cfg          text
+*.conf         text
+*.ini          text
+*.yaml         text
+*.yml          text
+
+# Docs
+*.DOC          diff=astextplain
+*.DOCX         diff=astextplain
+*.DOT          diff=astextplain
+*.PDF          diff=astextplain
+*.RTF          diff=astextplain
+*.adoc         text
+*.csv          text
+*.doc          diff=astextplain
+*.docx         diff=astextplain
+*.dot          diff=astextplain
+*.in           text
+*.md           text
+*.mustache     text
+*.pdf          diff=astextplain
+*.rst          text
+*.rtf          diff=astextplain
+*.sql          text
+*.tab          text
+*.text         text
+*.textile      text
+*.tsv          text
+AUTHORS        text
+LICENSE        text
+
+# Git
+.gitattributes text
+.gitconfig     text
+.gitignore     text
+
+# Heroku
+.slugignore    text
+Procfile       text
+
+# Misc
+*.inc          text
+*.map          text
+
+# Python sources
+*.pxd          text
+*.py           text
+*.py3          text
+*.pyw          text
+*.pyx          text
+
+# Scripts
+*.bat          text
+*.cmd          text
+*.sh           text
+
+# Translations
+*.po           text
+*.pot          text
+
+# Vectorial images
+*.svg          text
+
+# Web build
+*.bowerrc      text
+*.npmignore    text
+
+# Web code analysis
+.csslintrc     text
+.eslintrc      text
+.jscsrc        text
+.jshintignore  text
+.jshintrc      text
+.stylelintrc   text
+
+# Web config
+.editorconfig  text
+.htaccess      text
+
+# Web scripts
+*.coffee       text
+*.js           text
+
+# Web sources
+*.htm          text
+*.html         text
+*.json         text
+*.php          text
+*.pl           text
+*.rb           text
+*.scm          text
+*.ts           text
+*.xml          text
+
+# Web styles
+*.css          text
+*.less         text
+*.sass         text
+*.scss         text
+*.styl         text
+
+# Web templates
+*.ejs          text
+*.haml         text
+*.hbs          text
+*.hbt          text
+*.jade         text
+*.latte        text
+*.phtml        text
+*.tmpl         text
+
+# pyLoad
+*.etag         text
+*.pid          text
+
+
+# Denote all files that are truly binary and should not be modified
+# (binary is a macro for -text -diff)
+
+# Archives
+*.7z           binary
+*.gz           binary
+*.iso          binary
+*.rar          binary
+*.tar          binary
+*.xz           binary
+*.zip          binary
+*.zipx         binary
+
+# Docs
+*.db           binary
+
+# Images
+*.eps          binary
+*.gif          binary
+*.ico          binary
+*.jpg          binary
+*.jpeg         binary
+*.png          binary
+*.tif          binary
+*.tiff         binary
+
+# Fonts
+*.eot          binary
+*.ttf          binary
+*.woff         binary
+*.woff2        binary
+
+# Packages
+*.egg          binary
+*.exe          binary
+*.msi          binary
+*.whl          binary
+
+# Python
+*.p            binary
+*.pkl          binary
+*.pyc          binary
+*.pyd          binary
+*.pyo          binary
+
+# Translations
+*.mo           binary
+
+# Videos
+*.mov          binary
+*.mp3          binary
+*.mp4          binary
+*.fla          binary
+*.flv          binary
+*.swf          binary
