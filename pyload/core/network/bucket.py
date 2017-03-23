@@ -1,50 +1,49 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import absolute_import, division, unicode_literals
 
 from builtins import int, object
-from time import time
+
+import time
 
 from future import standard_library
-
 standard_library.install_aliases()
-
-# 10kb minimum rate
-MIN_RATE = 10240
 
 
 class Bucket(object):
 
-    __slots__ = ['rate', 'timestamp', 'tokens']
+    __slots__ = ['MIN_RATE', '_rate', 'timestamp', 'tokens']
+
+    MIN_RATE = 10240  #: 10kb minimum rate
+
+    rate = property(lambda self: self._rate, set_rate)
 
     def __init__(self):
-        self.rate = 0  #: bytes per second, maximum targeted throughput
+        self._rate = 0  #: bytes per second, maximum targeted throughput
         self.tokens = 0
-        self.timestamp = time()
+        self.timestamp = time.time()
 
     def __bool__(self):
-        return False if self.rate < MIN_RATE else True
+        return self.rate >= self.MIN_RATE
 
     def set_rate(self, rate):
-        self.rate = int(rate)
+        self._rate = int(rate)
+
+    def _calc_token(self):
+        if self.token >= self.rate:
+            return
+        now = time.time()
+        delta = self.rate * (now - self.timestamp)
+        self.token = min(self.rate, self.token + delta)
+        self.timestamp = now
 
     def consumed(self, amount):
         """
-        Return the time the process has to sleep, after it consumed a specified amount.
+        Return the time the process has to sleep, after it consumed a specified amount
         """
-        if self.rate < MIN_RATE:
-            return 0  #: May become unresponsive otherwise
-
-        self.calc_tokens()
-        self.tokens -= amount
-
-        if self.tokens < 0:
-            return -self.tokens // float(self.rate)
-        else:
-            return 0
-
-    def calc_tokens(self):
-        if self.tokens < self.rate:
-            now = time()
-            delta = self.rate * (now - self.timestamp)
-            self.tokens = min(self.rate, self.tokens + delta)
-            self.timestamp = now
+        if self.rate < self.MIN_RATE:
+            return 0  #@NOTE: May become unresponsive otherwise
+        self._calc_token()
+        self.token -= amount
+        consumed = -self.token // float(self.rate) if self.token < 0 else 0
+        return consumed
