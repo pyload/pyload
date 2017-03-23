@@ -96,7 +96,8 @@ STATUS = "2 - Pre-Alpha"
 DESC = """Free and Open Source download manager written in pure Python and
 designed to be extremely lightweight, easily extensible and fully manageable
 via web"""
-LONG_DESC='\n\n'.join(io.open("README.md").read(), io.open("HISTORY.md").read())
+LONG_DESC='\n\n'.join(
+    [io.open("README.md").read(), io.open("HISTORY.md").read()])
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
