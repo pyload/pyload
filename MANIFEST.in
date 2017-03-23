@@ -1,4 +1,4 @@
-global-exclude *.py[coi]
+global-exclude *.py[codi] __pycache__
 
 graft pyload/webui/app
 graft pyload/webui/node_modules
