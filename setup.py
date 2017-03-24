@@ -10,18 +10,16 @@
 #          \  /
 #           \/
 
-# import io
+import io
 import os
 import subprocess
-
-# from itertools import chain
 
 from setuptools import Command, setup
 from setuptools.command.sdist import sdist
 
 
 NAME = "pyload.utils"
-VERSION = "1.0.0"
+VERSION = "0.5.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
 LONG_DESC=io.open("README.md").read()
