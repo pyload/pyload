@@ -1,8 +1,13 @@
 <p align="center"><a href="https://pyload.net"><img src="/media/banner.png" alt="pyLoad" /></a></p>
 
-**pyLoad** is a Free and Open Source download manager written in Pure Python and
-designed to be extremely lightweight, easily extensible and fully manageable via
-web.
+Utils module of [**pyLoad**](https://github.com/pyload/pyload),
+*The Free and Open Source download manager written in Pure Python and designed
+to be extremely lightweight, fully customizable and remotely manageable*.
+
+_Continue reading about **pyLoad** amazing features on <https://pyload.net>_
+
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/utils/?branch=master)
 
 
 ------------------------------
