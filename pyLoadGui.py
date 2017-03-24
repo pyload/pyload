@@ -1473,7 +1473,7 @@ class main(QObject):
                         pf = abspath(self.core.pidfile) 
                     return self.errorInternalCoreStartup(self.messageBox_15, (pf, pid))
                 try:
-                    thread.start_new_thread(self.core.start, (False, False))
+                    thread.start_new_thread(self.core.start, (False, True))
                 except:
                     return self.errorInternalCoreStartup(self.messageBox_16)
                 # wait max 15sec for startup
