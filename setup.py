@@ -22,7 +22,8 @@ NAME = "pyload.utils"
 VERSION = "0.5.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
-LONG_DESC=io.open("README.md").read()
+LONG_DESC='\n\n'.join(
+    [io.open("README.md").read(), io.open("HISTORY.md").read()])
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/utils/releases"

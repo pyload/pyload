@@ -35,4 +35,4 @@ deploy:
     repo: pyload/utils
     branch: master
     python: 3.5
-    tags: true
+    # tags: true
