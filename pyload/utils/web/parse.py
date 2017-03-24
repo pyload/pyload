@@ -13,6 +13,7 @@ standard_library.install_aliases()
 from . import convert as webconvert
 from . import purge as webpurge
 from .. import format
+from ..check import isiterable
 from ..struct import HeaderDict
 
 
@@ -34,51 +35,49 @@ def domain(url):
 _re_form = re.compile(
     r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
     flags=re.I | re.S)
-
-
+    
+def _extract_inputs(form):
+    taginputs = {}
+    for inputtag in _re_form.finditer(
+            webpurge.comments(form.group('CONTENT'))):
+        tagname = attr(inputtag.group(1), "name")
+        if not tagname:
+            continue
+        tagvalue = attr(inputtag.group(1), "value")
+        taginputs[tagname] = tagvalue or inputtag.group(3) or ""
+    return taginputs
+    
+    
+def _same_inputs(taginputs, inputs):
+    for key, value in inputs.items():
+        if key not in taginputs:
+            return False
+        tagvalue = taginputs[key]
+        if hasattr(value, 'search') and re.match(value, tagvalue):
+            continue
+        elif isinstance(value, str) and tagvalue == value:
+            continue
+        elif isiterable(value) and tagvalue in value:
+            continue
+        return False
+    return True
+                   
+        
 def form(html, name=None, inputs={}):
     pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
     pattr = pattr.format(name or "")
     for form in re.finditer(pattr, html, flags=re.I | re.S):
-        taginputs = {}
+        taginputs = _extract_inputs(form)
         formaction = attr(form.group('TAG'), "action")
-
-        for inputtag in _re_form.finditer(
-                webpurge.comments(form.group('CONTENT'))):
-            tagname = attr(inputtag.group(1), "name")
-            if not tagname:
-                continue
-
-            tagvalue = attr(inputtag.group(1), "value")
-            taginputs[tagname] = tagvalue or inputtag.group(3) or ""
-
-        if not inputs:
-            return formaction, taginputs  #: No attribute check
-
         #: Check input attributes
-        for key, value in inputs.items():
-            if key in taginputs:
-                if isinstance(value, str) and taginputs[key] == value:
-                    continue
-                elif isinstance(value, tuple) and taginputs[key] in value:
-                    continue
-                elif hasattr(value, "search") and re.match(value, taginputs[key]):
-                    continue
-                else:
-                    break  #: Attibute value does not match
-            else:
-                break  #: Attibute name does not match
-        else:
+        if not inputs or _same_inputs(taginputs, inputs):
             return formaction, taginputs  #: Passed attribute check
-
     return None, {}  #: No matching form found
 
 
 _re_header = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
 
 # TODO: Rewrite...
-
-
 def header(html):
     hdict = HeaderDict()
     for key, value in _re_header.findall(html):

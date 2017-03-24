@@ -43,49 +43,57 @@ def availspace(path):
     return res
 
 
-def copy(src, dst, overwrite=None, preserve_metadata=True):
+def _shdo(func, src, dst, array=None):
+    try:
+        func(src, dst)
+    except Exception:
+        pass
+    else:
+        if isinstance(array, list):
+            del array[:]
+            
+            
+def _shdorc(func, filenames, src_dir, dst_dir, overwrite=None):
     NT = os.name == 'nt'
-    copy = shutil.copy2 if preserve_metadata else shutil.copy
-    copytree = shutil.copytree
-    isdir = os.path.isdir
     isfile = os.path.isfile
     join = os.path.join
     mtime = os.path.getmtime
     remove = os.remove
+    
+    for filename in filenames:
+        src_file = join(src_dir, filename)
+        dst_file = join(dst_dir, filename)
+        try:
+            if isfile(dst_file):
+                if overwrite is None and mtime(
+                        src_file) <= mtime(dst_file):
+                    continue
+                elif not overwrite:
+                    continue
+                elif NT:
+                    remove(dst_file)
+                    
+            func(src_file, dst_file)
+            
+        except Exception:
+            continue
+            
+            
+def copy(src, dst, overwrite=None, preserve_metadata=True):
+    copy = shutil.copy2 if preserve_metadata else shutil.copy
+    copytree = shutil.copytree
+    isdir = os.path.isdir
 
     if not isdir(dst) or not isdir(src):
         return copytree(src, dst)
 
     for src_dir, dirnames, filenames in os.walk(src):
         dst_dir = src_dir.replace(src, dst, 1)
-
-        if not isdir(dst_dir):
-            try:
-                copytree(src_dir, dst_dir)
-            except Exception:
-                pass
-            else:
-                del dirnames[:]
-            continue
-
-        for filename in filenames:
-            src_file = join(src_dir, filename)
-            dst_file = join(dst_dir, filename)
-            try:
-                if isfile(dst_file):
-                    if overwrite is None and mtime(
-                            src_file) <= mtime(dst_file):
-                        continue
-                    elif not overwrite:
-                        continue
-                    elif NT:
-                        remove(dst_file)
-
-                copy(src_file, dst_file)
-
-            except Exception:
-                continue
-
+        if isdir(dst_dir):
+            _shdorc(copy, filenames, src_dir, dst_dir, overwrite)
+        else:
+            _shdo(copytree, src_dir, dst_dir, dirnames)
+            
 
 @iterate
 def exists(path, sensitive=False):
@@ -206,15 +214,10 @@ def makefile(path, dirmode=0o700, opened=None, size=None):
     makedirs(dirname, dirmode)
     return mkfile(basename, opened, size)
 
-
+    
 def move(src, dst, overwrite=None):
-    NT = os.name == 'nt'
     isdir = os.path.isdir
-    isfile = os.path.isfile
-    join = os.path.join
     move = shutil.move
-    mtime = os.path.getmtime
-    remove = os.remove
     removedirs = os.removedirs
 
     if not isdir(dst) or not isdir(src):
@@ -222,33 +225,10 @@ def move(src, dst, overwrite=None):
 
     for src_dir, dirnames, filenames in os.walk(src):
         dst_dir = src_dir.replace(src, dst, 1)
-
-        if not isdir(dst_dir):
-            try:
-                move(src_dir, dst_dir)
-            except Exception:
-                pass
-            else:
-                del dirnames[:]
-            continue
-
-        for filename in filenames:
-            src_file = join(src_dir, filename)
-            dst_file = join(dst_dir, filename)
-            try:
-                if isfile(dst_file):
-                    if overwrite is None and mtime(
-                            src_file) <= mtime(dst_file):
-                        continue
-                    elif not overwrite:
-                        continue
-                    elif NT:
-                        remove(dst_file)
-
-                move(src_file, dst_file)
-
-            except Exception:
-                continue
+        if isdir(dst_dir):
+            _shdorc(move, filenames, src_dir, dst_dir, overwrite)
+        else:
+            _shdo(move, src_dir, dst_dir, dirnames)
         try:
             removedirs(src_dir)
         except Exception:
@@ -258,7 +238,7 @@ def move(src, dst, overwrite=None):
     except Exception:
         pass
 
-
+        
 @iterate
 def mtime(path):
     getmtime = os.path.getmtime

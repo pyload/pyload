@@ -17,7 +17,6 @@ __all__ = ['comments', 'escape', 'tags', 'text']
 
 _re_comments = re.compile(r' *<!--.*?--> *', flags=re.S)
 
-
 @iterate
 def comments(value):
     return _re_comments.sub(" ", value).strip()
@@ -33,7 +32,6 @@ def escape(text):
 
 
 _re_tags = re.compile(r'\s*<.+?>\s*', flags=re.S)
-
 
 @iterate
 def tags(value):

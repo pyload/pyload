@@ -231,7 +231,6 @@ def from_version(value, default=None, exc=Exception):
 
 _re_vtt = re.compile(r'\D+')
 
-
 def to_version(value, default=None, exc=Exception):
     """
     Convert version like string to a version tuple of integers or return default.

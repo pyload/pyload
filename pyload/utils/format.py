@@ -147,7 +147,6 @@ def time(s):
 
 _re_url = re.compile(r'(?<!:)/{2,}')
 
-
 @iterate
 def url(url):
     from .web import purge as webpurge

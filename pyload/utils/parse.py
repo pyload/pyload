@@ -33,7 +33,6 @@ __all__ = [
 
 _re_alias = re.compile(r'[\d.-_]+')
 
-
 @iterate
 def alias(value):
     chunks = _re_alias.split(format.name(value))
@@ -42,7 +41,6 @@ def alias(value):
 
 _re_boolean = re.compile(r'1|y|true', flags=re.I)
 
-
 @iterate
 @purge.args
 def boolean(value):
@@ -50,7 +48,6 @@ def boolean(value):
 
 
 _re_entries = re.compile(r'[;,\s]+')
-
 
 @iterate
 def entries(value):
@@ -96,7 +93,6 @@ def mime(value):
 
 _re_number = re.compile(r'[\s-]+')
 
-
 @iterate
 @purge.args
 def number(value):
@@ -119,7 +115,6 @@ def number(value):
 
 _re_packs = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
 
-
 @purge.args
 def packs(nameurls):
     packs = {}
@@ -138,7 +133,6 @@ def packs(nameurls):
 
 _re_size = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 
-
 @iterate
 @purge.args
 def size(value, unit=None):  #: returns integer bytes
@@ -156,7 +150,6 @@ def size(value, unit=None):  #: returns integer bytes
 
 
 _re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
-
 
 @iterate
 @purge.args

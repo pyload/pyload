@@ -73,7 +73,6 @@ __all__ = [
 
 _re_ish = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
 
-
 def ishostname(value):
     try:
         name = value.encode('idna')
