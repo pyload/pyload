@@ -200,6 +200,10 @@ class ConnectionManager(QDialog):
         data["default"] = state
         self.emit(SIGNAL("saveConnection"), data)
     
+    def keyPressEvent(self, event):
+        if event.key() != Qt.Key_Escape:
+            QDialog.keyPressEvent(self, event)
+    
     def closeEvent(self, event):
         event.ignore()
         self.emit(SIGNAL("quitConnWindow"))
