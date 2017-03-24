@@ -14,6 +14,7 @@ from .layer.legacy.collections_ import Iterable, Mapping
 
 __all__ = [
     'bitset',
+    'cmp',
     'hasmethod',
     'haspropriety',
     'isiterable',
@@ -24,13 +25,20 @@ __all__ = [
     'proprieties']
 
 
-def bitset(bits, compare):
+def bitset(bits, cmp):
     """
-    Checks if all bits are set in compare, or bits is 0.
+    Checks if all bits are set in cmp or bits is zero.
     """
-    return bits == (bits & compare)
+    return bits == (bits & cmp)
 
 
+def cmp(x, y):
+    """
+    Compare the two objects x and y and return an integer according to the outcome.
+    """
+    return (x > y) - (x < y)
+
+    
 def hasmethod(obj, name):
     """
     Check if method `name` was defined in obj.
