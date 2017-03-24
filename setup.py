@@ -71,7 +71,7 @@ class Sdist(sdist):
 
 
 NAME = "pyload.config"
-VERSION = "0.1.0"
+VERSION = "1.0.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Config module"""
 # LONG_DESC=io.open("README.md").read()
