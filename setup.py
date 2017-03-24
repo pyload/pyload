@@ -21,7 +21,7 @@ from setuptools.command.sdist import sdist
 
 
 NAME = "pyload.utils"
-VERSION = "0.1.0"
+VERSION = "1.0.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
 LONG_DESC=io.open("README.md").read()
@@ -36,10 +36,10 @@ PACKAGES = ['pyload', 'pyload/utils']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = [
-    'IPy', 'Send2Trash', 'bitmath', 'colorclass', 'dbus-python;os_name!="nt"', 
+    'IPy', 'Send2Trash', 'bitmath', 'colorclass', 'dbus-python;os_name!="nt"',
     'goslate', 'psutil', 'setproctitle', 'tld', 'validators'
 ]
-# SETUP_REQUIRES = ['readme_renderer', 'recommonmark']
+SETUP_REQUIRES = ['readme_renderer', 'recommonmark']
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
@@ -82,7 +82,7 @@ SETUP_MAP = dict(
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,
-    # setup_requires=SETUP_REQUIRES,
+    setup_requires=SETUP_REQUIRES,
     python_requires=PYTHON_REQUIRES,
     # test_suite=TEST_SUITE,
     # tests_require=TESTS_REQUIRE,
