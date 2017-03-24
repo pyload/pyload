@@ -100,7 +100,4 @@ checks:
 tools:
   pylint:
     python_version: '3'
-    # config_file: .pylintrc
-# filter:
-  # excluded_paths:
-    # - '*/test/*'
+    config_file: .pylintrc
