@@ -38,7 +38,7 @@ def cmp(x, y):
     """
     return (x > y) - (x < y)
 
-    
+
 def hasmethod(obj, name):
     """
     Check if method `name` was defined in obj.

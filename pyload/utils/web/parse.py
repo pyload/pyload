@@ -35,7 +35,7 @@ def domain(url):
 _re_form = re.compile(
     r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
     flags=re.I | re.S)
-    
+
 def _extract_inputs(form):
     taginputs = {}
     for inputtag in _re_form.finditer(
@@ -46,8 +46,8 @@ def _extract_inputs(form):
         tagvalue = attr(inputtag.group(1), "value")
         taginputs[tagname] = tagvalue or inputtag.group(3) or ""
     return taginputs
-    
-    
+
+
 def _same_inputs(taginputs, inputs):
     for key, value in inputs.items():
         if key not in taginputs:
@@ -61,8 +61,8 @@ def _same_inputs(taginputs, inputs):
             continue
         return False
     return True
-                   
-        
+
+
 def form(html, name=None, inputs={}):
     pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
     pattr = pattr.format(name or "")

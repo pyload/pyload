@@ -9,22 +9,18 @@ import shutil
 from builtins import int, next
 from os.path import *
 
+import send2trash
 import psutil
+
 from future import standard_library
 standard_library.install_aliases()
 
-from .check import ismodule
 from .decorator import iterate
-
 
 try:
     import magic
 except ImportError:
     from filetype import guess_mime
-try:
-    import send2trash
-except ImportError:
-    pass
 
 
 @iterate
@@ -51,15 +47,15 @@ def _shdo(func, src, dst, array=None):
     else:
         if isinstance(array, list):
             del array[:]
-            
-            
+
+
 def _shdorc(func, filenames, src_dir, dst_dir, overwrite=None):
     NT = os.name == 'nt'
     isfile = os.path.isfile
     join = os.path.join
     mtime = os.path.getmtime
     remove = os.remove
-    
+
     for filename in filenames:
         src_file = join(src_dir, filename)
         dst_file = join(dst_dir, filename)
@@ -72,13 +68,13 @@ def _shdorc(func, filenames, src_dir, dst_dir, overwrite=None):
                     continue
                 elif NT:
                     remove(dst_file)
-                    
+
             func(src_file, dst_file)
-            
+
         except Exception:
             continue
-            
-            
+
+
 def copy(src, dst, overwrite=None, preserve_metadata=True):
     copy = shutil.copy2 if preserve_metadata else shutil.copy
     copytree = shutil.copytree
@@ -93,7 +89,7 @@ def copy(src, dst, overwrite=None, preserve_metadata=True):
             _shdorc(copy, filenames, src_dir, dst_dir, overwrite)
         else:
             _shdo(copytree, src_dir, dst_dir, dirnames)
-            
+
 
 @iterate
 def exists(path, sensitive=False):
@@ -214,7 +210,7 @@ def makefile(path, dirmode=0o700, opened=None, size=None):
     makedirs(dirname, dirmode)
     return mkfile(basename, opened, size)
 
-    
+
 def move(src, dst, overwrite=None):
     isdir = os.path.isdir
     move = shutil.move
@@ -238,7 +234,7 @@ def move(src, dst, overwrite=None):
     except Exception:
         pass
 
-        
+
 @iterate
 def mtime(path):
     getmtime = os.path.getmtime
@@ -282,7 +278,7 @@ def remove(path, trash=False, ignore_errors=False):
         if ignore_errors:
             return None
         raise OSError("Path not exists")
-    if trash and ismodule('send2trash'):
+    if trash:
         send2trash.send2trash(path)
     elif os.path.isdir(path):
         shutil.rmtree(path, ignore_errors)
@@ -310,12 +306,8 @@ def which(path):
 
 
 # Cleanup
-del int, io, ismodule, iterate, os, psutil, shutil
+del int, io, iterate, os, psutil, send2trash, shutil
 try:
     del magic
 except NameError:
     del guess_mime
-try:
-    del send2trash
-except NameError:
-    pass

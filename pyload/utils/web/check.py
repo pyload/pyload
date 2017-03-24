@@ -7,20 +7,16 @@ import os
 import re
 from builtins import map
 
+import IPy
 import bottle
 import requests
 import validators
+
 from future import standard_library
 standard_library.install_aliases()
 
 from . import convert as webconvert
 from .. import format, parse
-
-
-try:
-    import IPy
-except ImportError:
-    pass
 
 
 __all__ = [
@@ -84,7 +80,7 @@ def ishostname(value):
         return False
     try:
         IPy.IP(name)
-    except (NameError, ValueError):
+    except ValueError:
         pass
     else:
         return False

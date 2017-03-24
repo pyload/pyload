@@ -14,6 +14,8 @@ import io
 import os
 import subprocess
 
+from itertools import chain
+
 from setuptools import Command, setup
 from setuptools.command.sdist import sdist
 
@@ -35,12 +37,17 @@ PACKAGES = ['pyload', 'pyload/utils']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = [
-    'IPy', 'Send2Trash', 'bitmath', 'colorclass', 'dbus-python;os_name!="nt"',
-    'goslate', 'psutil', 'setproctitle', 'tld', 'validators'
+    'IPy', 'Send2Trash', 'colorclass', 'filetype', 'goslate', 'psutil',
+    'setproctitle', 'tld', 'validators'
 ]
 SETUP_REQUIRES = ['readme_renderer', 'recommonmark']
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
+EXTRAS_REQUIRE = {
+    'dbus;os_name!="nt"': ['dbus-python'],
+    'bitmath': ['bitmath']
+}
+EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 ZIP_SAFE = False
 CLASSIFIERS = [
@@ -82,6 +89,7 @@ SETUP_MAP = dict(
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,
     # test_suite=TEST_SUITE,
     # tests_require=TESTS_REQUIRE,

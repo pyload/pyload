@@ -5,20 +5,18 @@ from __future__ import absolute_import, division, unicode_literals
 
 import itertools
 import re
+
 from builtins import bytes, int, map, str
 
 from future import standard_library
 standard_library.install_aliases()
 
-from .check import isiterable, ismapping
+import goslate
 
+from .check import isiterable, ismapping
 
 try:
     import bitmath
-except ImportError:
-    pass
-try:
-    import goslate
 except ImportError:
     pass
 
