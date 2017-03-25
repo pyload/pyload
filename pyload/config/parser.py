@@ -32,7 +32,10 @@ class ConfigParser(object):
     """
     Holds and manages the configuration + meta data for config read from file.
     """
-    __slots__ = ['_RE_VERSION', 'config', 'filename', 'values', 'version']
+    __slots__ = [
+        '_RE_VERSION', '_extract_option', '_extract_section', '_parseline', 
+        '_write_version', 'config', 'filename', 'values', 'version'
+    ]
 
     _RE_VERSION = re.compile(r'\s*version\s*:\s*(\d+\.\d+\.\d+)', flags=re.I)
 
@@ -53,89 +56,77 @@ class ConfigParser(object):
     def load_default(self):
         make_config(self)
 
+    def _write_version(self):
+        verstr = convert.from_version(self.version)
+        with io.open(self.filename, mode='wb') as fp:
+            fp.write("version: {0}\n".format(verstr))
+    
     def check_version(self):
         """
         Determines if config needs to be deleted.
         """
-        if not os.path.exists(self.filename):
-            with io.open(self.filename, mode='wb') as fp:
-                fp.write(
-                    "version: {0}".format(
-                        convert.from_version(
-                            self.version)))
-            return None
+        if os.path.exists(self.filename):
+            version = None
+            try:
+                with io.open(self.filename, mode='rb') as fp:
+                    m = self._RE_VERSION.match(fp.readline())
+                    version = convert.to_version(m.group(1))
+            except (AttributeError, TypeError):
+                pass
+            if not self.version or version[:-1] != self.version[:-1]:
+                os.rename(self.filename, "{0}.old".format(self.filename))
+        self._write_version()
 
-        version = None
-        try:
-            with io.open(self.filename, mode='rb') as fp:
-                m = self._RE_VERSION.match(fp.readline())
-                version = convert.to_version(m.group(1))
-        except (AttributeError, TypeError):
-            pass
+    def _extract_section(self, line):
+        section = line.replace("[", "").replace("]", "")
+        if section not in self.config:
+            print("Unrecognized section", section)
+            section = ""
+        return section
+                                  
+    def _extract_option(self, line):
+        option, _, value = line.rpartition("=")
+        return option.strip(), value.strip()
 
-        if not self.version or version[:-1] != self.version[:-1]:
-            os.rename(self.filename, "{0}.old".format(self.filename))
-
-        with io.open(self.filename, mode='wb') as fp:
-            fp.write("version: {0}".format(convert.from_version(self.version)))
-
+    def _parseline(self, line, section):
+        if line.startswith("["):
+            return self._extract_section(line)
+        option, value = self._extract_option(line)
+        if not section: 
+            print("Option without section", option)
+        elif option in self.config[section].config:
+            self.set(section, option, value, sync=False)
+        else:
+            print("Unrecognized option", section, option)
+        return section
+            
     def parse(self, filename):
         """
         Read config values from file.
         """
         with io.open(filename, mode='rb') as fp:
-            # save the current section
-            section = ""
-            fp.readline()
+            section = ""  #: save the current section
             for line in iter(fp.readline, ""):
                 line = line.strip()
-
-                # comment line, different variants
-                if not line or line.startswith("#") or line.startswith(
-                        "//") or line.startswith("|"):
-                    continue
-
-                if line.startswith("["):
-                    section = line.replace("[", "").replace("]", "")
-
-                    if section not in self.config:
-                        print("Unrecognized section", section)
-                        section = ""
-
-                else:
-                    name, non, value = line.rpartition("=")
-                    name = name.strip()
-                    value = value.strip()
-
-                    if not section:
-                        print("Value without section", name)
-                        continue
-
-                    if name in self.config[section].config:
-                        self.set(section, name, value, sync=False)
-                    else:
-                        print("Unrecognized option", section, name)
+                if not line:
+                    continue  
+                if line[0] in ("#", "//", "|"):
+                    continue                    
+                section = self._parseline(line, section)
 
     def save(self):
         """
         Saves config to filename.
         """
-        configs = []
+        os.chmod(self.filename, 0o600)
+        self._write_version()
         with io.open(self.filename, mode='wb') as fp:
             configs.append(fp)
-            os.chmod(self.filename, 0o600)
-            fp.write(
-                "version: {0}\n\n".format(
-                    convert.from_version(
-                        self.version)))
-
             for section, data in self.config.items():
                 fp.write("[{0}]\n".format(section))
-
                 for option, data in data.config.items():
                     value = self.get(section, option)
                     fp.write("{0} = {1}\n".format(option, value))
-
                 fp.write("\n")
 
     def __getitem__(self, section):

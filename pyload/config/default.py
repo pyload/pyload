@@ -15,7 +15,10 @@ def make_config(config):
     """
     Configuration layout for default base config.
     """
-    config.add_config_section('general', _('General'), _('Description'), _('Long description'),
+    desc = _('Description')
+    expl = _('Long description')
+    
+    config.add_config_section('general', _('General'), desc, expl,
     [
         ('language', 'en|de|fr|it|es|nl|sv|ru|pl|cs|sr|pt', _('Language'), 'en'),
         ('storage_folder', 'folder', _('Storage folder'), ''),
@@ -26,7 +29,7 @@ def make_config(config):
         ('ioniceness', '0|1|2|3', _('Process I/O priority'), '0')
     ])
 
-    config.add_config_section('log', _('Logging'), _('Description'), _('Long description'),
+    config.add_config_section('log', _('Logging'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'True'),
         ('syslog', 'no|remote|local', _('Sent log to syslog'), 'no'),
@@ -43,7 +46,7 @@ def make_config(config):
         ('color_console', 'bool', _('Color console'), 'True')
     ])
 
-    config.add_config_section('permission', _('Permissions'), _('Description'), _('Long description'),
+    config.add_config_section('permission', _('Permissions'), desc, expl,
     [
         ('user', 'str', _('Username'), 'user'),
         ('group', 'str', _('Groupname'), 'users'),
@@ -56,7 +59,7 @@ def make_config(config):
         ('change_filemode', 'bool', _('Change file mode of saved files'), 'False')
     ])
 
-    config.add_config_section('connection', _('Connections'), _('Description'), _('Long description'),
+    config.add_config_section('connection', _('Connections'), desc, expl,
     [
         ('max_transfers', 'int', _('Max parallel transfers'), '5'),
         ('max_speed', 'int', _('Max transfer speed (in KiB/s)'), '-1'),
@@ -68,21 +71,21 @@ def make_config(config):
         ('ipv6', 'bool', _('Allow IPv6'), 'False')
     ])
 
-    config.add_config_section('ssl', _('SSL'), _('Description'), _('Long description'),
+    config.add_config_section('ssl', _('SSL'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'False'),
         ('cert', 'file', _('Cert file'), 'ssl.crt'),
         ('key', 'file', _('Key file'), 'ssl.key')
     ])
 
-    config.add_config_section('reconnect', _('Reconnection'), _('Description'), _('Long description'),
+    config.add_config_section('reconnect', _('Reconnection'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'False'),
         ('script', 'str', _('Script file'), ''),
         ('wait', 'str', _('Don\'t reconnect while waiting'), 'False')
     ])
 
-    config.add_config_section('proxy', _('Proxy'), _('Description'), _('Long description'),
+    config.add_config_section('proxy', _('Proxy'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'False'),
         ('type', 'http|socks4|socks5', _('Protocol'), 'http'),
@@ -92,7 +95,7 @@ def make_config(config):
         ('password', 'str', _('Password'), '')
     ])
 
-    config.add_config_section('webui', _('Web User Interface'), _('Description'), _('Long description'),
+    config.add_config_section('webui', _('Web User Interface'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'True'),
         ('server', 'auto|threaded|fallback|fastcgi', _('Webserver'), 'auto'),
@@ -104,14 +107,14 @@ def make_config(config):
         # ('debug', 'bool', _('Debug mode'), 'False')
     ])
 
-    config.add_config_section('rpc', _('REST API Interface'), _('Description'), _('Long description'),
+    config.add_config_section('rpc', _('REST API Interface'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'False'),
         ('host', 'str', _('IP address'), '0.0.0.0'),
         ('port', 'port', _('Port'), '7227')
     ])
 
-    config.add_config_section('update', _('Updates'), _('Description'), _('Long description'),
+    config.add_config_section('update', _('Updates'), desc, expl,
     [
         ('activated', 'bool', _('Activated'), 'True'),
         ('nodebug', 'bool', _('Don\'t update in debug mode'), 'False'),

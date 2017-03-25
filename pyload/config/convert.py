@@ -30,7 +30,6 @@ input_dict = {
     'folder': InputType.Folder
 }
 
-
 def to_input(type_):
     """
     Converts old config format to input type.
@@ -39,7 +38,6 @@ def to_input(type_):
 
 
 ConfigData = namedtuple("ConfigData", "label description input")
-
 
 def to_configdata(entry):
     if len(entry) != 4:
