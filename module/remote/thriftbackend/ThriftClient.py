@@ -46,41 +46,51 @@ class ThriftClient:
                 print_exc()
                 raise NoConnection
 
+        errorException = eofException = False
+        e = None
         try:
             correct = self.client.login(user, password)
-        #except error, e:
-        except (error, TTransport.TTransportException), e:
-            # TTransport.TTransportException.END_OF_FILE, this seems to work for MS Windows 10 x64, with python x32
-            winConnectionClosed = True if (os.name == "nt" and e.args and e.args[0] == "TSocket read 0 bytes") else False
-            #if e.args and e.args[0] == 104:
-            if (e.args and e.args[0] == 104) or winConnectionClosed:
-                #connection reset by peer, probably wants ssl
-                try:
-                    self.ssl = True
-                    self.createConnection(host, port, self.ssl)
-                    #set timeout or a ssl socket will block when querying none ssl server
-                    self.socket.setTimeout(10 *1000)   # milliseconds
-                except ImportError:
-                    #@TODO untested
-                    raise NoSSL
-                except:
-                    print_exc()
-                    raise NoConnection
-                try:
-                    self.transport.open()
-                except:
-                    raise NoConnection
-                try:
-                    correct = self.client.login(user, password)
-                except:
-                    raise NoSSL
-                finally:
-                    self.socket.setTimeout(None)
-            elif e.args and e.args[0] == 32:
-                raise NoConnection
+        except error, e:
+            errorException = True
+        except TTransport.TTransportException, e:
+            if e.type == TTransport.TTransportException.END_OF_FILE:
+                eofException = True
             else:
                 print_exc()
                 raise NoConnection
+
+        if ((errorException and e.args and e.args[0] == 104) or     # linux client, linux server
+            eofException or                                         # mixed linux/windows client/server
+            (errorException and e.args and e.args[0] == 10054)):    # windows client, windows server
+            # probably wants ssl
+            try:
+                self.ssl = True
+                self.createConnection(host, port, self.ssl)
+                #set timeout or a ssl socket will block when querying none ssl server
+                self.socket.setTimeout(10 *1000)   # milliseconds
+            except ImportError:
+                #@TODO untested
+                raise NoSSL
+            except:
+                print_exc()
+                raise NoConnection
+            try:
+                self.transport.open()
+            except:
+                raise NoConnection
+            try:
+                correct = self.client.login(user, password)
+            except:
+                raise NoSSL
+            finally:
+                self.socket.setTimeout(None)
+
+        elif errorException and (e.args and e.args[0] == 32):
+            raise NoConnection
+
+        elif errorException:
+            print_exc()
+            raise NoConnection
 
         if not correct:
             self.transport.close()
