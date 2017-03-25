@@ -1,0 +1,6 @@
+global-exclude *.py[codi] __pycache__
+
+include *.md *.rst *.txt
+
+recursive-include locale *.mo *.pot
+recursive-include pyload *.py

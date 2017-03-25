@@ -10,7 +10,7 @@
 #          \  /
 #           \/
 
-# import io
+import io
 import os
 import subprocess
 
@@ -71,10 +71,11 @@ class Sdist(sdist):
 
 
 NAME = "pyload.config"
-VERSION = "1.0.0"
+VERSION = "0.5.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Config module"""
-# LONG_DESC=io.open("README.md").read()
+LONG_DESC='\n\n'.join(
+    [io.open("README.md").read(), io.open("HISTORY.md").read()])
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/config/releases"
@@ -87,7 +88,7 @@ INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = [
     'configparser;python_version<"3.5"', 'enum34;python_version<"3.4"',
-    'future', 'pyload.utils'
+    'future', 'pyload.utils-ng'
 ]
 SETUP_REQUIRES = ['Babel', 'readme_renderer', 'recommonmark']
 # TEST_SUITE = ''
@@ -130,7 +131,7 @@ SETUP_MAP = dict(
     name=NAME,
     version=VERSION,
     description=DESC,
-    # long_description=LONG_DESC,
+    long_description=LONG_DESC,
     keywords=KEYWORDS,
     url=URL,
     download_url=DOWNLOAD_URL,
@@ -141,7 +142,7 @@ SETUP_MAP = dict(
     packages=PACKAGES,
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
-    # install_requires=INSTALL_REQUIRES,
+    install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
     # extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,

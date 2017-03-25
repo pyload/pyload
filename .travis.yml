@@ -3,24 +3,36 @@ language: python
 branches:
   only: master
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "nightly"
-  - "pypy"
-  # - "pypy3"
+  - 2.6
+  - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
+  - nightly
+  - pypy
+  # - pypy3
 matrix:
   allow_failures:
-    - "2.6"
-    - "nightly"
-    - "pypy"
-    # - "pypy3"
+    - 2.6
+    - nightly
+    - pypy
+    # - pypy3
   fast_finish: true
 cache: pip
 install:
   - pip install -U setuptools
   - pip install tox-travis
 script: tox --skip-missing-interpreters
+deploy:
+  provider: pypi
+  user: vuolter
+  password:
+    secure: "k+ivszdG3FtyAueVB9DPq2/ld6fT/kyN+lfOC9NU1Qil+a7PdmNy4dkxvf3Gy/frWR/6UOogbjtTyP+Gx8lq2nHnvFZdTPm/Rt/VgMRDTlbxmGC3BxIe6LuLVuEsE6opcNUb5ErUgl8G7kCkGljscMc2C1L85r1/oDmXJ4N4fJW0+wxoTkkHKbe/5mg6puw349ky1WXxYsPMrCxuoEbSSfDCvXEQTUMTrcc04zLqtkbUtdhFXMIPcv0LjNdGEs1sM0Bf3hssXQYZ5P9gdtaeSUvrTQSE0aA8frtVyBfH2apA99yQ9lcZPRvY7vwv3EZPYqT04UytRmSzRn0FPHFMizOt8unNKQmaykD5oShOmEGY5QDBMbFYr3dhV8j4r+l+QAKQz+k8AhnuiqJutNheSsRi6EFiNyG2ZEX9cyNyNP8cWllcyF+LfoBag4QlXYB21xpOT2yy46Q97/AR33DtarHNSd12wG71uv2uyssRBLr9dAiiVx6pYGUdOX2rFm7Vhu9QH/gKnD5MDnHvumscryHv6D4xli2JnWG6B6+8pNfcMGH4gomyQi61dAHIyuuV6P2FVCb/iAK6qJhrahrIOUMU4bgbUajJVVc/xDQfC+mBGSJOaWMsMFBe8+1A2Da1C04GzoBoqhxc8aunqrWH+VIGgk4kT9h8q0S0mIx/HfE="
+  distributions: sdist bdist_wheel
+  skip_cleanup: true
+  on:
+    repo: pyload/config
+    branch: master
+    python: 3.5
+    # tags: true
