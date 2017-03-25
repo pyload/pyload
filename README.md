@@ -8,8 +8,8 @@ _Continue reading about **pyLoad** amazing features on <https://pyload.net>_
 
 
 [![Build Status](https://travis-ci.org/pyload/utils.svg?branch=master)](https://travis-ci.org/pyload/utils)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/utils/?branch=master)
 [![Requirements Status](https://requires.io/github/pyload/utils/requirements.svg?branch=master)](https://requires.io/github/pyload/utils/requirements/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/utils/?branch=master)
 
 
 > **Notice:**

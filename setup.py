@@ -20,7 +20,7 @@ from setuptools import Command, setup
 from setuptools.command.sdist import sdist
 
 
-NAME = "pyload.utils"
+NAME = "pyload.utils-ng"
 VERSION = "0.5.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
@@ -44,8 +44,9 @@ SETUP_REQUIRES = ['readme_renderer', 'recommonmark']
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
 EXTRAS_REQUIRE = {
+    'bitmath': ['bitmath'],
     'dbus;os_name!="nt"': ['dbus-python'],
-    'bitmath': ['bitmath']
+    'magic;os_name!="nt"': ['python-magic']
 }
 EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
