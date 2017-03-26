@@ -978,7 +978,7 @@ class main(QObject):
             self.slotShowConnector()
 
     def messageBox_13(self):
-        text = _("Do you really want to restart the pyLoad server?")
+        text = _("Do you really want to restart the pyLoad server?") + "<br><i>" + _("This does not work when the server is running on a Windows OS.") + "</i>"
         return self.msgBoxYesNo(text, "Q")
 
     def slotReloadQueue(self):
