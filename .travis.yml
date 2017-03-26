@@ -26,11 +26,13 @@ install:
 script: tox --skip-missing-interpreters
 deploy:
   provider: pypi
+  server: https://upload.pypi.org/legacy/
   user: vuolter
   password:
     secure: "vnYHPWXJHcARxG8YIcf/72R1jbCTopaCAvzJ8qK6EyPYGy5XRin77Ttw1EI121U79jspt+dXxxyxU+2NxcQH9d6DKcrynF0M/K4PgWykPy6xLZFevds6RWw9FrCTWK7FCKt0mWmXuUZnG/sCvZ/Oz3XSwqXbOqrIwrIWr9ehq9GsIpV8pnPCNL5i/a3TcU6SbqyCzVXu75h2A1GGBHX+VVT7WuXyLAF1dDSeEYX5wjUhVEvRTUeOwqltYEqLY7TOSPf3WsudDW0Fh8nFGMtXqhhyFDVshNHreF0dW+Enk3MU2gyoHGDtSLws9bBPgtm+1OkcNDlzYtbBaB4t6cL0n6BjBVSSOnprW9Q+sBz0yh4D4s5HIKay406q7ttJmOf437E/w+M9OurHfEMJKgAuiFE0SrFJD21nto92Po7+URt1X07dk1/YTFM6OzSAOz4xHTauku+J3M508sTPuF9xhPX5p2quRPYg5EGeYn96KPchLFOEx6W4zb9eRBquF32t71voSd0Y1tZMFJ2nv2u29N/QUI5Sqm0ZimXA3OxjsqKXPVY/E5RN7HAkhE4nVNvj6N9eW6QmlRE0jvEsaMLwRr4snzDPC4++SLYraG4JFqL6PlmXB3IBqHunNIRnw09WKskgJY+p4pUbn6wkVjk/wjvZr68d8MbIc5riGkktiGA="
   distributions: sdist bdist_wheel
   skip_cleanup: true
+  skip_upload_docs: true
   on:
     repo: pyload/utils
     branch: master

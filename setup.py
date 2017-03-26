@@ -28,13 +28,13 @@ def _get_long_description():
     with io.open("README.md") as fp1:
         fp1.readline()  #: Avoid first line, because not CommonMark-compliant
         with io.open("HISTORY.md") as fp2:
-            content = '\r\n\r\n'.join([fp1.read(), fp2.read()])
+            body = '\r\n\r\n'.join([fp1.read(), fp2.read()])
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst'},
-        files={'input_files[]': ('DESCRIPTION.md', content)}
+        files={'input_files[]': ('DESCRIPTION.md', body)}
     )
-    return req.content if req.ok else None
+    return req.text if req.ok else None
     
     
 NAME = "pyload.utils2"
