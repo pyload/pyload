@@ -15,32 +15,47 @@ import os
 import subprocess
 
 from itertools import chain
-
+    
 from setuptools import Command, setup
 from setuptools.command.sdist import sdist
 
 
-NAME = "pyload.utils-ng"
+def _get_long_description():
+    try:
+        import requests
+    except ImportError:
+        return None
+    with io.open("README.md") as fp1:
+        fp1.readline()  #: Avoid first line, because not CommonMark-compliant
+        with io.open("HISTORY.md") as fp2:
+            content = '\r\n\r\n'.join([fp1.read(), fp2.read()])
+    req = requests.post(
+        url='http://c.docverter.com/convert',
+        data={'from': 'markdown', 'to': 'rst'},
+        files={'input_files[]': ('DESCRIPTION.md', content)}
+    )
+    return req.content if req.ok else None
+    
+    
+NAME = "pyload.utils2"
 VERSION = "0.5.0"
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
-LONG_DESC='\n\n'.join(
-    [io.open("README.md").read(), io.open("HISTORY.md").read()])
+LONG_DESC=_get_long_description() or ""
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/utils/releases"
-LICENSE = "AGPLv3"
+LICENSE = "GNU Affero General Public License v3"
 AUTHOR = "Walter Purcaro"
 AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
 PACKAGES = ['pyload', 'pyload/utils']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
-INSTALL_REQUIRES = [
-    'IPy', 'Send2Trash', 'colorclass', 'filetype', 'goslate', 'psutil',
-    'setproctitle', 'tld', 'validators'
-]
-SETUP_REQUIRES = ['readme_renderer', 'recommonmark']
+INSTALL_REQUIRES = io.open(
+    os.path.join('requirements', 'install.txt')).read().splitlines()
+SETUP_REQUIRES = io.open(
+    os.path.join('requirements', 'setup.txt')).read().splitlines()
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
 EXTRAS_REQUIRE = {
@@ -66,7 +81,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Communications",
     "Topic :: Communications :: File Sharing",
     "Topic :: Internet",
