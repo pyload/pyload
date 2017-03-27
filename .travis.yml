@@ -1,5 +1,10 @@
 sudo: false
 language: python
+env:
+  global:
+    - PYPI_USER="Yu0/mUnRQ6yteYB+zqgMZnph91IqFeOf8OZaj5Js1JtK+XC+uVHutFdpNMAakIUPZL/20LlyrJXSis4BNk3N0oIPu+OgOZdeTowLjHjD3ky7GYUSUyjKcZmgT+MzuDpAbao+AadI6m+tkknEGsU5+MdF83rwTkSXsjrB86jlTD7Qw6BiOXI3BpQJ39LxAWUzjq1zUa4M0lEe0vNV0BZKNsE5VFdZXTmJqFoi2/v2iZH0XUuBNi6+vzKDlAYBRWlgwnMJnAewoZa19S847fMkLBmt8sfNCakEcwyD2S2lQhJeKRIfD5AiUYdtApZH2msy5FM/sP9JhlkBe3jvBv+MzIA+JWVMVdHFCA+0KIXuK2ybdU4aTNJyFWu6649jqwuhddFU85JGdsjn8gRB8QVDKHQd6cbHysRAKx/dK/dRTnxa67uDdaR+Gw5o4sPJ6D/EAwLGG3H6vDDz/k9DUpbXklJyqAMTjtYRfBn3eToSy4OJXYoyYu21hljMU0k30Cp2O4A67Bb+xDIV4GYFU18OXzVVtxAgCxdeoGeYxSs1BEjGL+6VjFUckhFlyd+yLvmkScXi/zGm3b00Za4Z1Phi6ZQiSS4Svod22T53gOMqtQXUku+f2PXJJC2cUm0HZmkFxde11sBSIPxM6DBuxjVl29Ij9zdXwfoGzMakWxQT2Uo="
+    - PYPI_PASSWORD="vnYHPWXJHcARxG8YIcf/72R1jbCTopaCAvzJ8qK6EyPYGy5XRin77Ttw1EI121U79jspt+dXxxyxU+2NxcQH9d6DKcrynF0M/K4PgWykPy6xLZFevds6RWw9FrCTWK7FCKt0mWmXuUZnG/sCvZ/Oz3XSwqXbOqrIwrIWr9ehq9GsIpV8pnPCNL5i/a3TcU6SbqyCzVXu75h2A1GGBHX+VVT7WuXyLAF1dDSeEYX5wjUhVEvRTUeOwqltYEqLY7TOSPf3WsudDW0Fh8nFGMtXqhhyFDVshNHreF0dW+Enk3MU2gyoHGDtSLws9bBPgtm+1OkcNDlzYtbBaB4t6cL0n6BjBVSSOnprW9Q+sBz0yh4D4s5HIKay406q7ttJmOf437E/w+M9OurHfEMJKgAuiFE0SrFJD21nto92Po7+URt1X07dk1/YTFM6OzSAOz4xHTauku+J3M508sTPuF9xhPX5p2quRPYg5EGeYn96KPchLFOEx6W4zb9eRBquF32t71voSd0Y1tZMFJ2nv2u29N/QUI5Sqm0ZimXA3OxjsqKXPVY/E5RN7HAkhE4nVNvj6N9eW6QmlRE0jvEsaMLwRr4snzDPC4++SLYraG4JFqL6PlmXB3IBqHunNIRnw09WKskgJY+p4pUbn6wkVjk/wjvZr68d8MbIc5riGkktiGA="
+    - REPO_OAUTH="RBi0Ro/lRxjd2KYivGkymBzNcGcxR5SaUCujPi+vUAYUpsug6TL1FsC8kwhUKaw69PcaljGVKCNgaWi/Ugx+hJEfmehoOhaY+HAaC40OJziIedW7ZTjYk3upQW+onIAUjisd/4kvfm7p9kB3d5CfH60bGuNTaCbzqedpuXy6gOy5M7SXg87gHL/DE+JCJcXQcQdHCBB+Elup1hdhFxNXjM3RnZbMJarhsxJ5YgkSTDST4NRW/hjZGfq7N+nif19rkMkEBLTc6WXsjo+E8D3YEaJY3zL5mEGz+qE51YXL6g2J23serMzAKy6khmXUiUU0DXN1VeYQD4jbDv0yKT+t2/MTcMMI3Rjx9qHDFXr0vJM4c+71qhU3XO1qVzRd2imdea15G25qJHoqBUr5RAlmjdBl4XAV8WSUh/WqPVyeRCEd0IoxFC1/I1Q0ZTOR+ziaKAUqg7ql9tqfC/s6oMaLz/lgmYEChnBqRIVpNZwi2tFWhQXYrR3PUWcDVj8JImQuw/9yI2xPZfmqwE9r8m6HQp2cAa5qWfxr6GpY667qVWSgYvJ/NwVWZFm+v4VBS2pkwXPNOJq9JCetAw++9IX4LgIlUuin4PwF04MwoCfEAmOWY9xKYLq8ZeKZdft867evPloWZhSdDF2v93/7C8Iuc0uUNnn786NbR3JfvzpxFjE="
 branches:
   only: master
 python:
@@ -24,17 +29,33 @@ install:
   - pip install -U setuptools
   - pip install tox-travis
 script: tox --skip-missing-interpreters
+before_deploy:
+  - test $TRAVIS_TEST_RESULT = 0
+  - test $TRAVIS_EVENT_TYPE != "cron"
+  - pip install requests
 deploy:
-  provider: pypi
-  server: https://upload.pypi.org/legacy/
-  user: vuolter
-  password:
-    secure: "vnYHPWXJHcARxG8YIcf/72R1jbCTopaCAvzJ8qK6EyPYGy5XRin77Ttw1EI121U79jspt+dXxxyxU+2NxcQH9d6DKcrynF0M/K4PgWykPy6xLZFevds6RWw9FrCTWK7FCKt0mWmXuUZnG/sCvZ/Oz3XSwqXbOqrIwrIWr9ehq9GsIpV8pnPCNL5i/a3TcU6SbqyCzVXu75h2A1GGBHX+VVT7WuXyLAF1dDSeEYX5wjUhVEvRTUeOwqltYEqLY7TOSPf3WsudDW0Fh8nFGMtXqhhyFDVshNHreF0dW+Enk3MU2gyoHGDtSLws9bBPgtm+1OkcNDlzYtbBaB4t6cL0n6BjBVSSOnprW9Q+sBz0yh4D4s5HIKay406q7ttJmOf437E/w+M9OurHfEMJKgAuiFE0SrFJD21nto92Po7+URt1X07dk1/YTFM6OzSAOz4xHTauku+J3M508sTPuF9xhPX5p2quRPYg5EGeYn96KPchLFOEx6W4zb9eRBquF32t71voSd0Y1tZMFJ2nv2u29N/QUI5Sqm0ZimXA3OxjsqKXPVY/E5RN7HAkhE4nVNvj6N9eW6QmlRE0jvEsaMLwRr4snzDPC4++SLYraG4JFqL6PlmXB3IBqHunNIRnw09WKskgJY+p4pUbn6wkVjk/wjvZr68d8MbIc5riGkktiGA="
-  distributions: sdist bdist_wheel
-  skip_cleanup: true
-  skip_upload_docs: true
-  on:
-    repo: pyload/utils
-    branch: master
-    python: 3.5
-    # tags: true
+  - provider: pypi
+    server: https://upload.pypi.org/legacy/
+    user:
+      secure: $PYPI_USER
+    password:
+      secure: $PYPI_PASSWORD
+    distributions: sdist bdist_wheel
+    skip_cleanup: true
+    skip_upload_docs: true
+    on:
+      branch: master
+      python: 3.5
+      # tags: true
+  - provider: releases
+    api-key: $REPO_OAUTH
+    file_glob: true
+    file: dist/*
+    skip_cleanup: true
+    on:
+      branch: master
+      python: 3.5
+      tags: true
+after_deploy:
+  pip install travis-bump-version && python travis-bump-version --api-token $REPO_OAUTH --repo $TRAVIS_REPO_SLUG VERSION
+  # - if [[ -n $TRAVIS_TAG ]]; then pip install travis-bump-version && python travis-bump-version --api-token $REPO_OAUTH --repo $TRAVIS_REPO_SLUG VERSION ; fi

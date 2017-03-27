@@ -25,9 +25,9 @@ def _get_long_description():
         import requests
     except ImportError:
         return None
-    with io.open("README.md") as fp1:
+    with io.open('README.md') as fp1:
         fp1.readline()  #: Avoid first line, because not CommonMark-compliant
-        with io.open("HISTORY.md") as fp2:
+        with io.open('HISTORY.md') as fp2:
             body = '\r\n\r\n'.join([fp1.read(), fp2.read()])
     req = requests.post(
         url='http://c.docverter.com/convert',
@@ -38,7 +38,7 @@ def _get_long_description():
     
     
 NAME = "pyload.utils2"
-VERSION = "0.5.0"
+VERSION = io.open('VERSION').readline()
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
 LONG_DESC=_get_long_description() or ""
