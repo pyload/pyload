@@ -9,10 +9,10 @@ _Continue reading about **pyLoad** amazing features on <https://pyload.net>_
 
 [![Build Status](https://travis-ci.org/pyload/utils.svg?branch=master)](https://travis-ci.org/pyload/utils)
 [![Requirements Status](https://requires.io/github/pyload/utils/requirements.svg?branch=master)](https://requires.io/github/pyload/utils/requirements/?branch=master)
-[![PyPI](https://img.shields.io/pypi/status/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
-[![PyPI](https://img.shields.io/pypi/pyversions/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
-[![PyPI](https://img.shields.io/pypi/v/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/utils/?branch=master)
+[![PyPI](https://img.shields.io/pypi/status/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
+[![PyPI](https://img.shields.io/pypi/v/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
+[![PyPI](https://img.shields.io/pypi/pyversions/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
 [![PyPI](https://img.shields.io/pypi/l/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
 
 
