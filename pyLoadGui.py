@@ -53,6 +53,8 @@ from os.path import join
 from os.path import basename
 from os.path import commonprefix
 from os.path import exists
+from threading import Timer
+from subprocess import call
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
@@ -372,7 +374,12 @@ class main(QObject):
             start all refresh threads and show main window
         """
         self.loadOptionsFromConfig()
-        if not self.connector.connectProxy():
+        timeout = 30.0 #seconds
+        timer = Timer(timeout, self.quitConnTimeout)
+        timer.start()
+        connected = self.connector.connectProxy()
+        timer.cancel()
+        if not connected:
             self.init()
             return
         self.connect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
@@ -2284,6 +2291,20 @@ class main(QObject):
         self.log.info("pyLoad Client quit")
         self.removeLogger()
         self.app.quit()
+
+    def quitConnTimeout(self):
+        self.log.error("Connecting to the pyLoad server is taking an unusually long time")
+        self.log.info("Terminating pyLoad Client")
+        self.setExcepthook(False)
+        self.removeLogger()
+        pid = str(os.getpid())
+        # kill the process because the qt eventloop is blocked
+        if os.name != "nt":
+            call(["kill", "-9", pid])
+        else:
+            call(["taskkill", "/F", "/PID", pid])
+        while True:
+            sleep(0.5)
 
     def quitInternal(self):
         if self.core:
