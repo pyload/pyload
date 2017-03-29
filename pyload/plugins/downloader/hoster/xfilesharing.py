@@ -298,9 +298,8 @@ class XFileSharingPro(SimpleHoster):
                 self.html = self.load(self.pyfile.url, post=inputs, ref=True)
                 self.errmsg = None
 
-        else:
-            self.parse_error(_("FORM: {0}").format(
-                inputs['op'] if 'op' in inputs else _('UNKNOWN')))
+        self.parse_error(_("FORM: {0}").format(
+            inputs['op'] if 'op' in inputs else _('UNKNOWN')))
 
     def handle_captcha(self, inputs):
         found = re.search(self.RECAPTCHA_URL_PATTERN, self.html)

@@ -326,16 +326,16 @@ class CurlDownload(Download):
         """
         for chunk in self.chunks:
             self.close_chunk(chunk)
-        else:
-            # Workaround: pycurl segfaults when closing multi, that never had
-            # any curl handles
-            if hasattr(self, "m"):
-                with closing(pycurl.Curl()) as c:
-                    self.manager.add_handle(c)
-                    self.manager.remove_handle(c)
+            
+        # Workaround: pycurl segfaults when closing multi, that never had
+        # any curl handles
+        if hasattr(self, 'manager'):
+            with closing(pycurl.Curl()) as c:
+                self.manager.add_handle(c)
+                self.manager.remove_handle(c)
 
         self.chunks = []
-        if hasattr(self, "m"):
+        if hasattr(self, 'manager'):
             self.manager.close()
             del self.manager
         if hasattr(self, "info"):
