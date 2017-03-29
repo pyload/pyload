@@ -15,33 +15,43 @@ import os
 import subprocess
 
 from itertools import chain
-    
+
 from setuptools import Command, setup
 from setuptools.command.sdist import sdist
 
 
-def _get_long_description():
+def _get_long_description(fromline=None, lines=None):
     try:
         import requests
     except ImportError:
         return None
     with io.open('README.md') as fp1:
-        fp1.readline()  #: Avoid first line, because not CommonMark-compliant
-        with io.open('HISTORY.md') as fp2:
-            body = '\r\n\r\n'.join([fp1.read(), fp2.read()])
+        readme = ''.join(fp1.readlines()[fromline:lines])
+    with io.open('CHANGELOG.md') as fp2:
+        desc = '\r\n\r\n\r\n\r\n'.join([readme, fp2.read()])
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst'},
-        files={'input_files[]': ('DESCRIPTION.md', body)}
+        files={'input_files[]': ('DESCRIPTION.md', desc)}
     )
     return req.text if req.ok else None
+
     
-    
+def _get_requires(filename):
+    path = os.path.join('requirements', filename)
+    with io.open(path) as fp:
+        return fp.read().splitlines()
+
+        
+def _get_version():
+    return io.open('VERSION').read().strip()
+
+
 NAME = "pyload.utils2"
-VERSION = io.open('VERSION').readline()
+VERSION = _get_version()
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
-LONG_DESC=_get_long_description() or ""
+LONG_DESC = _get_long_description(fromline=2, lines=19) or ""
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/utils/releases"
@@ -52,10 +62,8 @@ PLATFORMS = ['any']
 PACKAGES = ['pyload', 'pyload/utils']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
-INSTALL_REQUIRES = io.open(
-    os.path.join('requirements', 'install.txt')).read().splitlines()
-SETUP_REQUIRES = io.open(
-    os.path.join('requirements', 'setup.txt')).read().splitlines()
+INSTALL_REQUIRES = _get_requires('install.txt')
+SETUP_REQUIRES = _get_requires('setup.txt')
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
 EXTRAS_REQUIRE = {
