@@ -15,12 +15,39 @@ import os
 import subprocess
 
 from itertools import chain
-
+    
 from setuptools import Command, setup
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 
 
+def _get_long_description(fromline=None, lines=None):
+    try:
+        import requests
+    except ImportError:
+        return None
+    with io.open('README.md') as fp1:
+        readme = ''.join(fp1.readlines()[fromline:lines])
+    with io.open('CHANGELOG.md') as fp2:
+        desc = '\r\n\r\n\r\n\r\n'.join([readme, fp2.read()])
+    req = requests.post(
+        url='http://c.docverter.com/convert',
+        data={'from': 'markdown', 'to': 'rst'},
+        files={'input_files[]': ('DESCRIPTION.md', desc)}
+    )
+    return req.text if req.ok else None
+
+    
+def _get_requires(filename):
+    path = os.path.join('requirements', filename)
+    with io.open(path) as fp:
+        return fp.read().splitlines()
+
+        
+def _get_version():
+    return io.open('VERSION').read().strip()
+    
+    
 def _setx_path():
     if os.name != 'nt':
         return None
@@ -91,13 +118,12 @@ class Sdist(sdist):
 
 
 NAME = "pyload.core"
-VERSION = "1.0.0"
+VERSION = _get_version()
 STATUS = "2 - Pre-Alpha"
-DESC = """Free and Open Source download manager written in pure Python and
-designed to be extremely lightweight, easily extensible and fully manageable
-via web"""
-LONG_DESC='\n\n'.join(
-    [io.open("README.md").read(), io.open("HISTORY.md").read()])
+DESC = """Free and Open Source download manager written in Pure Python and
+designed to be extremely lightweight, fully customizable and remotely
+manageable"""
+LONG_DESC = _get_long_description(fromline=2, lines=20) or ""
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
@@ -105,24 +131,15 @@ KEYWORDS = [
 ]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/pyload/releases"
-LICENSE = "AGPLv3"
+LICENSE = "GNU Affero General Public License v3"
 AUTHOR = "Walter Purcaro"
 AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
 PACKAGES = ['pyload', 'pyload/core', 'pyload/plugins']
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
-INSTALL_REQUIRES = [
-    'argparse;python_version<"2.7"', 'autoupgrade-ng', 'daemonize',
-    'enum34;python_version<"3.4"', 'future', 'pycurl', 'pyload.config',
-    'pyload.utils'
-    # 'requests>=2.0'
-]
-SETUP_REQUIRES = [
-    'Babel', 'readme_renderer', 'recommonmark'
-    # 'sphinx<=1.4;python_version=="2.6" or python_version=="3.3"',
-    # 'sphinx>1.4;python_version=="2.7" or python_version>"3.3"'
-]
+INSTALL_REQUIRES = _get_requires('install.txt')
+SETUP_REQUIRES = _get_requires('setup.txt')
 TEST_SUITE = 'nose.collector'
 TESTS_REQUIRE = [
     'future', 'nose', 'requests>=1.2.2', 'unittest2',
@@ -164,7 +181,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Communications",
     "Topic :: Communications :: File Sharing",
     "Topic :: Internet",

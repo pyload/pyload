@@ -1,0 +1,9 @@
+argparse;python_version<"2.7"
+autoupgrade-ng
+daemonize
+enum34;python_version<"3.4"
+future
+pycurl
+pyload.config
+pyload.utils2
+# requests>=2.0

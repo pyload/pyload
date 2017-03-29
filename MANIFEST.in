@@ -1,14 +1,12 @@
 global-exclude *.py[codi] __pycache__
 
-graft pyload/webui/app
-graft pyload/webui/node_modules
-
 include *.md *.rst pyLoad.py
 
-prune docs/build
+prune docs/build VERSION
 
 recursive-include docs *.py *.rst
 recursive-include lib *
 recursive-include locale *.mo *.pot
 recursive-include pyload *.py
+recursive-include requirements *.txt
 recursive-include tests *.org *.py *.sh *.txt
