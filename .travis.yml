@@ -40,6 +40,7 @@ before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 install:
   - pip install -U setuptools
+  - pip install requests
   - pip install tox-travis
 script:
   - test $COVERITY_SCAN_BRANCH = 0
@@ -52,7 +53,6 @@ script:
 before_deploy:
   - test $TRAVIS_TEST_RESULT = 0
   - test $TRAVIS_EVENT_TYPE != "cron"
-  - pip install requests
 deploy:
   - provider: pypi
     user:
