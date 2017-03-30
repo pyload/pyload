@@ -1,8 +1,8 @@
 global-exclude *.py[codi] __pycache__
 
-include *.md *.rst pyLoad.py
+include *.md *.rst pyLoad.py VERSION
 
-prune docs/build VERSION
+prune docs/build
 
 recursive-include docs *.py *.rst
 recursive-include lib *

@@ -15,47 +15,82 @@ import os
 import subprocess
 
 from itertools import chain
-    
+
 from setuptools import Command, setup
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 
 
-def _get_long_description(fromline=None, lines=None):
-    try:
-        import requests
-    except ImportError:
-        return None
-    with io.open('README.md') as fp1:
-        readme = ''.join(fp1.readlines()[fromline:lines])
-    with io.open('CHANGELOG.md') as fp2:
-        desc = '\r\n\r\n\r\n\r\n'.join([readme, fp2.read()])
+def _extract_text(path, fromline=None, toline=None):
+    text = None
+    with io.open(path) as fp:
+        if fromline or toline:
+            text = ''.join(fp.readlines()[fromline:toline])
+        else:
+            text = fp.read()
+    return text.strip()
+
+
+def _gen_long_description(fromline=None, toline=None):
+    import requests
+
+    readme = _extract_text('README.md', fromline, toline)
+    history = _extract_text('CHANGELOG.md')
+    desc = '\r\n\r\n'.join([readme, history])
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst'},
         files={'input_files[]': ('DESCRIPTION.md', desc)}
     )
-    return req.text if req.ok else None
+    req.raise_for_status()
+    return req.text
 
-    
+
+def _get_long_description(fromline=None, toline=None):
+    try:
+        return _extract_text('README.rst')
+    except IOError:
+        return _gen_long_description(fromline, toline)
+
+
 def _get_requires(filename):
     path = os.path.join('requirements', filename)
-    with io.open(path) as fp:
-        return fp.read().splitlines()
+    return _extract_text(path).splitlines()
 
-        
+
 def _get_version():
-    return io.open('VERSION').read().strip()
-    
-    
-def _setx_path():
+    return _extract_text('VERSION')
+
+
+def _setx_ntpath():
     if os.name != 'nt':
         return None
-    try:
-        packdir = os.path.abspath(os.path.dirname(__file__))
-        subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
-    except Exception:
+    packdir = os.path.abspath(os.path.dirname(__file__))
+    subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
+
+
+class BuildLocale(Command):
+    """
+    Build the locales
+    """
+    description = 'build the locales'
+    user_options = []
+
+    def initialize_options(self):
         pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            os.mkdir('locale')
+        except OSError:
+            pass
+        self.run_command('extract_messages')
+        self.run_command('init_catalog')
+        # self.run_command('download_catalog')
+        self.run_command('compile_catalog')
 
 
 class Configure(Command):
@@ -72,17 +107,11 @@ class Configure(Command):
         pass
 
     def run(self):
-        try:
-            os.mkdir('locale')
-        except OSError:
-            pass
-        self.run_command('extract_messages')
-        self.run_command('init_catalog')
-        # self.run_command('get_catalog')
-        self.run_command('compile_catalog')
+        self.run_command('make_readme')
+        self.run_command('build_locale')
 
 
-class GetCatalog(Command):
+class DownloadCatalog(Command):
     """
     Download the translation catalog from the remote repository
     """
@@ -99,13 +128,31 @@ class GetCatalog(Command):
         raise NotImplementedError
 
 
+class MakeReadme(Command):
+    """
+    Create a valid README.rst file
+    """
+    description = 'create a valid README.rst file'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        with io.open('README.rst', mode='w') as fp:
+            fp.write(_gen_long_description(fromline=1, toline=36))
+
+
 class Install(install):
     """
     Custom ``install`` command
     """
     def run(self):
         install.run(self)
-        _setx_path()
+        _setx_ntpath()
 
 
 class Sdist(sdist):
@@ -123,7 +170,7 @@ STATUS = "2 - Pre-Alpha"
 DESC = """Free and Open Source download manager written in Pure Python and
 designed to be extremely lightweight, fully customizable and remotely
 manageable"""
-LONG_DESC = _get_long_description(fromline=2, lines=20) or ""
+LONG_DESC = _get_long_description(fromline=1, toline=36)
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
@@ -141,10 +188,7 @@ NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = _get_requires('install.txt')
 SETUP_REQUIRES = _get_requires('setup.txt')
 TEST_SUITE = 'nose.collector'
-TESTS_REQUIRE = [
-    'future', 'nose', 'requests>=1.2.2', 'unittest2',
-    'websocket-client>=0.8'
-]
+TESTS_REQUIRE = _get_requires('test.txt')
 EXTRAS_REQUIRE = {
     'colorlog': ['colorlog'],
     'rpc': ['pyload.rpc'],
@@ -158,8 +202,10 @@ ENTRY_POINTS = {
 }
 CMDCLASS = {
     'configure': Configure,
-    'get_catalog': GetCatalog,
+    'build_locale': BuildLocale,
+    'download_catalog': DownloadCatalog,
     'install': Install,
+    'make_readme': MakeReadme,
     'sdist': Sdist
 }
 MESSAGE_EXTRACTORS = {
