@@ -18,8 +18,8 @@ import sys
 import tempfile
 
 builtins.PACKDIR = PACKDIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..'))
-builtins.COREDIR = COREDIR = os.path.join(PACKDIR, 'pyload', 'core')
+    os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+builtins.COREDIR = COREDIR = os.path.join(PACKDIR, 'src', 'pyload', 'core')
 builtins.USERDIR = USERDIR = os.path.expanduser('~')
 builtins.DATADIR = DATADIR = os.getenv(
     'APPDATA') if os.name == 'nt' else USERDIR
