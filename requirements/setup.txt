@@ -1,5 +1,6 @@
 Babel
 # recommonmark
+requests>=1.2.2
 setuptools
 # sphinx<=1.4;python_version=="2.6" or python_version=="3.3"
 # sphinx>1.4;python_version=="2.7" or python_version>"3.3"
