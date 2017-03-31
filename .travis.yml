@@ -20,14 +20,18 @@ matrix:
     # - pypy3
   fast_finish: true
 cache: pip
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y pandoc
 install:
   - pip install -U setuptools
+  - pip install pypandoc
+  - pip install requests
   - pip install tox-travis
 script: tox --skip-missing-interpreters
 before_deploy:
   - test $TRAVIS_TEST_RESULT = 0
   - test $TRAVIS_EVENT_TYPE != "cron"
-  - pip install requests
 deploy:
   - provider: pypi
     user:

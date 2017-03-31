@@ -15,11 +15,11 @@ from ..decorator import iterate
 __all__ = ['comments', 'escape', 'tags', 'text']
 
 
-_re_comments = re.compile(r' *<!--.*?--> *', flags=re.S)
+_re_comments = re.compile(r'<!--.*?-->', flags=re.S)
 
 @iterate
 def comments(value):
-    return _re_comments.sub(" ", value).strip()
+    return _re_comments.sub('', value).strip()
 
 
 @iterate
@@ -31,11 +31,11 @@ def escape(text):
     return h.unescape(text)
 
 
-_re_tags = re.compile(r'\s*<.+?>\s*', flags=re.S)
+_re_tags = re.compile(r'<[^<]+?>')
 
 @iterate
 def tags(value):
-    return _re_tags.sub(" ", value).strip()
+    return _re_tags.sub('', value).strip()
 
 
 # NOTE: No lower-case conversion

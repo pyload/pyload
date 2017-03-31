@@ -104,7 +104,7 @@ def trycatch(callback):
                 return func(self, *args, **kwargs)
             except Exception as e:
                 msg = "Error executing `{0}` | {1}".format(
-                    func.__name__, e.message)
+                    func.__name__, str(e))
                 self.pyload.log.debug(msg)
                 if self.pyload.debug:
                     print_traceback()

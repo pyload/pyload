@@ -41,7 +41,7 @@ def _format_dump(obj):
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
         except Exception as e:
-            attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(e.message)
+            attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(str(e))
         dump.append((attr_name, attr_dump))
     return dump
 
@@ -81,7 +81,7 @@ def _format_framestack(frame=None, limit=None):
                     attr_dump = pprint.pformat(value)
                 except Exception as e:
                     attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(
-                        e.message)
+                        str(e))
                 frame_dump.append((attr_name, attr_dump))
 
             dump.append((frame_name, frame_dump))
