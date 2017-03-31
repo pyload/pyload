@@ -12,46 +12,89 @@
 
 import io
 import os
-import subprocess
+import re
 
 # from itertools import chain
 
-from setuptools import Command, setup
+from setuptools import Command, find_packages, setup
+from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
 
 
-def _get_long_description(fromline=None, lines=None):
-    try:
-        import requests
-    except ImportError:
-        return None
-    with io.open('README.md') as fp1:
-        readme = ''.join(fp1.readlines()[fromline:lines])
-    with io.open('CHANGELOG.md') as fp2:
-        desc = '\r\n\r\n\r\n\r\n'.join([readme, fp2.read()])
+def _extract_text(path, fromline=None, toline=None):
+    text = None
+    path = os.path.join(os.path.dirname(__file__), path)
+    with io.open(path) as fp:
+        if fromline or toline:
+            text = ''.join(fp.readlines()[fromline:toline])
+        else:
+            text = fp.read()
+    return text.strip()
+
+
+def _pandoc_convert(text):
+    import pypandoc
+    return pypandoc.convert_text(text, 'rst', 'markdown_github')
+
+
+def _docverter_convert(text):
+    import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst'},
-        files={'input_files[]': ('DESCRIPTION.md', desc)}
+        files={'input_files[]': ('.md', text)}
     )
-    return req.text if req.ok else None
+    req.raise_for_status()
+    return req.text
 
-    
+
+def _convert_text(text):
+    try:
+        return _pandoc_convert(text)
+    except Exception as e:
+        print(str(e))
+        return _docverter_convert(text)
+
+
+def _purge_text(text):
+    return re.sub('.*<.+>.*', '', text).strip()
+
+
+def _gen_long_description(fromline=None, toline=None, rst=False):
+    readme = _purge_text(_extract_text('README.md', fromline, toline))
+    history = _purge_text(_extract_text('CHANGELOG.md'))
+    desc = '\r\n\r\n'.join([readme, history])
+    try:
+        return _convert_text(desc)
+    except Exception as e:
+        if rst:
+            raise
+        else:
+            print(str(e))
+    return desc
+
+
+def _get_long_description(fromline=None, toline=None):
+    try:
+        return _extract_text('README.rst')
+    except IOError:
+        return _gen_long_description(fromline, toline)
+
+
 def _get_requires(filename):
     path = os.path.join('requirements', filename)
-    with io.open(path) as fp:
-        return fp.read().splitlines()
+    return _extract_text(path).splitlines()
 
-        
+
 def _get_version():
-    return io.open('VERSION').read().strip()
-    
-    
-class Configure(Command):
+    return _extract_text('VERSION')
+
+
+class BuildLocale(Command):
     """
-    Configure the package
+    BuildPy the locales
     """
-    description = 'configure the package'
+    description = 'build the locales'
     user_options = []
 
     def initialize_options(self):
@@ -63,15 +106,16 @@ class Configure(Command):
     def run(self):
         try:
             os.mkdir('locale')
-        except OSError:
-            pass
+        except OSError as e:
+            print(str(e))
+            return None
         self.run_command('extract_messages')
         self.run_command('init_catalog')
-        # self.run_command('get_catalog')
+        # self.run_command('download_catalog')
         self.run_command('compile_catalog')
 
 
-class GetCatalog(Command):
+class DownloadCatalog(Command):
     """
     Download the translation catalog from the remote repository
     """
@@ -88,12 +132,44 @@ class GetCatalog(Command):
         raise NotImplementedError
 
 
+class BuildReadme(Command):
+    """
+    Create a valid README.rst file
+    """
+    description = 'create a valid README.rst file'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        if os.path.isfile('README.rst'):
+            return None
+        with io.open('README.rst', mode='w') as fp:
+            fp.write(_gen_long_description(toline=30))
+
+
+class BuildPy(build_py):
+    """
+    Custom ``build_py`` command
+    """
+    def run(self):
+        if not self.dry_run:
+            self.run_command('build_readme')
+            self.run_command('build_locale')
+        build_py.run(self)
+
+
 class Sdist(sdist):
     """
     Custom ``sdist`` command
     """
     def run(self):
-        self.run_command('configure')
+        if not self.dry_run:
+            self.run_command('build_py')
         sdist.run(self)
 
 
@@ -101,7 +177,7 @@ NAME = "pyload.config"
 VERSION = _get_version()
 STATUS = "1 - Planning"
 DESC = """pyLoad Config module"""
-LONG_DESC = _get_long_description(fromline=2, lines=19) or ""
+LONG_DESC = _get_long_description(toline=30)
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/config/releases"
@@ -109,7 +185,8 @@ LICENSE = "GNU Affero General Public License v3"
 AUTHOR = "Walter Purcaro"
 AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
-PACKAGES = ['pyload', 'pyload/config']
+PACKAGES = find_packages('src')
+PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = _get_requires('install.txt')
@@ -120,12 +197,14 @@ SETUP_REQUIRES = _get_requires('setup.txt')
 # EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 CMDCLASS = {
-    'configure': Configure,
-    'get_catalog': GetCatalog,
+    'build_locale': BuildLocale,
+    'build_py': BuildPy,
+    'build_readme': BuildReadme,
+    'download_catalog': DownloadCatalog,
     'sdist': Sdist
 }
 MESSAGE_EXTRACTORS = {
-    'pyload': [('**.py', 'python', None)]
+    'src': [('**.py', 'python', None)]
 }
 ZIP_SAFE = False
 CLASSIFIERS = [
@@ -163,6 +242,7 @@ SETUP_MAP = dict(
     author_email=AUTHOR_EMAIL,
     platforms=PLATFORMS,
     packages=PACKAGES,
+    package_dir=PACKAGE_DIR,
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,

@@ -33,7 +33,7 @@ class ConfigParser(object):
     Holds and manages the configuration + meta data for config read from file.
     """
     __slots__ = [
-        '_RE_VERSION', '_extract_option', '_extract_section', '_parseline', 
+        '_RE_VERSION', '_extract_option', '_extract_section', '_parseline',
         '_write_version', 'config', 'filename', 'values', 'version'
     ]
 
@@ -60,7 +60,7 @@ class ConfigParser(object):
         verstr = convert.from_version(self.version)
         with io.open(self.filename, mode='wb') as fp:
             fp.write("version: {0}\n".format(verstr))
-    
+
     def check_version(self):
         """
         Determines if config needs to be deleted.
@@ -83,7 +83,7 @@ class ConfigParser(object):
             print("Unrecognized section", section)
             section = ""
         return section
-                                  
+
     def _extract_option(self, line):
         option, _, value = line.rpartition("=")
         return option.strip(), value.strip()
@@ -92,14 +92,14 @@ class ConfigParser(object):
         if line.startswith("["):
             return self._extract_section(line)
         option, value = self._extract_option(line)
-        if not section: 
+        if not section:
             print("Option without section", option)
         elif option in self.config[section].config:
             self.set(section, option, value, sync=False)
         else:
             print("Unrecognized option", section, option)
         return section
-            
+
     def parse(self, filename):
         """
         Read config values from file.
@@ -109,9 +109,9 @@ class ConfigParser(object):
             for line in iter(fp.readline, ""):
                 line = line.strip()
                 if not line:
-                    continue  
+                    continue
                 if line[0] in ("#", "//", "|"):
-                    continue                    
+                    continue
                 section = self._parseline(line, section)
 
     def save(self):

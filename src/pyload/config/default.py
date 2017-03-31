@@ -17,7 +17,7 @@ def make_config(config):
     """
     desc = _('Description')
     expl = _('Long description')
-    
+
     config.add_config_section('general', _('General'), desc, expl,
     [
         ('language', 'en|de|fr|it|es|nl|sv|ru|pl|cs|sr|pt', _('Language'), 'en'),
