@@ -44,7 +44,6 @@ Table of contents
 - [Installation](#installation)
   - [Dependencies](#dependencies)
   - [PIP Install](#pip-install)
-  - [Manual Install](#manual-install)
   - [Tarball Install](#tarball-install)
 - [Usage](#usage)
   - [Quick Start](#quick-start)
@@ -96,7 +95,6 @@ Installation
 
 You can install **pyLoad** in several ways:
 - [PIP install](#pip-install) _(recommended on Unix based systems)_
-- [Manual Install](#manual-install)
 - [Tarball Install](#tarball-install)
 
 ### Dependencies
@@ -127,14 +125,14 @@ pyLoad package.
 
 ### PIP Install
 
-Type in your command shell **with _administrator/root_ privileges**:
+Just type in your command shell **with _administrator/root_ privileges**:
 
     pip install pyload.core[full]
 
 The `full` option will ensure that all the (optional) extra packages are
 downloaded and installed as well as the mandatory ones.
 
-To install only the essential dependencies, type directly:
+But, if you want to install just the essential dependencies, only type:
 
     pip install pyload.core
 
@@ -143,30 +141,18 @@ If the above commands fail, consider using the
 
     pip install --user pyload.core
 
-If the above command fails too, try the others install methods.
+If the above command fails too, try the [others install methods](#installation).
 Leaves as last resort to [report your issue](#report-an-issue).
 
-### Manual Install
-
-1. Download the [build package](https://github.com/pyload/pyload/releases) for
-your platform.
-2. Extract the downloaded archive.
-3. From the extracted directory path,
-run the command `python setup.py install pyload.core[full]`
-(or `python setup.py install pyload.core` for a minimal installation).
-
 ### Tarball Install
-
-Like the [Manual install method](#manual-install) with one more pass:
 
 1. Get the latest _tarball_ of the source code in format
 [ZIP](https://github.com/pyload/pyload/archive/master.zip) or
 [TAR](https://github.com/pyload/pyload/archive/master.tar.gz).
 2. Extract the downloaded archive.
 3. From the extracted directory path, run the command
-`python setup.py configure`.
-4. Then run the command `python setup.py install pyload.core[full]`
-(or `python setup.py install pyload.core` for a minimal installation).
+`python setup.py build`.
+4. Then run the command `python setup.py install`.
 
 
 Usage
@@ -377,7 +363,7 @@ Development
 To report an issue, suggest features, ask for a question or help us out,
 [**open a ticket**](https://github.com/pyload/pyload/issues).
 
-Please, always title your issues with a pertinent short description and expone 
+Please, always title your issues with a pertinent short description and expone
 accurately the problem you encounter.
 
 **Don't foget to attach a full debug log of your bugged session from the
@@ -393,7 +379,7 @@ To submit your code to the pyLoad repository
 [**open a new _Pull Request_**](https://github.com/pyload/pyload/pulls).
 
 If you want to contribute to the project you have to sign our
-[Contributor License Agreement](#contributor-license-agreement) to allow us 
+[Contributor License Agreement](#contributor-license-agreement) to allow us
 to integrate your work in the official repository.
 You can sign it easily from within your pull request itself.
 
@@ -401,7 +387,7 @@ For further information see the [License Section](#license).
 
 ### Coding Guidelines
 
-Please, follow the 
+Please, follow the
 [PEP 8 - Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/).
 
 ### Localization
@@ -409,7 +395,7 @@ Please, follow the
 > **Notice:**
 > **Localization not yet available.**
 
-You can download the latest locale files from 
+You can download the latest locale files from
 ~~<https://crowdin.com/download/project/pyload.zip>~~.
 
 ### Performances

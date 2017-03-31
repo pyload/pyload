@@ -161,7 +161,7 @@ class Addon(Base):
                 self.periodical()
         except Exception as e:
             self.pyload.log.error(
-                _("Error executing addon: {0}").format(e.message))
+                _("Error executing addon: {0}").format(str(e)))
             # self.pyload.print_exc()
 
         if self.cb:

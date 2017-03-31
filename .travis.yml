@@ -34,12 +34,14 @@ addons:
     build_command: python setup.py configure
     branch_pattern: coverity_scan
 before_install:
-  # - sudo apt-get -qq update
+  - sudo apt-get -qq update
+  - sudo apt-get install -y pandoc
   # - sudo apt-get install -y python-crypto
   # - sudo apt-get install -y python-pycurl
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 install:
   - pip install -U setuptools
+  - pip install pypandoc
   - pip install requests
   - pip install tox-travis
 script:

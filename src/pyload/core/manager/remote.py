@@ -38,7 +38,7 @@ class RemoteManager(object):
                     _("Starting {0}: {1}:{2}").format(b, host, port))
             except Exception as e:
                 self.pyload.log.error(
-                    _("Failed loading backend {0} | {1}").format(b, e.message))
+                    _("Failed loading backend {0} | {1}").format(b, str(e)))
                 if self.pyload.debug:
                     print_exc()
             else:

@@ -305,7 +305,7 @@ class Crypter(Base):
                             with io.open(format.path(path), mode='rb') as fp:
                                 content.append((fp.name, fp.read()))
                     except IOError as e:
-                        self.log_error(_("IOError"), e.message)
+                        self.log_error(_("IOError"), str(e))
                 else:
                     remote.append(url)
 

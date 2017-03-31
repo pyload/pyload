@@ -206,14 +206,14 @@ class Core(Process):
                 group = self.config.get('permission', 'group')
                 sys.set_process_group(group)
             except Exception as e:
-                self.log.error(_("Unable to change gid"), e.message)
+                self.log.error(_("Unable to change gid"), str(e))
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
                 sys.set_process_user(user)
             except Exception as e:
-                self.log.error(_("Unable to change uid"), e.message)
+                self.log.error(_("Unable to change uid"), str(e))
 
     def _init_translation(self):
         language = self.config.get('general', 'language')
@@ -469,7 +469,7 @@ class Core(Process):
         except KeyboardInterrupt:
             pass
         except Exception as e:
-            self.log.critical(_("Critical error"), e.message)
+            self.log.critical(_("Critical error"), str(e))
             self.terminate()
             raise
 

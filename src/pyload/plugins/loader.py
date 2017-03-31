@@ -179,7 +179,7 @@ class PluginLoader(object):
             except Exception as e:
                 self.log_debug(
                     folder, name, "Error when parsing: {0}".format(m[-1]))
-                self.log.debug(e.message)
+                self.log.debug(str(e))
 
             if not hasattr(Base, "__{0}__".format(m[0])):
                 # TODO: remove type from all plugins, its not needed

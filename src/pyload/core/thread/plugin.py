@@ -97,7 +97,7 @@ class PluginThread(Thread):
 
         except Exception as e:
             self.pyload.log.debug(
-                "Error creating zip file: {0}".format(e.message))
+                "Error creating zip file: {0}".format(str(e)))
 
             dump_name = dump_name.replace(".zip", ".txt")
             with io.open(dump_name, mode='wb') as fp:
@@ -128,7 +128,7 @@ class PluginThread(Thread):
                     dump += pformat(value) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        e.message)
+                        str(e))
 
             del frame
 
@@ -144,7 +144,7 @@ class PluginThread(Thread):
                     dump += pformat(attr) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        e.message)
+                        str(e))
 
         return dump
 
@@ -159,7 +159,7 @@ class PluginThread(Thread):
                     dump += pformat(attr) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        e.message)
+                        str(e))
 
         return dump
 

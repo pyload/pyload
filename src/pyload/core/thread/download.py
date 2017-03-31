@@ -188,7 +188,7 @@ class DownloadThread(PluginThread):
                 pyfile.set_status("skipped")
 
                 self.pyload.log.info(
-                    _("Download skipped: {0} due to {1}").format(pyfile.name, e.message))
+                    _("Download skipped: {0} due to {1}").format(pyfile.name, str(e)))
 
                 self.clean(pyfile)
 
@@ -209,8 +209,8 @@ class DownloadThread(PluginThread):
                 else:
                     pyfile.set_status("failed")
                     self.pyload.log.warning(
-                        _("Download failed: {0} | {1}").format(pyfile.name, e.message))
-                    pyfile.error = e.message
+                        _("Download failed: {0} | {1}").format(pyfile.name, str(e)))
+                    pyfile.error = str(e)
 
                 if self.pyload.debug:
                     print_exc()

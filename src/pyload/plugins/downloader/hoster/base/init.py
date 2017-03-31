@@ -314,7 +314,7 @@ class Hoster(Base):
                     os.chown(location, uid, gid)
                 except Exception as e:
                     self.pyload.log.warning(
-                        _("Setting User and Group failed: {0}").format(e.message))
+                        _("Setting User and Group failed: {0}").format(str(e)))
 
         name = self.pyfile.name
 
@@ -356,7 +356,7 @@ class Hoster(Base):
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.pyload.log.warning(
-                    _("Setting User and Group failed: {0}").format(e.message))
+                    _("Setting User and Group failed: {0}").format(str(e)))
 
         self.last_download = fs_filename
         return self.last_download

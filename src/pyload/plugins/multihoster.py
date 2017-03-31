@@ -69,7 +69,7 @@ class MultiHoster(Account):
                 try:
                     self.hoster = self.load_hoster_list(req)
                 except Exception as e:
-                    self.log_error(e.message)
+                    self.log_error(str(e))
                     return []
 
             for rep in self.replacements:

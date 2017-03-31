@@ -12,17 +12,20 @@
 
 import io
 import os
+import re
 import subprocess
 
 from itertools import chain
 
-from setuptools import Command, setup
+from setuptools import Command, find_packages, setup
+from setuptools.command.build_py import build_py
 from setuptools.command.install import install
 from setuptools.command.sdist import sdist
 
 
 def _extract_text(path, fromline=None, toline=None):
     text = None
+    path = os.path.join(os.path.dirname(__file__), path)
     with io.open(path) as fp:
         if fromline or toline:
             text = ''.join(fp.readlines()[fromline:toline])
@@ -31,19 +34,46 @@ def _extract_text(path, fromline=None, toline=None):
     return text.strip()
 
 
-def _gen_long_description(fromline=None, toline=None):
-    import requests
+def _pandoc_convert(text):
+    import pypandoc
+    return pypandoc.convert_text(text, 'rst', 'markdown_github')
 
-    readme = _extract_text('README.md', fromline, toline)
-    history = _extract_text('CHANGELOG.md')
-    desc = '\r\n\r\n'.join([readme, history])
+
+def _docverter_convert(text):
+    import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst'},
-        files={'input_files[]': ('DESCRIPTION.md', desc)}
+        files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
     return req.text
+
+
+def _convert_text(text):
+    try:
+        return _pandoc_convert(text)
+    except Exception as e:
+        print(str(e))
+        return _docverter_convert(text)
+
+
+def _purge_text(text):
+    return re.sub('.*<.+>.*', '', text).strip()
+
+
+def _gen_long_description(fromline=None, toline=None, rst=False):
+    readme = _purge_text(_extract_text('README.md', fromline, toline))
+    history = _purge_text(_extract_text('CHANGELOG.md'))
+    desc = '\r\n\r\n'.join([readme, history])
+    try:
+        return _convert_text(desc)
+    except Exception as e:
+        if rst:
+            raise
+        else:
+            print(str(e))
+    return desc
 
 
 def _get_long_description(fromline=None, toline=None):
@@ -63,15 +93,13 @@ def _get_version():
 
 
 def _setx_ntpath():
-    if os.name != 'nt':
-        return None
     packdir = os.path.abspath(os.path.dirname(__file__))
     subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
 
 
 class BuildLocale(Command):
     """
-    Build the locales
+    BuildPy the locales
     """
     description = 'build the locales'
     user_options = []
@@ -85,30 +113,13 @@ class BuildLocale(Command):
     def run(self):
         try:
             os.mkdir('locale')
-        except OSError:
-            pass
+        except OSError as e:
+            print(str(e))
+            return None
         self.run_command('extract_messages')
         self.run_command('init_catalog')
         # self.run_command('download_catalog')
         self.run_command('compile_catalog')
-
-
-class Configure(Command):
-    """
-    Configure the package
-    """
-    description = 'configure the package'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        self.run_command('make_readme')
-        self.run_command('build_locale')
 
 
 class DownloadCatalog(Command):
@@ -128,7 +139,7 @@ class DownloadCatalog(Command):
         raise NotImplementedError
 
 
-class MakeReadme(Command):
+class BuildReadme(Command):
     """
     Create a valid README.rst file
     """
@@ -142,8 +153,21 @@ class MakeReadme(Command):
         pass
 
     def run(self):
+        if os.path.isfile('README.rst'):
+            return None
         with io.open('README.rst', mode='w') as fp:
-            fp.write(_gen_long_description(fromline=1, toline=36))
+            fp.write(_gen_long_description(toline=36, rst=True))
+
+
+class BuildPy(build_py):
+    """
+    Custom ``build_py`` command
+    """
+    def run(self):
+        if not self.dry_run:
+            self.run_command('build_readme')
+            self.run_command('build_locale')
+        build_py.run(self)
 
 
 class Install(install):
@@ -152,6 +176,11 @@ class Install(install):
     """
     def run(self):
         install.run(self)
+        if self.dry_run:
+            return None
+        if os.name != 'nt':
+            return None
+        distutils.log.info("setting path in environment variables")
         _setx_ntpath()
 
 
@@ -160,7 +189,8 @@ class Sdist(sdist):
     Custom ``sdist`` command
     """
     def run(self):
-        self.run_command('configure')
+        if not self.dry_run:
+            self.run_command('build_py')
         sdist.run(self)
 
 
@@ -170,7 +200,7 @@ STATUS = "2 - Pre-Alpha"
 DESC = """Free and Open Source download manager written in Pure Python and
 designed to be extremely lightweight, fully customizable and remotely
 manageable"""
-LONG_DESC = _get_long_description(fromline=1, toline=36)
+LONG_DESC = _get_long_description(toline=36)
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
@@ -182,7 +212,8 @@ LICENSE = "GNU Affero General Public License v3"
 AUTHOR = "Walter Purcaro"
 AUTHOR_EMAIL = "vuolter@gmail.com"
 PLATFORMS = ['any']
-PACKAGES = ['pyload', 'pyload/core', 'pyload/plugins']
+PACKAGES = find_packages('src')
+PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = ['pyload']
 INSTALL_REQUIRES = _get_requires('install.txt')
@@ -201,15 +232,15 @@ ENTRY_POINTS = {
     'console_scripts': ['pyload = pyLoad:main']
 }
 CMDCLASS = {
-    'configure': Configure,
     'build_locale': BuildLocale,
+    'build_py': BuildPy,
+    'build_readme': BuildReadme,
     'download_catalog': DownloadCatalog,
     'install': Install,
-    'make_readme': MakeReadme,
     'sdist': Sdist
 }
 MESSAGE_EXTRACTORS = {
-    'pyload': [('**.py', 'python', None)]
+    'src': [('**.py', 'python', None)]
 }
 ZIP_SAFE = False
 CLASSIFIERS = [
@@ -247,6 +278,7 @@ SETUP_MAP = dict(
     author_email=AUTHOR_EMAIL,
     platforms=PLATFORMS,
     packages=PACKAGES,
+    package_dir=PACKAGE_DIR,
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,

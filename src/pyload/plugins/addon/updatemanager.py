@@ -153,7 +153,7 @@ class UpdateManager(Hook):
                 content = get_url(url.format(info))
             except Exception as e:
                 self.log_warning(
-                    _("Error when updating {0}").format(filename), e.message)
+                    _("Error when updating {0}").format(filename), str(e))
                 continue
 
             m = vre.search(content)

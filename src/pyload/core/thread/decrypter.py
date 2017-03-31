@@ -102,7 +102,7 @@ class DecrypterThread(PluginThread):
                 except Abort:
                     plugin.log_info(_("Decrypting aborted"))
                 except Exception as e:
-                    plugin.log_error(_("Decrypting failed"), e.message)
+                    plugin.log_error(_("Decrypting failed"), str(e))
 
                     self.error = True
                     # generate error linkStatus

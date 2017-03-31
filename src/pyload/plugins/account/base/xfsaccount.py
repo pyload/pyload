@@ -42,7 +42,7 @@ class XFSPAccount(Account):
                 self.log_debug(found.group(1))
                 validuntil = mktime(strptime(found.group(1), "%d %B %Y"))
             except Exception as e:
-                self.log_error(e.message)
+                self.log_error(str(e))
         else:
             found = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if found:

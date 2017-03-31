@@ -70,7 +70,7 @@ class AddonManager(object):
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.log_error(_("Error when executing {0}".format(f)), e.message)
+            plugin.log_error(_("Error when executing {0}".format(f)), str(e))
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -86,7 +86,7 @@ class AddonManager(object):
             func = getattr(self.plugins[plugin].instances[0], func_name)
             return func(*args)
         except Exception as e:
-            raise ServiceException(e.message)
+            raise ServiceException(str(e))
 
     @lock
     def create_index(self):

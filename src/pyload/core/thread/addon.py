@@ -82,7 +82,7 @@ class AddonThread(PluginThread):
         except Exception as e:
             if hasattr(self.fn, "im_self"):
                 addon = self.fn.__self__
-                addon.log_error(_("An Error occurred"), e.message)
+                addon.log_error(_("An Error occurred"), str(e))
                 if self.manager.pyload.debug:
                     print_exc()
                     self.write_debug_report(addon.__name__, plugin=addon)

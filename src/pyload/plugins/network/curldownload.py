@@ -215,7 +215,7 @@ class CurlDownload(Download):
                         chunk.verify_header()
                     except ResponseException as e:
                         self.pyload.log.debug(
-                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, e.message))
+                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -236,7 +236,7 @@ class CurlDownload(Download):
                         chunk.verify_header()
                     except ResponseException as e:
                         self.pyload.log.debug(
-                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, e.message))
+                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -316,7 +316,7 @@ class CurlDownload(Download):
         try:
             self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
-            self.pyload.log.debug("Error removing chunk: {0}".format(e.message))
+            self.pyload.log.debug("Error removing chunk: {0}".format(str(e)))
         finally:
             chunk.close()
 
@@ -326,7 +326,7 @@ class CurlDownload(Download):
         """
         for chunk in self.chunks:
             self.close_chunk(chunk)
-            
+
         # Workaround: pycurl segfaults when closing multi, that never had
         # any curl handles
         if hasattr(self, 'manager'):

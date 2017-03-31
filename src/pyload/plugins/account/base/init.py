@@ -78,7 +78,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.log_error(_("Invalid config: {0}").format(e.message))
+            self.log_error(_("Invalid config: {0}").format(str(e)))
             self.config_data = {}
 
         self.init()
@@ -160,7 +160,7 @@ class Account(Base):
 
         except Exception as e:
             self.log_warning(
-                _("Could not login with account {0} | {1}").format(self.loginname, e.message))
+                _("Could not login with account {0} | {1}").format(self.loginname, str(e)))
             self.valid = False
             # self.pyload.print_exc()
 
@@ -234,8 +234,8 @@ class Account(Base):
                             "Deprecated .load_account_info(...) signature, omit user argument")
                         infos = self.load_account_info(self.loginname, req)
                 except Exception as e:
-                    infos = {'error': e.message}
-                    self.log_error(_("Error: {0}").format(e.message))
+                    infos = {'error': str(e)}
+                    self.log_error(_("Error: {0}").format(str(e)))
 
             self.restore_defaults()  #: reset to initial state
             if isinstance(infos, dict):  #: copy result from dict to class

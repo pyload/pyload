@@ -109,7 +109,7 @@ class DatabaseJob(object):
             print_exc()
             try:
                 print("Database Error @", self.fn.__name__,
-                      self.args[1:], self.kwargs, e.message)
+                      self.args[1:], self.kwargs, str(e))
             except Exception:
                 pass
 

@@ -98,7 +98,7 @@ class HosterPluginTester(PluginTester):
         except Exception as e:
             if isinstance(e, Fail) and status == "failed":
                 pass
-            elif isinstance(e, Fail) and status == "offline" and e.message == "offline":
+            elif isinstance(e, Fail) and status == "offline" and str(e) == "offline":
                 pass
             else:
                 raise
