@@ -99,8 +99,8 @@ checks:
     classes_no_self_use: true
 tools:
   pylint:
-    # python_version: '3'
-    config_file: .pylintrc
+    python_version: '3'
+    # config_file: .pylintrc
 filter:
   excluded_paths:
     - '*/plugins/*'
