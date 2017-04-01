@@ -4,6 +4,6 @@ daemonize
 enum34;python_version<"3.4"
 future
 pycurl
-pyload.config
-pyload.utils2
+pyload.config==0.5
+pyload.utils2==0.5
 # requests>=2.0
