@@ -1,2 +1,2 @@
 requests>=1.2.2
-setuptools
+setuptools>=17.1
