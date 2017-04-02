@@ -23,26 +23,31 @@ except ImportError:
 __all__ = ['checksum', 'forward', 'install_translation']
 
 
+def _crcsum(path, name, buffer):
+    last = 0
+    call = getattr(zlib, name)
+    with io.open(path, mode='rb') as fp:
+        for chunk in iter(lambda: fp.read(buffer), b''):
+            last = call(chunk, last)
+    return "{0:x}".format(last & 0xffffffff)
+        
+        
+def _hashsum(path, name, buffer):
+    h = hashlib.new(name)
+    buffer *= h.block_size
+    with io.open(path, mode='rb') as fp:
+        for chunk in iter(lambda: fp.read(buffer), b''):
+            h.update(chunk)
+    return h.hexdigest()
+        
+        
 def checksum(path, name, buffer=None):
     res = None
     buf = buffer or bufsize(path)
-
     if name in ('adler32', 'crc32'):
-        last = 0
-        call = getattr(zlib, name)
-        with io.open(path, mode='rb') as fp:
-            for chunk in iter(lambda: fp.read(buf), b''):
-                last = call(chunk, last)
-        res = "{0:x}".format(last & 0xffffffff)
-
+        res = _crcsum(path, name, buf)
     elif name in hashlib.algorithms_available:
-        h = hashlib.new(name)
-        buf *= h.block_size
-        with io.open(path, mode='rb') as fp:
-            for chunk in iter(lambda: fp.read(buf), b''):
-                h.update(chunk)
-        res = h.hexdigest()
-
+        res = _hashsum(path, name, buf)
     return res
 
 

@@ -26,12 +26,12 @@ __all__ = ['accumulate', 'chunks', 'convert', 'from_version', 'language',
            'to_int', 'to_list', 'to_str', 'to_version']
 
 
-def convert(obj, rule, func, fn_args=(), fn_kwgs={}, fallback=None):
+def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
     res = None
-    cvargs = (rule, func, fn_args, fn_kwgs, fallback)
+    cvargs = (rule, func, args, kwargs, fallback)
     try:
         if rule(obj):
-            res = func(obj, *fn_args, **fn_kwgs)
+            res = func(obj, *args, **kwargs)
         elif ismapping(obj):
             res = dict((convert(k, *cvargs), convert(v, *cvargs))
                        for k, v in obj.items())
