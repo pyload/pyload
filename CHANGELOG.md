@@ -103,10 +103,6 @@ Release History
 - New `Unrar` plugin
 - Online check for some hosters
 
-### 0.3.2 (2010-03-10)
-
-- ...
-
 ### 0.3.1 (2010-02-08)
 
 - Better GUI updating
@@ -138,10 +134,6 @@ Release History
 
 - Bugfixes
 - Web User Interface
-
-### 0.2.0 (2017-03-21)
-
-- ...
 
 ### 0.1.1 (2009-08-12)
 
