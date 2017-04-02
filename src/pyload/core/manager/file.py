@@ -201,9 +201,70 @@ class FileManager(object):
         """
         if fid in self.files:
             return self.files[fid].to_info_data()
-
         return self.db.get_file_info(fid)
 
+    def _get_tree_files(self, root, state, owner, search):
+        files = self.db.get_all_files(
+            package=root, state=state, search=search, owner=owner)
+        # updating from cache
+        for fid, f in self.files.items():
+            if fid not in files:
+                continue
+            files[fid] = f.to_info_data()
+        return files
+                
+    def _get_tree_packages(self, root, owner):
+        packs = self.db.get_all_packages(root, owner=owner)
+        # foreign pid, do not overwrite local pid !
+        for fpid, p in self.packages.items():
+            if fpid not in packs:
+                continue
+            # copy the stats data
+            stats = packs[fpid].stats
+            packs[fpid] = p.to_info_data()
+            packs[fpid].stats = stats            
+        return packs
+        
+    def _reduce_tree(self, pid, packs, files):
+        keep = []
+        queue = [pid]
+        while queue:
+            fpid = queue.pop()
+            keep.append(fpid)
+            queue.extend(packs[fpid].pids)
+        # now remove unneeded data
+        for fpid in packs.keys():
+            if fpid in keep:
+                continue
+            del packs[fpid]
+        for fid, f in files.items():
+            if f.package in keep:
+                continue
+            del files[fid]
+        return packs, files
+              
+    def _sanitize_tree(self, packs, files):
+        # linear traversal over all data
+        for fpid, p in packs.items():
+            if p.fids is None:
+                p.fids = []
+            if p.pids is None:
+                p.pids = []
+            root = packs.get(p.root, None)
+            if not root:
+                continue
+            if root.pids is None:
+                root.pids = []
+            root.pids.append(fpid)
+            
+        for fid, f in files.items():
+            p = packs.get(f.package, None)
+            if not p:
+                continue
+            p.fids.append(fid)
+            
+        return packs, files
+        
     @readlock
     def get_tree(self, pid, full, state, owner=None, search=None):
         """
@@ -214,24 +275,10 @@ class FileManager(object):
 
         # for depth=1, we do not need to retrieve all files/packages
         root = pid if not full else None
-
-        packs = self.db.get_all_packages(root, owner=owner)
-        files = self.db.get_all_files(
-            package=root, state=state, search=search, owner=owner)
-
-        # updating from cache
-        for fid, f in self.files.items():
-            if fid in files:
-                files[fid] = f.to_info_data()
-
-        # foreign pid, do not overwrite local pid !
-        for fpid, p in self.packages.items():
-            if fpid in packs:
-                # copy the stats data
-                stats = packs[fpid].stats
-                packs[fpid] = p.to_info_data()
-                packs[fpid].stats = stats
-
+        
+        packs = self._get_tree_packages(root, state, owner, search)
+        files = self._get_tree_files(root, owner)
+        
         # root package is not in database, create an instance
         if pid == self.ROOT_PACKAGE:
             view.root = RootPackage(self, self.ROOT_OWNER).to_info_data()
@@ -241,58 +288,26 @@ class FileManager(object):
         else:  #: package does not exists
             return view
 
-        # linear traversal over all data
-        for fpid, p in packs.items():
-            if p.fids is None:
-                p.fids = []
-            if p.pids is None:
-                p.pids = []
-
-            root = packs.get(p.root, None)
-            if root:
-                if root.pids is None:
-                    root.pids = []
-                root.pids.append(fpid)
-
-        for fid, f in files.items():
-            p = packs.get(f.package, None)
-            if p:
-                p.fids.append(fid)
-
+        self._sanitize_tree(packs, files)
+        
         # cutting of tree is not good in runtime, only saves bandwidth
         # need to remove some entries
         if full and pid > -1:
-            keep = []
-            queue = [pid]
-            while queue:
-                fpid = queue.pop()
-                keep.append(fpid)
-                queue.extend(packs[fpid].pids)
-
-            # now remove unneeded data
-            for fpid in packs.keys():
-                if fpid not in keep:
-                    del packs[fpid]
-
-            for fid, f in files.items():
-                if f.package not in keep:
-                    del files[fid]
-
+            self._reduce_tree(pid, packs, files)
+            
         # remove root
         del packs[pid]
+        
         view.files = files
         view.packages = packs
-
         return view
 
     @lock
     def get_jobs(self, occ):
-
         # load jobs with file info
         if occ not in self.job_cache:
             self.job_cache[occ] = dict((k, self.get_file_info(fid)) for k, fid
                                        in self.db.get_jobs(occ).items())
-
         return self.job_cache[occ]
 
     def get_download_stats(self, user=None):
@@ -512,57 +527,55 @@ class FileManager(object):
                 continue
             if pack.pid == pid:
                 pack.packageorder = position
-            if p.packageorder > position:
-                if position <= pack.packageorder < p.packageorder:
+            if p.packageorder > position and position <= pack.packageorder < p.packageorder:
                     pack.packageorder += 1
-            elif p.order < position:
-                if position >= pack.packageorder > p.packageorder:
+            elif p.packageorder < position and position >= pack.packageorder > p.packageorder:
                     pack.packageorder -= 1
 
         self.db.commit()
 
         self.pyload.evm.fire("package:reordered", pid, position, p.root)
 
+    def _min_fileorder(self, files):
+        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
+        return f.fileorder
+        
+    def _order_files(self, fids, order, position):
+        diff = len(fids)
+        incr = 0
+        files = (pyfile for pyfile in self.files.values()
+                 if not (pyfile.fileorder < 0 or pyfile.packageid != f.package))
+        if order > position:
+            for pyfile in files:
+                if not (position <= pyfile.fileorder < order):
+                    continue
+                pyfile.fileorder += diff                    
+            diff = 0
+        elif order < position:
+            for pyfile in files:
+                if not (position >= pyfile.fileorder >= order + diff):
+                    continue
+                pyfile.fileorder -= diff
+            incr = 1
+        for i, fid in enumerate(fids):
+            if fid not in self.files:
+                continue
+            self.files[fid].fileorder = position - diff + i + incr
+            
     @lock
     @invalidate
     def order_files(self, fids, pid, position):
-
         files = [self.get_file_info(fid) for fid in fids]
         orders = [f.fileorder for f in files]
         if min(orders) + len(files) != max(orders) + 1:
             raise Exception("Tried to reorder non continuous block of files")
 
-        # minimum fileorder
-        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
-        order = f.fileorder
-
+        order = self._min_fileorder(files)  #: minimum fileorder
         self.db.order_files(pid, fids, order, position)
-        diff = len(fids)
-
-        if f.fileorder > position:
-            for pyfile in self.files.values():
-                if pyfile.packageid != f.package or pyfile.fileorder < 0:
-                    continue
-                if position <= pyfile.fileorder < f.fileorder:
-                    pyfile.fileorder += diff
-
-            for i, fid in enumerate(fids):
-                if fid in self.files:
-                    self.files[fid].fileorder = position + i
-
-        elif f.fileorder < position:
-            for pyfile in self.files.values():
-                if pyfile.packageid != f.package or pyfile.fileorder < 0:
-                    continue
-                if position >= pyfile.fileorder >= f.fileorder + diff:
-                    pyfile.fileorder -= diff
-
-            for i, fid in enumerate(fids):
-                if fid in self.files:
-                    self.files[fid].fileorder = position - diff + i + 1
+        
+        self._order_files(fids, order, position)
 
         self.db.commit()
-
         self.pyload.evm.fire("file:reordered", pid)
 
     @readlock

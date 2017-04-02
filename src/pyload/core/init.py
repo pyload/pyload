@@ -103,13 +103,7 @@ class Core(Process):
     def version(self):
         return __core_version
 
-    # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
-    def _init_logger(self, level):
-        # Init logger
-        self.log = logging.getLogger('pyload')
-        self.log.setLevel(level)
-
-        # Set console handler
+    def _init_consolelog_handler(self):
         if self.config.get('log', 'color_console') and ismodule('colorlog'):
             fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
             datefmt = "%Y-%m-%d  %H:%M:%S"
@@ -138,43 +132,32 @@ class Core(Process):
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
         self.log.addHandler(consolehdlr)
+        
+    def _init_syslog_handler(self):
+        #: try to mimic to normal syslog messages
+        fmt = "%(asctime)s %(name)s: %(message)s"
+        datefmt = "%b %e %H:%M:%S"
+        syslogform = logging.Formatter(fmt, datefmt)
+        syslogaddr = None
 
-        # Set syslog handler
-        syslog = self.config.get('log', 'syslog')
-        if syslog != 'no':
-            #: try to mimic to normal syslog messages
-            fmt = "%(asctime)s %(name)s: %(message)s"
-            datefmt = "%b %e %H:%M:%S"
-            syslogform = logging.Formatter(fmt, datefmt)
-            syslogaddr = None
+        if syslog == 'remote':
+            syslog_host = self.config.get('log', 'syslog_host')
+            syslog_port = self.config.get('log', 'syslog_port')
+            syslogaddr = (syslog_host, syslog_port)
+        else:
+            syslog_folder = self.config.get('log', 'syslog_folder')
+            if syslogaddr:
+                syslogaddr = syslog_folder
+            elif sys.platform == 'darwin':
+                syslogaddr = '/var/run/syslog'
+            elif os.name != 'nt':
+                syslogaddr = '/dev/log'
 
-            if syslog == 'remote':
-                syslog_host = self.config.get('log', 'syslog_host')
-                syslog_port = self.config.get('log', 'syslog_port')
-                syslogaddr = (syslog_host, syslog_port)
-            else:
-                syslog_folder = self.config.get('log', 'syslog_folder')
-                if syslogaddr:
-                    syslogaddr = syslog_folder
-                elif sys.platform == 'darwin':
-                    syslogaddr = '/var/run/syslog'
-                elif os.name != 'nt':
-                    syslogaddr = '/dev/log'
-
-            sysloghdlr = logging.handlers.SysLogHandler(syslogaddr)
-            sysloghdlr.setFormatter(syslogform)
-            self.log.addHandler(sysloghdlr)
-
-        # Create logfile folder
-        logfile_folder = self.config.get('log', 'logfile_folder')
-        if not logfile_folder:
-            logfile_folder = os.path.abspath("logs")
-        makedirs(logfile_folder)
-
-        # Set file handler
-        if not self.config.get('log', 'logfile'):
-            return None
-
+        sysloghdlr = logging.handlers.SysLogHandler(syslogaddr)
+        sysloghdlr.setFormatter(syslogform)
+        self.log.addHandler(sysloghdlr)
+        
+    def _init_logfile_handler(self):
         fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
         datefmt = "%Y-%m-%d %H:%M:%S"
         fileform = logging.Formatter(fmt, datefmt)
@@ -193,6 +176,32 @@ class Core(Process):
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
+        
+    def _mklogdir(self)
+        logfile_folder = self.config.get('log', 'logfile_folder')
+        if not logfile_folder:
+            logfile_folder = os.path.abspath("logs")
+        makedirs(logfile_folder)
+        
+    # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
+    def _init_logger(self, level):
+        # Init logger
+        self.log = logging.getLogger('pyload')
+        self.log.setLevel(level)
+
+        # Set console handler
+        self._init_consolelog_handler()
+
+        # Set syslog handler
+        if self.config.get('log', 'syslog') != 'no':
+            self._init_syslog_handler()
+            
+        # Create logfile folder
+        self._mklogdir()
+
+        # Set file handler
+        if self.config.get('log', 'logfile'):
+            self._init_logfile_handler()
 
     def _init_permissions(self):
         if os.name == 'nt':
@@ -246,20 +255,19 @@ class Core(Process):
 
         # TODO: Parse remote host:port
 
-        if isinstance(webui, str):
-            host, port = map(str.strip, webui.rsplit(':', 1))
-            webui = True
-        else:
-            host, port = (None, None)
-
-        kwgs = {
-            'server': self.config.get('webui', 'server'),
-            'host': host or self.config.get('webui', 'host'),
-            'port': port or self.config.get('webui', 'port'),
-            'key': self.config.get('ssl', 'key'),
-            'cert': self.config.get('ssl', 'cert'),
-            'ssl': self.config.get('ssl', 'activated')
-        }
+        # if isinstance(webui, str):
+            # host, port = map(str.strip, webui.rsplit(':', 1))
+            # webui = True
+        # else:
+            # host, port = (None, None)
+        # kwgs = {
+            # 'server': self.config.get('webui', 'server'),
+            # 'host': host or self.config.get('webui', 'host'),
+            # 'port': port or self.config.get('webui', 'port'),
+            # 'key': self.config.get('ssl', 'key'),
+            # 'cert': self.config.get('ssl', 'cert'),
+            # 'ssl': self.config.get('ssl', 'activated')
+        # }
         if webui or self.config.get('webui', 'activated'):
             from .thread.webserver import WebServer
             self.webserver = WebServer(self)
