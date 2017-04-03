@@ -38,6 +38,7 @@ def clearpath():
 
 
 def find(domain, localedir=None, languages=None, all=False):
+    translation.func_globals['find'] = origfind     # ugly hack, apparently find is a recursive function in some implementations
     if _searchdirs is None:
         return origfind(domain, localedir, languages, all)
     searches = [localedir] + _searchdirs
@@ -48,6 +49,7 @@ def find(domain, localedir=None, languages=None, all=False):
             results.append(res)
         else:
             results.extend(res)
+    translation.func_globals['find'] = find         # ugly hack part two
     if all is False:
         results = filter(lambda x: x is not None, results)
         if len(results) == 0:
