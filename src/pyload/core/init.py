@@ -103,7 +103,7 @@ class Core(Process):
     def version(self):
         return __core_version
 
-    def _init_consolelog_handler(self):
+    def _set_consolelog_handler(self):
         if self.config.get('log', 'color_console') and ismodule('colorlog'):
             fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
             datefmt = "%Y-%m-%d  %H:%M:%S"
@@ -133,7 +133,7 @@ class Core(Process):
         consolehdlr.setFormatter(consoleform)
         self.log.addHandler(consolehdlr)
         
-    def _init_syslog_handler(self):
+    def _set_syslog_handler(self):
         #: try to mimic to normal syslog messages
         fmt = "%(asctime)s %(name)s: %(message)s"
         datefmt = "%b %e %H:%M:%S"
@@ -157,7 +157,7 @@ class Core(Process):
         sysloghdlr.setFormatter(syslogform)
         self.log.addHandler(sysloghdlr)
         
-    def _init_logfile_handler(self):
+    def _set_logfile_handler(self):
         fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
         datefmt = "%Y-%m-%d %H:%M:%S"
         fileform = logging.Formatter(fmt, datefmt)
@@ -177,7 +177,7 @@ class Core(Process):
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
         
-    def _mklogdir(self)
+    def _mklogdir(self):
         logfile_folder = self.config.get('log', 'logfile_folder')
         if not logfile_folder:
             logfile_folder = os.path.abspath("logs")
@@ -190,18 +190,18 @@ class Core(Process):
         self.log.setLevel(level)
 
         # Set console handler
-        self._init_consolelog_handler()
+        self._set_consolelog_handler()
 
         # Set syslog handler
         if self.config.get('log', 'syslog') != 'no':
-            self._init_syslog_handler()
+            self._set_syslog_handler()
             
         # Create logfile folder
         self._mklogdir()
 
         # Set file handler
         if self.config.get('log', 'logfile'):
-            self._init_logfile_handler()
+            self._set_logfile_handler()
 
     def _init_permissions(self):
         if os.name == 'nt':
