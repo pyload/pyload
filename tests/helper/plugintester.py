@@ -126,5 +126,5 @@ class PluginTester(TestCase):
     def tearDown(self):
         exc = sys.exc_info()
         if exc != (None, None, None):
-            debug = self.thread.write_debug_report()
+            debug = self.thread.debug_report()
             log(DEBUG, debug)
