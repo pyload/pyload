@@ -14,7 +14,7 @@ AbstractApi = object
 
 class BaseApi(AbstractApi):
 
-    __slots__ = ['primary_uid', 'pyload', 'user']
+    # __slots__ = ['primary_uid', 'pyload', 'user']
 
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
@@ -31,7 +31,7 @@ class BaseApi(AbstractApi):
 
 
 class AbstractApi(object):
-    __slots__ = []
+    # __slots__ = []
 
     def add_links(self, pid, links):
         pass

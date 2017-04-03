@@ -19,16 +19,16 @@ log = logging.getLogger('pyload')
 
 class WebServer(Thread):
 
-    __slots__ = [
-        'cert',
-        'debug',
-        'error',
-        'force_server',
-        'host',
-        'https',
-        'key',
-        'port',
-        'server']
+    # __slots__ = [
+        # 'cert',
+        # 'debug',
+        # 'error',
+        # 'force_server',
+        # 'host',
+        # 'https',
+        # 'key',
+        # 'port',
+        # 'server']
 
     def __init__(self, pycore=None, pysetup=None):
         global core, setup

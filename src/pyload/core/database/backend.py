@@ -60,7 +60,7 @@ def inner(f):
 
 class DatabaseMethods(object):
 
-    __slots__ = ['c', 'conn', 'core', 'manager']
+    # __slots__ = ['c', 'conn', 'core', 'manager']
 
     # stubs for autocompletion
     core = None
@@ -75,7 +75,7 @@ class DatabaseMethods(object):
 
 class DatabaseJob(object):
 
-    __slots__ = ['args', 'done', 'exception', 'fn', 'kwargs', 'result']
+    # __slots__ = ['args', 'done', 'exception', 'fn', 'kwargs', 'result']
 
     def __init__(self, fn, *args, **kwargs):
         self.done = Event()
@@ -123,15 +123,15 @@ class DatabaseJob(object):
 
 class DatabaseBackend(Thread):
 
-    __slots__ = [
-        'DB_FILE',
-        'VERSION_FILE',
-        'error',
-        'jobs',
-        'manager',
-        'pyload',
-        'running',
-        'subs']
+    # __slots__ = [
+        # 'DB_FILE',
+        # 'VERSION_FILE',
+        # 'error',
+        # 'jobs',
+        # 'manager',
+        # 'pyload',
+        # 'running',
+        # 'subs']
 
     subs = []
 

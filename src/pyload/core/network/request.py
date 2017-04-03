@@ -17,7 +17,7 @@ from .bucket import Bucket
 
 class RequestFactory(object):
 
-    __slots__ = ['bucket', 'pyload']
+    # __slots__ = ['bucket', 'pyload']
 
     def __init__(self, core):
         self.pyload = core

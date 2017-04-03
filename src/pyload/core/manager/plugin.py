@@ -17,7 +17,7 @@ class PluginMatcher(object):
     """
     Abstract class that allows modify which plugins to match and to load.
     """
-    __slots__ = []
+    # __slots__ = []
 
     def match_url(self, url):
         """
@@ -34,7 +34,7 @@ class PluginMatcher(object):
 
 class PluginManager(object):
 
-    __slots__ = [
+    # __slots__ = [
         'DEFAULT_PLUGIN',
         'LOCALROOT',
         'MATCH_HISTORY',

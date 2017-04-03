@@ -24,7 +24,7 @@ def random_salt():
 
 class UserMethods(DatabaseMethods):
 
-    __slots__ = []
+    # __slots__ = []
 
     @queue
     def add_user(self, user, password, role, permission):

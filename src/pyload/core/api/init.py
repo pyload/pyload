@@ -24,7 +24,7 @@ perm_map = {}
 
 def requireperm(bits):
     class _Dec(object):
-        __slots__ = []
+        # __slots__ = []
 
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
@@ -169,7 +169,7 @@ class UserApi(Api):
     """
     Proxy object for api that provides all methods in user context.
     """
-    __slots__ = []
+    # __slots__ = []
 
     def __init__(self, core, user):
         #: No need to init super class

@@ -21,7 +21,7 @@ class ThreadManager(object):
     """
     Manages all non download related threads and jobs.
     """
-    __slots__ = [
+    # __slots__ = [
         'info_cache',
         'info_results',
         'lock',

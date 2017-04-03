@@ -10,7 +10,7 @@ from .backend import DatabaseMethods, async, queue
 
 class ConfigMethods(DatabaseMethods):
 
-    __slots__ = []
+    # __slots__ = []
 
     @async
     def save_config(self, plugin, config, user=None):

@@ -10,7 +10,7 @@ from .backend import DatabaseMethods
 
 class StatisticMethods(DatabaseMethods):
 
-    __slots__ = []
+    # __slots__ = []
 
     def add_entry(self, user, plugin, premium, amount):
         raise NotImplementedError

@@ -27,7 +27,7 @@ class ConfigApi(BaseApi):
     """
     Everything related to configuration.
     """
-    __slots__ = []
+    # __slots__ = []
 
     def get_config_value(self, section, option):
         """

@@ -20,7 +20,7 @@ class AccountManager(object):
     """
     Manages all accounts.
     """
-    __slots__ = ['accounts', 'lock', 'pyload']
+    # __slots__ = ['accounts', 'lock', 'pyload']
 
     def __init__(self, core):
         """

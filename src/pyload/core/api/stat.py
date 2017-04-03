@@ -17,7 +17,7 @@ class StatisticsApi(BaseApi):
     """
     Retrieve download statistics and quota.
     """
-    __slots__ = []
+    # __slots__ = []
 
     def record_download(self, pyfile):
         """

@@ -13,7 +13,7 @@ from .backend import DatabaseBackend, queue
 
 class StorageMethods(object):
 
-    __slots__ = []
+    # __slots__ = []
 
     @queue
     def set_storage(self, db, identifier, key, value):

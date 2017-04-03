@@ -27,14 +27,14 @@ class DownloadManager(object):
     """
     Schedules and manages download and decrypter jobs.
     """
-    __slots__ = [
-        'decrypter',
-        'free',
-        'lock',
-        'paused',
-        'pyload',
-        'reconnecting',
-        'working']
+    # __slots__ = [
+        # 'decrypter',
+        # 'free',
+        # 'lock',
+        # 'paused',
+        # 'pyload',
+        # 'reconnecting',
+        # 'working']
 
     def __init__(self, core):
         self.pyload = core

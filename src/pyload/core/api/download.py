@@ -19,7 +19,7 @@ class DownloadApi(BaseApi):
     """
     Component to create, add, delete or modify downloads.
     """
-    __slots__ = []
+    # __slots__ = []
 
     # TODO: workaround for link adding without owner
     def true_primary(self):

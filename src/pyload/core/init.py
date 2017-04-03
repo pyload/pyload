@@ -65,14 +65,14 @@ def _gen_profiledir(profile=None, configdir=None):
 
 
 class Restart(Exception):
-    __slots__ = []
+    # __slots__ = []
 
     def __str__(self):
         return """<RestartSignal {0}>""".format(self.message)
 
 
 class Shutdown(Exception):
-    __slots__ = []
+    # __slots__ = []
 
     def __str__(self):
         return """<ShutdownSignal {0}>""".format(self.message)
@@ -89,15 +89,15 @@ class Shutdown(Exception):
 #  improve external scripts
 class Core(Process):
 
-    __slots__ = [
-        '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
-        'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db',
-        'debug', 'debug_level', 'dlm', 'downloadmanager', 'eventmanager', 'evm',
-        'filemanager', 'files', 'interactionmanager', 'itm', 'log', 'pgm',
-        'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
-        'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm',
-        'threadmanager', 'tmpdir', 'version', 'webserver'
-    ]
+    # __slots__ = [
+        # '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
+        # 'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db',
+        # 'debug', 'debug_level', 'dlm', 'downloadmanager', 'eventmanager', 'evm',
+        # 'filemanager', 'files', 'interactionmanager', 'itm', 'log', 'pgm',
+        # 'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
+        # 'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm',
+        # 'threadmanager', 'tmpdir', 'version', 'webserver'
+    # ]
 
     @property
     def version(self):

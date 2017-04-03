@@ -31,7 +31,7 @@ class EventManager(object):
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished
     """
-    __slots__ = ['events', 'lock', 'pyload']
+    # __slots__ = ['events', 'lock', 'pyload']
 
     def __init__(self, core):
         self.pyload = core

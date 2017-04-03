@@ -30,7 +30,7 @@ class PreDownloadApi(BaseApi):
     """
     All kind of methods to parse links or retrieve online status.
     """
-    __slots__ = []
+    # __slots__ = []
 
     @requireperm(Permission.Add)
     def parse_links(self, links):

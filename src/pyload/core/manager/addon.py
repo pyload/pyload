@@ -29,7 +29,7 @@ class AddonManager(object):
     """
     Manages addons, loading, unloading.
     """
-    __slots__ = ['info_props', 'lock', 'plugins', 'pyload']
+    # __slots__ = ['info_props', 'lock', 'plugins', 'pyload']
 
     def __init__(self, core):
         self.pyload = core

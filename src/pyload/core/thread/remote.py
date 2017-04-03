@@ -13,7 +13,7 @@ from pyload.utils.layer.safethreading import Event, Thread
 
 class RemoteBackend(Thread):
 
-    __slots__ = ['enabled', 'manager', 'pyload', 'running']
+    # __slots__ = ['enabled', 'manager', 'pyload', 'running']
 
     def __init__(self, manager):
         Thread.__init__(self)

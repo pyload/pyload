@@ -33,7 +33,7 @@ class ConfigManager(ConfigParser):
     Manages the core config and configs for addons and single user.
     Has similar interface to ConfigParser.
     """
-    __slots__ = ['config', 'parser', 'pyload', 'values']
+    # __slots__ = ['config', 'parser', 'pyload', 'values']
 
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!

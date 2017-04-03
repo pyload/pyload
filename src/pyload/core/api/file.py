@@ -19,7 +19,7 @@ class FileApi(BaseApi):
     """
     Everything related to available packages or files. Deleting, Modifying and so on.
     """
-    __slots__ = []
+    # __slots__ = []
 
     def check_result(self, info):
         """

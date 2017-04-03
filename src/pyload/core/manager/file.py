@@ -35,7 +35,7 @@ class FileManager(object):
     Handles all request made to obtain information,
     modify status or other request for links or packages
     """
-    __slots__ = [
+    # __slots__ = [
         'db',
         'downloadstats',
         'files',

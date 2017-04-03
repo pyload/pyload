@@ -12,7 +12,7 @@ standard_library.install_aliases()
 
 class RemoteManager(object):
 
-    __slots__ = ['backends', 'pyload']
+    # __slots__ = ['backends', 'pyload']
 
     available = ["WebSocketBackend"]
 

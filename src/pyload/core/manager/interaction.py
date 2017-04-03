@@ -24,15 +24,15 @@ class InteractionManager(object):
     Class that gives ability to interact with the user.
     Arbitrary tasks with predefined output and input types can be set off
     """
-    __slots__ = [
-        'CLIENT_THRESHOLD',
-        'MAX_NOTIFICATIONS',
-        'NOTIFICATION_TIMEOUT',
-        'ids',
-        'last_clients',
-        'lock',
-        'pyload',
-        'tasks']
+    # __slots__ = [
+        # 'CLIENT_THRESHOLD',
+        # 'MAX_NOTIFICATIONS',
+        # 'NOTIFICATION_TIMEOUT',
+        # 'ids',
+        # 'last_clients',
+        # 'lock',
+        # 'pyload',
+        # 'tasks']
 
     # number of seconds a client is classified as active
     CLIENT_THRESHOLD = 60

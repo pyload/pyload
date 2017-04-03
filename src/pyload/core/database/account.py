@@ -11,7 +11,7 @@ from .backend import DatabaseMethods, async, queue
 
 class AccountMethods(DatabaseMethods):
 
-    __slots__ = []
+    # __slots__ = []
 
     @queue
     def load_accounts(self):

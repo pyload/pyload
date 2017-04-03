@@ -15,7 +15,7 @@ class UserInteractionApi(BaseApi):
     """
     Everything needed for user interaction.
     """
-    __slots__ = []
+    # __slots__ = []
 
     @requireperm(Permission.Interaction)
     def is_interaction_waiting(self, mode):

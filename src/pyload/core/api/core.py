@@ -21,7 +21,7 @@ class CoreApi(BaseApi):
     """
     This module provides methods for general interaction with the core, like status or progress retrieval.
     """
-    __slots__ = []
+    # __slots__ = []
 
     @requireperm(Permission.All)
     def get_server_version(self):

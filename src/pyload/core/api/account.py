@@ -14,7 +14,7 @@ class AccountApi(BaseApi):
     """
     All methods to control accounts.
     """
-    __slots__ = []
+    # __slots__ = []
 
     @requireperm(Permission.All)
     def get_account_types(self):

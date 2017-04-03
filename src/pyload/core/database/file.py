@@ -22,7 +22,7 @@ _zero_stats = PackageStats(0, 0, 0, 0)
 
 class FileMethods(DatabaseMethods):
 
-    __slots__ = []
+    # __slots__ = []
 
     @queue
     def filecount(self):
