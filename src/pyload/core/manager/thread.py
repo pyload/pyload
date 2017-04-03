@@ -107,10 +107,8 @@ class ThreadManager(object):
             # skip if not belong to current user
             if user is not None and thread.owner != user:
                 continue
-
-            progress = thread.get_progress()
-            if progress:
-                info.extend(to_list(progress, []))
+            if thread.progress:
+                info.extend(to_list(thread.progress, []))
 
         return info
 

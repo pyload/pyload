@@ -129,7 +129,7 @@ class DownloadManager(object):
         """
 
         # decrypter progress could be none
-        return [x for x in [p.get_progress() for p in self.working + self.decrypter
+        return [x for x in [p.progress for p in self.working + self.decrypter
                             if uid is None or p.owner == uid] if x is not None]
 
     def processing_ids(self):
@@ -331,9 +331,8 @@ class DownloadManager(object):
         occ = {}
         # decrypter are treated as occupied
         for p in self.decrypter:
-            progress = p.get_progress()
-            if progress:
-                occ[progress.plugin] = 0
+            if p.progress:
+                occ[p.progress.plugin] = 0
 
         # get all default dl limits
         for t in self.working:

@@ -4,18 +4,15 @@ from __future__ import absolute_import, unicode_literals
 
 import io
 import os
+import time
 import zipfile
-from contextlib import closing
-from pprint import pformat
-from time import gmtime, strftime
-from traceback import format_exc
 
 from future import standard_library
 standard_library.install_aliases()
 
-from pyload.utils import sys
+from pyload.utils import debug, format, sys
 from pyload.utils.layer.safethreading import Thread
-from types import MethodType
+from pyload.utils.path import filesize, makedirs, open
 
 
 class PluginThread(Thread):
@@ -23,12 +20,15 @@ class PluginThread(Thread):
     Abstract base class for thread types.
     """
     __slots__ = ['manager', 'owner', 'pyload']
-
+    
     def __init__(self, manager, owner=None):
+        """
+        Constructor
+        """
         Thread.__init__(self)
         self.setDaemon(True)
-        self.manager = manager  #: thread manager
-        self.pyload = manager.pyload
+        self.manager = manager  #: Thread manager
+        self.pyload  = manager.pyload
         #: Owner of the thread, every type should set it or overwrite user
         self.owner = owner
 
@@ -36,6 +36,10 @@ class PluginThread(Thread):
     def user(self):
         return self.owner.primary if self.owner else None
 
+    @property
+    def progress(self):
+        return self.get_progress()
+        
     def finished(self):
         """
         Remove thread from list.
@@ -48,124 +52,61 @@ class PluginThread(Thread):
 
         :return: :class:`ProgressInfo`
         """
+        pass
+        
+    def _debug_report(self, pyfile):
+        # TODO: Add config setting dump
+        report = "pyLoad {} Debug Report of {} {}\n\n{}\n\n{}\n\n{}\n\n{}".format(
+            self.pyload.__version__,
+            pyfile.plugin.__name__,
+            pyfile.plugin.__version__,
+            debug.format_traceback(),
+            debug.format_framestack(),
+            debug.format_dump(pyfile.plugin),
+            debug.format_dump(pyfile)
+        )
+        return report
+    
+    def _write_report(self, report, path):
+        with zipfile.ZipFile(path, 'w') as zip:
+            reportdir = os.path.join(
+                self.pyload.profiledir, 'crashes', 'reports', name)  # NOTE: Relpath to configdir
+            makedirs(reportdir)
+            
+            for filename in os.listdir(reportdir):
+                try:
+                    zip.write(os.path.join(reportdir, filename),
+                              os.path.join(name, filename))
+                except Exception:
+                    pass
 
-    # Debug Stuff
-    def write_debug_report(self, name, pyfile=None, plugin=None):
+            for name, data in (('debug', report), ('system', system)):
+                info = zipfile.ZipInfo(
+                    os.path.join(name, "{0}_Report.txt".format(name)), time.gmtime())
+                info.external_attr = 0o644 << 16  #: change permissions
+                zip.writestr(info, data)
+
+        if not filesize(path):
+            raise Exception("Empty Zipfile")
+    
+    def debug_report(self, pyfile):
         """
         Writes a debug report to disk.
         """
-        dump_name = "debug_{0}_{1}.zip".format(
-            name, strftime("%d-%m-%Y_%H-%M-%S"))
-        if pyfile:
-            dump = self.get_plugin_dump(pyfile.plugin) + "\n"
-            dump += self.get_file_dump(pyfile)
-        else:
-            dump = self.get_plugin_dump(plugin)
+        name = pyfile.pluginname
+        file = "debug_{}_{}.zip".format(
+            name, time.strftime("%d-%m-%Y_%H-%M-%S"))
 
+        report = self._debug_report(pyfile)
+        system = "SYSTEM INFO:\n\t{}\n".format(
+            '\n\t'.join(format.map(sys.get_info())))
         try:
-            with closing(zipfile.ZipFile(dump_name, mode='w')) as zip:
-                if os.path.exists(os.path.join(
-                        self.pyload.profiledir, 'crashes', 'reports', name)):
-                    for f in os.listdir(os.path.join(
-                            self.pyload.profiledir, 'crashes', 'reports', name)):
-                        try:
-                            # avoid encoding errors
-                            zip.write(
-                                os.path.join(self.pyload.profiledir, 'crashes', 'reports', name, f), os.path.join(
-                                    name, f))
-                        except Exception:
-                            pass
-
-                info = zipfile.ZipInfo(
-                    os.path.join(
-                        name,
-                        "debug_Report.txt"),
-                    gmtime())
-                info.external_attr = 0o644 << 16  #: change permissions
-                zip.writestr(info, dump)
-
-                info = zipfile.ZipInfo(
-                    os.path.join(
-                        name,
-                        "system_Report.txt"),
-                    gmtime())
-                info.external_attr = 0o644 << 16
-                zip.writestr(info, self.get_system_dump())
-
-            if not os.stat(dump_name).st_size:
-                raise Exception("Empty Zipfile")
-
+            self._write_report(report, file)
+            
         except Exception as e:
-            self.pyload.log.debug(
-                "Error creating zip file: {0}".format(str(e)))
+            self.pyload.log.debug("Error creating zip file", e)
+            file = file.replace(".zip", ".txt")
+            with io.open(file, mode='wb') as fp:
+                fp.write(report)
 
-            dump_name = dump_name.replace(".zip", ".txt")
-            with io.open(dump_name, mode='wb') as fp:
-                fp.write(dump)
-
-        self.pyload.log.info(_("Debug Report written to {0}").format(dump_name))
-        return dump_name
-
-    def get_plugin_dump(self, plugin):
-        dump = "pyLoad {0} Debug Report of {1} {2} \n\nTRACEBACK:\n {3} \n\nFRAMESTACK:\n".format(
-            self.manager.pyload.api.get_server_version(
-            ), plugin.__name__, plugin.__version__, format_exc()
-        )
-        tb = sys.exc_info()[2]
-        stack = []
-        while tb:
-            stack.append(tb.tb_frame)
-            tb = tb.tb_next
-
-        for frame in stack[1:]:
-            dump += "\nFrame {0} in {1} at line {2}\n".format(frame.f_code.co_name,
-                                                           frame.f_code.co_filename,
-                                                           frame.f_lineno)
-
-            for key, value in frame.f_locals.items():
-                dump += "\t{0:20} = ".format(key)
-                try:
-                    dump += pformat(value) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        str(e))
-
-            del frame
-
-        del stack  #: delete it just to be sure...
-
-        dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
-
-        for name in dir(plugin):
-            attr = getattr(plugin, name)
-            if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{0:20} = ".format(name)
-                try:
-                    dump += pformat(attr) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        str(e))
-
-        return dump
-
-    def get_file_dump(self, pyfile):
-        dump = "PYFILE OBJECT DUMP: \n\n"
-
-        for name in dir(pyfile):
-            attr = getattr(pyfile, name)
-            if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t{0:20} = ".format(name)
-                try:
-                    dump += pformat(attr) + "\n"
-                except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> {0}\n".format(
-                        str(e))
-
-        return dump
-
-    def get_system_dump(self):
-        dump = "SYSTEM:\n\n"
-        for k, v in sys.get_info().items():
-            dump += "{0}: {1}\n".format(k, v)
-
-        return dump
+        self.pyload.log.info(_("Debug Report written to file"), file)

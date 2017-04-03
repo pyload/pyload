@@ -19,7 +19,7 @@ from .plugin import PluginThread
 
 class InfoThread(DecrypterThread):
 
-    __slots__ = ['data', 'oc', 'pid', 'progress']
+    __slots__ = ['_progressinfo', 'data', 'oc', 'pid']
 
     def __init__(self, manager, owner, data, pid=-1, oc=None):
         PluginThread.__init__(self, manager, owner)
@@ -31,7 +31,7 @@ class InfoThread(DecrypterThread):
         # urls that already have a package name
         self.names = {}
 
-        self.progress = None
+        self._progressinfo = None
 
         self.manager.add_thread(self)
         self.start()
@@ -67,7 +67,7 @@ class InfoThread(DecrypterThread):
                 l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
-        self.progress = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
+        self._progressinfo = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
                                      self.owner, ProgressType.LinkCheck)
 
         for pluginname, urls in plugins.items():
@@ -87,7 +87,7 @@ class InfoThread(DecrypterThread):
 
         self.names.clear()
         self.manager.timestamp = time() + 5 * 60
-        self.progress = None
+        self._progressinfo = None
         self.finished()
 
     def update_db(self, result):
@@ -127,11 +127,11 @@ class InfoThread(DecrypterThread):
         # also works on module names
         pluginname = plugin.__name__.split(".")[-1]
 
-        self.progress.plugin = pluginname
-        self.progress.name = _("Checking {0:d} links").format(len(urls))
+        self._progressinfo.plugin = pluginname
+        self._progressinfo.name = _("Checking {0:d} links").format(len(urls))
 
         # final number of links to be checked
-        done = self.progress.done + len(urls)
+        done = self._progressinfo.done + len(urls)
         try:
             cached = []  #: results loaded from cache
             process = []  #: urls to process
@@ -144,7 +144,7 @@ class InfoThread(DecrypterThread):
             if cached:
                 self.manager.log.debug(
                     "Fetched {0:d} links from cache for {1}".format(len(cached), pluginname))
-                self.progress.done += len(cached)
+                self._progressinfo.done += len(cached)
                 cb(cached)
 
             if process:
@@ -174,7 +174,7 @@ class InfoThread(DecrypterThread):
                     for link in links:
                         self.manager.info_cache[link.url] = link
 
-                    self.progress.done += len(links)
+                    self._progressinfo.done += len(links)
                     cb(links)
 
             self.manager.log.debug(
@@ -184,4 +184,4 @@ class InfoThread(DecrypterThread):
                 _("Info Fetching for {0} failed | {1}").format(pluginname, str(e)))
             # self.pyload.print_exc()
         finally:
-            self.progress.done = done
+            self._progressinfo.done = done

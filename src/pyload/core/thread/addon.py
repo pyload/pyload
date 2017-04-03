@@ -16,43 +16,37 @@ class AddonThread(PluginThread):
     """
     Thread for addons.
     """
-    __slots__ = ['active', 'args', 'fn', 'kwargs']
+    __slots__ = ['_progressinfo', 'active', 'args', 'fn', 'kwargs']
 
-    def __init__(self, m, fn, args, kwargs):
+    def __init__(self, manager, fn, args, kwargs):
         """
         Constructor.
         """
-        PluginThread.__init__(self, m)
+        PluginThread.__init__(self, manager)
 
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
 
         self.active = []
-        self.progress = 0
+        self._progressinfo = None
 
-        m.add_thread(self)
+        manager.add_thread(self)
 
         self.start()
 
     def get_active_files(self):
         return self.active
 
-    # TODO: multiple progresses
-    def set_progress(self, progress, pyfile=None):
-        """
-        Sets progress for the thread in percent.
-        """
-        self.progress = progress
-
     def get_progress(self):
         """
         Progress of the thread.
         """
-        if self.active:
-            active = self.active[0]
-            return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
-                                self.progress, 100, self.owner, ProgressType.Addon)
+        if not self.active:
+            return None
+        active = self.active[0]
+        return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
+                            self._progressinfo, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, pyfile):
         """
@@ -85,7 +79,7 @@ class AddonThread(PluginThread):
                 addon.log_error(_("An Error occurred"), str(e))
                 if self.manager.pyload.debug:
                     print_exc()
-                    self.write_debug_report(addon.__name__, plugin=addon)
+                    # self.debug_report(addon.__name__, plugin=addon)
 
         finally:
             local = copy(self.active)

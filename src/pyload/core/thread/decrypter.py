@@ -21,7 +21,7 @@ class DecrypterThread(PluginThread):
     """
     Thread for decrypting.
     """
-    __slots__ = ['data', 'error', 'fid', 'pid', 'progress']
+    __slots__ = ['_progressinfo', 'data', 'error', 'fid', 'pid']
 
     def __init__(self, manager, data, fid, pid, owner):
         PluginThread.__init__(self, manager, owner)
@@ -30,14 +30,14 @@ class DecrypterThread(PluginThread):
         self.fid = fid
         self.pid = pid
         # holds the progress, while running
-        self.progress = None
+        self._progressinfo = None
         # holds if an error happened
         self.error = False
 
         self.start()
 
     def get_progress(self):
-        return self.progress
+        return self._progressinfo
 
     def run(self):
         pack = self.pyload.files.get_package(self.pid)
@@ -65,7 +65,7 @@ class DecrypterThread(PluginThread):
     def decrypt(self, plugin_map, password=None, err=False):
         result = []
 
-        self.progress = ProgressInfo("BasePlugin", "", _("decrypting"),
+        self._progressinfo = ProgressInfo("BasePlugin", "", _("decrypting"),
                                      0, 0, len(self.data), self.owner, ProgressType.Decrypting)
         # TODO: QUEUE_DECRYPT
         for name, urls in plugin_map.items():
@@ -74,8 +74,8 @@ class DecrypterThread(PluginThread):
             plugin_result = []
 
             # updating progress
-            self.progress.plugin = name
-            self.progress.name = _("Decrypting {0} links").format(
+            self._progressinfo.plugin = name
+            self._progressinfo.name = _("Decrypting {0} links").format(
                 len(urls) if len(urls) > 1 else urls[0])
 
             # TODO: dependency check, there is a new error code for this
@@ -113,16 +113,16 @@ class DecrypterThread(PluginThread):
                     # no debug for intentional errors
                     if self.pyload.debug and not isinstance(e, Fail):
                         # self.pyload.print_exc()
-                        self.write_debug_report(plugin.__name__, plugin=plugin)
+                        # self.debug_report(plugin.__name__, plugin=plugin)
                 finally:
                     if plugin:
                         plugin.clean()
 
-            self.progress.done += len(urls)
+            self._progressinfo.done += len(urls)
             result.extend(plugin_result)
 
         # clear the progress
-        self.progress = None
+        self._progressinfo = None
 
         # generated packages
         packs = {}
