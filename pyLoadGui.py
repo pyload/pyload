@@ -230,8 +230,8 @@ class main(QObject):
             self.lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(self.lang), "en"], fallback=True)
-        translation.install(unicode=True)
+        self.translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(self.lang), "en"], fallback=True)
+        self.translation.install(unicode=True)
 
         self.loggingOptions = LoggingOptions()
         optlog = self.parser.xml.elementsByTagName("optionsLogging").item(0).toElement().text()
@@ -1491,6 +1491,7 @@ class main(QObject):
                 if not self.core.running:
                     return self.errorInternalCoreStartup(self.messageBox_17)
 
+                self.translation.install(unicode=True) # restore the gui language
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
 
