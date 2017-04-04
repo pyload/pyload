@@ -167,6 +167,7 @@ class DownloadInfo(TBase):
    - packageID
    - packageName
    - plugin
+   - url
   """
 
   __slots__ = [ 
@@ -186,6 +187,7 @@ class DownloadInfo(TBase):
     'packageID',
     'packageName',
     'plugin',
+    'url',
    ]
 
   thrift_spec = (
@@ -206,9 +208,10 @@ class DownloadInfo(TBase):
     (14, TType.I32, 'packageID', None, None, ), # 14
     (15, TType.STRING, 'packageName', None, None, ), # 15
     (16, TType.STRING, 'plugin', None, None, ), # 16
+    (17, TType.STRING, 'url', None, None, ), # 17
   )
 
-  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None,):
+  def __init__(self, fid=None, name=None, speed=None, eta=None, format_eta=None, bleft=None, size=None, format_size=None, percent=None, status=None, statusmsg=None, format_wait=None, wait_until=None, packageID=None, packageName=None, plugin=None, url=None,):
     self.fid = fid
     self.name = name
     self.speed = speed
@@ -225,6 +228,7 @@ class DownloadInfo(TBase):
     self.packageID = packageID
     self.packageName = packageName
     self.plugin = plugin
+    self.url = url
 
 
 class ServerStatus(TBase):
