@@ -10,6 +10,52 @@ def whatsThisFormat(title, text):
     html = "<table><tr><td><b>" + title + "</b></td></tr></table>" + "<table><tr><td>" + text + "</td></tr></table>"
     return html
 
+class WhatsThisButton(QPushButton):
+    def __init__(self, text="?"):
+        QPushButton.__init__(self, text)
+        self.text = text
+        self.setDefault(False)
+        self.setAutoDefault(False)
+        self.setFocusPolicy(Qt.NoFocus)
+        self.updateSize()
+        self.connect(self, SIGNAL("clicked()"), QWhatsThis.enterWhatsThisMode)
+
+    def updateSize(self):
+        width  = self.fontMetrics().boundingRect(self.text).width()
+        height = self.fontMetrics().boundingRect(self.text).height()
+        s = width
+        if height > s:
+            s = height
+        s += 4  # border
+        self.setFixedSize(s, s)
+
+class WtDialogButtonBox(QDialogButtonBox):
+    def __init__(self, orientation=Qt.Horizontal, parent=None):
+        QDialogButtonBox.__init__(self, orientation, parent)
+        self.wtBtn = WhatsThisButton()
+        self.l = QHBoxLayout()
+        self.l.setContentsMargins(0, 0, 0, 0)
+        self.l.setSpacing(0)
+        self.l.addWidget(self.wtBtn)
+        self.spacer = QSpacerItem(self.wtBtn.width(), self.wtBtn.width())
+        self.l.addSpacerItem(self.spacer)
+        self.l.addWidget(self)
+
+    def layout(self):
+        return self.l
+
+    def hideWhatsThisButton(self, hide=True):
+        self.wtBtn.setHidden(hide)
+        if hide:
+            self.spacer.changeSize(0, 0)
+        else:
+            self.spacer.changeSize(self.wtBtn.width(), self.wtBtn.width())
+
+    def updateWhatsThisButton(self):
+        if not self.wtBtn.isHidden():
+            self.wtBtn.updateSize()
+            self.spacer.changeSize(self.wtBtn.width(), self.wtBtn.width())
+
 class LineView(QLineEdit):
     def __init__(self, contents=""):
         QLineEdit.__init__(self, contents)

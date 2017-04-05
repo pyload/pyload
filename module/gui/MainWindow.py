@@ -33,7 +33,7 @@ from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
-from module.gui.Tools import whatsThisFormat
+from module.gui.Tools import whatsThisFormat, WhatsThisButton, WtDialogButtonBox
 
 from module.remote.thriftbackend.ThriftClient import AccountInfo, DownloadStatus
 
@@ -180,6 +180,7 @@ class MainWindow(QMainWindow):
                          "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
+                         "whatsthis": QAction("What's This?", self.menus["help"]),
                          "about": QAction(_("About pyLoad Client"), self.menus["help"])}
         
         self.mactions["showtoolbar"].setCheckable(True)
@@ -208,6 +209,7 @@ class MainWindow(QMainWindow):
         self.menus["view"].addSeparator()
         self.menus["view"].addAction(self.mactions["showtoolbar"])
         self.menus["view"].addAction(self.mactions["showspeedlimit"])
+        self.menus["help"].addAction(self.mactions["whatsthis"])
         self.menus["help"].addAction(self.mactions["about"])
         
         #toolbar
@@ -263,6 +265,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["showcaptcha"], SIGNAL("triggered()"), self.slotShowCaptcha)
         self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
         self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
+        self.connect(self.mactions["whatsthis"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
@@ -1311,7 +1314,8 @@ class NotificationOptions(QDialog):
         self.cbEnableNotify.setCheckable(True)
         self.cbEnableNotify.setLayout(vboxCb)
         
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -1319,7 +1323,7 @@ class NotificationOptions(QDialog):
         
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnableNotify)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
         
         self.adjustSize()
@@ -1363,6 +1367,9 @@ class NotificationOptions(QDialog):
         self.cbFailed.setChecked          (self.settings["Failed"])
         self.cbAborted.setChecked         (self.settings["Aborted"])
         self.cbCaptcha.setChecked         (self.settings["Captcha"])
+    
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class TrayOptions(QDialog):
     """
@@ -1393,7 +1400,8 @@ class TrayOptions(QDialog):
         self.cbEnableTray.setCheckable(True)
         self.cbEnableTray.setLayout(vboxCb)
         
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -1401,7 +1409,7 @@ class TrayOptions(QDialog):
         
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnableTray)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
         
         self.adjustSize()
@@ -1430,6 +1438,9 @@ class TrayOptions(QDialog):
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
         self.cbAltMethod.setChecked     (self.settings["AltMethod"])
+    
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class OtherOptions(QDialog):
     """
@@ -1444,7 +1455,7 @@ class OtherOptions(QDialog):
         self.cbWindowsWtMainWindowSetting = None   # none consistent setting
         
         self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
@@ -1463,7 +1474,7 @@ class OtherOptions(QDialog):
         self.cbEnableUnmax.setCheckable(False)
         self.cbEnableUnmax.setLayout(vboxCb)
         
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -1471,7 +1482,7 @@ class OtherOptions(QDialog):
         
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnableUnmax)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
         
         self.adjustSize()
@@ -1494,3 +1505,6 @@ class OtherOptions(QDialog):
     def dict2checkBoxStates(self):
         self.cbWindowsWtMainWindow.setChecked(self.cbWindowsWtMainWindowSetting)
         self.cbUnmaximze.setChecked(self.settings["Unmaximize"])
+    
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()

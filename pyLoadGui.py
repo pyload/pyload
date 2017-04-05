@@ -28,7 +28,7 @@ import sys
 from sys import argv
 from getopt import getopt, GetoptError
 from module.gui import LoggingLevels
-from module.gui.Tools import LineView
+from module.gui.Tools import WhatsThisButton, WtDialogButtonBox, LineView
 import logging.handlers
 from os import getcwd, makedirs, sep
 
@@ -528,6 +528,7 @@ class main(QObject):
         self.connect(self.connWindow,          SIGNAL("removeConnection"), self.slotRemoveConnection)
         self.connect(self.connWindow,          SIGNAL("connect"), self.slotConnect)
         self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
+        self.connect(self.fontOptions,         SIGNAL("appFontChanged"), self.slotAppFontChanged)
         self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
         self.connect(self.mainWindow,          SIGNAL("showCorePermissions"), self.slotShowCorePermissions)
         self.connect(self.mainWindow,          SIGNAL("quitCore"), self.slotQuitCore)
@@ -2466,6 +2467,24 @@ class main(QObject):
         else:
             self.fontOptions.settings = copy.deepcopy(oldsettings)
 
+    def slotAppFontChanged(self):
+        """
+            the application font changed
+        """
+        self.captchaOptions.appFontChanged()
+        self.loggingOptions.appFontChanged()
+        self.fontOptions.appFontChanged()
+        self.automaticReloadingOptions.appFontChanged()
+        self.clickNLoadForwarderOptions.appFontChanged()
+        self.languageOptions.appFontChanged()
+        self.packageEdit.appFontChanged()
+        self.mainWindow.notificationOptions.appFontChanged()
+        self.mainWindow.trayOptions.appFontChanged()
+        self.mainWindow.otherOptions.appFontChanged()
+        self.mainWindow.captchaDialog.appFontChanged()
+        self.connWindow.appFontChanged()
+        self.connector.pwBox.appFontChanged()
+
     def slotShowLanguageOptions(self):
         """
             popup the language options dialog
@@ -2630,7 +2649,8 @@ class AboutBox(QDialog):
         hbox.addSpacing(20)
         hbox.addStretch(1)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.okBtn = self.buttons.addButton(QDialogButtonBox.Ok)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
         self.copyBtn = QPushButton(_("Copy to Clipboard"))
@@ -2640,7 +2660,7 @@ class AboutBox(QDialog):
         vbox.addLayout(hbox)
         vbox.addSpacing(5)
         vbox.addStretch(1)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.connect(self.okBtn, SIGNAL("clicked()"), self.accept)
@@ -2699,7 +2719,7 @@ class InfoCorePermissions(QDialog):
         self.activeperms = activeperms
 
         self.setAttribute(Qt.WA_DeleteOnClose, True)
-        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Information"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
@@ -2743,7 +2763,7 @@ class InfoCorePermissions(QDialog):
         hintLbl = QLabel("<b>" + _("Permissons were changed.<br>") + _("Takes effect on next login.") + "</b>")
         hintLbl.setWordWrap(True)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.closeBtn = self.buttons.addButton(QDialogButtonBox.Close)
         self.buttons.button(QDialogButtonBox.Close).setText(_("Close"))
 
@@ -2752,7 +2772,7 @@ class InfoCorePermissions(QDialog):
         if self.perms != self.activeperms:
             vbox.addWidget(hintLbl)
         vbox.addStretch(1)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.adjustSize()
@@ -2865,7 +2885,8 @@ class CaptchaOptions(QDialog):
         self.cbEnableDialog.setCheckable(True)
         self.cbEnableDialog.setLayout(vboxCb)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -2873,7 +2894,7 @@ class CaptchaOptions(QDialog):
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnableDialog)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.adjustSize()
@@ -2896,6 +2917,9 @@ class CaptchaOptions(QDialog):
     def dict2dialogState(self):
         self.cbEnableDialog.setChecked (self.settings["Enabled"])
         self.cbAdjSize.setChecked      (self.settings["AdjSize"])
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class LoggingOptions(QDialog):
     """
@@ -2945,7 +2969,8 @@ class LoggingOptions(QDialog):
         grid1.addWidget(self.cbException, 2, 0, 1, 2)
         self.cbEnableFileLog.setLayout(grid1)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -2954,7 +2979,7 @@ class LoggingOptions(QDialog):
         grid = QGridLayout()
         grid.addWidget(self.cbEnableFileLog, 0, 0)
         grid.setRowStretch(1, 1)
-        grid.addWidget(self.buttons, 2, 0)
+        grid.addLayout(self.buttons.layout(), 2, 0)
         self.setLayout(grid)
 
         self.adjustSize()
@@ -2996,6 +3021,9 @@ class LoggingOptions(QDialog):
         self.sbSize.setValue            (self.settings["log_size"])
         self.sbCount.setValue           (self.settings["log_count"])
         self.cbException.setChecked     (self.settings["exception"])
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class FontOptions(QDialog):
     """
@@ -3086,7 +3114,8 @@ class FontOptions(QDialog):
         grid1.setColumnStretch(1, 1)
         self.cbEnableCustomFonts.setLayout(grid1)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.resetBtn  = self.buttons.addButton(QDialogButtonBox.Reset)
@@ -3098,7 +3127,7 @@ class FontOptions(QDialog):
         vbox.setSizeConstraint(QLayout.SetMinAndMaxSize)
         vbox.addWidget(self.cbEnableCustomFonts)
         vbox.addStretch()
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.setMinimumWidth(250)
@@ -3277,6 +3306,10 @@ class FontOptions(QDialog):
         self.mainWindow.tabs["accounts"]["view"].setFont(self.accountsFont)
         self.mainWindow.tabs["guilog"]["text"].setFont(self.logFont)
         self.mainWindow.tabs["corelog"]["text"].setFont(self.logFont)
+        self.emit(SIGNAL("appFontChanged"))
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class AutomaticReloadingOptions(QDialog):
     """
@@ -3300,7 +3333,7 @@ class AutomaticReloadingOptions(QDialog):
         self.lastFont = None
 
         self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
@@ -3320,7 +3353,7 @@ class AutomaticReloadingOptions(QDialog):
         self.cbEnabled.setCheckable(True)
         self.cbEnabled.setLayout(hboxCb)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -3329,7 +3362,7 @@ class AutomaticReloadingOptions(QDialog):
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnabled)
         vbox.addStretch(1)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.setMinimumWidth(250)
@@ -3360,6 +3393,9 @@ class AutomaticReloadingOptions(QDialog):
         self.cbEnabled.setChecked(self.settings["enabled"])
         self.sbInterval.setValue(self.settings["interval"])
 
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
+
 class ClickNLoadForwarderOptions(QDialog):
     """
         ClickNLoad port forwarder options dialog
@@ -3373,7 +3409,7 @@ class ClickNLoadForwarderOptions(QDialog):
         self.lastFont = None
 
         self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
@@ -3410,7 +3446,7 @@ class ClickNLoadForwarderOptions(QDialog):
         gb = QGroupBox(_("ClickNLoad Port Forwarding"))
         gb.setLayout(grid)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -3418,7 +3454,7 @@ class ClickNLoadForwarderOptions(QDialog):
 
         vbox = QVBoxLayout()
         vbox.addWidget(gb)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.setMinimumWidth(250)
@@ -3469,6 +3505,9 @@ class ClickNLoadForwarderOptions(QDialog):
                 self.lblStatus.setText(_("Not Running"))
         else:
             self.lblStatus.setText(_("ERROR"))
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class ClickNLoadForwarder(QObject):
     """
@@ -3668,7 +3707,8 @@ class LanguageOptions(QDialog):
         self.gb = QGroupBox(_("Language"))
         self.gb.setLayout(vboxGp)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -3676,7 +3716,7 @@ class LanguageOptions(QDialog):
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.gb)
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.setMinimumWidth(250)
@@ -3705,6 +3745,9 @@ class LanguageOptions(QDialog):
         self.combo.clear()
         self.combo.addItems(self.settings["languageList"])
         self.combo.setCurrentIndex(self.combo.findText(self.settings["language"]))
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
@@ -3812,7 +3855,8 @@ class PackageEdit(QDialog):
         vbox.addWidget(self.password)
         vbox.addSpacing(spacing)
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.saveBtn = self.buttons.addButton(QDialogButtonBox.Save)
         self.saveBtn.setDefault(True)
         self.saveBtn.setAutoDefault(True)
@@ -3825,7 +3869,7 @@ class PackageEdit(QDialog):
         self.cancelAllBtn.setDefault(False)
         self.cancelAllBtn.setAutoDefault(False)
         self.cancelAllBtn.setText(_("Cancel All"))
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
 
         self.setLayout(vbox)
         self.adjustSize()
@@ -3843,6 +3887,9 @@ class PackageEdit(QDialog):
 
     def slotCancelAllClicked(self):
         self.done(self.CANCELALL)
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class Notification(QObject):
     def __init__(self, tray):

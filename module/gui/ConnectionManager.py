@@ -23,24 +23,30 @@ import logging
 from os.path import join
 from uuid import uuid4 as uuid
 
-from module.gui.Tools import whatsThisFormat
+from module.gui.Tools import whatsThisFormat, WhatsThisButton, WtDialogButtonBox
 
 class ConnectionManager(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.log = logging.getLogger("guilog")
         
-        self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Connection Manager"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         mainLayout   = QHBoxLayout()
+        labelLayout  = QHBoxLayout()
         boxLayout    = QVBoxLayout()
         buttonLayout = QVBoxLayout()
         
         self.connList = self.ListWidget()
         self.connList.setDragDropMode(QAbstractItemView.InternalMove)
-        boxLayout.addWidget(QLabel(_("Connections") + ":"))
+        self.wtBtn = WhatsThisButton()
+        labelLayout.setContentsMargins(0, 0, 0, 0)
+        labelLayout.setSpacing(0)
+        labelLayout.addWidget(QLabel(_("Connections") + ":"), 1)
+        labelLayout.addWidget(self.wtBtn)
+        boxLayout.addLayout(labelLayout)
         boxLayout.addWidget(self.connList)
         
         self.btnNew     = QPushButton(_("New"))
@@ -207,6 +213,10 @@ class ConnectionManager(QDialog):
     def closeEvent(self, event):
         event.ignore()
         self.emit(SIGNAL("quitConnWindow"))
+    
+    def appFontChanged(self):
+        self.wtBtn.updateSize()
+        self.edit.buttons.updateWhatsThisButton()
 
 
     class ListWidget(QListWidget):
@@ -225,7 +235,7 @@ class ConnectionManager(QDialog):
             self.log = logging.getLogger("guilog")
             
             self.setAttribute(Qt.WA_DeleteOnClose, False)
-            self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
             self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
             
             grid1 = QGridLayout()
@@ -295,7 +305,7 @@ class ConnectionManager(QDialog):
             cnlpf.setCheckable(True)
             cnlpf.setLayout(grid2)
             
-            self.buttons = QDialogButtonBox(Qt.Horizontal)
+            self.buttons = WtDialogButtonBox(Qt.Horizontal)
             save = self.buttons.addButton(QDialogButtonBox.Save)
             cancel = self.buttons.addButton(QDialogButtonBox.Cancel)
             self.buttons.button(QDialogButtonBox.Save).setText(_("Save"))
@@ -306,7 +316,7 @@ class ConnectionManager(QDialog):
             vbox.addSpacing(3)
             vbox.addWidget(gb1)
             vbox.addWidget(cnlpf)
-            vbox.addWidget(self.buttons)
+            vbox.addLayout(self.buttons.layout())
             
             self.setLayout(vbox)
             #self.setMinimumWidth(300)

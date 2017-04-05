@@ -30,7 +30,7 @@ from os.path import join
 
 from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
-from module.gui.Tools import MessageBox
+from module.gui.Tools import MessageBox, WhatsThisButton, WtDialogButtonBox
 
 class Connector(QObject):
     """
@@ -253,7 +253,8 @@ class AskForUserAndPassword(QDialog):
         pwLabel = QLabel(_("Password") + ":")
         self.passwordLE = QLineEdit()
         self.passwordLE.setEchoMode(QLineEdit.Password)
-        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
         self.okBtn = self.buttons.addButton(QDialogButtonBox.Ok)
         self.okBtn.setText(_("OK"))
         self.okBtn.setDefault(True)
@@ -263,15 +264,15 @@ class AskForUserAndPassword(QDialog):
         self.cancelBtn.setDefault(False)
         self.cancelBtn.setAutoDefault(True)
         
-        grid.addWidget(self.textLabel,  0, 0, 1, 2)
+        grid.addWidget(self.textLabel,        0, 0, 1, 2)
         grid.setRowMinimumHeight(1, 7)
-        grid.addWidget(userLabel,       2, 0)
-        grid.addWidget(self.userLE,     2, 1)
-        grid.addWidget(pwLabel,         3, 0)
-        grid.addWidget(self.passwordLE, 3, 1)
+        grid.addWidget(userLabel,             2, 0)
+        grid.addWidget(self.userLE,           2, 1)
+        grid.addWidget(pwLabel,               3, 0)
+        grid.addWidget(self.passwordLE,       3, 1)
         grid.setRowMinimumHeight(4, 7)
         grid.setRowStretch(4, 1)
-        grid.addWidget(self.buttons,    5, 0, 1, 2)
+        grid.addLayout(self.buttons.layout(), 5, 0, 1, 2)
         self.setLayout(grid)
         
         self.setMinimumWidth(300)
@@ -287,6 +288,9 @@ class AskForUserAndPassword(QDialog):
             self.lastFont = self.font()
             self.adjustSize()
         return QDialog.exec_(self)
+    
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class DispatchRPC(QObject):
     """

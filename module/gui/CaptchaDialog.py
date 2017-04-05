@@ -23,6 +23,8 @@ from PyQt4.QtGui import *
 import logging
 from os.path import join
 
+from module.gui.Tools import WhatsThisButton, WtDialogButtonBox
+
 class CaptchaDialog(QDialog):
     """
         captcha dialog
@@ -52,7 +54,8 @@ class CaptchaDialog(QDialog):
         self.infoLabel.setAlignment(Qt.AlignCenter)
         self.lineEdit  = QLineEdit()
 
-        self.buttons = QDialogButtonBox(Qt.Horizontal, self)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
         self.submitBtn = self.buttons.addButton(QDialogButtonBox.Ok)
         self.ignoreBtn = self.buttons.addButton(QDialogButtonBox.Ignore)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("Submit"))
@@ -68,7 +71,7 @@ class CaptchaDialog(QDialog):
         vbox.addWidget(self.lineEdit)
         vbox.addSpacing(7)
         vbox.addStretch()
-        vbox.addWidget(self.buttons)
+        vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
 
         self.connect(self.submitBtn, SIGNAL("clicked()"),       self.slotSubmitText)
@@ -203,3 +206,5 @@ class CaptchaDialog(QDialog):
             self.geo = self.saveGeometry()
         QDialog.hide(self)
 
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()

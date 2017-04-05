@@ -22,6 +22,8 @@ from PyQt4.QtGui import *
 import logging
 from os.path import join
 
+from module.gui.Tools import WhatsThisButton, WtDialogButtonBox
+
 class AccountEdit(QDialog):
     """
         account editor widget
@@ -48,7 +50,8 @@ class AccountEdit(QDialog):
         self.login = QLineEdit()
         self.acctype = QComboBox()
         
-        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons = WtDialogButtonBox(Qt.Horizontal)
+        self.buttons.hideWhatsThisButton()
         self.save = self.buttons.addButton(QDialogButtonBox.Save)
         self.save.setDefault(False)
         self.save.setAutoDefault(False)
@@ -61,7 +64,7 @@ class AccountEdit(QDialog):
         self.connect(self.changePw, SIGNAL("toggled(bool)"), self.password, SLOT("setEnabled(bool)"))
         
         l.setRowMinimumHeight(3, 7)
-        l.addWidget(self.buttons, 4, 0, 1, 3)
+        l.addLayout(self.buttons.layout(), 4, 0, 1, 3)
         l.addWidget(self.acctype, 0, 1, 1, 2)
         l.addWidget(self.login, 1, 1, 1, 2)
         l.addWidget(self.password, 2, 2)
