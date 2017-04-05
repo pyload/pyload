@@ -736,10 +736,13 @@ class main(QObject):
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
             if self.mainWindow.numOfOpenModalDialogs > 0:
+                self.mainWindow.hide()
                 if self.mainWindow.isMaximized():
-                    QTimer.singleShot(100, self.mainWindow.showMaximized)
+                    self.mainWindow.showMaximized()
                 else:
-                    QTimer.singleShot(100, self.mainWindow.showNormal)
+                    self.mainWindow.showNormal()
+                self.mainWindow.raise_()
+                self.mainWindow.activateWindow()
             elif self.mainWindow.trayOptions.settings["Minimize2Tray"]:
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
         else:           # minimized flag was unset
