@@ -624,8 +624,12 @@ class MainWindow(QMainWindow):
     def initPaintEventHook(self):
         self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
         self.paintEventLastMax = False
+        self.paintEventSetPos  = False
     
     def paintEvent(self, event):
+        if self.paintEventSetPos:
+            self.paintEventSetPos = False
+            self.emit(SIGNAL("paintEventSetPos"))
         geo = self.geometry()
         if (geo.topLeft() != self.moveEventPos) or (geo.size() != self.resizeEventSize):
             self.log.debug3("MainWindow.paintEvent: Bad geometry")

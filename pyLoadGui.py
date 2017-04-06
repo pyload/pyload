@@ -536,6 +536,7 @@ class main(QObject):
         self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
         self.connect(self.fontOptions,         SIGNAL("appFontChanged"), self.slotAppFontChanged)
         self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
+        self.connect(self.mainWindow,          SIGNAL("paintEventSetPos"), self.slotSetMainWindowPos, Qt.QueuedConnection)
         self.connect(self.mainWindow,          SIGNAL("showCorePermissions"), self.slotShowCorePermissions)
         self.connect(self.mainWindow,          SIGNAL("quitCore"), self.slotQuitCore)
         self.connect(self.mainWindow,          SIGNAL("restartCore"), self.slotRestartCore)
@@ -698,12 +699,14 @@ class main(QObject):
         if not self.mainWindow.trayOptions.settings["AltMethod"]:
             pe(); self.mainWindow.restoreState(s["state"]) # docks
             pe(); self.mainWindow.restoreGeometry(s["geo"])
+            self.setMainWindowPosOnNextPaintEvent(self.mainWindow.pos())
         else: # alternative method
             pe(); self.mainWindow.newPackDock.setHidden(s["p"]["h"])
             pe(); self.mainWindow.newLinkDock.setHidden(s["l"]["h"])
             pe(); self.mainWindow.newPackDock.setFloating(s["p"]["f"])
             pe(); self.mainWindow.newLinkDock.setFloating(s["l"]["f"])
             pe(); self.mainWindow.restoreGeometry(s["geo"])
+            self.setMainWindowPosOnNextPaintEvent(self.mainWindow.pos())
         if prepForSave:
             pe(); self.mainWindow.show()    # an extra show
             self.emit(SIGNAL("traySetShowActionText"), False)
@@ -1911,6 +1914,7 @@ class main(QObject):
         geoCaptcha = str(nodes["geometryCaptcha"].text())
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
         self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
+        self.setMainWindowPosOnNextPaintEvent(self.mainWindow.pos())
         self.mainWindow.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
         self.mainWindow.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
         self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
@@ -1921,6 +1925,17 @@ class main(QObject):
         self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
         self.mainWindow.captchaDialog.geo = QByteArray.fromBase64(geoCaptcha)
+
+    def setMainWindowPosOnNextPaintEvent(self, pos):
+        """
+            move the mainWindow to pos at the next paintEvent
+            (pos must be of type QPoint)
+        """
+        self.mainWindowPosToSet = (int(pos.x()), int(pos.y()))
+        self.mainWindow.paintEventSetPos = True
+
+    def slotSetMainWindowPos(self):
+        self.mainWindow.move(self.mainWindowPosToSet[0], self.mainWindowPosToSet[1])
 
     def slotPushPackagesToQueue(self):
         """
