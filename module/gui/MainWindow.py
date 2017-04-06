@@ -1242,11 +1242,6 @@ class MainWindow(QMainWindow):
         self.numOfOpenModalDialogs -= 1
         if retval == QDialog.Accepted:
             self.otherOptions.checkBoxStates2dict()
-            if self.otherOptions.cbWindowsWtMainWindowSetting:
-                self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint & ~Qt.WindowMinimizeButtonHint)
-            else:
-                self.setWindowFlags(self.windowFlags() | Qt.WindowMaximizeButtonHint | Qt.WindowMinimizeButtonHint)
-            self.show()
     
     def slotShowLanguageOptions(self):
         """
@@ -1452,22 +1447,17 @@ class OtherOptions(QDialog):
         self.log = logging.getLogger("guilog")
         
         self.settings = {}
-        self.cbWindowsWtMainWindowSetting = None   # none consistent setting
         
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
-        self.cbWindowsWtMainWindow = QCheckBox(_("Force showing context-sensitive help button (question mark) in the main window title bar"))
-        whatsThis = (self.cbWindowsWtMainWindow.text(), _("Due to a limitation, the GUI framework cannot show the context-sensitive help button on Windows OS together with the minimize/maximize buttons. This option disables minimizing and maximizing of the main window to allow the help button to be shown. This option is not consistent and is always disabled on application start."))
-        self.cbWindowsWtMainWindow.setWhatsThis(whatsThisFormat(*whatsThis))
         self.cbUnmaximze = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
         whatsThis = (self.cbUnmaximze.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maxmized window."))
         self.cbUnmaximze.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbWindowsWtMainWindow)
         vboxCb.addWidget(self.cbUnmaximze)
         
         self.cbEnableUnmax = QGroupBox(_("Other"))
@@ -1493,17 +1483,14 @@ class OtherOptions(QDialog):
         self.defaultSettings()
     
     def defaultSettings(self):
-        self.cbWindowsWtMainWindowSetting = False
         self.settings.clear()
         self.settings["Unmaximize"] = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
-        self.cbWindowsWtMainWindowSetting = self.cbWindowsWtMainWindow.isChecked()
         self.settings["Unmaximize"] = self.cbUnmaximze.isChecked()
     
     def dict2checkBoxStates(self):
-        self.cbWindowsWtMainWindow.setChecked(self.cbWindowsWtMainWindowSetting)
         self.cbUnmaximze.setChecked(self.settings["Unmaximize"])
     
     def appFontChanged(self):
