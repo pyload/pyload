@@ -762,8 +762,10 @@ class main(QObject):
                     pe();self.mainWindow.newLinkDock.showNormal()
             elif self.mainWindow.trayOptions.settings["Minimize2Tray"]:
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
+            else:
+                self.emit(SIGNAL("traySetShowActionText"), True)
         else:           # minimized flag was unset
-            pass
+            self.emit(SIGNAL("traySetShowActionText"), False)
 
     def slotMinimize2Tray(self):
         """
