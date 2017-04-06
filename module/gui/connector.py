@@ -71,6 +71,7 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
+        self.timeoutTimerStart()
         firstAttempt = self.firstAttempt
         self.firstAttempt = False
         
@@ -111,6 +112,8 @@ class Connector(QObject):
                 return False
             if not self.messageBox_02(self.host, self.port):
                 return False
+            else:
+                self.timeoutTimerStart()
         # login
         while True:
             err = None
@@ -130,6 +133,8 @@ class Connector(QObject):
             # user and password popup
             if self.messageBox_03(self.host, self.port, self.user, self.password) == QDialog.Rejected:
                 return False
+            else:
+                self.timeoutTimerStart()
             self.user = unicode(self.pwBox.userLE.text())
             self.password = unicode(self.pwBox.passwordLE.text())
             sleep(1) # some delay to let the dialog fade out
@@ -175,12 +180,20 @@ class Connector(QObject):
         self.proxy.server.close()
         self.proxy = self.Dummy()
     
+    def timeoutTimerStart(self):
+        self.emit(SIGNAL("connectTimeout"))
+    
+    def timeoutTimerStop(self):
+        self.emit(SIGNAL("connectTimeout"), False)
+    
     def messageBox_01(self, host, port):
+        self.timeoutTimerStop()
         err = _("Invalid hostname or address:")
         err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_02(self, host, port):
+        self.timeoutTimerStop()
         err = _("No response from host:")
         err += "\n" + host + ":" + str(port)
         err += "\n\n" + _("Wait longer?")
@@ -188,6 +201,7 @@ class Connector(QObject):
         return msgb.exec_()
     
     def messageBox_03(self, host, port, user, password):
+        self.timeoutTimerStop()
         pwboxtxt = _("Please enter correct login credentials for host:")
         pwboxtxt += "\n" + host + ":" + str(port)
         self.pwBox.textLabel.setText(pwboxtxt)
@@ -197,16 +211,19 @@ class Connector(QObject):
         return self.pwBox.exec_()
     
     def messageBox_04(self, host, port):
+        self.timeoutTimerStop()
         err = _("No SSL support to connect to host:")
         err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_05(self, host, port):
+        self.timeoutTimerStop()
         err = _("Cannot connect to host:")
         err += "\n" + host + ":" + str(port)
         self.emit(SIGNAL("msgBoxError"), err)
     
     def messageBox_06(self, server_version, host, port):
+        self.timeoutTimerStop()
         err = _("Cannot connect to server:")
         err += "\n" + host + ":" + str(port)
         err += "\n" + (_("Server version is %s") % server_version) + ", " + _("but we need version %s") % SERVER_VERSION

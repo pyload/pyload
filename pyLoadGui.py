@@ -374,11 +374,8 @@ class main(QObject):
             start all refresh threads and show main window
         """
         self.loadOptionsFromConfig()
-        timeout = 30.0 #seconds
-        timer = Timer(timeout, self.quitConnTimeout)
-        timer.start()
         connected = self.connector.connectProxy()
-        timer.cancel()
+        self.connectTimeout(False)
         if not connected:
             self.init()
             return
@@ -413,6 +410,14 @@ class main(QObject):
         self.mainWindow.raise_()
         self.mainWindow.activateWindow()
         self.mainWindow.tabw.setFocus(Qt.OtherFocusReason)
+
+    def connectTimeout(self, start=True):
+        if start:
+            timeout = 30.0 #seconds
+            self.connectTimeoutTimer = Timer(timeout, self.quitConnTimeout)
+            self.connectTimeoutTimer.start()
+        else:
+            self.connectTimeoutTimer.cancel()
 
     def stopMain(self):
         """
@@ -521,6 +526,7 @@ class main(QObject):
         """
             signal and slot stuff, yay!
         """
+        self.connect(self.connector,           SIGNAL("connectTimeout"), self.connectTimeout)
         self.connect(self.connector,           SIGNAL("msgBoxError"), self.slotMsgBoxError)
         self.connect(self.clickNLoadForwarder, SIGNAL("msgBoxError"), self.slotMsgBoxError)
         self.connect(self.connWindow,          SIGNAL("saveConnection"), self.slotSaveConnection)
