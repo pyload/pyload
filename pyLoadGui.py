@@ -746,13 +746,20 @@ class main(QObject):
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
             if self.mainWindow.numOfOpenModalDialogs > 0:
-                self.mainWindow.hide()
+                pe = self.app.processEvents
+                pe();self.mainWindow.hide()
                 if self.mainWindow.isMaximized():
-                    self.mainWindow.showMaximized()
+                    pe();self.mainWindow.showMaximized()
                 else:
-                    self.mainWindow.showNormal()
-                self.mainWindow.raise_()
-                self.mainWindow.activateWindow()
+                    pe();self.mainWindow.showNormal()
+                pe();self.mainWindow.raise_()
+                pe();self.mainWindow.activateWindow()
+                if self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden():
+                    pe();self.mainWindow.newPackDock.hide()
+                    pe();self.mainWindow.newPackDock.showNormal()
+                if self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden():
+                    pe();self.mainWindow.newLinkDock.hide()
+                    pe();self.mainWindow.newLinkDock.showNormal()
             elif self.mainWindow.trayOptions.settings["Minimize2Tray"]:
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
         else:           # minimized flag was unset
