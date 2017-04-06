@@ -207,7 +207,6 @@ class Connector(QObject):
         self.pwBox.textLabel.setText(pwboxtxt)
         self.pwBox.userLE.setText(user)
         self.pwBox.passwordLE.setText(password)
-        self.pwBox.okBtn.setFocus(Qt.OtherFocusReason)
         return self.pwBox.exec_()
     
     def messageBox_04(self, host, port):
@@ -274,12 +273,8 @@ class AskForUserAndPassword(QDialog):
         self.buttons.hideWhatsThisButton()
         self.okBtn = self.buttons.addButton(QDialogButtonBox.Ok)
         self.okBtn.setText(_("OK"))
-        self.okBtn.setDefault(True)
-        self.okBtn.setAutoDefault(True)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.cancelBtn.setText(_("Cancel"))
-        self.cancelBtn.setDefault(False)
-        self.cancelBtn.setAutoDefault(True)
         
         grid.addWidget(self.textLabel,        0, 0, 1, 2)
         grid.setRowMinimumHeight(1, 7)
