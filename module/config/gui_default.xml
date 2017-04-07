@@ -20,6 +20,7 @@
         <optionsCaptcha></optionsCaptcha>
         <optionsFonts></optionsFonts>
         <optionsTray></optionsTray>
+        <optionsWhatsThis></optionsWhatsThis>
         <optionsOther></optionsOther>
         <visibilitySpeedLimit></visibilitySpeedLimit>
         <stateQueue></stateQueue>

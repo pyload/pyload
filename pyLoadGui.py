@@ -262,6 +262,7 @@ class main(QObject):
         self.packageEdit = PackageEdit(self.mainWindow)
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
         self.fontOptions = FontOptions(self.defAppFont, self.mainWindow)
+        self.whatsThisOptions = WhatsThisOptions(self.mainWindow)
         self.clickNLoadForwarderOptions = ClickNLoadForwarderOptions(self.mainWindow)
         self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
         self.languageOptions = LanguageOptions(self.mainWindow)
@@ -546,6 +547,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("showCaptchaOptions"), self.slotShowCaptchaOptions)
         self.connect(self.mainWindow,          SIGNAL("showCaptcha"), self.slotShowCaptcha)
         self.connect(self.mainWindow,          SIGNAL("showFontOptions"), self.slotShowFontOptions)
+        self.connect(self.mainWindow,          SIGNAL("showWhatsThisOptions"), self.slotShowWhatsThisOptions)
         self.connect(self.mainWindow,          SIGNAL("showLanguageOptions"), self.slotShowLanguageOptions)
         self.connect(self.mainWindow,          SIGNAL("reloadQueue"), self.slotReloadQueue)
         self.connect(self.mainWindow,          SIGNAL("reloadCollector"), self.slotReloadCollector)
@@ -1678,6 +1680,7 @@ class main(QObject):
         optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
         optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
         optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
+        optionsWhatsThis = str(QByteArray(str(self.whatsThisOptions.settings)).toBase64())
         optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
         optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
         optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
@@ -1686,6 +1689,7 @@ class main(QObject):
         optionsCaptchaNode = mainWindowNode.toElement().elementsByTagName("optionsCaptcha").item(0)
         optionsFontsNode = mainWindowNode.toElement().elementsByTagName("optionsFonts").item(0)
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
+        optionsWhatsThisNode = mainWindowNode.toElement().elementsByTagName("optionsWhatsThis").item(0)
         optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
         newOptionsNotificationsNode = self.parser.xml.createTextNode(optionsNotifications)
         newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
@@ -1694,6 +1698,7 @@ class main(QObject):
         newOptionsCaptchaNode = self.parser.xml.createTextNode(optionsCaptcha)
         newOptionsFontsNode = self.parser.xml.createTextNode(optionsFonts)
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
+        newOptionsWhatsThisNode = self.parser.xml.createTextNode(optionsWhatsThis)
         newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
         optionsNotificationsNode.removeChild(optionsNotificationsNode.firstChild())
         optionsNotificationsNode.appendChild(newOptionsNotificationsNode)
@@ -1709,6 +1714,8 @@ class main(QObject):
         optionsFontsNode.appendChild(newOptionsFontsNode)
         optionsTrayNode.removeChild(optionsTrayNode.firstChild())
         optionsTrayNode.appendChild(newOptionsTrayNode)
+        optionsWhatsThisNode.removeChild(optionsWhatsThisNode.firstChild())
+        optionsWhatsThisNode.appendChild(newOptionsWhatsThisNode)
         optionsOtherNode.removeChild(optionsOtherNode.firstChild())
         optionsOtherNode.appendChild(newOptionsOtherNode)
         self.parser.saveData()
@@ -1803,6 +1810,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsFonts"))
         if not nodes.get("optionsTray"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsTray"))
+        if not nodes.get("optionsWhatsThis"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("optionsWhatsThis"))
         if not nodes.get("optionsOther"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsOther"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
@@ -1819,6 +1828,7 @@ class main(QObject):
         optionsCaptcha = str(nodes["optionsCaptcha"].text())
         optionsFonts = str(nodes["optionsFonts"].text())
         optionsTray = str(nodes["optionsTray"].text())
+        optionsWhatsThis = str(nodes["optionsWhatsThis"].text())
         optionsOther = str(nodes["optionsOther"].text())
         reset = False
 
@@ -1874,6 +1884,14 @@ class main(QObject):
             try:    self.mainWindow.trayOptions.settings = d; self.mainWindow.trayOptions.dict2checkBoxStates()
             except: self.mainWindow.trayOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Tray Icon")); reset = True
+        # What's This
+        d = base64ToDict(optionsWhatsThis)
+        if d is not None:
+            try:    self.whatsThisOptions.settings = d; self.whatsThisOptions.dict2dialogState()
+            except: self.whatsThisOptions.defaultSettings(); d = None
+        if d is None: self.messageBox_21(_("What's This")); reset = True
+        self.whatsThisOptions.applySettings()
+        self.whatsThisOptions.choosenColors = None
         # Other
         d = base64ToDict(optionsOther)
         if d is not None:
@@ -2504,6 +2522,7 @@ class main(QObject):
         self.captchaOptions.appFontChanged()
         self.loggingOptions.appFontChanged()
         self.fontOptions.appFontChanged()
+        self.whatsThisOptions.appFontChanged()
         self.automaticReloadingOptions.appFontChanged()
         self.clickNLoadForwarderOptions.appFontChanged()
         self.languageOptions.appFontChanged()
@@ -2514,6 +2533,18 @@ class main(QObject):
         self.mainWindow.captchaDialog.appFontChanged()
         self.connWindow.appFontChanged()
         self.connector.pwBox.appFontChanged()
+
+    def slotShowWhatsThisOptions(self):
+        """
+            popup the whatsthis options dialog
+        """
+        self.whatsThisOptions.dict2dialogState()
+        self.mainWindow.numOfOpenModalDialogs += 1
+        retval = self.whatsThisOptions.exec_()
+        self.mainWindow.numOfOpenModalDialogs -= 1
+        if retval == QDialog.Accepted:
+            self.whatsThisOptions.dialogState2dict()
+            self.whatsThisOptions.applySettings()
 
     def slotShowLanguageOptions(self):
         """
@@ -3837,6 +3868,144 @@ class TrayIcon(QSystemTrayIcon):
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.Trigger:
                 self.showAction.trigger()
+
+class WhatsThisOptions(QDialog):
+    """
+        whatsthis options dialog
+    """
+
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+        self.log = logging.getLogger("guilog")
+
+        self.defaultColors = (int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipText).rgba()), int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipBase).rgba()))
+        self.choosenColors = None
+
+        self.settings = {}
+
+        self.setAttribute(Qt.WA_DeleteOnClose, False)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setWindowTitle(_("Options"))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+
+        self.lblText = QLabel(_("Text color"))
+        self.btnText = QPushButton(_("Choose"))
+        self.lblBack = QLabel(_("Background color"))
+        self.btnBack = QPushButton(_("Choose"))
+        self.lvExample = LineView(_("What's This Preview"))
+
+        grid = QGridLayout()
+        grid.addWidget(self.lblText, 0, 0)
+        grid.addWidget(self.btnText, 0, 1)
+        grid.addWidget(self.lblBack, 1, 0)
+        grid.addWidget(self.btnBack, 1, 1)
+
+        self.cbEnable = QGroupBox(_("Enable Custom Colors"))
+        self.cbEnable.setCheckable(True)
+        self.cbEnable.setLayout(grid)
+
+        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
+        self.buttons.hideWhatsThisButton()
+        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
+        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
+        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self.cbEnable)
+        vbox.addWidget(self.lvExample)
+        vbox.addLayout(self.buttons.layout())
+        self.setLayout(vbox)
+
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())
+
+        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
+        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.cbEnableToggled)
+        self.connect(self.btnText,   SIGNAL("clicked()"),     self.chooseTextColor)
+        self.connect(self.btnBack,   SIGNAL("clicked()"),     self.chooseBackgroundColor)
+        self.defaultSettings()
+
+    def cbEnableToggled(self, enabled):
+        if enabled:
+            self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
+        else:
+            self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
+
+    def chooseTextColor(self):
+        initCol = QColor()
+        initCol.setRgba(self.choosenColors[0])
+        col = QColorDialog.getColor(initCol, self, self.lblText.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
+        if not col.isValid():
+            self.log.error("WhatsThisOptions.chooseTextColor: Invalid color")
+            return
+        self.choosenColors = (int(col.rgba()), self.choosenColors[1])
+        self.setExampleColors(int(col.rgba()), None)
+
+    def chooseBackgroundColor(self):
+        initCol = QColor()
+        initCol.setRgba(self.choosenColors[1])
+        col = QColorDialog.getColor(initCol, self, self.lblBack.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
+        if not col.isValid():
+            self.log.error("WhatsThisOptions.chooseBackgroundColor: Invalid color")
+            return
+        self.choosenColors = (self.choosenColors[0], int(col.rgba()))
+        self.setExampleColors(None, int(col.rgba()))
+
+    def setExampleColors(self, textCol=None, backCol=None):
+        p = QPalette(self.lvExample.palette())
+        if textCol is not None:
+            qCol = QColor()
+            qCol.setRgba(textCol)
+            p.setColor(QPalette.Active,   self.lvExample.foregroundRole(), qCol)
+            p.setColor(QPalette.Inactive, self.lvExample.foregroundRole(), qCol)
+        if backCol is not None:
+            qCol = QColor()
+            qCol.setRgba(backCol)
+            p.setColor(QPalette.Active,   self.lvExample.backgroundRole(), qCol)
+            p.setColor(QPalette.Inactive, self.lvExample.backgroundRole(), qCol)
+        self.lvExample.setPalette(p)
+
+    def defaultSettings(self):
+        self.settings.clear()
+        self.settings["Enabled"] = False
+        (self.settings["TextColor"], self.settings["BackColor"]) = self.defaultColors
+        self.dict2dialogState()
+
+    def dialogState2dict(self):
+        self.settings["Enabled"] = self.cbEnable.isChecked()
+        (self.settings["TextColor"], self.settings["BackColor"]) = self.choosenColors
+
+    def dict2dialogState(self):
+        self.cbEnable.setChecked(self.settings["Enabled"])
+        if self.settings["Enabled"]:
+            self.choosenColors = (self.settings["TextColor"], self.settings["BackColor"])
+            self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
+        else:
+            if self.choosenColors is None:
+                self.choosenColors = (self.settings["TextColor"], self.settings["BackColor"])
+            self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
+
+    def applySettings(self):
+        if self.settings["Enabled"]:
+            textCol = self.settings["TextColor"]
+            backCol = self.settings["BackColor"]
+        else:
+            (textCol, backCol) = self.defaultColors
+        p = QApplication.palette()
+        qCol = QColor()
+        qCol.setRgba(textCol)
+        p.setColor(QPalette.Active,   QPalette.ToolTipText, qCol)
+        p.setColor(QPalette.Inactive, QPalette.ToolTipText, qCol)
+        qCol = QColor()
+        qCol.setRgba(backCol)
+        p.setColor(QPalette.Active,   QPalette.ToolTipBase, qCol)
+        p.setColor(QPalette.Inactive, QPalette.ToolTipBase, qCol)
+        QApplication.setPalette(p)
+
+    def appFontChanged(self):
+        self.buttons.updateWhatsThisButton()
 
 class PackageEdit(QDialog):
     """

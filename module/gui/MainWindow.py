@@ -174,13 +174,14 @@ class MainWindow(QMainWindow):
                          "captcha": QAction(_("Captcha Solving"), self.menus["options"]),
                          "fonts": QAction(_("Fonts"), self.menus["options"]),
                          "tray": QAction(_("Tray Icon"), self.menus["options"]),
+                         "whatsthis": QAction(_("What's This"), self.menus["options"]),
                          "other": QAction(_("Other"), self.menus["options"]),
                          "language": QAction(_("Language"), self.menus["options"]),
                          "reload": QAction(_("Reload"), self.menus["view"]),
                          "showcaptcha": QAction(_("Show Captcha"), self.menus["view"]),
                          "showtoolbar": QAction(_("Show Toolbar"), self.menus["view"]),
                          "showspeedlimit": QAction(_("Show Speed Limit"), self.menus["view"]),
-                         "whatsthis": QAction("What's This?", self.menus["help"]),
+                         "whatsthismode": QAction("What's This?", self.menus["help"]),
                          "about": QAction(_("About pyLoad Client"), self.menus["help"])}
         
         self.mactions["showtoolbar"].setCheckable(True)
@@ -202,14 +203,17 @@ class MainWindow(QMainWindow):
         self.menus["options"].addAction(self.mactions["captcha"])
         self.menus["options"].addAction(self.mactions["fonts"])
         self.menus["options"].addAction(self.mactions["tray"])
+        self.menus["options"].addAction(self.mactions["whatsthis"])
         self.menus["options"].addAction(self.mactions["other"])
+        self.menus["options"].addSeparator()
         self.menus["options"].addAction(self.mactions["language"])
         self.menus["view"].addAction(self.mactions["reload"])
         self.menus["view"].addAction(self.mactions["showcaptcha"])
         self.menus["view"].addSeparator()
         self.menus["view"].addAction(self.mactions["showtoolbar"])
         self.menus["view"].addAction(self.mactions["showspeedlimit"])
-        self.menus["help"].addAction(self.mactions["whatsthis"])
+        self.menus["help"].addAction(self.mactions["whatsthismode"])
+        self.menus["help"].addSeparator()
         self.menus["help"].addAction(self.mactions["about"])
         
         #toolbar
@@ -255,6 +259,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["captcha"], SIGNAL("triggered()"), self.slotShowCaptchaOptions)
         self.connect(self.mactions["fonts"], SIGNAL("triggered()"), self.slotShowFontOptions)
         self.connect(self.mactions["tray"], SIGNAL("triggered()"), self.slotShowTrayOptions)
+        self.connect(self.mactions["whatsthis"], SIGNAL("triggered()"), self.slotShowWhatsThisOptions)
         self.connect(self.mactions["other"], SIGNAL("triggered()"), self.slotShowOtherOptions)
         self.connect(self.mactions["language"], SIGNAL("triggered()"), self.slotShowLanguageOptions)
         self.connect(self.mactions["manager"], SIGNAL("triggered()"), self.slotShowConnector)
@@ -265,7 +270,7 @@ class MainWindow(QMainWindow):
         self.connect(self.mactions["showcaptcha"], SIGNAL("triggered()"), self.slotShowCaptcha)
         self.connect(self.mactions["showtoolbar"], SIGNAL("toggled(bool)"), self.slotToggleToolbar)
         self.connect(self.mactions["showspeedlimit"], SIGNAL("toggled(bool)"), self.slotToggleSpeedLimitVisibility)
-        self.connect(self.mactions["whatsthis"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
+        self.connect(self.mactions["whatsthismode"], SIGNAL("triggered()"), QWhatsThis.enterWhatsThisMode)
         self.connect(self.mactions["about"], SIGNAL("triggered()"), self.slotShowAbout)
         
         self.connect(self.tabs["queue"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotQueueContextMenu)
@@ -1235,6 +1240,12 @@ class MainWindow(QMainWindow):
                 self.emit(SIGNAL("showTrayIcon"))
             else:
                 self.emit(SIGNAL("hideTrayIcon"))
+    
+    def slotShowWhatsThisOptions(self):
+        """
+            popup the whatsthis options dialog
+        """
+        self.emit(SIGNAL("showWhatsThisOptions"))
     
     def slotShowOtherOptions(self):
         """
