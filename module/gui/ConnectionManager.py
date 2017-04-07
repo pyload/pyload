@@ -44,7 +44,7 @@ class ConnectionManager(QDialog):
         self.wtBtn = WhatsThisButton()
         labelLayout.setContentsMargins(0, 0, 0, 0)
         labelLayout.setSpacing(0)
-        labelLayout.addWidget(QLabel(_("Connections") + ":"), 1)
+        labelLayout.addWidget(QLabel("<b>" + _("Connections") + ":" + "</b>"), 1)
         labelLayout.addWidget(self.wtBtn)
         boxLayout.addLayout(labelLayout)
         boxLayout.addWidget(self.connList)
