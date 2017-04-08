@@ -125,6 +125,7 @@ class SettingsWidget(QWidget):
         order = sorted(order, key=lambda d: d)
         for o in order:
             for k, section in self.data.iteritems():
+                QApplication.processEvents()
                 if section.description == o:
                     s = Section(section, self.general)
                     self.sections[k] = s
@@ -137,6 +138,7 @@ class SettingsWidget(QWidget):
         sl = QStringList()
         for o in order:
             for k, section in self.pdata.iteritems():
+                QApplication.processEvents()
                 if section.description == o:
                     s = Section(section, self.plugins, "plugin")
                     self.psections[k] = s

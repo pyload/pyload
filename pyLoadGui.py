@@ -400,7 +400,6 @@ class main(QObject):
         self.connect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
-        self.mainWindow.tabs["settings"]["w"].loadConfig()
         self.createTrayIcon()
         if self.mainWindow.trayOptions.settings["EnableTray"]:
             self.tray.show()
