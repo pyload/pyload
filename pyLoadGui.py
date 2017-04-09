@@ -573,6 +573,8 @@ class main(QObject):
 
         self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
         self.connect(self.mainWindow.captchaDialog, SIGNAL("done"), self.slotCaptchaDone)
+        self.connect(self.mainWindow.newPackDock, SIGNAL("newPackDockPaintEvent"), self.slotActivateNewPackDock, Qt.QueuedConnection)
+        self.connect(self.mainWindow.newLinkDock, SIGNAL("newLinkDockPaintEvent"), self.slotActivateNewLinkDock, Qt.QueuedConnection)
 
         self.packageEdit.connect(self.packageEdit.saveBtn, SIGNAL("clicked()"), self.slotEditPackageSave)
 
@@ -919,9 +921,12 @@ class main(QObject):
         pe = self.app.processEvents
         pe(); self.mainWindow.newLinkDock.setFloating(False)
         pe(); self.mainWindow.newPackDock.setFloating(True)
+        self.mainWindow.newPackDock.paintEventSignal = True
         pe(); self.mainWindow.newPackDock.show()
-        pe(); self.mainWindow.newPackDock.raise_()
-        pe(); self.mainWindow.newPackDock.activateWindow()
+
+    def slotActivateNewPackDock(self):
+        self.mainWindow.newPackDock.raise_()
+        self.mainWindow.newPackDock.activateWindow()
 
     def slotShowAddLinksFromTray(self):
         """
@@ -934,9 +939,12 @@ class main(QObject):
         pe = self.app.processEvents
         pe(); self.mainWindow.newPackDock.setFloating(False)
         pe(); self.mainWindow.newLinkDock.setFloating(True)
+        self.mainWindow.newLinkDock.paintEventSignal = True
         pe(); self.mainWindow.newLinkDock.show()
-        pe(); self.mainWindow.newLinkDock.raise_()
-        pe(); self.mainWindow.newLinkDock.activateWindow()
+
+    def slotActivateNewLinkDock(self):
+        self.mainWindow.newLinkDock.raise_()
+        self.mainWindow.newLinkDock.activateWindow()
 
     def slotShowCaptcha(self):
         """

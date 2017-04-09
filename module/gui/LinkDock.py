@@ -24,6 +24,7 @@ from os.path import join
 
 class NewLinkDock(QDockWidget):
     def __init__(self):
+        self.paintEventSignal = False
         QDockWidget.__init__(self, _("Add Links"))
         self.log = logging.getLogger("guilog")
         
@@ -52,6 +53,11 @@ class NewLinkDock(QDockWidget):
     def closeEvent(self, event):
         self.hide()
         event.ignore()
+    
+    def paintEvent(self, event):
+        if self.paintEventSignal:
+            self.paintEventSignal = False
+            self.emit(SIGNAL("newLinkDockPaintEvent"))
 
 class NewLinkWindow(QWidget):
     def __init__(self, dock):

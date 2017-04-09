@@ -24,6 +24,7 @@ from os.path import join
 
 class NewPackageDock(QDockWidget):
     def __init__(self):
+        self.paintEventSignal = False
         QDockWidget.__init__(self, _("New Package"))
         self.log = logging.getLogger("guilog")
         
@@ -63,6 +64,11 @@ class NewPackageDock(QDockWidget):
     def closeEvent(self, event):
         self.hide()
         event.ignore()
+    
+    def paintEvent(self, event):
+        if self.paintEventSignal:
+            self.paintEventSignal = False
+            self.emit(SIGNAL("newPackDockPaintEvent"))
 
 class NewPackageWindow(QWidget):
     def __init__(self, dock):
