@@ -1458,7 +1458,7 @@ class OtherOptions(QDialog):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         self.cbUnmaximze = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
-        whatsThis = (self.cbUnmaximze.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maxmized window."))
+        whatsThis = (self.cbUnmaximze.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maximized window."))
         self.cbUnmaximze.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
