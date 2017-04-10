@@ -14,7 +14,7 @@ from ..internal.misc import decode, encode
 class DLC(Container):
     __name__ = "DLC"
     __type__ = "container"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'
@@ -28,7 +28,8 @@ class DLC(Container):
                    ("spoob", "spoob@pyload.org"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Schnusch", "Schnusch@users.noreply.github.com"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     KEY = "cb99b5cbc24db398"
     IV = "9bc24cb995cb8db3"
@@ -46,21 +47,15 @@ class DLC(Container):
         dlc_content = self.load(self.API_URL % dlc_key)
 
         try:
-            rc = re.search(
-                r'<rc>(.+)</rc>',
-                dlc_content,
-                re.S).group(1).decode('base64')
+            rc = re.search(r'<rc>(.+)</rc>', dlc_content, re.S).group(1).decode('base64')[:16]
 
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        key = iv = Crypto.Cipher.AES.new(
-            self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
+        key = iv = Crypto.Cipher.AES.new(self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data = Crypto.Cipher.AES.new(
-            key,
-            Crypto.Cipher.AES.MODE_CBC,
-            iv).decrypt(dlc_data).decode('base64')
+        self.data = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
+
         self.packages = [(name or pyfile.name, links, name or pyfile.name)
                          for name, links in self.get_packages()]
 
