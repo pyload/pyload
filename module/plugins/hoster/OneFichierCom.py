@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.07"
+    __version__ = "1.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
@@ -45,6 +45,7 @@ class OneFichierCom(SimpleHoster):
     OFFLINE_PATTERN = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
     LINK_PATTERN = r'<a href="(.+?)".*>Click here to download the file</a>'
     TEMP_OFFLINE_PATTERN = r'Warning ! Without subscription, you can only download one file at|Our services are in maintenance'
+    PREMIUM_ONLY_PATTERN = r'is not possible to unregistered users|need a subscription'
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
 
