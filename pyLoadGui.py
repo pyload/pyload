@@ -1247,7 +1247,7 @@ class main(QObject):
             return [], True
         return oldlines[offset:], True
 
-    def refreshGuiLog(self):
+    def refreshGuiLog(self, first):
         """
             update gui log window
         """
@@ -1262,6 +1262,8 @@ class main(QObject):
             return
         if not logrot:
             self.mainWindow.tabs["guilog"]["text"].logOffset += len(lines)
+        if first:
+            lines = lines[-100:]    # load only the last lines in the widget
         for line in lines:
             self.mainWindow.tabs["guilog"]["text"].emit(SIGNAL("append(QString)"), line.strip("\n"))
         cursor = self.mainWindow.tabs["guilog"]["text"].textCursor()
@@ -1269,7 +1271,7 @@ class main(QObject):
         cursor.movePosition(QTextCursor.StartOfLine, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["guilog"]["text"].setTextCursor(cursor)
 
-    def refreshCoreLog(self):
+    def refreshCoreLog(self, first):
         """
             update core log window
         """
@@ -1277,10 +1279,16 @@ class main(QObject):
             return
         offset = self.mainWindow.tabs["corelog"]["text"].logOffset
         if offset == 0:
+            if first:
+                self.log.debug9("main.refreshCoreLog: Fetching server log ...")
             lines = self.connector.proxy.getLog(offset)
+            if first:
+                self.log.debug9("main.refreshCoreLog: Server log fetched")
             if not lines: # zero size log file
                 return
             self.mainWindow.tabs["corelog"]["text"].logOffset += len(lines)
+            if first:
+                lines = lines[-100:]    # load only the last lines in the widget
         else:
             lines = self.connector.proxy.getLog(offset - 1)
             if not lines:
@@ -2391,10 +2399,10 @@ class main(QObject):
             self.lastSpaceCheck = 0
 
         def start(self):
-            self.update()
+            self.update(True)
             self.timer.start(1000)
 
-        def update(self):
+        def update(self, first=False):
             """
                 methods to call
             """
@@ -2403,8 +2411,8 @@ class main(QObject):
                 self.lastSpaceCheck = time()
                 if self.parent.corePermissions["STATUS"]:
                     self.parent.serverStatus["freespace"] = self.parent.connector.proxy.freeSpace()
-            self.parent.refreshGuiLog()
-            self.parent.refreshCoreLog()
+            self.parent.refreshGuiLog(first)
+            self.parent.refreshCoreLog(first)
             self.parent.checkCaptcha()
 
             # check dirty data model flags at regular intervals
