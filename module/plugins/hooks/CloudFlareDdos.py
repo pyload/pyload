@@ -175,7 +175,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
@@ -269,12 +269,6 @@ class CloudFlareDdos(Addon):
         self._override_preload(pyfile.plugin)
 
     def download_processed(self, pyfile):
-        if id(pyfile.plugin) in self.stubs:
-            self._unoverride_preload(pyfile.plugin)
-
-    #@NOTE: Do not use download_failed() here because download_failed() is fired only on 'failed' status and
-    # not for other statuses, e.g.: `offline`
-    def downloadFailed(self, pyfile):
         if id(pyfile.plugin) in self.stubs:
             self._unoverride_preload(pyfile.plugin)
 
