@@ -751,7 +751,7 @@ class main(QObject):
                 if self.mainWindow.isMaximized():
                     pe();self.mainWindow.showMaximized()
                 else:
-                    pe();self.mainWindow.showNormal()
+                    pe();self.mainWindow.show()
                 pe();self.mainWindow.raise_()
                 pe();self.mainWindow.activateWindow()
                 if self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden():
