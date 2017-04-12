@@ -55,6 +55,7 @@ class NewLinkDock(QDockWidget):
         event.ignore()
     
     def paintEvent(self, event):
+        QDockWidget.paintEvent(self, event)
         if self.paintEventSignal:
             self.paintEventSignal = False
             self.emit(SIGNAL("newLinkDockPaintEvent"))
