@@ -670,21 +670,24 @@ class main(QObject):
         s["l"]["f&!h"] = s["l"]["f"] and not s["l"]["h"]
         s["ignoreMinimizeToggled"] = True
         self.mainWindow.hide()
-        self.unminimizeMainWindow()   # needed on windows os
+        self.unminimizeMainWindow()     # needed on windows os
         self.mainWindow.newPackDock.hide()
         self.mainWindow.newLinkDock.hide()
-        s["ignoreMinimizeToggled"] = False
         self.emit(SIGNAL("traySetShowActionText"), True)
         s["hiddenInTray"] = True   # must be updated before allowUserActions(True)
         s["restore_unmaxed_geo"] = s["maximized"]
+        s["ignoreMinimizeToggled"] = False
         self.allowUserActions(True)
         self.log.debug4("main.hideInTray: done")
 
     def unminimizeMainWindow(self):
-        """
-            unminimize mainWindow
-        """
         self.mainWindow.setWindowState(self.mainWindow.windowState() & ~Qt.WindowMinimized)
+
+    def unminimizeNewPackDock(self):
+        self.mainWindow.newPackDock.setWindowState(self.mainWindow.newPackDock.windowState() & ~Qt.WindowMinimized)
+
+    def unminimizeNewLinkDock(self):
+        self.mainWindow.newLinkDock.setWindowState(self.mainWindow.newLinkDock.windowState() & ~Qt.WindowMinimized)
 
     def showFromTray(self, prepForSave=False):
         """
@@ -709,6 +712,8 @@ class main(QObject):
         # default methode
         if not self.mainWindow.trayOptions.settings["AltMethod"]:
             pe(); self.mainWindow.restoreState(s["state"]) # docks
+            pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
+            pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             if not s["maximized"]:
                 pe(); self.mainWindow.restoreGeometry(s["geo"])
                 if prepForSave: return
@@ -728,6 +733,8 @@ class main(QObject):
             pe(); self.mainWindow.newLinkDock.setHidden(s["l"]["h"])
             pe(); self.mainWindow.newPackDock.setFloating(s["p"]["f"])
             pe(); self.mainWindow.newLinkDock.setFloating(s["l"]["f"])
+            pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
+            pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             if not s["maximized"]:
                 pe(); self.mainWindow.restoreGeometry(s["geo"])
                 if prepForSave: return
@@ -870,6 +877,7 @@ class main(QObject):
         pe = self.app.processEvents
         pe(); self.mainWindow.newLinkDock.setFloating(False)
         pe(); self.mainWindow.newPackDock.setFloating(True)
+        pe(); self.unminimizeNewPackDock()  # needed on gnome 3 when minimized to tray
         self.mainWindow.newPackDock.paintEventSignal = True
         pe(); self.mainWindow.newPackDock.show()
 
@@ -888,6 +896,7 @@ class main(QObject):
         pe = self.app.processEvents
         pe(); self.mainWindow.newPackDock.setFloating(False)
         pe(); self.mainWindow.newLinkDock.setFloating(True)
+        pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 when minimized to tray
         self.mainWindow.newLinkDock.paintEventSignal = True
         pe(); self.mainWindow.newLinkDock.show()
 
