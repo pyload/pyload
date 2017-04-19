@@ -11,7 +11,7 @@
     <mainWindow>
         <state></state>
         <geometry></geometry>
-        <geometryMaximize></geometryMaximize>
+        <geometryUnmaximized></geometryUnmaximized>
         <optionsNotifications></optionsNotifications>
         <optionsLogging></optionsLogging>
         <optionsClickNLoadForwarder></optionsClickNLoadForwarder>

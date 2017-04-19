@@ -628,12 +628,12 @@ class MainWindow(QMainWindow):
     def initPaintEventHook(self):
         self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
         self.paintEventLastMax = False
-        self.paintEventSetPos  = False
+        self.paintEventSignal  = False
     
     def paintEvent(self, event):
-        if self.paintEventSetPos:
-            self.paintEventSetPos = False
-            self.emit(SIGNAL("paintEventSetPos"))
+        if self.paintEventSignal:
+            self.paintEventSignal = False
+            self.emit(SIGNAL("mainWindowPaintEvent"))
         geo = self.geometry()
         if (geo.topLeft() != self.moveEventPos) or (geo.size() != self.resizeEventSize):
             self.log.debug3("MainWindow.paintEvent: Bad geometry")
@@ -675,6 +675,11 @@ class MainWindow(QMainWindow):
                     self.emit(SIGNAL("minimizeToggled"), True)
             elif (event.oldState() & Qt.WindowMinimized):
                 self.emit(SIGNAL("minimizeToggled"), False)
+            if (self.windowState() & Qt.WindowMaximized):
+                if not (event.oldState() & Qt.WindowMaximized):
+                    self.emit(SIGNAL("maximizeToggled"), True)
+            elif (event.oldState() & Qt.WindowMaximized):
+                self.emit(SIGNAL("maximizeToggled"), False)
     
     def closeEvent(self, event):
         """
@@ -1457,12 +1462,12 @@ class OtherOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
-        self.cbUnmaximze = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
-        whatsThis = (self.cbUnmaximze.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maximized window."))
-        self.cbUnmaximze.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.cbRestoreUnmaximizedGeo = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
+        whatsThis = (self.cbRestoreUnmaximizedGeo.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maximized window."))
+        self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbUnmaximze)
+        vboxCb.addWidget(self.cbRestoreUnmaximizedGeo)
         
         self.cbEnableUnmax = QGroupBox(_("Other"))
         self.cbEnableUnmax.setCheckable(False)
@@ -1488,14 +1493,14 @@ class OtherOptions(QDialog):
     
     def defaultSettings(self):
         self.settings.clear()
-        self.settings["Unmaximize"] = False
+        self.settings["RestoreUnmaximizedGeo"] = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
-        self.settings["Unmaximize"] = self.cbUnmaximze.isChecked()
+        self.settings["RestoreUnmaximizedGeo"] = self.cbRestoreUnmaximizedGeo.isChecked()
     
     def dict2checkBoxStates(self):
-        self.cbUnmaximze.setChecked(self.settings["Unmaximize"])
+        self.cbRestoreUnmaximizedGeo.setChecked(self.settings["RestoreUnmaximizedGeo"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
