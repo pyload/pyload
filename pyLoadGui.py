@@ -3916,7 +3916,7 @@ class LanguageOptions(QDialog):
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
-        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo-gui.png")))
+        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo-gui64x64.png")))
         self.log = logging.getLogger("guilog")
 
         self.menu = QMenu()
