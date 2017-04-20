@@ -715,10 +715,14 @@ class main(QObject):
             pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             if not s["maximized"]:
-                pe(); self.mainWindow.restoreGeometry(s["geo"])
+                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                    pe(); self.mainWindow.restoreGeometry(s["geo"])
                 if prepForSave: return
-                self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
-                self.mainWindow.update(); pe()
+                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                    self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
+                else:
+                    self.scheduleMainWindowPaintEventAction()
+                    self.mainWindow.update(); pe()
                 self.showFromTray_continue()
             else:
                 pe(); self.mainWindow.showMaximized() # needed on mint cinnamon
@@ -736,10 +740,14 @@ class main(QObject):
             pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
             if not s["maximized"]:
-                pe(); self.mainWindow.restoreGeometry(s["geo"])
+                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                    pe(); self.mainWindow.restoreGeometry(s["geo"])
                 if prepForSave: return
-                self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
-                self.mainWindow.update(); pe()
+                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                    self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
+                else:
+                    self.scheduleMainWindowPaintEventAction()
+                    self.mainWindow.update(); pe()
                 self.showFromTray_continue()
             else:
                 pe(); self.mainWindow.showMaximized() # needed on mint cinnamon

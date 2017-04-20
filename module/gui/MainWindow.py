@@ -1397,18 +1397,24 @@ class TrayOptions(QDialog):
         self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
         self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
+        self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
+        whatsThis = (self.cbRestoreGeo.text(), _(
+        "Restores size and position of the normal (not maxmized) main window when shown from the tray.<br>"
+        "Try toggle this if the main window sometimes pops up slightly shifted away from where it was hidden.<br>"
+        "Also, enable this when '" + str(self.cbAltMethod.text()) + "' is enabled."))
+        self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
         vboxCb.addWidget(self.cbAltMethod)
+        vboxCb.addWidget(self.cbRestoreGeo)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon"))
         self.cbEnableTray.setCheckable(True)
         self.cbEnableTray.setLayout(vboxCb)
         
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
@@ -1432,6 +1438,7 @@ class TrayOptions(QDialog):
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
         self.settings["AltMethod"]     = False
+        self.settings["RestoreGeo"]    = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
@@ -1439,12 +1446,14 @@ class TrayOptions(QDialog):
         self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
         self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
         self.settings["AltMethod"]     = self.cbAltMethod.isChecked()
+        self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbEnableTray.setChecked    (self.settings["EnableTray"])
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
         self.cbAltMethod.setChecked     (self.settings["AltMethod"])
+        self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
@@ -1461,7 +1470,7 @@ class OtherOptions(QDialog):
         self.settings = {}
         
         self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
