@@ -824,8 +824,16 @@ class main(QObject):
             if s["maximized"]:
                 self.log.error("main.slotMaximizeToggled: repeated maximize")
                 return
-            s["unmaxed_pos"]  = self.mainWindow.pos()
-            s["unmaxed_size"] = self.mainWindow.size()
+            if self.mainWindow.paintEventLastNormalPos is not None:
+                s["unmaxed_pos"] = self.mainWindow.paintEventLastNormalPos
+            else:
+                s["unmaxed_pos"] = self.mainWindow.pos()
+                self.log.error("main.slotMaximizeToggled: paintEventLastNormalPos is None")
+            if self.mainWindow.paintEventLastNormalSize is not None:
+                s["unmaxed_size"] = self.mainWindow.paintEventLastNormalSize
+            else:
+                s["unmaxed_size"] = self.mainWindow.size()
+                self.log.error("main.slotMaximizeToggled: paintEventLastNormalSize is None")
             s["restore_unmaxed_geo"] = False
             self.log.debug4("main.slotMaximizeToggled: geometry stored,     pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
         else:           # maximized flag was unset
@@ -1899,10 +1907,7 @@ class main(QObject):
         geoCaptcha = str(nodes["geometryCaptcha"].text())
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
         self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
-        if not self.mainWindow.isMaximized():
-            self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
-        else:
-            self.scheduleMainWindowPaintEventAction()
+        self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
         self.geoUnmaximized = {}
         try:
             self.geoUnmaximized = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))

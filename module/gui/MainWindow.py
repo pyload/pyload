@@ -627,10 +627,17 @@ class MainWindow(QMainWindow):
     
     def initPaintEventHook(self):
         self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
-        self.paintEventLastMax = False
+        self.paintEventLastNormalPos  = None
+        self.paintEventLastNormalSize = None
+        self.paintEventLastMaximized = False
         self.paintEventSignal  = False
     
     def paintEvent(self, event):
+        maximized = bool(self.windowState() & Qt.WindowMaximized)
+        minimized = bool(self.windowState() & Qt.WindowMinimized)
+        if not (maximized or minimized):
+            self.paintEventLastNormalPos  = self.pos()
+            self.paintEventLastNormalSize = self.size()
         if self.paintEventSignal:
             self.paintEventSignal = False
             self.emit(SIGNAL("mainWindowPaintEvent"))
@@ -641,22 +648,18 @@ class MainWindow(QMainWindow):
         if (geo.topLeft() == self.paintEventLastGeo.topLeft()) or (geo.size() == self.paintEventLastGeo.size()):
             return
         # got new geometry, size and position
-        max = bool(self.windowState() & Qt.WindowMaximized)
-        maxChanged = (max != self.paintEventLastMax)
-        if not maxChanged:
+        if maximized == self.paintEventLastMaximized:
             return
         # got maximize flag toggled
-        if max:
+        if maximized:
             if self.log.isEnabledFor(logging.DEBUG3):
                 self.log.debug3("MainWindow.paintEvent: maximized\t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
                 mrogeo = QRect(self.moveEventOldPos, self.resizeEventOldSize)
                 self.log.debug3("MainWindow.paintEvent:          \t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[mrogeo]" % (mrogeo.topLeft().x(), mrogeo.topLeft().y(), mrogeo.size().width(), mrogeo.size().height()))
-            self.emit(SIGNAL("maximizeDone"))
         else:
             self.log.debug3("MainWindow.paintEvent: unmaximized\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
-            self.emit(SIGNAL("unmaximizeDone"))
         self.paintEventLastGeo = geo
-        self.paintEventLastMax = max
+        self.paintEventLastMaximized = maximized
     
     def moveEvent(self, event):
         self.moveEventOldPos = event.oldPos()
