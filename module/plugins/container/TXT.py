@@ -2,28 +2,28 @@
 
 import codecs
 
-from module.plugins.internal.Container import Container
-from module.plugins.internal.misc import encode
+from ..internal.Container import Container
+from ..internal.misc import encode
 
 
 class TXT(Container):
-    __name__    = "TXT"
-    __type__    = "container"
-    __version__ = "0.20"
-    __status__  = "testing"
+    __name__ = "TXT"
+    __type__ = "container"
+    __version__ = "0.21"
+    __status__ = "testing"
 
     __pattern__ = r'.+\.(txt|text)$'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default"),
-                   ("flush"             , "bool"          , "Flush list after adding"         , False    ),
-                   ("encoding"          , "str"           , "File encoding"                   , "utf-8"  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No",
+                   "Create folder for each package", "Default"),
+                  ("flush", "bool", "Flush list after adding", False),
+                  ("encoding", "str", "File encoding", "utf-8")]
 
     __description__ = """Read link lists in plain text formats"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org"),
-                       ("jeix", "jeix@hasnomail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("jeix", "jeix@hasnomail.com")]
 
     def decrypt(self, pyfile):
         try:
@@ -33,9 +33,9 @@ class TXT(Container):
             encoding = "utf-8"
 
         fs_filename = encode(pyfile.url)
-        txt         = codecs.open(fs_filename, 'r', encoding)
-        curPack     = "Parsed links from %s" % pyfile.name
-        packages    = {curPack:[],}
+        txt = codecs.open(fs_filename, 'r', encoding)
+        curPack = "Parsed links from %s" % pyfile.name
+        packages = {curPack: [], }
 
         for link in txt.readlines():
             link = link.strip()

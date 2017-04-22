@@ -7,38 +7,37 @@ import socket
 import struct
 import time
 
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import exists, fsjoin
+from ..internal.Hoster import Hoster
+from ..internal.misc import exists, fsjoin
 
 
 class XDCC(Hoster):
-    __name__    = "XDCC"
-    __type__    = "hoster"
-    __version__ = "0.42"
-    __status__  = "testing"
+    __name__ = "XDCC"
+    __type__ = "hoster"
+    __version__ = "0.43"
+    __status__ = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
-    __config__  = [("nick",         "str", "Nickname",           "pyload"               ),
-                   ("ident",        "str", "Ident",              "pyloadident"          ),
-                   ("realname",     "str", "Realname",           "pyloadreal"           ),
-                   ("ctcp_version", "str","CTCP version string", "pyLoad! IRC Interface")]
+    __config__ = [("nick", "str", "Nickname", "pyload"),
+                  ("ident", "str", "Ident", "pyloadident"),
+                  ("realname", "str", "Realname", "pyloadreal"),
+                  ("ctcp_version", "str", "CTCP version string", "pyLoad! IRC Interface")]
 
     __description__ = """Download from IRC XDCC bot"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix",      "jeix@hasnomail.com"        ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def setup(self):
         self.timeout = 30
         self.multiDL = False
 
-
     def process(self, pyfile):
         #: Change request type
-        self.req = self.pyload.requestFactory.getRequest(self.classname, type="XDCC")
+        self.req = self.pyload.requestFactory.getRequest(
+            self.classname, type="XDCC")
 
-        for _i in xrange(0, 3):
+        for _i in range(0, 3):
             try:
                 nmn = self.do_download(pyfile.url)
                 self.log_info("Download of %s finished." % nmn)
@@ -49,32 +48,38 @@ class XDCC(Hoster):
                     err_no = e.errno
 
                     if err_no in (10054, 10061):
-                        self.log_warning("Server blocked our ip, retry in 5 min")
+                        self.log_warning(
+                            "Server blocked our ip, retry in 5 min")
                         self.wait(300)
                         continue
 
                     else:
-                        self.log_error(_("Failed due to socket errors. Code: %s") % err_no)
-                        self.fail(_("Failed due to socket errors. Code: %s") % err_no)
+                        self.log_error(
+                            _("Failed due to socket errors. Code: %s") %
+                            err_no)
+                        self.fail(
+                            _("Failed due to socket errors. Code: %s") %
+                            err_no)
 
                 else:
                     err_msg = e.args[0]
-                    self.log_error(_("Failed due to socket errors: '%s'") % err_msg)
+                    self.log_error(
+                        _("Failed due to socket errors: '%s'") %
+                        err_msg)
                     self.fail(_("Failed due to socket errors: '%s'") % err_msg)
 
         self.log_error(_("Server blocked our ip, retry again later manually"))
         self.fail(_("Server blocked our ip, retry again later manually"))
-
 
     def do_download(self, url):
         self.pyfile.setStatus("waiting")
 
         server, chan, bot, pack = re.match(self.__pattern__, url).groups()
 
-        nick          = self.config.get('nick')
-        ident         = self.config.get('ident')
-        realname      = self.config.get('realname')
-        ctcp_version  = self.config.get('ctcp_version')
+        nick = self.config.get('nick')
+        ident = self.config.get('ident')
+        realname = self.config.get('realname')
+        ctcp_version = self.config.get('ctcp_version')
 
         temp = server.split(':')
         ln = len(temp)
@@ -103,7 +108,7 @@ class XDCC(Hoster):
 
         self.log_info(_("Connect success."))
 
-        self.wait(5) # Wait for logon to complete
+        self.wait(5)  # Wait for logon to complete
 
         sock.send("JOIN #%s\r\n" % chan)
         sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
@@ -120,7 +125,7 @@ class XDCC(Hoster):
                     sock.send("PRIVMSG %s :xdcc send #%s\r\n" % (bot, pack))
 
             else:
-                if (dl_time + self.timeout) < time.time():  #@TODO: add in config
+                if (dl_time + self.timeout) < time.time():  # @TODO: add in config
                     sock.send("QUIT :byebye\r\n")
                     sock.close()
                     self.log_error(_("XDCC Bot did not answer"))
@@ -153,16 +158,21 @@ class XDCC(Hoster):
                 msg = {'origin': msg[0][1:],
                        'action': msg[1],
                        'target': msg[2],
-                       'text'  : msg[3][1:]}
+                       'text': msg[3][1:]}
 
-                if msg['target'][0:len(nick)] == nick and msg['action'] == "PRIVMSG":
+                if msg['target'][0:len(nick)] == nick and msg[
+                        'action'] == "PRIVMSG":
                     if msg['text'] == "\x01VERSION\x01":
-                        self.log_debug(_("Sending CTCP VERSION"))
-                        sock.send("NOTICE %s :%s\r\n" % (msg['origin'], ctcp_version))
+                        self.log_debug("Sending CTCP VERSION")
+                        sock.send(
+                            "NOTICE %s :%s\r\n" %
+                            (msg['origin'], ctcp_version))
 
                     elif msg['text'] == "\x01TIME\x01":
-                        self.log_debug(_("Sending CTCP TIME"))
-                        sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+                        self.log_debug("Sending CTCP TIME")
+                        sock.send(
+                            "NOTICE %s :%d\r\n" %
+                            (msg['origin'], time.time()))
 
                     elif msg['text'] == "\x01LAG\x01":
                         pass  #: don't know how to answer
@@ -172,7 +182,8 @@ class XDCC(Hoster):
                         or msg['action'] not in ("PRIVMSG", "NOTICE"):
                     continue
 
-                self.log_debug(_("PrivMsg: <%s> - %s" % (msg['origin'], msg['text'])))
+                self.log_debug("PrivMsg: <%s> - %s" %
+                               (msg['origin'], msg['text']))
 
                 if "You already requested that pack" in msg['text']:
                     retry = time.time() + 300
@@ -181,11 +192,13 @@ class XDCC(Hoster):
                     self.log_error(_("Invalid channel"))
                     self.fail(_("Invalid channel"))
 
-                m = re.match('\x01DCC SEND (?P<NAME>.*?) (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01', msg['text'])
+                m = re.match(
+                    '\x01DCC SEND (?P<NAME>.*?) (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01',
+                    msg['text'])
 
         #: Get connection data
-        ip        = socket.inet_ntoa(struct.pack('!I', int(m.group('IP'))))
-        port      = int(m.group('PORT'))
+        ip = socket.inet_ntoa(struct.pack('!I', int(m.group('IP'))))
+        port = int(m.group('PORT'))
         file_name = m.group('NAME')
         if m.group('SIZE'):
             self.req.filesize = long(m.group('SIZE'))
@@ -206,9 +219,11 @@ class XDCC(Hoster):
 
         self.pyfile.setStatus("downloading")
 
-        newname = self.req.download(ip, port, dl_file, sock, self.pyfile.setProgress)
+        newname = self.req.download(
+            ip, port, dl_file, sock, self.pyfile.setProgress)
         if newname and newname != dl_file:
-            self.log_info(_("%(name)s saved as %(newname)s") % {'name': self.pyfile.name, 'newname': newname})
+            self.log_info(_("%(name)s saved as %(newname)s") %
+                          {'name': self.pyfile.name, 'newname': newname})
             dl_file = newname
 
         #: kill IRC socket

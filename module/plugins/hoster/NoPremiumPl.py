@@ -1,76 +1,67 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import json
+from ..internal.misc import json
+from ..internal.MultiHoster import MultiHoster
 
 
 class NoPremiumPl(MultiHoster):
-    __name__    = "NoPremiumPl"
-    __type__    = "hoster"
-    __version__ = "0.09"
-    __status__  = "testing"
+    __name__ = "NoPremiumPl"
+    __type__ = "hoster"
+    __version__ = "0.12"
+    __status__ = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", False),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """NoPremium.pl multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("goddie", "dev@nopremium.pl")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("goddie", "dev@nopremium.pl")]
 
     API_URL = "http://crypt.nopremium.pl"
 
-    API_QUERY = {'site'    : "nopremium",
-                 'output'  : "json",
+    API_QUERY = {'site': "nopremium",
+                 'output': "json",
                  'username': "",
                  'password': "",
-                 'url'     : ""}
+                 'url': ""}
 
-    ERROR_CODES = {0 : "Incorrect login credentials",
-                   1 : "Not enough transfer to download - top-up your account",
-                   2 : "Incorrect / dead link",
-                   3 : "Error connecting to hosting, try again later",
-                   9 : "Premium account has expired",
+    ERROR_CODES = {0: "Incorrect login credentials",
+                   1: "Not enough transfer to download - top-up your account",
+                   2: "Incorrect / dead link",
+                   3: "Error connecting to hosting, try again later",
+                   9: "Premium account has expired",
                    15: "Hosting no longer supported",
                    80: "Too many incorrect login attempts, account blocked for 24h"}
-
-
-    def _prepare(self):
-        super(NoPremiumPl, self)._prepare()
-
-        data = self.account.get_data()
-
-        self.usr = data['usr']
-        self.pwd = data['pwd']
-
 
     def run_file_query(self, url, mode=None):
         query = self.API_QUERY.copy()
 
-        query['username'] = self.usr
-        query['password'] = self.pwd
-        query['url']      = url
+        query['username'] = self.account.user
+        query['password'] = self.account.info['data']['hash_password']
+        query['url'] = url
 
         if mode == "fileinfo":
             query['check'] = 2
-            query['loc']   = 1
+            query['loc'] = 1
 
         self.log_debug(query)
 
-        return self.load(self.API_URL, post=query)
+        return self.load(self.API_URL, post=query, redirect=20)
 
-
-    def handle_free(self, pyfile):
+    def handle_premium(self, pyfile):
+        self.log_debug("handle_premium")
         try:
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
         except Exception:
-            self.temp_offline("Query error #1")
+            self.fail("Query error #1")
 
         try:
             parsed = json.loads(data)
@@ -102,4 +93,4 @@ class NoPremiumPl(MultiHoster):
             self.link = self.run_file_query(pyfile.url, 'filedownload')
 
         except Exception:
-            self.temp_offline("Query error #2")
+            self.fail("Query error #2")

@@ -3,29 +3,27 @@
 import re
 import urllib
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class YourfilesTo(Hoster):
-    __name__    = "YourfilesTo"
-    __type__    = "hoster"
-    __version__ = "0.27"
-    __status__  = "testing"
+    __name__ = "YourfilesTo"
+    __type__ = "hoster"
+    __version__ = "0.28"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youfiles.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de"),
-                       ("skydancer", "skydancer@hasnomail.de")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.de"),
+                   ("skydancer", "skydancer@hasnomail.de")]
 
     def process(self, pyfile):
         self.pyfile = pyfile
         self.prepare()
         self.download(self.get_file_url())
-
 
     def prepare(self):
         if not self.file_exists():
@@ -34,7 +32,6 @@ class YourfilesTo(Hoster):
         self.pyfile.name = self.get_file_name()
 
         self.wait(self.get_waiting_time())
-
 
     def get_waiting_time(self):
         if not self.data:
@@ -49,11 +46,9 @@ class YourfilesTo(Hoster):
 
         return sec
 
-
     def download_html(self):
         url = self.pyfile.url
         self.data = self.load(url)
-
 
     def get_file_url(self):
         """
@@ -62,18 +57,17 @@ class YourfilesTo(Hoster):
         url = re.search(r"var bla = '(.*?)';", self.data)
         if url:
             url = url.group(1)
-            url = urllib.unquote(url.replace("http://http:/http://", "http://").replace("dumdidum", ""))
+            url = urllib.unquote(url.replace(
+                "http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:
             self.error(_("Absolute filepath not found"))
-
 
     def get_file_name(self):
         if not self.data:
             self.download_html()
 
         return re.search("<title>(.*)</title>", self.data).group(1)
-
 
     def file_exists(self):
         """

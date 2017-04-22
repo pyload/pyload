@@ -3,29 +3,27 @@
 from __future__ import with_statement
 
 import os
-import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import encode, exists
+from .Crypter import Crypter
+from .misc import encode, exists
 
 
 class Container(Crypter):
-    __name__    = "Container"
-    __type__    = "container"
-    __version__ = "0.12"
-    __status__  = "stable"
+    __name__ = "Container"
+    __type__ = "container"
+    __version__ = "0.13"
+    __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
 
     __description__ = """Base container decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay"         , "mkaay@mkaay.de"   ),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("mkaay", "mkaay@mkaay.de"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     def process(self, pyfile):
         """
@@ -45,11 +43,9 @@ class Container(Crypter):
 
         self._create_packages()
 
-
     def _delete_tmpfile(self):
         if self.pyfile.name.startswith("tmp_"):
             self.remove(self.pyfile.url, trash=False)
-
 
     def _make_tmpfile(self):
         """
@@ -62,7 +58,11 @@ class Container(Crypter):
             content = self.load(self.pyfile.url)
 
             self.pyfile.name = "tmp_" + self.pyfile.name
-            self.pyfile.url  = os.path.join(self.pyload.config.get('general', 'download_folder'), self.pyfile.name)
+            self.pyfile.url = os.path.join(
+                self.pyload.config.get(
+                    'general',
+                    'download_folder'),
+                self.pyfile.name)
 
             try:
                 with open(self.pyfile.url, "wb") as f:

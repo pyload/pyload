@@ -2,35 +2,33 @@
 
 import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class CryptCat(SimpleCrypter):
-    __name__    = "CryptCat"
-    __type__    = "crypter"
-    __version__ = "0.03"
-    __status__  = "testing"
+    __name__ = "CryptCat"
+    __type__ = "crypter"
+    __version__ = "0.04"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?crypt\.cat/\w+'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No",
+                   "Create folder for each package", "Default"),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """crypt.cat decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     OFFLINE_PATTERN = r'Folder not available!'
 
-    LINK_PATTERN    = r'<input .+?readonly="" value="\s*(.+?)" type="text">'
-
+    LINK_PATTERN = r'<input .+?readonly="" value="\s*(.+?)" type="text">'
 
     def get_links(self):
         baseurl = self.req.http.lastEffectiveURL
         url, inputs = self.parse_html_form()
-
 
         if ">Enter your password.<" in self.data:
             password = self.get_password()
@@ -41,8 +39,9 @@ class CryptCat(SimpleCrypter):
 
         elif "Enter Captcha" in self.data:
             m = re.search(r'<img src="(.+?)"', self.data)
-            if m:
-                captcha_code = self.captcha.decrypt(m.group(1), input_type="jpeg")
+            if m is not None:
+                captcha_code = self.captcha.decrypt(
+                    m.group(1), input_type="jpeg")
                 inputs['security_code'] = captcha_code
 
             else:

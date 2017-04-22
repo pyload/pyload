@@ -3,73 +3,81 @@
 import re
 
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.SimpleHoster import SimpleHoster
-from module.plugins.internal.misc import format_exc
+
+from ..internal.misc import format_exc
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class OneFichierCom(SimpleHoster):
-    __name__    = "OneFichierCom"
-    __type__    = "hoster"
-    __version__ = "1.01"
-    __status__  = "testing"
+    __name__ = "OneFichierCom"
+    __type__ = "hoster"
+    __version__ = "1.08"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """1fichier.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
-                       ("the-razer", "daniel_ AT gmx DOT net"),
-                       ("zoidberg", "zoidberg@mujmail.cz"),
-                       ("imclem", None),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                       ("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("fragonib", "fragonib[AT]yahoo[DOT]es"),
+                   ("the-razer", "daniel_ AT gmx DOT net"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("imclem", None),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DISPOSITION      = False  #@TODO: Remove disposition in 0.4.10
+    DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
 
-    URL_REPLACEMENTS = [("https:", "http:")]  #@TODO: Remove in 0.4.10
+    URL_REPLACEMENTS = [("http:", "https:")]
 
-    COOKIES          = [("1fichier.com", "LG", "en")]
+    COOKIES = [("1fichier.com", "LG", "en")]
 
-    NAME_PATTERN     = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
-    SIZE_PATTERN     = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN  = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
-    LINK_PATTERN     = r'<a href="(.+?)".*>Click here to download the file</a>'
+    NAME_PATTERN = r'>File\s*Name :</td>\s*<td.*>(?P<N>.+?)<'
+    SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
+    LINK_PATTERN = r'<a href="(.+?)".*>Click here to download the file</a>'
+    TEMP_OFFLINE_PATTERN = r'Warning ! Without subscription, you can only download one file at|Our services are in maintenance'
+    PREMIUM_ONLY_PATTERN = r'is not possible to unregistered users|need a subscription'
 
-    WAIT_PATTERN     = r'>You must wait \d+ minutes'
+    WAIT_PATTERN = r'>You must wait \d+ minutes'
 
     def setup(self):
-        self.multiDL         = self.premium
+        self.multiDL = self.premium
         self.resume_download = True
-
 
     @classmethod
     def get_info(cls, url="", html=""):
         redirect = url
-        for i in xrange(10):
+        for i in range(10):
             try:
-                headers = dict((k.lower(), v) for k,v in re.findall(r'(?P<name>.+?): (?P<value>.+?)\r?\n', get_url(redirect, just_header=True)))
+                headers = dict((k.lower(), v) for k, v in re.findall(
+                    r'(?P<name>.+?): (?P<value>.+?)\r?\n', get_url(redirect, just_header=True)))
                 if 'location' in headers and headers['location']:
                     redirect = headers['location']
 
                 else:
-                    if 'content-type' in headers and headers['content-type'] == "application/octet-stream":
+                    if 'content-type' in headers and headers[
+                            'content-type'] == "application/octet-stream":
                         if "filename=" in headers.get('content-disposition'):
-                            name = dict(_i.split("=") for _i in map(str.strip, headers['content-disposition'].split(";"))[1:])['filename'].strip("\"'")
+                            _name = dict(
+                                _i.split("=") for _i in map(str.strip, headers[
+                                    'content-disposition'].split(";"))[1:])
+                            name = _name['filename'].strip("\"'")
                         else:
                             name = url
 
-                        info = {'name'  : name,
-                                'size'  : long(headers.get('content-length')),
+                        info = {'name': name,
+                                'size': long(headers.get('content-length')),
                                 'status': 7,
-                                'url'   : url}
+                                'url': url}
 
                     else:
                         info = super(OneFichierCom, cls).get_info(url, html)
@@ -77,20 +85,20 @@ class OneFichierCom(SimpleHoster):
                     break
 
             except Exception, e:
-                print format_exc()
-                info = {'status' : 8,
-                        'error'  : e.message}
+                print(format_exc())
+                info = {'status': 8,
+                        'error': e.message}
                 break
 
         else:
-            info = {'status' : 8,
-                    'error'  : _("Too many redirects")}
+            info = {'status': 8,
+                    'error': _("Too many redirects")}
 
         return info
 
-
     def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
+        url, inputs = self.parse_html_form(
+            'action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
             return
@@ -103,9 +111,13 @@ class OneFichierCom(SimpleHoster):
         self.data = self.load(url, post=inputs)
 
         m = re.search(self.LINK_PATTERN, self.data)
-        if m:
+        if m is not None:
             self.link = m.group(1)
 
-
     def handle_premium(self, pyfile):
-        self.download(pyfile.url, post={'did': 1, 'dl_no_ssl': "on"}, disposition=False)  #@TODO: Remove disposition in 0.4.10
+        self.download(
+            pyfile.url,
+            post={
+                'did': 0,
+                'dl_no_ssl': "on"},
+            disposition=False)  # @TODO: Remove disposition in 0.4.10

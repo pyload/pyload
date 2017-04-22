@@ -5,8 +5,13 @@ from __future__ import with_statement
 import os
 import sys
 
+from ..internal.Addon import Addon
+from ..internal.Extractor import ArchiveError, CRCError, PasswordError
+from ..internal.misc import Expose, encode, exists, fsjoin, threaded, uniqify
+
 # monkey patch bug in python 2.6 and lower
-# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 , http://bugs.python.org/issue1731717
+# http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
+# http://bugs.python.org/issue1731717
 if sys.version_info < (2, 7) and os.name != "nt":
     import errno
     import subprocess
@@ -20,7 +25,6 @@ if sys.version_info < (2, 7) and os.name != "nt":
                 if e.errno == errno.EINTR:
                     continue
                 raise
-
 
     #: Unsued timeout option for older python version
     def wait(self, timeout=0):
@@ -49,29 +53,21 @@ try:
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threaded, uniqify
-
 
 class ArchiveQueue(object):
 
     def __init__(self, plugin, storage):
-        self.plugin  = plugin
+        self.plugin = plugin
         self.storage = storage
-
 
     def get(self):
         return self.plugin.db.retrieve(self.storage, default=[])
 
-
     def set(self, value):
         return self.plugin.db.store(self.storage, value)
 
-
     def delete(self):
         return self.plugin.db.delete(self.storage)
-
 
     def add(self, item):
         queue = self.get()
@@ -79,7 +75,6 @@ class ArchiveQueue(object):
             return self.set(queue + [item])
         else:
             return True
-
 
     def remove(self, item):
         queue = self.get()
@@ -96,56 +91,55 @@ class ArchiveQueue(object):
 
 
 class ExtractArchive(Addon):
-    __name__    = "ExtractArchive"
-    __type__    = "hook"
-    __version__ = "1.59"
-    __status__  = "testing"
+    __name__ = "ExtractArchive"
+    __type__ = "hook"
+    __version__ = "1.62"
+    __status__ = "testing"
 
-    __config__ = [("activated"      , "bool"  , "Activated"                             , True                                                                     ),
-                  ("fullpath"       , "bool"  , "Extract with full paths"               , True                                                                     ),
-                  ("overwrite"      , "bool"  , "Overwrite files"                       , False                                                                    ),
-                  ("keepbroken"     , "bool"  , "Try to extract broken archives"        , False                                                                    ),
-                  ("repair"         , "bool"  , "Repair broken archives (RAR required)" , False                                                                    ),
-                  ("usepasswordfile", "bool"  , "Use password file"                     , True                                                                     ),
-                  ("passwordfile"   , "file"  , "Password file"                         , "passwords.txt"                                                          ),
-                  ("delete"         , "bool"  , "Delete archive after extraction"       , True                                                                     ),
-                  ("deltotrash"     , "bool"  , "Move to trash instead delete"          , True                                                                     ),
-                  ("subfolder"      , "bool"  , "Create subfolder for each package"     , False                                                                    ),
-                  ("destination"    , "folder", "Extract files to folder"               , ""                                                                       ),
-                  ("extensions"     , "str"   , "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles"   , "str"   , "Don't extract the following files"     , "*.nfo,*.DS_Store,index.dat,thumb.db"                                    ),
-                  ("recursive"      , "bool"  , "Extract archives in archives"          , True                                                                     ),
-                  ("waitall"        , "bool"  , "Run after all downloads was processed" , False                                                                    ),
-                  ("priority"       , "int"   , "Process priority"                      , 0                                                                        )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("fullpath", "bool", "Extract with full paths", True),
+                  ("overwrite", "bool", "Overwrite files", False),
+                  ("keepbroken", "bool", "Try to extract broken archives", False),
+                  ("repair", "bool", "Repair broken archives (RAR required)", False),
+                  ("usepasswordfile", "bool", "Use password file", True),
+                  ("passwordfile", "file", "Password file", "passwords.txt"),
+                  ("delete", "bool", "Delete archive after extraction", True),
+                  ("deltotrash", "bool", "Move to trash instead delete", True),
+                  ("subfolder", "bool", "Create subfolder for each package", False),
+                  ("destination", "folder", "Extract files to folder", ""),
+                  ("extensions", "str", "Extract archives ending with extension",
+                   "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles", "str", "Don't extract the following files",
+                   "*.nfo,*.DS_Store,index.dat,thumb.db"),
+                  ("recursive", "bool", "Extract archives in archives", True),
+                  ("waitall", "bool", "Run after all downloads was processed", False),
+                  ("priority", "int", "Process priority", 0)]
 
     __description__ = """Extract different kind of archives"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Immenz", "immenz@gmx.net")]
 
     NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
 
-
     def init(self):
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
-                          'packageDeleted'       : "package_deleted"        }
+                          'packageDeleted': "package_deleted"}
 
-        self.queue  = ArchiveQueue(self, "Queue")
+        self.queue = ArchiveQueue(self, "Queue")
         self.failed = ArchiveQueue(self, "Failed")
 
-        self.extracting   = False
+        self.extracting = False
         self.last_package = False
-        self.extractors   = []
-        self.passwords    = []
-        self.repair       = False
-
+        self.extractors = []
+        self.passwords = []
+        self.repair = False
 
     def activate(self):
         for p in ("UnRar", "SevenZip", "UnZip", "UnTar"):
             try:
                 module = self.pyload.pluginManager.loadModule("internal", p)
-                klass  = getattr(module, p)
+                klass = getattr(module, p)
                 if klass.find():
                     self.extractors.append(klass)
                 if klass.REPAIR:
@@ -161,15 +155,16 @@ class ExtractArchive(Addon):
                 self.log_warning(_("Could not activate: %s") % p, e)
 
         if self.extractors:
-            self.log_debug(*["Found %s %s" % (Extractor.__name__, Extractor.VERSION) for Extractor in self.extractors])
+            self.log_debug(*["Found %s %s" % (Extractor.__name__,
+                                              Extractor.VERSION) for Extractor in self.extractors])
             self.extract_queued()  #: Resume unfinished extractions
         else:
             self.log_info(_("No Extract plugins activated"))
 
-
     @threaded
     def extract_queued(self, thread):
-        if self.extracting:  #@NOTE: doing the check here for safety (called by coreReady)
+        # @NOTE: doing the check here for safety (called by coreReady)
+        if self.extracting:
             return
 
         self.extracting = True
@@ -178,17 +173,18 @@ class ExtractArchive(Addon):
         while packages:
             if self.last_package:  #: Called from allDownloadsProcessed
                 self.last_package = False
-                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(
+                        packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
                 self.manager.dispatchEvent("all_archives_processed")
             else:
-                if self.extract(packages, thread):  #@NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(
+                        packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
                     pass
 
             packages = self.queue.get()  #: Check for packages added during extraction
 
         self.extracting = False
-
 
     #: Deprecated method, use `extract_package` instead
     @Expose
@@ -197,7 +193,6 @@ class ExtractArchive(Addon):
         See `extract_package`
         """
         return self.extract_package(*args, **kwargs)
-
 
     @Expose
     def extract_package(self, *ids):
@@ -209,43 +204,45 @@ class ExtractArchive(Addon):
         if not self.config.get('waitall') and not self.extracting:
             self.extract_queued()
 
-
     def package_deleted(self, pid):
         self.queue.remove(pid)
-
 
     def package_finished(self, pypack):
         self.queue.add(pypack.id)
         if not self.config.get('waitall') and not self.extracting:
             self.extract_queued()
 
-
     def all_downloads_processed(self):
         self.last_package = True
         if self.config.get('waitall') and not self.extracting:
             self.extract_queued()
 
-
     @Expose
-    def extract(self, ids, thread=None):  #@TODO: Use pypack, not pid to improve method usability
+    def extract(self, ids, thread=None):  # @TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
 
-        processed = []
         extracted = []
-        failed    = []
+        failed = []
 
-        toList = lambda string: string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')
+        toList = lambda string: string.replace(
+            ' ',
+            '').replace(
+            ',',
+            '|').replace(
+            ';',
+            '|').split('|')
 
         destination = self.config.get('destination')
-        subfolder   = self.config.get('subfolder')
-        fullpath    = self.config.get('fullpath')
-        overwrite   = self.config.get('overwrite')
-        priority    = self.config.get('priority')
-        recursive   = self.config.get('recursive')
-        keepbroken  = self.config.get('keepbroken')
+        subfolder = self.config.get('subfolder')
+        fullpath = self.config.get('fullpath')
+        overwrite = self.config.get('overwrite')
+        priority = self.config.get('priority')
+        recursive = self.config.get('recursive')
+        keepbroken = self.config.get('keepbroken')
 
-        extensions   = [x.lstrip('.').lower() for x in toList(self.config.get('extensions'))]
+        extensions = [x.lstrip('.').lower()
+                      for x in toList(self.config.get('extensions'))]
         excludefiles = toList(self.config.get('excludefiles'))
 
         if extensions:
@@ -267,7 +264,11 @@ class ExtractArchive(Addon):
             self.log_info(_("Check package: %s") % pypack.name)
 
             #: Determine output folder
-            out = fsjoin(dl_folder, pypack.folder, destination, "")  #: Force trailing slash
+            out = fsjoin(
+                dl_folder,
+                pypack.folder,
+                destination,
+                "")  #: Force trailing slash
 
             if subfolder:
                 out = fsjoin(out, pypack.folder)
@@ -275,23 +276,32 @@ class ExtractArchive(Addon):
             if not exists(out):
                 os.makedirs(out)
 
-            matched   = False
-            success   = True
-            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(dl_folder, pypack.folder, fdata['name'])), out)) for fdata \
-                        in pypack.getChildren().values()).values()  #: Remove duplicates
+                if subfolder:
+                    self.set_permissions(out)
+
+            matched = False
+            success = True
+            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(dl_folder, pypack.folder, fdata['name'])), out)) for fdata
+                             in pypack.getChildren().values()).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:
-                    files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
+                    files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
                                  if filter(lambda ext: fname.lower().endswith(ext), extensions)]
+
+                    #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                    #: This is important because, for example, UnRar ignores preceding parts in listing mode
+                    files_ids.sort(key=lambda file_id: file_id[1])
 
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
                     if targets:
-                        self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
+                        self.log_debug(
+                            "Targets for %s: %s" %
+                            (Extractor.__name__, targets))
                         matched = True
 
                     for fid, fname, fout in targets:
@@ -303,7 +313,7 @@ class ExtractArchive(Addon):
 
                         self.log_info(name, _("Extract to: %s") % fout)
                         try:
-                            pyfile  = self.pyload.files.getFile(fid)
+                            pyfile = self.pyload.files.getFile(fid)
                             archive = Extractor(pyfile,
                                                 fname,
                                                 fout,
@@ -316,8 +326,13 @@ class ExtractArchive(Addon):
                             thread.addActive(pyfile)
                             archive.init()
 
+                            #: Save for removal from file processing list, which happens after deletion.
+                            #: So archive.chunks() would just return an empty list.
+                            chunks = archive.chunks()
+
                             try:
-                                new_files = self._extract(pyfile, archive, pypack.password)
+                                new_files = self._extract(
+                                    pyfile, archive, pypack.password)
 
                             finally:
                                 pyfile.setProgress(100)
@@ -329,23 +344,30 @@ class ExtractArchive(Addon):
                             continue
 
                         #: Remove processed file and related multiparts from list
-                        files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids \
-                                    if fname not in archive.chunks()]
+                        files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
+                                     if fname not in chunks]
                         self.log_debug("Extracted files: %s" % new_files)
 
                         for filename in new_files:
                             self.set_permissions(filename)
 
                         for filename in new_files:
-                            file = encode(fsjoin(os.path.dirname(archive.filename), filename))
+                            file = encode(
+                                fsjoin(
+                                    os.path.dirname(
+                                        archive.filename),
+                                    filename))
                             if not exists(file):
-                                self.log_debug("New file %s does not exists" % filename)
+                                self.log_debug(
+                                    "New file %s does not exists" % filename)
                                 continue
 
                             if recursive and os.path.isfile(file):
-                                new_files_ids.append((fid, filename, os.path.dirname(filename)))  #: Append as new target
+                                new_files_ids.append(
+                                    (fid, filename, os.path.dirname(filename)))  #: Append as new target
 
-                        self.manager.dispatchEvent("archive_extracted", pyfile, archive)
+                        self.manager.dispatchEvent(
+                            "archive_extracted", pyfile, archive)
 
                 files_ids = new_files_ids  #: Also check extracted files
 
@@ -356,7 +378,8 @@ class ExtractArchive(Addon):
 
                 else:
                     failed.append(pid)
-                    self.manager.dispatchEvent("package_extract_failed", pypack)
+                    self.manager.dispatchEvent(
+                        "package_extract_failed", pypack)
 
                     self.failed.add(pid)
             else:
@@ -373,16 +396,17 @@ class ExtractArchive(Addon):
 
         return True if not failed else False
 
-
     def _extract(self, pyfile, archive, password):
-        name   = os.path.basename(archive.filename)
+        name = os.path.basename(archive.filename)
 
         pyfile.setStatus("processing")
 
         encrypted = False
         try:
             self.log_debug("Password: %s" % (password or "None provided"))
-            passwords = uniqify([password] + self.get_passwords(False)) if self.config.get('usepasswordfile') else [password]
+            passwords = uniqify(
+                [password] +
+                self.get_passwords(False)) if self.config.get('usepasswordfile') else [password]
             for pw in passwords:
                 try:
                     pyfile.setCustomStatus(_("archive testing"))
@@ -427,10 +451,13 @@ class ExtractArchive(Addon):
             pyfile.setProgress(0)
 
             if not encrypted or not self.config.get('usepasswordfile'):
-                self.log_debug("Extracting using password: %s" % (password or "None"))
+                self.log_debug(
+                    "Extracting using password: %s" %
+                    (password or "None"))
                 archive.extract(password)
             else:
-                for pw in filter(None, uniqify([password] + self.get_passwords(False))):
+                for pw in filter(None, uniqify(
+                        [password] + self.get_passwords(False))):
                     try:
                         self.log_debug("Extracting using password: %s" % pw)
 
@@ -445,6 +472,8 @@ class ExtractArchive(Addon):
 
             pyfile.setProgress(100)
             pyfile.setStatus("processing")
+
+            extracted_files = archive.files or archive.list()
 
             delfiles = archive.chunks()
             self.log_debug("Would delete: " + ", ".join(delfiles))
@@ -474,15 +503,18 @@ class ExtractArchive(Addon):
                                              e.message)
 
                         else:
-                            self.log_info(_("Moved %s to trash") % os.path.basename(f))
+                            self.log_info(
+                                _("Moved %s to trash") %
+                                os.path.basename(f))
 
             self.log_info(name, _("Extracting finished"))
-            extracted_files = archive.files or archive.list()
 
             return extracted_files
 
         except PasswordError:
-            self.log_error(name, _("Wrong password" if password else "No password found"))
+            self.log_error(
+                name, _(
+                    "Wrong password" if password else "No password found"))
 
         except CRCError, e:
             self.log_error(name, _("CRC mismatch"), e)
@@ -497,7 +529,6 @@ class ExtractArchive(Addon):
 
         raise Exception(_("Extract failed"))
 
-
     #: Deprecated method, use `get_passwords` instead
     @Expose
     def getPasswords(self, *args, **kwargs):
@@ -505,7 +536,6 @@ class ExtractArchive(Addon):
         See `get_passwords`
         """
         return self.get_passwords(*args, **kwargs)
-
 
     @Expose
     def get_passwords(self, reload=True):
@@ -516,7 +546,6 @@ class ExtractArchive(Addon):
             self.reload_passwords()
 
         return self.passwords
-
 
     def reload_passwords(self):
         try:
@@ -538,7 +567,6 @@ class ExtractArchive(Addon):
         else:
             self.passwords = passwords
 
-
     #: Deprecated method, use `add_password` instead
     @Expose
     def addPassword(self, *args, **kwargs):
@@ -546,7 +574,6 @@ class ExtractArchive(Addon):
         See `add_password`
         """
         return self.add_password(*args, **kwargs)
-
 
     @Expose
     def add_password(self, password):

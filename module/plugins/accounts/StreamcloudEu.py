@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class StreamcloudEu(XFSAccount):
-    __name__    = "StreamcloudEu"
-    __type__    = "account"
-    __version__ = "0.06"
-    __status__  = "testing"
+    __name__ = "StreamcloudEu"
+    __type__ = "account"
+    __version__ = "0.07"
+    __status__ = "testing"
 
     __description__ = """Streamcloud.eu account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     PLUGIN_DOMAIN = "streamcloud.eu"

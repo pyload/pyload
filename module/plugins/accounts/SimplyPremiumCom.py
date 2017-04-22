@@ -1,39 +1,42 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import json, set_cookie
+from ..internal.misc import json, set_cookie
+from ..internal.MultiAccount import MultiAccount
 
 
 class SimplyPremiumCom(MultiAccount):
-    __name__    = "SimplyPremiumCom"
-    __type__    = "account"
-    __version__ = "0.12"
-    __status__  = "testing"
+    __name__ = "SimplyPremiumCom"
+    __type__ = "account"
+    __version__ = "0.14"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """Simply-Premium.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("EvolutionClip", "evolutionclip@live.de")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("EvolutionClip", "evolutionclip@live.de")]
 
     def grab_hosters(self, user, password, data):
-        json_data = self.load("http://www.simply-premium.com/api/hosts.php", get={'format': "json", 'online': 1})
+        json_data = self.load(
+            "http://www.simply-premium.com/api/hosts.php",
+            get={
+                'format': "json",
+                'online': 1})
         json_data = json.loads(json_data)
 
         host_list = [element['regex'] for element in json_data['result']]
 
         return host_list
 
-
     def grab_info(self, user, password, data):
-        premium     = False
-        validuntil  = -1
+        premium = False
+        validuntil = -1
         trafficleft = None
 
-        json_data = self.load('http://www.simply-premium.com/api/user.php?format=json')
+        json_data = self.load(
+            'http://www.simply-premium.com/api/user.php?format=json')
 
         self.log_debug("JSON data: %s" % json_data)
 
@@ -45,11 +48,13 @@ class SimplyPremiumCom(MultiAccount):
         if 'timeend' in json_data['result'] and json_data['result']['timeend']:
             validuntil = float(json_data['result']['timeend'])
 
-        if 'remain_traffic' in json_data['result'] and json_data['result']['remain_traffic']:
-            trafficleft = float(json_data['result']['remain_traffic']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
+        if 'remain_traffic' in json_data[
+                'result'] and json_data['result']['remain_traffic']:
+            # @TODO: Remove `/ 1024` in 0.4.10
+            trafficleft = float(json_data['result']['remain_traffic']) / 1024
 
-        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
-
+        return {'premium': premium, 'validuntil': validuntil,
+                'trafficleft': trafficleft}
 
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "simply-premium.com", "lang", "EN")

@@ -3,55 +3,52 @@
 from __future__ import with_statement
 
 import os
-import time
 import subprocess
 import sys
+import time
+
+from ..internal.Addon import Addon
+from ..internal.misc import Expose, encode, fsjoin
 
 try:
     import caffeine
 except ImportError:
     pass
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, Expose, fsjoin
-
 
 class Kernel32(object):
     ES_AWAYMODE_REQUIRED = 0x00000040
-    ES_CONTINUOUS        = 0x80000000
-    ES_DISPLAY_REQUIRED  = 0x00000002
-    ES_SYSTEM_REQUIRED   = 0x00000001
-    ES_USER_PRESENT      = 0x00000004
+    ES_CONTINUOUS = 0x80000000
+    ES_DISPLAY_REQUIRED = 0x00000002
+    ES_SYSTEM_REQUIRED = 0x00000001
+    ES_USER_PRESENT = 0x00000004
 
 
 class AntiStandby(Addon):
-    __name__    = "AntiStandby"
-    __type__    = "hook"
-    __version__ = "0.17"
-    __status__  = "testing"
+    __name__ = "AntiStandby"
+    __type__ = "hook"
+    __version__ = "0.18"
+    __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                       , False),
-                  ("hdd"      , "bool", "Prevent HDD standby"             , True ),
-                  ("system"   , "bool", "Prevent OS standby"              , True ),
-                  ("display"  , "bool", "Prevent display standby"         , False),
-                  ("interval" , "int" , "HDD touching interval in seconds", 25   )]
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("hdd", "bool", "Prevent HDD standby", True),
+                  ("system", "bool", "Prevent OS standby", True),
+                  ("display", "bool", "Prevent display standby", False),
+                  ("interval", "int", "HDD touching interval in seconds", 25)]
 
     __description__ = """Prevent OS, HDD and display standby"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     TMP_FILE = ".antistandby"
 
-
     def init(self):
-        self.pid   = None
+        self.pid = None
         self.mtime = 0
 
-
     def activate(self):
-        hdd     = self.config.get('hdd')
-        system  = not self.config.get('system')
+        hdd = self.config.get('hdd')
+        system = not self.config.get('system')
         display = not self.config.get('display')
 
         if hdd:
@@ -66,7 +63,6 @@ class AntiStandby(Addon):
         else:
             self.linux_standby(system, display)
 
-
     def deactivate(self):
         self.remove(self.TMP_FILE, trash=False)
 
@@ -78,7 +74,6 @@ class AntiStandby(Addon):
 
         else:
             self.linux_standby(True)
-
 
     @Expose
     def win_standby(self, system=True, display=True):
@@ -95,8 +90,8 @@ class AntiStandby(Addon):
             if display:
                 set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED)
             else:
-                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED | Kernel32.ES_DISPLAY_REQUIRED)
-
+                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED |
+                    Kernel32.ES_DISPLAY_REQUIRED)
 
     @Expose
     def osx_standby(self, system=True, display=True):
@@ -112,7 +107,6 @@ class AntiStandby(Addon):
 
         except Exception, e:
             self.log_warning(_("Unable to change power state"), e)
-
 
     @Expose
     def linux_standby(self, system=True, display=True):
@@ -136,7 +130,6 @@ class AntiStandby(Addon):
         except Exception, e:
             self.log_warning(_("Unable to change display power state"), e)
 
-
     @Expose
     def touch(self, path):
         with open(path, 'w'):
@@ -144,14 +137,12 @@ class AntiStandby(Addon):
 
         self.mtime = time.time()
 
-
     @Expose
     def max_mtime(self, path):
         return max(0, 0,
                    *(os.path.getmtime(fsjoin(root, file))
-                        for root, dirs, files in os.walk(encode(path), topdown=False)
-                            for file in files))
-
+                     for root, dirs, files in os.walk(encode(path), topdown=False)
+                     for file in files))
 
     def periodical_task(self):
         if self.config.get('hdd') is False:
@@ -159,7 +150,7 @@ class AntiStandby(Addon):
 
         if (self.pyload.threadManager.pause or
             not self.pyload.api.isTimeDownload() or
-            not self.pyload.threadManager.getActiveFiles()):
+                not self.pyload.threadManager.getActiveFiles()):
             return
 
         dl_folder = self.pyload.config.get('general', 'download_folder')

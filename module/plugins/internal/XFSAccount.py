@@ -4,48 +4,46 @@ import re
 import time
 import urlparse
 
-from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import parse_html_form, parse_time, set_cookie
+from .misc import parse_html_form, parse_time, set_cookie
+from .Account import Account
 
 
-class XFSAccount(MultiAccount):
-    __name__    = "XFSAccount"
-    __type__    = "account"
-    __version__ = "0.57"
-    __status__  = "stable"
+class XFSAccount(Account):
+    __name__ = "XFSAccount"
+    __type__ = "account"
+    __version__ = "0.59"
+    __status__ = "stable"
 
-    __config__ = [("activated"     , "bool"               , "Activated"                    , True ),
-                  ("multi"         , "bool"               , "Multi-hoster"                 , True ),
-                  ("multi_mode"    , "all;listed;unlisted", "Hosters to use"               , "all"),
-                  ("multi_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("multi_interval", "int"                , "Reload interval in hours"     , 12   )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("multi", "bool", "Multi-hoster", True),
+                  ("multi_mode", "all;listed;unlisted", "Hosters to use", "all"),
+                  ("multi_list", "str", "Hoster list (comma separated)", ""),
+                  ("multi_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """XFileSharing account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg"      , "zoidberg@mujmail.cz"),
-                       ("Walter Purcaro", "vuolter@gmail.com"  )]
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
+    PLUGIN_DOMAIN = None
+    PLUGIN_URL = None
+    LOGIN_URL = None
 
-    PLUGIN_DOMAIN         = None
-    PLUGIN_URL            = None
-    LOGIN_URL             = None
+    COOKIES = True
 
-    COOKIES               = True
+    PREMIUM_PATTERN = r'\(Premium only\)'
 
-    PREMIUM_PATTERN       = r'\(Premium only\)'
+    VALID_UNTIL_PATTERN = r'Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
 
-    VALID_UNTIL_PATTERN   = r'Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
-
-    TRAFFIC_LEFT_PATTERN  = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
-    TRAFFIC_LEFT_UNIT     = "MB"  #: Used only if no group <U> was found
+    TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    TRAFFIC_LEFT_UNIT = "MB"  #: Used only if no group <U> was found
 
     LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
-    LEECH_TRAFFIC_UNIT    = "MB"  #: Used only if no group <U> was found
+    LEECH_TRAFFIC_UNIT = "MB"  #: Used only if no group <U> was found
 
-    LOGIN_FAIL_PATTERN    = r'Incorrect Login or Password|account was banned|Error<'
-    LOGIN_BAN_PATTERN     = r'>(Your IP.+?)<a'
-    LOGIN_SKIP_PATTERN    = r'op=logout'
-
+    LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
+    LOGIN_BAN_PATTERN = r'>(Your IP.+?)<a'
+    LOGIN_SKIP_PATTERN = r'op=logout'
 
     def _set_xfs_cookie(self):
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")
@@ -53,7 +51,6 @@ class XFSAccount(MultiAccount):
             self.COOKIES.insert(cookie)
         else:
             set_cookie(self.req.cj, *cookie)
-
 
     def setup(self):
         if not self.PLUGIN_DOMAIN:
@@ -63,24 +60,22 @@ class XFSAccount(MultiAccount):
             self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
 
         if not self.LOGIN_URL:
-            self.LOGIN_URL  = urlparse.urljoin(self.PLUGIN_URL, "login.html")
+            self.LOGIN_URL = urlparse.urljoin(self.PLUGIN_URL, "login.html")
 
         if self.COOKIES:
             self._set_xfs_cookie()
-
 
     #@TODO: Implement default grab_hosters routine
     # def grab_hosters(self, user, password, data):
         # pass
 
-
     def grab_info(self, user, password, data):
-        validuntil   = None
-        trafficleft  = None
+        validuntil = None
+        trafficleft = None
         leechtraffic = None
-        premium      = None
+        premium = None
 
-        if not self.PLUGIN_URL:  #@TODO: Remove in 0.4.10
+        if not self.PLUGIN_URL:  # @TODO: Remove in 0.4.10
             return
 
         self.data = self.load(self.PLUGIN_URL,
@@ -104,10 +99,10 @@ class XFSAccount(MultiAccount):
                 self.log_debug("Valid until: %s" % validuntil)
 
                 if validuntil > time.mktime(time.gmtime()):
-                    premium     = True
+                    premium = True
                     trafficleft = -1
                 else:
-                    premium    = False
+                    premium = False
                     validuntil = None  #: Registered account type (not premium)
         else:
             self.log_debug("VALID UNTIL PATTERN not found")
@@ -116,7 +111,7 @@ class XFSAccount(MultiAccount):
         if m is not None:
             try:
                 traffic = m.groupdict()
-                size    = traffic['S']
+                size = traffic['S']
 
                 if "nlimited" in size:
                     trafficleft = -1
@@ -140,7 +135,10 @@ class XFSAccount(MultiAccount):
         else:
             self.log_debug("TRAFFIC LEFT PATTERN not found")
 
-        leech = [m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.data)]
+        leech = [
+            m.groupdict() for m in re.finditer(
+                self.LEECH_TRAFFIC_PATTERN,
+                self.data)]
         if leech:
             leechtraffic = 0
             try:
@@ -167,11 +165,10 @@ class XFSAccount(MultiAccount):
         else:
             self.log_debug("LEECH TRAFFIC PATTERN not found")
 
-        return {'validuntil'  : validuntil,
-                'trafficleft' : trafficleft,
+        return {'validuntil': validuntil,
+                'trafficleft': trafficleft,
                 'leechtraffic': leechtraffic,
-                'premium'     : premium}
-
+                'premium': premium}
 
     def signin(self, user, password, data):
         self.data = self.load(self.LOGIN_URL, cookies=self.COOKIES)
@@ -181,10 +178,10 @@ class XFSAccount(MultiAccount):
 
         action, inputs = parse_html_form('name="FL"', self.data)
         if not inputs:
-            inputs = {'op'      : "login",
+            inputs = {'op': "login",
                       'redirect': self.PLUGIN_URL}
 
-        inputs.update({'login'   : user,
+        inputs.update({'login': user,
                        'password': password})
 
         if action:
@@ -195,7 +192,6 @@ class XFSAccount(MultiAccount):
         self.data = self.load(url, post=inputs, cookies=self.COOKIES)
 
         self.check_errors()
-
 
     def check_errors(self):
         self.log_info(_("Checking for link errors..."))

@@ -4,25 +4,24 @@ import os
 import re
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import json
+from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 class RedtubeCom(Hoster):
-    __name__    = "RedtubeCom"
-    __type__    = "hoster"
-    __version__ = "0.26"
-    __status__  = "testing"
+    __name__ = "RedtubeCom"
+    __type__ = "hoster"
+    __version__ = "0.27"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Redtube.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("jeix", "jeix@hasnomail.de")]
+    __license__ = "GPLv3"
+    __authors__ = [("jeix", "jeix@hasnomail.de")]
 
     NAME_PATTERN = r'videoTitle: "(?P<N>.+?)",'
-
 
     def process(self, pyfile):
         html = self.load(pyfile.url)
@@ -32,7 +31,7 @@ class RedtubeCom(Hoster):
             self.error(_("sources pattern not found"))
 
         sources = json.loads(m.group(1))
-        quality = str(max([int(q) for q in sources.keys()]))
+        quality = str(max(int(q) for q in sources.keys()))
 
         link = sources[quality]
 
@@ -44,4 +43,3 @@ class RedtubeCom(Hoster):
         pyfile.name = m.group(1) + ext
 
         self.download(link)
-

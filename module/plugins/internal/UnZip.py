@@ -5,46 +5,44 @@ from __future__ import with_statement
 import sys
 import zipfile
 
-from module.plugins.internal.Extractor import Extractor, ArchiveError, CRCError, PasswordError
-from module.plugins.internal.misc import encode
+from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .misc import encode
 
 
 class UnZip(Extractor):
-    __name__    = "UnZip"
-    __type__    = "extractor"
-    __version__ = "1.22"
-    __status__  = "stable"
+    __name__ = "UnZip"
+    __type__ = "extractor"
+    __version__ = "1.24"
+    __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    VERSION = "%s.%s.%s" % (sys.version_info[0], sys.version_info[1], sys.version_info[2])
-
+    VERSION = "%s.%s.%s" % (sys.version_info[0],
+                            sys.version_info[1],
+                            sys.version_info[2])
 
     @classmethod
     def isarchive(cls, filename):
         return zipfile.is_zipfile(encode(filename))
 
-
     @classmethod
     def find(cls):
         return sys.version_info[:2] >= (2, 6)
 
-
     def list(self, password=None):
-        with zipfile.ZipFile(self.target, 'r') as z:
+        with zipfile.ZipFile(self.filename, 'r') as z:
             z.setpassword(password)
             self.files = z.namelist()
         return self.files
 
-
     def verify(self, password=None):
         try:
-            with zipfile.ZipFile(self.target, 'r') as z:
+            with zipfile.ZipFile(self.filename, 'r') as z:
                 z.setpassword(password)
-                if z.testzip():
+                badfile = z.testzip()
+                if badfile is not None:
                     raise CRCError(badfile)
 
         except (zipfile.BadZipfile, zipfile.LargeZipFile), e:
@@ -56,12 +54,11 @@ class UnZip(Extractor):
             else:
                 raise CRCError(e)
 
-
     def extract(self, password=None):
         self.verify(password)
 
         try:
-            with zipfile.ZipFile(self.target, 'r') as z:
+            with zipfile.ZipFile(self.filename, 'r') as z:
                 z.setpassword(password)
                 z.extractall(self.dest)
                 self.files = z.namelist()

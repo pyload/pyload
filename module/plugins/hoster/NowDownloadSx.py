@@ -2,27 +2,27 @@
 
 import re
 
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class NowDownloadSx(SimpleHoster):
-    __name__    = "NowDownloadSx"
-    __type__    = "hoster"
-    __version__ = "0.14"
-    __status__  = "testing"
+    __name__ = "NowDownloadSx"
+    __type__ = "hoster"
+    __version__ = "0.15"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(nowdownload\.[a-zA-Z]{2,}/(dl/|download\.php.+?id=|mobile/(#/files/|.+?id=))|likeupload\.org/)\w+'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """NowDownload.sx hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("godofdream", "soilfiction@gmail.com"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("godofdream", "soilfiction@gmail.com"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     INFO_PATTERN = r'Downloading</span> <br> (?P<N>.*) (?P<S>[\d.,]+) (?P<U>[\w^_]+) </h4>'
     OFFLINE_PATTERN = r'>This file does not exist'
@@ -34,12 +34,10 @@ class NowDownloadSx(SimpleHoster):
 
     NAME_REPLACEMENTS = [(r'<.*?>', '')]
 
-
     def setup(self):
         self.resume_download = True
-        self.multiDL        = True
-        self.chunk_limit     = -1
-
+        self.multiDL = True
+        self.chunk_limit = -1
 
     def handle_free(self, pyfile):
         tokenlink = re.search(self.TOKEN_PATTERN, self.data)

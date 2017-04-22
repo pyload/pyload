@@ -3,28 +3,28 @@
 import re
 import time
 
-from module.plugins.internal.misc import json
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.misc import json
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class FilepostCom(SimpleHoster):
-    __name__    = "FilepostCom"
-    __type__    = "hoster"
-    __version__ = "0.39"
-    __status__  = "testing"
+    __name__ = "FilepostCom"
+    __type__ = "hoster"
+    __version__ = "0.41"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Filepost.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     INFO_PATTERN = r'<input type="text" id="url" value=\'<a href.*?>(?P<N>.+?) - (?P<S>[\d.,]+) (?P<U>[\w^_]+)</a>\' class="inp_text"/>'
     OFFLINE_PATTERN = r'class="error_msg_title"> Invalid or Deleted File. </div>|<div class="file_info file_info_deleted">'
@@ -32,7 +32,6 @@ class FilepostCom(SimpleHoster):
     PREMIUM_ONLY_PATTERN = r'members only. Please upgrade to premium|a premium membership is required to download this file'
     RECAPTCHA_PATTERN = r'Captcha.init\({\s*key:\s*\'(.+?)\''
     FLP_TOKEN_PATTERN = r'set_store_options\({token: \'(.+?)\''
-
 
     def handle_free(self, pyfile):
         m = re.search(self.FLP_TOKEN_PATTERN, self.data)
@@ -46,24 +45,37 @@ class FilepostCom(SimpleHoster):
         captcha_key = m.group(1)
 
         #: Get wait time
-        get_dict = {'SID': self.req.cj.getCookie('SID'), 'JsHttpRequest': str(int(time.time() * 10000)) + '-xml'}
-        post_dict = {'action': 'set_download', 'token': flp_token, 'code': self.info['pattern']['ID']}
-        wait_time = int(self.get_json_response(get_dict, post_dict, 'wait_time'))
+        get_dict = {'SID': self.req.cj.getCookie(
+            'SID'), 'JsHttpRequest': str(int(time.time() * 10000)) + '-xml'}
+        post_dict = {
+            'action': 'set_download',
+            'token': flp_token,
+            'code': self.info['pattern']['ID']}
+        wait_time = int(
+            self.get_json_response(
+                get_dict,
+                post_dict,
+                'wait_time'))
 
         if wait_time > 0:
             self.wait(wait_time)
 
-        post_dict = {'token': flp_token, 'code': self.info['pattern']['ID'], 'file_pass': ''}
+        post_dict = {
+            'token': flp_token,
+            'code': self.info['pattern']['ID'],
+            'file_pass': ''}
 
         if 'var is_pass_exists = true;' in self.data:
             #: Solve password
             password = self.get_password()
-
             if password:
-                self.log_info(_("Password protected link, trying ") + file_pass)
+                self.log_info(
+                    _("Password protected link, trying ") +
+                    password)
 
-                get_dict['JsHttpRequest'] = str(int(time.time() * 10000)) + '-xml'
-                post_dict['file_pass'] = file_pass
+                get_dict['JsHttpRequest'] = str(
+                    int(time.time() * 10000)) + '-xml'
+                post_dict['file_pass'] = password
 
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 
@@ -79,13 +91,16 @@ class FilepostCom(SimpleHoster):
             if not self.link:
                 #: Solve ReCaptcha
                 self.captcha = ReCaptcha(pyfile)
-                post_dict['recaptcha_response_field'], post_dict['recaptcha_challenge_field'] = self.captcha.challenge(captcha_key)
+                post_dict['recaptcha_response_field'], post_dict[
+                    'recaptcha_challenge_field'] = self.captcha.challenge(captcha_key)
                 self.link = self.get_json_response(get_dict, post_dict, 'link')
 
-
     def get_json_response(self, get_dict, post_dict, field):
-        html = self.load('https://filepost.com/files/get/', get=get_dict, post=post_dict)
-        res  = json.loads(html)
+        html = self.load(
+            'https://filepost.com/files/get/',
+            get=get_dict,
+            post=post_dict)
+        res = json.loads(html)
 
         self.log_debug(res)
 
@@ -108,7 +123,8 @@ class FilepostCom(SimpleHoster):
                 return None
 
             elif 'CAPTCHA' in res['js']['error']:
-                self.log_debug("Error response is unknown, but mentions CAPTCHA")
+                self.log_debug(
+                    "Error response is unknown, but mentions CAPTCHA")
                 return None
 
             else:

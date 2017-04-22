@@ -3,8 +3,8 @@
 import re
 import urllib
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 def clean_json(json_expr):
@@ -16,19 +16,18 @@ def clean_json(json_expr):
 
 
 class XHamsterCom(Hoster):
-    __name__    = "XHamsterCom"
-    __type__    = "hoster"
-    __version__ = "0.17"
-    __status__  = "testing"
+    __name__ = "XHamsterCom"
+    __type__ = "hoster"
+    __version__ = "0.19"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?xhamster\.com/movies/.+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("type", ".mp4;.flv", "Preferred type", ".mp4")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("type", ".mp4;.flv", "Preferred type", ".mp4")]
 
     __description__ = """XHamster.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = []
-
+    __license__ = "GPLv3"
+    __authors__ = []
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -42,11 +41,9 @@ class XHamsterCom(Hoster):
         pyfile.name = self.get_file_name() + self.desired_fmt
         self.download(self.get_file_url())
 
-
     def download_html(self):
         url = self.pyfile.url
         self.data = self.load(url)
-
 
     def get_file_url(self):
         """
@@ -55,8 +52,8 @@ class XHamsterCom(Hoster):
         if not self.data:
             self.download_html()
 
-        flashvar_pattern = re.compile('flashvars = ({.*?});', re.S)
-        json_flashvar = flashvar_pattern.search(self.data)
+        _re_flashvar = re.compile('flashvars = ({.*?});', re.S)
+        json_flashvar = _re_flashvar.search(self.data)
 
         if not json_flashvar:
             self.error(_("flashvar not found"))
@@ -72,12 +69,12 @@ class XHamsterCom(Hoster):
         if flashvars['url_mode']:
             url_mode = flashvars['url_mode']
 
-
         else:
             self.error(_("url_mode not found"))
 
         if self.desired_fmt == ".mp4":
-            file_url = re.search(r'<a href=\"" + srv_url + "(.+?)\"', self.data)
+            file_url = re.search(
+                r'<a href=\"" + srv_url + "(.+?)\"', self.data)
             if file_url is None:
                 self.error(_("file_url not found"))
 
@@ -99,7 +96,6 @@ class XHamsterCom(Hoster):
 
         return long_url
 
-
     def get_file_name(self):
         if not self.data:
             self.download_html()
@@ -111,7 +107,7 @@ class XHamsterCom(Hoster):
             name = re.search(pattern, self.data)
             if name is None:
                 pattern = r'http://[www.]+xhamster\.com/movies/.*/(.*?)\.html?'
-                name = re.match(file_name_pattern, self.pyfile.url)
+                name = re.match(pattern, self.pyfile.url)
                 if name is None:
                     pattern = r'<div id="element_str_id" style="display:none;">(.*)</div>'
                     name = re.search(pattern, self.data)
@@ -119,7 +115,6 @@ class XHamsterCom(Hoster):
                         return "Unknown"
 
         return name.group(1)
-
 
     def file_exists(self):
         """

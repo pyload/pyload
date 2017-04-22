@@ -5,32 +5,29 @@
 
 import re
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.captcha.ReCaptcha import ReCaptcha
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 class OboomCom(Hoster):
-    __name__    = "OboomCom"
-    __type__    = "hoster"
-    __version__ = "0.44"
-    __status__  = "testing"
+    __name__ = "OboomCom"
+    __type__ = "hoster"
+    __version__ = "0.45"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Oboom.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stanley", "stanley.foerster@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("stanley", "stanley.foerster@gmail.com")]
 
     RECAPTCHA_KEY = "6LdqpO0SAAAAAJGHXo63HyalP7H4qlRs_vff0kJX"
-
 
     def setup(self):
         self.chunk_limit = 1
         self.multiDL = self.resume_download = self.premium
-
 
     def process(self, pyfile):
         self.pyfile.url.replace(".com/#id=", ".com/#")
@@ -44,16 +41,18 @@ class OboomCom(Hoster):
         if not self.premium:
             self.solve_captcha()
         self.get_download_ticket()
-        self.download("http://%s/1.0/dlh" % self.download_domain, get={'ticket': self.download_ticket, 'http_errors': 0})
-
+        self.download(
+            "http://%s/1.0/dlh" %
+            self.download_domain,
+            get={
+                'ticket': self.download_ticket,
+                'http_errors': 0})
 
     def load_url(self, url, get={}):
         return json.loads(self.load(url, get))
 
-
     def get_file_id(self, url):
         self.file_id = re.match(OboomCom.__pattern__, url).group('ID')
-
 
     def get_session_token(self):
         if self.premium:
@@ -68,8 +67,9 @@ class OboomCom(Hoster):
             if result[0] == 200:
                 self.session_token = result[1]
             else:
-                self.fail(_("Could not retrieve token for guest session. Error code: %s") % result[0])
-
+                self.fail(
+                    _("Could not retrieve token for guest session. Error code: %s") %
+                    result[0])
 
     def solve_captcha(self):
         self.captcha = ReCaptcha(self.pyfile)
@@ -85,26 +85,25 @@ class OboomCom(Hoster):
 
         if result[0] == 200:
             self.download_token = result[1]
-            self.download_auth  = result[2]
+            self.download_auth = result[2]
             self.captcha.correct()
             self.wait(30)
 
         elif result[0] == 403:
-                if result[1] == -1:  #: Another download is running
-                    self.set_wait(15 * 60)
-                else:
-                    self.set_wait(result[1])
-                    self.set_reconnect(True)
+            if result[1] == -1:  #: Another download is running
+                self.set_wait(15 * 60)
+            else:
+                self.set_wait(result[1])
+                self.set_reconnect(True)
 
-                self.wait()
-                self.retry(5)
+            self.wait()
+            self.retry(5)
 
         elif result[0] == 400 and result[1] == "forbidden":
             self.retry(5, 15 * 60, _("Service unavailable"))
 
         else:
             self.retry_captcha()
-
 
     def get_fileInfo(self, token, fileId):
         apiUrl = "http://api.oboom.com/1.0/info"
@@ -119,8 +118,9 @@ class OboomCom(Hoster):
             else:
                 self.offline()
         else:
-            self.fail(_("Could not retrieve file info. Error code %s: %s") % (result[0], result[1]))
-
+            self.fail(
+                _("Could not retrieve file info. Error code %s: %s") %
+                (result[0], result[1]))
 
     def get_download_ticket(self):
         apiUrl = "http://api.oboom.com/1/dl"
@@ -138,4 +138,6 @@ class OboomCom(Hoster):
         elif result[0] == 421:
             self.retry(wait=result[2] + 60, msg=_("Connection limit exceeded"))
         else:
-            self.fail(_("Could not retrieve download ticket. Error code: %s") % result[0])
+            self.fail(
+                _("Could not retrieve download ticket. Error code: %s") %
+                result[0])

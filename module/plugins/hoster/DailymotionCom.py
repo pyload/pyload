@@ -2,20 +2,21 @@
 
 import re
 
-from module.PyFile import statusMap
-from module.plugins.internal.misc import json
 from module.network.RequestFactory import getURL as get_url
-from module.plugins.internal.Hoster import Hoster
+from module.PyFile import statusMap
+
+from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 def get_info(urls):
-    result  = []
-    regex   = re.compile(DailymotionCom.__pattern__)
-    apiurl  = "https://api.dailymotion.com/video/%s"
+    result = []
+    _re = re.compile(DailymotionCom.__pattern__)
+    apiurl = "https://api.dailymotion.com/video/%s"
     request = {'fields': "access_error,status,title"}
 
     for url in urls:
-        id   = regex.match(url).group('ID')
+        id = _re.match(url).group('ID')
         html = get_url(apiurl % id, get=request)
         info = json.loads(html)
 
@@ -42,24 +43,22 @@ def get_info(urls):
 
 
 class DailymotionCom(Hoster):
-    __name__    = "DailymotionCom"
-    __type__    = "hoster"
-    __version__ = "0.26"
-    __status__  = "testing"
+    __name__ = "DailymotionCom"
+    __type__ = "hoster"
+    __version__ = "0.27"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dailymotion\.com/.*video/(?P<ID>[\w^_]+)'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
 
     __description__ = """Dailymotion.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def setup(self):
         self.resume_download = True
-        self.multiDL        = True
-
+        self.multiDL = True
 
     def get_streams(self):
         streams = []
@@ -67,15 +66,14 @@ class DailymotionCom(Hoster):
         for result in re.finditer(r'\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"',
                                   self.data):
             url = result.group('URL')
-            qf  = result.group('QF')
+            qf = result.group('QF')
 
-            link    = url.replace("\\", "")
+            link = url.replace("\\", "")
             quality = tuple(int(x) for x in qf.split("x"))
 
             streams.append((quality, link))
 
         return sorted(streams, key=lambda x: x[0][::-1])
-
 
     def get_quality(self):
         q = self.config.get('quality')
@@ -88,7 +86,6 @@ class DailymotionCom(Hoster):
             quality = int(q.rsplit(" ")[1][:-1])
 
         return quality
-
 
     def get_link(self, streams, quality):
         if quality > 0:
@@ -108,16 +105,15 @@ class DailymotionCom(Hoster):
 
         return s[1]
 
-
     def check_info(self, pyfile):
-        pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[0]
+        pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[
+            0]
 
         if pyfile.status == 1:
             self.offline()
 
         elif pyfile.status == 6:
             self.temp_offline()
-
 
     def process(self, pyfile):
         self.check_info(pyfile)

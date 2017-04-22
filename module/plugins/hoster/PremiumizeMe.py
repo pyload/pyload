@@ -1,62 +1,67 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.MultiHoster import MultiHoster
-from module.plugins.internal.misc import json
+import urlparse
+
+from ..internal.misc import json
+from ..internal.MultiHoster import MultiHoster
 
 
 class PremiumizeMe(MultiHoster):
-    __name__    = "PremiumizeMe"
-    __type__    = "hoster"
-    __version__ = "0.25"
-    __status__  = "testing"
+    __name__ = "PremiumizeMe"
+    __type__ = "hoster"
+    __version__ = "0.29"
+    __status__ = "testing"
 
-    __pattern__ = r'^unmatchable$'  #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
-    __config__  = [("activated"   , "bool", "Activated"                                        , True ),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True ),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , False),
-                   ("chk_filesize", "bool", "Check file size"                                  , True ),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10   ),
-                   ("revertfailed", "bool", "Revert to standard download if fails"             , True )]
+    __pattern__ = r'^unmatchable$'
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback",
+                   "bool",
+                   "Fallback to free download if premium fails",
+                   False),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int",
+                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Premiumize.me multi-hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Florian Franzen", "FlorianFranzen@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # @TODO: Revert to `https` in 0.4.10
+    API_URL = "http://api.premiumize.me/pm-api/v1.php"
+
+    def api_respond(self, method, user, password, **kwargs):
+        get_params = {'method': method,
+                      'params[login]': user,
+                      'params[pass]': password}
+        for key, val in kwargs.items():
+            get_params["params[%s]" % key] = val
+
+        json_data = self.load(self.API_URL, get=get_params)
+
+        return json.loads(json_data)
 
     def handle_premium(self, pyfile):
-        #: In some cases hostsers do not supply us with a filename at download, so we
-        #: Are going to set a fall back filename (e.g. for freakshare or xfileshare)
-        pyfile.name = pyfile.name.split('/').pop()  #: Remove everthing before last slash
+        res = self.api_respond(
+            "directdownloadlink",
+            self.account.user,
+            self.account.info['login']['password'],
+            link=pyfile.url)
 
-        #: Correction for automatic assigned filename: Removing html at end if needed
-        suffix_to_remove = ["html", "htm", "php", "php3", "asp", "shtm", "shtml", "cfml", "cfm"]
-        temp = pyfile.name.split('.')
-        if temp.pop() in suffix_to_remove:
-            pyfile.name = ".".join(temp)
-
-        #: Get account data
-        user, info = self.account.select()
-
-        #: Get rewritten link using the premiumize.me api v1 (see https://secure.premiumize.me/?show=api)
-        html = self.load("http://api.premiumize.me/pm-api/v1.php",  #@TODO: Revert to `https` in 0.4.10
-                         get={'method'       : "directdownloadlink",
-                              'params[login]': user,
-                              'params[pass]' : info['login']['password'],
-                              'params[link]' : pyfile.url})
-        data = json.loads(html)
-
-        #: Check status and decide what to do
-        status = data['status']
-
+        status = res['status']
         if status == 200:
-            if 'filename' in data['result']:
-                self.pyfile.name = data['result']['filename']
+            self.pyfile.name = res['result']['filename']
+            self.pyfile.size = res['result']['filesize']
 
-            if 'filesize' in data['result']:
-                self.pyfile.size = data['result']['filesize']
-
-            self.link = data['result']['location']
-            return
+            #@NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
+            urlp = urlparse.urlparse(res['result']['location'])
+            urlq = urlparse.parse_qsl(urlp.query)
+            self.download(
+                "%s://%s%s" %
+                (urlp.scheme, urlp.netloc, urlp.path), get=urlq)
+            # self.link        = res['result']['location']
 
         elif status == 400:
             self.fail(_("Invalid url"))
@@ -68,4 +73,4 @@ class PremiumizeMe(MultiHoster):
             self.temp_offline()
 
         else:
-            self.fail(data['statusmessage'])
+            self.fail(res['statusmessage'])

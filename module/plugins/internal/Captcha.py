@@ -5,34 +5,31 @@ from __future__ import with_statement
 import os
 import time
 
-from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import encode
+from .Plugin import Plugin
 
 
 class Captcha(Plugin):
-    __name__    = "Captcha"
-    __type__    = "captcha"
-    __version__ = "0.54"
-    __status__  = "stable"
+    __name__ = "Captcha"
+    __type__ = "captcha"
+    __version__ = "0.55"
+    __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def __init__(self, pyfile):
         self._init(pyfile.m.core)
 
         self.pyfile = pyfile
-        self.task   = None  #: captchaManager task
+        self.task = None  #: captchaManager task
 
         self.init()
 
-
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
-
+        return self.pyfile.plugin._log(
+            level, plugintype, self.pyfile.plugin.__name__, messages)
 
     def recognize(self, image):
         """
@@ -40,14 +37,20 @@ class Captcha(Plugin):
         """
         pass
 
-
     def decrypt(self, url, get={}, post={}, ref=False, cookies=True, req=None,
                 input_type='jpg', output_type='textual', ocr=True, timeout=120):
-        img = self.load(url, get=get, post=post, ref=ref, cookies=cookies, decode=False, req=req or self.pyfile.plugin.req)
+        img = self.load(
+            url,
+            get=get,
+            post=post,
+            ref=ref,
+            cookies=cookies,
+            decode=False,
+            req=req or self.pyfile.plugin.req)
         return self.decrypt_image(img, input_type, output_type, ocr, timeout)
 
-
-    def decrypt_image(self, img, input_type='jpg', output_type='textual', ocr=False, timeout=120):
+    def decrypt_image(self, img, input_type='jpg',
+                      output_type='textual', ocr=False, timeout=120):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -63,7 +66,7 @@ class Captcha(Plugin):
 
         :return: result of decrypting
         """
-        result   = None
+        result = None
         time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
 
         with open(os.path.join("tmp", "captcha_image_%s_%s.%s" % (self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
@@ -73,7 +76,8 @@ class Captcha(Plugin):
             self.log_info(_("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, basestring):
-                _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                _OCR = self.pyload.pluginManager.loadClass(
+                    "captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:
                 result = self.recognize(img_f.name)
@@ -85,11 +89,13 @@ class Captcha(Plugin):
             captchaManager = self.pyload.captchaManager
 
             try:
-                self.task = captchaManager.newTask(img, input_type, img_f.name, output_type)
+                self.task = captchaManager.newTask(
+                    img, input_type, img_f.name, output_type)
 
                 captchaManager.handleCaptcha(self.task)
 
-                self.task.setWaiting(max(timeout, 50))  #@TODO: Move to `CaptchaManager` in 0.4.10
+                # @TODO: Move to `CaptchaManager` in 0.4.10
+                self.task.setWaiting(max(timeout, 50))
                 while self.task.isWaiting():
                     self.pyfile.plugin.check_status()
                     time.sleep(1)
@@ -101,7 +107,8 @@ class Captcha(Plugin):
 
             if self.task.error:
                 if not self.task.handler and not self.pyload.isClientConnected():
-                    self.log_warning(_("No Client connected for captcha decrypting"))
+                    self.log_warning(
+                        _("No Client connected for captcha decrypting"))
                     self.fail(_("No Client connected for captcha decrypting"))
                 else:
                     self.pyfile.plugin.retry_captcha(msg=self.task.error)
@@ -110,13 +117,13 @@ class Captcha(Plugin):
                 self.log_info(_("Captcha result: `%s`") % (result,))
 
             else:
-                self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing"))
+                self.pyfile.plugin.retry_captcha(
+                    msg=_("No captcha result obtained in appropriate timing"))
 
         if not self.pyload.debug:
             self.remove(img_f.name, trash=False)
 
         return result
-
 
     def invalid(self):
         if not self.task:
@@ -125,7 +132,6 @@ class Captcha(Plugin):
         self.log_warning(_("Invalid captcha"), self.task.result)
         self.task.invalid()
         self.task = None
-
 
     def correct(self):
         if not self.task:

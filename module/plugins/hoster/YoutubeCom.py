@@ -7,11 +7,12 @@ import subprocess
 import time
 import urllib
 
-from module.plugins.Plugin import Abort
-from module.network.HTTPRequest import HTTPRequest
 from module.network.CookieJar import CookieJar
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import html_unescape, json, replace_patterns, which
+from module.network.HTTPRequest import HTTPRequest
+
+from ..internal.Hoster import Hoster
+from ..internal.misc import html_unescape, json, replace_patterns, which, reduce
+from ..internal.Plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -19,7 +20,9 @@ class BIGHTTPRequest(HTTPRequest):
     Overcome HTTPRequest's load() size limit to allow
     loading very big web pages by overrding HTTPRequest's write() function
     """
-    def __init__(self, cookies=None, options=None, limit=1000000):  #@TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    def __init__(self, cookies=None, options=None, limit=1000000):
         self.limit = limit
         HTTPRequest.__init__(self, cookies=cookies, options=options)
 
@@ -27,7 +30,8 @@ class BIGHTTPRequest(HTTPRequest):
         """ writes response """
         if self.limit and self.rep.tell() > self.limit or self.abort:
             rep = self.getResponse()
-            if self.abort: raise Abort()
+            if self.abort:
+                raise Abort()
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()
@@ -36,29 +40,30 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
-
 class YoutubeCom(Hoster):
-    __name__    = "YoutubeCom"
-    __type__    = "hoster"
-    __version__ = "0.55"
-    __status__  = "testing"
+    __name__ = "YoutubeCom"
+    __type__ = "hoster"
+    __version__ = "0.59"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting"             , "hd" ),
-                   ("fmt"    , "int"                                         , "FMT/ITAG Number (0 for auto)", 0    ),
-                   (".mp4"   , "bool"                                        , "Allow .mp4"                  , True ),
-                   (".flv"   , "bool"                                        , "Allow .flv"                  , True ),
-                   (".webm"  , "bool"                                        , "Allow .webm"                 , False),
-                   (".3gp"   , "bool"                                        , "Allow .3gp"                  , False),
-                   ("3d"     , "bool"                                        , "Prefer 3D"                   , False)]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("quality",
+                   "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p",
+                   "Quality Setting",
+                   "hd"),
+                  ("fmt", "int", "FMT/ITAG Number (0 for auto)", 0),
+                  (".mp4", "bool", "Allow .mp4", True),
+                  (".flv", "bool", "Allow .flv", True),
+                  (".webm", "bool", "Allow .webm", False),
+                  (".3gp", "bool", "Allow .3gp", False),
+                  ("3d", "bool", "Prefer 3D", False)]
 
     __description__ = """Youtube.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob",     "spoob@pyload.org"          ),
-                       ("zoidberg",  "zoidberg@mujmail.cz"       ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("spoob", "spoob@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/watch?v=')]
 
@@ -66,32 +71,35 @@ class YoutubeCom(Hoster):
     invalid_chars = u'\u2605:?><"|\\'
 
     #: name, width, height, quality ranking, 3D
-    formats = {5  : (".flv" , 400 , 240 , 1 , False),
-               6  : (".flv" , 640 , 400 , 4 , False),
-               17 : (".3gp" , 176 , 144 , 0 , False),
-               18 : (".mp4" , 480 , 360 , 2 , False),
-               22 : (".mp4" , 1280, 720 , 8 , False),
-               43 : (".webm", 640 , 360 , 3 , False),
-               34 : (".flv" , 640 , 360 , 4 , False),
-               35 : (".flv" , 854 , 480 , 6 , False),
-               36 : (".3gp" , 400 , 240 , 1 , False),
-               37 : (".mp4" , 1920, 1080, 9 , False),
-               38 : (".mp4" , 4096, 3072, 10, False),
-               44 : (".webm", 854 , 480 , 5 , False),
-               45 : (".webm", 1280, 720 , 7 , False),
-               46 : (".webm", 1920, 1080, 9 , False),
-               82 : (".mp4" , 640 , 360 , 3 , True ),
-               83 : (".mp4" , 400 , 240 , 1 , True ),
-               84 : (".mp4" , 1280, 720 , 8 , True ),
-               85 : (".mp4" , 1920, 1080, 9 , True ),
-               100: (".webm", 640 , 360 , 3 , True ),
-               101: (".webm", 640 , 360 , 4 , True ),
-               102: (".webm", 1280, 720 , 8 , True )}
+    formats = {5: (".flv", 400, 240, 1, False),
+               6: (".flv", 640, 400, 4, False),
+               17: (".3gp", 176, 144, 0, False),
+               18: (".mp4", 480, 360, 2, False),
+               22: (".mp4", 1280, 720, 8, False),
+               43: (".webm", 640, 360, 3, False),
+               34: (".flv", 640, 360, 4, False),
+               35: (".flv", 854, 480, 6, False),
+               36: (".3gp", 400, 240, 1, False),
+               37: (".mp4", 1920, 1080, 9, False),
+               38: (".mp4", 4096, 3072, 10, False),
+               44: (".webm", 854, 480, 5, False),
+               45: (".webm", 1280, 720, 7, False),
+               46: (".webm", 1920, 1080, 9, False),
+               82: (".mp4", 640, 360, 3, True),
+               83: (".mp4", 400, 240, 1, True),
+               84: (".mp4", 1280, 720, 8, True),
+               85: (".mp4", 1920, 1080, 9, True),
+               100: (".webm", 640, 360, 3, True),
+               101: (".webm", 640, 360, 4, True),
+               102: (".webm", 1280, 720, 8, True)}
 
     def _decrypt_signature(self, encrypted_sig):
         """Turn the encrypted 's' field into a working signature"""
         try:
-            player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")', self.data).group(1))
+            player_url = json.loads(
+                re.search(
+                    r'"assets":.+?"js":\s*("[^"]+")',
+                    self.data).group(1))
         except (AttributeError, IndexError):
             self.fail(_("Player URL not found"))
 
@@ -104,33 +112,43 @@ class YoutubeCom(Hoster):
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
 
-        if cache_info is None or 'version' not in cache_info or cache_info['version'] != self.__version__:
+        if cache_info is None or 'version' not in cache_info or cache_info[
+                'version'] != self.__version__:
             cache_info = {'version': self.__version__,
-                          'cache'  : {}}
+                          'cache': {}}
             cache_dirty = True
 
-        if player_url in cache_info['cache'] and time.time() < cache_info['cache'][player_url]['time'] + 24 * 60 * 60:
+        if player_url in cache_info['cache'] and time.time() < cache_info['cache'][
+                player_url]['time'] + 24 * 60 * 60:
             self.log_debug("Using cached decode function to decrypt the URL")
-            decrypt_func = lambda s: ''.join(s[_i] for _i in cache_info['cache'][player_url]['decrypt_map'])
+            decrypt_func = lambda s: ''.join(
+                s[_i] for _i in cache_info['cache'][player_url]['decrypt_map'])
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
-            player_data = self.load(player_url)
+            player_data = self.load(self.fixurl(player_url))
+
+            m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
+                re.search(
+                    r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
+
             try:
-                function_name = re.search(r'\.sig\|\|([a-zA-Z0-9$]+)\(', player_data).group(1)
+                function_name = m.group('sig')
 
             except (AttributeError, IndexError):
                 self.fail(_("Signature decode function name not found"))
 
             try:
                 jsi = JSInterpreter(player_data)
-                decrypt_func = lambda s: jsi.extract_function(function_name)([s])
+                decrypt_func = lambda s: jsi.extract_function(
+                    function_name)([s])
 
                 #: Since Youtube just scrambles the order of the characters in the signature
                 #: and does not change any byte value, we can store just a transformation map as a cached function
-                decrypt_map = [ord(c) for c in decrypt_func(''.join(map(unichr, xrange(len(encrypted_sig)))))]
+                decrypt_map = [ord(c) for c in decrypt_func(
+                    ''.join(map(unichr, range(len(encrypted_sig)))))]
                 cache_info['cache'][player_url] = {'decrypt_map': decrypt_map,
-                                                   'time'       : time.time()}
+                                                   'time': time.time()}
                 cache_dirty = True
 
                 decrypted_sig = decrypt_func(encrypted_sig)
@@ -140,7 +158,7 @@ class YoutubeCom(Hoster):
                 self.fail(e.message)
 
         #: Remove old records from cache
-        for _k in list(cache_info['cache'].iterkeys()):
+        for _k in list(cache_info['cache'].keys()):
             if time.time() >= cache_info['cache'][_k]['time'] + 24 * 60 * 60:
                 cache_info['cache'].pop(_k, None)
                 cache_dirty = True
@@ -150,24 +168,26 @@ class YoutubeCom(Hoster):
 
         return decrypted_sig
 
-
     def setup(self):
         self.resume_download = True
-        self.multiDL         = True
+        self.multiDL = True
 
         try:
             self.req.http.close()
         except Exception:
             pass
 
-        self.req.http = BIGHTTPRequest(cookies=CookieJar(None), options=self.pyload.requestFactory.getOptions(), limit=2000000)
-
+        self.req.http = BIGHTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.requestFactory.getOptions(),
+            limit=2000000)
 
     def process(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
-        self.data  = self.load(pyfile.url)
+        self.data = self.load(pyfile.url)
 
-        if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*">', self.data):
+        if re.search(
+                r'<div id="player-unavailable" class="\s*player-width player-height\s*">', self.data):
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in self.data:
@@ -193,7 +213,9 @@ class YoutubeCom(Hoster):
             desired_fmt = 0
 
         #: Parse available streams
-        streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",', self.data).group(1)
+        streams = re.search(
+            r'"url_encoded_fmt_stream_map":"(.+?)",',
+            self.data).group(1)
         streams = [x.split('\u0026') for x in streams.split(',')]
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
         streams = [(int(x['itag']),
@@ -208,28 +230,37 @@ class YoutubeCom(Hoster):
 
         #: Build dictionary of supported itags (3D/2D)
         allowed = lambda x: self.config.get(self.formats[x][0])
-        streams = [x for x in streams if x[0] in self.formats and allowed(x[0])]
+        streams = [x for x in streams if x[0]
+                   in self.formats and allowed(x[0])]
 
         if not streams:
             self.fail(_("No available stream meets your preferences"))
 
-        fmt_dict = dict([(x[0], x[1:]) for x in streams if self.formats[x[0]][4] == use3d] or streams)
+        fmt_dict = dict([(x[0], x[1:])
+                         for x in streams if self.formats[x[0]][4] == use3d]
+                        or streams)
 
         self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
-                      (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
-                       "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
+                       (desired_fmt, "%s %dx%d Q:%d 3D:%s" % self.formats[desired_fmt],
+                        "" if desired_fmt in fmt_dict else "NOT ", "" if allowed(desired_fmt) else "NOT "))
 
         #: Return fmt nearest to quality index
         if desired_fmt in fmt_dict and allowed(desired_fmt):
             choosen_fmt = desired_fmt
         else:
-            sel  = lambda x: self.formats[x][3]  #: Select quality index
+            sel = lambda x: self.formats[x][3]  #: Select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
-            self.log_debug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt)) for x in fmt_dict.keys()])
+            self.log_debug(
+                "Choosing nearest fmt: %s" % [
+                    (x,
+                     allowed(x),
+                        comp(
+                         x,
+                         desired_fmt)) for x in fmt_dict.keys()])
 
             choosen_fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
-                                                   sel(x) > sel(y) else y, fmt_dict.keys())
+                                 sel(x) > sel(y) else y, fmt_dict.keys())
 
         self.log_debug("Chosen fmt: %s" % choosen_fmt)
 
@@ -248,9 +279,14 @@ class YoutubeCom(Hoster):
             url += "&ratebypass=yes"
 
         #: Set file name
-        file_suffix = self.formats[choosen_fmt][0] if choosen_fmt in self.formats else ".flv"
+        file_suffix = self.formats[choosen_fmt][
+            0] if choosen_fmt in self.formats else ".flv"
         file_name_pattern = '<meta name="title" content="(.+?)">'
-        name = re.search(file_name_pattern, self.data).group(1).replace("/", "")
+        name = re.search(
+            file_name_pattern,
+            self.data).group(1).replace(
+            "/",
+            "")
 
         #: Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
@@ -269,7 +305,7 @@ class YoutubeCom(Hoster):
             pyfile.name += " (starting at %s:%s)" % (m, s)
 
         pyfile.name += file_suffix
-        filename     = self.download(url)
+        filename = self.download(url)
 
         if ffmpeg and time:
             inputfile = filename + "_"
@@ -287,11 +323,14 @@ class YoutubeCom(Hoster):
 
 
 """Credit to this awesome piece of code below goes to the 'youtube_dl' project, kudos!"""
+
+
 class JSInterpreterError(Exception):
     pass
 
 
 class JSInterpreter(object):
+
     def __init__(self, code, objects=None):
         self._OPERATORS = [
             ('|', operator.or_),
@@ -305,7 +344,8 @@ class JSInterpreter(object):
             ('/', operator.truediv),
             ('*', operator.mul),
         ]
-        self._ASSIGN_OPERATORS = [(op + '=', opfunc) for op, opfunc in self._OPERATORS]
+        self._ASSIGN_OPERATORS = [(op + '=', opfunc)
+                                  for op, opfunc in self._OPERATORS]
         self._ASSIGN_OPERATORS.append(('=', lambda cur, right: right))
         self._VARNAME_PATTERN = r'[a-zA-Z_$][a-zA-Z_$0-9]*'
 
@@ -352,7 +392,8 @@ class JSInterpreter(object):
                     parens_count -= 1
                     if parens_count == 0:
                         sub_expr = expr[1:m.start()]
-                        sub_result = self.interpret_expression(sub_expr, local_vars, allow_recursion)
+                        sub_result = self.interpret_expression(
+                            sub_expr, local_vars, allow_recursion)
                         remaining_expr = expr[m.end():].strip()
                         if not remaining_expr:
                             return sub_result
@@ -360,17 +401,22 @@ class JSInterpreter(object):
                             expr = json.dumps(sub_result) + remaining_expr
                         break
             else:
-                raise JSInterpreterError('Premature end of parens in %r' % expr)
+                raise JSInterpreterError(
+                    'Premature end of parens in %r' % expr)
 
         for op, opfunc in self._ASSIGN_OPERATORS:
-            m = re.match(r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' % (self._VARNAME_PATTERN, re.escape(op)), expr)
-            if not m:
+            m = re.match(
+                r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' %
+                (self._VARNAME_PATTERN, re.escape(op)), expr)
+            if m is None:
                 continue
-            right_val = self.interpret_expression(m.group('expr'), local_vars, allow_recursion - 1)
+            right_val = self.interpret_expression(
+                m.group('expr'), local_vars, allow_recursion - 1)
 
             if m.groupdict().get('index'):
                 lvar = local_vars[m.group('out')]
-                idx = self.interpret_expression(m.group('index'), local_vars, allow_recursion)
+                idx = self.interpret_expression(
+                    m.group('index'), local_vars, allow_recursion)
                 assert isinstance(idx, int)
                 cur = lvar[idx]
                 val = opfunc(cur, right_val)
@@ -385,7 +431,9 @@ class JSInterpreter(object):
         if expr.isdigit():
             return int(expr)
 
-        var_m = re.match(r'(?!if|return|true|false)(?P<name>%s)$' % self._VARNAME_PATTERN, expr)
+        var_m = re.match(
+            r'(?!if|return|true|false)(?P<name>%s)$' %
+            self._VARNAME_PATTERN, expr)
         if var_m:
             return local_vars[var_m.group('name')]
 
@@ -394,8 +442,10 @@ class JSInterpreter(object):
         except ValueError:
             pass
 
-        m = re.match(r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' % self._VARNAME_PATTERN, expr)
-        if m:
+        m = re.match(
+            r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' %
+            self._VARNAME_PATTERN, expr)
+        if m is not None:
             variable = m.group('var')
             member = m.group('member')
             arg_str = m.group('args')
@@ -418,7 +468,8 @@ class JSInterpreter(object):
             if arg_str == '':
                 argvals = tuple()
             else:
-                argvals = tuple([self.interpret_expression(v, local_vars, allow_recursion) for v in arg_str.split(',')])
+                argvals = tuple(self.interpret_expression(
+                    v, local_vars, allow_recursion) for v in arg_str.split(','))
 
             if member == 'split':
                 assert argvals == ('',)
@@ -447,31 +498,43 @@ class JSInterpreter(object):
 
             return obj[member](argvals)
 
-        m = re.match(r'(?P<in>%s)\[(?P<idx>.+)\]$' % self._VARNAME_PATTERN, expr)
-        if m:
+        m = re.match(
+            r'(?P<in>%s)\[(?P<idx>.+)\]$' %
+            self._VARNAME_PATTERN, expr)
+        if m is not None:
             val = local_vars[m.group('in')]
-            idx = self.interpret_expression(m.group('idx'), local_vars, allow_recursion - 1)
+            idx = self.interpret_expression(
+                m.group('idx'), local_vars, allow_recursion - 1)
             return val[idx]
 
         for op, opfunc in self._OPERATORS:
             m = re.match(r'(?P<x>.+?)%s(?P<y>.+)' % re.escape(op), expr)
-            if not m:
+            if m is None:
                 continue
 
-            x, abort = self.interpret_statement(m.group('x'), local_vars, allow_recursion - 1)
+            x, abort = self.interpret_statement(
+                m.group('x'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError('Premature left-side return of %s in %r' % (op, expr))
+                raise JSInterpreterError(
+                    'Premature left-side return of %s in %r' %
+                    (op, expr))
 
-            y, abort = self.interpret_statement(m.group('y'), local_vars, allow_recursion - 1)
+            y, abort = self.interpret_statement(
+                m.group('y'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError('Premature right-side return of %s in %r' % (op, expr))
+                raise JSInterpreterError(
+                    'Premature right-side return of %s in %r' %
+                    (op, expr))
 
             return opfunc(x, y)
 
-        m = re.match(r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' % self._VARNAME_PATTERN, expr)
-        if m:
+        m = re.match(
+            r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' %
+            self._VARNAME_PATTERN, expr)
+        if m is not None:
             fname = m.group('func')
-            argvals = tuple([int(v) if v.isdigit() else local_vars[v] for v in m.group('args').split(',')])
+            argvals = tuple(int(v) if v.isdigit() else local_vars[v]
+                            for v in m.group('args').split(','))
             if fname not in self._functions:
                 self._functions[fname] = self.extract_function(fname)
             return self._functions[fname](argvals)
@@ -484,10 +547,13 @@ class JSInterpreter(object):
                           % re.escape(objname), self.code)
         fields = obj_m.group('fields')
         # Currently, it only supports function definitions
-        fields_m = re.finditer(r'(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}', fields)
+        fields_m = re.finditer(
+            r'(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}',
+            fields)
         for f in fields_m:
             argnames = f.group('args').split(',')
-            obj[f.group('key')] = self.build_function(argnames, f.group('code'))
+            obj[f.group('key')] = self.build_function(
+                argnames, f.group('code'))
 
         return obj
 
@@ -495,7 +561,9 @@ class JSInterpreter(object):
         func_m = re.search(r'(?x)(?:function\s+%s|[{;,]\s*%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
                            % (re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
         if func_m is None:
-            raise JSInterpreterError('Could not find JS function %r' % function_name)
+            raise JSInterpreterError(
+                'Could not find JS function %r' %
+                function_name)
 
         argnames = func_m.group('args').split(',')
 

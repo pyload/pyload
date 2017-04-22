@@ -2,35 +2,36 @@
 
 import hashlib
 
-from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import json
+from ..internal.misc import json
+from ..internal.MultiAccount import MultiAccount
 
 
 class LinksnappyCom(MultiAccount):
-    __name__    = "LinksnappyCom"
-    __type__    = "account"
-    __version__ = "0.12"
-    __status__  = "testing"
+    __name__ = "LinksnappyCom"
+    __type__ = "account"
+    __version__ = "0.14"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """Linksnappy.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
     def grab_hosters(self, user, password, data):
-        json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
+        json_data = self.load(
+            "http://gen.linksnappy.com/lseAPI.php",
+            get={
+                'act': "FILEHOSTS"})
         json_data = json.loads(json_data)
 
         return json_data['return'].keys()
 
-
     def grab_info(self, user, password, data):
         r = self.load('http://gen.linksnappy.com/lseAPI.php',
-                      get={'act'     : 'USERDETAILS',
+                      get={'act': 'USERDETAILS',
                            'username': user,
                            'password': hashlib.md5(password).hexdigest()})
 
@@ -52,19 +53,19 @@ class LinksnappyCom(MultiAccount):
         else:
             validuntil = float(validuntil)
 
-        if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
+        if 'trafficleft' not in j['return'] or isinstance(
+                j['return']['trafficleft'], str):
             trafficleft = -1
         else:
             trafficleft = self.parse_traffic(j['return']['trafficleft'], "MB")
 
-        return {'premium'    : True       ,
-                'validuntil' : validuntil ,
+        return {'premium': True,
+                'validuntil': validuntil,
                 'trafficleft': trafficleft}
-
 
     def signin(self, user, password, data):
         html = self.load("https://gen.linksnappy.com/lseAPI.php",
-                         get={'act'     : 'USERDETAILS',
+                         get={'act': 'USERDETAILS',
                               'username': user,
                               'password': hashlib.md5(password).hexdigest()})
 

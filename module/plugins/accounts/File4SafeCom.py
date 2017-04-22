@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class File4SafeCom(XFSAccount):
-    __name__    = "File4SafeCom"
-    __type__    = "account"
-    __version__ = "0.09"
-    __status__  = "testing"
+    __name__ = "File4SafeCom"
+    __type__ = "account"
+    __version__ = "0.11"
+    __status__ = "testing"
 
     __description__ = """File4Safe.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
     PLUGIN_DOMAIN = "file4safe.com"
 

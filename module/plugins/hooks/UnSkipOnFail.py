@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from module.PyFile import PyFile
-from module.plugins.internal.Addon import Addon
+
+from ..internal.Addon import Addon
 
 
 class UnSkipOnFail(Addon):
-    __name__    = "UnSkipOnFail"
-    __type__    = "hook"
-    __version__ = "0.13"
-    __status__  = "testing"
+    __name__ = "UnSkipOnFail"
+    __type__ = "hook"
+    __version__ = "0.14"
+    __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Restart skipped duplicates when download fails"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def download_failed(self, pyfile):
         msg = _("Looking for skipped duplicates of: %s (pid:%s)")
@@ -23,7 +23,9 @@ class UnSkipOnFail(Addon):
 
         link = self.find_duplicate(pyfile)
         if link:
-            self.log_info(_("Queue found duplicate: %s (pid:%s)") % (link.name, link.packageID))
+            self.log_info(
+                _("Queue found duplicate: %s (pid:%s)") %
+                (link.name, link.packageID))
 
             #: Change status of "link" to "new_status".
             #: "link" has to be a valid FileData object,
@@ -41,7 +43,6 @@ class UnSkipOnFail(Addon):
 
         else:
             self.log_info(_("No duplicates found"))
-
 
     def find_duplicate(self, pyfile):
         """Search all packages for duplicate links to "pyfile".
@@ -69,7 +70,6 @@ class UnSkipOnFail(Addon):
                 #: and at last check if it is not pyfile itself
                 if link.name == pyfile.name and link.fid != pyfile.id:
                     return link
-
 
     def _create_pyFile(self, pylink):
         return PyFile(self.pyload.files,

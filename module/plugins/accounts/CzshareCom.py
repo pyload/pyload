@@ -3,29 +3,27 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class CzshareCom(Account):
-    __name__    = "CzshareCom"
-    __type__    = "account"
-    __version__ = "0.27"
-    __status__  = "testing"
+    __name__ = "CzshareCom"
+    __type__ = "account"
+    __version__ = "0.28"
+    __status__ = "testing"
 
     __description__ = """Czshare.com account plugin, now Sdilej.cz"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"),
-                       ("stickell", "l.stickell@yahoo.it"),
-                       ("ondrej", "git@ondrej.it"),]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("ondrej", "git@ondrej.it"), ]
 
     CREDIT_LEFT_PATTERN = r'^\s+<div class="credit">\s+\n.+<strong>([\d,]+)(KB|MB|GB)</strong>\s+\n.+<!-- \.credit -->\s+$'
     VALID_UNTIL_PATTERN = r'^\s+<tr class="active">\s+\n.+\n\s+<td>([\d\.: ]+)</td>\s+$'
 
-
     def grab_info(self, user, password, data):
-        premium     = False
-        validuntil  = None
+        premium = False
+        validuntil = None
         trafficleft = None
 
         html = self.load("http://sdilej.cz/prehled_kreditu/")
@@ -35,7 +33,10 @@ class CzshareCom(Account):
             trafficleft = self.parse_traffic(m.group(1), m.group(2))
 
             v = re.search(self.VALID_UNTIL_PATTERN, html, re.MULTILINE)
-            validuntil  = time.mktime(time.strptime(v.group(1), '%d.%m.%y %H:%M'))
+            validuntil = time.mktime(
+                time.strptime(
+                    v.group(1),
+                    '%d.%m.%y %H:%M'))
 
         except Exception, e:
             self.log_error(e, trace=True)
@@ -43,16 +44,15 @@ class CzshareCom(Account):
         else:
             premium = True
 
-        return {'premium'    : premium,
-                'validuntil' : validuntil,
+        return {'premium': premium,
+                'validuntil': validuntil,
                 'trafficleft': trafficleft}
-
 
     def signin(self, user, password, data):
         html = self.load('https://sdilej.cz/index.php',
-                         post={'Prihlasit'     : "Prihlasit",
+                         post={'Prihlasit': "Prihlasit",
                                "login-password": password,
-                               "login-name"    : user})
+                               "login-name": user})
 
         if '<div class="login' in html:
             self.fail_login()

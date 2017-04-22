@@ -3,30 +3,35 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class FreakshareCom(Account):
-    __name__    = "FreakshareCom"
-    __type__    = "account"
-    __version__ = "0.19"
-    __status__  = "testing"
+    __name__ = "FreakshareCom"
+    __type__ = "account"
+    __version__ = "0.21"
+    __status__ = "testing"
 
     __description__ = """Freakshare.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
     def grab_info(self, user, password, data):
         premium = False
-        validuntil  = None
+        validuntil = None
         trafficleft = None
 
         html = self.load("http://freakshare.com/")
 
         try:
-            m = re.search(r'ltig bis:</td>\s*<td><b>([\d.:\-]+)</b></td>', html, re.M)
-            validuntil = time.mktime(time.strptime(m.group(1), "%d.%m.%Y - %H:%M"))
+            m = re.search(
+                r'ltig bis:</td>\s*<td><b>([\d.:\-]+)</b></td>',
+                html,
+                re.M)
+            validuntil = time.mktime(
+                time.strptime(
+                    m.group(1),
+                    "%d.%m.%Y - %H:%M"))
 
         except Exception:
             pass
@@ -38,16 +43,16 @@ class FreakshareCom(Account):
         except Exception:
             pass
 
-        return {'premium': premium, 'validuntil': validuntil, 'trafficleft': trafficleft}
-
+        return {'premium': premium, 'validuntil': validuntil,
+                'trafficleft': trafficleft}
 
     def signin(self, user, password, data):
         self.load("http://freakshare.com/index.php?language=EN")
 
         html = self.load("https://freakshare.com/login.html",
                          post={'submit': "Login",
-                               'user'  : user,
-                               'pass'  : password})
+                               'user': user,
+                               'pass': password})
 
         if ">Wrong Username or Password" in html:
             self.fail_login()

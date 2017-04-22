@@ -2,32 +2,30 @@
 
 import urlparse
 
-from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import json
+from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class RapidgatorNet(Account):
-    __name__    = "RapidgatorNet"
-    __type__    = "account"
-    __version__ = "0.21"
-    __status__  = "testing"
+    __name__ = "RapidgatorNet"
+    __type__ = "account"
+    __version__ = "0.22"
+    __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg",  "zoidberg@mujmail.cz"       ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     TUNE_TIMEOUT = False
 
     API_URL = "http://rapidgator.net/api/user/"
 
-
     def grab_info(self, user, password, data):
-        validuntil  = None
+        validuntil = None
         trafficleft = None
-        premium     = False
-        sid         = None
+        premium = False
+        sid = None
 
         try:
             sid = data.get('sid', None)
@@ -40,9 +38,11 @@ class RapidgatorNet(Account):
             json_data = json.loads(html)
 
             if json_data['response_status'] == 200:
-                validuntil  = json_data['response']['expire_date']
-                trafficleft = float(json_data['response']['traffic_left']) / 1024  #@TODO: Remove `/ 1024` in 0.4.10
-                premium     = True
+                validuntil = json_data['response']['expire_date']
+                # @TODO: Remove `/ 1024` in 0.4.10
+                trafficleft = float(
+                    json_data['response']['traffic_left']) / 1024
+                premium = True
 
             else:
                 self.log_error(json_data['response_details'])
@@ -50,11 +50,10 @@ class RapidgatorNet(Account):
         except Exception, e:
             self.log_error(e, trace=True)
 
-        return {'validuntil' : validuntil,
+        return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
-                'premium'    : premium,
-                'sid'        : sid}
-
+                'premium': premium,
+                'sid': sid}
 
     def signin(self, user, password, data):
         try:

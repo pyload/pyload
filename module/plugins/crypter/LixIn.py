@@ -3,29 +3,27 @@
 import re
 import urlparse
 
-from module.plugins.internal.Crypter import Crypter
+from ..internal.Crypter import Crypter
 
 
 class LixIn(Crypter):
-    __name__    = "LixIn"
-    __type__    = "crypter"
-    __version__ = "0.27"
-    __status__  = "testing"
+    __name__ = "LixIn"
+    __type__ = "crypter"
+    __version__ = "0.28"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?lix\.in/(?P<ID>.+)'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
 
     __description__ = """Lix.in decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("spoob", "spoob@pyload.org")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("spoob", "spoob@pyload.org")]
 
     CAPTCHA_PATTERN = r'<img src="(captcha_img\.php\?.*?)"'
     SUBMIT_PATTERN = r'value=\'continue.*?\''
     LINK_PATTERN = r'name="ifram" src="(.*?)"'
-
 
     def decrypt(self, pyfile):
         url = pyfile.url
@@ -45,8 +43,14 @@ class LixIn(Crypter):
 
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
-            captcharesult = self.captcha.decrypt(urlparse.urljoin("http://lix.in/", m.group(1)))
-            self.data = self.load(url, post={'capt': captcharesult, 'submit': "submit", 'tiny': id})
+            captcharesult = self.captcha.decrypt(
+                urlparse.urljoin("http://lix.in/", m.group(1)))
+            self.data = self.load(
+                url,
+                post={
+                    'capt': captcharesult,
+                    'submit': "submit",
+                    'tiny': id})
 
             if re.search(self.CAPTCHA_PATTERN, self.data):
                 self.fail(_("No captcha solved"))

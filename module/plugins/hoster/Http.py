@@ -3,44 +3,46 @@
 import re
 import urlparse
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class Http(Hoster):
-    __name__    = "Http"
-    __type__    = "hoster"
-    __version__ = "0.07"
-    __status__  = "testing"
+    __name__ = "Http"
+    __type__ = "hoster"
+    __version__ = "0.09"
+    __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Download simple http link"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def setup(self):
-        self.chunk_limit     = -1
+        self.chunk_limit = -1
         self.resume_download = True
 
-
     def process(self, pyfile):
-        url    = re.sub(r'^(jd|py)', "http", pyfile.url)
+        url = re.sub(r'^(jd|py)', "http", pyfile.url)
         netloc = urlparse.urlparse(url).netloc
 
-        for _i in xrange(2):
+        for _i in range(2):
             self.download(url, ref=False, disposition=True)
 
             if self.req.code in (404, 410):
                 self.offline()
 
             elif self.req.code in (401, 403):
-                self.log_debug("Auth required", "Received HTTP status code: %d" % e.code)
+                self.log_debug(
+                    "Auth required",
+                    "Received HTTP status code: %d" %
+                    self.req.code)
 
                 #@TODO: Recheck in 0.4.10
                 if self.account:
-                    servers = [x['login'] for x in self.account.getAllAccounts()]
+                    servers = [x['login']
+                               for x in self.account.getAllAccounts()]
                 else:
                     servers = []
 
@@ -59,11 +61,10 @@ class Http(Hoster):
 
         self.check_download()
 
-
     def check_download(self):
         errmsg = self.scan_download({
-            'Html error'   : re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
-            'Html file'    : re.compile(r'\A\s*<!DOCTYPE html'),
+            'Html error': re.compile(r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+            'Html file': re.compile(r'\A\s*<!DOCTYPE html'),
             'Request error': re.compile(r'([Aa]n error occured while processing your request)')
         })
 
@@ -76,5 +77,7 @@ class Http(Hoster):
         except Exception:
             pass
 
-        self.log_warning(_("Check result: ") + errmsg, _("Waiting 1 minute and retry"))
+        self.log_warning(
+            _("Check result: ") + errmsg,
+            _("Waiting 1 minute and retry"))
         self.retry(3, 60, errmsg)
