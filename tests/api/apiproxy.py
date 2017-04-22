@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import object, zip
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.core.datatype.debug import classes, methods
 from tests.helper.config import credentials
+
+standard_library.install_aliases()
 
 
 class ApiProxy(object):

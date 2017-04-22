@@ -19,18 +19,18 @@
 #
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import io
 import logging
 import os
 from builtins import COREDIR, object, range
 
-from future import standard_library
-standard_library.install_aliases()
-
 import Image
 from pyload.utils.layer.legacy.subprocess_ import PIPE, Popen
 from pyload.utils.path import remove
+
+standard_library.install_aliases()
 
 
 # import tempfile

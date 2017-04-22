@@ -2,14 +2,12 @@
 # @author: zoidberg
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import random
 import re
 from builtins import int, range
 from urllib.parse import unquote, urlparse
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from pyload.core.network import get_url
@@ -18,6 +16,8 @@ from pyload.utils.web import purge as webpurge
 
 from .base.simplehoster import (PluginParseError, SimpleHoster,
                                 create_get_info, replace_patterns)
+
+standard_library.install_aliases()
 
 
 class XFileSharingPro(SimpleHoster):

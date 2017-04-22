@@ -2,15 +2,15 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-
+from future import standard_library
 
 from enum import IntFlag
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.check import bitset
 
 from .init import BaseObject, ExceptionObject, Permission
+
+standard_library.install_aliases()
 
 
 class Role(IntFlag):

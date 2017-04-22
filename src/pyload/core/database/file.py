@@ -2,11 +2,9 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import int
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 
@@ -15,6 +13,8 @@ from ..datatype.file import FileInfo, guess_type
 from ..datatype.init import DownloadInfo, DownloadState
 from ..datatype.package import PackageInfo, PackageStats
 from .backend import DatabaseMethods, async, inner, queue
+
+standard_library.install_aliases()
 
 
 _zero_stats = PackageStats(0, 0, 0, 0)

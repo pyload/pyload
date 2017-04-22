@@ -2,12 +2,12 @@
 # @author: zoidberg
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import random
 import re
 from builtins import object
 
-from future import standard_library
 standard_library.install_aliases()
 
 

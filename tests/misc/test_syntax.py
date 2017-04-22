@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import os
-
-from future import standard_library
-standard_library.install_aliases()
 
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
+
+standard_library.install_aliases()
 
 
 PACKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import json
 from builtins import object
 
 import requests
-from future import standard_library
-standard_library.install_aliases()
-from requests.auth import HTTPBasicAuth
-
 from nose.tools import assertEqual, raises
 from pyload.core.datatype import Forbidden
 from pyload.rpc.jsonclient import JSONClient
+from requests.auth import HTTPBasicAuth
 from tests.helper.config import credentials, webaddress
+
+standard_library.install_aliases()
 
 
 class TestJSONBackend(object):

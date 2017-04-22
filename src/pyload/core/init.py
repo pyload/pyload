@@ -2,9 +2,7 @@
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
-from builtins import str
 from future import standard_library
-standard_library.install_aliases()
 
 import builtins
 import errno
@@ -18,8 +16,7 @@ import sched
 import signal
 import tempfile
 import time
-
-from builtins import DATADIR, PACKDIR, REQUEST, TMPDIR, USERDIR, int, map
+from builtins import DATADIR, PACKDIR, REQUEST, TMPDIR, USERDIR, int, map, str
 from contextlib import closing
 from locale import getpreferredencoding
 from multiprocessing import Event, Process
@@ -27,17 +24,21 @@ from multiprocessing import Event, Process
 import autoupgrade
 import daemonize
 import psutil
-try:
-    import colorlog
-except ImportError:
-    pass
-
 from pyload.config import ConfigParser
 from pyload.utils import convert, format, sys
 from pyload.utils.check import ismodule
 from pyload.utils.misc import install_translation
 from pyload.utils.path import availspace, makedirs, pyclean, remove
 from pyload.utils.struct.info import Info
+
+standard_library.install_aliases()
+
+
+try:
+    import colorlog
+except ImportError:
+    pass
+
 
 
 def _get_setup_map():

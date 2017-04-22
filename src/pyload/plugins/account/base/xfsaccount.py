@@ -2,18 +2,18 @@
 # @author: zoidberg
 
 from __future__ import absolute_import, unicode_literals
-
-from builtins import str
-import re
-from time import mktime, strptime
-
 from future import standard_library
-standard_library.install_aliases()
+
+import re
+from builtins import str
+from time import mktime, strptime
 
 from pyload.plugins.downloader.hoster.base.simplehoster import parse_html_form
 from pyload.utils import parse
 
 from .init import Account
+
+standard_library.install_aliases()
 
 
 class XFSPAccount(Account):

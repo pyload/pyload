@@ -2,6 +2,7 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import os
 import random
@@ -9,18 +10,17 @@ import time
 from builtins import COREDIR, object
 from collections import defaultdict
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.layer.legacy import subprocess_ as subprocess
 from pyload.utils.layer.safethreading import Event
-from pyload.utils.struct.lock import ReadWriteLock
 from pyload.utils.path import availspace
+from pyload.utils.struct.lock import ReadWriteLock
 from pyload.utils.web.check import local_addr
 
 from ..datatype.init import DownloadStatus
 from ..thread import DecrypterThread, DownloadThread
+
+standard_library.install_aliases()
 
 
 class DownloadManager(object):

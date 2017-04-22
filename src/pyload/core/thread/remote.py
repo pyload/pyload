@@ -2,14 +2,14 @@
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import str
 from traceback import print_exc
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.utils.layer.safethreading import Event, Thread
+
+standard_library.install_aliases()
 
 
 class RemoteBackend(Thread):

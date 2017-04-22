@@ -2,21 +2,21 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import dict, object
 from functools import reduce
 from time import time
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.struct.lock import ReadWriteLock
 
 from ..datatype.file import File
 from ..datatype.init import DownloadStatus, TreeCollection
-from ..datatype.package import (PackageDoesNotExist, PackageStatus, Package,
+from ..datatype.package import (Package, PackageDoesNotExist, PackageStatus,
                                 RootPackage)
+
+standard_library.install_aliases()
 
 
 # invalidates the cache

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import re
 
-from future import standard_library
-standard_library.install_aliases()
-
 from . import Crypter, Package
+
+standard_library.install_aliases()
 
 
 class XfilesharingProFolder(Crypter):

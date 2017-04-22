@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
 import time
 import zipfile
-
-from future import standard_library
-standard_library.install_aliases()
+from builtins import str
 
 from pyload.utils import debug, format, sys
 from pyload.utils.layer.safethreading import Thread
 from pyload.utils.path import filesize, makedirs, open
+
+standard_library.install_aliases()
 
 
 class PluginThread(Thread):

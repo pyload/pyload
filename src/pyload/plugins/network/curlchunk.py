@@ -2,6 +2,7 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import io
 import os
@@ -9,15 +10,14 @@ import re
 import time
 from builtins import int, object, range
 
-from future import standard_library
-standard_library.install_aliases()
-
 import pycurl
 from pyload.utils import format
 from pyload.utils.path import remove
 from pyload.utils.struct import HeaderDict
 
 from .curlrequest import CurlRequest
+
+standard_library.install_aliases()
 
 
 class ChunkInfo(object):

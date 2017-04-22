@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-
 from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.purge import uniqify
 
@@ -12,6 +10,8 @@ from ..datatype.init import DownloadState, Permission
 from ..datatype.package import PackageDoesNotExist, PackageStatus
 from .base import BaseApi
 from .init import Api, requireperm
+
+standard_library.install_aliases()
 
 
 # TODO: user context

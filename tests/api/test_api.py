@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import random
 from builtins import range
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.core import Core
 from tests.api.apitester import ApiTester
 from unittest2 import TestCase
+
+standard_library.install_aliases()
 
 
 class TestAPI(TestCase):

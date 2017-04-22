@@ -2,21 +2,20 @@
 # @author: zoidberg
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import re
-from builtins import bytes, int, super
+from builtins import bytes, int, str, super
 from time import time
 from urllib.parse import urlparse
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.core.network import CookieJar, get_url
 from pyload.utils import parse
 from pyload.utils.web import purge as webpurge
 
 from .. import Hoster
+
+standard_library.install_aliases()
 
 
 def replace_patterns(string, ruleslist):

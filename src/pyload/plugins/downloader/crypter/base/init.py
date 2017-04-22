@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
-from builtins import object
-
-from future import standard_library
-standard_library.install_aliases()
+from builtins import object, str
 
 from pyload.core.datatype import DownloadStatus, LinkStatus
 from pyload.plugins import Base, Retry
@@ -17,6 +14,8 @@ from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
 from pyload.utils.path import remove
 from pyload.utils.purge import uniqify
+
+standard_library.install_aliases()
 
 
 # represent strings as LinkStatus

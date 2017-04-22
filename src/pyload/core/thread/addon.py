@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import str
 from copy import copy
 from traceback import print_exc
 
-from future import standard_library
-standard_library.install_aliases()
-
 from ..datatype.init import ProgressInfo, ProgressType
 from .plugin import PluginThread
+
+standard_library.install_aliases()
 
 
 class AddonThread(PluginThread):

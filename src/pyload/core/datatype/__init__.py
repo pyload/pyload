@@ -3,19 +3,8 @@
 
 from .init import *
 from .check import OnlineCheck
-from .file import File
-from .file import FileDoesNotExist
-from .file import FileInfo
-from .file import FileStatus
-from .package import Package
-from .package import PackageDoesNotExist
-from .package import PackageInfo
-from .package import PackageStats
-from .package import PackageStatus
-from .package import RootPackage
-from .task import Interaction
-from .task import InteractionTask
-from .user import Role
-from .user import User
-from .user import UserData
-from .user import UserDoesNotExist
+from .file import File, FileDoesNotExist, FileInfo, FileStatus
+from .package import (Package, PackageDoesNotExist, PackageInfo, PackageStats,
+                      PackageStatus, RootPackage)
+from .task import Interaction, InteractionTask
+from .user import Role, User, UserData, UserDoesNotExist

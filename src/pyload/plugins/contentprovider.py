@@ -2,11 +2,11 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-
 from future import standard_library
-standard_library.install_aliases()
 
 from pyload.plugins import Base
+
+standard_library.install_aliases()
 
 
 class ContentProvider(Base):

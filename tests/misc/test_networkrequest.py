@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import object
 from contextlib import closing
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.core.network import RequestFactory
 from pyload.plugins.network.curlrequest import CurlRequest
 from tests.helper.stubs import Core
+
+standard_library.install_aliases()
 
 
 class TestRequestFactory(object):

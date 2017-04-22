@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-
 from future import standard_library
-standard_library.install_aliases()
 
 from .request import Request
+
+standard_library.install_aliases()
 
 
 class Download(Request):

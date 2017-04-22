@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import object
 from time import time
 
-from future import standard_library
-standard_library.install_aliases()
-
 from .init import BaseObject
+
+standard_library.install_aliases()
 
 
 class OnlineCheck(BaseObject):

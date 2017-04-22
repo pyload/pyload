@@ -11,6 +11,7 @@
 #           \/
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import argparse
 import operator
@@ -18,12 +19,12 @@ import os
 import sys
 from builtins import map
 
-from future import standard_library
-standard_library.install_aliases()
-
 import pyload.core
 from pyload.utils import convert, format
 from pyload.utils.sys import set_console_icon, set_console_title
+
+standard_library.install_aliases()
+
 
 # from multiprocessing import freeze_support
 

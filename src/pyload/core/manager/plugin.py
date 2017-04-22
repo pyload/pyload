@@ -2,16 +2,15 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import os
 import sys
-from builtins import COREDIR, object
-
-from future import standard_library
-standard_library.install_aliases()
+from builtins import COREDIR, object, str
 
 from pyload.plugins.loader import LoaderFactory, PluginLoader
+
+standard_library.install_aliases()
 
 
 class PluginMatcher(object):

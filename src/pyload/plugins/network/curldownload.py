@@ -2,17 +2,14 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
 import shutil
-from builtins import range
+from builtins import range, str
 from contextlib import closing
 from time import time
-
-from future import standard_library
-standard_library.install_aliases()
 
 import pycurl
 from pyload.core.datatype import Connection
@@ -24,6 +21,8 @@ from pyload.utils.path import remove
 from .curlchunk import ChunkInfo, CurlChunk
 from .curlrequest import ResponseException
 from .download import Download
+
+standard_library.install_aliases()
 
 
 # TODO: save content-disposition for resuming

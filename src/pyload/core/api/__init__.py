@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from .init import Api
-from .init import requireperm
-from .init import statestring
-from .base import AbstractApi
-from .base import BaseApi
+from .init import Api, requireperm, statestring
+from .base import AbstractApi, BaseApi
 from .account import AccountApi
 from .addon import AddonApi
 from .config import ConfigApi

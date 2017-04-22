@@ -3,6 +3,4 @@
 
 from .bucket import Bucket
 from .cookie import CookieJar
-from .request import RequestFactory
-from .request import get_request
-from .request import get_url
+from .request import RequestFactory, get_request, get_url

@@ -14,7 +14,6 @@ import io
 import os
 import re
 import subprocess
-
 from itertools import chain
 
 from setuptools import Command, find_packages, setup

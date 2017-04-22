@@ -2,20 +2,19 @@
 # @author: RaNaN, mkaay
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
 import shutil
-from builtins import int, object, range
+from builtins import int, object, range, str
 from traceback import print_exc
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.layer.safethreading import Event, Thread
 from pyload.utils.path import remove
 from queue import Queue
+
+standard_library.install_aliases()
 
 
 try:

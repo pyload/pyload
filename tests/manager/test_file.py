@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import random
 from builtins import range
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.core.database import DatabaseBackend
 from pyload.core.datatype import DownloadState
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core, normal_user
+
+standard_library.install_aliases()
 
 
 # disable asyncronous queries

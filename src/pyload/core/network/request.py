@@ -2,17 +2,17 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import REQUEST, object
 from contextlib import closing
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.plugins.network.defaultrequest import (DefaultDownload,
                                                    DefaultRequest)
 
 from .bucket import Bucket
+
+standard_library.install_aliases()
 
 
 class RequestFactory(object):

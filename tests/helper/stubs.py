@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import builtins
 import os
@@ -10,13 +11,12 @@ from logging import DEBUG, ERROR, INFO, WARN, log
 from time import strftime
 from traceback import format_exc
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.config import ConfigParser
 from pyload.core import Core
 from pyload.core.datatype import Role, User
 from pyload.core.thread import PluginThread
+
+standard_library.install_aliases()
 
 
 # from pyload.core.inithomedir import init_dir

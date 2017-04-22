@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-
-from builtins import str
-from builtins import object
-
 from future import standard_library
-standard_library.install_aliases()
+
+from builtins import object, str
 
 from pyload.utils.layer.safethreading import Lock
+
+standard_library.install_aliases()
 
 
 class EventManager(object):

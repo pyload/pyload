@@ -2,12 +2,11 @@
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
-from builtins import object
+from builtins import object, str
 from traceback import print_exc
 
-from future import standard_library
 standard_library.install_aliases()
 
 

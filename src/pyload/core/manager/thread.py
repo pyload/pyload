@@ -2,12 +2,10 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 from builtins import object
 from time import time
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils.convert import to_list
 from pyload.utils.decorator import lock
@@ -15,6 +13,8 @@ from pyload.utils.layer.safethreading import RLock
 
 from ..datatype.check import OnlineCheck
 from ..thread import InfoThread
+
+standard_library.install_aliases()
 
 
 class ThreadManager(object):

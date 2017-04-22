@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-
-
 from future import standard_library
-standard_library.install_aliases()
 
 from .check import OnlineCheck
 from .file import FileInfo
@@ -12,6 +9,8 @@ from .init import *
 from .package import PackageInfo, PackageStats
 from .task import InteractionTask
 from .user import UserData
+
+standard_library.install_aliases()
 
 
 enums = [

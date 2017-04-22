@@ -2,22 +2,21 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import logging
 import os
 import re
-from builtins import object, range
+from builtins import object, range, str
 from time import time
-
-from future import standard_library
-standard_library.install_aliases()
 
 import ast
 from pyload.plugins import Base
 from pyload.utils.layer.legacy.collections_ import defaultdict, namedtuple
 from pyload.utils.path import makedirs
+
+standard_library.install_aliases()
 
 
 PluginTuple = namedtuple("PluginTuple", "version re deps category user path")

@@ -2,16 +2,17 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import os
 from builtins import object
 from time import time
 
 from enum import IntFlag
-from future import standard_library
-standard_library.install_aliases()
 
 from .init import BaseObject, ExceptionObject
+
+standard_library.install_aliases()
 
 
 class PackageStatus(IntFlag):

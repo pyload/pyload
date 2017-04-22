@@ -2,18 +2,18 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import json
 import random
 from builtins import object
 
-from future import standard_library
-standard_library.install_aliases()
-
 from pyload.utils.decorator import lock
 from pyload.utils.layer.safethreading import Lock
 
 from ..datatype.init import AccountInfo
+
+standard_library.install_aliases()
 
 
 class AccountManager(object):

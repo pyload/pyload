@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
-
-from future import standard_library
-standard_library.install_aliases()
+from builtins import str
 
 from ..datatype.init import Permission
 from ..datatype.user import Role
 from .base import BaseApi
 from .init import Api, requireperm
+
+standard_library.install_aliases()
 
 
 class DownloadApi(BaseApi):

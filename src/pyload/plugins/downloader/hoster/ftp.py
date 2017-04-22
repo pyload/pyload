@@ -2,17 +2,17 @@
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import re
 from builtins import int
 from urllib.parse import quote, unquote, urlparse
 
-from future import standard_library
-standard_library.install_aliases()
-
 import pycurl
 
 from . import Hoster
+
+standard_library.install_aliases()
 
 
 class Ftp(Hoster):

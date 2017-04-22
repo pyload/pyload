@@ -3,17 +3,19 @@
 
 from __future__ import absolute_import, unicode_literals
 from future import standard_library
-standard_library.install_aliases()
 
 import builtins
 import io
 import os
-from builtins import object
 import random
 import time
+from builtins import object
 
 from pyload.utils.convert import to_str
 from pyload.utils.path import makedirs, remove
+
+standard_library.install_aliases()
+
 
 builtins._ = lambda x: x  # NOTE: gettext pre-start fixup
 

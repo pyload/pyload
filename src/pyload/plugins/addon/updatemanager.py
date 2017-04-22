@@ -2,22 +2,21 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
 import re
 import sys
-from builtins import dict, zip
+from builtins import dict, str, zip
 from time import time
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.config.parser import IGNORE
 from pyload.core.network import get_url
 
 from .base.init import Expose, Hook, threaded
+
+standard_library.install_aliases()
 
 
 class UpdateManager(Hook):

@@ -2,14 +2,12 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import sys
 import time
+from builtins import str
 from traceback import print_exc
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pycurl import error
 from pyload.plugins import Abort, Fail, Retry
@@ -19,6 +17,8 @@ from pyload.utils.layer.safethreading import Event
 from queue import Queue
 
 from .plugin import PluginThread
+
+standard_library.install_aliases()
 
 
 class DownloadThread(PluginThread):

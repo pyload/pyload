@@ -15,16 +15,16 @@
     along with this program; if not, see <http://www.gnu.org/licenses/>
 """
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
 import re
 import urllib.error
 import urllib.parse
 import urllib.request
 
-from future import standard_library
-standard_library.install_aliases()
-
 from . import Crypter
+
+standard_library.install_aliases()
 
 
 class Dereferer(Crypter):

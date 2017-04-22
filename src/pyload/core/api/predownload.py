@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+from future import standard_library
 
-from builtins import str
 import io
 import os
 import re
+from builtins import str
 from itertools import chain
-
-from future import standard_library
-standard_library.install_aliases()
 
 from pyload.utils import parse
 from pyload.utils.purge import uniqify
@@ -19,6 +17,8 @@ from ..datatype.init import DownloadStatus, LinkStatus, Permission
 from ..network.request import get_url
 from .base import BaseApi
 from .init import Api, requireperm
+
+standard_library.install_aliases()
 
 
 _re_urlmatch = re.compile(
