@@ -110,16 +110,16 @@ class DownloadApi(BaseApi):
         self.pyload.files.save()
 
     @requireperm(Permission.Add)
-    def upload_container(self, filename, data):
+    def upload_container(self, fname, data):
         """
         Uploads and adds a container file to pyLoad.
 
-        :param filename: filename, extension is important so it can correctly decrypted
+        :param fname: fname, extension is important so it can correctly decrypted
         :param data: file content
         """
-        file = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{0}".format(filename))
-        with io.open(file, mode='wb') as fp:
+        path = os.path.join(self.pyload.config.get(
+            'general', 'storage_folder'), "tmp_{0}".format(fname))
+        with io.open(path, mode='wb') as fp:
             fp.write(str(data))
         return self.add_package(fp.name, [fp.name])
 
@@ -184,9 +184,9 @@ class DownloadApi(BaseApi):
         """
         Aborts all running downloads.
         """
-        for pyfile in self.pyload.files.cached_files():
-            if self.has_access(pyfile):
-                pyfile.abort_download()
+        for file in self.pyload.files.cached_files():
+            if self.has_access(file):
+                file.abort_download()
 
     @requireperm(Permission.Modify)
     def stop_downloads(self, fids):
@@ -196,7 +196,7 @@ class DownloadApi(BaseApi):
         :param fids: list of file ids
         :return:
         """
-        pyfiles = self.pyload.files.cached_files()
-        for pyfile in pyfiles:
-            if pyfile.fid in fids and self.has_access(pyfile):
-                pyfile.abort_download()
+        files = self.pyload.files.cached_files()
+        for file in files:
+            if file.fid in fids and self.has_access(file):
+                file.abort_download()

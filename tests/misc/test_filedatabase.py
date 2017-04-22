@@ -120,15 +120,15 @@ class TestDatabase(BenchmarkTest):
 
     def test_get_file_data(self):
         fid = random.choice(self.fids)
-        f = self.db.get_file_info(fid)
-        self.assert_file(f)
+        finfo = self.db.get_file_info(fid)
+        self.assert_file(finfo)
 
     def test_find_files(self):
         files = self.db.get_all_files(search="1")
         print("Found {0} files".format(len(files)))
-        f = random.choice(files.values())
+        finfo = random.choice(files.values())
 
-        assert "1" in f.name
+        assert "1" in finfo.name
         names = self.db.get_matching_filenames("1")
         for name in names:
             assert "1" in name
@@ -196,36 +196,36 @@ class TestDatabase(BenchmarkTest):
         assert pack.comment == "lol"
         assert "video" in pack.tags
 
-    def assert_file(self, f):
+    def assert_file(self, finfo):
         try:
-            assert f is not None
-            assert isinstance(f, FileInfo)
-            self.assert_in(f, ("fid", "status", "size", "media",
-                               "fileorder", "added", "package", "owner"))
-            assert f.status in range(5)
-            assert f.owner == self.owner
-            assert f.media in range(1024)
-            assert f.package in self.pids
-            assert f.added > 10 ** 6  #: date is usually big integer
+            assert finfo is not None
+            assert isinstance(finfo, FileInfo)
+            self.assert_in(
+                finfo, ("fid", "status", "size", "media", "fileorder", "added", "package", "owner"))
+            assert finfo.status in range(5)
+            assert finfo.owner == self.owner
+            assert finfo.media in range(1024)
+            assert finfo.package in self.pids
+            assert finfo.added > 10 ** 6  #: date is usually big integer
         except Exception:
-            print(f)
+            print(finfo)
             raise
 
-    def assert_pack(self, p):
+    def assert_pack(self, pinfo):
         try:
-            assert p is not None
-            assert isinstance(p, PackageInfo)
-            self.assert_in(p, ("pid", "root", "added",
+            assert pinfo is not None
+            assert isinstance(pinfo, PackageInfo)
+            self.assert_in(pinfo, ("pid", "root", "added",
                                "status", "packageorder", "owner"))
-            assert p.pid in self.pids
-            assert p.owner == self.owner
-            assert p.status in range(5)
-            assert p.root in self.pids
-            assert p.added > 10 ** 6
-            assert isinstance(p.tags, list)
-            assert p.shared in (0, 1)
+            assert pinfo.pid in self.pids
+            assert pinfo.owner == self.owner
+            assert pinfo.status in range(5)
+            assert pinfo.root in self.pids
+            assert pinfo.added > 10 ** 6
+            assert isinstance(pinfo.tags, list)
+            assert pinfo.shared in (0, 1)
         except Exception:
-            print(p)
+            print(pinfo)
             raise
 
     def assert_in(self, obj, list):

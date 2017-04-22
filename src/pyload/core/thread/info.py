@@ -123,7 +123,6 @@ class InfoThread(DecrypterThread):
         """
         Executes info fetching for given plugin and urls.
         """
-
         # also works on module names
         pluginname = plugin.__name__.split(".")[-1]
 

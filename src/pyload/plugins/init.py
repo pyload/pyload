@@ -257,9 +257,9 @@ class Base(object):
                         'dumps',
                         self.__name__))
 
-            file = os.path.join(self.pyload.profiledir, 'crashes', 'dumps', self.__name__, "{0}_line{1}.dump.html".format(
+            path = os.path.join(self.pyload.profiledir, 'crashes', 'dumps', self.__name__, "{0}_line{1}.dump.html".format(
                 frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-            with io.open(file, mode='wb') as fp:
+            with io.open(path, mode='wb') as fp:
                 del frame  #: delete the frame or it wont be cleaned
                 fp.write(res)
 

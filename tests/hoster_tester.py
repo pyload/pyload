@@ -14,7 +14,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 from nose.tools import nottest
-from pyload.core.datatype import PyFile
+from pyload.core.datatype import File
 from pyload.core.datatype.file import statusmap
 from pyload.plugins import Fail
 from pyload.utils.convert import accumulate
@@ -32,16 +32,17 @@ class HosterPluginTester(PluginTester):
 
     def setUp(self):
         PluginTester.setUp(self)
-        for f in self.files:
-            file = os.path.join(DL_DIR, f)
-            if os.path.exists(file):
-                remove(file, trash=True)
+        for fname in self.files:
+            path = os.path.join(DL_DIR, fname)
+            remove(path, trash=True, ignore_errors=True)
 
         # folder for reports
         report = os.path.join(self.__class__.__name__)
-        if os.path.exists(report):
-            for f in os.listdir(report):
-                remove(os.path.join(report, f), trash=True)
+        if not os.path.exists(report):
+            return None
+        for fname in os.listdir(report):
+            path = os.path.join(report, fname)
+            remove(path, trash=True)
 
     @nottest
     def test_plugin(self, name, url, status):
@@ -50,48 +51,48 @@ class HosterPluginTester(PluginTester):
         log(DEBUG, "{0}: {1}, {2}".format(name, url, status))
 
         # url and plugin should be only important thing
-        pyfile = PyFile(self.pyload, -1, url, url, 0, 0,
+        file = File(self.pyload, -1, url, url, 0, 0,
                         0, 0, url, name, "", 0, 0, 0, 0)
-        pyfile.init_plugin()
+        file.init_plugin()
 
-        self.thread.pyfile = pyfile
-        self.thread.plugin = pyfile.plugin
+        self.thread.file = file
+        self.thread.plugin = file.plugin
 
         try:
             a = time()
-            pyfile.plugin.preprocessing(self.thread)
+            file.plugin.preprocessing(self.thread)
 
             log(DEBUG, "downloading took {0:d}s".format(time() - a))
-            log(DEBUG, "size {0:d} KiB".format(pyfile.size >> 10))
+            log(DEBUG, "size {0:d} KiB".format(file.size >> 10))
 
             if status == "offline":
                 raise Exception("No offline Exception raised")
 
-            if pyfile.name not in self.files:
+            if file.name not in self.files:
                 raise Exception(
-                    "Filename {0} not recognized".format(pyfile.name))
+                    "Filename {0} not recognized".format(file.name))
 
             hash = md5()
-            file = os.path.join(DL_DIR, pyfile.name)
+            path = os.path.join(DL_DIR, file.name)
 
-            if not os.path.exists(file):
-                raise Exception("File {0} does not exists".format(pyfile.name))
+            if not os.path.exists(path):
+                raise Exception("File {0} does not exists".format(file.name))
 
-            with io.open(file, mode='rb') as fp:
+            with io.open(path, mode='rb') as fp:
                 while True:
                     buf = fp.read(4096)
                     if not buf:
                         break
                     hash.update(buf)
 
-            if hash.hexdigest() != self.files[pyfile.name]:
+            if hash.hexdigest() != self.files[file.name]:
                 log(DEBUG, "Hash is {0}".format(hash.hexdigest()))
 
-                size = os.stat(f.name).st_size
+                size = os.stat(fp.name).st_size
                 if size < 10 << 20:  #: 10MB
                     # Copy for debug report
                     log(DEBUG, "Downloaded file copied to report")
-                    shutil.move(f.name, os.path.join(plugin, f.name))
+                    shutil.move(fp.name, os.path.join(plugin, fp.name))
 
                 raise Exception("Hash does not match")
 
@@ -110,8 +111,8 @@ sections = parse_config(
     os.path.join(os.path.dirname(__file__), "hosterlinks.txt")
 )
 
-for f in sections['files']:
-    name, hash = f.rsplit(" ", 1)
+for link in sections['files']:
+    name, hash = link.rsplit(" ", 1)
     HosterPluginTester.files[name] = str(hash)
 
 del sections['files']

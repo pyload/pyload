@@ -25,7 +25,6 @@ class FileApi(BaseApi):
         """
         Internal method to verify result and owner.
         """
-
         # TODO: shared?
         return info and (not self.primary_uid or info.owner ==
                          self.primary_uid)
@@ -85,10 +84,10 @@ class FileApi(BaseApi):
         :raises PackageDoesNotExist:
         :return: :class:`PackageInfo`
         """
-        info = self.pyload.files.get_package_info(pid)
-        if not self.check_result(info):
+        pinfo = self.pyload.files.get_package_info(pid)
+        if not self.check_result(pinfo):
             raise PackageDoesNotExist(pid)
-        return info
+        return pinfo
 
     @requireperm(Permission.All)
     def get_file_info(self, fid):
@@ -138,11 +137,11 @@ class FileApi(BaseApi):
         :return updated package info
         """
         pid = pack.pid
-        p = self.pyload.files.get_package(pid)
-        if not self.check_result(p):
+        pack_ = self.pyload.files.get_package(pid)
+        if not self.check_result(pack_):
             raise PackageDoesNotExist(pid)
-        p.update_from_info_data(pack)
-        p.sync()
+        pack_.update_from_info_data(pack)
+        pack_.sync()
         self.pyload.files.save()
 
     @requireperm(Permission.Modify)
@@ -154,18 +153,18 @@ class FileApi(BaseApi):
         :param paused: desired paused state of the package
         :return the new package status
         """
-        p = self.pyload.files.get_package(pid)
-        if not self.check_result(p):
+        pack = self.pyload.files.get_package(pid)
+        if not self.check_result(pack):
             raise PackageDoesNotExist(pid)
 
-        if p.status == PackageStatus.Ok and paused:
-            p.status = PackageStatus.Paused
-        elif p.status == PackageStatus.Paused and not paused:
-            p.status = PackageStatus.Ok
+        if pack.status == PackageStatus.Ok and paused:
+            pack.status = PackageStatus.Paused
+        elif pack.status == PackageStatus.Paused and not paused:
+            pack.status = PackageStatus.Ok
 
-        p.sync()
+        pack.sync()
 
-        return p.status
+        return pack.status
 
     # TODO: multiuser etc..
     @requireperm(Permission.Modify)

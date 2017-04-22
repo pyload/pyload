@@ -108,7 +108,6 @@ class UpdateManager(Hook):
         """
         Checks for plugins updates.
         """
-
         # plugins were already updated
         if self.info['plugins']:
             return None
@@ -122,14 +121,14 @@ class UpdateManager(Hook):
 
         for plugin in updates:
             info = dict(list(zip(schema, plugin.split("|"))))
-            filename = info['name']
+            fname = info['name']
             prefix = info['type']
             version = info['version']
 
-            if filename.endswith(".pyc"):
-                name = filename[:filename.find("_")]
+            if fname.endswith(".pyc"):
+                name = fname[:fname.find("_")]
             else:
-                name = filename.replace(".py", "")
+                name = fname.replace(".py", "")
 
             # TODO: obsolete in 1.0.0
             if prefix.endswith("s"):
@@ -153,7 +152,7 @@ class UpdateManager(Hook):
                 content = get_url(url.format(info))
             except Exception as e:
                 self.log_warning(
-                    _("Error when updating {0}").format(filename), str(e))
+                    _("Error when updating {0}").format(fname), str(e))
                 continue
 
             m = vre.search(content)
@@ -162,7 +161,7 @@ class UpdateManager(Hook):
                     name), _("Version mismatch"))
                 continue
 
-            with io.open(os.path.join("userplugins", prefix, filename), mode='wb') as fp:
+            with io.open(os.path.join("userplugins", prefix, fname), mode='wb') as fp:
                 fp.write(content)
 
             self.updated = True

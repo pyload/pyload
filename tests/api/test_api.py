@@ -27,12 +27,12 @@ class TestAPI(TestCase):
 
         cls.core = Core()
         for Test in (TestNoArgs,):
-            t = Test()
-            t.enable_json()
-            t = Test()
-            t.enable_ws()
-            t = Test()
-            t.set_api(cls.core.api)
+            test = Test()
+            test.enable_json()
+            test = Test()
+            test.enable_ws()
+            test = Test()
+            test.set_api(cls.core.api)
 
         cls.methods = ApiTester.get_methods()
 

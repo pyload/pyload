@@ -41,20 +41,20 @@ class AbtractExtractor(object):
         """
         raise NotImplementedError
 
-    def __init__(self, m, file, out, fullpath,
+    def __init__(self, m, path, out, fullpath,
                  overwrite, excludefiles, renice):
         """
         Initialize extractor for specific file
 
         :param m: ExtractArchive addon plugin
-        :param file: Absolute file path
+        :param path: Absolute file path
         :param out: Absolute path to destination directory
         :param fullpath: Extract to fullpath
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
         self.manager = m
-        self.file = file
+        self.file = path
         self.out = out
         self.fullpath = fullpath
         self.overwrite = overwrite

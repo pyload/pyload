@@ -20,11 +20,11 @@ class TestSyntax(TestCase):
 
 
 for dir, dirnames, filenames in os.walk(os.path.join(PACKDIR, "pyload")):
-    for filename in filenames:
-        if not filename.endswith(".py") or filename.startswith("__"):
+    for fname in filenames:
+        if not fname.endswith(".py") or fname.startswith("__"):
             continue
-        file = os.path.join(PACKDIR, filename)
-        pack = file.replace(PACKDIR, "")[1:-3]  #: replace / and  .py
+        path = os.path.join(PACKDIR, fname)
+        pack = path.replace(PACKDIR, "")[1:-3]  #: replace / and  .py
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)

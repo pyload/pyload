@@ -165,8 +165,8 @@ class WebServer(Thread):
 
     # check if an error was raised for n seconds
     def check_error(self, n=1):
-        t = time.time() + n
-        while time.time() < t:
+        threshold = time.time() + n
+        while time.time() < threshold:
             if self.error:
                 return self.error
             time.sleep(0.1)

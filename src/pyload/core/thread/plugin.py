@@ -20,7 +20,7 @@ class PluginThread(Thread):
     Abstract base class for thread types.
     """
     __slots__ = ['manager', 'owner', 'pyload']
-    
+
     def __init__(self, manager, owner=None):
         """
         Constructor
@@ -39,7 +39,7 @@ class PluginThread(Thread):
     @property
     def progress(self):
         return self.get_progress()
-        
+
     def finished(self):
         """
         Remove thread from list.
@@ -53,30 +53,30 @@ class PluginThread(Thread):
         :return: :class:`ProgressInfo`
         """
         pass
-        
-    def _debug_report(self, pyfile):
+
+    def _debug_report(self, file):
         # TODO: Add config setting dump
         report = "pyLoad {} Debug Report of {} {}\n\n{}\n\n{}\n\n{}\n\n{}".format(
             self.pyload.__version__,
-            pyfile.plugin.__name__,
-            pyfile.plugin.__version__,
+            file.plugin.__name__,
+            file.plugin.__version__,
             debug.format_traceback(),
             debug.format_framestack(),
-            debug.format_dump(pyfile.plugin),
-            debug.format_dump(pyfile)
+            debug.format_dump(file.plugin),
+            debug.format_dump(file)
         )
         return report
-    
+
     def _write_report(self, report, path):
         with zipfile.ZipFile(path, 'w') as zip:
             reportdir = os.path.join(
                 self.pyload.profiledir, 'crashes', 'reports', name)  # NOTE: Relpath to configdir
             makedirs(reportdir)
-            
-            for filename in os.listdir(reportdir):
+
+            for fname in os.listdir(reportdir):
                 try:
-                    zip.write(os.path.join(reportdir, filename),
-                              os.path.join(name, filename))
+                    zip.write(os.path.join(reportdir, fname),
+                              os.path.join(name, fname))
                 except Exception:
                     pass
 
@@ -88,25 +88,25 @@ class PluginThread(Thread):
 
         if not filesize(path):
             raise Exception("Empty Zipfile")
-    
-    def debug_report(self, pyfile):
+
+    def debug_report(self, file):
         """
         Writes a debug report to disk.
         """
-        name = pyfile.pluginname
-        file = "debug_{}_{}.zip".format(
+        name = file.pluginname
+        path = "debug_{}_{}.zip".format(
             name, time.strftime("%d-%m-%Y_%H-%M-%S"))
 
-        report = self._debug_report(pyfile)
+        report = self._debug_report(file)
         system = "SYSTEM INFO:\n\t{}\n".format(
             '\n\t'.join(format.map(sys.get_info())))
         try:
-            self._write_report(report, file)
-            
+            self._write_report(report, path)
+
         except Exception as e:
-            self.pyload.log.debug("Error creating zip file", e)
-            file = file.replace(".zip", ".txt")
-            with io.open(file, mode='wb') as fp:
+            self.pyload.log.debug("Error creating zip file", str(e))
+            path = path.replace(".zip", ".txt")
+            with io.open(path, mode='wb') as fp:
                 fp.write(report)
 
-        self.pyload.log.info(_("Debug Report written to file"), file)
+        self.pyload.log.info(_("Debug Report written to file"), path)

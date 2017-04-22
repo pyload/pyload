@@ -223,14 +223,13 @@ class DatabaseBackend(Thread):
         """
         Get db version.
         """
-        if not os.path.exists(self.VERSION_FILE):
+        try:
+            with io.open(self.VERSION_FILE, mode='rb') as fp:
+                v = int(fp.read().strip())
+        except IOError:
             with io.open(self.VERSION_FILE, mode='wb') as fp:
                 fp.write(str(DB_VERSION))
             return None
-
-        with io.open(self.VERSION_FILE, mode='rb') as fp:
-            v = int(fp.read().strip())
-
         return v
 
     def _convert_db(self, v):

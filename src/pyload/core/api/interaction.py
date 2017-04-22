@@ -37,10 +37,10 @@ class UserInteractionApi(BaseApi):
         """
         tasks = self.pyload.im.get_tasks(self.primary_uid, mode)
         # retrieved tasks count as seen
-        for t in tasks:
-            t.seen = True
-            if t.type == Interaction.Notification:
-                t.set_waiting(self.pyload.im.CLIENT_THRESHOLD)
+        for tsk in tasks:
+            tsk.seen = True
+            if tsk.type == Interaction.Notification:
+                tsk.set_waiting(self.pyload.im.CLIENT_THRESHOLD)
 
         return tasks
 

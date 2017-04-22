@@ -55,7 +55,6 @@ class FileMethods(DatabaseMethods):
         """
         Number and size of files in queue not finished yet.
         """
-
         # status not in NA, finished, skipped
         if user is None:
             self.c.execute(
@@ -74,7 +73,6 @@ class FileMethods(DatabaseMethods):
         """
         Number of files which have to be processed.
         """
-
         # status in online, queued, starting, waiting, downloading
         self.c.execute(
             "SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
@@ -186,12 +184,11 @@ class FileMethods(DatabaseMethods):
 
         data = OrderedDict()
         for r in self.c.fetchall():
-            f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
+            finfo = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
             if r[11] > 0:  #: dl status != NA
-                f.download = DownloadInfo(
+                finfo.download = DownloadInfo(
                     r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
-
-            data[r[0]] = f
+            data[r[0]] = finfo
 
         return data
 
@@ -293,13 +290,11 @@ class FileMethods(DatabaseMethods):
         r = self.c.fetchone()
         if not r:
             return None
-        else:
-            f = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
-            if r[11] > 0 or force:
-                f.download = DownloadInfo(
-                    r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
-
-            return f
+        finfo = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
+        if r[11] > 0 or force:
+            finfo.download = DownloadInfo(
+                r[8], r[9], r[10], r[11], self.manager.status_msg[r[11]], r[12])
+        return finfo
 
     @queue
     def get_package_info(self, pid, stats=True):
@@ -329,9 +324,8 @@ class FileMethods(DatabaseMethods):
         """
         Data is list of tuples (name, size, status,[ hash,] url).
         """
-
         # inserts media type as n-1th arguments
-        data = [t[:-1] + (guess_type(t[0]), t[-1]) for t in data]
+        data = [info[:-1] + (guess_type(info[0]), info[-1]) for info in data]
 
         # status in (NA, Offline, Online, Queued, TempOffline)
         if data and len(data[0]) == 5:
@@ -432,7 +426,7 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_jobs(self, occ):
         """
-        Return pyfile ids, which are suitable for download and do not use a occupied plugin.
+        Return file ids, which are suitable for download and do not use a occupied plugin.
         """
         cmd = "({0})".format(", ".join("'{0}'".format(x) for x in occ))
 
@@ -458,7 +452,6 @@ class FileMethods(DatabaseMethods):
         """
         Return list of max length 3 ids with pyfiles in package not finished or processed.
         """
-
         # status in finished, skipped, processing
         self.c.execute(
             "SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3", (pid,))
@@ -472,14 +465,13 @@ class FileMethods(DatabaseMethods):
             "UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
 
     @queue
-    def find_duplicates(self, id, folder, filename):
+    def find_duplicates(self, id, folder, fname):
         """
         Checks if filename exists with different id and same package, dlstatus = finished.
         """
-
         # TODO: also check root of package
         self.c.execute(
-            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?", (folder, id, filename))
+            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?", (folder, id, fname))
         return self.c.fetchone()
 
     @queue

@@ -163,8 +163,7 @@ class AccountManager(object):
         """
         Return account info for every visible account.
         """
-
-        # filter by owner / shared, but admins see all accounts
+        # NOTE: filter by owner / shared, but admins see all accounts
         accounts = []
         for plugin, accs in self.accounts.items():
             accounts.extend(
@@ -176,6 +175,6 @@ class AccountManager(object):
         """
         Force a refresh of every account.
         """
-        for p in self.accounts.values():
-            for acc in p:
+        for accounts in self.accounts.values():
+            for acc in accounts:
                 acc.get_account_info(True)

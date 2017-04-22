@@ -78,7 +78,6 @@ class ConfigApi(BaseApi):
 
         :rtype: list of PluginInfo
         """
-
         # TODO: include addons that are activated by default
         # TODO: multi user
         # TODO: better plugin / addon activated config
@@ -107,7 +106,6 @@ class ConfigApi(BaseApi):
 
         :rtype: list of PluginInfo
         """
-
         # TODO: filter user_context / addons when not allowed
         plugins = [ConfigInfo(name, config.label, config.description,
                               self.pyload.pgm.get_category(name),
@@ -124,7 +122,6 @@ class ConfigApi(BaseApi):
         :param name: Name of plugin or config section
         :rtype: ConfigHolder
         """
-
         # requires at least plugin permissions, but only admin can load core
         # config
         config, values = self.pyload.config.get_section(name, self.primary_uid)
@@ -150,6 +147,5 @@ class ConfigApi(BaseApi):
 
         :param plugin: plugin name
         """
-
         # TODO: delete should deactivate addons?
         self.pyload.config.delete(plugin, self.primary_uid)

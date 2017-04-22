@@ -36,7 +36,7 @@ class Dereferer(Crypter):
     __author_name__ = "zoidberg"
     __author_mail__ = "zoidberg@mujmail.cz"
 
-    def decrypt(self, pyfile):
-        link = re.match(self.__pattern__, pyfile.url).group('url')
+    def decrypt(self, file):
+        link = re.match(self.__pattern__, file.url).group('url')
         self.pyload.files.add_links(
-            [urllib.parse.unquote(link).rstrip('+')], pyfile.package().id)
+            [urllib.parse.unquote(link).rstrip('+')], file.package().id)

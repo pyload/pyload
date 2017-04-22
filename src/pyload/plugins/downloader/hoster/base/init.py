@@ -64,9 +64,9 @@ class Hoster(Base):
 
     __type__ = "hoster"
 
-    def __init__(self, pyfile):
-        # TODO: pyfile.owner, but it's not correct yet
-        Base.__init__(self, pyfile.manager.pyload)
+    def __init__(self, file):
+        # TODO: file.owner, but it's not correct yet
+        Base.__init__(self, file.manager.pyload)
 
         self.want_reconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -99,8 +99,8 @@ class Hoster(Base):
         #: Will hold the download class
         self.dl = None
 
-        #: associated pyfile instance, see `PyFile`
-        self.pyfile = pyfile
+        #: associated file instance, see `File`
+        self.file = file
         self.thread = None  #: holds thread in future
 
         #: location where the last call to download was saved
@@ -176,18 +176,18 @@ class Hoster(Base):
 
         self.setup()
 
-        self.pyfile.set_status("starting")
+        self.file.set_status("starting")
 
-        return self.process(self.pyfile)
+        return self.process(self.file)
 
-    def process(self, pyfile):
+    def process(self, file):
         """
         The 'main' method of every plugin, you **have to** overwrite it.
         """
         raise NotImplementedError
 
     def abort(self):
-        return self.pyfile.abort
+        return self.file.abort
 
     def reset_account(self):
         """
@@ -206,9 +206,7 @@ class Hoster(Base):
         10 - not implemented
         20 - unknown error
         """
-
         # TODO: checksum check addon
-
         return True, 10
 
     def set_wait(self, seconds, reconnect=None):
@@ -220,7 +218,7 @@ class Hoster(Base):
         """
         if reconnect is not None:
             self.want_reconnect = reconnect
-        self.pyfile.wait_until = time() + int(seconds)
+        self.file.wait_until = time() + int(seconds)
 
     def wait(self, seconds=None, reconnect=None):
         """
@@ -233,9 +231,9 @@ class Hoster(Base):
 
     def _wait(self):
         self.waiting = True
-        self.pyfile.set_status("waiting")
+        self.file.set_status("waiting")
 
-        while self.pyfile.wait_until > time():
+        while self.file.wait_until > time():
             self.thread.manager.reconnecting.wait(2)
             self.check_abort()
             if self.thread.manager.reconnecting.isSet():
@@ -244,7 +242,7 @@ class Hoster(Base):
                 raise Reconnect
 
         self.waiting = False
-        self.pyfile.set_status("starting")
+        self.file.set_status("starting")
 
     def offline(self):
         """
@@ -287,17 +285,17 @@ class Hoster(Base):
         Downloads the content at url to download folder
 
         :param disposition: if True and server provides content-disposition header
-        the filename will be changed if needed
+        the fname will be changed if needed
         :return: The location where the file was saved
         """
         self.check_for_same_files()
         self.check_abort()
 
-        self.pyfile.set_status("downloading")
+        self.file.set_status("downloading")
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
 
-        location = os.path.join(download_folder, self.pyfile.package().folder)
+        location = os.path.join(download_folder, self.file.package().folder)
 
         if not os.path.exists(location):
             makedirs(location, int(self.pyload.config.get(
@@ -316,29 +314,29 @@ class Hoster(Base):
                     self.pyload.log.warning(
                         _("Setting User and Group failed: {0}").format(str(e)))
 
-        name = self.pyfile.name
+        name = self.file.name
 
-        filename = os.path.join(location, name)
+        fname = os.path.join(location, name)
 
-        self.pyload.adm.fire("download:start", self.pyfile, url, filename)
+        self.pyload.adm.fire("download:start", self.file, url, fname)
 
         # Create the class used for downloading
         self.dl = self.pyload.req.get_download_request(
             self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
-            newname = self.dl.download(url, filename, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),
+            newname = self.dl.download(url, fname, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),
                                        resume=self.resume_download, cookies=cookies, disposition=disposition)
         finally:
             self.dl.close()
-            self.pyfile.size = self.dl.size
+            self.file.size = self.dl.size
 
         if disposition and newname and newname != name:  #: triple check, just to be sure
             self.pyload.log.info(_("{0} saved as {1}").format(name, newname))
-            self.pyfile.name = newname
-            filename = os.path.join(location, newname)
+            self.file.name = newname
+            fname = os.path.join(location, newname)
 
-        fs_filename = format.path(filename)
+        fs_filename = format.path(fname)
 
         if self.pyload.config.get('permission', 'change_filemode'):
             os.chmod(fs_filename, int(self.pyload.config.get(
@@ -406,7 +404,7 @@ class Hoster(Base):
         """
         Get the password the user provided in the package.
         """
-        password = self.pyfile.package().password
+        password = self.file.package().password
         if not password:
             return ""
         return password
@@ -418,41 +416,41 @@ class Hoster(Base):
         :param starting: indicates that the current download is going to start
         :raises Skip:
         """
-        pack = self.pyfile.package()
+        pack = self.file.package()
 
-        for pyfile in self.pyload.files.cached_files():
-            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package(
+        for file in self.pyload.files.cached_files():
+            if file != self.file and file.name == self.file.name and file.package(
             ).folder == pack.folder:
-                if pyfile.status in (0, 12):  #: finished or downloading
-                    raise Skip(pyfile.pluginname)
-                elif pyfile.status in (
+                if file.status in (0, 12):  #: finished or downloading
+                    raise Skip(file.pluginname)
+                elif file.status in (
                         5, 7) and starting:  #: a download is waiting/starting and was apparently started before
-                    raise Skip(pyfile.pluginname)
+                    raise Skip(file.pluginname)
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
-        location = os.path.join(download_folder, pack.folder, self.pyfile.name)
+        location = os.path.join(download_folder, pack.folder, self.file.name)
 
         if starting and self.pyload.config.get(
                 'connection', 'skip') and os.path.exists(location):
             size = os.stat(location).st_size
-            if size >= self.pyfile.size:
+            if size >= self.file.size:
                 raise Skip("File exists")
 
-        pyfile = self.pyload.db.find_duplicates(
-            self.pyfile.fid, self.pyfile.package().folder, self.pyfile.name)
-        if pyfile:
+        file = self.pyload.db.find_duplicates(
+            self.file.fid, self.file.package().folder, self.file.name)
+        if file:
             if os.path.exists(location):
-                raise Skip(pyfile[0])
+                raise Skip(file[0])
 
             self.pyload.log.debug(
-                "File {0} not skipped, because it does not exists".format(self.pyfile.name))
+                "File {0} not skipped, because it does not exists".format(self.file.name))
 
     def clean(self):
         """
         Clean everything and remove references.
         """
-        if hasattr(self, "pyfile"):
-            del self.pyfile
+        if hasattr(self, "file"):
+            del self.file
         if hasattr(self, "req"):
             self.req.close()
             del self.req

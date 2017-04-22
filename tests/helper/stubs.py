@@ -85,13 +85,12 @@ class Thread(PluginThread):
         self.plugin = None
 
     def debug_report(self):
-        if hasattr(self, "pyfile"):
+        if hasattr(self, "file"):
             dump = PluginThread.debug_report(
-                self, self.plugin.__name__, pyfile=self.pyfile)
+                self, self.plugin.__name__, file=self.file)
         else:
             dump = PluginThread.debug_report(
                 self, self.plugin.__name__, plugin=self.plugin)
-
         return dump
 
 

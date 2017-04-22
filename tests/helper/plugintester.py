@@ -31,7 +31,7 @@ def _wait(self):
     """
     self.waiting = True
 
-    waittime = self.pyfile.wait_until - time.time()
+    waittime = self.file.wait_until - time.time()
     log(DEBUG, "waiting {0}s".format(waittime))
 
     if self.want_reconnect and waittime > 300:
@@ -39,13 +39,13 @@ def _wait(self):
     elif waittime > 300:
         raise Fail("Would wait {0}s".format(waittime))
 
-    while self.pyfile.wait_until > time.time():
+    while self.file.wait_until > time.time():
         time.sleep(1)
-        if self.pyfile.abort:
+        if self.file.abort:
             raise Abort
 
     self.waiting = False
-    self.pyfile.set_status("starting")
+    self.file.set_status("starting")
 
 Hoster.wait = _wait
 
@@ -107,17 +107,16 @@ class PluginTester(TestCase):
     def setUpClass(cls):
         cls.core = Core()
         name = "{0}.{1}".format(cls.__module__, cls.__name__)
-        for f in glob(os.path.join(name, "debug_*")):
-            remove(f, trash=True)
+        for fname in glob(os.path.join(name, "debug_*")):
+            remove(fname, trash=True)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
         name = "{0}.{1}".format(cls.__module__, cls.__name__)
-        if not os.path.exists(name):
-            makedirs(name)
-        for f in glob("debug_*"):
-            shutil.move(f, os.path.join(name, f))
+        makedirs(name)
+        for fname in glob("debug_*"):
+            shutil.move(fname, os.path.join(name, fname))
 
     def setUp(self):
         self.thread = Thread(self.pyload)

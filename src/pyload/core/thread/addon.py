@@ -48,18 +48,18 @@ class AddonThread(PluginThread):
         return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
                             self._progressinfo, 100, self.owner, ProgressType.Addon)
 
-    def add_active(self, pyfile):
+    def add_active(self, file):
         """
-        Adds a pyfile to active list and thus will be displayed on overview.
+        Adds a file to active list and thus will be displayed on overview.
         """
-        if pyfile not in self.active:
-            self.active.append(pyfile)
+        if file not in self.active:
+            self.active.append(file)
 
-    def finish_file(self, pyfile):
-        if pyfile in self.active:
-            self.active.remove(pyfile)
+    def finish_file(self, file):
+        if file in self.active:
+            self.active.remove(file)
 
-        pyfile.finish_if_done()
+        file.finish_if_done()
 
     def run(self):  # TODO: approach via func_code
         try:

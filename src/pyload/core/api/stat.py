@@ -19,7 +19,7 @@ class StatisticsApi(BaseApi):
     """
     # __slots__ = []
 
-    def record_download(self, pyfile):
+    def record_download(self, file):
         """
         Add download record to the statistics.
         """

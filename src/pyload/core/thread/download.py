@@ -38,84 +38,84 @@ class DownloadThread(PluginThread):
 
         self.start()
 
-    def _handle_abort(self, pyfile):
+    def _handle_abort(self, file):
         try:
             self.pyload.log.info(
-                _("Download aborted: {0}").format(pyfile.name))
+                _("Download aborted: {0}").format(file.name))
         except Exception:
             pass
-        pyfile.set_status("aborted")
-        
-    def _handle_reconnect(self, pyfile):
-        self.queue.put(pyfile)
-        # pyfile.req.clear_cookies()
+        file.set_status("aborted")
+
+    def _handle_reconnect(self, file):
+        self.queue.put(file)
+        # file.req.clear_cookies()
         while self.manager.reconnecting.isSet():
             time.sleep(0.5)
-            
-    def _handle_retry(self, pyfile, reason):
+
+    def _handle_retry(self, file, reason):
         self.pyload.log.info(
-            _("Download restarted: {0} | {1}").format(pyfile.name, reason))
-        self.queue.put(pyfile)
-        
-    def _handle_notimplement(self, pyfile):
+            _("Download restarted: {0} | {1}").format(file.name, reason))
+        self.queue.put(file)
+
+    def _handle_notimplement(self, file):
         self.pyload.log.error(
-            _("Plugin {0} is missing a function").format(pyfile.pluginname))
-        pyfile.set_status("failed")
-        pyfile.error = "Plugin does not work"
-        self.clean(pyfile)
-        
-    def _handle_exception(self, pyfile, errmsg, tempoffline=False):
+            _("Plugin {0} is missing a function").format(file.pluginname))
+        file.set_status("failed")
+        file.error = "Plugin does not work"
+        self.clean(file)
+
+    def _handle_exception(self, file, errmsg, tempoffline=False):
         if tempoffline:
-            pyfile.set_status("temp. offline")
+            file.set_status("temp. offline")
             self.pyload.log.warning(
-                _("Download is temporary offline: {0}").format(pyfile.name))
-            pyfile.error = _("Internal Server Error")
+                _("Download is temporary offline: {0}").format(file.name))
+            file.error = _("Internal Server Error")
         else:
-            pyfile.set_status("failed")
+            file.set_status("failed")
             self.pyload.log.warning(
-                _("Download failed: {0} | {1}").format(pyfile.name, errmsg))
-            pyfile.error = errmsg
+                _("Download failed: {0} | {1}").format(file.name, errmsg))
+            file.error = errmsg
 
         if self.pyload.debug:
             print_exc()
-            self.debug_report(pyfile)
+            self.debug_report(file)
 
-        self.pyload.adm.download_failed(pyfile)
-        self.clean(pyfile)
-        
+        self.pyload.adm.download_failed(file)
+        self.clean(file)
+
     # TODO: activate former skipped downloads
-    def _handle_fail(pyfile, errmsg)                    
+    def _handle_fail(file, errmsg):
         if errmsg == "offline":
-            pyfile.set_status("offline")
+            file.set_status("offline")
             self.pyload.log.warning(
-                _("Download is offline: {0}").format(pyfile.name))
+                _("Download is offline: {0}").format(file.name))
         elif errmsg == "temp. offline":
-            pyfile.set_status("temp. offline")
+            file.set_status("temp. offline")
             self.pyload.log.warning(
-                _("Download is temporary offline: {0}").format(pyfile.name))
+                _("Download is temporary offline: {0}").format(file.name))
         else:
-            pyfile.set_status("failed")
+            file.set_status("failed")
             self.pyload.log.warning(
-                _("Download failed: {0} | {1}").format(pyfile.name, errmsg))
-            pyfile.error = errmsg
+                _("Download failed: {0} | {1}").format(file.name, errmsg))
+            file.error = errmsg
 
-        self.pyload.adm.download_failed(pyfile)
-        self.clean(pyfile)
-        
-    def _handle_skip(self, pyfile, errmsg):
-        pyfile.set_status("skipped")
+        self.pyload.adm.download_failed(file)
+        self.clean(file)
+
+    def _handle_skip(self, file, errmsg):
+        file.set_status("skipped")
 
         self.pyload.log.info(
-            _("Download skipped: {0} due to {1}").format(pyfile.name, errmsg))
+            _("Download skipped: {0} due to {1}").format(file.name, errmsg))
 
-        self.clean(pyfile)
+        self.clean(file)
 
-        self.pyload.files.check_package_finished(pyfile)
+        self.pyload.files.check_package_finished(file)
 
         self.active = False
         self.pyload.files.save()
-        
-    def _handle_error(pyfile, errmsg, errcode=None):
+
+    def _handle_error(file, errmsg, errcode=None):
         self.pyload.log.debug(
             "pycurl exception {0}: {1}".format(errcode, errmsg))
 
@@ -124,120 +124,120 @@ class DownloadThread(PluginThread):
                 _("Couldn't connect to host or connection reset, waiting 1 minute and retry"))
             wait = time.time() + 60
 
-            pyfile.wait_until = wait
-            pyfile.set_status("waiting")
+            file.wait_until = wait
+            file.set_status("waiting")
             while time.time() < wait:
                 time.sleep(0.5)
 
-                if pyfile.abort:
+                if file.abort:
                     break
 
-            if pyfile.abort:
+            if file.abort:
                 self.pyload.log.info(
-                    _("Download aborted: {0}").format(pyfile.name))
-                pyfile.set_status("aborted")
+                    _("Download aborted: {0}").format(file.name))
+                file.set_status("aborted")
                 # do not clean, aborting function does this itself
-                # self.clean(pyfile)
+                # self.clean(file)
             else:
-                self.queue.put(pyfile)
+                self.queue.put(file)
         else:
-            pyfile.set_status("failed")
+            file.set_status("failed")
             self.pyload.log.error(
                 _("pycurl error {0}: {1}").format(errcode, errmsg))
             if self.pyload.debug:
                 print_exc()
-                self.debug_report(pyfile)
+                self.debug_report(file)
 
-            self.pyload.adm.download_failed(pyfile)
-        
-    def _run(self, pyfile):
-        pyfile.init_plugin()
+            self.pyload.adm.download_failed(file)
+
+    def _run(self, file):
+        file.init_plugin()
 
         # after initialization the thread is fully ready
         self.running.set()
 
-        # this pyfile was deleted while queuing
+        # this file was deleted while queuing
         # TODO: what will happen with new thread manager?
-        # if not pyfile.has_plugin(): continue
+        # if not file.has_plugin(): continue
 
-        pyfile.plugin.check_for_same_files(starting=True)
+        file.plugin.check_for_same_files(starting=True)
         self.pyload.log.info(
-            _("Download starts: {0}".format(pyfile.name)))
+            _("Download starts: {0}".format(file.name)))
 
         # start download
-        self.pyload.adm.download_preparing(pyfile)
-        pyfile.plugin.preprocessing(self)
+        self.pyload.adm.download_preparing(file)
+        file.plugin.preprocessing(self)
 
         self.pyload.log.info(
-            _("Download finished: {0}").format(pyfile.name))
-        self.pyload.adm.download_finished(pyfile)
-        self.pyload.files.check_package_finished(pyfile)
-        
-    def _finalize(self, pyfile):
+            _("Download finished: {0}").format(file.name))
+        self.pyload.adm.download_finished(file)
+        self.pyload.files.check_package_finished(file)
+
+    def _finalize(self, file):
         self.pyload.files.save()
-        pyfile.check_if_processed()
+        file.check_if_processed()
         sys.exc_clear()
         # manager could still be waiting for it
         self.running.set()
         # only done when job was not put back
         if self.queue.empty():
             self.manager.done(self)
-            
+
     def run(self):
         """
         Run method.
         """
-        pyfile = None
+        file = None
         while True:
-            del pyfile
-            
+            del file
+
             self.active = self.queue.get()
-            pyfile = self.active
+            file = self.active
 
             if self.active == "quit":
                 self.active = None
                 self.manager.stop(self)
                 return True
             try:
-                self._run(pyfile)
+                self._run(file)
             except NotImplementedError:
-                self._handle_notimplement(pyfile)
+                self._handle_notimplement(file)
                 continue
             except Abort:
-                self._handle_abort(pyfile)
+                self._handle_abort(file)
                 # abort cleans the file
-                # self.clean(pyfile)
+                # self.clean(file)
                 continue
             except Reconnect:
-                self._handle_reconnect(pyfile)
+                self._handle_reconnect(file)
                 continue
             except Retry as e:
-                self._handle_retry(pyfile, e.args[0])
+                self._handle_retry(file, e.args[0])
                 continue
             except Fail as e:
-                self._handle_fail(pyfile, e.args[0])
+                self._handle_fail(file, e.args[0])
                 continue
             except error as e:
                 errcode = None
                 errmsg = e.args
                 if len(e.args) == 2:
                     errcode, errmsg = e.args
-                self._handle_error(pyfile, errmsg, errcode)
-                self.clean(pyfile)
+                self._handle_error(file, errmsg, errcode)
+                self.clean(file)
                 continue
             except Skip as e:
-                self._handle_skip(pyfile, str(e))
+                self._handle_skip(file, str(e))
                 continue
             except Exception as e:
                 tempoffline = isinstance(e, ResponseException) and e.code == 500
-                self._handle_exception(pyfile, str(e), tempoffline)
+                self._handle_exception(file, str(e), tempoffline)
                 continue
             finally:
-                self._finalize(pyfile)
-                
-            # pyfile.plugin.req.clean()
+                self._finalize(file)
+
+            # file.plugin.req.clean()
             self.active = False
-            pyfile.finish_if_done()
+            file.finish_if_done()
             self.pyload.files.save()
 
     def get_progress(self):
@@ -251,11 +251,11 @@ class DownloadThread(PluginThread):
         """
         self.queue.put(job)
 
-    def clean(self, pyfile):
+    def clean(self, file):
         """
-        Set thread inactive and release pyfile.
+        Set thread inactive and release file.
         """
-        pyfile.release()
+        file.release()
 
     def stop(self):
         """

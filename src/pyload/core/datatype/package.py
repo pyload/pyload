@@ -63,7 +63,7 @@ class PackageStats(BaseObject):
         self.sizedone = sizedone
 
 
-class PyPackage(BaseObject):
+class Package(BaseObject):
     """
     Represents a package object at runtime.
     """
@@ -74,7 +74,7 @@ class PyPackage(BaseObject):
 
     @staticmethod
     def from_info_data(m, info):
-        return PyPackage(m, info.pid, info.name, info.folder, info.root, info.owner,
+        return Package(m, info.pid, info.name, info.folder, info.root, info.owner,
                          info.site, info.comment, info.password, info.added, info.tags, info.status, info.shared, info.packageorder)
 
     def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status,
@@ -156,12 +156,12 @@ class PyPackage(BaseObject):
         self.manager.pyload.evm.fire("packageUpdated", self.id)
 
 
-class RootPackage(PyPackage):
+class RootPackage(Package):
 
     __slots__ = []
 
     def __init__(self, m, owner):
-        PyPackage.__init__(self, m, -1, "root", "", owner, -2,
+        Package.__init__(self, m, -1, "root", "", owner, -2,
                            "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):

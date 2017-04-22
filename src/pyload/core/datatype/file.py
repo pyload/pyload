@@ -90,7 +90,7 @@ class FileInfo(BaseObject):
         self.download = download
 
 
-class PyFile(BaseObject):
+class File(BaseObject):
     """
     Represents a file object at runtime.
     """
@@ -101,15 +101,15 @@ class PyFile(BaseObject):
 
     @staticmethod
     def from_info_data(m, info):
-        f = PyFile(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
+        file = File(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
                    "", "", "", DownloadStatus.NA, "", info.package, info.owner)
         if info.download:
-            f.url = info.download.url
-            f.pluginname = info.download.plugin
-            f.hash = info.download.hash
-            f.status = info.download.status
-            f.error = info.download.error
-        return f
+            file.url = info.download.url
+            file.pluginname = info.download.plugin
+            file.hash = info.download.hash
+            file.status = info.download.status
+            file.error = info.download.error
+        return file
 
     def __init__(self, manager, fid, name, size, filestatus, media, added, fileorder,
                  url, pluginname, hash, status, error, package, owner):
@@ -172,7 +172,7 @@ class PyFile(BaseObject):
     name = property(get_name, set_name)
 
     def __repr__(self):
-        return "<PyFile {0}: {1}@{2}>".format(self.id, self.name, self.pluginname)
+        return "<File {0}: {1}@{2}>".format(self.id, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):
@@ -217,7 +217,7 @@ class PyFile(BaseObject):
 
     def sync(self):
         """
-        Sync PyFile instance with database.
+        Sync File instance with database.
         """
         self.manager.update_file(self)
 
@@ -247,7 +247,7 @@ class PyFile(BaseObject):
     # TODO: Recheck
     def abort_download(self):
         """
-        Abort pyfile if possible.
+        Abort file if possible.
         """
         while self.fid in self.manager.pyload.dlm.processing_ids():
             self.lock.acquire(shared=True)
@@ -268,7 +268,6 @@ class PyFile(BaseObject):
         """
         Set status to finish and release file if every thread is finished with it.
         """
-
         # TODO: this is wrong now, it should check if addons are using it
         if self.id in self.manager.pyload.dlm.processing_ids():
             return False

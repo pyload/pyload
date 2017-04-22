@@ -48,29 +48,29 @@ class TestInteractionManager(TestCase):
         self.assert_false(self.itm.get_tasks(self.ADMIN, Interaction.Query))
 
     def test_captcha(self):
-        t = self.itm.create_captcha_task("1", "png", "", owner=self.ADMIN)
+        tsk = self.itm.create_captcha_task("1", "png", "", owner=self.ADMIN)
 
-        self.assertEqual(t.type, Interaction.Captcha)
-        self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [t])
+        self.assertEqual(tsk.type, Interaction.Captcha)
+        self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [tsk])
         self.assert_empty(self.itm.get_tasks(self.USER))
-        t.set_shared()
-        self.assert_list_equal(self.itm.get_tasks(self.USER), [t])
+        tsk.set_shared()
+        self.assert_list_equal(self.itm.get_tasks(self.USER), [tsk])
 
         t2 = self.itm.create_captcha_task("2", "png", "", owner=self.USER)
         self.assert_true(self.itm.is_task_waiting(self.USER))
         self.assert_empty(self.itm.get_tasks(self.USER, Interaction.Query))
-        self.itm.remove_task(t)
+        self.itm.remove_task(tsk)
 
         self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [t2])
         self.assert_is(self.itm.get_task_by_id(t2.iid), t2)
 
     def test_query(self):
-        t = self.itm.create_query_task(
+        tsk = self.itm.create_query_task(
             InputType.Text, "text", owner=self.ADMIN)
 
-        self.assertEqual(t.description, "text")
+        self.assertEqual(tsk.description, "text")
         self.assert_list_equal(self.itm.get_tasks(
-            self.ADMIN, Interaction.Query), [t])
+            self.ADMIN, Interaction.Query), [tsk])
         self.assert_empty(self.itm.get_tasks(Interaction.Captcha))
 
     def test_clients(self):
@@ -80,5 +80,5 @@ class TestInteractionManager(TestCase):
         self.assert_false(self.itm.is_client_connected(self.USER))
 
     def test_users(self):
-        t = self.itm.create_captcha_task("1", "png", "", owner=self.USER)
-        self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [t])
+        tsk = self.itm.create_captcha_task("1", "png", "", owner=self.USER)
+        self.assert_list_equal(self.itm.get_tasks(self.ADMIN), [tsk])

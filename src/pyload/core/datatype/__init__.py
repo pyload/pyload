@@ -5,15 +5,15 @@ from __future__ import absolute_import
 
 from .init import *
 from .check import OnlineCheck
+from .file import File
 from .file import FileDoesNotExist
 from .file import FileInfo
 from .file import FileStatus
-from .file import PyFile
+from .package import Package
 from .package import PackageDoesNotExist
 from .package import PackageInfo
 from .package import PackageStats
 from .package import PackageStatus
-from .package import PyPackage
 from .package import RootPackage
 from .task import Interaction
 from .task import InteractionTask

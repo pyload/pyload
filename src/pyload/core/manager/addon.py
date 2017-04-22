@@ -182,11 +182,11 @@ class AddonManager(object):
 
         # TODO: could be improved
         # remove event listener
-        for f in dir(addon):
-            if f.startswith("__") or not isinstance(
-                    getattr(addon, f), MethodType):
+        for fname in dir(addon):
+            if fname.startswith("__") or not isinstance(
+                    getattr(addon, fname), MethodType):
                 continue
-            self.pyload.evm.remove_from_events(getattr(addon, f))
+            self.pyload.evm.remove_from_events(getattr(addon, fname))
 
     def activate_addons(self):
         self.pyload.log.info(_("Activating addons ..."))
@@ -206,14 +206,14 @@ class AddonManager(object):
             for inst in plugin.instances:
                 self.call(inst, "deactivate")
 
-    def download_preparing(self, pyfile):
-        self.call_in_hooks("pre_download", "download:preparing", pyfile)
+    def download_preparing(self, file):
+        self.call_in_hooks("pre_download", "download:preparing", file)
 
-    def download_finished(self, pyfile):
-        self.call_in_hooks("download_finished", "download:finished", pyfile)
+    def download_finished(self, file):
+        self.call_in_hooks("download_finished", "download:finished", file)
 
-    def download_failed(self, pyfile):
-        self.call_in_hooks("download_failed", "download:failed", pyfile)
+    def download_failed(self, file):
+        self.call_in_hooks("download_failed", "download:failed", file)
 
     def package_finished(self, package):
         self.call_in_hooks("package_finished", "package:finished", package)
@@ -226,8 +226,8 @@ class AddonManager(object):
         """
         Returns all active plugins.
         """
-        return [p for x in self.plugins.values()
-                for p in x.instances if p.is_activated()]
+        return [inst for plugin in self.plugins.values()
+                for inst in plugin.instances if inst.is_activated()]
 
     def get_info(self, plugin):
         """

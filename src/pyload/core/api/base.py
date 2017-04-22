@@ -51,7 +51,7 @@ class AbstractApi(object):
     def add_user(self, username, password):
         pass
 
-    def check_container(self, filename, data):
+    def check_container(self, fname, data):
         pass
 
     def check_html(self, html, url):
@@ -283,5 +283,5 @@ class AbstractApi(object):
     def update_user_data(self, data):
         pass
 
-    def upload_container(self, filename, data):
+    def upload_container(self, fname, data):
         pass

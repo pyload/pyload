@@ -52,7 +52,7 @@ class XDCCRequest(object):
 
         return socket.socket()
 
-    def download(self, ip, port, filename, irc, progress_notify=None):
+    def download(self, ip, port, fname, irc, progress_notify=None):
 
         ircbuffer = ""
         last_update = time()
@@ -62,24 +62,24 @@ class XDCCRequest(object):
             dccsock.settimeout(self.timeout)
             dccsock.connect((ip, port))
 
-            if os.path.exists(filename):
+            if os.path.exists(fname):
                 i = 0
-                name_parts = filename.rpartition(".")
+                name_parts = fname.rpartition(".")
                 while True:
                     newfilename = "{0}-{1:d}{2}{3}".format(
                         name_parts[0], i, name_parts[1], name_parts[2])
                     i += 1
 
                     if not os.path.exists(newfilename):
-                        filename = newfilename
+                        fname = newfilename
                         break
 
-            with io.open(filename, mode='wb') as fp:
+            with io.open(fname, mode='wb') as fp:
                 # recv loop for dcc socket
                 while True:
                     if self.abort:
                         # dccsock.close()
-                        remove(filename, trash=True)
+                        remove(fname, trash=True)
                         raise Abort
 
                     self._keep_alive(irc, ircbuffer)
@@ -108,7 +108,7 @@ class XDCCRequest(object):
                     # acknowledge data by sending number of received bytes
                     dccsock.send(struct.pack('!I', self.recv))
 
-        return filename
+        return fname
 
     def _keep_alive(self, sock, readbuffer):
         fdset = select([sock], [], [], 0)

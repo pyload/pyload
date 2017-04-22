@@ -36,8 +36,9 @@ class CoreApi(BaseApi):
         if not self.pyload.config.get('ssl', 'activated'):
             return False
 
-        if not os.path.exists(self.pyload.config.get('ssl', 'cert')) or not os.path.exists(
-                self.pyload.config.get('ssl', 'key')):
+        cert = self.pyload.config.get('ssl', 'cert')
+        key = self.pyload.config.get('ssl', 'key')
+        if not os.path.exists(cert) or not os.path.exists(key):
             self.pyload.log.warning(_('SSL key or certificate not found'))
             return False
 
@@ -78,8 +79,8 @@ class CoreApi(BaseApi):
                                        'reconnect', 'activated'),
                                    self.get_quota())
 
-        for pyfile in self.pyload.dlm.active_downloads(self.primary_uid):
-            server_status.speed += pyfile.get_speed()  #: bytes/s
+        for file in self.pyload.dlm.active_downloads(self.primary_uid):
+            server_status.speed += file.get_speed()  #: bytes/s
 
         return server_status
 
@@ -154,10 +155,10 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = os.path.join(self.pyload.config.get(
+        fname = os.path.join(self.pyload.config.get(
             'log', 'logfile_folder'), 'log.txt')
         try:
-            with io.open(filename) as fp:
+            with io.open(fname) as fp:
                 lines = fp.readlines()
             if offset >= len(lines):
                 return []

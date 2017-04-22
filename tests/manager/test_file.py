@@ -74,21 +74,21 @@ class TestFileManager(BenchmarkTest):
         assert info.stats.linkstotal == self.count
 
         fid = random.choice(info.fids)
-        f = self.manager.get_file(fid)
-        assert f.fid in self.manager.files
+        file = self.manager.get_file(fid)
+        assert file.fid in self.manager.files
 
-        f.name = "new name"
-        f.sync()
+        file.name = "new name"
+        file.sync()
         finfo = self.manager.get_file_info(fid)
         assert finfo is not None
         assert finfo.name == "new name"
 
-        p = self.manager.get_package(random.choice(self.pids))
-        assert p is not None
-        assert p.pid in self.manager.packages
-        p.sync()
+        pack = self.manager.get_package(random.choice(self.pids))
+        assert pack is not None
+        assert pack.pid in self.manager.packages
+        pack.sync()
 
-        p.delete()
+        pack.delete()
 
         self.manager.get_tree(-1, True, None)
 
@@ -109,9 +109,9 @@ class TestFileManager(BenchmarkTest):
 
         assert len(view.packages) == len(self.pids)
 
-        p = random.choice(view.packages.values())
-        assert len(p.fids) == self.count
-        assert p.stats.linkstotal == self.count
+        pack = random.choice(view.packages.values())
+        assert len(pack.fids) == self.count
+        assert pack.stats.linkstotal == self.count
 
     def test_get_package_content(self):
         view = self.manager.get_tree(random.choice(self.pids), False, None)
@@ -203,12 +203,12 @@ class TestFileManager(BenchmarkTest):
     def assert_ordered(self, part, start, end, data, dict, pack=False):
         assert data[start:end] == part
         if pack:
-            assert sorted(p.packageorder for p in dict.values()
+            assert sorted(pinfo.packageorder for pinfo in dict.values()
                           ) == list(range(len(dict)))
             assert [dict[pid].packageorder for pid in part] == list(
                 range(start, end))
         else:
-            assert sorted(f.fileorder for f in dict.values()
+            assert sorted(finfo.fileorder for finfo in dict.values()
                           ) == list(range(len(dict)))
             assert [dict[fid].fileorder for fid in part] == list(
                 range(start, end))
@@ -222,7 +222,7 @@ class TestFileManager(BenchmarkTest):
         v = self.manager.get_tree(-1, False, False)
 
         assert pid in v.root.pids
-        assert sorted(p.packageorder for p in v.packages.values()
+        assert sorted(pinfo.packageorder for pinfo in v.packages.values()
                       ) == list(range(len(v.packages)))
 
         v = self.manager.get_tree(pid, False, False)
@@ -230,7 +230,7 @@ class TestFileManager(BenchmarkTest):
         self.manager.move_files(fids, pid2)
         v = self.manager.get_tree(pid2, False, False)
 
-        assert sorted(f.fileorder for f in v.files.values()
+        assert sorted(finfo.fileorder for finfo in v.files.values()
                       ) == list(range(len(v.files)))
         assert len(v.files) == self.count + len(fids)
 

@@ -72,17 +72,17 @@ class PreDownloadApi(BaseApi):
         return OnlineCheck(rid, data)
 
     @requireperm(Permission.Add)
-    def check_container(self, filename, data):
+    def check_container(self, fname, data):
         """
         Checks online status of urls and a submitted container file
 
-        :param filename: name of the file
+        :param fname: name of the file
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        file = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{0}".format(filename))
-        with io.open(file, mode='wb') as fp:
+        path = os.path.join(self.pyload.config.get(
+            'general', 'storage_folder'), "tmp_{0}".format(fname))
+        with io.open(path, mode='wb') as fp:
             fp.write(str(data))
             return self.check_links([fp.name])
 

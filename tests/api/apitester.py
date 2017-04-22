@@ -27,9 +27,9 @@ class ApiTester(object):
         All available methods for testing.
         """
         methods = []
-        for t in cls.tester:
-            methods.extend(getattr(t, attr)
-                           for attr in dir(t) if attr.startswith("test_"))
+        for test in cls.tester:
+            methods.extend(getattr(test, attr)
+                           for attr in dir(test) if attr.startswith("test_"))
         return methods
 
     def __init__(self):

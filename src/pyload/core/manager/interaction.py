@@ -95,7 +95,7 @@ class InteractionManager(object):
         return task
 
     @lock
-    def create_captcha_task(self, img, format, filename,
+    def create_captcha_task(self, img, format, fname,
                             plugin="", type_=InputType.Text, owner=None):
         """
         Createss a new captcha task.
@@ -110,7 +110,7 @@ class InteractionManager(object):
         elif type_ == 'positional':
             type_ = InputType.Click
 
-        input = Input(type_, data=[standard_b64encode(img), format, filename])
+        input = Input(type_, data=[standard_b64encode(img), format, fname])
 
         # TODO: title desc plugin
         task = InteractionTask(self.ids, Interaction.Captcha, input,
@@ -136,16 +136,16 @@ class InteractionManager(object):
         self.last_clients[user] = time()
 
         # filter current mode
-        tasks = [t for t in self.tasks.values() if mode ==
-                 Interaction.All or bitset(t.type, mode)]
+        tasks = [tsk for tsk in self.tasks.values() if mode ==
+                 Interaction.All or bitset(tsk.type, mode)]
         # filter correct user / or shared
-        tasks = [t for t in tasks if user is None or user == t.owner or t.shared]
+        tasks = [tsk for tsk in tasks if user is None or user == tsk.owner or tsk.shared]
 
         return tasks
 
     def is_task_waiting(self, user, mode=Interaction.All):
-        tasks = [t for t in self.get_tasks(
-            user, mode) if not t.type == Interaction.Notification or not t.seen]
+        tasks = [tsk for tsk in self.get_tasks(
+            user, mode) if not tsk.type == Interaction.Notification or not tsk.seen]
         return len(tasks) > 0
 
     def queue_task(self, task):

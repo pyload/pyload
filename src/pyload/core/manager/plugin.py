@@ -35,15 +35,15 @@ class PluginMatcher(object):
 class PluginManager(object):
 
     # __slots__ = [
-        'DEFAULT_PLUGIN',
-        'LOCALROOT',
-        'MATCH_HISTORY',
-        'ROOT',
-        'history',
-        'loader',
-        'matcher',
-        'modules',
-        'pyload']
+        # 'DEFAULT_PLUGIN',
+        # 'LOCALROOT',
+        # 'MATCH_HISTORY',
+        # 'ROOT',
+        # 'history',
+        # 'loader',
+        # 'matcher',
+        # 'modules',
+        # 'pyload']
 
     ROOT = "pyload.plugin"
     LOCALROOT = "userplugins"
@@ -224,7 +224,7 @@ class PluginManager(object):
             self.pyload.log.error(
                 _("Plugin does not define class '{0}'").format(name))
 
-    def find_module(self, fullname, path=None):
+    def find_module(self, fullname):
         # redirecting imports if necessary
         for loader in self.loader:
             if not fullname.startswith(loader.package):

@@ -40,15 +40,15 @@ class Xdcc(Hoster):
         self.timeout = 30
         self.multi_dl = False
 
-    def process(self, pyfile):
+    def process(self, file):
         # change request type
-        self.req = pyfile.manager.pyload.req.get_request(
+        self.req = file.manager.pyload.req.get_request(
             self.__name__, type_="XDCC")
 
-        self.pyfile = pyfile
+        self.file = file
         for _ in range(0, 3):
             try:
-                nmn = self.do_download(pyfile.url)
+                nmn = self.do_download(file.url)
                 self.log_debug(
                     "{0}: Download of {1} finished".format(self.__name__, nmn))
                 return None
@@ -71,10 +71,10 @@ class Xdcc(Hoster):
         self.fail(_("Server blocked our ip, retry again later manually"))
 
     def do_download(self, url):
-        self.pyfile.set_status("waiting")  #: real link
+        self.file.set_status("waiting")  #: real link
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
-        location = os.path.join(download_folder, self.pyfile.package(
+        location = os.path.join(download_folder, self.file.package(
         ).folder.decode(sys.getfilesystemencoding()))
         if not os.path.exists(location):
             makedirs(location)
@@ -209,21 +209,21 @@ class Xdcc(Hoster):
             if len(m.groups()) > 3:
                 self.req.filesize = int(m.group(4))
 
-            self.pyfile.name = packname
-            filename = format.path(location, packname)
+            self.file.name = packname
+            fname = format.path(location, packname)
             self.log_info(
                 _("XDCC: Downloading {0} from {1}:{2:d}").format(packname, ip, port))
 
-            self.pyfile.set_status("downloading")
+            self.file.set_status("downloading")
             newname = self.req.download(
-                ip, port, filename, sock, self.pyfile.set_progress)
-            if newname and newname != filename:
+                ip, port, fname, sock, self.file.set_progress)
+            if newname and newname != fname:
                 self.log_info(_("{0} saved as {1}").format(
-                    self.pyfile.name, newname))
-                filename = newname
+                    self.file.name, newname))
+                fname = newname
 
             # kill IRC socket
             # sock.send("QUIT :byebye\r\n")
 
-        self.last_download = filename
+        self.last_download = fname
         return self.last_download

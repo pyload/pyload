@@ -80,8 +80,8 @@ def parse_html_form(attr_str, html, input_names=None):
 def parse_file_info(self, url='', html=''):
     info = {'name': url, 'size': 0, 'status': 3}
 
-    if hasattr(self, "pyfile"):
-        url = self.pyfile.url
+    if hasattr(self, "file"):
+        url = self.file.url
 
     if hasattr(self, "req") and self.req.http.code == '404':
         info['status'] = 1
@@ -197,14 +197,14 @@ class SimpleHoster(Hoster):
         if isinstance(self.SH_COOKIES, list):
             set_cookies(self.req.cj, self.SH_COOKIES)
 
-    def process(self, pyfile):
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+    def process(self, file):
+        file.url = replace_patterns(file.url, self.FILE_URL_REPLACEMENTS)
         self.req.set_option("timeout", 120)
         # Due to a 0.4.9 core bug self.load would keep previous cookies even if overridden by cookies parameter.
         # Workaround using get_url. Can be reverted in 0.5 as the cookies bug
         # has been fixed.
         self.html = get_url(
-            pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+            file.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
         premium_only = hasattr(self, 'PREMIUM_ONLY_PATTERN') and re.search(
             self.PREMIUM_ONLY_PATTERN, self.html)
         if not premium_only:  #: Usually premium only pages does not show the file information
@@ -219,7 +219,7 @@ class SimpleHoster(Hoster):
             # This line is required due to the get_url workaround. Can be
             # removed in 0.5
             self.html = self.load(
-                pyfile.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
+                file.url, decode=not self.SH_BROKEN_ENCODING, cookies=self.SH_COOKIES)
             self.handle_free()
 
     def load(self, url, get={}, post={}, ref=True,
@@ -228,7 +228,7 @@ class SimpleHoster(Hoster):
                            just_header=just_header, decode=decode)
 
     def get_file_info(self):
-        self.log_debug("URL: {0}".format(self.pyfile.url))
+        self.log_debug("URL: {0}".format(self.file.url))
         if hasattr(self, "TEMP_OFFLINE_PATTERN") and re.search(
                 self.TEMP_OFFLINE_PATTERN, self.html):
             self.temp_offline()
@@ -242,18 +242,18 @@ class SimpleHoster(Hoster):
             self.parse_error(_('File info'))
 
         if name:
-            self.pyfile.name = name
+            self.file.name = name
         else:
-            self.pyfile.name = webpurge.escape(
-                urlparse(self.pyfile.url).path.split("/")[-1])
+            self.file.name = webpurge.escape(
+                urlparse(self.file.url).path.split("/")[-1])
 
         if size:
-            self.pyfile.size = size
+            self.file.size = size
         else:
             self.log_error(_("File size not parsed"))
 
         self.log_debug("FILE NAME: {0} FILE SIZE: {1}".format(
-            self.pyfile.name, self.pyfile.size))
+            self.file.name, self.file.size))
         return self.file_info
 
     def handle_free(self):
@@ -287,7 +287,7 @@ class SimpleHoster(Hoster):
         traffic = self.account.get_account_info(self.user, True)['trafficleft']
         if traffic == -1:
             return True
-        size = self.pyfile.size >> 10
+        size = self.file.size >> 10
         self.log_info(_("Filesize: {0:d} KiB, Traffic left for user {1}: {2:d} KiB").format(
             size, self.user, traffic))
         return size <= traffic

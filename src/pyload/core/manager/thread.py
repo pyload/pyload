@@ -22,13 +22,13 @@ class ThreadManager(object):
     Manages all non download related threads and jobs.
     """
     # __slots__ = [
-        'info_cache',
-        'info_results',
-        'lock',
-        'pyload',
-        'result_ids',
-        'thread',
-        'timestamp']
+        # 'info_cache',
+        # 'info_results',
+        # 'lock',
+        # 'pyload',
+        # 'result_ids',
+        # 'thread',
+        # 'timestamp']
 
     def __init__(self, core):
         """

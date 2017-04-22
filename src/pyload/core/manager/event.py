@@ -70,18 +70,17 @@ class EventManager(object):
         """
         Dispatches event with args.
         """
-
         # dispatch the meta event
         if event != "event":
             self.fire("event", *(event,) + args, **kwargs)
 
         if event in self.events:
-            for f in self.events[event]:
+            for func in self.events[event]:
                 try:
-                    f(*args, **kwargs)
+                    func(*args, **kwargs)
                 except Exception as e:
                     self.pyload.log.warning(
                         "Error calling event handler {0}: {1}, {2}, {3}".format(
-                            event, f, args, str(e))
+                            event, func, args, str(e))
                     )
                     # self.pyload.print_exc()

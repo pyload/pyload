@@ -29,44 +29,43 @@ class BasePlugin(Hoster):
         self.chunk_limit = -1
         self.resume_download = True
 
-    def process(self, pyfile):
+    def process(self, file):
         """
         Main function.
         """
-
         # debug part, for api exerciser
-        if pyfile.url.startswith("DEBUG_API"):
+        if file.url.startswith("DEBUG_API"):
             self.multi_dl = False
             return None
 
         # self.__name__ = "NetloadIn"
-        # pyfile.name = "test"
+        # file.name = "test"
         # self.html = self.load("http://localhost:9000/short")
         # self.download("http://localhost:9000/short")
         # self.api = self.load("http://localhost:9000/short")
         # self.decrypt_captcha("http://localhost:9000/captcha")
         #
-        # if pyfile.url == "79":
+        # if file.url == "79":
         #     self.pyload.api.add_package("test", [str(i) for i in range(80)], 1)
         #
         # return None
-        if pyfile.url.startswith("http"):
+        if file.url.startswith("http"):
 
             try:
-                self.download_file(pyfile)
+                self.download_file(file)
             except ResponseException as e:
                 if e.code in (401, 403):
                     self.log_debug("Auth required")
 
                     account = self.pyload.acm.get_account_plugin('Http')
                     servers = [x['login'] for x in account.get_all_accounts()]
-                    server = urlparse(pyfile.url).netloc
+                    server = urlparse(file.url).netloc
 
                     if server in servers:
                         self.log_debug("Logging on to {0}".format(server))
                         self.req.add_auth(account.accounts[server]['password'])
                     else:
-                        for pwd in pyfile.package().password.splitlines():
+                        for pwd in file.package().password.splitlines():
                             if ":" in pwd:
                                 self.req.add_auth(pwd.strip())
                                 break
@@ -74,15 +73,15 @@ class BasePlugin(Hoster):
                             self.fail(
                                 _("Authorization required (username:password)"))
 
-                    self.download_file(pyfile)
+                    self.download_file(file)
                 else:
                     raise
 
         else:
             self.fail(_("No Plugin matched and not a downloadable url"))
 
-    def download_file(self, pyfile):
-        url = pyfile.url
+    def download_file(self, file):
+        url = file.url
 
         for _ in range(5):
             header = self.load(url, just_header=True)
@@ -108,7 +107,7 @@ class BasePlugin(Hoster):
         if 'content-disposition' in header:
             self.log_debug(
                 "Content-Disposition: {0}".format(header['content-disposition']))
-            m = search("filename(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)",
+            m = search("fname(?P<type>=|\*=(?P<enc>.+)'')(?P<name>.*)",
                        header['content-disposition'])
             if m:
                 disp = m.groupdict()
@@ -120,6 +119,6 @@ class BasePlugin(Hoster):
 
         if not name:
             name = url
-        pyfile.name = name
-        self.log_debug("Filename: {0}".format(pyfile.name))
+        file.name = name
+        self.log_debug("Filename: {0}".format(file.name))
         self.download(url, disposition=True)

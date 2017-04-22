@@ -59,12 +59,12 @@ class XFileSharingPro(SimpleHoster):
 
         self.chunk_limit = 1
 
-    def process(self, pyfile):
+    def process(self, file):
         self.prepare()
 
-        pyfile.url = replace_patterns(pyfile.url, self.FILE_URL_REPLACEMENTS)
+        file.url = replace_patterns(file.url, self.FILE_URL_REPLACEMENTS)
 
-        if not re.match(self.__pattern__, pyfile.url):
+        if not re.match(self.__pattern__, file.url):
             if self.premium:
                 self.handle_overriden()
             else:
@@ -75,7 +75,7 @@ class XFileSharingPro(SimpleHoster):
                 # Due to a 0.4.9 core bug self.load would use cookies even if
                 # cookies=False. Workaround using get_url to avoid cookies.
                 # Can be reverted in 0.5 as the cookies bug has been fixed.
-                self.html = get_url(pyfile.url, decode=True)
+                self.html = get_url(file.url, decode=True)
                 self.file_info = self.get_file_info()
             except PluginParseError:
                 self.file_info = None
@@ -83,8 +83,8 @@ class XFileSharingPro(SimpleHoster):
             self.location = self.get_direct_download_link()
 
             if not self.file_info:
-                pyfile.name = webpurge.escape(unquote(urlparse(
-                    self.location if self.location else pyfile.url).path.split("/")[-1]))
+                file.name = webpurge.escape(unquote(urlparse(
+                    self.location if self.location else file.url).path.split("/")[-1]))
 
             if self.location:
                 self.start_download(self.location)
@@ -99,7 +99,7 @@ class XFileSharingPro(SimpleHoster):
         """
         if not hasattr(self, "HOSTER_NAME"):
             self.HOSTER_NAME = re.match(
-                self.__pattern__, self.pyfile.url).group(1)
+                self.__pattern__, self.file.url).group(1)
         if not hasattr(self, "DIRECT_LINK_PATTERN"):
             self.DIRECT_LINK_PATTERN = r'(http://([^/]*?{0}|\d+\.\d+\.\d+\.\d+)(:\d+)?(/d/|(?:/files)?/\d+/\w+/)[^"\'<]+)'.format(
                 self.HOSTER_NAME)
@@ -111,10 +111,10 @@ class XFileSharingPro(SimpleHoster):
         """
         Get download link for premium users with direct download enabled.
         """
-        self.req.http.last_url = self.pyfile.url
+        self.req.http.last_url = self.file.url
 
         self.req.http.c.setopt(FOLLOWLOCATION, 0)
-        self.html = self.load(self.pyfile.url, cookies=True, decode=True)
+        self.html = self.load(self.file.url, cookies=True, decode=True)
         self.header = self.req.http.header
         self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
@@ -137,7 +137,7 @@ class XFileSharingPro(SimpleHoster):
 
             self.req.http.c.setopt(FOLLOWLOCATION, 0)
             self.html = self.load(
-                self.pyfile.url, post=data, ref=True, decode=True)
+                self.file.url, post=data, ref=True, decode=True)
             self.header = self.req.http.header
             self.req.http.c.setopt(FOLLOWLOCATION, 1)
 
@@ -158,7 +158,7 @@ class XFileSharingPro(SimpleHoster):
         return found.group(1)
 
     def handle_premium(self):
-        self.html = self.load(self.pyfile.url, post=self.get_post_parameters())
+        self.html = self.load(self.file.url, post=self.get_post_parameters())
         found = re.search(self.DIRECT_LINK_PATTERN, self.html)
         if not found:
             self.parse_error(_('DIRECT LINK'))
@@ -171,7 +171,7 @@ class XFileSharingPro(SimpleHoster):
         upload_id = "{0:012d}".format(random.random() * 10 ** 12)
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
         inputs['tos'] = '1'
-        inputs['url_mass'] = self.pyfile.url
+        inputs['url_mass'] = self.file.url
         inputs['up1oad_type'] = 'url'
 
         self.log_debug(self.HOSTER_NAME, action, inputs)
@@ -194,10 +194,10 @@ class XFileSharingPro(SimpleHoster):
         found = re.search(self.OVR_DOWNLOAD_LINK_PATTERN, self.html)
         if not found:
             self.parse_error(_('DIRECT LINK (OVR)'))
-        self.pyfile.url = found.group(1)
-        header = self.load(self.pyfile.url, just_header=True)
+        self.file.url = found.group(1)
+        header = self.load(self.file.url, just_header=True)
         if 'location' in header:  #: Direct link
-            self.start_download(self.pyfile.url)
+            self.start_download(self.file.url)
         else:
             self.retry()
 
@@ -284,7 +284,7 @@ class XFileSharingPro(SimpleHoster):
                 return inputs
 
             else:
-                inputs['referer'] = self.pyfile.url
+                inputs['referer'] = self.file.url
 
                 if self.premium:
                     inputs['method_premium'] = "Premium Download"
@@ -295,7 +295,7 @@ class XFileSharingPro(SimpleHoster):
                     if 'method_premium' in inputs:
                         del inputs['method_premium']
 
-                self.html = self.load(self.pyfile.url, post=inputs, ref=True)
+                self.html = self.load(self.file.url, post=inputs, ref=True)
                 self.errmsg = None
 
         self.parse_error(_("FORM: {0}").format(

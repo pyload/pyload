@@ -57,8 +57,8 @@ class Package(object):
 
     def get_all_urls(self):
         urls = self.get_urls()
-        for p in self.packs:
-            urls.extend(p.get_all_urls())
+        for pack in self.packs:
+            urls.extend(pack.get_all_urls())
         return urls
 
     # same name and urls is enough to be equal for packages
@@ -73,7 +73,7 @@ class Package(object):
         return hash(self.name) ^ hash(frozenset(self.links)) ^ hash(self.name)
 
 
-class PyFileMockup(object):
+class DummyFile(object):
     """
     Legacy class needed by old crypter plugins.
     """
@@ -85,14 +85,13 @@ class PyFileMockup(object):
         self.pack_name = pack_name + " Package"
 
     def package(self):
-        # mockes the pyfile package
-        class PyPackage(object):
+        # mockes the file package
+        class Package(object):
             __slots__ = ['folder', 'name']
-
-            def __init__(self, f):
-                self.name = f.pack_name
+            def __init__(self, dummy):
+                self.name = dummy.pack_name
                 self.folder = self.name
-        return PyPackage(self)
+        return Package(self)
 
 
 class Crypter(Base):
@@ -140,11 +139,11 @@ class Crypter(Base):
         :return: List of decrypted urls, all package info removed
         """
         urls = to_list(urls, [])
-        p = cls(core, password)
+        plugin = cls(core, password)
         try:
-            result = p._decrypt(urls)
+            result = plugin._decrypt(urls)
         finally:
-            p.clean()
+            plugin.clean()
 
         ret = []
 
@@ -183,7 +182,7 @@ class Crypter(Base):
         # For old style decrypter, do not use these!
         self.packages = []
         self.urls = []
-        self.pyfile = None
+        self.file = None
 
         self.init()
 
@@ -191,11 +190,13 @@ class Crypter(Base):
         """
         More init stuff if needed.
         """
+        pass
 
     def setup(self):
         """
         Called everytime before decrypting. A Crypter plugin will be most likely used for several jobs.
         """
+        pass
 
     def decrypt_url(self, url):
         """
@@ -244,9 +245,9 @@ class Crypter(Base):
             self.log_debug("Deprecated .decrypt() method in Crypter plugin")
             result = []
             for url in urls:
-                self.pyfile = PyFileMockup(url, cls.__name__)
+                self.file = DummyFile(url, cls.__name__)
                 self.setup()
-                self.decrypt(self.pyfile)
+                self.decrypt(self.file)
                 result.extend(self.convert_packages())
         elif urls:
             method = True
@@ -262,14 +263,14 @@ class Crypter(Base):
                     self.setup()
                     result.extend(to_list(self.decrypt_url(url), []))
 
-        for f, c in content:
+        for fname, data in content:
             self.setup()
-            result.extend(to_list(self.decrypt_file(c), []))
+            result.extend(to_list(self.decrypt_file(data), []))
             try:
-                if f.startswith("tmp_"):
-                    remove(f)
+                if fname.startswith("tmp_"):
+                    remove(fname)
             except IOError:
-                self.log_warning(_("Could not delete file '{0}'").format(f))
+                self.log_warning(_("Could not delete file '{0}'").format(fname))
                 # self.pyload.print_exc()
 
         return to_link_list(result)
@@ -279,7 +280,7 @@ class Crypter(Base):
         Load files from disk and separate to file content and url list
 
         :param urls:
-        :return: list of (filename, content), remote urls
+        :return: list of (fname, content), remote urls
         """
         content = []
         # do nothing if no decrypt_file method

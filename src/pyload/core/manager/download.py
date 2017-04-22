@@ -44,7 +44,7 @@ class DownloadManager(object):
 
         #: each thread is in exactly one category
         self.free = []
-        #: a thread that in working must have a pyfile as active attribute
+        #: a thread that in working must have a file as active attribute
         self.working = []
         #: holds the decrypter threads
         self.decrypter = []
@@ -59,7 +59,6 @@ class DownloadManager(object):
         """
         Switch thread from working to free state.
         """
-
         # only download threads will be re-used
         if isinstance(thread, DownloadThread):
             # clean local var
@@ -127,10 +126,9 @@ class DownloadManager(object):
         """
         Progress of all running downloads.
         """
-
         # decrypter progress could be none
-        return [x for x in [p.progress for p in self.working + self.decrypter
-                            if uid is None or p.owner == uid] if x is not None]
+        return [x for x in [thd.progress for thd in self.working + self.decrypter
+                            if uid is None or thd.owner == uid] if x is not None]
 
     def processing_ids(self):
         """
@@ -215,7 +213,6 @@ class DownloadManager(object):
         """
         Make a fair choice of which k jobs to start.
         """
-
         # TODO: prefer admins, make a fairer choice?
         if k <= 0:
             return []
@@ -267,9 +264,9 @@ class DownloadManager(object):
         if not (0 < self.want_reconnect() == len(self.working)):
             return False
 
-        if not os.path.exists(self.pyload.config.get('reconnect', 'script')):
-            if os.path.exists(
-                    os.path.join(COREDIR, self.pyload.config.get('reconnect', 'script'))):
+        script = self.pyload.config.get('reconnect', 'script')
+        if not os.path.exists(script):
+            if os.path.exists(os.path.join(COREDIR, script)):
                 self.pyload.config.set('reconnect', 'script', os.path.join(
                     COREDIR, self.pyload.config.get('reconnect', 'script')))
             else:
@@ -330,23 +327,24 @@ class DownloadManager(object):
         """
         occ = {}
         # decrypter are treated as occupied
-        for p in self.decrypter:
-            if p.progress:
-                occ[p.progress.plugin] = 0
+        for thd in self.decrypter:
+            if not thd.progress:
+                continue
+            occ[thd.progress.plugin] = 0
 
         # get all default dl limits
-        for t in self.working:
-            if not t.active.has_plugin():
+        for thd in self.working:
+            if not thd.active.has_plugin():
                 continue
-            limit = t.active.plugin.get_download_limit()
+            limit = thd.active.plugin.get_download_limit()
             # limit <= 0 means no limit
-            occ[t.active.pluginname] = limit if limit > 0 else float('inf')
+            occ[thd.active.pluginname] = limit if limit > 0 else float('inf')
 
         # subtract with running downloads
-        for t in self.working:
-            if not t.active.has_plugin():
+        for thd in self.working:
+            if not thd.active.has_plugin():
                 continue
-            plugin = t.active.pluginname
+            plugin = thd.active.pluginname
             if plugin in occ:
                 occ[plugin] -= 1
 

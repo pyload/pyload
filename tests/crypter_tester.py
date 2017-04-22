@@ -26,11 +26,11 @@ class CrypterPluginTester(PluginTester):
         log(DEBUG, "{0}: {1}".format(name, url))
 
         plugin = self.pyload.pgm.get_plugin_class("crypter", name)
-        p = plugin(self.pyload, None, "")
-        self.thread.plugin = p
+        thd = plugin(self.pyload, None, "")
+        self.thread.plugin = thd
 
         try:
-            result = p._decrypt([url])
+            result = thd._decrypt([url])
 
             if to_int(flag):
                 assert int(flag) == len(result)

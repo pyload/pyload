@@ -18,13 +18,16 @@ class ContentProvider(Base):
         """
         TODO.
         """
+        raise NotImplementedError
 
     def search(self, query):
         """
         TODO.
         """
+        raise NotImplementedError
 
     def suggest(self, query):
         """
         TODO.
         """
+        raise NotImplementedError

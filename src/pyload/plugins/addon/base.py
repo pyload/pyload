@@ -12,8 +12,8 @@ from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
 
 
-def class_name(p):
-    return p.rpartition(".")[2]
+def class_name(path):
+    return path.rpartition(".")[2]
 
 
 def add_event_listener(event):
@@ -26,11 +26,11 @@ def add_event_listener(event):
     class klass(object):
         __slots__ = []
 
-        def __new__(cls, f, *args, **kwargs):
+        def __new__(cls, func, *args, **kwargs):
             for ev in to_list(event, []):
                 ADDONMANAGER.add_event_listener(
-                    class_name(f.__module__), f.__name__, ev)
-            return f
+                    class_name(func.__module__), func.__name__, ev)
+            return func
     return klass
 
 
@@ -48,10 +48,11 @@ def addon_handler(label, desc, package=True, media=-1):
     class klass(object):
         __slots__ = []
 
-        def __new__(cls, f, *args, **kwargs):
-            ADDONMANAGER.add_addon_handler(class_name(f.__module__), f.__name__, label, desc,
-                                           f.__code__.co_varnames[1:], package, media)
-            return f
+        def __new__(cls, func, *args, **kwargs):
+            ADDONMANAGER.add_addon_handler(
+                class_name(func.__module__), func.__name__, label, desc,
+                func.__code__.co_varnames[1:], package, media)
+            return func
     return klass
 
 
@@ -214,14 +215,14 @@ class Addon(Base):
         pass
 
     # public events starts from here
-    def download_preparing(self, pyfile):
+    def download_preparing(self, file):
         pass
 
-    def download_finished(self, pyfile):
+    def download_finished(self, file):
         pass
 
-    def download_failed(self, pyfile):
+    def download_failed(self, file):
         pass
 
-    def package_finished(self, pypack):
+    def package_finished(self, pack):
         pass

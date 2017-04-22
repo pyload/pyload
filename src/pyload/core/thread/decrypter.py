@@ -55,8 +55,8 @@ class DecrypterThread(PluginThread):
                 _("Decrypted {0:d} links into package {1}").format(len(links), pack.name))
             api.add_links(self.pid, [l.url for l in links])
 
-        for p in packages:
-            api.add_package(p.name, p.get_urls(), pack.password)
+        for pack_ in packages:
+            api.add_package(pack_.name, pack_.get_urls(), pack.password)
 
         self.pyload.files.set_download_status(
             self.fid, DownloadStatus.Finished if not self.error else DownloadStatus.Failed)
@@ -111,7 +111,7 @@ class DecrypterThread(PluginThread):
                             url, url, -1, DownloadStatus.Failed, name) for url in urls)
 
                     # no debug for intentional errors
-                    if self.pyload.debug and not isinstance(e, Fail):
+                    # if self.pyload.debug and not isinstance(e, Fail):
                         # self.pyload.print_exc()
                         # self.debug_report(plugin.__name__, plugin=plugin)
                 finally:
@@ -130,17 +130,17 @@ class DecrypterThread(PluginThread):
         urls = []
 
         # merge urls and packages
-        for p in result:
-            if isinstance(p, Package):
-                if p.name in packs:
-                    packs[p.name].urls.extend(p.urls)
+        for pack in result:
+            if isinstance(pack, Package):
+                if pack.name in packs:
+                    packs[pack.name].urls.extend(pack.urls)
                 else:
-                    if not p.name:
-                        urls.extend(p.links)
+                    if not pack.name:
+                        urls.extend(pack.links)
                     else:
-                        packs[p.name] = p
+                        packs[pack.name] = pack
             else:
-                urls.append(p)
+                urls.append(pack)
 
         urls = uniqify(urls)
 

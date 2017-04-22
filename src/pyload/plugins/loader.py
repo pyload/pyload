@@ -65,9 +65,9 @@ class LoaderFactory(object):
         Finds a plugin type for given name.
         """
         for loader in self.loader:
-            for t in loader.TYPES:
-                if loader.has_plugin(t, name):
-                    return t
+            for type_ in loader.TYPES:
+                if loader.has_plugin(type_, name):
+                    return type_
 
         return None
 
@@ -148,26 +148,26 @@ class PluginLoader(object):
             fp = io.open(os.path.join(pfolder, "__init__.py"), mode='wb')
             fp.close()
 
-        for f in os.listdir(pfolder):
-            if os.path.isfile(os.path.join(pfolder, f)) and f.endswith(
-                    ".py") and not f.startswith("_"):
+        for fname in os.listdir(pfolder):
+            if os.path.isfile(os.path.join(pfolder, fname)) and fname.endswith(
+                    ".py") and not fname.startswith("_"):
                 # replace suffix and version tag
-                name = f[:-3]
+                name = fname[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
 
                 plugin = self.parse_plugin(
-                    os.path.join(pfolder, f), folder, name)
+                    os.path.join(pfolder, fname), folder, name)
                 if plugin:
                     plugins[name] = plugin
 
         return plugins
 
-    def parse_attributes(self, filename, name, folder=""):
+    def parse_attributes(self, fname, name, folder=""):
         """
         Parse attribute dict from plugin.
         """
-        with io.open(filename, mode='rb') as fp:
+        with io.open(fname, mode='rb') as fp:
             content = fp.read()
 
         attrs = BaseAttributes()
@@ -219,14 +219,14 @@ class PluginLoader(object):
 
         return attrs
 
-    def parse_plugin(self, filename, folder, name):
+    def parse_plugin(self, fname, folder, name):
         """
         Parses a plugin from disk, folder means plugin type in this context. Also sets config.
 
         :arg home: dict with plugins, of which the found one will be matched against (according version)
         :returns PluginTuple
         """
-        attrs = self.parse_attributes(filename, name, folder)
+        attrs = self.parse_attributes(fname, name, folder)
         if not attrs:
             return None
 
@@ -257,7 +257,7 @@ class PluginLoader(object):
         # create plugin tuple
         # user_context=True is the default for non addon plugins
         plugin = PluginTuple(version, re_plugin, deps, category,
-                             bool(folder != "addon" or attrs['user_context']), filename)
+                             bool(folder != "addon" or attrs['user_context']), fname)
 
         # These have none or their own config
         if folder in ("internal", "account", "network"):

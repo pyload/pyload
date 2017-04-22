@@ -17,9 +17,9 @@ class BenchmarkTest(object):
     @classmethod
     def timestamp(cls, name, a):
         t = time()
-        r = cls.results.get(name, [])
-        r.append((t - a) * 1000)
-        cls.results[name] = r
+        res = cls.results.get(name, [])
+        res.append((t - a) * 1000)
+        cls.results[name] = res
 
     @classmethod
     def benchmark(cls, n=1):
@@ -63,10 +63,10 @@ class BenchmarkTest(object):
 
         obj = cls()
 
-        for f in cls.bench:
+        for fname in cls.bench:
             a = time()
-            getattr(obj, "test_{0}".format(f))()
-            cls.timestamp(f, a)
+            getattr(obj, "test_{0}".format(fname))()
+            cls.timestamp(fname, a)
 
         if hasattr(cls, "tearDownClass"):
             a = time()

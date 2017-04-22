@@ -13,9 +13,9 @@ standard_library.install_aliases()
 from pyload.utils.decorator import lock, readlock
 from pyload.utils.struct.lock import ReadWriteLock
 
-from ..datatype.file import PyFile
+from ..datatype.file import File
 from ..datatype.init import DownloadStatus, TreeCollection
-from ..datatype.package import (PackageDoesNotExist, PackageStatus, PyPackage,
+from ..datatype.package import (PackageDoesNotExist, PackageStatus, Package,
                                 RootPackage)
 
 
@@ -36,16 +36,16 @@ class FileManager(object):
     modify status or other request for links or packages
     """
     # __slots__ = [
-        'db',
-        'downloadstats',
-        'files',
-        'job_cache',
-        'lock',
-        'packages',
-        'pyload',
-        'queuecount',
-        'queuestats',
-        'status_msg']
+        # 'db',
+        # 'downloadstats',
+        # 'files',
+        # 'job_cache',
+        # 'lock',
+        # 'packages',
+        # 'pyload',
+        # 'queuecount',
+        # 'queuestats',
+        # 'status_msg']
 
     ROOT_PACKAGE = -1
     ROOT_OWNER = -1
@@ -91,11 +91,11 @@ class FileManager(object):
         """
         Saves all data to backend and waits until all data are written.
         """
-        for pyfile in self.files.values():
-            pyfile.sync()
+        for file in self.files.values():
+            file.sync()
 
-        for pypack in self.packages.values():
-            pypack.sync()
+        for pack in self.packages.values():
+            pack.sync()
 
         self.db.sync_save()
 
@@ -124,9 +124,9 @@ class FileManager(object):
         """
         pid = self.db.add_package(name, folder, root, password, site, comment,
                                   PackageStatus.Paused if paused else PackageStatus.Ok, owner)
-        p = self.db.get_package_info(pid)
+        pinfo = self.db.get_package_info(pid)
 
-        self.pyload.evm.fire("package:inserted", pid, p.root, p.packageorder)
+        self.pyload.evm.fire("package:inserted", pid, pinfo.root, pinfo.packageorder)
         return pid
 
     @lock
@@ -145,7 +145,7 @@ class FileManager(object):
             if not info:
                 return None
 
-            pack = PyPackage.from_info_data(self, info)
+            pack = Package.from_info_data(self, info)
             self.packages[pid] = pack
 
             return pack
@@ -156,14 +156,14 @@ class FileManager(object):
         Returns dict with package information.
         """
         if pid == self.ROOT_PACKAGE:
-            pack = RootPackage(self, self.ROOT_OWNER).to_info_data()
+            pinfo = RootPackage(self, self.ROOT_OWNER).to_info_data()
         elif pid in self.packages:
-            pack = self.packages[pid].to_info_data()
-            pack.stats = self.db.get_stats_for_package(pid)
+            pinfo = self.packages[pid].to_info_data()
+            pinfo.stats = self.db.get_stats_for_package(pid)
         else:
-            pack = self.db.get_package_info(pid)
+            pinfo = self.db.get_package_info(pid)
 
-        if not pack:
+        if not pinfo:
             return None
 
         # TODO: what does this todo mean?!
@@ -171,17 +171,17 @@ class FileManager(object):
         packs = self.db.get_all_packages(root=pid)
         if pid in packs:
             del packs[pid]
-        pack.pids = list(packs.keys())
+        pinfo.pids = list(packs.keys())
 
         files = self.db.get_all_files(package=pid)
-        pack.fids = list(files.keys())
+        pinfo.fids = list(files.keys())
 
-        return pack
+        return pinfo
 
     @lock
     def get_file(self, fid):
         """
-        Returns pyfile instance.
+        Returns file instance.
         """
         if fid in self.files:
             return self.files[fid]
@@ -190,7 +190,7 @@ class FileManager(object):
             if not info:
                 return None
 
-            f = PyFile.from_info_data(self, info)
+            f = File.from_info_data(self, info)
             self.files[fid] = f
             return f
 
@@ -207,24 +207,24 @@ class FileManager(object):
         files = self.db.get_all_files(
             package=root, state=state, search=search, owner=owner)
         # updating from cache
-        for fid, f in self.files.items():
+        for fid, file in self.files.items():
             if fid not in files:
                 continue
-            files[fid] = f.to_info_data()
+            files[fid] = file.to_info_data()
         return files
-                
+
     def _get_tree_packages(self, root, owner):
         packs = self.db.get_all_packages(root, owner=owner)
         # foreign pid, do not overwrite local pid !
-        for fpid, p in self.packages.items():
+        for fpid, pack in self.packages.items():
             if fpid not in packs:
                 continue
             # copy the stats data
             stats = packs[fpid].stats
-            packs[fpid] = p.to_info_data()
-            packs[fpid].stats = stats            
+            packs[fpid] = pack.to_info_data()
+            packs[fpid].stats = stats
         return packs
-        
+
     def _reduce_tree(self, pid, packs, files):
         keep = []
         queue = [pid]
@@ -237,34 +237,34 @@ class FileManager(object):
             if fpid in keep:
                 continue
             del packs[fpid]
-        for fid, f in files.items():
-            if f.package in keep:
+        for fid, file in files.items():
+            if file.package in keep:
                 continue
             del files[fid]
         return packs, files
-              
+
     def _sanitize_tree(self, packs, files):
         # linear traversal over all data
-        for fpid, p in packs.items():
-            if p.fids is None:
-                p.fids = []
-            if p.pids is None:
-                p.pids = []
-            root = packs.get(p.root, None)
+        for fpid, pack in packs.items():
+            if pack.fids is None:
+                pack.fids = []
+            if pack.pids is None:
+                pack.pids = []
+            root = packs.get(pack.root, None)
             if not root:
                 continue
             if root.pids is None:
                 root.pids = []
             root.pids.append(fpid)
-            
-        for fid, f in files.items():
-            p = packs.get(f.package, None)
-            if not p:
+
+        for fid, file in files.items():
+            pack = packs.get(file.package, None)
+            if not pack:
                 continue
-            p.fids.append(fid)
-            
+            pack.fids.append(fid)
+
         return packs, files
-        
+
     @readlock
     def get_tree(self, pid, full, state, owner=None, search=None):
         """
@@ -275,10 +275,10 @@ class FileManager(object):
 
         # for depth=1, we do not need to retrieve all files/packages
         root = pid if not full else None
-        
+
         packs = self._get_tree_packages(root, state, owner, search)
         files = self._get_tree_files(root, owner)
-        
+
         # root package is not in database, create an instance
         if pid == self.ROOT_PACKAGE:
             view.root = RootPackage(self, self.ROOT_OWNER).to_info_data()
@@ -289,15 +289,15 @@ class FileManager(object):
             return view
 
         self._sanitize_tree(packs, files)
-        
+
         # cutting of tree is not good in runtime, only saves bandwidth
         # need to remove some entries
         if full and pid > -1:
             self._reduce_tree(pid, packs, files)
-            
+
         # remove root
         del packs[pid]
-        
+
         view.files = files
         view.packages = packs
         return view
@@ -337,16 +337,16 @@ class FileManager(object):
         """
         Delete package and all contained links.
         """
-        p = self.get_package(pid)
-        if not p:
+        pack = self.get_package(pid)
+        if not pack:
             return None
 
-        oldorder = p.packageorder
-        root = p.root
+        oldorder = pack.packageorder
+        root = pack.root
 
-        for pyfile in self.cached_files():
-            if pyfile.packageid == pid:
-                pyfile.abort_download()
+        for file in self.cached_files():
+            if file.packageid == pid:
+                file.abort_download()
 
         self.db.delete_package(pid)
         self.release_package(pid)
@@ -363,29 +363,29 @@ class FileManager(object):
         """
         Deletes links.
         """
-        f = self.get_file(fid)
-        if not f:
+        file = self.get_file(fid)
+        if not file:
             return None
 
-        pid = f.packageid
-        order = f.fileorder
+        pid = file.packageid
+        order = file.fileorder
 
         if fid in self.pyload.dlm.processing_ids():
-            f.abort_download()
+            file.abort_download()
 
-        self.db.delete_file(fid, f.fileorder, f.packageid)
+        self.db.delete_file(fid, file.fileorder, file.packageid)
         self.release_file(fid)
 
-        for pyfile in self.files.values():
-            if pyfile.packageid == pid and pyfile.fileorder > order:
-                pyfile.fileorder -= 1
+        for file in self.files.values():
+            if file.packageid == pid and file.fileorder > order:
+                file.fileorder -= 1
 
         self.pyload.evm.fire("file:deleted", fid, pid)
 
     @lock
     def release_file(self, fid):
         """
-        Removes pyfile from cache.
+        Removes file from cache.
         """
         if fid in self.files:
             del self.files[fid]
@@ -399,14 +399,14 @@ class FileManager(object):
             del self.packages[pid]
 
     @invalidate
-    def update_file(self, pyfile):
+    def update_file(self, file):
         """
         Updates file.
         """
-        self.db.update_file(pyfile)
+        self.db.update_file(file)
 
-        # This event is thrown with pyfile or only fid
-        self.pyload.evm.fire("file:updated", pyfile)
+        # This event is thrown with file or only fid
+        self.pyload.evm.fire("file:updated", file)
 
     @invalidate
     @readlock
@@ -422,12 +422,12 @@ class FileManager(object):
         self.pyload.evm.fire("file:updated", fid)
 
     @invalidate
-    def update_package(self, pypack):
+    def update_package(self, pack):
         """
         Updates a package.
         """
-        self.db.update_package(pypack)
-        self.pyload.evm.fire("package:updated", pypack.pid)
+        self.db.update_package(pack)
+        self.pyload.evm.fire("package:updated", pack.pid)
 
     @invalidate
     def update_file_info(self, data, pid):
@@ -441,7 +441,6 @@ class FileManager(object):
         """
         Checks if all files are finished and dispatch event.
         """
-
         # TODO: user context?
         if not self.db.queuestats()[0]:
             self.pyload.adm.fire("download:allFinished")
@@ -454,7 +453,6 @@ class FileManager(object):
         """
         Checks if all files was processed and pyload would idle now, needs fid which will be ignored when counting.
         """
-
         # reset count so statistic will update (this is called when dl was
         # processed)
         self.reset_count()
@@ -467,17 +465,17 @@ class FileManager(object):
 
         return False
 
-    def check_package_finished(self, pyfile):
+    def check_package_finished(self, file):
         """
         Checks if package is finished and calls addonmanager.
         """
-        ids = self.db.get_unfinished(pyfile.packageid)
-        if not ids or (pyfile.fid in ids and len(ids) == 1):
-            if not pyfile.package().set_finished:
+        ids = self.db.get_unfinished(file.packageid)
+        if not ids or (file.fid in ids and len(ids) == 1):
+            if not file.package().set_finished:
                 self.pyload.log.info(
-                    _("Package finished: {0}").format(pyfile.package().name))
-                self.pyload.adm.package_finished(pyfile.package())
-                pyfile.package().set_finished = True
+                    _("Package finished: {0}").format(file.package().name))
+                self.pyload.adm.package_finished(file.package())
+                file.package().set_finished = True
 
     def reset_count(self):
         self.queuecount = -1
@@ -488,9 +486,9 @@ class FileManager(object):
         """
         Restart package.
         """
-        for pyfile in self.cached_files():
-            if pyfile.packageid == pid:
-                self.restart_file(pyfile.fid)
+        for file in self.cached_files():
+            if file.packageid == pid:
+                self.restart_file(file.fid)
 
         self.db.restart_package(pid)
 
@@ -506,11 +504,11 @@ class FileManager(object):
         Restart file.
         """
         if fid in self.files:
-            f = self.files[fid]
-            f.status = DownloadStatus.Queued
-            f.name = f.url
-            f.error = ""
-            f.abort_download()
+            file = self.files[fid]
+            file.status = DownloadStatus.Queued
+            file.name = file.url
+            file.error = ""
+            file.abort_download()
 
         self.db.restart_file(fid)
         self.pyload.evm.fire("file:updated", fid)
@@ -518,62 +516,62 @@ class FileManager(object):
     @lock
     @invalidate
     def order_package(self, pid, position):
-
-        p = self.get_package_info(pid)
-        self.db.order_package(pid, p.root, p.packageorder, position)
+        pinfo = self.get_package_info(pid)
+        self.db.order_package(pid, pinfo.root, pinfo.packageorder, position)
 
         for pack in self.packages.values():
-            if pack.root != p.root or pack.packageorder < 0:
+            if pack.root != pinfo.root or pack.packageorder < 0:
                 continue
             if pack.pid == pid:
                 pack.packageorder = position
-            if p.packageorder > position and position <= pack.packageorder < p.packageorder:
-                    pack.packageorder += 1
-            elif p.packageorder < position and position >= pack.packageorder > p.packageorder:
-                    pack.packageorder -= 1
+            if pinfo.packageorder > position and position <= pack.packageorder < pinfo.packageorder:
+                pack.packageorder += 1
+            elif pinfo.packageorder < position and position >= pack.packageorder > pinfo.packageorder:
+                pack.packageorder -= 1
 
         self.db.commit()
 
-        self.pyload.evm.fire("package:reordered", pid, position, p.root)
+        self.pyload.evm.fire("package:reordered", pid, position, pinfo.root)
 
-    def _min_fileorder(self, files):
-        f = reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
-        return f.fileorder
-        
-    def _order_files(self, fids, order, position):
+    def _lower_file(self, files):
+        return reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
+
+    def _order_files(self, fids, finfo, position):
         diff = len(fids)
         incr = 0
-        files = (pyfile for pyfile in self.files.values()
-                 if not (pyfile.fileorder < 0 or pyfile.packageid != f.package))
-        if order > position:
-            for pyfile in files:
-                if not (position <= pyfile.fileorder < order):
+        files = (file for file in self.files.values()
+                 if not (file.fileorder < 0 or file.packageid != finfo.package))
+        if finfo.fileorder > position:
+            for file in files:
+                if not (position <= file.fileorder < finfo.fileorder):
                     continue
-                pyfile.fileorder += diff                    
+                file.fileorder += diff
             diff = 0
-        elif order < position:
-            for pyfile in files:
-                if not (position >= pyfile.fileorder >= order + diff):
+        elif finfo.fileorder < position:
+            for file in files:
+                if not (position >= file.fileorder >= finfo.fileorder + diff):
                     continue
-                pyfile.fileorder -= diff
+                file.fileorder -= diff
             incr = 1
         for i, fid in enumerate(fids):
             if fid not in self.files:
                 continue
             self.files[fid].fileorder = position - diff + i + incr
-            
+
     @lock
     @invalidate
     def order_files(self, fids, pid, position):
         files = [self.get_file_info(fid) for fid in fids]
-        orders = [f.fileorder for f in files]
+        orders = (finfo.fileorder for finfo in files)
         if min(orders) + len(files) != max(orders) + 1:
             raise Exception("Tried to reorder non continuous block of files")
 
-        order = self._min_fileorder(files)  #: minimum fileorder
+        finfo = self._lower_file(files)
+
+        order = finfo.fileorder #: minimum fileorder
         self.db.order_files(pid, fids, order, position)
-        
-        self._order_files(fids, order, position)
+
+        self._order_files(fids, finfo, position)
 
         self.db.commit()
         self.pyload.evm.fire("file:reordered", pid)
@@ -584,20 +582,20 @@ class FileManager(object):
         """
         Move pid - root.
         """
-        p = self.get_package_info(pid)
+        pinfo = self.get_package_info(pid)
         dest = self.get_package_info(root)
-        if not p:
+        if not pinfo:
             raise PackageDoesNotExist(pid)
         if not dest:
             raise PackageDoesNotExist(root)
 
         # cantor won't be happy if we put the package in itself
-        if pid == root or p.root == root:
+        if pid == root or pinfo.root == root:
             return False
 
         # we assume pack is not in use anyway, so we can release it
         self.release_package(pid)
-        self.db.move_package(p.root, p.packageorder, pid, root)
+        self.db.move_package(pinfo.root, pinfo.packageorder, pid, root)
 
         return True
 
@@ -607,13 +605,13 @@ class FileManager(object):
         """
         Move all fids to pid.
         """
-        f = self.get_file_info(fids[0])
-        if not f or f.package == pid:
+        finfo = self.get_file_info(fids[0])
+        if not finfo or finfo.package == pid:
             return False
         if not self.get_package_info(pid):
             raise PackageDoesNotExist(pid)
 
-        self.db.move_files(f.package, fids, pid)
+        self.db.move_files(finfo.package, fids, pid)
 
         return True
 
@@ -626,10 +624,10 @@ class FileManager(object):
 
         urls = []
 
-        for pyfile in data.values():
-            if pyfile.status not in (
+        for file in data.values():
+            if file.status not in (
                     DownloadStatus.NA, DownloadStatus.Finished, DownloadStatus.Skipped):
-                urls.append((pyfile.url, pyfile.pluginname))
+                urls.append((file.url, file.pluginname))
 
         self.pyload.thm.create_info_thread(urls, pid)
 
@@ -638,6 +636,5 @@ class FileManager(object):
         """
         Restart all failed links.
         """
-
         # failed should not be in cache anymore, so working on db is sufficient
         self.db.restart_failed()

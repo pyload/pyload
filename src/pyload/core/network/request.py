@@ -38,7 +38,6 @@ class RequestFactory(object):
         """
         Creates a request with new or given context.
         """
-
         # also accepts the context class directly
         if isinstance(context, class_.CONTEXT_CLASS):
             return class_(self.get_config(), context)
@@ -51,7 +50,6 @@ class RequestFactory(object):
         """
         Instantiates a instance for downloading.
         """
-
         # TODO: load with plugin manager
         return class_(self.bucket, request)
 

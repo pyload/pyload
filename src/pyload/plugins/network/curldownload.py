@@ -31,7 +31,7 @@ class CurlDownload(Download):
     Loads an url, http + ftp supported.
     """
 
-    # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
+    # def __init__(self, url, fname, get={}, post={}, referer=None, cj=None, bucket=None,
     #              options={}, disposition=False):
 
     CONTEXT_CLASS = CookieJar

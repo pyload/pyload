@@ -43,8 +43,8 @@ def _get_setup_map():
     """
     Load info dict from `setup.py`.
     """
-    fp, filename, desc = imp.find_module('setup', PACKDIR)
-    module = imp.load_module('_setup', fp, filename, desc)
+    fp, fname, desc = imp.find_module('setup', PACKDIR)
+    module = imp.load_module('_setup', fp, fname, desc)
     return module.SETUP_MAP
 
 __setup_map = _get_setup_map()
@@ -132,7 +132,7 @@ class Core(Process):
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
         self.log.addHandler(consolehdlr)
-        
+
     def _set_syslog_handler(self):
         #: try to mimic to normal syslog messages
         fmt = "%(asctime)s %(name)s: %(message)s"
@@ -156,7 +156,7 @@ class Core(Process):
         sysloghdlr = logging.handlers.SysLogHandler(syslogaddr)
         sysloghdlr.setFormatter(syslogform)
         self.log.addHandler(sysloghdlr)
-        
+
     def _set_logfile_handler(self):
         fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
         datefmt = "%Y-%m-%d %H:%M:%S"
@@ -176,13 +176,13 @@ class Core(Process):
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
-        
+
     def _mklogdir(self):
         logfile_folder = self.config.get('log', 'logfile_folder')
         if not logfile_folder:
             logfile_folder = os.path.abspath("logs")
         makedirs(logfile_folder)
-        
+
     # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
     def _init_logger(self, level):
         # Init logger
@@ -195,7 +195,7 @@ class Core(Process):
         # Set syslog handler
         if self.config.get('log', 'syslog') != 'no':
             self._set_syslog_handler()
-            
+
         # Create logfile folder
         self._mklogdir()
 
@@ -575,18 +575,18 @@ def quit(profile=None, configdir=None, wait=300):
 
 def start(profile=None, configdir=None, debug=0,
           refresh=0, webui=None, rpc=None, update=True, daemon=False):
-    p = Core(profile, configdir, debug, refresh, webui, rpc, update)
-    p.start()
+    proc = Core(profile, configdir, debug, refresh, webui, rpc, update)
+    proc.start()
 
     if daemon:
         pidfile = tempfile.mkstemp(
             suffix='.pid',
             prefix='daemon-',
-            dir=p.tmpdir)[1]
-        d = daemonize.Daemonize("pyLoad", pidfile, p.join, logger=p.log)
+            dir=proc.tmpdir)[1]
+        d = daemonize.Daemonize("pyLoad", pidfile, proc.join, logger=proc.log)
         d.start()
 
-    return p  #: returns process instance
+    return proc  #: returns process instance
 
 
 def restart(*args, **kwargs):
