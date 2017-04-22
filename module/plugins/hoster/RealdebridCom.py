@@ -11,10 +11,10 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.75"
+    __version__ = "0.76"
     __status__ = "testing"
 
-    __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl/|[\w^_]\.rdb\.so/d/)[\w^_]+'
+    __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+'
     __config__ = [("use_premium", "bool", "Use premium account if available", True),
                   ("fallback",
                    "bool",
