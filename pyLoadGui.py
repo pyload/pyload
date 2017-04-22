@@ -757,7 +757,7 @@ class main(QObject):
         s = self.trayState
         self.log.debug4("main.showFromTray_continue: entered")
         if s["maximized"]:
-            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %dmsec", self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
+            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %d msec", self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
         self.emit(SIGNAL("traySetShowActionText"), False)
         s["hiddenInTray"] = False  # must be updated before allowUserActions(True)
         self.allowUserActions(True)

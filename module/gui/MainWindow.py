@@ -632,6 +632,7 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
     def initPaintEventHook(self):
+        self.paintEventCounter = 0
         self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
         self.paintEventLastNormalPos  = None
         self.paintEventLastNormalSize = None
@@ -639,6 +640,8 @@ class MainWindow(QMainWindow):
         self.paintEventSignal  = False
     
     def paintEvent(self, event):
+        self.paintEventCounter += 1
+        self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" % (self.time_msec(), self.paintEventCounter, event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
         maximized = bool(self.windowState() & Qt.WindowMaximized)
         minimized = bool(self.windowState() & Qt.WindowMinimized)
         if not (maximized or minimized):
@@ -670,12 +673,12 @@ class MainWindow(QMainWindow):
     def moveEvent(self, event):
         self.moveEventOldPos = event.oldPos()
         self.moveEventPos = event.pos()
-        self.log.debug3("MainWindow.moveEvent:\t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))
+        self.log.debug3("MainWindow.moveEvent:   at %08d msec \t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (self.time_msec(), event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))        
     
     def resizeEvent(self, event):
         self.resizeEventOldSize = event.oldSize()
         self.resizeEventSize = event.size()
-        self.log.debug3("MainWindow.resizeEvent:\t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" % (event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
+        self.log.debug3("MainWindow.resizeEvent: at %08d msec \t\t----------------------------\t(%04d, %04d) -> (%04d, %04d)\t" % (self.time_msec(), event.oldSize().width(), event.oldSize().height(), event.size().width(), event.size().height()))
     
     def changeEvent(self, event):
         if (event.type() == QEvent.WindowStateChange):
