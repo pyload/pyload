@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
 import os
 import re
-from builtins import str
 from itertools import chain
 
 from future import standard_library

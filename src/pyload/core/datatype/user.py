@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import str
 
 from enum import IntFlag
 from future import standard_library

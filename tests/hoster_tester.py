@@ -2,10 +2,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
 import os
 import shutil
-from builtins import str
 from hashlib import md5
 from logging import DEBUG, log
 from time import time

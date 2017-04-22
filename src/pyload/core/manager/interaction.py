@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 from base64 import standard_b64encode
 from builtins import object
@@ -52,7 +52,7 @@ class InteractionManager(object):
     @lock
     def work(self):
         # old notifications will be removed
-        for n in [k for k, v in self.tasks.items() if v.timed_out()]:
+        for n in (k for k, v in self.tasks.items() if v.timed_out()):
             del self.tasks[n]
 
         # keep notifications count limited

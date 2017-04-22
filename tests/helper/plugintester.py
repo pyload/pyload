@@ -2,12 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
 import os
 import shutil
 import sys
 import time
-from builtins import str
 from contextlib import closing
 from glob import glob
 from json import loads

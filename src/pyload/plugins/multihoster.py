@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 from contextlib import closing
 from time import time
 

@@ -2,9 +2,9 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
 import os
-from builtins import str
 
 from future import standard_library
 standard_library.install_aliases()

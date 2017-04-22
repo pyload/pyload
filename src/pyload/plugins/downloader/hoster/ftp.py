@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import re
-from builtins import int, str
+from builtins import int
 from urllib.parse import quote, unquote, urlparse
 
 from future import standard_library

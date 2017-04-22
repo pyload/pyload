@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import sys
 import time
 from traceback import print_exc

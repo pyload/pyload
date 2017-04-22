@@ -3,10 +3,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
 import os
 import shutil
-from builtins import int, object, range, str
+from builtins import int, object, range
 from traceback import print_exc
 
 from future import standard_library

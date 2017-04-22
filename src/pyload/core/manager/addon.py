@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import builtins
 from builtins import object
 from collections import defaultdict

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 
@@ -9,7 +9,6 @@ import builtins
 import io
 import os
 from builtins import object
-from builtins import str
 import random
 import time
 
@@ -334,7 +333,7 @@ class Base(object):
                 OCR = None
 
             if OCR and not forceuser:
-                time.sleep(random.randint(3000, 5000) // 1000.0)
+                time.sleep(random.randint(3000, 5000) // 1000)
                 self.check_abort()
 
                 ocr = OCR()

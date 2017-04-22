@@ -18,7 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import logging

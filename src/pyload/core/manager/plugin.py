@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import os
 import sys
 from builtins import COREDIR, object

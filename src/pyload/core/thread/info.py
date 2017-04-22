@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 from builtins import int
 from time import time
 
@@ -67,9 +68,11 @@ class InfoThread(DecrypterThread):
                 l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
-        self._progressinfo = ProgressInfo("BasePlugin", "", _("online check"), 0, 0, sum(len(urls) for urls in plugins.values()),
-                                     self.owner, ProgressType.LinkCheck)
-
+        self._progressinfo = ProgressInfo(
+            "BasePlugin", "", _("online check"), 0, 0,
+            sum(len(urls) for urls in plugins.values()), self.owner,
+            ProgressType.LinkCheck
+        )
         for pluginname, urls in plugins.items():
             plugin = self.manager.pyload.pgm.load_module("hoster", pluginname)
             klass = self.manager.pyload.pgm.get_plugin_class(

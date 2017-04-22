@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import io
 import os
@@ -180,9 +180,9 @@ class CurlChunk(CurlRequest):
 
                 # as last chunk dont set end range, so we get everything
                 if self.id == len(self.p.info.chunks) - 1:
-                    range = b"{0:d}-".format(self.arrived + self.range[0])
+                    range = b'{0:d}-'.format(self.arrived + self.range[0])
                 else:
-                    range = b"{0:d}-{1:d}".format(self.arrived + self.range[
+                    range = b'{0:d}-{1:d}'.format(self.arrived + self.range[
                                                 0], min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked resume with range {0}".format(range))

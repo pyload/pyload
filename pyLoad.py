@@ -32,7 +32,7 @@ try:
 except ImportError:
     autoblue = autogreen = autored = autowhite = autoyellow = lambda msg: msg
 else:
-    for tag, reset, _, _ in filter(None, colorclass.list_tags()):
+    for tag, reset, _, _ in (_f for _f in colorclass.list_tags() if _f):
         globals()[tag] = lambda msg: colorclass.Color(
             "{{{0}}}{1}{{{2}}}".format(tag, msg, reset))
     if os.name == 'nt':

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # @author: zoidberg
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import re
-from builtins import bytes, int, str, super
+from builtins import bytes, int, super
 from time import time
 from urllib.parse import urlparse
 
