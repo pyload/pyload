@@ -3,8 +3,9 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import io
-from builtins import bytes, dict, int, range, str
+from builtins import bytes, dict, int, range
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from urllib.parse import quote, urlencode
 
@@ -91,15 +92,15 @@ class CurlRequest(Request):
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         # do not save the cookies
-        self.c.setopt(pycurl.COOKIEFILE, b"")
-        self.c.setopt(pycurl.COOKIEJAR, b"")
+        self.c.setopt(pycurl.COOKIEFILE, b'')
+        self.c.setopt(pycurl.COOKIEJAR, b'')
 
         # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(pycurl.USERAGENT,
                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
         if pycurl.version_info()[7]:
-            self.c.setopt(pycurl.ENCODING, b"gzip, deflate")
+            self.c.setopt(pycurl.ENCODING, b'gzip,deflate')
 
         self.headers.update(
             {'Accept': "*/*",
@@ -158,8 +159,9 @@ class CurlRequest(Request):
         Sets same options as available in pycurl.
         """
         for k, v in options.items():
-            if hasattr(pycurl, k):
-                self.c.setopt(getattr(pycurl, k), v)
+            if not hasattr(pycurl, k):
+                continue
+            self.c.setopt(getattr(pycurl, k), v)
 
     def set_request_context(self, url, get, post,
                             referer, cookies, multipart=False):
@@ -200,7 +202,7 @@ class CurlRequest(Request):
                 self.c.setopt(pycurl.COOKIELIST, c)
         else:
             # Magic string that erases all cookies
-            self.c.setopt(pycurl.COOKIELIST, b"ALL")
+            self.c.setopt(pycurl.COOKIELIST, b'ALL')
 
         # TODO: remove auth again
         if "auth" in self.options:
@@ -221,8 +223,9 @@ class CurlRequest(Request):
 
         if "header" in self.options:
             # TODO
-            print("custom header not implemented")
-            self.c.setopt(pycurl.HTTPHEADER, self.options['header'])
+            # print("custom header not implemented")
+            header = self.options['header']
+            self.c.setopt(pycurl.HTTPHEADER, convert.to_bytes(header, header))
 
         if just_header:
             self.c.setopt(pycurl.FOLLOWLOCATION, 0)
@@ -230,9 +233,9 @@ class CurlRequest(Request):
 
             # overwrite HEAD request, we want a common request type
             if post:
-                self.c.setopt(pycurl.CUSTOMREQUEST, b"POST")
+                self.c.setopt(pycurl.CUSTOMREQUEST, b'POST')
             else:
-                self.c.setopt(pycurl.CUSTOMREQUEST, b"GET")
+                self.c.setopt(pycurl.CUSTOMREQUEST, b'GET')
 
             try:
                 self.c.perform()
@@ -246,7 +249,7 @@ class CurlRequest(Request):
             self.c.perform()
             rep = self.get_response()
 
-        self.c.setopt(pycurl.POSTFIELDS, b"")
+        self.c.setopt(pycurl.POSTFIELDS, b'')
         self.last_url = myquote(url)
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
         if self.last_effective_url:
