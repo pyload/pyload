@@ -34,7 +34,6 @@ from os import getcwd, makedirs, sep
 
 from uuid import uuid4 as uuid # should be above PyQt imports
 from time import sleep, time
-from datetime import datetime
 from base64 import b64decode
 
 from PyQt4.QtCore import *
@@ -89,9 +88,6 @@ class main(QObject):
             sys.excepthook = self.pyLoadGuiExcepthook
         else:
             sys.excepthook = sys.__excepthook__
-
-    def time_msec(self):
-        return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
 
     def __init__(self):
         """
@@ -728,7 +724,7 @@ class main(QObject):
                 pe(); self.mainWindow.showMaximized() # needed on mint cinnamon
                 if prepForSave: return
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
-                s["showFromTrayShowTime"] = self.time_msec()
+                s["showFromTrayShowTime"] = self.mainWindow.time_msec()
                 for i in range(numOfPaintEventsToWait + 2):
                     self.mainWindow.update();pe();pe();pe();pe();pe()
         # alternative methode
@@ -753,7 +749,7 @@ class main(QObject):
                 pe(); self.mainWindow.showMaximized() # needed on mint cinnamon
                 if prepForSave: return
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
-                s["showFromTrayShowTime"] = self.time_msec()
+                s["showFromTrayShowTime"] = self.mainWindow.time_msec()
                 for i in range(numOfPaintEventsToWait + 2):
                     self.mainWindow.update();pe();pe();pe();pe();pe()
 
@@ -761,7 +757,7 @@ class main(QObject):
         s = self.trayState
         self.log.debug4("main.showFromTray_continue: entered")
         if s["maximized"]:
-            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %dmsec", self.time_msec() - self.trayState["showFromTrayShowTime"])
+            self.log.debug4("main.showFromTray_continue: mainWindow is maximized, delay: %dmsec", self.mainWindow.time_msec() - self.trayState["showFromTrayShowTime"])
         self.emit(SIGNAL("traySetShowActionText"), False)
         s["hiddenInTray"] = False  # must be updated before allowUserActions(True)
         self.allowUserActions(True)

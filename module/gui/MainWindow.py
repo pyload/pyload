@@ -23,6 +23,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from os.path import join
+from datetime import datetime
 
 from module.gui.PackageDock import *
 from module.gui.LinkDock import *
@@ -38,10 +39,15 @@ from module.gui.Tools import whatsThisFormat, WhatsThisButton, WtDialogButtonBox
 from module.remote.thriftbackend.ThriftClient import AccountInfo, DownloadStatus
 
 class MainWindow(QMainWindow):
+    
+    def time_msec(self):
+        return int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000 - self.time_msec_init)
+    
     def __init__(self, corePermissions, connector):
         """
             set up main window
         """
+        self.time_msec_init = int((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
         QMainWindow.__init__(self)
         self.setEnabled(False)
         self.log = logging.getLogger("guilog")
