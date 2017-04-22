@@ -77,7 +77,7 @@ deploy:
       branch: master
       python: 3.5
       tags: true
-after_deploy:
-  - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
-  - pip install travis-bump-version
-  - travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
+# after_deploy:
+  # - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
+  # - pip install travis-bump-version
+  # - travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
