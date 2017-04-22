@@ -27,18 +27,26 @@ from pyload.utils.sys import set_console_icon, set_console_title
 
 # from multiprocessing import freeze_support
 
-
 try:
-    from pyload.utils.layer.mycolorclass import (autoblue, autogreen, autored,
-                                                 autowhite, autoyellow)
+    import colorclass
 except ImportError:
     autoblue = autogreen = autored = autowhite = autoyellow = lambda msg: msg
+else:
+    for tag, reset, _, _ in filter(None, colorclass.list_tags()):
+        globals()[tag] = lambda msg: colorclass.Color(
+            "{{{0}}}{1}{{{2}}}".format(tag, msg, reset))
+    if os.name == 'nt':
+        colorclass.Windows.enable(auto_colors=True, reset_atexit=True)
+    elif is_light():
+        colorclass.set_light_background()
+    else:
+        colorclass.set_dark_background()
 
 
 __all__ = ['logo', 'main', 'parse_args']
 
 
-PACKDIR = os.path.abspath(os.path.dirname(__file__))
+# PACKDIR = os.path.abspath(os.path.dirname(__file__))
 
 
 def _gen_logo():
@@ -63,64 +71,57 @@ def parse_args(argv=None):
     epilog = autogreen(
         "*** Please refer to the included `README.md` for further details ***")
 
-    ap = argparse.ArgumentParser(prog=prog,
-                                 description=desc,
-                                 epilog=epilog,
-                                 add_help=False)
+    ap = argparse.ArgumentParser(
+        prog=prog, description=desc, epilog=epilog, add_help=False)
     pg = ap.add_argument_group(autogreen("Optional arguments"))
-    sp = ap.add_subparsers(title=autogreen("Commands"),
-                           dest='command',
-                           help=autored("Available sub-commands (") +
-                                autoyellow("`COMMAND --help`") +
-                                autored(" for detailed help)"))
+    sp = ap.add_subparsers(
+        title=autogreen("Commands"),
+        dest='command',
+        help=''.join(
+            autored("Available sub-commands ("), autoyellow("`COMMAND --help`"), autored(" for detailed help)"))
+    )
 
-    sc = (('start', "Start process instance"),
-          ('quit', "Terminate process instance"),
-          ('restart', "Restart process instance"),
-          ('setup', "Setup package"),
-          ('status', "Show process PID"),
-          ('version', "Show package version"),
-          ('info', "Show package info"))
-
+    sc = (
+        ('start', "Start process instance"),
+        ('quit', "Terminate process instance"),
+        ('restart', "Restart process instance"),
+        ('setup', "Setup package"),
+        ('status', "Show process PID"),
+        ('version', "Show package version"),
+        ('info', "Show package info")
+    )
     for prog, desc in sc:
         desc = autored(desc)
-        p = sp.add_parser(prog, description=desc,
-                          epilog=epilog, help=desc, add_help=False)
-        globals()['sp_' + prog] = p
+        prsr = sp.add_parser(
+            prog, description=desc, epilog=epilog, help=desc, add_help=False)
+        globals()['sp_' + prog] = prsr
 
-    for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup, sp_version:
-        p.add_argument('-h', '--help',
-                       action='help',
-                       help=autored("Show this help message and exit"))
+    for prsr in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup, sp_version:
+        prsr.add_argument(
+            '-h', '--help', action='help', help=autored("Show this help message and exit"))
 
-    for p in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup:
-        profile_help = autored("Config profile to use (") + autoyellow("`default`") + \
-            autored(" if missing)")
+    for prsr in pg, sp_start, sp_stop, sp_restart, sp_status, sp_setup:
+        profile_help = ''.join(
+            autored("Config profile to use ("), autoyellow("`default`"), autored(" if missing)"))
         configdir_help = autored("Change path of config directory")
-        p.add_argument('-p', '--profile', help=profile_help)
-        p.add_argument('-c', '--configdir', help=configdir_help)
+        prsr.add_argument('-p', '--profile', help=profile_help)
+        prsr.add_argument('-c', '--configdir', help=configdir_help)
 
-    for p in pg, sp_start, sp_restart:
-        debug_help = autored("Enable debug mode (") + autoyellow("`-dd`") + \
-            autored(" for extended debug)")
+    for prsr in pg, sp_start, sp_restart:
+        debug_help = ''.join(autored("Enable debug mode ("), autoyellow("`-dd`"), autored(" for extended debug)"))
         # webdebug_help = autored("Enable webserver debugging")
-        refresh_help = autored("Remove compiled files and temp folder (") + \
-            autoyellow("`-rr`") + autored(" to restore default login credentials ") + \
-            autoyellow("`admin|pyload`") + autored(")")
-        webui_help = autored("Enable webui interface at entered ") + \
-            autoyellow("`IP address:Port number`") + \
-            autored(" (use defaults if missing)")
-        remote_help = autored("Enable remote api interface at entered ") + \
-            autoyellow("`IP address:Port number`") + \
-            autored(" (use defaults if missing)")
+        refresh_help = ''.join(autored("Remove compiled files and temp folder ("), autoyellow("`-rr`"), autored(" to restore default login credentials "), autoyellow("`admin|pyload`"), autored(")"))
+        webui_help = ''.join(autored("Enable webui interface at entered "), autoyellow("`IP address:Port number`"), autored(" (use defaults if missing)"))
+        remote_help = ''.join(autored("Enable remote api interface at entered "), autoyellow("`IP address:Port number`"), autored(" (use defaults if missing)"))
         daemon_help = autored("Run as daemon")
-        p.add_argument('-d', '--debug', action='count', help=debug_help)
-        # p.add_argument('-w', '--webdebug', action='count', help=webdebug_help)
-        p.add_argument('-r', '--refresh', '--restore',
-                       action='count', help=refresh_help)
-        p.add_argument('-u', '--webui', help=webui_help)
-        p.add_argument('-a', '--rpc', help=remote_help)
-        p.add_argument('-D', '--daemon', action='store_true', help=daemon_help)
+        prsr.add_argument('-d', '--debug', action='count', help=debug_help)
+        # prsr.add_argument('-w', '--webdebug', action='count', help=webdebug_help)
+        prsr.add_argument(
+            '-r', '--refresh', '--restore', action='count', help=refresh_help)
+        prsr.add_argument('-u', '--webui', help=webui_help)
+        prsr.add_argument('-a', '--rpc', help=remote_help)
+        prsr.add_argument(
+            '-D', '--daemon', action='store_true', help=daemon_help)
 
     wait_help = autored("Timeout for graceful exit (in seconds)")
     sp_stop.add_argument('--wait', help=wait_help)
