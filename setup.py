@@ -83,8 +83,8 @@ def _get_long_description(fromline=None, toline=None):
         return _gen_long_description(fromline, toline)
 
 
-def _get_requires(filename):
-    path = os.path.join('requirements', filename)
+def _get_requires(fname):
+    path = os.path.join('requirements', fname)
     return _extract_text(path).splitlines()
 
 
@@ -221,7 +221,7 @@ SETUP_REQUIRES = _get_requires('setup.txt')
 TEST_SUITE = 'nose.collector'
 TESTS_REQUIRE = _get_requires('test.txt')
 EXTRAS_REQUIRE = {
-    'colorlog': ['colorlog'],
+    'colorized': ['colorclass', 'colorlog'],
     'rpc': ['pyload.rpc'],
     'setup': ['pyload.setup'],
     'webui': ['pyload.webui']
@@ -249,7 +249,9 @@ CLASSIFIERS = [
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: {0}".format(LICENSE),
     "Natural Language :: English",
-    "Operating System :: OS Independent",
+    # "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
     "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 2.6",
     "Programming Language :: Python :: 2.7",
@@ -258,7 +260,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    # "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Communications",
     "Topic :: Communications :: File Sharing",
     "Topic :: Internet",
