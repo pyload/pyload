@@ -24,7 +24,6 @@ checks:
     basic_exec_used: true
     variables_redefined_outer_name: true
     variables_redefine_in_handler: true
-    imports_import_error: true
     variables_used_before_assignment: true
     variables_undefined_loop_variable: true
     variables_undefined_all_variable: true
