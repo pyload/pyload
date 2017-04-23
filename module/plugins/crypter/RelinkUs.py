@@ -16,7 +16,7 @@ from ..internal.misc import fsjoin, replace_patterns
 class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
-    __version__ = "3.21"
+    __version__ = "3.22"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.(?:us|to)/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
@@ -35,9 +35,9 @@ class RelinkUs(Crypter):
 
     OFFLINE_TOKEN = r'<title>Tattooside'
 
-    PASSWORD_TOKEN = r'container_password.php'
+    PASSWORD_TOKEN = r'container_password2.php'
     PASSWORD_ERROR_ROKEN = r'You have entered an incorrect password'
-    PASSWORD_SUBMIT_URL = r'http://relink.to/container_password.php'
+    PASSWORD_SUBMIT_URL = r'http://relink.to/container_password2.php'
 
     CAPTCHA_TOKEN = r'container_captcha.php'
     CIRCLE_CAPTCHA_PATTERN = r'id="captcha_id" value="(\w+?)"'
@@ -106,7 +106,7 @@ class RelinkUs(Crypter):
         self.package = pyfile.package()
 
     def request_package(self):
-        self.data = self.load(self.pyfile.url)
+        self.data = self.load(self.pyfile.url, redirect=2)
 
     def is_online(self):
         if self.OFFLINE_TOKEN in self.data:
