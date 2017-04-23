@@ -113,7 +113,7 @@ def favicon():
 
 
 @route('/robots.txt')
-def favicon():
+def robots():
     return static_file("robots.txt", root=join(PROJECT_DIR, "media", "txt"))
 
 
