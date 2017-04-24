@@ -34,7 +34,7 @@ def _extract_text(path, fromline=None, toline=None):
 
 def _pandoc_convert(text):
     import pypandoc
-    return pypandoc.convert_text(text, 'rst', 'markdown_github')
+    return pypandoc.convert_text(text, 'rst', 'markdown').replace('\r', '')
 
 
 def _docverter_convert(text):
