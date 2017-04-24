@@ -8,7 +8,7 @@ import os
 import sys
 from builtins import COREDIR, object, str
 
-from pyload.plugins.loader import LoaderFactory, PluginLoader
+from ..plugin.factory import LoaderFactory, PluginLoader
 
 standard_library.install_aliases()
 

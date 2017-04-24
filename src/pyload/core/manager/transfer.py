@@ -23,7 +23,7 @@ from ..thread import DecrypterThread, DownloadThread
 standard_library.install_aliases()
 
 
-class DownloadManager(object):
+class TransferManager(object):
     """
     Schedules and manages download and decrypter jobs.
     """
@@ -45,9 +45,9 @@ class DownloadManager(object):
         #: each thread is in exactly one category
         self.free = []
         #: a thread that in working must have a file as active attribute
-        self.working = []
+        self.downloading = []
         #: holds the decrypter threads
-        self.decrypter = []
+        self.decrypting = []
 
         #: indicates when reconnect has occurred
         self.reconnecting = Event()
@@ -63,11 +63,11 @@ class DownloadManager(object):
         if isinstance(thread, DownloadThread):
             # clean local var
             thread.active = None
-            self.working.remove(thread)
+            self.downloading.remove(thread)
             self.free.append(thread)
             thread.running.clear()
         elif isinstance(thread, DecrypterThread):
-            self.decrypter.remove(thread)
+            self.decrypting.remove(thread)
 
     @lock
     def stop(self, thread):
@@ -76,8 +76,8 @@ class DownloadManager(object):
         """
         if thread in self.free:
             self.free.remove(thread)
-        elif thread in self.working:
-            self.working.remove(thread)
+        elif thread in self.downloading:
+            self.downloading.remove(thread)
 
     @lock
     def start_download_thread(self, info):
@@ -91,10 +91,11 @@ class DownloadManager(object):
             thread = DownloadThread(self)
 
         thread.put(self.pyload.files.get_file(info.fid))
-
+        thread.start()        
         # wait until it picked up the task
         thread.running.wait()
-        self.working.append(thread)
+        self.downloading.append(thread)
+        return thread
 
     @lock
     def start_decrypter_thread(self, info):
@@ -103,15 +104,21 @@ class DownloadManager(object):
         """
         self.pyload.files.set_download_status(
             info.fid, DownloadStatus.Decrypting)
-        self.decrypter.append(DecrypterThread(self, [(info.download.url, info.download.plugin)],
-                                              info.fid, info.package, info.owner))
+        thread = DecrypterThread(
+            self,
+            [(info.download.url, info.download.plugin)],
+            info.fid, info.package, info.owner
+        )
+        thread.start()
+        self.decrypting.append(thread)
+        return thread
 
     @readlock
     def active_downloads(self, uid=None):
         """
         Retrieve pyfiles of running downloads.
         """
-        return [x.active for x in self.working if uid is None or x.active.owner == uid]
+        return [x.active for x in self.downloading if uid is None or x.active.owner == uid]
 
     @readlock
     def waiting_downloads(self):
@@ -119,7 +126,7 @@ class DownloadManager(object):
         All waiting downloads.
         """
         return [
-            x.active for x in self.working if x.active.has_status("waiting")]
+            x.active for x in self.downloading if x.active.has_status("waiting")]
 
     @readlock
     def get_progress_list(self, uid):
@@ -127,7 +134,7 @@ class DownloadManager(object):
         Progress of all running downloads.
         """
         # decrypter progress could be none
-        return [x for x in [thd.progress for thd in self.working + self.decrypter
+        return [x for x in [thd.progress for thd in self.downloading + self.decrypting
                             if uid is None or thd.owner == uid] if x is not None]
 
     def processing_ids(self):
@@ -142,7 +149,7 @@ class DownloadManager(object):
         End all threads.
         """
         self.pause = True
-        for thread in self.working + self.free:
+        for thread in self.downloading + self.free:
             thread.put("quit")
 
     def work(self):
@@ -261,7 +268,7 @@ class DownloadManager(object):
             return False
 
         # only reconnect when all threads are ready
-        if not (0 < self.want_reconnect() == len(self.working)):
+        if not (0 < self.want_reconnect() == len(self.downloading)):
             return False
 
         script = self.pyload.config.get('reconnect', 'script')
@@ -279,7 +286,7 @@ class DownloadManager(object):
         self.pyload.log.info(_("Starting reconnect"))
 
         # wait until all thread got the event
-        while [x.active.plugin.waiting for x in self.working].count(True) != 0:
+        while [x.active.plugin.waiting for x in self.downloading].count(True) != 0:
             time.sleep(0.25)
 
         old_ip = local_addr()
@@ -317,7 +324,7 @@ class DownloadManager(object):
         Number of downloads that are waiting for reconnect.
         """
         active = [x.active.has_plugin(
-        ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.working]
+        ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.downloading]
         return active.count(True)
 
     @readlock
@@ -327,13 +334,13 @@ class DownloadManager(object):
         """
         occ = {}
         # decrypter are treated as occupied
-        for thd in self.decrypter:
+        for thd in self.decrypting:
             if not thd.progress:
                 continue
             occ[thd.progress.plugin] = 0
 
         # get all default dl limits
-        for thd in self.working:
+        for thd in self.downloading:
             if not thd.active.has_plugin():
                 continue
             limit = thd.active.plugin.get_download_limit()
@@ -341,7 +348,7 @@ class DownloadManager(object):
             occ[thd.active.pluginname] = limit if limit > 0 else float('inf')
 
         # subtract with running downloads
-        for thd in self.working:
+        for thd in self.downloading:
             if not thd.active.has_plugin():
                 continue
             plugin = thd.active.pluginname

@@ -9,7 +9,7 @@ from builtins import int
 from logging import DEBUG, log
 
 from nose.tools import nottest
-from pyload.plugins import Fail
+from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate, to_int
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core

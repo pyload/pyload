@@ -11,7 +11,7 @@ from urllib.parse import unquote, urlparse
 
 from pycurl import FOLLOWLOCATION, LOW_SPEED_TIME
 from pyload.core.network import get_url
-from pyload.plugins.internal.captchaservice import ReCaptcha, SolveMedia
+from pyload.plugin.internal.captchaservice import ReCaptcha, SolveMedia
 from pyload.utils.web import purge as webpurge
 
 from .base.simplehoster import (PluginParseError, SimpleHoster,

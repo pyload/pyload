@@ -3,8 +3,8 @@
 from __future__ import absolute_import, unicode_literals
 from future import standard_library
 
-from .curldownload import CurlDownload
-from .curlrequest import CurlRequest
+from .download import CurlDownload
+from .request import CurlRequest
 
 standard_library.install_aliases()
 

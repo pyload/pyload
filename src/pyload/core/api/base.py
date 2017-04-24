@@ -154,7 +154,7 @@ class AbstractApi(object):
     def get_plugin_config(self):
         pass
 
-    def get_progress_info(self):
+    def get_progress(self):
         pass
 
     def get_quota(self):

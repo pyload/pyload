@@ -6,9 +6,9 @@ from future import standard_library
 import io
 import os
 
-from pyload.core.network import Bucket
-from pyload.plugins.network.curldownload import CurlDownload
-from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.core.network.bucket import Bucket
+from pyload.core.network.curl.download import CurlDownload
+from pyload.core.network.curl.request import CurlRequest
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase

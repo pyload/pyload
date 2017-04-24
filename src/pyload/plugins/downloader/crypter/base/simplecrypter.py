@@ -7,7 +7,7 @@ from future import standard_library
 import re
 from builtins import int, range
 
-from pyload.plugins.hoster.base.simplehoster import replace_patterns
+from pyload.plugin.hoster.base.simplehoster import replace_patterns
 from pyload.utils.web import purge as webpurge
 
 from .. import Crypter, Package

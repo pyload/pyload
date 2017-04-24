@@ -250,7 +250,7 @@ class File(BaseObject):
         """
         Abort file if possible.
         """
-        while self.fid in self.manager.pyload.dlm.processing_ids():
+        while self.fid in self.manager.pyload.tsm.processing_ids():
             self.lock.acquire(shared=True)
             self.abort = True
             if self.plugin and self.plugin.req:
@@ -270,7 +270,7 @@ class File(BaseObject):
         Set status to finish and release file if every thread is finished with it.
         """
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.manager.pyload.dlm.processing_ids():
+        if self.id in self.manager.pyload.tsm.processing_ids():
             return False
 
         self.set_status("finished")
@@ -328,7 +328,7 @@ class File(BaseObject):
     def get_flags(self):
         return self.plugin.dl.flags
 
-    def get_progress_info(self):
+    def get_progress(self):
         return ProgressInfo(self.pluginname, self.name, self.get_status_name(), self.get_eta(),
                             self.get_bytes_arrived(), self.get_size(), self.owner, ProgressType.Download,
                             DownloadProgress(self.fid, self.packageid, self.get_speed(), self.get_flags(), self.status))

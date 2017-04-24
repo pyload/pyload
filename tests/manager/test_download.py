@@ -17,7 +17,7 @@ standard_library.install_aliases()
 DatabaseBackend.async = DatabaseBackend.queue
 
 
-class TestDownloadManager(BenchmarkTest):
+class TestTransferManager(BenchmarkTest):
 
     bench = ["add_links", "simple", "empty"]
 
@@ -36,7 +36,7 @@ class TestDownloadManager(BenchmarkTest):
         cls.db.add_debug_user(other_user.uid)
 
         cls.files = cls.c.files
-        cls.m = cls.c.dlm
+        cls.m = cls.c.tfm
 
     @classmethod
     def tearDownClass(cls):
@@ -65,4 +65,4 @@ class TestDownloadManager(BenchmarkTest):
 
 
 if __name__ == '__main__':
-    TestDownloadManager.benchmark()
+    TestTransferManager.benchmark()

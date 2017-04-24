@@ -97,7 +97,7 @@ methods = {
     'get_package_content': TreeCollection,
     'get_package_info': PackageInfo,
     'get_plugin_config': (list, ConfigInfo),
-    'get_progress_info': (list, ProgressInfo),
+    'get_progress': (list, ProgressInfo),
     'get_quota': int,
     'get_server_version': str,
     'get_status_info': StatusInfo,

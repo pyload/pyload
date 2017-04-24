@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 from future import standard_library
 
-from pyload.plugins import Base
+from pyload.core.plugin import Base
 
 standard_library.install_aliases()
 

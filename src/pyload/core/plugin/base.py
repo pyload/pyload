@@ -341,18 +341,18 @@ class Base(object):
                 ocr = OCR()
                 result = ocr.get_captcha(fp.name)
             else:
-                task = self.pyload.itm.create_captcha_task(
+                task = self.pyload.exm.create_captcha_task(
                     img, imgtype, fp.name, self.__name__, result_type)
                 self.task = task
 
                 while task.is_waiting():
                     if self.abort():
-                        self.pyload.itm.remove_task(task)
+                        self.pyload.exm.remove_task(task)
                         raise Abort
                     time.sleep(1)
 
                 # TODO: task handling
-                self.pyload.itm.remove_task(task)
+                self.pyload.exm.remove_task(task)
 
                 if task.error and has_plugin:  #: ignore default error message since the user could use OCR
                     self.fail(

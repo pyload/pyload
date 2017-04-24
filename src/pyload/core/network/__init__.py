@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# @author: RaNaN, vuolter
 
 from .bucket import Bucket
 from .cookie import CookieJar
-from .request import RequestFactory, get_request, get_url
+from .download import DownloadRequest
+from .factory import RequestFactory, get_request, get_url
+from .request import Request, ResponseException

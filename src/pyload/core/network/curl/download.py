@@ -13,20 +13,21 @@ from time import time
 
 import pycurl
 from pyload.core.datatype import Connection
-from pyload.core.network import CookieJar
-from pyload.plugins import Abort
+from ..cookie import CookieJar
+from pyload.core.plugin import Abort
 from pyload.utils import format
 from pyload.utils.path import remove
 
-from .curlchunk import ChunkInfo, CurlChunk
-from .curlrequest import ResponseException
-from .download import Download
+from ..chunk import ChunkInfo
+from .chunk import CurlChunk
+from .request import ResponseException
+from ..download import DownloadRequest
 
 standard_library.install_aliases()
 
 
 # TODO: save content-disposition for resuming
-class CurlDownload(Download):
+class CurlDownload(DownloadRequest):
     """
     Loads an url, http + ftp supported.
     """
@@ -37,7 +38,7 @@ class CurlDownload(Download):
     CONTEXT_CLASS = CookieJar
 
     def __init__(self, *args, **kwargs):
-        Download.__init__(self, *args, **kwargs)
+        DownloadRequest.__init__(self, *args, **kwargs)
 
         self.path = None
         self.disposition = False

@@ -103,7 +103,7 @@ class DownloadApi(BaseApi):
 
         self.pyload.files.add_links(hoster + crypter, pid, self.true_primary())
         if hoster:
-            self.pyload.thm.create_info_thread(hoster, pid)
+            self.pyload.iom.create_info_thread(hoster, pid)
 
         self.pyload.log.info(
             (_("Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))

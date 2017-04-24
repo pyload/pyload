@@ -5,9 +5,10 @@ from future import standard_library
 
 import time
 from builtins import str
+from itertools import chain
 
-from pyload.plugins import Abort, Fail, Retry
-from pyload.plugins.downloader.crypter.base import Package
+from ..plugin import Abort, Fail, Retry
+from ..plugin.crypter import Package
 from pyload.utils.convert import accumulate
 from pyload.utils.purge import uniqify
 
@@ -22,7 +23,7 @@ class DecrypterThread(PluginThread):
     """
     Thread for decrypting.
     """
-    __slots__ = ['_progressinfo', 'data', 'error', 'fid', 'pid']
+    __slots__ = ['_progress', 'data', 'error', 'fid', 'pid']
 
     def __init__(self, manager, data, fid, pid, owner):
         PluginThread.__init__(self, manager, owner)
@@ -31,14 +32,12 @@ class DecrypterThread(PluginThread):
         self.fid = fid
         self.pid = pid
         # holds the progress, while running
-        self._progressinfo = None
+        self._progress = None
         # holds if an error happened
         self.error = False
 
-        self.start()
-
     def get_progress(self):
-        return self._progressinfo
+        return self._progress
 
     def run(self):
         pack = self.pyload.files.get_package(self.pid)
@@ -60,89 +59,92 @@ class DecrypterThread(PluginThread):
             api.add_package(pack_.name, pack_.get_urls(), pack.password)
 
         self.pyload.files.set_download_status(
-            self.fid, DownloadStatus.Finished if not self.error else DownloadStatus.Failed)
+            self.fid,
+            DownloadStatus.Finished if not self.error else DownloadStatus.Failed
+        )
         self.manager.done(self)
 
-    def decrypt(self, plugin_map, password=None, err=False):
+    def _decrypt(self, name, urls):
+        klass = self.pyload.pgm.load_class("crypter", name)
+        plugin = None
         result = []
 
-        self._progressinfo = ProgressInfo("BasePlugin", "", _("decrypting"),
-                                     0, 0, len(self.data), self.owner, ProgressType.Decrypting)
-        # TODO: QUEUE_DECRYPT
-        for name, urls in plugin_map.items():
-            klass = self.pyload.pgm.load_class("crypter", name)
-            plugin = None
-            plugin_result = []
+        # updating progress
+        self._progress.plugin = name
+        self._progress.name = _("Decrypting {0} links").format(
+            len(urls) if len(urls) > 1 else urls[0])
 
-            # updating progress
-            self._progressinfo.plugin = name
-            self._progressinfo.name = _("Decrypting {0} links").format(
-                len(urls) if len(urls) > 1 else urls[0])
+        # TODO: dependency check, there is a new error code for this
+        # TODO: decrypting with result yielding
+        if not klass:
+            self.error = True
+            if err:
+                result.extend(LinkStatus(
+                    url, url, -1, DownloadStatus.NotPossible, name) for url in urls)
+            self.pyload.log.debug(
+                "Plugin '{0}' for decrypting was not loaded".format(name))
+        else:
+            try:
+                plugin = klass(self.pyload, password)
 
-            # TODO: dependency check, there is a new error code for this
-            # TODO: decrypting with result yielding
-            if not klass:
-                self.error = True
-                if err:
-                    plugin_result.extend(LinkStatus(
-                        url, url, -1, DownloadStatus.NotPossible, name) for url in urls)
-                self.pyload.log.debug(
-                    "Plugin '{0}' for decrypting was not loaded".format(name))
-            else:
                 try:
-                    plugin = klass(self.pyload, password)
+                    result = plugin._decrypt(urls)
+                except Retry:
+                    time.sleep(1)
+                    result = plugin._decrypt(urls)
 
-                    try:
-                        plugin_result = plugin._decrypt(urls)
-                    except Retry:
-                        time.sleep(1)
-                        plugin_result = plugin._decrypt(urls)
+                plugin.log_debug("Decrypted", result)
 
-                    plugin.log_debug("Decrypted", plugin_result)
+            except Abort:
+                plugin.log_info(_("Decrypting aborted"))
+            except Exception as e:
+                plugin.log_error(_("Decrypting failed"), str(e))
 
-                except Abort:
-                    plugin.log_info(_("Decrypting aborted"))
-                except Exception as e:
-                    plugin.log_error(_("Decrypting failed"), str(e))
+                self.error = True
+                # generate error linkStatus
+                if err:
+                    result.extend(LinkStatus(
+                        url, url, -1, DownloadStatus.Failed, name) for url in urls)
 
-                    self.error = True
-                    # generate error linkStatus
-                    if err:
-                        plugin_result.extend(LinkStatus(
-                            url, url, -1, DownloadStatus.Failed, name) for url in urls)
-
-                    # no debug for intentional errors
-                    # if self.pyload.debug and not isinstance(e, Fail):
-                        # self.pyload.print_exc()
-                        # self.debug_report(plugin.__name__, plugin=plugin)
-                finally:
-                    if plugin:
-                        plugin.clean()
-
-            self._progressinfo.done += len(urls)
-            result.extend(plugin_result)
-
+                # no debug for intentional errors
+                # if self.pyload.debug and not isinstance(e, Fail):
+                    # self.pyload.print_exc()
+                    # self.debug_report(plugin.__name__, plugin=plugin)
+            finally:
+                if plugin:
+                    plugin.clean()
+                self._progress.done += len(urls)
+                
+        return result
+                        
+    def decrypt(self, plugin_map, password=None, err=False):
+        result = []
+        self._progress = ProgressInfo(
+            "BasePlugin", "", _("decrypting"), 0, 0, len(self.data), self.owner,
+            ProgressType.Decrypting
+        )
+        # TODO: QUEUE_DECRYPT
+        result = self._pack_result(
+            chain.from_iterable(
+                self._decrypt(name, urls) for name, urls in plugin_map.items()))
         # clear the progress
-        self._progressinfo = None
-
+        self._progress = None
+        return result
+        
+    def _pack_result(self, packages):    
         # generated packages
         packs = {}
         # urls without package
         urls = []
-
         # merge urls and packages
-        for pack in result:
+        for pack in packages:
             if isinstance(pack, Package):
                 if pack.name in packs:
                     packs[pack.name].urls.extend(pack.urls)
+                elif not pack.name:
+                    urls.extend(pack.links)
                 else:
-                    if not pack.name:
-                        urls.extend(pack.links)
-                    else:
-                        packs[pack.name] = pack
+                    packs[pack.name] = pack
             else:
-                urls.append(pack)
-
-        urls = uniqify(urls)
-
-        return urls, list(packs.values())
+                urls.append(pack)        
+        return uniqify(urls), list(packs.values())

@@ -370,7 +370,7 @@ class FileManager(object):
         pid = file.packageid
         order = file.fileorder
 
-        if fid in self.pyload.dlm.processing_ids():
+        if fid in self.pyload.tsm.processing_ids():
             file.abort_download()
 
         self.db.delete_file(fid, file.fileorder, file.packageid)
@@ -629,7 +629,10 @@ class FileManager(object):
                     DownloadStatus.NA, DownloadStatus.Finished, DownloadStatus.Skipped):
                 urls.append((file.url, file.pluginname))
 
-        self.pyload.thm.create_info_thread(urls, pid)
+        if not urls:
+            return None
+            
+        self.pyload.iom.create_info_thread(urls, pid)
 
     @invalidate
     def restart_failed(self):

@@ -7,9 +7,9 @@ from builtins import dict, str
 from contextlib import closing
 
 from pyload.config.convert import from_string, to_configdata
-from pyload.core.datatype import AccountInfo, ConfigItem
-from pyload.core.network import CookieJar
-from pyload.plugins import Base
+from ..datatype import AccountInfo, ConfigItem
+from ..network.cookie import CookieJar
+from .base import Base
 from pyload.utils import format, parse, time
 from pyload.utils.convert import to_str
 from pyload.utils.decorator import lock

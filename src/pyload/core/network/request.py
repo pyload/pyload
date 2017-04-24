@@ -1,123 +1,120 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
 from future import standard_library
 
-from builtins import REQUEST, object
-from contextlib import closing
+from builtins import object
 
-from pyload.plugins.network.defaultrequest import (DefaultDownload,
-                                                   DefaultRequest)
-
-from .bucket import Bucket
+from pyload.utils.struct import HeaderDict
 
 standard_library.install_aliases()
 
 
-class RequestFactory(object):
+class ResponseException(Exception):
+    __slots__ = ['code']
 
-    # __slots__ = ['bucket', 'pyload']
+    def __init__(self, code, content=""):
+        Exception.__init__(
+            self, "Server response error: {0} {1}".format(code, content))
+        self.code = code
 
-    def __init__(self, core):
-        self.pyload = core
-        self.bucket = Bucket()
-        self.update_bucket()
 
-        self.pyload.evm.listen_to("config:changed", self.update_config)
+class Request(object):
+    """
+    Abstract class to support different types of request, most methods should be overwritten.
+    """
+    __version__ = "0.1"
 
-    def get_url(self, *args, **kwargs):
-        """
-        See HTTPRequest for argument list.
-        """
-        with closing(DefaultRequest(self.get_config())) as h:
-            rep = h.load(*args, **kwargs)
-        return rep
+    #: Class that will be instantiated and associated with the request, and if needed copied and reused
+    CONTEXT_CLASS = None
 
-    def get_request(self, context=None, class_=DefaultRequest):
-        """
-        Creates a request with new or given context.
-        """
-        # also accepts the context class directly
-        if isinstance(context, class_.CONTEXT_CLASS):
-            return class_(self.get_config(), context)
-        elif context:
-            return class_(*context)
+    def __init__(self, config, context=None, options=None):
+
+        # Global config, holds some configurable parameter
+        self.config = config
+
+        # Create a new context if not given
+        if context is None and self.CONTEXT_CLASS is not None:
+            self.context = self.CONTEXT_CLASS()
         else:
-            return class_(self.get_config())
+            self.context = context
 
-    def get_download_request(self, request=None, class_=DefaultDownload):
-        """
-        Instantiates a instance for downloading.
-        """
-        # TODO: load with plugin manager
-        return class_(self.bucket, request)
+        # Store options in dict
+        self.options = {} if options is None else options
 
-    def get_interface(self):
-        return self.pyload.config.get('connection', 'interface')
+        self.headers = HeaderDict()
 
-    def get_proxies(self):
+        # Last response code
+        self.code = 0
+        self.flags = 0
+        self.do_abort = False
+        self.init_context()
+
+        # TODO: content encoding? Could be handled globally
+
+    def init_context(self):
         """
-        Returns a proxy list for the request classes.
+        Should be used to initialize everything from given context and options.
         """
-        if not self.pyload.config.get('proxy', 'activated'):
-            return {}
+        pass
+
+    def get_context(self):
+        """
+        Retrieves complete state that is needed to copy the request context.
+        """
+        return self.config, self.context, self.options
+
+    def set_context(self, *args):
+        """
+        Sets request context.
+        """
+        self.config, self.context, self.options = args
+
+    def set_option(self, name, value):
+        """
+        Sets an option.
+        """
+        self.options[name] = value
+
+    def unset_option(self, name):
+        """
+        Removes a specific option or reset everything on empty string.
+        """
+        if name == "":
+            self.options.clear()
         else:
-            _type = "http"
-            setting = self.pyload.config.get('proxy', 'type').lower()
-            if setting == "socks4":
-                _type = "socks4"
-            elif setting == "socks5":
-                _type = "socks5"
+            if name in self.options:
+                del self.options[name]
 
-            username = None
-            if self.pyload.config.get('proxy', 'username') and self.pyload.config.get(
-                    'proxy', 'username').lower() != "none":
-                username = self.pyload.config.get('proxy', 'username')
-
-            pw = None
-            if self.pyload.config.get('proxy', 'password') and self.pyload.config.get(
-                    'proxy', 'password').lower() != "none":
-                pw = self.pyload.config.get('proxy', 'password')
-
-            return {
-                'type': _type,
-                'address': self.pyload.config.get('proxy', 'host'),
-                'port': self.pyload.config.get('proxy', 'port'),
-                'username': username,
-                'password': pw,
-            }
-
-    def update_config(self, section, option, value):
+    def add_auth(self, user, pwd):
         """
-        Updates the bucket when a config value changed.
+        Adds authentication information to the request.
         """
-        if option in ("limit_speed", "max_speed"):
-            self.update_bucket()
+        self.options['auth'] = "{0}:{1}".format(user, pwd)
 
-    def get_config(self):
+    def remove_auth(self):
         """
-        Returns options needed for pycurl.
+        Removes authentication from the request.
         """
-        return {'interface': self.get_interface(),
-                'proxies': self.get_proxies(),
-                'ipv6': self.pyload.config.get('connection', 'ipv6')}
+        self.unset_option("auth")
 
-    def update_bucket(self):
+    def load(self, uri, *args, **kwargs):
         """
-        Set values in the bucket according to settings.
+        Loads given resource from given uri. Args and kwargs depends on implementation.
         """
-        max_speed = self.pyload.config.get('connection', 'max_speed')
-        if max_speed > 0:
-            self.bucket.set_rate(max_speed << 10)
-        else:
-            self.bucket.set_rate(-1)
+        raise NotImplementedError
 
+    def abort(self):
+        self.do_abort = True
 
-# needs REQUEST in global namespace
-def get_url(*args, **kwargs):
-    return REQUEST.get_url(*args, **kwargs)
+    def reset(self):
+        """
+        Resets the context to initial state.
+        """
+        self.unset_option("")
 
-
-def get_request(*args, **kwargs):
-    return REQUEST.get_request(*args, **kwargs)
+    def close(self):
+        """
+        Close and clean everything.
+        """
+        raise NotImplementedError

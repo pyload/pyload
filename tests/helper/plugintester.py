@@ -16,8 +16,8 @@ from logging import DEBUG, log
 
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.core.network import get_request
-from pyload.plugins import Abort, Fail
-from pyload.plugins.downloader.hoster.base import Hoster
+from pyload.core.plugin.base import Abort, Fail
+from pyload.core.plugin.hoster import Hoster
 from pyload.utils.path import makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase

@@ -8,7 +8,7 @@ import re
 from builtins import str
 from time import mktime, strptime
 
-from pyload.plugins.downloader.hoster.base.simplehoster import parse_html_form
+from pyload.plugin.downloader.hoster.base.simplehoster import parse_html_form
 from pyload.utils import parse
 
 from .init import Account

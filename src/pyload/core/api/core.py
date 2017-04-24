@@ -72,39 +72,39 @@ class CoreApi(BaseApi):
                                    total[1], queue[1],
                                    self.is_interaction_waiting(
                                        Interaction.All),
-                                   not self.pyload.dlm.pause,  #: and self.is_time_download(),
-                                   self.pyload.dlm.pause,
+                                   not self.pyload.tsm.pause,  #: and self.is_time_download(),
+                                   self.pyload.tsm.pause,
                                    # and self.is_time_reconnect(),
                                    self.pyload.config.get(
                                        'reconnect', 'activated'),
                                    self.get_quota())
 
-        for file in self.pyload.dlm.active_downloads(self.primary_uid):
+        for file in self.pyload.tsm.active_downloads(self.primary_uid):
             server_status.speed += file.get_speed()  #: bytes/s
 
         return server_status
 
     @requireperm(Permission.All)
-    def get_progress_info(self):
+    def get_progress(self):
         """
         Status of all currently running tasks
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return (self.pyload.dlm.get_progress_list(self.primary_uid) +
-                self.pyload.thm.get_progress_list(self.primary_uid))
+        return (self.pyload.tsm.get_progress_list(self.primary_uid) +
+                self.pyload.iom.get_progress_list(self.primary_uid))
 
     def pause_server(self):
         """
         Pause server: It won't start any new downloads, but nothing gets aborted.
         """
-        self.pyload.dlm.pause = True
+        self.pyload.tsm.pause = True
 
     def unpause_server(self):
         """
         Unpause server: New Downloads will be started.
         """
-        self.pyload.dlm.pause = False
+        self.pyload.tsm.pause = False
 
     def toggle_pause(self):
         """
@@ -112,8 +112,8 @@ class CoreApi(BaseApi):
 
         :return: new pause state
         """
-        self.pyload.dlm.pause ^= True
-        return self.pyload.dlm.pause
+        self.pyload.tsm.pause ^= True
+        return self.pyload.tsm.pause
 
     def toggle_reconnect(self):
         """

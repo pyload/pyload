@@ -7,7 +7,7 @@ from builtins import range, str
 from re import match, search
 from urllib.parse import unquote, urlparse
 
-from pyload.plugins.request import ResponseException
+from pyload.plugin.request import ResponseException
 from pyload.utils import purge
 from pyload.utils.web import purge as webpurge
 

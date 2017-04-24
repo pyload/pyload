@@ -8,111 +8,22 @@ import io
 import os
 import re
 import time
-from builtins import int, object, range
+from builtins import int, range
 
 import pycurl
 from pyload.utils import format
-from pyload.utils.path import remove
 from pyload.utils.struct import HeaderDict
 
-from .curlrequest import CurlRequest
+from .request import CurlRequest
 
 standard_library.install_aliases()
 
-
-class ChunkInfo(object):
-
-    def __init__(self, name):
-        self.name = name
-        self.size = 0
-        self.resume = False
-        self.chunks = []
-
-    def __repr__(self):
-        ret = "ChunkInfo: {0}, {1}\n".format(self.name, self.size)
-        for i, c in enumerate(self.chunks):
-            ret += "{0}# {1}\n".format(i, c[1])
-
-        return ret
-
-    def set_size(self, size):
-        self.size = int(size)
-
-    def add_chunk(self, name, range):
-        self.chunks.append((name, range))
-
-    def clear(self):
-        self.chunks = []
-
-    def create_chunks(self, chunks):
-        self.clear()
-        chunk_size = self.size // chunks
-
-        current = 0
-        for i in range(chunks):
-            end = self.size - 1 if (i == chunks - 1) else current + chunk_size
-            self.add_chunk("{0}.chunk{1}".format(self.name, i), (current, end))
-            current += chunk_size + 1
-
-    def save(self):
-        fs_name = format.path("{0}.chunks".format(self.name))
-        with io.open(fs_name, mode='w') as fp:
-            fp.write("name:{0}\n".format(self.name))
-            fp.write("size:{0}\n".format(self.size))
-            for i, c in enumerate(self.chunks):
-                fp.write("#{0:d}:\n".format(i))
-                fp.write("\tname:{0}\n".format(c[0]))
-                fp.write("\trange:{0:d}-{1:d}\n".format(*c[1]))
-
-    @staticmethod
-    def load(name):
-        fs_name = format.path("{0}.chunks".format(name))
-        if not os.path.exists(fs_name):
-            raise IOError
-        with io.open(fs_name) as fp:
-            name = fp.readline()[:-1]
-            size = fp.readline()[:-1]
-            if name.startswith("name:") and size.startswith("size:"):
-                name = name[5:]
-                size = size[5:]
-            else:
-                raise TypeError("chunk.file has wrong format")
-            ci = ChunkInfo(name)
-            ci.loaded = True
-            ci.set_size(size)
-            while True:
-                if not fp.readline():  #: skip line
-                    break
-                name = fp.readline()[1:-1]
-                range = fp.readline()[1:-1]
-                if name.startswith("name:") and range.startswith("range:"):
-                    name = name[5:]
-                    range = range[6:].split("-")
-                else:
-                    raise TypeError("chunk.file has wrong format")
-
-                ci.add_chunk(name, (int(range[0]), int(range[1])))
-        return ci
-
-    def remove(self):
-        fs_name = format.path("{0}.chunks".format(self.name))
-        remove(fs_name)
-
-    def get_count(self):
-        return len(self.chunks)
-
-    def get_chunk_name(self, index):
-        return self.chunks[index][0]
-
-    def get_chunk_range(self, index):
-        return self.chunks[index][1]
-
-_re_filename = re.compile(
-    r'filename(?P<type>=|\*=(?P<enc>.+)\'\')(?P<name>.*)',
-    flags=re.I)
-
-
+       
 class CurlChunk(CurlRequest):
+
+    _re_filename = re.compile(
+        r'filename(?P<type>=|\*=(?P<enc>.+)\'\')(?P<name>.*)',
+        flags=re.I)
 
     def __init__(self, id, parent, range=None, resume=False):
         self.set_context(*parent.get_context())
@@ -137,14 +48,14 @@ class CurlChunk(CurlRequest):
 
         self.init_context()
 
-        self.BOMChecked = False  #: check and remove byte order mark
+        self.check_bom = True  #: check and remove byte order mark
 
         self.rep = None
 
         self.sleep = 0.000
         self.last_size = 0
         # next to last size
-        self.n_last_size = 0
+        self._nlast_size = 0
 
     def __repr__(self):
         return "<CurlChunk id={0:d}, size={1:d}, arrived={2:d}>".format(
@@ -160,8 +71,8 @@ class CurlChunk(CurlRequest):
         """
         self.set_request_context(
             self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
-        self.c.setopt(pycurl.WRITEFUNCTION, self.write_body)
-        self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
+        self.setopt(pycurl.WRITEFUNCTION, self.write_body)
+        self.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
         # request all bytes, since some servers in russia seems to have a
         # defect arihmetic unit
@@ -180,16 +91,16 @@ class CurlChunk(CurlRequest):
 
                 # as last chunk dont set end range, so we get everything
                 if self.id == len(self.p.info.chunks) - 1:
-                    range = b'{0:d}-'.format(self.arrived + self.range[0])
+                    range = '{0:d}-'.format(self.arrived + self.range[0])
                 else:
-                    range = b'{0:d}-{1:d}'.format(self.arrived + self.range[
+                    range = '{0:d}-{1:d}'.format(self.arrived + self.range[
                                                 0], min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked resume with range {0}".format(range))
-                self.c.setopt(pycurl.RANGE, range)
+                self.setopt(pycurl.RANGE, range)
             else:
                 self.log.debug("Resume File from {0:d}".format(self.arrived))
-                self.c.setopt(pycurl.RESUME_FROM, self.arrived)
+                self.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
@@ -200,7 +111,7 @@ class CurlChunk(CurlRequest):
                                                min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {0}".format(range))
-                self.c.setopt(pycurl.RANGE, range)
+                self.setopt(pycurl.RANGE, range)
 
             self.fp = io.open(fs_name, mode='wb')
 
@@ -223,13 +134,13 @@ class CurlChunk(CurlRequest):
 
     def write_body(self, buf):
         # ignore BOM, it confuses unrar
-        if not self.BOMChecked:
+        if self.check_bom:
             if [ord(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
-            self.BOMChecked = True
+            self.check_bom = False
 
         size = len(buf)
-        self.n_last_size = self.last_size
+        self._nlast_size = self.last_size
         self.last_size = size
 
         self.arrived += size
@@ -240,7 +151,7 @@ class CurlChunk(CurlRequest):
             time.sleep(self.p.bucket.consumed(size))
 
         # if the buffer sizes are stable no sleep will be made
-        elif size != self.last_size or size != self.n_last_size:
+        elif size != self.last_size or size != self._nlast_size:
             # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
             # otherwise reduce sleep time percentile (values are based on tests)
             # So in general cpu time is saved without reducing bandwidth too
@@ -265,15 +176,14 @@ class CurlChunk(CurlRequest):
             if line.startswith("accept-ranges") and "bytes" in line:
                 self.p.chunk_support = True
 
-            if "content-disposition" in line:
-
-                m = _re_filename.search(orgline.strip())
+            if 'content-disposition' in line:
+                m = self._re_filename.search(orgline.strip())
                 if m:
                     name = format.name(m.groupdict()['name'])
                     self.p._name = name
                     self.log.debug("Content-Disposition: {0}".format(name))
 
-            if not self.resume and line.startswith("content-length"):
+            if not self.resume and line.startswith('content-length'):
                 self.p._size = int(line.split(":")[1])
 
         self.header_parsed = True

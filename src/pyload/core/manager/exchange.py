@@ -19,7 +19,7 @@ from ..datatype.task import Interaction, InteractionTask
 standard_library.install_aliases()
 
 
-class InteractionManager(object):
+class ExchangeManager(object):
     """
     Class that gives ability to interact with the user.
     Arbitrary tasks with predefined output and input types can be set off

@@ -5,10 +5,10 @@ from .plugin import PluginManager
 from .account import AccountManager
 from .addon import AddonManager
 from .config import ConfigManager
-from .download import DownloadManager
 from .event import EventManager
+from .exchange import ExchangeManager
 from .file import FileManager
-from .interaction import InteractionManager
+from .info import InfoManager
 from .remote import RemoteManager
 # from .server import ServerManager
-from .thread import ThreadManager
+from .transfer import TransferManager

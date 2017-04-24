@@ -11,7 +11,7 @@ from .init import Api, requireperm
 standard_library.install_aliases()
 
 
-class UserInteractionApi(BaseApi):
+class UserExchangeApi(BaseApi):
     """
     Everything needed for user interaction.
     """

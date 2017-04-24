@@ -8,8 +8,8 @@ from .addon import AddonApi
 from .config import ConfigApi
 from .core import CoreApi
 from .download import DownloadApi
+from .exchange import UserExchangeApi
 from .file import FileApi
-from .interaction import UserInteractionApi
 from .predownload import PreDownloadApi
 from .stat import StatisticsApi
 from .user import UserApi
@@ -23,11 +23,12 @@ __api_classes = (
     ConfigApi,
     CoreApi,
     DownloadApi,
+    UserExchangeApi,
     FileApi,
-    UserInteractionApi,
     PreDownloadApi,
     StatisticsApi,
-    UserApi)
+    UserApi
+)
 for api in __api_classes:
     Api.extend(api)
 

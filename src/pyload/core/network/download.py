@@ -8,7 +8,7 @@ from .request import Request
 standard_library.install_aliases()
 
 
-class Download(Request):
+class DownloadRequest(Request):
     """
     Abstract class for download request.
     """

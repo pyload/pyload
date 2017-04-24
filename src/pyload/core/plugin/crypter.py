@@ -8,9 +8,8 @@ import os
 from builtins import int, str
 from time import time
 
-from pyload.plugins import Base, Fail, Retry
-from pyload.plugins.network.defaultrequest import (DefaultDownload,
-                                                   DefaultRequest)
+from .base import Base, Fail, Retry
+from pyload.plugins.network.defaultrequest import DefaultDownload, DefaultRequest
 from pyload.utils import format
 from pyload.utils.convert import chunks as _chunks
 from pyload.utils.path import makedirs, remove

@@ -12,7 +12,8 @@ from builtins import object, range, str
 from time import time
 
 import ast
-from pyload.plugins import Base
+
+from .base import Base
 from pyload.utils.layer.legacy.collections_ import defaultdict, namedtuple
 from pyload.utils.path import makedirs
 

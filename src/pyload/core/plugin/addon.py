@@ -5,7 +5,7 @@ from future import standard_library
 
 from builtins import ADDONMANAGER, object, str
 
-from pyload.plugins import Base
+from .base import Base
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
 

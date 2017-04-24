@@ -14,7 +14,7 @@ from time import time
 from nose.tools import nottest
 from pyload.core.datatype import File
 from pyload.core.datatype.file import statusmap
-from pyload.plugins import Fail
+from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate
 from pyload.utils.path import remove
 from tests.helper.parser import parse_config

@@ -5,7 +5,7 @@ from future import standard_library
 
 from builtins import dict
 
-from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.core.network.curl.request import CurlRequest
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase

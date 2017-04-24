@@ -14,7 +14,7 @@ from pyload.utils.purge import uniqify
 
 from ..datatype.check import OnlineCheck
 from ..datatype.init import DownloadStatus, LinkStatus, Permission
-from ..network.request import get_url
+from ..network.factory import get_url
 from .base import BaseApi
 from .init import Api, requireperm
 
@@ -66,7 +66,7 @@ class PreDownloadApi(BaseApi):
         tmp = [(url, LinkStatus(url, url, -1, DownloadStatus.Queued, pluginname))
                for url, pluginname in hoster]
         data = parse.packs(tmp)
-        rid = self.pyload.thm.create_result_thread(
+        rid = self.pyload.iom.create_result_thread(
             self.primary_uid, hoster + crypter)
 
         return OnlineCheck(rid, data)
@@ -111,7 +111,7 @@ class PreDownloadApi(BaseApi):
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
-        result = self.pyload.thm.get_info_result(rid)
+        result = self.pyload.iom.get_info_result(rid)
         if result and result.owner == self.primary_uid:
             return result.to_api_data()
 

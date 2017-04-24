@@ -10,9 +10,9 @@ from builtins import str
 from traceback import print_exc
 
 from pycurl import error
-from pyload.plugins import Abort, Fail, Retry
-from pyload.plugins.downloader.hoster.base import Reconnect, Skip
-from pyload.plugins.request import ResponseException
+from ..plugin import Abort, Fail, Retry
+from ..plugin.hoster import Reconnect, Skip
+from ..network.request import ResponseException
 from pyload.utils.layer.safethreading import Event
 from queue import Queue
 
@@ -36,8 +36,6 @@ class DownloadThread(PluginThread):
         self.running = Event()
         self.queue = Queue()  #: job queue
         self.active = None
-
-        self.start()
 
     def _handle_abort(self, file):
         try:
@@ -85,7 +83,7 @@ class DownloadThread(PluginThread):
         self.clean(file)
 
     # TODO: activate former skipped downloads
-    def _handle_fail(file, errmsg):
+    def _handle_fail(self, file, errmsg):
         if errmsg == "offline":
             file.set_status("offline")
             self.pyload.log.warning(
@@ -116,7 +114,7 @@ class DownloadThread(PluginThread):
         self.active = False
         self.pyload.files.save()
 
-    def _handle_error(file, errmsg, errcode=None):
+    def _handle_error(self, file, errmsg, errcode=None):
         self.pyload.log.debug(
             "pycurl exception {0}: {1}".format(errcode, errmsg))
 
@@ -244,7 +242,7 @@ class DownloadThread(PluginThread):
     def get_progress(self):
         if not self.active:
             return None
-        return self.active.get_progress_info()
+        return self.active.get_progress()
 
     def put(self, job):
         """

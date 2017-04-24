@@ -11,8 +11,8 @@ from urllib.parse import quote, urlencode
 
 import pycurl
 from http.client import responses
-from pyload.core.network import CookieJar
-from pyload.plugins import Abort
+from ..cookie import CookieJar
+from pyload.core.plugin import Abort
 from pyload.utils import convert
 
 from .request import Request, ResponseException
@@ -20,11 +20,11 @@ from .request import Request, ResponseException
 standard_library.install_aliases()
 
 
-def myquote(url):
+def safequote(url):
     return quote(convert.to_bytes(url, url), safe="%/:=&?~#+!$,;'@()*[]")
 
 
-def myurlencode(data):
+def safeurlencode(data):
     data = dict(data)
     return urlencode(
         dict((convert.to_bytes(x, x), convert.to_bytes(y, y))
@@ -56,8 +56,8 @@ class CurlRequest(Request):
         # cookiejar defines the context
         self.cj = self.context
 
-        self.c.setopt(pycurl.WRITEFUNCTION, self.write)
-        self.c.setopt(pycurl.HEADERFUNCTION, self.write_header)
+        self.setopt(pycurl.WRITEFUNCTION, self.write)
+        self.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
     # TODO: addHeader
 
@@ -73,33 +73,38 @@ class CurlRequest(Request):
             self.set_interface(self.config)
             self.init_options(self.config)
 
+    def setopt(self, option, value):
+        self.setopt(option, convert.to_bytes(value, value))
+        
     def init_handle(self):
         """
         Sets common options to curl handle.
         """
-        self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-        self.c.setopt(pycurl.MAXREDIRS, 5)
-        self.c.setopt(pycurl.CONNECTTIMEOUT, 30)
-        self.c.setopt(pycurl.NOSIGNAL, 1)
-        self.c.setopt(pycurl.NOPROGRESS, 1)
+        self.setopt(pycurl.FOLLOWLOCATION, 1)
+        self.setopt(pycurl.MAXREDIRS, 5)
+        self.setopt(pycurl.CONNECTTIMEOUT, 30)
+        self.setopt(pycurl.NOSIGNAL, 1)
+        self.setopt(pycurl.NOPROGRESS, 1)
         if hasattr(pycurl, "AUTOREFERER"):
-            self.c.setopt(pycurl.AUTOREFERER, 1)
-        self.c.setopt(pycurl.SSL_VERIFYPEER, 0)
+            self.setopt(pycurl.AUTOREFERER, 1)
+        self.setopt(pycurl.SSL_VERIFYPEER, 0)
         # Interval for low speed, detects connection loss, but can abort dl if
         # hoster stalls the download
-        self.c.setopt(pycurl.LOW_SPEED_TIME, 45)
-        self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
+        self.setopt(pycurl.LOW_SPEED_TIME, 45)
+        self.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
         # do not save the cookies
-        self.c.setopt(pycurl.COOKIEFILE, b'')
-        self.c.setopt(pycurl.COOKIEJAR, b'')
+        self.setopt(pycurl.COOKIEFILE, '')
+        self.setopt(pycurl.COOKIEJAR, '')
 
-        # self.c.setopt(pycurl.VERBOSE, 1)
+        # self.setopt(pycurl.VERBOSE, 1)
 
-        self.c.setopt(pycurl.USERAGENT,
-                      "Mozilla/5.0 (Windows NT 6.1; Win64; x64;en; rv:5.0) Gecko/20110619 Firefox/5.0")
+        self.setopt(
+            pycurl.USERAGENT,
+            'Mozilla/5.0 (Windows NT 10.0; Win64; rv:53.0) Gecko/20100101 Firefox/53.0'
+        )
         if pycurl.version_info()[7]:
-            self.c.setopt(pycurl.ENCODING, b'gzip,deflate')
+            self.setopt(pycurl.ENCODING, 'gzip,deflate')
 
         self.headers.update(
             {'Accept': "*/*",
@@ -110,48 +115,37 @@ class CurlRequest(Request):
              'Expect': ""})
 
     def set_interface(self, options):
-
         interface, proxy, ipv6 = options[
             'interface'], options['proxies'], options['ipv6']
 
         if interface and interface.lower() != "none":
-            self.c.setopt(
-                pycurl.INTERFACE,
-                convert.to_bytes(
-                    interface,
-                    interface))
+            self.setopt(pycurl.INTERFACE, interface)
 
         if proxy:
             if proxy['type'] == "socks4":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
+                self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
             elif proxy['type'] == "socks5":
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
+                self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
             else:
-                self.c.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
+                self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
-            host = proxy['host']
-            self.c.setopt(pycurl.PROXY, convert.to_bytes(host, host))
-            self.c.setopt(pycurl.PROXYPORT, proxy['port'])
+            self.setopt(pycurl.PROXY, proxy['host'])
+            self.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:
                 userpwd = "{0}:{1}".format(proxy['username'], proxy['password'])
-                self.c.setopt(
-                    pycurl.PROXYUSERPWD,
-                    convert.to_bytes(
-                        userpwd,
-                        userpwd))
+                self.setopt(pycurl.PROXYUSERPWD, userpwd)
 
         if ipv6:
-            self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
+            self.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
         else:
-            self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
+            self.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
         if "timeout" in options:
-            self.c.setopt(pycurl.LOW_SPEED_TIME, options['timeout'])
+            self.setopt(pycurl.LOW_SPEED_TIME, options['timeout'])
 
         if "auth" in options:
-            auth = self.options['auth']
-            self.c.setopt(pycurl.USERPWD, convert.to_bytes(auth, auth))
+            self.setopt(pycurl.USERPWD, self.options['auth'])
 
     def init_options(self, options):
         """
@@ -160,36 +154,36 @@ class CurlRequest(Request):
         for k, v in options.items():
             if not hasattr(pycurl, k):
                 continue
-            self.c.setopt(getattr(pycurl, k), v)
+            self.setopt(getattr(pycurl, k), v)
 
     def set_request_context(self, url, get, post,
                             referer, cookies, multipart=False):
         """
         Sets everything needed for the request.
         """
-        url = myquote(url)
+        url = safequote(url)
 
         if get:
             get = urlencode(get)
             url = "{0}?{1}".format(url, get)
 
-        self.c.setopt(pycurl.URL, url)
+        self.setopt(pycurl.URL, url)
 
         if post:
-            self.c.setopt(pycurl.POST, 1)
+            self.setopt(pycurl.POST, 1)
             if not multipart:
                 if isinstance(post, str):
                     post = convert.to_bytes(post, post)
                 elif not isinstance(post, bytes):
-                    post = myurlencode(post)
+                    post = safeurlencode(post)
 
-                self.c.setopt(pycurl.POSTFIELDS, post)
+                self.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [(x, convert.to_bytes(y, y))
                         for x, y in post.items()]
-                self.c.setopt(pycurl.HTTPPOST, post)
+                self.setopt(pycurl.HTTPPOST, post)
         else:
-            self.c.setopt(pycurl.POST, 0)
+            self.setopt(pycurl.POST, 0)
 
         if referer and self.last_url:
             self.headers['Referer'] = str(self.last_url)
@@ -198,17 +192,16 @@ class CurlRequest(Request):
 
         if cookies:
             for c in self.cj.output().splitlines():
-                self.c.setopt(pycurl.COOKIELIST, c)
+                self.setopt(pycurl.COOKIELIST, c)
         else:
             # Magic string that erases all cookies
-            self.c.setopt(pycurl.COOKIELIST, b'ALL')
+            self.setopt(pycurl.COOKIELIST, 'ALL')
 
         # TODO: remove auth again
         if "auth" in self.options:
-            auth = self.options['auth']
-            self.c.setopt(pycurl.USERPWD, convert.to_bytes(auth, auth))
+            self.setopt(pycurl.USERPWD, self.options['auth'])
 
-        self.c.setopt(pycurl.HTTPHEADER, self.headers.list())
+        self.setopt(pycurl.HTTPHEADER, self.headers.list())
 
     def load(self, url, get={}, post={}, referer=True, cookies=True,
              just_header=False, multipart=False, decode=False):
@@ -223,33 +216,32 @@ class CurlRequest(Request):
         if "header" in self.options:
             # TODO
             # print("custom header not implemented")
-            header = self.options['header']
-            self.c.setopt(pycurl.HTTPHEADER, convert.to_bytes(header, header))
+            self.setopt(pycurl.HTTPHEADER, self.options['header'])
 
         if just_header:
-            self.c.setopt(pycurl.FOLLOWLOCATION, 0)
-            self.c.setopt(pycurl.NOBODY, 1)  # TODO: nobody= no post?
+            self.setopt(pycurl.FOLLOWLOCATION, 0)
+            self.setopt(pycurl.NOBODY, 1)  # TODO: nobody= no post?
 
             # overwrite HEAD request, we want a common request type
             if post:
-                self.c.setopt(pycurl.CUSTOMREQUEST, b'POST')
+                self.setopt(pycurl.CUSTOMREQUEST, 'POST')
             else:
-                self.c.setopt(pycurl.CUSTOMREQUEST, b'GET')
+                self.setopt(pycurl.CUSTOMREQUEST, 'GET')
 
             try:
                 self.c.perform()
                 rep = self.header
             finally:
-                self.c.setopt(pycurl.FOLLOWLOCATION, 1)
-                self.c.setopt(pycurl.NOBODY, 0)
+                self.setopt(pycurl.FOLLOWLOCATION, 1)
+                self.setopt(pycurl.NOBODY, 0)
                 self.c.unsetopt(pycurl.CUSTOMREQUEST)
 
         else:
             self.c.perform()
             rep = self.get_response()
 
-        self.c.setopt(pycurl.POSTFIELDS, b'')
-        self.last_url = myquote(url)
+        self.setopt(pycurl.POSTFIELDS, '')
+        self.last_url = safequote(url)
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
         if self.last_effective_url:
             self.last_url = self.last_effective_url

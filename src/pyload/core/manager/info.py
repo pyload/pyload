@@ -17,7 +17,7 @@ from ..thread import InfoThread
 standard_library.install_aliases()
 
 
-class ThreadManager(object):
+class InfoManager(object):
     """
     Manages all non download related threads and jobs.
     """
@@ -71,8 +71,8 @@ class ThreadManager(object):
         Start a thread which fetches online status and other info's.
         """
         self.timestamp = time() + 5 * 60
-        if data:
-            InfoThread(self, None, data, pid)
+        thread = InfoThread(self, None, data, pid)
+        thread.start()
 
     @lock
     def create_result_thread(self, user, data):
@@ -87,8 +87,9 @@ class ThreadManager(object):
         oc = OnlineCheck(rid, user)
         self.info_results[rid] = oc
 
-        InfoThread(self, user, data, oc=oc)
-
+        thread = InfoThread(self, user, data, oc=oc)
+        thread.start()
+        
         return rid
 
     @lock

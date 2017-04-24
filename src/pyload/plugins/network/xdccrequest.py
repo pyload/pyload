@@ -13,7 +13,7 @@ from contextlib import closing
 from select import select
 from time import time
 
-from pyload.plugins import Abort
+from pyload.core.plugin import Abort
 from pyload.utils.path import remove
 
 standard_library.install_aliases()

@@ -17,25 +17,25 @@ class AddonThread(PluginThread):
     """
     Thread for addons.
     """
-    __slots__ = ['_progressinfo', 'active', 'args', 'fn', 'kwargs']
+    __slots__ = ['_progress', 'active', 'args', 'func', 'kwargs']
 
-    def __init__(self, manager, fn, args, kwargs):
+    def __init__(self, manager, func, args, kwargs):
         """
         Constructor.
         """
         PluginThread.__init__(self, manager)
 
-        self.fn = fn
+        self.func = func
         self.args = args
         self.kwargs = kwargs
 
         self.active = []
-        self._progressinfo = None
+        self._progress = None
 
-        manager.add_thread(self)
-
-        self.start()
-
+    def start(self):
+        self.manager.add_thread(self)
+        PluginThread.start(self)
+        
     def get_active_files(self):
         return self.active
 
@@ -47,7 +47,7 @@ class AddonThread(PluginThread):
             return None
         active = self.active[0]
         return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
-                            self._progressinfo, 100, self.owner, ProgressType.Addon)
+                            self._progress, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, file):
         """
@@ -66,17 +66,17 @@ class AddonThread(PluginThread):
         try:
             try:
                 self.kwargs['thread'] = self
-                self.fn(*self.args, **self.kwargs)
+                self.func(*self.args, **self.kwargs)
             except TypeError as e:
                 # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
                 del self.kwargs['thread']
-                self.fn(*self.args, **self.kwargs)
+                self.func(*self.args, **self.kwargs)
         except Exception as e:
-            if hasattr(self.fn, "im_self"):
-                addon = self.fn.__self__
+            if hasattr(self.func, "im_self"):
+                addon = self.func.__self__
                 addon.log_error(_("An Error occurred"), str(e))
                 if self.manager.pyload.debug:
                     print_exc()
@@ -85,6 +85,6 @@ class AddonThread(PluginThread):
         finally:
             local = copy(self.active)
             for x in local:
-                self.fninish_file(x)
+                self.funcinish_file(x)
 
-            self.fninished()
+            self.funcinished()

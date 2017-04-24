@@ -75,12 +75,12 @@ class DatabaseMethods(object):
 
 class DatabaseJob(object):
 
-    # __slots__ = ['args', 'done', 'exception', 'fn', 'kwargs', 'result']
+    # __slots__ = ['args', 'done', 'exception', 'func', 'kwargs', 'result']
 
-    def __init__(self, fn, *args, **kwargs):
+    def __init__(self, func, *args, **kwargs):
         self.done = Event()
 
-        self.fn = fn
+        self.func = func
         self.args = args
         self.kwargs = kwargs
 
@@ -100,15 +100,15 @@ class DatabaseJob(object):
         # del frame
         # del self.frame
         return "DataBase Job {0}:{1}\n{2}Result: {3}".format(
-            self.fn.__name__, self.args[1:], output, self.result)
+            self.func.__name__, self.args[1:], output, self.result)
 
     def process_job(self):
         try:
-            self.result = self.fn(*self.args, **self.kwargs)
+            self.result = self.func(*self.args, **self.kwargs)
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.fn.__name__,
+                print("Database Error @", self.func.__name__,
                       self.args[1:], self.kwargs, str(e))
             except Exception:
                 pass

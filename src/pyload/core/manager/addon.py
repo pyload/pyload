@@ -219,8 +219,10 @@ class AddonManager(object):
         self.call_in_hooks("package_finished", "package:finished", package)
 
     @lock
-    def start_thread(self, function, *args, **kwargs):
-        AddonThread(self.pyload.thm, function, args, kwargs)
+    def start_thread(self, func, *args, **kwargs):
+        thread = AddonThread(self.pyload.iom, func, args, kwargs)
+        thread.start()
+        return thread
 
     def active_plugins(self):
         """

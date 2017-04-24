@@ -6,8 +6,8 @@ from future import standard_library
 from builtins import object
 from contextlib import closing
 
-from pyload.core.network import RequestFactory
-from pyload.plugins.network.curlrequest import CurlRequest
+from pyload.core.network.factory import RequestFactory
+from pyload.core.network.curl.request import CurlRequest
 from tests.helper.stubs import Core
 
 standard_library.install_aliases()

@@ -24,6 +24,8 @@ from multiprocessing import Event, Process
 import autoupgrade
 import daemonize
 import psutil
+
+from .config import make_config
 from pyload.config import ConfigParser
 from pyload.utils import convert, format, sys
 from pyload.utils.check import ismodule
@@ -33,14 +35,25 @@ from pyload.utils.struct.info import Info
 
 standard_library.install_aliases()
 
-
 try:
     import colorlog
 except ImportError:
     pass
 
-
-
+    
+def _gen_profiledir(profile=None, configdir=None):
+    if not profile:
+        profile = 'default'
+    if configdir:
+        configdir = os.path.expanduser(configdir)
+    else:
+        configdir = os.path.join(
+            DATADIR, 'pyLoad' if os.name == 'nt' else '.pyload')
+    profiledir = os.path.abspath(os.path.join(configdir, profile))
+    makedirs(profiledir)
+    return profiledir
+    
+    
 def _get_setup_map():
     """
     Load info dict from `setup.py`.
@@ -53,29 +66,14 @@ __setup_map = _get_setup_map()
 __core_version = convert.to_version(__setup_map['version'])
 
 
-def _gen_profiledir(profile=None, configdir=None):
-    if not profile:
-        profile = 'default'
-    if configdir:
-        configdir = os.path.expanduser(configdir)
-    else:
-        configdir = os.path.join(
-            DATADIR, 'pyLoad' if os.name == 'nt' else '.pyload')
-    profiledir = os.path.abspath(os.path.join(configdir, profile))
-    makedirs(profiledir)
-    return profiledir
-
-
 class Restart(Exception):
     # __slots__ = []
-
     def __str__(self):
         return """<RestartSignal {0}>""".format(self.message)
 
 
 class Shutdown(Exception):
     # __slots__ = []
-
     def __str__(self):
         return """<ShutdownSignal {0}>""".format(self.message)
 
@@ -94,11 +92,11 @@ class Core(Process):
     # __slots__ = [
         # '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
         # 'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db',
-        # 'debug', 'debug_level', 'dlm', 'downloadmanager', 'eventmanager', 'evm',
-        # 'filemanager', 'files', 'interactionmanager', 'itm', 'log', 'pgm',
+        # 'debug', 'debug_level', 'tsm', 'transfermanager', 'eventmanager', 'evm',
+        # 'filemanager', 'files', 'exchangemanager', 'exm', 'log', 'pgm',
         # 'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
-        # 'remotemanager', 'req', 'request', 'running', 'scheduler', 'thm',
-        # 'threadmanager', 'tmpdir', 'version', 'webserver'
+        # 'remotemanager', 'req', 'request', 'running', 'scheduler', 'iom',
+        # 'infomanager', 'tmpdir', 'version', 'webserver'
     # ]
 
     @property
@@ -185,7 +183,7 @@ class Core(Process):
             logfile_folder = os.path.abspath("logs")
         makedirs(logfile_folder)
 
-    # TODO: Extend `logging.Logger` like `pyload.plugin.Log`
+    # TODO: Extend `logging.Logger` like `..plugin.Log`
     def _init_logger(self, level):
         # Init logger
         self.log = logging.getLogger('pyload')
@@ -297,25 +295,25 @@ class Core(Process):
                 "Restored default login credentials `admin|pyload`")
 
     def _init_managers(self):
-        from .manager import (AccountManager, AddonManager, DownloadManager,
-                              EventManager, FileManager, InteractionManager,
-                              PluginManager, RemoteManager, ThreadManager)
+        from .manager import (AccountManager, AddonManager, EventManager, 
+                              ExchangeManager, FileManager, InfoManager,
+                              PluginManager, RemoteManager, TransferManager)
 
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.filemanager = self.files = FileManager(self)
         self.pluginmanager = self.pgm = PluginManager(self)
-        self.interactionmanager = self.itm = InteractionManager(self)
+        self.exchangemanager = self.exm = ExchangeManager(self)
         self.eventmanager = self.evm = EventManager(self)
         self.accountmanager = self.acm = AccountManager(self)
-        self.threadmanager = self.thm = ThreadManager(self)
-        self.downloadmanager = self.dlm = DownloadManager(self)
+        self.infomanager = self.iom = InfoManager(self)
+        self.transfermanager = self.tsm = TransferManager(self)
         self.addonmanager = self.adm = AddonManager(self)
         self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager = self.svm = ServerManager(self)
         self.db.manager = self.files  #: ugly?
 
     def _init_network(self):
-        from .network.request import RequestFactory
+        from .network.factory import RequestFactory
         builtins.REQUEST = self.request = self.req = RequestFactory(self)
 
     def _init_pid(self):
@@ -349,7 +347,8 @@ class Core(Process):
         os.chdir(self.profiledir)
         self.configfile = os.path.join(self.profiledir, 'pyload.conf')
         self.config = self.cfg = ConfigParser(self.configfile, self.version)
-
+        make_config(self.cfg)  # TODO: Rewrite...
+        
     def _register_signal(self):
         try:
             if os.name == 'nt':
@@ -419,14 +418,14 @@ class Core(Process):
         self.log.info(_("Available storage space: {0}").format(space_size))
 
     def _workloop(self):
-        self.dlm.pause = False  # NOTE: Recheck...
+        self.tsm.pause = False  # NOTE: Recheck...
         self.running.set()
         try:
             while True:
                 self.running.wait()
-                self.dlm.work()
-                self.thm.work()
-                self.itm.work()
+                self.tsm.work()
+                self.iom.work()
+                self.exm.work()
                 if self._restart:
                     raise Restart
                 if self._shutdown:
@@ -533,7 +532,7 @@ class Core(Process):
             self.log.info(_("Stopping pyLoad ..."))
             self.evm.fire('pyload:stopping')
             # TODO: quit webserver
-            self.dlm.shutdown()
+            self.tsm.shutdown()
             self.api.stop_all_downloads()
             self.adm.deactivate_addons()
         finally:

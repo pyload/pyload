@@ -92,7 +92,7 @@ class PluginThread(Thread):
 
     def debug_report(self, file):
         """
-        Writes a debug report to disk.
+        Write a debug report to disk.
         """
         name = file.pluginname
         path = "debug_{}_{}.zip".format(
