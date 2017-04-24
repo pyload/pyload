@@ -2,6 +2,7 @@ IPy
 Send2Trash
 colorclass
 filetype
+future
 goslate
 psutil
 setproctitle
