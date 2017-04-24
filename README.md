@@ -19,6 +19,7 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 
 **Licensing**:
 
+[![CLA assistant](https://cla-assistant.io/readme/badge/pyload/config)](https://cla-assistant.io/pyload/config)
 [![PyPI License](https://img.shields.io/pypi/l/pyload.config.svg)](https://pypi.python.org/pypi/pyload.config)
 
 **Contact Us** on:
