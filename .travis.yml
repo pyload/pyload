@@ -54,7 +54,7 @@ deploy:
       branch: master
       python: 3.5
       tags: true
-after_deploy:
+# after_deploy:
   # - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
-  - pip install travis-bump-version
-  - travis-bump-version --api-token "RBi0Ro/lRxjd2KYivGkymBzNcGcxR5SaUCujPi+vUAYUpsug6TL1FsC8kwhUKaw69PcaljGVKCNgaWi/Ugx+hJEfmehoOhaY+HAaC40OJziIedW7ZTjYk3upQW+onIAUjisd/4kvfm7p9kB3d5CfH60bGuNTaCbzqedpuXy6gOy5M7SXg87gHL/DE+JCJcXQcQdHCBB+Elup1hdhFxNXjM3RnZbMJarhsxJ5YgkSTDST4NRW/hjZGfq7N+nif19rkMkEBLTc6WXsjo+E8D3YEaJY3zL5mEGz+qE51YXL6g2J23serMzAKy6khmXUiUU0DXN1VeYQD4jbDv0yKT+t2/MTcMMI3Rjx9qHDFXr0vJM4c+71qhU3XO1qVzRd2imdea15G25qJHoqBUr5RAlmjdBl4XAV8WSUh/WqPVyeRCEd0IoxFC1/I1Q0ZTOR+ziaKAUqg7ql9tqfC/s6oMaLz/lgmYEChnBqRIVpNZwi2tFWhQXYrR3PUWcDVj8JImQuw/9yI2xPZfmqwE9r8m6HQp2cAa5qWfxr6GpY667qVWSgYvJ/NwVWZFm+v4VBS2pkwXPNOJq9JCetAw++9IX4LgIlUuin4PwF04MwoCfEAmOWY9xKYLq8ZeKZdft867evPloWZhSdDF2v93/7C8Iuc0uUNnn786NbR3JfvzpxFjE=" --repo $TRAVIS_REPO_SLUG VERSION
+  # - pip install travis-bump-version
+  # - travis-bump-version --api-token "RBi0Ro/lRxjd2KYivGkymBzNcGcxR5SaUCujPi+vUAYUpsug6TL1FsC8kwhUKaw69PcaljGVKCNgaWi/Ugx+hJEfmehoOhaY+HAaC40OJziIedW7ZTjYk3upQW+onIAUjisd/4kvfm7p9kB3d5CfH60bGuNTaCbzqedpuXy6gOy5M7SXg87gHL/DE+JCJcXQcQdHCBB+Elup1hdhFxNXjM3RnZbMJarhsxJ5YgkSTDST4NRW/hjZGfq7N+nif19rkMkEBLTc6WXsjo+E8D3YEaJY3zL5mEGz+qE51YXL6g2J23serMzAKy6khmXUiUU0DXN1VeYQD4jbDv0yKT+t2/MTcMMI3Rjx9qHDFXr0vJM4c+71qhU3XO1qVzRd2imdea15G25qJHoqBUr5RAlmjdBl4XAV8WSUh/WqPVyeRCEd0IoxFC1/I1Q0ZTOR+ziaKAUqg7ql9tqfC/s6oMaLz/lgmYEChnBqRIVpNZwi2tFWhQXYrR3PUWcDVj8JImQuw/9yI2xPZfmqwE9r8m6HQp2cAa5qWfxr6GpY667qVWSgYvJ/NwVWZFm+v4VBS2pkwXPNOJq9JCetAw++9IX4LgIlUuin4PwF04MwoCfEAmOWY9xKYLq8ZeKZdft867evPloWZhSdDF2v93/7C8Iuc0uUNnn786NbR3JfvzpxFjE=" --repo $TRAVIS_REPO_SLUG VERSION
