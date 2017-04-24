@@ -106,7 +106,7 @@ class RelinkUs(Crypter):
         self.package = pyfile.package()
 
     def request_package(self):
-        self.data = self.load(self.pyfile.url, redirect=2)
+        self.data = self.load(self.pyfile.url)
 
     def is_online(self):
         if self.OFFLINE_TOKEN in self.data:
