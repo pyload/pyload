@@ -6,7 +6,7 @@ import io
 import os
 import re
 
-from builtins import int, object, str
+from builtins import int, object
 
 from gettext import gettext
 
@@ -15,7 +15,6 @@ standard_library.install_aliases()
 
 from pyload.utils import convert
 from pyload.utils.layer.legacy.collections_ import OrderedDict, namedtuple
-from pyload.utils.path import bufsize
 
 from .convert import from_string, to_configdata
 from .default import make_config
@@ -34,14 +33,15 @@ class ConfigParser(object):
     """
     __slots__ = [
         '_RE_VERSION', '_extract_option', '_extract_section', '_parseline',
-        '_write_version', 'config', 'filename', 'values', 'version'
+        '_read_version', '_write_version', 'config', 'filename', 'values',
+        'version'
     ]
 
     _RE_VERSION = re.compile(r'\s*version\s*:\s*(\d+\.\d+\.\d+)', flags=re.I)
 
     def __init__(self, file, version):
         self.filename = file
-        self.version = convert.to_version(version, version)
+        self.version = convert.to_version(version)
 
         # Meta data information
         self.config = OrderedDict()
@@ -49,30 +49,29 @@ class ConfigParser(object):
         self.values = {}
 
         self.check_version()
-
-        self.load_default()
         self.parse(self.filename)
-
-    def load_default(self):
-        make_config(self)
 
     def _write_version(self):
         verstr = convert.from_version(self.version)
         with io.open(self.filename, mode='wb') as fp:
             fp.write("version: {0}\n".format(verstr))
 
+    def _read_version(self):
+        version = None
+        try:
+            with io.open(self.filename, mode='rb') as fp:
+                m = self._RE_VERSION.search(fp.read())
+                version = convert.to_version(m.group(1))
+        except (AttributeError, TypeError):
+            pass
+        return version
+
     def check_version(self):
         """
         Determines if config needs to be deleted.
         """
         if os.path.exists(self.filename):
-            version = None
-            try:
-                with io.open(self.filename, mode='rb') as fp:
-                    m = self._RE_VERSION.match(fp.readline())
-                    version = convert.to_version(m.group(1))
-            except (AttributeError, TypeError):
-                pass
+            version = self._read_version()
             if not self.version or version[:-1] != self.version[:-1]:
                 os.rename(self.filename, "{0}.old".format(self.filename))
         self._write_version()
@@ -108,9 +107,7 @@ class ConfigParser(object):
             section = ""  #: save the current section
             for line in iter(fp.readline, ""):
                 line = line.strip()
-                if not line:
-                    continue
-                if line[0] in ("#", "//", "|"):
+                if not line or line[0] in ("#", "//", "|"):
                     continue
                 section = self._parseline(line, section)
 

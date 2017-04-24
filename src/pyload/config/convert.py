@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
-from builtins import bytes, int, str
+from builtins import bytes, int
 
 from gettext import gettext
 

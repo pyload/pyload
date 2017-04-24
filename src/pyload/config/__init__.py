@@ -15,7 +15,6 @@ import builtins
 
 builtins._ = lambda x: x  # NOTE: gettext pre-start fixup
 
-from .default import make_config
 from .parser import ConfigParser
 from .parser import ConfigSection
 
