@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 from multiprocessing import Process
 
 from future import standard_library
@@ -39,10 +40,10 @@ __all__ = [
 
 def fork(func, daemon=True):
     def new(self, *args, **kwargs):
-        p = Process(target=func, args=args, kwargs=kwargs)
-        p.daemon = bool(daemon)
-        p.start()
-        return p
+        proc = Process(target=func, args=args, kwargs=kwargs)
+        proc.daemon = bool(daemon)
+        proc.start()
+        return proc
     return new
 
 
@@ -85,10 +86,10 @@ def singleton(klass):
 
 def threaded(func, daemon=True):
     def new(self, *args, **kwargs):
-        t = Thread(target=func, args=args, kwargs=kwargs)
-        t.setDaemon(daemon)
-        t.start()
-        return t
+        thread = Thread(target=func, args=args, kwargs=kwargs)
+        thread.setDaemon(daemon)
+        thread.start()
+        return thread
     return new
 
 

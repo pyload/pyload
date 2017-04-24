@@ -81,8 +81,8 @@ def _get_long_description(fromline=None, toline=None):
         return _gen_long_description(fromline, toline)
 
 
-def _get_requires(filename):
-    path = os.path.join('requirements', filename)
+def _get_requires(fname):
+    path = os.path.join('requirements', fname)
     return _extract_text(path).splitlines()
 
 

@@ -88,7 +88,7 @@ def ismodule(name, path=None):
     Check if exists a module with given name.
     """
     try:
-        fp, filename, desc = imp.find_module(name, path)
+        fp, fname, desc = imp.find_module(name, path)
         if fp is not None:
             fp.close()
         return True

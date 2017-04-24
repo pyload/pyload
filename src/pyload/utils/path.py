@@ -39,28 +39,26 @@ def availspace(path):
     return res
 
 
-def _shdo(func, src, dst, overwrite=None, array=None):
+def _shdo(func, src, dst, overwrite=None, ref=None):
     mtime = os.path.getmtime
     try:
         if os.path.isfile(dst):
-            if overwrite is None and mtime(src) <= mtime(dst):
-                continue
-            elif not overwrite:
-                continue
-            elif os.name == 'nt':
+            if (overwrite is None and mtime(src) <= mtime(dst)) or not overwrite:
+                return None
+            if os.name == 'nt':
                 os.remove(dst)
         func(src, dst)
-        if isinstance(array, list):
-            del array[:]
+        if isinstance(ref, list):
+            del ref[:]
     except Exception:
         pass
-        
+
 
 def _shdorc(func, filenames, src_dir, dst_dir, overwrite=None):
     join = os.path.join
-    for filename in filenames:
-        src_file = join(src_dir, filename)
-        dst_file = join(dst_dir, filename)
+    for fname in filenames:
+        src_file = join(src_dir, fname)
+        dst_file = join(dst_dir, fname)
         _shdo(func, src_file, dst_file, overwrite)
 
 
@@ -74,13 +72,13 @@ def _copyrc(src, dst, overwrite, preserve_metadata):
             _shdorc(copy, filenames, src_dir, dst_dir, overwrite)
         else:
             _shdo(copytree, src_dir, dst_dir, overwrite, dirnames)
-    
-    
+
+
 def copy(src, dst, overwrite=None, preserve_metadata=True):
     if not os.path.isdir(dst) or not os.path.isdir(src):
         return _shdo(shutil.copytree, src, dst, overwrite)
     return _copyrc(src, dst, overwrite, preserve_metadata)
-    
+
 
 @iterate
 def exists(path, sensitive=False):
@@ -201,7 +199,7 @@ def makefile(path, dirmode=0o700, opened=None, size=None):
     makedirs(dirname, dirmode)
     return mkfile(basename, opened, size)
 
-    
+
 def _moverc(src, dst, overwrite):
     exists = os.path.exists
     move = shutil.move
@@ -217,7 +215,7 @@ def _moverc(src, dst, overwrite):
         except Exception:
             pass
 
-            
+
 def move(src, dst, overwrite=None):
     if not os.path.isdir(dst) or not os.path.isdir(src):
         return _shdo(shutil.move, src, dst, overwrite)
@@ -236,26 +234,26 @@ def mtime(path):
     if not os.path.isdir(path):
         return getmtime(path)
 
-    mtimes = [getmtime(join(dir, file))
+    mtimes = [getmtime(join(dir, fname))
               for dir, dirnames, filenames in os.walk(path)
-              for file in filenames]
+              for fname in filenames]
 
     return max(0, 0, *mtimes)
-   
-        
-def _pyclean2(dirpath, filenames)
+
+
+def _py2clean(dirpath, filenames):
     join = os.path.join
     remove = os.remove
-    for filename in filenames:
-        if filename[-4:] not in ('.pyc', '.pyo', '.pyd'):
+    for fname in filenames:
+        if fname[-4:] not in ('.pyc', '.pyo', '.pyd'):
             continue
         try:
-            remove(join(dirpath, filename))
+            remove(join(dirpath, fname))
         except Exception:
             continue
 
-            
-def _pyclean3(dirpath, dirnames):
+
+def _py3clean(dirpath, dirnames):
     cname = '__pycache__'
     if cname not in dirnames:
         return None
@@ -265,16 +263,16 @@ def _pyclean3(dirpath, dirnames):
     except Exception:
         pass
 
-        
+
 @iterate
 def pyclean(path, recursive=True):
     walkpath = os.walk(path)
     if not recursive:
         walkpath = (next(walkpath),)
     for dir, dirnames, filenames in walkpath:
-        _pyclean2(dir, filenames)
-        _pyclean3(dir, dirnames)
-        
+        _py2clean(dir, filenames)
+        _py3clean(dir, dirnames)
+
 
 
 def remove(path, trash=False, ignore_errors=False):

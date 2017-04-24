@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import inspect
 import os
 import pprint
@@ -21,13 +22,13 @@ __all__ = ['_format_dump', '_format_framestack', '_format_traceback',
            'print_framestack', 'print_traceback', 'report']
 
 
-def report(value, path=None):
+def report(value, dirname="reports"):
     frame = inspect.currentframe()
     try:
-        name = "{0}_line{1}.report".format(
+        fname = "{0}_line{1}.report".format(
             frame.f_back.f_code.co_name, frame.f_back.f_lineno)
-        file = os.path.join(path or "reports", name)
-        with makefile(file, 'wb') as fp:
+        path = os.path.join(dirname, fname)
+        with makefile(path, mode='wb') as fp:
             fp.write(value)
     finally:
         del frame  #: delete it just now or wont be cleaned by gc

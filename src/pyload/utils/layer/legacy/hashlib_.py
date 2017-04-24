@@ -40,8 +40,8 @@ if sys.version_info[:2] < (2, 7):
         import binascii
         import struct
 
-        _trans_5C = b"".join(chr(x ^ 0x5C) for x in range(256))
-        _trans_36 = b"".join(chr(x ^ 0x36) for x in range(256))
+        _trans_5C = b''.join(chr(x ^ 0x5C) for x in range(256))
+        _trans_36 = b''.join(chr(x ^ 0x36) for x in range(256))
 
         def pbkdf2_hmac(hash_name, password, salt, iterations, dklen=None):
             """Password based key derivation function 2 (PKCS #5 v2.0)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import absolute_import, division, unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import shlex
@@ -51,7 +51,7 @@ def exec_cmd(command, *args, **kwargs):
 def call_cmd(command, *args, **kwargs):
     ignore_errors = kwargs.pop('ignore_errors', False)
     try:
-        p = exec_cmd(command, *args, **kwargs)
+        proc = exec_cmd(command, *args, **kwargs)
 
     except Exception as exc:
         if not ignore_errors:
@@ -61,8 +61,8 @@ def call_cmd(command, *args, **kwargs):
             stdoutdata = ""
             stderrdata = exc.message.strip()
     else:
-        returncode = p.returncode
-        stdoutdata, stderrdata = map(str.strip, p.communicate())
+        returncode = proc.returncode
+        stdoutdata, stderrdata = map(str.strip, proc.communicate())
 
     finally:
         return returncode, stdoutdata, stderrdata
@@ -88,26 +88,26 @@ def get_info():
 def get_process_id(name):
     procs = psutil.process_iter()
     zombie = psutil.STATUS_ZOMBIE
-    return [p.pid() for p in procs if p.name() == name and
-            p.is_running() and
-            p.status() != zombie]
+    return [proc.pid() for proc in procs if proc.name() == name and
+            proc.is_running() and
+            proc.status() != zombie]
 
 
 def get_process_name(pid):
     procs = psutil.process_iter()
     zombie = psutil.STATUS_ZOMBIE
-    return [p.name() for p in procs if p.pid() == pid and
-            p.is_running() and
-            p.status() != zombie]
+    return [proc.name() for proc in procs if proc.pid() == pid and
+            proc.is_running() and
+            proc.status() != zombie]
 
 
 def kill_process(pid, wait=None):
     try:
-        p = psutil.Process(pid)
-        p.terminate()
-        p.wait(wait)
+        proc = psutil.Process(pid)
+        proc.terminate()
+        proc.wait(wait)
     except (psutil.TimeoutExpired, psutil.ZombieProcess):
-        p.kill()
+        proc.kill()
 
 
 def renice(value, pid=None):
@@ -130,8 +130,8 @@ def renice(value, pid=None):
             (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
         value = priocls[prioval]
 
-    p = psutil.Process(pid)
-    p.nice(value)
+    proc = psutil.Process(pid)
+    proc.nice(value)
 
 
 def ionice(ioclass=None, value=None, pid=None):
@@ -140,8 +140,8 @@ def ionice(ioclass=None, value=None, pid=None):
     """
     if os.name == 'nt':
         ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
-    p = psutil.Process(pid)
-    p.ionice(ioclass, value)
+    proc = psutil.Process(pid)
+    proc.ionice(ioclass, value)
 
 
 def set_console_icon(iconpath):
@@ -156,10 +156,10 @@ def set_console_icon(iconpath):
     LR_LOADFROMFILE = 0x00000010
     LR_DEFAULTSIZE = 0x00000040
 
-    file = os.path.abspath(iconpath)
+    fpath = os.path.abspath(iconpath)
     flags = LR_LOADFROMFILE | LR_DEFAULTSIZE
     hicon = ctypes.windll.kernel32.LoadImageW(
-        None, file, IMAGE_ICON, 0, 0, flags)
+        None, fpath, IMAGE_ICON, 0, 0, flags)
 
     ctypes.windll.kernel32.SetConsoleIcon(hicon)
 

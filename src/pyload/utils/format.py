@@ -3,12 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import str
 import datetime
 import os
 import re
 import sys
 import urllib.parse
-from builtins import int, map, str
+from builtins import int, map
 
 from future import standard_library
 standard_library.install_aliases()
@@ -86,9 +87,9 @@ def path(*paths):
     """
     path = os.path.join(*paths)
 
-    drive, filename = os.path.splitdrive(path)
+    drive, fname = os.path.splitdrive(path)
 
-    nameparts = [name(chunk) for chunk in filename.split(os.sep)]
+    nameparts = [name(chunk) for chunk in fname.split(os.sep)]
     dirname = os.path.join(*nameparts[:-1]) + os.sep
 
     root, ext = os.path.splitext(nameparts[-1])

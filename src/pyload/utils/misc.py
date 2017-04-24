@@ -30,8 +30,8 @@ def _crcsum(path, name, buffer):
         for chunk in iter(lambda: fp.read(buffer), b''):
             last = call(chunk, last)
     return "{0:x}".format(last & 0xffffffff)
-        
-        
+
+
 def _hashsum(path, name, buffer):
     h = hashlib.new(name)
     buffer *= h.block_size
@@ -39,8 +39,8 @@ def _hashsum(path, name, buffer):
         for chunk in iter(lambda: fp.read(buffer), b''):
             h.update(chunk)
     return h.hexdigest()
-        
-        
+
+
 def checksum(path, name, buffer=None):
     res = None
     buf = buffer or bufsize(path)
