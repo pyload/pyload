@@ -389,8 +389,7 @@ class main(QObject):
         self.mainWindow.newLinkDock.hide()
         self.mainWindow.newPackDock.setFloating(False)
         self.mainWindow.newLinkDock.setFloating(False)
-        self.mainWindow.show()
-        self.loadWindowFromConfig() # geometry/state
+        self.loadWindowFromConfig()
         self.mainWindow.update()
         self.initQueue()
         self.initCollector()
@@ -573,6 +572,21 @@ class main(QObject):
 
         self.packageEdit.connect(self.packageEdit.saveBtn, SIGNAL("clicked()"), self.slotEditPackageSave)
 
+    def waitForPaintEvents(self, cnt, msec=5000):
+        """
+            wait until cnt main window events passed  
+        """
+        timeout = self.mainWindow.time_msec() + msec
+        while True:
+            ec = self.mainWindow.paintEventCounter
+            if ec >= cnt:
+                self.log.debug4("main.waitForPaintEvents: %d events passed (min: %d)" % (ec, cnt))
+                return ec
+            if self.mainWindow.time_msec() > timeout:
+                self.log.error("main.waitForPaintEvents: Timeout waiting for %d events, %d events passed" % (cnt, ec))
+                return ec
+            self.app.processEvents()
+
     def createTrayIcon(self):
         self.trayState = {"p": {"f": False, "h": False, "f&!h": False}, "l": {"f": False, "h": False, "f&!h": False}}
         self.trayState["hiddenInTray"] = False
@@ -704,8 +718,8 @@ class main(QObject):
         pe(); self.mainWindow.newPackDock.setFloating(False)
         pe(); self.mainWindow.newLinkDock.setFloating(False)
         pe(); self.mainWindow.show()
-        numOfPaintEventsToWait = 2  # ignore maximize/unmaximize events until num paintEvents happened
-        # default methode
+        numOfPaintEventsToWait = 1  # ignore maximize/unmaximize events until num paintEvents happened
+        # default method
         if not self.mainWindow.trayOptions.settings["AltMethod"]:
             pe(); self.mainWindow.restoreState(s["state"]) # docks
             pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
@@ -727,7 +741,7 @@ class main(QObject):
                 s["showFromTrayShowTime"] = self.mainWindow.time_msec()
                 for i in range(numOfPaintEventsToWait + 2):
                     self.mainWindow.update();pe();pe();pe();pe();pe()
-        # alternative methode
+        # alternative method
         else:
             pe(); self.mainWindow.newPackDock.setHidden(s["p"]["h"])
             pe(); self.mainWindow.newLinkDock.setHidden(s["l"]["h"])
@@ -823,28 +837,57 @@ class main(QObject):
         if self.mainWindow.isHidden():
             self.log.error("main.slotMaximizeToggled: mainWindow is hidden, maximized: %s" % maximized)
             return
+        self.log.debug4("main.slotMaximizeToggled: maximized: %s" % maximized)
         s = self.trayState
         if maximized:   # maximized flag was set
             if s["maximized"]:
-                self.log.error("main.slotMaximizeToggled: repeated maximize")
+                self.log.debug4("main.slotMaximizeToggled: repeated maximize")
                 return
-            if self.mainWindow.paintEventLastNormalPos is not None:
-                s["unmaxed_pos"] = self.mainWindow.paintEventLastNormalPos
+            if self.mainWindow.otherOptions.settings["SecondLastNormalGeo"]:
+                if self.mainWindow.paintEventSecondLastNormalPos is not None:
+                    s["unmaxed_pos"] = self.mainWindow.paintEventSecondLastNormalPos
+                else:
+                    s["unmaxed_pos"] = self.mainWindow.pos()
+                    self.log.error("main.slotMaximizeToggled: paintEventSecondLastNormalPos is None")
+                if self.mainWindow.paintEventSecondLastNormalSize is not None:
+                    s["unmaxed_size"] = self.mainWindow.paintEventSecondLastNormalSize
+                else:
+                    s["unmaxed_size"] = self.mainWindow.size()
+                    self.log.error("main.slotMaximizeToggled: paintEventSecondLastNormalSize is None")
             else:
-                s["unmaxed_pos"] = self.mainWindow.pos()
-                self.log.error("main.slotMaximizeToggled: paintEventLastNormalPos is None")
-            if self.mainWindow.paintEventLastNormalSize is not None:
-                s["unmaxed_size"] = self.mainWindow.paintEventLastNormalSize
-            else:
-                s["unmaxed_size"] = self.mainWindow.size()
-                self.log.error("main.slotMaximizeToggled: paintEventLastNormalSize is None")
+                if self.mainWindow.paintEventLastNormalPos is not None:
+                    s["unmaxed_pos"] = self.mainWindow.paintEventLastNormalPos
+                else:
+                    s["unmaxed_pos"] = self.mainWindow.pos()
+                    self.log.error("main.slotMaximizeToggled: paintEventLastNormalPos is None")
+                if self.mainWindow.paintEventLastNormalSize is not None:
+                    s["unmaxed_size"] = self.mainWindow.paintEventLastNormalSize
+                else:
+                    s["unmaxed_size"] = self.mainWindow.size()
+                    self.log.error("main.slotMaximizeToggled: paintEventLastNormalSize is None")
             s["restore_unmaxed_geo"] = False
             self.log.debug4("main.slotMaximizeToggled: geometry stored,     pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
         else:           # maximized flag was unset
             if not s["maximized"]:
-                self.log.error("main.slotMaximizeToggled: repeated unmaximize")
+                self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and s["restore_unmaxed_geo"]:
+                if self.mainWindow.otherOptions.settings["HideShowOnUnmax"]:
+                    hidePackDock = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
+                    hideLinkDock = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
+                    self.mainWindow.hide()
+                    if hidePackDock:
+                        self.mainWindow.newPackDock.hide()
+                    if hideLinkDock:
+                        self.mainWindow.newLinkDock.hide()
+                    self.mainWindow.paintEventCounter = 0
+                    self.mainWindow.show()
+                    self.waitForPaintEvents(1)
+                    self.log.debug4("main.slotMaximizeToggled: Option '%s' done, show()" % str(self.mainWindow.otherOptions.cbHideShowOnUnmax.text()))
+                    if hidePackDock:
+                        self.mainWindow.newPackDock.show()
+                    if hideLinkDock:
+                        self.mainWindow.newLinkDock.show()
                 self.scheduleMainWindowPaintEventAction(s["unmaxed_pos"], s["unmaxed_size"])
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
@@ -1629,6 +1672,7 @@ class main(QObject):
         self.geoUnmaximized = {}
         self.geoUnmaximized["unmaxed_pos"] = None if (self.trayState["unmaxed_pos"] is None) else (self.trayState["unmaxed_pos"].x(), self.trayState["unmaxed_pos"].y())
         self.geoUnmaximized["unmaxed_size"] = None if (self.trayState["unmaxed_size"] is None) else (self.trayState["unmaxed_size"].width(), self.trayState["unmaxed_size"].height())
+        self.geoUnmaximized["maximized"] = self.trayState["maximized"]
         self.log.debug4("main.prepareForSaveOptionsAndWindow: save geoUnmaximized to xml:  pos: %s                     size: %s" % (self.geoUnmaximized["unmaxed_pos"], self.geoUnmaximized["unmaxed_size"]))
         if self.mainWindow.trayOptions.settings["EnableTray"] and self.trayState["hiddenInTray"]:
             self.log.debug4("main.prepareForSaveOptionsAndWindow: showFromTray()")
@@ -1882,6 +1926,7 @@ class main(QObject):
     def loadWindowFromConfig(self):
         """
             load window geometry and state from the config file
+            and show main window and docks
         """
         mainWindowNode = self.parser.xml.elementsByTagName("mainWindow").item(0)
         if mainWindowNode.isNull():
@@ -1909,20 +1954,51 @@ class main(QObject):
         stateAccounts = str(nodes["stateAccounts"].text())
         visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
         geoCaptcha = str(nodes["geometryCaptcha"].text())
+
+        # mainWindow restoreState
+        self.mainWindow.paintEventCounter = 0
+        self.mainWindow.show()
+        self.waitForPaintEvents(1)
+        self.log.debug4("main.loadWindowFromConfig: first show() done")
+        self.mainWindow.paintEventCounter = 0
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
-        self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
-        self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
+        self.waitForPaintEvents(1)
+        self.log.debug4("main.loadWindowFromConfig: restoreState() done")
         self.geoUnmaximized = {}
         try:
             self.geoUnmaximized = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))
             self.geoUnmaximized["unmaxed_pos"]
             self.geoUnmaximized["unmaxed_size"]
+            self.geoUnmaximized["maximized"]
         except:
             self.geoUnmaximized["unmaxed_pos"]  = None
             self.geoUnmaximized["unmaxed_size"] = None
+            self.geoUnmaximized["maximized"]    = False
+        if not self.geoUnmaximized["maximized"]:
+            self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
+            self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
+        else:
+            if self.mainWindow.otherOptions.settings["HideShowOnStart"]:
+                self.mainWindow.paintEventCounter = 0
+                self.mainWindow.showMaximized()
+                cnt = self.waitForPaintEvents(2)
+                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
+                self.mainWindow.hide()
+                self.app.processEvents()
+                self.mainWindow.paintEventCounter = 0
+                self.mainWindow.show()
+                cnt = self.waitForPaintEvents(2)
+                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
+                self.app.processEvents()
+            else:
+                self.mainWindow.showMaximized()
+            self.scheduleMainWindowPaintEventAction()
+
+        # tabs restoreState
         self.mainWindow.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
         self.mainWindow.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
         self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
+
         try:
             visSpeed = literal_eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
         except:
@@ -1943,6 +2019,14 @@ class main(QObject):
         if self.mainWindow.paintEventSignal:
             self.log.error("main.scheduleMainWindowPaintEventAction: last action not queued yet")
             return
+        if self.log.isEnabledFor(logging.DEBUG4):
+            p = pos
+            if p is not None:
+                p = "(%s, %s)" % (pos.x(), pos.y())
+            s = size
+            if s is not None:
+                s = "(%s, %s)" % (s.width(), s.height())
+            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s" % (p, s, raise_, activate, focus, showFromTrayContinue))
         a = self.mainWindowPaintEventAction
         a["pos"]      = pos
         a["size"]     = size

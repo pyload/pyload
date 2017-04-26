@@ -632,10 +632,12 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
     def initPaintEventHook(self):
-        self.paintEventCounter = 0
+        self.paintEventCounter = int(0)
         self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
-        self.paintEventLastNormalPos  = None
-        self.paintEventLastNormalSize = None
+        self.paintEventLastNormalPos        = None
+        self.paintEventLastNormalSize       = None
+        self.paintEventSecondLastNormalPos  = None
+        self.paintEventSecondLastNormalSize = None
         self.paintEventLastMaximized = False
         self.paintEventSignal  = False
     
@@ -645,6 +647,8 @@ class MainWindow(QMainWindow):
         maximized = bool(self.windowState() & Qt.WindowMaximized)
         minimized = bool(self.windowState() & Qt.WindowMinimized)
         if not (maximized or minimized):
+            self.paintEventSecondLastNormalPos  = self.paintEventLastNormalPos
+            self.paintEventSecondLastNormalSize = self.paintEventLastNormalSize
             self.paintEventLastNormalPos  = self.pos()
             self.paintEventLastNormalSize = self.size()
         if self.paintEventSignal:
@@ -1407,10 +1411,9 @@ class TrayOptions(QDialog):
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
         self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
-        whatsThis = (self.cbRestoreGeo.text(), _(
-        "Restores size and position of the normal (not maxmized) main window when shown from the tray.<br>"
-        "Try toggle this if the main window sometimes pops up slightly shifted away from where it was hidden.<br>"
-        "Also, enable this when '" + str(self.cbAltMethod.text()) + "' is enabled."))
+        whatsThis = (self.cbAltMethod.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
+        self.cbAltMethod.setWhatsThis(whatsThisFormat(*whatsThis))
+        whatsThis = (self.cbRestoreGeo.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
@@ -1477,22 +1480,41 @@ class OtherOptions(QDialog):
         self.log = logging.getLogger("guilog")
         
         self.settings = {}
+        self.lastFont = None
         
         self.setAttribute(Qt.WA_DeleteOnClose, False)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
-        self.cbRestoreUnmaximizedGeo = QCheckBox(_("Workaround for broken window geometry after unmaximize"))
-        whatsThis = (self.cbRestoreUnmaximizedGeo.text(), _("Due to a bug in the GUI framework (QTBUG-21371), on some platforms, the window position and/or size does not get correctly restored when unmaximizing a maximized window. Here, it affects hiding in tray, and exiting the application, with a maximized window."))
+        self.gb = QGroupBox(_("Other"))
+        self.gb.setCheckable(False)
+        
+        self.cbRestoreUnmaximizedGeoTitle = _("Workaround for broken window geometry after unmaximize")
+        self.cbRestoreUnmaximizedGeo = QGroupBox(self.cbRestoreUnmaximizedGeoTitle + "     ")
+        self.cbRestoreUnmaximizedGeo.setCheckable(True)
+        whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings.<br><br>This is needed only on Linux. Disable on Windows OS."))
         self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
-        vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbRestoreUnmaximizedGeo)
+        self.cbHideShowOnUnmax     = QCheckBox(_("Extra fix for show from tray"))
+        self.cbSecondLastNormalGeo = QCheckBox(_("Apply second last known geometry"))
+        self.cbHideShowOnStart     = QCheckBox(_("Extra fix on application start"))
+        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Cinnamon or MATE desktop environments."))
+        self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
+        whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
+        self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
+        whatsThis = (self.cbHideShowOnStart.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>Can be required on some Xfce desktop environments."))
+        self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
         
-        self.cbEnableUnmax = QGroupBox(_("Other"))
-        self.cbEnableUnmax.setCheckable(False)
-        self.cbEnableUnmax.setLayout(vboxCb)
+        vboxCb1 = QVBoxLayout()
+        vboxCb1.addWidget(self.cbHideShowOnUnmax)
+        vboxCb1.addWidget(self.cbSecondLastNormalGeo)
+        vboxCb1.addWidget(self.cbHideShowOnStart)
+        self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
+        
+        vboxGb = QVBoxLayout()
+        vboxGb.addWidget(self.cbRestoreUnmaximizedGeo)
+        self.gb.setLayout(vboxGb)
         
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
@@ -1501,27 +1523,43 @@ class OtherOptions(QDialog):
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
         
         vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnableUnmax)
+        vbox.addWidget(self.gb)
         vbox.addLayout(self.buttons.layout())
         self.setLayout(vbox)
         
         self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
+        #self.setFixedSize(self.width(), self.height())
         
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
         self.defaultSettings()
     
+    def exec_(self):
+        # It does not resize very well when the font size has changed
+        if self.font() != self.lastFont:
+            self.lastFont = self.font()
+            self.adjustSize()
+        return QDialog.exec_(self)
+    
     def defaultSettings(self):
         self.settings.clear()
         self.settings["RestoreUnmaximizedGeo"] = False
+        self.settings["HideShowOnUnmax"]       = False
+        self.settings["SecondLastNormalGeo"]   = False
+        self.settings["HideShowOnStart"]       = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
         self.settings["RestoreUnmaximizedGeo"] = self.cbRestoreUnmaximizedGeo.isChecked()
+        self.settings["HideShowOnUnmax"]       = self.cbHideShowOnUnmax.isChecked()
+        self.settings["SecondLastNormalGeo"]   = self.cbSecondLastNormalGeo.isChecked()
+        self.settings["HideShowOnStart"]       = self.cbHideShowOnStart.isChecked()
     
     def dict2checkBoxStates(self):
-        self.cbRestoreUnmaximizedGeo.setChecked(self.settings["RestoreUnmaximizedGeo"])
+        self.cbRestoreUnmaximizedGeo.setChecked (self.settings["RestoreUnmaximizedGeo"])
+        self.cbHideShowOnUnmax.setChecked       (self.settings["HideShowOnUnmax"])
+        self.cbSecondLastNormalGeo.setChecked   (self.settings["SecondLastNormalGeo"])
+        self.cbHideShowOnStart.setChecked       (self.settings["HideShowOnStart"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
