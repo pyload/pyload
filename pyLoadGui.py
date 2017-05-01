@@ -871,7 +871,7 @@ class main(QObject):
             if not s["maximized"]:
                 self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
-            if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and s["restore_unmaxed_geo"]:
+            if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and (s["restore_unmaxed_geo"] or self.mainWindow.otherOptions.settings["AlwaysRestore"]) and not QApplication.activeModalWidget():
                 if self.mainWindow.otherOptions.settings["HideShowOnUnmax"]:
                     hidePackDock = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
                     hideLinkDock = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
@@ -2038,6 +2038,7 @@ class main(QObject):
         if size is not None:
             self.mainWindow.resize(size)
         if pos is not None:
+            self.mainWindow.move(pos.x() + 1, pos.y() + 1)  # needed on LXDE
             self.mainWindow.move(pos)
         self.mainWindow.paintEventSignal = True
 

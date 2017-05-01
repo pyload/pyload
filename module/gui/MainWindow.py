@@ -1409,18 +1409,18 @@ class TrayOptions(QDialog):
         
         self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
-        self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
+        self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
+        whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some LXDE desktop environments.<br>Could be useful when using the Compiz window manager."))
+        self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbAltMethod.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
         self.cbAltMethod.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbRestoreGeo.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
-        self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
-        vboxCb.addWidget(self.cbAltMethod)
         vboxCb.addWidget(self.cbRestoreGeo)
+        vboxCb.addWidget(self.cbAltMethod)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon"))
         self.cbEnableTray.setCheckable(True)
@@ -1449,23 +1449,23 @@ class TrayOptions(QDialog):
         self.settings["EnableTray"]    = True
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
-        self.settings["AltMethod"]     = False
         self.settings["RestoreGeo"]    = False
+        self.settings["AltMethod"]     = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
         self.settings["EnableTray"]    = self.cbEnableTray.isChecked()
         self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
         self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
-        self.settings["AltMethod"]     = self.cbAltMethod.isChecked()
         self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
+        self.settings["AltMethod"]     = self.cbAltMethod.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbEnableTray.setChecked    (self.settings["EnableTray"])
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
-        self.cbAltMethod.setChecked     (self.settings["AltMethod"])
         self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
+        self.cbAltMethod.setChecked     (self.settings["AltMethod"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
@@ -1499,17 +1499,21 @@ class OtherOptions(QDialog):
         self.cbHideShowOnUnmax     = QCheckBox(_("Extra fix for show from tray"))
         self.cbSecondLastNormalGeo = QCheckBox(_("Apply second last known geometry"))
         self.cbHideShowOnStart     = QCheckBox(_("Extra fix on application start"))
-        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Cinnamon or MATE desktop environments."))
+        self.cbAlwaysRestore       = QCheckBox(_("Always restore geometry"))
+        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Cinnamon, MATE or LXDE desktop environments."))
         self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
         self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbHideShowOnStart.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>Can be required on some Xfce desktop environments."))
         self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
+        whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Can be required on some LXDE desktop environments."))
+        self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb1 = QVBoxLayout()
         vboxCb1.addWidget(self.cbHideShowOnUnmax)
         vboxCb1.addWidget(self.cbSecondLastNormalGeo)
         vboxCb1.addWidget(self.cbHideShowOnStart)
+        vboxCb1.addWidget(self.cbAlwaysRestore)
         self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
         
         vboxGb = QVBoxLayout()
@@ -1547,6 +1551,7 @@ class OtherOptions(QDialog):
         self.settings["HideShowOnUnmax"]       = False
         self.settings["SecondLastNormalGeo"]   = False
         self.settings["HideShowOnStart"]       = False
+        self.settings["AlwaysRestore"]         = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
@@ -1554,12 +1559,14 @@ class OtherOptions(QDialog):
         self.settings["HideShowOnUnmax"]       = self.cbHideShowOnUnmax.isChecked()
         self.settings["SecondLastNormalGeo"]   = self.cbSecondLastNormalGeo.isChecked()
         self.settings["HideShowOnStart"]       = self.cbHideShowOnStart.isChecked()
+        self.settings["AlwaysRestore"]         = self.cbAlwaysRestore.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbRestoreUnmaximizedGeo.setChecked (self.settings["RestoreUnmaximizedGeo"])
         self.cbHideShowOnUnmax.setChecked       (self.settings["HideShowOnUnmax"])
         self.cbSecondLastNormalGeo.setChecked   (self.settings["SecondLastNormalGeo"])
         self.cbHideShowOnStart.setChecked       (self.settings["HideShowOnStart"])
+        self.cbAlwaysRestore.setChecked         (self.settings["AlwaysRestore"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
