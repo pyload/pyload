@@ -4012,8 +4012,10 @@ class WhatsThisOptions(QDialog):
         self.buttons.hideWhatsThisButton()
         self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
         self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
+        self.resetBtn  = self.buttons.addButton(QDialogButtonBox.Reset)
         self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
         self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
+        self.buttons.button(QDialogButtonBox.Reset).setText(_("Reset"))
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.cbEnable)
@@ -4022,20 +4024,26 @@ class WhatsThisOptions(QDialog):
         self.setLayout(vbox)
 
         self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
+        self.setFixedSize(self.width() + 20, self.height())
 
         self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
         self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
+        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.resetBtnClicked)
         self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.cbEnableToggled)
         self.connect(self.btnText,   SIGNAL("clicked()"),     self.chooseTextColor)
         self.connect(self.btnBack,   SIGNAL("clicked()"),     self.chooseBackgroundColor)
         self.defaultSettings()
+
+    def resetBtnClicked(self):
+        self.choosenColors = self.defaultColors
+        self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
 
     def cbEnableToggled(self, enabled):
         if enabled:
             self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
         else:
             self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
+        self.resetBtn.setEnabled(enabled)
 
     def chooseTextColor(self):
         initCol = QColor()
