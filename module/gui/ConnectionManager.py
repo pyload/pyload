@@ -284,7 +284,7 @@ class ConnectionManager(QDialog):
             grid1.addWidget(password,     4, 1)
             #grid1.setRowMinimumHeight(    5, 7)
             
-            gb1 = QGroupBox(_("Login"))
+            gb1 = QGroupBox(_("Login") + "     ")
             gb1.setLayout(grid1)
             
             grid2 = QGridLayout()
@@ -301,7 +301,7 @@ class ConnectionManager(QDialog):
             grid2.setColumnStretch(1, 1)
             #grid2.setRowMinimumHeight(2, 7)
             
-            cnlpf = QGroupBox(_("Enable ClickNLoad Port Forwarding"))
+            cnlpf = QGroupBox(_("Enable ClickNLoad Port Forwarding") + "     ")
             cnlpf.setCheckable(True)
             cnlpf.setLayout(grid2)
             

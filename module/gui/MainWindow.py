@@ -1330,7 +1330,7 @@ class NotificationOptions(QDialog):
         vboxCb.addWidget(self.cbAborted)
         vboxCb.addWidget(self.cbCaptcha)
         
-        self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications"))
+        self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications") + "     ")
         self.cbEnableNotify.setCheckable(True)
         self.cbEnableNotify.setLayout(vboxCb)
         
@@ -1422,7 +1422,7 @@ class TrayOptions(QDialog):
         vboxCb.addWidget(self.cbRestoreGeo)
         vboxCb.addWidget(self.cbAltMethod)
         
-        self.cbEnableTray = QGroupBox(_("Enable Tray Icon"))
+        self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
         self.cbEnableTray.setCheckable(True)
         self.cbEnableTray.setLayout(vboxCb)
         
@@ -1487,11 +1487,10 @@ class OtherOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
-        self.gb = QGroupBox(_("Other"))
+        self.gb = QGroupBox(_("Other") + "     ")
         self.gb.setCheckable(False)
         
-        self.cbRestoreUnmaximizedGeoTitle = _("Workaround for broken window geometry after unmaximize")
-        self.cbRestoreUnmaximizedGeo = QGroupBox(self.cbRestoreUnmaximizedGeoTitle + "     ")
+        self.cbRestoreUnmaximizedGeo = QGroupBox(_("Workaround for broken window geometry after unmaximize") + "     ")
         self.cbRestoreUnmaximizedGeo.setCheckable(True)
         whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings.<br><br>This is needed only on Linux. Disable on Windows OS."))
         self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))

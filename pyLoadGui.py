@@ -2922,7 +2922,7 @@ class InfoCorePermissions(QDialog):
         grid.setColumnMinimumWidth(2, 10)
         grid.setColumnStretch(2, 1)
 
-        gp = QGroupBox(_("Server Permissions"))
+        gp = QGroupBox(_("Server Permissions") + "     ")
         gp.setLayout(grid)
 
         hintLbl = QLabel("<b>" + _("Permissons were changed.<br>") + _("Takes effect on next login.") + "</b>")
@@ -3046,7 +3046,7 @@ class CaptchaOptions(QDialog):
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbAdjSize)
 
-        self.cbEnableDialog = QGroupBox(_("Enable Captcha Solving"))
+        self.cbEnableDialog = QGroupBox(_("Enable Captcha Solving") + "     ")
         self.cbEnableDialog.setCheckable(True)
         self.cbEnableDialog.setLayout(vboxCb)
 
@@ -3102,13 +3102,13 @@ class LoggingOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.cbEnableFileLog = QGroupBox(_("Enable File Log"))
+        self.cbEnableFileLog = QGroupBox(_("Enable File Log") + "     ")
         self.cbEnableFileLog.setCheckable(True)
         self.cbEnableFileLog.setMinimumWidth(250)
         folderLabel = QLabel(_("Folder"))
         self.leFolder = QLineEdit()
 
-        self.cbRotate = QGroupBox(_("Log Rotation"))
+        self.cbRotate = QGroupBox(_("Log Rotation") + "     ")
         self.cbRotate.setCheckable(True)
         sizeLabel = QLabel(_("Size in kb"))
         self.sbSize = QSpinBox()
@@ -3225,7 +3225,7 @@ class FontOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
-        self.cbEnableCustomFonts = QGroupBox(_("Enable Custom Fonts"))
+        self.cbEnableCustomFonts = QGroupBox(_("Enable Custom Fonts") + "     ")
         self.cbEnableCustomFonts.setCheckable(True)
         self.cbApplication = QCheckBox(_("Application") + ":")
         self.cbApplication.setChecked(True)
@@ -3514,7 +3514,7 @@ class AutomaticReloadingOptions(QDialog):
         hboxCb.addWidget(lbl2)
         hboxCb.addStretch(1)
 
-        self.cbEnabled = QGroupBox(_("Enable") + " " + _("Automatic Reloading"))
+        self.cbEnabled = QGroupBox(_("Enable") + " " + _("Automatic Reloading") + "     ")
         self.cbEnabled.setCheckable(True)
         self.cbEnabled.setLayout(hboxCb)
 
@@ -3608,7 +3608,7 @@ class ClickNLoadForwarderOptions(QDialog):
         grid.addLayout(self.hboxStatus, 5, 0, 1, 3)
         grid.setRowStretch(6, 1)
 
-        gb = QGroupBox(_("ClickNLoad Port Forwarding"))
+        gb = QGroupBox(_("ClickNLoad Port Forwarding") + "     ")
         gb.setLayout(grid)
 
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
@@ -3869,7 +3869,7 @@ class LanguageOptions(QDialog):
         vboxGp.addLayout(hboxGp)
         vboxGp.addWidget(self.noteLbl)
 
-        self.gb = QGroupBox(_("Language"))
+        self.gb = QGroupBox(_("Language") + "     ")
         self.gb.setLayout(vboxGp)
 
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
@@ -4004,7 +4004,7 @@ class WhatsThisOptions(QDialog):
         grid.addWidget(self.lblBack, 1, 0)
         grid.addWidget(self.btnBack, 1, 1)
 
-        self.cbEnable = QGroupBox(_("Enable Custom Colors"))
+        self.cbEnable = QGroupBox(_("Enable Custom Colors") + "     ")
         self.cbEnable.setCheckable(True)
         self.cbEnable.setLayout(grid)
 
