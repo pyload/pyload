@@ -27,7 +27,7 @@ _decode = decode
 class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__ = "stable"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
@@ -192,13 +192,11 @@ class Plugin(object):
         #@TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(
-                pycurl.FOLLOWLOCATION, 0)
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             # @NOTE: req can be a HTTPRequest or a Browser object
-            (req.http if hasattr(req, "http") else req).c.setopt(
-                pycurl.MAXREDIRS, redirect)
+            (req.http if hasattr(req, "http") else req).c.setopt(pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
         if isinstance(ref, basestring):
@@ -220,7 +218,7 @@ class Plugin(object):
             (req.http if hasattr(req, "http") else req).c.setopt(
                 pycurl.FOLLOWLOCATION, 1)
 
-        elif isinstance(redirect, int):
+        elif type(redirect) is int:
             maxredirs = int(
                 self.pyload.api.getConfigValue(
                     "UserAgentSwitcher",

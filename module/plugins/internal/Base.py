@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -272,6 +272,11 @@ class Base(Plugin):
         #@TODO: Enable in 0.4.10
         # self.pyload.hookManager.downloadPreparing(self.pyfile)
         # self.check_status()
+
+        #@TODO: Remove in 0.4.10
+        if self.__type__ == "crypter":
+            self.pyload.hookManager.downloadPreparing(self.pyfile)
+            self.check_status()
 
         self.pyfile.setStatus("starting")
 
