@@ -1411,16 +1411,26 @@ class TrayOptions(QDialog):
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
         self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
+        self.lblUrl          = QLabel()
+        
         whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some LXDE desktop environments.<br>Could be useful when using the Compiz window manager."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbAltMethod.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
         self.cbAltMethod.setWhatsThis(whatsThisFormat(*whatsThis))
+        desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
+        urltext  = "Options.txt"
+        url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
+        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
+        self.lblUrl.setTextFormat(Qt.RichText)
+        self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.lblUrl.setOpenExternalLinks(True)
         
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
         vboxCb.addWidget(self.cbRestoreGeo)
         vboxCb.addWidget(self.cbAltMethod)
+        vboxCb.addWidget(self.lblUrl)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
         self.cbEnableTray.setCheckable(True)
@@ -1499,6 +1509,8 @@ class OtherOptions(QDialog):
         self.cbSecondLastNormalGeo = QCheckBox(_("Apply second last known geometry"))
         self.cbHideShowOnStart     = QCheckBox(_("Extra fix on application start"))
         self.cbAlwaysRestore       = QCheckBox(_("Always restore geometry"))
+        self.lblUrl                = QLabel()
+        
         whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Cinnamon, MATE or LXDE desktop environments."))
         self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
@@ -1507,12 +1519,20 @@ class OtherOptions(QDialog):
         self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Can be required on some LXDE desktop environments."))
         self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
+        desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
+        urltext  = "Options.txt"
+        url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
+        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
+        self.lblUrl.setTextFormat(Qt.RichText)
+        self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.lblUrl.setOpenExternalLinks(True)
         
         vboxCb1 = QVBoxLayout()
         vboxCb1.addWidget(self.cbHideShowOnUnmax)
         vboxCb1.addWidget(self.cbSecondLastNormalGeo)
         vboxCb1.addWidget(self.cbHideShowOnStart)
         vboxCb1.addWidget(self.cbAlwaysRestore)
+        vboxCb1.addWidget(self.lblUrl)
         self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
         
         vboxGb = QVBoxLayout()
