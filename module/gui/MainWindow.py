@@ -1502,7 +1502,7 @@ class OtherOptions(QDialog):
         
         self.cbRestoreUnmaximizedGeo = QGroupBox(_("Workaround for broken window geometry after unmaximize") + "     ")
         self.cbRestoreUnmaximizedGeo.setCheckable(True)
-        whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings.<br><br>This is needed only on Linux. Disable on Windows OS."))
+        whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings."))
         self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         
         self.cbHideShowOnUnmax     = QCheckBox(_("Extra fix for show from tray"))
