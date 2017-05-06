@@ -187,10 +187,60 @@ var Package = new Class({
         }).send();
     },
 
+    deleteLinkByType: function(type) {
+
+        var ul = $("sort_children_{id}".substitute({"id": this.id}));
+
+        switch (type) {
+            case "all":
+            case "none":
+                ul.getElements('input[name="delete_bundle"]').each(function(el) {
+                    el.checked = "all" == type;
+                    $$(el).fireEvent("change");
+                });
+                break;
+            default:
+                ul.getElements('.link_plugin_name').each(function(el) {
+                    if (type == $$(el).get("text").toString()) {
+                        var checkbox = $$(el).getParent().getElement('input[name="delete_bundle"]');
+
+                        checkbox[0].checked = true;
+                        checkbox[0].fireEvent("change");
+                    }
+                });
+        }
+    },
+
     createLinks: function(data) {
+        var children = $("children_{id}".substitute({"id": this.id}));
         var ul = $("sort_children_{id}".substitute({"id": this.id}));
         ul.set("html", "");
+
+        var packageObject = this;
+
+        var selectionElements = new Element("div", {id: "selection_elements"});
+        var markDropdown = new Element("select", {
+            id:"select_mark"
+
+        }).addEvent('change',function() {
+            if (this.getSelected().get("value")) {
+                packageObject.deleteLinkByType(this.getSelected().get("value").toString());
+            }
+        });
+
+        new Element('option', {'text':'Select...'}).inject(markDropdown);
+        new Element('option', {'value': 'all', 'text':'All'}).inject(markDropdown);
+        new Element('option', {'value': 'none', 'text':'None'}).inject(markDropdown);
+
+
+        selectionElements.adopt(markDropdown).inject(ul, "before");
+
+        var downloadPlugins = {};
         data.links.each(function(link) {
+
+            downloadPlugins[link.plugin] = downloadPlugins[link.plugin] || [];
+            downloadPlugins[link.plugin].push(link.fid);
+
             link.id = link.fid;
             var li = new Element("li", {
                 "style": {
@@ -198,11 +248,13 @@ var Package = new Class({
                 }
             });
 
+
             var html = "<span style='cursor: move' class='child_status sorthandle'><img src='/media/default/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({"name": link.name});
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
-            html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
+            html += "<span class='child_status link_plugin_name'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
+            html += "<input type='checkbox' name='delete_bundle' value='1' />";
             html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='/media/default/img/delete.png' />&nbsp;&nbsp;";
             html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='/media/default/img/arrow_refresh.png' /></div>";
 
@@ -212,12 +264,47 @@ var Package = new Class({
                 "html": html
             });
 
+            div.getElement('input[name="delete_bundle"]').addEvent("change", function() {
+                if (0 < ul.getElements('input[name="delete_bundle"]:checked').length) {
+
+                    if (!children.getElement("button.delete_bundle")) {
+                        var deleteButton = new Element("button", {
+                            html: "Delete chosen",
+                            class: "delete_bundle"
+                        }).addEvent("click", function () {
+                                packageObject.bundleDelete();
+                            });
+
+                        selectionElements.adopt(deleteButton);
+                    }
+                } else if (deleteButton = selectionElements.getElement("button.delete_bundle")) {
+                    deleteButton.remove();
+                }
+            });
+
             li.store("order", link.order);
             li.store("lid", link.id);
 
             li.adopt(div);
             ul.adopt(li);
         });
+
+        Object.each(downloadPlugins, function(lids, pluginName, el) {
+
+            var button = new Element("option", {
+                text: pluginName,
+                value: pluginName
+            })
+            .inject(markDropdown)
+            .addEvent("click", function() {
+                lids.each(function(lid) {
+                    var linkElement = $("file_{lid}".substitute({lid: lid})).getElement("input[name='delete_bundle']");
+                    linkElement.checked = "checked";
+                    $$(linkElement).fireEvent("change");
+                })
+            });
+        });
+
         this.sorts = new Sortables(ul, {
             constrain: false,
             clone: true,
@@ -232,9 +319,37 @@ var Package = new Class({
         this.toggle();
     },
 
+    bundleDelete: function() {
+        var $toDelete = $$("#" + this.id.input).getElements('input[name="delete_bundle"]:checked');
+
+        var linkIds = [];
+        $toDelete.each(function(elem) {
+            var lid = elem.getParent("li").retrieve("lid");
+            linkIds.push(lid);
+        });
+
+        linkIds.getLast().each(function(linkId) {
+            new Request({
+                    method: 'get',
+                    url: '/api/deleteFiles/[' + linkId + "]",
+                    onSuccess: function() {
+                        $('file_' + linkId).nix()
+                    },
+                    onFailure: indicateFail
+                }).send();
+        });
+
+        if (!$$("#" + this.id.input).getElements('input[name="delete_bundle"]').length) {
+            this.deletePackage();
+        }
+
+    },
+
     registerLinkEvents: function() {
+
         this.ele.getElements('.child').each(function(child) {
             var lid = child.get('id').match(/[0-9]+/);
+
             var imgs = child.getElements('.child_secrow img');
             imgs[0].addEvent('click', function(e) {
                 new Request({
@@ -290,8 +405,10 @@ var Package = new Class({
             }.bind(this),
             onFailure: indicateFail
         }).send();
-        //hide_pack();
-        event.stop();
+
+        if (event) {
+            event.stop();
+        }
     },
 
     restartPackage: function(event) {
