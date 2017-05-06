@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -33,7 +33,7 @@ class NitroflareCom(SimpleHoster):
     INFO_PATTERN = r'title="(?P<N>.+?)".+>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'>File doesn\'t exist'
 
-    LINK_PREMIUM_PATTERN = LINK_FREE_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
+    LINK_PATTERN = r'(https?://[\w\-]+\.nitroflare\.com/.+?)"'
     FILE_ID_PATTERN = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     DIRECT_LINK = False
 
@@ -64,27 +64,27 @@ class NitroflareCom(SimpleHoster):
         self.load("http://nitroflare.com/ajax/setCookie.php",
                   post={'fileId': self.info['pattern']['ID']})
 
-        self.load(pyfile.url, post={'goToFreePage': ""})
+        self.data = self.load(pyfile.url,
+                              post={'goToFreePage': ""})
 
-        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
-                              post={'method': "startTimer",
-                                    'fileId': self.info['pattern']['ID']})
+        self.load("http://nitroflare.com/ajax/freeDownload.php",
+                  post={'method': "startTimer",
+                        'fileId': self.info['pattern']['ID']})
 
         self.check_errors()
 
         try:
-            js_file = self.load(
-                "http://nitroflare.com/js/downloadFree.js?v=1.0.1")
-            var_time = re.search(r'var time = (\d+);', js_file).group(1)
-            wait_time = int(var_time)
+            wait_time = int(re.search(r'var timerSeconds = (\d+);', self.data).group(1))
 
         except Exception:
-            wait_time = 60
+            wait_time = 120
 
-        self.wait(wait_time)
+        self.set_wait(wait_time)
 
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+
+        self.wait()
 
         self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "fetchDownload",
