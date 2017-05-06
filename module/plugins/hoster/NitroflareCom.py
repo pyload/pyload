@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -67,17 +67,17 @@ class NitroflareCom(SimpleHoster):
         self.data = self.load(pyfile.url,
                               post={'goToFreePage': ""})
 
-        self.load("http://nitroflare.com/ajax/freeDownload.php",
-                  post={'method': "startTimer",
-                        'fileId': self.info['pattern']['ID']})
-
-        self.check_errors()
-
         try:
             wait_time = int(re.search(r'var timerSeconds = (\d+);', self.data).group(1))
 
         except Exception:
             wait_time = 120
+
+        self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
+                              post={'method': "startTimer",
+                                    'fileId': self.info['pattern']['ID']})
+
+        self.check_errors()
 
         self.set_wait(wait_time)
 
