@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -27,10 +27,9 @@ class Keep2ShareCc(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DIRECT_LINK = False  # @TODO: Recheck in v0.4.10
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://k2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2share.cc/file/\g<ID>")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
@@ -112,7 +111,7 @@ class Keep2ShareCc(SimpleHoster):
                 self.error(_("Free download link not found"))
 
         # if group 1 did not match, check group 2
-        self.link = m.group(1) if m.group(1) else m.group(2)
+        self.link = m.group(1) or m.group(2)
 
     def handle_captcha(self):
         post_data = {'free': 1,
