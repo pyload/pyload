@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -29,7 +29,7 @@ class Keep2ShareCc(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2share.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2share.cc/file/\g<ID>?force_old=1")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
@@ -75,16 +75,14 @@ class Keep2ShareCc(SimpleHoster):
         # SimpleHoster.check_errors(self)
 
     def handle_free(self, pyfile):
-        m = re.search(
-            r'<input type="hidden" name="slow_id" value="(.+?)">',
-            self.data)
+        m = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data)
+
         if m is None:
             self.error(_("Slow-ID pattern not found"))
 
-        self.fid = m.group(1)
-
-        self.data = self.load(pyfile.url, post={'yt0': '',
-                                                'slow_id': self.fid})
+        self.data = self.load(pyfile.url,
+                              post={'yt0': '',
+                                    'slow_id': m.group(1)})
 
         self.check_errors()
 
@@ -92,9 +90,7 @@ class Keep2ShareCc(SimpleHoster):
         if m is None:
             self.handle_captcha()
 
-            m = re.search(
-                r'<div id="download-wait-timer".*>\s*(\d+).+?</div>',
-                self.data)
+            m = re.search(r'<div id="download-wait-timer".*>\s*(\d+).+?</div>', self.data)
             if m is not None:
                 self.wait(m.group(1))
 
@@ -103,8 +99,9 @@ class Keep2ShareCc(SimpleHoster):
             if m is None:
                 self.error(_("Unique-ID pattern not found"))
 
-            self.data = self.load(pyfile.url, post={'uniqueId': m.group('uID'),
-                                                    'free': '1'})
+            self.data = self.load(pyfile.url,
+                                  post={'uniqueId': m.group('uID'),
+                                        'free': '1'})
 
             m = re.search(self.LINK_FREE_PATTERN, self.data)
             if m is None:
@@ -114,27 +111,20 @@ class Keep2ShareCc(SimpleHoster):
         self.link = m.group(1) or m.group(2)
 
     def handle_captcha(self):
-        post_data = {'free': 1,
-                     'freeDownloadRequest': 1,
-                     'uniqueId': self.fid,
-                     'yt0': ''}
-
-        m = re.search(r'id="(captcha-form)"', self.data)
-        if m is not None:
+        url, inputs = self.parse_html_form('id="captcha-form"')
+        if inputs is not None:
             m = re.search(self.CAPTCHA_PATTERN, self.data)
-
             if m is not None:
                 captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
-                post_data['CaptchaForm[code]'] = self.captcha.decrypt(
-                    captcha_url)
-
+                inputs['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
             else:
                 self.captcha = ReCaptcha(self.pyfile)
                 response, challenge = self.captcha.challenge()
-                post_data.update({'recaptcha_challenge_field': challenge,
-                                  'recaptcha_response_field': response})
+                inputs.update({'recaptcha_challenge_field': challenge,
+                               'recaptcha_response_field': response})
 
-            self.data = self.load(self.pyfile.url, post=post_data)
+            self.data = self.load(self.fixurl(url),
+                                  post=inputs)
 
             if 'verification code is incorrect' in self.data:
                 self.retry_captcha()
