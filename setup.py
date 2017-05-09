@@ -25,7 +25,7 @@ from setuptools.command.sdist import sdist
 def _extract_text(path, fromline=None, toline=None):
     text = None
     path = os.path.join(os.path.dirname(__file__), path)
-    with io.open(path) as fp:
+    with io.open(path, encoding='UTF-8') as fp:
         if fromline or toline:
             text = ''.join(fp.readlines()[fromline:toline])
         else:
@@ -154,7 +154,7 @@ class BuildReadme(Command):
     def run(self):
         if os.path.isfile('README.rst'):
             return None
-        with io.open('README.rst', mode='w') as fp:
+        with io.open('README.rst', mode='w', encoding='UTF-8') as fp:
             fp.write(_gen_long_description(toline=36, rst=True))
 
 
