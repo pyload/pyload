@@ -38,7 +38,7 @@ class BIGHTTPRequest(HTTPRequest):
 class PornhubCom(SimpleHoster):
     __name__ = "PornhubCom"
     __type__ = "hoster"
-    __version__ = "0.58"
+    __version__ = "0.59"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
@@ -54,8 +54,9 @@ class PornhubCom(SimpleHoster):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     NAME_PATTERN = r'"video_title":"(?P<N>.+?)"'
-    TEMP_OFFLINE_PATTERN = r''
-    OFFLINE_PATTERN = r''
+
+    TEMP_OFFLINE_PATTERN = r'^unmatchable$'  # Who knows?
+    OFFLINE_PATTERN = r'^unmatchable$'  # Who knows?
 
 
     @classmethod
