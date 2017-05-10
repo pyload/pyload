@@ -7,7 +7,7 @@ from ..captcha.ReCaptcha import ReCaptcha
 class UploadgigCom(SimpleHoster):
     __name__ = "UploadgigCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
@@ -29,7 +29,7 @@ class UploadgigCom(SimpleHoster):
 
     OFFLINE_PATTERN = r'File not found'
 
-    LOGIN_ACCOUNT = True  #: Free download is not possible because they blocked noscript ReCaptcha
+    LOGIN_PREMIUM = True  #: Free download is not possible because they blocked noscript ReCaptcha
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
