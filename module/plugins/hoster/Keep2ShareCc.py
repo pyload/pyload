@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -29,7 +29,7 @@ class Keep2ShareCc(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2share.cc/file/\g<ID>?force_old=1")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://k2s.cc/file/\g<ID>?force_old=1")]
 
     NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
     SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
