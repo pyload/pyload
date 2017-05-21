@@ -15,14 +15,13 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -46,6 +45,8 @@ class RapidgatorNet(SimpleHoster):
 
     PREMIUM_ONLY_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
+    IP_BLOCKED_ERROR_PATTERN = 'You can`t download more than 1 file at a time in free mode\.' \
+                               ''
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in).+'
 
     LINK_FREE_PATTERN = r'return \'(http://\w+.rapidgator.net/.*)\';'
@@ -114,35 +115,32 @@ class RapidgatorNet(SimpleHoster):
 
             self.retry(wait=wait_time, msg=m.group(0))
 
+        m = re.search(self.IP_BLOCKED_ERROR_PATTERN, self.data)
+        if m is not None:
+            self.fail(_("You can't download more than one file within a certain time period in free mode"))
+
     def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))
         self.log_debug(jsvars)
-
-        self.req.http.lastURL = pyfile.url
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            ["X-Requested-With: XMLHttpRequest"])
 
         url = "http://rapidgator.net%s?fid=%s" % (
             jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
         jsvars.update(self.get_json_response(url))
 
-        self.wait(jsvars.get('secs', 45), False)
+        self.wait(jsvars.get('secs', 180), False)
 
         url = "http://rapidgator.net%s?sid=%s" % (
-            jsvars.get('getDownloadUrl', '/download/AjaxGetDownload'), jsvars['sid'])
+            jsvars.get('getDownloadUrl', '/download/AjaxGetDownloadLink'), jsvars['sid'])
         jsvars.update(self.get_json_response(url))
 
-        self.req.http.lastURL = pyfile.url
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
-
-        url = "http://rapidgator.net%s" % jsvars.get(
-            'captchaUrl', '/download/captcha')
-        self.data = self.load(url)
+        url = "http://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
+        self.data = self.load(url, ref=pyfile.url)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
-            self.link = m.group(1)
+            # self.link = m.group(1)
+            self.download(m.group(1), ref=url)
+
         else:
             captcha = self.handle_captcha()
 
@@ -157,10 +155,12 @@ class RapidgatorNet(SimpleHoster):
 
             if "The verification code is incorrect" in self.data:
                 self.retry_captcha()
+
             else:
                 m = re.search(self.LINK_FREE_PATTERN, self.data)
                 if m is not None:
-                    self.link = m.group(1)
+                    # self.link = m.group(1)
+                    self.download(m.group(1), ref=url)
 
     def handle_captcha(self):
         for klass in (AdsCaptcha, ReCaptcha, SolveMedia):
@@ -170,7 +170,15 @@ class RapidgatorNet(SimpleHoster):
                 return captcha
 
     def get_json_response(self, url):
-        res = self.load(url)
+        self.req.http.c.setopt(
+            pycurl.HTTPHEADER,
+            ["X-Requested-With: XMLHttpRequest"])
+
+        res = self.load(url, ref=self.pyfile.url)
+        self.req.http.c.setopt(
+            pycurl.HTTPHEADER,
+            ["X-Requested-With:"])
+
         if not res.startswith('{'):
             self.retry()
         self.log_debug(url, res)
