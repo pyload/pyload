@@ -15,7 +15,7 @@ from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "1.17"
+    __version__ = "1.18"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -48,10 +48,10 @@ class UpdateManager(Addon):
         self.periodical.start(10)
 
     def init(self):
-        self.info = {
+        self.info.update({
             'pyload': False,
             'plugins': False,
-            'last_check': time.time()}
+            'last_check': time.time()})
         self.mtimes = {}  #: Store modification time for each plugin
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
 
