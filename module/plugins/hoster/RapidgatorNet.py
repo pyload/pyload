@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
@@ -117,7 +117,9 @@ class RapidgatorNet(SimpleHoster):
 
         m = re.search(self.IP_BLOCKED_ERROR_PATTERN, self.data)
         if m is not None:
-            self.fail(_("You can't download more than one file within a certain time period in free mode"))
+            msg = _("You can't download more than one file within a certain time period in free mode")
+            self.log_warning(msg)
+            self.retry(wait=24 * 60 * 60, msg=msg)
 
     def handle_free(self, pyfile):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))

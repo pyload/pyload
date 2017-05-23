@@ -13,7 +13,7 @@ from .SimpleHoster import SimpleHoster
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.79"
+    __version__ = "0.80"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -204,9 +204,11 @@ class XFSHoster(SimpleHoster):
 
                     wait_time = parse_time(waitmsg)
                     self.set_wait(wait_time)
-                    self.set_reconnect(False)
-                    if wait_time < self.config.get('max_wait', 10) * 60:
+                    if wait_time < self.config.get('max_wait', 10) * 60 or \
+                            self.pyload.config.get('reconnect', 'activated') is False or \
+                            self.pyload.api.isTimeReconnect() is False:
                         self.handle_captcha(inputs)
+
                     self.wait()
 
                 else:

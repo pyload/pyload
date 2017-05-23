@@ -13,7 +13,7 @@ from ..internal.misc import json
 class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})'
@@ -91,13 +91,15 @@ class OboomCom(Hoster):
 
         elif result[0] == 403:
             if result[1] == -1:  #: Another download is running
-                self.set_wait(15 * 60)
+                wait_time = 15 * 60
+                reconnect = None
             else:
-                self.set_wait(result[1])
-                self.set_reconnect(True)
+                wait_time = result[1]
+                reconnect = True
 
-            self.wait()
-            self.retry(5)
+            self.wait(wait_time, reconnect=reconnect)
+
+            self.retry()
 
         elif result[0] == 400 and result[1] == "forbidden":
             self.retry(5, 15 * 60, _("Service unavailable"))
