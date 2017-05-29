@@ -113,7 +113,7 @@
                                            <td>
                                                <input id="{{plugin}}|password;{{account.login}}"
                                                       name="{{plugin}}|password;{{account.login}}"
-                                                      type="password" value="{{account.password}}" size="12"/>
+                                                      type="password" size="12"/>
                                            </td>
                                            <td>
                                                {% if account.valid %}
@@ -148,12 +148,12 @@
                                            <td>
                                                <input id="{{plugin}}|time;{{account.login}}"
                                                       name="{{plugin}}|time;{{account.login}}" type="text"
-                                                      size="7" value="{{account.time}}"/>
+                                                      size="7" value="{{account.options['time']}}"/>
                                            </td>
                                            <td>
                                                <input id="{{plugin}}|limitdl;{{account.login}}"
                                                       name="{{plugin}}|limitdl;{{account.login}}" type="text"
-                                                      size="2" value="{{account.limitdl}}"/>
+                                                      size="2" value="{{account.options['limitdl']}}"/>
                                            </td>
                                            <td>
                                                <input id="{{plugin}}|delete;{{account.login}}"
