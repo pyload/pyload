@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -244,10 +244,10 @@ def format_time(value):
     dt = datetime.datetime(1, 1, 1) + \
         datetime.timedelta(seconds=abs(int(value)))
     days = ("%d days" % (dt.day - 1)) if dt.day > 1 else ""
-    res = ", ".join("%d %ss" % (getattr(dt, attr), attr)
+    tm = ", ".join("%d %ss" % (getattr(dt, attr), attr)
                             for attr in ("hour", "minute", "second")
                             if getattr(dt, attr))
-    return days + (" and " if res else "") + res
+    return days + (" and " if days and tm else "") + tm
 
 def format_size(value):
     for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
