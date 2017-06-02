@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import dict
 
-from pyload.core.network.curl.request import CurlRequest
+from future import standard_library
+from pyload.requests.curl.request import CurlRequest
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase

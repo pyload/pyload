@@ -2,16 +2,15 @@
 # @author: RaNaN, mkaay
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 import shutil
 from builtins import int, object, range, str
 from traceback import print_exc
 
+from future import standard_library
+from pyload.utils.fs import lopen, remove
 from pyload.utils.layer.safethreading import Event, Thread
-from pyload.utils.path import remove
 from queue import Queue
 
 standard_library.install_aliases()
@@ -60,8 +59,6 @@ def inner(f):
 
 class DatabaseMethods(object):
 
-    # __slots__ = ['c', 'conn', 'core', 'manager']
-
     # stubs for autocompletion
     core = None
     manager = None
@@ -74,8 +71,6 @@ class DatabaseMethods(object):
 
 
 class DatabaseJob(object):
-
-    # __slots__ = ['args', 'done', 'exception', 'func', 'kwargs', 'result']
 
     def __init__(self, func, *args, **kwargs):
         self.done = Event()
@@ -99,8 +94,8 @@ class DatabaseJob(object):
         # frame = frame.f_back
         # del frame
         # del self.frame
-        return "DataBase Job {0}:{1}\n{2}Result: {3}".format(
-            self.func.__name__, self.args[1:], output, self.result)
+        return "DataBase Job {0}:{1}{2}{3}Result: {4}".format(
+            self.func.__name__, self.args[1:], os.linesep, output, self.result)
 
     def process_job(self):
         try:
@@ -123,16 +118,6 @@ class DatabaseJob(object):
 
 class DatabaseBackend(Thread):
 
-    # __slots__ = [
-        # 'DB_FILE',
-        # 'VERSION_FILE',
-        # 'error',
-        # 'jobs',
-        # 'manager',
-        # 'pyload',
-        # 'running',
-        # 'subs']
-
     subs = []
 
     DB_FILE = "pyload.db"
@@ -142,20 +127,25 @@ class DatabaseBackend(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.pyload = core
+        self._ = core._
         self.manager = None  #: set later
         self.error = None
-        self.running = Event()
+        self.__running = Event()
 
         self.jobs = Queue()
 
         set_db(self)
+
+    @property
+    def running(self):
+        return self.__running.is_set()
 
     def setup(self):
         """
         *MUST* be called before db can be used !.
         """
         self.start()
-        self.running.wait()
+        self.__running.wait()
 
     def init(self):
         """
@@ -177,14 +167,14 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.manager.pyload.log.warning(
-                        _("Database was deleted due to incompatible version"))
+                    self.pyload.log.warning(
+                        self._("Database was deleted due to incompatible version"))
                 except Exception:
                     print("Database was deleted due to incompatible version")
 
                 remove(self.VERSION_FILE)
                 shutil.move(self.DB_FILE, self.DB_FILE + ".bak")
-                with io.open(self.VERSION_FILE, mode='wb') as fp:
+                with lopen(self.VERSION_FILE, mode='wb') as fp:
                     fp.write(str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
@@ -200,7 +190,7 @@ class DatabaseBackend(Thread):
         except Exception as e:
             self.error = e
         finally:
-            self.running.set()
+            self.__running.set()
 
         while True:
             j = self.jobs.get()
@@ -214,7 +204,7 @@ class DatabaseBackend(Thread):
 
     # TODO: Recheck...
     def shutdown(self):
-        self.running.clear()
+        self.__running.clear()
         self.closing = Event()
         self.jobs.put("quit")
         self.closing.wait(1)
@@ -224,10 +214,10 @@ class DatabaseBackend(Thread):
         Get db version.
         """
         try:
-            with io.open(self.VERSION_FILE, mode='rb') as fp:
+            with lopen(self.VERSION_FILE, mode='rb') as fp:
                 v = int(fp.read().strip())
         except IOError:
-            with io.open(self.VERSION_FILE, mode='wb') as fp:
+            with lopen(self.VERSION_FILE, mode='wb') as fp:
                 fp.write(str(DB_VERSION))
             return None
         return v
@@ -451,14 +441,14 @@ class DatabaseBackend(Thread):
 
     def queue(self, f, *args, **kwargs):
         # Raise previous error of initialization
-        if self.error:
+        if isinstance(self.error, Exception):
             raise self.error
         args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
         # only wait when db is running
-        if self.running.isSet():
+        if self.running:
             job.wait()
         return job.result
 
@@ -509,17 +499,17 @@ class DatabaseBackend(Thread):
         # print("e")
 
     # db.register_sub(Test)
-    # from time import time
+    # import time
 
-    # start = time()
+    # start = time.time()
     # for i in range(100):
         # db.insert()
-    # end = time()
+    # end = time.time()
     # print(end - start)
 
-    # start = time()
+    # start = time.time()
     # db.insert2()
-    # end = time()
+    # end = time.time()
     # print(end - start)
 
     # db.error()

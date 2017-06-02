@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
+from future import standard_library
+from pyload.utils.fs import lopen
 
 standard_library.install_aliases()
 
@@ -12,7 +12,7 @@ def parse_config(path):
     result = {}
 
     current_section = None
-    with io.open(path, mode='rb') as fp:
+    with lopen(path, mode='rb') as fp:
         for line in fp.readlines():
             line = line.strip()
             if not line or line.startswith("#"):

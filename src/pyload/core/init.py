@@ -2,36 +2,41 @@
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import builtins
 import errno
 import fcntl
 import imp
-import io
+import locale
 import logging
 import logging.handlers
 import os
 import sched
 import signal
+import sys
 import tempfile
 import time
-from builtins import DATADIR, PACKDIR, REQUEST, TMPDIR, USERDIR, int, map, str
+from builtins import TMPDIR, USERDIR, int, map, str
 from contextlib import closing
-from locale import getpreferredencoding
 from multiprocessing import Event, Process
 
-import autoupgrade
-import daemonize
+import portalocker
 import psutil
+from pkg_resources import resource_filename
 
-from .config import make_config
+from future import standard_library
 from pyload.config import ConfigParser
-from pyload.utils import convert, format, sys
+from pyload.utils import convert, format
 from pyload.utils.check import ismodule
-from pyload.utils.misc import install_translation
-from pyload.utils.path import availspace, makedirs, pyclean, remove
+from pyload.utils.fs import availspace, fullpath, lopen, makedirs, remove
+from pyload.utils.misc import get_translation, write_pid
 from pyload.utils.struct.info import Info
+from pyload.utils.system import (ionice, renice, set_process_group,
+                                 set_process_name, set_process_user)
+from semver import format_version
+
+from .__about__ import __namespace__, __version__, __version_info__, __package__
+from .config import config_defaults, session_defaults
 
 standard_library.install_aliases()
 
@@ -40,42 +45,16 @@ try:
 except ImportError:
     pass
 
-    
-def _gen_profiledir(profile=None, configdir=None):
-    if not profile:
-        profile = 'default'
-    if configdir:
-        configdir = os.path.expanduser(configdir)
-    else:
-        configdir = os.path.join(
-            DATADIR, 'pyLoad' if os.name == 'nt' else '.pyload')
-    profiledir = os.path.abspath(os.path.join(configdir, profile))
-    makedirs(profiledir)
-    return profiledir
-    
-    
-def _get_setup_map():
-    """
-    Load info dict from `setup.py`.
-    """
-    fp, fname, desc = imp.find_module('setup', PACKDIR)
-    module = imp.load_module('_setup', fp, fname, desc)
-    return module.SETUP_MAP
 
-__setup_map = _get_setup_map()
-__core_version = convert.to_version(__setup_map['version'])
+_pmap = {}
 
 
 class Restart(Exception):
-    # __slots__ = []
-    def __str__(self):
-        return """<RestartSignal {0}>""".format(self.message)
+    pass
 
 
 class Shutdown(Exception):
-    # __slots__ = []
-    def __str__(self):
-        return """<ShutdownSignal {0}>""".format(self.message)
+    pass
 
 
 # TODO:
@@ -89,31 +68,26 @@ class Shutdown(Exception):
 #  improve external scripts
 class Core(Process):
 
-    # __slots__ = [
-        # '_cleanup', '_restart', '_shutdown', '_rpc', '_webui', 'accountmanager',
-        # 'acm', 'addonmanager', 'adm', 'api', 'configdir', 'configfile', 'db',
-        # 'debug', 'debug_level', 'tsm', 'transfermanager', 'eventmanager', 'evm',
-        # 'filemanager', 'files', 'exchangemanager', 'exm', 'log', 'pgm',
-        # 'pid', 'pidfile', 'pluginmanager', 'profile', 'profiledir', 'rem',
-        # 'remotemanager', 'req', 'request', 'running', 'scheduler', 'iom',
-        # 'infomanager', 'tmpdir', 'version', 'webserver'
-    # ]
+    __SESSIONFILENAME = 'session.ini'
+    __CONFIGFILENAME = 'config.ini'
+    DEFAULT_LANGUAGE = 'english'
+    DEFAULT_USERNAME = 'admin'
+    DEFAULT_PASSWORD = 'pyload'
+    DEFAULT_STORAGEDIRNAME = 'downloads'
+    DEFAULT_LOGDIRNAME = 'logs'
+    DEFAULT_LOGFILENAME = 'log.txt'
 
-    @property
-    def version(self):
-        return __core_version
-
-    def _set_consolelog_handler(self):
+    def _init_consolelogger(self):
         if self.config.get('log', 'color_console') and ismodule('colorlog'):
             fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
             datefmt = "%Y-%m-%d  %H:%M:%S"
-            log_colors = {
+            primary_colors = {
                 'DEBUG': "bold,cyan",
                 'WARNING': "bold,yellow",
                 'ERROR': "bold,red",
                 'CRITICAL': "bold,purple",
             }
-            log_colors_2 = {
+            secondary_colors = {
                 'label': {
                     'DEBUG': "bold,white,bg_cyan",
                     'INFO': "bold,white,bg_green",
@@ -122,8 +96,9 @@ class Core(Process):
                     'CRITICAL': "bold,white,bg_purple",
                 }
             }
-            consoleform = colorlog.ColoredFormatter(fmt, datefmt, log_colors,
-                                                    secondary_log_colors=log_colors_2)
+            consoleform = colorlog.ColoredFormatter(
+                fmt, datefmt, primary_colors,
+                secondary_log_colors=secondary_colors)
         else:
             fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
             datefmt = "%Y-%m-%d %H:%M:%S"
@@ -133,13 +108,14 @@ class Core(Process):
         consolehdlr.setFormatter(consoleform)
         self.log.addHandler(consolehdlr)
 
-    def _set_syslog_handler(self):
+    def _init_syslogger(self):
         #: try to mimic to normal syslog messages
         fmt = "%(asctime)s %(name)s: %(message)s"
         datefmt = "%b %e %H:%M:%S"
         syslogform = logging.Formatter(fmt, datefmt)
         syslogaddr = None
 
+        syslog = self.config.get('log', 'syslog')
         if syslog == 'remote':
             syslog_host = self.config.get('log', 'syslog_host')
             syslog_port = self.config.get('log', 'syslog_port')
@@ -157,53 +133,54 @@ class Core(Process):
         sysloghdlr.setFormatter(syslogform)
         self.log.addHandler(sysloghdlr)
 
-    def _set_logfile_handler(self):
+    def _init_filelogger(self):
         fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
         datefmt = "%Y-%m-%d %H:%M:%S"
         fileform = logging.Formatter(fmt, datefmt)
 
-        logfile = os.path.join(logfile_folder, 'log.txt')
+        logfile_folder = self.config.get('log', 'logfile_folder')
+        if not logfile_folder:
+            logfile_folder = self.DEFAULT_LOGDIRNAME
+        makedirs(logfile_folder, exist_ok=True)
+
+        logfile_name = self.config.get('log', 'logfile_name')
+        if not logfile_name:
+            logfile_name = self.DEFAULT_LOGFILENAME
+        logfile = os.path.join(logfile_folder, logfile_name)
+
         if self.config.get('log', 'rotate'):
             logfile_size = self.config.get('log', 'logfile_size') << 10
             max_logfiles = self.config.get('log', 'max_logfiles')
-            filehdlr = logging.handlers.RotatingFileHandler(logfile,
-                                                            maxBytes=logfile_size,
-                                                            backupCount=max_logfiles,
-                                                            encoding=getpreferredencoding())
+            filehdlr = logging.handlers.RotatingFileHandler(
+                logfile, maxBytes=logfile_size, backupCount=max_logfiles,
+                encoding=locale.getpreferredencoding(do_setlocale=False))
         else:
             filehdlr = logging.FileHandler(
-                logfile, encoding=getpreferredencoding())
+                logfile, encoding=locale.getpreferredencoding(do_setlocale=False))
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
 
-    def _mklogdir(self):
-        logfile_folder = self.config.get('log', 'logfile_folder')
-        if not logfile_folder:
-            logfile_folder = os.path.abspath("logs")
-        makedirs(logfile_folder)
-
     # TODO: Extend `logging.Logger` like `..plugin.Log`
-    def _init_logger(self, level):
+    def _init_logger(self):
+        level = logging.DEBUG if self.debug else logging.INFO
+
         # Init logger
-        self.log = logging.getLogger('pyload')
+        self.log = logging.getLogger()
         self.log.setLevel(level)
 
         # Set console handler
-        self._set_consolelog_handler()
+        self._init_consolelogger()
 
         # Set syslog handler
         if self.config.get('log', 'syslog') != 'no':
-            self._set_syslog_handler()
-
-        # Create logfile folder
-        self._mklogdir()
+            self._init_syslogger()
 
         # Set file handler
         if self.config.get('log', 'logfile'):
-            self._set_logfile_handler()
+            self._init_filelogger()
 
-    def _init_permissions(self):
+    def _setup_permissions(self):
         if os.name == 'nt':
             return None
 
@@ -213,45 +190,61 @@ class Core(Process):
         if change_group:
             try:
                 group = self.config.get('permission', 'group')
-                sys.set_process_group(group)
+                set_process_group(group)
             except Exception as e:
-                self.log.error(_("Unable to change gid"), str(e))
+                self.log.error(self._("Unable to change gid"), str(e))
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
-                sys.set_process_user(user)
+                set_process_user(user)
             except Exception as e:
-                self.log.error(_("Unable to change uid"), str(e))
+                self.log.error(self._("Unable to change uid"), str(e))
 
-    def _init_translation(self):
-        language = self.config.get('general', 'language')
-        localedir = os.path.join(PACKDIR, 'locale')
+    def set_language(self, lang):
+        localedir = resource_filename(__package__, 'locale')
+        lc = locale.locale_alias[lang.lower()].split('_', 1)[0]
+        trans = get_translation('core', localedir, (lc,))
         try:
-            install_translation('core', localedir, [language])
-        except (IOError, OSError):
+            self._ = trans.ugettext
+        except AttributeError:
+            self._ = trans.gettext
+
+    def _setup_language(self):
+        self.log.debug("Loading language ...")
+        lang = self.config.get('general', 'language')
+        default = self.DEFAULT_LANGUAGE
+        if not lang:
+            code = locale.getlocale()[0] or locale.getdefaultlocale()[0]
+            lang = default if code is None else code.lower().split('_', 1)[0]
+        try:
+            self.set_language(lang)
+        except Exception as e:
+            if lang == default:
+                raise
             self.log.warning(
-                _("Unable to load `{0}` language, use default").format(language))
-            install_translation('core', localedir, fallback=True)
+                self._("Unable to load `{0}` language, use default `{1}`").format(lang, default),
+                str(e))
+            self.set_language(default)
 
-    def _init_debug(self, debug):
-        debug_log = self.config.get('log', 'debug')
-        verbose_log = self.config.get('log', 'verbose')
-        self.debug = 2 if debug_log and verbose_log else int(
-            max(debug, debug_log))
+    def _setup_debug(self):
+        if self.__debug is None:
+            debug_log = self.config.get('log', 'debug')
+            verbose_log = self.config.get('log', 'verbose')
+            self.__debug = 0 if not debug_log else 2 if verbose_log else 1
 
-    def _start_interface(self, webui, rpc):
-        if webui is None:
-            webui = self._webui
-        if rpc is None:
-            rpc = self._rpc
+    # def start_interface(self, webui=None, rpc=None):
+        # if webui is None:
+            # webui = self.__webui
+        # if rpc is None:
+            # rpc = self.__rpc
 
-        # TODO: Parse `remote`
-        if rpc or self.config.get('rpc', 'activated'):
-            self.log.debug("Activating RPC interface ...")
-            self.rem.start()
-        elif not webui:
-            webui = True
+        # # TODO: Parse `remote`
+        # if rpc or self.config.get('rpc', 'activated'):
+            # self.log.debug("Activating RPC interface ...")
+            # self.rem.start()
+        # elif not webui:
+            # webui = True
 
         # TODO: Parse remote host:port
 
@@ -268,10 +261,10 @@ class Core(Process):
             # 'cert': self.config.get('ssl', 'cert'),
             # 'ssl': self.config.get('ssl', 'activated')
         # }
-        if webui or self.config.get('webui', 'activated'):
-            from .thread.webserver import WebServer
-            self.webserver = WebServer(self)
-            self.webserver.start()
+        # if webui or self.config.get('webui', 'activated'):
+            # from .thread.webserver import WebServer
+            # self.webserver = WebServer(self)
+            # self.webserver.start()
             # self.svm.add('webui', **kwgs)
             # self.svm.start()
 
@@ -279,25 +272,27 @@ class Core(Process):
         from .api import Api
         self.api = Api(self)
 
-    def _init_database(self, restore):
+    def _init_database(self):
         from .database import DatabaseBackend
         from .datatype import Permission, Role
 
         # TODO: Move inside DatabaseBackend
-        newdb = not os.path.exists(DatabaseBackend.DB_FILE)
+        newdb = not os.path.isfile(DatabaseBackend.DB_FILE)
         self.db = DatabaseBackend(self)
         self.db.setup()
 
-        if restore or newdb:
-            self.db.add_user("admin", "pyload", Role.Admin, Permission.All)
-        if restore:
+        if self.__restore or newdb:
+            self.db.add_user(
+                self.DEFAULT_USERNAME, self.DEFAULT_PASSWORD, Role.Admin,
+                Permission.All)
+        if self.__restore:
             self.log.warning(
-                "Restored default login credentials `admin|pyload`")
+                self._("Restored default login credentials `admin|pyload`"))
 
     def _init_managers(self):
-        from .manager import (AccountManager, AddonManager, EventManager, 
-                              ExchangeManager, FileManager, InfoManager,
-                              PluginManager, RemoteManager, TransferManager)
+        from .manager import (
+            AccountManager, AddonManager, EventManager, ExchangeManager,
+            FileManager, InfoManager, PluginManager, TransferManager)
 
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.filemanager = self.files = FileManager(self)
@@ -308,158 +303,166 @@ class Core(Process):
         self.infomanager = self.iom = InfoManager(self)
         self.transfermanager = self.tsm = TransferManager(self)
         self.addonmanager = self.adm = AddonManager(self)
-        self.remotemanager = self.rem = RemoteManager(self)
+        # self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager = self.svm = ServerManager(self)
         self.db.manager = self.files  #: ugly?
 
-    def _init_network(self):
+    def _init_requests(self):
         from .network.factory import RequestFactory
-        builtins.REQUEST = self.request = self.req = RequestFactory(self)
+        self.request = self.req = RequestFactory(self)
 
-    def _init_pid(self):
-        self._lockfd = None
-        self.pid = os.getpid()
-        self.pidfile = os.path.join(self.profiledir, 'pyload.session')
-        try:
-            with io.open(self.pidfile, mode='w') as fp:
-                self._lockfd = fp.fileno()
-                fp.write(self.pid)
-                fcntl.flock(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except IOError as e:
-            if e.errno != errno.EAGAIN:
-                e = "A pyLoad instance using profile `{0}` is already running".format(
-                    self.profiledir)
-            raise IOError(e)
+    def _init_config(self):
+        session = ConfigParser(self.__SESSIONFILENAME, session_defaults)
 
-    def _init_config(self, profile, configdir):
-        self.profiledir = _gen_profiledir(profile, configdir)
-        self.configdir, self.profile = os.path.split(self.profiledir)
+        flags = portalocker.LOCK_EX | portalocker.LOCK_NB
+        portalocker.lock(session.fp, flags)
 
-        tmproot = os.path.join(TMPDIR, os.path.basename(self.configdir))
-        makedirs(tmproot)
-        self.tmpdir = tempfile.mkdtemp(dir=tmproot)
+        profiledir = os.path.join(self.configdir, self.profile)
+        psp = psutil.Process()
+        session.set('current', 'id', time.time())
+        session.set('current', 'profile', 'path', profiledir)
+        session.set('current', 'profile', 'pid', psp.pid())
+        session.set('current', 'profile', 'ctime', psp.create_time())
 
-        self._init_pid()
+        self.config = ConfigParser(self.__CONFIGFILENAME, config_defaults)
+        self.session = session
 
-        if self.profiledir not in sys.path:
-            sys.path.append(self.profiledir)
+    def _init_cache(self):
+        #: Re-use cache
+        tempdir = self.__tempdir
+        if tempdir is None:
+            tempdir = self.session.get('previous', 'cache', 'path')
+            if tempdir is None or not os.path.isdir(tempdir):
+                pydir = os.path.join(TMPDIR, __namespace__)
+                makedirs(pydir, exist_ok=True)
+                tempdir = tempfile.mkdtemp(dir=pydir)
+        self.session.set('current', 'cache', 'path', tempdir)
+        self.cachedir = tempdir
+        # if tempdir not in sys.path:
+            # sys.path.append(tempdir)
 
-        os.chdir(self.profiledir)
-        self.configfile = os.path.join(self.profiledir, 'pyload.conf')
-        self.config = self.cfg = ConfigParser(self.configfile, self.version)
-        make_config(self.cfg)  # TODO: Rewrite...
-        
-    def _register_signal(self):
+    def _register_signals(self):
+        shutfn = lambda s, f: self.shutdown()
+        quitfn = lambda s, f: self.terminate()
         try:
             if os.name == 'nt':
-                signal.signal(
-                    signal.CTRL_C_EVENT,
-                    lambda s,
-                    f: self.shutdown())
-                signal.signal(
-                    signal.CTRL_BREAK_EVENT,
-                    lambda s,
-                    f: self.shutdown())
+                # signal.signal(signal.CTRL_C_EVENT, shutfn)
+                signal.signal(signal.CTRL_BREAK_EVENT, shutfn)
             else:
-                signal.signal(signal.SIGTERM, lambda s, f: self.shutdown())
-                signal.signal(signal.SIGINT, lambda s, f: self.shutdown())
-                signal.signal(signal.SIGQUIT, lambda s, f: self.terminate())
-                # signal.signal(signal.SIGTSTP, lambda s, f: self._stop())
-                # signal.signal(signal.SIGCONT, lambda s, f: self._start())
+                signal.signal(signal.SIGTERM, shutfn)
+                # signal.signal(signal.SIGINT, shutfn)
+                signal.signal(signal.SIGQUIT, quitfn)
+                # signal.signal(signal.SIGTSTP, lambda s, f: self.stop())
+                # signal.signal(signal.SIGCONT, lambda s, f: self.run())
         except Exception:
             pass
 
-    def __init__(self, profile=None, configdir=None, debug=None,
-                 refresh=None, webui=None, rpc=None, update=None):
-        self.running = Event()
+    def __init__(self, profiledir=None, tempdir=None, debug=None, restore=None):
+        self.__running = Event()
+        self.__do_restart = False
+        self.__do_shutdown = False
+        self.__debug = debug if debug is None else int(debug)
+        self.__restore = bool(restore)
+        self.__tempdir = tempdir
+        self._ = lambda x: x
 
-        self._cleanup = bool(refresh)
-        self._restart = False
-        self._shutdown = False
-        self._rpc = rpc
-        self._webui = webui
+        self._init_profile(profiledir)
 
-        if refresh:
-            pyclean(PACKDIR)
+        # if refresh:
+            # cleanpy(PACKDIR)
 
-        # NOTE: Do not change the init order!
-        self._register_signal()
-        self._init_config(profile, configdir)
-        self._init_debug(debug)
-        self._init_logger(logging.DEBUG if self.debug else logging.INFO)
-        self._init_translation()
+        Process.__init__(self)
 
-        self.log.debug("Initializing pyLoad ...")
-        self._init_permissions()
-        self._init_database(refresh > 1)
-        self._init_network()
-        self._init_api()
-        self._init_managers()
+    @property
+    def version(self):
+        return __version__
 
-        Process.__init__(self, target=self._start)
+    @property
+    def version_info(self):
+        return __version_info__
 
-    def _tune_process(self):
+    @property
+    def running(self):
+        return self.__running.is_set()
+
+    @property
+    def debug(self):
+        return self.__debug
+
+    def _init_profile(self, profiledir):
+        profiledir = fullpath(profiledir)
+        os.chdir(profiledir)
+        self.configdir, self.profile = os.path.split(profiledir)
+
+    def _setup_process(self):
         try:
-            sys.set_process_name('pyLoad')
+            set_process_name('pyLoad')
         except NameError:
             pass
         niceness = self.config.get('general', 'niceness')
-        sys.renice(niceness)
+        renice(niceness=niceness)
         ioniceness = int(self.config.get('general', 'ioniceness'))
-        sys.ionice(ioniceness)
+        ionice(niceness=ioniceness)
 
-    def _init_storage(self):
+    def _setup_storage(self):
         storage_folder = self.config.get('general', 'storage_folder')
         if not storage_folder:
-            storage_folder = os.path.join(USERDIR, 'Downloads')
+            storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGEDIRNAME)
         self.log.debug("Storage: {0}".format(storage_folder))
-        makedirs(storage_folder)
-        space_size = format.size(availspace(storage_folder))
-        self.log.info(_("Available storage space: {0}").format(space_size))
+        makedirs(storage_folder, exist_ok=True)
+        avail_space = format.size(availspace(storage_folder))
+        self.log.info(self._("Available storage space: {0}").format(avail_space))
 
     def _workloop(self):
+        self.__running.set()
         self.tsm.pause = False  # NOTE: Recheck...
-        self.running.set()
-        try:
-            while True:
-                self.running.wait()
-                self.tsm.work()
-                self.iom.work()
-                self.exm.work()
-                if self._restart:
-                    raise Restart
-                if self._shutdown:
-                    raise Shutdown
-                self.scheduler.run()
-        except Restart:
-            self.restart()
-        except Shutdown:
-            pass
+        while True:
+            self.__running.wait()
+            self.tsm.work()
+            self.iom.work()
+            self.exm.work()
+            if self.__do_restart:
+                raise Restart
+            if self.__do_shutdown:
+                raise Shutdown
+            self.scheduler.run()
 
     def _start_plugins(self):
-        # TODO: Move in accountmanager
-        self.log.info(_("Activating accounts ..."))
+        # TODO: Move to accountmanager
+        self.log.info(self._("Activating accounts ..."))
         self.acm.get_account_infos()
         # self.scheduler.enter(0, 0, self.acm.get_account_infos)
-        self.adm.activate_plugins()
-        self.config.save()  #: save so config files gets filled
+        self.adm.activate_addons()
 
-    def _start(self, webui=None, rpc=None):
+    def _show_info(self):
+        self.log.info(self._("Welcome to pyLoad v{0}").format(self.version))
+
+        self.log.info(self._("Profile: {0}").format(self.profile))
+        self.log.info(self._("Config directory: {0}").format(self.configdir))
+
+        self.log.debug("Cache directory: {0}".format(self.cachedir))
+
+    def run(self):
+        self._init_config()
+        self._init_cache()
+        self._setup_debug()
+        self._init_logger()
         try:
-            self.log.info(_("Starting pyLoad ..."))
-            self.log.info(
-                _("Version: {0}").format(
-                    convert.from_version(
-                        self.version)))
-            self.log.info(_("Profile: {0}").format(self.profiledir))
-            self.log.debug("Tempdir: {0}".format(self.tmpdir))
+            self.log.debug("Running pyLoad ...")
 
-            self._start_interface(webui, rpc)
-            self._init_storage()
-            self._tune_process()
+            self._setup_language()
+            self._setup_permissions()
+            self._init_database()
+            self._init_requests()
+            self._init_api()
+            self._init_managers()
+
+            self._show_info()
+            self._setup_storage()
             self._start_plugins()
+            self._setup_process()
 
-            self.log.info(_("pyLoad is up and running"))
+            self.log.info(self._("pyLoad is up and running"))
             self.evm.fire('pyload:started')
 
             # #: some memory stats
@@ -471,131 +474,94 @@ class Core(Process):
             # import memdebug
             # memdebug.start(8002)
             # from meliae import scanner
-            # scanner.dump_all_objects(os.path.join(COREDIR, 'objs.json'))
+            # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self._workloop()
 
-        except KeyboardInterrupt:
-            pass
+        except Restart:
+            self.restart()
+        except Shutdown:
+            self.shutdown()
+        except (KeyboardInterrupt, SystemExit):
+            self.shutdown()
         except Exception as e:
-            self.log.critical(_("Critical error"), str(e))
+            self.log.critical(str(e))
             self.terminate()
             raise
+        else:
+            self.shutdown()
 
-        self.shutdown()
-
-    def _remove_logger(self):
+    def _remove_loggers(self):
         for handler in self.log.handlers:
             with closing(handler) as hdlr:
                 self.log.removeHandler(hdlr)
 
-    def update(self):
-        autoupgrade.upgrade(__setup_map['name'], dependencies=True, restart=True)
-
     def restart(self):
-        self._stop()
-        self.log.info(_("Restarting pyLoad ..."))
+        self.stop()
+        self.log.info(self._("Restarting pyLoad ..."))
         self.evm.fire('pyload:restarting')
-        self._start()
+        self.start()
 
-    def _remove_pid(self):
-        try:
-            fcntl.flock(self._lockfd, fcntl.LOCK_UN)
-        except IOError:
-            pass
-        remove(self.pidfile, ignore_errors=True)
+    def _register_instance(self):
+        profiledir = os.path.join(self.configdir, self.profile)
+        if profiledir in _pmap:
+            errmsg = "A pyLoad instance using profile `{0}` is already running".format(
+                profiledir)
+            raise RuntimeError(errmsg)
+        _pmap[profiledir] = self
+
+    def _unregister_instance(self):
+        profiledir = os.path.join(self.configdir, self.profile)
+        _pmap.pop(profiledir, None)
+
+    def _close_session(self):
+        id = self.session.get('previous', 'id')
+        self.session[id] = self.session['previous']
+        self.session['previous'] = self.session['current']
+        self.session['current'].reset()
+        self.session.close()
 
     def terminate(self):
         try:
             self.log.debug("Killing pyLoad ...")
-            self._remove_pid()
-            self._remove_logger()
+            self._unregister_instance()
+            self._close_session()
         finally:
-            return Process.terminate(self)
+            Process.terminate(self)
 
-    def shutdown(self, cleanup=None):
-        if cleanup is None:
-            cleanup = self._cleanup
+    def shutdown(self):
         try:
-            if self.is_alive():
-                self._stop()
-            self.log.info(_("Exiting pyLoad ..."))
-            self.db.shutdown()
-            if cleanup:
-                self.log.info(_("Deleting temp files ..."))
-                remove(self.tmpdir, ignore_errors=True)
-        finally:
-            return self.terminate(self)
-
-    def _stop(self):
-        try:
-            self.log.info(_("Stopping pyLoad ..."))
-            self.evm.fire('pyload:stopping')
-            # TODO: quit webserver
+            self.stop()
+            self.log.info(self._("Exiting pyLoad ..."))
             self.tsm.shutdown()
-            self.api.stop_all_downloads()
-            self.adm.deactivate_addons()
+            self.db.shutdown()  # NOTE: Why here?
+            self.config.close()
+            self._remove_loggers()
+            # if cleanup:
+                # self.log.info(self._("Deleting temp files ..."))
+                # remove(self.tempdir, ignore_errors=True)
         finally:
-            self.running.clear()
-            self.evm.fire('pyload:stopped')
+            self.terminate()
+
+    def start(self):
+        if not self.is_alive():
+            self._register_instance()
+            self._register_signals()
+            Process.start()
+        elif not self.running:
+            self.log.info(self._("Starting pyLoad ..."))
+            self.evm.fire('pyload:starting')
+            self.__running.set()
+
+    def stop(self):
+        if not self.running:
+            return None
+        try:
+            self.log.info(self._("Stopping pyLoad ..."))
+            self.evm.fire('pyload:stopping')
+            self.adm.deactivate_addons()
+            self.api.stop_all_downloads()
+        finally:
             self.files.sync_save()
-
-
-def info():
-    return Info(__setup_map)
-
-
-def version():
-    return __core_version
-
-
-def status(profile=None, configdir=None):
-    profiledir = _gen_profiledir(profile, configdir)
-    pidfile = os.path.join(profiledir, 'pyload.session')
-    try:
-        with io.open(pidfile, mode='rb') as fp:
-            return int(fp.read().strip())
-    except (OSError, TypeError):
-        return None
-
-
-def setup(profile=None, configdir=None):
-    from pyload.setup import SetupAssistant
-    profiledir = _gen_profiledir(profile, configdir)
-    configfile = os.path.join(profiledir, 'pyload.conf')
-    return SetupAssistant(configfile, version()).start()
-
-
-def quit(profile=None, configdir=None, wait=300):
-    pid = status(profile, configdir)
-    try:
-        sys.kill_process(pid, wait)
-    except Exception:
-        pass
-
-
-def start(profile=None, configdir=None, debug=0,
-          refresh=0, webui=None, rpc=None, update=True, daemon=False):
-    proc = Core(profile, configdir, debug, refresh, webui, rpc, update)
-    proc.start()
-
-    if daemon:
-        pidfile = tempfile.mkstemp(
-            suffix='.pid',
-            prefix='daemon-',
-            dir=proc.tmpdir)[1]
-        d = daemonize.Daemonize("pyLoad", pidfile, proc.join, logger=proc.log)
-        d.start()
-
-    return proc  #: returns process instance
-
-
-def restart(*args, **kwargs):
-    configdir = kwargs.get('configdir', args.pop(1))
-    profile = kwargs.get('profile', args.pop(0))
-    quit(profile, configdir, wait=None)
-    return start(*args, **kwargs)
-
-
-# def test():
-    # raise NotImplementedError
+            self.__running.clear()
+            self.evm.fire('pyload:stopped')

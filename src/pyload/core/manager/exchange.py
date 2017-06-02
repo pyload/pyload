@@ -2,52 +2,40 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
+import time
 from base64 import standard_b64encode
-from builtins import object
-from time import time
 
+from future import standard_library
 from pyload.utils.check import bitset
-from pyload.utils.decorator import lock
 from pyload.utils.layer.legacy.collections_ import OrderedDict
-from pyload.utils.layer.safethreading import Lock
+from pyload.utils.struct.lock import lock
 
 from ..datatype.init import Input, InputType
 from ..datatype.task import Interaction, InteractionTask
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class ExchangeManager(object):
+class ExchangeManager(BaseManager):
     """
     Class that gives ability to interact with the user.
     Arbitrary tasks with predefined output and input types can be set off
     """
-    # __slots__ = [
-        # 'CLIENT_THRESHOLD',
-        # 'MAX_NOTIFICATIONS',
-        # 'NOTIFICATION_TIMEOUT',
-        # 'ids',
-        # 'last_clients',
-        # 'lock',
-        # 'pyload',
-        # 'tasks']
-
     # number of seconds a client is classified as active
     CLIENT_THRESHOLD = 60
     NOTIFICATION_TIMEOUT = 60 * 60 * 30
     MAX_NOTIFICATIONS = 50
 
     def __init__(self, core):
-        self.lock = Lock()
-        self.pyload = core
+        BaseManager.__init__(self, core)
         self.tasks = OrderedDict()  #: task store, for all outgoing tasks
         self.last_clients = {}
         self.ids = 0  #: uniue interaction ids
 
     def is_client_connected(self, user):
-        return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time()
+        return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time.time()
 
     @lock
     def work(self):
@@ -73,7 +61,7 @@ class ExchangeManager(object):
         :param plugin: plugin name
         :return: :class:`InteractionTask`
         """
-        task = InteractionTask(self.ids, Interaction.Notification, Input(InputType.Text, None, content), title, desc, plugin,
+        task = InteractionTask(self.ids, Interaction.Notification, Input(InputType.Str, None, content), title, desc, plugin,
                                owner=owner)
         self.ids += 1
         self.queue_task(task)
@@ -88,15 +76,15 @@ class ExchangeManager(object):
             raise TypeError(
                 "'Input' class expected not '{0}'".format(type(input)))
 
-        task = InteractionTask(self.ids, Interaction.Query, input, _(
+        task = InteractionTask(self.ids, Interaction.Query, input, self._(
             "Query"), desc, plugin, owner=owner)
         self.ids += 1
         self.queue_task(task)
         return task
 
     @lock
-    def create_captcha_task(self, img, format, fname,
-                            plugin="", type_=InputType.Text, owner=None):
+    def create_captcha_task(self, img, format, filename,
+                            plugin="", type_=InputType.Str, owner=None):
         """
         Createss a new captcha task.
 
@@ -106,15 +94,15 @@ class ExchangeManager(object):
         :return:
         """
         if type_ == 'textual':
-            type_ = InputType.Text
+            type_ = InputType.Str
         elif type_ == 'positional':
             type_ = InputType.Click
 
-        input = Input(type_, data=[standard_b64encode(img), format, fname])
+        input = Input(type_, data=[standard_b64encode(img), format, filename])
 
         # TODO: title desc plugin
         task = InteractionTask(self.ids, Interaction.Captcha, input,
-                               _("Captcha request"), _("Please solve the captcha"), plugin, owner=owner)
+                               self._("Captcha request"), self._("Please solve the captcha"), plugin, owner=owner)
 
         self.ids += 1
         self.queue_task(task)
@@ -133,7 +121,7 @@ class ExchangeManager(object):
     @lock
     def get_tasks(self, user, mode=Interaction.All):
         # update last active clients
-        self.last_clients[user] = time()
+        self.last_clients[user] = time.time()
 
         # filter current mode
         tasks = [tsk for tsk in self.tasks.values() if mode ==

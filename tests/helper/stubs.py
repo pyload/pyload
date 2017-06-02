@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import builtins
 import os
 import sys
+import time
 from builtins import object
 from logging import DEBUG, ERROR, INFO, WARN, log
-from time import strftime
 from traceback import format_exc
 
+from future import standard_library
 from pyload.config import ConfigParser
 from pyload.core import Core
 from pyload.core.datatype import Role, User
@@ -60,7 +60,7 @@ class TestCore(Core):
         self.log = LogStub()
 
     def get_server_version(self):
-        return "TEST_RUNNER on {0}".format(strftime("%d %h %Y"))
+        return "TEST_RUNNER on {0}".format(time.strftime("%d %h %Y"))
 
     def init_logger(self, level):
         # init with empty logger

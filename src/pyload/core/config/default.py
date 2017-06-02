@@ -1,123 +1,145 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from __future__ import absolute_import
+
+from builtins import range
+from copy import deepcopy
 
 from future import standard_library
+from pyload.config.types import InputType
+
 standard_library.install_aliases()
 
 
-__all__ = ['make_config']
+def _gen_session_defaults():
+    profile_section = (
+        ('path', ('option', None, 'Path', None, None, InputType.Folder)),
+        ('pid', ('option', None, 'PID', None, None, InputType.Int)),
+        ('ctime', ('option', None, 'CTime', None, None, InputType.Float))
+    )
+    cache_section = (
+        ('path', ('option', None, 'Path', None, None, InputType.Folder))
+    )
+    log_section = (
+        ('path', ('option', None, 'Path', None, None, InputType.Folder)),
+        ('name', ('option', None, 'Name', None, None, InputType.Str))
+    )
+    
+    current_config = (
+        ('id', ('option', None, 'ID', None, None, InputType.Float)),
+        ('profile', ('section', profile_section, 'Profile', None)),
+        ('cache', ('section', cache_section, 'Cache', None)),
+        ('log', ('section', log_section, 'Logging', None))
+    )
+    previous_config = deepcopy(current_config)
+
+    defaults = (
+        ('current', ('section', current_config, 'Current', None)),
+        ('previous', ('section', previous_config, 'Previous', None))
+    )
+    return defaults
+
+session_defaults = _gen_session_defaults()
 
 
-# TODO: write tooltips and descriptions
-# TODO: use apis config related classes
-def make_config(config):
-    """
-    Configuration layout for default base config.
-    """
-    desc = _('Description')
-    expl = _('Long description')
+# TODO: write descriptions
+def _gen_config_defaults():
+    general_config = (
+        ('language', ('option', None, 'Language', None, (None, 'english'), InputType.Str)),
+        ('storage_folder', ('option', None, 'Storage folder', None, None, InputType.Folder)),
+        ('min_storage_size', ('option', 1024, 'Min storage space (in MiB)', None, None, InputType.Size)),
+        ('folder_pack', ('option', True, 'Create folder for each package', None, None, InputType.Bool)),
+        ('local_access', ('option', True, 'No authentication on local access', None, None, InputType.Bool)),
+        ('niceness', ('option', 0, 'Process priority', None, range(-19, 20), InputType.Int)),
+        ('ioniceness', ('option', 0, 'Process I/O priority', None, range(0, 3), InputType.Int))
+    )
+    log_config = (
+        ('activated', ('option', True, 'Activated', None, None, InputType.Bool)),
+        ('syslog', ('option', None, 'Sent log to syslog', None, (None, 'remote', 'local'), InputType.Str)),
+        ('syslog_folder', ('option', None, 'Syslog local folder', None, None, InputType.Folder)),
+        ('syslog_host', ('option', 'localhost:514', 'Syslog remote IP address', None, None, InputType.Address)),
+        ('logfile', ('option', False, 'Save log to file', None, None, InputType.Bool)),
+        ('logfile_size', ('option', 100, 'Max file size (in KiB)', None, None, InputType.Size)),
+        ('logfile_folder', ('option', None, 'File folder', None, None, InputType.Foider)),
+        ('logfile_name', ('option', None, 'File name', None, None, InputType.File)),
+        ('max_logfiles', ('option', 5, 'Max log files', None, None, InputType.Int)),
+        ('rotate', ('option', True, 'Log rotate', None, None, InputType.Bool)),
+        ('debug', ('option', False, 'Debug mode', None, None, InputType.Bool)),
+        ('verbose', ('option', False, 'Verbose mode', None, None, InputType.Bool)),
+        ('color_console', ('option', True, 'Color console', None, None, InputType.Bool))
+    )
+    perm_config = (
+        ('user', ('option', 'user', 'Username', None, None, InputType.Str)),
+        ('group', ('option', 'users', 'Groupname', None, None, InputType.Str)),
+        ('foldermode', ('option', 0o755, 'Folder mode', None, None, InputType.Octal)),
+        ('filemode', ('option', 0o644, 'File mode', None, None, InputType.Octal)),
+        ('change_user', ('option', False, 'Change user of pyLoad process', None, None, InputType.Bool)),
+        ('change_group', ('option', False, 'Change group of pyLoad process', None, None, InputType.Bool)),
+        ('change_fileowner', ('option', False, 'Change user and group of saved files', None, None, InputType.Bool)),
+        ('change_filemode', ('option', False, 'Change file mode of saved files', None, None, InputType.Bool))
+    )
+    conn_config = (
+        ('max_transfers', ('option', 5, 'Max parallel transfers', None, None, InputType.Int)),
+        ('max_speed', ('option', -1, 'Max transfer speed (in KiB/s)', None, None, InputType.Size)),
+        ('max_chunks', ('option', -1, 'Max connections for single transfer', None, None, InputType.Int)),
+        ('wait', ('option', 2, 'Active transfers while waiting', None, None, InputType.Int)),  # TODO: Recheck...
+        ('skip', ('option', False, 'Skip existing files', None, None, InputType.Bool)),
+        ('preallocate', ('option', True, 'Pre-allocate files on disk', None, None, InputType.Bool)),
+        ('interface', ('option', None, 'Interface address to bind', None, None, InputType.Address)),
+        ('ipv6', ('option', False, 'Allow IPv6', None, None, InputType.Bool)),
+    )
+    ssl_config = (
+        ('activated', ('option', False, 'Activated', None, None, InputType.Bool)),
+        ('cert', ('option', 'ssl.crt', 'Cert file', None, None, InputType.File)),
+        ('key', ('option', 'ssl.key', 'Key file', None, None, InputType.File))
+    )
+    reconn_config = (
+        ('activated', ('option', False, 'Activated', None, None, InputType.Bool)),
+        ('script', ('option', None, 'Script file', None, None, InputType.File)),
+        ('wait', ('option', False, 'Don\'t reconnect while waiting', None, None, InputType.Bool))
+    )
+    proxy_config = (
+        ('activated', ('option', False, 'Activated', None, None, InputType.Bool)),
+        ('type', ('option', 'http', 'Protocol', None, ('http', 'socks4', 'socks5'), InputType.Str)),
+        ('host', ('option', 'localhost:7070', 'IP address', None, None, InputType.Address)),
+        ('username', ('option', None, 'Username', None, None, InputType.Str)),
+        ('password', ('option', None, 'Password', None, None, InputType.Password))
+    )
+    up_config = (
+        ('activated', ('option', False, 'Activated', None, None, InputType.Bool)),
+        ('nodebug', ('option', False, 'Don\'t update in debug mode', None, None, InputType.Bool)),
+        ('periodical', ('option', True, 'Check for updates on schedule', None, None, InputType.Bool)),
+        ('interval', ('option', 1, 'Check interval (in days)', None, None, InputType.Int))
+    )
+    # self.config.add_section('webui', 'Web User Interface', desc, expl,
+    # [
+        # ('activated', 'bool', 'Activated', True),
+        # ('server', ('auto', 'threaded', 'fallback', 'fastcgi'), 'Webserver', 'auto'),
+        # ('host', 'str', 'IP address', 'localhost'),
+        # ('port', 'port', 'Port', 8010),
+        # ('force_server', 'str', 'Forced webserver', None),
+        # ('external', 'bool', 'Served external', False),
+        # ('prefix', 'str', 'Path prefix', None),
+        # ('debug', 'bool', 'Debug mode', False)
+    # ])
+    # self.config.add_section('rpc', 'REST API Interface', desc, expl,
+    # [
+        # ('activated', 'bool', 'Activated', False),
+        # ('host', 'str', 'IP address', '0.0.0.0'),
+        # ('port', 'port', 'Port', 7227)
+    # ])
 
-    config.add_config_section('general', _('General'), desc, expl,
-    [
-        ('language', 'en|de|fr|it|es|nl|sv|ru|pl|cs|sr|pt', _('Language'), 'en'),
-        ('storage_folder', 'folder', _('Storage folder'), ''),
-        ('min_storage_size', 'int', _('Min storage space (in MiB)'), '1024'),
-        ('folder_pack', 'bool', _('Create folder for each package'), 'True'),
-        ('local_access', 'bool', _('No authentication on local access'), 'True'),
-        ('niceness', 'int', _('Process priority'), '0'),
-        ('ioniceness', '0|1|2|3', _('Process I/O priority'), '0')
-    ])
+    defaults = (
+        ('general', ('section', general_config, 'General', None)),
+        ('log', ('section', log_config, 'Logging', None)),
+        ('permission', ('section', perm_config, 'Permissions', None)),
+        ('connection', ('section', conn_config, 'Connections', None)),
+        ('ssl', ('section', ssl_config, 'SSL', None)),
+        ('reconnect', ('section', reconn_config, 'Reconnection', None)),
+        ('proxy', ('section', proxy_config, 'Proxy', None)),
+        ('update', ('section', up_config, 'Updates', None))
+    )
+    return defaults
 
-    config.add_config_section('log', _('Logging'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'True'),
-        ('syslog', 'no|remote|local', _('Sent log to syslog'), 'no'),
-        ('syslog_folder', 'folder', _('Syslog local folder'), ''),
-        ('syslog_host', 'str', _('Syslog remote IP address'), 'localhost'),
-        ('syslog_port', 'port', _('Syslog remote port'), ''),
-        ('logfile', 'bool', _('Save log to file'), 'True'),
-        ('logfile_size', 'int', _('Max file size (in KiB)'), '100'),
-        ('logfile_folder', 'folder', _('File folder'), ''),
-        ('max_logfiles', 'int', _('Max log files'), '5'),
-        ('rotate', 'bool', _('Log rotate'), 'True'),
-        ('debug', 'bool', _('Debug mode'), 'False'),
-        ('verbose', 'bool', _('Verbose mode'), 'False'),
-        ('color_console', 'bool', _('Color console'), 'True')
-    ])
-
-    config.add_config_section('permission', _('Permissions'), desc, expl,
-    [
-        ('user', 'str', _('Username'), 'user'),
-        ('group', 'str', _('Groupname'), 'users'),
-        ('foldermode', 'str', _('Folder mode'), '0o755'),
-        ('filemode', 'str', _('File mode'), '0o644'),
-        ('change_user', 'bool', _('Change user of pyLoad process'), 'False'),
-        ('change_group', 'bool', _('Change group of pyLoad process'), 'False'),
-        ('change_fileowner', 'bool', _(
-            'Change user and group of saved files'), 'False'),
-        ('change_filemode', 'bool', _('Change file mode of saved files'), 'False')
-    ])
-
-    config.add_config_section('connection', _('Connections'), desc, expl,
-    [
-        ('max_transfers', 'int', _('Max parallel transfers'), '5'),
-        ('max_speed', 'int', _('Max transfer speed (in KiB/s)'), '-1'),
-        ('max_chunks', 'int', _('Max connections for single transfer'), '-1'),
-        ('wait', 'int', _('Active transfers while waiting'), '2'),  # TODO: Recheck
-        ('skip', 'bool', _('Skip existing files'), 'False'),
-        ('preallocate', 'bool', _('Pre-allocate files on disk'), 'True'),
-        ('interface', 'str', _('Interface address to bind'), ''),
-        ('ipv6', 'bool', _('Allow IPv6'), 'False')
-    ])
-
-    config.add_config_section('ssl', _('SSL'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'False'),
-        ('cert', 'file', _('Cert file'), 'ssl.crt'),
-        ('key', 'file', _('Key file'), 'ssl.key')
-    ])
-
-    config.add_config_section('reconnect', _('Reconnection'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'False'),
-        ('script', 'str', _('Script file'), ''),
-        ('wait', 'str', _('Don\'t reconnect while waiting'), 'False')
-    ])
-
-    config.add_config_section('proxy', _('Proxy'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'False'),
-        ('type', 'http|socks4|socks5', _('Protocol'), 'http'),
-        ('host', 'str', _('IP address'), 'localhost'),
-        ('port', 'port', _('Port'), '7070'),
-        ('username', 'str', _('Username'), ''),
-        ('password', 'str', _('Password'), '')
-    ])
-
-    config.add_config_section('webui', _('Web User Interface'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'True'),
-        ('server', 'auto|threaded|fallback|fastcgi', _('Webserver'), 'auto'),
-        ('host', 'str', _('IP address'), 'localhost'),
-        ('port', 'port', _('Port'), '8010'),
-        ('force_server', 'str', _('Forced webserver'), ''),
-        ('external', 'bool', _('Served external'), 'False'),
-        ('prefix', 'str', _('Path prefix'), ''),
-        # ('debug', 'bool', _('Debug mode'), 'False')
-    ])
-
-    config.add_config_section('rpc', _('REST API Interface'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'False'),
-        ('host', 'str', _('IP address'), '0.0.0.0'),
-        ('port', 'port', _('Port'), '7227')
-    ])
-
-    config.add_config_section('update', _('Updates'), desc, expl,
-    [
-        ('activated', 'bool', _('Activated'), 'True'),
-        ('nodebug', 'bool', _('Don\'t update in debug mode'), 'False'),
-        ('periodical', 'bool', _('Check for updates on schedule'), 'True'),
-        ('interval', 'int', _('Check interval (in days)'), '1')
-    ])
+config_defaults = _gen_config_defaults()

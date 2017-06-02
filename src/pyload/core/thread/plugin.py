@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
+import sys
 import time
 import zipfile
 from builtins import str
 
-from pyload.utils import debug, format, sys
+from future import standard_library
+from pyload.utils import debug, format
+from pyload.utils.fs import lopen, makedirs
 from pyload.utils.layer.safethreading import Thread
-from pyload.utils.path import filesize, makedirs, open
+from semver import format_version
 
 standard_library.install_aliases()
 
@@ -29,7 +30,8 @@ class PluginThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.manager = manager  #: Thread manager
-        self.pyload  = manager.pyload
+        self.pyload = manager.pyload
+        self._ = manager.pyload._
         #: Owner of the thread, every type should set it or overwrite user
         self.owner = owner
 
@@ -38,8 +40,8 @@ class PluginThread(Thread):
         return self.owner.primary if self.owner else None
 
     @property
-    def progress(self):
-        return self.get_progress()
+    def progress_info(self):
+        return self.get_progress_info()
 
     def finished(self):
         """
@@ -47,7 +49,7 @@ class PluginThread(Thread):
         """
         self.manager.remove_thread(self)
 
-    def get_progress(self):
+    def get_progress_info(self):
         """
         Retrieves progress information about the current running task
 
@@ -55,59 +57,56 @@ class PluginThread(Thread):
         """
         pass
 
-    def _debug_report(self, file):
-        # TODO: Add config setting dump
-        report = "pyLoad {} Debug Report of {} {}\n\n{}\n\n{}\n\n{}\n\n{}".format(
-            self.pyload.__version__,
-            file.plugin.__name__,
-            file.plugin.__version__,
-            debug.format_traceback(),
-            debug.format_framestack(),
-            debug.format_dump(file.plugin),
-            debug.format_dump(file)
+    def _gen_reports(self, file):
+        si_entries = (
+            ('pyload version', self.pyload.version),
+            ('system platform', sys.platform),
+            ('system version', sys.version),
+            ('system encoding', sys.getdefaultencoding()),
+            ('file-system encoding', sys.getfilesystemencoding()),
+            ('current working directory', os.getcwdu())
         )
-        return report
+        si_title = "SYSTEM INFO:"
+        si_body = os.linesep.join(
+            "\t{0:20} = {1}".format(name, value) for name, value in si_entries)
+        sysinfo = os.linesep.join((si_title, si_body))
 
-    def _write_report(self, report, path):
-        with zipfile.ZipFile(path, 'w') as zip:
-            reportdir = os.path.join(
-                self.pyload.profiledir, 'crashes', 'reports', name)  # NOTE: Relpath to configdir
-            makedirs(reportdir)
+        # TODO: Add config setting dump
+        reports = (
+            ('traceback.txt', debug.format_traceback()),
+            ('framestack.txt', debug.format_framestack()),
+            ('plugindump.txt', debug.format_dump(file.plugin)),
+            ('filedump.txt', debug.format_dump(file)),
+            ('sysinfo.txt', sysinfo)
+        )
+        return reports
 
-            for fname in os.listdir(reportdir):
+    def _zip(self, filepath, reports, dumpdir):
+        filename = os.path.basename(filepath)
+        with zipfile.ZipFile(filepath, 'wb') as zip:
+            for fname in os.listdir(dumpdir):
                 try:
-                    zip.write(os.path.join(reportdir, fname),
-                              os.path.join(name, fname))
+                    arcname = os.path.join(filename, fname)
+                    zip.write(os.path.join(dumpdir, fname), arcname)
                 except Exception:
                     pass
-
-            for name, data in (('debug', report), ('system', system)):
-                info = zipfile.ZipInfo(
-                    os.path.join(name, "{0}_Report.txt".format(name)), time.gmtime())
-                info.external_attr = 0o644 << 16  #: change permissions
-                zip.writestr(info, data)
-
-        if not filesize(path):
-            raise Exception("Empty Zipfile")
+            for fname, data in reports:
+                arcname = os.path.join(filename, fname)
+                zip.writestr(arcname, data)
 
     def debug_report(self, file):
-        """
-        Write a debug report to disk.
-        """
-        name = file.pluginname
-        path = "debug_{}_{}.zip".format(
-            name, time.strftime("%d-%m-%Y_%H-%M-%S"))
+        dumpdir = os.path.join(self.pyload.cachedir, 'plugins', file.pluginname)
+        makedirs(dumpdir, exist_ok=True)
 
-        report = self._debug_report(file)
-        system = "SYSTEM INFO:\n\t{}\n".format(
-            '\n\t'.join(format.map(sys.get_info())))
-        try:
-            self._write_report(report, path)
+        reportdir = os.path.join('crashes', 'plugins', file.pluginname)  # NOTE: Relpath to configdir
+        makedirs(reportdir, exist_ok=True)
 
-        except Exception as e:
-            self.pyload.log.debug("Error creating zip file", str(e))
-            path = path.replace(".zip", ".txt")
-            with io.open(path, mode='wb') as fp:
-                fp.write(report)
+        filename = "debug-report_{0}_{1}.zip".format(
+            file.pluginname, time.strftime("%d-%m-%Y_%H-%M-%S"))
+        filepath = os.path.join(reportdir, filename)
 
-        self.pyload.log.info(_("Debug Report written to file"), path)
+        reports = self._gen_reports(file)
+        self._zip(filepath, reports, dumpdir)
+
+        self.pyload.log.info(
+            self._('Debug Report written to file {0}').format(filename))

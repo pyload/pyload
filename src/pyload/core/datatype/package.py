@@ -2,20 +2,25 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import os
+import time
 from builtins import object
-from time import time
 
-from enum import IntFlag
+from future import standard_library
 
 from .init import BaseObject, ExceptionObject
+
+try:
+    from enum import IntEnum
+except ImportError:
+    from aenum import IntEnum
+
 
 standard_library.install_aliases()
 
 
-class PackageStatus(IntFlag):
+class PackageStatus(IntEnum):
     Ok = 0
     Paused = 1
     Folder = 2
@@ -81,6 +86,7 @@ class Package(BaseObject):
     def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status,
                  shared, packageorder):
         self.manager = manager
+        self.pyload = manager.pyload
 
         self.pid = pid
         self.name = name
@@ -95,13 +101,13 @@ class Package(BaseObject):
         self.status = status
         self.shared = shared
         self.packageorder = packageorder
-        self.timestamp = time()
+        self.timestamp = time.time()
 
         #: Finish event already fired
         self.set_finished = False
 
     def is_stale(self):
-        return self.timestamp + 30 * 60 > time()
+        return self.timestamp + 30 * 60 > time.time()
 
     def to_info_data(self):
         return PackageInfo(
@@ -121,10 +127,10 @@ class Package(BaseObject):
         """
         Get contaied files data.
         """
-        return self.manager.pyload.db.get_all_files(package=self.pid)
+        return self.pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=""):
-        self.timestamp = time()
+        self.timestamp = time.time()
         return os.path.join(self.manager.get_package(
             self.root).get_path(), self.folder, name)
 
@@ -154,7 +160,7 @@ class Package(BaseObject):
         return False
 
     def notify_change(self):
-        self.manager.pyload.evm.fire("packageUpdated", self.id)
+        self.pyload.evm.fire("packageUpdated", self.id)
 
 
 class RootPackage(Package):
@@ -166,7 +172,7 @@ class RootPackage(Package):
                            "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return os.path.join(self.manager.pyload.config.get(
+        return os.path.join(self.pyload.config.get(
             'general', 'storage_folder'), name)
 
     # no database operations

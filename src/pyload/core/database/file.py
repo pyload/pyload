@@ -2,10 +2,10 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import int
 
+from future import standard_library
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 
 from ..api.init import statestring
@@ -22,7 +22,6 @@ _zero_stats = PackageStats(0, 0, 0, 0)
 
 class FileMethods(DatabaseMethods):
 
-    # __slots__ = []
 
     @queue
     def filecount(self):
@@ -241,7 +240,6 @@ class FileMethods(DatabaseMethods):
                     8], r[9].split(","), r[10], r[11], r[12],
                 stats.get(r[0], _zero_stats)
             )
-
         return data
 
     @inner
@@ -465,13 +463,13 @@ class FileMethods(DatabaseMethods):
             "UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
 
     @queue
-    def find_duplicates(self, id, folder, fname):
+    def find_duplicates(self, id, folder, filename):
         """
         Checks if filename exists with different id and same package, dlstatus = finished.
         """
         # TODO: also check root of package
         self.c.execute(
-            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?", (folder, id, fname))
+            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?", (folder, id, filename))
         return self.c.fetchone()
 
     @queue

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import random
 from builtins import range
 
+from future import standard_library
 from pyload.core.database import DatabaseBackend
 from pyload.core.datatype import DownloadState, FileInfo, PackageInfo
 from tests.helper.benchmark import BenchmarkTest

@@ -12,9 +12,15 @@
 # serve to show the default.
 
 from __future__ import unicode_literals
-import sys
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
+from future import standard_library
+standard_library.install_aliases()
 import os
-from os.path import dirname, join, abspath, exists
+import sys
+from os.path import abspath, dirname, exists, join
 
 dir_name = join(dirname(abspath("")))
 sys.path.append(dir_name)

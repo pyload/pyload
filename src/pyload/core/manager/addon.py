@@ -2,22 +2,23 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import builtins
-from builtins import object, str
+from builtins import str
 from collections import defaultdict
 from gettext import gettext
 
 from _thread import start_new_thread
-from pyload.utils.decorator import lock
+from future import standard_library
 from pyload.utils.layer.legacy.collections_ import namedtuple
 from pyload.utils.layer.safethreading import RLock
+from pyload.utils.struct.lock import lock
 from types import MethodType
 
 from ..datatype.init import (AddonInfo, AddonService, ServiceDoesNotExist,
                              ServiceException)
 from ..thread import AddonThread
+from .base import BaseManager
 
 standard_library.install_aliases()
 
@@ -25,14 +26,12 @@ standard_library.install_aliases()
 AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 
 
-class AddonManager(object):
+class AddonManager(BaseManager):
     """
     Manages addons, loading, unloading.
     """
-    # __slots__ = ['info_props', 'lock', 'plugins', 'pyload']
-
     def __init__(self, core):
-        self.pyload = core
+        BaseManager.__init__(self, core)
 
         builtins.ADDONMANAGER = self  #: needed to let addons register themselves
 
@@ -70,7 +69,7 @@ class AddonManager(object):
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.log_error(_("Error when executing {0}".format(f)), str(e))
+            plugin.log_error(self._("Error when executing {0}".format(f)), str(e))
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -120,12 +119,12 @@ class AddonManager(object):
 
             except Exception:
                 self.pyload.log.warning(
-                    _("Failed activating {0}").format(pluginname))
+                    self._("Failed activating {0}").format(pluginname))
                 # self.pyload.print_exc()
 
         self.pyload.log.info(
-            _("Activated addons: {0}").format(", ".join(sorted(active))))
-        self.pyload.log.info(_("Deactivated addons: {0}").format(
+            self._("Activated addons: {0}").format(", ".join(sorted(active))))
+        self.pyload.log.info(self._("Deactivated addons: {0}").format(
             ", ".join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
@@ -189,7 +188,7 @@ class AddonManager(object):
             self.pyload.evm.remove_from_events(getattr(addon, fname))
 
     def activate_addons(self):
-        self.pyload.log.info(_("Activating addons ..."))
+        self.pyload.log.info(self._("Activating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.is_activated():
@@ -201,7 +200,7 @@ class AddonManager(object):
         """
         Called when core is shutting down.
         """
-        self.pyload.log.info(_("Deactivating addons ..."))
+        self.pyload.log.info(self._("Deactivating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, "deactivate")

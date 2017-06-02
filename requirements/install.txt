@@ -1,9 +1,11 @@
+aenum;python_version<"3.4"
 argparse;python_version<"2.7"
 autoupgrade-ng
 daemonize
-enum34;python_version<"3.4"
 future
 pycurl
-pyload.config~=0.5
-pyload.utils2~=0.5
-# requests[security]>=2.0
+pyload.config[full]~=0.6
+pyload.requests[full]~=0.6
+pyload.utils2[full]~=0.6
+semver
+setuptools

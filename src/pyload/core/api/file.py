@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
+from future import standard_library
 from pyload.utils.purge import uniqify
 
 from ..datatype.file import FileDoesNotExist
@@ -19,15 +19,14 @@ class FileApi(BaseApi):
     """
     Everything related to available packages or files. Deleting, Modifying and so on.
     """
-    # __slots__ = []
 
-    def check_result(self, info):
-        """
-        Internal method to verify result and owner.
-        """
+    # def check_result(self, info):
+        # """
+        # Internal method to verify result and owner.
+        # """
         # TODO: shared?
-        return info and (not self.primary_uid or info.owner ==
-                         self.primary_uid)
+        # return info and (not self.primary_uid or info.owner ==
+                         # self.primary_uid)
 
     @requireperm(Permission.All)
     def get_all_files(self):
@@ -53,8 +52,7 @@ class FileApi(BaseApi):
         :param full: go down the complete tree or only the first layer
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.get_tree(
-            pid, full, DownloadState.All, self.primary_uid)
+        return self.pyload.files.get_tree(pid, full, DownloadState.All)
 
     @requireperm(Permission.All)
     def get_filtered_file_tree(self, pid, full, state):
@@ -66,7 +64,7 @@ class FileApi(BaseApi):
         :param state: :class:`DownloadState`, the attributes used for filtering
         :return: :class:`TreeCollection`
         """
-        return self.pyload.files.get_tree(pid, full, state, self.primary_uid)
+        return self.pyload.files.get_tree(pid, full, state)
 
     @requireperm(Permission.All)
     def get_package_content(self, pid):
@@ -84,10 +82,10 @@ class FileApi(BaseApi):
         :raises PackageDoesNotExist:
         :return: :class:`PackageInfo`
         """
-        pinfo = self.pyload.files.get_package_info(pid)
-        if not self.check_result(pinfo):
+        info = self.pyload.files.get_package_info(pid)
+        if not info:
             raise PackageDoesNotExist(pid)
-        return pinfo
+        return info
 
     @requireperm(Permission.All)
     def get_file_info(self, fid):
@@ -100,7 +98,7 @@ class FileApi(BaseApi):
 
         """
         info = self.pyload.files.get_file_info(fid)
-        if not self.check_result(info):
+        if not info:
             raise FileDoesNotExist(fid)
         return info
 
@@ -114,13 +112,11 @@ class FileApi(BaseApi):
 
     @requireperm(Permission.All)
     def find_files(self, pattern):
-        return self.pyload.files.get_tree(-1, True,
-                                          DownloadState.All, self.primary_uid, pattern)
+        return self.pyload.files.get_tree(-1, True, DownloadState.All, pattern)
 
     @requireperm(Permission.All)
     def search_suggestions(self, pattern):
-        names = self.pyload.db.get_matching_filenames(
-            pattern, self.primary_uid)
+        names = self.pyload.db.get_matching_filenames(pattern)
         # TODO: stemming and reducing the names to provide better suggestions
         return uniqify(names)
 
@@ -138,7 +134,7 @@ class FileApi(BaseApi):
         """
         pid = pack.pid
         pack_ = self.pyload.files.get_package(pid)
-        if not self.check_result(pack_):
+        if not pack_:
             raise PackageDoesNotExist(pid)
         pack_.update_from_info_data(pack)
         pack_.sync()
@@ -154,7 +150,7 @@ class FileApi(BaseApi):
         :return the new package status
         """
         pack = self.pyload.files.get_package(pid)
-        if not self.check_result(pack):
+        if not pack:
             raise PackageDoesNotExist(pid)
 
         if pack.status == PackageStatus.Ok and paused:

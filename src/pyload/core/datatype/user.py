@@ -2,18 +2,21 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
-
-from enum import IntFlag
-
 from pyload.utils.check import bitset
 
 from .init import BaseObject, ExceptionObject, Permission
 
+try:
+    from enum import IntEnum
+except ImportError:
+    from aenum import IntEnum
+
 standard_library.install_aliases()
 
 
-class Role(IntFlag):
+class Role(IntEnum):
     Admin = 0
     User = 1
 

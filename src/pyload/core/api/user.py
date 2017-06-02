@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from ..datatype.init import Permission
@@ -14,7 +15,6 @@ class UserApi(BaseApi):
     """
     Api methods to retrieve user profile and manage users.
     """
-    # __slots__ = []
 
     @requireperm(Permission.All)
     def get_user_data(self):

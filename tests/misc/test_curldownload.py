@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 
-from pyload.core.network.bucket import Bucket
-from pyload.core.network.curl.download import CurlDownload
-from pyload.core.network.curl.request import CurlRequest
+from future import standard_library
+from pyload.requests.bucket import Bucket
+from pyload.requests.curl.download import CurlDownload
+from pyload.requests.curl.request import CurlRequest
+from pyload.utils.fs import lopen
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
@@ -49,7 +49,7 @@ class TestCurlRequest(TestCase):
         assert req.context is dl.context is not None
 
         dl.download(self.cookie_url + "/cookies.php", "cookies.txt")
-        with io.open("cookies.txt", mode='rb') as fp:
+        with lopen("cookies.txt", mode='rb') as fp:
             cookies = fp.read().splitlines()
 
         self.assertEqual(len(cookies), len(dl.context))

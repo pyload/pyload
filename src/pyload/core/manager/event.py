@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
+from builtins import str
+
 from future import standard_library
 
-from builtins import object, str
-
-from pyload.utils.layer.safethreading import Lock
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class EventManager(object):
+class EventManager(BaseManager):
     """
     Handles all event-related tasks, also stores an event queue for clients, so they can retrieve them later.
 
@@ -31,12 +32,9 @@ class EventManager(object):
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished
     """
-    # __slots__ = ['events', 'lock', 'pyload']
-
     def __init__(self, core):
-        self.pyload = core
+        BaseManager.__init__(self, core)
         self.events = {'event': []}
-        self.lock = Lock()
 
     def listen_to(self, event, func):
         """

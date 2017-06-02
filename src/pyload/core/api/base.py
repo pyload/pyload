@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import object
+
+from future import standard_library
 
 standard_library.install_aliases()
 
@@ -14,24 +15,21 @@ AbstractApi = object
 
 class BaseApi(AbstractApi):
 
-    # __slots__ = ['primary_uid', 'pyload', 'user']
-
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
-        from pyload.core import Core
+        from ..init import Core
         from ..datatype.user import User
         assert isinstance(core, Core)
         assert issubclass(BaseApi, AbstractApi)
         self.pyload = core
+        self._ = core._
         assert isinstance(user, User)
         self.user = user
-        self.primary_uid = 0
         # No instantiating!
         raise Exception
 
 
 class AbstractApi(object):
-    # __slots__ = []
 
     def add_links(self, pid, links):
         pass
@@ -51,7 +49,7 @@ class AbstractApi(object):
     def add_user(self, username, password):
         pass
 
-    def check_container(self, fname, data):
+    def check_container(self, filename, data):
         pass
 
     def check_html(self, html, url):
@@ -67,8 +65,8 @@ class AbstractApi(object):
                        password, site, comment, paused):
         pass
 
-    def delete_config(self, plugin):
-        pass
+    # def delete_config(self, plugin):
+        # pass
 
     def delete_files(self, fids):
         pass
@@ -112,17 +110,17 @@ class AbstractApi(object):
     def get_all_user_data(self):
         pass
 
-    def get_available_plugins(self):
-        pass
+    # def get_available_plugins(self):
+        # pass
 
-    def get_config(self):
-        pass
+    # def get_config(self):
+        # pass
 
     def get_config_value(self, section, option):
         pass
 
-    def get_core_config(self):
-        pass
+    # def get_core_config(self):
+        # pass
 
     def get_file_info(self, fid):
         pass
@@ -151,10 +149,10 @@ class AbstractApi(object):
     def get_package_info(self, pid):
         pass
 
-    def get_plugin_config(self):
-        pass
+    # def get_plugin_config(self):
+        # pass
 
-    def get_progress(self):
+    def get_progress_info(self):
         pass
 
     def get_quota(self):
@@ -169,8 +167,8 @@ class AbstractApi(object):
     def get_user_data(self):
         pass
 
-    def get_ws_address(self):
-        pass
+    # def get_ws_address(self):
+        # pass
 
     def invoke_addon(self, plugin, func, func_args):
         pass
@@ -181,8 +179,8 @@ class AbstractApi(object):
     def is_interaction_waiting(self, mode):
         pass
 
-    def load_config(self, name):
-        pass
+    # def load_config(self, name):
+        # pass
 
     def login(self, username, password):
         pass
@@ -238,8 +236,8 @@ class AbstractApi(object):
     def restart_package(self, pid):
         pass
 
-    def save_config(self, config):
-        pass
+    # def save_config(self, config):
+        # pass
 
     def search_suggestions(self, pattern):
         pass
@@ -283,5 +281,5 @@ class AbstractApi(object):
     def update_user_data(self, data):
         pass
 
-    def upload_container(self, fname, data):
+    def upload_container(self, filename, data):
         pass

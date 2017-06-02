@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from ..datatype.init import Permission
@@ -15,7 +16,6 @@ class AddonApi(BaseApi):
     """
     Methods to interact with addons.
     """
-    # __slots__ = []
 
     @requireperm(Permission.Interaction)
     def get_all_info(self):
@@ -43,8 +43,9 @@ class AddonApi(BaseApi):
         """
         handler = {}
         for name, data in self.pyload.adm.iter_addons():
-            if data.handler:
-                handler[name] = list(data.handler.values())
+            if not data.handler:
+                continue
+            handler[name] = list(data.handler.values())
         return handler
 
     @requireperm(Permission.Interaction)

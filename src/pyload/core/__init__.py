@@ -11,38 +11,33 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import builtins
 import codecs
+import locale
 import os
 import sys
 import tempfile
 
-builtins.PACKDIR = PACKDIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-builtins.COREDIR = COREDIR = os.path.join(PACKDIR, 'src', 'pyload', 'core')
-builtins.USERDIR = USERDIR = os.path.expanduser('~')
-builtins.DATADIR = DATADIR = os.getenv(
-    'APPDATA') if os.name == 'nt' else USERDIR
-builtins.TMPDIR = TMPDIR = tempfile.gettempdir()
+builtins.USERDIR = os.path.expanduser('~')
+builtins.DATADIR = os.getenv(
+    'APPDATA') if os.name == 'nt' else builtins.USERDIR
+builtins.TMPDIR = tempfile.gettempdir()
 
-sys.path.append(PACKDIR)
-sys.path.append(os.path.join(PACKDIR, 'lib'))
+# TODO: Remove
+builtins.ADDONMANAGER = None
 
-builtins.REQUEST = None  # TODO: Remove
-builtins.ADDONMANAGER = None  # TODO: Remove
-builtins._ = lambda x: x  # NOTE: gettext pre-start fixup
+# from .__about__ import __package__
+# from pkg_resources import resource_filename
+# from pyload.utils.misc import install_translation
 
-# codecs.register(lambda name: codecs.lookup('utf-8') if name == 'cp65001' else None)
+locale.setlocale(locale.LC_ALL, '')
+# install_translation('core', resource_filename(__package__, 'locale'))
+
+# codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
-from . import api
-from . import database
-from . import datatype
-from . import manager
-from . import network
-from . import thread
-from .init import (Core, Restart, Shutdown, info, quit, restart, setup, start,
-                   status, version)
-
-# Cleanup
-del builtins, codecs, os, sys, tempfile
+from . import api, config, database, datatype, manager, network, plugin, thread
+from .iface import cleanup, quit, restart, start, status, version, upgrade
+from .init import Core, Restart, Shutdown

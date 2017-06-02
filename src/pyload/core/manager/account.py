@@ -2,32 +2,28 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import json
 import random
-from builtins import object
 
-from pyload.utils.decorator import lock
-from pyload.utils.layer.safethreading import Lock
+from future import standard_library
+from pyload.utils.struct.lock import lock
 
 from ..datatype.init import AccountInfo
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class AccountManager(object):
+class AccountManager(BaseManager):
     """
     Manages all accounts.
     """
-    # __slots__ = ['accounts', 'lock', 'pyload']
-
     def __init__(self, core):
         """
         Constructor.
         """
-        self.pyload = core
-        self.lock = Lock()
+        BaseManager.__init__(self, core)
 
         # PluginName mapped to list of account instances
         self.accounts = {}
@@ -44,7 +40,7 @@ class AccountManager(object):
         klass = self.pyload.pgm.load_class("account", plugin)
         if not klass:
             self.pyload.log.warning(
-                _("Account plugin {0} not available").format(plugin))
+                self._("Account plugin {0} not available").format(plugin))
             raise ValueError("Account plugin {0} not available".format(plugin))
 
         if plugin not in self.accounts:
@@ -68,7 +64,7 @@ class AccountManager(object):
                 self._create_account(info, password, options)
             except Exception:
                 self.pyload.log.error(
-                    _("Could not load account {0}").format(info))
+                    self._("Could not load account {0}").format(info))
                 # self.pyload.print_exc()
 
     def iter_accounts(self):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from ..datatype.init import AccountInfo
@@ -11,7 +12,6 @@ standard_library.install_aliases()
 
 class AccountMethods(DatabaseMethods):
 
-    # __slots__ = []
 
     @queue
     def load_accounts(self):

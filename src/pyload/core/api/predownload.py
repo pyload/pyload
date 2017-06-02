@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 import re
 from builtins import str
 from itertools import chain
 
+from future import standard_library
 from pyload.utils import parse
+from pyload.utils.fs import lopen
 from pyload.utils.purge import uniqify
 
 from ..datatype.check import OnlineCheck
 from ..datatype.init import DownloadStatus, LinkStatus, Permission
-from ..network.factory import get_url
 from .base import BaseApi
 from .init import Api, requireperm
 
@@ -30,7 +29,6 @@ class PreDownloadApi(BaseApi):
     """
     All kind of methods to parse links or retrieve online status.
     """
-    # __slots__ = []
 
     @requireperm(Permission.Add)
     def parse_links(self, links):
@@ -66,23 +64,23 @@ class PreDownloadApi(BaseApi):
         tmp = [(url, LinkStatus(url, url, -1, DownloadStatus.Queued, pluginname))
                for url, pluginname in hoster]
         data = parse.packs(tmp)
-        rid = self.pyload.iom.create_result_thread(
-            self.primary_uid, hoster + crypter)
+        rid = self.pyload.iom.create_result_thread(hoster + crypter)
 
         return OnlineCheck(rid, data)
 
     @requireperm(Permission.Add)
-    def check_container(self, fname, data):
+    def check_container(self, filename, data):
         """
         Checks online status of urls and a submitted container file
 
-        :param fname: name of the file
+        :param filename: name of the file
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        path = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{0}".format(fname))
-        with io.open(path, mode='wb') as fp:
+        storagedir = self.pyload.config.get('general', 'storage_folder')
+        filename = 'tmp_{0}'.format(filename)
+        filepath = os.path.join(storagedir, filename)
+        with lopen(filepath, mode='wb') as fp:
             fp.write(str(data))
             return self.check_links([fp.name])
 
@@ -98,7 +96,7 @@ class PreDownloadApi(BaseApi):
         if html:
             urls += [x[0] for x in _re_urlmatch.findall(html)]
         if url:
-            page = get_url(url)
+            page = self.pyload.req.get_url(url)
             urls += [x[0] for x in _re_urlmatch.findall(page)]
 
         return self.check_links(uniqify(urls))
@@ -112,7 +110,7 @@ class PreDownloadApi(BaseApi):
         :return: `OnlineCheck`, if rid is -1 then there is no more data available
         """
         result = self.pyload.iom.get_info_result(rid)
-        if result and result.owner == self.primary_uid:
+        if result:
             return result.to_api_data()
 
     @requireperm(Permission.Add)

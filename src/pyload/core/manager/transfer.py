@@ -2,42 +2,32 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import os
 import random
 import time
-from builtins import COREDIR, object
 from collections import defaultdict
 
-from pyload.utils.decorator import lock, readlock
+from future import standard_library
+from pyload.utils.fs import availspace
 from pyload.utils.layer.legacy import subprocess_ as subprocess
 from pyload.utils.layer.safethreading import Event
-from pyload.utils.path import availspace
-from pyload.utils.struct.lock import ReadWriteLock
-from pyload.utils.web.check import local_addr
+from pyload.utils.struct.lock import RWLock, lock
+from pyload.utils.web.misc import get_ip
 
 from ..datatype.init import DownloadStatus
 from ..thread import DecrypterThread, DownloadThread
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class TransferManager(object):
+class TransferManager(BaseManager):
     """
     Schedules and manages download and decrypter jobs.
     """
-    # __slots__ = [
-        # 'decrypter',
-        # 'free',
-        # 'lock',
-        # 'paused',
-        # 'pyload',
-        # 'reconnecting',
-        # 'working']
-
     def __init__(self, core):
-        self.pyload = core
+        BaseManager.__init__(self, core)
 
         #: won't start download when true
         self.pause = True
@@ -52,7 +42,7 @@ class TransferManager(object):
         #: indicates when reconnect has occurred
         self.reconnecting = Event()
 
-        self.lock = ReadWriteLock()
+        self.lock = RWLock()
 
     @lock
     def done(self, thread):
@@ -70,7 +60,7 @@ class TransferManager(object):
             self.decrypting.remove(thread)
 
     @lock
-    def stop(self, thread):
+    def discard(self, thread):
         """
         Removes a thread from all lists.
         """
@@ -91,7 +81,7 @@ class TransferManager(object):
             thread = DownloadThread(self)
 
         thread.put(self.pyload.files.get_file(info.fid))
-        thread.start()        
+        thread.start()
         # wait until it picked up the task
         thread.running.wait()
         self.downloading.append(thread)
@@ -113,14 +103,14 @@ class TransferManager(object):
         self.decrypting.append(thread)
         return thread
 
-    @readlock
+    @lock(shared=True)
     def active_downloads(self, uid=None):
         """
         Retrieve pyfiles of running downloads.
         """
         return [x.active for x in self.downloading if uid is None or x.active.owner == uid]
 
-    @readlock
+    @lock(shared=True)
     def waiting_downloads(self):
         """
         All waiting downloads.
@@ -128,7 +118,7 @@ class TransferManager(object):
         return [
             x.active for x in self.downloading if x.active.has_status("waiting")]
 
-    @readlock
+    @lock(shared=True)
     def get_progress_list(self, uid):
         """
         Progress of all running downloads.
@@ -143,7 +133,7 @@ class TransferManager(object):
         """
         return [x.fid for x in self.active_downloads(None)]
 
-    @readlock
+    @lock(shared=True)
     def shutdown(self):
         """
         End all threads.
@@ -160,7 +150,7 @@ class TransferManager(object):
 
         if (availspace(self.pyload.config.get('general', 'storage_folder')) <
                 self.pyload.config.get('general', 'min_storage_size') << 20):
-            self.pyload.log.warning(_("Not enough space left on device"))
+            self.pyload.log.warning(self._("Not enough space left on device"))
             self.pause = True
 
         # if self.pause or not self.pyload.api.is_time_download():
@@ -236,7 +226,7 @@ class TransferManager(object):
         # this plugin does not exits
         if plugin is None:
             self.pyload.log.error(
-                _("Plugin '{0}' does not exists").format(info.download.plugin))
+                self._("Plugin '{0}' does not exists").format(info.download.plugin))
             self.pyload.files.set_download_status(
                 info.fid, DownloadStatus.Failed)
             return False
@@ -253,11 +243,11 @@ class TransferManager(object):
             self.start_decrypter_thread(info)
         else:
             self.pyload.log.error(
-                _("Plugin type '{0}' can't be used for downloading").format(plugin))
+                self._("Plugin type '{0}' can't be used for downloading").format(plugin))
 
         return False
 
-    @readlock
+    @lock(shared=True)
     def try_reconnect(self):
         """
         Checks if reconnect needed.
@@ -272,24 +262,20 @@ class TransferManager(object):
             return False
 
         script = self.pyload.config.get('reconnect', 'script')
-        if not os.path.exists(script):
-            if os.path.exists(os.path.join(COREDIR, script)):
-                self.pyload.config.set('reconnect', 'script', os.path.join(
-                    COREDIR, self.pyload.config.get('reconnect', 'script')))
-            else:
-                self.pyload.config.set('reconnect', 'activated', False)
-                self.pyload.log.warning(_("Reconnect script not found!"))
-                return None
+        if not os.path.isfile(script):
+            self.pyload.config.set('reconnect', 'activated', False)
+            self.pyload.log.warning(self._("Reconnect script not found!"))
+            return None
 
         self.reconnecting.set()
 
-        self.pyload.log.info(_("Starting reconnect"))
+        self.pyload.log.info(self._("Starting reconnect"))
 
         # wait until all thread got the event
         while [x.active.plugin.waiting for x in self.downloading].count(True) != 0:
             time.sleep(0.25)
 
-        old_ip = local_addr()
+        old_ip = get_ip()
 
         self.pyload.evm.fire("reconnect:before", old_ip)
         self.pyload.log.debug("Old IP: {0}".format(old_ip))
@@ -301,24 +287,24 @@ class TransferManager(object):
                     'script'),
                 shell=True)
         except Exception:
-            self.pyload.log.warning(_("Failed executing reconnect script!"))
+            self.pyload.log.warning(self._("Failed executing reconnect script!"))
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
             # self.pyload.print_exc()
             return None
 
         time.sleep(1)
-        ip = local_addr()
+        ip = get_ip()
         self.pyload.evm.fire("reconnect:after", ip)
 
         if not old_ip or old_ip == ip:
-            self.pyload.log.warning(_("Reconnect not successful"))
+            self.pyload.log.warning(self._("Reconnect not successful"))
         else:
-            self.pyload.log.info(_("Reconnected, new IP: {0}").format(ip))
+            self.pyload.log.info(self._("Reconnected, new IP: {0}").format(ip))
 
         self.reconnecting.clear()
 
-    @readlock
+    @lock(shared=True)
     def want_reconnect(self):
         """
         Number of downloads that are waiting for reconnect.
@@ -327,7 +313,7 @@ class TransferManager(object):
         ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.downloading]
         return active.count(True)
 
-    @readlock
+    @lock(shared=True)
     def get_remaining_plugin_slots(self):
         """
         Dict of plugin names mapped to remaining dls.

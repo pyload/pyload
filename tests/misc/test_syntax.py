@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import os
 
+from future import standard_library
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
@@ -12,14 +12,16 @@ from unittest2 import TestCase
 standard_library.install_aliases()
 
 
-PACKDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+PACKDIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'pyload', 'core')
+)
 
 
 class TestSyntax(TestCase):
     pass
 
 
-for dir, dirnames, filenames in os.walk(os.path.join(PACKDIR, "pyload")):
+for dir, dirnames, filenames in os.walk(PACKDIR):
     for fname in filenames:
         if not fname.endswith(".py") or fname.startswith("__"):
             continue
@@ -28,10 +30,6 @@ for dir, dirnames, filenames in os.walk(os.path.join(PACKDIR, "pyload")):
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)
-
-        # to much sideeffect when importing
-        if "web" in packages or "lib" in packages:
-            continue
 
         # currying
         def meta(imp, sig):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import range
 
+from future import standard_library
 from pyload.core.datatype import InputType, Interaction
 from pyload.core.manager import ExchangeManager
 from tests.helper.stubs import Core

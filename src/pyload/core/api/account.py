@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from ..datatype.init import Permission
@@ -14,7 +15,6 @@ class AccountApi(BaseApi):
     """
     All methods to control accounts.
     """
-    # __slots__ = []
 
     @requireperm(Permission.All)
     def get_account_types(self):
@@ -32,7 +32,7 @@ class AccountApi(BaseApi):
 
         :return: list of `AccountInfo`
         """
-        accounts = self.pyload.acm.get_all_accounts(self.primary_uid)
+        accounts = self.pyload.acm.get_all_accounts()
         return [acc.to_info_data() for acc in accounts]
 
     @requireperm(Permission.Accounts)
@@ -45,8 +45,7 @@ class AccountApi(BaseApi):
         account = self.pyload.acm.get_account(aid, plugin)
 
         # Admins can see and refresh accounts
-        if not account or (
-                self.primary_uid and self.primary_uid != account.owner):
+        if not account:
             return None
 
         if refresh:
@@ -96,5 +95,4 @@ class AccountApi(BaseApi):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        self.pyload.acm.remove_account(
-            account.aid, account.plugin, self.primary_uid)
+        self.pyload.acm.remove_account(account.aid, account.plugin)

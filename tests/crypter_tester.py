@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 from builtins import int
 from logging import DEBUG, log
 
+from future import standard_library
 from nose.tools import nottest
 from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate, to_int
+from pyload.utils.fs import lopen
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
 
@@ -46,7 +46,8 @@ class CrypterPluginTester(PluginTester):
 
 c = Core()
 
-with io.open(os.path.join(os.path.dirname(__file__), "crypterlinks.txt")) as fp:
+crypterlinks = os.path.join(os.path.dirname(__file__), "crypterlinks.txt")
+with lopen(crypterlinks) as fp:
     links = [x.strip() for x in fp.readlines()]
 urls = []
 flags = {}

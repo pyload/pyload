@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 import shutil
 import sys
@@ -14,11 +12,12 @@ from glob import glob
 from json import loads
 from logging import DEBUG, log
 
+from future import standard_library
 from pycurl import FORM_FILE, LOW_SPEED_TIME
-from pyload.core.network import get_request
 from pyload.core.plugin.base import Abort, Fail
 from pyload.core.plugin.hoster import Hoster
-from pyload.utils.path import makedirs, remove
+from pyload.requests import get_request
+from pyload.utils.fs import lopen, makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
 
@@ -55,7 +54,7 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
     img = self.load(url, get=get, post=post, cookies=cookies)
 
     id = "{0:.2f}".format(time.time())[-6:].replace(".", "")
-    with io.open(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+    with lopen(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
         fp.write(img)
 
     log(DEBUG, "Using ct for captcha")
@@ -64,8 +63,8 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
     if not os.path.exists(conf):
         raise Exception("CaptchaService config {0} not found".format(conf))
 
-    with io.open(conf, mode='rb') as fp:
-        with closing(get_request()) as req:
+    with lopen(conf, mode='rb') as fp:
+        with closing(get_request()) as req:  # TODO: Check get_request
             # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
 
@@ -114,7 +113,7 @@ class PluginTester(TestCase):
     @classmethod
     def tearDownClass(cls):
         name = "{0}.{1}".format(cls.__module__, cls.__name__)
-        makedirs(name)
+        makedirs(name, exist_ok=True)
         for fname in glob("debug_*"):
             shutil.move(fname, os.path.join(name, fname))
 

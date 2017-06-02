@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from .check import OnlineCheck
@@ -83,10 +84,10 @@ methods = {
     'get_all_files': TreeCollection,
     'get_all_info': (dict, str, list),
     'get_all_user_data': (dict, int, UserData),
-    'get_available_plugins': (list, ConfigInfo),
-    'get_config': (dict, str, ConfigHolder),
+    # 'get_available_plugins': (list, ConfigInfo),
+    # 'get_config': (dict, str, ConfigHolder),
     'get_config_value': str,
-    'get_core_config': (list, ConfigInfo),
+    # 'get_core_config': (list, ConfigInfo),
     'get_file_info': FileInfo,
     'get_file_tree': TreeCollection,
     'get_filtered_file_tree': TreeCollection,
@@ -96,8 +97,8 @@ methods = {
     'get_log': (list, str),
     'get_package_content': TreeCollection,
     'get_package_info': PackageInfo,
-    'get_plugin_config': (list, ConfigInfo),
-    'get_progress': (list, ProgressInfo),
+    # 'get_plugin_config': (list, ConfigInfo),
+    'get_progress_info': (list, ProgressInfo),
     'get_quota': int,
     'get_server_version': str,
     'get_status_info': StatusInfo,

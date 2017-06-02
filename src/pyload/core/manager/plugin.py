@@ -2,13 +2,19 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import os
 import sys
-from builtins import COREDIR, object, str
+from builtins import object, str
 
-from ..plugin.factory import LoaderFactory, PluginLoader
+from pkg_resources import resource_filename
+
+from future import standard_library
+from pyload.utils.fs import fullpath
+
+from .base import BaseManager
+from ..__about__ import __package__
+from ..network.loader import LoaderFactory, PluginLoader
 
 standard_library.install_aliases()
 
@@ -17,7 +23,6 @@ class PluginMatcher(object):
     """
     Abstract class that allows modify which plugins to match and to load.
     """
-    # __slots__ = []
 
     def match_url(self, url):
         """
@@ -32,27 +37,16 @@ class PluginMatcher(object):
         return None
 
 
-class PluginManager(object):
+class PluginManager(BaseManager):
 
-    # __slots__ = [
-        # 'DEFAULT_PLUGIN',
-        # 'LOCALROOT',
-        # 'MATCH_HISTORY',
-        # 'ROOT',
-        # 'history',
-        # 'loader',
-        # 'matcher',
-        # 'modules',
-        # 'pyload']
-
-    ROOT = "pyload.plugin"
+    ROOT = "pyload.core.plugin"
     LOCALROOT = "userplugins"
 
     MATCH_HISTORY = 10
     DEFAULT_PLUGIN = "BasePlugin"
 
     def __init__(self, core):
-        self.pyload = core
+        BaseManager.__init__(self, core)
 
         # cached modules (type, name)
         self.modules = {}
@@ -63,10 +57,12 @@ class PluginManager(object):
         sys.meta_path.append(self)
 
         # add to path, so we can import from userplugins
-        sys.path.append(os.path.abspath(""))
-        self.loader = LoaderFactory(PluginLoader(os.path.abspath(self.LOCALROOT), self.LOCALROOT, self.pyload.config),
-                                    PluginLoader(os.path.abspath(os.path.join(COREDIR, "pyload", "plugin")), self.ROOT,
-                                                 self.pyload.config))
+        sys.path.append(os.getcwdu())  # TODO: Recheck...
+        self.loader = LoaderFactory(
+            PluginLoader(fullpath(self.LOCALROOT),
+            self.LOCALROOT, self.pyload.config),
+            PluginLoader(resource_filename(__package__, 'network')),
+            self.ROOT, self.pyload.config)
 
         self.loader.check_versions()
 
@@ -209,7 +205,7 @@ class PluginManager(object):
                     return module
                 except Exception as e:
                     self.pyload.log.error(
-                        _("Error importing {0}: {1}").format(name, str(e)))
+                        self._("Error importing {0}: {1}").format(name, str(e)))
                     # self.pyload.print_exc()
 
     def load_class(self, type_, name):
@@ -222,7 +218,7 @@ class PluginManager(object):
                 return getattr(module, name)
         except AttributeError:
             self.pyload.log.error(
-                _("Plugin does not define class '{0}'").format(name))
+                self._("Plugin does not define class '{0}'").format(name))
 
     def find_module(self, fullname):
         # redirecting imports if necessary

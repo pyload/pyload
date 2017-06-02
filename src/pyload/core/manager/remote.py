@@ -2,22 +2,23 @@
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
+
+from builtins import str
+from traceback import print_exc
+
 from future import standard_library
 
-from builtins import object, str
-from traceback import print_exc
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class RemoteManager(object):
-
-    # __slots__ = ['backends', 'pyload']
+class RemoteManager(BaseManager):
 
     available = ["WebSocketBackend"]
 
     def __init__(self, core):
-        self.pyload = core
+        BaseManager.__init__(self, core)
         self.backends = []
 
     def start(self):
@@ -35,10 +36,10 @@ class RemoteManager(object):
             try:
                 backend.setup(host, port)
                 self.pyload.log.info(
-                    _("Starting {0}: {1}:{2}").format(b, host, port))
+                    self._("Starting {0}: {1}:{2}").format(b, host, port))
             except Exception as e:
                 self.pyload.log.error(
-                    _("Failed loading backend {0} | {1}").format(b, str(e)))
+                    self._("Failed loading backend {0} | {1}").format(b, str(e)))
                 if self.pyload.debug:
                     print_exc()
             else:

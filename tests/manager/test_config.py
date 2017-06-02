@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from collections import defaultdict
 
+from future import standard_library
 from nose.tools import raises
 from pyload.core.database import DatabaseBackend, InvalidConfigSection
 from pyload.core.manager import ConfigManager

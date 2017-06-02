@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
+from future import standard_library
 from pyload.core.manager import AccountManager
 from tests.helper.stubs import Core, admin_user, normal_user
 from unittest2 import TestCase

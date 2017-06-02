@@ -2,12 +2,13 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import random
 from builtins import range
 from hashlib import sha1
 from string import digits, letters
+
+from future import standard_library
 
 from ..datatype.user import UserData
 from .backend import DatabaseMethods, async, queue
@@ -19,12 +20,11 @@ alphnum = letters + digits
 
 
 def random_salt():
-    return "".join(random.choice(alphnum) for x in range(0, 5))
+    return "".join(random.choice(alphnum) for _i in range(0, 5))
 
 
 class UserMethods(DatabaseMethods):
 
-    # __slots__ = []
 
     @queue
     def add_user(self, user, password, role, permission):

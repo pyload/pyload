@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
+import time
 from builtins import object, range, str
-from time import time
+
+from future import standard_library
 
 standard_library.install_aliases()
 
@@ -16,7 +17,7 @@ class BenchmarkTest(object):
 
     @classmethod
     def timestamp(cls, name, a):
-        t = time()
+        t = time.time()
         res = cls.results.get(name, [])
         res.append((t - a) * 1000)
         cls.results[name] = res
@@ -57,18 +58,18 @@ class BenchmarkTest(object):
     @classmethod
     def collect_results(cls):
         if hasattr(cls, "setUpClass"):
-            a = time()
+            a = time.time()
             cls.setUpClass()
             cls.timestamp("setUpClass", a)
 
         obj = cls()
 
         for fname in cls.bench:
-            a = time()
+            a = time.time()
             getattr(obj, "test_{0}".format(fname))()
             cls.timestamp(fname, a)
 
         if hasattr(cls, "tearDownClass"):
-            a = time()
+            a = time.time()
             cls.tearDownClass()
             cls.timestamp("tearDownClass", a)

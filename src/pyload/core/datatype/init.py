@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import object
 
-from enum import IntFlag
+from future import standard_library
+
+try:
+    from enum import IntEnum
+except ImportError:
+    from aenum import IntEnum
 
 standard_library.install_aliases()
 
@@ -56,13 +60,13 @@ class Unauthorized(ExceptionObject):
     __slots__ = []
 
 
-class Connection(IntFlag):
+class Connection(IntEnum):
     All = 0
     Resumable = 1
     Secure = 2
 
 
-class DownloadState(IntFlag):
+class DownloadState(IntEnum):
     All = 0
     Finished = 1
     Unfinished = 2
@@ -70,7 +74,7 @@ class DownloadState(IntFlag):
     Unmanaged = 4
 
 
-class DownloadStatus(IntFlag):
+class DownloadStatus(IntEnum):
     NA = 0
     Offline = 1
     Online = 2
@@ -94,27 +98,26 @@ class DownloadStatus(IntFlag):
     Unknown = 20
 
 
-class InputType(IntFlag):
+class InputType(IntEnum):
     NA = 0
-    Text = 1
+    Bool = 1
     Int = 2
-    File = 3
-    Folder = 4
-    Textbox = 5
-    Password = 6
-    Time = 7
-    TimeSpan = 8
-    ByteSize = 9
-    Bool = 10
-    Click = 11
-    Select = 12
-    Multiple = 13
-    List = 14
-    PluginList = 15
-    Table = 16
+    Float = 3
+    Octal = 4
+    Str = 5
+    Bytes = 6
+    Size = 7
+    File = 8
+    Folder = 9
+    Password = 10
+    Time = 11
+    Click = 12
+    Address = 13
+    Tristate = 14
+    StrList = 15
 
 
-class MediaType(IntFlag):
+class MediaType(IntEnum):
     All = 0
     Other = 1
     Audio = 2
@@ -125,7 +128,7 @@ class MediaType(IntFlag):
     Executable = 64
 
 
-class Permission(IntFlag):
+class Permission(IntEnum):
     All = 0
     Add = 1
     Delete = 2
@@ -136,7 +139,7 @@ class Permission(IntFlag):
     Plugins = 64
 
 
-class ProgressType(IntFlag):
+class ProgressType(IntEnum):
     All = 0
     Other = 1
     Download = 2
@@ -262,11 +265,11 @@ class EventInfo(BaseObject):
 
 
 class Input(BaseObject):
-    __slots__ = ['type', 'default_value', 'data']
+    __slots__ = ['type', 'default', 'data']
 
-    def __init__(self, type_=None, default_value=None, data=None):
+    def __init__(self, type_=None, default=None, data=None):
         self.type = type_
-        self.default_value = default_value
+        self.default = default
         self.data = data
 
 

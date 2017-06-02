@@ -2,19 +2,24 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+
+import time
+from builtins import int
+
 from future import standard_library
 
-from builtins import int
-from time import time
-
-from enum import IntFlag
-
 from .init import BaseObject, InputType
+
+try:
+    from enum import IntEnum
+except ImportError:
+    from aenum import IntEnum
+
 
 standard_library.install_aliases()
 
 
-class Interaction(IntFlag):
+class Interaction(IntEnum):
     All = 0
     Notification = 1
     Captcha = 2
@@ -93,7 +98,7 @@ class InteractionTask(BaseObject):
             if sec < 0:
                 self.wait_until = -1
             else:
-                self.wait_until = max(time() + sec, self.wait_until)
+                self.wait_until = max(time.time() + sec, self.wait_until)
 
             if lock:
                 self.locked = True
@@ -105,7 +110,7 @@ class InteractionTask(BaseObject):
         return True
 
     def timed_out(self):
-        return time() > self.wait_until > -1
+        return time.time() > self.wait_until > -1
 
     def correct(self):
         [x.task_correct(self) for x in self.handler]

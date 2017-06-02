@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+from __future__ import unicode_literals
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
 from .init import Api, requireperm, statestring
 from .base import AbstractApi, BaseApi
 from .account import AccountApi
@@ -33,6 +37,3 @@ for api in __api_classes:
     Api.extend(api)
 
 Api.EXTEND = False
-
-# Cleanup
-del __api_classes

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import json
 
+from future import standard_library
 from pyload.config import ConfigParser
-from pyload.config.convert import from_string
+# from pyload.config.convert import from_string
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 
 from ..datatype.init import InvalidConfigSection
@@ -33,8 +33,6 @@ class ConfigManager(ConfigParser):
     Manages the core config and configs for addons and single user.
     Has similar interface to ConfigParser.
     """
-    # __slots__ = ['config', 'parser', 'pyload', 'values']
-
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!
 
@@ -53,7 +51,7 @@ class ConfigManager(ConfigParser):
         # TODO: similar to a cache, could be deleted periodically
 
     def save(self):
-        self.parser.save()
+        self.parser.store()
 
     @convertkeyerror
     def get(self, section, option, user=None):
@@ -75,7 +73,7 @@ class ConfigManager(ConfigParser):
             except KeyError:
                 pass  #: Returns default value later
 
-        return self.config[section].config[option].input.default_value
+        return self.config[section].config[option].input.default
 
     def load_values(self, user, section):
         if (user, section) not in self.values:
@@ -130,8 +128,8 @@ class ConfigManager(ConfigParser):
         self.pyload.db.delete_config(section, user)
         self.pyload.evm.fire("config:deleted", section, user)
 
-    def iter_core_sections(self):
-        return self.parser.iter_sections()
+    # def iter_core_sections(self):
+        # return self.parser.iter_sections()
 
     def iter_sections(self, user=None):
         """

@@ -2,39 +2,30 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+
+import time
+
 from future import standard_library
-
-from builtins import object
-from time import time
-
 from pyload.utils.convert import to_list
-from pyload.utils.decorator import lock
 from pyload.utils.layer.safethreading import RLock
+from pyload.utils.struct.lock import lock
 
 from ..datatype.check import OnlineCheck
 from ..thread import InfoThread
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
-class InfoManager(object):
+class InfoManager(BaseManager):
     """
     Manages all non download related threads and jobs.
     """
-    # __slots__ = [
-        # 'info_cache',
-        # 'info_results',
-        # 'lock',
-        # 'pyload',
-        # 'result_ids',
-        # 'thread',
-        # 'timestamp']
-
     def __init__(self, core):
         """
         Constructor.
         """
-        self.pyload = core
+        BaseManager.__init__(self, core)
 
         self.thread = []  #: thread list
 
@@ -70,7 +61,7 @@ class InfoManager(object):
         """
         Start a thread which fetches online status and other info's.
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
         thread = InfoThread(self, None, data, pid)
         thread.start()
 
@@ -79,7 +70,7 @@ class InfoManager(object):
         """
         Creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         rid = self.result_ids
         self.result_ids += 1
@@ -89,7 +80,7 @@ class InfoManager(object):
 
         thread = InfoThread(self, user, data, oc=oc)
         thread.start()
-        
+
         return rid
 
     @lock
@@ -117,10 +108,10 @@ class InfoManager(object):
         """
         Run all task which have to be done (this is for repetitive call by core).
         """
-        if self.info_cache and self.timestamp < time():
+        if self.info_cache and self.timestamp < time.time():
             self.info_cache.clear()
             self.pyload.log.debug("Cleared Result cache")
 
-        for rid in self.info_results.keys():
+        for rid in self.info_results:
             if self.info_results[rid].is_stale():
                 del self.info_results[rid]

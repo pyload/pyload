@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 
-from pyload.utils import convert
-from pyload.utils.path import availspace
+from future import standard_library
+from pyload.utils.fs import availspace, lopen
+from semver import format_version
 
 from ..datatype.init import Permission, StatusInfo
 from ..datatype.task import Interaction
@@ -21,14 +20,13 @@ class CoreApi(BaseApi):
     """
     This module provides methods for general interaction with the core, like status or progress retrieval.
     """
-    # __slots__ = []
 
     @requireperm(Permission.All)
     def get_server_version(self):
         """
         PyLoad Core version.
         """
-        return convert.from_version(self.pyload.version)
+        return self.pyload.version
 
     def is_ws_secure(self):
         # needs to use TLS when either requested or webui is also using
@@ -38,24 +36,23 @@ class CoreApi(BaseApi):
 
         cert = self.pyload.config.get('ssl', 'cert')
         key = self.pyload.config.get('ssl', 'key')
-        if not os.path.exists(cert) or not os.path.exists(key):
-            self.pyload.log.warning(_('SSL key or certificate not found'))
+        if not os.path.isfile(cert) or not os.path.isfile(key):
+            self.pyload.log.warning(self._('SSL key or certificate not found'))
             return False
 
         return True
 
-    @requireperm(Permission.All)
-    def get_ws_address(self):
-        """
-        Gets and address for the websocket based on configuration.
-        """
-        if self.is_ws_secure():
-            ws = "wss"
-        else:
-            ws = "ws"
+    # @requireperm(Permission.All)
+    # def get_ws_address(self):
+        # """
+        # Gets and address for the websocket based on configuration.
+        # """
+        # if self.is_ws_secure():
+            # ws = "wss"
+        # else:
+            # ws = "ws"
 
-        return "{0}://{{0}}:{1:d}".format(ws,
-                                        self.pyload.config.get('rpc', 'port'))
+        # return "{0}://{{0}}:{1:d}".format(ws, self.pyload.config.get('rpc', 'port'))
 
     @requireperm(Permission.All)
     def get_status_info(self):
@@ -64,8 +61,8 @@ class CoreApi(BaseApi):
 
         :return: `StatusInfo`
         """
-        queue = self.pyload.files.get_queue_stats(self.primary_uid)
-        total = self.pyload.files.get_download_stats(self.primary_uid)
+        queue = self.pyload.files.get_queue_stats()
+        total = self.pyload.files.get_download_stats()
 
         server_status = StatusInfo(0,
                                    total[0], queue[0],
@@ -79,20 +76,20 @@ class CoreApi(BaseApi):
                                        'reconnect', 'activated'),
                                    self.get_quota())
 
-        for file in self.pyload.tsm.active_downloads(self.primary_uid):
+        for file in self.pyload.tsm.active_downloads():
             server_status.speed += file.get_speed()  #: bytes/s
 
         return server_status
 
     @requireperm(Permission.All)
-    def get_progress(self):
+    def get_progress_info(self):
         """
         Status of all currently running tasks
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return (self.pyload.tsm.get_progress_list(self.primary_uid) +
-                self.pyload.iom.get_progress_list(self.primary_uid))
+        return (
+            self.pyload.tsm.get_progress_list() + self.pyload.iom.get_progress_list())
 
     def pause_server(self):
         """
@@ -134,19 +131,13 @@ class CoreApi(BaseApi):
         """
         Clean way to quit pyLoad.
         """
-        self.pyload._shutdown = True
+        self.pyload._Core__do_shutdown = True
 
     def restart(self):
         """
         Restart pyload core.
         """
-        self.pyload._restart = True
-
-    # def stop(self):
-        # """
-        # Stop pyload core.
-        # """
-        # self.pyload._stop = True
+        self.pyload._Core__do_restart = True
 
     def get_log(self, offset=0):
         """
@@ -155,10 +146,16 @@ class CoreApi(BaseApi):
         :param offset: line offset
         :return: List of log entries
         """
-        fname = os.path.join(self.pyload.config.get(
-            'log', 'logfile_folder'), 'log.txt')
+        # TODO: Rewrite!
+        logfile_folder = self.config.get('log', 'logfile_folder')
+        if not logfile_folder:
+            logfile_folder = self.pyload.DEFAULT_LOGDIRNAME
+        logfile_name = self.config.get('log', 'logfile_name')
+        if not logfile_name:
+            logfile_name = self.DEFAULT_LOGFILENAME
+        filepath = os.path.join(logfile_folder, logfile_name)
         try:
-            with io.open(fname) as fp:
+            with lopen(filepath) as fp:
                 lines = fp.readlines()
             if offset >= len(lines):
                 return []

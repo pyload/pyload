@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import object
 
+from future import standard_library
 from nose.tools import raises
 from tests.helper.stubs import Core
 

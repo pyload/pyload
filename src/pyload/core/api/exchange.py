@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from ..datatype.init import Permission
@@ -15,7 +16,6 @@ class UserExchangeApi(BaseApi):
     """
     Everything needed for user interaction.
     """
-    # __slots__ = []
 
     @requireperm(Permission.Interaction)
     def is_interaction_waiting(self, mode):
@@ -25,7 +25,7 @@ class UserExchangeApi(BaseApi):
         :param mode: binary or'ed output type
         :return: boolean
         """
-        return self.pyload.im.is_task_waiting(self.primary_uid, mode)
+        return self.pyload.im.is_task_waiting(mode)
 
     @requireperm(Permission.Interaction)
     def get_interaction_tasks(self, mode):
@@ -35,7 +35,7 @@ class UserExchangeApi(BaseApi):
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
         """
-        tasks = self.pyload.im.get_tasks(self.primary_uid, mode)
+        tasks = self.pyload.im.get_tasks(mode)
         # retrieved tasks count as seen
         for tsk in tasks:
             tsk.seen = True
@@ -53,7 +53,7 @@ class UserExchangeApi(BaseApi):
         :param result: result as json string
         """
         task = self.pyload.im.get_task_by_id(iid)
-        if task and self.primary_uid == task.owner:
+        if task:
             task.set_result(result)
 
     @requireperm(Permission.Interaction)

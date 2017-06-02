@@ -31,29 +31,26 @@ addons:
       name: pyload/pyload
       description: "Free and Open Source download manager written in Pure Python and designed to be extremely lightweight, fully customizable and remotely manageable"
     notification_email: dev@pyload.net
-    build_command: python setup.py configure
+    build_command_prepend: ""
+    build_command: python setup.py build
     branch_pattern: coverity_scan
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y pandoc
-  # - sudo apt-get install -y python-crypto
   # - sudo apt-get install -y python-pycurl
-  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - if [ $COVERITY_SCAN_BRANCH -eq 1 ]; echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
 install:
   - pip install -U setuptools
   - pip install pypandoc
   - pip install requests
   - pip install tox-travis
-script:
-  - test $COVERITY_SCAN_BRANCH = 0
-  - tox --skip-missing-interpreters
+before_script: if [ $COVERITY_SCAN_BRANCH -eq 1 ]; then travis_terminate ; fi
+script: tox --skip-missing-interpreters
 # after_success:
-  # - pip install coveralls
   # - pip install scrutinizer-ocular
-  # - coveralls
   # - ocular
 before_deploy:
-  - test $TRAVIS_TEST_RESULT = 0
+  - test $TRAVIS_TEST_RESULT -eq 0
   - test $TRAVIS_EVENT_TYPE != "cron"
 deploy:
   - provider: pypi
@@ -78,6 +75,5 @@ deploy:
       python: 3.5
       tags: true
 # after_deploy:
-  # - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
   # - pip install travis-bump-version
   # - travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION

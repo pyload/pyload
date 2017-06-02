@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
+import time
 from builtins import object
-from time import time
+
+from future import standard_library
 
 from .init import BaseObject
 
@@ -22,20 +23,20 @@ class OnlineCheck(BaseObject):
         self.owner = owner
         self.result = {}
         self.done = False
-        self.timestamp = time()
+        self.timestamp = time.time()
 
     def is_stale(self, timeout=5):
         """
         Checks if the data was updated or accessed recently.
         """
-        return self.timestamp + timeout * 60 < time()
+        return self.timestamp + timeout * 60 < time.time()
 
     def update(self, result):
-        self.timestamp = time()
+        self.timestamp = time.time()
         self.result.update(result)
 
     def to_api_data(self):
-        self.timestamp = time()
+        self.timestamp = time.time()
         oc = OnlineCheck(self.rid, self.result)
         # getting the results clears the older ones
         self.result = {}

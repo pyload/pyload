@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from .base import BaseApi
@@ -17,13 +18,13 @@ class StatisticsApi(BaseApi):
     """
     Retrieve download statistics and quota.
     """
-    # __slots__ = []
 
     def record_download(self, file):
         """
         Add download record to the statistics.
         """
         del CACHE[:]
+        raise NotImplementedError
 
     def calc_quota(self, uid):
         return QUOTA_UNLIMITED

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
+
 from future import standard_library
 
 from .backend import DatabaseMethods, async, queue
@@ -10,7 +11,6 @@ standard_library.install_aliases()
 
 class ConfigMethods(DatabaseMethods):
 
-    # __slots__ = []
 
     @async
     def save_config(self, plugin, config, user=None):

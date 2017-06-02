@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 from builtins import str
+
+from future import standard_library
+from pyload.utils.fs import lopen
 
 from ..datatype.init import Permission
 from ..datatype.user import Role
@@ -19,7 +20,6 @@ class DownloadApi(BaseApi):
     """
     Component to create, add, delete or modify downloads.
     """
-    # __slots__ = []
 
     # TODO: workaround for link adding without owner
     def true_primary(self):
@@ -50,7 +50,7 @@ class DownloadApi(BaseApi):
             "http://", "").replace(":", "").replace("\\", "_").replace("..", "")
 
         self.pyload.log.info(
-            _("Added package {0} as folder {1}").format(name, folder))
+            self._("Added package {0} as folder {1}").format(name, folder))
         pid = self.pyload.files.add_package(
             name, folder, root, password, site, comment, paused, self.true_primary())
 
@@ -106,22 +106,23 @@ class DownloadApi(BaseApi):
             self.pyload.iom.create_info_thread(hoster, pid)
 
         self.pyload.log.info(
-            (_("Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
+            (self._("Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()
 
     @requireperm(Permission.Add)
-    def upload_container(self, fname, data):
+    def upload_container(self, filename, data):
         """
         Uploads and adds a container file to pyLoad.
 
-        :param fname: fname, extension is important so it can correctly decrypted
+        :param filename: name of the file
         :param data: file content
         """
-        path = os.path.join(self.pyload.config.get(
-            'general', 'storage_folder'), "tmp_{0}".format(fname))
-        with io.open(path, mode='wb') as fp:
+        storagedir = self.pyload.config.get('general', 'storage_folder')
+        filename = 'tmp_{0}'.format(filename)
+        filepath = os.path.join(storagedir, filename)
+        with lopen(filepath, mode='wb') as fp:
             fp.write(str(data))
-        return self.add_package(fp.name, [fp.name])
+            return self.add_package(fp.name, [fp.name])
 
     @requireperm(Permission.Delete)
     def remove_files(self, fids):

@@ -2,19 +2,19 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-from builtins import dict, object
+import time
+from builtins import dict
 from functools import reduce
-from time import time
 
-from pyload.utils.decorator import lock, readlock
-from pyload.utils.struct.lock import ReadWriteLock
+from future import standard_library
+from pyload.utils.struct.lock import RWLock, lock
 
 from ..datatype.file import File
 from ..datatype.init import DownloadStatus, TreeCollection
 from ..datatype.package import (Package, PackageDoesNotExist, PackageStatus,
                                 RootPackage)
+from .base import BaseManager
 
 standard_library.install_aliases()
 
@@ -30,23 +30,11 @@ def invalidate(func):
     return new
 
 
-class FileManager(object):
+class FileManager(BaseManager):
     """
     Handles all request made to obtain information,
     modify status or other request for links or packages
     """
-    # __slots__ = [
-        # 'db',
-        # 'downloadstats',
-        # 'files',
-        # 'job_cache',
-        # 'lock',
-        # 'packages',
-        # 'pyload',
-        # 'queuecount',
-        # 'queuestats',
-        # 'status_msg']
-
     ROOT_PACKAGE = -1
     ROOT_OWNER = -1
 
@@ -54,17 +42,17 @@ class FileManager(object):
         """
         Constructor.
         """
-        self.pyload = core
+        BaseManager.__init__(self, core)
 
         # translations
-        self.status_msg = [_("none"), _("offline"), _("online"), _("queued"), _("paused"),
-                           _("finished"), _("skipped"), _(
-                               "failed"), _("starting"), _("waiting"),
-                           _("downloading"), _("temp. offline"), _(
-                               "aborted"), _("not possible"), _("missing"),
-                           _("file mismatch"), _("occupied"), _(
-                               "decrypting"), _("processing"), _("custom"),
-                           _("unknown")]
+        self.status_msg = [self._("none"), self._("offline"), self._("online"), self._("queued"), self._("paused"),
+                           self._("finished"), self._("skipped"), self._(
+                               "failed"), self._("starting"), self._("waiting"),
+                           self._("downloading"), self._("temp. offline"), self._(
+                               "aborted"), self._("not possible"), self._("missing"),
+                           self._("file mismatch"), self._("occupied"), self._(
+                               "decrypting"), self._("processing"), self._("custom"),
+                           self._("unknown")]
 
         self.files = {}  #: holds instances for files
         self.packages = {}  #: same for packages
@@ -72,7 +60,7 @@ class FileManager(object):
         self.job_cache = {}
 
         # locking the caches, db is already locked implicit
-        self.lock = ReadWriteLock()
+        self.lock = RWLock()
         #self.lock._Verbose__verbose = True
 
         self.downloadstats = {}  #: cached dl stats
@@ -86,7 +74,7 @@ class FileManager(object):
         """
         self.db.commit()
 
-    @readlock
+    @lock(shared=True)
     def sync_save(self):
         """
         Saves all data to backend and waits until all data are written.
@@ -138,7 +126,7 @@ class FileManager(object):
             return RootPackage(self, self.ROOT_OWNER)
         elif pid in self.packages:
             pack = self.packages[pid]
-            pack.timestamp = time()
+            pack.timestamp = time.time()
             return pack
         else:
             info = self.db.get_package_info(pid, False)
@@ -150,7 +138,7 @@ class FileManager(object):
 
             return pack
 
-    @readlock
+    @lock(shared=True)
     def get_package_info(self, pid):
         """
         Returns dict with package information.
@@ -194,7 +182,7 @@ class FileManager(object):
             self.files[fid] = f
             return f
 
-    @readlock
+    @lock(shared=True)
     def get_file_info(self, fid):
         """
         Returns dict with file information.
@@ -233,7 +221,7 @@ class FileManager(object):
             keep.append(fpid)
             queue.extend(packs[fpid].pids)
         # now remove unneeded data
-        for fpid in packs.keys():
+        for fpid in packs:
             if fpid in keep:
                 continue
             del packs[fpid]
@@ -265,8 +253,8 @@ class FileManager(object):
 
         return packs, files
 
-    @readlock
-    def get_tree(self, pid, full, state, owner=None, search=None):
+    @lock(shared=True)
+    def get_tree(self, pid, full, state, owner=None):
         """
         Return a TreeCollection and fill the info data of containing packages.
         Optional filter only unfinished files.
@@ -276,8 +264,8 @@ class FileManager(object):
         # for depth=1, we do not need to retrieve all files/packages
         root = pid if not full else None
 
-        packs = self._get_tree_packages(root, state, owner, search)
-        files = self._get_tree_files(root, owner)
+        packs = self._get_tree_packages(root, owner)
+        files = self._get_tree_files(root, state, owner)
 
         # root package is not in database, create an instance
         if pid == self.ROOT_PACKAGE:
@@ -306,8 +294,9 @@ class FileManager(object):
     def get_jobs(self, occ):
         # load jobs with file info
         if occ not in self.job_cache:
-            self.job_cache[occ] = dict((k, self.get_file_info(fid)) for k, fid
-                                       in self.db.get_jobs(occ).items())
+            self.job_cache[occ] = dict(
+                (k, self.get_file_info(fid))
+                for k, fid in self.db.get_jobs(occ).items())
         return self.job_cache[occ]
 
     def get_download_stats(self, user=None):
@@ -409,7 +398,7 @@ class FileManager(object):
         self.pyload.evm.fire("file:updated", file)
 
     @invalidate
-    @readlock
+    @lock(shared=True)
     def set_download_status(self, fid, status):
         """
         Sets a download status for a file.
@@ -473,14 +462,14 @@ class FileManager(object):
         if not ids or (file.fid in ids and len(ids) == 1):
             if not file.package().set_finished:
                 self.pyload.log.info(
-                    _("Package finished: {0}").format(file.package().name))
+                    self._("Package finished: {0}").format(file.package().name))
                 self.pyload.adm.package_finished(file.package())
                 file.package().set_finished = True
 
     def reset_count(self):
         self.queuecount = -1
 
-    @readlock
+    @lock(shared=True)
     @invalidate
     def restart_package(self, pid):
         """
@@ -497,7 +486,7 @@ class FileManager(object):
 
         self.pyload.evm.fire("package:updated", pid)
 
-    @readlock
+    @lock(shared=True)
     @invalidate
     def restart_file(self, fid):
         """
@@ -533,8 +522,8 @@ class FileManager(object):
 
         self.pyload.evm.fire("package:reordered", pid, position, pinfo.root)
 
-    def _lower_file(self, files):
-        return reduce(lambda x, y: x if x.fileorder < y.fileorder else y, files)
+    def _get_first_fileinfo(self, files):
+        return reduce(lambda x, y: x if x.fileorder <= y.fileorder else y, files)  # NOTE: Equality between fileorders should never happen...
 
     def _order_files(self, fids, finfo, position):
         diff = len(fids)
@@ -566,7 +555,7 @@ class FileManager(object):
         if min(orders) + len(files) != max(orders) + 1:
             raise Exception("Tried to reorder non continuous block of files")
 
-        finfo = self._lower_file(files)
+        finfo = self._get_first_fileinfo(files)
 
         order = finfo.fileorder #: minimum fileorder
         self.db.order_files(pid, fids, order, position)
@@ -576,7 +565,7 @@ class FileManager(object):
         self.db.commit()
         self.pyload.evm.fire("file:reordered", pid)
 
-    @readlock
+    @lock(shared=True)
     @invalidate
     def move_package(self, pid, root):
         """
@@ -599,7 +588,7 @@ class FileManager(object):
 
         return True
 
-    @readlock
+    @lock(shared=True)
     @invalidate
     def move_files(self, fids, pid):
         """
@@ -631,7 +620,7 @@ class FileManager(object):
 
         if not urls:
             return None
-            
+
         self.pyload.iom.create_info_thread(urls, pid)
 
     @invalidate

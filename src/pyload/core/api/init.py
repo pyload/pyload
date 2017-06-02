@@ -2,10 +2,10 @@
 # @author: RaNaN, vuolter
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import object, str
 
+from future import standard_library
 from types import MethodType
 
 from ..datatype.init import DownloadState, DownloadStatus, Permission
@@ -24,7 +24,6 @@ perm_map = {}
 
 def requireperm(bits):
     class _Dec(object):
-        # __slots__ = []
 
         def __new__(cls, func, *args, **kwargs):
             perm_map[func.__name__] = bits
@@ -66,15 +65,16 @@ class Api(AbstractApi):
 
     def __init__(self, core):
         self.pyload = core
+        self._ = core._
         self.user_apis = {}
 
     @property
     def user(self):
         return None  # TODO: return default user?
 
-    @property
-    def primary_uid(self):
-        return self.user.primary if self.user else None
+    # @property
+    # def primary_uid(self):
+        # return self.user.primary if self.user else None
 
     def has_access(self, obj):
         """
@@ -144,7 +144,7 @@ class Api(AbstractApi):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.pyload.log.info(_("User '{0}' tries to log in").format(username))
+        self.pyload.log.info(self._("User '{0}' tries to log in").format(username))
 
         return self.pyload.db.check_auth(username, password)
 
@@ -169,7 +169,6 @@ class UserApi(Api):
     """
     Proxy object for api that provides all methods in user context.
     """
-    # __slots__ = []
 
     def __init__(self, core, user):
         #: No need to init super class

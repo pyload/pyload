@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import str
 from copy import copy
 from traceback import print_exc
+
+from future import standard_library
 
 from ..datatype.init import ProgressInfo, ProgressType
 from .plugin import PluginThread
@@ -30,31 +31,33 @@ class AddonThread(PluginThread):
         self.kwargs = kwargs
 
         self.active = []
-        self._progress = None
+        self.__pi = None  #: ProgressInfo
 
     def start(self):
         self.manager.add_thread(self)
         PluginThread.start(self)
-        
+
     def get_active_files(self):
         return self.active
 
-    def get_progress(self):
+    def get_progress_info(self):
         """
         Progress of the thread.
         """
         if not self.active:
             return None
         active = self.active[0]
-        return ProgressInfo(active.pluginname, active.name, active.get_status_name(), 0,
-                            self._progress, 100, self.owner, ProgressType.Addon)
+        return ProgressInfo(
+            active.pluginname, active.name, active.get_status_name(), 0,
+            self.__pi, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, file):
         """
         Adds a file to active list and thus will be displayed on overview.
         """
-        if file not in self.active:
-            self.active.append(file)
+        if file in self.active:
+            return None
+        self.active.append(file)
 
     def finish_file(self, file):
         if file in self.active:
@@ -77,8 +80,8 @@ class AddonThread(PluginThread):
         except Exception as e:
             if hasattr(self.func, "im_self"):
                 addon = self.func.__self__
-                addon.log_error(_("An Error occurred"), str(e))
-                if self.manager.pyload.debug:
+                addon.log_error(self._("An Error occurred"), str(e))
+                if self.pyload.debug:
                     print_exc()
                     # self.debug_report(addon.__name__, plugin=addon)
 

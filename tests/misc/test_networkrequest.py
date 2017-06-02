@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 from builtins import object
 from contextlib import closing
 
+from future import standard_library
 from pyload.core.network.factory import RequestFactory
-from pyload.core.network.curl.request import CurlRequest
+from pyload.requests.curl.request import CurlRequest
 from tests.helper.stubs import Core
 
 standard_library.install_aliases()

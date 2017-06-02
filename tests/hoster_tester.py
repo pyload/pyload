@@ -1,22 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
-import io
 import os
 import shutil
+import time
 from builtins import str
 from hashlib import md5
 from logging import DEBUG, log
-from time import time
 
+from future import standard_library
 from nose.tools import nottest
 from pyload.core.datatype import File
 from pyload.core.datatype.file import statusmap
 from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate
-from pyload.utils.path import remove
+from pyload.utils.fs import lopen, remove
 from tests.helper.parser import parse_config
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
@@ -59,10 +58,10 @@ class HosterPluginTester(PluginTester):
         self.thread.plugin = file.plugin
 
         try:
-            a = time()
+            a = time.time()
             file.plugin.preprocessing(self.thread)
 
-            log(DEBUG, "downloading took {0:d}s".format(time() - a))
+            log(DEBUG, "downloading took {0:d}s".format(time.time() - a))
             log(DEBUG, "size {0:d} KiB".format(file.size >> 10))
 
             if status == "offline":
@@ -78,7 +77,7 @@ class HosterPluginTester(PluginTester):
             if not os.path.exists(path):
                 raise Exception("File {0} does not exists".format(file.name))
 
-            with io.open(path, mode='rb') as fp:
+            with lopen(path, mode='rb') as fp:
                 while True:
                     buf = fp.read(4096)
                     if not buf:
@@ -107,9 +106,8 @@ class HosterPluginTester(PluginTester):
 # setup methods
 c = Core()
 
-sections = parse_config(
-    os.path.join(os.path.dirname(__file__), "hosterlinks.txt")
-)
+hosterlinks = os.path.join(os.path.dirname(__file__), "hosterlinks.txt")
+sections = parse_config(hosterlinks)
 
 for link in sections['files']:
     name, hash = link.rsplit(" ", 1)

@@ -2,21 +2,18 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
+
+from builtins import object
+
 from future import standard_library
-
-from builtins import REQUEST, object
-from contextlib import closing
-
-from ..plugin.network.defaultrequest import DefaultDownload, DefaultRequest
-
-from .bucket import Bucket
+from pyload.requests.bucket import Bucket
+from pyload.requests.curl.download import CurlDownload
+from pyload.requests.curl.request import CurlRequest
 
 standard_library.install_aliases()
 
 
 class RequestFactory(object):
-
-    # __slots__ = ['bucket', 'pyload']
 
     def __init__(self, core):
         self.pyload = core
@@ -29,11 +26,11 @@ class RequestFactory(object):
         """
         See HTTPRequest for argument list.
         """
-        with closing(DefaultRequest(self.get_config())) as h:
+        with CurlRequest(self.get_config()) as h:
             rep = h.load(*args, **kwargs)
         return rep
 
-    def get_request(self, context=None, class_=DefaultRequest):
+    def get_request(self, context=None, class_=CurlRequest):
         """
         Creates a request with new or given context.
         """
@@ -45,7 +42,7 @@ class RequestFactory(object):
         else:
             return class_(self.get_config())
 
-    def get_download_request(self, request=None, class_=DefaultDownload):
+    def get_download_request(self, request=None, class_=CurlDownload):
         """
         Instantiates a instance for downloading.
         """
@@ -111,12 +108,3 @@ class RequestFactory(object):
             self.bucket.set_rate(max_speed << 10)
         else:
             self.bucket.set_rate(-1)
-
-
-# needs REQUEST in global namespace
-def get_url(*args, **kwargs):
-    return REQUEST.get_url(*args, **kwargs)
-
-
-def get_request(*args, **kwargs):
-    return REQUEST.get_request(*args, **kwargs)

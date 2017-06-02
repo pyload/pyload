@@ -100,14 +100,15 @@ You can install **pyLoad** in several ways:
 
 Please refer to
 https://requires.io/github/pyload/pyload/requirements/?branch=master
-for the updated dependencies list.
+for the package dependencies list.
+
 All entries are mandatory _for the own scope_:
 
-- `setup.txt` requirements are required by the built-in `setup.py` to
+- Packages listed in `setup.txt` are required by the built-in `setup.py` to
 **run itself**.
-- `install.txt` requirements are required by the built-in `setup.py` to
-**install** the pyLoad package.
-- `test.txt` requirements are required by the built-in `setup.py` to
+- Packages listed in `install.txt` are required by the built-in `setup.py` just
+to **install** the pyLoad package.
+- Packages listed in `test.txt` are required by the built-in `setup.py` just to
 **test** the pyLoad package.
 
 > **Note:**
@@ -121,14 +122,18 @@ All entries are mandatory _for the own scope_:
 
 ### PIP Install
 
-Just type in your command shell **with _administrator/root_ privileges**:
+Type in your command shell **with _administrator/root_ privileges**:
 
     pip install pyload.core[full]
 
-The `full` option will ensure that all the (optional) extra packages are
-downloaded and installed as well as the mandatory ones.
+Under Unix based systems this usually means you have to use `sudo`:
 
-But, if you want to install just the essential dependencies, only type:
+    sudo pip install pyload.core[full]
+
+The `full` option ensures that all the optional packages will downloaded and
+installed as well as the mandatory ones.
+
+You can install just the essential dependencies typing:
 
     pip install pyload.core
 
@@ -137,7 +142,7 @@ If the above commands fail, consider using the
 
     pip install --user pyload.core
 
-If the above command fails too, try the [others install methods](#installation).
+If this command fails too, try the [others install methods](#installation).
 Leaves as last resort to [report your issue](#report-an-issue).
 
 ### Tarball Install
@@ -189,7 +194,7 @@ listening to the configured ip address and port
 ### Advanced Options
 
 **pyLoad**'s command line supports several options:
-`start`, `stop`, `restart`, `info`, `version`.
+`start`, `stop`, `restart`, `version`.
 
 > **Note:**
 > If you do not enter any option, `start` will be used.
@@ -306,7 +311,7 @@ Available methods:
   - **ARGUMENTS**:
     - `profile` sets the profile name of the process to show *(show all the
       running processes if none entered)*.
-- `pyload.core.info()`
+- ~~`pyload.core.info()`~~
   - **DESCRIPTION**: Show the package info.
   - **RETURN**: Info dict.
   - **ARGUMENTS**: None.
@@ -451,5 +456,5 @@ Please refer to the included [CHANGELOG](/CHANGELOG.md) for the detailed release
 history.
 
 
-------------------------------
-###### © 2009-2017 pyLoad Team
+------------------------------------------------------------------------------
+###### © 2009-2015 pyLoad Team, © 2015-2017 Walter Purcaro <vuolter@gmail.com>

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import random
 from builtins import range
 
+from future import standard_library
 from pyload.core.database import DatabaseBackend
 from pyload.core.datatype import DownloadState
 from tests.helper.benchmark import BenchmarkTest
@@ -143,12 +143,12 @@ class TestFileManager(BenchmarkTest):
         v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 
-        pid = list(v.packages.keys())[0]
+        pid = v.packages.keys()[0]
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 0)
         self.assert_pack_ordered(parent, pid, 4)
-        pid = list(v.packages.keys())[2]
+        pid = v.packages.keys()[2]
         self.assert_pack_ordered(parent, pid, 4)
         self.assert_pack_ordered(parent, pid, 3)
         self.assert_pack_ordered(parent, pid, 2)

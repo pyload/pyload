@@ -2,20 +2,23 @@
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
-from future import standard_library
 
 import re
 import time
 from builtins import int, object
 
-from enum import IntFlag
-
-from pyload.utils import format
-from pyload.utils.decorator import lock, readlock, trycatch
-from pyload.utils.struct.lock import ReadWriteLock
+from future import standard_library
+from pyload.utils import purge
+from pyload.utils.decorator import trycatch
+from pyload.utils.struct.lock import RWLock, lock
 
 from .init import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
+
+try:
+    from enum import IntEnum
+except ImportError:
+    from aenum import IntEnum
 
 standard_library.install_aliases()
 
@@ -60,7 +63,7 @@ def guess_type(name):
     return MediaType.Other
 
 
-class FileStatus(IntFlag):
+class FileStatus(IntEnum):
     Ok = 0
     Missing = 1
     Remote = 2
@@ -114,12 +117,12 @@ class File(BaseObject):
 
     def __init__(self, manager, fid, name, size, filestatus, media, added, fileorder,
                  url, pluginname, hash, status, error, package, owner):
-
         self.manager = manager
+        self.pyload = manager.pyload
 
         self.fid = int(fid)
-        self._name = format.name(name)
-        self._size = size
+        self._name = purge.name(name)
+        self._size = int(size)
         self.filestatus = filestatus
         self.media = media
         self.added = added
@@ -133,7 +136,7 @@ class File(BaseObject):
         self.packageid = package
         # database information ends here
 
-        self.lock = ReadWriteLock()
+        self.lock = RWLock()
 
         self.plugin = None
 
@@ -144,11 +147,19 @@ class File(BaseObject):
         self.reconnected = False
         self.statusname = None
 
+    def get_size(self):
+        """
+        Get size of download.
+        """
+        if self.plugin.dl.size is not None:
+            self.self._size(self.plugin.dl.size)
+        return self._size
+
+    # NOTE: convert size to int
     def set_size(self, value):
         self._size = int(value)
 
-    # will convert all sizes to ints
-    size = property(lambda self: self._size, set_size)
+    size = property(get_size, set_size)
 
     def get_name(self):
         try:
@@ -163,7 +174,7 @@ class File(BaseObject):
         """
         Only set unicode or utf8 strings as name.
         """
-        name = format.name(name)
+        name = purge.name(name)
 
         # media type is updated if needed
         if self._name != name:
@@ -181,11 +192,11 @@ class File(BaseObject):
         Inits plugin instance.
         """
         if not self.plugin:
-            self.pluginclass = self.manager.pyload.pgm.get_plugin_class(
+            self.pluginclass = self.pyload.pgm.get_plugin_class(
                 "hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
-    @readlock
+    @lock(shared=True)
     def has_plugin(self):
         """
         Thread safe way to determine this file has initialized plugin attribute.
@@ -234,7 +245,7 @@ class File(BaseObject):
         self.manager.release_file(self.fid)
 
     def to_info_data(self):
-        return FileInfo(self.fid, self.get_name(), self.packageid, self.owner, self.get_size(), self.filestatus,
+        return FileInfo(self.fid, self.get_name(), self.packageid, self.owner, self.size, self.filestatus,
                         self.media, self.added, self.fileorder, DownloadInfo(
             self.url, self.pluginname, self.hash, self.status, self.get_status_name(), self.error)
         )
@@ -250,15 +261,13 @@ class File(BaseObject):
         """
         Abort file if possible.
         """
-        while self.fid in self.manager.pyload.tsm.processing_ids():
-            self.lock.acquire(shared=True)
-            self.abort = True
-            if self.plugin and self.plugin.req:
-                self.plugin.req.abort()
-                if self.plugin.dl:
-                    self.plugin.dl.abort()
-            self.lock.release()
-
+        while self.fid in self.pyload.tsm.processing_ids():
+            with self.lock(shared=True):
+                self.abort = True
+                if self.plugin and self.plugin.req:
+                    self.plugin.req.abort()
+                    if self.plugin.dl:
+                        self.plugin.dl.abort()
             time.sleep(0.5)
 
         self.abort = False
@@ -270,7 +279,7 @@ class File(BaseObject):
         Set status to finish and release file if every thread is finished with it.
         """
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.manager.pyload.tsm.processing_ids():
+        if self.id in self.pyload.tsm.processing_ids():
             return False
 
         self.set_status("finished")
@@ -312,23 +321,16 @@ class File(BaseObject):
         """
         return self.plugin.dl.size - self.plugin.dl.arrived
 
-    def get_size(self):
-        """
-        Get size of download.
-        """
-        try:
-            if self.plugin.dl.size:
-                return self.plugin.dl.size
-            else:
-                return self.size
-        except Exception:
-            return self.size
-
     @trycatch(0)
     def get_flags(self):
         return self.plugin.dl.flags
 
-    def get_progress(self):
-        return ProgressInfo(self.pluginname, self.name, self.get_status_name(), self.get_eta(),
-                            self.get_bytes_arrived(), self.get_size(), self.owner, ProgressType.Download,
-                            DownloadProgress(self.fid, self.packageid, self.get_speed(), self.get_flags(), self.status))
+    def get_progress_info(self):
+        return ProgressInfo(
+            self.pluginname, self.name, self.get_status_name(), self.get_eta(),
+            self.get_bytes_arrived(), self.size, self.owner, ProgressType.Download,
+            DownloadProgress(
+                self.fid, self.packageid, self.get_speed(), self.get_flags(),
+                self.status
+            )
+        )
