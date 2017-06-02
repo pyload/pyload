@@ -1,9 +1,6 @@
-argparse;python_version<"2.7"
-autoupgrade-ng
-daemonize
-enum34;python_version<"3.4"
 future
 pycurl
-pyload.config~=0.5
-pyload.utils2~=0.5
+pyload.utils2[full]~=0.6
 # requests[security]>=2.0
+semver
+setuptools

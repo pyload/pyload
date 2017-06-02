@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: vuolter
+# @author: RaNaN, vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
@@ -9,4 +9,11 @@
 #          \  /
 #           \/
 
-__import__('pkg_resources').declare_namespace(__name__)
+from __future__ import unicode_literals
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from .bucket import Bucket
+from .cookie import CookieJar
+from .download import DownloadRequest
+from .request import Request, ResponseException

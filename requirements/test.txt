@@ -1,9 +1,0 @@
-enum34;python_version<"3.4"
-future
-nose
-pycurl
-pyload.config~=0.5
-pyload.utils2~=0.5
-requests>=1.2.2
-unittest2
-websocket-client>=0.8

@@ -1,12 +1,7 @@
 sudo: required
 language: python
-env:
-  global:
-    - secure: "bYWv6YwvjwAuP9lQbAx4vAUx/CSX1XVLysUr02RDylUOMfYdrRmm4WGpV03eA2miX1RdSOI+dQDMEyFUUhV0hhHR3dl4oRJ1XEVupaFAfxYQJWL/u7FoJ2QK5gTx3rOSH0fDgEPaSiQyHz84aQS0E8QLO/JQQxJIqjDTo4JAikY="
 branches:
-  only:
-    - master
-    - coverity_scan
+  only: master
 python:
   - 2.6
   - 2.7
@@ -25,42 +20,28 @@ matrix:
     # - pypy3
   fast_finish: true
 cache: pip
-addons:
-  coverity_scan:
-    project:
-      name: pyload/pyload
-      description: "Free and Open Source download manager written in Pure Python and designed to be extremely lightweight, fully customizable and remotely manageable"
-    notification_email: dev@pyload.net
-    build_command: python setup.py configure
-    branch_pattern: coverity_scan
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y pandoc
-  # - sudo apt-get install -y python-crypto
   # - sudo apt-get install -y python-pycurl
-  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 install:
   - pip install -U setuptools
   - pip install pypandoc
   - pip install requests
   - pip install tox-travis
-script:
-  - test $COVERITY_SCAN_BRANCH = 0
-  - tox --skip-missing-interpreters
+script: tox --skip-missing-interpreters
 # after_success:
-  # - pip install coveralls
   # - pip install scrutinizer-ocular
-  # - coveralls
   # - ocular
 before_deploy:
-  - test $TRAVIS_TEST_RESULT = 0
+  - test $TRAVIS_TEST_RESULT -eq 0
   - test $TRAVIS_EVENT_TYPE != "cron"
 deploy:
   - provider: pypi
     user:
-      secure: "mluJyTHPamuHJoPV/tA4fbmJ6t89lCKyIGlc32EnZqUWklu138xGGBtQhGYxcTKzh6L4lhDFpGVyYJeSvtOqsfhDHnElnzA89zplqDOR//Y5tayps1q2E8KI9zkNSL9Eq3G6cONVZCF3AbFxIdP3g2zNA2hcC3OoaXjM8N7270Y="
+      secure: ""
     password:
-      secure: "YdhzNRg2x5eoLmjpoer2WmbzHy5sSC3K3/1v1cAVv2DSwuFas13Bp4S4kMhz0eXU+yqNvM16tDM488PY6Kjtw1663A4oVNANA71bUc61yWUqN1G9NYNiA9HM4GAG1wjUFjDUKcArX7d9I5Pw14T/AfP9A8AmkDgt3tNz45jKg9k="
+      secure: ""
     distributions: sdist bdist_wheel
     skip_cleanup: true
     skip_upload_docs: true
@@ -69,7 +50,7 @@ deploy:
       python: 3.5
       tags: true
   - provider: releases
-    api-key: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
+    api-key: ""
     file_glob: true
     file: dist/*
     skip_cleanup: true
@@ -78,6 +59,5 @@ deploy:
       python: 3.5
       tags: true
 # after_deploy:
-  # - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
   # - pip install travis-bump-version
-  # - travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
+  # - travis-bump-version --api-token "" --repo $TRAVIS_REPO_SLUG VERSION
