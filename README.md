@@ -31,5 +31,22 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 [![IRC Freenode](https://img.shields.io/badge/irc-freenode-lightgray.svg)](https://kiwiirc.com/client/irc.freenode.com/#pyload)
 
 
-------------------------------
-###### © 2009-2017 pyLoad Team
+Installation
+------------
+
+Type in your command shell **with _administrator/root_ privileges**:
+
+    pip install pyload.config
+
+Under Unix based systems this usually means you have to use `sudo`:
+
+    sudo pip install pyload.config
+
+If the above commands fail, consider using the
+[`--user`](https://pip.pypa.io/en/latest/user_guide/#user-installs) option:
+
+    pip install --user pyload.config
+
+
+------------------------------------------------------------------------------
+###### © 2009-2015 pyLoad Team, © 2015-2017 Walter Purcaro <vuolter@gmail.com>

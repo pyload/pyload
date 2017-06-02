@@ -29,8 +29,11 @@ install:
   - pip install requests
   - pip install tox-travis
 script: tox --skip-missing-interpreters
+# after_success:
+  # - pip install scrutinizer-ocular
+  # - ocular
 before_deploy:
-  - test $TRAVIS_TEST_RESULT = 0
+  - test $TRAVIS_TEST_RESULT -eq 0
   - test $TRAVIS_EVENT_TYPE != "cron"
 deploy:
   - provider: pypi
@@ -55,6 +58,5 @@ deploy:
       python: 3.5
       tags: true
 # after_deploy:
-  # - if [[ -n $TRAVIS_TAG ]]; then travis_terminate ; fi
   # - pip install travis-bump-version
   # - travis-bump-version --api-token "ebgfx5zYbXpwI+B1Wm0d7nI/CBwwUwpuhdngqpA5/7zN2aTWSPjlESX+u1c2UvLU9KuX7QA0aSTaBl/XNhsv41jEuiAxPDtzP5P8LYEs3CiVZiVawUpIf0i+OIJSJ0ALF/vRXTE/u5O7JJLrTveLintAR3JB1mRRnPA2UwBK8K3ncRsg3Jzqs3l234bPETIrKZkOoJCXpXiL7L18fG/uuyxuyJHejJYG9NHXvJzGoE+6VYOmL/frcj7JHkmjmDyGsuogoBfphlXdRjj7OkhZytMK145kh3rKV9CEao5yYyjdt4h3q32EjDQu6DrWZp+IpmumLpT61G9CZracDZVpITldAzy9AuCKkLKWBYykgRk7UdTA1YQNXTta/3QqyA8LPZDhYZOLB6A3HHgCcideS3bGWsYGqbKBUWjMVJS3APBBJ4MsYASiFcNH8VTbhJiaLX3c33NnTYtjM/4Ow5Dowu+g8ES86i5ORwFkS6LSvUuYyojarHgl4d0YjN5iDcB1k0lAm5l8tbMXuo8ua2le5hNNpFDcw2UdqCqm777ulg72rEq2UG1POBJkaNp7Q1EESlreaJO3nCenICyjJaDmIF9DNsinxGKX0BKrWW2pV/PRh02BU0VLu2QWdefHNPNbG22Ed64P0mJI+DdbaZviwQ0f2EL15qd7/5sCMnZqOCY=" --repo $TRAVIS_REPO_SLUG VERSION

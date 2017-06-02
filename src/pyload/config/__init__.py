@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN, vuolter
+# @author: vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
@@ -9,14 +9,10 @@
 #          \  /
 #           \/
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
-
-import builtins
-
-builtins._ = lambda x: x  # NOTE: gettext pre-start fixup
-
-from .parser import ConfigParser
-from .parser import ConfigSection
-
-# Cleanup
-del builtins
+from future import standard_library
+standard_library.install_aliases()
+from .exceptions import AlreadyExistsKeyError, InvalidValueError, VersionMismatchError
+from .parser import ConfigOption, ConfigParser, ConfigSection
+from .types import InputType

@@ -1,4 +1,6 @@
+aenum;python_version<"3.4"
 configparser;python_version<"3.5"
-enum34;python_version<"3.4"
 future
-pyload.utils2~=0.5
+pyload.utils2[full]~=0.6
+semver
+setuptools

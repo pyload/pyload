@@ -63,5 +63,5 @@ checks:
     basic_expression_not_assigned: true
 tools:
   pylint:
-    python_version: '3'
+    python_version: 3
     # config_file: .pylintrc
