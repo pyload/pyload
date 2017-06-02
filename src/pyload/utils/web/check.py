@@ -7,25 +7,16 @@ import os
 import re
 from builtins import map
 
-import IPy
-import bottle
+import idna
 import requests
 import validators
 
 from future import standard_library
-standard_library.install_aliases()
 
-from . import convert as webconvert
 from .. import format, parse
+from .convert import splitaddress
 
-
-__all__ = [
-    'ishostname',
-    'isonline',
-    'isresource',
-    'isurl',
-    'local_addr',
-    'remote_addr']
+standard_library.install_aliases()
 
 
 # TODO: Recheck
@@ -67,24 +58,53 @@ __all__ = [
 # return False
 
 
-_re_ish = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
+def isipv4(value):
+    try:
+        validators.ipv4(value)
+    except validators.ValidationFailure:
+        return False
+    return True
 
-def ishostname(value):
+
+def isipv6(value):
     try:
-        name = value.encode('idna')
+        validators.ipv6(value)
+    except validators.ValidationFailure:
+        return False
+    return True
+
+
+def isip(value):
+    return isipv4(value) or isipv6(value)
+
+
+def isport(value):
+    return 0 <= value <= 65535
+
+
+__re_ish = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
+
+def ishost(value):
+    MAX_HOSTNAME_LEN = 253
+    try:
+        value = idna.encode(value)
     except AttributeError:
-        name = value
-    if name.endswith('.'):
-        name = name[:-1]
-    if len(name) < 1 or len(name) > 253:
-        return False
-    try:
-        IPy.IP(name)
-    except ValueError:
         pass
-    else:
+    if value.endswith('.'):
+        value = value[:-1]
+    if not value or len(value) > MAX_HOSTNAME_LEN:
         return False
-    return all(map(_re_ish.match, name.split('.')))
+    return all(map(__re_ish.match, value.split('.')))
+
+
+def issocket(value):
+    ip, port = splitaddress(value)
+    return isip(ip) and isport(port)
+
+
+def isendpoint(value):
+    host, port = splitaddress(value)
+    return ishost(host) and isport(port)
 
 
 def isonline(url, *args, **kwargs):
@@ -120,7 +140,7 @@ def isresource(url, *args, **kwargs):
     if content:
         mime, delemiter, charset = content.rpartition("charset=")
     else:
-        name = webconvert.url_to_name(url)
+        name = parse.name(url)
         root, ext = os.path.splitext(name)
         if ext:
             mime = parse.mime(name) or "application/octet-stream"
@@ -138,14 +158,3 @@ def isurl(url):
         return validators.url(url)
     except validators.ValidationFailure:
         return False
-
-
-def local_addr():
-    """
-    Retrieve current local ip address.
-    """
-    return bottle.request.urlparts.netloc
-
-
-def remote_addr():
-    return bottle.request.remote_addr

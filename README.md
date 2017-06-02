@@ -19,6 +19,7 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 
 **Licensing**:
 
+[![CLA assistant](https://cla-assistant.io/readme/badge/pyload/utils)](https://cla-assistant.io/pyload/utils)
 [![PyPI License](https://img.shields.io/pypi/l/pyload.utils2.svg)](https://pypi.python.org/pypi/pyload.utils2)
 
 **Contact Us** on:
@@ -30,5 +31,29 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 [![IRC Freenode](https://img.shields.io/badge/irc-freenode-lightgray.svg)](https://kiwiirc.com/client/irc.freenode.com/#pyload)
 
 
-------------------------------
-###### © 2009-2017 pyLoad Team
+Installation
+------------
+
+Type in your command shell **with _administrator/root_ privileges**:
+
+    pip install pyload.utils2[full]
+
+Under Unix based systems this usually means you have to use `sudo`:
+
+    sudo pip install pyload.utils2[full]
+
+The `full` option ensures that all the optional packages will downloaded and
+installed as well as the mandatory ones.
+
+You can install just the essential dependencies typing:
+
+    pip install pyload.utils2
+
+If the above commands fail, consider using the
+[`--user`](https://pip.pypa.io/en/latest/user_guide/#user-installs) option:
+
+    pip install --user pyload.utils2
+
+
+------------------------------------------------------------------------------
+###### © 2009-2015 pyLoad Team, © 2015-2017 Walter Purcaro <vuolter@gmail.com>

@@ -1,0 +1,8 @@
+[bitmath]
+bitmath
+
+[dbus;os_name!="nt"]
+dbus-python
+
+[magic;os_name!="nt"]
+python-magic

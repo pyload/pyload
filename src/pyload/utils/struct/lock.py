@@ -3,36 +3,28 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import time
 from builtins import object
-from contextlib import contextmanager
-from time import time
 
 from future import standard_library
-standard_library.install_aliases()
 
-from ..decorator import lock
 from ..layer.safethreading import Condition, Lock, RLock, currentThread
 
+standard_library.install_aliases()
 
-__all__ = ['LockObject', 'ReadWriteLock']
 
-
-class LockObject(object):
-
-    __slots__ = ['lock']
-
-    def __init__(self):
-        self.lock = RLock()
-
-    def __getattribute__(self, name):
-        attr = object.__getattribute__(self, name)
-        if name.startswith('_') or not callable(attr):
-            return attr
-
-        @lock
-        def wrapper(self, *args, **kwargs):
-            return attr(*args, **kwargs)
-        return wrapper
+# NOTE: decorator
+def lock(blocking=True, timeout=None, shared=False):
+    def wrapper(func):
+        def new(self, *args, **kwargs):
+            try:
+                with self.lock(blocking, timeout, shared):
+                    return func(self, *args, **kwargs)
+            except TypeError:
+                with self.lock(blocking=blocking):
+                    return func(self, *args, **kwargs)
+        return new
+    return wrapper
 
 
 # Read-Write lock thread lock implementation
@@ -43,7 +35,7 @@ class LockObject(object):
 # Released under the BSD-license.
 #
 # http://code.activestate.com/recipes/502283-read-write-lock-class-rlock-like/
-class ReadWriteLock(object):
+class RWLock(object):
     """
     Read-Write lock class. A read-write lock differs from a standard
     threading.RLock() by allowing multiple threads to simultaneously hold a
@@ -69,7 +61,7 @@ class ReadWriteLock(object):
     full write lock, and not be downgraded after the upgrading call to
     acquirewrite() has been match by a corresponding release().
     """
-    __slots__ = ['__condition', '__pendingwriters', '__readers',
+    __slots__ = ['__condition', '__enter__', '__pendingwriters', '__readers',
                  '__upgradewritercount', '__upgradewritercount', '__writer',
                  '__writercount']
 
@@ -77,7 +69,6 @@ class ReadWriteLock(object):
         """
         Initialize this read-write lock.
         """
-
         # Condition variable, used to signal waiters of a change in object
         # state.
         self.__condition = Condition(Lock())
@@ -91,18 +82,9 @@ class ReadWriteLock(object):
         # Initialize with no readers.
         self.__readers = {}
 
-    @property
-    @contextmanager
-    def readlock(self):
-        self.acquireread()
-        try:
-            yield
-        finally:
-            self.release()
-
     def acquire(self, blocking=True, timeout=None, shared=False):
         if shared:
-            self.acquireread(timeout)
+            self.acquireread(blocking, timeout)
         else:
             self.acquirewrite(timeout)
 
@@ -120,7 +102,7 @@ class ReadWriteLock(object):
         if not blocking:
             endtime = -1
         elif timeout is not None:
-            endtime = time() + timeout
+            endtime = time.time() + timeout
         else:
             endtime = None
         me = currentThread()
@@ -148,7 +130,7 @@ class ReadWriteLock(object):
                         self.__readers[me] = self.__readers.get(me, 0) + 1
                         return None
                 if timeout is not None:
-                    remaining = endtime - time()
+                    remaining = endtime - time.time()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
                         raise RuntimeError("Acquiring read lock timed out")
@@ -172,9 +154,8 @@ class ReadWriteLock(object):
         In case the timeout expires before the lock could be serviced, a
         RuntimeError is thrown.
         """
-
         if timeout is not None:
-            endtime = time() + timeout
+            endtime = time.time() + timeout
         me, upgradewriter = currentThread(), False
         self.__condition.acquire()
         try:
@@ -227,7 +208,7 @@ class ReadWriteLock(object):
                         self.__pendingwriters = self.__pendingwriters[1:]
                         return None
                 if timeout is not None:
-                    remaining = endtime - time()
+                    remaining = endtime - time.time()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
                         if upgradewriter:
@@ -256,7 +237,6 @@ class ReadWriteLock(object):
 
         In case the current thread holds no lock, a ValueError is thrown.
         """
-
         me = currentThread()
         self.__condition.acquire()
         try:
@@ -282,3 +262,51 @@ class ReadWriteLock(object):
                 raise ValueError("Trying to release unheld lock")
         finally:
             self.__condition.release()
+
+    __enter__ = acquireread
+
+    def __exit__(self, t, v, tb):
+        self.release()
+
+    def __delete__(self, instance):  # pragma: no cover
+        instance.release()
+
+
+class LockedObject(object):
+
+    __slots__ = ['lock']
+
+    def __init__(self, *args, **kwargs):
+        self._init_lock()
+        self.init(*args, **kwargs)
+
+    def init(self, *args, **kwargs):
+        pass
+
+    def _init_lock(self):
+        self.lock = Lock()
+
+    def __getattribute__(self, name):
+        attr = object.__getattribute__(self, name)
+        if name.startswith('_') or not callable(attr):
+            return attr
+        @lock
+        def wrapper(self, *args, **kwargs):
+            return attr(*args, **kwargs)
+        return wrapper
+
+
+class RLockedObject(LockedObject):
+
+    __slots__ = ['lock']
+
+    def _init_lock(self):
+        self.lock = RLock()
+
+
+class RWLockedObject(LockedObject):
+
+    __slots__ = ['lock']
+
+    def _init_lock(self):
+        self.lock = RWLock()

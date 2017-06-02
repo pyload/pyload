@@ -6,20 +6,16 @@ from __future__ import absolute_import, unicode_literals
 from builtins import object
 
 from future import standard_library
-standard_library.install_aliases()
 
 from ..layer.legacy.collections_ import Mapping, MutableMapping
 
-
-__all__ = ['HeaderDict', 'InscDict']
+standard_library.install_aliases()
 
 
 class InscDict(MutableMapping):
     """
     Improved version of the header dictionary from `requests.structures.CaseInsensitiveDict`.
     """
-    __slots__ = ['__dict__']
-
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)
 
@@ -47,9 +43,15 @@ class InscDict(MutableMapping):
         if not isinstance(other, Mapping):
             return NotImplementedError
         #: Compare insensitively
-        return self._loweritems() == InscDict(other)._loweritems()
+        return self.loweritems() == InscDict(other).loweritems()
 
-    def _loweritems(self):
+    def lowerkeys(self):
+        """
+        Like `keys`, but with all lowercase keys.
+        """
+        return self.__dict__.keys()
+
+    def loweritems(self):
         """
         Like `items`, but with all lowercase keys.
         """

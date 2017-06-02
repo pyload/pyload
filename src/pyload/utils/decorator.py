@@ -7,20 +7,11 @@ from builtins import str
 from multiprocessing import Process
 
 from future import standard_library
-standard_library.install_aliases()
 
 from .check import isiterable
 from .layer.safethreading import Thread
 
-
-__all__ = [
-    'fork',
-    'iterate',
-    'lock',
-    'readlock',
-    'singleton',
-    'threaded',
-    'trycatch']
+standard_library.install_aliases()
 
 
 # def deprecated(by=None):
@@ -38,45 +29,20 @@ __all__ = [
 # return wrapper
 
 
-def fork(func, daemon=True):
-    def new(self, *args, **kwargs):
-        proc = Process(target=func, args=args, kwargs=kwargs)
-        proc.daemon = bool(daemon)
-        proc.start()
-        return proc
-    return new
-
-
-def iterate(func):
-    def new(seq, *args, **kwargs):
-        if isiterable(seq):
-            return type(seq)(func(val, *args, **kwargs) for val in seq)
-        return func(seq, *args, **kwargs)
-    return new
-
-
-def readlock(func):
-    def new(self, *args, **kwargs):
-        args.lock.acquire(shared=True)
-        try:
-            return func(*args, **kwargs)
-        finally:
-            args.lock.release()
-
-    return new
-
-
-def lock(func):
-    def new(self, *args, **kwargs):
-        with self.lock:
-            return func(self, *args, **kwargs)
-    return new
+def fork(daemon=True):
+    def wrapper(func):
+        def new(self, *args, **kwargs):
+            p = Process(target=func, args=args, kwargs=kwargs)
+            p.daemon = bool(daemon)
+            p.start()
+            return p
+        return new
+    return wrapper
 
 
 # NOTE: Don't use this if you can use the metaclass struct.abc.Singleton
 def singleton(klass):
     inst = {}
-
     def get_inst(*args, **kwargs):
         if klass not in inst:
             inst[klass] = klass(*args, **kwargs)
@@ -84,13 +50,15 @@ def singleton(klass):
     return get_inst
 
 
-def threaded(func, daemon=True):
-    def new(self, *args, **kwargs):
-        thread = Thread(target=func, args=args, kwargs=kwargs)
-        thread.setDaemon(daemon)
-        thread.start()
-        return thread
-    return new
+def threaded(daemon=True):
+    def wrapper(func):
+        def new(self, *args, **kwargs):
+            thread = Thread(target=func, args=args, kwargs=kwargs)
+            thread.setDaemon(daemon)
+            thread.start()
+            return thread
+        return new
+    return wrapper
 
 
 def trycatch(callback):

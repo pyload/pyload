@@ -10,10 +10,11 @@ import sys
 from subprocess import *
 
 from future import standard_library
+
 standard_library.install_aliases()
 
 
-if sys.version_info[:2] < (2, 7) and os.name != 'nt':
+if sys.version_info < (2, 7) and os.name != 'nt':
     import errno
 
     def _eintr_retry_call(func, *args):
@@ -45,9 +46,3 @@ if sys.version_info[:2] < (2, 7) and os.name != 'nt':
         return self.returncode
 
     Popen.wait = wait
-
-    # Cleanup
-    del errno
-
-# Cleanup
-del sys

@@ -9,13 +9,14 @@ from builtins import dict
 from collections import *
 
 from future import standard_library
+
 standard_library.install_aliases()
 
 
 # Backport of OrderedDict() class that runs on Python 2.4, 2.5, 2.6, 2.7 and pypy.
 # Passes Python 2.7's test suite and incorporates all the latest updates.
 # http://code.activestate.com/recipes/576693/
-if sys.version_info[:2] < (2, 7):
+if sys.version_info < (2, 7):
 
     class OrderedDict(dict):
         'Dictionary that remembers insertion order'
@@ -221,7 +222,7 @@ if sys.version_info[:2] < (2, 7):
                 if not self:
                     return "{0}()".format(self.__class__.__name__)
                 return '{0}({1:r})'.format(
-                    self.__class__.__name__, self.items())
+                    self.__class__.__name__, list(self.items()))
             finally:
                 del _repr_running[call_key]
 
@@ -276,6 +277,3 @@ if sys.version_info[:2] < (2, 7):
         def viewitems(self):
             "od.viewitems() -> a set-like object providing a view on od's items"
             return ItemsView(self)
-
-# Cleanup
-del dict, sys

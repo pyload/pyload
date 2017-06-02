@@ -10,10 +10,11 @@ from builtins import bytes, chr, int, range
 from hashlib import *
 
 from future import standard_library
+
 standard_library.install_aliases()
 
 
-if sys.version_info[:2] < (2, 7):
+if sys.version_info < (2, 7):
     # This tuple and __get_builtin_constructor() must be modified if a new
     # always available algorithm is added.
     __always_supported = (
@@ -40,8 +41,8 @@ if sys.version_info[:2] < (2, 7):
         import binascii
         import struct
 
-        _trans_5C = b''.join(chr(x ^ 0x5C) for x in range(256))
-        _trans_36 = b''.join(chr(x ^ 0x36) for x in range(256))
+        _trans_5C = b''.join(chr(i ^ 0x5C) for i in range(256))
+        _trans_36 = b''.join(chr(i ^ 0x36) for i in range(256))
 
         def pbkdf2_hmac(hash_name, password, salt, iterations, dklen=None):
             """Password based key derivation function 2 (PKCS #5 v2.0)
@@ -91,7 +92,7 @@ if sys.version_info[:2] < (2, 7):
             while len(dkey) < dklen:
                 prev = prf(salt + struct.pack(b'>I', loop))
                 rkey = int(binascii.hexlify(prev), 16)
-                for i in range(iterations - 1):
+                for _i in range(iterations - 1):
                     prev = prf(prev)
                     rkey ^= int(binascii.hexlify(prev), 16)
                 loop += 1
@@ -101,6 +102,3 @@ if sys.version_info[:2] < (2, 7):
 
     # Cleanup locals()
     del __always_supported
-
-# Cleanup
-del sys

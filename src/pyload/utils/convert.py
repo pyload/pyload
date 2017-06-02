@@ -3,28 +3,22 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import str
+from builtins import dict
 import itertools
 import re
-
-from builtins import bytes, int, map
+from builtins import bytes, int, map, str
 
 from future import standard_library
-standard_library.install_aliases()
-
-import goslate
 
 from .check import isiterable, ismapping
+
+standard_library.install_aliases()
+
 
 try:
     import bitmath
 except ImportError:
     pass
-
-
-__all__ = ['accumulate', 'chunks', 'convert', 'from_version', 'language',
-           'merge', 'size', 'to_bool', 'to_bytes', 'to_dict', 'to_float',
-           'to_int', 'to_list', 'to_str', 'to_version']
 
 
 def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
@@ -46,52 +40,6 @@ def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
             return fallback(obj, *fbargs)
         raise
     return res
-
-
-def accumulate(it, inv_map=None):
-    """
-    Accumulate (key, value) data to {value : [keylist]} dictionary.
-    """
-    if inv_map is None:
-        inv_map = {}
-    for key, value in it:
-        inv_map.setdefault(value, []).append(key)
-    return inv_map
-
-
-def chunks(iterable, size):
-    islice = itertools.islice
-    it = iter(iterable)
-    item = list(islice(it, size))
-    while item:
-        yield item
-        item = list(islice(it, size))
-
-
-def language(text, target=None, source=None):
-    target = target.lower() if target else "en"
-    source = source.lower() if source else "auto"
-
-    gs = goslate.Goslate()
-
-    languages = gs.get_languages()
-    if target not in languages:
-        reverse = dict((value.lower(), key) for key, value in languages.items())
-        target = reverse.get(target)
-
-    return gs.translate(text, target, source)
-
-
-def merge(d1, d2):
-    """
-    Recursively merges d2 into d1.
-    """
-    for key in d2:
-        if key in d1 and isinstance(d1, dict) and isinstance(d2, dict):
-            d1[key] = merge(d1[key], d2[key])
-        else:
-            d1[key] = d2[key]
-    return d1
 
 
 def size(value, in_unit, out_unit):
@@ -214,27 +162,5 @@ def to_str(value, default=None, exc=Exception):
             return value.decode('utf-8')
         except Exception:
             return str(value)
-    except exc:
-        return default
-
-
-def from_version(value, default=None, exc=Exception):
-    """
-    Convert version tuple to version like string or return default.
-    """
-    try:
-        return '.'.join(to_str(num, num) for num in value)
-    except exc:
-        return default
-
-
-_re_vtt = re.compile(r'\D+')
-
-def to_version(value, default=None, exc=Exception):
-    """
-    Convert version like string to a version tuple of integers or return default.
-    """
-    try:
-        return tuple(int(_f) for _f in _re_vtt.split(value) if _f)
     except exc:
         return default

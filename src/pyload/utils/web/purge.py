@@ -7,22 +7,16 @@ import re
 
 import html.parser
 from future import standard_library
+
 standard_library.install_aliases()
 
-from ..decorator import iterate
 
+__re_comments = re.compile(r'<!--.*?-->', flags=re.S)
 
-__all__ = ['comments', 'escape', 'tags', 'text']
-
-
-_re_comments = re.compile(r'<!--.*?-->', flags=re.S)
-
-@iterate
 def comments(value):
-    return _re_comments.sub('', value).strip()
+    return __re_comments.sub('', value).strip()
 
 
-@iterate
 def escape(text):
     """
     Removes HTML or XML character references and entities from a text string.
@@ -31,16 +25,12 @@ def escape(text):
     return h.unescape(text)
 
 
-_re_tags = re.compile(r'<[^<]+?>')
+__re_tags = re.compile(r'<[^<]+?>')
 
-@iterate
 def tags(value):
-    return _re_tags.sub('', value).strip()
+    return __re_tags.sub('', value).strip()
 
 
-# NOTE: No lower-case conversion
-@iterate
+# NOTE: No case conversion here
 def text(value):
-    res = escape(value)
-    res = tags(res)
-    return res.strip('\'" ')
+    return tags(escape(value)).strip('\'" ')

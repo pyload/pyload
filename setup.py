@@ -13,23 +13,31 @@
 import io
 import os
 import re
-
+import shutil
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
+from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
 
 
-def _extract_text(path, fromline=None, toline=None):
-    text = None
-    path = os.path.join(os.path.dirname(__file__), path)
-    with io.open(path) as fp:
-        if fromline or toline:
-            text = ''.join(fp.readlines()[fromline:toline])
-        else:
-            text = fp.read()
-    return text.strip()
+_NAMESPACE = 'pyload'
+_PACKAGE = 'pyload.utils'
+_PACKAGE_NAME = 'pyload.utils2'
+_PACKAGE_PATH = 'src/pyload/utils'
+_CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
+            ('pyLoad Team', 'info@pyload.net', '2009-2015'))
+
+
+def _read_text(file):
+    with io.open(file, encoding='utf-8')  as fp:
+        return fp.read().strip()
+
+
+def _write_text(file, text):
+    with io.open(file, mode='w', encoding='utf-8') as fp:
+        fp.write(text.strip() + os.linesep)
 
 
 def _pandoc_convert(text):
@@ -60,40 +68,50 @@ def _purge_text(text):
     return re.sub('.*<.+>.*', '', text).strip()
 
 
-def _gen_long_description(fromline=None, toline=None, rst=False):
-    readme = _purge_text(_extract_text('README.md', fromline, toline))
-    history = _purge_text(_extract_text('CHANGELOG.md'))
-    desc = '\r\n\r\n'.join([readme, history])
-    try:
-        return _convert_text(desc)
-    except Exception as e:
-        if rst:
-            raise
-        else:
-            print(str(e))
-    return desc
+def _gen_long_description():
+    readme = _purge_text(_read_text('README.md').split(os.linesep * 3, 1)[0])
+    history = _purge_text(_read_text('CHANGELOG.md'))
+    desc = os.linesep.join((readme, history))
+    return _convert_text(desc)
 
 
-def _get_long_description(fromline=None, toline=None):
+def _get_long_description():
     try:
-        return _extract_text('README.rst')
+        return _read_text('README.rst')
     except IOError:
-        return _gen_long_description(fromline, toline)
+        return _gen_long_description()
 
 
-def _get_requires(fname):
-    path = os.path.join('requirements', fname)
-    return _extract_text(path).splitlines()
+__re_section = re.compile(r'^\s*\[(.*?)\]\s+([^[]*)')
+__re_deps = re.compile(r'^\s*(?![#; ]+)([^\s]+)')
+
+def _extract_requires(text):
+    deps = __re_deps.findall(__re_section.split(text, maxsplit=1))
+    extras = dict((opt, deps) for opt, entries in __re_section.findall(text)
+                  for deps in __re_deps.findall(entries) if deps)
+    return deps, extras
+
+
+def _get_requires(name):
+    file = os.path.join('requirements', name + '.txt')
+    text = _read_text(file)
+    deps, extras = _extract_requires(text)
+    if name.startswith('extra'):
+        extras['full'] = list(set(chain(*list(extras.values()))))
+        return extras
+    return deps
 
 
 def _get_version():
-    return _extract_text('VERSION')
+    return _read_text('VERSION')
 
 
-class BuildReadme(Command):
+class MakeReadme(Command):
     """
     Create a valid README.rst file
     """
+    READMEFILE = 'README.rst'
+
     description = 'create a valid README.rst file'
     user_options = []
 
@@ -104,10 +122,52 @@ class BuildReadme(Command):
         pass
 
     def run(self):
-        if os.path.isfile('README.rst'):
+        if os.path.isfile(self.READMEFILE):
             return None
-        with io.open('README.rst', mode='w') as fp:
-            fp.write(_gen_long_description(toline=30))
+        _write_text(self.READMEFILE, _gen_long_description())
+
+
+class PreBuild(Command):
+    """
+    Prepare for build
+    """
+    description = 'prepare for build'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def _makeabout(self):
+        file = os.path.join(_PACKAGE_PATH, '__about__.py')
+        credits = ', '.join(str(info) for info in _CREDITS)
+        text = """# -*- coding: utf-8 -*-
+
+from semver import parse_version_info
+
+__namespace__ = {0}
+__package__ = {1}
+__package_name__ = {2}
+__version__ = {3}
+__version_info__ = parse_version_info(__version__)
+__credits__ = ({4})
+""".format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
+        _write_text(file, text)
+
+    def run(self):
+        self._makeabout()
+
+
+class BdistEgg(bdist_egg):
+    """
+    Custom ``bdist_egg`` command
+    """
+    def run(self):
+        if not self.dry_run:
+            self.run_command('prebuild')
+        bdist_egg.run(self)
 
 
 class BuildPy(build_py):
@@ -116,7 +176,7 @@ class BuildPy(build_py):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('build_readme')
+            self.run_command('prebuild')
         build_py.run(self)
 
 
@@ -126,50 +186,49 @@ class Sdist(sdist):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('build_py')
+            self.run_command('makereadme')
         sdist.run(self)
 
 
-NAME = "pyload.utils2"
+NAME = _PACKAGE_NAME
 VERSION = _get_version()
 STATUS = "1 - Planning"
 DESC = """pyLoad Utils module"""
-LONG_DESC = _get_long_description(toline=30)
+LONG_DESC = _get_long_description()
 KEYWORDS = ["pyload"]
 URL = "https://pyload.net"
 DOWNLOAD_URL = "https://github.com/pyload/utils/releases"
 LICENSE = "GNU Affero General Public License v3"
-AUTHOR = "Walter Purcaro"
-AUTHOR_EMAIL = "vuolter@gmail.com"
+AUTHOR = _CREDITS[0][0]
+AUTHOR_EMAIL = _CREDITS[0][1]
 PLATFORMS = ['any']
 PACKAGES = find_packages('src')
 PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
-NAMESPACE_PACKAGES = ['pyload']
-INSTALL_REQUIRES = _get_requires('install.txt')
-SETUP_REQUIRES = _get_requires('setup.txt')
+NAMESPACE_PACKAGES = [_NAMESPACE]
+INSTALL_REQUIRES = _get_requires('install')
+SETUP_REQUIRES = _get_requires('setup')
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
-EXTRAS_REQUIRE = {
-    'bitmath': ['bitmath'],
-    'dbus;os_name!="nt"': ['dbus-python'],
-    'magic;os_name!="nt"': ['python-magic']
-}
-EXTRAS_REQUIRE['full'] = list(set(chain(*EXTRAS_REQUIRE.values())))
+EXTRAS_REQUIRE = _get_requires('extra')
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 CMDCLASS = {
+    'bdist_egg': BdistEgg,
     'build_py': BuildPy,
-    'build_readme': BuildReadme,
+    'makereadme': MakeReadme,
+    'prebuild': PreBuild,
     'sdist': Sdist
 }
-ZIP_SAFE = False
+ZIP_SAFE = True
 CLASSIFIERS = [
     "Development Status :: {0}".format(STATUS),
     "Environment :: Web Environment",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: {0}".format(LICENSE),
     "Natural Language :: English",
-    "Operating System :: OS Independent",
+    # "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
     "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 2.6",
     "Programming Language :: Python :: 2.7",
@@ -178,14 +237,16 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: Implementation :: CPython",
+    # "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Communications",
     "Topic :: Communications :: File Sharing",
     "Topic :: Internet",
     "Topic :: Internet :: File Transfer Protocol (FTP)",
     "Topic :: Internet :: WWW/HTTP"
 ]
-SETUP_MAP = dict(
+
+setup(
     name=NAME,
     version=VERSION,
     description=DESC,
@@ -205,10 +266,9 @@ SETUP_MAP = dict(
     setup_requires=SETUP_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,
+    cmdclass=CMDCLASS,
     # test_suite=TEST_SUITE,
     # tests_require=TESTS_REQUIRE,
     zip_safe=ZIP_SAFE,
     classifiers=CLASSIFIERS
 )
-
-setup(**SETUP_MAP)

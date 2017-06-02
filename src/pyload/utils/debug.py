@@ -3,32 +3,29 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import str
 import inspect
 import os
 import pprint
 import sys
 import traceback
+from builtins import str
 
 from future import standard_library
-standard_library.install_aliases()
 
 from .check import proprieties
-from .path import makefile
+from .fs import lopen, makefile
+
+standard_library.install_aliases()
 
 
-__all__ = ['_format_dump', '_format_framestack', '_format_traceback',
-           'format_dump', 'format_framestack', 'format_traceback', 'print_dump',
-           'print_framestack', 'print_traceback', 'report']
-
-
-def report(value, dirname="reports"):
+def report(value, dirname):
     frame = inspect.currentframe()
     try:
-        fname = "{0}_line{1}.report".format(
+        filename = "{0}_line{1}.report".format(
             frame.f_back.f_code.co_name, frame.f_back.f_lineno)
-        path = os.path.join(dirname, fname)
-        with makefile(path, mode='wb') as fp:
+        filepath = os.path.join(dirname, filename)
+        makefile(filepath, exist_ok=True)
+        with lopen(filepath, mode='wb') as fp:
             fp.write(value)
     finally:
         del frame  #: delete it just now or wont be cleaned by gc
@@ -49,9 +46,10 @@ def _format_dump(obj):
 
 def format_dump(obj):
     title = "DUMP {0!r}:".format(obj)
-    body = '\n'.join("\t{0:20} = {1}".format(attr_name, attr_dump)
-                     for attr_name, attr_dump in _format_dump(obj))
-    return "{0}\n{1}\n".format(title, body)
+    body = os.linesep.join(
+        "\t{0:20} = {1}".format(attr_name, attr_dump)
+        for attr_name, attr_dump in _format_dump(obj))
+    return os.linesep.join((title, body))
 
 
 def print_dump(obj, file=None):
@@ -69,13 +67,11 @@ def _format_framestack(frame=None, limit=None):
         while tb:
             stack.append(tb.tb_frame)
             tb = tb.tb_next
-
         dump = []
         for frame in stack[1:limit]:
             msg = "Frame {0} in {1} at line {2}"
-            frame_name = msg.format(frame.f_code.co_name,
-                                    frame.f_code.co_filename,
-                                    frame.f_lineno)
+            frame_name = msg.format(
+                frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno)
             frame_dump = []
             for attr_name, value in frame.f_locals.items():
                 try:
@@ -84,12 +80,9 @@ def _format_framestack(frame=None, limit=None):
                     attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(
                         str(e))
                 frame_dump.append((attr_name, attr_dump))
-
             dump.append((frame_name, frame_dump))
             del frame
-
         return dump
-
     finally:
         del stack[:]  #: delete all just to be sure...
 
@@ -98,13 +91,13 @@ def format_framestack(frame=None, limit=None):
     framestack = _format_framestack(frame, limit)
     stack_desc = []
     for frame_name, frame_dump in framestack:
-        dump = '\n'.join("\t{0:20} = {1}".format(attr_name, attr_dump)
+        dump = os.linesep.join("\t{0:20} = {1}".format(attr_name, attr_dump)
                          for attr_name, attr_dump in frame_dump)
-        stack_desc.append("{0}\n{1}".format(frame_name, dump))
+        stack_desc.append("{0}{1}{2}".format(frame_name, os.linesep, dump))
 
     title = "FRAMESTACK {0!r}:".format(frame)
-    body = '\n\n'.join(stack_desc)
-    return "{0}\n{1}\n".format(title, body)
+    body = (os.linesep * 2).join(stack_desc)
+    return os.linesep.format((title, body))
 
 
 def print_framestack(frame=None, limit=None, file=None):
@@ -148,7 +141,7 @@ def format_traceback(frame=None, limit=None, offset=None):
     stack, exception = _format_traceback(frame, limit, offset)
     title = "Traceback (most recent call last):"
     body = ''.join(stack + exception)
-    return "{0}\n{1}\n".format(title, body)
+    return os.linesep.format((title, body))
 
 
 def print_traceback(frame=None, limit=None, file=None):

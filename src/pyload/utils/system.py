@@ -5,17 +5,18 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import shlex
-import sys as _sys
-from builtins import dict, map
-from sys import *
+import sys
+from builtins import dict, map, str
 
 import psutil
+
 from future import standard_library
-standard_library.install_aliases()
 
-from pyload.utils import convert
-
+from . import convert
+from .check import isiterable
 from .layer.legacy.subprocess_ import PIPE, Popen
+
+standard_library.install_aliases()
 
 
 try:
@@ -51,7 +52,7 @@ def exec_cmd(command, *args, **kwargs):
 def call_cmd(command, *args, **kwargs):
     ignore_errors = kwargs.pop('ignore_errors', False)
     try:
-        proc = exec_cmd(command, *args, **kwargs)
+        sp = exec_cmd(command, *args, **kwargs)
 
     except Exception as exc:
         if not ignore_errors:
@@ -59,10 +60,10 @@ def call_cmd(command, *args, **kwargs):
         else:
             returncode = 1
             stdoutdata = ""
-            stderrdata = exc.message.strip()
+            stderrdata = str(exc).strip()
     else:
-        returncode = proc.returncode
-        stdoutdata, stderrdata = map(str.strip, proc.communicate())
+        returncode = sp.returncode
+        stdoutdata, stderrdata = map(str.strip, sp.communicate())
 
     finally:
         return returncode, stdoutdata, stderrdata
@@ -74,43 +75,49 @@ def console_encoding(enc):
     return "cp850" if enc == "cp65001" else enc  #: aka UTF-8 under Windows
 
 
-def get_info():
-    """
-    Returns system information as dict.
-    """
-    return dict(platform=_sys.platform,
-                version=_sys.version,
-                path=os.path.abspath(''),
-                encoding=_sys.getdefaultencoding(),
-                fs_encoding=_sys.getfilesystemencoding())
-
-
-def get_process_id(name):
-    procs = psutil.process_iter()
-    zombie = psutil.STATUS_ZOMBIE
-    return [proc.pid() for proc in procs if proc.name() == name and
-            proc.is_running() and
-            proc.status() != zombie]
-
-
-def get_process_name(pid):
-    procs = psutil.process_iter()
-    zombie = psutil.STATUS_ZOMBIE
-    return [proc.name() for proc in procs if proc.pid() == pid and
-            proc.is_running() and
-            proc.status() != zombie]
-
-
-def kill_process(pid, wait=None):
+def _get_psutil_process(pid, ctime):
+    if pid is None:
+        pid = os.getpid()
+    if ctime is None:
+        return psutil.Process(pid)
     try:
-        proc = psutil.Process(pid)
-        proc.terminate()
-        proc.wait(wait)
+        psps = (psp for psp in psutil.process_iter()
+            if psp.pid() == pid and psp.create_time() == ctime)
+        return psps[0]
+    except:
+        raise psutil.NoSuchProcess(pid)
+
+
+def is_running_process(pid=None):
+    if isiterable(pid):
+        pid, ctime = pid
+    psp = _get_psutil_process(pid, ctime)
+    return psp.is_running() and psp.create_time() == ctime
+
+
+def is_zombie_process(pid=None):
+    if isiterable(pid):
+        pid, ctime = pid
+    try:
+        psp = _get_psutil_process(pid, ctime)
+        flag = psp.status() is psutil.STATUS_ZOMBIE
+    except psutil.ZombieProcess:
+        flag = True
+    return flag
+
+
+def kill_process(pid=None, timeout=None):
+    if isiterable(pid):
+        pid, ctime = pid
+    try:
+        psp = _get_psutil_process(pid, ctime)
+        psp.terminate()
+        psp.wait(timeout)
     except (psutil.TimeoutExpired, psutil.ZombieProcess):
-        proc.kill()
+        psp.kill()
 
 
-def renice(value, pid=None):
+def renice(pid=None, niceness=None):
     """
     Unix notation process nicener.
     """
@@ -118,30 +125,32 @@ def renice(value, pid=None):
         MIN_NICENESS = -20
         MAX_NICENESS = 19
 
-        normval = min(MAX_NICENESS, value) if value else max(
-            MIN_NICENESS, value)
+        normval = min(MAX_NICENESS, niceness) if niceness else max(
+            MIN_NICENESS, niceness)
         priocls = [psutil.IDLE_PRIORITY_CLASS,
                    psutil.BELOW_NORMAL_PRIORITY_CLASS,
                    psutil.NORMAL_PRIORITY_CLASS,
                    psutil.ABOVE_NORMAL_PRIORITY_CLASS,
                    psutil.HIGH_PRIORITY_CLASS,
                    psutil.REALTIME_PRIORITY_CLASS]
-        prioval = (normval - MAX_NICENESS) * \
-            (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
+        prioval = (normval - MAX_NICENESS) * (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
         value = priocls[prioval]
+    if isiterable(pid):
+        pid, ctime = pid
+    psp = _get_psutil_process(pid, ctime)
+    psp.nice(value)
 
-    proc = psutil.Process(pid)
-    proc.nice(value)
 
-
-def ionice(ioclass=None, value=None, pid=None):
+def ionice(pid=None, ioclass=None, niceness=None):
     """
     Unix notation process I/O nicener.
     """
     if os.name == 'nt':
         ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
-    proc = psutil.Process(pid)
-    proc.ionice(ioclass, value)
+    if isiterable(pid):
+        pid, ctime = pid
+    psp = _get_psutil_process(pid, ctime)
+    psp.ionice(ioclass, niceness)
 
 
 def set_console_icon(iconpath):
@@ -156,10 +165,9 @@ def set_console_icon(iconpath):
     LR_LOADFROMFILE = 0x00000010
     LR_DEFAULTSIZE = 0x00000040
 
-    fpath = os.path.abspath(iconpath)
     flags = LR_LOADFROMFILE | LR_DEFAULTSIZE
     hicon = ctypes.windll.kernel32.LoadImageW(
-        None, fpath, IMAGE_ICON, 0, 0, flags)
+        None, iconpath, IMAGE_ICON, 0, 0, flags)
 
     ctypes.windll.kernel32.SetConsoleIcon(hicon)
 
@@ -170,7 +178,7 @@ def set_console_title(value):
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
-        stdout.write("\x1b]2;{0}\x07".format(title))
+        sys.stdout.write("\x1b]2;{0}\x07".format(title))
 
 
 def set_process_group(value):
@@ -191,7 +199,7 @@ def shutdown():
     if os.name == 'nt':
         call_cmd('rundll32.exe user.exe,ExitWindows')
 
-    elif _sys.platform == "darwin":
+    elif sys.platform == "darwin":
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
@@ -206,23 +214,3 @@ def shutdown():
             stop_method()
         except NameError:
             call_cmd('stop -h now')  # NOTE: Root privileges needed
-
-
-# Cleanup
-del _sys, PIPE, Popen, convert, dict, map, os, psutil, shlex
-try:
-    del dbus
-except NameError:
-    pass
-try:
-    del setproctitle
-except NameError:
-    pass
-try:
-    del grp
-except NameError:
-    pass
-try:
-    del pwd
-except NameError:
-    pass

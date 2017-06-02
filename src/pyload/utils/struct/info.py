@@ -3,48 +3,28 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import dict
 from future import standard_library
-standard_library.install_aliases()
 
 from ..layer.legacy.collections_ import MutableMapping
 from .init import InscDict
 
-
-__all__ = [
-    'DeleteError',
-    'Info',
-    'InscInfo',
-    'ReadError',
-    'SyncInfo',
-    'WriteError']
+standard_library.install_aliases()
 
 
 class ReadError(KeyError):
-
-    def __str__(self):
-        return """<ReadError {0}>""".format(self.message)
+    pass
 
 
 class WriteError(KeyError):
-
-    def __str__(self):
-        return """<WriteError {0}>""".format(self.message)
+    pass
 
 
 class DeleteError(KeyError):
-
-    def __str__(self):
-        return """<DeleteError {0}>""".format(self.message)
+    pass
 
 
 class Info(MutableMapping):
-
-    __slots__ = [
-        '__deleteable__',
-        '__dict__',
-        '__readable__',
-        '__updateable__',
-        '__writeable__']
 
     __readable__ = True
     __writeable__ = True

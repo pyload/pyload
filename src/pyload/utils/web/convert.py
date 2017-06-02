@@ -3,37 +3,65 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import urllib.parse
 from builtins import int
+from socket import getaddrinfo, gethostbyaddr, gethostbyname_ex
+
+import idna
 
 from future import standard_library
+
+from .check import isipv4, isipv6
+
 standard_library.install_aliases()
 
-from pyload.utils import format
+
+def splitaddress(address):
+    try:
+        address = idna.encode(address)
+    except AttributeError:
+        pass
+    sep = ']:' if address.split(':', 2)[2:] else ':'
+    parts = address.rsplit(sep, 1)
+    try:
+        addr, port = parts
+        port = int(port)
+    except ValueError:
+        addr = parts[0]
+        port = None
+    return addr, port
 
 
-__all__ = ['code_to_status', 'url_to_name']
+def host_to_ip(hostname):
+    hostname, aliaslist, ipaddrlist = gethostbyname_ex(hostname)
+    return ipaddrlist
 
 
-def code_to_status(code):
-    code = int(code)
-    if code < 400:
-        status = 'online'
-    elif code < 500:
-        status = 'offline'
-    elif code < 600:
-        status = 'tempoffline'
-    else:
-        status = 'unknown'
-    return status
+def ip_to_host(ipaddress):
+    hostname, aliaslist, ipaddrlist = gethostbyaddr(ipaddress)
+    return [hostname] + aliaslist
 
 
-def url_to_name(url, strict=False):
-    url = format.url(url)
-    url_p = urllib.parse.urlparse(url)
-    name = url_p.path.split('/')[-1]
-    if not name:
-        name = url_p.query.split('=', 1)[::-1][0].split('&', 1)[0]
-    if not name:
-        name = url_p.netloc.split('.', 1)[0]
-    return name.strip() if strict else format.name(name)
+def socket_to_endpoint(socket):
+    ip, port = splitaddress(socket)
+    host = ip_to_host(ip)
+    port = int(port)
+    return '{0}:{1:d}'.format(host, port)
+
+
+def endpoint_to_socket(endpoint):
+    host, port = splitaddress(endpoint)
+    addrinfo = getaddrinfo(host, int(port))
+    return addrinfo[0][-1][:2], addrinfo[1][-1][:2]
+
+
+# def code_to_status(code):
+    # code = int(code)
+    # if code < 400:
+        # status = 'online'
+    # elif code < 500:
+        # status = 'offline'
+    # elif code < 600:
+        # status = 'tempoffline'
+    # else:
+        # status = 'unknown'
+    # return status

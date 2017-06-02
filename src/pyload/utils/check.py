@@ -7,22 +7,10 @@ import imp
 from builtins import map, range
 
 from future import standard_library
-standard_library.install_aliases()
 
 from .layer.legacy.collections_ import Iterable, Mapping
 
-
-__all__ = [
-    'bitset',
-    'cmp',
-    'hasmethod',
-    'haspropriety',
-    'isiterable',
-    'ismapping',
-    'ismodule',
-    'methods',
-    'missing',
-    'proprieties']
+standard_library.install_aliases()
 
 
 def bitset(bits, cmp):

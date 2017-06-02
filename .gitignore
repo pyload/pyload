@@ -7,17 +7,18 @@
 *.rar
 *.zip
 *.gz
+*.tgz
 *.bzip
 *.bz2
 *.xz
 *.lzma
 *.cab
 
-#packing-only formats
+# Packing-only formats
 *.iso
 *.tar
 
-#package management formats
+# Package management formats
 *.dmg
 *.xpi
 *.gem
@@ -33,7 +34,7 @@
 
 *~
 
-# temporary files which can be created if a process still has a handle open of a deleted file
+# Temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
 
 # KDE directory preferences
@@ -52,6 +53,9 @@
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
+
+# Dump file
+*.stackdump
 
 # Folder config file
 Desktop.ini
@@ -102,7 +106,7 @@ Temporary Items
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[codi]
+*.py[cod]
 *$py.class
 
 # C extensions
@@ -110,7 +114,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -145,7 +148,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-*,cover
+*.cover
 .hypothesis/
 
 # Translations
@@ -181,16 +184,22 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# dotenv
+# Environments
 .env
-
-# virtualenv
 .venv
+env/
 venv/
 ENV/
 
 # Spyder project settings
 .spyderproject
+.spyproject
 
 # Rope project settings
 .ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/

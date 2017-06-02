@@ -1,10 +1,12 @@
-IPy
 Send2Trash
-colorclass
 filetype
 future
-goslate
+googletrans
+idna
+portalocker
 psutil
 setproctitle
+semver
+setuptools
 tld
 validators
