@@ -82,20 +82,22 @@ def _get_long_description():
         return _gen_long_description()
 
 
-__re_section = re.compile(r'^\s*\[(.*?)\]\s+([^[]*)')
-__re_deps = re.compile(r'^\s*(?![#; ]+)([^\s]+)')
+__re_section = re.compile(
+    r'^\[([^\s]+)\]\s+([^[\s].+?)(?=^\[|\Z)', flags=re.M|re.S)
+__re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
 
-def _extract_requires(text):
-    deps = __re_deps.findall(__re_section.split(text, maxsplit=1))
-    extras = dict((opt, deps) for opt, entries in __re_section.findall(text)
-                  for deps in __re_deps.findall(entries) if deps)
+def _parse_requires(text):
+    deps = __re_entry.findall(__re_section.split(text, maxsplit=1)[0])
+    extras = {}
+    for name, rawdeps in __re_section.findall(text):
+        extras[name] = [pack for pack in __re_entry.findall(rawdeps)]
     return deps, extras
 
 
 def _get_requires(name):
     file = os.path.join('requirements', name + '.txt')
     text = _read_text(file)
-    deps, extras = _extract_requires(text)
+    deps, extras = _parse_requires(text)
     if name.startswith('extra'):
         extras['full'] = list(set(chain(*list(extras.values()))))
         return extras
