@@ -87,7 +87,7 @@ Python versions from `Python3.0` to `Python3.2` are NOT supported!
 
 An **experimental support** for [PyPy](http://pypy.org) is available;
 as expected you need at least `PyPy2.6` or `PyPy3.3` to run **pyLoad**.
-	
+
 
 Installation
 ------------
@@ -456,5 +456,6 @@ Please refer to the included [CHANGELOG](/CHANGELOG.md) for the detailed release
 history.
 
 
-------------------------------------------------------------------------------
-###### © 2009-2015 pyLoad Team, © 2015-2017 Walter Purcaro <vuolter@gmail.com>
+-----------------------------------------------------
+###### © 2015-2017 Walter Purcaro <vuolter@gmail.com>
+###### © 2009-2015 pyLoad Team
