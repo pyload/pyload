@@ -14,10 +14,10 @@ from . import purge
 standard_library.install_aliases()
 
 
-__re_url = re.compile(r'(?<!:)/{2,}')
+_re_url = re.compile(r'(?<!:)/{2,}')
 
 def url(obj):
     url = urllib.parse.unquote(str(obj).decode('unicode-escape'))
     url = purge.text(url).lstrip('.').lower()
-    url = __re_url.sub('/', url).rstrip('/')
+    url = _re_url.sub('/', url).rstrip('/')
     return url

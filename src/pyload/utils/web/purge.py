@@ -11,10 +11,10 @@ from future import standard_library
 standard_library.install_aliases()
 
 
-__re_comments = re.compile(r'<!--.*?-->', flags=re.S)
+_re_comments = re.compile(r'<!--.*?-->', flags=re.S)
 
 def comments(value):
-    return __re_comments.sub('', value).strip()
+    return _re_comments.sub('', value).strip()
 
 
 def escape(text):
@@ -25,10 +25,10 @@ def escape(text):
     return h.unescape(text)
 
 
-__re_tags = re.compile(r'<[^<]+?>')
+_re_tags = re.compile(r'<[^<]+?>')
 
 def tags(value):
-    return __re_tags.sub('', value).strip()
+    return _re_tags.sub('', value).strip()
 
 
 # NOTE: No case conversion here

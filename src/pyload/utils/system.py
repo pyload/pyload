@@ -53,19 +53,17 @@ def call_cmd(command, *args, **kwargs):
     try:
         sp = exec_cmd(command, *args, **kwargs)
 
-    except Exception as exc:
+    except Exception as e:
         if not ignore_errors:
             raise
-        else:
-            returncode = 1
-            stdoutdata = ""
-            stderrdata = str(exc).strip()
+        returncode = 1
+        stdoutdata = ""
+        stderrdata = str(e).strip()
     else:
         returncode = sp.returncode
         stdoutdata, stderrdata = map(str.strip, sp.communicate())
 
-    finally:
-        return returncode, stdoutdata, stderrdata
+    return returncode, stdoutdata, stderrdata
 
 
 def console_encoding(enc):

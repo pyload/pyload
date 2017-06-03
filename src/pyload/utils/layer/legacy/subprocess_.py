@@ -22,7 +22,7 @@ if sys.version_info < (2, 7) and os.name != 'nt':
         while True:
             try:
                 return func(*args)
-            except (OSError, WindowsError) as e:
+            except OSError as e:
                 if e.errno == errno.EINTR:
                     continue
                 raise

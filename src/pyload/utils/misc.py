@@ -27,7 +27,7 @@ def accumulate(iterable, inv_map=None):
 
 def reverse(obj):
     return type(obj)(
-        map(reversed, obj.items())) if ismapping else reversed(obj)
+        map(reversed, obj.items())) if ismapping(obj) else reversed(obj)
 
 
 def forward(source, destination, buffering=1024):

@@ -31,7 +31,12 @@ def name(text, sep='_', allow_whitespaces=False):
     """
     Remove invalid characters.
     """
-    bc = __winbadchars if os.name else __macbadchars if sys.platform else __unixbadchars
+    if os.name == 'nt':
+        bc = __winbadchars
+    elif sys.platform == 'darwin':
+        bc = __macbadchars
+    else:
+        bc = __unixbadchars
     repl = r''.join(bc)
     if not allow_whitespaces:
         repl += ' '
