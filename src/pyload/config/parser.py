@@ -40,21 +40,33 @@ class ConfigOption(object):
         InputType.Str: lambda x: "" if x is None else str(x),
         InputType.Int: lambda x: 0 if x is None else int(x),
         InputType.File: lambda x: "" if x is None else fullpath(x),
-        InputType.Folder: lambda x: "" if x is None else os.path.dirname(fullpath(x)),
+        InputType.Folder:
+            lambda x: "" if x is None else os.path.dirname(fullpath(x)),
         InputType.Password: lambda x: "" if x is None else str(x),
-        InputType.Bool: lambda x: parse.boolean(x) if isinstance(x, str) else bool(x),
+        InputType.Bool:
+            lambda x: parse.boolean(x) if isinstance(x, str) else bool(x),
         InputType.Float: lambda x: 0.0 if x is None else float(x),
         InputType.Tristate: lambda x: x if x is None else bool(x),
         InputType.Octal: lambda x: 0 if x is None else oct(x),
         InputType.Size: lambda x: 0 if x is None else parse.bytesize(x),
-        InputType.Address: lambda x: (None, None) if x is None else (endpoint if isendpoint(x) else socket)(x),
+        InputType.Address:
+            lambda x: (None, None) if x is None else (
+            endpoint if isendpoint(x) else socket)(x),
         InputType.Bytes: lambda x: b"" if x is None else bytes(x),
-        InputType.StrList: lambda l: [str(x) for x in l] if isiterable(l) else parse.entries(l)
+        InputType.StrList:
+            lambda l: [str(x) for x in l] if isiterable(l) else parse.entries(l)
     }
 
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
         self.parser = parser
+        self.type = None
+        self.value = None
+        self.default = None
+        self.allowed_values = None
+        self.label = None
+        self.desc = None
+
         self._set_type(input_type)
         self._set_value(value)
         self._set_allowed(allowed_values)
@@ -221,15 +233,13 @@ class ConfigParser(ConfigSection):
 
     def __init__(self, filename, config=None, version=__version_info__,
                  logger=None):
-        self.parser = self
-
         self.path = fullpath(filename)
         self.version, self.version_info = self._parse_version(version)
 
         self.log = self._get_logger(logger)
         self.fp = open(filename, mode='ab+')
 
-        self.update(config)
+        ConfigSection.__init__(self, self, config)
         self._retrieve_fileconfig()
 
     def close(self):

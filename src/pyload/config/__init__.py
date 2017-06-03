@@ -9,6 +9,7 @@
 #          \  /
 #           \/
 
-from .exceptions import AlreadyExistsKeyError, InvalidValueError, VersionMismatchError
+from .exceptions import (AlreadyExistsKeyError, InvalidValueError,
+                         VersionMismatchError)
 from .parser import ConfigOption, ConfigParser, ConfigSection
 from .types import InputType
