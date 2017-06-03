@@ -31,12 +31,12 @@ _CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
 
 
 def _read_text(file):
-    with io.open(file, encoding='utf-8')  as fp:
+    with io.open(file, mode='rb') as fp:
         return fp.read().strip()
 
 
 def _write_text(file, text):
-    with io.open(file, mode='w', encoding='utf-8') as fp:
+    with io.open(file, mode='wb') as fp:
         fp.write(text.strip() + os.linesep)
 
 
@@ -64,12 +64,15 @@ def _convert_text(text):
         return _docverter_convert(text)
 
 
+__re_purge = re.compile(r'.*<.+>.*')
+
 def _purge_text(text):
-    return re.sub('.*<.+>.*', '', text).strip()
+    return __re_purge.sub('', text).strip()
 
 
 def _gen_long_description():
-    readme = _purge_text(_read_text('README.md').split(os.linesep * 3, 1)[0])
+    delimeter = os.linesep * 3
+    readme = _purge_text(_read_text('README.md').split(delimeter, 1)[0])
     history = _purge_text(_read_text('CHANGELOG.md'))
     desc = os.linesep.join((readme, history))
     return _convert_text(desc)
@@ -82,20 +85,23 @@ def _get_long_description():
         return _gen_long_description()
 
 
-__re_section = re.compile(r'^\s*\[(.*?)\]\s+([^[]*)')
-__re_deps = re.compile(r'^\s*(?![#; ]+)([^\s]+)')
+__re_section = re.compile(
+    r'^\[([^\s]+)\]\s+([^[\s].+?)(?=^\[|\Z)', flags=re.M | re.S)
+__re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
 
-def _extract_requires(text):
-    deps = __re_deps.findall(__re_section.split(text, maxsplit=1))
-    extras = dict((opt, deps) for opt, entries in __re_section.findall(text)
-                  for deps in __re_deps.findall(entries) if deps)
+def _parse_requires(text):
+    deps = list(set(
+        __re_entry.findall(__re_section.split(text, maxsplit=1)[0])))
+    extras = {}
+    for name, rawdeps in __re_section.findall(text):
+        extras[name] = list(set(pack for pack in __re_entry.findall(rawdeps)))
     return deps, extras
 
 
 def _get_requires(name):
     file = os.path.join('requirements', name + '.txt')
     text = _read_text(file)
-    deps, extras = _extract_requires(text)
+    deps, extras = _parse_requires(text)
     if name.startswith('extra'):
         extras['full'] = list(set(chain(*list(extras.values()))))
         return extras
@@ -131,6 +137,8 @@ class PreBuild(Command):
     """
     Prepare for build
     """
+    ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
+
     description = 'prepare for build'
     user_options = []
 
@@ -141,22 +149,23 @@ class PreBuild(Command):
         pass
 
     def _makeabout(self):
-        file = os.path.join(_PACKAGE_PATH, '__about__.py')
         credits = ', '.join(str(info) for info in _CREDITS)
         text = """# -*- coding: utf-8 -*-
 
 from semver import parse_version_info
 
-__namespace__ = {0}
-__package__ = {1}
-__package_name__ = {2}
-__version__ = {3}
+__namespace__ = '{0}'
+__package__ = '{1}'
+__package_name__ = '{2}'
+__version__ = '{3}'
 __version_info__ = parse_version_info(__version__)
 __credits__ = ({4})
 """.format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
-        _write_text(file, text)
+        _write_text(self.ABOUTFILE, text)
 
     def run(self):
+        if os.path.isfile(self.ABOUTFILE):
+            return None
         self._makeabout()
 
 
@@ -210,7 +219,7 @@ INSTALL_REQUIRES = _get_requires('install')
 SETUP_REQUIRES = _get_requires('setup')
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
-EXTRAS_REQUIRE = _get_requires('extra')
+# EXTRAS_REQUIRE = _get_requires('extra')
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 CMDCLASS = {
     'bdist_egg': BdistEgg,
@@ -264,7 +273,7 @@ setup(
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
-    extras_require=EXTRAS_REQUIRE,
+    # extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,
     cmdclass=CMDCLASS,
     # test_suite=TEST_SUITE,
