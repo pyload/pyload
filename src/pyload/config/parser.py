@@ -3,16 +3,15 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import open
-from builtins import int
+import configparser
 import logging
 import os
-from builtins import bytes, object, oct, range, str
+from builtins import bytes, int, object, oct, range, str
 from contextlib import closing
 
-import configparser
-import semver
 from future import standard_library
+
+import semver
 from pyload.utils import parse
 from pyload.utils.check import isiterable, ismapping
 from pyload.utils.fs import fullpath, open
@@ -31,7 +30,8 @@ standard_library.install_aliases()
 
 class ConfigOption(object):
 
-    __slots__ = ['DEFAULT_TYPE', '_convert_map', 'allowed_values', 'default', 'desc', 'label', 'parser', 'type', 'value']
+    __slots__ = ['DEFAULT_TYPE', '_convert_map', 'allowed_values',
+                 'default', 'desc', 'label', 'parser', 'type', 'value']
 
     DEFAULT_TYPE = InputType.Str
 
@@ -52,7 +52,8 @@ class ConfigOption(object):
         InputType.StrList: lambda l: [str(x) for x in l] if isiterable(l) else parse.entries(l)
     }
 
-    def __init__(self, parser, value, label=None, desc=None, allowed_values=None, input_type=None):
+    def __init__(self, parser, value, label=None, desc=None,
+                 allowed_values=None, input_type=None):
         self.parser = parser
         self._set_type(input_type)
         self._set_value(value)
@@ -130,7 +131,7 @@ class ConfigSection(InscDict):
         else:
             entry_type = value[0]
             entry_args = value[1:]
-            func = ConfigOption if not entry_type or entry_type == 'option' else ConfigSection
+            func = ConfigSection if entry_type == 'section' else ConfigOption
             entry_obj = func(self.parser, *entry_args)
         return entry_obj
 
@@ -141,7 +142,8 @@ class ConfigSection(InscDict):
     def update(self, iterable):
         if ismapping(iterable):
             iterable = iterable.items()
-        config = ((name, self._to_configentry(value)) for name, value in iterable)
+        config = (
+            (name, self._to_configentry(value)) for name, value in iterable)
         InscDict.update(self, config)
 
     def is_section(self, name):
@@ -174,7 +176,8 @@ class ConfigSection(InscDict):
             raise InvalidValueError(name)
         return self.__getitem__(name)
 
-    def add_section(self, name, config=None, label=None, desc=None, store=None):
+    def add_section(
+            self, name, config=None, label=None, desc=None, store=None):
         if self.SECTION_SEP in name:
             raise InvalidValueError(name)
         if name.lower() in self.lowerkeys():
@@ -187,19 +190,21 @@ class ConfigSection(InscDict):
             self.parser.store()
         return section
 
-    def add_option(self, name, value, label=None, desc=None, allowed_values=None, input_type=None, store=True):
+    def add_option(self, name, value, label=None, desc=None,
+                   allowed_values=None, input_type=None, store=True):
         if name.lower() in self.lowerkeys():
             raise AlreadyExistsKeyError(name)
         if label is None:
             label = name.strip().capitalize()
-        option = ConfigOption(self.parser, value, label, desc, allowed_values, input_type)
+        option = ConfigOption(
+            self.parser, value, label, desc, allowed_values, input_type)
         self.__setitem__(name, option)
         if store:
             self.parser.store()
         return option
 
     def add(self, section, *args, **kwargs):
-        func = self.add_option if not section or section == 'option' else self.add_section
+        func = self.add_section if section == 'section' else self.add_option
         return func(*args, **kwargs)
 
     # def __str__(self):
@@ -208,12 +213,14 @@ class ConfigSection(InscDict):
 
 class ConfigParser(ConfigSection):
 
-    __slots__ = ['DEFAULT_SECTION', 'SELF_SECTION', 'fp', 'lock', 'log', 'parser', 'path', 'version', 'version_info']
+    __slots__ = ['DEFAULT_SECTION', 'SELF_SECTION', 'fp', 'lock',
+                 'log', 'parser', 'path', 'version', 'version_info']
 
     DEFAULT_SECTION = configparser.DEFAULTSECT
     SELF_SECTION = ''
 
-    def __init__(self, filename, config=None, version=__version_info__, logger=None):
+    def __init__(self, filename, config=None, version=__version_info__,
+                 logger=None):
         self.parser = self
 
         self.path = fullpath(filename)
@@ -256,8 +263,8 @@ class ConfigParser(ConfigSection):
         version = semver.format_version(*tuple(version_info))
         return version, version_info
 
-    def _make_sections(self, section_addr):
-        section_names = section_addr.split(self.SECTION_SEP)
+    def _make_sections(self, section_id):
+        section_names = section_id.split(self.SECTION_SEP)
         section = self
         for idx, name in enumerate(section_names):
             try:
@@ -281,17 +288,20 @@ class ConfigParser(ConfigSection):
             allow_no_value=True,
             default_section=self.DEFAULT_SECTION)
 
-    def _make_options(self, section_config):
+    def _make_options(self, section, section_config):
         for option_name, option_value in section_config.items():
             try:
-                self.set(option_name, option_value)
+                section.set(option_name, option_value)
             except KeyError:
-                self.add_option(option_name, option_value, store=False)
+                section.add_option(option_name, option_value, store=False)
 
-    def add_section(self, name, config=None, label=None, desc=None, store=None):
-        if name.lower() in (self.DEFAULT_SECTION.lower(), self.SELF_SECTION.lower()):
+    def add_section(
+            self, name, config=None, label=None, desc=None, store=None):
+        na = (self.DEFAULT_SECTION.lower(), self.SELF_SECTION.lower())
+        if name.lower() in na:
             raise InvalidValueError(name)
-        return ConfigSection.add_section(self, name, config, label, desc, store)
+        return ConfigSection.add_section(
+            self, name, config, label, desc, store)
 
     def retrieve(self):
         parser = self._new_parser()
@@ -300,12 +310,11 @@ class ConfigParser(ConfigSection):
         version = config.get(self.DEFAULT_SECTION, 'version', fallback=None)
         self._check_version(version)
 
-        if self.SELF_SECTION in config:
-            self._make_options(config[self.SELF_SECTION])
+        self._make_options(self, config.pop(self.SELF_SECTION, {}))
 
-        for section_addr in config.sections():
-            section = self._make_sections(section_addr)
-            self._make_options(config[section_addr])
+        for section_id in config.sections():
+            section = self._make_sections(section_id)
+            self._make_options(section, config[section_id])
 
     def _to_filevalue(self, value):
         return ','.join(value) if isiterable(value) else value
@@ -316,19 +325,22 @@ class ConfigParser(ConfigSection):
             if section.is_section(name):
                 sub_name = '{0}{1}{2}'.format(
                     section_name, self.SECTION_SEP, name)
-                config.update(self._to_fileconfig(item, sub_name))
+                fc = self._to_fileconfig(item, sub_name)
+                config.update(fc)
             else:
-                config.setdefault(
-                    section_name, OrderedDict())[name] = self._to_filevalue(item.get())
+                fv = self._to_filevalue(item.get())
+                config.setdefault(section_name, OrderedDict())[name] = fv
         return config
 
     def _gen_fileconfig(self):
         config = OrderedDict((self.SELF_SECTION, OrderedDict()))
         for name, item in self.loweritems():
             if self.is_section(name):
-                config.update(self._to_fileconfig(item, name))
+                fc = self._to_fileconfig(item, name)
+                config.update(fc)
             else:
-                config[self.SELF_SECTION][name] = self._to_filevalue(item.get())
+                fv = self._to_filevalue(item.get())
+                config[self.SELF_SECTION][name] = fv
         return config
 
     def store(self):

@@ -13,14 +13,12 @@
 import io
 import os
 import re
-import shutil
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
-
 
 _NAMESPACE = 'pyload'
 _PACKAGE = 'pyload.config'
