@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from future import standard_library
+
 from pyload.utils.layer.safethreading import Event
 
 from .request import Request
@@ -27,7 +28,7 @@ class DownloadRequest(Request):
         self._name = None
         self._size = 0
 
-        #: bucket used for rate limiting
+        # bucket used for rate limiting
         self.bucket = bucket
 
     def _get_logger(self, value):

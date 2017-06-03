@@ -6,11 +6,12 @@ from __future__ import absolute_import, unicode_literals
 import os
 import re
 import time
-from builtins import int, range
+from builtins import int
+from contextlib import closing
+
+from future import standard_library
 
 import pycurl
-from contextlib import closing
-from future import standard_library
 from pyload.utils import purge
 from pyload.utils.fs import lopen
 from pyload.utils.struct import HeaderDict
@@ -30,8 +31,8 @@ class CurlChunk(CurlRequest):
         self.set_context(*parent.get_context())
 
         self.id = id
-        self.p = parent  #: CurlDownload instance
-        self.range = range  #: tuple (start, end)
+        self.p = parent  # CurlDownload instance
+        self.range = range  # tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -42,14 +43,14 @@ class CurlChunk(CurlRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.header_parsed = False  #: indicates if the header has been processed
+        self.header_parsed = False  # indicates if the header has been processed
         self.headers = HeaderDict()
 
-        self.fp = None  #: file handle
+        self.fp = None  # file handle
 
         self.init_context()
 
-        self.check_bom = True  #: check and remove byte order mark
+        self.check_bom = True  # check and remove byte order mark
 
         self.rep = None
 
@@ -98,8 +99,9 @@ class CurlChunk(CurlRequest):
                 if self.id == len(self.p.info.chunks) - 1:
                     range = '{0:d}-'.format(self.arrived + self.range[0])
                 else:
-                    range = '{0:d}-{1:d}'.format(self.arrived + self.range[
-                                                0], min(self.range[1] + 1, self.p.size - 1))
+                    range = '{0:d}-{1:d}'.format(
+                        self.arrived + self.range[0],
+                        min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked resume with range {0}".format(range))
                 self.setopt(pycurl.RANGE, range)
@@ -109,11 +111,12 @@ class CurlChunk(CurlRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1:  #: see above
+                if self.id == len(self.p.info.chunks) - 1:  # see above
                     range = "{0:d}-".format(self.range[0])
                 else:
-                    range = "{0:d}-{1:d}".format(self.range[0],
-                                               min(self.range[1] + 1, self.p.size - 1))
+                    range = "{0:d}-{1:d}".format(
+                        self.range[0],
+                        min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {0}".format(range))
                 self.setopt(pycurl.RANGE, range)
@@ -170,7 +173,7 @@ class CurlChunk(CurlRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  #: close if we have enough data
+            return 0  # close if we have enough data
 
     def parse_header(self):
         """
@@ -214,10 +217,10 @@ class CurlChunk(CurlRequest):
         """
         Flush and close file.
         """
-        #: needs to be closed, or merging chunks will fail
+        # needs to be closed, or merging chunks will fail
         with closing(self.fp) as fp:
             fp.flush()
-            os.fsync(fp.fileno()) #: make sure everything was written to disk
+            os.fsync(fp.fileno())  # : make sure everything was written to disk
 
     def close(self):
         """

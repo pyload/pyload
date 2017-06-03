@@ -6,6 +6,7 @@ import logging
 from builtins import object
 
 from future import standard_library
+
 from pyload.utils.struct import HeaderDict
 
 standard_library.install_aliases()
@@ -31,7 +32,7 @@ class Request(object):
     """
     Abstract class to support different types of request, most methods should be overwritten.
     """
-    #: Class that will be instantiated and associated with the request, and if needed copied and reused
+    # Class that will be instantiated and associated with the request, and if needed copied and reused
     CONTEXT_CLASS = lambda: None
 
     def __init__(self, config, context=None, options=None, logger=None):

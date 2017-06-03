@@ -6,11 +6,12 @@ from __future__ import absolute_import, unicode_literals
 import io
 from builtins import bytes, dict, int, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
+from http.client import responses
 from urllib.parse import quote, urlencode
 
-import pycurl
 from future import standard_library
-from http.client import responses
+
+import pycurl
 from pyload.utils import convert
 from pyload.utils.fs import lopen
 
@@ -139,7 +140,8 @@ class CurlRequest(Request):
             self.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:
-                userpwd = "{0}:{1}".format(proxy['username'], proxy['password'])
+                userpwd = "{0}:{1}".format(
+                    proxy['username'], proxy['password'])
                 self.setopt(pycurl.PROXYUSERPWD, userpwd)
 
         if ipv6:
@@ -295,7 +297,7 @@ class CurlRequest(Request):
         Decode with correct encoding, relies on header.
         """
         header = self.header.splitlines()
-        encoding = "utf8"  #: default encoding
+        encoding = "utf8"  # default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")

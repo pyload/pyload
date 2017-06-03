@@ -7,6 +7,7 @@ import os
 from builtins import int, object, range
 
 from future import standard_library
+
 from pyload.utils.fs import bufread, fullpath, lopen, remove
 
 standard_library.install_aliases()
@@ -53,7 +54,8 @@ class ChunkInfo(object):
             for i, c in enumerate(self.chunks):
                 fp.write("#{0:d}:{1}".format(i, os.linesep))
                 fp.write("\tname:{0}{1}".format(c[0], os.linesep))
-                fp.write("\trange:{0:d}-{1:d}{2}".format(c[1][0], c[1][1], os.linesep))
+                fp.write("\trange:{0:d}-{1:d}{2}".format(
+                    c[1][0], c[1][1], os.linesep))
 
     @staticmethod
     def load(name):

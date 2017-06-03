@@ -4,9 +4,9 @@ from __future__ import absolute_import, unicode_literals
 
 import time
 from builtins import int, str
+from http.cookies import SimpleCookie
 
 from future import standard_library
-from http.cookies import SimpleCookie
 
 standard_library.install_aliases()
 
@@ -32,4 +32,5 @@ class CookieJar(SimpleCookie):
         self.__dict__[name]['tailmatch'] = 'TRUE' if tailmatch else 'FALSE'
         self.__dict__[name]['path'] = str(path)
         self.__dict__[name]['secure'] = 'TRUE' if secure else 'FALSE'
-        self.__dict__[name]['expires'] = int(expires or time.time() + self.EXPIRE_TIME)
+        self.__dict__[name]['expires'] = int(
+            expires or time.time() + self.EXPIRE_TIME)
