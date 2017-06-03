@@ -63,13 +63,14 @@ class DailymotionCom(Hoster):
     def get_streams(self):
         streams = []
 
-        for result in re.finditer(r'\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF>.*?)\\.*?)\"',
+        for result in re.finditer(r'\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\"',
                                   self.data):
             url = result.group('URL')
-            qf = result.group('QF')
+            qf_width = result.group('QF_WIDTH')
+            qf_height = result.group('QF_HEIGHT')
 
             link = url.replace("\\", "")
-            quality = tuple(int(x) for x in qf.split("x"))
+            quality = (int(qf_width), int(qf_height))
 
             streams.append((quality, link))
 
