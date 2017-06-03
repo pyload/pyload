@@ -7,7 +7,6 @@ import shutil
 import sys
 import time
 from builtins import str
-from contextlib import closing
 from glob import glob
 from json import loads
 from logging import DEBUG, log
@@ -17,7 +16,7 @@ from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.core.plugin.base import Abort, Fail
 from pyload.core.plugin.hoster import Hoster
 from pyload.requests import get_request
-from pyload.utils.fs import lopen, makedirs, remove
+from pyload.utils.fs import bufread, lopen, makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
 
@@ -64,7 +63,7 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
         raise Exception("CaptchaService config {0} not found".format(conf))
 
     with lopen(conf, mode='rb') as fp:
-        with closing(get_request()) as req:  # TODO: Check get_request
+        with get_request() as req:  # TODO: Check get_request
             # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
 

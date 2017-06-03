@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
-from pyload.utils.fs import lopen
+from pyload.utils.fs import bufread, lopen
 
 standard_library.install_aliases()
 
@@ -13,7 +13,7 @@ def parse_config(path):
 
     current_section = None
     with lopen(path, mode='rb') as fp:
-        for line in fp.readlines():
+        for line in bufread(fp, buffering=1):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue

@@ -10,7 +10,7 @@ from future import standard_library
 from nose.tools import nottest
 from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate, to_int
-from pyload.utils.fs import lopen
+from pyload.utils.fs import bufread, lopen
 from tests.helper.plugintester import PluginTester
 from tests.helper.stubs import Core
 
@@ -48,7 +48,7 @@ c = Core()
 
 crypterlinks = os.path.join(os.path.dirname(__file__), "crypterlinks.txt")
 with lopen(crypterlinks) as fp:
-    links = [x.strip() for x in fp.readlines()]
+    links = [line.strip() for line in bufread(fp, buffering=1):]
 urls = []
 flags = {}
 
