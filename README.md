@@ -48,5 +48,6 @@ If the above commands fail, consider using the
     pip install --user pyload.requests
 
 
-------------------------------------------------------------------------------
-###### © 2009-2015 pyLoad Team, © 2015-2017 Walter Purcaro <vuolter@gmail.com>
+-----------------------------------------------------
+###### © 2015-2017 Walter Purcaro <vuolter@gmail.com>
+###### © 2009-2015 pyLoad Team
