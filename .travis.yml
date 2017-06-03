@@ -1,12 +1,7 @@
 sudo: required
 language: python
-env:
-  global:
-    - secure: "bYWv6YwvjwAuP9lQbAx4vAUx/CSX1XVLysUr02RDylUOMfYdrRmm4WGpV03eA2miX1RdSOI+dQDMEyFUUhV0hhHR3dl4oRJ1XEVupaFAfxYQJWL/u7FoJ2QK5gTx3rOSH0fDgEPaSiQyHz84aQS0E8QLO/JQQxJIqjDTo4JAikY="
 branches:
-  only:
-    - master
-    - coverity_scan
+  only: master
 python:
   - 2.6
   - 2.7
@@ -25,27 +20,19 @@ matrix:
     # - pypy3
   fast_finish: true
 cache: pip
-addons:
-  coverity_scan:
-    project:
-      name: pyload/pyload
-      description: "Free and Open Source download manager written in Pure Python and designed to be extremely lightweight, fully customizable and remotely manageable"
-    notification_email: dev@pyload.net
-    build_command_prepend: ""
-    build_command: python setup.py build
-    branch_pattern: coverity_scan
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y pandoc
   # - sudo apt-get install -y python-pycurl
-  - if [ $COVERITY_SCAN_BRANCH -eq 1 ]; echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca- ; fi
 install:
   - pip install -U setuptools
+  - pip install flake8
   - pip install pypandoc
   - pip install requests
   - pip install tox-travis
-before_script: if [ $COVERITY_SCAN_BRANCH -eq 1 ]; then travis_terminate ; fi
-script: tox --skip-missing-interpreters
+script:
+  - tox --skip-missing-interpreters
+  - flake8 setup.py pyload.py src tests
 # after_success:
   # - pip install scrutinizer-ocular
   # - ocular
