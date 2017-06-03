@@ -19,6 +19,8 @@ import psutil
 import send2trash
 from future import standard_library
 
+from .layer.legacy import hashlib_ as hashlib
+
 standard_library.install_aliases()
 
 try:
@@ -128,6 +130,40 @@ def blksize(path):
     return size
 
 
+def bufread(fp, buffering=-1, sentinel=b''):
+    buf = blksize(fp.name) if buffering < 0 else buffering
+    func = fp.readline if buffering == 1 else lambda: fp.read(buf)
+    return iter(func, sentinel)
+
+
+def _crcsum(filename, chkname, buffering):
+    last = 0
+    call = getattr(zlib, chkname)
+    with lopen(filename, mode='rb') as fp:
+        for chunk in bufread(fp, buffering):
+            last = call(chunk, last)
+    return "{0:x}".format(last & 0xffffffff)
+
+
+def _hashsum(filename, chkname, buffering):
+    h = hashlib.new(chkname)
+    buffering *= h.block_size
+    with lopen(filename, mode='rb') as fp:
+        for chunk in bufread(fp, buffering):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def checksum(filename, chkname, buffering=None):
+    res = None
+    buf = buffering or blksize(filename)
+    if chkname in ('adler32', 'crc32'):
+        res = _crcsum(filename, chkname, buf)
+    elif chkname in hashlib.algorithms_available:
+        res = _hashsum(filename, chkname, buf)
+    return res
+
+
 def isexec(filename):
     return os.path.isfile(filename) and os.access(filename, os.X_OK)
 
@@ -161,10 +197,9 @@ def flush(filename, exist_ok=False):
 
 
 def merge(dst_file, src_file):
-    buf = blksize(src_file)
     with lopen(dst_file, mode='ab') as dfp:
         with lopen(src_file, mode='rb') as sfp:
-            for chunk in iter(lambda: sfp.read(buf), b''):
+            for chunk in bufread(sfp):
                 dfp.write(chunk)
 
 
@@ -242,9 +277,9 @@ def mtime(path):
     if not os.path.isdir(path):
         return getmtime(path)
 
-    mtimes = [getmtime(join(dirpath, fname))
+    mtimes = (getmtime(join(dirpath, fname))
               for dirpath, dirnames, filenames in os.walk(path)
-              for fname in filenames]
+              for fname in filenames)
 
     return max(0, 0, *mtimes)
 
