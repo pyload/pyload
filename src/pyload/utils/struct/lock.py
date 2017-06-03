@@ -196,7 +196,7 @@ class RWLock(object):
                             return None
                             # There is a writer to upgrade, but it's not us.
                             # Always leave the upgrade writer the advance slot,
-                            # because he presumes he'll get a write lock 
+                            # because he presumes he'll get a write lock
                             # directly from a previously held read lock.
                     elif self.__pendingwriters[0] is me:
                         # If there are no readers and writers, it's always

@@ -5,8 +5,6 @@ from __future__ import absolute_import, unicode_literals
 
 import datetime
 import os
-import re
-import urllib.parse
 from builtins import int, str
 
 from future import standard_library
@@ -77,13 +75,3 @@ def time(obj):
     if days:
         timelist.append("{0:d} days".format(days))
     return timelist
-
-
-__re_url = re.compile(r'(?<!:)/{2,}')
-
-def url(obj):
-    from .web import purge
-    url = urllib.parse.unquote(str(obj).decode('unicode-escape'))
-    url = purge.text(url).lstrip('.').lower()
-    url = __re_url.sub('/', url).rstrip('/')
-    return url

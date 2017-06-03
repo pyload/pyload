@@ -64,7 +64,8 @@ def threaded(daemon=True):
 
 def trycatch(callback):
     """
-    Decorator that executes the function and returns the value or fallback on any exception.
+    Decorator that executes the function and returns the value or fallback on
+    any exception.
     """
     from .debug import print_traceback
 

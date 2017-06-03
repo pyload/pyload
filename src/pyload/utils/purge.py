@@ -10,14 +10,10 @@ from builtins import bytes
 
 from future import standard_library
 
-from . import convert
+from . import convert, web
 
 standard_library.install_aliases()
 
-
-##########################################################################
-# Functions  ############################################################
-##########################################################################
 
 def chars(text, chars, repl=''):
     return re.sub(r'[{0}]+'.format(chars), repl, text)
@@ -71,27 +67,3 @@ def uniqify(seq):
     seen = set()
     seen_add = seen.add
     return type(seq)(x for x in seq if x not in seen and not seen_add(x))
-
-
-##########################################################################
-# Decorators  ###########################################################
-##########################################################################
-
-def args(func):
-    from .web import purge
-
-    def new(*args, **kwargs):
-        def rule(x): return isinstance(x, str)
-        args = convert.convert(args, rule, func=purge.text)
-        return func(*args, **kwargs)
-    return new
-
-
-def kwargs(func):
-    from .web import purge
-
-    def new(*args, **kwargs):
-        def rule(x): return isinstance(x, str) or isinstance(x, bytes)
-        kwgs = convert.convert(kwargs, rule, func=purge.text)
-        return func(*args, **kwgs)
-    return new

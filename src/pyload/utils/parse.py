@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import mimetypes
 import os
 import re
 import urllib.parse
@@ -63,10 +62,6 @@ def name(text, strict=True):
     except Exception:
         name = os.path.basename(text).strip()
     return name if strict else purge.name(name)
-
-
-def mime(text, strict=False):
-    return mimetypes.guess_type(text.strip(), strict)[0]
 
 
 __onewords = (

@@ -55,7 +55,9 @@ class Info(MutableMapping):
         return self.__dict__[key]
 
     def __setitem__(self, key, value):
-        if not self.writable or not self.updateable and key not in self.__dict__:
+        if not self.writable:
+            raise WriteError
+        if not self.updateable and key not in self.__dict__:
             raise WriteError
         self.__dict__[key] = value
 
@@ -112,7 +114,9 @@ class InscInfo(InscDict, Info):
         return InscDict.__getitem__(self, key)
 
     def __setitem__(self, key, value):
-        if not self.writable or not self.updateable and key.lower() not in self.__dict__:
+        if not self.writable:
+            raise WriteError
+        if not self.updateable and key.lower() not in self.__dict__:
             raise WriteError
         InscDict.__setitem__(self, key, value)
 
@@ -129,7 +133,8 @@ class SyncInfo(Info):
 
     __slots__ = ['__local__', '__remote__']
 
-    __local__ = None  # NOTE: Refer to the internal __dict__ used by <Info> class
+    # NOTE: Refer to the internal __dict__ used by <Info> class
+    __local__ = None
     __remote__ = None
 
     def __init__(self, remotedict, *args, **kwargs):

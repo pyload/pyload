@@ -204,7 +204,8 @@ def shutdown():
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
-        # See `http://stackoverflow.com/questions/23013274/shutting-down-computer-linux-using-python`
+        # See `http://stackoverflow.com/questions/23013274/
+        #      shutting-down-computer-linux-using-python`
         try:
             sys_bus = dbus.SystemBus()
             ck_srv = sys_bus.get_object(

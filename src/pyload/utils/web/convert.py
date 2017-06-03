@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import socket
 from builtins import int
-from socket import getaddrinfo, gethostbyaddr, gethostbyname_ex
 
 import idna
 from future import standard_library
@@ -29,12 +29,12 @@ def splitaddress(address):
 
 
 def host_to_ip(hostname):
-    hostname, aliaslist, ipaddrlist = gethostbyname_ex(hostname)
+    hostname, aliaslist, ipaddrlist = socket.gethostbyname_ex(hostname)
     return ipaddrlist
 
 
 def ip_to_host(ipaddress):
-    hostname, aliaslist, ipaddrlist = gethostbyaddr(ipaddress)
+    hostname, aliaslist, ipaddrlist = socket.gethostbyaddr(ipaddress)
     return [hostname] + aliaslist
 
 
@@ -47,7 +47,7 @@ def socket_to_endpoint(socket):
 
 def endpoint_to_socket(endpoint):
     host, port = splitaddress(endpoint)
-    addrinfo = getaddrinfo(host, int(port))
+    addrinfo = socket.getaddrinfo(host, int(port))
     return addrinfo[0][-1][:2], addrinfo[1][-1][:2]
 
 

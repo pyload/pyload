@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import mimetypes
 import re
 import urllib.parse
 
@@ -10,8 +11,7 @@ from future import standard_library
 
 import tld
 
-from . import purge as webpurge
-from .. import format, purge
+from . import format, purge
 from ..check import isiterable
 from ..struct import HeaderDict
 from .check import ishost, isip, isport
@@ -20,18 +20,16 @@ from .convert import host_to_ip, ip_to_host, splitaddress
 standard_library.install_aliases()
 
 
-@purge.args
 def socket(text):
-    addr, port = splitaddress(text)
+    addr, port = splitaddress(text.strip())
     ip = addr if isip(addr) else host_to_ip(addr)
     if port is not None and not isport(port):
         raise ValueError(port)
     return ip, port
 
 
-@purge.args
 def endpoint(text):
-    addr, port = splitaddress(text)
+    addr, port = splitaddress(text.strip())
     host = addr if ishost(addr) else ip_to_host(addr)
     if port is not None and not isport(port):
         raise ValueError(port)
@@ -56,7 +54,7 @@ __re_form = re.compile(
 def _extract_inputs(form):
     taginputs = {}
     for inputtag in __re_form.finditer(
-            webpurge.comments(form.group('CONTENT'))):
+            purge.comments(form.group('CONTENT'))):
         tagname = attr(inputtag.group(1), "name")
         if not tagname:
             continue
@@ -110,6 +108,12 @@ def header(text):
     return hdict
 
 
+def mime(text, strict=False):
+    DEFAULT_MIMETYPE = "application/octet-stream"
+    mimetype = mimetypes.guess_type(text.strip(), strict)[0]
+    return mimetype or DEFAULT_MIMETYPE
+    
+    
 def name(url):
     url = format.url(url)
     up = urllib.parse.urlparse(url)

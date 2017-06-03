@@ -13,7 +13,8 @@ from future import standard_library
 standard_library.install_aliases()
 
 
-# Backport of OrderedDict() class that runs on Python 2.4, 2.5, 2.6, 2.7 and pypy.
+# Backport of OrderedDict() class that runs on Python 2.4, 2.5, 2.6, 2.7
+# and pypy.
 # Passes Python 2.7's test suite and incorporates all the latest updates.
 # http://code.activestate.com/recipes/576693/
 if sys.version_info < (2, 7):
@@ -21,14 +22,18 @@ if sys.version_info < (2, 7):
     class OrderedDict(dict):
         'Dictionary that remembers insertion order'
         # An inherited dict maps keys to values.
-        # The inherited dict provides __getitem__, __len__, __contains__, and get.
+        # The inherited dict provides __getitem__, __len__, __contains__,
+        # and get.
         # The remaining methods are order-aware.
         # Big-O running times for all methods are the same as for regular
         # dictionaries.
 
-        # The internal self.__map dictionary maps keys to links in a doubly linked list.
-        # The circular doubly linked list starts and ends with a sentinel element.
-        # The sentinel element never gets deleted (this simplifies the algorithm).
+        # The internal self.__map dictionary maps keys to links in a doubly
+        # linked list.
+        # The circular doubly linked list starts and ends with a sentinel
+        # element.
+        # The sentinel element never gets deleted (this simplifies the
+        # algorithm).
         # Each link is stored as a list of length three:  [PREV, NEXT, KEY].
 
         try:
@@ -52,16 +57,16 @@ if sys.version_info < (2, 7):
             try:
                 self.__root
             except AttributeError:
-                self.__root = root = []                     # sentinel node
+                self.__root = root = []  # sentinel node
                 root[:] = [root, root, None]
                 self.__map = {}
             self.__update(*args, **kwds)
 
         def __setitem__(self, key, value, dict_setitem=dict.__setitem__):
             'od.__setitem__(i, y) <==> od[i]=y'
-            # Setting a new item creates a new link which goes at the end of the linked
-            # list, and the inherited dictionary is updated with the new
-            # key/value pair.
+            # Setting a new item creates a new link which goes at the end of
+            # the linked list, and the inherited dictionary is updated with
+            # the new key/value pair.
             if key not in self:
                 root = self.__root
                 last = root[0]
@@ -70,8 +75,8 @@ if sys.version_info < (2, 7):
 
         def __delitem__(self, key, dict_delitem=dict.__delitem__):
             'od.__delitem__(y) <==> del od[y]'
-            # Deleting an existing item uses self.__map to find the link which is
-            # then removed by updating the links in the predecessor and
+            # Deleting an existing item uses self.__map to find the link which
+            # is then removed by updating the links in the predecessor and
             # successor nodes.
             dict_delitem(self, key)
             link_prev, link_next, key = self.__map.pop(key)
@@ -109,7 +114,8 @@ if sys.version_info < (2, 7):
         def popitem(self, last=True):
             """
             od.popitem() -> (k, v), return and remove a (key, value) pair.
-            Pairs are returned in LIFO order if last is true or FIFO order if false.
+            Pairs are returned in LIFO order if last is true or FIFO order
+            if false.
             """
             if not self:
                 raise KeyError('dictionary is empty')
@@ -161,10 +167,17 @@ if sys.version_info < (2, 7):
             """
             od.update(E, **F) -> None.  Update od from dict/iterable E and F.
 
-            If E is a dict instance, does:           for k in E: od[k] = E[k]
-            If E has a .keys() method, does:         for k in E.keys(): od[k] = E[k]
-            Or if E is an iterable of items, does:   for k, v in E: od[k] = v
-            In either case, this is followed by:     for k, v in F.items(): od[k] = v
+            If E is a dict instance, does:
+            for k in E: od[k] = E[k]
+
+            If E has a .keys() method, does:
+            for k in E.keys(): od[k] = E[k]
+
+            Or if E is an iterable of items, does:
+            for k, v in E: od[k] = v
+
+            In either case, this is followed by:
+            for k, v in F.items(): od[k] = v
             """
             if len(args) > 2:
                 msg = 'update() takes at most 2 positional arguments ({} given)'
@@ -188,14 +201,17 @@ if sys.version_info < (2, 7):
             for key, value in kwds.items():
                 self[key] = value
 
-        __update = update  # let subclasses override update without breaking __init__
+        # let subclasses override update without breaking __init__
+        __update = update
 
         __marker = object()
 
         def pop(self, key, default=__marker):
             """
-            od.pop(k[,d]) -> v, remove specified key and return the corresponding value.
-            If key is not found, d is returned if given, otherwise KeyError is raised.
+            od.pop(k[,d]) -> v, remove specified key and return the
+            corresponding value.
+            If key is not found, d is returned if given, otherwise KeyError
+            is raised.
             """
             if key in self:
                 result = self[key]
@@ -206,14 +222,19 @@ if sys.version_info < (2, 7):
             return default
 
         def setdefault(self, key, default=None):
-            'od.setdefault(k[,d]) -> od.get(k, d), also set od[k] = d if k not in od'
+            """
+            od.setdefault(k[,d]) -> od.get(k, d),
+            also set od[k] = d if k not in od
+            """
             if key in self:
                 return self[key]
             self[key] = default
             return default
 
         def __repr__(self, _repr_running={}):
-            'od.__repr__() <==> repr(od)'
+            """
+            od.__repr__() <==> repr(od)
+            """
             call_key = id(self), _get_ident()
             if call_key in _repr_running:
                 return '...'
@@ -227,7 +248,9 @@ if sys.version_info < (2, 7):
                 del _repr_running[call_key]
 
         def __reduce__(self):
-            'Return state information for pickling'
+            """
+            Return state information for pickling
+            """
             items = [[k, self[k]] for k in self]
             inst_dict = vars(self).copy()
             for k in vars(OrderedDict()):
@@ -237,7 +260,9 @@ if sys.version_info < (2, 7):
             return self.__class__, (items,)
 
         def copy(self):
-            'od.copy() -> a shallow copy of od'
+            """
+            od.copy() -> a shallow copy of od
+            """
             return self.__class__(self)
 
         @classmethod
@@ -253,8 +278,9 @@ if sys.version_info < (2, 7):
 
         def __eq__(self, other):
             """
-            od.__eq__(y) <==> od==y.  Comparison to another OD is order-sensitive
-            while comparison to a regular mapping is order-insensitive.
+            od.__eq__(y) <==> od==y.  Comparison to another OD
+            is order-sensitive while comparison to a regular mapping
+            is order-insensitive.
             """
             if isinstance(other, OrderedDict):
                 return len(self) == len(
@@ -267,13 +293,19 @@ if sys.version_info < (2, 7):
         # -- the following methods are only used in Python 2.7 --
 
         def viewkeys(self):
-            "od.viewkeys() -> a set-like object providing a view on od's keys"
+            """"
+            od.viewkeys() -> a set-like object providing a view on od's keys
+            """
             return KeysView(self)
 
         def viewvalues(self):
-            "od.viewvalues() -> an object providing a view on od's values"
+            """
+            od.viewvalues() -> an object providing a view on od's values
+            """
             return ValuesView(self)
 
         def viewitems(self):
-            "od.viewitems() -> a set-like object providing a view on od's items"
+            """
+            od.viewitems() -> a set-like object providing a view on od's items
+            """
             return ItemsView(self)

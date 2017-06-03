@@ -49,7 +49,9 @@ def _shdo(func, src, dst, overwrite=None, ref=None):
     mtime = os.path.getmtime
     try:
         if os.path.isfile(dst):
-            if (overwrite is None and mtime(src) <= mtime(dst)) or not overwrite:
+            if overwrite is None and mtime(src) <= mtime(dst):
+                return None
+            elif not overwrite:
                 return None
             if os.name == 'nt':
                 os.remove(dst)
@@ -178,15 +180,20 @@ def open(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
          newline=None, closefd=True):
     if encoding is None:
         encoding = locale.getpreferredencoding(do_setlocale=False) or 'utf-8'
-    with _open(filename, mode, buffering, encoding, errors, newline, closefd) as fp:
+    with _open(filename, mode, buffering, encoding,
+               errors, newline, closefd) as fp:
         yield fp
 
 
 @contextmanager
 def lopen(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
           newline=None, closefd=True, blocking=True):
-    flags = portalocker.LOCK_EX if blocking else portalocker.LOCK_EX | portalocker.LOCK_NB
-    with open(filename, mode, buffering, encoding, errors, newline, closefd) as fp:
+    if blocking:
+        flags = portalocker.LOCK_EX
+    else:
+        flags = portalocker.LOCK_EX | portalocker.LOCK_NB
+    with open(filename, mode, buffering, encoding,
+              errors, newline, closefd) as fp:
         portalocker.lock(fp, flags)
         yield fp
 

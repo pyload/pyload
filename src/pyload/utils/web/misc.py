@@ -11,7 +11,6 @@ from future import standard_library
 standard_library.install_aliases()
 
 
-
 def get_ip():
     return socket.gethostbyname(socket.getfqdn())
 

@@ -22,7 +22,8 @@ def bitset(bits, cmp):
 
 def cmp(x, y):
     """
-    Compare the two objects x and y and return an integer according to the outcome.
+    Compare the two objects x and y and return an integer according to the
+    outcome.
     """
     return (x > y) - (x < y)
 
