@@ -29,12 +29,12 @@ _CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
 
 
 def _read_text(file):
-    with io.open(file, mode='rb') as fp:
+    with io.open(file) as fp:
         return fp.read().strip()
 
 
 def _write_text(file, text):
-    with io.open(file, mode='wb') as fp:
+    with io.open(file, mode='w') as fp:
         fp.write(text.strip() + os.linesep)
 
 
@@ -62,42 +62,44 @@ def _convert_text(text):
         return _docverter_convert(text)
 
 
-__re_purge = re.compile(r'.*<.+>.*')
+_re_purge = re.compile(r'.*<.+>.*')
 
 def _purge_text(text):
-    return __re_purge.sub('', text).strip()
+    return _re_purge.sub('', text).strip()
 
 
 def _gen_long_description():
-    delimeter = os.linesep * 3
-    readme = _purge_text(_read_text('README.md').split(delimeter, 1)[0])
+    DELIMITER = os.linesep * 3
+    readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
     history = _purge_text(_read_text('CHANGELOG.md'))
-    desc = os.linesep.join((readme, history))
-    return _convert_text(desc)
+    text = os.linesep.join((readme, history))
+    return _convert_text(text)
 
 
 def _get_long_description():
+    FILENAME = 'README.rst'
     try:
-        return _read_text('README.rst')
+        return _read_text(FILENAME)
     except IOError:
         return _gen_long_description()
 
 
-__re_section = re.compile(
+_re_section = re.compile(
     r'^\[([^\s]+)\]\s+([^[\s].+?)(?=^\[|\Z)', flags=re.M | re.S)
-__re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
+_re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
 
 def _parse_requires(text):
     deps = list(set(
-        __re_entry.findall(__re_section.split(text, maxsplit=1)[0])))
+        _re_entry.findall(_re_section.split(text, maxsplit=1)[0])))
     extras = {}
-    for name, rawdeps in __re_section.findall(text):
-        extras[name] = list(set(pack for pack in __re_entry.findall(rawdeps)))
+    for name, rawdeps in _re_section.findall(text):
+        extras[name] = list(set(pack for pack in _re_entry.findall(rawdeps)))
     return deps, extras
 
 
 def _get_requires(name):
-    file = os.path.join('requirements', name + '.txt')
+    DIRNAME = 'requirements'
+    file = os.path.join(DIRNAME, name + '.txt')
     text = _read_text(file)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
@@ -107,14 +109,15 @@ def _get_requires(name):
 
 
 def _get_version():
-    return _read_text('VERSION')
+    FILENAME = 'VERSION'
+    return _read_text(FILENAME)
 
 
 class MakeReadme(Command):
     """
     Create a valid README.rst file
     """
-    READMEFILE = 'README.rst'
+    FILENAME = 'README.rst'
 
     description = 'create a valid README.rst file'
     user_options = []
@@ -126,16 +129,16 @@ class MakeReadme(Command):
         pass
 
     def run(self):
-        if os.path.isfile(self.READMEFILE):
+        if os.path.isfile(self.FILENAME):
             return None
-        _write_text(self.READMEFILE, _gen_long_description())
+        _write_text(self.FILENAME, _gen_long_description())
 
 
 class PreBuild(Command):
     """
     Prepare for build
     """
-    ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
+    FILENAME = os.path.join(_PACKAGE_PATH, '__about__.py')
 
     description = 'prepare for build'
     user_options = []
@@ -159,10 +162,10 @@ __version__ = '{3}'
 __version_info__ = parse_version_info(__version__)
 __credits__ = ({4})
 """.format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
-        _write_text(self.ABOUTFILE, text)
+        _write_text(self.FILENAME, text)
 
     def run(self):
-        if not os.path.isfile(self.ABOUTFILE):
+        if not os.path.isfile(self.FILENAME):
             self._makeabout()
         self._makeabout()
 
@@ -199,7 +202,7 @@ class Sdist(sdist):
 
 NAME = _PACKAGE_NAME
 VERSION = _get_version()
-STATUS = "1 - Planning"
+STATUS = "2 - Pre-Alpha"
 DESC = """pyLoad Utils module"""
 LONG_DESC = _get_long_description()
 KEYWORDS = ["pyload"]
