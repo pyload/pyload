@@ -8,7 +8,7 @@ from builtins import object
 
 from future import standard_library
 
-from ..layer.safethreading import Condition, Lock, RLock, currentThread
+from ..layer.safethreading import Condition, Lock, RLock, current_thread
 
 standard_library.install_aliases()
 
@@ -61,7 +61,7 @@ class RWLock(object):
     full write lock, and not be downgraded after the upgrading call to
     acquirewrite() has been match by a corresponding release().
     """
-    __slots__ = ['__condition', '__enter__', '__pendingwriters', '__readers',
+    __slots__ = ['__condition', '__pendingwriters', '__readers',
                  '__upgradewritercount', '__upgradewritercount', '__writer',
                  '__writercount']
 
@@ -105,7 +105,7 @@ class RWLock(object):
             endtime = time.time() + timeout
         else:
             endtime = None
-        me = currentThread()
+        me = current_thread()
         self.__condition.acquire()
         try:
             if self.__writer is me:
@@ -156,7 +156,7 @@ class RWLock(object):
         """
         if timeout is not None:
             endtime = time.time() + timeout
-        me, upgradewriter = currentThread(), False
+        me, upgradewriter = current_thread(), False
         self.__condition.acquire()
         try:
             if self.__writer is me:
@@ -196,8 +196,8 @@ class RWLock(object):
                             return None
                             # There is a writer to upgrade, but it's not us.
                             # Always leave the upgrade writer the advance slot,
-                            # because he presumes he'll get a write lock directly
-                            # from a previously held read lock.
+                            # because he presumes he'll get a write lock 
+                            # directly from a previously held read lock.
                     elif self.__pendingwriters[0] is me:
                         # If there are no readers and writers, it's always
                         # fine for us to take the writer slot, removing us
@@ -237,7 +237,7 @@ class RWLock(object):
 
         In case the current thread holds no lock, a ValueError is thrown.
         """
-        me = currentThread()
+        me = current_thread()
         self.__condition.acquire()
         try:
             if self.__writer is me:
@@ -263,9 +263,10 @@ class RWLock(object):
         finally:
             self.__condition.release()
 
-    __enter__ = acquireread
+    def __enter__(self):
+        return self.acquireread()
 
-    def __exit__(self, t, v, tb):
+    def __exit__(self, type, value, tb):
         self.release()
 
     def __delete__(self, instance):  # pragma: no cover
