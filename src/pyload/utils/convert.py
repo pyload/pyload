@@ -3,10 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import dict
-import itertools
-import re
-from builtins import bytes, int, map, str
+from builtins import bytes, dict, int, str
 
 from future import standard_library
 
@@ -18,7 +15,7 @@ standard_library.install_aliases()
 try:
     import bitmath
 except ImportError:
-    pass
+    bitmath = None
 
 
 def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
@@ -60,7 +57,7 @@ def size(value, in_unit, out_unit):
         out_size = getattr(in_size, 'to_' + out_unit)()
         return out_size.value
 
-    except NameError:
+    except AttributeError:
         sizeunits = ('B', 'K', 'M', 'G', 'T', 'P', 'E')
         sizemap = dict((u, i * 10) for i, u in enumerate(sizeunits))
 

@@ -28,7 +28,7 @@ def report(value, dirname):
         with lopen(filepath, mode='wb') as fp:
             fp.write(value)
     finally:
-        del frame  #: delete it just now or wont be cleaned by gc
+        del frame  # delete it just now or wont be cleaned by gc
 
 
 def _format_dump(obj):
@@ -84,15 +84,16 @@ def _format_framestack(frame=None, limit=None):
             del frame
         return dump
     finally:
-        del stack[:]  #: delete all just to be sure...
+        del stack[:]  # delete all just to be sure...
 
 
 def format_framestack(frame=None, limit=None):
     framestack = _format_framestack(frame, limit)
     stack_desc = []
     for frame_name, frame_dump in framestack:
-        dump = os.linesep.join("\t{0:20} = {1}".format(attr_name, attr_dump)
-                         for attr_name, attr_dump in frame_dump)
+        dump = os.linesep.join(
+            "\t{0:20} = {1}".format(attr_name, attr_dump)
+            for attr_name, attr_dump in frame_dump)
         stack_desc.append("{0}{1}{2}".format(frame_name, os.linesep, dump))
 
     title = "FRAMESTACK {0!r}:".format(frame)
@@ -122,7 +123,7 @@ def _format_traceback(frame=None, limit=None, offset=None):
         if etype is not None:
             exception_callstack = traceback.extract_tb(tb)
 
-            #: Does this exception belongs to us?
+            # Does this exception belongs to us?
             if callstack[-1][0] == exception_callstack[0][0]:
                 callstack.pop()
                 callstack.extend(exception_callstack)

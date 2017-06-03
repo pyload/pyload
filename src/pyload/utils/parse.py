@@ -3,13 +3,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import mimetypes
 import os
 import re
 import urllib.parse
-from builtins import dict
-from socket import gethostbyname
 
-import mimetypes
 from future import standard_library
 
 from . import convert, purge
@@ -65,7 +63,6 @@ def hash(text):
 @purge.args
 def name(text, strict=True):
     from .web import parse
-    from .web.check import isurl
     try:
         name = parse.name(text)
     except Exception:
@@ -83,7 +80,8 @@ __onewords = (
     "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
     "sixteen", "seventeen", "eighteen", "nineteen")
 __tenwords = (
-    "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
+    "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty",
+    "ninety")
 __re_number = re.compile(r'[\s-]+')
 
 @purge.args
@@ -125,7 +123,7 @@ def packs(nameurls):
 __re_size = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 
 @purge.args
-def bytesize(text, unit=None):  #: returns integer bytes
+def bytesize(text, unit=None):  # returns integer bytes
     DEFAULT_INPUTUNIT = 'byte'
 
     m = __re_size.match(text)
@@ -142,7 +140,8 @@ def bytesize(text, unit=None):  #: returns integer bytes
 
 
 __timewords = ("this", "a", "an", "next")
-__timemap = {'day': 60 ** 2 * 12, 'hr': 60 ** 2, 'hour': 60 ** 2, 'min': 60, 'sec': 1}
+__timemap = {
+    'day': 60 ** 2 * 12, 'hr': 60 ** 2, 'hour': 60 ** 2, 'min': 60, 'sec': 1}
 __re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
 
 @purge.args

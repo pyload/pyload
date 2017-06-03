@@ -60,8 +60,8 @@ def isiterable(obj, strict=False):
     """
     Check if object is iterable (`<type 'str'>` excluded if strict=False).
     """
-    return (isinstance(obj, Iterable)
-            and (strict or not (isinstance(obj, str) or isinstance(obj, bytes))))
+    return (isinstance(obj, Iterable) and (
+        strict or not (isinstance(obj, str) or isinstance(obj, bytes))))
 
 
 def ismapping(obj):

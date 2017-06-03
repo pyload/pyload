@@ -3,21 +3,19 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import dict
-from builtins import open
 import io
 import locale
 import os
 import shutil
 import sys
-from builtins import int, next
+from builtins import dict, int, next, open
 from contextlib import contextmanager
 
 import portalocker
 import psutil
+from future import standard_library
 
 import send2trash
-from future import standard_library
 
 from .layer.legacy import hashlib_ as hashlib
 
@@ -26,7 +24,12 @@ standard_library.install_aliases()
 try:
     import magic
 except ImportError:
+    magic = None
     from filetype import guess_mime
+try:
+    import zlib
+except ImportError:
+    zlib = None
 
 
 def availspace(path):
@@ -103,7 +106,7 @@ def filesize(filename):
 def filetype(filename):
     try:
         return magic.from_file(filename, mime=True)
-    except NameError:
+    except AttributeError:
         pass
     return guess_mime(filename)
 
@@ -214,7 +217,8 @@ def mountpoint(path):
 
 def filesystem(path):
     mp = mountpoint(path)
-    fs = dict((part.mountpoint, part.fstype) for part in psutil.disk_partitions())
+    fs = dict(
+        (part.mountpoint, part.fstype) for part in psutil.disk_partitions())
     return fs.get(mp)
 
 

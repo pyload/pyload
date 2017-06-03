@@ -7,10 +7,7 @@ from builtins import int
 from socket import getaddrinfo, gethostbyaddr, gethostbyname_ex
 
 import idna
-
 from future import standard_library
-
-from .check import isipv4, isipv6
 
 standard_library.install_aliases()
 

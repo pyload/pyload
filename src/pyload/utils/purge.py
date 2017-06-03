@@ -16,7 +16,7 @@ standard_library.install_aliases()
 
 
 ##########################################################################
-#: Functions  ############################################################
+# Functions  ############################################################
 ##########################################################################
 
 def chars(text, chars, repl=''):
@@ -57,9 +57,9 @@ def pattern(text, rules):
 
 
 def truncate(text, offset):
-    max_trunc = len(text) // 2
-    if offset > max_trunc:
-        raise ValueError("String too short")
+    maxtrunc = len(text) // 2
+    if offset > maxtrunc:
+        raise ValueError("String too short to truncate")
     trunc = (len(text) - offset) // 3
     return "{0}~{1}".format(text[:trunc * 2], text[-trunc:])
 
@@ -74,14 +74,14 @@ def uniqify(seq):
 
 
 ##########################################################################
-#: Decorators  ###########################################################
+# Decorators  ###########################################################
 ##########################################################################
 
 def args(func):
     from .web import purge
 
     def new(*args, **kwargs):
-        rule = lambda x: isinstance(x, str)
+        def rule(x): return isinstance(x, str)
         args = convert.convert(args, rule, func=purge.text)
         return func(*args, **kwargs)
     return new
@@ -91,7 +91,7 @@ def kwargs(func):
     from .web import purge
 
     def new(*args, **kwargs):
-        rule = lambda x: isinstance(x, str) or isinstance(x, bytes)
+        def rule(x): return isinstance(x, str) or isinstance(x, bytes)
         kwgs = convert.convert(kwargs, rule, func=purge.text)
         return func(*args, **kwgs)
     return new

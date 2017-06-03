@@ -290,9 +290,11 @@ class LockedObject(object):
         attr = object.__getattribute__(self, name)
         if name.startswith('_') or not callable(attr):
             return attr
+
         @lock
         def wrapper(self, *args, **kwargs):
             return attr(*args, **kwargs)
+
         return wrapper
 
 

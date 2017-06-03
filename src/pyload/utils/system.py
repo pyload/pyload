@@ -6,10 +6,9 @@ from __future__ import absolute_import, unicode_literals
 import os
 import shlex
 import sys
-from builtins import dict, map, str
+from builtins import map, str
 
 import psutil
-
 from future import standard_library
 
 from . import convert
@@ -22,19 +21,19 @@ standard_library.install_aliases()
 try:
     import dbus
 except ImportError:
-    pass
+    dbus = None
 try:
     import setproctitle
 except ImportError:
-    pass
+    setproctitle = None
 try:
     import grp
 except ImportError:
-    pass
+    grp = None
 try:
     import pwd
 except ImportError:
-    pass
+    pwd = None
 
 
 # TODO: Recheck...
@@ -72,7 +71,7 @@ def call_cmd(command, *args, **kwargs):
 def console_encoding(enc):
     if os.name != 'nt':
         return 'utf-8'
-    return "cp850" if enc == "cp65001" else enc  #: aka UTF-8 under Windows
+    return "cp850" if enc == "cp65001" else enc  # aka UTF-8 under Windows
 
 
 def _get_psutil_process(pid, ctime):
@@ -81,10 +80,11 @@ def _get_psutil_process(pid, ctime):
     if ctime is None:
         return psutil.Process(pid)
     try:
-        psps = (psp for psp in psutil.process_iter()
+        psps = (
+            psp for psp in psutil.process_iter()
             if psp.pid() == pid and psp.create_time() == ctime)
         return psps[0]
-    except:
+    except IndexError:
         raise psutil.NoSuchProcess(pid)
 
 
@@ -133,7 +133,8 @@ def renice(pid=None, niceness=None):
                    psutil.ABOVE_NORMAL_PRIORITY_CLASS,
                    psutil.HIGH_PRIORITY_CLASS,
                    psutil.REALTIME_PRIORITY_CLASS]
-        prioval = (normval - MAX_NICENESS) * (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
+        prioval = (normval - MAX_NICENESS) * \
+            (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
         value = priocls[prioval]
     if isiterable(pid):
         pid, ctime = pid
@@ -203,14 +204,15 @@ def shutdown():
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
-        #: See `http://stackoverflow.com/questions/23013274/shutting-down-computer-linux-using-python`
+        # See `http://stackoverflow.com/questions/23013274/shutting-down-computer-linux-using-python`
         try:
             sys_bus = dbus.SystemBus()
-            ck_srv = sys_bus.get_object('org.freedesktop.ConsoleKit',
-                                        '/org/freedesktop/ConsoleKit/Manager')
+            ck_srv = sys_bus.get_object(
+                'org.freedesktop.ConsoleKit',
+                '/org/freedesktop/ConsoleKit/Manager')
             ck_iface = dbus.Interface(
                 ck_srv, 'org.freedesktop.ConsoleKit.Manager')
             stop_method = ck_iface.get_dbus_method("Stop")
             stop_method()
-        except NameError:
+        except AttributeError:
             call_cmd('stop -h now')  # NOTE: Root privileges needed

@@ -3,8 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import object
-
 from future import standard_library
 
 from ..layer.legacy.collections_ import Mapping, MutableMapping
@@ -42,7 +40,7 @@ class InscDict(MutableMapping):
     def __eq__(self, other):
         if not isinstance(other, Mapping):
             return NotImplementedError
-        #: Compare insensitively
+        # Compare insensitively
         return self.loweritems() == InscDict(other).loweritems()
 
     def lowerkeys(self):

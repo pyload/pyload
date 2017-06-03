@@ -8,7 +8,6 @@ from multiprocessing import Process
 
 from future import standard_library
 
-from .check import isiterable
 from .layer.safethreading import Thread
 
 standard_library.install_aliases()
@@ -43,10 +42,12 @@ def fork(daemon=True):
 # NOTE: Don't use this if you can use the metaclass struct.abc.Singleton
 def singleton(klass):
     inst = {}
+
     def get_inst(*args, **kwargs):
         if klass not in inst:
             inst[klass] = klass(*args, **kwargs)
         return inst[klass]
+
     return get_inst
 
 

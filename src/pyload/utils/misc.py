@@ -4,7 +4,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import gettext
-import os
 import socket
 from builtins import map
 
@@ -13,11 +12,6 @@ from future import standard_library
 from .check import ismapping
 
 standard_library.install_aliases()
-
-try:
-    import zlib
-except ImportError:
-    pass
 
 
 def accumulate(iterable, inv_map=None):
@@ -32,7 +26,8 @@ def accumulate(iterable, inv_map=None):
 
 
 def reverse(obj):
-    return type(obj)(map(reversed, obj.items())) if ismapping else reversed(obj)
+    return type(obj)(
+        map(reversed, obj.items())) if ismapping else reversed(obj)
 
 
 def forward(source, destination, buffering=1024):

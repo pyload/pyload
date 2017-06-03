@@ -3,9 +3,9 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import html.parser
 import re
 
-import html.parser
 from future import standard_library
 
 standard_library.install_aliases()

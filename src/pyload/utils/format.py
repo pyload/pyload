@@ -7,11 +7,10 @@ import datetime
 import os
 import re
 import urllib.parse
-from builtins import int, map, str
+from builtins import int, str
 
 from future import standard_library
 
-from . import purge
 from .check import isiterable
 from .fs import fullpath
 
@@ -21,7 +20,7 @@ standard_library.install_aliases()
 try:
     import bitmath
 except ImportError:
-    pass
+    bitmath = None
 
 
 def attributes(obj, ignore=None):
@@ -38,8 +37,8 @@ def items(obj, ignore=None):
         items = ("{0}={1}".format(k, v) for k, v in obj.items())
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        items = ("{0}={1}".format(k, v)
-                for k, v in obj.items() if k not in ignored)
+        items = (
+            "{0}={1}".format(k, v) for k, v in obj.items() if k not in ignored)
     return items
 
 
@@ -54,7 +53,7 @@ def size(obj):
     num = float(obj)
     try:
         return bitmath.Byte(num).best_prefix()
-    except NameError:
+    except AttributeError:
         for prefix in __byte_prefixes[:-1]:
             if abs(num) < KIB:
                 return "{0:3.2f} {1}B".format(num, prefix)

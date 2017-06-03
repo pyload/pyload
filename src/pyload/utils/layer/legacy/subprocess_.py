@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import os
 import sys
 from subprocess import *
 
@@ -26,7 +27,7 @@ if sys.version_info < (2, 7) and os.name != 'nt':
                     continue
                 raise
 
-    #: Unsued timeout option for older python version
+    # Unsued timeout option for older python version
     def wait(self, timeout=0):
         """
         Wait for child process to terminate.  Returns returncode
@@ -38,9 +39,9 @@ if sys.version_info < (2, 7) and os.name != 'nt':
             except OSError as e:
                 if e.errno != errno.ECHILD:
                     raise Exception()
-                #: This happens if SIGCLD is set to be ignored or waiting
-                #: For child processes has otherwise been disabled for our
-                #: process.  This child is dead, we can't get the status.
+                # This happens if SIGCLD is set to be ignored or waiting
+                # For child processes has otherwise been disabled for our
+                # process.  This child is dead, we can't get the status.
                 sts = 0
             self._handle_exitstatus(sts)
         return self.returncode

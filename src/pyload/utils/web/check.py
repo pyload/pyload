@@ -10,7 +10,6 @@ from builtins import map
 import idna
 import requests
 import validators
-
 from future import standard_library
 
 from .. import format, parse

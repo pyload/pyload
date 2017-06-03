@@ -6,10 +6,9 @@ from __future__ import absolute_import, unicode_literals
 import re
 import urllib.parse
 
-import requests
+from future import standard_library
 
 import tld
-from future import standard_library
 
 from . import purge as webpurge
 from .. import format, purge
@@ -87,10 +86,10 @@ def form(text, name=None, inputs={}):
     for form in re.finditer(pattr, text, flags=re.I | re.S):
         taginputs = _extract_inputs(form)
         formaction = attr(form.group('TAG'), "action")
-        #: Check input attributes
+        # Check input attributes
         if not inputs or _same_inputs(taginputs, inputs):
-            return formaction, taginputs  #: Passed attribute check
-    return None, {}  #: No matching form found
+            return formaction, taginputs  # Passed attribute check
+    return None, {}  # No matching form found
 
 
 __re_header = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
