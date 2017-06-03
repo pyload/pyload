@@ -26,10 +26,13 @@ before_install:
   # - sudo apt-get install -y python-pycurl
 install:
   - pip install -U setuptools
+  - pip install flake8
   - pip install pypandoc
   - pip install requests
   - pip install tox-travis
-script: tox --skip-missing-interpreters
+script:
+  - tox --skip-missing-interpreters
+  - flake8 setup.py src
 # after_success:
   # - pip install scrutinizer-ocular
   # - ocular
@@ -39,9 +42,9 @@ before_deploy:
 deploy:
   - provider: pypi
     user:
-      secure: ""
+      secure: "BJmH9b6aZHUM+TOo31l8s7VJyCxRH8vARo+0PZh02/DHiTIi/cisJsW4rWJHSBagjCRsnVRu/JASN0/WwJRDMUNbH+BuoVcPVH+X//Zm5RVbSffSL0ldgstGJ1btTtN2SXBIExydgfKqiyik8bl0x/eFbcM/rlEP00Ng7YEgS+X17Zgb/qnHSGV2bq29MMRlM7YP8wIhaT6g3FEn7HfVXuYmUqZ5TTL5yNTJZfc+m8Pm0abTokwb2X6hwEsLvigPWfNpc6PemyIIgQ/rix80KQ0RfmiT6z/8ItiCRJTuUpPlGk41h2PcimVznrPwEyT5QIACPB6LArBbW9RNZl+4bhYhJRI07N8FCpgoRlIkEGbIny3oqC7AnZdyyix2freVCsnWmdRsJGWo7YnmcrGDvPsVF/l4Kf7mCB9E9wK13UREMqDiCcGCzrQcPMF6yTPbz1aI49YscKdHCJKdcLiiVvF3ePT39razshf6FZJWraCDUdKCHsH5NuMO6yy5at57Xpxe60TnTZGKesW+cvvDJB2uMj95cYgkS5OOfq/OFK5bU9uX5mXshhOKYlFA65Aw5NWNeZg0wvCHMurOmEq+/1HMT13FUk3r+pvuvMvQyYhg8giXZQP3BK+5zJA1HliJpXjU92sS28tNdiJNzK1UbbguN9VkMXTp+sa2sxFU/BE="
     password:
-      secure: ""
+      secure: "JAYIdAanTG3sFDpIMqqKKoqKrSPzZbIwYi5d+ZC7ukGBywLz0OiVO/OKENCnPcmLYvKdnNHlCirPXWSVmcuKo/3Ba4UEjg8N3lkgXIephxIRs5d9oP6k8ANQICgOCf/BdMQJj/kTnmNmI5tWTfW9rjYze57/VTMqpRaWaMp4c4mfv9doLD/+3wUnaJVHj784I0goTp1iLvaL8kjwyvdqlIhev1R4NbYuWm0Ogvm0ziBSHA1vTNz6R+gNfvKLHvN3Q6twqWPJiI2DUOHt9dHlykcjLrFLWypLfXh/vEonK7BBVR/kcL3kVFhaUIu/Cf+mviuxJXHMjzXJzIw8Tor8/xNuBavxWORC+GIGElh++GVxCwXstE7jTSXdr4JpdIRXWWT9q17bFljNLP1faszUN2/JVmeB/JDw/xhFD9oZr7UY1oz75FB/0mQhaNzM2DIomXR6POg7il0jGD9mcA3nCI1hcLZqdHlP46JrWUUHNhXmkT2p5nDyGQlLcenHfQdM1vYAaRlwX9c+UsFL1Orbl5KxI2qGIrUegkJSxJ0aCSYhmi2QMdSVw35EVAVKVMkmtq+X2YYXFyOxJgk+2GPWXIYOciThHSdMjroJxr3a+dZgfKda8YX6PUcg2TFScDsGX4Fia/siPadYpWDRNT8Jvr+jAzWs0DUNuwk4GSSzA7w="
     distributions: sdist bdist_wheel
     skip_cleanup: true
     skip_upload_docs: true
@@ -50,7 +53,7 @@ deploy:
       python: 3.5
       tags: true
   - provider: releases
-    api-key: ""
+    api-key: "Xif4FGNCk0LGOMZSuleRwXoYblBWD9/tyTlZz/dJ6wVAF7y2sPVe5NmhDHHN/ky0fc34B7vRNNUUpp3gnwMIq3zkUtM5k3TKZZjoR+5NJmSrHThuaV9DLgNdCBNBlzvuXCyuGzT/iKdaU3LPngUaz56rS6ODEB9HN/MZYB0G6ZTGT/ywAhsLHvGZgIUfYgavI3NCB740DdAPRMiiJEIRPlPO4O1ZJa5KCQVvpE2Pu4Bn+aBzFlf/Gah+MClcqyCxL8sYr076CmKxPdn04dwH6oq2sj+LshUNw7jljde0L9WxY/dQjARhIx3kuiZzENtJ97tNxDAW++kjZ/6JkVbXVkszkawQbpbSrar+ZqD+RokP1DOb0+WUtF6AEEg6xVK9roeI/bwCkjYS1R1V0X+IcBw7yuC+5b2NUFEGclAvrTZEmiwd+qlHPoQ/M/mzfGY1tWnedx8vBTH+vId5U9K7WkM+AR0oZzYNHRoSl0UZlD0Atb4ZBEHKjZbe5vp8hW2lAskbsVlYzxDXh5MM3pNnIeXI7/VUL1BenfaQ1z/Zq0Owg8Gi64sYOmuO3UaZsJLYSYlypThgau4+H4BDfA3u2O2ZnW+6tTKPhiKBglMNaiMvdeFXtS62rOJW5au/69cGJPXB+9Ypxai08vmrG+piH2oxgPS+cyrvRR4PW4yfDAU="
     file_glob: true
     file: dist/*
     skip_cleanup: true
