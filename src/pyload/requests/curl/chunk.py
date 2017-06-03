@@ -43,7 +43,8 @@ class CurlChunk(CurlRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.header_parsed = False  # indicates if the header has been processed
+        # indicates if the header has been processed
+        self.header_parsed = False  
         self.headers = HeaderDict()
 
         self.fp = None  # file handle
@@ -127,8 +128,9 @@ class CurlChunk(CurlRequest):
 
     def write_header(self, buf):
         self.header += buf
-        # TODO: forward headers?, this is possibly unneeded, when we just parse valid 200 headers
-        # as first chunk, we will parse the headers
+        # TODO: forward headers?, this is possibly unneeded,
+        # when we just parse valid 200 headers as first chunk,
+        # we will parse the headers
         if not self.range and self.header.endswith(os.linesep * 2):
             self.parse_header()
         # ftp file size parsing
@@ -160,8 +162,9 @@ class CurlChunk(CurlRequest):
 
         # if the buffer sizes are stable no sleep will be made
         elif size != self.last_size or size != self._nlast_size:
-            # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
-            # otherwise reduce sleep time percentile (values are based on tests)
+            # Avoid small buffers, increasing sleep time slowly if buffer size 
+            # gets smaller otherwise reduce sleep time percentile (values are 
+            # based on tests)
             # So in general cpu time is saved without reducing bandwidth too
             # much
 
@@ -220,7 +223,7 @@ class CurlChunk(CurlRequest):
         # needs to be closed, or merging chunks will fail
         with closing(self.fp) as fp:
             fp.flush()
-            os.fsync(fp.fileno())  # : make sure everything was written to disk
+            os.fsync(fp.fileno())  # make sure everything was written to disk
 
     def close(self):
         """

@@ -40,7 +40,8 @@ class DownloadRequest(Request):
 
     def download(self, uri, filename, *args, **kwargs):
         """
-        Downloads the resource with additional options depending on implementation.
+        Downloads the resource with additional options
+        depending on implementation.
         """
         raise NotImplementedError
 

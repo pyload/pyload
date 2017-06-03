@@ -31,11 +31,17 @@ class CurlDownload(DownloadRequest):
     """
     Loads an url, http + ftp supported.
     """
-    # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, bucket=None,
-    #              options={}, disposition=False):
+    # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None, 
+    #              bucket=None, options={}, disposition=False):
 
     CONTEXT_CLASS = CookieJar
-    PATH_MAXLEN = 255 if os.name == 'nt' else 1024 if sys.platform == 'darwin' else 4096
+    
+    if os.name == 'nt'
+        PATH_MAXLEN = 255
+    else sys.platform == 'darwin':
+        PATH_MAXLEN = 1024
+    else:
+        PATH_MAXLEN = 4096
 
     def __init__(self, *args, **kwargs):
         DownloadRequest.__init__(self, *args, **kwargs)
@@ -60,7 +66,9 @@ class CurlDownload(DownloadRequest):
 
     @property
     def arrived(self):
-        return sum(c.arrived for c in self.chunks) if self.chunks else self._size
+        if not self.chunks:
+            return self._size
+        return sum(c.arrived for c in self.chunks)
 
     @property
     def name(self):
@@ -73,7 +81,8 @@ class CurlDownload(DownloadRequest):
             with lopen(init, "rb+") as fpo:  # first chunkfile
                 for i in range(1, self.info.get_count()):
                     # input file
-                    # seek to beginning of chunk, to get rid of overlapping chunks
+                    # seek to beginning of chunk,
+                    # to get rid of overlapping chunks
                     fpo.seek(self.info.get_chunk_range(i - 1)[1] + 1)
                     filename = "{0}.chunk{1:d}".format(self.path, i)
                     buf = 32 << 10
@@ -88,7 +97,7 @@ class CurlDownload(DownloadRequest):
                         remove(init)
                         self.info.remove()  # there are probably invalid chunks
                         raise Exception(
-                            "Downloaded content was smaller than expected. Try to reduce download connections")
+                            "Downloaded content was smaller than expected")
                     remove(filename)  # remove chunk
 
         if self.name:
@@ -101,7 +110,8 @@ class CurlDownload(DownloadRequest):
     def check_resume(self):
         try:
             self.info = ChunkInfo.load(self.path)
-            self.info.resume = True  # resume is only possible with valid info file
+            # resume is only possible with valid info file
+            self.info.resume = True  
             self._size = self.info.size
             self.info_saved = True
         except IOError:
@@ -178,12 +188,14 @@ class CurlDownload(DownloadRequest):
         chunks_done = set()  # list of curl handles that are finished
         chunks_created = False
         done = False
-        if self.info.get_count() > 1:  # This is a resume, if we were chunked originally assume still can
+        # This is a resume, if we were chunked originally assume still can
+        if self.info.get_count() > 1:  
             self.chunk_support = True
 
         while True:
             # need to create chunks
-            if not chunks_created and self.chunk_support and self.size:  # will be set later by first chunk
+            # will be set later by first chunk
+            if not chunks_created and self.chunk_support and self.size:  
 
                 self.flags ^= Connection.Resumable  # TODO: Recheck...
                 if not resume:
@@ -224,12 +236,15 @@ class CurlDownload(DownloadRequest):
                 failed = []
 
                 # TODO: Rewrite...
-                ex = Exception()  # save only last exception, we can only raise one anyway
+                # save only last exception, we can only raise one anyway
+                ex = Exception()  
 
                 num_q, ok_list, err_list = self.manager.info_read()
                 for c in ok_list:
                     chunk = self.find_chunk(c)
-                    try:  # check if the header implies success, else add it to failed list
+                    # check if the header implies success,
+                    # else add it to failed list
+                    try:  
                         chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug(
@@ -250,8 +265,9 @@ class CurlDownload(DownloadRequest):
                         self.log.debug(
                             "Chunk {0:d} failed: {1}".format(chunk.id + 1, ex))
                         continue
-
-                    try:  # check if the header implies success, else add it to failed list
+                    # check if the header implies success,
+                    #else add it to failed list
+                    try:
                         chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug(
@@ -263,12 +279,13 @@ class CurlDownload(DownloadRequest):
                         chunks_done.add(curl)
                 if not num_q:  # no more info to get
 
-                    # check if init is not finished so we reset download connections
+                    # check if init is not finished so we reset download 
+                    #connections
                     # note that other chunks are closed and everything
                     # downloaded with initial connection
                     if failed and init not in failed and init.c not in chunks_done:
-                        self.log.error(
-                            "Download chunks failed, fallback to single connection | {0}".format(ex))
+                        msg = "Download chunks failed, fallback to single connection | {0}"
+                        self.log.error(msg.format(ex))
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -292,9 +309,9 @@ class CurlDownload(DownloadRequest):
                     if len(chunks_done) >= len(self.chunks):
                         if len(chunks_done) > len(self.chunks):
                             self.log.warning(
-                                "Finished download chunks size incorrect, please report bug")
+                                "Finished download chunks size incorrect")
                         done = True  # all chunks loaded
-
+                        
                     break
 
             if done:
@@ -302,9 +319,8 @@ class CurlDownload(DownloadRequest):
 
             # calc speed once per second, averaging over 3 seconds
             if last_time_check + 1 < t:
-                diff = [
-                    c.arrived - (
-                        self.last_arrived[i] if len(self.last_arrived) > i else 0)
+                len_la = len(self.last_arrived)
+                diff = [c.arrived - (self.last_arrived[i] if len_la > i else 0)
                     for i, c in enumerate(self.chunks)]
 
                 self.last_speeds[1] = self.last_speeds[0]
@@ -325,7 +341,8 @@ class CurlDownload(DownloadRequest):
 
     def find_chunk(self, handle):
         """
-        Linear search to find a chunk (should be ok since chunk size is usually low).
+        Linear search to find a chunk
+        (should be ok since chunk size is usually low).
         """
         for chunk in self.chunks:
             if chunk.c == handle:
