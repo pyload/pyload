@@ -71,25 +71,25 @@ class DownloadThread(PluginThread):
         file.set_status("temp. offline")
         self.pyload.log.warning(
             self._("Download is temporary offline: {0}").format(file.name))
-        file.error = self._("Internal Server Error") 
-        
+        file.error = self._("Internal Server Error")
+
         if self.pyload.debug:
             print_exc()
             self.debug_report(file)
-            
+
         self.pyload.adm.download_failed(file)
         self.clean(file)
-        
+
     def _handle_failed(self, file, errmsg):
         file.set_status("failed")
         self.pyload.log.warning(
             self._("Download failed: {0} | {1}").format(file.name, errmsg))
         file.error = errmsg
-        
+
         if self.pyload.debug:
             print_exc()
             self.debug_report(file)
-            
+
         self.pyload.adm.download_failed(file)
         self.clean(file)
 

@@ -64,7 +64,7 @@ class PluginThread(Thread):
             ('system version', sys.version),
             ('system encoding', sys.getdefaultencoding()),
             ('file-system encoding', sys.getfilesystemencoding()),
-            ('current working directory', os.getcwdu())
+            ('current working directory', os.getcwd())
         )
         si_title = "SYSTEM INFO:"
         si_body = os.linesep.join(

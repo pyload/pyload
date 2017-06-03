@@ -25,7 +25,7 @@ def _gen_session_defaults():
         ('path', ('option', None, 'Path', None, None, InputType.Folder)),
         ('name', ('option', None, 'Name', None, None, InputType.Str))
     )
-    
+
     current_config = (
         ('id', ('option', None, 'ID', None, None, InputType.Float)),
         ('profile', ('section', profile_section, 'Profile', None)),

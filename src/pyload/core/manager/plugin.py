@@ -57,7 +57,7 @@ class PluginManager(BaseManager):
         sys.meta_path.append(self)
 
         # add to path, so we can import from userplugins
-        sys.path.append(os.getcwdu())  # TODO: Recheck...
+        sys.path.append(os.getcwd())  # TODO: Recheck...
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
             self.LOCALROOT, self.pyload.config),
