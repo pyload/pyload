@@ -7,7 +7,7 @@ import os
 from builtins import int, object, range
 
 from future import standard_library
-from pyload.utils.fs import fullpath, lopen, remove
+from pyload.utils.fs import bufread, fullpath, lopen, remove
 
 standard_library.install_aliases()
 
@@ -71,10 +71,8 @@ class ChunkInfo(object):
             ci = ChunkInfo(name)
             ci.loaded = True
             ci.set_size(size)
-            while True:
-                if not fp.readline():  #: skip line
-                    break
-                name = fp.readline()[1:-1]
+            for line in bufread(fp, buffering=1):
+                name = line[1:-1]
                 range = fp.readline()[1:-1]
                 if name.startswith("name:") and range.startswith("range:"):
                     name = name[5:]
