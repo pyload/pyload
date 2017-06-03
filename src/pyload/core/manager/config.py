@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import json
 
 from future import standard_library
+
 from pyload.config import ConfigParser
 # from pyload.config.convert import from_string
 from pyload.utils.layer.legacy.collections_ import OrderedDict
@@ -18,7 +19,6 @@ def convertkeyerror(func):
     """
     Converts KeyError into InvalidConfigSection.
     """
-
     def conv(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -71,7 +71,7 @@ class ConfigManager(ConfigParser):
                 assert self.config[section].config[option]
                 return self.load_values(user, section)[option]
             except KeyError:
-                pass  #: Returns default value later
+                pass  # Returns default value later
 
         return self.config[section].config[option].input.default
 
@@ -80,7 +80,7 @@ class ConfigManager(ConfigParser):
             conf = self.pyload.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
-            except ValueError:  #: Something did go wrong when parsing
+            except ValueError:  # Something did go wrong when parsing
                 self.values[user, section] = {}
                 # self.pyload.print_exc()
 

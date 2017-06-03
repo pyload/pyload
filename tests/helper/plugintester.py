@@ -12,11 +12,12 @@ from json import loads
 from logging import DEBUG, log
 
 from future import standard_library
+
 from pycurl import FORM_FILE, LOW_SPEED_TIME
 from pyload.core.plugin.base import Abort, Fail
 from pyload.core.plugin.hoster import Hoster
 from pyload.requests import get_request
-from pyload.utils.fs import bufread, lopen, makedirs, remove
+from pyload.utils.fs import lopen, makedirs, remove
 from tests.helper.stubs import Core, Thread, noop
 from unittest2 import TestCase
 
@@ -45,10 +46,13 @@ def _wait(self):
     self.waiting = False
     self.file.set_status("starting")
 
+
 Hoster.wait = _wait
 
 
-def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, imgtype='jpg',
+def decrypt_captcha(self, url, get={},
+                    post={},
+                    cookies=False, forceuser=False, imgtype='jpg',
                     result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
@@ -67,12 +71,14 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
             # raise timeout threshold
             req.c.setopt(LOW_SPEED_TIME, 300)
 
-            json = req.load("http://captchatrader.com/api/submit",
-                            post={'api_key': "9f65e7f381c3af2b076ea680ae96b0b7",
-                                  'username': fp.readline().strip(),
-                                  'password': fp.readline().strip(),
-                                  'value': (FORM_FILE, fp.name),
-                                  'type': "file"}, multipart=True)
+            json = req.load(
+                "http://captchatrader.com/api/submit",
+                post={'api_key': "9f65e7f381c3af2b076ea680ae96b0b7",
+                      'username': fp.readline().strip(),
+                      'password': fp.readline().strip(),
+                      'value': (FORM_FILE, fp.name),
+                      'type': "file"},
+                multipart=True)
 
     response = loads(json)
     log(DEBUG, str(response))
@@ -82,17 +88,20 @@ def decrypt_captcha(self, url, get={}, post={}, cookies=False, forceuser=False, 
 
     return result
 
+
 Hoster.decrypt_captcha = decrypt_captcha
 
 
 def invalid_captcha(self):
     log(DEBUG, "Captcha invalid")
 
+
 Hoster.invalid_captcha = invalid_captcha
 
 
 def correct_captcha(self):
     log(DEBUG, "Captcha correct")
+
 
 Hoster.correct_captcha = correct_captcha
 

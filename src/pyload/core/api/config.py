@@ -3,31 +3,27 @@
 from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
-from pyload.utils.convert import to_str
 
-from ..datatype.init import ConfigHolder, ConfigInfo, ConfigItem, Permission
 from .base import BaseApi
-from .init import Api, requireperm
 
 standard_library.install_aliases()
 
 
-# @TODO: Recheck...
+# TODO: Recheck...
 # helper function to create a ConfigHolder
 # def to_config_holder(section, config, values):
-    # holder = ConfigHolder(section, config.label,
-                          # config.description, config.explanation)
-    # holder.items = [ConfigItem(option, x.label, x.description, x.input,
-                               # to_str(values.get(option, x.input.default), values.get(option, x.input.default))) for option, x in
-                    # config.config.items()]
-    # return holder
+# holder = ConfigHolder(section, config.label,
+# config.description, config.explanation)
+# holder.items = [ConfigItem(option, x.label, x.description, x.input,
+# to_str(values.get(option, x.input.default), values.get(option, x.input.default))) for option, x in
+# config.config.items()]
+# return holder
 
 
 class ConfigApi(BaseApi):
     """
     Everything related to configuration.
     """
-
     def get_config_value(self, section, option):
         """
         Retrieve config value.
@@ -57,7 +53,7 @@ class ConfigApi(BaseApi):
         # """
         # data = {}
         # for section, config, values in self.pyload.config.iter_core_sections():
-            # data[section] = to_config_holder(section, config, values)
+        # data[section] = to_config_holder(section, config, values)
         # return data
 
     # def get_core_config(self):
@@ -67,7 +63,7 @@ class ConfigApi(BaseApi):
         # :rtype: list of PluginInfo
         # """
         # return [ConfigInfo(section, config.label, config.description, False, False)
-                # for section, config, values in self.pyload.config.iter_core_sections()]
+        # for section, config, values in self.pyload.config.iter_core_sections()]
 
     # @requireperm(Permission.Plugins)
     # def get_plugin_config(self):
@@ -82,17 +78,17 @@ class ConfigApi(BaseApi):
         # data = []
         # active = [x.get_name() for x in self.pyload.adm.active_plugins()]
         # for name, config, values in self.pyload.config.iter_sections():
-            # # skip unmodified and inactive addons
-            # if not values and name not in active:
-                # continue
+        # # skip unmodified and inactive addons
+        # if not values and name not in active:
+        # continue
 
-            # item = ConfigInfo(name, config.label, config.description,
-                              # self.pyload.pgm.get_category(name),
-                              # self.pyload.pgm.is_user_plugin(name),
-                              # # TODO: won't work probably
-                              # values.get("activated",
-                                         # None if "activated" not in config.config else config.config['activated'].input.default))
-            # data.append(item)
+        # item = ConfigInfo(name, config.label, config.description,
+        # self.pyload.pgm.get_category(name),
+        # self.pyload.pgm.is_user_plugin(name),
+        # # TODO: won't work probably
+        # values.get("activated",
+        # None if "activated" not in config.config else config.config['activated'].input.default))
+        # data.append(item)
 
         # return data
 
@@ -105,9 +101,9 @@ class ConfigApi(BaseApi):
         # """
         # # TODO: filter user_context / addons when not allowed
         # plugins = [ConfigInfo(name, config.label, config.description,
-                              # self.pyload.pgm.get_category(name),
-                              # self.pyload.pgm.is_user_plugin(name))
-                   # for name, config, values in self.pyload.config.iter_sections()]
+        # self.pyload.pgm.get_category(name),
+        # self.pyload.pgm.is_user_plugin(name))
+        # for name, config, values in self.pyload.config.iter_sections()]
 
         # return plugins
 
@@ -132,7 +128,7 @@ class ConfigApi(BaseApi):
         # :param config: :class:`ConfigHolder`
         # """
         # for item in config.items:
-            # self.pyload.config.set(config.name, item.name, item.value, store=False)
+        # self.pyload.config.set(config.name, item.name, item.value, store=False)
         # # save the changes
         # self.pyload.config.store()
 

@@ -11,6 +11,7 @@ from logging import DEBUG, ERROR, INFO, WARN, log
 from traceback import format_exc
 
 from future import standard_library
+
 from pyload.config import ConfigParser
 from pyload.core import Core
 from pyload.core.datatype import Role, User

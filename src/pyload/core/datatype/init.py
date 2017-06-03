@@ -150,11 +150,15 @@ class ProgressType(IntEnum):
 
 
 class AccountInfo(BaseObject):
-    __slots__ = ['aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
-                 'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared', 'config']
+    __slots__ = [
+        'aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
+        'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared',
+        'config']
 
-    def __init__(self, aid=None, plugin=None, loginname=None, owner=None, valid=None, validuntil=None,
-                 trafficleft=None, maxtraffic=None, premium=None, activated=None, shared=None, config=None):
+    def __init__(
+            self, aid=None, plugin=None, loginname=None, owner=None,
+            valid=None, validuntil=None, trafficleft=None, maxtraffic=None,
+            premium=None, activated=None, shared=None, config=None):
         self.aid = aid
         self.plugin = plugin
         self.loginname = loginname
@@ -304,11 +308,13 @@ class ProgressInfo(BaseObject):
 
 
 class StatusInfo(BaseObject):
-    __slots__ = ['speed', 'linkstotal', 'linksqueue', 'sizetotal',
-                 'sizequeue', 'notifications', 'paused', 'download', 'reconnect', 'quota']
+    __slots__ = [
+        'speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue',
+        'notifications', 'paused', 'download', 'reconnect', 'quota']
 
-    def __init__(self, speed=None, linkstotal=None, linksqueue=None, sizetotal=None, sizequeue=None,
-                 notifications=None, paused=None, download=None, reconnect=None, quota=None):
+    def __init__(self, speed=None, linkstotal=None, linksqueue=None,
+                 sizetotal=None, sizequeue=None, notifications=None,
+                 paused=None, download=None, reconnect=None, quota=None):
         self.speed = speed
         self.linkstotal = linkstotal
         self.linksqueue = linksqueue

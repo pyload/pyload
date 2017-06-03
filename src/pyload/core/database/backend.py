@@ -5,13 +5,14 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import shutil
-from builtins import int, object, range, str
+from builtins import int, object, str
+from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
+
 from pyload.utils.fs import lopen, remove
 from pyload.utils.layer.safethreading import Event, Thread
-from queue import Queue
 
 standard_library.install_aliases()
 
@@ -128,7 +129,7 @@ class DatabaseBackend(Thread):
         self.setDaemon(True)
         self.pyload = core
         self._ = core._
-        self.manager = None  #: set later
+        self.manager = None  # set later
         self.error = None
         self.__running = Event()
 
@@ -228,12 +229,12 @@ class DatabaseBackend(Thread):
         except Exception:
             return False
 
-    #--convert scripts start
+    # -- convert scripts start --
 
     def _convert_v6(self):
         return False
 
-    #--convert scripts end
+    # -- convert scripts end --
 
     def _create_tables(self):
         """
@@ -247,11 +248,11 @@ class DatabaseBackend(Thread):
             '"site" TEXT DEFAULT "" NOT NULL, '
             '"comment" TEXT DEFAULT "" NOT NULL, '
             '"password" TEXT DEFAULT "" NOT NULL, '
-            '"added" INTEGER DEFAULT 0 NOT NULL,'  #: set by trigger
+            '"added" INTEGER DEFAULT 0 NOT NULL,'  # set by trigger
             '"status" INTEGER DEFAULT 0 NOT NULL,'
             '"tags" TEXT DEFAULT "" NOT NULL,'
             '"shared" INTEGER DEFAULT 0 NOT NULL,'
-            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  #: incremented by trigger
+            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  # incremented by trigger
             '"root" INTEGER DEFAULT -1 NOT NULL, '
             '"owner" INTEGER NOT NULL, '
             'FOREIGN KEY(owner) REFERENCES users(uid), '
@@ -265,16 +266,14 @@ class DatabaseBackend(Thread):
             'UPDATE packages SET added = strftime("%s", "now"), '
             'packageorder = (SELECT max(p.packageorder) + 1 FROM packages p WHERE p.root=new.root) '
             'WHERE rowid = new.rowid;'
-            'END'
-        )
+            'END')
 
         self.c.execute(
             'CREATE TRIGGER IF NOT EXISTS "delete_package" AFTER DELETE ON "packages"'
             'BEGIN '
             'DELETE FROM files WHERE package = old.pid;'
             'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > old.packageorder AND root=old.pid;'
-            'END'
-        )
+            'END')
         self.c.execute(
             'CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
         self.c.execute(
@@ -313,8 +312,7 @@ class DatabaseBackend(Thread):
             'UPDATE files SET added = strftime("%s", "now"), '
             'fileorder = (SELECT max(f.fileorder) + 1 FROM files f WHERE f.package=new.package) '
             'WHERE rowid = new.rowid;'
-            'END'
-        )
+            'END')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "collector" ('
@@ -348,7 +346,7 @@ class DatabaseBackend(Thread):
             '"dlquota" TEXT DEFAULT "" NOT NULL, '
             '"hddquota" INTEGER DEFAULT -1 NOT NULL, '
             '"template" TEXT DEFAULT "default" NOT NULL, '
-            '"user" INTEGER DEFAULT -1 NOT NULL, '  #: set by trigger to self
+            '"user" INTEGER DEFAULT -1 NOT NULL, '  # set by trigger to self
             'FOREIGN KEY(user) REFERENCES users(uid)'
             ')'
         )
@@ -360,8 +358,7 @@ class DatabaseBackend(Thread):
             'BEGIN '
             'UPDATE users SET user = new.uid, folder=new.name '
             'WHERE rowid = new.rowid;'
-            'END'
-        )
+            'END')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "settings" ('

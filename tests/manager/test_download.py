@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import range
 
 from future import standard_library
+
 from pyload.core.database import DatabaseBackend
 from tests.helper.benchmark import BenchmarkTest
 from tests.helper.stubs import Core, admin_user, normal_user, other_user
@@ -52,8 +53,11 @@ class TestTransferManager(BenchmarkTest):
             for i in range(self.PACKAGES):
                 pid = self.files.add_package(
                     "name {0:d}", "folder", -1, "", "", "", False, user.uid)
-                self.files.add_links((("url{0:d}".format(i), "plugin{0:d}".format(
-                    i % self.PLUGINS)) for i in range(self.LINKS)), pid, user.uid)
+                self.files.add_links(
+                    (("url{0:d}".format(i),
+                      "plugin{0:d}".format(i % self.PLUGINS))
+                     for i in range(self.LINKS)),
+                    pid, user.uid)
 
     def test_simple(self):
         jobs = self.db.get_jobs([])

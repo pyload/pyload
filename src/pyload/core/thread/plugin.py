@@ -6,13 +6,12 @@ import os
 import sys
 import time
 import zipfile
-from builtins import str
 
 from future import standard_library
-from pyload.utils import debug, format
-from pyload.utils.fs import lopen, makedirs
+
+from pyload.utils import debug
+from pyload.utils.fs import makedirs
 from pyload.utils.layer.safethreading import Thread
-from semver import format_version
 
 standard_library.install_aliases()
 
@@ -29,10 +28,10 @@ class PluginThread(Thread):
         """
         Thread.__init__(self)
         self.setDaemon(True)
-        self.manager = manager  #: Thread manager
+        self.manager = manager  # Thread manager
         self.pyload = manager.pyload
         self._ = manager.pyload._
-        #: Owner of the thread, every type should set it or overwrite user
+        # Owner of the thread, every type should set it or overwrite user
         self.owner = owner
 
     @property
@@ -95,10 +94,12 @@ class PluginThread(Thread):
                 zip.writestr(arcname, data)
 
     def debug_report(self, file):
-        dumpdir = os.path.join(self.pyload.cachedir, 'plugins', file.pluginname)
+        dumpdir = os.path.join(self.pyload.cachedir,
+                               'plugins', file.pluginname)
         makedirs(dumpdir, exist_ok=True)
 
-        reportdir = os.path.join('crashes', 'plugins', file.pluginname)  # NOTE: Relpath to configdir
+        # NOTE: Relpath to configdir
+        reportdir = os.path.join('crashes', 'plugins', file.pluginname)
         makedirs(reportdir, exist_ok=True)
 
         filename = "debug-report_{0}_{1}.zip".format(

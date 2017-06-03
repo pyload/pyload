@@ -5,13 +5,13 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from future import standard_library
+
 from pyload.utils.fs import availspace, lopen
-from semver import format_version
 
 from ..datatype.init import Permission, StatusInfo
 from ..datatype.task import Interaction
 from .base import BaseApi
-from .init import Api, requireperm
+from .init import requireperm
 
 standard_library.install_aliases()
 
@@ -48,9 +48,9 @@ class CoreApi(BaseApi):
         # Gets and address for the websocket based on configuration.
         # """
         # if self.is_ws_secure():
-            # ws = "wss"
+        # ws = "wss"
         # else:
-            # ws = "ws"
+        # ws = "ws"
 
         # return "{0}://{{0}}:{1:d}".format(ws, self.pyload.config.get('rpc', 'port'))
 
@@ -69,7 +69,7 @@ class CoreApi(BaseApi):
                                    total[1], queue[1],
                                    self.is_interaction_waiting(
                                        Interaction.All),
-                                   not self.pyload.tsm.pause,  #: and self.is_time_download(),
+                                   not self.pyload.tsm.pause,  # and self.is_time_download(),
                                    self.pyload.tsm.pause,
                                    # and self.is_time_reconnect(),
                                    self.pyload.config.get(
@@ -77,7 +77,7 @@ class CoreApi(BaseApi):
                                    self.get_quota())
 
         for file in self.pyload.tsm.active_downloads():
-            server_status.speed += file.get_speed()  #: bytes/s
+            server_status.speed += file.get_speed()  # bytes/s
 
         return server_status
 

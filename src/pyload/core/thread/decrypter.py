@@ -6,12 +6,13 @@ import time
 from builtins import str
 
 from future import standard_library
+
 from pyload.utils.misc import accumulate
 from pyload.utils.purge import uniqify
 
 from ..datatype.init import (DownloadStatus, LinkStatus, ProgressInfo,
                              ProgressType)
-from ..network.base import Abort, Fail, Retry
+from ..network.base import Abort, Retry
 from ..network.crypter import Package
 from .plugin import PluginThread
 
@@ -51,16 +52,17 @@ class DecrypterThread(PluginThread):
 
         if links:
             self.pyload.log.info(
-                self._("Decrypted {0:d} links into package {1}").format(len(links), pack.name))
+                self._("Decrypted {0:d} links into package {1}").format(
+                    len(links),
+                    pack.name))
             api.add_links(self.pid, [l.url for l in links])
 
         for pack_ in packages:
             api.add_package(pack_.name, pack_.get_urls(), pack.password)
 
         self.pyload.files.set_download_status(
-            self.fid,
-            DownloadStatus.Finished if not self.error else DownloadStatus.Failed
-        )
+            self.fid, DownloadStatus.Finished
+            if not self.error else DownloadStatus.Failed)
         self.manager.done(self)
 
     def _decrypt(self, name, urls, password):
@@ -78,8 +80,10 @@ class DecrypterThread(PluginThread):
         if not klass:
             self.error = True
             # if err:
-            result.extend(LinkStatus(
-                url, url, -1, DownloadStatus.NotPossible, name) for url in urls)
+            result.extend(
+                LinkStatus(
+                    url, url, -1, DownloadStatus.NotPossible, name)
+                for url in urls)
             self.pyload.log.debug(
                 "Plugin '{0}' for decrypting was not loaded".format(name))
             self.__pi.done += len(urls)
@@ -108,8 +112,8 @@ class DecrypterThread(PluginThread):
 
             # no debug for intentional errors
             # if self.pyload.debug and not isinstance(e, Fail):
-                # self.pyload.print_exc()
-                # self.debug_report(plugin.__name__, plugin=plugin)
+            # self.pyload.print_exc()
+            # self.debug_report(plugin.__name__, plugin=plugin)
         finally:
             if plugin:
                 plugin.clean()
@@ -120,12 +124,14 @@ class DecrypterThread(PluginThread):
     def decrypt(self, plugin_map, password=None):
         result = []
         self.__pi = ProgressInfo(
-            "BasePlugin", "", self._("decrypting"), 0, 0, len(self.data), self.owner,
+            "BasePlugin", "", self._("decrypting"), 0, 0, len(
+                self.data), self.owner,
             ProgressType.Decrypting
         )
         # TODO: QUEUE_DECRYPT
         result = self._pack_result(
-            self._decrypt(name, urls, password) for name, urls in plugin_map.items())
+            self._decrypt(name, urls, password) for name,
+            urls in plugin_map.items())
         # clear the progress
         self.__pi = None
         return result

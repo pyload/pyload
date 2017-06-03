@@ -3,13 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import builtins
 import os
 import random
 import time
 from builtins import object
 
 from future import standard_library
+
 from pyload.utils.convert import to_str
 from pyload.utils.fs import lopen, makedirs, remove
 
@@ -46,40 +46,40 @@ class Base(object):
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
 
-    #: Version as string or number
+    # Version as string or number
     __version__ = "0.1"
     # Type of the plugin, will be inherited and should not be set!
     __type__ = ""
-    #: Regexp pattern which will be matched for download/crypter plugins
+    # Regexp pattern which will be matched for download/crypter plugins
     __pattern__ = r''
-    #: Internal addon plugin which is always loaded
+    # Internal addon plugin which is always loaded
     __internal__ = False
-    #: When True this addon can be enabled by every user
+    # When True this addon can be enabled by every user
     __user_context__ = False
-    #: Config definition: list of  (name, type, label, default) or
-    #: (name, label, desc, Input(...))
+    # Config definition: list of  (name, type, label, default) or
+    # (name, label, desc, Input(...))
     __config__ = tuple()
-    #: Short description, one liner
+    # Short description, one liner
     __description__ = ""
-    #: More detailed text
+    # More detailed text
     __explanation__ = """"""
-    #: List of needed modules
+    # List of needed modules
     __dependencies__ = tuple()
-    #: Used to assign a category for addon plugins
+    # Used to assign a category for addon plugins
     __category__ = ""
-    #: Tags to categorize the plugin, see documentation for further info
+    # Tags to categorize the plugin, see documentation for further info
     __tags__ = tuple()
-    #: Base64 encoded .png icon, should be 32x32, please do not use sizes above ~2KB, for bigger icons use url.
+    # Base64 encoded .png icon, should be 32x32, please do not use sizes above ~2KB, for bigger icons use url.
     __icon__ = ""
-    #: Alternative, link to png icon
+    # Alternative, link to png icon
     __icon_url__ = ""
-    #: Domain name of the service
+    # Domain name of the service
     __domain__ = ""
-    #: Url with general information/support/discussion
+    # Url with general information/support/discussion
     __url__ = ""
-    #: Url to term of content, user is accepting these when using the plugin
+    # Url to term of content, user is accepting these when using the plugin
     __toc_url__ = ""
-    #: Url to service (to buy premium) for accounts
+    # Url to service (to buy premium) for accounts
     __ref_url__ = ""
 
     __author__ = tuple()
@@ -88,23 +88,23 @@ class Base(object):
     def __init__(self, core, owner=None):
         self.__name__ = self.__class__.__name__
 
-        #: Core instance
+        # Core instance
         self.pyload = core
         self._ = core._
 
         if owner is not None:
-            #: :class:`Api`, user api when user is set
+            # :class:`Api`, user api when user is set
             self.api = self.pyload.api.with_user_context(owner)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
-            #: :class:`User`, user related to this plugin
+            # :class:`User`, user related to this plugin
             self.owner = self.api.user
         else:
             self.api = self.pyload.api
             self.owner = None
 
-        #: last interaction task
+        # last interaction task
         self.task = None
 
     def __getitem__(self, item):
@@ -241,14 +241,15 @@ class Base(object):
             from inspect import currentframe
 
             frame = currentframe()
-            dumpdir = os.path.join(self.pyload.cachedir, 'plugins', self.__name__)
+            dumpdir = os.path.join(self.pyload.cachedir,
+                                   'plugins', self.__name__)
             makedirs(dumpdir, exist_ok=True)
 
             filepath = os.path.join(dumpdir, "dump_{0}_line{1}.html".format(
                 frame.f_back.f_code.co_name, frame.f_back.f_lineno))
             with lopen(filepath, mode='wb') as fp:
                 fp.write(res)
-            del frame  #: delete the frame or it wont be cleaned
+            del frame  # delete the frame or it wont be cleaned
 
         if just_header:
             # parse header
@@ -289,8 +290,11 @@ class Base(object):
         self.log_debug("Deprecated method .correct_captcha, use .correct_task")
         self.correct_task()
 
-    def decrypt_captcha(self, url, get={}, post={}, cookies=True, forceuser=False, imgtype='jpg',
-                        result_type='textual'):
+    def decrypt_captcha(
+            self, url, get={},
+            post={},
+            cookies=True, forceuser=False, imgtype='jpg',
+            result_type='textual'):
         """
         Loads a captcha and decrypts it with ocr, plugin, user input
 
@@ -340,14 +344,16 @@ class Base(object):
                 # TODO: task handling
                 self.pyload.exm.remove_task(task)
 
-                if task.error and has_plugin:  #: ignore default error message since the user could use OCR
+                if task.error and has_plugin:  # ignore default error message since the user could use OCR
                     self.fail(
-                        self._("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+                        self._(
+                            "Pil and tesseract not installed and no Client connected for captcha decrypting"))
                 elif task.error:
                     self.fail(task.error)
                 elif not task.result:
                     self.fail(
-                        self._("No captcha result obtained in appropriate time"))
+                        self._(
+                            "No captcha result obtained in appropriate time"))
 
                 result = task.result
                 self.pyload.log.debug(

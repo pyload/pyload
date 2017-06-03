@@ -14,10 +14,8 @@ from __future__ import absolute_import, unicode_literals
 from future import standard_library
 standard_library.install_aliases()
 import builtins
-import codecs
 import locale
 import os
-import sys
 import tempfile
 
 builtins.USERDIR = os.path.expanduser('~')

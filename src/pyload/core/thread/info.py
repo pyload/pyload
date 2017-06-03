@@ -6,6 +6,7 @@ import time
 from builtins import int, str
 
 from future import standard_library
+
 from pyload.utils import parse
 from pyload.utils.check import hasmethod
 from pyload.utils.misc import accumulate
@@ -27,11 +28,11 @@ class InfoThread(DecrypterThread):
         # [...(url, plugin)...]
         self.data = data
         self.pid = pid
-        self.oc = oc  #: online check
+        self.oc = oc  # online check
         # urls that already have a package name
         self.names = {}
 
-        self.__pi = None  #: ProgressInfo
+        self.__pi = None  # ProgressInfo
 
     def start(self):
         self.manager.add_thread(self)
@@ -135,8 +136,8 @@ class InfoThread(DecrypterThread):
         # final number of links to be checked
         done = self.__pi.done + len(urls)
         try:
-            cached = []  #: results loaded from cache
-            process = []  #: urls to process
+            cached = []  # results loaded from cache
+            process = []  # urls to process
             for url in urls:
                 if url in self.manager.info_cache:
                     cached.append(self.manager.info_cache[url])
@@ -145,7 +146,9 @@ class InfoThread(DecrypterThread):
 
             if cached:
                 self.manager.log.debug(
-                    "Fetched {0:d} links from cache for {1}".format(len(cached), pluginname))
+                    "Fetched {0:d} links from cache for {1}".format(
+                        len(cached),
+                        pluginname))
                 self.__pi.done += len(cached)
                 cb(cached)
 
@@ -163,8 +166,13 @@ class InfoThread(DecrypterThread):
                         if isinstance(res, LinkStatus):
                             links.append(res)
                         elif isinstance(res, tuple) and len(res) == 4:
-                            links.append(LinkStatus(
-                                res[3], res[0], int(res[1]), res[2], pluginname))
+                            links.append(
+                                LinkStatus(
+                                    res[3],
+                                    res[0],
+                                    int(res[1]),
+                                    res[2],
+                                    pluginname))
                         elif isinstance(res, tuple) and len(res) == 5:
                             links.append(LinkStatus(res[3], res[0], int(
                                 res[1]), res[2], pluginname, res[4]))
@@ -183,7 +191,8 @@ class InfoThread(DecrypterThread):
                 "Finished Info Fetching for {0}".format(pluginname))
         except Exception as e:
             self.manager.log.warning(
-                self._("Info Fetching for {0} failed | {1}").format(pluginname, str(e)))
+                self._("Info Fetching for {0} failed | {1}").format(
+                    pluginname, str(e)))
             # self.pyload.print_exc()
         finally:
             self.__pi.done = done

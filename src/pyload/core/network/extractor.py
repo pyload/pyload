@@ -61,7 +61,7 @@ class AbtractExtractor(object):
         self.overwrite = overwrite
         self.excludefiles = excludefiles
         self.renice = renice
-        self.files = []  #: Store extracted files here
+        self.files = []  # Store extracted files here
 
     def init(self):
         """

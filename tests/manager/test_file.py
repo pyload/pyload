@@ -7,6 +7,7 @@ import random
 from builtins import range
 
 from future import standard_library
+
 from pyload.core.database import DatabaseBackend
 from pyload.core.datatype import DownloadState
 from tests.helper.benchmark import BenchmarkTest
@@ -61,8 +62,10 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_files(self):
         for pid in self.pids:
-            self.manager.add_links((("plugin {0:d}".format(i), "url {0}".format(
-                i)) for i in range(self.count)), pid, normal_user.uid)
+            self.manager.add_links(
+                (("plugin {0:d}".format(i),
+                  "url {0}".format(i)) for i in range(self.count)),
+                pid, normal_user.uid)
 
         count = self.manager.get_queue_stats()[0]
         files = self.count * len(self.pids)
@@ -138,8 +141,10 @@ class TestFileManager(BenchmarkTest):
         self.manager.add_links((("url", "plugin")
                                 for i in range(100)), parent, normal_user.uid)
 
-        pids = [self.manager.add_package(
-            "c", "", parent, "", "", "", False, normal_user.uid) for i in range(5)]
+        pids = [
+            self.manager.add_package(
+                "c", "", parent, "", "", "", False, normal_user.uid)
+            for i in range(5)]
         v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
 

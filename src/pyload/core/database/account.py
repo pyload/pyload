@@ -12,7 +12,6 @@ standard_library.install_aliases()
 
 class AccountMethods(DatabaseMethods):
 
-
     @queue
     def load_accounts(self):
         self.c.execute(
@@ -23,8 +22,9 @@ class AccountMethods(DatabaseMethods):
 
     @queue
     def create_account(self, plugin, loginname, password, owner):
-        self.c.execute('INSERT INTO accounts(plugin, loginname, password, owner) VALUES(?,?,?,?)',
-                       (plugin, loginname, password, owner))
+        self.c.execute(
+            'INSERT INTO accounts(plugin, loginname, password, owner) VALUES(?,?,?,?)',
+            (plugin, loginname, password, owner))
 
         return self.c.lastrowid
 

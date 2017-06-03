@@ -31,7 +31,7 @@ class AddonThread(PluginThread):
         self.kwargs = kwargs
 
         self.active = []
-        self.__pi = None  #: ProgressInfo
+        self.__pi = None  # ProgressInfo
 
     def start(self):
         self.manager.add_thread(self)

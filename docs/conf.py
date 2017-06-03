@@ -11,16 +11,15 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
-from future import standard_library
-standard_library.install_aliases()
 import os
 import sys
 from os.path import abspath, dirname, exists, join
+
+from future import standard_library
+
+standard_library.install_aliases()
 
 dir_name = join(dirname(abspath("")))
 sys.path.append(dir_name)
@@ -39,8 +38,10 @@ needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
-              'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary',
+              'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
+              'sphinx.ext.pngmath', 'sphinx.ext.ifconfig',
+              'sphinx.ext.viewcode']
 
 autosummary_generate = True
 autodoc_default_flags = ['members']

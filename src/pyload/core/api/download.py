@@ -6,12 +6,13 @@ import os
 from builtins import str
 
 from future import standard_library
+
 from pyload.utils.fs import lopen
 
 from ..datatype.init import Permission
 from ..datatype.user import Role
 from .base import BaseApi
-from .init import Api, requireperm
+from .init import requireperm
 
 standard_library.install_aliases()
 
@@ -105,8 +106,8 @@ class DownloadApi(BaseApi):
         if hoster:
             self.pyload.iom.create_info_thread(hoster, pid)
 
-        self.pyload.log.info(
-            (self._("Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
+        self.pyload.log.info((self._(
+            "Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
         self.pyload.files.save()
 
     @requireperm(Permission.Add)

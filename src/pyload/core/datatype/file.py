@@ -5,9 +5,10 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 import time
-from builtins import int, object
+from builtins import int
 
 from future import standard_library
+
 from pyload.utils import purge
 from pyload.utils.decorator import trycatch
 from pyload.utils.struct.lock import RWLock, lock
@@ -47,13 +48,20 @@ statusmap = {
     'unknown': 20
 }
 filetypes = {
-    MediaType.Audio: re.compile(r'\.(m3u|m4a|mp3|wav|wma|aac?|flac|midi|m4b)$', flags=re.I),
-    MediaType.Image: re.compile(r'\.(jpe?g|bmp|png|gif|ico|tiff?|svg|psd)$', flags=re.I),
-    MediaType.Video: re.compile(r'\.(3gp|flv|m4v|avi|mp4|mov|swf|vob|wmv|divx|mpe?g|rm|mkv)$', flags=re.I),
-    MediaType.Document: re.compile(r'\.(epub|mobi|acsm|azw[0-9]|pdf|txt|md|abw|docx?|tex|odt|rtf||log)$', flags=re.I),
-    MediaType.Archive: re.compile(r'\.(rar|r[0-9]+|7z|7z.[0-9]+|zip|gz|bzip2?|tar|lzma)$', flags=re.I),
-    MediaType.Executable: re.compile(r'\.(jar|exe|dmg|sh|apk)$', flags=re.I),
-}
+    MediaType.Audio: re.compile(
+        r'\.(m3u|m4a|mp3|wav|wma|aac?|flac|midi|m4b)$', flags=re.I),
+    MediaType.Image: re.compile(
+        r'\.(jpe?g|bmp|png|gif|ico|tiff?|svg|psd)$', flags=re.I),
+    MediaType.Video: re.compile(
+        r'\.(3gp|flv|m4v|avi|mp4|mov|swf|vob|wmv|divx|mpe?g|rm|mkv)$',
+        flags=re.I),
+    MediaType.Document: re.compile(
+        r'\.(epub|mobi|acsm|azw[0-9]|pdf|txt|md|abw|docx?|tex|odt|rtf||log)$',
+        flags=re.I),
+    MediaType.Archive: re.compile(
+        r'\.(rar|r[0-9]+|7z|7z.[0-9]+|zip|gz|bzip2?|tar|lzma)$', flags=re.I),
+    MediaType.Executable: re.compile(
+        r'\.(jar|exe|dmg|sh|apk)$', flags=re.I), }
 
 
 def guess_type(name):
@@ -80,8 +88,9 @@ class FileInfo(BaseObject):
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
 
-    def __init__(self, fid=None, name=None, package=None, owner=None, size=None,
-                 status=None, media=None, added=None, fileorder=None, download=None):
+    def __init__(self, fid=None, name=None, package=None, owner=None,
+                 size=None, status=None, media=None, added=None,
+                 fileorder=None, download=None):
         self.fid = fid
         self.name = name
         self.package = package
@@ -98,15 +107,16 @@ class File(BaseObject):
     """
     Represents a file object at runtime.
     """
-    __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid', 'fileorder',
-                 'filestatus', 'hash', 'lock', 'manager', 'media', 'owner',
-                 'packageid', 'plugin', 'pluginclass', 'pluginname',
+    __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid',
+                 'fileorder', 'filestatus', 'hash', 'lock', 'manager', 'media',
+                 'owner', 'packageid', 'plugin', 'pluginclass', 'pluginname',
                  'reconnected', 'status', 'statusname', 'url', 'wait_until']
 
     @staticmethod
     def from_info_data(m, info):
-        file = File(m, info.fid, info.name, info.size, info.status, info.media, info.added, info.fileorder,
-                   "", "", "", DownloadStatus.NA, "", info.package, info.owner)
+        file = File(m, info.fid, info.name, info.size, info.status, info.media,
+                    info.added, info.fileorder, "", "", "", DownloadStatus.NA,
+                    "", info.package, info.owner)
         if info.download:
             file.url = info.download.url
             file.pluginname = info.download.plugin
@@ -115,8 +125,9 @@ class File(BaseObject):
             file.error = info.download.error
         return file
 
-    def __init__(self, manager, fid, name, size, filestatus, media, added, fileorder,
-                 url, pluginname, hash, status, error, package, owner):
+    def __init__(
+        self, manager, fid, name, size, filestatus, media, added,
+            fileorder, url, pluginname, hash, status, error, package, owner):
         self.manager = manager
         self.pyload = manager.pyload
 
@@ -140,7 +151,7 @@ class File(BaseObject):
 
         self.plugin = None
 
-        self.wait_until = 0  #: time.time() + time to wait
+        self.wait_until = 0  # time.time() + time to wait
 
         # status attributes
         self.abort = False
@@ -184,7 +195,8 @@ class File(BaseObject):
     name = property(get_name, set_name)
 
     def __repr__(self):
-        return "<File {0}: {1}@{2}>".format(self.id, self.name, self.pluginname)
+        return "<File {0}: {1}@{2}>".format(
+            self.id, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):
@@ -245,10 +257,13 @@ class File(BaseObject):
         self.manager.release_file(self.fid)
 
     def to_info_data(self):
-        return FileInfo(self.fid, self.get_name(), self.packageid, self.owner, self.size, self.filestatus,
-                        self.media, self.added, self.fileorder, DownloadInfo(
-            self.url, self.pluginname, self.hash, self.status, self.get_status_name(), self.error)
-        )
+        return FileInfo(self.fid, self.get_name(),
+                        self.packageid, self.owner, self.size, self.filestatus,
+                        self.media, self.added, self.fileorder,
+                        DownloadInfo(
+                            self.url, self.pluginname, self.hash, self.status,
+                            self.get_status_name(),
+                            self.error))
 
     def get_path(self):
         raise NotImplementedError
@@ -327,10 +342,11 @@ class File(BaseObject):
 
     def get_progress_info(self):
         return ProgressInfo(
-            self.pluginname, self.name, self.get_status_name(), self.get_eta(),
-            self.get_bytes_arrived(), self.size, self.owner, ProgressType.Download,
+            self.pluginname, self.name, self.get_status_name(),
+            self.get_eta(),
+            self.get_bytes_arrived(),
+            self.size, self.owner, ProgressType.Download,
             DownloadProgress(
-                self.fid, self.packageid, self.get_speed(), self.get_flags(),
-                self.status
-            )
-        )
+                self.fid, self.packageid, self.get_speed(),
+                self.get_flags(),
+                self.status))

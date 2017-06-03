@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from future import standard_library
+
 from pyload.requests.bucket import Bucket
 from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
@@ -31,7 +32,8 @@ class TestCurlRequest(TestCase):
         assert self.dl.context is not None
 
         self.dl.download(
-            "https://pyload.net/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png", "/tmp/random.bin")
+            "https://pyload.net/lib/tpl/pyload/images/pyload-logo-edited3.5-new-font-small.png",
+            "/tmp/random.bin")
 
         print(self.dl.size, self.dl.arrived)
         assert self.dl.size == self.dl.arrived > 0

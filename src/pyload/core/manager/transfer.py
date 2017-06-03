@@ -9,6 +9,7 @@ import time
 from collections import defaultdict
 
 from future import standard_library
+
 from pyload.utils.fs import availspace
 from pyload.utils.layer.legacy import subprocess_ as subprocess
 from pyload.utils.layer.safethreading import Event
@@ -29,17 +30,17 @@ class TransferManager(BaseManager):
     def __init__(self, core):
         BaseManager.__init__(self, core)
 
-        #: won't start download when true
+        # won't start download when true
         self.pause = True
 
-        #: each thread is in exactly one category
+        # each thread is in exactly one category
         self.free = []
-        #: a thread that in working must have a file as active attribute
+        # a thread that in working must have a file as active attribute
         self.downloading = []
-        #: holds the decrypter threads
+        # holds the decrypter threads
         self.decrypting = []
 
-        #: indicates when reconnect has occurred
+        # indicates when reconnect has occurred
         self.reconnecting = Event()
 
         self.lock = RWLock()
@@ -226,7 +227,8 @@ class TransferManager(BaseManager):
         # this plugin does not exits
         if plugin is None:
             self.pyload.log.error(
-                self._("Plugin '{0}' does not exists").format(info.download.plugin))
+                self._("Plugin '{0}' does not exists").format(
+                    info.download.plugin))
             self.pyload.files.set_download_status(
                 info.fid, DownloadStatus.Failed)
             return False
@@ -287,7 +289,8 @@ class TransferManager(BaseManager):
                     'script'),
                 shell=True)
         except Exception:
-            self.pyload.log.warning(self._("Failed executing reconnect script!"))
+            self.pyload.log.warning(
+                self._("Failed executing reconnect script!"))
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
             # self.pyload.print_exc()
@@ -309,8 +312,10 @@ class TransferManager(BaseManager):
         """
         Number of downloads that are waiting for reconnect.
         """
-        active = [x.active.has_plugin(
-        ) and x.active.plugin.want_reconnect and x.active.plugin.waiting for x in self.downloading]
+        active = [
+            x.active.has_plugin() and
+            x.active.plugin.want_reconnect and x.active.plugin.waiting
+            for x in self.downloading]
         return active.count(True)
 
     @lock(shared=True)

@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from future import standard_library
+
 # needed to register globals
 from tests.helper import stubs
 from unittest2 import TestCase
@@ -26,7 +27,7 @@ for dir, dirnames, filenames in os.walk(PACKDIR):
         if not fname.endswith(".py") or fname.startswith("__"):
             continue
         path = os.path.join(PACKDIR, fname)
-        pack = path.replace(PACKDIR, "")[1:-3]  #: replace / and  .py
+        pack = path.replace(PACKDIR, "")[1:-3]  # replace / and  .py
         imp = pack.replace("/", ".")
         packages = imp.split(".")
         #__import__(imp)

@@ -7,6 +7,7 @@ import time
 from base64 import standard_b64encode
 
 from future import standard_library
+
 from pyload.utils.check import bitset
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 from pyload.utils.struct.lock import lock
@@ -30,12 +31,13 @@ class ExchangeManager(BaseManager):
 
     def __init__(self, core):
         BaseManager.__init__(self, core)
-        self.tasks = OrderedDict()  #: task store, for all outgoing tasks
+        self.tasks = OrderedDict()  # task store, for all outgoing tasks
         self.last_clients = {}
-        self.ids = 0  #: uniue interaction ids
+        self.ids = 0  # uniue interaction ids
 
     def is_client_connected(self, user):
-        return self.last_clients.get(user, 0) + self.CLIENT_THRESHOLD > time.time()
+        return self.last_clients.get(
+            user, 0) + self.CLIENT_THRESHOLD > time.time()
 
     @lock
     def work(self):
@@ -44,8 +46,10 @@ class ExchangeManager(BaseManager):
             del self.tasks[n]
 
         # keep notifications count limited
-        n = [k for k, v in self.tasks.items() if v.type == Interaction.Notification][
-            ::-1]
+        n = [
+            k for k, v in self.tasks.items()
+            if v.type == Interaction.Notification][
+            :: -1]
         for v in n[:self.MAX_NOTIFICATIONS]:
             del self.tasks[v]
 
@@ -61,8 +65,10 @@ class ExchangeManager(BaseManager):
         :param plugin: plugin name
         :return: :class:`InteractionTask`
         """
-        task = InteractionTask(self.ids, Interaction.Notification, Input(InputType.Str, None, content), title, desc, plugin,
-                               owner=owner)
+        task = InteractionTask(
+            self.ids, Interaction.Notification,
+            Input(InputType.Str, None, content),
+            title, desc, plugin, owner=owner)
         self.ids += 1
         self.queue_task(task)
         return task
@@ -101,8 +107,8 @@ class ExchangeManager(BaseManager):
         input = Input(type_, data=[standard_b64encode(img), format, filename])
 
         # TODO: title desc plugin
-        task = InteractionTask(self.ids, Interaction.Captcha, input,
-                               self._("Captcha request"), self._("Please solve the captcha"), plugin, owner=owner)
+        task = InteractionTask(self.ids, Interaction.Captcha, input, self._(
+            "Captcha request"), self._("Please solve the captcha"), plugin, owner=owner)
 
         self.ids += 1
         self.queue_task(task)
@@ -127,13 +133,15 @@ class ExchangeManager(BaseManager):
         tasks = [tsk for tsk in self.tasks.values() if mode ==
                  Interaction.All or bitset(tsk.type, mode)]
         # filter correct user / or shared
-        tasks = [tsk for tsk in tasks if user is None or user == tsk.owner or tsk.shared]
+        tasks = [tsk for tsk in tasks if user is None or user ==
+                 tsk.owner or tsk.shared]
 
         return tasks
 
     def is_task_waiting(self, user, mode=Interaction.All):
-        tasks = [tsk for tsk in self.get_tasks(
-            user, mode) if not tsk.type == Interaction.Notification or not tsk.seen]
+        tasks = [
+            tsk for tsk in self.get_tasks(user, mode)
+            if not tsk.type == Interaction.Notification or not tsk.seen]
         return len(tasks) > 0
 
     def queue_task(self, task):

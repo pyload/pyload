@@ -7,6 +7,7 @@ import random
 from builtins import range
 
 from future import standard_library
+
 from pyload.core.database import DatabaseBackend
 from pyload.core.datatype import DownloadState, FileInfo, PackageInfo
 from tests.helper.benchmark import BenchmarkTest
@@ -21,8 +22,9 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 class TestDatabase(BenchmarkTest):
     bench = ["insert", "insert_links", "insert_many", "get_packages",
-             "get_files", "get_files_queued", "get_package_childs", "get_package_files",
-             "get_package_data", "get_file_data", "find_files", "collector", "purge"]
+             "get_files", "get_files_queued", "get_package_childs",
+             "get_package_files", "get_package_data", "get_file_data",
+             "find_files", "collector", "purge"]
     pids = None
     fids = None
     owner = 123
@@ -56,8 +58,9 @@ class TestDatabase(BenchmarkTest):
 
     def test_insert(self, n=200):
         for i in range(n):
-            pid = self.db.add_package("name", "folder", random.choice(self.pids), "password", "site", "comment", self.pstatus,
-                                      self.owner)
+            pid = self.db.add_package(
+                "name", "folder", random.choice(self.pids),
+                "password", "site", "comment", self.pstatus, self.owner)
             self.pids.append(pid)
 
     def test_insert_links(self):
@@ -200,13 +203,13 @@ class TestDatabase(BenchmarkTest):
         try:
             assert finfo is not None
             assert isinstance(finfo, FileInfo)
-            self.assert_in(
-                finfo, ("fid", "status", "size", "media", "fileorder", "added", "package", "owner"))
+            self.assert_in(finfo, ("fid", "status", "size", "media",
+                                   "fileorder", "added", "package", "owner"))
             assert finfo.status in range(5)
             assert finfo.owner == self.owner
             assert finfo.media in range(1024)
             assert finfo.package in self.pids
-            assert finfo.added > 10 ** 6  #: date is usually big integer
+            assert finfo.added > 10 ** 6  # date is usually big integer
         except Exception:
             print(finfo)
             raise
@@ -216,7 +219,7 @@ class TestDatabase(BenchmarkTest):
             assert pinfo is not None
             assert isinstance(pinfo, PackageInfo)
             self.assert_in(pinfo, ("pid", "root", "added",
-                               "status", "packageorder", "owner"))
+                                   "status", "packageorder", "owner"))
             assert pinfo.pid in self.pids
             assert pinfo.owner == self.owner
             assert pinfo.status in range(5)
@@ -231,6 +234,7 @@ class TestDatabase(BenchmarkTest):
     def assert_in(self, obj, list):
         for attr in list:
             assert isinstance(getattr(obj, attr), int)
+
 
 if __name__ == '__main__':
     TestDatabase.benchmark()

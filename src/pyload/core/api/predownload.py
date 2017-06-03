@@ -8,6 +8,7 @@ from builtins import str
 from itertools import chain
 
 from future import standard_library
+
 from pyload.utils import parse
 from pyload.utils.fs import lopen
 from pyload.utils.purge import uniqify
@@ -15,7 +16,7 @@ from pyload.utils.purge import uniqify
 from ..datatype.check import OnlineCheck
 from ..datatype.init import DownloadStatus, LinkStatus, Permission
 from .base import BaseApi
-from .init import Api, requireperm
+from .init import requireperm
 
 standard_library.install_aliases()
 

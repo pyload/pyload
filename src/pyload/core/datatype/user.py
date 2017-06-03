@@ -4,6 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
+
 from pyload.utils.check import bitset
 
 from .init import BaseObject, ExceptionObject, Permission
@@ -33,8 +34,9 @@ class UserData(BaseObject):
                  'traffic', 'dllimit', 'dlquota', 'hddquota', 'user',
                  'templatename']
 
-    def __init__(self, uid=None, name=None, email=None, role=None, permission=None, folder=None,
-                 traffic=None, dllimit=None, dlquota=None, hddquota=None, user=None, templatename=None):
+    def __init__(self, uid=None, name=None, email=None, role=None,
+                 permission=None, folder=None, traffic=None, dllimit=None,
+                 dlquota=None, hddquota=None, user=None, templatename=None):
         self.uid = uid
         self.name = name
         self.email = email
@@ -57,8 +59,10 @@ class User(UserData):
 
     @staticmethod
     def from_user_data(api, user):
-        return User(api, user.uid, user.name, user.email, user.role, user.permission, user.folder,
-                    user.traffic, user.dllimit, user.dlquota, user.hddquota, user.user, user.templatename)
+        return User(
+            api, user.uid, user.name, user.email, user.role, user.permission,
+            user.folder, user.traffic, user.dllimit, user.dlquota, user.
+            hddquota, user.user, user.templatename)
 
     def __init__(self, api, *args, **kwargs):
         UserData.__init__(self, *args, **kwargs)

@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import object
 
 from future import standard_library
+
 from pyload.requests.bucket import Bucket
 from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
@@ -67,12 +68,14 @@ class RequestFactory(object):
                 _type = "socks5"
 
             username = None
-            if self.pyload.config.get('proxy', 'username') and self.pyload.config.get(
+            if self.pyload.config.get(
+                    'proxy', 'username') and self.pyload.config.get(
                     'proxy', 'username').lower() != "none":
                 username = self.pyload.config.get('proxy', 'username')
 
             pw = None
-            if self.pyload.config.get('proxy', 'password') and self.pyload.config.get(
+            if self.pyload.config.get(
+                    'proxy', 'password') and self.pyload.config.get(
                     'proxy', 'password').lower() != "none":
                 pw = self.pyload.config.get('proxy', 'password')
 

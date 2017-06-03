@@ -24,14 +24,14 @@ import logging
 import os
 from builtins import object, range
 
+from future import standard_library
 from pkg_resources import resource_filename
 
 import Image
-from future import standard_library
-
-from ..__about__ import __package__
 from pyload.utils.fs import lopen, remove
 from pyload.utils.layer.legacy.subprocess_ import PIPE, Popen
+
+from ..__about__ import __package__
 
 standard_library.install_aliases()
 
@@ -91,7 +91,8 @@ class OCR(object):
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == 'nt':
-            tessparams = [resource_filename(__package__, 'tesseract/tesseract.exe')]
+            tessparams = [resource_filename(
+                __package__, 'tesseract/tesseract.exe')]
         else:
             tessparams = ['tesseract']
 

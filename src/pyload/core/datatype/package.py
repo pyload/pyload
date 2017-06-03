@@ -5,7 +5,6 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import time
-from builtins import object
 
 from future import standard_library
 
@@ -15,7 +14,6 @@ try:
     from enum import IntEnum
 except ImportError:
     from aenum import IntEnum
-
 
 standard_library.install_aliases()
 
@@ -35,11 +33,16 @@ class PackageDoesNotExist(ExceptionObject):
 
 
 class PackageInfo(BaseObject):
-    __slots__ = ['pid', 'name', 'folder', 'root', 'owner', 'site', 'comment', 'password',
-                 'added', 'tags', 'status', 'shared', 'packageorder', 'stats', 'fids', 'pids']
+    __slots__ = [
+        'pid', 'name', 'folder', 'root', 'owner', 'site', 'comment',
+        'password', 'added', 'tags', 'status', 'shared', 'packageorder',
+        'stats', 'fids', 'pids']
 
-    def __init__(self, pid=None, name=None, folder=None, root=None, owner=None, site=None, comment=None, password=None,
-                 added=None, tags=None, status=None, shared=None, packageorder=None, stats=None, fids=None, pids=None):
+    def __init__(
+            self, pid=None, name=None, folder=None, root=None, owner=None,
+            site=None, comment=None, password=None, added=None, tags=None,
+            status=None, shared=None, packageorder=None, stats=None, fids=None,
+            pids=None):
         self.pid = pid
         self.name = name
         self.folder = folder
@@ -80,11 +83,14 @@ class Package(BaseObject):
 
     @staticmethod
     def from_info_data(m, info):
-        return Package(m, info.pid, info.name, info.folder, info.root, info.owner,
-                         info.site, info.comment, info.password, info.added, info.tags, info.status, info.shared, info.packageorder)
+        return Package(
+            m, info.pid, info.name, info.folder, info.root, info.owner, info.
+            site, info.comment, info.password, info.added, info.tags, info.
+            status, info.shared, info.packageorder)
 
-    def __init__(self, manager, pid, name, folder, root, owner, site, comment, password, added, tags, status,
-                 shared, packageorder):
+    def __init__(
+            self, manager, pid, name, folder, root, owner, site, comment,
+            password, added, tags, status, shared, packageorder):
         self.manager = manager
         self.pyload = manager.pyload
 
@@ -103,7 +109,7 @@ class Package(BaseObject):
         self.packageorder = packageorder
         self.timestamp = time.time()
 
-        #: Finish event already fired
+        # Finish event already fired
         self.set_finished = False
 
     def is_stale(self):
@@ -169,7 +175,7 @@ class RootPackage(Package):
 
     def __init__(self, m, owner):
         Package.__init__(self, m, -1, "root", "", owner, -2,
-                           "", "", "", 0, [], PackageStatus.Ok, False, 0)
+                         "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
         return os.path.join(self.pyload.config.get(

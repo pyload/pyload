@@ -8,6 +8,7 @@ from builtins import dict
 from functools import reduce
 
 from future import standard_library
+
 from pyload.utils.struct.lock import RWLock, lock
 
 from ..datatype.file import File
@@ -45,17 +46,31 @@ class FileManager(BaseManager):
         BaseManager.__init__(self, core)
 
         # translations
-        self.status_msg = [self._("none"), self._("offline"), self._("online"), self._("queued"), self._("paused"),
-                           self._("finished"), self._("skipped"), self._(
-                               "failed"), self._("starting"), self._("waiting"),
-                           self._("downloading"), self._("temp. offline"), self._(
-                               "aborted"), self._("not possible"), self._("missing"),
-                           self._("file mismatch"), self._("occupied"), self._(
-                               "decrypting"), self._("processing"), self._("custom"),
-                           self._("unknown")]
+        self.status_msg = [
+            self._("none"),
+            self._("offline"),
+            self._("online"),
+            self._("queued"),
+            self._("paused"),
+            self._("finished"),
+            self._("skipped"),
+            self._("failed"),
+            self._("starting"),
+            self._("waiting"),
+            self._("downloading"),
+            self._("temp. offline"),
+            self._("aborted"),
+            self._("not possible"),
+            self._("missing"),
+            self._("file mismatch"),
+            self._("occupied"),
+            self._("decrypting"),
+            self._("processing"),
+            self._("custom"),
+            self._("unknown")]
 
-        self.files = {}  #: holds instances for files
-        self.packages = {}  #: same for packages
+        self.files = {}  # holds instances for files
+        self.packages = {}  # same for packages
 
         self.job_cache = {}
 
@@ -63,8 +78,8 @@ class FileManager(BaseManager):
         self.lock = RWLock()
         #self.lock._Verbose__verbose = True
 
-        self.downloadstats = {}  #: cached dl stats
-        self.queuestats = {}  #: cached queue stats
+        self.downloadstats = {}  # cached dl stats
+        self.queuestats = {}  # cached queue stats
 
         self.db = self.pyload.db
 
@@ -110,11 +125,13 @@ class FileManager(BaseManager):
         """
         Adds a package to database.
         """
-        pid = self.db.add_package(name, folder, root, password, site, comment,
-                                  PackageStatus.Paused if paused else PackageStatus.Ok, owner)
+        pid = self.db.add_package(
+            name, folder, root, password, site, comment, PackageStatus.Paused
+            if paused else PackageStatus.Ok, owner)
         pinfo = self.db.get_package_info(pid)
 
-        self.pyload.evm.fire("package:inserted", pid, pinfo.root, pinfo.packageorder)
+        self.pyload.evm.fire("package:inserted", pid,
+                             pinfo.root, pinfo.packageorder)
         return pid
 
     @lock
@@ -273,7 +290,7 @@ class FileManager(BaseManager):
             packs[self.ROOT_PACKAGE] = view.root
         elif pid in packs:
             view.root = packs[pid]
-        else:  #: package does not exists
+        else:  # package does not exists
             return view
 
         self._sanitize_tree(packs, files)
@@ -462,7 +479,8 @@ class FileManager(BaseManager):
         if not ids or (file.fid in ids and len(ids) == 1):
             if not file.package().set_finished:
                 self.pyload.log.info(
-                    self._("Package finished: {0}").format(file.package().name))
+                    self._("Package finished: {0}").format(
+                        file.package().name))
                 self.pyload.adm.package_finished(file.package())
                 file.package().set_finished = True
 
@@ -523,13 +541,15 @@ class FileManager(BaseManager):
         self.pyload.evm.fire("package:reordered", pid, position, pinfo.root)
 
     def _get_first_fileinfo(self, files):
-        return reduce(lambda x, y: x if x.fileorder <= y.fileorder else y, files)  # NOTE: Equality between fileorders should never happen...
+        # NOTE: Equality between fileorders should never happen...
+        return reduce(
+            lambda x, y: x if x.fileorder <= y.fileorder else y, files)
 
     def _order_files(self, fids, finfo, position):
         diff = len(fids)
         incr = 0
-        files = (file for file in self.files.values()
-                 if not (file.fileorder < 0 or file.packageid != finfo.package))
+        files = (file for file in self.files.values() if not (
+            file.fileorder < 0 or file.packageid != finfo.package))
         if finfo.fileorder > position:
             for file in files:
                 if not (position <= file.fileorder < finfo.fileorder):
@@ -557,7 +577,7 @@ class FileManager(BaseManager):
 
         finfo = self._get_first_fileinfo(files)
 
-        order = finfo.fileorder #: minimum fileorder
+        order = finfo.fileorder  # : minimum fileorder
         self.db.order_files(pid, fids, order, position)
 
         self._order_files(fids, finfo, position)

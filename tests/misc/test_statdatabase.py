@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import object
 
 from future import standard_library
+
 from tests.helper.stubs import Core
 
 standard_library.install_aliases()

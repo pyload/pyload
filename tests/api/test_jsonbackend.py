@@ -6,9 +6,9 @@ import json
 from builtins import object
 
 import requests
+from future import standard_library
 from requests.auth import HTTPBasicAuth
 
-from future import standard_library
 from nose.tools import assertEqual, raises
 from pyload.core.datatype import Forbidden
 from pyload.rpc.jsonclient import JSONClient
@@ -42,8 +42,10 @@ class TestJSONBackend(object):
         payload = {'section': 'webui', 'option': 'port'}
         headers = {'content-type': 'application/json'}
 
-        ret = requests.get(webaddress + "/getConfigValue", headers=headers,
-                           auth=HTTPBasicAuth(*credentials), data=json.dumps(payload))
+        ret = requests.get(
+            webaddress + "/getConfigValue", headers=headers,
+            auth=HTTPBasicAuth(*credentials),
+            data=json.dumps(payload))
 
         assertEqual(ret.status_code, 200)
         assert ret.text

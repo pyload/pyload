@@ -6,6 +6,7 @@ from builtins import object
 from contextlib import closing
 
 from future import standard_library
+
 from pyload.core.network.factory import RequestFactory
 from pyload.requests.curl.request import CurlRequest
 from tests.helper.stubs import Core

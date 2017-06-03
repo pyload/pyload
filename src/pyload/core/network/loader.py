@@ -3,14 +3,15 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import ast
 import logging
 import os
 import re
 import time
 from builtins import object, range, str
 
-import ast
 from future import standard_library
+
 from pyload.utils.fs import fullpath, lopen, makefile
 from pyload.utils.layer.legacy.collections_ import defaultdict, namedtuple
 
@@ -26,7 +27,6 @@ class BaseAttributes(defaultdict):
     """
     Dictionary that loads defaults values from Base object.
     """
-
     def __missing__(self, key):
         attr = "__{0}__".format(key)
         if not hasattr(Base, attr):
@@ -39,7 +39,6 @@ class LoaderFactory(object):
     """
     Container for multiple plugin loaders.
     """
-
     def __init__(self, *loader):
         self.loader = list(loader)
 
@@ -230,7 +229,8 @@ class PluginLoader(object):
                 version = float(attrs['version'])
             except ValueError:
                 self.log_debug(
-                    folder, name, "Invalid version {0}".format(attrs['version']))
+                    folder, name, "Invalid version {0}".format(
+                        attrs['version']))
                 version = 9  # TODO: remove when plugins are fixed, causing update loops
         else:
             self.log_debug(folder, name, "No version attribute")
@@ -240,7 +240,8 @@ class PluginLoader(object):
                 re_plugin = re.compile(attrs['pattern'], flags=re.I)
             except Exception:
                 self.log_debug(
-                    folder, name, "Invalid regexp pattern '{0}'".format(attrs['pattern']))
+                    folder, name, "Invalid regexp pattern '{0}'".format(
+                        attrs['pattern']))
                 re_plugin = self.RE_NO_MATCH
         else:
             re_plugin = self.RE_NO_MATCH
@@ -250,8 +251,8 @@ class PluginLoader(object):
 
         # create plugin tuple
         # user_context=True is the default for non addon plugins
-        plugin = PluginTuple(
-            version, re_plugin, deps, category, bool(folder != "addon" or attrs['user_context']), filename)
+        plugin = PluginTuple(version, re_plugin, deps, category, bool(
+            folder != "addon" or attrs['user_context']), filename)
 
         # These have none or their own config
         if folder in ("internal", "account", "network"):
@@ -273,7 +274,7 @@ class PluginLoader(object):
                 for item in config:
                     if item[0] == "activated":
                         break
-                else:  #: activated flag missing
+                else:  # activated flag missing
                     config.insert(0, ("activated", "bool", "Activated", False))
 
             try:

@@ -10,6 +10,7 @@ from hashlib import md5
 from logging import DEBUG, log
 
 from future import standard_library
+
 from nose.tools import nottest
 from pyload.core.datatype import File
 from pyload.core.datatype.file import statusmap
@@ -51,7 +52,7 @@ class HosterPluginTester(PluginTester):
 
         # url and plugin should be only important thing
         file = File(self.pyload, -1, url, url, 0, 0,
-                        0, 0, url, name, "", 0, 0, 0, 0)
+                    0, 0, url, name, "", 0, 0, 0, 0)
         file.init_plugin()
 
         self.thread.file = file
@@ -88,7 +89,7 @@ class HosterPluginTester(PluginTester):
                 log(DEBUG, "Hash is {0}".format(hash.hexdigest()))
 
                 size = os.stat(fp.name).st_size
-                if size < 10 << 20:  #: 10MB
+                if size < 10 << 20:  # 10MB
                     # Copy for debug report
                     log(DEBUG, "Downloaded file copied to report")
                     shutil.move(fp.name, os.path.join(plugin, fp.name))
@@ -102,6 +103,7 @@ class HosterPluginTester(PluginTester):
                 pass
             else:
                 raise
+
 
 # setup methods
 c = Core()

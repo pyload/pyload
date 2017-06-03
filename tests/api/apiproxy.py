@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import object, zip
 
 from future import standard_library
+
 from pyload.core.datatype.debug import classes, methods
 from tests.helper.config import credentials
 
@@ -16,7 +17,6 @@ class ApiProxy(object):
     """
     Proxy that does type checking on the api.
     """
-
     def __init__(self, api, user=credentials[0], pw=credentials[1]):
         self.api = api
         self.user = user
@@ -27,7 +27,7 @@ class ApiProxy(object):
 
     def assert_type(self, result, type_):
         if not type_:
-            return  #: void
+            return  # void
         try:
             # Complex attribute
             if isinstance(type_, tuple):
@@ -54,7 +54,7 @@ class ApiProxy(object):
                 for attr, atype in zip(result.__slots__, classes[
                                        result.__name__]):
                     self.assert_type(getattr(result, attr), atype)
-            else:  #: simple object
+            else:  # simple object
                 assert isinstance(result, type_)
         except AssertionError:
             print("Assertion for {0} as {1} failed".format(result, type_))
@@ -71,6 +71,7 @@ class ApiProxy(object):
             return self.call(item, *args, **kwargs)
 
         return call
+
 
 if __name__ == '__main__':
 

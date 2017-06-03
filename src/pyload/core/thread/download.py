@@ -6,13 +6,14 @@ from __future__ import absolute_import, unicode_literals
 import sys
 import time
 from builtins import str
+from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
+
 from pycurl import error
 from pyload.requests.request import ResponseException
 from pyload.utils.layer.safethreading import Event
-from queue import Queue
 
 from ..network.base import Abort, Fail, Retry
 from ..network.hoster import Reconnect, Skip
@@ -34,7 +35,7 @@ class DownloadThread(PluginThread):
         PluginThread.__init__(self, manager)
 
         self.__running = Event()
-        self.queue = Queue()  #: job queue
+        self.queue = Queue()  # job queue
         self.active = None
 
     @property
@@ -116,7 +117,8 @@ class DownloadThread(PluginThread):
         file.set_status("skipped")
 
         self.pyload.log.info(
-            self._("Download skipped: {0} due to {1}").format(file.name, errmsg))
+            self._("Download skipped: {0} due to {1}").format(
+                file.name, errmsg))
 
         self.clean(file)
 
@@ -131,7 +133,8 @@ class DownloadThread(PluginThread):
 
         if errcode in (7, 18, 28, 52, 56):
             self.pyload.log.warning(
-                self._("Couldn't connect to host or connection reset, waiting 1 minute and retry"))
+                self._(
+                    "Couldn't connect to host or connection reset, waiting 1 minute and retry"))
             wait = time.time() + 60
 
             file.wait_until = wait

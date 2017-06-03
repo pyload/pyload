@@ -15,7 +15,6 @@ try:
 except ImportError:
     from aenum import IntEnum
 
-
 standard_library.install_aliases()
 
 
@@ -35,23 +34,23 @@ class InteractionTask(BaseObject):
                  'owner', 'plugin', 'result', 'seen', 'shared', 'storage',
                  'title', 'type', 'wait_until']
 
-    #: Plugins can put needed data here
+    # Plugins can put needed data here
     storage = None
-    #: Timestamp when task expires
+    # Timestamp when task expires
     wait_until = 0
-    #: The received result
+    # The received result
     result = None
-    #: List of registered handles
+    # List of registered handles
     handler = None
-    #: Error Message
+    # Error Message
     error = None
-    #: Timeout locked
+    # Timeout locked
     locked = False
-    #: A task that was retrieved counts as seen
+    # A task that was retrieved counts as seen
     seen = False
-    #: A task that is relevant to every user
+    # A task that is relevant to every user
     shared = False
-    #: primary uid of the owner
+    # primary uid of the owner
     owner = None
 
     def __init__(self, iid=None, type_=None, input=None, title=None,

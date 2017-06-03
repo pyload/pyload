@@ -3,10 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import builtins
-import errno
-import fcntl
-import imp
 import locale
 import logging
 import logging.handlers
@@ -16,26 +12,25 @@ import signal
 import sys
 import tempfile
 import time
-from builtins import TMPDIR, USERDIR, int, map, str
+from builtins import TMPDIR, USERDIR, int, str
 from contextlib import closing
 from multiprocessing import Event, Process
 
 import portalocker
 import psutil
+from future import standard_library
 from pkg_resources import resource_filename
 
-from future import standard_library
 from pyload.config import ConfigParser
-from pyload.utils import convert, format
+from pyload.utils import format
 from pyload.utils.check import ismodule
-from pyload.utils.fs import availspace, fullpath, lopen, makedirs, remove
-from pyload.utils.misc import get_translation, write_pid
-from pyload.utils.struct.info import Info
+from pyload.utils.fs import availspace, fullpath, makedirs
+from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_name, set_process_user)
-from semver import format_version
 
-from .__about__ import __namespace__, __version__, __version_info__, __package__
+from .__about__ import (__namespace__, __package__, __version__,
+                        __version_info__)
 from .config import config_defaults, session_defaults
 
 standard_library.install_aliases()
@@ -43,7 +38,7 @@ standard_library.install_aliases()
 try:
     import colorlog
 except ImportError:
-    pass
+    colorlog = None
 
 
 _pmap = {}
@@ -109,7 +104,7 @@ class Core(Process):
         self.log.addHandler(consolehdlr)
 
     def _init_syslogger(self):
-        #: try to mimic to normal syslog messages
+        # try to mimic to normal syslog messages
         fmt = "%(asctime)s %(name)s: %(message)s"
         datefmt = "%b %e %H:%M:%S"
         syslogform = logging.Formatter(fmt, datefmt)
@@ -156,7 +151,8 @@ class Core(Process):
                 encoding=locale.getpreferredencoding(do_setlocale=False))
         else:
             filehdlr = logging.FileHandler(
-                logfile, encoding=locale.getpreferredencoding(do_setlocale=False))
+                logfile, encoding=locale.getpreferredencoding(
+                    do_setlocale=False))
 
         filehdlr.setFormatter(fileform)
         self.log.addHandler(filehdlr)
@@ -223,7 +219,8 @@ class Core(Process):
             if lang == default:
                 raise
             self.log.warning(
-                self._("Unable to load `{0}` language, use default `{1}`").format(lang, default),
+                self._("Unable to load `{0}` language, use default `{1}`").format(
+                    lang, default),
                 str(e))
             self.set_language(default)
 
@@ -305,7 +302,7 @@ class Core(Process):
         self.addonmanager = self.adm = AddonManager(self)
         # self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager = self.svm = ServerManager(self)
-        self.db.manager = self.files  #: ugly?
+        self.db.manager = self.files  # ugly?
 
     def _init_requests(self):
         from .network.factory import RequestFactory
@@ -328,7 +325,7 @@ class Core(Process):
         self.session = session
 
     def _init_cache(self):
-        #: Re-use cache
+        # Re-use cache
         tempdir = self.__tempdir
         if tempdir is None:
             tempdir = self.session.get('previous', 'cache', 'path')
@@ -339,11 +336,11 @@ class Core(Process):
         self.session.set('current', 'cache', 'path', tempdir)
         self.cachedir = tempdir
         # if tempdir not in sys.path:
-            # sys.path.append(tempdir)
+        # sys.path.append(tempdir)
 
     def _register_signals(self):
-        shutfn = lambda s, f: self.shutdown()
-        quitfn = lambda s, f: self.terminate()
+        def shutfn(s, f): return self.shutdown()
+        def quitfn(s, f): return self.terminate()
         try:
             if os.name == 'nt':
                 # signal.signal(signal.CTRL_C_EVENT, shutfn)
@@ -369,7 +366,7 @@ class Core(Process):
         self._init_profile(profiledir)
 
         # if refresh:
-            # cleanpy(PACKDIR)
+        # cleanpy(PACKDIR)
 
         Process.__init__(self)
 
@@ -397,7 +394,7 @@ class Core(Process):
     def _setup_process(self):
         try:
             set_process_name('pyLoad')
-        except NameError:
+        except AttributeError:
             pass
         niceness = self.config.get('general', 'niceness')
         renice(niceness=niceness)
@@ -411,7 +408,8 @@ class Core(Process):
         self.log.debug("Storage: {0}".format(storage_folder))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
-        self.log.info(self._("Available storage space: {0}").format(avail_space))
+        self.log.info(
+            self._("Available storage space: {0}").format(avail_space))
 
     def _workloop(self):
         self.__running.set()
@@ -465,7 +463,7 @@ class Core(Process):
             self.log.info(self._("pyLoad is up and running"))
             self.evm.fire('pyload:started')
 
-            # #: some memory stats
+            # # some memory stats
             # from guppy import hpy
             # hp=hpy()
             # print(hp.heap())
@@ -538,8 +536,8 @@ class Core(Process):
             self.config.close()
             self._remove_loggers()
             # if cleanup:
-                # self.log.info(self._("Deleting temp files ..."))
-                # remove(self.tempdir, ignore_errors=True)
+            # self.log.info(self._("Deleting temp files ..."))
+            # remove(self.tempdir, ignore_errors=True)
         finally:
             self.terminate()
 

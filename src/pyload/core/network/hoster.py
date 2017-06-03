@@ -7,9 +7,9 @@ import time
 from builtins import int, str
 
 from future import standard_library
+
 from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
-from pyload.utils import format
 from pyload.utils.convert import chunks as _chunks
 from pyload.utils.fs import lopen, makedirs, remove
 
@@ -46,10 +46,10 @@ class Hoster(Base):
     Base plugin for hoster plugin. Overwrite get_info for online status retrieval, process for downloading.
     """
 
-    #: Class used to make requests with `self.load`
+    # Class used to make requests with `self.load`
     REQUEST_CLASS = CurlRequest
 
-    #: Class used to make download
+    # Class used to make download
     DOWNLOAD_CLASS = CurlDownload
 
     @staticmethod
@@ -69,26 +69,26 @@ class Hoster(Base):
         Base.__init__(self, file.manager.pyload)
 
         self.want_reconnect = False
-        #: enables simultaneous processing of multiple downloads
+        # enables simultaneous processing of multiple downloads
         self.limit_dl = 0
-        #: chunk limit
+        # chunk limit
         self.chunk_limit = 1
-        #: enables resume (will be ignored if server dont accept chunks)
+        # enables resume (will be ignored if server dont accept chunks)
         self.resume_download = False
 
-        #: plugin is waiting
+        # plugin is waiting
         self.waiting = False
 
-        self.ocr = None  #: captcha reader instance
-        #: account handler instance, see :py:class:`Account`
+        self.ocr = None  # captcha reader instance
+        # account handler instance, see :py:class:`Account`
         self.account = self.pyload.acm.select_account(
             self.__name__, self.owner)
 
-        #: premium status
+        # premium status
         self.premium = False
 
         if self.account:
-            #: Request instance bound to account
+            # Request instance bound to account
             self.req = self.account.get_account_request()
             # Default:  -1, True, True
             self.chunk_limit, self.limit_dl, self.resume_download = self.account.get_download_settings()
@@ -96,20 +96,20 @@ class Hoster(Base):
         else:
             self.req = self.pyload.req.get_request(class_=self.REQUEST_CLASS)
 
-        #: Will hold the download class
+        # Will hold the download class
         self.dl = None
 
-        #: associated file instance, see `File`
+        # associated file instance, see `File`
         self.filename = file
-        self.thread = None  #: holds thread in future
+        self.thread = None  # holds thread in future
 
-        #: location where the last call to download was saved
+        # location where the last call to download was saved
         self.last_download = ""
-        #: re match of the last call to `check_download`
+        # re match of the last call to `check_download`
         self.last_check = None
 
-        self.retries = 0  #: amount of retries already made
-        self.html = None  #: some plugins store html code here
+        self.retries = 0  # amount of retries already made
+        self.html = None  # some plugins store html code here
 
         self.init()
 
@@ -126,7 +126,7 @@ class Hoster(Base):
     def set_multi_dl(self, val):
         self.limit_dl = 0 if val else 1
 
-    #: virtual attribute using self.limit_dl on behind
+    # virtual attribute using self.limit_dl on behind
     multi_dl = property(get_multi_dl, set_multi_dl)
 
     def get_chunk_count(self):
@@ -140,7 +140,7 @@ class Hoster(Base):
             limit = self.account.options.get("limitDL", 0)
             if limit == "":
                 limit = 0
-            if self.limit_dl > 0:  #: a limit is already set, we use the minimum
+            if self.limit_dl > 0:  # a limit is already set, we use the minimum
                 return min(int(limit), self.limit_dl)
             else:
                 return int(limit)
@@ -312,7 +312,8 @@ class Hoster(Base):
                     os.chown(location, uid, gid)
                 except Exception as e:
                     self.pyload.log.warning(
-                        self._("Setting User and Group failed: {0}").format(str(e)))
+                        self._("Setting User and Group failed: {0}").format(
+                            str(e)))
 
         name = self.file.name
 
@@ -325,14 +326,18 @@ class Hoster(Base):
             self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
-            newname = self.dl.download(url, filepath, get=get, post=post, referer=ref, chunks=self.get_chunk_count(),
-                                       resume=self.resume_download, cookies=cookies, disposition=disposition)
+            newname = self.dl.download(
+                url, filepath, get=get, post=post, referer=ref,
+                chunks=self.get_chunk_count(),
+                resume=self.resume_download, cookies=cookies,
+                disposition=disposition)
         finally:
             self.dl.close()
             self.file.size = self.dl.size
 
-        if disposition and newname and newname != name:  #: triple check, just to be sure
-            self.pyload.log.info(self._("{0} saved as {1}").format(name, newname))
+        if disposition and newname and newname != name:  # triple check, just to be sure
+            self.pyload.log.info(
+                self._("{0} saved as {1}").format(name, newname))
             self.file.name = newname
             filepath = os.path.join(location, newname)
 
@@ -354,7 +359,8 @@ class Hoster(Base):
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.pyload.log.warning(
-                    self._("Setting User and Group failed: {0}").format(str(e)))
+                    self._("Setting User and Group failed: {0}").format(
+                        str(e)))
 
         self.last_download = fs_filename
         return self.last_download
@@ -421,10 +427,10 @@ class Hoster(Base):
         for file in self.pyload.files.cached_files():
             if file != self.file and file.name == self.file.name and file.package(
             ).folder == pack.folder:
-                if file.status in (0, 12):  #: finished or downloading
+                if file.status in (0, 12):  # finished or downloading
                     raise Skip(file.pluginname)
                 elif file.status in (
-                        5, 7) and starting:  #: a download is waiting/starting and was apparently started before
+                        5, 7) and starting:  # a download is waiting/starting and was apparently started before
                     raise Skip(file.pluginname)
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
@@ -443,7 +449,8 @@ class Hoster(Base):
                 raise Skip(file[0])
 
             self.pyload.log.debug(
-                "File {0} not skipped, because it does not exists".format(self.file.name))
+                "File {0} not skipped, because it does not exists".format(
+                    self.file.name))
 
     def clean(self):
         """

@@ -3,13 +3,14 @@
 from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
+
 from pyload.utils.purge import uniqify
 
 from ..datatype.file import FileDoesNotExist
 from ..datatype.init import DownloadState, Permission
 from ..datatype.package import PackageDoesNotExist, PackageStatus
 from .base import BaseApi
-from .init import Api, requireperm
+from .init import requireperm
 
 standard_library.install_aliases()
 
@@ -21,12 +22,12 @@ class FileApi(BaseApi):
     """
 
     # def check_result(self, info):
-        # """
-        # Internal method to verify result and owner.
-        # """
-        # TODO: shared?
-        # return info and (not self.primary_uid or info.owner ==
-                         # self.primary_uid)
+    # """
+    # Internal method to verify result and owner.
+    # """
+    # TODO: shared?
+    # return info and (not self.primary_uid or info.owner ==
+    # self.primary_uid)
 
     @requireperm(Permission.All)
     def get_all_files(self):

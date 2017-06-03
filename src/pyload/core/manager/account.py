@@ -7,6 +7,7 @@ import json
 import random
 
 from future import standard_library
+
 from pyload.utils.struct.lock import lock
 
 from ..datatype.init import AccountInfo
@@ -46,7 +47,8 @@ class AccountManager(BaseManager):
         if plugin not in self.accounts:
             self.accounts[plugin] = []
 
-        self.pyload.log.debug("Create account {0}:{1}".format(plugin, loginname))
+        self.pyload.log.debug(
+            "Create account {0}:{1}".format(plugin, loginname))
 
         # New account instance
         account = klass.from_info_data(self, info, password, options)
@@ -82,9 +84,10 @@ class AccountManager(BaseManager):
         data = []
         for plugin, accounts in self.accounts.items():
             data.extend(
-                [(acc.loginname, 1 if acc.activated else 0, 1 if acc.shared else 0, acc.password,
-                  json.dumps(acc.options), acc.aid) for acc in
-                 accounts])
+                [(acc.loginname, 1 if acc.activated else 0, 1
+                  if acc.shared else 0, acc.password, json.dumps(
+                      acc.options),
+                  acc.aid) for acc in accounts])
         self.pyload.db.save_accounts(data)
 
     def get_account(self, aid, plugin, user=None):
@@ -163,7 +166,8 @@ class AccountManager(BaseManager):
         accounts = []
         for plugin, accs in self.accounts.items():
             accounts.extend(
-                acc for acc in accs if acc.shared or not uid or acc.owner == uid)
+                acc for acc in accs
+                if acc.shared or not uid or acc.owner == uid)
 
         return accounts
 

@@ -6,7 +6,7 @@ from future import standard_library
 
 from ..datatype.init import Permission
 from .base import BaseApi
-from .init import Api, requireperm
+from .init import requireperm
 
 standard_library.install_aliases()
 

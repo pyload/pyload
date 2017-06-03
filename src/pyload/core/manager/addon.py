@@ -7,13 +7,14 @@ import builtins
 from builtins import str
 from collections import defaultdict
 from gettext import gettext
+from types import MethodType
 
 from _thread import start_new_thread
 from future import standard_library
+
 from pyload.utils.layer.legacy.collections_ import namedtuple
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
-from types import MethodType
 
 from ..datatype.init import (AddonInfo, AddonService, ServiceDoesNotExist,
                              ServiceException)
@@ -33,7 +34,7 @@ class AddonManager(BaseManager):
     def __init__(self, core):
         BaseManager.__init__(self, core)
 
-        builtins.ADDONMANAGER = self  #: needed to let addons register themselves
+        builtins.ADDONMANAGER = self  # needed to let addons register themselves
 
         # TODO: multiuser addons
 
@@ -69,7 +70,8 @@ class AddonManager(BaseManager):
             func = getattr(plugin, f)
             return func(*args)
         except Exception as e:
-            plugin.log_error(self._("Error when executing {0}".format(f)), str(e))
+            plugin.log_error(
+                self._("Error when executing {0}".format(f)), str(e))
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -113,7 +115,8 @@ class AddonManager(BaseManager):
                         active.append(pluginclass.__name__)
                     else:
                         self.pyload.log.debug(
-                            "Loaded internal plugin: {0}".format(pluginclass.__name__))
+                            "Loaded internal plugin: {0}".format(
+                                pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 

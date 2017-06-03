@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import ADDONMANAGER, object, str
 
 from future import standard_library
+
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
 
@@ -109,7 +110,7 @@ class Addon(Base):
 
     """
 
-    #: periodic call interval in seconds
+    # periodic call interval in seconds
     interval = 0
 
     __type__ = "addon"
@@ -117,10 +118,10 @@ class Addon(Base):
     def __init__(self, core, manager, user=None):
         Base.__init__(self, core, user)
 
-        #: Callback of periodical job task, used by AddonManager
+        # Callback of periodical job task, used by AddonManager
         self.cb = None
 
-        #: `AddonManager`
+        # `AddonManager`
         self.manager = manager
 
         self.init()

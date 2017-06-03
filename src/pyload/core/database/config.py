@@ -11,20 +11,21 @@ standard_library.install_aliases()
 
 class ConfigMethods(DatabaseMethods):
 
-
     @async
     def save_config(self, plugin, config, user=None):
         if user is None:
             user = -1
         self.c.execute(
-            'INSERT INTO settings(plugin, config, user) VALUES(?,?,?)', (plugin, config, user))
+            'INSERT INTO settings(plugin, config, user) VALUES(?,?,?)',
+            (plugin, config, user))
 
     @queue
     def load_config(self, plugin, user=None):
         if user is None:
             user = -1
         self.c.execute(
-            'SELECT config FROM settings WHERE plugin=? AND user=?', (plugin, user))
+            'SELECT config FROM settings WHERE plugin=? AND user=?',
+            (plugin, user))
 
         r = self.c.fetchone()
         return r[0] if r else ""
@@ -35,7 +36,8 @@ class ConfigMethods(DatabaseMethods):
             self.c.execute('DELETE FROM settings WHERE plugin=?', (plugin,))
         else:
             self.c.execute(
-                'DELETE FROM settings WHERE plugin=? AND user=?', (plugin, user))
+                'DELETE FROM settings WHERE plugin=? AND user=?',
+                (plugin, user))
 
     @queue
     def load_all_configs(self):

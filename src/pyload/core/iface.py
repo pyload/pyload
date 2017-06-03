@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
+
+import os
+from builtins import DATADIR
+from tempfile import mkstemp
 
 from future import standard_library
-standard_library.install_aliases()
-import os
+from pkg_resources import get_default_cache
 
 import autoupgrade
 import daemonize
-
-from tempfile import mkstemp
-
-from builtins import DATADIR
-from pkg_resources import get_default_cache
 from pyload.utils.fs import cleanpy, makedirs
 
-from .__about__ import __namespace__, __version__, __package_name__
+from .__about__ import __namespace__, __package_name__, __version__
 from .init import Core, _pmap
+
+standard_library.install_aliases()
+
+
+
+
 
 
 def _mkdprofile(profile=None, rootdir=None):
@@ -62,7 +65,9 @@ def quit(profile=None, configdir=None):
     inst.shutdown()
 
 
-def start(profile=None, configdir=None, tempdir=None, debug=None, restore=None, daemon=False):
+def start(
+        profile=None, configdir=None, tempdir=None, debug=None, restore=None,
+        daemon=False):
     profiledir = _mkdprofile(profile, configdir)
 
     inst = Core(profiledir, tempdir, debug, restore)
@@ -74,7 +79,7 @@ def start(profile=None, configdir=None, tempdir=None, debug=None, restore=None, 
         d = daemonize.Daemonize("pyLoad", pidfile, inst.join, logger=inst.log)
         d.start()
 
-    return inst  #: returns process instance
+    return inst  # returns process instance
 
 
 def restart(*args, **kwargs):

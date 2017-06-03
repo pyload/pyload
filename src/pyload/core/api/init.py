@@ -4,9 +4,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from builtins import object, str
+from types import MethodType
 
 from future import standard_library
-from types import MethodType
 
 from ..datatype.init import DownloadState, DownloadStatus, Permission
 from ..datatype.user import User
@@ -34,7 +34,7 @@ def requireperm(bits):
 statemap = {
     DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
     DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
-    DownloadState.Unfinished: None,  #: set below
+    DownloadState.Unfinished: None,  # set below
     DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
                                      DownloadStatus.NotPossible, DownloadStatus.FileMismatch)),
     DownloadState.Unmanaged: None,
@@ -60,8 +60,8 @@ class Api(AbstractApi):
     These can be configured via web interface.
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission
     """
-    EXTERNAL = AbstractApi  #: let the json api know which methods are external
-    EXTEND = False  #: only extendable when set too true
+    EXTERNAL = AbstractApi  # let the json api know which methods are external
+    EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
         self.pyload = core
@@ -144,7 +144,8 @@ class Api(AbstractApi):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.pyload.log.info(self._("User '{0}' tries to log in").format(username))
+        self.pyload.log.info(
+            self._("User '{0}' tries to log in").format(username))
 
         return self.pyload.db.check_auth(username, password)
 
@@ -169,9 +170,8 @@ class UserApi(Api):
     """
     Proxy object for api that provides all methods in user context.
     """
-
     def __init__(self, core, user):
-        #: No need to init super class
+        # No need to init super class
         self.pyload = core
         self._user = user
 

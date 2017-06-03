@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import dict
 
 from future import standard_library
+
 from pyload.requests.curl.request import CurlRequest
 # needed to register globals
 from tests.helper import stubs

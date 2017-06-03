@@ -6,6 +6,7 @@ import time
 from builtins import dict, str
 
 from future import standard_library
+
 from pyload.requests.cookie import CookieJar
 from pyload.utils import format, parse
 from pyload.utils.convert import to_str
@@ -45,15 +46,16 @@ class Account(Base):
     maxtraffic = -1
     premium = True
 
-    #: after that time [in minutes] pyload will relogin the account
+    # after that time [in minutes] pyload will relogin the account
     login_timeout = 600
-    #: account data will be reloaded after this time
+    # account data will be reloaded after this time
     info_threshold = 600
 
     @classmethod
     def from_info_data(cls, m, info, password, options):
-        return cls(m, info.aid, info.loginname, info.owner,
-                   True if info.activated else False, True if info.shared else False, password, options)
+        return cls(m, info.aid, info.loginname, info.owner, True
+                   if info.activated else False, True
+                   if info.shared else False, password, options)
 
     __type__ = "account"
 
@@ -73,7 +75,7 @@ class Account(Base):
 
         self.lock = RLock()
         self.timestamp = 0
-        self.login_ts = 0  #: timestamp for login
+        self.login_ts = 0  # timestamp for login
         self.cj = CookieJar()
         self.error = None
 
@@ -86,14 +88,16 @@ class Account(Base):
         self.init()
 
     def to_info_data(self):
-        info = AccountInfo(self.aid, self.__name__, self.loginname, self.owner, self.valid, self.validuntil, self.trafficleft,
-                           self.maxtraffic, self.premium, self.activated, self.shared, self.options)
+        info = AccountInfo(
+            self.aid, self.__name__, self.loginname, self.owner, self.valid,
+            self.validuntil, self.trafficleft, self.maxtraffic, self.premium,
+            self.activated, self.shared, self.options)
 
         info.config = [
             ConfigItem(
                 name, item.label, item.description, item.input,
                 to_str(self.get_config(name), self.get_config(name)))
-                for name, item in self.config_data.items()]
+            for name, item in self.config_data.items()]
         return info
 
     def init(self):
@@ -159,12 +163,14 @@ class Account(Base):
             self.valid = True
         except WrongPassword:
             self.log_warning(
-                self._("Could not login with account {0} | {1}").format(self.loginname, self._("Wrong Password")))
+                self._("Could not login with account {0} | {1}").format(
+                    self.loginname, self._("Wrong Password")))
             self.valid = False
 
         except Exception as e:
             self.log_warning(
-                self._("Could not login with account {0} | {1}").format(self.loginname, str(e)))
+                self._("Could not login with account {0} | {1}").format(
+                    self.loginname, str(e)))
             self.valid = False
             # self.pyload.print_exc()
 
@@ -182,7 +188,7 @@ class Account(Base):
         """
         if password != self.password or loginname != self.loginname:
             self.login_ts = 0
-            self.valid = True  #: set valid, so the login will be retried
+            self.valid = True  # set valid, so the login will be retried
 
             self.loginname = loginname
             self.password = password
@@ -241,13 +247,14 @@ class Account(Base):
                     infos = {'error': str(e)}
                     self.log_error(self._("Error: {0}").format(str(e)))
 
-            self.restore_defaults()  #: reset to initial state
-            if isinstance(infos, dict):  #: copy result from dict to class
+            self.restore_defaults()  # reset to initial state
+            if isinstance(infos, dict):  # copy result from dict to class
                 for k, v in infos.items():
                     if hasattr(self, k):
                         setattr(self, k, v)
                     else:
-                        self.log_debug("Unknown attribute {0}={1}".format(k, v))
+                        self.log_debug(
+                            "Unknown attribute {0}={1}".format(k, v))
 
             self.log_debug("Account Info: {0}".format(infos))
             self.timestamp = time.time()
@@ -306,12 +313,12 @@ class Account(Base):
 
         if 0 <= self.validuntil < time.time():
             return False
-        if self.trafficleft is 0:  #: test explicitly for 0
+        if self.trafficleft is 0:  # test explicitly for 0
             return False
 
         return True
 
-    def parse_traffic(self, string):  #: returns kbyte
+    def parse_traffic(self, string):  # returns kbyte
         return parse.bytesize(string) >> 10
 
     def format_trafficleft(self):
@@ -326,8 +333,8 @@ class Account(Base):
         if user:
             self.log_debug("Deprecated argument user for .empty()", user)
 
-        self.log_warning(
-            self._("Account {0} has not enough traffic, checking again in 30min").format(self.login))
+        self.log_warning(self._(
+            "Account {0} has not enough traffic, checking again in 30min").format(self.login))
 
         self.trafficleft = 0
         self.schedule_refresh(30 * 60)
@@ -346,8 +353,9 @@ class Account(Base):
         """
         Add a task for refreshing the account info to the scheduler.
         """
-        self.log_debug("Scheduled Account refresh for {0} in {1} seconds".format(
-            self.loginname, time))
+        self.log_debug(
+            "Scheduled Account refresh for {0} in {1} seconds".format(
+                self.loginname, time))
         self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
     @lock
@@ -356,7 +364,7 @@ class Account(Base):
         Checks if the user is still logged in.
         """
         if self.login_ts + self.login_timeout * 60 < time.time():
-            if self.login_ts:  #: separate from fresh login to have better debug logs
+            if self.login_ts:  # separate from fresh login to have better debug logs
                 self.log_debug(
                     "Reached login timeout for {0}".format(self.loginname))
             else:

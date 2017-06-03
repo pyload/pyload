@@ -5,7 +5,6 @@ from __future__ import absolute_import, unicode_literals
 from future import standard_library
 
 from .base import BaseApi
-from .init import Api
 
 standard_library.install_aliases()
 
@@ -18,7 +17,6 @@ class StatisticsApi(BaseApi):
     """
     Retrieve download statistics and quota.
     """
-
     def record_download(self, file):
         """
         Add download record to the statistics.

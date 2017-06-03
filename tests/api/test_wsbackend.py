@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from builtins import object
 
 from future import standard_library
+
 from nose.tools import raises
 from pyload.core.datatype import Forbidden
 from pyload.rpc.wsclient import WSClient

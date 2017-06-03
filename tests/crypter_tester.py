@@ -7,6 +7,7 @@ from builtins import int
 from logging import DEBUG, log
 
 from future import standard_library
+
 from nose.tools import nottest
 from pyload.core.plugin.base import Fail
 from pyload.utils.convert import accumulate, to_int
@@ -46,21 +47,20 @@ class CrypterPluginTester(PluginTester):
 
 c = Core()
 
-crypterlinks = os.path.join(os.path.dirname(__file__), "crypterlinks.txt")
-with lopen(crypterlinks) as fp:
-    links = [line.strip() for line in bufread(fp, buffering=1):]
 urls = []
 flags = {}
 
-for l in links:
-    if not l or l.startswith("#"):
-        continue
-    if l.startswith("http"):
-        if "||" in l:
-            l, flag = l.split("||")
-            flags[l] = flag
-
-        urls.append(l)
+crypterlinks = os.path.join(os.path.dirname(__file__), "crypterlinks.txt")
+with lopen(crypterlinks) as fp:
+    links = (line.strip() for line in bufread(fp, buffering=1))
+    for l in links:
+        if not l or l.startswith("#"):
+            continue
+        if l.startswith("http"):
+            if "||" in l:
+                l, flag = l.split("||")
+                flags[l] = flag
+            urls.append(l)
 
 h, crypter = c.pgm.parse_urls(urls)
 plugins = accumulate(crypter)

@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import time
 
 from future import standard_library
+
 from pyload.utils.convert import to_list
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
@@ -27,7 +28,7 @@ class InfoManager(BaseManager):
         """
         BaseManager.__init__(self, core)
 
-        self.thread = []  #: thread list
+        self.thread = []  # thread list
 
         self.lock = RLock()
 

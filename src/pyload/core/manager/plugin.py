@@ -7,14 +7,14 @@ import os
 import sys
 from builtins import object, str
 
+from future import standard_library
 from pkg_resources import resource_filename
 
-from future import standard_library
 from pyload.utils.fs import fullpath
 
-from .base import BaseManager
 from ..__about__ import __package__
 from ..network.loader import LoaderFactory, PluginLoader
+from .base import BaseManager
 
 standard_library.install_aliases()
 
@@ -23,7 +23,6 @@ class PluginMatcher(object):
     """
     Abstract class that allows modify which plugins to match and to load.
     """
-
     def match_url(self, url):
         """
         Returns (type, name) of a plugin if a match is found.
@@ -60,7 +59,7 @@ class PluginManager(BaseManager):
         sys.path.append(os.getcwd())  # TODO: Recheck...
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
-            self.LOCALROOT, self.pyload.config),
+                         self.LOCALROOT, self.pyload.config),
             PluginLoader(resource_filename(__package__, 'network')),
             self.ROOT, self.pyload.config)
 
@@ -75,7 +74,8 @@ class PluginManager(BaseManager):
         """
         if not isinstance(matcher, PluginMatcher):
             raise TypeError(
-                "Expected type of PluginMatcher, got '{0}' instead".format(type(matcher)))
+                "Expected type of PluginMatcher, got '{0}' instead".format(
+                    type(matcher)))
 
         if matcher in self.matcher:
             self.matcher.remove(matcher)
@@ -93,7 +93,7 @@ class PluginManager(BaseManager):
         """
         Parse plugins for given list of urls, separate to crypter and hoster.
         """
-        res = {'hoster': [], 'crypter': []}  #: tupels of (url, plugin)
+        res = {'hoster': [], 'crypter': []}  # tupels of (url, plugin)
 
         for url in urls:
             if not isinstance(url, str):
@@ -108,10 +108,10 @@ class PluginManager(BaseManager):
                 if self.loader.get_plugin(ptype, name).re.match(url):
                     res[ptype].append((url, name))
                     found = (ptype, name)
-                    break  #: need to exit this loop first
+                    break  # need to exit this loop first
 
-            if found:  #: found match
-                if self.history[0] != found:  #: update history
+            if found:  # found match
+                if self.history[0] != found:  # update history
                     self.history.remove(found)
                     self.history.insert(0, found)
                 continue
@@ -205,7 +205,8 @@ class PluginManager(BaseManager):
                     return module
                 except Exception as e:
                     self.pyload.log.error(
-                        self._("Error importing {0}: {1}").format(name, str(e)))
+                        self._("Error importing {0}: {1}").format(
+                            name, str(e)))
                     # self.pyload.print_exc()
 
     def load_class(self, type_, name):
