@@ -199,7 +199,7 @@ class Sdist(sdist):
 
 NAME = _PACKAGE_NAME
 VERSION = _get_version()
-STATUS = "1 - Planning"
+STATUS = "2 - Pre-Alpha"
 DESC = """pyLoad Config module"""
 LONG_DESC = _get_long_description()
 KEYWORDS = ["pyload"]
