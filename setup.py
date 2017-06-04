@@ -10,7 +10,6 @@
 #          \  /
 #           \/
 
-import io
 import os
 import re
 from itertools import chain
@@ -29,12 +28,12 @@ _CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
 
 
 def _read_text(file):
-    with io.open(file) as fp:
+    with open(file) as fp:
         return fp.read().strip()
 
 
 def _write_text(file, text):
-    with io.open(file, mode='w') as fp:
+    with open(file, mode='w') as fp:
         fp.write(text.strip() + os.linesep)
 
 
@@ -117,7 +116,7 @@ class MakeReadme(Command):
     """
     Create a valid README.rst file
     """
-    FILENAME = 'README.rst'
+    READMEFILE = 'README.rst'
 
     description = 'create a valid README.rst file'
     user_options = []
@@ -129,16 +128,16 @@ class MakeReadme(Command):
         pass
 
     def run(self):
-        if os.path.isfile(self.FILENAME):
+        if os.path.isfile(self.READMEFILE):
             return None
-        _write_text(self.FILENAME, _gen_long_description())
+        _write_text(self.READMEFILE, _gen_long_description())
 
 
 class PreBuild(Command):
     """
     Prepare for build
     """
-    FILENAME = os.path.join(_PACKAGE_PATH, '__about__.py')
+    ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
 
     description = 'prepare for build'
     user_options = []
@@ -162,11 +161,11 @@ __version__ = '{3}'
 __version_info__ = parse_version_info(__version__)
 __credits__ = ({4})
 """.format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
-        _write_text(self.FILENAME, text)
+        _write_text(self.ABOUTFILE, text)
 
     def run(self):
-        if not os.path.isfile(self.FILENAME):
-            self._makeabout()
+        if os.path.isfile(self.ABOUTFILE):
+            return None
         self._makeabout()
 
 
