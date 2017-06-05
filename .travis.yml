@@ -1,7 +1,9 @@
 sudo: required
 language: python
 branches:
-  only: master
+  only:
+    - master
+    - /^v\d+\.\d+\.\d+$/
 python:
   - 2.6
   - 2.7
@@ -26,21 +28,15 @@ before_install:
   # - sudo apt-get -qq install python-pycurl
 install:
   - pip install -U setuptools
-  - pip install flake8
-  - pip install pylint
   - pip install pypandoc
   - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
 script: tox --skip-missing-interpreters
-after_script:
-  - pylint -E setup.py src
-  - flake8 setup.py src
+after_script: tox -e issues
 # after_success: ocular
-before_deploy:
-  - test $TRAVIS_TEST_RESULT -eq 0
-  - test $TRAVIS_EVENT_TYPE != "cron"
+before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:
   - provider: pypi
     user:
@@ -51,7 +47,6 @@ deploy:
     skip_cleanup: true
     skip_upload_docs: true
     on:
-      branch: master
       python: 3.5
       tags: true
   - provider: releases
@@ -60,14 +55,13 @@ deploy:
     file: dist/*
     skip_cleanup: true
     on:
-      branch: master
       python: 3.5
       tags: true
-# after_deploy: travis-bump-version --api-token "" --repo $TRAVIS_REPO_SLUG VERSION
+# after_deploy: travis-bump-version --api-token "Xif4FGNCk0LGOMZSuleRwXoYblBWD9/tyTlZz/dJ6wVAF7y2sPVe5NmhDHHN/ky0fc34B7vRNNUUpp3gnwMIq3zkUtM5k3TKZZjoR+5NJmSrHThuaV9DLgNdCBNBlzvuXCyuGzT/iKdaU3LPngUaz56rS6ODEB9HN/MZYB0G6ZTGT/ywAhsLHvGZgIUfYgavI3NCB740DdAPRMiiJEIRPlPO4O1ZJa5KCQVvpE2Pu4Bn+aBzFlf/Gah+MClcqyCxL8sYr076CmKxPdn04dwH6oq2sj+LshUNw7jljde0L9WxY/dQjARhIx3kuiZzENtJ97tNxDAW++kjZ/6JkVbXVkszkawQbpbSrar+ZqD+RokP1DOb0+WUtF6AEEg6xVK9roeI/bwCkjYS1R1V0X+IcBw7yuC+5b2NUFEGclAvrTZEmiwd+qlHPoQ/M/mzfGY1tWnedx8vBTH+vId5U9K7WkM+AR0oZzYNHRoSl0UZlD0Atb4ZBEHKjZbe5vp8hW2lAskbsVlYzxDXh5MM3pNnIeXI7/VUL1BenfaQ1z/Zq0Owg8Gi64sYOmuO3UaZsJLYSYlypThgau4+H4BDfA3u2O2ZnW+6tTKPhiKBglMNaiMvdeFXtS62rOJW5au/69cGJPXB+9Ypxai08vmrG+piH2oxgPS+cyrvRR4PW4yfDAU=" --repo $TRAVIS_REPO_SLUG VERSION
 notifications:
   webhooks:
     urls:
-      - secure: ""
+      - secure: "kxox4nWtRBQSQurR7V1O3Q/LAtAXdr1zx2KjuFXAZ7TuEFhCdvOOrRbicRMkM62qEfQ6ksGfMacvHby68II6sbksbZNBMdCE4uElVJcF9tMGst/ayuRUaW51phS0snQ1abmeilU9jnQToAnmQ+Klf+avKTJ0RTvSJ97GZEaoXXTS8b+wSFCmgaiWQk6zPqZlQevjVOIoDw3bHvEU62mfovL07d4lMY68YAwAUqQ634piISrnpgE2SZ3T0PXmJInhxEUw9YYb+mIfT07cNljaBkTLKjalI+fICCz/np884ZDbnpp0VG5vGfHBOSkyJjCgG1EyiIzGyxZuAerTBu5CEWjRM6NGbKwEzoMWPLxI50xBeq02mq1Yp+rqZ5DotUGzNv+sEl6mSIfUSqlgXTjsvhDGfdOTWbySe9xb5VMP5K1G8dS+ZOagomsSu6mSMMRGw6KaAs1JcH34SFbpc2Ut5YtcdUB/sd2CcF7MVbgEA6sMtFygPdDmImYV5zhiuAGC5vhPSH/NoLvPVWm8i2FrDFXidtkfsYp/OkiKfTQKX+im9Sa03rSmZmcTFzlZn9UzZWxwtZBGPKbq/7K1rMS6qYtGgaceYAtZReLkkThNkJ+CUFjn1e7YzZpBX84iE6K6Q6QU9QMDvEb0GUxMalDhu9pCGUQZjqLJgoLKx/Reae4="
     on_success: change
     on_failure: always
     on_start: never
