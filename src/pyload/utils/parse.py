@@ -75,7 +75,7 @@ _re_number = re.compile(r'[\s-]+')
 
 def number(text):
     try:
-        text = web.translate(text).lower()
+        text = web.misc.translate(text).lower()
     except Exception:
         text = text.lower()
     o_tuple = [(w, i) for i, w in enumerate(__onewords)]
@@ -132,7 +132,7 @@ _re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
 
 def seconds(text):
     try:
-        text = web.translate(text).lower()
+        text = web.misc.translate(text).lower()
     except Exception:
         text = text.lower()
     pattr = r'({0})\s+day|today|daily'.format('|'.join(__timewords))
