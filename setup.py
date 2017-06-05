@@ -34,7 +34,7 @@ def _read_text(file):
 
 def _write_text(file, text):
     with open(file, mode='w') as fp:
-        fp.write(text.strip() + os.linesep)
+        fp.write(text.strip() + '\n')
 
 
 def _pandoc_convert(text):
@@ -46,7 +46,7 @@ def _docverter_convert(text):
     import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst'
+        data={'from': 'markdown', 'to': 'rst',
               'smart': None, 'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
@@ -72,7 +72,7 @@ def _gen_long_description():
     DELIMITER = '\n\n\n'
     readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
     history = _purge_text(_read_text('CHANGELOG.md'))
-    text = os.linesep.join((readme, history))
+    text = '\n'.join((readme, history))
     return _convert_text(text)
 
 
