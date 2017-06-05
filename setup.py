@@ -10,7 +10,6 @@
 #          \  /
 #           \/
 
-import io
 import os
 import re
 import shutil
@@ -33,13 +32,13 @@ _CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
 
 
 def _read_text(file):
-    with io.open(file, mode='rb') as fp:
+    with open(file) as fp:
         return fp.read().strip()
 
 
 def _write_text(file, text):
-    with io.open(file, mode='wb') as fp:
-        fp.write(text.strip() + os.linesep)
+    with open(file, mode='w') as fp:
+        fp.write(text.strip() + '\n')
 
 
 def _pandoc_convert(text):
@@ -51,7 +50,8 @@ def _docverter_convert(text):
     import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst'},
+        data={'from': 'markdown', 'to': 'rst',
+              'smart': None, 'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
@@ -66,42 +66,44 @@ def _convert_text(text):
         return _docverter_convert(text)
 
 
-__re_purge = re.compile(r'.*<.+>.*')
+_re_purge = re.compile(r'.*<.+>.*')
 
 def _purge_text(text):
-    return __re_purge.sub('', text).strip()
+    return _re_purge.sub('', text).strip()
 
 
 def _gen_long_description():
-    delimeter = os.linesep * 3
-    readme = _purge_text(_read_text('README.md').split(delimeter, 1)[0])
+    DELIMITER = '\n\n\n'
+    readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
     history = _purge_text(_read_text('CHANGELOG.md'))
-    desc = os.linesep.join((readme, history))
-    return _convert_text(desc)
+    text = '\n'.join((readme, history))
+    return _convert_text(text)
 
 
 def _get_long_description():
+    FILENAME = 'README.rst'
     try:
-        return _read_text('README.rst')
+        return _read_text(FILENAME)
     except IOError:
         return _gen_long_description()
 
 
-__re_section = re.compile(
+_re_section = re.compile(
     r'^\[([^\s]+)\]\s+([^[\s].+?)(?=^\[|\Z)', flags=re.M | re.S)
-__re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
+_re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
 
 def _parse_requires(text):
     deps = list(set(
-        __re_entry.findall(__re_section.split(text, maxsplit=1)[0])))
+        _re_entry.findall(_re_section.split(text, maxsplit=1)[0])))
     extras = {}
-    for name, rawdeps in __re_section.findall(text):
-        extras[name] = list(set(pack for pack in __re_entry.findall(rawdeps)))
+    for name, rawdeps in _re_section.findall(text):
+        extras[name] = list(set(pack for pack in _re_entry.findall(rawdeps)))
     return deps, extras
 
 
 def _get_requires(name):
-    file = os.path.join('requirements', name + '.txt')
+    DIRNAME = 'requirements'
+    file = os.path.join(DIRNAME, name + '.txt')
     text = _read_text(file)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
@@ -111,7 +113,8 @@ def _get_requires(name):
 
 
 def _get_version():
-    return _read_text('VERSION')
+    FILENAME = 'VERSION'
+    return _read_text(FILENAME)
 
 
 # def _setx_ntpath():
@@ -165,20 +168,20 @@ class BuildLocale(Command):
 
 
 # class DownloadCatalog(Command):
-    # """
-    # Download the translation catalog from the remote repository
-    # """
-    # description = 'download the translation catalog from the remote repository'
-    # user_options = []
+# """
+# Download the translation catalog from the remote repository
+# """
+# description = 'download the translation catalog from the remote repository'
+# user_options = []
 
-    # def initialize_options(self):
-        # pass
+# def initialize_options(self):
+# pass
 
-    # def finalize_options(self):
-        # pass
+# def finalize_options(self):
+# pass
 
-    # def run(self):
-        # raise NotImplementedError
+# def run(self):
+# raise NotImplementedError
 
 
 class PreBuild(Command):
@@ -253,8 +256,8 @@ NAME = _PACKAGE_NAME
 VERSION = _get_version()
 STATUS = "1 - Planning"
 DESC = """Free and Open Source download manager written in Pure Python and
-designed to be extremely lightweight, fully customizable and remotely
-manageable"""
+ designed to be extremely lightweight, fully customizable and remotely
+ manageable"""
 LONG_DESC = _get_long_description()
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",

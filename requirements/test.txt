@@ -2,9 +2,9 @@ aenum;python_version<"3.4"
 future
 nose
 pycurl
-pyload.config[full]~=0.6
-pyload.requests[full]~=0.6
-pyload.utils2[full]~=0.6
+pyload.config~=0.6
+pyload.requests~=0.6
+pyload.utils2~=0.6
 requests>=1.2.2
 setuptools
 unittest2
