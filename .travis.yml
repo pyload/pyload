@@ -38,9 +38,7 @@ after_script:
   - tox -e pylint -E
   - tox -e mypy
 # after_success: ocular
-before_deploy:
-  - test $TRAVIS_TEST_RESULT -eq 0
-  - test $TRAVIS_EVENT_TYPE != "cron"
+before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:
   - provider: pypi
     user:
