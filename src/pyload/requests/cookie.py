@@ -13,7 +13,7 @@ standard_library.install_aliases()
 
 class CookieJar(SimpleCookie):
 
-    __slots__ = ['EXPIRE_TIME']
+    __slots__ = []
 
     EXPIRE_TIME = 180 * 24 * 3600
 

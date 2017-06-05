@@ -16,10 +16,11 @@ class Abort(Exception):
     """
     Raised when aborted.
     """
-    pass
+    __slots__ = []
 
 
 class ResponseException(Exception):
+
     __slots__ = ['code']
 
     def __init__(self, code, content=""):
@@ -30,9 +31,12 @@ class ResponseException(Exception):
 
 class Request(object):
     """
-    Abstract class to support different types of request, most methods should be overwritten.
+    Abstract class to support different types of request,
+    most methods should be overwritten.
     """
-    # Class that will be instantiated and associated with the request, and if needed copied and reused
+
+    # Class that will be instantiated and associated with the request,
+    # and if needed copied and reused
     CONTEXT_CLASS = lambda: None
 
     def __init__(self, config, context=None, options=None, logger=None):
@@ -118,7 +122,8 @@ class Request(object):
 
     def load(self, uri, *args, **kwargs):
         """
-        Loads given resource from given uri. Args and kwargs depends on implementation.
+        Loads given resource from given uri.
+        Args and kwargs depends on implementation.
         """
         raise NotImplementedError
 

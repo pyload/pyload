@@ -106,8 +106,10 @@ class CurlRequest(Request):
 
         # self.setopt(pycurl.VERBOSE, 1)
 
-        ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; rv:53.0) Gecko/20100101 Firefox/53.0'
-        self.setopt(pycurl.USERAGENT, ua)
+        self.setopt(
+            pycurl.USERAGENT,
+            'Mozilla/5.0 (Windows NT 10.0; Win64; rv:53.0) '
+            'Gecko/20100101 Firefox/53.0')
         if pycurl.version_info()[7]:
             self.setopt(pycurl.ENCODING, 'gzip,deflate')
 

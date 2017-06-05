@@ -12,7 +12,7 @@ standard_library.install_aliases()
 
 class Bucket(object):
 
-    __slots__ = ['MIN_RATE', '_rate', 'timestamp', 'token']
+    __slots__ = ['_rate', 'timestamp', 'token']
 
     MIN_RATE = 10240  # 10kb minimum rate
 

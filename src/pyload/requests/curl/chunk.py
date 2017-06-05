@@ -44,7 +44,7 @@ class CurlChunk(CurlRequest):
 
         self.header = ""
         # indicates if the header has been processed
-        self.header_parsed = False  
+        self.header_parsed = False
         self.headers = HeaderDict()
 
         self.fp = None  # file handle
@@ -73,7 +73,8 @@ class CurlChunk(CurlRequest):
         Returns a Curl handle ready to use for perform/multiperform.
         """
         self.set_request_context(
-            self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cookies)
+            self.p.url, self.p.get, self.p.post,
+            self.p.referer, self.p.cookies)
         self.setopt(pycurl.WRITEFUNCTION, self.write_body)
         self.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
@@ -134,7 +135,8 @@ class CurlChunk(CurlRequest):
         if not self.range and self.header.endswith(os.linesep * 2):
             self.parse_header()
         # ftp file size parsing
-        elif not self.range and buf.startswith("150") and "data connection" in buf:
+        elif (not self.range and buf.startswith("150") and
+              "data connection" in buf):
             size = re.search(r"(\d+) bytes", buf)
             if size is not None:
                 self.p._size = int(size.group(1))
@@ -162,8 +164,8 @@ class CurlChunk(CurlRequest):
 
         # if the buffer sizes are stable no sleep will be made
         elif size != self.last_size or size != self._nlast_size:
-            # Avoid small buffers, increasing sleep time slowly if buffer size 
-            # gets smaller otherwise reduce sleep time percentile (values are 
+            # Avoid small buffers, increasing sleep time slowly if buffer size
+            # gets smaller otherwise reduce sleep time percentile (values are
             # based on tests)
             # So in general cpu time is saved without reducing bandwidth too
             # much
