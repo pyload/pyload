@@ -22,20 +22,22 @@ matrix:
 cache: pip
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y pandoc
-  # - sudo apt-get install -y python-pycurl
+  - sudo apt-get -qq install pandoc
+  # - sudo apt-get -qq install python-pycurl
 install:
   - pip install -U setuptools
   - pip install flake8
+  - pip install pylint
   - pip install pypandoc
   - pip install requests
-  - pip install tox-travis
-script:
-  - tox --skip-missing-interpreters
-  - flake8 setup.py src
-# after_success:
   # - pip install scrutinizer-ocular
-  # - ocular
+  - pip install tox-travis
+  # - pip install travis-bump-version
+script: tox --skip-missing-interpreters
+after_script:
+  - pylint -E setup.py src
+  - flake8 setup.py src
+# after_success: ocular
 before_deploy:
   - test $TRAVIS_TEST_RESULT -eq 0
   - test $TRAVIS_EVENT_TYPE != "cron"
@@ -61,6 +63,11 @@ deploy:
       branch: master
       python: 3.5
       tags: true
-# after_deploy:
-  # - pip install travis-bump-version
-  # - travis-bump-version --api-token "" --repo $TRAVIS_REPO_SLUG VERSION
+# after_deploy: travis-bump-version --api-token "" --repo $TRAVIS_REPO_SLUG VERSION
+notifications:
+  webhooks:
+    urls:
+      - secure: ""
+    on_success: change
+    on_failure: always
+    on_start: never
