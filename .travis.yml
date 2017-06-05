@@ -1,7 +1,9 @@
 sudo: required
 language: python
 branches:
-  only: master
+  only:
+    - master
+    - /^v\d+\.\d+\.\d+$/
 python:
   - 2.6
   - 2.7
@@ -22,23 +24,22 @@ matrix:
 cache: pip
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y pandoc
-  # - sudo apt-get install -y python-pycurl
+  - sudo apt-get -qq install pandoc
+  # - sudo apt-get -qq install python-pycurl
 install:
   - pip install -U setuptools
-  - pip install flake8
   - pip install pypandoc
   - pip install requests
-  - pip install tox-travis
-script:
-  - tox --skip-missing-interpreters
-  - flake8 setup.py pyload.py src tests
-# after_success:
   # - pip install scrutinizer-ocular
-  # - ocular
-before_deploy:
-  - test $TRAVIS_TEST_RESULT -eq 0
-  - test $TRAVIS_EVENT_TYPE != "cron"
+  - pip install tox-travis
+  # - pip install travis-bump-version
+script: tox --skip-missing-interpreters
+after_script:
+  - tox -e flake8
+  - tox -e pylint -E
+  - tox -e mypy
+# after_success: ocular
+before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:
   - provider: pypi
     user:
@@ -49,7 +50,6 @@ deploy:
     skip_cleanup: true
     skip_upload_docs: true
     on:
-      branch: master
       python: 3.5
       tags: true
   - provider: releases
@@ -58,9 +58,13 @@ deploy:
     file: dist/*
     skip_cleanup: true
     on:
-      branch: master
       python: 3.5
       tags: true
-# after_deploy:
-  # - pip install travis-bump-version
-  # - travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
+# after_deploy: travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
+notifications:
+  webhooks:
+    urls:
+      - secure: "cRnsy5ijZCyPJXIo9LoDaztpXcBr7VF3SjYRib1HHEE/LVn27hFnwLDDlL7R8FCpRdQOYXbkXNsY5ja62WIZttalzsd2RraApY+XH9QvSGGq6QNjoX593kMQ45PyqGpf3vrT9XwT5AXnw/WIg4umn7DBPsMX/aQtlNvvVlbI/6s="
+    on_success: change
+    on_failure: always
+    on_start: never
