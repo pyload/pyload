@@ -133,10 +133,6 @@ class SyncInfo(Info):
 
     __slots__ = ['__local__', '__remote__']
 
-    # NOTE: Refer to the internal __dict__ used by <Info> class
-    __local__ = None
-    __remote__ = None
-
     def __init__(self, remotedict, *args, **kwargs):
         Info.__init__(self, *args, **kwargs)
         self.__local__ = self.__dict__

@@ -18,11 +18,11 @@ standard_library.install_aliases()
 # def wrapper(old_func):
 # def new(self, *args, **kargs):
 # if new_func:
-# self.pyload.log.debug("`{0}` has been deprecated, use `{1}` instead".format(
+# self.__pyload.log.debug("`{0}` has been deprecated, use `{1}` instead".format(
 # old_func.__name__, new_func.__name__))
 # return new_func(self, *args, **kargs)
 # else:
-# self.pyload.log.error(_("`{0}` has been removed").format(old_func.__name__))
+# self.__pyload.log.error(_("`{0}` has been removed").format(old_func.__name__))
 # print_traceback()
 # return new
 # return wrapper
@@ -76,8 +76,8 @@ def trycatch(callback):
             except Exception as e:
                 msg = "Error executing `{0}` | {1}".format(
                     func.__name__, str(e))
-                self.pyload.log.debug(msg)
-                if self.pyload.debug:
+                self.__pyload.log.debug(msg)
+                if self.__pyload.debug:
                     print_traceback()
                 return callback(e)
         return new
