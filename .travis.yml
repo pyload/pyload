@@ -33,9 +33,7 @@ install:
   - pip install tox-travis
   # - pip install travis-bump-version
 script: tox --skip-missing-interpreters
-after_script:
-  - pylint -E setup.py src
-  - flake8 setup.py src
+after_script: tox -e issues
 # after_success: ocular
 before_deploy:
   - test $TRAVIS_TEST_RESULT -eq 0
