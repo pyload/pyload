@@ -30,8 +30,8 @@ standard_library.install_aliases()
 
 class ConfigOption(object):
 
-    __slots__ = ['DEFAULT_TYPE', '_convert_map', 'allowed_values',
-                 'default', 'desc', 'label', 'parser', 'type', 'value']
+    __slots__ = ['allowed_values', 'default', 'desc', 'label', 'parser',
+                 'type', 'value']
 
     DEFAULT_TYPE = InputType.Str
 
@@ -51,15 +51,17 @@ class ConfigOption(object):
         InputType.Size: lambda x: 0 if x is None else parse.bytesize(x),
         InputType.Address:
             lambda x: (None, None) if x is None else (
-            endpoint if isendpoint(x) else socket)(x),
+                endpoint if isendpoint(x) else socket)(x),
         InputType.Bytes: lambda x: b"" if x is None else bytes(x),
         InputType.StrList:
-            lambda l: [str(x) for x in l] if isiterable(l) else parse.entries(l)
+            lambda l: [
+                str(x) for x in l] if isiterable(l) else parse.entries(l)
     }
 
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
-        self.parser = parser
+        self.__parser = parser
+
         self.type = None
         self.value = None
         self.default = None
@@ -114,7 +116,7 @@ class ConfigOption(object):
             return None
         self.value = norm_value
         if store:
-            self.parser.store()
+            self.__parser.store()
 
     # def __str__(self):
         # pass
@@ -124,7 +126,7 @@ class ConfigSection(InscDict):
     """
     Provides dictionary like access for configparser.
     """
-    __slots__ = ['SECTION_SEP', 'desc', 'label', 'parser']
+    __slots__ = ['desc', 'label', 'parser']
 
     SECTION_SEP = ':'
 
@@ -132,7 +134,7 @@ class ConfigSection(InscDict):
         """
         Constructor.
         """
-        self.parser = parser
+        self.__parser = parser
         self.label = "" if label is None else str(label)
         self.desc = "" if desc is None else str(desc)
         self.update(config or ())
@@ -144,7 +146,7 @@ class ConfigSection(InscDict):
             entry_type = value[0]
             entry_args = value[1:]
             func = ConfigSection if entry_type == 'section' else ConfigOption
-            entry_obj = func(self.parser, *entry_args)
+            entry_obj = func(self.__parser, *entry_args)
         return entry_obj
 
     def reset(self):
@@ -196,10 +198,10 @@ class ConfigSection(InscDict):
             raise AlreadyExistsKeyError(name)
         if label is None:
             label = name.strip().capitalize()
-        section = ConfigSection(self.parser, config, label, desc)
+        section = ConfigSection(self.__parser, config, label, desc)
         self.__setitem__(name, section)
         if store or (store is None and config):
-            self.parser.store()
+            self.__parser.store()
         return section
 
     def add_option(self, name, value, label=None, desc=None,
@@ -209,10 +211,10 @@ class ConfigSection(InscDict):
         if label is None:
             label = name.strip().capitalize()
         option = ConfigOption(
-            self.parser, value, label, desc, allowed_values, input_type)
+            self.__parser, value, label, desc, allowed_values, input_type)
         self.__setitem__(name, option)
         if store:
-            self.parser.store()
+            self.__parser.store()
         return option
 
     def add(self, section, *args, **kwargs):
@@ -225,8 +227,8 @@ class ConfigSection(InscDict):
 
 class ConfigParser(ConfigSection):
 
-    __slots__ = ['DEFAULT_SECTION', 'SELF_SECTION', 'fp', 'lock',
-                 'log', 'parser', 'path', 'version', 'version_info']
+    __slots__ = ['fp', 'lock', 'log', 'parser', 'path', 'version',
+                 'version_info']
 
     DEFAULT_SECTION = configparser.DEFAULTSECT
     SELF_SECTION = ''

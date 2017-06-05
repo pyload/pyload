@@ -9,12 +9,15 @@ standard_library.install_aliases()
 
 
 class AlreadyExistsKeyError(KeyError):
-    pass
+
+    __slots__ = []
 
 
 class InvalidValueError(ValueError):
-    pass
+
+    __slots__ = []
 
 
 class VersionMismatchError(Exception):
-    pass
+
+    __slots__ = []
