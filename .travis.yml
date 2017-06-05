@@ -25,15 +25,16 @@ before_install:
   - sudo apt-get -qq install pandoc
 install:
   - pip install -U setuptools
-  - pip install flake8
-  - pip install pylint
   - pip install pypandoc
   - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
 script: tox --skip-missing-interpreters
-after_script: tox -e issues
+after_script:
+  - tox -e flake8
+  - tox -e pylint -E
+  - tox -e mypy
 # after_success: ocular
 before_deploy:
   - test $TRAVIS_TEST_RESULT -eq 0
