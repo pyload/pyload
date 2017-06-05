@@ -12,7 +12,6 @@ from pyload.utils.layer.safethreading import Lock
 standard_library.install_aliases()
 
 
-
 class BaseManager(object):
     """
     Base manager
@@ -21,6 +20,9 @@ class BaseManager(object):
         """
         Constructor.
         """
-        self.pyload = core
+        self.__pyload = core
         self._ = core._
         self.lock = Lock()
+
+    def get_core(self):
+        return self.__pyload

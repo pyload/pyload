@@ -20,7 +20,8 @@ class AddonApi(BaseApi):
     @requireperm(Permission.Interaction)
     def get_all_info(self):
         """
-        Returns all information stored by addon plugins. Values are always strings.
+        Returns all information stored by addon plugins.
+        Values are always strings.
         """
         raise NotImplementedError
 
@@ -32,7 +33,7 @@ class AddonApi(BaseApi):
         :param plugin: pluginName
         :return: list of :class:`AddonInfo`
         """
-        return self.pyload.adm.get_info(plugin)
+        return self.__pyload.adm.get_info(plugin)
 
     @requireperm(Permission.Interaction)
     def get_addon_handler(self):
@@ -42,7 +43,7 @@ class AddonApi(BaseApi):
         :return: dict of plugin name to list of :class:`AddonService`
         """
         handler = {}
-        for name, data in self.pyload.adm.iter_addons():
+        for name, data in self.__pyload.adm.iter_addons():
             if not data.handler:
                 continue
             handler[name] = list(data.handler.values())
@@ -53,7 +54,7 @@ class AddonApi(BaseApi):
         """
         Calls any function exposed by an addon.
         """
-        return self.pyload.adm.invoke(plugin, func, func_args)
+        return self.__pyload.adm.invoke(plugin, func, func_args)
 
     @requireperm(Permission.Interaction)
     def invoke_addon_handler(self, plugin, func, pid_or_fid):

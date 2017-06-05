@@ -15,6 +15,7 @@ standard_library.install_aliases()
 
 
 class BaseObject(object):
+
     __slots__ = []
 
     def __str__(self):
@@ -23,18 +24,22 @@ class BaseObject(object):
 
 
 class ExceptionObject(Exception):
+
     __slots__ = []
 
 
 class Conflict(ExceptionObject):
+
     __slots__ = []
 
 
 class Forbidden(ExceptionObject):
+
     __slots__ = []
 
 
 class InvalidConfigSection(ExceptionObject):
+
     __slots__ = ['section']
 
     def __init__(self, section=None):
@@ -42,6 +47,7 @@ class InvalidConfigSection(ExceptionObject):
 
 
 class ServiceDoesNotExist(ExceptionObject):
+
     __slots__ = ['plugin', 'func']
 
     def __init__(self, plugin=None, func=None):
@@ -50,6 +56,7 @@ class ServiceDoesNotExist(ExceptionObject):
 
 
 class ServiceException(ExceptionObject):
+
     __slots__ = ['msg']
 
     def __init__(self, msg=None):
@@ -57,6 +64,7 @@ class ServiceException(ExceptionObject):
 
 
 class Unauthorized(ExceptionObject):
+
     __slots__ = []
 
 
@@ -150,6 +158,7 @@ class ProgressType(IntEnum):
 
 
 class AccountInfo(BaseObject):
+
     __slots__ = [
         'aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
         'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared',
@@ -174,6 +183,7 @@ class AccountInfo(BaseObject):
 
 
 class AddonInfo(BaseObject):
+
     __slots__ = ['name', 'description', 'value']
 
     def __init__(self, name=None, description=None, value=None):
@@ -183,6 +193,7 @@ class AddonInfo(BaseObject):
 
 
 class AddonService(BaseObject):
+
     __slots__ = ['__name__', 'func_name', 'label',
                  'description', 'arguments', 'pack', 'media']
 
@@ -197,6 +208,7 @@ class AddonService(BaseObject):
 
 
 class ConfigHolder(BaseObject):
+
     __slots__ = ['name', 'label', 'description',
                  'explanation', 'items', 'info']
 
@@ -211,6 +223,7 @@ class ConfigHolder(BaseObject):
 
 
 class ConfigInfo(BaseObject):
+
     __slots__ = ['name', 'label', 'description',
                  'category', 'user_context', 'activated']
 
@@ -225,6 +238,7 @@ class ConfigInfo(BaseObject):
 
 
 class ConfigItem(BaseObject):
+
     __slots__ = ['name', 'label', 'description', 'input', 'value']
 
     def __init__(self, name=None, label=None,
@@ -237,6 +251,7 @@ class ConfigItem(BaseObject):
 
 
 class DownloadInfo(BaseObject):
+
     __slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
 
     def __init__(self, url=None, plugin=None, hash=None,
@@ -261,6 +276,7 @@ class DownloadProgress(BaseObject):
 
 
 class EventInfo(BaseObject):
+
     __slots__ = ['eventname', 'event_args']
 
     def __init__(self, eventname=None, event_args=None):
@@ -269,6 +285,7 @@ class EventInfo(BaseObject):
 
 
 class Input(BaseObject):
+
     __slots__ = ['type', 'default', 'data']
 
     def __init__(self, type_=None, default=None, data=None):
@@ -278,6 +295,7 @@ class Input(BaseObject):
 
 
 class LinkStatus(BaseObject):
+
     __slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
     def __init__(self, url=None, name=None, size=None,
@@ -291,6 +309,7 @@ class LinkStatus(BaseObject):
 
 
 class ProgressInfo(BaseObject):
+
     __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
                  'done', 'total', 'owner', 'type', 'download']
 
@@ -308,6 +327,7 @@ class ProgressInfo(BaseObject):
 
 
 class StatusInfo(BaseObject):
+
     __slots__ = [
         'speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue',
         'notifications', 'paused', 'download', 'reconnect', 'quota']
@@ -328,6 +348,7 @@ class StatusInfo(BaseObject):
 
 
 class TreeCollection(BaseObject):
+
     __slots__ = ['root', 'files', 'packages']
 
     def __init__(self, root=None, files=None, packages=None):

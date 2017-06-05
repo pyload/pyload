@@ -13,21 +13,27 @@ standard_library.install_aliases()
 
 class EventManager(BaseManager):
     """
-    Handles all event-related tasks, also stores an event queue for clients, so they can retrieve them later.
+    Handles all event-related tasks, also stores an event queue for clients,
+    so they can retrieve them later.
 
     **Known Events:**
     Most addon methods exist as events. These are some additional known events.
 
-    ===================== ================ ===========================================================
+    ===================== ================ ====================================
     Name                      Arguments      Description
-    ===================== ================ ===========================================================
-    event                 event_name, *args Called for every event, with event_name and original args
-    download:preparing    fid              A download was just queued and will be prepared now.
-    download:start        fid              A plugin will immediately start the download afterwards.
-    download:allProcessed                  All links were handled, pyLoad would idle afterwards.
-    download:allFinished                   All downloads in the queue are finished.
+    ===================== ================ ====================================
+    event                 event_name, args Called for every event,
+                                           with event_name and original args
+    download:preparing    fid              A download was just queued and
+                                           will be prepared now.
+    download:start        fid              A plugin will immediately start
+                                           the download afterwards.
+    download:allProcessed                  All links were handled,
+                                           pyLoad would idle afterwards.
+    download:allFinished                   All downloads in the queue are
+                                           finished.
     config:changed        sec, opt, value  The config was changed.
-    ===================== ================ ===========================================================
+    ===================== ================ ====================================
 
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished
@@ -42,7 +48,7 @@ class EventManager(BaseManager):
         """
         if event in self.events:
             if func in self.events[event]:
-                self.pyload.log.debug(
+                self.__pyload.log.debug(
                     "Function already registered {0}".format(func))
             else:
                 self.events[event].append(func)
@@ -77,8 +83,8 @@ class EventManager(BaseManager):
                 try:
                     func(*args, **kwargs)
                 except Exception as e:
-                    self.pyload.log.warning(
-                        "Error calling event handler {0}: {1}, {2}, {3}".format(
-                            event, func, args, str(e))
+                    self.__pyload.log.warning(
+                        "Error calling event handler "
+                        "{0}: {1}, {2}, {3}".format(event, func, args, str(e))
                     )
-                    # self.pyload.print_exc()
+                    # self.__pyload.print_exc()

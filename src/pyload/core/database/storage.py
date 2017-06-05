@@ -25,8 +25,8 @@ class StorageMethods(object):
                 (value, identifier, key))
         else:
             db.c.execute(
-                "INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)",
-                (identifier, key, value))
+                "INSERT INTO storage (identifier, key, value) "
+                "VALUES (?, ?, ?)", (identifier, key, value))
 
     @queue
     def get_storage(self, db, identifier, key=None):

@@ -32,11 +32,16 @@ def requireperm(bits):
 
 
 statemap = {
-    DownloadState.All: frozenset(getattr(DownloadStatus, x) for x in dir(DownloadStatus) if not x.startswith("_")),
-    DownloadState.Finished: frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
+    DownloadState.All:
+        frozenset(getattr(DownloadStatus, x)
+                  for x in dir(DownloadStatus) if not x.startswith("_")),
+    DownloadState.Finished:
+        frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
     DownloadState.Unfinished: None,  # set below
-    DownloadState.Failed: frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline, DownloadStatus.Aborted,
-                                     DownloadStatus.NotPossible, DownloadStatus.FileMismatch)),
+    DownloadState.Failed:
+        frozenset((DownloadStatus.Failed, DownloadStatus.TempOffline,
+                   DownloadStatus.Aborted, DownloadStatus.NotPossible,
+                   DownloadStatus.FileMismatch)),
     DownloadState.Unmanaged: None,
 }
 statemap[DownloadState.Unfinished] = frozenset(
@@ -51,20 +56,23 @@ class Api(AbstractApi):
     """
     **pyLoads API**
 
-    This is accessible either internal via core.api, websocket backend or json api.
+    This is accessible either internal via core.api,
+    websocket backend or json api.
 
     see Thrift specification file rpc/thriftbackend/pyload.thrift
     for information about data structures and what methods are usable with rpc.
 
-    Most methods requires specific permissions, please look at the source code if you need to know.
+    Most methods requires specific permissions,
+    please look at the source code if you need to know.
     These can be configured via web interface.
-    Admin user have all permissions, and are the only ones who can access the methods with no specific permission
+    Admin user have all permissions, and are the only ones who can access
+    the methods with no specific permission
     """
     EXTERNAL = AbstractApi  # let the json api know which methods are external
     EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
-        self.pyload = core
+        self.__pyload = core
         self._ = core._
         self.user_apis = {}
 
@@ -110,12 +118,12 @@ class Api(AbstractApi):
             uid = uid.uid
 
         if uid not in self.user_apis:
-            user = self.pyload.db.get_user_data(uid=uid)
+            user = self.__pyload.db.get_user_data(uid=uid)
             if not user:  # TODO: anonymous user?
                 return None
 
             self.user_apis[uid] = UserApi(
-                self.pyload, User.from_user_data(self, user))
+                self.__pyload, User.from_user_data(self, user))
 
         return self.user_apis[uid]
 
@@ -126,7 +134,8 @@ class Api(AbstractApi):
     @requireperm(Permission.All)
     def login(self, username, password, remoteip=None):
         """
-        Login into pyLoad, this **must** be called when using rpc before any methods can be used.
+        Login into pyLoad, this **must** be called when using rpc before
+        any methods can be used.
 
         :param username:
         :param password:
@@ -144,10 +153,10 @@ class Api(AbstractApi):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.pyload.log.info(
+        self.__pyload.log.info(
             self._("User '{0}' tries to log in").format(username))
 
-        return self.pyload.db.check_auth(username, password)
+        return self.__pyload.db.check_auth(username, password)
 
     @staticmethod
     def is_authorized(func, user):
@@ -172,7 +181,7 @@ class UserApi(Api):
     """
     def __init__(self, core, user):
         # No need to init super class
-        self.pyload = core
+        self.__pyload = core
         self._user = user
 
     def with_user_context(self, uid):

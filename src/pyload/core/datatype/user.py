@@ -23,6 +23,7 @@ class Role(IntEnum):
 
 
 class UserDoesNotExist(ExceptionObject):
+
     __slots__ = ['user']
 
     def __init__(self, user=None):
@@ -30,6 +31,7 @@ class UserDoesNotExist(ExceptionObject):
 
 
 class UserData(BaseObject):
+
     __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder',
                  'traffic', 'dllimit', 'dlquota', 'hddquota', 'user',
                  'templatename']

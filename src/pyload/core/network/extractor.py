@@ -10,14 +10,17 @@ standard_library.install_aliases()
 
 
 class ArchiveError(Exception):
+
     __slots__ = []
 
 
 class CRCError(Exception):
+
     __slots__ = []
 
 
 class WrongPassword(Exception):
+
     __slots__ = []
 
 
@@ -54,7 +57,7 @@ class AbtractExtractor(object):
         :param overwrite: Overwrite existing archives
         :param renice: Renice value
         """
-        self.manager = m
+        self.__manager = m
         self.filename = filename
         self.out = out
         self.fullpath = fullpath

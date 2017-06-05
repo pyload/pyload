@@ -28,9 +28,9 @@ class PluginThread(Thread):
         """
         Thread.__init__(self)
         self.setDaemon(True)
-        self.manager = manager  # Thread manager
-        self.pyload = manager.pyload
-        self._ = manager.pyload._
+        self.__manager = manager  # Thread manager
+        self.__pyload = manager.get_core()
+        self._ = self.__pyload._
         # Owner of the thread, every type should set it or overwrite user
         self.owner = owner
 
@@ -42,11 +42,14 @@ class PluginThread(Thread):
     def progress_info(self):
         return self.get_progress_info()
 
+    def get_manager(self):
+        return self.__manager
+
     def finished(self):
         """
         Remove thread from list.
         """
-        self.manager.remove_thread(self)
+        self.__manager.remove_thread(self)
 
     def get_progress_info(self):
         """
@@ -58,7 +61,7 @@ class PluginThread(Thread):
 
     def _gen_reports(self, file):
         si_entries = (
-            ('pyload version', self.pyload.version),
+            ('pyload version', self.__pyload.version),
             ('system platform', sys.platform),
             ('system version', sys.version),
             ('system encoding', sys.getdefaultencoding()),
@@ -94,7 +97,7 @@ class PluginThread(Thread):
                 zip.writestr(arcname, data)
 
     def debug_report(self, file):
-        dumpdir = os.path.join(self.pyload.cachedir,
+        dumpdir = os.path.join(self.__pyload.cachedir,
                                'plugins', file.pluginname)
         makedirs(dumpdir, exist_ok=True)
 
@@ -109,5 +112,5 @@ class PluginThread(Thread):
         reports = self._gen_reports(file)
         self._zip(filepath, reports, dumpdir)
 
-        self.pyload.log.info(
+        self.__pyload.log.info(
             self._('Debug Report written to file {0}').format(filename))

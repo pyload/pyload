@@ -107,8 +107,10 @@ class ExchangeManager(BaseManager):
         input = Input(type_, data=[standard_b64encode(img), format, filename])
 
         # TODO: title desc plugin
-        task = InteractionTask(self.ids, Interaction.Captcha, input, self._(
-            "Captcha request"), self._("Please solve the captcha"), plugin, owner=owner)
+        task = InteractionTask(
+            self.ids, Interaction.Captcha, input,
+            self._("Captcha request"), self._("Please solve the captcha"),
+            plugin, owner=owner)
 
         self.ids += 1
         self.queue_task(task)
@@ -118,7 +120,7 @@ class ExchangeManager(BaseManager):
     def remove_task(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
-            self.pyload.evm.fire("interaction:deleted", task.iid)
+            self.__pyload.evm.fire("interaction:deleted", task.iid)
 
     @lock
     def get_task_by_id(self, iid):
@@ -157,16 +159,12 @@ class ExchangeManager(BaseManager):
             # notifications are valid for 30h
             task.set_waiting(self.NOTIFICATION_TIMEOUT)
 
-        for plugin in self.pyload.adm.active_plugins():
+        for plugin in self.__pyload.adm.active_plugins():
             try:
                 plugin.new_interaction_task(task)
             except Exception:
-                # self.pyload.print_exc()
+                # self.__pyload.print_exc()
                 pass
 
         self.tasks[task.iid] = task
-        self.pyload.evm.fire("interaction:added", task)
-
-
-# if __name__ == '__main__':
-    # it = InteractionTask()
+        self.__pyload.evm.fire("interaction:added", task)

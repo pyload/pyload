@@ -26,8 +26,6 @@ def add_event_listener(event):
     :param event: Name of event or list of them.
     """
     class klass(object):
-        __slots__ = []
-
         def __new__(cls, func, *args, **kwargs):
             for ev in to_list(event, []):
                 ADDONMANAGER.add_event_listener(
@@ -48,8 +46,6 @@ def addon_handler(label, desc, package=True, media=-1):
     :param media: media type of the file to work with.
     """
     class klass(object):
-        __slots__ = []
-
         def __new__(cls, func, *args, **kwargs):
             ADDONMANAGER.add_addon_handler(
                 class_name(func.__module__), func.__name__, label, desc,
@@ -83,7 +79,7 @@ def addon_property(name, desc, default=None, fire_event=True):
 
     def _set(self, value):
         if fire_event:
-            self.manager.fire("addon:property:change", value)
+            self.__manager.fire("addon:property:change", value)
 
         return setattr(self, h, value)
 
@@ -122,7 +118,7 @@ class Addon(Base):
         self.cb = None
 
         # `AddonManager`
-        self.manager = manager
+        self.__manager = manager
 
         self.init()
 
@@ -143,7 +139,7 @@ class Addon(Base):
         if self.cb:
             self.stop_periodical()
 
-        self.cb = self.pyload.scheduler.enter(wait, 2, self._periodical)
+        self.cb = self.__pyload.scheduler.enter(wait, 2, self._periodical)
         self.interval = interval
         return True
 
@@ -152,7 +148,7 @@ class Addon(Base):
         Stops periodical call if existing
         :return: True if the callback was stopped, false otherwise
         """
-        if self.cb and self.pyload.scheduler.cancel(self.cb):
+        if self.cb and self.__pyload.scheduler.cancel(self.cb):
             self.cb = None
             return True
         else:
@@ -163,12 +159,12 @@ class Addon(Base):
             if self.is_activated():
                 self.periodical()
         except Exception as e:
-            self.pyload.log.error(
+            self.__pyload.log.error(
                 self._("Error executing addon: {0}").format(str(e)))
-            # self.pyload.print_exc()
+            # self.__pyload.print_exc()
 
         if self.cb:
-            self.cb = self.pyload.scheduler.enter(
+            self.cb = self.__pyload.scheduler.enter(
                 self.interval, 2, self._periodical)
 
     def __repr__(self):
@@ -181,7 +177,7 @@ class Addon(Base):
         return True if self.__internal__ else self.get_config("activated")
 
     def get_category(self):
-        return self.pyload.pgm.get_category(self.__name__)
+        return self.__pyload.pgm.get_category(self.__name__)
 
     def init(self):
         pass

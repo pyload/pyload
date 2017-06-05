@@ -45,11 +45,13 @@ _pmap = {}
 
 
 class Restart(Exception):
-    pass
+
+    __slots__ = []
 
 
 class Shutdown(Exception):
-    pass
+
+    __slots__ = []
 
 
 # TODO:
@@ -219,8 +221,8 @@ class Core(Process):
             if lang == default:
                 raise
             self.log.warning(
-                self._("Unable to load `{0}` language, use default `{1}`").format(
-                    lang, default),
+                self._("Unable to load `{0}` language, "
+                       "use default `{1}`").format(lang, default),
                 str(e))
             self.set_language(default)
 
@@ -339,8 +341,8 @@ class Core(Process):
         # sys.path.append(tempdir)
 
     def _register_signals(self):
-        def shutfn(s, f): return self.shutdown()
-        def quitfn(s, f): return self.terminate()
+        shutfn = lambda s, f: self.shutdown()
+        quitfn = lambda s, f: self.terminate()
         try:
             if os.name == 'nt':
                 # signal.signal(signal.CTRL_C_EVENT, shutfn)
@@ -354,7 +356,8 @@ class Core(Process):
         except Exception:
             pass
 
-    def __init__(self, profiledir=None, tempdir=None, debug=None, restore=None):
+    def __init__(self, profiledir=None, tempdir=None, debug=None,
+                 restore=None):
         self.__running = Event()
         self.__do_restart = False
         self.__do_shutdown = False
@@ -503,9 +506,10 @@ class Core(Process):
     def _register_instance(self):
         profiledir = os.path.join(self.configdir, self.profile)
         if profiledir in _pmap:
-            errmsg = "A pyLoad instance using profile `{0}` is already running".format(
-                profiledir)
-            raise RuntimeError(errmsg)
+            raise RuntimeError(
+                "A pyLoad instance using profile `{0}` "
+                "is already running".format(
+                profiledir))
         _pmap[profiledir] = self
 
     def _unregister_instance(self):

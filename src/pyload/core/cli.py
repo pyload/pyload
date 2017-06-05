@@ -55,11 +55,11 @@ LOGO = _gen_logo()
 
 def parse_args(argv=None):
     prog = autoblue("py") + autoyellow("Load")
-    desc = autored("""Free and Open Source download manager written in Pure
-Python and designed to be extremely lightweight, fully customizable and remotely
-manageable""")
-    epilog = autogreen(
-        """*** Visit https://pyload.net for further details ***""")
+    desc = autored(
+        "Free and Open Source download manager written in Pure"
+        "Python and designed to be extremely lightweight, fully customizable "
+        "and remotely manageable")
+    epilog = autogreen("*** Visit https://pyload.net for further details ***")
 
     ap = argparse.ArgumentParser(
         prog=prog, description=desc, epilog=epilog, add_help=False)

@@ -32,7 +32,8 @@ class InfoManager(BaseManager):
 
         self.lock = RLock()
 
-        # some operations require to fetch url info from hoster, so we caching them so it wont be done twice
+        # some operations require to fetch url info from hoster,
+        # so we caching them so it wont be done twice
         # contains a timestamp and will be purged after timeout
         self.info_cache = {}
 
@@ -89,7 +90,7 @@ class InfoManager(BaseManager):
         return self.info_results.get(rid)
 
     def set_info_results(self, oc, result):
-        self.pyload.evm.fire("linkcheck:updated", oc.rid,
+        self.__pyload.evm.fire("linkcheck:updated", oc.rid,
                              result, owner=oc.owner)
         oc.update(result)
 
@@ -107,11 +108,12 @@ class InfoManager(BaseManager):
 
     def work(self):
         """
-        Run all task which have to be done (this is for repetitive call by core).
+        Run all task which have to be done
+        (this is for repetitive call by core).
         """
         if self.info_cache and self.timestamp < time.time():
             self.info_cache.clear()
-            self.pyload.log.debug("Cleared Result cache")
+            self.__pyload.log.debug("Cleared Result cache")
 
         for rid in self.info_results:
             if self.info_results[rid].is_stale():

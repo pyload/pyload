@@ -28,13 +28,13 @@ class AddonThread(PluginThread):
 
         self.func = func
         self.args = args
-        self.kwargs = kwargs
+        self.kwgs = kwargs
 
         self.active = []
         self.__pi = None  # ProgressInfo
 
     def start(self):
-        self.manager.add_thread(self)
+        self.__manager.add_thread(self)
         PluginThread.start(self)
 
     def get_active_files(self):
@@ -68,20 +68,20 @@ class AddonThread(PluginThread):
     def run(self):  # TODO: approach via func_code
         try:
             try:
-                self.kwargs['thread'] = self
-                self.func(*self.args, **self.kwargs)
+                self.kwgs['thread'] = self
+                self.func(*self.args, **self.kwgs)
             except TypeError as e:
                 # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
 
-                del self.kwargs['thread']
-                self.func(*self.args, **self.kwargs)
+                del self.kwgs['thread']
+                self.func(*self.args, **self.kwgs)
         except Exception as e:
             if hasattr(self.func, "im_self"):
                 addon = self.func.__self__
                 addon.log_error(self._("An Error occurred"), str(e))
-                if self.pyload.debug:
+                if self.__pyload.debug:
                     print_exc()
                     # self.debug_report(addon.__name__, plugin=addon)
 

@@ -78,7 +78,7 @@ class DatabaseJob(object):
 
         self.func = func
         self.args = args
-        self.kwargs = kwargs
+        self.kwgs = kwargs
 
         self.result = None
         self.exception = False
@@ -91,7 +91,8 @@ class DatabaseJob(object):
         output = ""
         # for i in range(5):
         # output += "\t{0}:{1}, {2}\n".format(
-        # os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+        # os.path.basename(
+        # frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
         # frame = frame.f_back
         # del frame
         # del self.frame
@@ -100,12 +101,12 @@ class DatabaseJob(object):
 
     def process_job(self):
         try:
-            self.result = self.func(*self.args, **self.kwargs)
+            self.result = self.func(*self.args, **self.kwgs)
         except Exception as e:
             print_exc()
             try:
                 print("Database Error @", self.func.__name__,
-                      self.args[1:], self.kwargs, str(e))
+                      self.args[1:], self.kwgs, str(e))
             except Exception:
                 pass
 
@@ -127,9 +128,9 @@ class DatabaseBackend(Thread):
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.pyload = core
+        self.__pyload = core
         self._ = core._
-        self.manager = None  # set later
+        self.__manager = None  # set later
         self.error = None
         self.__running = Event()
 
@@ -168,8 +169,9 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.pyload.log.warning(
-                        self._("Database was deleted due to incompatible version"))
+                    self.__pyload.log.warning(
+                        self._("Database was deleted "
+                               "due to incompatible version"))
                 except Exception:
                     print("Database was deleted due to incompatible version")
 
@@ -252,7 +254,7 @@ class DatabaseBackend(Thread):
             '"status" INTEGER DEFAULT 0 NOT NULL,'
             '"tags" TEXT DEFAULT "" NOT NULL,'
             '"shared" INTEGER DEFAULT 0 NOT NULL,'
-            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  # incremented by trigger
+            '"packageorder" INTEGER DEFAULT -1 NOT NULL,'  # inc by trigger
             '"root" INTEGER DEFAULT -1 NOT NULL, '
             '"owner" INTEGER NOT NULL, '
             'FOREIGN KEY(owner) REFERENCES users(uid), '
@@ -261,21 +263,26 @@ class DatabaseBackend(Thread):
         )
 
         self.c.execute(
-            'CREATE TRIGGER IF NOT EXISTS "insert_package" AFTER INSERT ON "packages"'
+            'CREATE TRIGGER IF NOT EXISTS "insert_package" '
+            'AFTER INSERT ON "packages"'
             'BEGIN '
             'UPDATE packages SET added = strftime("%s", "now"), '
-            'packageorder = (SELECT max(p.packageorder) + 1 FROM packages p WHERE p.root=new.root) '
+            'packageorder = (SELECT max(p.packageorder) + 1 FROM '
+            'packages p WHERE p.root=new.root) '
             'WHERE rowid = new.rowid;'
             'END')
 
         self.c.execute(
-            'CREATE TRIGGER IF NOT EXISTS "delete_package" AFTER DELETE ON "packages"'
+            'CREATE TRIGGER IF NOT EXISTS "delete_package" '
+            'AFTER DELETE ON "packages"'
             'BEGIN '
             'DELETE FROM files WHERE package = old.pid;'
-            'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > old.packageorder AND root=old.pid;'
+            'UPDATE packages SET packageorder=packageorder-1 '
+            'WHERE packageorder > old.packageorder AND root=old.pid;'
             'END')
         self.c.execute(
-            'CREATE INDEX IF NOT EXISTS "package_index" ON packages(root, owner)')
+            'CREATE INDEX IF NOT EXISTS "package_index" ON '
+            'packages(root, owner)')
         self.c.execute(
             'CREATE INDEX IF NOT EXISTS "package_owner" ON packages(owner)')
 
@@ -307,10 +314,12 @@ class DatabaseBackend(Thread):
             'CREATE INDEX IF NOT EXISTS "file_plugin" ON files(plugin)')
 
         self.c.execute(
-            'CREATE TRIGGER IF NOT EXISTS "insert_file" AFTER INSERT ON "files"'
+            'CREATE TRIGGER IF NOT EXISTS "insert_file" '
+            'AFTER INSERT ON "files"'
             'BEGIN '
             'UPDATE files SET added = strftime("%s", "now"), '
-            'fileorder = (SELECT max(f.fileorder) + 1 FROM files f WHERE f.package=new.package) '
+            'fileorder = (SELECT max(f.fileorder) + 1 FROM files f '
+            'WHERE f.package=new.package) '
             'WHERE rowid = new.rowid;'
             'END')
 
@@ -354,7 +363,8 @@ class DatabaseBackend(Thread):
             'CREATE INDEX IF NOT EXISTS "username_index" ON users(name)')
 
         self.c.execute(
-            'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER INSERT ON "users"'
+            'CREATE TRIGGER IF NOT EXISTS "insert_user" AFTER '
+            'INSERT ON "users"'
             'BEGIN '
             'UPDATE users SET user = new.uid, folder=new.name '
             'WHERE rowid = new.rowid;'
@@ -385,7 +395,8 @@ class DatabaseBackend(Thread):
         )
 
         self.c.execute(
-            'CREATE INDEX IF NOT EXISTS "accounts_login" ON accounts(plugin, loginname)')
+            'CREATE INDEX IF NOT EXISTS "accounts_login" ON '
+            'accounts(plugin, loginname)')
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "stats" ('
@@ -462,51 +473,3 @@ class DatabaseBackend(Thread):
             if hasattr(sub, attr):
                 return getattr(sub, attr)
         raise AttributeError(attr)
-
-
-# if __name__ == '__main__':
-    # db = DatabaseBackend()
-    # db.setup()
-
-    # class Test():
-        # @queue
-        # def insert(db):
-        # c = db.create_cursor()
-        # for i in range(1000):
-        # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
-
-        # @async
-        # def insert2(db):
-        # c = db.create_cursor()
-        # for i in range(1000 * 1000):
-        # c.execute("INSERT INTO storage (identifier, key, value) VALUES (?, ?, ?)", ("foo", i, "bar"))
-
-        # @queue
-        # def select(db):
-        # c = db.create_cursor()
-        # for i in range(10):
-        # res = c.execute("SELECT value FROM storage WHERE identifier=? AND key=?", ("foo", i))
-        # print(res.fetchone())
-
-        # @queue
-        # def error(db):
-        # c = db.create_cursor()
-        # print("a")
-        # c.execute("SELECT myerror FROM storage WHERE identifier=? AND key=?", ("foo", i))
-        # print("e")
-
-    # db.register_sub(Test)
-    # import time
-
-    # start = time.time()
-    # for i in range(100):
-        # db.insert()
-    # end = time.time()
-    # print(end - start)
-
-    # start = time.time()
-    # db.insert2()
-    # end = time.time()
-    # print(end - start)
-
-    # db.error()

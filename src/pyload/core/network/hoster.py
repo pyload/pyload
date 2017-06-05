@@ -81,7 +81,7 @@ class Hoster(Base):
 
         self.ocr = None  # captcha reader instance
         # account handler instance, see :py:class:`Account`
-        self.account = self.pyload.acm.select_account(
+        self.account = self.__pyload.acm.select_account(
             self.__name__, self.owner)
 
         # premium status
@@ -94,7 +94,7 @@ class Hoster(Base):
             self.chunk_limit, self.limit_dl, self.resume_download = self.account.get_download_settings()
             self.premium = self.account.is_premium()
         else:
-            self.req = self.pyload.req.get_request(class_=self.REQUEST_CLASS)
+            self.req = self.__pyload.req.get_request(class_=self.REQUEST_CLASS)
 
         # Will hold the download class
         self.dl = None
@@ -131,8 +131,8 @@ class Hoster(Base):
 
     def get_chunk_count(self):
         if self.chunk_limit <= 0:
-            return self.pyload.config.get('connection', 'max_chunks')
-        return min(self.pyload.config.get(
+            return self.__pyload.config.get('connection', 'max_chunks')
+        return min(self.__pyload.config.get(
             'connection', 'max_chunks'), self.chunk_limit)
 
     def get_download_limit(self):
@@ -194,7 +194,7 @@ class Hoster(Base):
         Don't use account and retry download.
         """
         self.account = None
-        self.req = self.pyload.req.get_request(self.__name__)
+        self.req = self.__pyload.req.get_request(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
@@ -293,25 +293,25 @@ class Hoster(Base):
 
         self.file.set_status("downloading")
 
-        download_folder = self.pyload.config.get('general', 'storage_folder')
+        download_folder = self.__pyload.config.get('general', 'storage_folder')
 
         location = os.path.join(download_folder, self.file.package().folder)
 
         if not os.path.isdir(location):
-            mode = int(self.pyload.config.get('permission', 'foldermode'), 8)
+            mode = int(self.__pyload.config.get('permission', 'foldermode'), 8)
             makedirs(location, mode, exist_ok=True)
 
-            if self.pyload.config.get(
+            if self.__pyload.config.get(
                     'permission', 'change_fileowner') and os.name != 'nt':
                 try:
-                    uid = pwd.getpwnam(self.pyload.config.get(
+                    uid = pwd.getpwnam(self.__pyload.config.get(
                         'permission', 'user'))[2]
-                    gid = grp.getgrnam(self.pyload.config.get(
+                    gid = grp.getgrnam(self.__pyload.config.get(
                         'permission', 'group'))[2]
 
                     os.chown(location, uid, gid)
                 except Exception as e:
-                    self.pyload.log.warning(
+                    self.__pyload.log.warning(
                         self._("Setting User and Group failed: {0}").format(
                             str(e)))
 
@@ -319,10 +319,10 @@ class Hoster(Base):
 
         filepath = os.path.join(location, name)
 
-        self.pyload.adm.fire("download:start", self.file, url, filepath)
+        self.__pyload.adm.fire("download:start", self.file, url, filepath)
 
         # Create the class used for downloading
-        self.dl = self.pyload.req.get_download_request(
+        self.dl = self.__pyload.req.get_download_request(
             self.req, self.DOWNLOAD_CLASS)
         try:
             # TODO: hardcoded arguments
@@ -336,29 +336,29 @@ class Hoster(Base):
             self.file.size = self.dl.size
 
         if disposition and newname and newname != name:  # triple check, just to be sure
-            self.pyload.log.info(
+            self.__pyload.log.info(
                 self._("{0} saved as {1}").format(name, newname))
             self.file.name = newname
             filepath = os.path.join(location, newname)
 
         fs_filename = filepath
 
-        if self.pyload.config.get('permission', 'change_filemode'):
-            os.chmod(fs_filename, int(self.pyload.config.get(
+        if self.__pyload.config.get('permission', 'change_filemode'):
+            os.chmod(fs_filename, int(self.__pyload.config.get(
                 'permission', 'filemode'), 8))
 
-        if self.pyload.config.get(
+        if self.__pyload.config.get(
                 'permission', 'change_fileowner') and os.name != 'nt':
             try:
                 uid = pwd.getpwnam(
-                    self.pyload.config.get(
+                    self.__pyload.config.get(
                         'permission', 'user'))[2]
-                gid = grp.getgrnam(self.pyload.config.get(
+                gid = grp.getgrnam(self.__pyload.config.get(
                     'permission', 'group'))[2]
 
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
-                self.pyload.log.warning(
+                self.__pyload.log.warning(
                     self._("Setting User and Group failed: {0}").format(
                         str(e)))
 
@@ -387,11 +387,11 @@ class Hoster(Base):
             return None
         elif size > max_size and not read_size:
             return None
-        self.pyload.log.debug("Download Check triggered")
+        self.__pyload.log.debug("Download Check triggered")
         with lopen(self.last_download, mode='rb') as fp:
             content = fp.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
-        #self.pyload.log.debug("Content: {0}".format(content))
+        #self.__pyload.log.debug("Content: {0}".format(content))
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
@@ -424,7 +424,7 @@ class Hoster(Base):
         """
         pack = self.file.package()
 
-        for file in self.pyload.files.cached_files():
+        for file in self.__pyload.files.cached_files():
             if file != self.file and file.name == self.file.name and file.package(
             ).folder == pack.folder:
                 if file.status in (0, 12):  # finished or downloading
@@ -433,22 +433,22 @@ class Hoster(Base):
                         5, 7) and starting:  # a download is waiting/starting and was apparently started before
                     raise Skip(file.pluginname)
 
-        download_folder = self.pyload.config.get('general', 'storage_folder')
+        download_folder = self.__pyload.config.get('general', 'storage_folder')
         location = os.path.join(download_folder, pack.folder, self.file.name)
 
-        if starting and self.pyload.config.get(
+        if starting and self.__pyload.config.get(
                 'connection', 'skip') and os.path.isfile(location):
             size = os.stat(location).st_size
             if size >= self.file.size:
                 raise Skip("File exists")
 
-        file = self.pyload.db.find_duplicates(
+        file = self.__pyload.db.find_duplicates(
             self.file.fid, self.file.package().folder, self.file.name)
         if file:
             if os.path.isfile(location):
                 raise Skip(file[0])
 
-            self.pyload.log.debug(
+            self.__pyload.log.debug(
                 "File {0} not skipped, because it does not exists".format(
                     self.file.name))
 

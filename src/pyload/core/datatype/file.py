@@ -78,6 +78,7 @@ class FileStatus(IntEnum):
 
 
 class FileDoesNotExist(ExceptionObject):
+
     __slots__ = ['fid']
 
     def __init__(self, fid=None):
@@ -85,6 +86,7 @@ class FileDoesNotExist(ExceptionObject):
 
 
 class FileInfo(BaseObject):
+
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
 
@@ -128,8 +130,8 @@ class File(BaseObject):
     def __init__(
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
-        self.manager = manager
-        self.pyload = manager.pyload
+        self.__manager = manager
+        self.__pyload = manager.get_core()
 
         self.fid = int(fid)
         self._name = purge.name(name)
@@ -204,7 +206,7 @@ class File(BaseObject):
         Inits plugin instance.
         """
         if not self.plugin:
-            self.pluginclass = self.pyload.pgm.get_plugin_class(
+            self.pluginclass = self.__pyload.pgm.get_plugin_class(
                 "hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
@@ -219,7 +221,7 @@ class File(BaseObject):
         """
         Return package instance.
         """
-        return self.manager.get_package(self.packageid)
+        return self.__manager.get_package(self.packageid)
 
     def set_status(self, status):
         self.status = statusmap[status]
@@ -232,7 +234,7 @@ class File(BaseObject):
 
     def get_status_name(self):
         if self.status not in (15, 16) or not self.statusname:
-            return self.manager.status_msg[self.status]
+            return self.__manager.status_msg[self.status]
         else:
             return self.statusname
 
@@ -243,7 +245,7 @@ class File(BaseObject):
         """
         Sync File instance with database.
         """
-        self.manager.update_file(self)
+        self.__manager.update_file(self)
 
     @lock
     def release(self):
@@ -254,7 +256,7 @@ class File(BaseObject):
             self.plugin.clean()
             self.plugin = None
 
-        self.manager.release_file(self.fid)
+        self.__manager.release_file(self.fid)
 
     def to_info_data(self):
         return FileInfo(self.fid, self.get_name(),
@@ -276,7 +278,7 @@ class File(BaseObject):
         """
         Abort file if possible.
         """
-        while self.fid in self.pyload.tsm.processing_ids():
+        while self.fid in self.__pyload.tsm.processing_ids():
             with self.lock(shared=True):
                 self.abort = True
                 if self.plugin and self.plugin.req:
@@ -291,19 +293,20 @@ class File(BaseObject):
 
     def finish_if_done(self):
         """
-        Set status to finish and release file if every thread is finished with it.
+        Set status to finish and release file if every thread
+        is finished with it.
         """
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.pyload.tsm.processing_ids():
+        if self.id in self.__pyload.tsm.processing_ids():
             return False
 
         self.set_status("finished")
         self.release()
-        self.manager.check_all_links_finished()
+        self.__manager.check_all_links_finished()
         return True
 
     def check_if_processed(self):
-        self.manager.check_all_links_processed(self.id)
+        self.__manager.check_all_links_processed(self.id)
 
     @trycatch(0)
     def get_speed(self):

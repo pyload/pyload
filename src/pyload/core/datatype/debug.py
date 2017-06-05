@@ -29,30 +29,38 @@ enums = [
 ]
 
 classes = {
-    'AccountInfo': [int, str, str, int, bool, int, int, int, bool, bool, bool, (list, ConfigItem)],
+    'AccountInfo':
+        [int, str, str, int, bool, int, int, int, bool, bool, bool,
+         (list, ConfigItem)],
     'AddonInfo': [str, str, str],
     'AddonService': [str, str, str, (list, str), bool, int],
-    'ConfigHolder': [str, str, str, str, (list, ConfigItem), (None, (list, AddonInfo))],
+    'ConfigHolder':
+        [str, str, str, str, (list, ConfigItem), (None, (list, AddonInfo))],
     'ConfigInfo': [str, str, str, str, bool, (None, bool)],
     'ConfigItem': [str, str, str, Input, str],
     'DownloadInfo': [str, str, str, int, str, str],
     'DownloadProgress': [int, int, int, int, int],
     'EventInfo': [str, (list, str)],
     'FileDoesNotExist': [int],
-    'FileInfo': [int, str, int, int, int, int, int, int, int, (None, DownloadInfo)],
+    'FileInfo':
+        [int, str, int, int, int, int, int, int, int, (None, DownloadInfo)],
     'Input': [int, (None, str), (None, str)],
     'InteractionTask': [int, int, Input, str, str, str],
     'InvalidConfigSection': [str],
     'LinkStatus': [str, str, int, int, (None, str), (None, str)],
     'OnlineCheck': [int, (dict, str, LinkStatus)],
     'PackageDoesNotExist': [int],
-    'PackageInfo': [int, str, str, int, int, str, str, str, int, (list, str), int, bool, int, PackageStats, (list, int), (list, int)],
+    'PackageInfo':
+        [int, str, str, int, int, str, str, str, int, (list, str), int, bool,
+         int, PackageStats, (list, int), (list, int)],
     'PackageStats': [int, int, int, int],
-    'ProgressInfo': [str, str, str, int, int, int, int, int, (None, DownloadProgress)],
+    'ProgressInfo':
+        [str, str, str, int, int, int, int, int, (None, DownloadProgress)],
     'ServiceDoesNotExist': [str, str],
     'ServiceException': [str],
     'StatusInfo': [int, int, int, int, int, bool, bool, bool, bool, int],
-    'TreeCollection': [PackageInfo, (dict, int, FileInfo), (dict, int, PackageInfo)],
+    'TreeCollection':
+        [PackageInfo, (dict, int, FileInfo), (dict, int, PackageInfo)],
     'UserData': [int, str, str, int, int, str, int, int, str, int, int, str],
     'UserDoesNotExist': [str]
 }

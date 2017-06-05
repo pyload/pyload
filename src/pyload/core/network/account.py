@@ -22,6 +22,7 @@ standard_library.install_aliases()
 
 
 class WrongPassword(Exception):
+
     __slots__ = []
 
 
@@ -61,7 +62,7 @@ class Account(Base):
 
     def __init__(self, manager, aid, loginname, owner,
                  activated, shared, password, options):
-        Base.__init__(self, manager.pyload, owner)
+        Base.__init__(self, manager.get_core(), owner)
 
         self.aid = aid
         self.loginname = loginname
@@ -71,7 +72,7 @@ class Account(Base):
         self.password = password
         self.options = options
 
-        self.manager = manager
+        self.__manager = manager
 
         self.lock = RLock()
         self.timestamp = 0
@@ -172,7 +173,7 @@ class Account(Base):
                 self._("Could not login with account {0} | {1}").format(
                     self.loginname, str(e)))
             self.valid = False
-            # self.pyload.print_exc()
+            # self.__pyload.print_exc()
 
         return self.valid
 
@@ -206,7 +207,7 @@ class Account(Base):
                 self.set_config(item.name, item.value)
 
     def get_account_request(self):
-        return self.pyload.req.get_request(self.cj)
+        return self.__pyload.req.get_request(self.cj)
 
     def get_download_settings(self):
         """
@@ -258,7 +259,7 @@ class Account(Base):
 
             self.log_debug("Account Info: {0}".format(infos))
             self.timestamp = time.time()
-            self.pyload.evm.fire("account:loaded", self.to_info_data())
+            self.__pyload.evm.fire("account:loaded", self.to_info_data())
 
     # TODO: remove user
     def load_account_info(self, req):
@@ -356,7 +357,7 @@ class Account(Base):
         self.log_debug(
             "Scheduled Account refresh for {0} in {1} seconds".format(
                 self.loginname, time))
-        self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
+        self.__pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
     @lock
     def check_login(self, req):

@@ -329,14 +329,3 @@ class OCR(object):
             return result
         else:
             self.result_captcha = result
-
-
-# if __name__ == '__main__':
-    # ocr = OCR()
-    # ocr.load_image("B.jpg")
-    # ocr.to_greyscale()
-    # ocr.eval_black_white(140)
-    # ocr.derotate_by_average()
-    # ocr.run_tesser()
-    # print("Tesseract", ocr.result_captcha)
-    # ocr.image.save("derotated.jpg")

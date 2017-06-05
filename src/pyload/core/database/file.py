@@ -37,12 +37,12 @@ class FileMethods(DatabaseMethods):
         Number of downloads and size.
         """
         if user is None:
-            self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus != 0")
+            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f "
+                           "WHERE dlstatus != 0")
         else:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus != 0",
-                (user,))
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? "
+                "AND dlstatus != 0", (user,))
 
         r = self.c.fetchone()
         # sum is None when no elements are added
@@ -57,11 +57,12 @@ class FileMethods(DatabaseMethods):
         # status not in NA, finished, skipped
         if user is None:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus NOT IN (0,5,6)")
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE dlstatus "
+                "NOT IN (0,5,6)")
         else:
             self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus NOT IN (0,5,6)",
-                (user,))
+                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? "
+                "AND dlstatus NOT IN (0,5,6)", (user,))
 
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
@@ -74,19 +75,18 @@ class FileMethods(DatabaseMethods):
         """
         # status in online, queued, starting, waiting, downloading
         self.c.execute(
-            "SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10) AND fid != ?",
-            (fid,))
+            "SELECT COUNT(*), SUM(size) FROM files "
+            "WHERE dlstatus IN (2,3,8,9,10) AND fid != ?", (fid,))
         return self.c.fetchone()[0]
 
     @queue
     def processstats(self, user=None):
         if user is None:
-            self.c.execute(
-                "SELECT COUNT(*), SUM(size) FROM files WHERE dlstatus IN (2,3,8,9,10)")
+            self.c.execute("SELECT COUNT(*), SUM(size) FROM files "
+                           "WHERE dlstatus IN (2,3,8,9,10)")
         else:
-            self.c.execute(
-                "SELECT COUNT(*), SUM(f.size) FROM files f WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)",
-                (user,))
+            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f "
+                           "WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)", (user,))
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 
@@ -94,7 +94,8 @@ class FileMethods(DatabaseMethods):
     def add_link(self, url, name, plugin, package, owner):
         # mark file status initially as missing, dlstatus - queued
         self.c.execute(
-            'INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
+            'INSERT INTO files(url, name, plugin, status, dlstatus, package, '
+            'owner) VALUES(?,?,?,1,3,?,?)',
             (url, name, plugin, package, owner))
         return self.c.lastrowid
 
@@ -105,22 +106,23 @@ class FileMethods(DatabaseMethods):
         """
         links = [(x[0], x[0], x[1], package, owner) for x in links]
         self.c.executemany(
-            'INSERT INTO files(url, name, plugin, status, dlstatus, package, owner) VALUES(?,?,?,1,3,?,?)',
-            links)
+            'INSERT INTO files(url, name, plugin, status, dlstatus, package, '
+            'owner) VALUES(?,?,?,1,3,?,?)', links)
 
     @queue
     def add_file(self, name, size, media, package, owner):
         # file status - ok, dl status NA
         self.c.execute(
-            'INSERT INTO files(name, size, media, package, owner) VALUES(?,?,?,?,?)',
-            (name, size, media, package, owner))
+            'INSERT INTO files(name, size, media, package, owner) '
+            'VALUES(?,?,?,?,?)', (name, size, media, package, owner))
         return self.c.lastrowid
 
     @queue
     def add_package(self, name, folder, root, password,
                     site, comment, status, owner):
         self.c.execute(
-            'INSERT INTO packages(name, folder, root, password, site, comment, status, owner) VALUES(?,?,?,?,?,?,?,?)',
+            'INSERT INTO packages(name, folder, root, password, site, '
+            'comment, status, owner) VALUES(?,?,?,?,?,?,?,?)',
             (name, folder, root, password, site, comment, status, owner))
         return self.c.lastrowid
 
@@ -141,14 +143,14 @@ class FileMethods(DatabaseMethods):
         if owner is None:
             self.c.execute('DELETE FROM files WHERE fid=?', (fid,))
             self.c.execute(
-                'UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=?',
-                (order, package))
+                'UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? '
+                'AND package=?', (order, package))
         else:
             self.c.execute(
                 'DELETE FROM files WHERE fid=? AND owner=?', (fid, owner))
             self.c.execute(
-                'UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? AND package=? AND owner=?',
-                (order, package, owner))
+                'UPDATE files SET fileorder=fileorder-1 WHERE fileorder > ? '
+                'AND package=? AND owner=?', (order, package, owner))
 
     @queue
     def get_all_files(self, package=None, search=None, state=None, owner=None):
@@ -160,8 +162,9 @@ class FileMethods(DatabaseMethods):
         :param unfinished: filter by dlstatus not finished
         :param owner: only specific owner
         """
-        qry = ('SELECT fid, name, owner, size, status, media, added, fileorder, '
-               'url, plugin, hash, dlstatus, error, package FROM files WHERE ')
+        qry = ('SELECT fid, name, owner, size, status, media, added, '
+               'fileorder, url, plugin, hash, dlstatus, error, package '
+               'FROM files WHERE ')
 
         arg = []
 
@@ -197,7 +200,7 @@ class FileMethods(DatabaseMethods):
                     r[9],
                     r[10],
                     r[11],
-                    self.manager.status_msg[r[11]],
+                    self.__manager.status_msg[r[11]],
                     r[12])
             data[r[0]] = finfo
 
@@ -227,8 +230,9 @@ class FileMethods(DatabaseMethods):
         :param tags: optional tag list
         """
         qry = (
-            'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
-            'FROM packages{} ORDER BY root, packageorder')
+            'SELECT pid, name, folder, root, owner, site, comment, password, '
+            'added, tags, status, shared, packageorder FROM packages{} '
+            'ORDER BY root, packageorder')
 
         if root is None:
             stats = self.get_package_stats(owner=owner)
@@ -258,11 +262,13 @@ class FileMethods(DatabaseMethods):
     @inner
     def get_package_stats(self, pid=None, root=None, owner=None):
         qry = (
-            "SELECT p.pid, SUM(f.size) AS sizetotal, COUNT(f.fid) AS linkstotal, sizedone, linksdone "
-            "FROM packages p JOIN files f ON p.pid = f.package AND f.dlstatus > 0 {0} LEFT OUTER JOIN "
-            "(SELECT p.pid AS pid, SUM(f.size) AS sizedone, COUNT(f.fid) AS linksdone "
-            "FROM packages p JOIN files f ON p.pid = f.package {0} AND f.dlstatus in (5,6) GROUP BY p.pid) s ON s.pid = p.pid "
-            "GROUP BY p.pid")
+            "SELECT p.pid, SUM(f.size) AS sizetotal, COUNT(f.fid) "
+            "AS linkstotal, sizedone, linksdone FROM packages p JOIN files f "
+            "ON p.pid = f.package AND f.dlstatus > 0 {0} LEFT OUTER "
+            "JOIN (SELECT p.pid AS pid, SUM(f.size) AS sizedone, COUNT(f.fid) "
+            "AS linksdone FROM packages p JOIN files f "
+            "ON p.pid = f.package {0} AND f.dlstatus in (5,6) "
+            "GROUP BY p.pid) s ON s.pid = p.pid GROUP BY p.pid")
 
         # status in (finished, skipped, processing)
 
@@ -294,7 +300,8 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_file_info(self, fid, force=False):
         """
-        Get data for specific file, when force is true download info will be appended.
+        Get data for specific file, when force is true download info
+        will be appended.
         """
         self.c.execute(
             'SELECT fid, name, owner, size, status, media, added, fileorder, '
@@ -310,7 +317,7 @@ class FileMethods(DatabaseMethods):
                 r[9],
                 r[10],
                 r[11],
-                self.manager.status_msg[r[11]],
+                self.__manager.status_msg[r[11]],
                 r[12])
         return finfo
 
@@ -323,8 +330,9 @@ class FileMethods(DatabaseMethods):
             stats = self.get_package_stats(pid=pid)
 
         self.c.execute(
-            'SELECT pid, name, folder, root, owner, site, comment, password, added, tags, status, shared, packageorder '
-            'FROM packages WHERE pid=?', (pid,))
+            'SELECT pid, name, folder, root, owner, site, comment, password, '
+            'added, tags, status, shared, packageorder FROM packages '
+            'WHERE pid=?', (pid,))
 
         r = self.c.fetchone()
         if not r:
@@ -348,12 +356,12 @@ class FileMethods(DatabaseMethods):
         # status in (NA, Offline, Online, Queued, TempOffline)
         if data and len(data[0]) == 5:
             self.c.executemany(
-                'UPDATE files SET name=?, size=?, dlstatus=?, media=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
-                data)
+                'UPDATE files SET name=?, size=?, dlstatus=?, media=? '
+                'WHERE url=? AND dlstatus IN (0,1,2,3,11)', data)
         else:
             self.c.executemany(
-                'UPDATE files SET name=?, size=?, dlstatus=?, hash=?, media=? WHERE url=? AND dlstatus IN (0,1,2,3,11)',
-                data)
+                'UPDATE files SET name=?, size=?, dlstatus=?, hash=?, media=? '
+                'WHERE url=? AND dlstatus IN (0,1,2,3,11)', data)
 
     @async
     def update_file(self, f):
@@ -371,8 +379,10 @@ class FileMethods(DatabaseMethods):
     @async
     def update_package(self, p):
         self.c.execute(
-            'UPDATE packages SET name=?, folder=?, site=?, comment=?, password=?, tags=?, status=?, shared=? WHERE pid=?',
-            (p.name, p.folder, p.site, p.comment, p.password, ",".join(p.tags), p.status, p.shared, p.pid))
+            'UPDATE packages SET name=?, folder=?, site=?, comment=?, '
+            'password=?, tags=?, status=?, shared=? WHERE pid=?',
+            (p.name, p.folder, p.site, p.comment, p.password,
+             ",".join(p.tags), p.status, p.shared, p.pid))
 
     # TODO: most modifying methods needs owner argument to avoid checking
     # beforehand
@@ -380,12 +390,14 @@ class FileMethods(DatabaseMethods):
     def order_package(self, pid, root, oldorder, order):
         if oldorder > order:  # package moved upwards
             self.c.execute(
-                'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND root=? AND packageorder >= 0',
-                (order, oldorder, root))
+                'UPDATE packages SET packageorder=packageorder+1 '
+                'WHERE packageorder >= ? AND packageorder < ? AND root=? '
+                'AND packageorder >= 0', (order, oldorder, root))
         elif oldorder < order:  # moved downwards
             self.c.execute(
-                'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND root=? AND packageorder >= 0',
-                (order, oldorder, root))
+                'UPDATE packages SET packageorder=packageorder-1 '
+                'WHERE packageorder <= ? AND packageorder > ? AND root=? '
+                'AND packageorder >= 0', (order, oldorder, root))
 
         self.c.execute(
             'UPDATE packages SET packageorder=? WHERE pid=?', (order, pid))
@@ -397,12 +409,14 @@ class FileMethods(DatabaseMethods):
 
         if oldorder > order:  # moved upwards
             self.c.execute(
-                'UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? AND fileorder < ? AND package=?',
+                'UPDATE files SET fileorder=fileorder+? WHERE fileorder >= ? '
+                'AND fileorder < ? AND package=?',
                 (diff, order, oldorder, pid))
             data = [(order + i, fid) for i, fid in enumerate(fids)]
         elif oldorder < order:
             self.c.execute(
-                'UPDATE files SET fileorder=fileorder-? WHERE fileorder <= ? AND fileorder >= ? AND package=?',
+                'UPDATE files SET fileorder=fileorder-? WHERE fileorder <= ? '
+                'AND fileorder >= ? AND package=?',
                 (diff, order, oldorder + diff, pid))
             data = [(order - diff + i + 1, fid) for i, fid in enumerate(fids)]
 
@@ -416,8 +430,8 @@ class FileMethods(DatabaseMethods):
         order = (r[0] if r[0] else 0) + 1
 
         self.c.execute(
-            'UPDATE files SET fileorder=fileorder-? WHERE fileorder > ? AND package=?',
-            (len(fids), order, pid))
+            'UPDATE files SET fileorder=fileorder-? WHERE fileorder > ? '
+            'AND package=?', (len(fids), order, pid))
 
         data = [(package, order + i, fid) for i, fid in enumerate(fids)]
         self.c.executemany(
@@ -431,8 +445,8 @@ class FileMethods(DatabaseMethods):
         max = (r[0] if r[0] else 0) + 1
 
         self.c.execute(
-            'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND root=?',
-            (order, root))
+            'UPDATE packages SET packageorder=packageorder-1 '
+            'WHERE packageorder > ? AND root=?', (order, root))
 
         self.c.execute(
             'UPDATE packages SET root=?, packageorder=? WHERE pid=?',
@@ -452,16 +466,17 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_jobs(self, occ):
         """
-        Return file ids, which are suitable for download and do not use a occupied plugin.
+        Return file ids, which are suitable for download and
+        do not use a occupied plugin.
         """
         cmd = "({0})".format(", ".join("'{0}'".format(x) for x in occ))
 
         # dlstatus in online, queued, occupied | package status = ok
         cmd = (
-            "SELECT f.owner, f.fid FROM files as f INNER JOIN packages as p ON f.package=p.pid "
-            "WHERE f.owner=? AND f.plugin NOT IN {} AND f.dlstatus IN (2,3,16) AND p.status=0 "
-            "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1").format(
-            cmd)
+            "SELECT f.owner, f.fid FROM files as f INNER JOIN packages "
+            "as p ON f.package=p.pid WHERE f.owner=? AND f.plugin NOT IN {} "
+            "AND f.dlstatus IN (2,3,16) AND p.status=0 "
+            "ORDER BY p.packageorder ASC, f.fileorder ASC LIMIT 1").format(cmd)
 
         self.c.execute("SELECT uid FROM users")
         uids = self.c.fetchall()
@@ -478,12 +493,13 @@ class FileMethods(DatabaseMethods):
     @queue
     def get_unfinished(self, pid):
         """
-        Return list of max length 3 ids with pyfiles in package not finished or processed.
+        Return list of max length 3 ids with pyfiles in package not finished
+        or processed.
         """
         # status in finished, skipped, processing
         self.c.execute(
-            "SELECT fid FROM files WHERE package=? AND dlstatus NOT IN (5, 6, 14) LIMIT 3",
-            (pid,))
+            "SELECT fid FROM files WHERE package=? AND dlstatus "
+            "NOT IN (5, 6, 14) LIMIT 3", (pid,))
         return [r[0] for r in self.c.fetchall()]
 
     @queue
@@ -491,17 +507,20 @@ class FileMethods(DatabaseMethods):
         # status=queued, where status in failed, aborted, temp offline, file
         # mismatch
         self.c.execute(
-            "UPDATE files SET dlstatus=3, error='' WHERE dlstatus IN (7, 11, 12, 15)")
+            "UPDATE files SET dlstatus=3, error='' WHERE dlstatus "
+            "IN (7, 11, 12, 15)")
 
     @queue
     def find_duplicates(self, id, folder, filename):
         """
-        Checks if filename exists with different id and same package, dlstatus = finished.
+        Checks if filename exists with different id and same package,
+        dlstatus = finished.
         """
         # TODO: also check root of package
         self.c.execute(
-            "SELECT f.plugin FROM files f INNER JOIN packages as p ON f.package=p.pid AND p.folder=? WHERE f.fid!=? AND f.dlstatus=5 AND f.name=?",
-            (folder, id, filename))
+            "SELECT f.plugin FROM files f INNER JOIN packages as p "
+            "ON f.package=p.pid AND p.folder=? WHERE f.fid!=? "
+            "AND f.dlstatus=5 AND f.name=?", (folder, id, filename))
         return self.c.fetchone()
 
     @queue

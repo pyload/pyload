@@ -26,6 +26,7 @@ class PackageStatus(IntEnum):
 
 
 class PackageDoesNotExist(ExceptionObject):
+
     __slots__ = ['pid']
 
     def __init__(self, pid=None):
@@ -33,6 +34,7 @@ class PackageDoesNotExist(ExceptionObject):
 
 
 class PackageInfo(BaseObject):
+
     __slots__ = [
         'pid', 'name', 'folder', 'root', 'owner', 'site', 'comment',
         'password', 'added', 'tags', 'status', 'shared', 'packageorder',
@@ -62,6 +64,7 @@ class PackageInfo(BaseObject):
 
 
 class PackageStats(BaseObject):
+
     __slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
 
     def __init__(self, linkstotal=None, linksdone=None,
@@ -91,8 +94,8 @@ class Package(BaseObject):
     def __init__(
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
-        self.manager = manager
-        self.pyload = manager.pyload
+        self.__manager = manager
+        self.__pyload = manager.get_core()
 
         self.pid = pid
         self.name = name
@@ -117,9 +120,9 @@ class Package(BaseObject):
 
     def to_info_data(self):
         return PackageInfo(
-            self.pid, self.name, self.folder, self.root, self.ownerid, self.site,
-            self.comment, self.password, self.added, self.tags, self.status,
-            self.shared, self.packageorder)
+            self.pid, self.name, self.folder, self.root, self.ownerid,
+            self.site, self.comment, self.password, self.added, self.tags,
+            self.status, self.shared, self.packageorder)
 
     def update_from_info_data(self, pack):
         """
@@ -133,28 +136,28 @@ class Package(BaseObject):
         """
         Get contaied files data.
         """
-        return self.pyload.db.get_all_files(package=self.pid)
+        return self.__pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=""):
         self.timestamp = time.time()
-        return os.path.join(self.manager.get_package(
+        return os.path.join(self.__manager.get_package(
             self.root).get_path(), self.folder, name)
 
     def sync(self):
         """
         Sync with db.
         """
-        self.manager.update_package(self)
+        self.__manager.update_package(self)
 
     def release(self):
         """
         Sync and delete from cache.
         """
         self.sync()
-        self.manager.release_package(self.id)
+        self.__manager.release_package(self.id)
 
     def delete(self):
-        self.manager.remove_package(self.id)
+        self.__manager.remove_package(self.id)
 
     def delete_if_empty(self):
         """
@@ -166,7 +169,7 @@ class Package(BaseObject):
         return False
 
     def notify_change(self):
-        self.pyload.evm.fire("packageUpdated", self.id)
+        self.__pyload.evm.fire("packageUpdated", self.id)
 
 
 class RootPackage(Package):
@@ -178,7 +181,7 @@ class RootPackage(Package):
                          "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return os.path.join(self.pyload.config.get(
+        return os.path.join(self.__pyload.config.get(
             'general', 'storage_folder'), name)
 
     # no database operations

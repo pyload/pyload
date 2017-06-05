@@ -25,7 +25,7 @@ class UserExchangeApi(BaseApi):
         :param mode: binary or'ed output type
         :return: boolean
         """
-        return self.pyload.im.is_task_waiting(mode)
+        return self.__pyload.im.is_task_waiting(mode)
 
     @requireperm(Permission.Interaction)
     def get_interaction_tasks(self, mode):
@@ -35,24 +35,25 @@ class UserExchangeApi(BaseApi):
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
         """
-        tasks = self.pyload.im.get_tasks(mode)
+        tasks = self.__pyload.im.get_tasks(mode)
         # retrieved tasks count as seen
         for tsk in tasks:
             tsk.seen = True
             if tsk.type == Interaction.Notification:
-                tsk.set_waiting(self.pyload.im.CLIENT_THRESHOLD)
+                tsk.set_waiting(self.__pyload.im.CLIENT_THRESHOLD)
 
         return tasks
 
     @requireperm(Permission.Interaction)
     def set_interaction_result(self, iid, result):
         """
-        Set Result for a interaction task. It will be immediately removed from task queue afterwards
+        Set Result for a interaction task.
+        It will be immediately removed from task queue afterwards
 
         :param iid: interaction id
         :param result: result as json string
         """
-        task = self.pyload.im.get_task_by_id(iid)
+        task = self.__pyload.im.get_task_by_id(iid)
         if task:
             task.set_result(result)
 

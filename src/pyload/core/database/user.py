@@ -34,12 +34,12 @@ class UserMethods(DatabaseMethods):
         self.c.execute('SELECT name FROM users WHERE name=?', (user,))
         if self.c.fetchone() is not None:
             self.c.execute(
-                'UPDATE users SET password=?, role=?, permission=? WHERE name=?',
-                (password, role, permission, user))
+                'UPDATE users SET password=?, role=?, permission=? '
+                'WHERE name=?', (password, role, permission, user))
         else:
             self.c.execute(
-                'INSERT INTO users (name, role, permission, password) VALUES (?, ?, ?, ?)',
-                (user, role, permission, password))
+                'INSERT INTO users (name, role, permission, password) '
+                'VALUES (?, ?, ?, ?)', (user, role, permission, password))
 
     @queue
     def add_debug_user(self, uid):
@@ -54,8 +54,8 @@ class UserMethods(DatabaseMethods):
     @queue
     def get_user_data(self, name=None, uid=None, role=None):
         qry = (
-            'SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
-            'hddquota, user, template FROM "users" WHERE ')
+            'SELECT uid, name, email, role, permission, folder, traffic, '
+            'dllimit, dlquota, hddquota, user, template FROM "users" WHERE ')
 
         if name is not None:
             self.c.execute(qry + "name=?", (name,))
@@ -80,8 +80,8 @@ class UserMethods(DatabaseMethods):
     @queue
     def get_all_user_data(self):
         self.c.execute(
-            'SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
-            'hddquota, user, template FROM "users"')
+            'SELECT uid, name, email, role, permission, folder, traffic, '
+            'dllimit, dlquota, hddquota, user, template FROM "users"')
         user = {}
         for r in self.c.fetchall():
             user[r[0]] = UserData(*r)
@@ -91,9 +91,9 @@ class UserMethods(DatabaseMethods):
     @queue
     def check_auth(self, user, password):
         self.c.execute(
-            'SELECT uid, name, email, role, permission, folder, traffic, dllimit, dlquota, '
-            'hddquota, user, template, password FROM "users" WHERE name=?',
-            (user,))
+            'SELECT uid, name, email, role, permission, folder, traffic, '
+            'dllimit, dlquota, hddquota, user, template, password '
+            'FROM "users" WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
             return None

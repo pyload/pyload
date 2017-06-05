@@ -20,10 +20,6 @@ from .init import Core, _pmap
 standard_library.install_aliases()
 
 
-
-
-
-
 def _mkdprofile(profile=None, rootdir=None):
     DEFAULT_PROFILE = 'default'
     if not profile:

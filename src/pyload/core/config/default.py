@@ -100,9 +100,11 @@ def _gen_config_defaults():
                          None, None, InputType.Bool)),
         ('change_group', ('option', False, 'Change group of pyLoad process',
                           None, None, InputType.Bool)),
-        ('change_fileowner', ('option', False, 'Change user and group of saved files',
+        ('change_fileowner', ('option', False,
+                              'Change user and group of saved files',
                               None, None, InputType.Bool)),
-        ('change_filemode', ('option', False, 'Change file mode of saved files',
+        ('change_filemode', ('option', False,
+                             'Change file mode of saved files',
                              None, None, InputType.Bool))
     )
     conn_config = (
@@ -133,7 +135,8 @@ def _gen_config_defaults():
     reconn_config = (
         ('activated', ('option', False, 'Activated',
                        None, None, InputType.Bool)),
-        ('script', ('option', None, 'Script file', None, None, InputType.File)),
+        ('script', ('option', None, 'Script file',
+                    None, None, InputType.File)),
         ('wait', ('option', False, 'Don\'t reconnect while waiting',
                   None, None, InputType.Bool))
     )
@@ -158,23 +161,6 @@ def _gen_config_defaults():
         ('interval', ('option', 1, 'Check interval (in days)',
                       None, None, InputType.Int))
     )
-    # self.config.add_section('webui', 'Web User Interface', desc, expl,
-    # [
-    # ('activated', 'bool', 'Activated', True),
-    # ('server', ('auto', 'threaded', 'fallback', 'fastcgi'), 'Webserver', 'auto'),
-    # ('host', 'str', 'IP address', 'localhost'),
-    # ('port', 'port', 'Port', 8010),
-    # ('force_server', 'str', 'Forced webserver', None),
-    # ('external', 'bool', 'Served external', False),
-    # ('prefix', 'str', 'Path prefix', None),
-    # ('debug', 'bool', 'Debug mode', False)
-    # ])
-    # self.config.add_section('rpc', 'REST API Interface', desc, expl,
-    # [
-    # ('activated', 'bool', 'Activated', False),
-    # ('host', 'str', 'IP address', '0.0.0.0'),
-    # ('port', 'port', 'Port', 7227)
-    # ])
 
     defaults = (
         ('general', ('section', general_config, 'General', None)),

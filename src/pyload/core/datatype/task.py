@@ -28,46 +28,33 @@ class Interaction(IntEnum):
 # noinspection PyUnresolvedReferences
 class InteractionTask(BaseObject):
     """
-    General Interaction Task extends ITask defined by api with additional fields and methods.
+    General Interaction Task extends ITask defined by api
+    with additional fields and methods.
     """
     __slots__ = ['description', 'error', 'handler', 'iid', 'input', 'locked',
                  'owner', 'plugin', 'result', 'seen', 'shared', 'storage',
                  'title', 'type', 'wait_until']
 
-    # Plugins can put needed data here
-    storage = None
-    # Timestamp when task expires
-    wait_until = 0
-    # The received result
-    result = None
-    # List of registered handles
-    handler = None
-    # Error Message
-    error = None
-    # Timeout locked
-    locked = False
-    # A task that was retrieved counts as seen
-    seen = False
-    # A task that is relevant to every user
-    shared = False
-    # primary uid of the owner
-    owner = None
-
     def __init__(self, iid=None, type_=None, input=None, title=None,
-                 description=None, plugin=None, owner=None, shared=None):
+                 description=None, plugin=None, owner=None, shared=False):
         self.iid = iid
         self.type = type_
         self.input = input
         self.title = title
         self.description = description
         self.plugin = plugin
-        self.owner = owner
-        self.shared = shared
+        self.owner = owner  # primary uid of the owner
+        self.shared = shared  # A task that is relevant to every user
+
+        self.result = None  # The received result
+        self.error = None  # Error Message
+        self.locked = False  # Timeout locked
+        self.seen = False  # A task that was retrieved counts as seen
 
         # additional internal attributes
-        self.storage = {}
-        self.handler = []
-        self.wait_until = 0
+        self.storage = {}  # Plugins can put needed data here
+        self.handler = []  # List of registered handles
+        self.wait_until = 0  # Timestamp when task expires
 
     def convert_result(self, value):
         if self.input.type == InputType.Click:

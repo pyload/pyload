@@ -27,7 +27,7 @@ class DownloadApi(BaseApi):
         if self.user:
             return self.user.true_primary
         else:
-            return self.pyload.db.get_user_data(role=Role.Admin).uid
+            return self.__pyload.db.get_user_data(role=Role.Admin).uid
 
     @requireperm(Permission.Add)
     def create_package(self, name, folder, root, password="",
@@ -47,20 +47,22 @@ class DownloadApi(BaseApi):
         if os.path.isabs(folder):
             folder = folder.replace("/", "_")
 
-        folder = folder.replace(
-            "http://", "").replace(":", "").replace("\\", "_").replace("..", "")
+        folder = folder.replace("http://", "").replace(":", "")
+        folder = folder.replace("\\", "_").replace("..", "")
 
-        self.pyload.log.info(
+        self.__pyload.log.info(
             self._("Added package {0} as folder {1}").format(name, folder))
-        pid = self.pyload.files.add_package(
-            name, folder, root, password, site, comment, paused, self.true_primary())
+        pid = self.__pyload.files.add_package(
+            name, folder, root, password, site, comment, paused,
+            self.true_primary())
 
         return pid
 
     @requireperm(Permission.Add)
     def add_package(self, name, links, password="", paused=False):
         """
-        Convenient method to add a package to the top-level and for adding links.
+        Convenient method to add a package to the top-level
+        and for adding links.
 
         :return: package id
         """
@@ -81,7 +83,7 @@ class DownloadApi(BaseApi):
         :param root: parents package id
         :return: package id of the new package
         """
-        if self.pyload.config.get('general', 'folder_pack'):
+        if self.__pyload.config.get('general', 'folder_pack'):
             folder = name
         else:
             folder = ""
@@ -100,15 +102,16 @@ class DownloadApi(BaseApi):
         :param pid: package id
         :param links: list of urls
         """
-        hoster, crypter = self.pyload.pgm.parse_urls(links)
+        hoster, crypter = self.__pyload.pgm.parse_urls(links)
 
-        self.pyload.files.add_links(hoster + crypter, pid, self.true_primary())
+        self.__pyload.files.add_links(hoster + crypter, pid, self.true_primary())
         if hoster:
-            self.pyload.iom.create_info_thread(hoster, pid)
+            self.__pyload.iom.create_info_thread(hoster, pid)
 
-        self.pyload.log.info((self._(
-            "Added {0:d} links to package") + " #{0:d}".format(pid)).format(len(hoster + crypter)))
-        self.pyload.files.save()
+        self.__pyload.log.info((self._(
+            "Added {0:d} links to package "
+            "#{0:d}").format(pid)).format(len(hoster + crypter)))
+        self.__pyload.files.save()
 
     @requireperm(Permission.Add)
     def upload_container(self, filename, data):
@@ -118,7 +121,7 @@ class DownloadApi(BaseApi):
         :param filename: name of the file
         :param data: file content
         """
-        storagedir = self.pyload.config.get('general', 'storage_folder')
+        storagedir = self.__pyload.config.get('general', 'storage_folder')
         filename = 'tmp_{0}'.format(filename)
         filepath = os.path.join(storagedir, filename)
         with lopen(filepath, mode='wb') as fp:
@@ -133,9 +136,9 @@ class DownloadApi(BaseApi):
         :param fids: list of file ids
         """
         for fid in fids:
-            self.pyload.files.remove_file(fid)
+            self.__pyload.files.remove_file(fid)
 
-        self.pyload.files.save()
+        self.__pyload.files.save()
 
     @requireperm(Permission.Delete)
     def remove_packages(self, pids):
@@ -145,9 +148,9 @@ class DownloadApi(BaseApi):
         :param pids: list of package ids
         """
         for pid in pids:
-            self.pyload.files.remove_package(pid)
+            self.__pyload.files.remove_package(pid)
 
-        self.pyload.files.save()
+        self.__pyload.files.save()
 
     @requireperm(Permission.Modify)
     def restart_package(self, pid):
@@ -156,7 +159,7 @@ class DownloadApi(BaseApi):
 
         :param pid: package id
         """
-        self.pyload.files.restart_package(pid)
+        self.__pyload.files.restart_package(pid)
 
     @requireperm(Permission.Modify)
     def restart_file(self, fid):
@@ -165,28 +168,29 @@ class DownloadApi(BaseApi):
 
         :param fid: file id
         """
-        self.pyload.files.restart_file(fid)
+        self.__pyload.files.restart_file(fid)
 
     @requireperm(Permission.Modify)
     def recheck_package(self, pid):
         """
-        Check online status of all files in a package, also a default action when package is added.
+        Check online status of all files in a package,
+        also a default action when package is added.
         """
-        self.pyload.files.re_check_package(pid)
+        self.__pyload.files.re_check_package(pid)
 
     @requireperm(Permission.Modify)
     def restart_failed(self):
         """
         Restarts all failed failes.
         """
-        self.pyload.files.restart_failed()
+        self.__pyload.files.restart_failed()
 
     @requireperm(Permission.Modify)
     def stop_all_downloads(self):
         """
         Aborts all running downloads.
         """
-        for file in self.pyload.files.cached_files():
+        for file in self.__pyload.files.cached_files():
             if self.has_access(file):
                 file.abort_download()
 
@@ -198,7 +202,7 @@ class DownloadApi(BaseApi):
         :param fids: list of file ids
         :return:
         """
-        files = self.pyload.files.cached_files()
+        files = self.__pyload.files.cached_files()
         for file in files:
             if file.fid in fids and self.has_access(file):
                 file.abort_download()
