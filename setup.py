@@ -46,7 +46,8 @@ def _docverter_convert(text):
     import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst'},
+        data={'from': 'markdown', 'to': 'rst'
+              'smart': None, 'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
@@ -68,7 +69,7 @@ def _purge_text(text):
 
 
 def _gen_long_description():
-    DELIMITER = os.linesep * 3
+    DELIMITER = '\n\n\n'
     readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
     history = _purge_text(_read_text('CHANGELOG.md'))
     text = os.linesep.join((readme, history))
@@ -219,7 +220,7 @@ INSTALL_REQUIRES = _get_requires('install')
 SETUP_REQUIRES = _get_requires('setup')
 # TEST_SUITE = ''
 # TESTS_REQUIRE = []
-# EXTRAS_REQUIRE = _get_requires('extra')
+EXTRAS_REQUIRE = _get_requires('extra')
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 CMDCLASS = {
     'bdist_egg': BdistEgg,
@@ -273,7 +274,7 @@ setup(
     namespace_packages=NAMESPACE_PACKAGES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
-    # extras_require=EXTRAS_REQUIRE,
+    extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,
     cmdclass=CMDCLASS,
     # test_suite=TEST_SUITE,
