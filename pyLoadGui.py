@@ -108,9 +108,9 @@ class main(QObject):
         self.debugLogLevel = None
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vc:np:hd:',
+                options, args = getopt(argv[1:], 'vc:nip:hd:',
                     ["configdir=", "version", "connection=",
-                     "noconsole", "pidfile=", "help", "debug="])
+                     "noconsole", "icontest", "pidfile=", "help", "debug="])
                 for option, argument in options:
                     if option in ("-v", "--version"):
                         print "pyLoad Client", CURRENT_VERSION
@@ -119,12 +119,15 @@ class main(QObject):
                         self.cmdLineConnection = argument
                     elif option in ("--configdir"):
                         self.configdir = argument
-                    if option in ("-n", "--noconsole"):
+                    elif option in ("-n", "--noconsole"):
                         if os.name == "nt":
                             self.noConsole = True
                         else:
                             print "Error: The noconsole option works only on Windows OS"
                             exit()
+                    elif option in ("-i", "--icontest"):
+                        self.icontest()
+                        exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
                         print "Error: The pidfile option is not implemented"
@@ -158,6 +161,39 @@ class main(QObject):
         QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
         self.init(True)
 
+    def icontest(self):
+        print "Test of the desktop environment icon theme."
+        print "  This will crash (Segmentation fault) if an icon fails to load."
+        print "  In such case, the active icon theme possibly is broken or incomplete."
+        print "  Try choose a different icon theme in your desktop environment and run the test again.\n"
+        icons = []
+        icons.append(( QMessageBox.Question,    "QMessageBox.Question                       "))
+        icons.append(( QMessageBox.Information, "QMessageBox.Information                    "))
+        icons.append(( QMessageBox.Warning,     "QMessageBox.Warning                        "))
+        icons.append(( QMessageBox.Critical,    "QMessageBox.Critical                       "))
+        msgb = QMessageBox()
+        for i in icons:
+            print i[1],; sys.stdout.flush()
+            msgb.setIcon(i[0])
+            print "OK"
+        icons = []
+        icons.append(( QStyle.SP_MessageBoxQuestion,               "QStyle.SP_MessageBoxQuestion               "))
+        icons.append(( QStyle.SP_MessageBoxInformation,            "QStyle.SP_MessageBoxInformation            "))
+        icons.append(( QStyle.SP_MessageBoxWarning,                "QStyle.SP_MessageBoxWarning                "))
+        icons.append(( QStyle.SP_MessageBoxCritical,               "QStyle.SP_MessageBoxCritical               "))
+        icons.append(( QStyle.SP_ToolBarHorizontalExtensionButton, "QStyle.SP_ToolBarHorizontalExtensionButton "))
+        icons.append(( QStyle.SP_ToolBarVerticalExtensionButton,   "QStyle.SP_ToolBarVerticalExtensionButton   "))
+        icons.append(( QStyle.SP_ToolBarHorizontalExtensionButton, "QStyle.SP_ToolBarHorizontalExtensionButton "))
+        icons.append(( QStyle.SP_ToolBarVerticalExtensionButton,   "QStyle.SP_ToolBarVerticalExtensionButton   "))
+        icons.append(( QStyle.SP_BrowserReload,                    "QStyle.SP_BrowserReload                    "))
+        icons.append(( QStyle.SP_DialogSaveButton,                 "QStyle.SP_DialogSaveButton                 "))
+        style = QApplication.style()
+        for i in icons:
+            print i[1],; sys.stdout.flush()
+            i = style.standardIcon(i[0])
+            print "OK"
+        print "\nNo errors."
+
     def print_help(self):
         print ""
         print "pyLoad Client v%s     2008-2016 the pyLoad Team" % CURRENT_VERSION
@@ -176,6 +212,7 @@ class main(QObject):
         print "                               of the Connection Manager"
         print "  -n, --noconsole", " " * 8, "Hide Command Prompt on Windows OS"
         #print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
+        print "  -i, --icontest", " " * 9, "Check for crash when loading icons"
         print "  -h, --help", " " * 13, "Display this help screen"
         print ""
 
