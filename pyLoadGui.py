@@ -256,6 +256,7 @@ class main(QObject):
         """
             set main things up
         """
+        noconnect = False if first else self.connector.internal
         self.tray = None
         self.mainWindowPaintEventAction = {}
         self.geoOther = {"packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "captchaDialog": None}
@@ -304,7 +305,7 @@ class main(QObject):
         self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
         self.languageOptions = LanguageOptions(self.mainWindow)
         self.captchaOptions = CaptchaOptions(self.mainWindow)
-        self.connWindow = ConnectionManager()
+        self.connWindow = ConnectionManager(noconnect)
         self.clickNLoadForwarder = ClickNLoadForwarder()
         self.mainloop = self.Loop(self)
         self.connectSignals()

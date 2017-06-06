@@ -26,7 +26,7 @@ from uuid import uuid4 as uuid
 from module.gui.Tools import whatsThisFormat, WhatsThisButton, WtDialogButtonBox
 
 class ConnectionManager(QDialog):
-    def __init__(self):
+    def __init__(self, noconnect):
         QDialog.__init__(self)
         self.log = logging.getLogger("guilog")
         
@@ -52,10 +52,14 @@ class ConnectionManager(QDialog):
         self.btnNew     = QPushButton(_("New"))
         self.btnEdit    = QPushButton(_("Edit"))
         self.btnDefault = QPushButton(_("Default"))
-        self.btnDefault.setWhatsThis(whatsThisFormat(_("Default"), _("Toggles the default connection.")))
+        self.btnDefault.setWhatsThis(whatsThisFormat(self.btnDefault.text(), _("Toggles the default connection.")))
         self.btnRemove  = QPushButton(_("Remove"))
         self.btnConnect = QPushButton(_("Connect"))
         self.btnConnect.setDefault(True)
+        if noconnect:
+            self.btnConnect.setEnabled(False)
+            self.btnConnect.setToolTip(_("Cannot connect when the internal server was running.\nPlease close this window and start the application all over again."))
+        
         buttonLayout.addWidget(self.btnNew)
         buttonLayout.addWidget(self.btnEdit)
         buttonLayout.addWidget(self.btnDefault)
