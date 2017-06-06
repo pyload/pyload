@@ -1407,9 +1407,9 @@ class TrayOptions(QDialog):
         self.setWindowTitle(_("Options"))
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
+        self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
         self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
-        self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
         self.lblUrl          = QLabel()
         
         whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
@@ -1423,9 +1423,9 @@ class TrayOptions(QDialog):
         self.lblUrl.setOpenExternalLinks(True)
         
         vboxCb = QVBoxLayout()
+        vboxCb.addWidget(self.cbRestoreGeo)
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
-        vboxCb.addWidget(self.cbRestoreGeo)
         vboxCb.addWidget(self.lblUrl)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
@@ -1453,22 +1453,22 @@ class TrayOptions(QDialog):
     def defaultSettings(self):
         self.settings.clear()
         self.settings["EnableTray"]    = True
+        self.settings["RestoreGeo"]    = False
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
-        self.settings["RestoreGeo"]    = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
         self.settings["EnableTray"]    = self.cbEnableTray.isChecked()
+        self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
         self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
         self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
-        self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbEnableTray.setChecked    (self.settings["EnableTray"])
+        self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
-        self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
