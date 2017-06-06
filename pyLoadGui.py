@@ -2177,13 +2177,13 @@ class main(QObject):
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:
                 self.mainWindow.paintEventCounter = 0
                 self.mainWindow.showMaximized()
-                cnt = self.waitForPaintEvents(2)
+                cnt = self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.mainWindow.hide()
                 self.app.processEvents()
                 self.mainWindow.paintEventCounter = 0
                 self.mainWindow.show()
-                cnt = self.waitForPaintEvents(2)
+                cnt = self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.app.processEvents()
             else:
