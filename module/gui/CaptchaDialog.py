@@ -30,6 +30,7 @@ class CaptchaDialog(QDialog):
         captcha dialog
     """
     def __init__(self):
+        self.paintEventSignal = False
         QDialog.__init__(self)
         self.log = logging.getLogger("guilog")
 
@@ -82,6 +83,7 @@ class CaptchaDialog(QDialog):
         self.connect(self, SIGNAL("setTask"), self.setTask)
         self.connect(self, SIGNAL("setMovie(QMovie *)"), self.imgLabel, SLOT("setMovie(QMovie *)"))
         self.connect(self, SIGNAL("show"), self.slotShow)
+        self.connect(self, SIGNAL("slotShow_continue"), self.slotShow_continue, Qt.QueuedConnection)
         self.connect(self, SIGNAL("setFree"), self.setFree)
 
         self.setMinimumWidth(250)
@@ -163,8 +165,13 @@ class CaptchaDialog(QDialog):
     def slotShow(self):
         if self.isFree():
             self.setupNoCaptcha()
-        self.restoreGeometry(self.geo)
+        self.paintEventSignal = True
         self.show()
+        self.update()
+
+    def slotShow_continue(self):
+        if self.geo is not None:
+            self.setGeometry(self.geo)
         if self.adjSize:
             self.adjustSize()
         self.submitBtn.setFocus(Qt.OtherFocusReason)
@@ -197,13 +204,19 @@ class CaptchaDialog(QDialog):
     def ignore(self):
         self.hide()
 
+    def paintEvent(self, event):
+        QDialog.paintEvent(self, event)
+        if self.paintEventSignal:
+            self.paintEventSignal = False
+            self.emit(SIGNAL("slotShow_continue"))
+
     def closeEvent(self, event):
         self.hide()
         event.ignore()
 
     def hide(self):
         if not self.isHidden():
-            self.geo = self.saveGeometry()
+            self.geo = self.geometry()
         QDialog.hide(self)
 
     def appFontChanged(self):

@@ -28,7 +28,11 @@ class NewPackageDock(QDockWidget):
         QDockWidget.__init__(self, _("New Package"))
         self.log = logging.getLogger("guilog")
         
+        self.geo = None
+        self.paintEventCounter = int(0)
+        
         self.setObjectName("New Package Dock")
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
@@ -62,14 +66,23 @@ class NewPackageDock(QDockWidget):
         self.widget.box.setPlainText(result)
     
     def closeEvent(self, event):
+        if self.isFloating():
+            self.emit(SIGNAL("newPackDockClosed"))
         self.hide()
         event.ignore()
     
     def paintEvent(self, event):
         QDockWidget.paintEvent(self, event)
+        if self.isFloating():
+            self.geo = self.geometry()
+        self.paintEventCounter += 1
         if self.paintEventSignal:
             self.paintEventSignal = False
             self.emit(SIGNAL("newPackDockPaintEvent"))
+    
+    def moveEvent(self, event):
+        if self.isFloating():
+            self.geo = self.geometry()
 
 class NewPackageWindow(QWidget):
     def __init__(self, dock):

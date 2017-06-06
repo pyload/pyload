@@ -12,20 +12,20 @@
         <state></state>
         <geometry></geometry>
         <geometryUnmaximized></geometryUnmaximized>
+        <geometryOther></geometryOther>
+        <visibilitySpeedLimit></visibilitySpeedLimit>
+        <stateQueue></stateQueue>
+        <stateCollector></stateCollector>
+        <stateAccounts></stateAccounts>
         <optionsNotifications></optionsNotifications>
         <optionsLogging></optionsLogging>
         <optionsClickNLoadForwarder></optionsClickNLoadForwarder>
         <optionsAutomaticReloading></optionsAutomaticReloading>
-        <geometryCaptcha></geometryCaptcha>
         <optionsCaptcha></optionsCaptcha>
         <optionsFonts></optionsFonts>
         <optionsTray></optionsTray>
         <optionsWhatsThis></optionsWhatsThis>
         <optionsOther></optionsOther>
-        <visibilitySpeedLimit></visibilitySpeedLimit>
-        <stateQueue></stateQueue>
-        <stateCollector></stateCollector>
-        <stateAccounts></stateAccounts>
     </mainWindow>
     <language>en</language>
 </root>
