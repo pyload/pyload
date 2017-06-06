@@ -1519,6 +1519,18 @@ class OtherOptions(QDialog):
         self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Can be required on some LXDE desktop environments."))
         self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
+        
+        vboxCb1 = QVBoxLayout()
+        vboxCb1.addWidget(self.cbHideShowOnUnmax)
+        vboxCb1.addWidget(self.cbSecondLastNormalGeo)
+        vboxCb1.addWidget(self.cbHideShowOnStart)
+        vboxCb1.addWidget(self.cbAlwaysRestore)
+        self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
+        
+        self.cbRefreshGeo = QCheckBox(_("Fix for resize"))
+        whatsThis = (self.cbRefreshGeo.text(), _("Try enable this if the mainwindow gets slightly shifted when resizing it the first time after starting the application or when resizing it after showing the application from tray.<br><br>Can be required on some LXDE desktop environments."))
+        self.cbRefreshGeo.setWhatsThis(whatsThisFormat(*whatsThis))
+        
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
         url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
@@ -1527,16 +1539,10 @@ class OtherOptions(QDialog):
         self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self.lblUrl.setOpenExternalLinks(True)
         
-        vboxCb1 = QVBoxLayout()
-        vboxCb1.addWidget(self.cbHideShowOnUnmax)
-        vboxCb1.addWidget(self.cbSecondLastNormalGeo)
-        vboxCb1.addWidget(self.cbHideShowOnStart)
-        vboxCb1.addWidget(self.cbAlwaysRestore)
-        vboxCb1.addWidget(self.lblUrl)
-        self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
-        
         vboxGb = QVBoxLayout()
         vboxGb.addWidget(self.cbRestoreUnmaximizedGeo)
+        vboxGb.addWidget(self.cbRefreshGeo)
+        vboxGb.addWidget(self.lblUrl)
         self.gb.setLayout(vboxGb)
         
         self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
@@ -1571,6 +1577,7 @@ class OtherOptions(QDialog):
         self.settings["SecondLastNormalGeo"]   = False
         self.settings["HideShowOnStart"]       = False
         self.settings["AlwaysRestore"]         = False
+        self.settings["RefreshGeo"]            = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
@@ -1579,6 +1586,7 @@ class OtherOptions(QDialog):
         self.settings["SecondLastNormalGeo"]   = self.cbSecondLastNormalGeo.isChecked()
         self.settings["HideShowOnStart"]       = self.cbHideShowOnStart.isChecked()
         self.settings["AlwaysRestore"]         = self.cbAlwaysRestore.isChecked()
+        self.settings["RefreshGeo"]            = self.cbRefreshGeo.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbRestoreUnmaximizedGeo.setChecked (self.settings["RestoreUnmaximizedGeo"])
@@ -1586,6 +1594,7 @@ class OtherOptions(QDialog):
         self.cbSecondLastNormalGeo.setChecked   (self.settings["SecondLastNormalGeo"])
         self.cbHideShowOnStart.setChecked       (self.settings["HideShowOnStart"])
         self.cbAlwaysRestore.setChecked         (self.settings["AlwaysRestore"])
+        self.cbRefreshGeo.setChecked            (self.settings["RefreshGeo"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()

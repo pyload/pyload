@@ -719,9 +719,11 @@ class main(QObject):
         self.mainWindow.hide()
         self.unminimizeMainWindow()     # needed on windows os
         self.mainWindow.newPackDock.hide()
+        self.unminimizeNewPackDock()    # needed on lxde and lxqt when minimized to tray
         self.mainWindow.newLinkDock.hide()
+        self.unminimizeNewLinkDock()    # needed on lxde and lxqt when minimized to tray
         self.emit(SIGNAL("traySetShowActionText"), True)
-        s["hiddenInTray"] = True   # must be updated before allowUserActions(True)
+        s["hiddenInTray"] = True   # must be set before allowUserActions(True)
         s["restore_unmaxed_geo"] = s["maximized"]
         s["ignoreMinimizeToggled"] = False
         self.allowUserActions(True)
@@ -925,7 +927,7 @@ class main(QObject):
                         self.mainWindow.newPackDock.show()
                     if hideLinkDock:
                         self.mainWindow.newLinkDock.show()
-                self.scheduleMainWindowPaintEventAction(s["unmaxed_pos"], s["unmaxed_size"])
+                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"])
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
             else:
@@ -933,7 +935,8 @@ class main(QObject):
         s["maximized"] = maximized
 
     def debugTray(self):
-        self.log.debug9("mainWindow geometry:                           pos: %s   size: %s" % (self.mainWindow.pos(), self.mainWindow.size()))
+        self.log.debug9("mainWindow pos() + size():                     pos: %s   size: %s" % (self.mainWindow.pos(), self.mainWindow.size()))
+        self.log.debug9("mainWindow geometry():                         pos: %s   size: %s" % (self.mainWindow.geometry().topLeft(), self.mainWindow.geometry().size()))
         self.log.debug9("mainWindow:")
         self.log.debug9("  hidden    %s" % self.mainWindow.isHidden())
         self.log.debug9("  visible   %s" % self.mainWindow.isVisible())
@@ -2013,7 +2016,7 @@ class main(QObject):
             self.geoUnmaximized["maximized"]    = False
         if not self.geoUnmaximized["maximized"]:
             self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
-            self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
+            self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"])
         else:
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:                
                 self.mainWindow.paintEventCounter = 0
@@ -2044,7 +2047,7 @@ class main(QObject):
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
         self.mainWindow.captchaDialog.geo = QByteArray.fromBase64(geoCaptcha)
 
-    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0):
+    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0, refreshGeo=False):
         """
             schedule an action on a main window paintEvent
             pos is of type QPoint and size of type QSize
@@ -2063,14 +2066,15 @@ class main(QObject):
             s = size
             if s is not None:
                 s = "(%s, %s)" % (s.width(), s.height())
-            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s" % (p, s, raise_, activate, focus, showFromTrayContinue))
+            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s  refreshGeo:%s" % (p, s, raise_, activate, focus, showFromTrayContinue, refreshGeo))
         a = self.mainWindowPaintEventAction
-        a["pos"]      = pos
-        a["size"]     = size
-        a["raise_"]   = raise_
-        a["activate"] = activate
-        a["focus"]    = focus
+        a["pos"]                  = pos
+        a["size"]                 = size
+        a["raise_"]               = raise_
+        a["activate"]             = activate
+        a["focus"]                = focus
         a["showFromTrayContinue"] = showFromTrayContinue
+        a["refreshGeo"]           = refreshGeo
         # try set geometry right now to possibly avoid flicker with some window managers
         if size is not None:
             self.mainWindow.resize(size)
@@ -2093,6 +2097,10 @@ class main(QObject):
         if a["pos"] is not None:
             self.mainWindow.move(a["pos"])
             if dm: actmsg.append("moved (%d, %d)" % (a["pos"].x(), a["pos"].y()))
+        if a["refreshGeo"]: # fix for lxde, read the geometry and set it again
+            g = self.mainWindow.geometry()
+            self.mainWindow.setGeometry(g)
+            if dm: actmsg.append("refreshGeo")
         if a["raise_"]:
             self.mainWindow.raise_()
             if dm: actmsg.append("raised")
