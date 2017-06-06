@@ -698,8 +698,8 @@ class main(QObject):
         self.trayState["hiddenInTray"] = False
         self.trayState["ignoreMinimizeToggled"] = False
         self.trayState["maximized"] = self.mainWindow.isMaximized()
-        self.trayState["unmaxed_pos"] = None if (self.geoUnmaximized["unmaxed_pos"] is None) else QPoint(self.geoUnmaximized["unmaxed_pos"][0], self.geoUnmaximized["unmaxed_pos"][1])
-        self.trayState["unmaxed_size"] = None if (self.geoUnmaximized["unmaxed_size"] is None) else QSize(self.geoUnmaximized["unmaxed_size"][0], self.geoUnmaximized["unmaxed_size"][1])
+        self.trayState["unmaxed_pos"]  = self.geoUnmaximized["unmaxed_pos"]
+        self.trayState["unmaxed_size"] = self.geoUnmaximized["unmaxed_size"]
         self.trayState["restore_unmaxed_geo"] = True if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None) else False
         self.tray = TrayIcon()
         self.notification = Notification(self.tray)
@@ -1797,10 +1797,10 @@ class main(QObject):
             restore main window and dock windows, unmaximize main window if desired
             before saving their state to the config file and disconnecting from server
         """
-        self.geoUnmaximized = {}    # Note: Do not store Qt variable types in this dict
-        self.geoUnmaximized["unmaxed_pos"] = None if (self.trayState["unmaxed_pos"] is None) else (self.trayState["unmaxed_pos"].x(), self.trayState["unmaxed_pos"].y())
-        self.geoUnmaximized["unmaxed_size"] = None if (self.trayState["unmaxed_size"] is None) else (self.trayState["unmaxed_size"].width(), self.trayState["unmaxed_size"].height())
-        self.geoUnmaximized["maximized"] = self.trayState["maximized"]
+        self.geoUnmaximized = {}
+        self.geoUnmaximized["unmaxed_pos"]  = self.trayState["unmaxed_pos"]
+        self.geoUnmaximized["unmaxed_size"] = self.trayState["unmaxed_size"]
+        self.geoUnmaximized["maximized"]    = self.trayState["maximized"]
         self.log.debug4("main.prepareForSaveOptionsAndWindow: save geoUnmaximized to xml:  pos: %s                     size: %s" % (self.geoUnmaximized["unmaxed_pos"], self.geoUnmaximized["unmaxed_size"]))
         if not self.mainWindow.captchaDialog.isHidden():
             self.geoOther["captchaDialog"] = self.mainWindow.captchaDialog.geometry()
@@ -1895,8 +1895,12 @@ class main(QObject):
             self.parser.root.appendChild(mainWindowNode)
         state = str(state_raw.toBase64())
         geo = str(geo_raw.toBase64())
-        geoUnmaximized = str(QByteArray(str(self.geoUnmaximized)).toBase64())
-        gOther = {}
+        gUnmax = {} # convert Qt variable types to integer, literal_eval does not accept Qt variables
+        gUnmax["unmaxed_pos"] = 0 if (self.geoUnmaximized["unmaxed_pos"] is None) else [self.geoUnmaximized["unmaxed_pos"].x(),self.geoUnmaximized["unmaxed_pos"].y()]
+        gUnmax["unmaxed_size"] = 0 if (self.geoUnmaximized["unmaxed_size"] is None) else [self.geoUnmaximized["unmaxed_size"].width(),self.geoUnmaximized["unmaxed_size"].height()]
+        gUnmax["maximized"] = self.geoUnmaximized["maximized"]
+        geoUnmaximized = str(QByteArray(str(gUnmax)).toBase64())
+        gOther = {} # convert Qt variable types to integer, literal_eval does not accept Qt variables
         gOther["packDock"] = 0 if (self.geoOther["packDock"] is None) else [self.geoOther["packDock"].x(),self.geoOther["packDock"].y(),self.geoOther["packDock"].width(),self.geoOther["packDock"].height()]
         gOther["linkDock"] = 0 if (self.geoOther["linkDock"] is None) else [self.geoOther["linkDock"].x(),self.geoOther["linkDock"].y(),self.geoOther["linkDock"].width(),self.geoOther["linkDock"].height()]
         gOther["packDockTray"] = 0 if (self.geoOther["packDockTray"] is None) else [self.geoOther["packDockTray"].x(),self.geoOther["packDockTray"].y(),self.geoOther["packDockTray"].width(),self.geoOther["packDockTray"].height()]
@@ -2106,16 +2110,19 @@ class main(QObject):
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
         self.waitForPaintEvents(1)
         self.log.debug4("main.loadWindowFromConfig: restoreState() done")
-        self.geoUnmaximized = {}
+        gUnmax = {}
         try:
-            self.geoUnmaximized = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))
-            self.geoUnmaximized["unmaxed_pos"]
-            self.geoUnmaximized["unmaxed_size"]
-            self.geoUnmaximized["maximized"]
+            gUnmax = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))
+            gUnmax["unmaxed_pos"]
+            gUnmax["unmaxed_size"]
+            gUnmax["maximized"]
         except:
-            self.geoUnmaximized["unmaxed_pos"]  = None
-            self.geoUnmaximized["unmaxed_size"] = None
-            self.geoUnmaximized["maximized"]    = False
+            gUnmax["unmaxed_pos"] = gUnmax["unmaxed_size"] = 0
+            gUnmax["maximized"] = False
+        self.geoUnmaximized = {}
+        self.geoUnmaximized["unmaxed_pos"] = None if (gUnmax["unmaxed_pos"] == 0) else QPoint(gUnmax["unmaxed_pos"][0], gUnmax["unmaxed_pos"][1])
+        self.geoUnmaximized["unmaxed_size"] = None if (gUnmax["unmaxed_size"] == 0) else QSize(gUnmax["unmaxed_size"][0], gUnmax["unmaxed_size"][1])
+        self.geoUnmaximized["maximized"] = gUnmax["maximized"]
         gOther = {}
         try:
             gOther = literal_eval(str(QByteArray.fromBase64(geoOther)))
