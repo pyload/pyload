@@ -1651,7 +1651,6 @@ class main(QObject):
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
 
-            self.mainWindow.mactions["manager"].setEnabled(False)
             self.mainWindow.mactions["quitcore"].setEnabled(False)
             self.mainWindow.mactions["restartcore"].setEnabled(False)
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
