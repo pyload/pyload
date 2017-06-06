@@ -835,71 +835,44 @@ class main(QObject):
         self.mainWindow.show()
         self.waitForPaintEvents(1)
         numOfPaintEventsToWait = 1  # ignore maximize/unmaximize events until num paintEvents happened
-        # default method
-        if not self.mainWindow.trayOptions.settings["AltMethod"]:
-            self.mainWindow.paintEventCounter = 0
-            self.mainWindow.newPackDock.paintEventCounter = 0
-            self.mainWindow.newLinkDock.paintEventCounter = 0
-            self.mainWindow.restoreState(s["state"]) # docks
-            pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
-            pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
-            if s["maximized"]:
-                self.mainWindow.showMaximized() # needed on mint cinnamon
-            self.waitForPaintEvents(1)
-            if s["p"]["f&!h"]:
-                self.waitForPackDockPaintEvents(1)
-                pdgeo = self.geoOther["packDock"]
-            else:
-                pdgeo = None
-            if s["l"]["f&!h"]:
-                self.waitForLinkDockPaintEvents(1)
-                plgeo = self.geoOther["linkDock"]
-            else:
-                plgeo = None
-            if not s["maximized"]:
-                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
-                    pe(); self.mainWindow.restoreGeometry(s["geo"])
-                if prepForSave: return
-                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
-                    self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), pdGeo=pdgeo, plGeo=plgeo)
-                else:
-                    self.scheduleMainWindowPaintEventAction()
-                    self.mainWindow.update(); pe()
-                self.showFromTray_continue()
-            else:
-                if prepForSave: return
-                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
-                    self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait, pdGeo=pdgeo, plGeo=plgeo)
-                else:
-                    self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
-                s["showFromTrayShowTime"] = self.mainWindow.time_msec()
-                for i in range(numOfPaintEventsToWait + 2):
-                    self.mainWindow.update();pe();pe();pe();pe();pe()
-        # alternative method
+        self.mainWindow.paintEventCounter = 0
+        self.mainWindow.newPackDock.paintEventCounter = 0
+        self.mainWindow.newLinkDock.paintEventCounter = 0
+        self.mainWindow.restoreState(s["state"]) # docks
+        pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
+        pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
+        if s["maximized"]:
+            self.mainWindow.showMaximized() # needed on mint cinnamon
+        self.waitForPaintEvents(1)
+        if s["p"]["f&!h"]:
+            self.waitForPackDockPaintEvents(1)
+            pdgeo = self.geoOther["packDock"]
         else:
-            pe(); self.mainWindow.newPackDock.setHidden(s["p"]["h"])
-            pe(); self.mainWindow.newLinkDock.setHidden(s["l"]["h"])
-            pe(); self.mainWindow.newPackDock.setFloating(s["p"]["f"])
-            pe(); self.mainWindow.newLinkDock.setFloating(s["l"]["f"])
-            pe(); self.unminimizeNewPackDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
-            pe(); self.unminimizeNewLinkDock()  # needed on gnome 3 and mint cinnamon when minimized to tray
-            if not s["maximized"]:
-                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
-                    pe(); self.mainWindow.restoreGeometry(s["geo"])
-                if prepForSave: return
-                if self.mainWindow.trayOptions.settings["RestoreGeo"]:
-                    self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
-                else:
-                    self.scheduleMainWindowPaintEventAction()
-                    self.mainWindow.update(); pe()
-                self.showFromTray_continue()
+            pdgeo = None
+        if s["l"]["f&!h"]:
+            self.waitForLinkDockPaintEvents(1)
+            plgeo = self.geoOther["linkDock"]
+        else:
+            plgeo = None
+        if not s["maximized"]:
+            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                pe(); self.mainWindow.restoreGeometry(s["geo"])
+            if prepForSave: return
+            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), pdGeo=pdgeo, plGeo=plgeo)
             else:
-                pe(); self.mainWindow.showMaximized() # needed on mint cinnamon
-                if prepForSave: return
+                self.scheduleMainWindowPaintEventAction()
+                self.mainWindow.update(); pe()
+            self.showFromTray_continue()
+        else:
+            if prepForSave: return
+            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+                self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait, pdGeo=pdgeo, plGeo=plgeo)
+            else:
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
-                s["showFromTrayShowTime"] = self.mainWindow.time_msec()
-                for i in range(numOfPaintEventsToWait + 2):
-                    self.mainWindow.update();pe();pe();pe();pe();pe()
+            s["showFromTrayShowTime"] = self.mainWindow.time_msec()
+            for i in range(numOfPaintEventsToWait + 2):
+                self.mainWindow.update();pe();pe();pe();pe();pe()
 
     def showFromTray_continue(self):
         s = self.trayState

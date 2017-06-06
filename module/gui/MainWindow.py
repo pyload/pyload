@@ -1410,13 +1410,10 @@ class TrayOptions(QDialog):
         self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
-        self.cbAltMethod     = QCheckBox(_("Use alternative method for showing dockable windows"))
         self.lblUrl          = QLabel()
         
         whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some LXDE desktop environments.<br>Could be useful when using the Compiz window manager."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbAltMethod.text(), _("Experimental tweak.<br><br>Could be useful when using the Compiz window manager."))
-        self.cbAltMethod.setWhatsThis(whatsThisFormat(*whatsThis))
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
         url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
@@ -1429,7 +1426,6 @@ class TrayOptions(QDialog):
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
         vboxCb.addWidget(self.cbRestoreGeo)
-        vboxCb.addWidget(self.cbAltMethod)
         vboxCb.addWidget(self.lblUrl)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
@@ -1460,7 +1456,6 @@ class TrayOptions(QDialog):
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
         self.settings["RestoreGeo"]    = False
-        self.settings["AltMethod"]     = False
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
@@ -1468,14 +1463,12 @@ class TrayOptions(QDialog):
         self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
         self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
         self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
-        self.settings["AltMethod"]     = self.cbAltMethod.isChecked()
     
     def dict2checkBoxStates(self):
         self.cbEnableTray.setChecked    (self.settings["EnableTray"])
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
         self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
-        self.cbAltMethod.setChecked     (self.settings["AltMethod"])
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()
