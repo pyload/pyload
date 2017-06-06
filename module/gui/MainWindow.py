@@ -1413,6 +1413,7 @@ class TrayOptions(QDialog):
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
         self.lblIconFile     = QLabel(_("Icon size"))
         self.cobIconFile     = QComboBox()
+        self.lblIconFileNote = QLabel("<i>" + _("Takes effect on next login.") + "</i>")
         self.lblUrl          = QLabel()
         
         whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
@@ -1430,6 +1431,7 @@ class TrayOptions(QDialog):
         hboxIconFile = QHBoxLayout()
         hboxIconFile.addWidget(self.lblIconFile)
         hboxIconFile.addWidget(self.cobIconFile)
+        hboxIconFile.addWidget(self.lblIconFileNote)
         hboxIconFile.addStretch(1)
         
         vboxCb = QVBoxLayout()
