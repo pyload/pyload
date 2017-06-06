@@ -1252,6 +1252,7 @@ class MainWindow(QMainWindow):
                 self.emit(SIGNAL("showTrayIcon"))
             else:
                 self.emit(SIGNAL("hideTrayIcon"))
+            self.emit(SIGNAL("setupIcon"), self.trayOptions.settings["IconFile"])
     
     def slotShowWhatsThisOptions(self):
         """
@@ -1410,10 +1411,14 @@ class TrayOptions(QDialog):
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
         self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
         self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
+        self.lblIconFile     = QLabel(_("Icon size"))
+        self.cobIconFile     = QComboBox()
         self.lblUrl          = QLabel()
         
         whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
+        self.cobIconFile.addItem("24x24")
+        self.cobIconFile.addItem("64x64")
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
         url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
@@ -1422,10 +1427,16 @@ class TrayOptions(QDialog):
         self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self.lblUrl.setOpenExternalLinks(True)
         
+        hboxIconFile = QHBoxLayout()
+        hboxIconFile.addWidget(self.lblIconFile)
+        hboxIconFile.addWidget(self.cobIconFile)
+        hboxIconFile.addStretch(1)
+        
         vboxCb = QVBoxLayout()
         vboxCb.addWidget(self.cbRestoreGeo)
         vboxCb.addWidget(self.cbMinimize2Tray)
         vboxCb.addWidget(self.cbClose2Tray)
+        vboxCb.addLayout(hboxIconFile)
         vboxCb.addWidget(self.lblUrl)
         
         self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
@@ -1456,6 +1467,7 @@ class TrayOptions(QDialog):
         self.settings["RestoreGeo"]    = False
         self.settings["Minimize2Tray"] = False
         self.settings["Close2Tray"]    = False
+        self.settings["IconFile"]      = "24x24"
         self.dict2checkBoxStates()
     
     def checkBoxStates2dict(self):
@@ -1463,12 +1475,14 @@ class TrayOptions(QDialog):
         self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
         self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
         self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
+        self.settings["IconFile"]      = str(self.cobIconFile.currentText())
     
     def dict2checkBoxStates(self):
         self.cbEnableTray.setChecked    (self.settings["EnableTray"])
         self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
         self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
         self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
+        self.cobIconFile.setCurrentIndex(self.cobIconFile.findText(self.settings["IconFile"]))
     
     def appFontChanged(self):
         self.buttons.updateWhatsThisButton()

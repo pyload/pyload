@@ -704,6 +704,7 @@ class main(QObject):
         self.trayState["unmaxed_size"] = self.geoUnmaximized["unmaxed_size"]
         self.trayState["restore_unmaxed_geo"] = True if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None) else False
         self.tray = TrayIcon()
+        self.tray.setupIcon(self.mainWindow.trayOptions.settings["IconFile"])
         self.notification = Notification(self.tray)
         self.connect(self, SIGNAL("showMessage"),           self.notification.showMessage)
         self.connect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray, Qt.QueuedConnection)
@@ -721,6 +722,7 @@ class main(QObject):
             self.connect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
         self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
+        self.connect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
         self.connect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
         self.connect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
         self.connect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
@@ -742,6 +744,7 @@ class main(QObject):
             self.disconnect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
         self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
+        self.disconnect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
         self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
         self.disconnect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
         self.disconnect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
@@ -4140,7 +4143,7 @@ class LanguageOptions(QDialog):
 
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
-        QSystemTrayIcon.__init__(self, QIcon(join(pypath, "icons", "logo-gui64x64.png")))
+        QSystemTrayIcon.__init__(self)
         self.log = logging.getLogger("guilog")
 
         self.menu = QMenu()
@@ -4169,6 +4172,15 @@ class TrayIcon(QSystemTrayIcon):
         self.showAction.setEnabled(False)
         self.captchaAction.setEnabled(False)
         self.menuAdd.setEnabled(False)
+
+    def setupIcon(self, size):
+        if size == "24x24":
+            icon = QIcon(join(pypath, "icons", "logo-gui24x24.png"))
+        elif size == "64x64":
+            icon = QIcon(join(pypath, "icons", "logo-gui64x64.png"))
+        else:
+            icon = QIcon()
+        self.setIcon(icon)
 
     def setShowActionText(self, show):
         if show:
