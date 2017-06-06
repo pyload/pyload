@@ -773,6 +773,9 @@ class main(QObject):
         if self.trayState["hiddenInTray"]:
             self.log.error("main.hideInTray: Already hidden in tray")
             return
+        if QApplication.activeModalWidget() is not None:
+            self.log.debug4("main.hideInTray: ignored, due to an active modal widget")
+            return
         self.log.debug4("main.hideInTray: triggered")
         self.allowUserActions(False)
         s = self.trayState
@@ -898,23 +901,7 @@ class main(QObject):
             return
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
-            if QApplication.activeModalWidget() is not None:
-                # bring it back, no matter if the window manager allows minimizing
-                pe = self.app.processEvents
-                pe();self.mainWindow.hide()
-                if self.mainWindow.isMaximized():
-                    pe();self.mainWindow.showMaximized()
-                else:
-                    pe();self.mainWindow.show()
-                pe();self.mainWindow.raise_()
-                pe();self.mainWindow.activateWindow()
-                if self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden():
-                    pe();self.mainWindow.newPackDock.hide()
-                    pe();self.mainWindow.newPackDock.showNormal()
-                if self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden():
-                    pe();self.mainWindow.newLinkDock.hide()
-                    pe();self.mainWindow.newLinkDock.showNormal()
-            elif self.mainWindow.trayOptions.settings["Minimize2Tray"]:
+            if self.mainWindow.trayOptions.settings["Minimize2Tray"] and (QApplication.activeModalWidget() is None):
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
             else:
                 self.emit(SIGNAL("traySetShowActionText"), True)
