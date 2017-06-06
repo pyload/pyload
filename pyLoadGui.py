@@ -1245,6 +1245,8 @@ class main(QObject):
         dm("18"); self.messageBox_18(pid)
         dm("21"); self.messageBox_21(optCat)
         dm("22"); self.messageBox_22()
+        dm("23"); self.messageBox_23(pidfile, pid)
+        dm("24"); self.internalCoreRestartMsgBoxVisible = False; self.messageBox_24()
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
@@ -1609,15 +1611,20 @@ class main(QObject):
 
             from pyLoadCore import Core
             if not self.core:
+                class CoreSignal(QObject):
+                    coreRestart = pyqtSignal()
                 class Core_(Core):
-                    """
-                        Workaround os._exit() called when the Core quits.
-                        This is possible because the present Core code calls
-                        os._exit() right after calling removeLogger()
-                    """
+                    def __init__(self):
+                        Core.__init__(self)
+                        self.signal = CoreSignal()
+                    # Workaround os._exit() called when the Core quits. This is possible because the present Core code calls os._exit() right after calling removeLogger()
                     def removeLogger(self):
                          Core.removeLogger(self)
                          thread.exit()
+                    # Workaround Core restart invoked by the UpdateManager plugin 
+                    def restart(self):
+                        self.do_restart = False
+                        self.signal.emit(SIGNAL("coreRestart()"))
 
                 del sys.argv[1:] # do not pass our command-line arguments to the core
                 #sys.argv[1:2] = ["--foo=bar", "--debug"] # pass these instead
@@ -1626,16 +1633,17 @@ class main(QObject):
                     self.core = Core_()
                 except:
                     return self.errorInternalCoreStartup(self.messageBox_14)
+                if self.configdir: pf = self.homedir + sep + self.core.pidfile
+                else:              pf = abspath(self.core.pidfile)
+                if os.name != "nt":
+                    pid = self.core.isAlreadyRunning()
+                    if pid: return self.errorInternalCoreStartup(self.messageBox_15, (pf, pid))
+                else:
+                    pid = self.core.checkPidFile()
+                    if pid and not self.messageBox_23(pf, pid): self.init(); return
+                self.internalCoreRestartMsgBoxVisible = False
+                self.connect(self.core.signal, SIGNAL("coreRestart()"), self.slotCoreRestart, Qt.QueuedConnection)
                 self.core.startedInGui = True
-                if os.path.isfile(self.core.pidfile):
-                    f = open(self.core.pidfile, "rb")
-                    pid = f.read().strip()
-                    f.close()
-                    if self.configdir:
-                        pf = self.homedir + sep + self.core.pidfile
-                    else:
-                        pf = abspath(self.core.pidfile) 
-                    return self.errorInternalCoreStartup(self.messageBox_15, (pf, pid))
                 try:
                     thread.start_new_thread(self.core.start, (False, True))
                 except:
@@ -1667,6 +1675,13 @@ class main(QObject):
         self.init()
         return
 
+    def slotCoreRestart(self):
+        """
+            the internal server wants to restart
+        """
+        if self.messageBox_24():
+            self.slotQuit()
+
     def messageBox_22(self):
         text = _("Cannot start the internal server because the server is not configured.\n"
         "Please run the server setup from console, respectively from\ncommand prompt if you are on Windows OS.\n\nFor example:\n"
@@ -1684,6 +1699,14 @@ class main(QObject):
         text += "\n" + "PID: %d" % int(pid)
         self.msgBoxOk(text, "C")
 
+    def messageBox_23(self, pidfile, pid):
+        text  = _("A pyLoad server for this configuration is already running")
+        text += "\n" + _("or the server was not shut down properly last time.")
+        text += "\n" + _("PID-file: ") + unicode(pidfile)
+        text += "\n" + "PID: %d" % int(pid)
+        text += "\n\n" + _("Do you want to start the internal server anyway?")
+        return self.msgBoxYesNo(text, "C")
+
     def messageBox_16(self):
         text = _("Failed to start internal server thread.")
         self.msgBoxOk(text, "C")
@@ -1691,6 +1714,18 @@ class main(QObject):
     def messageBox_17(self):
         text = _("Failed to start internal server.")
         self.msgBoxOk(text, "C")
+
+    def messageBox_24(self):
+        if self.internalCoreRestartMsgBoxVisible:
+            return False
+        text = _("The internal server wants a restart.")
+        text += "\n" + _("Probably for plugin updates to take effect.")
+        text += "\n" + _("Therefore, you must exit the application and start all over again.") 
+        text += "\n\n" + _("Do you want to exit the application now?")
+        self.internalCoreRestartMsgBoxVisible = True
+        ret = self.msgBoxYesNo(text, "I")
+        self.internalCoreRestartMsgBoxVisible = False
+        return ret
 
     def refreshConnections(self, name=None):
         """
@@ -2649,10 +2684,28 @@ class main(QObject):
     def quitInternal(self):
         if self.core:
             self.core.api.kill()
-            for i in range(10):
+            timeout = 30    # seconds
+            popup   = 3     # seconds, progess dialog pop up delay
+            p = QProgressDialog("", "", 0, timeout * 10, self.mainWindow)
+            p.setCancelButton(None)
+            p.setWindowFlags(p.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+            p.setWindowModality(Qt.ApplicationModal)
+            p.setWindowTitle(_("Shutting down the internal server"))
+            p.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
+            p.setMinimumWidth(400)
+            p.setAutoReset(False)
+            p.setAutoClose(True)
+            p.setValue(0)
+            for i in range(timeout * 2):
                 if self.core.shuttedDown:
-                    break
+                    p.reset()
+                    return
                 sleep(0.5)
+                if i >= (popup * 2):
+                    p.setValue(i * 10 / 2 + 5)
+                    self.app.processEvents()
+            p.reset()
+            self.log.error("Timeout while shutting down the internal server")
 
     def slotConnectionLost(self):
         if not self.connectionLost:
