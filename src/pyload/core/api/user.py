@@ -15,7 +15,6 @@ class UserApi(BaseApi):
     """
     Api methods to retrieve user profile and manage users.
     """
-
     @requireperm(Permission.All)
     def get_user_data(self):
         """

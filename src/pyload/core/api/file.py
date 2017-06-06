@@ -21,7 +21,6 @@ class FileApi(BaseApi):
     Everything related to available packages or files. Deleting,
     Modifying and so on.
     """
-
     # def check_result(self, info):
     # """
     # Internal method to verify result and owner.
@@ -117,7 +116,8 @@ class FileApi(BaseApi):
 
     @requireperm(Permission.All)
     def find_files(self, pattern):
-        return self.__pyload.files.get_tree(-1, True, DownloadState.All, pattern)
+        return self.__pyload.files.get_tree(
+            -1, True, DownloadState.All, pattern)
 
     @requireperm(Permission.All)
     def search_suggestions(self, pattern):

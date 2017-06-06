@@ -52,7 +52,8 @@ class ConfigApi(BaseApi):
         # :rtype: list of PluginInfo
         # """
         # return [ConfigInfo(section, config.label, config.description, False, False)
-        # for section, config, values in self.__pyload.config.iter_core_sections()]
+        # for section, config, values in
+        # self.__pyload.config.iter_core_sections()]
 
     # @requireperm(Permission.Plugins)
     # def get_plugin_config(self):

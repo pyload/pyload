@@ -35,7 +35,6 @@ class Account(Base):
     An instance of this class is created for every entered account, it holds all
     fields of AccountInfo ttype, and can be set easily at runtime
     """
-
     # constants for special values
     UNKNOWN = -1
     UNLIMITED = -2
@@ -285,8 +284,12 @@ class Account(Base):
     def get_account_data(self, *args):
         self.log_debug(
             "Deprecated method .get_account_data -> use fields directly")
-        return {'password': self.password, 'premium': self.premium, 'trafficleft': self.trafficleft,
-                'maxtraffic': self.maxtraffic, 'validuntil': self.validuntil}
+        return {
+            'password': self.password,
+            'premium': self.premium,
+            'trafficleft': self.trafficleft,
+            'maxtraffic': self.maxtraffic,
+            'validuntil': self.validuntil}
 
     def is_premium(self, user=None):
         if user:
@@ -334,8 +337,9 @@ class Account(Base):
         if user:
             self.log_debug("Deprecated argument user for .empty()", user)
 
-        self.log_warning(self._(
-            "Account {0} has not enough traffic, checking again in 30min").format(self.login))
+        self.log_warning(
+            self._("Account {0} has not enough traffic, checking again in 30min").format(
+                self.login))
 
         self.trafficleft = 0
         self.schedule_refresh(30 * 60)

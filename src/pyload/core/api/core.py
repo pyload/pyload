@@ -21,7 +21,6 @@ class CoreApi(BaseApi):
     This module provides methods for general interaction with the core,
     like status or progress retrieval.
     """
-
     @requireperm(Permission.All)
     def get_server_version(self):
         """
@@ -38,7 +37,8 @@ class CoreApi(BaseApi):
         cert = self.__pyload.config.get('ssl', 'cert')
         key = self.__pyload.config.get('ssl', 'key')
         if not os.path.isfile(cert) or not os.path.isfile(key):
-            self.__pyload.log.warning(self._('SSL key or certificate not found'))
+            self.__pyload.log.warning(
+                self._('SSL key or certificate not found'))
             return False
 
         return True
@@ -114,7 +114,8 @@ class CoreApi(BaseApi):
         """
         Available free space at download directory in bytes.
         """
-        return availspace(self.__pyload.config.get('general', 'storage_folder'))
+        return availspace(self.__pyload.config.get(
+            'general', 'storage_folder'))
 
     def shutdown(self):
         """

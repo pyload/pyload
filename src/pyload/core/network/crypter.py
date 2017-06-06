@@ -45,7 +45,6 @@ class Hoster(Base):
     """
     Base plugin for hoster plugin. Overwrite get_info for online status retrieval, process for downloading.
     """
-
     # Class used to make requests with `self.load`
     REQUEST_CLASS = CurlRequest
 

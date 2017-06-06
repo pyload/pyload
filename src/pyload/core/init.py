@@ -509,7 +509,7 @@ class Core(Process):
             raise RuntimeError(
                 "A pyLoad instance using profile `{0}` "
                 "is already running".format(
-                profiledir))
+                    profiledir))
         _pmap[profiledir] = self
 
     def _unregister_instance(self):

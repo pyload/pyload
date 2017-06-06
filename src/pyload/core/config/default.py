@@ -40,6 +40,7 @@ def _gen_session_defaults():
     )
     return defaults
 
+
 session_defaults = _gen_session_defaults()
 
 
@@ -173,5 +174,6 @@ def _gen_config_defaults():
         ('update', ('section', up_config, 'Updates', None))
     )
     return defaults
+
 
 config_defaults = _gen_config_defaults()

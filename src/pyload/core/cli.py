@@ -50,6 +50,7 @@ def _gen_logo():
            \/  {0}
 """.format(text))
 
+
 LOGO = _gen_logo()
 
 

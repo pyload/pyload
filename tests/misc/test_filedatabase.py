@@ -148,10 +148,24 @@ class TestDatabase(BenchmarkTest):
         self.db.purge_all()
 
         p1 = self.db.add_package(
-            "name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+            "name",
+            "folder",
+            0,
+            "password",
+            "site",
+            "comment",
+            self.pstatus,
+            0)
         self.db.add_link("url", "name", "plugin", p1, 0)
         p2 = self.db.add_package(
-            "name", "folder", 0, "password", "site", "comment", self.pstatus, 1)
+            "name",
+            "folder",
+            0,
+            "password",
+            "site",
+            "comment",
+            self.pstatus,
+            1)
         self.db.add_link("url", "name", "plugin", p2, 1)
 
         assert len(self.db.get_all_packages(owner=0)) == 1 == len(
@@ -184,7 +198,14 @@ class TestDatabase(BenchmarkTest):
 
     def test_update(self):
         p1 = self.db.add_package(
-            "name", "folder", 0, "password", "site", "comment", self.pstatus, 0)
+            "name",
+            "folder",
+            0,
+            "password",
+            "site",
+            "comment",
+            self.pstatus,
+            0)
         pack = self.db.get_package_info(p1)
         assert isinstance(pack, PackageInfo)
 

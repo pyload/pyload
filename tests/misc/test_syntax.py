@@ -14,8 +14,8 @@ standard_library.install_aliases()
 
 
 PACKDIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'pyload', 'core')
-)
+    os.path.join(
+        os.path.dirname(__file__), '..', '..', 'src', 'pyload', 'core'))
 
 
 class TestSyntax(TestCase):

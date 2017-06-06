@@ -156,7 +156,8 @@ class TransferManager(BaseManager):
 
         if (availspace(self.__pyload.config.get('general', 'storage_folder')) <
                 self.__pyload.config.get('general', 'min_storage_size') << 20):
-            self.__pyload.log.warning(self._("Not enough space left on device"))
+            self.__pyload.log.warning(
+                self._("Not enough space left on device"))
             self.pause = True
 
         # if self.pause or not self.__pyload.api.is_time_download():
@@ -310,7 +311,8 @@ class TransferManager(BaseManager):
         if not old_ip or old_ip == ip:
             self.__pyload.log.warning(self._("Reconnect not successful"))
         else:
-            self.__pyload.log.info(self._("Reconnected, new IP: {0}").format(ip))
+            self.__pyload.log.info(
+                self._("Reconnected, new IP: {0}").format(ip))
 
         self.reconnecting.clear()
 

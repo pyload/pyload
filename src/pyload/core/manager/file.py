@@ -131,7 +131,7 @@ class FileManager(BaseManager):
         pinfo = self.db.get_package_info(pid)
 
         self.__pyload.evm.fire("package:inserted", pid,
-                             pinfo.root, pinfo.packageorder)
+                               pinfo.root, pinfo.packageorder)
         return pid
 
     @lock
@@ -534,7 +534,7 @@ class FileManager(BaseManager):
             if pack.pid == pid:
                 pack.packageorder = position
             if (pinfo.packageorder > position and
-                position <= pack.packageorder < pinfo.packageorder):
+                    position <= pack.packageorder < pinfo.packageorder):
                 pack.packageorder += 1
             elif (pinfo.packageorder < position and
                   position >= pack.packageorder > pinfo.packageorder):

@@ -15,7 +15,6 @@ class AccountApi(BaseApi):
     """
     All methods to control accounts.
     """
-
     @requireperm(Permission.All)
     def get_account_types(self):
         """

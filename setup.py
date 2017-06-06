@@ -51,7 +51,7 @@ def _docverter_convert(text):
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst',
-              'smart': None, 'reference_links': None},
+              'smart': None, 'normalize': None, 'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
@@ -73,10 +73,12 @@ def _purge_text(text):
 
 
 def _gen_long_description():
-    DELIMITER = '\n\n\n'
-    readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
-    history = _purge_text(_read_text('CHANGELOG.md'))
-    text = '\n'.join((readme, history))
+    READMEFILE = 'README.md'
+    HISTORYFILE = 'CHANGELOG.md'
+    readme = _purge_text(_read_text(
+        READMEFILE).split(os.linesep * 3, 1)[0].split('\n\n\n', 1)[0])
+    history = _purge_text(_read_text(HISTORYFILE))
+    text = '\n\n'.join((readme, history))
     return _convert_text(text)
 
 

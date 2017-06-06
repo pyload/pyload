@@ -101,7 +101,8 @@ class AddonManager(BaseManager):
                 attrs = self.__pyload.pgm.load_attributes("addon", pluginname)
                 internal = attrs.get("internal", False)
 
-                if internal or self.__pyload.config.get(pluginname, "activated"):
+                if internal or self.__pyload.config.get(
+                        pluginname, "activated"):
                     pluginclass = self.__pyload.pgm.load_class(
                         "addon", pluginname)
 

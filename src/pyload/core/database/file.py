@@ -85,8 +85,9 @@ class FileMethods(DatabaseMethods):
             self.c.execute("SELECT COUNT(*), SUM(size) FROM files "
                            "WHERE dlstatus IN (2,3,8,9,10)")
         else:
-            self.c.execute("SELECT COUNT(*), SUM(f.size) FROM files f "
-                           "WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)", (user,))
+            self.c.execute(
+                "SELECT COUNT(*), SUM(f.size) FROM files f "
+                "WHERE f.owner=? AND dlstatus IN (2,3,8,9,10)", (user,))
         r = self.c.fetchone()
         return (r[0], r[1] if r[1] is not None else 0) if r else (0, 0)
 

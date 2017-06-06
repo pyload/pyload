@@ -21,7 +21,6 @@ class DownloadApi(BaseApi):
     """
     Component to create, add, delete or modify downloads.
     """
-
     # TODO: workaround for link adding without owner
     def true_primary(self):
         if self.user:
@@ -104,7 +103,8 @@ class DownloadApi(BaseApi):
         """
         hoster, crypter = self.__pyload.pgm.parse_urls(links)
 
-        self.__pyload.files.add_links(hoster + crypter, pid, self.true_primary())
+        self.__pyload.files.add_links(
+            hoster + crypter, pid, self.true_primary())
         if hoster:
             self.__pyload.iom.create_info_thread(hoster, pid)
 

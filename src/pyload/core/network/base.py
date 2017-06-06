@@ -45,7 +45,6 @@ class Base(object):
     """
     The Base plugin class with all shared methods and every possible attribute for plugin definition.
     """
-
     # Version as string or number
     __version__ = "0.1"
     # Type of the plugin, will be inherited and should not be set!
@@ -69,7 +68,8 @@ class Base(object):
     __category__ = ""
     # Tags to categorize the plugin, see documentation for further info
     __tags__ = tuple()
-    # Base64 encoded .png icon, should be 32x32, please do not use sizes above ~2KB, for bigger icons use url.
+    # Base64 encoded .png icon, should be 32x32, please do not use sizes above
+    # ~2KB, for bigger icons use url.
     __icon__ = ""
     # Alternative, link to png icon
     __icon_url__ = ""

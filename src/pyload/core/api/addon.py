@@ -16,7 +16,6 @@ class AddonApi(BaseApi):
     """
     Methods to interact with addons.
     """
-
     @requireperm(Permission.Interaction)
     def get_all_info(self):
         """

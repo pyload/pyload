@@ -91,7 +91,7 @@ class InfoManager(BaseManager):
 
     def set_info_results(self, oc, result):
         self.__pyload.evm.fire("linkcheck:updated", oc.rid,
-                             result, owner=oc.owner)
+                               result, owner=oc.owner)
         oc.update(result)
 
     def get_progress_list(self, user=None):

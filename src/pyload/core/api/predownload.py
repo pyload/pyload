@@ -30,7 +30,6 @@ class PreDownloadApi(BaseApi):
     """
     All kind of methods to parse links or retrieve online status.
     """
-
     @requireperm(Permission.Add)
     def parse_links(self, links):
         """
@@ -65,7 +64,7 @@ class PreDownloadApi(BaseApi):
         # initial result does not contain the crypter links
         tmp = [(url,
                 LinkStatus(url, url, -1, DownloadStatus.Queued,
-                pluginname))
+                           pluginname))
                for url, pluginname in hoster]
         data = parse.packs(tmp)
         rid = self.__pyload.iom.create_result_thread(hoster + crypter)

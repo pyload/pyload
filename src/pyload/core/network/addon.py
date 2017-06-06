@@ -65,7 +65,6 @@ def addon_property(name, desc, default=None, fire_event=True):
     :param default: the default value
     :param fire_event: Fire `addon:property:change` event, when modified
     """
-
     # generated name for the attribute
     h = "__Property{0}".format(hash(name) ^ hash(desc))
 
@@ -105,7 +104,6 @@ class Addon(Base):
     Decorate methods with @Expose, @add_event_listener, @ConfigHandler
 
     """
-
     # periodic call interval in seconds
     interval = 0
 

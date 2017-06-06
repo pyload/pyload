@@ -16,7 +16,6 @@ class UserExchangeApi(BaseApi):
     """
     Everything needed for user interaction.
     """
-
     @requireperm(Permission.Interaction)
     def is_interaction_waiting(self, mode):
         """
