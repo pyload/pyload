@@ -377,6 +377,7 @@ class main(QObject):
             self.mainWindow.tabs["guilog"]["text"].setText(_("File Log is disabled"))
         self.mainWindow.tabs["guilog"]["text"].setEnabled(enabled)
         self.mainWindow.tabs["guilog"]["text"].logOffset = 0
+        self.refreshGuiLogFirst = True
         self.fileLogIsEnabled = enabled
 
     def initClickNLoadForwarder(self):
@@ -1376,7 +1377,7 @@ class main(QObject):
             return [], True
         return oldlines[offset:], True
 
-    def refreshGuiLog(self, first):
+    def refreshGuiLog(self):
         """
             update gui log window
         """
@@ -1391,8 +1392,9 @@ class main(QObject):
             return
         if not logrot:
             self.mainWindow.tabs["guilog"]["text"].logOffset += len(lines)
-        if first:
+        if self.refreshGuiLogFirst:
             lines = lines[-100:]    # load only the last lines in the widget
+            self.refreshGuiLogFirst = False
         for line in lines:
             self.mainWindow.tabs["guilog"]["text"].emit(SIGNAL("append(QString)"), line.strip("\n"))
         cursor = self.mainWindow.tabs["guilog"]["text"].textCursor()
@@ -2746,7 +2748,7 @@ class main(QObject):
                 self.lastSpaceCheck = time()
                 if self.parent.corePermissions["STATUS"]:
                     self.parent.serverStatus["freespace"] = self.parent.connector.proxy.freeSpace()
-            self.parent.refreshGuiLog(first)
+            self.parent.refreshGuiLog()
             self.parent.refreshCoreLog(first)
             self.parent.checkCaptcha()
 
