@@ -1412,7 +1412,7 @@ class TrayOptions(QDialog):
         self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
         self.lblUrl          = QLabel()
         
-        whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some LXDE desktop environments.<br>Could be useful when using the Compiz window manager."))
+        whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
         self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
@@ -1510,7 +1510,7 @@ class OtherOptions(QDialog):
         self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbHideShowOnStart.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>Can be required on some Xfce desktop environments."))
         self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Can be required on some LXDE desktop environments."))
+        whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Usually not required."))
         self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
         
         vboxCb1 = QVBoxLayout()
