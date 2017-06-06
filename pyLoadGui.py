@@ -2015,7 +2015,7 @@ class main(QObject):
             self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
             self.scheduleMainWindowPaintEventAction(self.mainWindow.pos(), self.mainWindow.size())
         else:
-            if self.mainWindow.otherOptions.settings["HideShowOnStart"]:
+            if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:                
                 self.mainWindow.paintEventCounter = 0
                 self.mainWindow.showMaximized()
                 cnt = self.waitForPaintEvents(2)
