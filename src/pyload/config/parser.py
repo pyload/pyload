@@ -317,16 +317,16 @@ class ConfigParser(ConfigSection):
 
     def retrieve(self):
         parser = self._new_parser()
-        config = parser.read_file(self.fp)
+        parser.read_file(self.fp)
 
-        version = config.get(self.DEFAULT_SECTION, 'version', fallback=None)
+        version = parser.get(self.DEFAULT_SECTION, 'version', fallback=None)
         self._check_version(version)
 
-        self._make_options(self, config.pop(self.SELF_SECTION, {}))
+        self._make_options(self, parser.pop(self.SELF_SECTION, {}))
 
-        for section_id in config.sections():
+        for section_id in parser.sections():
             section = self._make_sections(section_id)
-            self._make_options(section, config[section_id])
+            self._make_options(section, parser[section_id])
 
     def _to_filevalue(self, value):
         return ','.join(value) if isiterable(value) else value
