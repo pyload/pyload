@@ -1,5 +1,8 @@
 sudo: required
 language: python
+os:
+  - linux
+  - osx
 branches:
   only:
     - master
@@ -16,6 +19,7 @@ python:
   # - pypy3
 matrix:
   allow_failures:
+    - os: osx
     - 2.6
     - nightly
     - pypy
@@ -23,19 +27,26 @@ matrix:
   fast_finish: true
 cache: pip
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install pandoc
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq install pandoc; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 2* ]]; then brew install python; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 3* ]]; then brew install python3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == "pypy" ]]; then brew install pypy; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 2* ]]; then virtualenv env -p python; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 3* ]]; then virtualenv env -p python3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == "pypy" ]]; then virtualenv env -p pypy; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source env/bin/activate; fi
 install:
   - pip install -U setuptools
   - pip install pypandoc
-  - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
 script: tox --skip-missing-interpreters
 after_script:
-  - tox -e flake8
-  - tox -e pylint -E
+  - tox -e dups
+  - tox -e pylint -- -E
   - tox -e mypy
 # after_success: ocular
 before_deploy: test $TRAVIS_TEST_RESULT -eq 0
@@ -51,14 +62,14 @@ deploy:
     on:
       python: 3.5
       tags: true
-  - provider: releases
-    api-key: "ebgfx5zYbXpwI+B1Wm0d7nI/CBwwUwpuhdngqpA5/7zN2aTWSPjlESX+u1c2UvLU9KuX7QA0aSTaBl/XNhsv41jEuiAxPDtzP5P8LYEs3CiVZiVawUpIf0i+OIJSJ0ALF/vRXTE/u5O7JJLrTveLintAR3JB1mRRnPA2UwBK8K3ncRsg3Jzqs3l234bPETIrKZkOoJCXpXiL7L18fG/uuyxuyJHejJYG9NHXvJzGoE+6VYOmL/frcj7JHkmjmDyGsuogoBfphlXdRjj7OkhZytMK145kh3rKV9CEao5yYyjdt4h3q32EjDQu6DrWZp+IpmumLpT61G9CZracDZVpITldAzy9AuCKkLKWBYykgRk7UdTA1YQNXTta/3QqyA8LPZDhYZOLB6A3HHgCcideS3bGWsYGqbKBUWjMVJS3APBBJ4MsYASiFcNH8VTbhJiaLX3c33NnTYtjM/4Ow5Dowu+g8ES86i5ORwFkS6LSvUuYyojarHgl4d0YjN5iDcB1k0lAm5l8tbMXuo8ua2le5hNNpFDcw2UdqCqm777ulg72rEq2UG1POBJkaNp7Q1EESlreaJO3nCenICyjJaDmIF9DNsinxGKX0BKrWW2pV/PRh02BU0VLu2QWdefHNPNbG22Ed64P0mJI+DdbaZviwQ0f2EL15qd7/5sCMnZqOCY="
-    file_glob: true
-    file: dist/*
-    skip_cleanup: true
-    on:
-      python: 3.5
-      tags: true
+  # - provider: releases
+    # api-key: "ebgfx5zYbXpwI+B1Wm0d7nI/CBwwUwpuhdngqpA5/7zN2aTWSPjlESX+u1c2UvLU9KuX7QA0aSTaBl/XNhsv41jEuiAxPDtzP5P8LYEs3CiVZiVawUpIf0i+OIJSJ0ALF/vRXTE/u5O7JJLrTveLintAR3JB1mRRnPA2UwBK8K3ncRsg3Jzqs3l234bPETIrKZkOoJCXpXiL7L18fG/uuyxuyJHejJYG9NHXvJzGoE+6VYOmL/frcj7JHkmjmDyGsuogoBfphlXdRjj7OkhZytMK145kh3rKV9CEao5yYyjdt4h3q32EjDQu6DrWZp+IpmumLpT61G9CZracDZVpITldAzy9AuCKkLKWBYykgRk7UdTA1YQNXTta/3QqyA8LPZDhYZOLB6A3HHgCcideS3bGWsYGqbKBUWjMVJS3APBBJ4MsYASiFcNH8VTbhJiaLX3c33NnTYtjM/4Ow5Dowu+g8ES86i5ORwFkS6LSvUuYyojarHgl4d0YjN5iDcB1k0lAm5l8tbMXuo8ua2le5hNNpFDcw2UdqCqm777ulg72rEq2UG1POBJkaNp7Q1EESlreaJO3nCenICyjJaDmIF9DNsinxGKX0BKrWW2pV/PRh02BU0VLu2QWdefHNPNbG22Ed64P0mJI+DdbaZviwQ0f2EL15qd7/5sCMnZqOCY="
+    # file_glob: true
+    # file: dist/*
+    # skip_cleanup: true
+    # on:
+      # python: 3.5
+      # tags: true
 # after_deploy: travis-bump-version --api-token "ebgfx5zYbXpwI+B1Wm0d7nI/CBwwUwpuhdngqpA5/7zN2aTWSPjlESX+u1c2UvLU9KuX7QA0aSTaBl/XNhsv41jEuiAxPDtzP5P8LYEs3CiVZiVawUpIf0i+OIJSJ0ALF/vRXTE/u5O7JJLrTveLintAR3JB1mRRnPA2UwBK8K3ncRsg3Jzqs3l234bPETIrKZkOoJCXpXiL7L18fG/uuyxuyJHejJYG9NHXvJzGoE+6VYOmL/frcj7JHkmjmDyGsuogoBfphlXdRjj7OkhZytMK145kh3rKV9CEao5yYyjdt4h3q32EjDQu6DrWZp+IpmumLpT61G9CZracDZVpITldAzy9AuCKkLKWBYykgRk7UdTA1YQNXTta/3QqyA8LPZDhYZOLB6A3HHgCcideS3bGWsYGqbKBUWjMVJS3APBBJ4MsYASiFcNH8VTbhJiaLX3c33NnTYtjM/4Ow5Dowu+g8ES86i5ORwFkS6LSvUuYyojarHgl4d0YjN5iDcB1k0lAm5l8tbMXuo8ua2le5hNNpFDcw2UdqCqm777ulg72rEq2UG1POBJkaNp7Q1EESlreaJO3nCenICyjJaDmIF9DNsinxGKX0BKrWW2pV/PRh02BU0VLu2QWdefHNPNbG22Ed64P0mJI+DdbaZviwQ0f2EL15qd7/5sCMnZqOCY=" --repo $TRAVIS_REPO_SLUG VERSION
 notifications:
   webhooks:
