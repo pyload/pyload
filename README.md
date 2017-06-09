@@ -11,6 +11,7 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 **Status**:
 
 [![Build Status](https://travis-ci.org/pyload/utils.svg?branch=master)](https://travis-ci.org/pyload/utils)
+[![Build status](https://ci.appveyor.com/api/projects/status/5qjiw16bnns1dic3/branch/master?svg=true)](https://ci.appveyor.com/project/vuolter/utils/branch/master)
 [![Requirements Status](https://requires.io/github/pyload/utils/requirements.svg?branch=master)](https://requires.io/github/pyload/utils/requirements/?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5f86de4aad646708f4fb7af3c7cf029)](https://www.codacy.com/app/pyLoad/utils?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyload/utils&amp;utm_campaign=Badge_Grade)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/utils/?branch=master)
