@@ -34,7 +34,7 @@ def _read_text(file):
 
 def _write_text(file, text):
     with open(file, mode='w') as fp:
-        fp.write(text.strip() + os.linesep)
+        fp.write(text.strip() + '\n')
 
 
 def _pandoc_convert(text):
@@ -47,7 +47,7 @@ def _docverter_convert(text):
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst',
-              'smart': None, 'reference_links': None},
+              'smart': None, 'normalize': None, 'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
@@ -69,10 +69,12 @@ def _purge_text(text):
 
 
 def _gen_long_description():
-    DELIMITER = '\n\n\n'
-    readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
-    history = _purge_text(_read_text('CHANGELOG.md'))
-    text = os.linesep.join((readme, history))
+    READMEFILE = 'README.md'
+    HISTORYFILE = 'CHANGELOG.md'
+    readme = _purge_text(_read_text(
+        READMEFILE).split(os.linesep * 3, 1)[0].split('\n\n\n', 1)[0])
+    history = _purge_text(_read_text(HISTORYFILE))
+    text = '\n\n'.join((readme, history))
     return _convert_text(text)
 
 
@@ -216,6 +218,7 @@ PACKAGES = find_packages('src')
 PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = [_NAMESPACE]
+OBSOLETES = [_NAMESPACE]
 INSTALL_REQUIRES = _get_requires('install')
 SETUP_REQUIRES = _get_requires('setup')
 # TEST_SUITE = ''
@@ -272,6 +275,7 @@ setup(
     package_dir=PACKAGE_DIR,
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
+    obsoletes=OBSOLETES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
