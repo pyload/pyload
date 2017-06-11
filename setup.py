@@ -47,7 +47,8 @@ def _docverter_convert(text):
     req = requests.post(
         url='http://c.docverter.com/convert',
         data={'from': 'markdown', 'to': 'rst',
-              'smart': None, 'normalize': None, 'reference_links': None},
+              'smart': None, 'normalize': None, 'no_wrap': None,
+              'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
