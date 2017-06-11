@@ -13,21 +13,6 @@ from .layer.safethreading import Thread
 standard_library.install_aliases()
 
 
-# def deprecated(by=None):
-# new_func = by
-# def wrapper(old_func):
-# def new(self, *args, **kargs):
-# if new_func:
-# self.__pyload.log.debug("`{0}` has been deprecated, use `{1}` instead".format(
-# old_func.__name__, new_func.__name__))
-# return new_func(self, *args, **kargs)
-# else:
-# self.__pyload.log.error(_("`{0}` has been removed").format(old_func.__name__))
-# print_traceback()
-# return new
-# return wrapper
-
-
 def fork(daemon=True):
     def wrapper(func):
         def new(self, *args, **kwargs):
