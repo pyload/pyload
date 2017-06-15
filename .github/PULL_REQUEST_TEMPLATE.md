@@ -17,14 +17,11 @@ _REQUIRED_
 ### Additional info:
 
 > **NOTE:**
-> If this is a plugin request, remember to increase the value of the 
-> `__version__` in the plugin(s) your submitting.
+> If this is a **plugin** request, remember to increase the value of the
+> `__version__` attribute inside the files you're submitting.
 
 1. **Related pull requests**: _OPTIONAL_
 2. **Related issues**: _OPTIONAL_
-3. If this is a _**New plugin**_, please provide too:
-    - **Link to the plugin's homepage**: _OPTIONAL_
-    - **Link(s) to sample plugin's resources**: _OPTIONAL_
 
 ### Reasons for making this change:
 
