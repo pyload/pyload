@@ -8,4 +8,4 @@ pyload.config~=0.6
 pyload.requests~=0.6
 pyload.utils2~=0.6
 semver
-setuptools
+setuptools>=0.6.39

@@ -12,7 +12,7 @@ from pkg_resources import get_default_cache
 
 import autoupgrade
 import daemonize
-from pyload.utils.fs import cleanpy, makedirs
+from pyload.utils.fs import makedirs, remove
 
 from .__about__ import __namespace__, __package_name__, __version__
 from .init import Core, _pmap
@@ -95,7 +95,7 @@ def cleanup():
     if _pmap:
         raise RuntimeError
     packdir = os.path.join(get_default_cache(), __package_name__)
-    cleanpy(packdir)
+    remove(packdir, ignore_errors=True)
 
 
 # def test():
