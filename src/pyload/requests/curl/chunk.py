@@ -23,7 +23,7 @@ standard_library.install_aliases()
 
 class CurlChunk(CurlRequest):
 
-    _re_filename = re.compile(
+    _RE_FILENAME = re.compile(
         r'filename(?P<type>=|\*=(?P<enc>.+)\'\')(?P<name>.*)',
         flags=re.I)
 
@@ -190,7 +190,7 @@ class CurlChunk(CurlRequest):
                 self.p.chunk_support = True
 
             if 'content-disposition' in line:
-                m = self._re_filename.search(orgline.strip())
+                m = self._RE_FILENAME.search(orgline.strip())
                 if m is not None:
                     name = purge.name(m.groupdict()['name'])
                     self.p._name = name

@@ -1,5 +1,9 @@
 sudo: required
 language: python
+git:
+  depth: 3
+  lfs_skip_smudge: true
+  submodules: false
 branches:
   only:
     - master
@@ -11,15 +15,24 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7-dev
   - nightly
   - pypy
   # - pypy3
 matrix:
+  include:
+    - os: osx
+      language: generic
+      env: TRAVIS_PYTHON_VERSION=2.7
+      python: 2.7
+      before_install: pyenv install $TRAVIS_PYTHON_VERSION
   allow_failures:
-    - 2.6
-    - nightly
-    - pypy
-    # - pypy3
+    - os: osx
+    - python: 2.6
+    - python: 3.7-dev
+    - python: nightly
+    - python: pypy
+    # - python: pypy3
   fast_finish: true
 cache: pip
 before_install:
@@ -28,13 +41,16 @@ before_install:
   # - sudo apt-get -qq install python-pycurl
 install:
   - pip install -U setuptools
+  - pip install -U tox
   - pip install pypandoc
   - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
 script: tox --skip-missing-interpreters
-after_script: tox -e issues
+after_script:
+  - tox -e dups
+  - tox -e pylint -- -E
 # after_success: ocular
 before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:
@@ -49,14 +65,14 @@ deploy:
     on:
       python: 3.5
       tags: true
-  - provider: releases
-    api-key: "Xif4FGNCk0LGOMZSuleRwXoYblBWD9/tyTlZz/dJ6wVAF7y2sPVe5NmhDHHN/ky0fc34B7vRNNUUpp3gnwMIq3zkUtM5k3TKZZjoR+5NJmSrHThuaV9DLgNdCBNBlzvuXCyuGzT/iKdaU3LPngUaz56rS6ODEB9HN/MZYB0G6ZTGT/ywAhsLHvGZgIUfYgavI3NCB740DdAPRMiiJEIRPlPO4O1ZJa5KCQVvpE2Pu4Bn+aBzFlf/Gah+MClcqyCxL8sYr076CmKxPdn04dwH6oq2sj+LshUNw7jljde0L9WxY/dQjARhIx3kuiZzENtJ97tNxDAW++kjZ/6JkVbXVkszkawQbpbSrar+ZqD+RokP1DOb0+WUtF6AEEg6xVK9roeI/bwCkjYS1R1V0X+IcBw7yuC+5b2NUFEGclAvrTZEmiwd+qlHPoQ/M/mzfGY1tWnedx8vBTH+vId5U9K7WkM+AR0oZzYNHRoSl0UZlD0Atb4ZBEHKjZbe5vp8hW2lAskbsVlYzxDXh5MM3pNnIeXI7/VUL1BenfaQ1z/Zq0Owg8Gi64sYOmuO3UaZsJLYSYlypThgau4+H4BDfA3u2O2ZnW+6tTKPhiKBglMNaiMvdeFXtS62rOJW5au/69cGJPXB+9Ypxai08vmrG+piH2oxgPS+cyrvRR4PW4yfDAU="
-    file_glob: true
-    file: dist/*
-    skip_cleanup: true
-    on:
-      python: 3.5
-      tags: true
+  # - provider: releases
+    # api-key: "Xif4FGNCk0LGOMZSuleRwXoYblBWD9/tyTlZz/dJ6wVAF7y2sPVe5NmhDHHN/ky0fc34B7vRNNUUpp3gnwMIq3zkUtM5k3TKZZjoR+5NJmSrHThuaV9DLgNdCBNBlzvuXCyuGzT/iKdaU3LPngUaz56rS6ODEB9HN/MZYB0G6ZTGT/ywAhsLHvGZgIUfYgavI3NCB740DdAPRMiiJEIRPlPO4O1ZJa5KCQVvpE2Pu4Bn+aBzFlf/Gah+MClcqyCxL8sYr076CmKxPdn04dwH6oq2sj+LshUNw7jljde0L9WxY/dQjARhIx3kuiZzENtJ97tNxDAW++kjZ/6JkVbXVkszkawQbpbSrar+ZqD+RokP1DOb0+WUtF6AEEg6xVK9roeI/bwCkjYS1R1V0X+IcBw7yuC+5b2NUFEGclAvrTZEmiwd+qlHPoQ/M/mzfGY1tWnedx8vBTH+vId5U9K7WkM+AR0oZzYNHRoSl0UZlD0Atb4ZBEHKjZbe5vp8hW2lAskbsVlYzxDXh5MM3pNnIeXI7/VUL1BenfaQ1z/Zq0Owg8Gi64sYOmuO3UaZsJLYSYlypThgau4+H4BDfA3u2O2ZnW+6tTKPhiKBglMNaiMvdeFXtS62rOJW5au/69cGJPXB+9Ypxai08vmrG+piH2oxgPS+cyrvRR4PW4yfDAU="
+    # file_glob: true
+    # file: dist/*
+    # skip_cleanup: true
+    # on:
+      # python: 3.5
+      # tags: true
 # after_deploy: travis-bump-version --api-token "Xif4FGNCk0LGOMZSuleRwXoYblBWD9/tyTlZz/dJ6wVAF7y2sPVe5NmhDHHN/ky0fc34B7vRNNUUpp3gnwMIq3zkUtM5k3TKZZjoR+5NJmSrHThuaV9DLgNdCBNBlzvuXCyuGzT/iKdaU3LPngUaz56rS6ODEB9HN/MZYB0G6ZTGT/ywAhsLHvGZgIUfYgavI3NCB740DdAPRMiiJEIRPlPO4O1ZJa5KCQVvpE2Pu4Bn+aBzFlf/Gah+MClcqyCxL8sYr076CmKxPdn04dwH6oq2sj+LshUNw7jljde0L9WxY/dQjARhIx3kuiZzENtJ97tNxDAW++kjZ/6JkVbXVkszkawQbpbSrar+ZqD+RokP1DOb0+WUtF6AEEg6xVK9roeI/bwCkjYS1R1V0X+IcBw7yuC+5b2NUFEGclAvrTZEmiwd+qlHPoQ/M/mzfGY1tWnedx8vBTH+vId5U9K7WkM+AR0oZzYNHRoSl0UZlD0Atb4ZBEHKjZbe5vp8hW2lAskbsVlYzxDXh5MM3pNnIeXI7/VUL1BenfaQ1z/Zq0Owg8Gi64sYOmuO3UaZsJLYSYlypThgau4+H4BDfA3u2O2ZnW+6tTKPhiKBglMNaiMvdeFXtS62rOJW5au/69cGJPXB+9Ypxai08vmrG+piH2oxgPS+cyrvRR4PW4yfDAU=" --repo $TRAVIS_REPO_SLUG VERSION
 notifications:
   webhooks:

@@ -34,7 +34,7 @@ def _read_text(file):
 
 def _write_text(file, text):
     with open(file, mode='w') as fp:
-        fp.write(text.strip() + os.linesep)
+        fp.write(text.strip() + '\n')
 
 
 def _pandoc_convert(text):
@@ -46,8 +46,9 @@ def _docverter_convert(text):
     import requests
     req = requests.post(
         url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst'
-              'smart': None, 'reference_links': None},
+        data={'from': 'markdown', 'to': 'rst',
+              'smart': None, 'normalize': None, 'no_wrap': None,
+              'reference_links': None},
         files={'input_files[]': ('.md', text)}
     )
     req.raise_for_status()
@@ -62,44 +63,46 @@ def _convert_text(text):
         return _docverter_convert(text)
 
 
-_re_purge = re.compile(r'.*<.+>.*')
+_RE_PURGE = re.compile(r'.*<.+>.*')
 
 def _purge_text(text):
-    return _re_purge.sub('', text).strip()
+    return _RE_PURGE.sub('', text).strip()
 
 
 def _gen_long_description():
-    DELIMITER = '\n\n\n'
-    readme = _purge_text(_read_text('README.md').split(DELIMITER, 1)[0])
-    history = _purge_text(_read_text('CHANGELOG.md'))
-    text = os.linesep.join((readme, history))
+    readmefile = 'README.md'
+    historyfile = 'CHANGELOG.md'
+    readme = _purge_text(_read_text(
+        readmefile).split(os.linesep * 3, 1)[0].split('\n\n\n', 1)[0])
+    history = _purge_text(_read_text(historyfile))
+    text = '\n\n'.join((readme, history))
     return _convert_text(text)
 
 
 def _get_long_description():
-    FILENAME = 'README.rst'
+    filename = 'README.rst'
     try:
-        return _read_text(FILENAME)
+        return _read_text(filename)
     except IOError:
         return _gen_long_description()
 
 
-_re_section = re.compile(
+_RE_SECTION = re.compile(
     r'^\[([^\s]+)\]\s+([^[\s].+?)(?=^\[|\Z)', flags=re.M | re.S)
-_re_entry = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
+_RE_ENTRY = re.compile(r'^\s*(?![#;\s]+)([^\s]+)', flags=re.M)
 
 def _parse_requires(text):
     deps = list(set(
-        _re_entry.findall(_re_section.split(text, maxsplit=1)[0])))
+        _RE_ENTRY.findall(_RE_SECTION.split(text, maxsplit=1)[0])))
     extras = {}
-    for name, rawdeps in _re_section.findall(text):
-        extras[name] = list(set(pack for pack in _re_entry.findall(rawdeps)))
+    for name, rawdeps in _RE_SECTION.findall(text):
+        extras[name] = list(set(pack for pack in _RE_ENTRY.findall(rawdeps)))
     return deps, extras
 
 
 def _get_requires(name):
-    DIRNAME = 'requirements'
-    file = os.path.join(DIRNAME, name + '.txt')
+    dirname = 'requirements'
+    file = os.path.join(dirname, name + '.txt')
     text = _read_text(file)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
@@ -109,8 +112,8 @@ def _get_requires(name):
 
 
 def _get_version():
-    FILENAME = 'VERSION'
-    return _read_text(FILENAME)
+    filename = 'VERSION'
+    return _read_text(filename)
 
 
 class MakeReadme(Command):
@@ -216,6 +219,7 @@ PACKAGES = find_packages('src')
 PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = [_NAMESPACE]
+OBSOLETES = [_NAMESPACE]
 INSTALL_REQUIRES = _get_requires('install')
 SETUP_REQUIRES = _get_requires('setup')
 # TEST_SUITE = ''
@@ -272,6 +276,7 @@ setup(
     package_dir=PACKAGE_DIR,
     include_package_data=INCLUDE_PACKAGE_DATA,
     namespace_packages=NAMESPACE_PACKAGES,
+    obsoletes=OBSOLETES,
     install_requires=INSTALL_REQUIRES,
     setup_requires=SETUP_REQUIRES,
     extras_require=EXTRAS_REQUIRE,

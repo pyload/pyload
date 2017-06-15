@@ -23,7 +23,7 @@ standard_library.install_aliases()
 
 pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-bad_headers = list(range(400, 418)) + list(range(500, 506))
+BAD_HEADERS = list(range(400, 418)) + list(range(500, 506))
 
 
 def safequote(url):
@@ -276,7 +276,7 @@ class CurlRequest(Request):
         Raise an exceptions on bad headers.
         """
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in bad_headers:
+        if code in BAD_HEADERS:
             raise ResponseException(
                 code, responses.get(code, "Unknown statuscode"))
         return code

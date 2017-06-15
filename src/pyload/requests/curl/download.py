@@ -266,7 +266,7 @@ class CurlDownload(DownloadRequest):
                             "Chunk {0:d} failed: {1}".format(chunk.id + 1, ex))
                         continue
                     # check if the header implies success,
-                    #else add it to failed list
+                    # else add it to failed list
                     try:
                         chunk.verify_header()
                     except ResponseException as e:
@@ -280,15 +280,15 @@ class CurlDownload(DownloadRequest):
                 if not num_q:  # no more info to get
 
                     # check if init is not finished so we reset download
-                    #connections
+                    # connections
                     # note that other chunks are closed and everything
                     # downloaded with initial connection
                     if failed:
                         if init in failed or init.c in chunks_done:
                             raise ex
                         self.log.error(
-                             "Download chunks failed, fallback to "
-                             "single connection | {0}".format(ex))
+                            "Download chunks failed, fallback to "
+                            "single connection | {0}".format(ex))
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -322,7 +322,7 @@ class CurlDownload(DownloadRequest):
             if last_time_check + 1 < t:
                 len_la = len(self.last_arrived)
                 diff = [c.arrived - (self.last_arrived[i] if len_la > i else 0)
-                    for i, c in enumerate(self.chunks)]
+                        for i, c in enumerate(self.chunks)]
 
                 self.last_speeds[1] = self.last_speeds[0]
                 self.last_speeds[0] = self.speeds
