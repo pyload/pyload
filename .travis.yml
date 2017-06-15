@@ -1,5 +1,9 @@
 sudo: required
 language: python
+git:
+  depth: 3
+  lfs_skip_smudge: true
+  submodules: false
 branches:
   only:
     - master
@@ -11,15 +15,24 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7-dev
   - nightly
   - pypy
   # - pypy3
 matrix:
+  include:
+    - os: osx
+      language: generic
+      env: TRAVIS_PYTHON_VERSION=2.7
+      python: 2.7
+      before_install: pyenv install $TRAVIS_PYTHON_VERSION
   allow_failures:
-    - 2.6
-    - nightly
-    - pypy
-    # - pypy3
+    - os: osx
+    - python: 2.6
+    - python: 3.7-dev
+    - python: nightly
+    - python: pypy
+    # - python: pypy3
   fast_finish: true
 cache: pip
 before_install:
@@ -28,7 +41,9 @@ before_install:
   # - sudo apt-get -qq install python-pycurl
 install:
   - pip install -U setuptools
+  - pip install -U tox
   - pip install pypandoc
+  - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
@@ -36,7 +51,6 @@ script: tox --skip-missing-interpreters
 after_script:
   - tox -e dups
   - tox -e pylint -- -E
-  - tox -e mypy
 # after_success: ocular
 before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:
@@ -51,14 +65,14 @@ deploy:
     on:
       python: 3.5
       tags: true
-  - provider: releases
-    api-key: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
-    file_glob: true
-    file: dist/*
-    skip_cleanup: true
-    on:
-      python: 3.5
-      tags: true
+  # - provider: releases
+    # api-key: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
+    # file_glob: true
+    # file: dist/*
+    # skip_cleanup: true
+    # on:
+      # python: 3.5
+      # tags: true
 # after_deploy: travis-bump-version --api-token "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70=" --repo $TRAVIS_REPO_SLUG VERSION
 notifications:
   webhooks:
