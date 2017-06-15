@@ -1,8 +1,9 @@
 sudo: required
 language: python
-os:
-  - linux
-  - osx
+git:
+  depth: 3
+  lfs_skip_smudge: true
+  submodules: false
 branches:
   only:
     - master
@@ -14,32 +15,34 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7-dev
   - nightly
   - pypy
   # - pypy3
 matrix:
+  include:
+    - os: osx
+      language: generic
+      env: TRAVIS_PYTHON_VERSION=2.7
+      python: 2.7
+      before_install: pyenv install $TRAVIS_PYTHON_VERSION
   allow_failures:
     - os: osx
-    - 2.6
-    - nightly
-    - pypy
-    # - pypy3
+    - python: 2.6
+    - python: 3.7-dev
+    - python: nightly
+    - python: pypy
+    # - python: pypy3
   fast_finish: true
 cache: pip
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq install pandoc; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 2* ]]; then brew install python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 3* ]]; then brew install python3; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == "pypy" ]]; then brew install pypy; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 2* ]]; then virtualenv env -p python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == 3* ]]; then virtualenv env -p python3; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && "$TRAVIS_PYTHON_VERSION" == "pypy" ]]; then virtualenv env -p pypy; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source env/bin/activate; fi
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install pandoc
 install:
   - pip install -U setuptools
+  - pip install -U tox
   - pip install pypandoc
+  - pip install requests
   # - pip install scrutinizer-ocular
   - pip install tox-travis
   # - pip install travis-bump-version
@@ -47,7 +50,6 @@ script: tox --skip-missing-interpreters
 after_script:
   - tox -e dups
   - tox -e pylint -- -E
-  - tox -e mypy
 # after_success: ocular
 before_deploy: test $TRAVIS_TEST_RESULT -eq 0
 deploy:

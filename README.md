@@ -10,8 +10,8 @@ to be extremely lightweight, fully customizable and remotely manageable*.
 
 **Status**:
 
-[![Build Status](https://travis-ci.org/pyload/config.svg?branch=master)](https://travis-ci.org/pyload/config)
-[![Build status](https://ci.appveyor.com/api/projects/status/6d9dvk6gii5crxe0/branch/master?svg=true)](https://ci.appveyor.com/project/vuolter/config/branch/master)
+[![Travis Build Status](https://travis-ci.org/pyload/config.svg?branch=master)](https://travis-ci.org/pyload/config)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/6d9dvk6gii5crxe0/branch/master?svg=true)](https://ci.appveyor.com/project/vuolter/config/branch/master)
 [![Requirements Status](https://requires.io/github/pyload/config/requirements.svg?branch=master)](https://requires.io/github/pyload/config/requirements/?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/34315e905db14c1da433520a512a6151)](https://www.codacy.com/app/pyLoad/config?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyload/config&amp;utm_campaign=Badge_Grade)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/config/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/config/?branch=master)
