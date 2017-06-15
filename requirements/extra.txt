@@ -1,12 +1,3 @@
 [colorize]
 colorclass
 colorlog
-
-# [rpc]
-# pyload.rpc
-
-# [setup]
-# pyload.setup
-
-# [webui]
-# pyload.webui
