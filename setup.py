@@ -10,9 +10,11 @@
 #          \  /
 #           \/
 
+import io
 import os
 import re
 import shutil
+
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
@@ -32,12 +34,17 @@ _CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
 
 
 def _read_text(file):
-    with open(file) as fp:
-        return fp.read().strip()
+    with io.open(file, encoding='utf-8') as fp:
+        text = fp.read().strip()
+    try:
+        text = str(text)
+    except UnicodeEncodeError:
+        text = text.encode('utf-8')
+    return text
 
 
 def _write_text(file, text):
-    with open(file, mode='w') as fp:
+    with io.open(file, mode='w', encoding='utf-8') as fp:
         fp.write(text.strip() + '\n')
 
 
@@ -67,28 +74,29 @@ def _convert_text(text):
         return _docverter_convert(text)
 
 
-_RE_PURGE = re.compile(r'.*<.+>.*')
+_RE_PURGE = re.compile(r'<.+>')
 
-def _purge_text(text):
+def _purge_quotes(text):
     return _RE_PURGE.sub('', text).strip()
 
 
 def _gen_long_description():
-    readmefile = 'README.md'
-    historyfile = 'CHANGELOG.md'
-    readme = _purge_text(_read_text(
-        readmefile).split(os.linesep * 3, 1)[0].split('\n\n\n', 1)[0])
-    history = _purge_text(_read_text(historyfile))
-    text = '\n\n'.join((readme, history))
+    readme = _read_text('README.md')
+    history = _read_text('CHANGELOG.md')
+
+    #: keep just the header
+    readme = readme.split('\n\n\n', 1)[0]
+
+    text = '{0}\n\n{1}'.format(_purge_quotes(readme), _purge_quotes(history))
     return _convert_text(text)
 
 
-def _get_long_description():
-    filename = 'README.rst'
+def get_long_description():
     try:
-        return _read_text(filename)
+        text = _read_text('README.rst')
     except IOError:
-        return _gen_long_description()
+        text = _gen_long_description()
+    return text
 
 
 _RE_SECTION = re.compile(
@@ -104,9 +112,8 @@ def _parse_requires(text):
     return deps, extras
 
 
-def _get_requires(name):
-    dirname = 'requirements'
-    file = os.path.join(dirname, name + '.txt')
+def get_requires(name):
+    file = os.path.join('requirements', name + '.txt')
     text = _read_text(file)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
@@ -115,9 +122,8 @@ def _get_requires(name):
     return deps
 
 
-def _get_version():
-    filename = 'VERSION'
-    return _read_text(filename)
+def get_version():
+    return _read_text('VERSION')
 
 
 # def _setx_ntpath():
@@ -129,7 +135,7 @@ class MakeReadme(Command):
     """
     Create a valid README.rst file
     """
-    READMEFILE = 'README.rst'
+    _READMEFILE = 'README.rst'
 
     description = 'create a valid README.rst file'
     user_options = []
@@ -141,15 +147,17 @@ class MakeReadme(Command):
         pass
 
     def run(self):
-        if os.path.isfile(self.READMEFILE):
+        if os.path.isfile(self._READMEFILE):
             return None
-        _write_text(self.READMEFILE, _gen_long_description())
+        _write_text(self._READMEFILE, _gen_long_description())
 
 
 class BuildLocale(Command):
     """
     Build the locales
     """
+    _LOCALEDIR = os.path.join(_PACKAGE_PATH, 'locale')
+
     description = 'build the locales'
     user_options = []
 
@@ -161,7 +169,7 @@ class BuildLocale(Command):
 
     def run(self):
         try:
-            os.makedirs(os.path.join(_PACKAGE_PATH, 'locale'))
+            os.makedirs(self._LOCALEDIR)
         except OSError as e:
             print(str(e))
         self.run_command('extract_messages')
@@ -191,8 +199,8 @@ class PreBuild(Command):
     """
     Prepare for build
     """
-    ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
-    ICONFILE = 'media/icon.ico'
+    _ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
+    _ICONFILE = 'media/icon.ico'
 
     description = 'prepare for build'
     user_options = []
@@ -215,13 +223,13 @@ __package_name__ = '{2}'
 __version__ = '{3}'
 __version_info__ = parse_version_info(__version__)
 __credits__ = ({4})
-""".format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
-        _write_text(self.ABOUTFILE, text)
+""".format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, get_version(), credits)
+        _write_text(self._ABOUTFILE, text)
 
     def run(self):
-        if not os.path.isfile(self.ABOUTFILE):
+        if not os.path.isfile(self._ABOUTFILE):
             self._makeabout()
-        shutil.copy(self.ICONFILE, _PACKAGE_PATH)
+        shutil.copy(self._ICONFILE, _PACKAGE_PATH)
         self.run_command('build_locale')
 
 
@@ -256,12 +264,12 @@ class Sdist(sdist):
 
 
 NAME = _PACKAGE_NAME
-VERSION = _get_version()
+VERSION = get_version()
 STATUS = "1 - Planning"
 DESC = """Free and Open Source download manager written in Pure Python and
  designed to be extremely lightweight, fully customizable and remotely
  manageable"""
-LONG_DESC = _get_long_description()
+LONG_DESC = get_long_description()
 KEYWORDS = [
     "pyload", "download", "download-manager", "download-station", "downloader",
     "jdownloader", "one-click-hoster", "upload", "upload-manager",
@@ -278,11 +286,11 @@ PACKAGE_DIR = {'': 'src'}
 INCLUDE_PACKAGE_DATA = True
 NAMESPACE_PACKAGES = [_NAMESPACE]
 OBSOLETES = [_NAMESPACE]
-INSTALL_REQUIRES = _get_requires('install')
-SETUP_REQUIRES = _get_requires('setup')
+INSTALL_REQUIRES = get_requires('install')
+SETUP_REQUIRES = get_requires('setup')
 TEST_SUITE = 'nose.collector'
-TESTS_REQUIRE = _get_requires('test')
-EXTRAS_REQUIRE = _get_requires('extra')
+TESTS_REQUIRE = get_requires('test')
+EXTRAS_REQUIRE = get_requires('extra')
 PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
 ENTRY_POINTS = {
     'console_scripts': ['{0} = {1}.cli:main'.format(_NAMESPACE, _PACKAGE)]
