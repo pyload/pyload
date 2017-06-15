@@ -293,8 +293,8 @@ class LockedObject(object):
             return attr
 
         @lock
-        def wrapper(self, *args, **kwargs):
-            return attr(*args, **kwargs)
+        def wrapper(*args, **kwargs):
+            return attr(*args[1:], **kwargs)
 
         return wrapper
 

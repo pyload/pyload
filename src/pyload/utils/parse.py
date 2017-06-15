@@ -5,7 +5,6 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import re
-import urllib.parse
 
 from future import standard_library
 
@@ -16,19 +15,19 @@ from .time import seconds_to_midnight
 standard_library.install_aliases()
 
 
-_re_alias = re.compile(r'[\d.-_]+')
+_RE_ALIAS = re.compile(r'[\d.-_]+')
 
 def alias(text):
-    chunks = _re_alias.split(purge.name(text))
+    chunks = _RE_ALIAS.split(purge.name(text))
     return ''.join(word.capitalize() for word in chunks if word)
 
 
-__booleanmap = {
+_BOOLEANMAP = {
     '1': True, 'yes': True, 'true': True, 'on': True,
     '0': False, 'no': False, 'false': False, 'off': False}
 
 def boolean(text):
-    return __booleanmap.get(text.strip().lower())
+    return _BOOLEANMAP.get(text.strip().lower())
 
 
 def entries(text, allow_whitespaces=False):
@@ -64,31 +63,31 @@ def name(text, strict=True):
     return name if strict else purge.name(name)
 
 
-__onewords = (
+_ONEWORDS = (
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
     "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
     "sixteen", "seventeen", "eighteen", "nineteen")
-__tenwords = (
+_TENWORDS = (
     "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty",
     "ninety")
-_re_number = re.compile(r'[\s-]+')
+_RE_NUMBER = re.compile(r'[\s-]+')
 
 def number(text):
     try:
         text = web.misc.translate(text).lower()
     except Exception:
         text = text.lower()
-    o_tuple = [(w, i) for i, w in enumerate(__onewords)]
-    t_tuple = [(w, i * 10) for i, w in enumerate(__tenwords, 2)]
+    o_tuple = [(w, i) for i, w in enumerate(_ONEWORDS)]
+    t_tuple = [(w, i * 10) for i, w in enumerate(_TENWORDS, 2)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens = _re_number.split(text)
+    tokens = _RE_NUMBER.split(text)
 
     numbers = [_f for _f in (numwords.get(word) for word in tokens) if _f]
     return sum(numbers) if numbers else None
 
 
-_re_packs = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
+_RE_PACKS = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
 
 def packs(nameurls):
     DEFAULT_URLNAME = "Unknown"
@@ -97,7 +96,7 @@ def packs(nameurls):
     for urlname, url in nameurls:
         urlname = name(urlname, strict=False)
         urlname = os.path.splitext(urlname)[0].strip()
-        urlname = _re_packs.sub('_', urlname).strip('_')
+        urlname = _RE_PACKS.sub('_', urlname).strip('_')
 
         if not urlname:
             urlname = DEFAULT_URLNAME
@@ -107,12 +106,12 @@ def packs(nameurls):
     return packs
 
 
-_re_size = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
+_RE_SIZE = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 
 def bytesize(text, unit=None):  # returns integer bytes
     DEFAULT_INPUTUNIT = 'byte'
 
-    m = _re_size.match(text)
+    m = _RE_SIZE.match(text)
     if m is None:
         return None
 
@@ -125,23 +124,23 @@ def bytesize(text, unit=None):  # returns integer bytes
     return convert.size(size, unit, 'byte')
 
 
-__timewords = ("this", "a", "an", "next")
-__timemap = {
+_TIMEWORDS = ("this", "a", "an", "next")
+_TIMEMAP = {
     'day': 60 ** 2 * 12, 'hr': 60 ** 2, 'hour': 60 ** 2, 'min': 60, 'sec': 1}
-_re_time = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
+_RE_TIME = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
 
 def seconds(text):
     try:
         text = web.misc.translate(text).lower()
     except Exception:
         text = text.lower()
-    pattr = r'({0})\s+day|today|daily'.format('|'.join(__timewords))
+    pattr = r'({0})\s+day|today|daily'.format('|'.join(_TIMEWORDS))
     m = re.search(pattr, text)
     if m is not None:
         return seconds_to_midnight()
     seconds = sum(
-        (w in __timewords or convert.to_int(i or w, 0) or number(w) or 1) *
-        __timemap.get(u, 1) for w, u, i in _re_time.findall(text))
+        (w in _TIMEWORDS or convert.to_int(i or w, 0) or number(w) or 1) *
+        _TIMEMAP.get(u, 1) for w, u, i in _RE_TIME.findall(text))
     return seconds
 
 

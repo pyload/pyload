@@ -48,12 +48,12 @@ def domain(url):
     return tld.get_tld(format.url(url), fail_silently=True)
 
 
-_re_form = re.compile(
+_RE_FORM = re.compile(
     r'(<(input|textarea).*?>)([^<]*(?=</\2)|)', flags=re.I | re.S)
 
 def _extract_inputs(form):
     taginputs = {}
-    for inputtag in _re_form.finditer(
+    for inputtag in _RE_FORM.finditer(
             purge.comments(form.group('CONTENT'))):
         tagname = attr(inputtag.group(1), "name")
         if not tagname:
@@ -90,12 +90,12 @@ def form(text, name=None, inputs={}):
     return None, {}  # No matching form found
 
 
-_re_header = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
+_RE_HEADER = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
 
 # TODO: Rewrite...
 def header(text):
     hdict = HeaderDict()
-    for key, value in _re_header.findall(text):
+    for key, value in _RE_HEADER.findall(text):
         key = key.lower()
         if key not in hdict:
             hdict[key] = value

@@ -42,7 +42,7 @@ def isport(value):
     return 0 <= value <= 65535
 
 
-_re_ish = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
+_RE_ISH = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
 
 def ishost(value):
     MAX_HOSTNAME_LEN = 253
@@ -54,7 +54,7 @@ def ishost(value):
         value = value[:-1]
     if not value or len(value) > MAX_HOSTNAME_LEN:
         return False
-    return all(map(_re_ish.match, value.split('.')))
+    return all(map(_RE_ISH.match, value.split('.')))
 
 
 def issocket(value):

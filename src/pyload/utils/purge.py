@@ -6,11 +6,8 @@ from __future__ import absolute_import, unicode_literals
 import os
 import re
 import sys
-from builtins import bytes
 
 from future import standard_library
-
-from . import convert, web
 
 standard_library.install_aliases()
 
@@ -19,10 +16,10 @@ def chars(text, chars, repl=''):
     return re.sub(r'[{0}]+'.format(chars), repl, text)
 
 
-__unixbadchars = ('\0', '/', '\\')
-__macbadchars = __unixbadchars + (':',)
-__winbadchars = __macbadchars + ('<', '>', '"', '|', '?', '*')
-__winbadwords = (
+_UNIXBADCHARS = ('\0', '/', '\\')
+_MACBADCHARS = _UNIXBADCHARS + (':',)
+_WINBADCHARS = _MACBADCHARS + ('<', '>', '"', '|', '?', '*')
+_WINBADWORDS = (
     'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8', 'com9',
     'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
     'con', 'prn')
@@ -32,16 +29,16 @@ def name(text, sep='_', allow_whitespaces=False):
     Remove invalid characters.
     """
     if os.name == 'nt':
-        bc = __winbadchars
+        bc = _WINBADCHARS
     elif sys.platform == 'darwin':
-        bc = __macbadchars
+        bc = _MACBADCHARS
     else:
-        bc = __unixbadchars
+        bc = _UNIXBADCHARS
     repl = r''.join(bc)
     if not allow_whitespaces:
         repl += ' '
     name = chars(text, repl, sep).strip()
-    if os.name == 'nt' and name.lower() in __winbadwords:
+    if os.name == 'nt' and name.lower() in _WINBADWORDS:
         name = sep + name
     return name
 
