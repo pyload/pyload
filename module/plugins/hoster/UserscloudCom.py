@@ -36,7 +36,7 @@ class BIGHTTPRequest(HTTPRequest):
 class UserscloudCom(SimpleHoster):
     __name__ = "UserscloudCom"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?userscloud\.com/(?P<ID>\w{12})'
@@ -69,7 +69,8 @@ class UserscloudCom(SimpleHoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=150000)
+            limit=300000)
+
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('name="F1"')
