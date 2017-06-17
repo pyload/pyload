@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -31,8 +31,7 @@ class Keep2ShareCc(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2s.cc/file/\g<ID>")]
 
-    NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
-    SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
+    INFO_PATTERN = r'<span class="title-file">\s*(?P<N>.+?)\s*<em>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</em>'
 
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
