@@ -2773,7 +2773,7 @@ class main(QObject):
                 interval = float(self.parent.automaticReloadingOptions.settings["interval"]) - 0.5
                 self.parent.queue.automaticReloading(interval)
                 self.parent.collector.automaticReloading(interval)
-            self.parent.updateToolbarSpeedLimitFromCore()
+            self.parent.updateToolbarSpeedLimitFromCore(first)
 
         def stop(self):
             self.timer.stop()
@@ -2924,7 +2924,7 @@ class main(QObject):
             if self.languageOptions.settings["language"] != self.lang:
                 self.lang = self.languageOptions.settings["language"]
 
-    def updateToolbarSpeedLimitFromCore(self):
+    def updateToolbarSpeedLimitFromCore(self, first):
         """
             called from main loop
         """
@@ -2957,7 +2957,8 @@ class main(QObject):
         if rate_str:
             rate = int(rate_str)
         if enab != None and rate != None:
-            self.disconnect(self.mainWindow, SIGNAL("toolbarSpeedLimitEdited"), self.slotToolbarSpeedLimitEdited)
+            if not first:
+                self.disconnect(self.mainWindow, SIGNAL("toolbarSpeedLimitEdited"), self.slotToolbarSpeedLimitEdited)
             self.mainWindow.toolbar_speedLimit_enabled.setChecked(enab)
             self.mainWindow.toolbar_speedLimit_rate.setValue(rate)
             self.mainWindow.actions["speedlimit_enabled"].setEnabled(True)
