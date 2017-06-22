@@ -67,15 +67,18 @@ class MainWindow(QMainWindow):
         self.version = 3
         
         #init docks
+        self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowTabbedDocks | QMainWindow.ForceTabbedDocks)
+        self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea, QTabWidget.North)
         self.newPackDock = NewPackageDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
         self.connect(self.newPackDock, SIGNAL("parseUri"), self.slotParseUri)
-        self.captchaDialog = CaptchaDialog()
         self.newLinkDock = NewLinkDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newLinkDock)
         self.connect(self.newLinkDock, SIGNAL("done"), self.slotAddLinksToPackage)
         self.connect(self.newLinkDock, SIGNAL("parseUri"), self.slotParseUri)
+        self.tabifyDockWidget(self.newPackDock, self.newLinkDock)
+        self.captchaDialog = CaptchaDialog()
         
         #central widget, layout
         self.masterlayout = QVBoxLayout()
@@ -639,10 +642,13 @@ class MainWindow(QMainWindow):
         self.paintEventLastNormalSize       = None
         self.paintEventSecondLastNormalPos  = None
         self.paintEventSecondLastNormalSize = None
-        self.paintEventLastMaximized = False
-        self.paintEventSignal  = False
+        self.paintEventLastMaximized        = False
+        self.paintEventSignal               = False
+        self.paintEventStateSignal          = False
     
     def paintEvent(self, event):
+        if self.paintEventStateSignal:
+            self.emit(SIGNAL("mainWindowState"))
         self.paintEventCounter += 1
         self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" % (self.time_msec(), self.paintEventCounter, event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
         maximized = bool(self.windowState() & Qt.WindowMaximized)
@@ -838,7 +844,7 @@ class MainWindow(QMainWindow):
         self.newPackDock.widget.nameInput.setText("")
         self.newPackDock.widget.passwordInput.setText("")
         self.newPackDock.widget.box.clear()
-        self.newPackDock.show()
+        self.emit(SIGNAL("showAddPackage"))
     
     def slotShowAddLinks(self):
         """
@@ -850,7 +856,7 @@ class MainWindow(QMainWindow):
         else:
             self.newLinkDock.widget.destCollector.setChecked(True)
         self.newLinkDock.widget.box.clear()
-        self.newLinkDock.show()
+        self.emit(SIGNAL("showAddLinks"))
     
     def slotShowConnector(self):
         """

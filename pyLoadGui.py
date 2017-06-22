@@ -259,7 +259,7 @@ class main(QObject):
         noconnect = False if first else self.connector.internal
         self.tray = None
         self.mainWindowPaintEventAction = {}
-        self.geoOther = {"packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "captchaDialog": None}
+        self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
         self.guiLogMutex = QMutex()
 
         self.parser = XMLParser(join(self.homedir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
@@ -570,6 +570,7 @@ class main(QObject):
         self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
         self.connect(self.fontOptions,         SIGNAL("appFontChanged"), self.slotAppFontChanged)
         self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
+        self.connect(self.mainWindow,          SIGNAL("mainWindowState"), self.slotMainWindowState, Qt.QueuedConnection)
         self.connect(self.mainWindow,          SIGNAL("mainWindowPaintEvent"), self.slotMainWindowPaintEvent, Qt.QueuedConnection)
         self.connect(self.mainWindow,          SIGNAL("showCorePermissions"), self.slotShowCorePermissions)
         self.connect(self.mainWindow,          SIGNAL("quitCore"), self.slotQuitCore)
@@ -595,6 +596,8 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("selectAllPackages"), self.slotSelectAllPackages)
         self.connect(self.mainWindow,          SIGNAL("expandAll"), self.slotExpandAll)
         self.connect(self.mainWindow,          SIGNAL("collapseAll"), self.slotCollapseAll)
+        self.connect(self.mainWindow,          SIGNAL("showAddPackage"), self.slotShowAddPackage)
+        self.connect(self.mainWindow,          SIGNAL("showAddLinks"), self.slotShowAddLinks)
         self.connect(self.mainWindow,          SIGNAL("addContainer"), self.slotAddContainer)
         self.connect(self.mainWindow,          SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
         self.connect(self.mainWindow,          SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
@@ -632,6 +635,7 @@ class main(QObject):
                 self.mainWindow.update()
             else:
                 self.geoOther["packDock"] = self.mainWindow.newPackDock.geo
+                self.mainWindow.newPackDock.raise_() # activate tab
 
     def slotNewLinkDockTopLevelChanged(self, floating):
         """
@@ -649,6 +653,7 @@ class main(QObject):
                 self.mainWindow.update()
             else:
                 self.geoOther["linkDock"] = self.mainWindow.newLinkDock.geo
+                self.mainWindow.newLinkDock.raise_() # activate tab
 
     def waitForPaintEvents(self, cnt, msec=5000):
         """
@@ -972,27 +977,34 @@ class main(QObject):
                 return
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and (s["restore_unmaxed_geo"] or self.mainWindow.otherOptions.settings["AlwaysRestore"]) and not QApplication.activeModalWidget():
                 if self.mainWindow.otherOptions.settings["HideShowOnUnmax"]:
-                    hidePackDock = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
-                    hideLinkDock = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
+                    pdShownFloating = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
+                    ldShownFloating = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
                     self.mainWindow.hide()
-                    if hidePackDock:
+                    if pdShownFloating:
                         self.mainWindow.newPackDock.hide()
-                    if hideLinkDock:
+                    if ldShownFloating:
                         self.mainWindow.newLinkDock.hide()
                     self.mainWindow.paintEventCounter = 0
                     self.mainWindow.show()
                     self.waitForPaintEvents(1)
                     self.log.debug4("main.slotMaximizeToggled: Option '%s' done, show()" % str(self.mainWindow.otherOptions.cbHideShowOnUnmax.text()))
-                    if hidePackDock:
+                    if pdShownFloating:
                         self.mainWindow.newPackDock.show()
-                    if hideLinkDock:
+                    if ldShownFloating:
                         self.mainWindow.newLinkDock.show()
-                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"])
+                restoreDocks = self.mainWindow.paintEventStateSignal    # restore docked widgets width (divider position) at first unmaximize when the app was lauched maximized
+                if self.mainWindow.paintEventStateSignal:
+                    self.mainWindow.paintEventStateSignal = False
+                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
             else:
                 self.log.debug4("main.slotMaximizeToggled: geo. not restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
         s["maximized"] = maximized
+
+    def slotRestoreDocks(self):
+        self.mainWindow.restoreState(self.mainWindowStateFirstUnmax, self.mainWindow.version)  # also restores floating state of docks
+        self.log.debug4("main.slotRestoreDocks: docked widgets width (divider position) restored at first unmaximize")
 
     def debugTray(self):
         self.log.debug9("mainWindow pos() + size():                     pos: %s   size: %s" % (self.mainWindow.pos(), self.mainWindow.size()))
@@ -1803,6 +1815,36 @@ class main(QObject):
         else:
             self.mainWindow.newLinkDock.widget.slotMsgShow("<b>" + (_("Error, multiple packages selected in %s.") % txt) + "</b>")
 
+    def slotShowAddPackage(self):
+        """
+            emitted from main window
+            show new-package dock
+        """
+        if self.mainWindow.newPackDock.isHidden():
+            self.mainWindow.newPackDock.paintEventCounter = 0
+            self.mainWindow.newPackDock.show()
+            if self.mainWindow.newPackDock.isFloating() and self.geoOther["packDock"] is not None:
+                self.mainWindow.newPackDock.update()
+                self.waitForPackDockPaintEvents(1)
+                self.mainWindow.newPackDock.setGeometry(self.geoOther["packDock"])
+        if not self.mainWindow.newPackDock.isFloating():
+            self.mainWindow.newPackDock.raise_() # activate tab
+
+    def slotShowAddLinks(self):
+        """
+            emitted from main window
+            show new-links dock
+        """
+        if self.mainWindow.newLinkDock.isHidden():
+            self.mainWindow.newLinkDock.paintEventCounter = 0
+            self.mainWindow.newLinkDock.show()
+            if self.mainWindow.newLinkDock.isFloating() and self.geoOther["linkDock"] is not None:
+                self.mainWindow.newLinkDock.update()
+                self.waitForLinkDockPaintEvents(1)
+                self.mainWindow.newLinkDock.setGeometry(self.geoOther["linkDock"])
+        if not self.mainWindow.newLinkDock.isFloating():
+            self.mainWindow.newLinkDock.raise_() # activate tab
+
     def slotAddContainer(self, path):
         """
             emitted from main window
@@ -1912,6 +1954,12 @@ class main(QObject):
         """
         if self.mainWindow.isHidden():
             self.log.error("main.saveWindowToConfig: mainWindow is hidden")
+        gOther = {}
+        gOther["packDockIsFloating"] = self.mainWindow.newPackDock.isFloating()
+        gOther["linkDockIsFloating"] = self.mainWindow.newLinkDock.isFloating()
+        # undock before saveState() else the dock widget geometry does not restore correctly ...
+        self.mainWindow.newPackDock.setFloating(True)
+        self.mainWindow.newLinkDock.setFloating(True)
         state_raw = self.mainWindow.saveState(self.mainWindow.version)
         geo_raw = self.mainWindow.saveGeometry()
 
@@ -1932,7 +1980,7 @@ class main(QObject):
         gUnmax["unmaxed_size"] = 0 if (self.geoUnmaximized["unmaxed_size"] is None) else [self.geoUnmaximized["unmaxed_size"].width(),self.geoUnmaximized["unmaxed_size"].height()]
         gUnmax["maximized"] = self.geoUnmaximized["maximized"]
         geoUnmaximized = str(QByteArray(str(gUnmax)).toBase64())
-        gOther = {} # convert Qt variable types to integer, literal_eval does not accept Qt variables
+        # convert Qt variable types to integer, literal_eval does not accept Qt variables
         gOther["packDock"] = 0 if (self.geoOther["packDock"] is None) else [self.geoOther["packDock"].x(),self.geoOther["packDock"].y(),self.geoOther["packDock"].width(),self.geoOther["packDock"].height()]
         gOther["linkDock"] = 0 if (self.geoOther["linkDock"] is None) else [self.geoOther["linkDock"].x(),self.geoOther["linkDock"].y(),self.geoOther["linkDock"].width(),self.geoOther["linkDock"].height()]
         gOther["packDockTray"] = 0 if (self.geoOther["packDockTray"] is None) else [self.geoOther["packDockTray"].x(),self.geoOther["packDockTray"].y(),self.geoOther["packDockTray"].width(),self.geoOther["packDockTray"].height()]
@@ -2143,8 +2191,9 @@ class main(QObject):
         self.waitForPaintEvents(1)
         self.log.debug4("main.loadWindowFromConfig: first show() done")
         self.mainWindow.paintEventCounter = 0
-        self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)
+        self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)   # also restores floating state of docks
         self.waitForPaintEvents(1)
+        self.app.processEvents()   # needed on deepin
         self.log.debug4("main.loadWindowFromConfig: restoreState() done")
         gUnmax = {}
         try:
@@ -2162,10 +2211,12 @@ class main(QObject):
         gOther = {}
         try:
             gOther = literal_eval(str(QByteArray.fromBase64(geoOther)))
+            gOther["packDockIsFloating"]; gOther["linkDockIsFloating"]
             gOther["packDock"]; gOther["linkDock"]
             gOther["packDockTray"]; gOther["linkDockTray"]
             gOther["captchaDialog"]
         except:
+            gOther["packDockIsFloating"] = gOther["linkDockIsFloating"] = False
             gOther["packDock"] = gOther["linkDock"] = gOther["packDockTray"] = gOther["linkDockTray"] = gOther["captchaDialog"] = 0
         self.geoOther["packDock"] = None if (gOther["packDock"] == 0) else QRect(gOther["packDock"][0], gOther["packDock"][1], gOther["packDock"][2], gOther["packDock"][3])
         self.geoOther["linkDock"] = None if (gOther["linkDock"] == 0) else QRect(gOther["linkDock"][0], gOther["linkDock"][1], gOther["linkDock"][2], gOther["linkDock"][3])
@@ -2175,6 +2226,10 @@ class main(QObject):
 
         if not self.geoUnmaximized["maximized"]:
             self.mainWindow.restoreGeometry(QByteArray.fromBase64(geo))
+            self.mainWindow.newPackDock.setFloating(False)   # needed on enlightenment
+            self.mainWindow.newLinkDock.setFloating(False)   # needed on enlightenment
+            self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
+            self.mainWindow.newLinkDock.setFloating(gOther["linkDockIsFloating"])
             pdGeo = self.geoOther["packDock"]
             if not self.mainWindow.newPackDock.isFloating() or self.mainWindow.newPackDock.isHidden():
                 pdGeo = None
@@ -2183,10 +2238,12 @@ class main(QObject):
                 plGeo = None
             self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
         else:
+            self.mainWindow.paintEventCounter = 0
+            self.mainWindow.showMaximized()
+            cnt = self.waitForPaintEvents(1)
+            self.mainWindow.newPackDock.setFloating(False)   # needed on enlightenment
+            self.mainWindow.newLinkDock.setFloating(False)   # needed on enlightenment
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:
-                self.mainWindow.paintEventCounter = 0
-                self.mainWindow.showMaximized()
-                cnt = self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.mainWindow.hide()
                 self.app.processEvents()
@@ -2195,9 +2252,17 @@ class main(QObject):
                 cnt = self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.app.processEvents()
-            else:
-                self.mainWindow.showMaximized()
+            self.mainWindow.paintEventCounter = 0
+            self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
+            self.mainWindow.newLinkDock.setFloating(gOther["linkDockIsFloating"])
+            if (self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()) or (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()):
+                self.waitForPaintEvents(1)
             self.scheduleMainWindowPaintEventAction()
+
+        self.app.processEvents()   # needed on enlightenment
+        self.mainWindow.paintEventStateSignal = self.geoUnmaximized["maximized"]
+        self.mainWindow.paintEventCounter = 0   # for self.mainWindow.newPackDock.raise_() below
+        self.mainWindow.tabifyDockWidget(self.mainWindow.newPackDock, self.mainWindow.newLinkDock)
 
         # tabs restoreState
         self.mainWindow.tabs["queue"]["view"].header().restoreState(QByteArray.fromBase64(stateQueue))
@@ -2212,7 +2277,20 @@ class main(QObject):
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
         self.mainWindow.captchaDialog.geo = self.geoOther["captchaDialog"]
 
-    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0, refreshGeo=False, pdGeo=None, plGeo=None):
+        if not (self.mainWindow.newPackDock.isFloating() or self.mainWindow.newPackDock.isHidden()):
+            self.waitForPaintEvents(1)
+            self.mainWindow.newPackDock.raise_()   # activate tab
+
+    def slotMainWindowState(self):
+        """
+            catch the main window state right before the first unmaximize when the app was lauched maximized,
+            this is to restore the docked widgets width (divider position)
+            emitted from main window in paintEvent() (queued signal)
+        """
+        if self.mainWindow.isMaximized():
+            self.mainWindowStateFirstUnmax = self.mainWindow.saveState(self.mainWindow.version)
+
+    def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0, refreshGeo=False, pdGeo=None, plGeo=None, restoreDocks=False):
         """
             schedule an action on a main window paintEvent
             pos is of type QPoint and size of type QSize
@@ -2231,7 +2309,7 @@ class main(QObject):
             s = size
             if s is not None:
                 s = "(%s, %s)" % (s.width(), s.height())
-            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s  refreshGeo:%s  pdGeo:%s  plGeo:%s" % (p, s, raise_, activate, focus, showFromTrayContinue, refreshGeo, pdGeo, plGeo))
+            self.log.debug4("main.scheduleMainWindowPaintEventAction: pos:%s  size:%s  raise:%s  act:%s  foc:%s  cont:%s  refreshGeo:%s  pdGeo:%s  plGeo:%s  restoreDocks:%s" % (p, s, raise_, activate, focus, showFromTrayContinue, refreshGeo, pdGeo, plGeo, restoreDocks))
         a = self.mainWindowPaintEventAction
         a["pos"]                  = pos
         a["size"]                 = size
@@ -2242,6 +2320,7 @@ class main(QObject):
         a["refreshGeo"]           = refreshGeo
         a["pdGeo"]                = pdGeo
         a["plGeo"]                = plGeo
+        a["restoreDocks"]         = restoreDocks
         # try set geometry right now to possibly avoid flicker with some window managers
         if size is not None:
             self.mainWindow.resize(size)
@@ -2286,6 +2365,9 @@ class main(QObject):
             for i in [10, 50, 100, 200]:
                 QTimer.singleShot(i, self.mainWindow.activateWindow)
             if dm: actmsg.append("activated")
+        if a["restoreDocks"]:
+            QTimer.singleShot(300, self.slotRestoreDocks)
+            if dm: actmsg.append("restoreDocks")
         if len(actmsg) > 0:
             am = "main.slotMainWindowPaintEvent: "
             for i in range(len(actmsg)):
