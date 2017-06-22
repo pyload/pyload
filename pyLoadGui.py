@@ -566,7 +566,7 @@ class main(QObject):
         self.connect(self.connWindow,          SIGNAL("saveConnection"), self.slotSaveConnection)
         self.connect(self.connWindow,          SIGNAL("saveAllConnections"), self.slotSaveAllConnections)
         self.connect(self.connWindow,          SIGNAL("removeConnection"), self.slotRemoveConnection)
-        self.connect(self.connWindow,          SIGNAL("connect"), self.slotConnect)
+        self.connect(self.connWindow,          SIGNAL("connect"), self.slotConnect, Qt.QueuedConnection)
         self.connect(self.connWindow,          SIGNAL("quitConnWindow"), self.slotQuitConnWindow)
         self.connect(self.fontOptions,         SIGNAL("appFontChanged"), self.slotAppFontChanged)
         self.connect(self.mainWindow,          SIGNAL("connector"), self.slotShowConnector)
@@ -1670,7 +1670,7 @@ class main(QObject):
             self.mainWindow.mactions["cnlfwding"].setEnabled(False)
             self.mainWindow.setWindowTitle(_("pyLoad Client") + " - " + data["name"] + " [via API]")
 
-        self.startMain()
+        QTimer.singleShot(0, self.startMain)
 
     def errorInternalCoreStartup(self, mb, arg=None):
         if arg is None:
