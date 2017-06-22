@@ -1735,7 +1735,7 @@ class main(QObject):
     def messageBox_24(self):
         if self.internalCoreRestartMsgBoxVisible:
             return False
-        text = _("The internal server wants a restart.")
+        text = _("The internal server wants to restart.")
         text += "\n" + _("Probably for plugin updates to take effect.")
         text += "\n" + _("Therefore, you must exit the application and start all over again.") 
         text += "\n\n" + _("Do you want to exit the application now?")

@@ -1529,7 +1529,7 @@ class OtherOptions(QDialog):
         self.cbAlwaysRestore       = QCheckBox(_("Always restore geometry"))
         self.lblUrl                = QLabel()
         
-        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Cinnamon, MATE or LXDE desktop environments."))
+        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments."))
         self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
         whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
         self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
