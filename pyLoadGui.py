@@ -3815,7 +3815,7 @@ class ClickNLoadForwarderOptions(QDialog):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         self.cbEnable = QCheckBox(_("Enable"))
-        lblFrom = QLabel(_("Local Port"))
+        self.lblFrom = QLabel(_("Local Port"))
         self.sbFromPort = QSpinBox()
         self.sbFromPort.setMinimum(1)
         self.sbFromPort.setMaximum(65535)
@@ -3824,17 +3824,23 @@ class ClickNLoadForwarderOptions(QDialog):
         self.sbToPort.setMinimum(1)
         self.sbToPort.setMaximum(65535)
         self.cbGetPort = QCheckBox(_("Get Remote Port from Server Settings"))
-        self.cbGetPort.setWhatsThis(whatsThisFormat(_("Get Remote Port from Server Settings"), _("Needs") + " '" + _("Settings") + "'" + " (SETTINGS) " + _("permission on the server.")))
         lblSta = QLabel(_("Status"))
         self.lblStatus = LineView("Unknown")
         self.lblStatus.setAlignment(Qt.AlignHCenter)
+
+        whatsThis = whatsThisFormat(self.lblFrom.text(), _("This should usually stay on port 9666. At least Firefox with FlashGot only works reliable with its default address setting:<br>http://127.0.0.1:9666/flashgot"))
+        self.lblFrom.setWhatsThis(whatsThis)
+        self.sbFromPort.setWhatsThis(whatsThis)
+        whatsThis = whatsThisFormat(self.cbGetPort.text(), _("Needs") + " '" + _("Settings") + "'" + " (SETTINGS) " + _("permission on the server."))
+        self.cbGetPort.setWhatsThis(whatsThis)
+
         self.hboxStatus = QHBoxLayout()
         self.hboxStatus.addWidget(lblSta)
         self.hboxStatus.addWidget(self.lblStatus)
 
         grid = QGridLayout()
         grid.addWidget(self.cbEnable,   0, 0, 1, 2)
-        grid.addWidget(lblFrom,         1, 0)
+        grid.addWidget(self.lblFrom,    1, 0)
         grid.addWidget(self.sbFromPort, 1, 1)
         grid.addWidget(lblTo,           2, 0)
         grid.addWidget(self.sbToPort,   2, 1)
@@ -3961,7 +3967,8 @@ class ClickNLoadForwarder(QObject):
             self.dock_socket.listen(5)
         except socket.error, x:
             if x.args[0] == errno.EADDRINUSE:
-                self.log.error("ClickNLoadForwarder.server: Cannot bind to port %d, someone else is using it." % self.localPort)
+                self.log.error("ClickNLoadForwarder.server: Cannot bind to port %d, the port is occupied." % self.localPort)
+                self.log.info("ClickNLoadForwarder.server: If you are pretty sure that the port should be free, try waiting 2-3 minutes for the operating system to close the port.")
             self.onRaise()
             raise
         except:
