@@ -1862,6 +1862,7 @@ class main(QObject):
         optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
         optionsWhatsThis = str(QByteArray(str(self.whatsThisOptions.settings)).toBase64())
         optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
+        lastAddContainerDir = self.mainWindow.lastAddContainerDir
         optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
         optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
         optionsClickNLoadForwarderNode = mainWindowNode.toElement().elementsByTagName("optionsClickNLoadForwarder").item(0)
@@ -1871,6 +1872,7 @@ class main(QObject):
         optionsTrayNode = mainWindowNode.toElement().elementsByTagName("optionsTray").item(0)
         optionsWhatsThisNode = mainWindowNode.toElement().elementsByTagName("optionsWhatsThis").item(0)
         optionsOtherNode = mainWindowNode.toElement().elementsByTagName("optionsOther").item(0)
+        lastAddContainerDirNode = mainWindowNode.toElement().elementsByTagName("lastAddContainerDir").item(0)
         newOptionsNotificationsNode = self.parser.xml.createTextNode(optionsNotifications)
         newOptionsLoggingNode = self.parser.xml.createTextNode(optionsLogging)
         newOptionsClickNLoadForwarderNode = self.parser.xml.createTextNode(optionsClickNLoadForwarder)
@@ -1880,6 +1882,7 @@ class main(QObject):
         newOptionsTrayNode = self.parser.xml.createTextNode(optionsTray)
         newOptionsWhatsThisNode = self.parser.xml.createTextNode(optionsWhatsThis)
         newOptionsOtherNode = self.parser.xml.createTextNode(optionsOther)
+        newLastAddContainerDirNode = self.parser.xml.createTextNode(lastAddContainerDir)
         optionsNotificationsNode.removeChild(optionsNotificationsNode.firstChild())
         optionsNotificationsNode.appendChild(newOptionsNotificationsNode)
         optionsLoggingNode.removeChild(optionsLoggingNode.firstChild())
@@ -1898,6 +1901,8 @@ class main(QObject):
         optionsWhatsThisNode.appendChild(newOptionsWhatsThisNode)
         optionsOtherNode.removeChild(optionsOtherNode.firstChild())
         optionsOtherNode.appendChild(newOptionsOtherNode)
+        lastAddContainerDirNode.removeChild(lastAddContainerDirNode.firstChild())
+        lastAddContainerDirNode.appendChild(newLastAddContainerDirNode)
         self.parser.saveData()
         self.log.debug4("main.saveOptionsToConfig: done")
 
@@ -2004,6 +2009,8 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsWhatsThis"))
         if not nodes.get("optionsOther"):
             mainWindowNode.appendChild(self.parser.xml.createElement("optionsOther"))
+        if not nodes.get("lastAddContainerDir"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("lastAddContainerDir"))
         nodes = self.parser.parseNode(mainWindowNode, "dict")   # reparse with the new nodes (if any)
 
         if self.newConfigFile:
@@ -2020,6 +2027,7 @@ class main(QObject):
         optionsTray = str(nodes["optionsTray"].text())
         optionsWhatsThis = str(nodes["optionsWhatsThis"].text())
         optionsOther = str(nodes["optionsOther"].text())
+        lastAddContainerDir = unicode(nodes["lastAddContainerDir"].text())
         reset = False
 
         def base64ToDict(b64):
@@ -2088,7 +2096,8 @@ class main(QObject):
             try:    self.mainWindow.otherOptions.settings = d; self.mainWindow.otherOptions.dict2checkBoxStates()
             except: self.mainWindow.otherOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Other")); reset = True
-
+        # Last folder from where a container file has been loaded
+        self.mainWindow.lastAddContainerDir = lastAddContainerDir
         if reset:
             self.saveOptionsToConfig()
 

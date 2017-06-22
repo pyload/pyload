@@ -26,6 +26,7 @@
         <optionsTray></optionsTray>
         <optionsWhatsThis></optionsWhatsThis>
         <optionsOther></optionsOther>
+        <lastAddContainerDir></lastAddContainerDir>
     </mainWindow>
     <language>en</language>
 </root>

@@ -22,7 +22,7 @@ import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from os.path import join
+from os.path import join, dirname
 from datetime import datetime
 
 from module.gui.PackageDock import *
@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.log = logging.getLogger("guilog")
         self.corePermissions = corePermissions
         self.connector = connector
+        self.lastAddContainerDir = unicode("")
         
         #window stuff
         self.setWindowFlags(self.windowFlags() | Qt.WindowContextHelpButtonHint)
@@ -923,9 +924,11 @@ class MainWindow(QMainWindow):
             "RSDF (%s)" % "*.rsdf",
             "Text Files (%s)" % "*.txt"
         ])
-        fileNames = QFileDialog.getOpenFileNames(self, "Open Container", "", typeStr)
+        fileNames = QFileDialog.getOpenFileNames(self, "Open Container", self.lastAddContainerDir, typeStr)
         for name in fileNames:
             self.emit(SIGNAL("addContainer"), unicode(name))
+        if not fileNames.isEmpty():
+            self.lastAddContainerDir = unicode(dirname(unicode(name)))
     
     def slotPushPackagesToQueue(self):
         """
