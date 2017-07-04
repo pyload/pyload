@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.resize(100 ,100)
         self.move(200 ,200)
-        self.initPaintEventHook()
+        self.initEventHooks()
         
         #layout version
         self.version = 3
@@ -635,40 +635,40 @@ class MainWindow(QMainWindow):
         self.connect(self.accountContext.buttons["edit"], SIGNAL("triggered()"), self.slotEditAccount)
         self.connect(self.accountContext.buttons["remove"], SIGNAL("triggered()"), self.slotRemoveAccount)
     
-    def initPaintEventHook(self):
-        self.paintEventCounter = int(0)
-        self.paintEventLastGeo = QRect(10000000, 10000000, 10000000, 10000000)
-        self.paintEventLastNormalPos        = None
-        self.paintEventLastNormalSize       = None
-        self.paintEventSecondLastNormalPos  = None
-        self.paintEventSecondLastNormalSize = None
-        self.paintEventLastMaximized        = False
-        self.paintEventSignal               = False
-        self.paintEventStateSignal          = False
+    def initEventHooks(self):
+        self.eD = {}
+        self.eD["pCount"] = int(0)
+        self.eD["lastGeo"] = QRect(10000000, 10000000, 10000000, 10000000)
+        self.eD["lastNormPos"] = self.eD["lastNormSize"] = self.eD["2ndLastNormPos"] = self.eD["2ndLastNormSize"] = None
+        self.eD["pLastMax"] = self.eD["pSignal"] = self.eD["pStateSig"] = False
     
     def paintEvent(self, event):
-        if self.paintEventStateSignal:
+        if self.eD["pStateSig"]:
             self.emit(SIGNAL("mainWindowState"))
-        self.paintEventCounter += 1
-        self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" % (self.time_msec(), self.paintEventCounter, event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
+        self.eD["pCount"] += 1
+        self.log.debug3("MainWindow.paintEvent:  at %08d msec   cnt: %04d   rect: x:%04d y:%04d w:%04d h:%04d" % (self.time_msec(), self.eD["pCount"], event.rect().x(), event.rect().y(), event.rect().width(), event.rect().height()))
         maximized = bool(self.windowState() & Qt.WindowMaximized)
         minimized = bool(self.windowState() & Qt.WindowMinimized)
         if not (maximized or minimized):
-            self.paintEventSecondLastNormalPos  = self.paintEventLastNormalPos
-            self.paintEventSecondLastNormalSize = self.paintEventLastNormalSize
-            self.paintEventLastNormalPos  = self.pos()
-            self.paintEventLastNormalSize = self.size()
-        if self.paintEventSignal:
-            self.paintEventSignal = False
+            pos = self.pos()
+            if pos != self.eD["lastNormPos"]:
+                self.eD["2ndLastNormPos"] = self.eD["lastNormPos"]
+                self.eD["lastNormPos"] = pos
+            size = self.size()
+            if size != self.eD["lastNormSize"]:
+                self.eD["2ndLastNormSize"] = self.eD["lastNormSize"]
+                self.eD["lastNormSize"] = size
+        if self.eD["pSignal"]:
+            self.eD["pSignal"] = False
             self.emit(SIGNAL("mainWindowPaintEvent"))
         geo = self.geometry()
         if (geo.topLeft() != self.moveEventPos) or (geo.size() != self.resizeEventSize):
             self.log.debug3("MainWindow.paintEvent: Bad geometry")
             return
-        if (geo.topLeft() == self.paintEventLastGeo.topLeft()) or (geo.size() == self.paintEventLastGeo.size()):
+        if (geo.topLeft() == self.eD["lastGeo"].topLeft()) or (geo.size() == self.eD["lastGeo"].size()):
             return
         # got new geometry, size and position
-        if maximized == self.paintEventLastMaximized:
+        if maximized == self.eD["pLastMax"]:
             return
         # got maximize flag toggled
         if maximized:
@@ -678,13 +678,20 @@ class MainWindow(QMainWindow):
                 self.log.debug3("MainWindow.paintEvent:          \t\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[mrogeo]" % (mrogeo.topLeft().x(), mrogeo.topLeft().y(), mrogeo.size().width(), mrogeo.size().height()))
         else:
             self.log.debug3("MainWindow.paintEvent: unmaximized\t(%04d, %04d)\t\t\t(%04d, %04d)\t\t[geo]" % (geo.topLeft().x(), geo.topLeft().y(), geo.size().width(), geo.size().height()))
-        self.paintEventLastGeo = geo
-        self.paintEventLastMaximized = maximized
+        self.eD["lastGeo"] = geo
+        self.eD["pLastMax"] = maximized
     
     def moveEvent(self, event):
         self.moveEventOldPos = event.oldPos()
         self.moveEventPos = event.pos()
-        self.log.debug3("MainWindow.moveEvent:   at %08d msec \t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (self.time_msec(), event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))        
+        self.log.debug3("MainWindow.moveEvent:   at %08d msec \t\t(%04d, %04d) -> (%04d, %04d)\t----------------------------" % (self.time_msec(), event.oldPos().x(), event.oldPos().y(), event.pos().x(), event.pos().y()))
+        maximized = bool(self.windowState() & Qt.WindowMaximized)
+        minimized = bool(self.windowState() & Qt.WindowMinimized)
+        if not (maximized or minimized):
+            pos = self.pos()
+            if pos != self.eD["lastNormPos"]:
+                self.eD["2ndLastNormPos"] = self.eD["lastNormPos"]
+                self.eD["lastNormPos"] = pos
     
     def resizeEvent(self, event):
         self.resizeEventOldSize = event.oldSize()

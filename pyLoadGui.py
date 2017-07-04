@@ -661,7 +661,7 @@ class main(QObject):
         """
         timeout = self.mainWindow.time_msec() + msec
         while True:
-            ec = self.mainWindow.paintEventCounter
+            ec = self.mainWindow.eD["pCount"]
             if ec >= cnt:
                 self.log.debug4("main.waitForPaintEvents: %d events passed (min: %d)" % (ec, cnt))
                 return ec
@@ -844,11 +844,11 @@ class main(QObject):
         pe(); self.mainWindow.newLinkDock.hide()
         pe(); self.mainWindow.newPackDock.setFloating(False)
         pe(); self.mainWindow.newLinkDock.setFloating(False)
-        pe(); self.mainWindow.paintEventCounter = 0
+        pe(); self.mainWindow.eD["pCount"] = 0
         self.mainWindow.show()
         self.waitForPaintEvents(1)
         numOfPaintEventsToWait = 1  # ignore maximize/unmaximize events until num paintEvents happened
-        self.mainWindow.paintEventCounter = 0
+        self.mainWindow.eD["pCount"] = 0
         self.mainWindow.newPackDock.paintEventCounter = 0
         self.mainWindow.newLinkDock.paintEventCounter = 0
         self.mainWindow.restoreState(s["state"]) # docks
@@ -948,24 +948,24 @@ class main(QObject):
                 self.log.debug4("main.slotMaximizeToggled: repeated maximize")
                 return
             if self.mainWindow.otherOptions.settings["SecondLastNormalGeo"]:
-                if self.mainWindow.paintEventSecondLastNormalPos is not None:
-                    s["unmaxed_pos"] = self.mainWindow.paintEventSecondLastNormalPos
+                if self.mainWindow.eD["2ndLastNormPos"] is not None:
+                    s["unmaxed_pos"] = self.mainWindow.eD["2ndLastNormPos"]
                 else:
                     s["unmaxed_pos"] = self.mainWindow.pos()
                     self.log.error("main.slotMaximizeToggled: paintEventSecondLastNormalPos is None")
-                if self.mainWindow.paintEventSecondLastNormalSize is not None:
-                    s["unmaxed_size"] = self.mainWindow.paintEventSecondLastNormalSize
+                if self.mainWindow.eD["2ndLastNormSize"] is not None:
+                    s["unmaxed_size"] = self.mainWindow.eD["2ndLastNormSize"]
                 else:
                     s["unmaxed_size"] = self.mainWindow.size()
                     self.log.error("main.slotMaximizeToggled: paintEventSecondLastNormalSize is None")
             else:
-                if self.mainWindow.paintEventLastNormalPos is not None:
-                    s["unmaxed_pos"] = self.mainWindow.paintEventLastNormalPos
+                if self.mainWindow.eD["lastNormPos"] is not None:
+                    s["unmaxed_pos"] = self.mainWindow.eD["lastNormPos"]
                 else:
                     s["unmaxed_pos"] = self.mainWindow.pos()
                     self.log.error("main.slotMaximizeToggled: paintEventLastNormalPos is None")
-                if self.mainWindow.paintEventLastNormalSize is not None:
-                    s["unmaxed_size"] = self.mainWindow.paintEventLastNormalSize
+                if self.mainWindow.eD["lastNormSize"] is not None:
+                    s["unmaxed_size"] = self.mainWindow.eD["lastNormSize"]
                 else:
                     s["unmaxed_size"] = self.mainWindow.size()
                     self.log.error("main.slotMaximizeToggled: paintEventLastNormalSize is None")
@@ -984,7 +984,7 @@ class main(QObject):
                         self.mainWindow.newPackDock.hide()
                     if ldShownFloating:
                         self.mainWindow.newLinkDock.hide()
-                    self.mainWindow.paintEventCounter = 0
+                    self.mainWindow.eD["pCount"] = 0
                     self.mainWindow.show()
                     self.waitForPaintEvents(1)
                     self.log.debug4("main.slotMaximizeToggled: Option '%s' done, show()" % str(self.mainWindow.otherOptions.cbHideShowOnUnmax.text()))
@@ -992,9 +992,9 @@ class main(QObject):
                         self.mainWindow.newPackDock.show()
                     if ldShownFloating:
                         self.mainWindow.newLinkDock.show()
-                restoreDocks = self.mainWindow.paintEventStateSignal    # restore docked widgets width (divider position) at first unmaximize when the app was lauched maximized
-                if self.mainWindow.paintEventStateSignal:
-                    self.mainWindow.paintEventStateSignal = False
+                restoreDocks = self.mainWindow.eD["pStateSig"]    # restore docked widgets width (divider position) at first unmaximize when the app was lauched maximized
+                if self.mainWindow.eD["pStateSig"]:
+                    self.mainWindow.eD["pStateSig"] = False
                 self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
@@ -2186,11 +2186,11 @@ class main(QObject):
         visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
 
         # mainWindow restoreState
-        self.mainWindow.paintEventCounter = 0
+        self.mainWindow.eD["pCount"] = 0
         self.mainWindow.show()
         self.waitForPaintEvents(1)
         self.log.debug4("main.loadWindowFromConfig: first show() done")
-        self.mainWindow.paintEventCounter = 0
+        self.mainWindow.eD["pCount"] = 0
         self.mainWindow.restoreState(QByteArray.fromBase64(state), self.mainWindow.version)   # also restores floating state of docks
         self.waitForPaintEvents(1)
         self.app.processEvents()   # needed on deepin
@@ -2238,7 +2238,7 @@ class main(QObject):
                 plGeo = None
             self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
         else:
-            self.mainWindow.paintEventCounter = 0
+            self.mainWindow.eD["pCount"] = 0
             self.mainWindow.showMaximized()
             cnt = self.waitForPaintEvents(1)
             self.mainWindow.newPackDock.setFloating(False)   # needed on enlightenment
@@ -2247,12 +2247,12 @@ class main(QObject):
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.mainWindow.hide()
                 self.app.processEvents()
-                self.mainWindow.paintEventCounter = 0
+                self.mainWindow.eD["pCount"] = 0
                 self.mainWindow.show()
                 cnt = self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.app.processEvents()
-            self.mainWindow.paintEventCounter = 0
+            self.mainWindow.eD["pCount"] = 0
             self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
             self.mainWindow.newLinkDock.setFloating(gOther["linkDockIsFloating"])
             if (self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()) or (self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()):
@@ -2260,8 +2260,8 @@ class main(QObject):
             self.scheduleMainWindowPaintEventAction()
 
         self.app.processEvents()   # needed on enlightenment
-        self.mainWindow.paintEventStateSignal = self.geoUnmaximized["maximized"]
-        self.mainWindow.paintEventCounter = 0   # for self.mainWindow.newPackDock.raise_() below
+        self.mainWindow.eD["pStateSig"] = self.geoUnmaximized["maximized"]
+        self.mainWindow.eD["pCount"] = 0   # for self.mainWindow.newPackDock.raise_() below
         self.mainWindow.tabifyDockWidget(self.mainWindow.newPackDock, self.mainWindow.newLinkDock)
 
         # tabs restoreState
@@ -2299,7 +2299,7 @@ class main(QObject):
               self.showFromTray()
               self.slotMaximizeToggled()
         """
-        if self.mainWindow.paintEventSignal:
+        if self.mainWindow.eD["pSignal"]:
             self.log.error("main.scheduleMainWindowPaintEventAction: last action not queued yet")
             return
         if self.log.isEnabledFor(logging.DEBUG4):
@@ -2327,7 +2327,7 @@ class main(QObject):
         if pos is not None:
             self.mainWindow.move(pos.x() + 1, pos.y() + 1)  # needed on LXDE
             self.mainWindow.move(pos)
-        self.mainWindow.paintEventSignal = True
+        self.mainWindow.eD["pSignal"] = True
 
     def slotMainWindowPaintEvent(self):
         """
@@ -2382,7 +2382,7 @@ class main(QObject):
                 # rescheduling here is OK, since no more actions can be scheduled from any part of the code until showFromTray_continue() has finished
                 a["pos"] = a["size"] = None
                 a["raise_"] = a["activate"] = a["focus"] = False
-                self.mainWindow.paintEventSignal = True
+                self.mainWindow.eD["pSignal"] = True
 
     def slotPushPackagesToQueue(self):
         """
