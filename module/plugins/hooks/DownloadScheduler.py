@@ -9,7 +9,7 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -36,6 +36,8 @@ class DownloadScheduler(Addon):
     def update_schedule(self, schedule=None):
         if schedule is None:
             schedule = self.config.get('timetable')
+
+        self.last_timetable = schedule
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
