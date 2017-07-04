@@ -259,6 +259,7 @@ class main(QObject):
         noconnect = False if first else self.connector.internal
         self.tray = None
         self.mainWindowPaintEventAction = {}
+        self.mainWindowMaximizedSize = None
         self.geoOther = { "packDock": None, "linkDock": None, "packDockTray": None, "linkDockTray": None, "packDockIsFloating": None, "linkDockIsFloating": None, "captchaDialog": None }
         self.guiLogMutex = QMutex()
 
@@ -1003,7 +1004,19 @@ class main(QObject):
         s["maximized"] = maximized
 
     def slotRestoreDocks(self):
+        self.mainWindow.newPackDock.paintEventCounter = 0
+        self.mainWindow.newLinkDock.paintEventCounter = 0
         self.mainWindow.restoreState(self.mainWindowStateFirstUnmax, self.mainWindow.version)  # also restores floating state of docks
+        if self.mainWindow.newPackDock.isFloating():
+            self.waitForPackDockPaintEvents(1)
+        if self.mainWindow.newLinkDock.isFloating():
+            self.waitForLinkDockPaintEvents(1)
+        self.mainWindow.raise_()
+        self.mainWindow.tabw.setFocus(Qt.OtherFocusReason)
+        self.mainWindow.activateWindow()
+        # fire an extra fusillade for slow window managers
+        for i in [10, 50, 100, 200]:
+            QTimer.singleShot(i, self.mainWindow.activateWindow)
         self.log.debug4("main.slotRestoreDocks: docked widgets width (divider position) restored at first unmaximize")
 
     def debugTray(self):
@@ -2287,8 +2300,18 @@ class main(QObject):
             this is to restore the docked widgets width (divider position)
             emitted from main window in paintEvent() (queued signal)
         """
-        if self.mainWindow.isMaximized():
-            self.mainWindowStateFirstUnmax = self.mainWindow.saveState(self.mainWindow.version)
+        if self.mainWindow.isMaximized() and bool(self.mainWindow.windowState() & Qt.WindowMaximized):
+            state = self.mainWindow.saveState(self.mainWindow.version)
+            size = self.mainWindow.size()
+            if self.mainWindowMaximizedSize is None:
+                valid = True
+            elif size.width() >= self.mainWindowMaximizedSize.width() and size.height() >= self.mainWindowMaximizedSize.height():
+                valid = True
+            else:
+                valid = False
+            if valid:
+                self.mainWindowStateFirstUnmax = state
+                self.mainWindowMaximizedSize = size
 
     def scheduleMainWindowPaintEventAction(self, pos=None, size=None, raise_=True, activate=True, focus=True, showFromTrayContinue=0, refreshGeo=False, pdGeo=None, plGeo=None, restoreDocks=False):
         """
