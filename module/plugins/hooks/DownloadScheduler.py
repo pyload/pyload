@@ -9,7 +9,7 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -27,9 +27,22 @@ class DownloadScheduler(Addon):
     def activate(self):
         self.update_schedule()
 
+    def config_changed(self, category, option, value, section):
+        """Listen for config changes, to trigger a schedule update."""
+        # Trigger an update if the timetable has changed
+        if (
+            category == self.__name__ and
+            option == 'timetable' and
+            value != getattr(self, 'last_timetable', None)
+        ):
+            self.update_schedule(schedule=value)
+
     def update_schedule(self, schedule=None):
         if schedule is None:
             schedule = self.config.get('timetable')
+
+        # Save the last timetable for future comparison
+        self.last_timetable = schedule
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
