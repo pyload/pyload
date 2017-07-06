@@ -9,7 +9,7 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -68,8 +68,11 @@ class DownloadScheduler(Addon):
         if speed == 0:
             abort = self.config.get('abort')
             self.log_info(
-                _("Stopping download server. (Running downloads will %sbe aborted.)") %
-                "" if abort else _("not "))
+                _("Stopping download server. (Running downloads will be aborted.)")
+                if abort
+                else _("Stopping download server. (Running downloads will not be aborted.)")
+            )
+
             self.pyload.api.pauseServer()
             if abort:
                 self.pyload.api.stopAllDownloads()
@@ -86,3 +89,6 @@ class DownloadScheduler(Addon):
                 self.log_info(_("Setting download speed to FULL"))
                 self.pyload.config.set('download', 'limit_speed', 0)
                 self.pyload.config.set('download', 'max_speed', -1)
+
+            # Make new speed values take effect
+            self.pyload.requestFactory.updateBucket()
