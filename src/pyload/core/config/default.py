@@ -76,7 +76,7 @@ def _gen_config_defaults():
         ('logfile_size', ('option', 100, 'Max file size (in KiB)',
                           None, None, InputType.Size)),
         ('logfile_folder', ('option', None, 'File folder',
-                            None, None, InputType.Foider)),
+                            None, None, InputType.Folder)),
         ('logfile_name', ('option', None, 'File name',
                           None, None, InputType.File)),
         ('max_logfiles', ('option', 5, 'Max log files',
