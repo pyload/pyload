@@ -38,7 +38,7 @@ class CurlDownload(DownloadRequest):
 
     if os.name == 'nt':
         PATH_MAXLEN = 255
-    else sys.platform == 'darwin':
+    elif sys.platform == 'darwin':
         PATH_MAXLEN = 1024
     else:
         PATH_MAXLEN = 4096
@@ -61,7 +61,7 @@ class CurlDownload(DownloadRequest):
 
     @property
     def speed(self):
-        last = (sum(x) for x in self.last_speeds if x)
+        last = [sum(x) for x in self.last_speeds if x]
         return (sum(self.speeds) + sum(last)) // (1 + len(last))
 
     @property
