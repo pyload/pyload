@@ -16,7 +16,7 @@ import pycurl
 from pyload.utils import purge
 from pyload.utils.fs import fullpath, lopen, remove
 
-from ...datatype import Connection
+from pyload.requests.types import Connection
 from ..chunk import ChunkInfo
 from ..cookie import CookieJar
 from ..download import DownloadRequest
