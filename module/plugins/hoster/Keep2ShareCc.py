@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.36"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -29,10 +29,9 @@ class Keep2ShareCc(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://k2s.cc/file/\g<ID>?force_old=1")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2s.cc/file/\g<ID>")]
 
-    NAME_PATTERN = r'File: <span>(?P<N>.+?)</span>'
-    SIZE_PATTERN = r'Size: (?P<S>.+?)</div>'
+    INFO_PATTERN = r'<span class="title-file">\s*(?P<N>.+?)\s*<em>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</em>'
 
     OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
     TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
@@ -80,9 +79,18 @@ class Keep2ShareCc(SimpleHoster):
         if m is None:
             self.error(_("Slow-ID pattern not found"))
 
+        slow_id = m.group(1)
+
+        m = re.search(r'<span id="free-download-wait-timer">(\d+?)</span>', self.data)
+        if m is None:
+            self.log_warning(_("Wait time pattren not found, defaulting to 30 seconds"))
+            wait_time = 30
+
+        else:
+            wait_time = m.group(1)
+
         self.data = self.load(pyfile.url,
-                              post={'yt0': '',
-                                    'slow_id': m.group(1)})
+                              post={'slow_id': slow_id})
 
         self.check_errors()
 
@@ -90,9 +98,8 @@ class Keep2ShareCc(SimpleHoster):
         if m is None:
             self.handle_captcha()
 
-            m = re.search(r'<div id="download-wait-timer".*>\s*(\d+).+?</div>', self.data)
-            if m is not None:
-                self.wait(m.group(1))
+            if "$('#free-download-wait-timer')" in self.data:
+                self.wait(wait_time)
 
             # get the uniqueId from the html code
             m = re.search(self.UNIQUE_ID_PATTERN, self.data)
@@ -123,7 +130,7 @@ class Keep2ShareCc(SimpleHoster):
                 inputs.update({'recaptcha_challenge_field': challenge,
                                'recaptcha_response_field': response})
 
-            self.data = self.load(self.fixurl(url),
+            self.data = self.load(urlparse.urljoin(self.pyfile.url, url),
                                   post=inputs)
 
             if 'verification code is incorrect' in self.data:

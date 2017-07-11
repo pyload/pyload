@@ -11,14 +11,13 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.08"
+    __version__ = "1.09"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?\w+)?'
+    __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -36,7 +35,7 @@ class OneFichierCom(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
 
-    URL_REPLACEMENTS = [("http:", "https:")]
+    URL_REPLACEMENTS = [(__pattern__ + '.*', lambda m:"https://1fichier.com/?" + (m.group('ID1') if m.group('ID1') else m.group('ID2')))]
 
     COOKIES = [("1fichier.com", "LG", "en")]
 
@@ -44,7 +43,7 @@ class OneFichierCom(SimpleHoster):
     SIZE_PATTERN = r'>Size :</td>\s*<td.*>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'(?:File not found !\s*<)|(?:>The requested file has been deleted following an abuse request\.<)'
     LINK_PATTERN = r'<a href="(.+?)".*>Click here to download the file</a>'
-    TEMP_OFFLINE_PATTERN = r'Warning ! Without subscription, you can only download one file at|Our services are in maintenance'
+    TEMP_OFFLINE_PATTERN = r'Without subscription, you can only download one file at|Our services are in maintenance'
     PREMIUM_ONLY_PATTERN = r'is not possible to unregistered users|need a subscription'
 
     WAIT_PATTERN = r'>You must wait \d+ minutes'
@@ -97,8 +96,7 @@ class OneFichierCom(SimpleHoster):
         return info
 
     def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form(
-            'action="https://1fichier.com/\?[\w^_]+')
+        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
             return
@@ -110,6 +108,8 @@ class OneFichierCom(SimpleHoster):
 
         self.data = self.load(url, post=inputs)
 
+        self.check_errors()
+
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
@@ -117,7 +117,6 @@ class OneFichierCom(SimpleHoster):
     def handle_premium(self, pyfile):
         self.download(
             pyfile.url,
-            post={
-                'did': 0,
-                'dl_no_ssl': "on"},
+            post={'did': 0,
+                  'dl_no_ssl': "on"},
             disposition=False)  # @TODO: Remove disposition in 0.4.10

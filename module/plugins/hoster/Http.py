@@ -4,12 +4,13 @@ import re
 import urlparse
 
 from ..internal.Hoster import Hoster
+from module.network.HTTPRequest import BadHeader
 
 
 class Http(Hoster):
     __name__ = "Http"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'(?:jd|pys?)://.+'
@@ -28,7 +29,12 @@ class Http(Hoster):
         netloc = urlparse.urlparse(url).netloc
 
         for _i in range(2):
-            self.download(url, ref=False, disposition=True)
+            try:
+                self.download(url, ref=False, disposition=True)
+
+            except BadHeader, e:
+                if e.code not in (401, 403, 404, 410):
+                    raise
 
             if self.req.code in (404, 410):
                 self.offline()

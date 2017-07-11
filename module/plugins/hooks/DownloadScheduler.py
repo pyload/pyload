@@ -9,14 +9,11 @@ from ..internal.Addon import Addon
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "hook"
-    __version__ = "0.27"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
-                  ("timetable",
-                   "str",
-                   "List time periods as hh:mm full or number(kB/s)",
-                   "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
+                  ("timetable", "str", "List time periods as hh:mm full or number(kB/s)", "0:00 full, 7:00 250, 10:00 0, 17:00 150"),
                   ("abort", "bool", "Abort active downloads when start period with speed 0", False)]
 
     __description__ = """Download Scheduler"""
@@ -25,11 +22,22 @@ class DownloadScheduler(Addon):
                    ("stickell", "l.stickell@yahoo.it")]
 
     def activate(self):
+        self.last_timetable = None
         self.update_schedule()
+
+
+    def config_changed(self, category, option, value, section):
+        """Listen for config changes, to trigger a schedule update."""
+        if category == self.__name__ and \
+            option == 'timetable' and \
+            value != self.last_timetable:
+                self.update_schedule(schedule=value)
 
     def update_schedule(self, schedule=None):
         if schedule is None:
             schedule = self.config.get('timetable')
+
+        self.last_timetable = schedule
 
         schedule = re.findall("(\d{1,2}):(\d{2})[\s]*(-?\d+)",
                               schedule.lower().replace("full", "-1").replace("none", "0"))
@@ -51,8 +59,7 @@ class DownloadScheduler(Addon):
 
                 self.set_download_speed(last[3])
 
-                next_time = (
-                    ((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
+                next_time = (((24 + next[0] - now[0]) * 60 + next[1] - now[1]) * 60 + next[2] - now[2]) % 86400
                 self.pyload.scheduler.removeJob(self.cb)
                 self.cb = self.pyload.scheduler.addJob(
                     next_time, self.update_schedule, threaded=False)
@@ -61,11 +68,15 @@ class DownloadScheduler(Addon):
         if speed == 0:
             abort = self.config.get('abort')
             self.log_info(
-                _("Stopping download server. (Running downloads will %sbe aborted.)") %
-                '' if abort else _('not '))
+                _("Stopping download server. (Running downloads will be aborted.)")
+                if abort
+                else _("Stopping download server. (Running downloads will not be aborted.)")
+            )
+
             self.pyload.api.pauseServer()
             if abort:
                 self.pyload.api.stopAllDownloads()
+
         else:
             self.pyload.api.unpauseServer()
 
@@ -73,7 +84,11 @@ class DownloadScheduler(Addon):
                 self.log_info(_("Setting download speed to %d kB/s") % speed)
                 self.pyload.config.set('download', 'limit_speed', 1)
                 self.pyload.config.set('download', 'max_speed', speed)
+
             else:
                 self.log_info(_("Setting download speed to FULL"))
                 self.pyload.config.set('download', 'limit_speed', 0)
                 self.pyload.config.set('download', 'max_speed', -1)
+
+            # Make new speed values take effect
+            self.pyload.requestFactory.updateBucket()

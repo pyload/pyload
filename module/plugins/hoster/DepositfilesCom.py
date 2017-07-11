@@ -3,14 +3,14 @@
 import re
 import urllib
 
-from ..captcha.ReCaptcha import ReCaptcha
+from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster
 
 
 class DepositfilesCom(SimpleHoster):
     __name__ = "DepositfilesCom"
     __type__ = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(depositfiles\.com|dfiles\.(eu|ru))(/\w{1,3})?/files/(?P<ID>\w+)'
@@ -25,22 +25,24 @@ class DepositfilesCom(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("spoob", "spoob@pyload.org"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
     NAME_PATTERN = r'<script type="text/javascript">eval\( unescape\(\'(?P<N>.*?)\''
-    SIZE_PATTERN = r': <b>(?P<S>[\d.,]+)&nbsp;(?P<U>[\w^_]+)</b>'
+    SIZE_PATTERN = r'>File size: <b>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</b>'
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
+    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
     NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
                          (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://dfiles.eu/files/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://depositfiles.com/files/\g<ID>")]
 
-    COOKIES = [("dfiles.eu", "lang_current", "en")]
+    COOKIES = [("depositfiles.com", "lang_current", "en")]
 
     WAIT_PATTERN = r'(?:download_waiter_remain">|html_download_api-limit_interval">|>Please wait|>Try in).+'
     ERROR_PATTER = r'File is checked, please try again in a minute'
 
-    LINK_FREE_PATTERN = r'<form id="downloader_file_form" action="(http://.+?\.(dfiles\.eu|depositfiles\.com)/.+?)" method="post"'
+    LINK_FREE_PATTERN = r'<form id="downloader_file_form" action="(https?://.+?)" method="post"'
     LINK_PREMIUM_PATTERN = r'class="repeat"><a href="(.+?)"'
     LINK_MIRROR_PATTERN = r'class="repeat_mirror"><a href="(.+?)"'
 
@@ -52,22 +54,24 @@ class DepositfilesCom(SimpleHoster):
         m = re.search(r"var fid = '(\w+)';", self.data)
         if m is None:
             self.retry(wait=5)
+
         params = {'fid': m.group(1)}
         self.log_debug("FID: %s" % params['fid'])
 
-        self.check_errors()
+        self.data = self.load("https://depositfiles.com/get_file.php", get=params)
 
-        self.captcha = ReCaptcha(pyfile)
-        captcha_key = self.captcha.detect_key()
-        if captcha_key is None:
-            return
+        m = re.search(r'ACPuzzleKey = \'(.*?)\'', self.data)
+        if m is not None:
+            self.captcha = SolveMedia(pyfile)
+            captcha_key = m.group(1)
+            params['acpuzzle'] = 1
+            params['response'], params['challenge'] = self.captcha.challenge(captcha_key)
 
-        self.data = self.load("https://dfiles.eu/get_file.php", get=params)
+        else:
+            self.log_error(_("Captcha pattern not found"))
+            self.fail(_("Captcha pattern not found"))
 
-        if '<input type=button value="Continue" onclick="check_recaptcha' in self.data:
-            params['response'], params[
-                'challenge'] = self.captcha.challenge(captcha_key)
-            self.data = self.load("https://dfiles.eu/get_file.php", get=params)
+        self.data = self.load("https://depositfiles.com/get_file.php", get=params)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:

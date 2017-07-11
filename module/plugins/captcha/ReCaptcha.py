@@ -27,7 +27,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.35'
+    __version__ = '0.36'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -37,8 +37,8 @@ class ReCaptcha(CaptchaService):
                    ("Arno-Nymous", None),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])([\w\-]+)'
-    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])([\w\-]+)'
+    KEY_V1_PATTERN = r'(?:recaptcha(?:/api|\.net)/(?:challenge|noscript)\?k=|Recaptcha\.create\s*\(\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
+    KEY_V2_PATTERN = r'(?:data-sitekey=["\']|["\']sitekey["\']\s*:\s*["\'])((?:[\w\-]|%[0-9a-fA-F]{2})+)'
 
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
@@ -51,7 +51,7 @@ class ReCaptcha(CaptchaService):
             self.KEY_V1_PATTERN,
             html)
         if m is not None:
-            self.key = m.group(1).strip()
+            self.key = urllib.unquote(m.group(1).strip())
             self.log_debug("Key: %s" % self.key)
             return self.key
         else:
