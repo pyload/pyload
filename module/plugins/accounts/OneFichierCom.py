@@ -12,20 +12,21 @@ from ..internal.Account import Account
 class OneFichierCom(Account):
     __name__ = "OneFichierCom"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __description__ = """1fichier.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    VALID_UNTIL_PATTERN = r'Your Premium offer subscription is valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)'
+    VALID_UNTIL_PATTERN = r'valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)<'
 
     def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = -1
-        premium = None
+        premium = False
 
         html = self.load("https://1fichier.com/console/abo.pl")
 
@@ -44,15 +45,15 @@ class OneFichierCom(Account):
                 premium = True
 
         return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium or False}
+                'trafficleft': trafficleft,
+                'premium': premium}
 
     def signin(self, user, password, data):
-        self.req.http.c.setopt(
-            pycurl.REFERER,
-            "https://1fichier.com/login.pl?lg=en")
+        login_url = "https://1fichier.com/login.pl?lg=en"
 
         try:
-            html = self.load("https://1fichier.com/login.pl?lg=en",
+            html = self.load(login_url,
+                             ref=login_url,
                              post={'mail': user,
                                    'pass': password,
                                    'It': "on",
