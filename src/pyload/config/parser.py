@@ -65,9 +65,9 @@ class ConfigOption(object):
         self.type = None
         self.value = None
         self.default = None
-        self.allowed_values = None
         self.label = None
         self.desc = None
+        self.allowed_values = ()
 
         self._set_type(input_type)
         self._set_value(value)
@@ -89,10 +89,11 @@ class ConfigOption(object):
         self.value = self.default = self._normalize_value(value)
 
     def _set_allowed(self, allowed):
-        values = ()
         if allowed:
             values = [self._normalize_value(v) for v in allowed]
-        self.allowed_values = range(*values)
+            self.allowed_values = range(*values)
+        else:
+            self.allowed_values = ()
 
     def _normalize_value(self, value):
         return self._convert_map[self.type](value)
@@ -108,17 +109,13 @@ class ConfigOption(object):
 
     def set(self, value, store=True):
         norm_value = self._normalize_value(value)
-        if self.allowed_values:
-            if norm_value not in self.allowed_values:
-                raise InvalidValueError(value)
+        if norm_value not in self.allowed_values:
+            raise InvalidValueError(value)
         if self.value == norm_value:
             return None
         self.value = norm_value
         if store:
             self.__parser.store()
-
-    # def __str__(self):
-        # pass
 
 
 class ConfigSection(InscDict):
@@ -155,8 +152,11 @@ class ConfigSection(InscDict):
     def update(self, iterable):
         if ismapping(iterable):
             iterable = iterable.items()
-        config = (
-            (name, self._to_configentry(value)) for name, value in iterable)
+
+        config = [
+            (name, self._to_configentry(value))
+            for name, value in iterable
+        ]
         InscDict.update(self, config)
 
     def is_section(self, name):
