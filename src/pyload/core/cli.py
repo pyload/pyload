@@ -95,23 +95,28 @@ def parse_args(argv=None):
             '-h', '--help', action='help',
             help=autored("Show this help message and exit"))
 
-    for prsr in (pg, sp_start, sp_stop, sp_restart, sp_status):
-        profile_help = ''.join(
+    for prsr in (pg, sp_start, sp_quit, sp_restart, sp_status):
+        profile_help = ''.join((
             autored("Profile name to use ("),
             autoyellow("`default`"),
-            autored(" if missing)"))
+            autored(" if missing)"),
+        ))
         configdir_help = autored("Change path of config directory")
         prsr.add_argument('-p', '--profile', help=profile_help)
         prsr.add_argument('-c', '--configdir', help=configdir_help)
 
     for prsr in (pg, sp_start, sp_restart):
         tmpdir_help = autored("Change path of temp files directory")
-        debug_help = ''.join(autored("Enable debug mode ("), autoyellow(
-            "`-dd`"), autored(" for extended debug)"))
-        restore_help = ''.join(
+        debug_help = ''.join((
+            autored("Enable debug mode ("),
+            autoyellow("`-dd`"),
+            autored(" for extended debug)"),
+        ))
+        restore_help = ''.join((
             autored("Restore default login credentials "),
             autoyellow("`admin|pyload`"),
-            autored(")"))
+            autored(")"),
+        ))
         daemon_help = autored("Run as daemon")
         prsr.add_argument('-t', '--tmpdir', help=tmpdir_help)
         prsr.add_argument('-d', '--debug', action='count', help=debug_help)
