@@ -16,27 +16,27 @@ def _gen_session_defaults():
     profile_section = (
         ('path', ('option', None, 'Path', None, None, InputType.Folder)),
         ('pid', ('option', None, 'PID', None, None, InputType.Int)),
-        ('ctime', ('option', None, 'CTime', None, None, InputType.Float))
+        ('ctime', ('option', None, 'CTime', None, None, InputType.Float)),
     )
     cache_section = (
-        ('path', ('option', None, 'Path', None, None, InputType.Folder))
+        ('path', ('option', None, 'Path', None, None, InputType.Folder)),
     )
     log_section = (
         ('path', ('option', None, 'Path', None, None, InputType.Folder)),
-        ('name', ('option', None, 'Name', None, None, InputType.Str))
+        ('name', ('option', None, 'Name', None, None, InputType.Str)),
     )
 
     current_config = (
         ('id', ('option', None, 'ID', None, None, InputType.Float)),
         ('profile', ('section', profile_section, 'Profile', None)),
         ('cache', ('section', cache_section, 'Cache', None)),
-        ('log', ('section', log_section, 'Logging', None))
+        ('log', ('section', log_section, 'Logging', None)),
     )
     previous_config = deepcopy(current_config)
 
     defaults = (
         ('current', ('section', current_config, 'Current', None)),
-        ('previous', ('section', previous_config, 'Previous', None))
+        ('previous', ('section', previous_config, 'Previous', None)),
     )
     return defaults
 
