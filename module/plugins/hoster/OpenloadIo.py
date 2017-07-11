@@ -11,14 +11,13 @@ from ..internal.SimpleHoster import SimpleHoster
 class OpenloadIo(SimpleHoster):
     __name__ = "OpenloadIo"
     __type__ = "hoster"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -59,8 +58,10 @@ class OpenloadIo(SimpleHoster):
         file_id = self.info['pattern']['ID']
 
         while True:
-            ticket_json = self._load_json(
-                self._DOWNLOAD_TICKET_URI_PATTERN % file_id)
+            ticket_json = self._load_json(self._DOWNLOAD_TICKET_URI_PATTERN % file_id)
+
+            if ticket_json['status'] != 200:
+                self.log_error(ticket_json['msg'])
 
             if ticket_json['status'] == 404:
                 self.offline(ticket_json['msg'])
