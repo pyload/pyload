@@ -549,7 +549,7 @@ class Core(Process):
         if not self.is_alive():
             self._register_instance()
             self._register_signals()
-            Process.start()
+            Process.start(self)
         elif not self.running:
             self.log.info(self._("Starting pyLoad ..."))
             self.evm.fire('pyload:starting')
