@@ -15,7 +15,7 @@ def double_decode(m):
 class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/file/.+'
@@ -43,7 +43,11 @@ class FshareVn(SimpleHoster):
         url = urlparse.urljoin(pyfile.url, action)
 
         if not inputs:
-            self.error(_("No FORM"))
+            self.error(_("Free Download form not found"))
+
+        password = self.get_password()
+        if password:
+            inputs['DownloadForm[pwd]'] = password
 
         inputs.update({'ajax': "download-form", 'undefined': "undefined"})
         self.data = self.load(url, post=inputs)
@@ -59,8 +63,21 @@ class FshareVn(SimpleHoster):
             self.fail(err_msg)
 
         elif 'url' not in json_data:
-            self.fail(_("Unexpected response"))
+            if 'DownloadForm_pwd' in json_data:
+                if password:
+                    self.fail(_("Wrong password"))
 
-        self.wait(json_data.get('wait_time', 35))
+                else:
+                    self.fail(_("Download is password protected"))
 
-        self.link = json_data.get('url')
+            else:
+                self.fail(_("Unexpected response"))
+
+        wait_time = json_data.get('wait_time', None)
+        wait_time = 35 if wait_time is None else int(wait_time)
+        self.wait(wait_time)
+
+        self.link = json_data['url']
+
+    def handle_premium(self, pyfile):
+        self.handle_free(pyfile)
