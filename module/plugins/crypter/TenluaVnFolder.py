@@ -9,10 +9,10 @@ from ..internal.misc import json
 class TenluaVnFolder(SimpleCrypter):
     __name__ = "TenluaVnFolder"
     __type__ = "crypter"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?tenlua\.vn/folder(?:/.*)?/(?P<ID>[0-9a-f]{16})/'
+    __pattern__ = r'https?://(?:www\.)?tenlua\.vn/folder/.+?/(?P<ID>[0-9a-f]+)/'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),

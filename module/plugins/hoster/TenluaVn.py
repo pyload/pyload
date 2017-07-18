@@ -9,13 +9,16 @@ from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
 
 
+def gen_r():
+    return "0." + "".join([random.choice("0123456789") for x in range(16)])
+
 class TenluaVn(SimpleHoster):
     __name__ = "TenluaVn"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?tenlua\.vn(?!/folder)(?:/.*)?/(?P<ID>[0-9a-f]{16})/'
+    __pattern__ = r'https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
@@ -31,18 +34,51 @@ class TenluaVn(SimpleHoster):
     @classmethod
     def api_response(cls, method, **kwargs):
         kwargs['a'] = method
-        return json.loads(get_url(cls.API_URL, post=json.dumps([kwargs])))
+        sid = kwargs.pop('sid', None)
+        return json.loads(get_url(cls.API_URL,
+                                  get={'sid': sid} if sid is not None else {},
+                                  post=json.dumps([kwargs])))
 
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group('ID')
-        r = "0." + "".join([random.choice("0123456789") for x in range(16)])
-        file_info = cls.api_response("filemanager_builddownload_getinfo", n=file_id, r=r)
+        file_info = cls.api_response("filemanager_builddownload_getinfo", n=file_id, r=gen_r())[0]
 
-        return {'name': file_info[0]['n'],
-                'size': file_info[0]['real_size'],
-                'dlink': file_info[0]['dlink']}
+        return {'name': file_info['n'],
+                'size': file_info['real_size'],
+                'tenlua': {'link': file_info['dlink'],
+                           'password': bool(file_info['passwd'])}}
 
     def handle_free(self, pyfile):
-        self.wait(30)
-        self.link = self.info['dlink']
+        self.handle_download()
+
+    def handle_premium(self, pyfile):
+        sid = self.account.info['data']['sid']
+        self.handle_download(sid)
+
+    def handle_download(self, sid=None):
+        if self.info['tenlua']['password']:
+            password = self.get_password()
+            if password:
+                file_id = self.info['pattern']['ID']
+                args = dict(n=file_id, p=password, r=gen_r())
+                if sid is not None:
+                    args['sid'] = sid
+
+                password_status = self.api_response("filemanager_builddownload_checkpassword", **args)
+                if password_status['status'] == "0":
+                    self.fail(_("Wrong password"))
+
+                else:
+                    url = password_status['url']
+
+            else:
+                self.fail(_("Download is password protected"))
+
+        else:
+            url = self.info['tenlua']['link']
+
+        if sid is None:
+            self.wait(30)
+
+        self.link = url
