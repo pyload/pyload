@@ -192,7 +192,7 @@ def lopen(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
         flags = portalocker.LOCK_EX
     else:
         flags = portalocker.LOCK_EX | portalocker.LOCK_NB
-    with open(filename, mode, buffering, encoding,
+    with _open(filename, mode, buffering, encoding,
               errors, newline, closefd) as fp:
         portalocker.lock(fp, flags)
         yield fp
