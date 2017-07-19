@@ -10,7 +10,7 @@ from pyload.config import ConfigParser
 # from pyload.config.convert import from_string
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 
-from ..datatype.init import InvalidConfigSection
+from pyload.core.datatype.init import InvalidConfigSection
 
 standard_library.install_aliases()
 

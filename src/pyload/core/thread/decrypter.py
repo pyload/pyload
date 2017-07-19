@@ -10,11 +10,11 @@ from future import standard_library
 from pyload.utils.misc import accumulate
 from pyload.utils.purge import uniqify
 
-from ..datatype.init import (DownloadStatus, LinkStatus, ProgressInfo,
-                             ProgressType)
-from ..network.base import Abort, Retry
-from ..network.crypter import Package
-from .plugin import PluginThread
+from pyload.core.datatype.init import (
+    DownloadStatus, LinkStatus, ProgressInfo, ProgressType)
+from pyload.core.datatype.package import Package
+from pyload.core.network.base import Abort, Retry
+from pyload.core.thread.plugin import PluginThread
 
 standard_library.install_aliases()
 

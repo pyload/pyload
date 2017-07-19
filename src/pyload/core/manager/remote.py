@@ -8,7 +8,7 @@ from traceback import print_exc
 
 from future import standard_library
 
-from .base import BaseManager
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 

@@ -16,9 +16,9 @@ from pyload.utils.layer.safethreading import Event
 from pyload.utils.struct.lock import RWLock, lock
 from pyload.utils.web.misc import get_ip
 
-from ..datatype.init import DownloadStatus
-from ..thread import DecrypterThread, DownloadThread
-from .base import BaseManager
+from pyload.core.datatype.init import DownloadStatus
+from pyload.core.manager.base import BaseManager
+from pyload.core.thread import DecrypterThread, DownloadThread
 
 standard_library.install_aliases()
 
