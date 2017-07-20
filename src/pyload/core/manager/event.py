@@ -6,7 +6,7 @@ from builtins import str
 
 from future import standard_library
 
-from .base import BaseManager
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 

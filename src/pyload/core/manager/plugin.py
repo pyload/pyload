@@ -12,9 +12,9 @@ from pkg_resources import resource_filename
 
 from pyload.utils.fs import fullpath
 
-from ..__about__ import __package__
-from ..network.loader import LoaderFactory, PluginLoader
-from .base import BaseManager
+from pyload.core.__about__ import __package__
+from pyload.core.manager.base import BaseManager
+from pyload.core.network.loader import LoaderFactory, PluginLoader
 
 standard_library.install_aliases()
 

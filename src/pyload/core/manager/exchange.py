@@ -12,9 +12,9 @@ from pyload.utils.check import bitset
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 from pyload.utils.struct.lock import lock
 
-from ..datatype.init import Input, InputType
-from ..datatype.task import Interaction, InteractionTask
-from .base import BaseManager
+from pyload.core.datatype.init import Input, InputType
+from pyload.core.datatype.task import Interaction, InteractionTask
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 
