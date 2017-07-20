@@ -15,7 +15,7 @@ def gen_r():
 class TenluaVn(SimpleHoster):
     __name__ = "TenluaVn"
     __type__ = "hoster"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/'
@@ -44,10 +44,15 @@ class TenluaVn(SimpleHoster):
         file_id = re.match(cls.__pattern__, url).group('ID')
         file_info = cls.api_response("filemanager_builddownload_getinfo", n=file_id, r=gen_r())[0]
 
-        return {'name': file_info['n'],
-                'size': file_info['real_size'],
-                'tenlua': {'link': file_info['dlink'],
-                           'password': bool(file_info['passwd'])}}
+        if file_info['type'] == "none":
+            return {'status': 1}
+
+        else:
+            return {'name': file_info['n'],
+                    'size': file_info['real_size'],
+                    'status': 2,
+                    'tenlua': {'link': file_info['dlink'],
+                               'password': bool(file_info['passwd'])}}
 
     def handle_free(self, pyfile):
         self.handle_download()
