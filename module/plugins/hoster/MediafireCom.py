@@ -8,14 +8,13 @@ from ..internal.SimpleHoster import SimpleHoster
 class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
-    __version__ = "0.96"
+    __version__ = "0.97"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -23,11 +22,13 @@ class MediafireCom(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
-    SIZE_PATTERN = r'<li>File size: <span>(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    INFO_PATTERN = r'oFileSharePopup\.ald\(\'.*?\',\'(?P<N>.+?)\',\'(?P<S>[\d.,]+)\s*(?P<U>[\w^_]+)\',\'\',\'(?P<H>.+?)\'\)'
+    SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
+
+    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     OFFLINE_PATTERN = r'class="error_msg_title"'
 
     LINK_FREE_PATTERN = r'kNO = "(.+?)"'
@@ -76,8 +77,7 @@ class MediafireCom(SimpleHoster):
             if not password:
                 self.fail(_("No password found"))
             else:
-                self.log_info(
-                    _("Password protected link, trying: ") + password)
+                self.log_info(_("Password protected link, trying: %s") % password)
                 self.data = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.data:

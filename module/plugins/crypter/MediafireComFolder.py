@@ -9,85 +9,39 @@ from ..internal.misc import json
 class MediafireComFolder(Crypter):
     __name__ = "MediafireComFolder"
     __type__ = "crypter"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?mediafire\.com/(folder/|\?sharekey=|\?\w{13}($|[/#]))'
+    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(?:folder/|\?sharekey=|\?)(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    FOLDER_KEY_PATTERN = r'var afI= \'(\w+)'
-    LINK_PATTERN = r'<meta property="og:url" content="http://www\.mediafire\.com/\?(\w+)"/>'
+    # See http://www.mediafire.com/developers/core_api/
+    API_URL = "http://www.mediafire.com/api/"
 
-    def _get_url(self, url):
-        try:
-            for _i in range(3):
-                header = self.load(url, just_header=True)
+    def api_response(self, method, **kwargs):
+        kwargs['response_format'] = "json"
+        json_data = self.load(self.API_URL + method + ".php", get=kwargs)
+        res = json.loads(json_data)
 
-                for line in header.splitlines():
-                    line = line.lower()
+        if res['response']['result'] != "Success":
+            self.fail(res['response']['message'])
 
-                    if 'location' in line:
-                        url = line.split(':', 1)[1].strip()
-                        if 'error.php?errno=320' in url:
-                            return url, 1
-
-                        elif not url.startswith('http://'):
-                            url = 'http://www.mediafire.com' + url
-
-                        break
-
-                    elif 'content-disposition' in line:
-                        return url, 2
-
-        except Exception:
-            return url, 3
-
-        else:
-            return url, 0
+        return res
 
     def decrypt(self, pyfile):
-        url, result = self._get_url(pyfile.url)
-        self.log_debug("Location (%d): %s" % (result, url))
+        api_data = self.api_response("folder/get_info", folder_key=self.info['pattern']['ID'])
+        pack_name = api_data['response']['folder_info'].get('name') or self.pyfile.package().name
 
-        if result == 0:
-            #: Load and parse html
-            html = self.load(pyfile.url)
-            m = re.search(self.LINK_PATTERN, html)
-            if m is not None:
-                #: File page
-                self.links.append(
-                    "http://www.mediafire.com/file/%s" %
-                    m.group(1))
-            else:
-                #: Folder page
-                m = re.search(self.FOLDER_KEY_PATTERN, html)
-                if m is not None:
-                    folder_key = m.group(1)
-                    self.log_debug("FOLDER KEY: %s" % folder_key)
+        api_data = self.api_response("folder/get_content", folder_key=self.info['pattern']['ID'], content_type="files")
+        pack_links = ["http://www.mediafire.com/file/%s" % _f['quickkey']
+                      for _f in api_data['response']['folder_content']['files']]
 
-                    html = self.load("http://www.mediafire.com/api/folder/get_info.php",
-                                     get={'folder_key': folder_key,
-                                          'response_format': "json",
-                                          'version': 1})
-                    json_data = json.loads(html)
-                    # self.log_info(json_data)
-                    if json_data['response']['result'] == "Success":
-                        for link in json_data['response'][
-                                'folder_info']['files']:
-                            self.links.append(
-                                "http://www.mediafire.com/file/%s" %
-                                link['quickkey'])
-                    else:
-                        self.fail(json_data['response']['message'])
-
-        elif result == 1:
-            self.offline()
-
-        else:
-            self.links.append(url)
+        if pack_links:
+            self.packages.append((pack_name, pack_links, pack_name))
