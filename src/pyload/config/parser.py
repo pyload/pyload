@@ -109,7 +109,7 @@ class ConfigOption(object):
 
     def set(self, value, store=True):
         norm_value = self._normalize_value(value)
-        if norm_value not in self.allowed_values:
+        if self.allowed_values and norm_value not in self.allowed_values:
             raise InvalidValueError(value)
         if self.value == norm_value:
             return None
@@ -344,7 +344,7 @@ class ConfigParser(ConfigSection):
         return config
 
     def _gen_fileconfig(self):
-        config = OrderedDict((self.SELF_SECTION, OrderedDict()))
+        config = OrderedDict({self.SELF_SECTION: OrderedDict()})
         for name, item in self.loweritems():
             if self.is_section(name):
                 fc = self._to_fileconfig(item, name)
