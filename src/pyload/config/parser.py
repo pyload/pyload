@@ -60,7 +60,7 @@ class ConfigOption(object):
 
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
-        self.__parser = parser
+        self.parser = parser
 
         self.type = None
         self.value = None
@@ -115,7 +115,7 @@ class ConfigOption(object):
             return None
         self.value = norm_value
         if store:
-            self.__parser.store()
+            self.parser.store()
 
 
 class ConfigSection(InscDict):
@@ -130,7 +130,7 @@ class ConfigSection(InscDict):
         """
         Constructor.
         """
-        self.__parser = parser
+        self.parser = parser
         self.label = "" if label is None else str(label)
         self.desc = "" if desc is None else str(desc)
         self.update(config or ())
@@ -142,7 +142,7 @@ class ConfigSection(InscDict):
             entry_type = value[0]
             entry_args = value[1:]
             func = ConfigSection if entry_type == 'section' else ConfigOption
-            entry_obj = func(self.__parser, *entry_args)
+            entry_obj = func(self.parser, *entry_args)
         return entry_obj
 
     def reset(self):
@@ -197,10 +197,10 @@ class ConfigSection(InscDict):
             raise AlreadyExistsKeyError(name)
         if label is None:
             label = name.strip().capitalize()
-        section = ConfigSection(self.__parser, config, label, desc)
+        section = ConfigSection(self.parser, config, label, desc)
         self.__setitem__(name, section)
         if store or (store is None and config):
-            self.__parser.store()
+            self.parser.store()
         return section
 
     def add_option(self, name, value, label=None, desc=None,
@@ -210,10 +210,10 @@ class ConfigSection(InscDict):
         if label is None:
             label = name.strip().capitalize()
         option = ConfigOption(
-            self.__parser, value, label, desc, allowed_values, input_type)
+            self.parser, value, label, desc, allowed_values, input_type)
         self.__setitem__(name, option)
         if store:
-            self.__parser.store()
+            self.parser.store()
         return option
 
     def add(self, section, *args, **kwargs):
