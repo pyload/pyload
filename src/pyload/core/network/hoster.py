@@ -10,7 +10,6 @@ from future import standard_library
 
 from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
-from pyload.utils.convert import chunks as _chunks
 from pyload.utils.fs import lopen, makedirs, remove
 
 from .base import Base, Fail, Retry
@@ -21,10 +20,6 @@ standard_library.install_aliases()
 if os.name != 'nt':
     import grp
     import pwd
-
-
-# Import for Hoster Plugins
-chunks = _chunks
 
 
 class Reconnect(Exception):
