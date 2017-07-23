@@ -15,7 +15,6 @@ standard_library.install_aliases()
 
 
 enums = [
-    "Connection",
     "DownloadState",
     "DownloadStatus",
     "FileStatus",
