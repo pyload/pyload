@@ -134,7 +134,7 @@ def parse_args(argv=None):
 
 
 def _setup_console():
-    icon = resource_filename(__package__, 'pyload.ico')
+    icon = resource_filename(__package__, 'icon.ico')
     try:
         set_console_title("pyLoad console")
         set_console_icon(icon)
