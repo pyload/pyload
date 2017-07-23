@@ -68,12 +68,6 @@ class Unauthorized(ExceptionObject):
     __slots__ = []
 
 
-class Connection(IntEnum):
-    All = 0
-    Resumable = 1
-    Secure = 2
-
-
 class DownloadState(IntEnum):
     All = 0
     Finished = 1
