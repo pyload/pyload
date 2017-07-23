@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -39,10 +39,10 @@ class MegaDebridEu(MultiAccount):
         return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        hosters = self.api_response("getHosters")
+        hosters = self.api_response("getHostersList")
 
         if hosters['response_code'] == "ok":
-            return reduce((lambda x, y: x + y), hosters['hosters'])
+            return reduce((lambda x, y: x + y), [_h['domains'] for _h in hosters['hosters']])
 
         else:
             self.log_error(_("Unable to retrieve hoster list"))
@@ -53,9 +53,7 @@ class MegaDebridEu(MultiAccount):
         trafficleft = None
         premium = False
 
-        res = self.api_response(
-            "connectUser", args(
-                login=user, password=password))
+        res = self.api_response("connectUser", args(login=user, password=password))
 
         if res['response_code'] == "ok":
             validuntil = float(res['vip_end'])
@@ -72,13 +70,14 @@ class MegaDebridEu(MultiAccount):
 
     def signin(self, user, password, data):
         try:
-            res = self.api_response(
-                "connectUser", args(
-                    login=user, password=password))
+            res = self.api_response("connectUser", args(login=user, password=password))
 
         except BadHeader, e:
             if e.code == 401:
                 self.fail_login()
+
+            elif e.code == 405:
+                self.fail(_("User is banned"))
 
             else:
                 raise
