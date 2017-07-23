@@ -62,11 +62,11 @@ def quit(profile=None, configdir=None):
 
 
 def start(
-        profile=None, configdir=None, tempdir=None, debug=None, restore=None,
+        profile=None, configdir=None, tmpdir=None, debug=None, restore=None,
         daemon=False):
     profiledir = _mkdprofile(profile, configdir)
 
-    inst = Core(profiledir, tempdir, debug, restore)
+    inst = Core(profiledir, tmpdir, debug, restore)
     inst.start()
 
     if daemon:
