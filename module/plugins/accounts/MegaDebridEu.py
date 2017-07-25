@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -39,36 +39,47 @@ class MegaDebridEu(MultiAccount):
         return json.loads(json_data)
 
     def grab_hosters(self, user, password, data):
-        hosters = self.api_response("getHostersList")
+        hosters = []
+        try:
+            res = self.api_response("getHostersList")
 
-        if hosters['response_code'] == "ok":
-            return reduce((lambda x, y: x + y), [_h['domains'] for _h in hosters['hosters']])
+        except BadHeader, e:
+            if e.code == 405:
+                self.log_error(_("Unable to retrieve hosters list: Banned IP"))
+
+            else:
+                self.log_error(_("Unable to retrieve hosters list: error %s"), e.code)
 
         else:
-            self.log_error(_("Unable to retrieve hoster list"))
-            return []
+            if res['response_code'] == "ok":
+                hosters = reduce((lambda x, y: x + y), [_h['domains'] for _h in res['hosters']])
+
+            else:
+                self.log_error(_("Unable to retrieve hoster list: %s") % res['response_text'])
+
+        return hosters
 
     def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = None
         premium = False
 
-        res = self.api_response("connectUser", args(login=user, password=password))
-
-        if res['response_code'] == "ok":
-            validuntil = float(res['vip_end'])
+        cache_info = data.get('cache_info', {})
+        if user in cache_info:
+            validuntil = float(cache_info[user]['vip_end'])
             premium = validuntil > 0
             trafficleft = -1
 
-        else:
-            self.log_error(res['response_text'])
-
-        data['token'] = res['token']
-
         return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium}
+                'trafficleft': trafficleft,
+                'premium': premium}
 
     def signin(self, user, password, data):
+        cache_info = self.db.retrieve("cache_info", {})
+        if user in cache_info:
+            data['cache_info'] = cache_info
+            self.skip_login()
+
         try:
             res = self.api_response("connectUser", args(login=user, password=password))
 
@@ -77,12 +88,31 @@ class MegaDebridEu(MultiAccount):
                 self.fail_login()
 
             elif e.code == 405:
-                self.fail(_("User is banned"))
+                self.fail(_("Banned IP"))
 
             else:
                 raise
 
         if res['response_code'] != "ok":
+            cache_info.pop(user, None)
+            data['cache_info'] = cache_info
+            self.db.store("cache_info", cache_info)
+
             self.fail_login()
 
-        data['token'] = res['token']
+        else:
+            cache_info[user] = {'vip_end': res['vip_end'],
+                                'token': res['token']}
+            data['cache_info'] = cache_info
+
+            self.db.store("cache_info", cache_info)
+
+    def relogin(self):
+        if self.req:
+            cache_info = self.info['data'].get('cache_info', {})
+
+            cache_info.pop(self.user, None)
+            self.info['data']['cache_info'] = cache_info
+            self.db.store("cache_info", cache_info)
+
+        return MultiAccount.relogin(self)
