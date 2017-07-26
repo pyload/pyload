@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -26,6 +26,8 @@ class MegaDebridEu(MultiAccount):
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
                    ("FoxyDarnec", "goupildavid[AT]gmail[DOT]com")]
+
+    LOGIN_TIMEOUT = -1
 
     API_URL = "https://www.mega-debrid.eu/api.php"
 
