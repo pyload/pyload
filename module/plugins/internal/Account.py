@@ -12,14 +12,15 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.81"
+    __version__ = "0.82"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    LOGIN_TIMEOUT = 30 * 60  #: Relogin account every 30 minutes
+    #: Relogin account every 30 minutes, use -1 for never expire, you have to explicitly call relogin() when needed
+    LOGIN_TIMEOUT = 30 * 60
     TUNE_TIMEOUT = True     #: Automatically tune relogin interval
 
     def __init__(self, manager, accounts):
@@ -49,7 +50,7 @@ class Account(Plugin):
 
         self.sync()
 
-        if self.info['login']['timestamp'] + self.timeout < time.time():
+        if self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time():
             self.log_debug("Reached login timeout for user `%s`" % self.user)
             return False
         else:
