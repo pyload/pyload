@@ -320,7 +320,7 @@ class Core(Process):
         psp = psutil.Process()
         session.set('current', 'id', time.time())
         session.set('current', 'profile', 'path', profiledir)
-        session.set('current', 'profile', 'pid', psp.pid())
+        session.set('current', 'profile', 'pid', psp.pid)
         session.set('current', 'profile', 'ctime', psp.create_time())
 
         self.config = ConfigParser(self.__CONFIGFILENAME, config_defaults)
