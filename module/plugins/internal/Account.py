@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.82"
+    __version__ = "0.83"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -50,7 +50,8 @@ class Account(Plugin):
 
         self.sync()
 
-        if self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time():
+        if self.info['login']['timestamp'] == 0 or \
+                                self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time():
             self.log_debug("Reached login timeout for user `%s`" % self.user)
             return False
         else:
