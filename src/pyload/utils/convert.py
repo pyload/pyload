@@ -53,7 +53,10 @@ def size(value, in_unit, out_unit):
     out_unit += "yte" if out_unit == 'B' else "iB"
 
     try:
-        in_size = getattr(bitmath, in_unit)
+        # Create a bitmath instance representing the input value with its
+        # corresponding unit
+        in_size = getattr(bitmath, in_unit)(value)
+        # Call the instance method to convert it to the output unit
         out_size = getattr(in_size, 'to_' + out_unit)()
         return out_size.value
 
