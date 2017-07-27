@@ -87,15 +87,19 @@ def _get_psutil_process(pid, ctime):
 
 
 def is_running_process(pid=None):
+    ctime = None
     if isiterable(pid):
         pid, ctime = pid
+
     psp = _get_psutil_process(pid, ctime)
     return psp.is_running() and psp.create_time() == ctime
 
 
 def is_zombie_process(pid=None):
+    ctime = None
     if isiterable(pid):
         pid, ctime = pid
+
     try:
         psp = _get_psutil_process(pid, ctime)
         flag = psp.status() is psutil.STATUS_ZOMBIE
@@ -105,8 +109,10 @@ def is_zombie_process(pid=None):
 
 
 def kill_process(pid=None, timeout=None):
+    ctime = None
     if isiterable(pid):
         pid, ctime = pid
+
     try:
         psp = _get_psutil_process(pid, ctime)
         psp.terminate()
@@ -119,6 +125,9 @@ def renice(pid=None, niceness=None):
     """
     Unix notation process nicener.
     """
+    ctime = None
+    value = None
+
     if os.name == 'nt':
         MIN_NICENESS = -20
         MAX_NICENESS = 19
@@ -134,8 +143,10 @@ def renice(pid=None, niceness=None):
         prioval = (normval - MAX_NICENESS) * \
             (len(priocls) - 1) // (MIN_NICENESS - MAX_NICENESS)
         value = priocls[prioval]
+
     if isiterable(pid):
         pid, ctime = pid
+
     psp = _get_psutil_process(pid, ctime)
     psp.nice(value)
 
@@ -146,8 +157,11 @@ def ionice(pid=None, ioclass=None, niceness=None):
     """
     if os.name == 'nt':
         ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
+
+    ctime = None
     if isiterable(pid):
         pid, ctime = pid
+
     psp = _get_psutil_process(pid, ctime)
     psp.ionice(ioclass, niceness)
 
