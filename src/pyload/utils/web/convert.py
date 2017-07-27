@@ -15,7 +15,7 @@ standard_library.install_aliases()
 def splitaddress(address):
     try:
         address = idna.encode(address)
-    except AttributeError:
+    except (AttributeError, idna.IDNAError):
         pass
     sep = ']:' if address.split(':', 2)[2:] else ':'
     parts = address.rsplit(sep, 1)
