@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -100,7 +100,15 @@ class MegaDebridEu(MultiAccount):
             data['cache_info'] = cache_info
             self.db.store("cache_info", cache_info)
 
-            self.fail_login()
+            if res['response_code'] == "UNKNOWN_USER":
+                self.fail_login()
+
+            elif res['response_code'] == "UNALLOWED_IP":
+                self.fail_login(_("Banned IP"))
+
+            else:
+                self.log_error(res['response_text'])
+                self.fail_login(res['response_text'])
 
         else:
             cache_info[user] = {'vip_end': res['vip_end'],
