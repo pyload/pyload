@@ -246,10 +246,10 @@ def makedirs(dirname, mode=0o777, exist_ok=False):
 
 
 def makefile(filepath, mode=0o700, size=None, exist_ok=False):
-    dirname, filename = os.path.split(filepath)
+    dirname, _ = os.path.split(filepath)
     makedirs(dirname, mode, exist_ok=True)
     try:
-        mkfile(filename, size)
+        mkfile(filepath, size)
     except OSError as e:
         if not os.path.isfile(filepath) or not exist_ok:
             raise OSError(e)
