@@ -38,16 +38,16 @@ class AccountManager(BaseManager):
         if info.owner is None:
             raise ValueError("Owner must not be null")
 
-        klass = self.__pyload.pgm.load_class("account", plugin)
+        klass = self.pyload_core.pgm.load_class("account", plugin)
         if not klass:
-            self.__pyload.log.warning(
+            self.pyload_core.log.warning(
                 self._("Account plugin {0} not available").format(plugin))
             raise ValueError("Account plugin {0} not available".format(plugin))
 
         if plugin not in self.accounts:
             self.accounts[plugin] = []
 
-        self.__pyload.log.debug(
+        self.pyload_core.log.debug(
             "Create account {0}:{1}".format(plugin, loginname))
 
         # New account instance
@@ -59,15 +59,15 @@ class AccountManager(BaseManager):
         """
         Loads all accounts available from db.
         """
-        for info, password, options in self.__pyload.db.load_accounts():
+        for info, password, options in self.pyload_core.db.load_accounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
             try:
                 self._create_account(info, password, options)
             except Exception:
-                self.__pyload.log.error(
+                self.pyload_core.log.error(
                     self._("Could not load account {0}").format(info))
-                # self.__pyload.print_exc()
+                # self.pyload_core.print_exc()
 
     def iter_accounts(self):
         """
@@ -88,7 +88,7 @@ class AccountManager(BaseManager):
                   if acc.shared else 0, acc.password, json.dumps(
                       acc.options),
                   acc.aid) for acc in accounts])
-        self.__pyload.db.save_accounts(data)
+        self.pyload_core.db.save_accounts(data)
 
     def get_account(self, aid, plugin, user=None):
         """
@@ -105,13 +105,13 @@ class AccountManager(BaseManager):
         """
         Creates a new account.
         """
-        aid = self.__pyload.db.create_account(plugin, loginname, password, uid)
+        aid = self.pyload_core.db.create_account(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
         account = self._create_account(info, password, {})
         account.schedule_refresh()
         self.save_accounts()
 
-        self.__pyload.evm.fire("account:created", account.to_info_data())
+        self.pyload_core.evm.fire("account:created", account.to_info_data())
         return account
 
     @lock
@@ -127,7 +127,7 @@ class AccountManager(BaseManager):
             self.save_accounts()
             account.schedule_refresh(force=True)
 
-        self.__pyload.evm.fire("account:updated", account.to_info_data())
+        self.pyload_core.evm.fire("account:updated", account.to_info_data())
         return account
 
     @lock
@@ -140,8 +140,8 @@ class AccountManager(BaseManager):
                 # admins may delete accounts
                 if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
-                    self.__pyload.db.remove_account(aid)
-                    self.__pyload.evm.fire("account:deleted", aid, user=uid)
+                    self.pyload_core.db.remove_account(aid)
+                    self.pyload_core.evm.fire("account:deleted", aid, user=uid)
                     break
 
     @lock

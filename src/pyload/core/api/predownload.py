@@ -38,7 +38,7 @@ class PreDownloadApi(BaseApi):
         :param links:
         :return: {plugin: urls}
         """
-        data, crypter = self.__pyload.pgm.parse_urls(links)
+        data, crypter = self.pyload_core.pgm.parse_urls(links)
         plugins = {}
 
         for url, plugin in chain(data, crypter):
@@ -58,7 +58,7 @@ class PreDownloadApi(BaseApi):
         :return: initial set of data as :class:`OnlineCheck` instance
         containing the result id
         """
-        hoster, crypter = self.__pyload.pgm.parse_urls(links)
+        hoster, crypter = self.pyload_core.pgm.parse_urls(links)
 
         # TODO: withhold crypter, derypt or add later
         # initial result does not contain the crypter links
@@ -67,7 +67,7 @@ class PreDownloadApi(BaseApi):
                            pluginname))
                for url, pluginname in hoster]
         data = parse.packs(tmp)
-        rid = self.__pyload.iom.create_result_thread(hoster + crypter)
+        rid = self.pyload_core.iom.create_result_thread(hoster + crypter)
 
         return OnlineCheck(rid, data)
 
@@ -80,7 +80,7 @@ class PreDownloadApi(BaseApi):
         :param data: file content
         :return: :class:`OnlineCheck`
         """
-        storagedir = self.__pyload.config.get('general', 'storage_folder')
+        storagedir = self.pyload_core.config.get('general', 'storage_folder')
         filename = 'tmp_{0}'.format(filename)
         filepath = os.path.join(storagedir, filename)
         with lopen(filepath, mode='wb') as fp:
@@ -100,7 +100,7 @@ class PreDownloadApi(BaseApi):
         if html:
             urls += [x[0] for x in _re_urlmatch.findall(html)]
         if url:
-            page = self.__pyload.req.get_url(url)
+            page = self.pyload_core.req.get_url(url)
             urls += [x[0] for x in _re_urlmatch.findall(page)]
 
         return self.check_links(uniqify(urls))
@@ -114,7 +114,7 @@ class PreDownloadApi(BaseApi):
         :return: `OnlineCheck`, if rid is -1 then there is
         no more data available
         """
-        result = self.__pyload.iom.get_info_result(rid)
+        result = self.pyload_core.iom.get_info_result(rid)
         if result:
             return result.to_api_data()
 

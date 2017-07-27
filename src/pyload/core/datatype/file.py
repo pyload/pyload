@@ -131,7 +131,7 @@ class File(BaseObject):
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
         self.__manager = manager
-        self.__pyload = manager.get_core()
+        self.__pyload = manager.pyload_core
 
         self.fid = int(fid)
         self._name = purge.name(name)
@@ -159,6 +159,10 @@ class File(BaseObject):
         self.abort = False
         self.reconnected = False
         self.statusname = None
+
+    @property
+    def pyload_core(self):
+        return self.__pyload
 
     def get_size(self):
         """
@@ -206,7 +210,7 @@ class File(BaseObject):
         Inits plugin instance.
         """
         if not self.plugin:
-            self.pluginclass = self.__pyload.pgm.get_plugin_class(
+            self.pluginclass = self.pyload_core.pgm.get_plugin_class(
                 "hoster", self.pluginname)
             self.plugin = self.pluginclass(self)
 
@@ -278,7 +282,7 @@ class File(BaseObject):
         """
         Abort file if possible.
         """
-        while self.fid in self.__pyload.tsm.processing_ids():
+        while self.fid in self.pyload_core.tsm.processing_ids():
             with self.lock(shared=True):
                 self.abort = True
                 if self.plugin and self.plugin.req:
@@ -297,7 +301,7 @@ class File(BaseObject):
         is finished with it.
         """
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.__pyload.tsm.processing_ids():
+        if self.id in self.pyload_core.tsm.processing_ids():
             return False
 
         self.set_status("finished")

@@ -22,7 +22,7 @@ class AccountApi(BaseApi):
 
         :return: string list
         """
-        return list(self.__pyload.pgm.get_plugins("account").keys())
+        return list(self.pyload_core.pgm.get_plugins("account").keys())
 
     @requireperm(Permission.Accounts)
     def get_accounts(self):
@@ -31,7 +31,7 @@ class AccountApi(BaseApi):
 
         :return: list of `AccountInfo`
         """
-        accounts = self.__pyload.acm.get_all_accounts()
+        accounts = self.pyload_core.acm.get_all_accounts()
         return [acc.to_info_data() for acc in accounts]
 
     @requireperm(Permission.Accounts)
@@ -41,7 +41,7 @@ class AccountApi(BaseApi):
 
         :param refresh: reload account info
         """
-        account = self.__pyload.acm.get_account(aid, plugin)
+        account = self.pyload_core.acm.get_account(aid, plugin)
 
         # Admins can see and refresh accounts
         if not account:
@@ -60,7 +60,7 @@ class AccountApi(BaseApi):
 
         :return class:`AccountInfo`
         """
-        return self.__pyload.acm.create_account(
+        return self.pyload_core.acm.create_account(
             plugin, loginname, password, self.user.true_primary).to_info_data()
 
     @requireperm(Permission.Accounts)
@@ -70,7 +70,7 @@ class AccountApi(BaseApi):
 
         :return: updated account info
         """
-        return self.__pyload.acm.update_account(
+        return self.pyload_core.acm.update_account(
             aid, plugin, loginname, password, self.user).to_info_data()
 
     @requireperm(Permission.Accounts)
@@ -78,7 +78,7 @@ class AccountApi(BaseApi):
         """
         Update account settings from :class:`AccountInfo`.
         """
-        inst = self.__pyload.acm.get_account(
+        inst = self.pyload_core.acm.get_account(
             account.aid, account.plugin, self.user)
         if not inst:
             return None
@@ -94,4 +94,4 @@ class AccountApi(BaseApi):
 
         :param account: :class:`ÀccountInfo` instance
         """
-        self.__pyload.acm.remove_account(account.aid, account.plugin)
+        self.pyload_core.acm.remove_account(account.aid, account.plugin)

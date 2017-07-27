@@ -120,7 +120,7 @@ class ExchangeManager(BaseManager):
     def remove_task(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
-            self.__pyload.evm.fire("interaction:deleted", task.iid)
+            self.pyload_core.evm.fire("interaction:deleted", task.iid)
 
     @lock
     def get_task_by_id(self, iid):
@@ -159,12 +159,12 @@ class ExchangeManager(BaseManager):
             # notifications are valid for 30h
             task.set_waiting(self.NOTIFICATION_TIMEOUT)
 
-        for plugin in self.__pyload.adm.active_plugins():
+        for plugin in self.pyload_core.adm.active_plugins():
             try:
                 plugin.new_interaction_task(task)
             except Exception:
-                # self.__pyload.print_exc()
+                # self.pyload_core.print_exc()
                 pass
 
         self.tasks[task.iid] = task
-        self.__pyload.evm.fire("interaction:added", task)
+        self.pyload_core.evm.fire("interaction:added", task)

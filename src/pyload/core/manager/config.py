@@ -53,6 +53,10 @@ class ConfigManager(ConfigParser):
     def save(self):
         self.__parser.store()
 
+    @property
+    def pyload_core(self):
+        return self.__pyload
+
     @convertkeyerror
     def get(self, section, option, user=None):
         """
@@ -77,12 +81,12 @@ class ConfigManager(ConfigParser):
 
     def load_values(self, user, section):
         if (user, section) not in self.values:
-            conf = self.__pyload.db.load_config(section, user)
+            conf = self.pyload_core.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
             except ValueError:  # Something did go wrong when parsing
                 self.values[user, section] = {}
-                # self.__pyload.print_exc()
+                # self.pyload_core.print_exc()
 
         return self.values[user, section]
 
@@ -107,14 +111,14 @@ class ConfigManager(ConfigParser):
                     self.save_values(user, section)
 
         if changed:
-            self.__pyload.evm.fire("config:changed", section, option, value)
+            self.pyload_core.evm.fire("config:changed", section, option, value)
         return changed
 
     def save_values(self, user, section):
         if section in self.__parser and user is None:
             self.save()
         elif (user, section) in self.values:
-            self.__pyload.db.save_config(section, json.dumps(
+            self.pyload_core.db.save_config(section, json.dumps(
                 self.values[user, section]), user)
 
     def delete(self, section, user=None):
@@ -126,8 +130,8 @@ class ConfigManager(ConfigParser):
         if (user, section) in self.values:
             del self.values[user, section]
 
-        self.__pyload.db.delete_config(section, user)
-        self.__pyload.evm.fire("config:deleted", section, user)
+        self.pyload_core.db.delete_config(section, user)
+        self.pyload_core.evm.fire("config:deleted", section, user)
 
     # def iter_core_sections(self):
         # return self.__parser.iter_sections()
@@ -136,7 +140,7 @@ class ConfigManager(ConfigParser):
         """
         Yields: section, metadata, values.
         """
-        values = self.__pyload.db.load_configs_for_user(user)
+        values = self.pyload_core.db.load_configs_for_user(user)
 
         # Every section needs to be json decoded
         for section, data in values.items():
@@ -144,7 +148,7 @@ class ConfigManager(ConfigParser):
                 values[section] = json.loads(data) if data else {}
             except ValueError:
                 values[section] = {}
-                # self.__pyload.print_exc()
+                # self.pyload_core.print_exc()
 
         for name, config in self.config.items():
             yield name, config, values[name] if name in values else {}
