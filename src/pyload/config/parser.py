@@ -48,7 +48,9 @@ class ConfigOption(object):
         InputType.Float: lambda x: 0.0 if x is None else float(x),
         InputType.Tristate: lambda x: x if x is None else bool(x),
         InputType.Octal: lambda x: 0 if x is None else oct(x),
-        InputType.Size: lambda x: 0 if x is None else parse.bytesize(x),
+        InputType.Size:
+            lambda x: 0 if x is None else (
+                -1 if str(x) == '-1' else parse.bytesize(x)),
         InputType.Address:
             lambda x: (None, None) if x is None else (
                 endpoint if isendpoint(x) else socket)(x),
