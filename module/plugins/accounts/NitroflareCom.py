@@ -9,7 +9,7 @@ from ..internal.misc import json
 class NitroflareCom(Account):
     __name__ = "NitroflareCom"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __description__ = """Nitroflare.com account plugin"""
@@ -46,5 +46,11 @@ class NitroflareCom(Account):
                                     get={'user': user,
                                          'premiumKey': password}))
 
-        if data['type'] != 'success' or data['result']['status'] == "banned":
+        if data['type'] != 'success':
             self.fail_login()
+
+        elif data['result'].get("status") == "banned":
+            self.fail_login(_("Banned"))
+
+        elif 'recaptchaPublic' in data['result']:
+            self.fail_login(_("Account Login Requires Recaptcha"))
