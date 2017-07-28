@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.08"
+    __version__ = "0.09"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/(?P<ID>\w{12}).html'
@@ -27,7 +27,7 @@ class RockfileEu(SimpleHoster):
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)"'
     SIZE_PATTERN = r'var iniFileSize = (\d+)'
 
-    WAIT_PATTERN = r'<div id="countdown_str".+?>\s*.+?<span id=".+?">(\d+)</span>'
+    WAIT_PATTERN = r'<span id="countdown_str".+?><span .+?>(\d+)</span>'
     DL_LIMIT_PATTERN = r'You have to wait (?:<b>)?(.+?)(?:</b>)? until you can start another download'
 
     TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error"
