@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urllib
 import re
+import urllib
+
+from module.network.HTTPRequest import BadHeader
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
@@ -10,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/(?P<ID>\w{12}).html'
@@ -93,3 +95,12 @@ class RockfileEu(SimpleHoster):
             pyfile.name = urllib.unquote(self.link.split('/')[-1])
 
 
+        try:
+            self.download(self.link)
+
+        except BadHeader, e:
+            if e.code == 503:
+                self.retry()
+
+            else:
+                raise
