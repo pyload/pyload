@@ -14,7 +14,7 @@ def args(**kwargs):
 class MegaDebridEu(MultiAccount):
     __name__ = "MegaDebridEu"
     __type__ = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -33,9 +33,10 @@ class MegaDebridEu(MultiAccount):
 
     def api_response(self, action, get={}, post={}):
         get['action'] = action
-        self.req.http.c.setopt(pycurl.USERAGENT, encode(self.config.get("useragent",
-                                                                        default="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:51.0) Gecko/20100101 Firefox/51.0",
-                                                                        plugin="UserAgentSwitcher")))
+
+        # Better use pyLoad User-Agent so we don't get blocked
+        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/%s" % self.pyload.version))
+
         json_data = self.load(self.API_URL, get=get, post=post)
 
         return json.loads(json_data)
