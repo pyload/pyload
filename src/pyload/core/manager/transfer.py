@@ -81,7 +81,7 @@ class TransferManager(BaseManager):
         else:
             thread = DownloadThread(self)
 
-        thread.put(self.__pyload.files.get_file(info.fid))
+        thread.put(self.pyload_core.files.get_file(info.fid))
         thread.start()
         # wait until it picked up the task
         thread.running.wait()
@@ -94,7 +94,7 @@ class TransferManager(BaseManager):
         Start decrypting of entered data,
         all links in one package are accumulated to one thread.
         """
-        self.__pyload.files.set_download_status(
+        self.pyload_core.files.set_download_status(
             info.fid, DownloadStatus.Decrypting)
         thread = DecrypterThread(
             self,
@@ -154,19 +154,19 @@ class TransferManager(BaseManager):
         """
         self.try_reconnect()
 
-        if (availspace(self.__pyload.config.get('general', 'storage_folder')) <
-                self.__pyload.config.get('general', 'min_storage_size') << 20):
-            self.__pyload.log.warning(
+        if (availspace(self.pyload_core.config.get('general', 'storage_folder')) <
+                self.pyload_core.config.get('general', 'min_storage_size') << 20):
+            self.pyload_core.log.warning(
                 self._("Not enough space left on device"))
             self.pause = True
 
-        # if self.pause or not self.__pyload.api.is_time_download():
+        # if self.pause or not self.pyload_core.api.is_time_download():
             # return False
         if self.pause:
             return False
 
         # at least one thread want reconnect and we are supposed to wait
-        if self.__pyload.config.get(
+        if self.pyload_core.config.get(
                 'reconnect', 'wait') and self.want_reconnect() > 1:
             return False
 
@@ -178,7 +178,7 @@ class TransferManager(BaseManager):
         """
         Load jobs from db and try to assign them.
         """
-        limit = self.__pyload.config.get(
+        limit = self.pyload_core.config.get(
             'connection', 'max_transfers') - len(self.active_downloads())
 
         # check for waiting dl rule
@@ -186,20 +186,20 @@ class TransferManager(BaseManager):
             # increase limit if there are waiting downloads
             limit += min(
                 len(self.waiting_downloads()),
-                self.__pyload.config.get('connection', 'wait') +
-                self.__pyload.config.get('connection', 'max_transfers') -
+                self.pyload_core.config.get('connection', 'wait') +
+                self.pyload_core.config.get('connection', 'max_transfers') -
                 len(self.active_downloads()))
 
         slots = self.get_remaining_plugin_slots()
         occ = tuple(plugin for plugin, v in slots.items() if v == 0)
-        jobs = self.__pyload.files.get_jobs(occ)
+        jobs = self.pyload_core.files.get_jobs(occ)
 
         # map plugin to list of jobs
         plugins = defaultdict(list)
 
         for uid, info in jobs.items():
             # check the quota of each user and filter
-            quota = self.__pyload.api.calc_quota(uid)
+            quota = self.pyload_core.api.calc_quota(uid)
             if -1 < quota < info.size:
                 del jobs[uid]
 
@@ -231,13 +231,13 @@ class TransferManager(BaseManager):
         """
         Start a download or decrypter thread with given file info.
         """
-        plugin = self.__pyload.pgm.find_type(info.download.plugin)
+        plugin = self.pyload_core.pgm.find_type(info.download.plugin)
         # this plugin does not exits
         if plugin is None:
-            self.__pyload.log.error(
+            self.pyload_core.log.error(
                 self._("Plugin '{0}' does not exists").format(
                     info.download.plugin))
-            self.__pyload.files.set_download_status(
+            self.pyload_core.files.set_download_status(
                 info.fid, DownloadStatus.Failed)
             return False
 
@@ -252,7 +252,7 @@ class TransferManager(BaseManager):
         elif plugin == "crypter":
             self.start_decrypter_thread(info)
         else:
-            self.__pyload.log.error(
+            self.pyload_core.log.error(
                 self._("Plugin type '{0}' "
                        "can't be used for downloading").format(plugin))
 
@@ -263,22 +263,22 @@ class TransferManager(BaseManager):
         """
         Checks if reconnect needed.
         """
-        if not self.__pyload.config.get('reconnect', 'activated'):
+        if not self.pyload_core.config.get('reconnect', 'activated'):
             return False
 
         # only reconnect when all threads are ready
         if not (0 < self.want_reconnect() == len(self.downloading)):
             return False
 
-        script = self.__pyload.config.get('reconnect', 'script')
+        script = self.pyload_core.config.get('reconnect', 'script')
         if not os.path.isfile(script):
-            self.__pyload.config.set('reconnect', 'activated', False)
-            self.__pyload.log.warning(self._("Reconnect script not found!"))
+            self.pyload_core.config.set('reconnect', 'activated', False)
+            self.pyload_core.log.warning(self._("Reconnect script not found!"))
             return None
 
         self.reconnecting.set()
 
-        self.__pyload.log.info(self._("Starting reconnect"))
+        self.pyload_core.log.info(self._("Starting reconnect"))
 
         # wait until all thread got the event
         while [x.active.plugin.waiting
@@ -287,31 +287,31 @@ class TransferManager(BaseManager):
 
         old_ip = get_ip()
 
-        self.__pyload.evm.fire("reconnect:before", old_ip)
-        self.__pyload.log.debug("Old IP: {0}".format(old_ip))
+        self.pyload_core.evm.fire("reconnect:before", old_ip)
+        self.pyload_core.log.debug("Old IP: {0}".format(old_ip))
 
         try:
             subprocess.call(
-                self.__pyload.config.get(
+                self.pyload_core.config.get(
                     'reconnect',
                     'script'),
                 shell=True)
         except Exception:
-            self.__pyload.log.warning(
+            self.pyload_core.log.warning(
                 self._("Failed executing reconnect script!"))
-            self.__pyload.config.set('reconnect', 'activated', False)
+            self.pyload_core.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
-            # self.__pyload.print_exc()
+            # self.pyload_core.print_exc()
             return None
 
         time.sleep(1)
         ip = get_ip()
-        self.__pyload.evm.fire("reconnect:after", ip)
+        self.pyload_core.evm.fire("reconnect:after", ip)
 
         if not old_ip or old_ip == ip:
-            self.__pyload.log.warning(self._("Reconnect not successful"))
+            self.pyload_core.log.warning(self._("Reconnect not successful"))
         else:
-            self.__pyload.log.info(
+            self.pyload_core.log.info(
                 self._("Reconnected, new IP: {0}").format(ip))
 
         self.reconnecting.clear()

@@ -81,7 +81,7 @@ class FileManager(BaseManager):
         self.downloadstats = {}  # cached dl stats
         self.queuestats = {}  # cached queue stats
 
-        self.db = self.__pyload.db
+        self.db = self.pyload_core.db
 
     def save(self):
         """
@@ -117,7 +117,7 @@ class FileManager(BaseManager):
         Add links, data = (url, plugin) tuple. Internal method should use API.
         """
         self.db.add_links(data, pid, owner)
-        self.__pyload.evm.fire("package:updated", pid)
+        self.pyload_core.evm.fire("package:updated", pid)
 
     @invalidate
     def add_package(self, name, folder, root, password,
@@ -130,7 +130,7 @@ class FileManager(BaseManager):
             if paused else PackageStatus.Ok, owner)
         pinfo = self.db.get_package_info(pid)
 
-        self.__pyload.evm.fire("package:inserted", pid,
+        self.pyload_core.evm.fire("package:inserted", pid,
                                pinfo.root, pinfo.packageorder)
         return pid
 
@@ -362,7 +362,7 @@ class FileManager(BaseManager):
             if pack.root == root and pack.packageorder > oldorder:
                 pack.packageorder -= 1
 
-        self.__pyload.evm.fire("package:deleted", pid)
+        self.pyload_core.evm.fire("package:deleted", pid)
 
     @lock
     @invalidate
@@ -377,7 +377,7 @@ class FileManager(BaseManager):
         pid = file.packageid
         order = file.fileorder
 
-        if fid in self.__pyload.tsm.processing_ids():
+        if fid in self.pyload_core.tsm.processing_ids():
             file.abort_download()
 
         self.db.delete_file(fid, file.fileorder, file.packageid)
@@ -387,7 +387,7 @@ class FileManager(BaseManager):
             if file.packageid == pid and file.fileorder > order:
                 file.fileorder -= 1
 
-        self.__pyload.evm.fire("file:deleted", fid, pid)
+        self.pyload_core.evm.fire("file:deleted", fid, pid)
 
     @lock
     def release_file(self, fid):
@@ -413,7 +413,7 @@ class FileManager(BaseManager):
         self.db.update_file(file)
 
         # This event is thrown with file or only fid
-        self.__pyload.evm.fire("file:updated", file)
+        self.pyload_core.evm.fire("file:updated", file)
 
     @invalidate
     @lock(shared=True)
@@ -426,7 +426,7 @@ class FileManager(BaseManager):
         else:
             self.db.set_download_status(fid, status)
 
-        self.__pyload.evm.fire("file:updated", fid)
+        self.pyload_core.evm.fire("file:updated", fid)
 
     @invalidate
     def update_package(self, pack):
@@ -434,7 +434,7 @@ class FileManager(BaseManager):
         Updates a package.
         """
         self.db.update_package(pack)
-        self.__pyload.evm.fire("package:updated", pack.pid)
+        self.pyload_core.evm.fire("package:updated", pack.pid)
 
     @invalidate
     def update_file_info(self, data, pid):
@@ -442,7 +442,7 @@ class FileManager(BaseManager):
         Updates file info (name, size, status,[ hash,] url).
         """
         self.db.update_link_info(data)
-        self.__pyload.evm.fire("package:updated", pid)
+        self.pyload_core.evm.fire("package:updated", pid)
 
     def check_all_links_finished(self):
         """
@@ -450,8 +450,8 @@ class FileManager(BaseManager):
         """
         # TODO: user context?
         if not self.db.queuestats()[0]:
-            self.__pyload.adm.fire("download:allFinished")
-            self.__pyload.log.debug("All downloads finished")
+            self.pyload_core.adm.fire("download:allFinished")
+            self.pyload_core.log.debug("All downloads finished")
             return True
 
         return False
@@ -467,8 +467,8 @@ class FileManager(BaseManager):
 
         # TODO: user context?
         if not self.db.processcount(fid):
-            self.__pyload.adm.fire("download:allProcessed")
-            self.__pyload.log.debug("All downloads processed")
+            self.pyload_core.adm.fire("download:allProcessed")
+            self.pyload_core.log.debug("All downloads processed")
             return True
 
         return False
@@ -480,10 +480,10 @@ class FileManager(BaseManager):
         ids = self.db.get_unfinished(file.packageid)
         if not ids or (file.fid in ids and len(ids) == 1):
             if not file.package().set_finished:
-                self.__pyload.log.info(
+                self.pyload_core.log.info(
                     self._("Package finished: {0}").format(
                         file.package().name))
-                self.__pyload.adm.package_finished(file.package())
+                self.pyload_core.adm.package_finished(file.package())
                 file.package().set_finished = True
 
     def reset_count(self):
@@ -504,7 +504,7 @@ class FileManager(BaseManager):
         if pid in self.packages:
             self.packages[pid].set_finished = False
 
-        self.__pyload.evm.fire("package:updated", pid)
+        self.pyload_core.evm.fire("package:updated", pid)
 
     @lock(shared=True)
     @invalidate
@@ -520,7 +520,7 @@ class FileManager(BaseManager):
             file.abort_download()
 
         self.db.restart_file(fid)
-        self.__pyload.evm.fire("file:updated", fid)
+        self.pyload_core.evm.fire("file:updated", fid)
 
     @lock
     @invalidate
@@ -542,7 +542,7 @@ class FileManager(BaseManager):
 
         self.db.commit()
 
-        self.__pyload.evm.fire("package:reordered", pid, position, pinfo.root)
+        self.pyload_core.evm.fire("package:reordered", pid, position, pinfo.root)
 
     def _get_first_fileinfo(self, files):
         # NOTE: Equality between fileorders should never happen...
@@ -587,7 +587,7 @@ class FileManager(BaseManager):
         self._order_files(fids, finfo, position)
 
         self.db.commit()
-        self.__pyload.evm.fire("file:reordered", pid)
+        self.pyload_core.evm.fire("file:reordered", pid)
 
     @lock(shared=True)
     @invalidate
@@ -646,7 +646,7 @@ class FileManager(BaseManager):
         if not urls:
             return None
 
-        self.__pyload.iom.create_info_thread(urls, pid)
+        self.pyload_core.iom.create_info_thread(urls, pid)
 
     @invalidate
     def restart_failed(self):

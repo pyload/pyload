@@ -29,10 +29,14 @@ class PluginThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.__manager = manager  # Thread manager
-        self.__pyload = manager.get_core()
+        self.__pyload = manager.pyload_core
         self._ = self.__pyload._
         # Owner of the thread, every type should set it or overwrite user
         self.owner = owner
+
+    @property
+    def pyload_core(self):
+        return self.__pyload
 
     @property
     def user(self):
@@ -61,7 +65,7 @@ class PluginThread(Thread):
 
     def _gen_reports(self, file):
         si_entries = (
-            ('pyload version', self.__pyload.version),
+            ('pyload version', self.pyload_core.version),
             ('system platform', sys.platform),
             ('system version', sys.version),
             ('system encoding', sys.getdefaultencoding()),
@@ -97,7 +101,7 @@ class PluginThread(Thread):
                 zip.writestr(arcname, data)
 
     def debug_report(self, file):
-        dumpdir = os.path.join(self.__pyload.cachedir,
+        dumpdir = os.path.join(self.pyload_core.cachedir,
                                'plugins', file.pluginname)
         makedirs(dumpdir, exist_ok=True)
 
@@ -112,5 +116,5 @@ class PluginThread(Thread):
         reports = self._gen_reports(file)
         self._zip(filepath, reports, dumpdir)
 
-        self.__pyload.log.info(
+        self.pyload_core.log.info(
             self._('Debug Report written to file {0}').format(filename))

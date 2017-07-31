@@ -28,6 +28,10 @@ class BaseApi(AbstractApi):
         # No instantiating!
         raise Exception
 
+    @property
+    def pyload_core(self):
+        return self.__pyload
+
 
 class AbstractApi(object):
 

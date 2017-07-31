@@ -59,9 +59,9 @@ class PluginManager(BaseManager):
         sys.path.append(os.getcwd())  # TODO: Recheck...
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
-                         self.LOCALROOT, self.__pyload.config),
+                         self.LOCALROOT, self.pyload_core.config),
             PluginLoader(resource_filename(__package__, 'network')),
-            self.ROOT, self.__pyload.config)
+            self.ROOT, self.pyload_core.config)
 
         self.loader.check_versions()
 
@@ -97,7 +97,7 @@ class PluginManager(BaseManager):
 
         for url in urls:
             if not isinstance(url, str):
-                self.__pyload.log.debug(
+                self.pyload_core.log.debug(
                     "Parsing invalid type {0}".format(type(url)))
                 continue
 
@@ -204,10 +204,10 @@ class PluginManager(BaseManager):
                     self.modules[(type_, name)] = module
                     return module
                 except Exception as e:
-                    self.__pyload.log.error(
+                    self.pyload_core.log.error(
                         self._("Error importing {0}: {1}").format(
                             name, str(e)))
-                    # self.__pyload.print_exc()
+                    # self.pyload_core.print_exc()
 
     def load_class(self, type_, name):
         """
@@ -218,7 +218,7 @@ class PluginManager(BaseManager):
             if module:
                 return getattr(module, name)
         except AttributeError:
-            self.__pyload.log.error(
+            self.pyload_core.log.error(
                 self._("Plugin does not define class '{0}'").format(name))
 
     def find_module(self, fullname):

@@ -26,18 +26,18 @@ class CoreApi(BaseApi):
         """
         PyLoad Core version.
         """
-        return self.__pyload.version
+        return self.pyload_core.version
 
     def is_ws_secure(self):
         # needs to use TLS when either requested or webui is also using
         # encryption
-        if not self.__pyload.config.get('ssl', 'activated'):
+        if not self.pyload_core.config.get('ssl', 'activated'):
             return False
 
-        cert = self.__pyload.config.get('ssl', 'cert')
-        key = self.__pyload.config.get('ssl', 'key')
+        cert = self.pyload_core.config.get('ssl', 'cert')
+        key = self.pyload_core.config.get('ssl', 'key')
         if not os.path.isfile(cert) or not os.path.isfile(key):
-            self.__pyload.log.warning(
+            self.pyload_core.log.warning(
                 self._('SSL key or certificate not found'))
             return False
 
@@ -50,21 +50,21 @@ class CoreApi(BaseApi):
 
         :return: `StatusInfo`
         """
-        queue = self.__pyload.files.get_queue_stats()
-        total = self.__pyload.files.get_download_stats()
+        queue = self.pyload_core.files.get_queue_stats()
+        total = self.pyload_core.files.get_download_stats()
 
         server_status = StatusInfo(0,
                                    total[0], queue[0],
                                    total[1], queue[1],
                                    self.is_interaction_waiting(
                                        Interaction.All),
-                                   not self.__pyload.tsm.pause,
-                                   self.__pyload.tsm.pause,
-                                   self.__pyload.config.get(
+                                   not self.pyload_core.tsm.pause,
+                                   self.pyload_core.tsm.pause,
+                                   self.pyload_core.config.get(
                                        'reconnect', 'activated'),
                                    self.get_quota())
 
-        for file in self.__pyload.tsm.active_downloads():
+        for file in self.pyload_core.tsm.active_downloads():
             server_status.speed += file.get_speed()  # bytes/s
 
         return server_status
@@ -76,21 +76,21 @@ class CoreApi(BaseApi):
 
         :rtype: list of :class:`ProgressInfo`
         """
-        return (self.__pyload.tsm.get_progress_list() +
-                self.__pyload.iom.get_progress_list())
+        return (self.pyload_core.tsm.get_progress_list() +
+                self.pyload_core.iom.get_progress_list())
 
     def pause_server(self):
         """
         Pause server: It won't start any new downloads,
         but nothing gets aborted.
         """
-        self.__pyload.tsm.pause = True
+        self.pyload_core.tsm.pause = True
 
     def unpause_server(self):
         """
         Unpause server: New Downloads will be started.
         """
-        self.__pyload.tsm.pause = False
+        self.pyload_core.tsm.pause = False
 
     def toggle_pause(self):
         """
@@ -98,8 +98,8 @@ class CoreApi(BaseApi):
 
         :return: new pause state
         """
-        self.__pyload.tsm.pause ^= True
-        return self.__pyload.tsm.pause
+        self.pyload_core.tsm.pause ^= True
+        return self.pyload_core.tsm.pause
 
     def toggle_reconnect(self):
         """
@@ -107,27 +107,27 @@ class CoreApi(BaseApi):
 
         :return: new reconnect state
         """
-        self.__pyload.config['reconnect']['activated'] ^= True
-        return self.__pyload.config.get('reconnect', 'activated')
+        self.pyload_core.config['reconnect']['activated'] ^= True
+        return self.pyload_core.config.get('reconnect', 'activated')
 
     def avail_space(self):
         """
         Available free space at download directory in bytes.
         """
-        return availspace(self.__pyload.config.get(
+        return availspace(self.pyload_core.config.get(
             'general', 'storage_folder'))
 
     def shutdown(self):
         """
         Clean way to quit pyLoad.
         """
-        self.__pyload._Core__do_shutdown = True
+        self.pyload_core._Core__do_shutdown = True
 
     def restart(self):
         """
         Restart pyload core.
         """
-        self.__pyload._Core__do_restart = True
+        self.pyload_core._Core__do_restart = True
 
     def get_log(self, offset=0):
         """
@@ -139,7 +139,7 @@ class CoreApi(BaseApi):
         # TODO: Rewrite!
         logfile_folder = self.config.get('log', 'logfile_folder')
         if not logfile_folder:
-            logfile_folder = self.__pyload.DEFAULT_LOGDIRNAME
+            logfile_folder = self.pyload_core.DEFAULT_LOGDIRNAME
         logfile_name = self.config.get('log', 'logfile_name')
         if not logfile_name:
             logfile_name = self.DEFAULT_LOGFILENAME
@@ -161,8 +161,8 @@ class CoreApi(BaseApi):
 
         # :return: bool
         # """
-        # start = self.__pyload.config.get('connection', 'start').split(":")
-        # end = self.__pyload.config.get('connection', 'end').split(":")
+        # start = self.pyload_core.config.get('connection', 'start').split(":")
+        # end = self.pyload_core.config.get('connection', 'end').split(":")
         # return compare_time(start, end)
 
     # @requireperm(Permission.All)
@@ -172,7 +172,7 @@ class CoreApi(BaseApi):
 
         # :return: bool
         # """
-        # start = self.__pyload.config.get('reconnect', 'start').split(":")
-        # end = self.__pyload.config.get('reconnect', 'end').split(":")
+        # start = self.pyload_core.config.get('reconnect', 'start').split(":")
+        # end = self.pyload_core.config.get('reconnect', 'end').split(":")
         # return compare_time(start, end) and
-        # self.__pyload.config.get('reconnect', 'activated')
+        # self.pyload_core.config.get('reconnect', 'activated')

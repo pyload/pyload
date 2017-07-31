@@ -24,5 +24,6 @@ class BaseManager(object):
         self._ = core._
         self.lock = Lock()
 
-    def get_core(self):
+    @property
+    def pyload_core(self):
         return self.__pyload
