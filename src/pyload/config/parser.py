@@ -91,11 +91,11 @@ class ConfigOption(object):
         self.value = self.default = self._normalize_value(value)
 
     def _set_allowed(self, allowed):
-        if allowed:
-            values = [self._normalize_value(v) for v in allowed]
-            self.allowed_values = range(*values)
-        else:
+        if not allowed:
             self.allowed_values = ()
+            return
+
+        self.allowed_values = tuple(self._normalize_value(v) for v in allowed)
 
     def _normalize_value(self, value):
         return self._convert_map[self.type](value)
