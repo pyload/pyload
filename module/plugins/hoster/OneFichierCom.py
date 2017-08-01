@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.09"
+    __version__ = "1.10"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -63,12 +63,11 @@ class OneFichierCom(SimpleHoster):
                     redirect = headers['location']
 
                 else:
-                    if 'content-type' in headers and headers[
-                            'content-type'] == "application/octet-stream":
+                    if headers.get('content-type') == "application/octet-stream":
                         if "filename=" in headers.get('content-disposition'):
                             _name = dict(
-                                _i.split("=") for _i in map(str.strip, headers[
-                                    'content-disposition'].split(";"))[1:])
+                                _i.split("=") for _i in
+                                map(str.strip, headers['content-disposition'].split(";"))[1:])
                             name = _name['filename'].strip("\"'")
                         else:
                             name = url
@@ -99,10 +98,17 @@ class OneFichierCom(SimpleHoster):
         url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
+            self.log_error(_("Free download form not found"))
             return
 
         if "pass" in inputs:
-            inputs['pass'] = self.get_password()
+            password = self.get_password()
+
+            if password:
+                inputs['pass'] = password
+
+            else:
+                self.fail(_("Download is password protected"))
 
         inputs['dl_no_ssl'] = "on"
 
