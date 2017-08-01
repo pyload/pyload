@@ -454,9 +454,9 @@ class Core(Process):
             self._setup_language()
             self._setup_permissions()
             self._init_database()
+            self._init_managers()
             self._init_requests()
             self._init_api()
-            self._init_managers()
 
             self._show_info()
             self._setup_storage()
