@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/(?P<ID>\w{12}).html'
@@ -32,7 +32,8 @@ class RockfileEu(SimpleHoster):
     WAIT_PATTERN = r'<span id="countdown_str".+?><span .+?>(\d+)</span>'
     DL_LIMIT_PATTERN = r'You have to wait (?:<b>)?(.+?)(?:</b>)? until you can start another download'
 
-    TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error"
+    OFFLINE_PATTERN = r'File Not Found'
+    TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error|You have reached the download limit"
 
     LINK_FREE_PATTERN = r'href="(http://.+?\.rfservers\.eu.+?)"'
 
@@ -44,15 +45,6 @@ class RockfileEu(SimpleHoster):
         self.resume_download = True
 
     def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form("action=''")
-
-        if not inputs:
-            self.error("Free download form not found")
-
-        self.data = self.load(pyfile.url, post=inputs)
-
-        self.check_errors()
-
         url, inputs = self.parse_html_form('name="F1"')
         if not inputs:
             self.error("Form F1 not found")
