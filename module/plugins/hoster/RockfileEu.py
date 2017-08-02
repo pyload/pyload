@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?rockfile\.eu/(?P<ID>\w{12}).html'
@@ -45,6 +45,12 @@ class RockfileEu(SimpleHoster):
         self.resume_download = True
 
     def handle_free(self, pyfile):
+        url, inputs = self.parse_html_form("action=''")
+
+        if inputs:
+            self.data = self.load(pyfile.url, post=inputs)
+            self.check_errors()
+
         url, inputs = self.parse_html_form('name="F1"')
         if not inputs:
             self.error("Form F1 not found")
