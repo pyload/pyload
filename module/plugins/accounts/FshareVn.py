@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -38,7 +38,7 @@ class FshareVn(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is not None:
             premium = True
-            validuntil = time.mktime(time.strptime(m.group(1), '%d-%m-%Y'))
+            validuntil = time.mktime(time.strptime(m.group(1) + " 23:59:59", '%d-%m-%Y %H:%M:%S'))
 
         else:
             premium = False
