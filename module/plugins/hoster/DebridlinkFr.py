@@ -16,7 +16,7 @@ def args(**kwargs):
 class DebridlinkFr(MultiHoster):
     __name__ = "DebridlinkFr"
     __type__ = "hoster"
-    __version__ = "0.05"
+    __version__ = "0.06"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -76,5 +76,5 @@ class DebridlinkFr(MultiHoster):
                                'maxLink': "Limitation of number links per day reached",
                                'maxLinkHost': "Limitation of number links per day for this host reached"}.get(err_code)
 
-                self.log_error(err_message or "Unknown error: `%s`" % err_code)
+                self.fail(err_message or "Unknown error: `%s`" % err_code)
 
