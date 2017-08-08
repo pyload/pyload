@@ -431,8 +431,8 @@ class Core(Process):
     def _start_plugins(self):
         # TODO: Move to accountmanager
         self.log.info(self._("Activating accounts ..."))
-        self.acm.get_account_infos()
-        # self.scheduler.enter(0, 0, self.acm.get_account_infos)
+        self.acm.load_accounts()
+        # self.scheduler.enter(0, 0, self.acm.load_accounts)
         self.adm.activate_addons()
 
     def _show_info(self):
