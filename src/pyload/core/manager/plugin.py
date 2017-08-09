@@ -60,8 +60,9 @@ class PluginManager(BaseManager):
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
                          self.LOCALROOT, self.pyload_core.config),
-            PluginLoader(resource_filename(__package__, 'network')),
-            self.ROOT, self.pyload_core.config)
+            PluginLoader(resource_filename(__package__, 'network'),
+                         self.ROOT, self.pyload_core.config),
+        )
 
         self.loader.check_versions()
 
