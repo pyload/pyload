@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -22,8 +22,6 @@ class MultiAccount(Account):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
-    PERIODICAL_INTERVAL = 1  #: 1 hour
 
     DOMAIN_REPLACEMENTS = [(r'180upload\.com', "hundredeightyupload.com"),
                            (r'bayfiles\.net', "bayfiles.com"),
@@ -60,7 +58,7 @@ class MultiAccount(Account):
         self.pluginmodule = None
         self.plugintype = None
 
-        self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
+        self.fail_count = 0
 
         self.init_plugin()
 
@@ -71,6 +69,8 @@ class MultiAccount(Account):
             self.pluginmodule = self.pyload.pluginManager.loadModule(self.plugintype, self.classname)
             self.pluginclass = self.pyload.pluginManager.loadClass(self.plugintype, self.classname)
 
+            self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
+
             interval = self.config.get('mh_interval', 12) * 60 * 60
             self.periodical.start(interval, threaded=True, delay=2)
 
@@ -78,28 +78,7 @@ class MultiAccount(Account):
             self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
 
     def plugins_updated(self, type_plugins):
-        if not self.info['login']['valid']:
-            if self.info['data'].get('hosters'):
-                self.log_error(_("Could not reload hoster list - invalid account, retry in 5 minutes"))
-
-            else:
-                self.log_error(_("Could not load hoster list - invalid account, retry in 5 minutes"))
-
-            self.periodical.set_interval(5 * 60)
-            return
-
-        if not self.logged:
-            if not self.relogin():
-                if self.info['data'].get('hosters'):
-                    self.log_error(_("Could not reload hoster list - login failed, retry in 5 minutes"))
-
-                else:
-                    self.log_error(_("Could not load hoster list - login failed, retry in 5 minutes"))
-
-                self.periodical.set_interval(5 * 60)
-                return
-
-        self._override()
+        self.reactivate()
 
     def replace_domains(self, list):
         for r in self.DOMAIN_REPLACEMENTS:
@@ -144,43 +123,7 @@ class MultiAccount(Account):
         raise NotImplementedError
 
     def periodical_task(self):
-        if self.info['data'].get('hosters'):
-            self.log_info(_("Reloading hoster list for user `%s`...") % self.user)
-
-        else:
-            self.log_info(_("Loading hoster list for user `%s`...") % self.user)
-
-        if not self.info['login']['valid']:
-            if self.info['data'].get('hosters'):
-                self.log_error(_("Could not reload hoster list - invalid account, retry in 5 minutes"))
-
-            else:
-                self.log_error(_("Could not load hoster list - invalid account, retry in 5 minutes"))
-
-            self.periodical.set_interval(5 * 60)
-            return
-
-        if not self.logged:
-            if not self.relogin():
-                if self.info['data'].get('hosters'):
-                    self.log_error(_("Could not reload hoster list - login failed, retry in 5 minutes"))
-
-                else:
-                    self.log_error(_("Could not reload hoster list - login failed, retry in 5 minutes"))
-
-                self.periodical.set_interval(5 * 60)
-                return
-
-        hosters = self._grab_hosters()
-        if hosters:
-            self.log_debug("Hoster list for user `%s`: %s" % (self.user, hosters))
-
-            self._override()
-
-            self.periodical.set_interval(self.config.get('mh_interval', 12) * 60 * 60)
-
-        else:
-            self.log_error(_("Failed to load hoster list for user `%s`") % self.user)
+        self.reactivate(refresh=True)
 
     def _override(self):
         prev_supported = self.supported
@@ -246,7 +189,7 @@ class MultiAccount(Account):
                                                        for x in plugins)
 
             if hasattr(self.pluginclass, "__pattern__") and \
-                    isinstance(self.pluginclass.__pattern__, basestring) and\
+                    isinstance(self.pluginclass.__pattern__, basestring) and \
                             "://" in self.pluginclass.__pattern__:
                 pattern = r'%s|%s' % (self.pluginclass.__pattern__, pattern)
 
@@ -270,8 +213,7 @@ class MultiAccount(Account):
                 time.sleep(60)
 
         else:
-            self.log_warning(_("No hoster list retrieved, will retry in %s hour(s)") % self.PERIODICAL_INTERVAL)
-            self.periodical.set_interval(self.PERIODICAL_INTERVAL * 60 * 60)
+            self.log_warning(_("No hoster list retrieved"))
             return []
 
         try:
@@ -303,24 +245,110 @@ class MultiAccount(Account):
             hdict.pop('new_module', None)
             hdict.pop('new_name', None)
 
+
+    def reactivate(self, refresh=False):
+        reloading = self.info['data'].get('hosters') is not None
+        if not self.info['login']['valid']:
+            self.fail_count += 1
+            if self.fail_count < 3:
+                if reloading:
+                    self.log_error(_("Could not reload hoster list - invalid account, retry in 5 minutes"))
+
+                else:
+                    self.log_error(_("Could not load hoster list - invalid account, retry in 5 minutes"))
+
+                self.periodical.set_interval(5 * 60)
+
+            else:
+                if reloading:
+                    self.log_error(_("Could not reload hoster list - invalid account, deactivating"))
+
+                else:
+                    self.log_error(_("Could not load hoster list - invalid account, deactivating"))
+
+                self.deactivate()
+
+            return
+
+        if not self.logged:
+            if not self.relogin():
+                self.fail_count += 1
+                if self.fail_count < 3:
+                    if reloading:
+                        self.log_error(_("Could not reload hoster list - login failed, retry in 5 minutes"))
+
+                    else:
+                        self.log_error(_("Could not load hoster list - login failed, retry in 5 minutes"))
+
+                    self.periodical.set_interval(5 * 60)
+
+                else:
+                    if reloading:
+                        self.log_error(_("Could not reload hoster list - login failed, deactivating"))
+
+                    else:
+                        self.log_error(_("Could not load hoster list - login failed, deactivating"))
+
+                    self.deactivate()
+
+                return
+
+        self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
+
+        if refresh or not reloading:
+            hosters = self._grab_hosters()
+            if hosters:
+                self.log_debug("Hoster list for user `%s`: %s" % (self.user, hosters))
+
+            else:
+                self.fail_count += 1
+                if self.fail_count < 3:
+                    self.log_error(_("Failed to load hoster list for user `%s`, retry in 5 minutes") % self.user)
+                    self.periodical.set_interval(5 * 60)
+
+                else:
+                    self.log_error(_("Failed to load hoster list for user `%s`, deactivating") % self.user)
+                    self.deactivate()
+
+                return
+
+        if self.fail_count:
+            self.fail_count = 0
+            interval = self.config.get('mh_interval', 12) * 60 * 60
+            self.periodical.set_interval(interval)
+
+        self._override()
+
     def deactivate(self):
         """
         Remove override for all plugins.
         """
         self.log_info(_("Reverting back to default hosters"))
 
-        self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
+        try:
+            self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
+
+        except ValueError:
+            pass
+
         self.periodical.stop()
 
-        self.log_debug("Unload: %s" % ", ".join(self.supported))
-        for plugin in self.supported:
-            self.unload_plugin(plugin)
+        self.fail_count = 0
+
+        if self.supported:
+            self.log_debug("Unload: %s" % ", ".join(self.supported))
+            for plugin in self.supported:
+                self.unload_plugin(plugin)
 
         #: Reset pattern
         hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
 
         hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
         hdict['re'] = re.compile(hdict['pattern'])
+
+    def updateAccounts(self, user, password=None, options={}):
+        Account.updateAccounts(self, user, password, options)
+        self.reactivate()
 
     def removeAccount(self, user):
         self.deactivate()
