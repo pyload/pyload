@@ -34,7 +34,7 @@ def _mkdprofile(profile=None, rootdir=None):
     return profiledir
 
 
-def version():
+def version(**kwargs):
     return __version__
 
 
