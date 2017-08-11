@@ -150,7 +150,7 @@ def main(argv=sys.argv[1:]):
     # TODO: Handle --help output
 
     func = getattr(iface, args.command)
-    kwgs = vars(args)
+    kwgs = vars(args).copy()
     kwgs.pop('command', None)
 
     res = func(**kwgs)
