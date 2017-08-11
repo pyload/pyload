@@ -41,7 +41,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -174,6 +174,8 @@ class Periodical(object):
 
         finally:
             self.cb = None
+
+    stopped = property(lambda self: self.cb == None)
 
     def _task(self, threaded):
         try:
