@@ -6,7 +6,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -32,12 +32,12 @@ class PremiumTo(MultiAccount):
     def grab_hosters(self, user, password, data):
         html = self.api_response("hosters", user, password)
         return [x.strip() for x in html.replace("\"", "").split(";") if x] \
-            if self.LOGIN_FAILED_PATTERN not in html else []
+            if self.req.code == 200 else []
 
     def grab_info(self, user, password, data):
         traffic = self.api_response("straffic", user, password)
 
-        if self.LOGIN_FAILED_PATTERN not in traffic:
+        if self.req.code == 200:
             # @TODO: Remove `/ 1024` in 0.4.10
             trafficleft = sum(map(float, traffic.split(';'))) / 1024
             return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
@@ -48,5 +48,5 @@ class PremiumTo(MultiAccount):
     def signin(self, user, password, data):
         authcode = self.api_response("getauthcode", user, password)
 
-        if self.LOGIN_FAILED_PATTERN in authcode:
+        if self.req.code != 200:
             self.fail_login()
