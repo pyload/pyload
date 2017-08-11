@@ -38,7 +38,7 @@ def version(**kwargs):
     return __version__
 
 
-def status(profile=None, configdir=None):
+def status(profile=None, configdir=None, **kwargs):
     profiledir = _mkdprofile(profile, configdir)
     if profiledir not in _pmap:
         return None
@@ -53,7 +53,7 @@ def status(profile=None, configdir=None):
     # return SetupAssistant(configfile, version()).start()
 
 
-def quit(profile=None, configdir=None):
+def quit(profile=None, configdir=None, **kwargs):
     profiledir = _mkdprofile(profile, configdir)
     if profiledir not in _pmap:
         return None
