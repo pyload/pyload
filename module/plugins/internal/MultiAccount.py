@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -51,6 +51,8 @@ class MultiAccount(Account):
                            (r'^0', "zero")]
 
     def init(self):
+        self.need_reactivate = False
+
         self.plugins = []
         self.supported = []
 
@@ -79,6 +81,9 @@ class MultiAccount(Account):
 
     def plugins_updated(self, type_plugins):
         self.reactivate()
+
+    def periodical_task(self):
+        self.reactivate(refresh=True)
 
     def replace_domains(self, list):
         for r in self.DOMAIN_REPLACEMENTS:
@@ -113,6 +118,7 @@ class MultiAccount(Account):
             self.log_warning(_("Error loading hoster list for user `%s`") % self.user, e, trace=True)
 
         finally:
+            self.log_debug("Hoster list for user `%s`: %s" % (self.user, self.info['data']['hosters']))
             return self.info['data']['hosters']
 
     def grab_hosters(self, user, password, data):
@@ -122,15 +128,11 @@ class MultiAccount(Account):
         """
         raise NotImplementedError
 
-    def periodical_task(self):
-        self.reactivate(refresh=True)
-
     def _override(self):
         prev_supported = self.supported
         new_supported = []
         excluded = []
         self.supported = []
-        self.plugins = []
 
         if self.plugintype == "hoster":
             plugin_map = dict((name.lower(), name)
@@ -145,7 +147,7 @@ class MultiAccount(Account):
             account_list = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
                             for name in self.pyload.pluginManager.crypterPlugins.keys()]
 
-        for plugin in self.plugins_cached():
+        for plugin in self.get_plugins():
             name = remove_chars(plugin, "-.")
 
             if name in account_list:
@@ -199,8 +201,8 @@ class MultiAccount(Account):
             hdict['pattern'] = pattern
             hdict['re'] = re.compile(pattern)
 
-    def plugins_cached(self):
-        if self.plugins:
+    def get_plugins(self, cached=True):
+        if cached and self.plugins:
             return self.plugins
 
         for _i in range(5):
@@ -248,6 +250,7 @@ class MultiAccount(Account):
 
     def reactivate(self, refresh=False):
         reloading = self.info['data'].get('hosters') is not None
+
         if not self.info['login']['valid']:
             self.fail_count += 1
             if self.fail_count < 3:
@@ -296,11 +299,7 @@ class MultiAccount(Account):
         self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
 
         if refresh or not reloading:
-            hosters = self._grab_hosters()
-            if hosters:
-                self.log_debug("Hoster list for user `%s`: %s" % (self.user, hosters))
-
-            else:
+            if not self.get_plugins(cached=False):
                 self.fail_count += 1
                 if self.fail_count < 3:
                     self.log_error(_("Failed to load hoster list for user `%s`, retry in 5 minutes") % self.user)
@@ -314,6 +313,7 @@ class MultiAccount(Account):
 
         if self.fail_count:
             self.fail_count = 0
+
             interval = self.config.get('mh_interval', 12) * 60 * 60
             self.periodical.set_interval(interval)
 
@@ -348,7 +348,11 @@ class MultiAccount(Account):
 
     def updateAccounts(self, user, password=None, options={}):
         Account.updateAccounts(self, user, password, options)
-        self.reactivate()
+        if self.need_reactivate:
+            interval = self.config.get('mh_interval', 12) * 60 * 60
+            self.periodical.restart(interval, threaded=True, delay=2)
+
+        self.need_reactivate = True
 
     def removeAccount(self, user):
         self.deactivate()
