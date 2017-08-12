@@ -12,7 +12,7 @@ from ..internal.misc import json
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.24"
+    __version__ = "0.25"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -30,12 +30,14 @@ class UlozTo(Account):
             html = json.loads(self.load("https://ulozto.net/statistiky?do=overviewPaymentsView-ajaxLoad"))['snippets']['snippet-overviewPaymentsView-']
 
         except (ValueError, KeyError):
+            self.log_error(_("Unable to retrieve account information, unexpected response"))
             return {'validuntil': None,
                     'trafficleft': None,
                     'premium': False}
 
         m = re.search(self.INFO_PATTERN, html)
         if m is None:
+            self.log_error(_("Unable to retrieve account information, pattern not found"))
             return {'validuntil': None,
                     'trafficleft': None,
                     'premium': False}
