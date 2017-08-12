@@ -12,7 +12,7 @@ from ..internal.misc import json
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -25,9 +25,13 @@ class UlozTo(Account):
     INFO_PATTERN = r'title="credit in use"><\/span>\s*([\d.,]+) ([\w^_]+)\s*<\/td>\s*<td class="right">([\d.]+)<\/td>'
 
     def grab_info(self, user, password, data):
+        current_millis = int(time.time() * 1000)
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
         try:
-            html = json.loads(self.load("https://ulozto.net/statistiky?do=overviewPaymentsView-ajaxLoad"))['snippets']['snippet-overviewPaymentsView-']
+            html = json.loads(self.load("https://ulozto.net/statistiky"),
+                                        get={'do': "overviewPaymentsView-ajaxLoad",
+                                             '_': current_millis}
+                              )['snippets']['snippet-overviewPaymentsView-']
 
         except (ValueError, KeyError):
             self.log_error(_("Unable to retrieve account information, unexpected response"))
