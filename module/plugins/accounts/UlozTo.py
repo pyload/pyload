@@ -12,7 +12,7 @@ from ..internal.misc import json
 class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""
@@ -39,16 +39,23 @@ class UlozTo(Account):
                     'trafficleft': None,
                     'premium': False}
 
-        m = re.search(self.INFO_PATTERN, html)
-        if m is None:
-            self.log_error(_("Unable to retrieve account information, pattern not found"))
-            return {'validuntil': None,
-                    'trafficleft': None,
-                    'premium': False}
+        if ">You don't have any credit at the moment.<" in html:  #: Free account
+            validuntil = -1
+            trafficleft = -1
+            premium = False
 
-        validuntil = time.mktime(time.strptime(m.group(3) + " 23:59:59", '%d.%m.%Y %H:%M:%S'))
-        trafficleft = self.parse_traffic(m.group(1), m.group(2))
-        premium = True if trafficleft else False
+        else:
+            m = re.search(self.INFO_PATTERN, html)
+            if m is not None:
+                validuntil = time.mktime(time.strptime(m.group(3) + " 23:59:59", '%d.%m.%Y %H:%M:%S'))
+                trafficleft = self.parse_traffic(m.group(1), m.group(2))
+                premium = True if trafficleft else False
+
+            else:
+                self.log_error(_("Unable to retrieve account information, pattern not found"))
+                validuntil = None
+                trafficleft = None
+                premium = False
 
         return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
@@ -56,6 +63,9 @@ class UlozTo(Account):
 
     def signin(self, user, password, data):
         login_page = self.load('https://www.ulozto.net/?do=web-login')
+        if ">Log out<" in login_page:
+            self.skip_login()
+
         action = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token = re.search('_token_" value="(.+?)"', login_page).group(1)
 
