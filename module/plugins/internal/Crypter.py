@@ -7,7 +7,7 @@ from .misc import parse_name, safename
 class Crypter(Base):
     __name__ = "Crypter"
     __type__ = "crypter"
-    __version__ = "0.19"
+    __version__ = "0.20"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -49,9 +49,16 @@ class Crypter(Base):
         """
         Generate new packages from self.links
         """
-        pdict = self.pyload.api.generatePackages(self.links)
-        packages = [(name, links, parse_name(name))
-                    for name, links in pdict.items()]
+        name = self.info['pattern'].get("N")
+        if name is None:
+            links = map(self.fixurl, self.links)
+            pdict = self.pyload.api.generatePackages(links)
+            packages = [(_name, _links, parse_name(_name))
+                        for _name, _links in pdict.items()]
+
+        else:
+            packages = [(name, self.links, parse_name(name))]
+
         self.packages.extend(packages)
 
     def _create_packages(self):
