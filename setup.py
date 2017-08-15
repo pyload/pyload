@@ -288,6 +288,11 @@ NAMESPACE_PACKAGES = [_NAMESPACE]
 OBSOLETES = [_NAMESPACE]
 INSTALL_REQUIRES = get_requires('install')
 SETUP_REQUIRES = get_requires('setup')
+DEPENDENCY_LINKS = [
+    # TODO: Remove this dependency when pyload.requests is indexed in PyPI.
+    # Also, specify the correct required version in the requirement txt files
+    'git+git://github.com/pyload/requests.git#egg=pyload.requests',
+]
 TEST_SUITE = 'nose.collector'
 TESTS_REQUIRE = get_requires('test')
 EXTRAS_REQUIRE = get_requires('extra')
@@ -352,6 +357,7 @@ setup(
     namespace_packages=NAMESPACE_PACKAGES,
     obsoletes=OBSOLETES,
     install_requires=INSTALL_REQUIRES,
+    dependency_links=DEPENDENCY_LINKS,
     setup_requires=SETUP_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     python_requires=PYTHON_REQUIRES,

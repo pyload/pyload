@@ -3,7 +3,7 @@ future
 nose
 pycurl
 pyload.config~=0.6
-pyload.requests~=0.6
+pyload.requests
 pyload.utils2~=0.6
 requests>=1.2.2
 setuptools>=0.6.39
