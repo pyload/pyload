@@ -49,7 +49,7 @@ def _gen_config_defaults():
     general_config = (
         ('language', ('option', None, 'Language',
                       None, (None, 'english'), InputType.Str)),
-        ('storage_folder', ('option', None, 'Storage folder',
+        ('storage_folder', ('option', '.', 'Storage folder',
                             None, None, InputType.Folder)),
         ('min_storage_size', ('option', 1024, 'Min storage space (in MiB)',
                               None, None, InputType.Size)),
