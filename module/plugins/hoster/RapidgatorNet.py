@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "testing"
 
     __pattern__ = r'(http|https)://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
