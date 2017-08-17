@@ -18,7 +18,7 @@ class RapidgatorNet(SimpleHoster):
     __version__ = "0.47"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
+    __pattern__ = r'(http|https)://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
