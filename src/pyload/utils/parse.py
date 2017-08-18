@@ -111,7 +111,7 @@ _RE_SIZE = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 def bytesize(text, unit=None):  # returns integer bytes
     DEFAULT_INPUTUNIT = 'byte'
 
-    m = _RE_SIZE.match(text)
+    m = _RE_SIZE.match(str(text))
     if m is None:
         return None
 
@@ -121,7 +121,7 @@ def bytesize(text, unit=None):  # returns integer bytes
     size = float(m.group('S').replace(',', '.'))
     unit = unit[0].lower()
 
-    return convert.size(size, unit, 'byte')
+    return int(convert.size(size, unit, 'byte'))
 
 
 _TIMEWORDS = ("this", "a", "an", "next")
