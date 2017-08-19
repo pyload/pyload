@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -53,6 +53,7 @@ class RealdebridCom(MultiAccount):
 
         except BadHeader, e:
             if e.code == 401:
+                self.log_error(_("Password for Real-debrid should be the API token - get it from: https://real-debrid.com/apitoken"))
                 self.fail_login()
 
             else:
