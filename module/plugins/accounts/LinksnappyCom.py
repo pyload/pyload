@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -22,7 +22,6 @@ class LinksnappyCom(MultiAccount):
     API_URL = "https://linksnappy.com/api/"
 
     def api_response(self, method, **kwargs):
-        self.log_debug("api_response(%s, %s)" % (self.API_URL + method, kwargs))
         return json.loads(self.load(self.API_URL + method,
                                     get=kwargs))
 
