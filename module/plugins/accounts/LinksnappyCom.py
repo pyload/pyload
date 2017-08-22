@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class LinksnappyCom(MultiAccount):
     __name__ = "LinksnappyCom"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -30,32 +30,35 @@ class LinksnappyCom(MultiAccount):
         return json_data['return'].keys()
 
     def grab_info(self, user, password, data):
+        premium = True
+        validuntil = None
+        trafficleft = None
+
         json_data = self.api_response("USERDETAILS", username=user, password=password)
 
-        self.log_debug("JSON data: %s" % json_data)
-
-        if json_data['error']:
-            return {'premium': False}
-
-        validuntil = json_data['return']['expire']
-
-        if validuntil == "lifetime":
-            validuntil = -1
-
-        elif validuntil == "expired":
-            return {'premium': False}
+        if json_data['status'] != "OK":
+            self.log_error(json_data['error'])
 
         else:
-            validuntil = float(validuntil)
+            validuntil = json_data['return']['expire']
 
-        if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], str):
-            trafficleft = -1
+            if validuntil == "lifetime":
+                validuntil = -1
 
-        else:
-            # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = json_data['return']['trafficleft'] / 1024
+            elif validuntil == "expired":
+                premium = False
 
-        return {'premium': True,
+            else:
+                validuntil = float(validuntil)
+
+            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], basestring):
+                trafficleft = -1
+
+            else:
+                # @TODO: Remove `/ 1024` in 0.4.10
+                trafficleft = float(json_data['return']['trafficleft']) / 1024
+
+        return {'premium': premium,
                 'validuntil': validuntil,
                 'trafficleft': trafficleft}
 
