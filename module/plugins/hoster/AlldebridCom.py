@@ -7,19 +7,15 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.52"
+    __version__ = "0.53"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback",
-                   "bool",
-                   "Fallback to free download if premium fails",
-                   False),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """Alldebrid.com multi-hoster plugin"""
@@ -27,26 +23,21 @@ class AlldebridCom(MultiHoster):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    API_URL = "http://alldebrid.com/apiv2.php"
+
+    def api_response(self, action, **kwargs):
+        kwargs['action'] = action
+        html = self.load(self.API_URL, get=kwargs)
+        return json.loads(html)
+
     def setup(self):
         self.chunk_limit = 16
 
     def handle_premium(self, pyfile):
-        password = self.get_password()
-
-        html = self.load("http://www.alldebrid.com/service.php",
-                         get={'link': pyfile.url,
-                              'json': "true",
-                              'pseudo': self.account.user,
-                              'password': self.account.info['login']['password'],
-                              'pw': password})
-
-        json_data = json.loads(html)
-
-        self.log_debug("Json data", json_data)
+        json_data = self.api_response("unlock", link=pyfile.url, uid=self.account.info['data']['cookie'])
 
         if json_data['error']:
-            if json_data[
-                    'error'] == "This link isn't available on the hoster website.":
+            if json_data['error'] == "This link is not available on the file hoster website":
                 self.offline()
 
             else:
@@ -54,8 +45,6 @@ class AlldebridCom(MultiHoster):
                 self.temp_offline()
 
         else:
-            if pyfile.name and not pyfile.name.endswith('.tmp'):
-                pyfile.name = json_data['filename']
-
+            pyfile.name = json_data['filename']
             pyfile.size = parse_size(json_data['filesize'])
             self.link = json_data['link']

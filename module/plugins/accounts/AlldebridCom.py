@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import time
-import xml.dom.minidom as dom
-
 from ..internal.MultiAccount import MultiAccount
+from ..internal.misc import json
 
 
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -21,35 +19,36 @@ class AlldebridCom(MultiAccount):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://www.alldebrid.com/api.php"
+    API_URL = "http://alldebrid.com/apiv2.php"
 
     def api_response(self, action, **kwargs):
         kwargs['action'] = action
-        return self.load(self.API_URL, get=kwargs)
+        html = self.load(self.API_URL, get=kwargs)
+        return json.loads(html)
 
     def grab_hosters(self, user, password, data):
-        html = self.api_response("get_host")
-        return [x.strip() for x in html.replace("\"", "").split(",") if x]
+        return [x for x in self.api_response("supportedHost", domainsOnly=1) if x]
 
     def grab_info(self, user, password, data):
-        html = self.api_response("info_user", login=user, pw=password)
-        xml = dom.parseString(html)
+        validuntil = -1
+        premium = False
 
-        validuntil = time.time() + int(xml.getElementsByTagName("timestamp")
-                                       [0].childNodes[0].nodeValue)
+        json_data = self.api_response("login", username=user, password=password)
+
+        if json_data['success'] is True:
+            premium = json_data['user']['isPremium']
+            validuntil = json_data['user']['premiumUntil'] or -1
 
         return {'validuntil': validuntil,
                 'trafficleft': -1,
-                'premium': True}
+                'premium': premium}
 
     def signin(self, user, password, data):
-        html = self.api_response("info_user", login=user, pw=password)
+        json_data = self.api_response("login", username=user, password=password)
 
-        if "banned" in html:
-            self.fail_login("Your IP is banned")
+        if json_data['success'] is True:
+            data['cookie'] = json_data['user']['cookie']
 
-        elif "flood" in html:
-            self.fail_login("Failed because of flood")
-
-        elif "login fail" in html:
+        else:
+            self.log_error(json_data['error'])
             self.fail_login()
