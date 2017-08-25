@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.53"
+    __version__ = "0.54"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -23,7 +23,7 @@ class AlldebridCom(MultiHoster):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "http://alldebrid.com/apiv2.php"
+    API_URL = "https://alldebrid.com/apiv2.php"
 
     def api_response(self, action, **kwargs):
         kwargs['action'] = action

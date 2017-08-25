@@ -7,7 +7,7 @@ from ..internal.misc import json
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.36"
+    __version__ = "0.37"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -19,7 +19,7 @@ class AlldebridCom(MultiAccount):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "http://alldebrid.com/apiv2.php"
+    API_URL = "https://alldebrid.com/apiv2.php"
 
     def api_response(self, action, **kwargs):
         kwargs['action'] = action
