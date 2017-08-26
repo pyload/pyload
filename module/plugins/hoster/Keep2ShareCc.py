@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urlparse
 
-from ..captcha.ReCaptcha import ReCaptcha
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL as get_url
+
 from ..internal.SimpleHoster import SimpleHoster
+from ..internal.misc import json
 
 
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -31,110 +32,119 @@ class Keep2ShareCc(SimpleHoster):
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://keep2s.cc/file/\g<ID>")]
 
-    INFO_PATTERN = r'<span class="title-file">\s*(?P<N>.+?)\s*<em>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</em>'
+    API_URL = "https://keep2share.cc/api/v2/"
+    #: See https://github.com/keep2share/api
 
-    OFFLINE_PATTERN = r'File not found or deleted|Sorry, this file is blocked or deleted|Error 404'
-    TEMP_OFFLINE_PATTERN = r'Downloading blocked due to'
+    @classmethod
+    def api_response(cls, method, **kwargs):
+        html = get_url(cls.API_URL + method,
+                       post=json.dumps(kwargs))
+        return json.loads(html)
 
-    LINK_FREE_PATTERN = r'"([^"]+?url.html\?file=.+?)"|window\.location\.href = \'(.+?)\';'
-    LINK_PREMIUM_PATTERN = r'window\.location\.href = \'(.+?)\';'
-    UNIQUE_ID_PATTERN = r"data: {uniqueId: '(?P<uID>\w+)', free: 1}"
+    @classmethod
+    def api_info(cls, url):
+        file_id = re.match(cls.__pattern__, url).group('ID')
+        file_info = cls.api_response("GetFilesInfo", ids=[file_id], extended_info=False)
 
-    CAPTCHA_PATTERN = r'src="(/file/captcha\.html.+?)"'
-
-    WAIT_PATTERN = r'Please wait ([\d:]+) to download this file'
-    TEMP_ERROR_PATTERN = r'>\s*(Download count files exceed|Traffic limit exceed|Free account does not allow to download more than one file at the same time)'
-    ERROR_PATTERN = r'>\s*(Free user can\'t download large files|You no can access to this file|This download available only for premium users|This is private file)'
-
-    def check_errors(self):
-        m = re.search(self.TEMP_ERROR_PATTERN, self.data)
-        if m is not None:
-            self.info['error'] = m.group(1)
-            self.wantReconnect = True
-            self.retry(wait=30 * 60, msg=m.group(0))
-
-        m = re.search(self.ERROR_PATTERN, self.data)
-        if m is not None:
-            errmsg = self.info['error'] = m.group(1)
-            self.error(errmsg)
-
-        m = re.search(self.WAIT_PATTERN, self.data)
-        if m is not None:
-            self.log_debug("Hoster told us to wait for %s" % m.group(1))
-
-            #: String to time convert courtesy of https://stackoverflow.com/questions/10663720
-            ftr = [3600, 60, 1]
-            wait_time = sum(a * b for a, b in zip(ftr,
-                                                  map(int, m.group(1).split(':'))))
-
-            self.wantReconnect = True
-            self.retry(wait=wait_time, msg="Please wait to download this file")
-
-        self.info.pop('error', None)
-        # SimpleHoster.check_errors(self)
-
-    def handle_free(self, pyfile):
-        m = re.search(r'<input type="hidden" name="slow_id" value="(.+?)">', self.data)
-
-        if m is None:
-            self.error(_("Slow-ID pattern not found"))
-
-        slow_id = m.group(1)
-
-        m = re.search(r'<span id="free-download-wait-timer">(\d+?)</span>', self.data)
-        if m is None:
-            self.log_warning(_("Wait time pattren not found, defaulting to 30 seconds"))
-            wait_time = 30
+        if file_info['code'] != 200 or \
+                        len(file_info['files']) == 0 or \
+                        file_info['files'][0].get("is_available", False) is False:
+            return {'status': 1}
 
         else:
-            wait_time = m.group(1)
+            return {'name': file_info['files'][0]['name'],
+                    'size': file_info['files'][0]['size'],
+                    'md5': file_info['files'][0]['md5'],
+                    'access': file_info['files'][0]['access'],
+                    'status': 2 if file_info['files'][0]['is_available'] else 1}
 
-        self.data = self.load(pyfile.url,
-                              post={'slow_id': slow_id})
+    def setup(self):
+        self.resume_download = True
 
-        self.check_errors()
+    def handle_free(self, pyfile):
+        file_id = self.info['pattern']['ID']
 
-        m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m is None:
-            self.handle_captcha()
+        if self.info['access'] == "premium":
+            self.fail(_("File can be downloaded by premium users only"))
 
-            if "$('#free-download-wait-timer')" in self.data:
-                self.wait(wait_time)
+        elif self.info['access'] == "private":
+            self.fail(_("This is a private file"))
 
-            # get the uniqueId from the html code
-            m = re.search(self.UNIQUE_ID_PATTERN, self.data)
-            if m is None:
-                self.error(_("Unique-ID pattern not found"))
+        try:
+            json_data = self.api_response("GetUrl",
+                                          file_id=file_id,
+                                          free_download_key=None,
+                                          captcha_challenge=None,
+                                          captcha_response=None)
+        except BadHeader, e:
+            if e.code == 406:
+                self.log_debug(e.content)
+                for i in range(10):
+                    json_data = self.api_response("RequestCaptcha")
+                    if json_data['code'] != 200:
+                        self.fail(_("Request captcha API failed"))
 
-            self.data = self.load(pyfile.url,
-                                  post={'uniqueId': m.group('uID'),
-                                        'free': '1'})
+                    captcha_response = self.captcha.decrypt(json_data['captcha_url'])
+                    try:
+                        json_data = self.api_response("GetUrl",
+                                                      file_id=file_id,
+                                                      free_download_key=None,
+                                                      captcha_challenge=json_data['challenge'],
+                                                      captcha_response=captcha_response)
 
-            m = re.search(self.LINK_FREE_PATTERN, self.data)
-            if m is None:
-                self.error(_("Free download link not found"))
+                    except BadHeader, e:
+                        if e.code == 406:
+                            json_data = json.loads(e.content)
+                            if json_data['errorCode'] == 31:  #: ERROR_CAPTCHA_INVALID
+                                self.captcha.invalid()
+                                continue
 
-        # if group 1 did not match, check group 2
-        self.link = m.group(1) or m.group(2)
+                            elif json_data['errorCode'] == 42:  #: ERROR_DOWNLOAD_NOT_AVAILABLE
+                                self.captcha.correct()
+                                self.retry(wait=json_data['errors'][0]['timeRemaining'])
 
-    def handle_captcha(self):
-        url, inputs = self.parse_html_form('id="captcha-form"')
-        if inputs is not None:
-            m = re.search(self.CAPTCHA_PATTERN, self.data)
-            if m is not None:
-                captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
-                inputs['CaptchaForm[code]'] = self.captcha.decrypt(captcha_url)
+                            else:
+                                self.fail(json_data['message'])
+
+                        else:
+                            raise
+
+                    else:
+                        self.captcha.correct()
+                        free_download_key = json_data['free_download_key']
+                        break
+
+                else:
+                    self.fail(_("Recaptcha max retries exceeded"))
+
+                self.wait(json_data['time_wait'])
+
+                json_data = self.api_response("GetUrl",
+                                              file_id=file_id,
+                                              free_download_key=free_download_key,
+                                              captcha_challenge=None,
+                                              captcha_response=None)
+
+                if json_data['code'] == 200:
+                    self.link = json_data['url']
+
             else:
-                self.captcha = ReCaptcha(self.pyfile)
-                response, challenge = self.captcha.challenge()
-                inputs.update({'recaptcha_challenge_field': challenge,
-                               'recaptcha_response_field': response})
+                raise
 
-            self.data = self.load(urlparse.urljoin(self.pyfile.url, url),
-                                  post=inputs)
+        else:
+            self.link = json_data['url']
 
-            if 'verification code is incorrect' in self.data:
-                self.retry_captcha()
+    def handle_premium(self, pyfile):
+        file_id = self.info['pattern']['ID']
 
-            else:
-                self.captcha.correct()
+        if self.info['access'] == "private":
+            self.fail(_("This is a private file"))
+
+        json_data = self.api_response("GetUrl",
+                                      file_id=file_id,
+                                      free_download_key=None,
+                                      captcha_challenge=None,
+                                      captcha_response=None,
+                                      auth_token=self.account.info['data']['token'])
+
+        self.link = json_data['url']

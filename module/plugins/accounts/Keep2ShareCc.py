@@ -1,74 +1,56 @@
 # -*- coding: utf-8 -*-
 
-import re
-import time
+from module.network.HTTPRequest import BadHeader
+from module.network.RequestFactory import getURL as get_url
 
 from ..internal.Account import Account
-from ..internal.misc import set_cookie
+from ..internal.misc import json
 
 
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("aeronaut", "aeronaut@pianoguy.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    VALID_UNTIL_PATTERN = r'Premium expires:\s*<b>(.+?)<'
-    TRAFFIC_LEFT_PATTERN = r'Available traffic \(today\):\s*<b><a href="/user/statistic.html">(.+?)<'
+    API_URL = "https://keep2share.cc/api/v2/"
+    #: See https://github.com/keep2share/api
 
-    LOGIN_FAIL_PATTERN = r'Please fix the following input errors'
+    @classmethod
+    def api_response(cls, method, **kwargs):
+        html = get_url(cls.API_URL + method,
+                       post=json.dumps(kwargs))
+        return json.loads(html)
 
     def grab_info(self, user, password, data):
-        validuntil = None
-        trafficleft = -1
-        premium = False
+        json_data = self.api_response("AccountInfo", auth_token=data['token'])
 
-        html = self.load("http://keep2share.cc/site/profile.html")
-
-        m = re.search(self.VALID_UNTIL_PATTERN, html)
-        if m is not None:
-            expiredate = m.group(1).strip()
-            self.log_debug("Expire date: " + expiredate)
-
-            if expiredate == "LifeTime":
-                premium = True
-                validuntil = -1
-            else:
-                try:
-                    validuntil = time.mktime(
-                        time.strptime(expiredate, "%Y.%m.%d"))
-
-                except Exception, e:
-                    self.log_error(e, trace=True)
-
-                else:
-                    premium = True if validuntil > time.mktime(
-                        time.gmtime()) else False
-
-            m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-            if m is not None:
-                try:
-                    trafficleft = self.parse_traffic(m.group(1))
-
-                except Exception, e:
-                    self.log_error(e, trace=True)
-
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium}
+        return {'validuntil': json_data['account_expires'],
+                'trafficleft': json_data['available_traffic'] / 1024,  # @TODO: Remove `/ 1024` in 0.4.10
+                'premium': True}
 
     def signin(self, user, password, data):
-        set_cookie(self.req.cj, "keep2share.cc", "lang", "en")
+        if 'token' in data:
+            try:
+                json_data = self.api_response("test", auth_token=data['token'])
 
-        html = self.load("https://keep2share.cc/login.html",
-                         post={'LoginForm[username]': user,
-                               'LoginForm[password]': password,
-                               'LoginForm[rememberMe]': 1,
-                               'yt0': ""})
+            except BadHeader, e:
+                if e.code == 403:
+                    try:
+                        json_data = self.api_response("login", username=user, password=password)
 
-        if re.search(self.LOGIN_FAIL_PATTERN, html):
-            self.fail_login()
+                    except BadHeader, e:
+                        if e.code == 406:
+                            self.fail_login()
+
+                    else:
+                        data['token'] = json_data['auth_token']
+
+            else:
+                self.skip_login()
