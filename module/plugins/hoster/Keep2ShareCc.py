@@ -12,7 +12,7 @@ from ..internal.misc import json
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -59,6 +59,7 @@ class Keep2ShareCc(SimpleHoster):
                     'status': 2 if file_info['files'][0]['is_available'] else 1}
 
     def setup(self):
+        self.multiDL = self.premium
         self.resume_download = True
 
     def handle_free(self, pyfile):
