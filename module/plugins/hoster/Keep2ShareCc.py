@@ -12,7 +12,7 @@ from ..internal.misc import json
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -79,7 +79,6 @@ class Keep2ShareCc(SimpleHoster):
                                           captcha_response=None)
         except BadHeader, e:
             if e.code == 406:
-                self.log_debug(e.content)
                 for i in range(10):
                     json_data = self.api_response("RequestCaptcha")
                     if json_data['code'] != 200:
