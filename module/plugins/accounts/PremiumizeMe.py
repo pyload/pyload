@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumizeMe(MultiAccount):
     __name__ = "PremiumizeMe"
     __type__ = "account"
-    __version__ = "0.28"
+    __version__ = "0.29"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -19,8 +19,7 @@ class PremiumizeMe(MultiAccount):
     __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    # @TODO: Revert to `https` in 0.4.10
-    API_URL = "http://api.premiumize.me/pm-api/v1.php"
+    API_URL = "https://api.premiumize.me/pm-api/v1.php"
 
     def api_respond(self, method, user, password, **kwargs):
         get_params = {'method': method,
@@ -50,6 +49,7 @@ class PremiumizeMe(MultiAccount):
 
         if res['status'] == 200:
             validuntil = float(res['result']['expires'])
+
             # @TODO: Remove `/ 1024` in 0.4.10
             trafficleft = max(0, res['result']['trafficleft_bytes'] / 1024)
 
@@ -64,4 +64,4 @@ class PremiumizeMe(MultiAccount):
         res = self.api_respond("accountstatus", user, password)
 
         if res['status'] != 200:
-            self.fail_login()
+            self.fail_login(res['statusmessage'])
