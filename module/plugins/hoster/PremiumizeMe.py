@@ -9,7 +9,7 @@ from ..internal.MultiHoster import MultiHoster
 class PremiumizeMe(MultiHoster):
     __name__ = "PremiumizeMe"
     __type__ = "hoster"
-    __version__ = "0.30"
+    __version__ = "0.31"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -25,6 +25,7 @@ class PremiumizeMe(MultiHoster):
     __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # See https://www.premiumize.me/static/api/api.html
     API_URL = "https://api.premiumize.me/pm-api/v1.php"
 
     def api_respond(self, method, user, password, **kwargs):

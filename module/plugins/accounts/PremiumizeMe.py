@@ -7,7 +7,7 @@ from ..internal.MultiAccount import MultiAccount
 class PremiumizeMe(MultiAccount):
     __name__ = "PremiumizeMe"
     __type__ = "account"
-    __version__ = "0.29"
+    __version__ = "0.30"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -19,6 +19,7 @@ class PremiumizeMe(MultiAccount):
     __authors__ = [("Florian Franzen", "FlorianFranzen@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # See https://www.premiumize.me/static/api/api.html
     API_URL = "https://api.premiumize.me/pm-api/v1.php"
 
     def api_respond(self, method, user, password, **kwargs):
