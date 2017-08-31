@@ -7,7 +7,7 @@ from ..internal.misc import json
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.38"
+    __version__ = "0.39"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -51,7 +51,6 @@ class AlldebridCom(MultiAccount):
 
     def signin(self, user, password, data):
         json_data = self.api_response("user/login", username=user, password=password)
-        self.log_debug(json_data)
 
         if json_data.get("error", False):
             self.fail_login(json_data['error'])
