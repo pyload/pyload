@@ -7,7 +7,7 @@ from ..internal.misc import json
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.37"
+    __version__ = "0.38"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -19,23 +19,29 @@ class AlldebridCom(MultiAccount):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://alldebrid.com/apiv2.php"
+    # See https://docs.alldebrid.com/
+    API_URL = "https://api.alldebrid.com/"
 
-    def api_response(self, action, **kwargs):
-        kwargs['action'] = action
-        html = self.load(self.API_URL, get=kwargs)
+    def api_response(self, method, **kwargs):
+        html = self.load(self.API_URL + method, get=kwargs)
         return json.loads(html)
 
     def grab_hosters(self, user, password, data):
-        return [x for x in self.api_response("supportedHost", domainsOnly=1) if x]
+        json_data = self.api_response("hosts/domains")
+        if json_data.get("error", False):
+            return []
+
+        else:
+            return [x for x in json_data['hosts'] if x]
 
     def grab_info(self, user, password, data):
-        validuntil = -1
-        premium = False
+        json_data = self.api_response("user/login", token=data['token'])
 
-        json_data = self.api_response("login", username=user, password=password)
+        if json_data.get("error", False):
+            premium = False
+            validuntil = -1
 
-        if json_data['success'] is True:
+        else:
             premium = json_data['user']['isPremium']
             validuntil = json_data['user']['premiumUntil'] or -1
 
@@ -44,11 +50,11 @@ class AlldebridCom(MultiAccount):
                 'premium': premium}
 
     def signin(self, user, password, data):
-        json_data = self.api_response("login", username=user, password=password)
+        json_data = self.api_response("user/login", username=user, password=password)
+        self.log_debug(json_data)
 
-        if json_data['success'] is True:
-            data['cookie'] = json_data['user']['cookie']
+        if json_data.get("error", False):
+            self.fail_login(json_data['error'])
 
         else:
-            self.log_error(json_data['error'])
-            self.fail_login()
+            data['token'] = json_data['token']

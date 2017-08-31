@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.54"
+    __version__ = "0.55"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -23,21 +23,21 @@ class AlldebridCom(MultiHoster):
     __authors__ = [("Andy Voigt", "spamsales@online.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "https://alldebrid.com/apiv2.php"
+    # See https://docs.alldebrid.com/
+    API_URL = "https://api.alldebrid.com/"
 
-    def api_response(self, action, **kwargs):
-        kwargs['action'] = action
-        html = self.load(self.API_URL, get=kwargs)
+    def api_response(self, method, **kwargs):
+        html = self.load(self.API_URL + method, get=kwargs)
         return json.loads(html)
 
     def setup(self):
         self.chunk_limit = 16
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response("unlock", link=pyfile.url, uid=self.account.info['data']['cookie'])
+        json_data = self.api_response("link/unlock", link=pyfile.url, token=self.account.info['data']['token'])
 
-        if json_data['error']:
-            if json_data['error'] == "This link is not available on the file hoster website":
+        if json_data.get("error", False):
+            if json_data['errorCode'] == 12:
                 self.offline()
 
             else:
