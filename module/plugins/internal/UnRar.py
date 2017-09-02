@@ -19,7 +19,7 @@ class UnRar(Extractor):
 
     __description__ = """RAR extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("Immenz", "immenz@gmx.net"),
                    ("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]

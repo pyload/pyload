@@ -16,7 +16,7 @@ class YoupornCom(Hoster):
 
     __description__ = """Youporn.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("willnix", "willnix@pyload.org")]
+    __authors__ = [("willnix", "willnix@pyload.net")]
 
     def process(self, pyfile):
         self.pyfile = pyfile

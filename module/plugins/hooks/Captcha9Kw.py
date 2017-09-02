@@ -38,7 +38,7 @@ class Captcha9Kw(Addon):
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
     API_URL = "https://www.9kw.eu/index.cgi"

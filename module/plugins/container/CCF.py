@@ -24,7 +24,7 @@ class CCF(Container):
 
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Willnix", "Willnix@pyload.org"),
+    __authors__ = [("Willnix", "Willnix@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
     def decrypt(self, pyfile):

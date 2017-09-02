@@ -35,7 +35,7 @@ class BypassCaptcha(Addon):
 
     __description__ = """Send captchas to BypassCaptcha.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Godofdream", "soilfcition@gmail.com"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 

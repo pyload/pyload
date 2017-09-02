@@ -14,4 +14,4 @@ class HotfileComFolder(DeadCrypter):
 
     __description__ = """Hotfile.com folder decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]

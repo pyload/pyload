@@ -13,7 +13,18 @@
 <script type="text/javascript" src="/media/js/mootools-more-1.4.0.1.js"></script>
 <script type="text/javascript" src="/media/js/MooDialog_static.js"></script>
 <script type="text/javascript" src="/media/js/purr_static.js"></script>
-
+<script type="text/javascript">
+var timerID = null
+function AY()
+{
+  var date = new Date();
+  var year = date.getYear();
+  if (year < 1000){
+      year = 2000 + year - 100;
+  }
+  document.write(year);
+}
+</script>
 
 <script type="text/javascript" src="/media/js/base.js"></script>
 
@@ -162,7 +173,7 @@
 
 	<hr style="clear: both;" />
 
-<div id="foot">&copy; 2008-2011 pyLoad Team
+<div id="foot">&copy; 2008-<script type="text/javascript">AY()</script> pyLoad Team
 <a href="#top" class="action top" accesskey="x"><span>{{_("Back to top")}}</span></a><br />
 <!--<div class="breadcrumbs"></div>-->
 

@@ -89,7 +89,7 @@ Example: ::
         """
         def decrypt(self, pyfile):
 
-            urls = ["http://get.pyload.org/src", "http://get.pyload.org/debian", "http://get.pyload.org/win"]
+            urls = ["https://github.com/pyload/pyload/archive/v0.4.9.tar.gz", "https://github.com/pyload/pyload/releases/download/v0.4.9/pyload_0.4.9_all.deb", "https://github.com/pyload/pyload/releases/download/v0.4.9/pyload_0.4.9_win.zip"]
 
             self.packages.append(("pyLoad packages", urls, "pyLoad packages")) # urls list of urls
 

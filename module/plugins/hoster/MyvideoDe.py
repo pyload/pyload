@@ -17,7 +17,7 @@ class MyvideoDe(Hoster):
 
     __description__ = """Myvideo.de hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __authors__ = [("spoob", "spoob@pyload.net")]
 
     def process(self, pyfile):
         self.pyfile = pyfile
