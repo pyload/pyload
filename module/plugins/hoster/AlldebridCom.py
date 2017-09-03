@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -37,7 +37,7 @@ class AlldebridCom(MultiHoster):
         json_data = self.api_response("link/unlock", link=pyfile.url, token=self.account.info['data']['token'])
 
         if json_data.get("error", False):
-            if json_data['errorCode'] == 12:
+            if json_data.get("errorCode", 0) == 12:
                 self.offline()
 
             else:
@@ -45,6 +45,6 @@ class AlldebridCom(MultiHoster):
                 self.temp_offline()
 
         else:
-            pyfile.name = json_data['filename']
-            pyfile.size = parse_size(json_data['filesize'])
-            self.link = json_data['link']
+            pyfile.name = json_data['infos']['filename']
+            pyfile.size = parse_size(json_data['infos']['filesize'])
+            self.link = json_data['infos']['link']
