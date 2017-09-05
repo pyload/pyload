@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.62"
+    __version__ = "1.63"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -119,8 +119,6 @@ class ExtractArchive(Addon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("Immenz", "immenz@gmx.net")]
-
-    NAME_REPLACEMENTS = [(r'\.part\d+\.rar$', ".part.rar")]
 
     def init(self):
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed",
@@ -173,13 +171,12 @@ class ExtractArchive(Addon):
         while packages:
             if self.last_package:  #: Called from allDownloadsProcessed
                 self.last_package = False
-                if self.extract(
-                        packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
                 self.manager.dispatchEvent("all_archives_processed")
+
             else:
-                if self.extract(
-                        packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                if self.extract(packages, thread):  # @NOTE: check only if all gone fine, no failed reporting for now
                     pass
 
             packages = self.queue.get()  #: Check for packages added during extraction
@@ -225,13 +222,7 @@ class ExtractArchive(Addon):
         extracted = []
         failed = []
 
-        toList = lambda string: string.replace(
-            ' ',
-            '').replace(
-            ',',
-            '|').replace(
-            ';',
-            '|').split('|')
+        toList = lambda string: string.replace(' ', '').replace(',','|').replace(';', '|').split('|')
 
         destination = self.config.get('destination')
         subfolder = self.config.get('subfolder')
@@ -246,7 +237,7 @@ class ExtractArchive(Addon):
         excludefiles = toList(self.config.get('excludefiles'))
 
         if extensions:
-            self.log_debug("Use for extensions: %s" % "|.".join(extensions))
+            self.log_debug("Use for extensions: .%s" % "|.".join(extensions))
 
         #: Reload from txt file
         self.reload_passwords()
@@ -288,86 +279,76 @@ class ExtractArchive(Addon):
             while files_ids:
                 new_files_ids = []
 
-                if extensions:
-                    files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
-                                 if filter(lambda ext: fname.lower().endswith(ext), extensions)]
+                if extensions:  #: Include only specified archive types
+                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1].lower()) in extensions
+                                                            for Extractor in self.extractors]), files_ids)
 
-                    #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
-                    #: This is important because, for example, UnRar ignores preceding parts in listing mode
-                    files_ids.sort(key=lambda file_id: file_id[1])
+                #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
+                #: This is important because, for example, UnRar ignores preceding parts in listing mode
+                files_ids.sort(key=lambda file_id: file_id[1])
 
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
                     if targets:
-                        self.log_debug(
-                            "Targets for %s: %s" %
-                            (Extractor.__name__, targets))
+                        self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
                         matched = True
 
-                    for fid, fname, fout in targets:
-                        name = os.path.basename(fname)
+                        for fid, fname, fout in targets:
+                            name = os.path.basename(fname)
 
-                        if not exists(fname):
-                            self.log_debug(name, "File not found")
-                            continue
-
-                        self.log_info(name, _("Extract to: %s") % fout)
-                        try:
-                            pyfile = self.pyload.files.getFile(fid)
-                            archive = Extractor(pyfile,
-                                                fname,
-                                                fout,
-                                                fullpath,
-                                                overwrite,
-                                                excludefiles,
-                                                priority,
-                                                keepbroken)
-
-                            thread.addActive(pyfile)
-                            archive.init()
-
-                            #: Save for removal from file processing list, which happens after deletion.
-                            #: So archive.chunks() would just return an empty list.
-                            chunks = archive.chunks()
-
-                            try:
-                                new_files = self._extract(
-                                    pyfile, archive, pypack.password)
-
-                            finally:
-                                pyfile.setProgress(100)
-                                thread.finishFile(pyfile)
-
-                        except Exception, e:
-                            self.log_error(name, e)
-                            success = False
-                            continue
-
-                        #: Remove processed file and related multiparts from list
-                        files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
-                                     if fname not in chunks]
-                        self.log_debug("Extracted files: %s" % new_files)
-
-                        for filename in new_files:
-                            self.set_permissions(filename)
-
-                        for filename in new_files:
-                            file = encode(
-                                fsjoin(
-                                    os.path.dirname(
-                                        archive.filename),
-                                    filename))
-                            if not exists(file):
-                                self.log_debug(
-                                    "New file %s does not exists" % filename)
+                            if not exists(fname):
+                                self.log_debug(name, "File not found")
                                 continue
 
-                            if recursive and os.path.isfile(file):
-                                new_files_ids.append(
-                                    (fid, filename, os.path.dirname(filename)))  #: Append as new target
+                            self.log_info(name, _("Extract to: %s") % fout)
+                            try:
+                                pyfile = self.pyload.files.getFile(fid)
+                                archive = Extractor(pyfile,
+                                                    fname,
+                                                    fout,
+                                                    fullpath,
+                                                    overwrite,
+                                                    excludefiles,
+                                                    priority,
+                                                    keepbroken)
 
-                        self.manager.dispatchEvent(
-                            "archive_extracted", pyfile, archive)
+                                thread.addActive(pyfile)
+                                archive.init()
+
+                                #: Save for removal from file processing list, which happens after deletion.
+                                #: So archive.chunks() would just return an empty list.
+                                chunks = archive.chunks()
+
+                                try:
+                                    new_files = self._extract(pyfile, archive, pypack.password)
+
+                                finally:
+                                    pyfile.setProgress(100)
+                                    thread.finishFile(pyfile)
+
+                            except Exception, e:
+                                self.log_error(name, e)
+                                success = False
+                                continue
+
+                            #: Remove processed file and related multiparts from list
+                            files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
+                                         if fname not in chunks]
+                            self.log_debug("Extracted files: %s" % new_files)
+
+                            for filename in new_files:
+                                self.set_permissions(filename)
+
+                            for filename in new_files:
+                                file = encode(fsjoin(os.path.dirname(archive.filename), filename))
+                                if not exists(file):
+                                    self.log_debug("New file %s does not exists" % filename)
+                                    continue
+
+                                if recursive and os.path.isfile(file):
+                                    new_files_ids.append((fid, filename, os.path.dirname(filename)))  #: Append as new target
+
+                            self.manager.dispatchEvent("archive_extracted", pyfile, archive)
 
                 files_ids = new_files_ids  #: Also check extracted files
 
@@ -378,8 +359,7 @@ class ExtractArchive(Addon):
 
                 else:
                     failed.append(pid)
-                    self.manager.dispatchEvent(
-                        "package_extract_failed", pypack)
+                    self.manager.dispatchEvent("package_extract_failed", pypack)
 
                     self.failed.add(pid)
             else:
@@ -404,9 +384,9 @@ class ExtractArchive(Addon):
         encrypted = False
         try:
             self.log_debug("Password: %s" % (password or "None provided"))
-            passwords = uniqify(
-                [password] +
-                self.get_passwords(False)) if self.config.get('usepasswordfile') else [password]
+            passwords = uniqify([password] + self.get_passwords(False)) if \
+                self.config.get('usepasswordfile') else [password]
+
             for pw in passwords:
                 try:
                     pyfile.setCustomStatus(_("archive testing"))
@@ -451,13 +431,10 @@ class ExtractArchive(Addon):
             pyfile.setProgress(0)
 
             if not encrypted or not self.config.get('usepasswordfile'):
-                self.log_debug(
-                    "Extracting using password: %s" %
-                    (password or "None"))
+                self.log_debug("Extracting using password: %s" % (password or "None"))
                 archive.extract(password)
             else:
-                for pw in filter(None, uniqify(
-                        [password] + self.get_passwords(False))):
+                for pw in filter(None, uniqify([password] + self.get_passwords(False))):
                     try:
                         self.log_debug("Extracting using password: %s" % pw)
 
@@ -503,18 +480,14 @@ class ExtractArchive(Addon):
                                              e.message)
 
                         else:
-                            self.log_info(
-                                _("Moved %s to trash") %
-                                os.path.basename(f))
+                            self.log_info(_("Moved %s to trash") % os.path.basename(f))
 
             self.log_info(name, _("Extracting finished"))
 
             return extracted_files
 
         except PasswordError:
-            self.log_error(
-                name, _(
-                    "Wrong password" if password else "No password found"))
+            self.log_error(name, _("Wrong password" if password else "No password found"))
 
         except CRCError, e:
             self.log_error(name, _("CRC mismatch"), e)
