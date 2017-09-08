@@ -30,7 +30,7 @@ def compute_checksum(local_file, algorithm):
             for chunk in iter(lambda: f.read(8192), ''):
                 last = hf(chunk, last)
 
-        return "%x" % last
+        return "%x" % ((2**32 + last) & 0xFFFFFFFF)  #: zlib sometimes return negative value
 
     else:
         return None
@@ -39,7 +39,7 @@ def compute_checksum(local_file, algorithm):
 class Checksum(Addon):
     __name__ = "Checksum"
     __type__ = "hook"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "broken"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -58,11 +58,13 @@ class Checksum(Addon):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+                   ("stickell", "l.stickell@yahoo.it"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     _methodmap = {'sfv': 'crc32',
                   'crc': 'crc32',
                   'hash': 'md5'}
+
     _regexmap = {'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
                  'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
                  'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
@@ -203,8 +205,7 @@ class Checksum(Addon):
             with open(hash_file) as f:
                 text = f.read()
 
-            for m in re.finditer(self._regexmap.get(
-                    file_type, self._regexmap['default']), text):
+            for m in re.finditer(self._regexmap.get(file_type, self._regexmap['default']), text, re.M):
                 data = m.groupdict()
                 self.log_debug(fdata['name'], data)
 
@@ -212,7 +213,7 @@ class Checksum(Addon):
                 algorithm = self._methodmap.get(file_type, file_type)
                 checksum = compute_checksum(local_file, algorithm)
 
-                if checksum == data['HASH']:
+                if checksum == data['HASH'].lower():
                     self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
                                   (data['NAME'], algorithm, checksum))
                 else:
