@@ -24,7 +24,7 @@ class RequestFactory(object):
         self.__pyload.evm.listen_to("config:changed", self.update_config)
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
     def get_url(self, *args, **kwargs):
@@ -55,38 +55,38 @@ class RequestFactory(object):
         return class_(self.bucket, request)
 
     def get_interface(self):
-        return self.pyload_core.config.get('connection', 'interface')
+        return self.pyload.config.get('connection', 'interface')
 
     def get_proxies(self):
         """
         Returns a proxy list for the request classes.
         """
-        if not self.pyload_core.config.get('proxy', 'activated'):
+        if not self.pyload.config.get('proxy', 'activated'):
             return {}
         else:
             _type = "http"
-            setting = self.pyload_core.config.get('proxy', 'type').lower()
+            setting = self.pyload.config.get('proxy', 'type').lower()
             if setting == "socks4":
                 _type = "socks4"
             elif setting == "socks5":
                 _type = "socks5"
 
             username = None
-            if self.pyload_core.config.get(
-                    'proxy', 'username') and self.pyload_core.config.get(
+            if self.pyload.config.get(
+                    'proxy', 'username') and self.pyload.config.get(
                     'proxy', 'username').lower() != "none":
-                username = self.pyload_core.config.get('proxy', 'username')
+                username = self.pyload.config.get('proxy', 'username')
 
             pw = None
-            if self.pyload_core.config.get(
-                    'proxy', 'password') and self.pyload_core.config.get(
+            if self.pyload.config.get(
+                    'proxy', 'password') and self.pyload.config.get(
                     'proxy', 'password').lower() != "none":
-                pw = self.pyload_core.config.get('proxy', 'password')
+                pw = self.pyload.config.get('proxy', 'password')
 
             return {
                 'type': _type,
-                'address': self.pyload_core.config.get('proxy', 'host'),
-                'port': self.pyload_core.config.get('proxy', 'port'),
+                'address': self.pyload.config.get('proxy', 'host'),
+                'port': self.pyload.config.get('proxy', 'port'),
                 'username': username,
                 'password': pw,
             }
@@ -104,13 +104,13 @@ class RequestFactory(object):
         """
         return {'interface': self.get_interface(),
                 'proxies': self.get_proxies(),
-                'ipv6': self.pyload_core.config.get('connection', 'ipv6')}
+                'ipv6': self.pyload.config.get('connection', 'ipv6')}
 
     def update_bucket(self):
         """
         Set values in the bucket according to settings.
         """
-        max_speed = self.pyload_core.config.get('connection', 'max_speed')
+        max_speed = self.pyload.config.get('connection', 'max_speed')
         if max_speed > 0:
             self.bucket.set_rate(max_speed << 10)
         else:

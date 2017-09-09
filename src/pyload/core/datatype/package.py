@@ -95,7 +95,7 @@ class Package(BaseObject):
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
         self.__manager = manager
-        self.__pyload = manager.pyload_core
+        self.__pyload = manager.pyload
 
         self.pid = pid
         self.name = name
@@ -116,7 +116,7 @@ class Package(BaseObject):
         self.set_finished = False
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
     def is_stale(self):
@@ -140,7 +140,7 @@ class Package(BaseObject):
         """
         Get contaied files data.
         """
-        return self.pyload_core.db.get_all_files(package=self.pid)
+        return self.pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=""):
         self.timestamp = time.time()
@@ -173,7 +173,7 @@ class Package(BaseObject):
         return False
 
     def notify_change(self):
-        self.pyload_core.evm.fire("packageUpdated", self.id)
+        self.pyload.evm.fire("packageUpdated", self.id)
 
 
 class RootPackage(Package):
@@ -185,7 +185,7 @@ class RootPackage(Package):
                          "", "", "", 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=""):
-        return os.path.join(self.pyload_core.config.get(
+        return os.path.join(self.pyload.config.get(
             'general', 'storage_folder'), name)
 
     # no database operations

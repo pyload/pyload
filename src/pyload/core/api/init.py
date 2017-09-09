@@ -77,7 +77,7 @@ class Api(AbstractApi):
         self.user_apis = {}
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
     @property
@@ -122,12 +122,12 @@ class Api(AbstractApi):
             uid = uid.uid
 
         if uid not in self.user_apis:
-            user = self.pyload_core.db.get_user_data(uid=uid)
+            user = self.pyload.db.get_user_data(uid=uid)
             if not user:  # TODO: anonymous user?
                 return None
 
             self.user_apis[uid] = UserApi(
-                self.pyload_core, User.from_user_data(self, user))
+                self.pyload, User.from_user_data(self, user))
 
         return self.user_apis[uid]
 
@@ -157,10 +157,10 @@ class Api(AbstractApi):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("User '{0}' tries to log in").format(username))
 
-        return self.pyload_core.db.check_auth(username, password)
+        return self.pyload.db.check_auth(username, password)
 
     @staticmethod
     def is_authorized(func, user):

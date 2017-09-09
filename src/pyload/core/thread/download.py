@@ -44,7 +44,7 @@ class DownloadThread(PluginThread):
 
     def _handle_abort(self, file):
         try:
-            self.pyload_core.log.info(
+            self.pyload.log.info(
                 self._("Download aborted: {0}").format(file.name))
         except Exception:
             pass
@@ -57,12 +57,12 @@ class DownloadThread(PluginThread):
             time.sleep(0.5)
 
     def _handle_retry(self, file, reason):
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("Download restarted: {0} | {1}").format(file.name, reason))
         self.queue.put(file)
 
     def _handle_notimplement(self, file):
-        self.pyload_core.log.error(
+        self.pyload.log.error(
             self._("Plugin {0} is missing a function").format(file.pluginname))
         file.set_status("failed")
         file.error = "Plugin does not work"
@@ -70,69 +70,69 @@ class DownloadThread(PluginThread):
 
     def _handle_tempoffline(self, file):
         file.set_status("temp. offline")
-        self.pyload_core.log.warning(
+        self.pyload.log.warning(
             self._("Download is temporary offline: {0}").format(file.name))
         file.error = self._("Internal Server Error")
 
-        if self.pyload_core.debug:
+        if self.pyload.debug:
             print_exc()
             self.debug_report(file)
 
-        self.pyload_core.adm.download_failed(file)
+        self.pyload.adm.download_failed(file)
         self.clean(file)
 
     def _handle_failed(self, file, errmsg):
         file.set_status("failed")
-        self.pyload_core.log.warning(
+        self.pyload.log.warning(
             self._("Download failed: {0} | {1}").format(file.name, errmsg))
         file.error = errmsg
 
-        if self.pyload_core.debug:
+        if self.pyload.debug:
             print_exc()
             self.debug_report(file)
 
-        self.pyload_core.adm.download_failed(file)
+        self.pyload.adm.download_failed(file)
         self.clean(file)
 
     # TODO: activate former skipped downloads
     def _handle_fail(self, file, errmsg):
         if errmsg == "offline":
             file.set_status("offline")
-            self.pyload_core.log.warning(
+            self.pyload.log.warning(
                 self._("Download is offline: {0}").format(file.name))
         elif errmsg == "temp. offline":
             file.set_status("temp. offline")
-            self.pyload_core.log.warning(
+            self.pyload.log.warning(
                 self._("Download is temporary offline: {0}").format(file.name))
         else:
             file.set_status("failed")
-            self.pyload_core.log.warning(
+            self.pyload.log.warning(
                 self._("Download failed: {0} | {1}").format(file.name, errmsg))
             file.error = errmsg
 
-        self.pyload_core.adm.download_failed(file)
+        self.pyload.adm.download_failed(file)
         self.clean(file)
 
     def _handle_skip(self, file, errmsg):
         file.set_status("skipped")
 
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("Download skipped: {0} due to {1}").format(
                 file.name, errmsg))
 
         self.clean(file)
 
-        self.pyload_core.files.check_package_finished(file)
+        self.pyload.files.check_package_finished(file)
 
         self.active = None
-        self.pyload_core.files.save()
+        self.pyload.files.save()
 
     def _handle_error(self, file, errmsg, errcode=None):
-        self.pyload_core.log.debug(
+        self.pyload.log.debug(
             "pycurl exception {0}: {1}".format(errcode, errmsg))
 
         if errcode in (7, 18, 28, 52, 56):
-            self.pyload_core.log.warning(
+            self.pyload.log.warning(
                 self._(
                     "Couldn't connect to host or connection reset, "
                     "waiting 1 minute and retry"))
@@ -147,7 +147,7 @@ class DownloadThread(PluginThread):
                     break
 
             if file.abort:
-                self.pyload_core.log.info(
+                self.pyload.log.info(
                     self._("Download aborted: {0}").format(file.name))
                 file.set_status("aborted")
                 # do not clean, aborting function does this itself
@@ -156,13 +156,13 @@ class DownloadThread(PluginThread):
                 self.queue.put(file)
         else:
             file.set_status("failed")
-            self.pyload_core.log.error(
+            self.pyload.log.error(
                 self._("pycurl error {0}: {1}").format(errcode, errmsg))
-            if self.pyload_core.debug:
+            if self.pyload.debug:
                 print_exc()
                 self.debug_report(file)
 
-            self.pyload_core.adm.download_failed(file)
+            self.pyload.adm.download_failed(file)
 
     def _run(self, file):
         file.init_plugin()
@@ -175,20 +175,20 @@ class DownloadThread(PluginThread):
         # if not file.has_plugin(): continue
 
         file.plugin.check_for_same_files(starting=True)
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("Download starts: {0}".format(file.name)))
 
         # start download
-        self.pyload_core.adm.download_preparing(file)
+        self.pyload.adm.download_preparing(file)
         file.plugin.preprocessing(self)
 
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("Download finished: {0}").format(file.name))
-        self.pyload_core.adm.download_finished(file)
-        self.pyload_core.files.check_package_finished(file)
+        self.pyload.adm.download_finished(file)
+        self.pyload.files.check_package_finished(file)
 
     def _finalize(self, file):
-        self.pyload_core.files.save()
+        self.pyload.files.save()
         file.check_if_processed()
         sys.exc_clear()
         # manager could still be waiting for it
@@ -255,7 +255,7 @@ class DownloadThread(PluginThread):
             # file.plugin.req.clean()
             self.active = None
             file.finish_if_done()
-            self.pyload_core.files.save()
+            self.pyload.files.save()
 
     def get_progress_info(self):
         if not self.active:

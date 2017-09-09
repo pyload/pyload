@@ -94,14 +94,14 @@ class Base(object):
 
         if owner is not None:
             # :class:`Api`, user api when user is set
-            self.api = self.pyload_core.api.with_user_context(owner)
+            self.api = self.pyload.api.with_user_context(owner)
             if not self.api:
                 raise Exception("Plugin running with invalid user")
 
             # :class:`User`, user related to this plugin
             self.owner = self.api.user
         else:
-            self.api = self.pyload_core.api
+            self.api = self.pyload.api
             self.owner = None
 
         # last interaction task
@@ -114,7 +114,7 @@ class Base(object):
         return getattr(self, "__{0}__".format(item))
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
     def log_info(self, *args, **kwargs):
@@ -159,40 +159,40 @@ class Base(object):
         """
         Gives the compiled pattern of the plugin.
         """
-        return self.pyload_core.pgm.get_plugin(self.__type__, self.__name__).re
+        return self.pyload.pgm.get_plugin(self.__type__, self.__name__).re
 
     def set_config(self, option, value):
         """
         Set config value for current plugin.
         """
-        self.pyload_core.config.set(self.__name__, option, value)
+        self.pyload.config.set(self.__name__, option, value)
 
     # TODO: Recheck...
     def get_config(self, option):
         """
         Returns config value for current plugin.
         """
-        return self.pyload_core.config.get(self.__name__, option)
+        return self.pyload.config.get(self.__name__, option)
 
     def set_storage(self, key, value):
         """
         Saves a value persistently to the database.
         """
-        self.pyload_core.db.set_storage(self.__name__, key, value)
+        self.pyload.db.set_storage(self.__name__, key, value)
 
     def store(self, key, value):
         """
         Same as `set_storage`.
         """
-        self.pyload_core.db.set_storage(self.__name__, key, value)
+        self.pyload.db.set_storage(self.__name__, key, value)
 
     def get_storage(self, key=None, default=None):
         """
         Retrieves saved value or dict of all saved entries if key is None.
         """
         if key is not None:
-            return self.pyload_core.db.get_storage(self.__name__, key) or default
-        return self.pyload_core.db.get_storage(self.__name__, key)
+            return self.pyload.db.get_storage(self.__name__, key) or default
+        return self.pyload.db.get_storage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
         """
@@ -204,7 +204,7 @@ class Base(object):
         """
         Delete entry in db.
         """
-        self.pyload_core.db.del_storage(self.__name__, key)
+        self.pyload.db.del_storage(self.__name__, key)
 
     def abort(self):
         """
@@ -241,11 +241,11 @@ class Base(object):
         res = self.req.load(url, get, post, ref, cookies,
                             just_header, decode=decode)
 
-        if self.pyload_core.debug:
+        if self.pyload.debug:
             from inspect import currentframe
 
             frame = currentframe()
-            dumpdir = os.path.join(self.pyload_core.cachedir,
+            dumpdir = os.path.join(self.pyload.cachedir,
                                    'plugins', self.__name__)
             makedirs(dumpdir, exist_ok=True)
 
@@ -321,10 +321,10 @@ class Base(object):
             fp.write(img)
 
             name = "{0}OCR".format(self.__name__)
-            has_plugin = name in self.pyload_core.pgm.get_plugins("internal")
+            has_plugin = name in self.pyload.pgm.get_plugins("internal")
 
-            if self.pyload_core.captcha:
-                OCR = self.pyload_core.pgm.load_class("internal", name)
+            if self.pyload.captcha:
+                OCR = self.pyload.pgm.load_class("internal", name)
             else:
                 OCR = None
 
@@ -335,18 +335,18 @@ class Base(object):
                 ocr = OCR()
                 result = ocr.get_captcha(fp.name)
             else:
-                task = self.pyload_core.exm.create_captcha_task(
+                task = self.pyload.exm.create_captcha_task(
                     img, imgtype, fp.name, self.__name__, result_type)
                 self.task = task
 
                 while task.is_waiting():
                     if self.abort():
-                        self.pyload_core.exm.remove_task(task)
+                        self.pyload.exm.remove_task(task)
                         raise Abort
                     time.sleep(1)
 
                 # TODO: task handling
-                self.pyload_core.exm.remove_task(task)
+                self.pyload.exm.remove_task(task)
 
                 if task.error and has_plugin:  # ignore default error message since the user could use OCR
                     self.fail(
@@ -360,10 +360,10 @@ class Base(object):
                             "No captcha result obtained in appropriate time"))
 
                 result = task.result
-                self.pyload_core.log.debug(
+                self.pyload.log.debug(
                     "Received captcha result: {0}".format(result))
 
-            if not self.pyload_core.debug:
+            if not self.pyload.debug:
                 try:
                     remove(fp.name)
                 except Exception:

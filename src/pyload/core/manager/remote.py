@@ -22,8 +22,8 @@ class RemoteManager(BaseManager):
         self.backends = []
 
     def start(self):
-        host = self.pyload_core.config.get('rpc', 'host')
-        port = self.pyload_core.config.get('rpc', 'port')
+        host = self.pyload.config.get('rpc', 'host')
+        port = self.pyload.config.get('rpc', 'port')
 
         for b in self.available:
             klass = getattr(
@@ -35,13 +35,13 @@ class RemoteManager(BaseManager):
                 continue
             try:
                 backend.setup(host, port)
-                self.pyload_core.log.info(
+                self.pyload.log.info(
                     self._("Starting {0}: {1}:{2}").format(b, host, port))
             except Exception as e:
-                self.pyload_core.log.error(
+                self.pyload.log.error(
                     self._("Failed loading backend {0} | {1}").format(
                         b, str(e)))
-                if self.pyload_core.debug:
+                if self.pyload.debug:
                     print_exc()
             else:
                 backend.start()

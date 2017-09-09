@@ -29,7 +29,7 @@ class BaseApi(AbstractApi):
         raise Exception
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
 

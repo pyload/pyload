@@ -46,7 +46,7 @@ class InfoThread(DecrypterThread):
         cb = self.update_db if self.pid > 1 else self.update_result
 
         # filter out crypter plugins
-        for name in self.pyload_core.pgm.get_plugins("crypter"):
+        for name in self.pyload.pgm.get_plugins("crypter"):
             if name in plugins:
                 crypter[name] = plugins[name]
                 del plugins[name]
@@ -65,7 +65,7 @@ class InfoThread(DecrypterThread):
 
             # TODO: no plugin information pushed to GUI
             # parse links and merge
-            hoster, crypter = self.pyload_core.pgm.parse_urls(
+            hoster, crypter = self.pyload.pgm.parse_urls(
                 l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
@@ -75,14 +75,14 @@ class InfoThread(DecrypterThread):
             ProgressType.LinkCheck
         )
         for pluginname, urls in plugins.items():
-            plugin = self.pyload_core.pgm.load_module("hoster", pluginname)
-            klass = self.pyload_core.pgm.get_plugin_class(
+            plugin = self.pyload.pgm.load_module("hoster", pluginname)
+            klass = self.pyload.pgm.get_plugin_class(
                 "hoster", pluginname, overwrite=False)
             if hasmethod(klass, "get_info"):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
             elif hasmethod(plugin, "get_info"):
-                self.pyload_core.log.debug(
+                self.pyload.log.debug(
                     "Deprecated .get_info() method on module level, "
                     "use staticmethod instead")
                 self.fetch_for_plugin(plugin, urls, cb)
@@ -103,9 +103,9 @@ class InfoThread(DecrypterThread):
         info_hash = [(l.name, l.size, l.status, l.hash, l.url)
                      for l in result if l.hash]
         if info:
-            self.pyload_core.files.update_file_info(info, self.pid)
+            self.pyload.files.update_file_info(info, self.pid)
         if info_hash:
-            self.pyload_core.files.update_file_info(info_hash, self.pid)
+            self.pyload.files.update_file_info(info_hash, self.pid)
 
     def update_result(self, result):
         tmp = {}
@@ -194,6 +194,6 @@ class InfoThread(DecrypterThread):
             self.__manager.log.warning(
                 self._("Info Fetching for {0} failed | {1}").format(
                     pluginname, str(e)))
-            # self.pyload_core.print_exc()
+            # self.pyload.print_exc()
         finally:
             self.__pi.done = done

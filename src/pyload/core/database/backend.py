@@ -139,7 +139,7 @@ class DatabaseBackend(Thread):
         set_db(self)
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
 
     @property
@@ -173,7 +173,7 @@ class DatabaseBackend(Thread):
                 self.conn.close()
 
                 try:
-                    self.pyload_core.log.warning(
+                    self.pyload.log.warning(
                         self._("Database was deleted "
                                "due to incompatible version"))
                 except Exception:

@@ -22,7 +22,7 @@ class ConfigApi(BaseApi):
         :rtype: str
         :return: config value as string
         """
-        return self.pyload_core.config.get(section, option)
+        return self.pyload.config.get(section, option)
 
     def set_config_value(self, section, option, value):
         """
@@ -32,7 +32,7 @@ class ConfigApi(BaseApi):
         :param option:
         :param value: new config value
         """
-        self.pyload_core.config.set(section, option, value)
+        self.pyload.config.set(section, option, value)
 
     # def get_config(self):
         # """
@@ -41,7 +41,7 @@ class ConfigApi(BaseApi):
         # :rtype: dict of section -> ConfigHolder
         # """
         # data = {}
-        # for section, config, values in self.pyload_core.config.iter_core_sections():
+        # for section, config, values in self.pyload.config.iter_core_sections():
         # data[section] = to_config_holder(section, config, values)
         # return data
 
@@ -53,7 +53,7 @@ class ConfigApi(BaseApi):
         # """
         # return [ConfigInfo(section, config.label, config.description, False, False)
         # for section, config, values in
-        # self.pyload_core.config.iter_core_sections()]
+        # self.pyload.config.iter_core_sections()]
 
     # @requireperm(Permission.Plugins)
     # def get_plugin_config(self):
@@ -66,15 +66,15 @@ class ConfigApi(BaseApi):
         # # TODO: multi user
         # # TODO: better plugin / addon activated config
         # data = []
-        # active = [x.get_name() for x in self.pyload_core.adm.active_plugins()]
-        # for name, config, values in self.pyload_core.config.iter_sections():
+        # active = [x.get_name() for x in self.pyload.adm.active_plugins()]
+        # for name, config, values in self.pyload.config.iter_sections():
         # # skip unmodified and inactive addons
         # if not values and name not in active:
         # continue
 
         # item = ConfigInfo(name, config.label, config.description,
-        # self.pyload_core.pgm.get_category(name),
-        # self.pyload_core.pgm.is_user_plugin(name),
+        # self.pyload.pgm.get_category(name),
+        # self.pyload.pgm.is_user_plugin(name),
         # # TODO: won't work probably
         # values.get("activated",
         # None if "activated" not in config.config else config.config['activated'].input.default))
@@ -91,9 +91,9 @@ class ConfigApi(BaseApi):
         # """
         # # TODO: filter user_context / addons when not allowed
         # plugins = [ConfigInfo(name, config.label, config.description,
-        # self.pyload_core.pgm.get_category(name),
-        # self.pyload_core.pgm.is_user_plugin(name))
-        # for name, config, values in self.pyload_core.config.iter_sections()]
+        # self.pyload.pgm.get_category(name),
+        # self.pyload.pgm.is_user_plugin(name))
+        # for name, config, values in self.pyload.config.iter_sections()]
 
         # return plugins
 
@@ -107,7 +107,7 @@ class ConfigApi(BaseApi):
         # """
         # # requires at least plugin permissions, but only admin can load core
         # # config
-        # config, values = self.pyload_core.config.get_section(name)
+        # config, values = self.pyload.config.get_section(name)
         # return to_config_holder(name, config, values)
 
     # @requireperm(Permission.Plugins)
@@ -118,9 +118,9 @@ class ConfigApi(BaseApi):
         # :param config: :class:`ConfigHolder`
         # """
         # for item in config.items:
-        # self.pyload_core.config.set(config.name, item.name, item.value, store=False)
+        # self.pyload.config.set(config.name, item.name, item.value, store=False)
         # # save the changes
-        # self.pyload_core.config.store()
+        # self.pyload.config.store()
 
     # # NOTE: No delete method in ConfigParser, maybe in ConfigManager...
     # @requireperm(Permission.Plugins)
@@ -131,4 +131,4 @@ class ConfigApi(BaseApi):
         # :param plugin: plugin name
         # """
         # TODO: delete should deactivate addons?
-        # self.pyload_core.config.delete(plugin)
+        # self.pyload.config.delete(plugin)

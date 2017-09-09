@@ -73,7 +73,7 @@ class AddonManager(BaseManager):
         except Exception as e:
             plugin.log_error(
                 self._("Error when executing {0}".format(f)), str(e))
-            # self.pyload_core.print_exc()
+            # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
         """
@@ -95,48 +95,48 @@ class AddonManager(BaseManager):
         active = []
         deactive = []
 
-        for pluginname in self.pyload_core.pgm.get_plugins("addon"):
+        for pluginname in self.pyload.pgm.get_plugins("addon"):
             try:
                 # check first for builtin plugin
-                attrs = self.pyload_core.pgm.load_attributes("addon", pluginname)
+                attrs = self.pyload.pgm.load_attributes("addon", pluginname)
                 internal = attrs.get("internal", False)
 
-                if internal or self.pyload_core.config.get(
+                if internal or self.pyload.config.get(
                         pluginname, "activated"):
-                    pluginclass = self.pyload_core.pgm.load_class(
+                    pluginclass = self.pyload.pgm.load_class(
                         "addon", pluginname)
 
                     if not pluginclass:
                         continue
 
-                    plugin = pluginclass(self.pyload_core, self)
+                    plugin = pluginclass(self.pyload, self)
                     self.plugins[pluginclass.__name__].instances.append(plugin)
 
                     # hide internals from printing
                     if not internal and plugin.is_activated():
                         active.append(pluginclass.__name__)
                     else:
-                        self.pyload_core.log.debug(
+                        self.pyload.log.debug(
                             "Loaded internal plugin: {0}".format(
                                 pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 
             except Exception:
-                self.pyload_core.log.warning(
+                self.pyload.log.warning(
                     self._("Failed activating {0}").format(pluginname))
-                # self.pyload_core.print_exc()
+                # self.pyload.print_exc()
 
-        self.pyload_core.log.info(
+        self.pyload.log.info(
             self._("Activated addons: {0}").format(", ".join(sorted(active))))
-        self.pyload_core.log.info(self._("Deactivated addons: {0}").format(
+        self.pyload.log.info(self._("Deactivated addons: {0}").format(
             ", ".join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
         # TODO: multi user
 
         # check if section was a plugin
-        if plugin not in self.pyload_core.pgm.get_plugins("addon"):
+        if plugin not in self.pyload.pgm.get_plugins("addon"):
             return None
 
         if name == "activated" and value:
@@ -150,14 +150,14 @@ class AddonManager(BaseManager):
         if plugin in self.plugins:
             return None
 
-        pluginclass = self.pyload_core.pgm.load_class("addon", plugin)
+        pluginclass = self.pyload.pgm.load_class("addon", plugin)
 
         if not pluginclass:
             return None
 
-        self.pyload_core.log.debug("Plugin loaded: {0}".format(plugin))
+        self.pyload.log.debug("Plugin loaded: {0}".format(plugin))
 
-        plugin = pluginclass(self.pyload_core, self)
+        plugin = pluginclass(self.pyload, self)
         self.plugins[pluginclass.__name__].instances.append(plugin)
 
         # active the addon in new thread
@@ -175,11 +175,11 @@ class AddonManager(BaseManager):
             return None
 
         self.call(addon, "deactivate")
-        self.pyload_core.log.debug("Plugin deactivated: {0}".format(plugin))
+        self.pyload.log.debug("Plugin deactivated: {0}".format(plugin))
 
         # remove periodic call
-        self.pyload_core.log.debug("Removed callback {0}".format(
-            self.pyload_core.scheduler.cancel(addon.cb)))
+        self.pyload.log.debug("Removed callback {0}".format(
+            self.pyload.scheduler.cancel(addon.cb)))
 
         # TODO: only delete instances, meta data is lost otherwise
         del self.plugins[addon.__name__].instances[:]
@@ -190,10 +190,10 @@ class AddonManager(BaseManager):
             if fname.startswith("__") or not isinstance(
                     getattr(addon, fname), MethodType):
                 continue
-            self.pyload_core.evm.remove_from_events(getattr(addon, fname))
+            self.pyload.evm.remove_from_events(getattr(addon, fname))
 
     def activate_addons(self):
-        self.pyload_core.log.info(self._("Activating addons ..."))
+        self.pyload.log.info(self._("Activating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.is_activated():
@@ -205,7 +205,7 @@ class AddonManager(BaseManager):
         """
         Called when core is shutting down.
         """
-        self.pyload_core.log.info(self._("Deactivating addons ..."))
+        self.pyload.log.info(self._("Deactivating addons ..."))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, "deactivate")
@@ -224,7 +224,7 @@ class AddonManager(BaseManager):
 
     @lock
     def start_thread(self, func, *args, **kwargs):
-        thread = AddonThread(self.pyload_core.iom, func, args, kwargs)
+        thread = AddonThread(self.pyload.iom, func, args, kwargs)
         thread.start()
         return thread
 
@@ -280,7 +280,7 @@ class AddonManager(BaseManager):
         self.info_props[h] = AddonInfo(name, desc)
 
     def listen_to(self, *args):
-        self.pyload_core.evm.listen_to(*args)
+        self.pyload.evm.listen_to(*args)
 
     def fire(self, *args):
-        self.pyload_core.evm.fire(*args)
+        self.pyload.evm.fire(*args)

@@ -40,8 +40,8 @@ class DecrypterThread(PluginThread):
         return self.__pi
 
     def run(self):
-        pack = self.pyload_core.files.get_package(self.pid)
-        api = self.pyload_core.api.with_user_context(self.owner)
+        pack = self.pyload.files.get_package(self.pid)
+        api = self.pyload.api.with_user_context(self.owner)
         links, packages = self.decrypt(accumulate(self.data), pack.password)
 
         # if there is only one package links will be added to current one
@@ -51,7 +51,7 @@ class DecrypterThread(PluginThread):
             del packages[0]
 
         if links:
-            self.pyload_core.log.info(
+            self.pyload.log.info(
                 self._("Decrypted {0:d} links into package {1}").format(
                     len(links),
                     pack.name))
@@ -60,13 +60,13 @@ class DecrypterThread(PluginThread):
         for pack_ in packages:
             api.add_package(pack_.name, pack_.get_urls(), pack.password)
 
-        self.pyload_core.files.set_download_status(
+        self.pyload.files.set_download_status(
             self.fid, DownloadStatus.Finished
             if not self.error else DownloadStatus.Failed)
         self.__manager.done(self)
 
     def _decrypt(self, name, urls, password):
-        klass = self.pyload_core.pgm.load_class("crypter", name)
+        klass = self.pyload.pgm.load_class("crypter", name)
         plugin = None
         result = []
 
@@ -84,13 +84,13 @@ class DecrypterThread(PluginThread):
                 LinkStatus(
                     url, url, -1, DownloadStatus.NotPossible, name)
                 for url in urls)
-            self.pyload_core.log.debug(
+            self.pyload.log.debug(
                 "Plugin '{0}' for decrypting was not loaded".format(name))
             self.__pi.done += len(urls)
             return None
 
         try:
-            plugin = klass(self.pyload_core, password)
+            plugin = klass(self.pyload, password)
             try:
                 result = plugin._decrypt(urls)
             except Retry:
@@ -111,8 +111,8 @@ class DecrypterThread(PluginThread):
                 url, url, -1, DownloadStatus.Failed, name) for url in urls)
 
             # no debug for intentional errors
-            # if self.pyload_core.debug and not isinstance(e, Fail):
-            # self.pyload_core.print_exc()
+            # if self.pyload.debug and not isinstance(e, Fail):
+            # self.pyload.print_exc()
             # self.debug_report(plugin.__name__, plugin=plugin)
         finally:
             if plugin:

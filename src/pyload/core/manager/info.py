@@ -90,7 +90,7 @@ class InfoManager(BaseManager):
         return self.info_results.get(rid)
 
     def set_info_results(self, oc, result):
-        self.pyload_core.evm.fire("linkcheck:updated", oc.rid,
+        self.pyload.evm.fire("linkcheck:updated", oc.rid,
                                result, owner=oc.owner)
         oc.update(result)
 
@@ -113,7 +113,7 @@ class InfoManager(BaseManager):
         """
         if self.info_cache and self.timestamp < time.time():
             self.info_cache.clear()
-            self.pyload_core.log.debug("Cleared Result cache")
+            self.pyload.log.debug("Cleared Result cache")
 
         for rid in self.info_results:
             if self.info_results[rid].is_stale():

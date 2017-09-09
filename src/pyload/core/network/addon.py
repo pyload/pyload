@@ -137,7 +137,7 @@ class Addon(Base):
         if self.cb:
             self.stop_periodical()
 
-        self.cb = self.pyload_core.scheduler.enter(wait, 2, self._periodical)
+        self.cb = self.pyload.scheduler.enter(wait, 2, self._periodical)
         self.interval = interval
         return True
 
@@ -146,7 +146,7 @@ class Addon(Base):
         Stops periodical call if existing
         :return: True if the callback was stopped, false otherwise
         """
-        if self.cb and self.pyload_core.scheduler.cancel(self.cb):
+        if self.cb and self.pyload.scheduler.cancel(self.cb):
             self.cb = None
             return True
         else:
@@ -157,12 +157,12 @@ class Addon(Base):
             if self.is_activated():
                 self.periodical()
         except Exception as e:
-            self.pyload_core.log.error(
+            self.pyload.log.error(
                 self._("Error executing addon: {0}").format(str(e)))
-            # self.pyload_core.print_exc()
+            # self.pyload.print_exc()
 
         if self.cb:
-            self.cb = self.pyload_core.scheduler.enter(
+            self.cb = self.pyload.scheduler.enter(
                 self.interval, 2, self._periodical)
 
     def __repr__(self):
@@ -175,7 +175,7 @@ class Addon(Base):
         return True if self.__internal__ else self.get_config("activated")
 
     def get_category(self):
-        return self.pyload_core.pgm.get_category(self.__name__)
+        return self.pyload.pgm.get_category(self.__name__)
 
     def init(self):
         pass

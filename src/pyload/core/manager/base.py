@@ -25,5 +25,5 @@ class BaseManager(object):
         self.lock = Lock()
 
     @property
-    def pyload_core(self):
+    def pyload(self):
         return self.__pyload
