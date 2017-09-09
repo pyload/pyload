@@ -2,16 +2,17 @@
 
 import os
 import re
+import string
 import subprocess
 
 from .misc import encode, fsjoin, renice
-from .UnRar import ArchiveError, CRCError, PasswordError, UnRar
+from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 
 
-class SevenZip(UnRar):
+class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -20,17 +21,15 @@ class SevenZip(UnRar):
                    ("Michael Nowak", None)]
 
     CMD = "7z"
-    EXTENSIONS = ["7z", "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
+    EXTENSIONS = [('7z', "7z(?:\.\d{3})?"), "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
                   "tbz", "tar", "wim", "swm", "lzma", "rar", "cab", "arj", "z",
                   "taz", "cpio", "rpm", "deb", "lzh", "lha", "chm", "chw", "hxs",
                   "iso", "msi", "doc", "xls", "ppt", "dmg", "xar", "hfs", "exe",
                   "ntfs", "fat", "vhd", "mbr", "squashfs", "cramfs", "scap"]
 
-    #@NOTE: there are some more uncovered 7z formats
-    _RE_FILES = re.compile(
-        r'([\d\:]+)\s+([\d\:]+)\s+([\w\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
-    _RE_BADPWD = re.compile(
-        r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
+    _RE_PART = re.compile(r'\.7z\.\d{3}', re.I)
+    _RE_FILES = re.compile(r'([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
+    _RE_BADPWD = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
     _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
     _RE_VERSION = re.compile(r'7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)', re.I)
 
@@ -55,6 +54,10 @@ class SevenZip(UnRar):
 
             return True
 
+    @classmethod
+    def ismultipart(cls, filename):
+        return True if cls._RE_PART.search(filename) else False
+
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test
         p = self.call_cmd("l", "-slt", self.filename)
@@ -71,6 +74,25 @@ class SevenZip(UnRar):
 
         elif self._RE_BADCRC.search(err):
             raise CRCError(err)
+
+    def progress(self, process):
+        s = ""
+        while True:
+            c = process.stdout.read(1)
+            #: Quit loop on eof
+            if not c:
+                break
+            #: Reading a percentage sign -> set progress and restart
+            if c == "%":
+                self.pyfile.setProgress(int(s))
+                s = ""
+            #: Not reading a digit -> therefore restart
+            elif c not in string.digits:
+                s = ""
+            #: Add digit to progressstring
+            else:
+                s += c
+
 
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
@@ -98,6 +120,20 @@ class SevenZip(UnRar):
         if p.returncode > 1:
             raise ArchiveError(_("Process return code: %d") % p.returncode)
 
+    def chunks(self):
+        files = []
+        dir, name = os.path.split(self.filename)
+
+        #: eventually Multipart Files
+        files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
+                     if self._RE_PART.sub("", name) == self._RE_PART.sub("", file))
+
+        #: Actually extracted file
+        if self.filename not in files:
+            files.append(self.filename)
+
+        return files
+
     def list(self, password=None):
         command = "l" if self.fullpath else "l"
 
@@ -122,9 +158,21 @@ class SevenZip(UnRar):
     def call_cmd(self, command, *xargs, **kwargs):
         args = []
 
+        #: Progress output
+        if self.VERSION and float(self.VERSION) >= 15.08:
+                args.append("-bsp1")
+
         #: Overwrite flag
         if self.overwrite:
-            args.append("-y")
+            if self.VERSION and float(self.VERSION) >= 15.08:
+                args.append("-aoa")
+
+            else:
+                args.append("-y")
+
+        else:
+            if self.VERSION and float(self.VERSION) >= 15.08:
+                args.append("-aos")
 
         #: Exclude files
         for word in self.excludefiles:

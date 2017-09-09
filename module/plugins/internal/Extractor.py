@@ -22,13 +22,14 @@ class PasswordError(Exception):
 class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Immenz", "immenz@gmx.net")]
+                   ("Immenz", "immenz@gmx.net"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     EXTENSIONS = []
     REPAIR = False
@@ -37,9 +38,36 @@ class Extractor(Plugin):
     _RE_PART = re.compile(r'')
 
     @classmethod
+    def archivetype(cls, filename):
+        """
+        Get archive default extension from filename
+        :param filename: file name to test
+        :return: Extension or None
+        """
+        name = os.path.basename(filename).lower()
+        for ext in cls.EXTENSIONS:
+            if isinstance(ext, basestring):
+                if name.endswith('.' + ext):
+                    return ext
+
+            elif isinstance(ext, tuple):
+                if re.search("\." + ext[1] + "$", name):
+                    return ext[0]
+        return None
+
+    @classmethod
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith('.' + ext) for ext in cls.EXTENSIONS)
+        for ext in cls.EXTENSIONS:
+            if isinstance(ext, basestring):
+                if name.endswith('.' + ext):
+                    return True
+
+            elif isinstance(ext, tuple):
+                if re.search("\." + ext[1] + "$", name):
+                    return True
+
+        return False
 
     @classmethod
     def ismultipart(cls, filename):
@@ -69,9 +97,8 @@ class Extractor(Plugin):
             if cls.ismultipart(fname):
                 pname = cls._RE_PART.sub("", fname)
             else:
-                pname = fname
+                pname = os.path.splitext(fname)[0]
 
-            pname = os.path.splitext(pname)[0]
             if pname in processed:
                 continue
 

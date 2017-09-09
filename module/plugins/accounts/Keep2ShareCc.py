@@ -10,7 +10,7 @@ from ..internal.misc import json
 class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __description__ = """Keep2Share.cc account plugin"""
@@ -42,15 +42,22 @@ class Keep2ShareCc(Account):
 
             except BadHeader, e:
                 if e.code == 403:
-                    try:
-                        json_data = self.api_response("login", username=user, password=password)
+                    pass
 
-                    except BadHeader, e:
-                        if e.code == 406:
-                            self.fail_login()
-
-                    else:
-                        data['token'] = json_data['auth_token']
-
+                else:
+                    raise
             else:
                 self.skip_login()
+
+        try:
+            json_data = self.api_response("login", username=user, password=password)
+
+        except BadHeader, e:
+            if e.code == 406:
+                self.fail_login()
+
+            else:
+                raise
+
+        else:
+            data['token'] = json_data['auth_token']

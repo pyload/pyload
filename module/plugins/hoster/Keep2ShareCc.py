@@ -12,7 +12,7 @@ from ..internal.misc import json
 class Keep2ShareCc(SimpleHoster):
     __name__ = "Keep2ShareCc"
     __type__ = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(keep2share|k2s|keep2s)\.cc/file/(?P<ID>\w+)'
@@ -115,7 +115,7 @@ class Keep2ShareCc(SimpleHoster):
                         break
 
                 else:
-                    self.fail(_("Recaptcha max retries exceeded"))
+                    self.fail(_("Max captcha retries reached"))
 
                 self.wait(json_data['time_wait'])
 
