@@ -14,6 +14,6 @@ class NetloadIn(DeadHoster):
 
     __description__ = """Netload.in hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
-                   ("RaNaN", "ranan@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
+                   ("RaNaN", "ranan@pyload.net"),
                    ("Gregy", "gregy@gregy.cz")]

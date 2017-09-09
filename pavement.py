@@ -27,11 +27,11 @@ setup(
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
-    url="http://pyload.org",
-    download_url='http://pyload.org/download',
+    url="http://pyload.net",
+    download_url='https://github.com/pyload/pyload/releases',
     license='GPL v3',
     author="pyLoad Team",
-    author_email="support@pyload.org",
+    author_email="support@pyload.net",
     platforms = ('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
@@ -72,7 +72,7 @@ options(
         sourcedir=""
     ),
     get_source=Bunch(
-        src="https://bitbucket.org/spoob/pyload/get/tip.zip",
+        src="https://github.com/pyload/pyload/archive/v0.4.9.zip",
         rev=None,
         clean=False
     ),
@@ -92,7 +92,7 @@ options(
 
 # xgettext args
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
-         "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
+         "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.net'"]
 
 @task
 @needs('cog')

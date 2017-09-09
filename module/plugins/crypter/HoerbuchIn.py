@@ -20,7 +20,7 @@ class HoerbuchIn(Crypter):
 
     __description__ = """Hoerbuch.in decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de")]
 
     article = re.compile("http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")

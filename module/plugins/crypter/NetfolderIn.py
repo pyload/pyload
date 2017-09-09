@@ -14,5 +14,5 @@ class NetfolderIn(DeadCrypter):
 
     __description__ = """NetFolder.in decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("fragonib", "fragonib[AT]yahoo[DOT]es")]

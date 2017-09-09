@@ -11,7 +11,7 @@ class ShareonlineBiz(OCR):
 
     __description__ = """Shareonline.biz ocr plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
 
     #: Tesseract at 60%
     def recognize(self, image):
