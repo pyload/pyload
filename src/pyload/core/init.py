@@ -191,14 +191,14 @@ class Core(Process):
                 group = self.config.get('permission', 'group')
                 set_process_group(group)
             except Exception as e:
-                self.log.error(self._("Unable to change gid"), str(e))
+                self.log.error(self._("Unable to change gid: %s"), str(e))
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
                 set_process_user(user)
             except Exception as e:
-                self.log.error(self._("Unable to change uid"), str(e))
+                self.log.error(self._("Unable to change uid: %s"), str(e))
 
     def set_language(self, lang):
         localedir = resource_filename(__package__, 'locale')
@@ -221,10 +221,14 @@ class Core(Process):
         except Exception as e:
             if lang == default:
                 raise
+
             self.log.warning(
-                self._("Unable to load `{0}` language, "
-                       "use default `{1}`").format(lang, default),
-                str(e))
+                self._(
+                    "Unable to load `%(lang)s` language, using default "
+                    "`%(default)s`: %(error)s",
+                ),
+                {'lang': lang, 'default': default, 'error': str(e)},
+            )
             self.set_language(default)
 
     def _setup_debug(self):
