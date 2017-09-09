@@ -10,93 +10,29 @@
 #          \  /
 #           \/
 
+from __future__ import absolute_import
+
 import io
 import os
 import re
 import shutil
+# import subprocess
 
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
-from setuptools.command.sdist import sdist
-
-# import subprocess
 
 
-_NAMESPACE = 'pyload'
-_PACKAGE = 'pyload.core'
-_PACKAGE_NAME = 'pyload.core'
-_PACKAGE_PATH = 'src/pyload/core'
-_CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
-            ('pyLoad Team', 'info@pyload.net', '2009-2015'))
+def read_text(path):
+    with io.open(path, encoding='utf-8', errors='ignore') as fp:
+        return fp.read().strip()
 
 
-def _read_text(file):
-    with io.open(file, encoding='utf-8') as fp:
-        text = fp.read().strip()
-    try:
-        text = str(text)
-    except UnicodeEncodeError:
-        text = text.encode('utf-8')
-    return text
-
-
-def _write_text(file, text):
-    with io.open(file, mode='w', encoding='utf-8') as fp:
+def write_text(path, text):
+    with io.open(path, mode='w', encoding='utf-8') as fp:
         fp.write(text.strip() + '\n')
-
-
-def _pandoc_convert(text):
-    import pypandoc
-    return pypandoc.convert_text(text, 'rst', 'markdown').replace('\r', '')
-
-
-def _docverter_convert(text):
-    import requests
-    req = requests.post(
-        url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst',
-              'smart': None, 'normalize': None, 'no_wrap': None,
-              'reference_links': None},
-        files={'input_files[]': ('.md', text)}
-    )
-    req.raise_for_status()
-    return req.text
-
-
-def _convert_text(text):
-    try:
-        return _pandoc_convert(text)
-    except Exception as e:
-        print(str(e))
-        return _docverter_convert(text)
-
-
-_RE_PURGE = re.compile(r'<.+>')
-
-def _purge_quotes(text):
-    return _RE_PURGE.sub('', text).strip()
-
-
-def _gen_long_description():
-    readme = _read_text('README.md')
-    history = _read_text('CHANGELOG.md')
-
-    #: keep just the header
-    readme = readme.split('\n\n\n', 1)[0]
-
-    text = '{0}\n\n{1}'.format(_purge_quotes(readme), _purge_quotes(history))
-    return _convert_text(text)
-
-
-def get_long_description():
-    try:
-        text = _read_text('README.rst')
-    except IOError:
-        text = _gen_long_description()
-    return text
 
 
 _RE_SECTION = re.compile(
@@ -113,8 +49,8 @@ def _parse_requires(text):
 
 
 def get_requires(name):
-    file = os.path.join('requirements', name + '.txt')
-    text = _read_text(file)
+    path = os.path.join('requirements', name + '.txt')
+    text = read_text(path)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
         extras['full'] = list(set(chain(*list(extras.values()))))
@@ -122,41 +58,16 @@ def get_requires(name):
     return deps
 
 
-def get_version():
-    return _read_text('VERSION')
-
-
 # def _setx_ntpath():
     # packdir = os.path.abspath(os.path.dirname(__file__))
     # subprocess.call('SETX path "%PATH%;{0}"'.format(packdir), shell=True)
-
-
-class MakeReadme(Command):
-    """
-    Create a valid README.rst file
-    """
-    _READMEFILE = 'README.rst'
-
-    description = 'create a valid README.rst file'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if os.path.isfile(self._READMEFILE):
-            return None
-        _write_text(self._READMEFILE, _gen_long_description())
 
 
 class BuildLocale(Command):
     """
     Build the locales
     """
-    _LOCALEDIR = os.path.join(_PACKAGE_PATH, 'locale')
+    _LOCALEDIR = 'src/pyload/core/locale'
 
     description = 'build the locales'
     user_options = []
@@ -199,7 +110,7 @@ class PreBuild(Command):
     """
     Prepare for build
     """
-    _ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
+    _ABOUTFILE = 'src/pyload/core/__about__.py'
     _ICONFILE = 'media/icon.ico'
 
     description = 'prepare for build'
@@ -212,24 +123,23 @@ class PreBuild(Command):
         pass
 
     def _makeabout(self):
-        credits = ', '.join(str(info) for info in _CREDITS)
-        text = """# -*- coding: utf-8 -*-
+        write_text(self._ABOUTFILE, """# -*- coding: utf-8 -*-
 
 from semver import parse_version_info
 
-__namespace__ = '{0}'
-__package__ = '{1}'
-__package_name__ = '{2}'
-__version__ = '{3}'
+__namespace__ = 'pyload'
+__package__ = 'pyload.core'
+__package_name__ = 'pyload.core'
+__version__ = '{0}'
 __version_info__ = parse_version_info(__version__)
-__credits__ = ({4})
-""".format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, get_version(), credits)
-        _write_text(self._ABOUTFILE, text)
+__credits__ = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
+               ('pyLoad Team', 'info@pyload.net', '2009-2015'))
+""".format(read_text('VERSION')))
 
     def run(self):
         if not os.path.isfile(self._ABOUTFILE):
             self._makeabout()
-        shutil.copy(self._ICONFILE, _PACKAGE_PATH)
+        shutil.copy(self._ICONFILE, 'src/pyload/core')
         self.run_command('build_locale')
 
 
@@ -253,113 +163,65 @@ class BuildPy(build_py):
         build_py.run(self)
 
 
-class Sdist(sdist):
-    """
-    Custom ``sdist`` command
-    """
-    def run(self):
-        if not self.dry_run:
-            self.run_command('makereadme')
-        sdist.run(self)
-
-
-NAME = _PACKAGE_NAME
-VERSION = get_version()
-STATUS = "1 - Planning"
-DESC = """Free and Open Source download manager written in Pure Python and
- designed to be extremely lightweight, fully customizable and remotely
- manageable"""
-LONG_DESC = get_long_description()
-KEYWORDS = [
-    "pyload", "download", "download-manager", "download-station", "downloader",
-    "jdownloader", "one-click-hoster", "upload", "upload-manager",
-    "upload-station", "uploader"
-]
-URL = "https://pyload.net"
-DOWNLOAD_URL = "https://github.com/pyload/pyload/releases"
-LICENSE = "GNU Affero General Public License v3"
-AUTHOR = _CREDITS[0][0]
-AUTHOR_EMAIL = _CREDITS[0][1]
-PLATFORMS = ['any']
-PACKAGES = find_packages('src')
-PACKAGE_DIR = {'': 'src'}
-INCLUDE_PACKAGE_DATA = True
-NAMESPACE_PACKAGES = [_NAMESPACE]
-OBSOLETES = [_NAMESPACE]
-INSTALL_REQUIRES = get_requires('install')
-SETUP_REQUIRES = get_requires('setup')
-TEST_SUITE = 'nose.collector'
-TESTS_REQUIRE = get_requires('test')
-EXTRAS_REQUIRE = get_requires('extra')
-PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
-ENTRY_POINTS = {
-    'console_scripts': ['{0} = {1}.cli:main'.format(_NAMESPACE, _PACKAGE)]
-}
-CMDCLASS = {
-    'bdist_egg': BdistEgg,
-    'build_locale': BuildLocale,
-    'build_py': BuildPy,
-    # 'download_catalog': DownloadCatalog,
-    'makereadme': MakeReadme,
-    'prebuild': PreBuild,
-    'sdist': Sdist
-}
-MESSAGE_EXTRACTORS = {
-    _PACKAGE_PATH: [('**.py', 'python', None)]
-}
-ZIP_SAFE = True
-CLASSIFIERS = [
-    "Development Status :: {0}".format(STATUS),
-    "Environment :: Web Environment",
-    "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: {0}".format(LICENSE),
-    "Natural Language :: English",
-    # "Operating System :: MacOS :: MacOS X",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.6",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.3",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: Implementation :: CPython",
-    # "Programming Language :: Python :: Implementation :: PyPy",
-    "Topic :: Communications",
-    "Topic :: Communications :: File Sharing",
-    "Topic :: Internet",
-    "Topic :: Internet :: File Transfer Protocol (FTP)",
-    "Topic :: Internet :: WWW/HTTP"
-]
-
 setup(
-    name=NAME,
-    version=VERSION,
-    description=DESC,
-    long_description=LONG_DESC,
-    keywords=KEYWORDS,
-    url=URL,
-    download_url=DOWNLOAD_URL,
-    license=LICENSE,
-    author=AUTHOR,
-    author_email=AUTHOR_EMAIL,
-    platforms=PLATFORMS,
-    packages=PACKAGES,
-    package_dir=PACKAGE_DIR,
-    include_package_data=INCLUDE_PACKAGE_DATA,
-    namespace_packages=NAMESPACE_PACKAGES,
-    obsoletes=OBSOLETES,
-    install_requires=INSTALL_REQUIRES,
-    setup_requires=SETUP_REQUIRES,
-    extras_require=EXTRAS_REQUIRE,
-    python_requires=PYTHON_REQUIRES,
-    entry_points=ENTRY_POINTS,
-    cmdclass=CMDCLASS,
-    message_extractors=MESSAGE_EXTRACTORS,
-    # test_suite=TEST_SUITE,
-    # tests_require=TESTS_REQUIRE,
-    zip_safe=ZIP_SAFE,
-    classifiers=CLASSIFIERS
-)
+    name='pyload.core',
+    version=read_text('VERSION'),
+    description='Free and Open Source download manager written in Pure Python '
+                'and designed to be extremely lightweight, fully customizable '
+                'and remotely manageable',
+    long_description=read_text('README.rst'),
+    keywords='pyload download download-manager download-station downloader '
+             'jdownloader one-click-hoster upload upload-manager '
+             'upload-station uploader',
+    url='https://pyload.net',
+    download_url='https://github.com/pyload/pyload/releases',
+    author='Walter Purcaro',
+    author_email='vuolter@gmail.com',
+    license='GNU Affero General Public License v3',
+    classifiers=[
+        "Development Status :: 1 - Planning",
+        "Environment :: Web Environment",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Natural Language :: English",
+        # "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: CPython",
+        # "Programming Language :: Python :: Implementation :: PyPy",
+        "Topic :: Communications",
+        "Topic :: Communications :: File Sharing",
+        "Topic :: Internet",
+        "Topic :: Internet :: File Transfer Protocol (FTP)",
+        "Topic :: Internet :: WWW/HTTP",
+        'Topic :: Software Development :: Libraries :: Python Modules'],
+    platforms=['any'],
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    include_package_data=True,
+    namespace_packages=['pyload'],
+    obsoletes=['pyload'],
+    install_requires=get_requires('install'),
+    setup_requires=get_requires('setup'),
+    extras_require=get_requires('extra'),
+    python_requires='>=2.6,!=3.0,!=3.1,!=3.2',
+    entry_points = {'console_scripts': ['pyload = pyload.core.cli:main']}
+    cmdclass = {
+        'bdist_egg': BdistEgg,
+        'build_locale': BuildLocale,
+        'build_py': BuildPy,
+        # 'download_catalog': DownloadCatalog,
+        'prebuild': PreBuild
+    }
+    message_extractors = {'src/pyload/core': [('**.py', 'python', None)]}
+    # test_suite='nose.collector',
+    # tests_require=get_requires('test'),
+    zip_safe=False)

@@ -1,8 +1,8 @@
-global-exclude *.py[codi] __pycache__
+# global-exclude *.py[codi] __pycache__
 
 # graft src/pyload/lib
 
-include *.md *.rst VERSION pyLoad.py
+include *.md *.rst LICENSE VERSION pyLoad.py
 
 prune docs/build
 
