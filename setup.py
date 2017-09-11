@@ -15,7 +15,6 @@ from __future__ import absolute_import
 import codecs
 import os
 import re
-
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
@@ -122,7 +121,7 @@ class Develop(develop):
 
 
 setup(
-    name='pyload.utils',
+    name='pyload.utils2',
     version=read_text('VERSION'),
     description='pyLoad Utils Tools',
     long_description=read_text('README.rst'),
