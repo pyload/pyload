@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import configparser
 import logging
 import os
-from builtins import bytes, int, object, oct, range, str
+from builtins import bytes, int, object, oct, str
 from contextlib import closing
 
 from future import standard_library
@@ -83,9 +83,12 @@ class ConfigOption(object):
     def _set_type(self, input_type):
         if not input_type:
             input_type = self.DEFAULT_TYPE
-        if input_type not in InputType:
+        try:
+            InputType[input_type]
+        except KeyError:
             raise InvalidValueError(input_type)
-        self.type = input_type
+        else:
+            self.type = input_type
 
     def _set_value(self, value):
         self.value = self.default = self._normalize_value(value)
@@ -138,7 +141,7 @@ class ConfigSection(InscDict):
         self.update(config or ())
 
     def _to_configentry(self, value):
-        if isinstance(value, ConfigOption) or isinstance(value, ConfigSection):
+        if isinstance(value, (ConfigOption, ConfigSection)):
             entry_obj = value
         else:
             entry_type = value[0]
@@ -283,8 +286,8 @@ class ConfigParser(ConfigSection):
             try:
                 section = section.get_section(name)
             except KeyError:
-                for name in section_names[idx:]:
-                    section = section.add_section(name, store=False)
+                for subname in section_names[idx:]:
+                    section = section.add_section(subname, store=False)
                 break
         return section
 
