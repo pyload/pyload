@@ -10,81 +10,28 @@
 #          \  /
 #           \/
 
+from __future__ import absolute_import
+
+import codecs
 import os
 import re
+
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
-from setuptools.command.sdist import sdist
-
-_NAMESPACE = 'pyload'
-_PACKAGE = 'pyload.config'
-_PACKAGE_NAME = 'pyload.config'
-_PACKAGE_PATH = 'src/pyload/config'
-_CREDITS = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
-            ('pyLoad Team', 'info@pyload.net', '2009-2015'))
+from setuptools.command.develop import develop
 
 
-def _read_text(file):
-    with open(file) as fp:
+def read_text(path):
+    with codecs.open(path, encoding='utf-8', errors='ignore') as fp:
         return fp.read().strip()
 
 
-def _write_text(file, text):
-    with open(file, mode='w') as fp:
+def write_text(path, text):
+    with codecs.open(path, mode='w', encoding='utf-8') as fp:
         fp.write(text.strip() + '\n')
-
-
-def _pandoc_convert(text):
-    import pypandoc
-    return pypandoc.convert_text(text, 'rst', 'markdown').replace('\r', '')
-
-
-def _docverter_convert(text):
-    import requests
-    req = requests.post(
-        url='http://c.docverter.com/convert',
-        data={'from': 'markdown', 'to': 'rst',
-              'smart': None, 'normalize': None, 'no_wrap': None,
-              'reference_links': None},
-        files={'input_files[]': ('.md', text)}
-    )
-    req.raise_for_status()
-    return req.text
-
-
-def _convert_text(text):
-    try:
-        return _pandoc_convert(text)
-    except Exception as e:
-        print(str(e))
-        return _docverter_convert(text)
-
-
-_RE_PURGE = re.compile(r'.*<.+>.*')
-
-def _purge_text(text):
-    return _RE_PURGE.sub('', text).strip()
-
-
-def _gen_long_description():
-    readmefile = 'README.md'
-    historyfile = 'CHANGELOG.md'
-    readme = _purge_text(_read_text(
-        readmefile).split(os.linesep * 3, 1)[0].split('\n\n\n', 1)[0])
-    history = _purge_text(_read_text(historyfile))
-    text = '\n\n'.join((readme, history))
-    return _convert_text(text)
-
-
-def _get_long_description():
-    filename = 'README.rst'
-    try:
-        return _read_text(filename)
-    except IOError:
-        return _gen_long_description()
 
 
 _RE_SECTION = re.compile(
@@ -100,10 +47,9 @@ def _parse_requires(text):
     return deps, extras
 
 
-def _get_requires(name):
-    dirname = 'requirements'
-    file = os.path.join(dirname, name + '.txt')
-    text = _read_text(file)
+def get_requires(name):
+    path = os.path.join('requirements', name + '.txt')
+    text = read_text(path)
     deps, extras = _parse_requires(text)
     if name.startswith('extra'):
         extras['full'] = list(set(chain(*list(extras.values()))))
@@ -111,37 +57,11 @@ def _get_requires(name):
     return deps
 
 
-def _get_version():
-    filename = 'VERSION'
-    return _read_text(filename)
-
-
-class MakeReadme(Command):
-    """
-    Create a valid README.rst file
-    """
-    READMEFILE = 'README.rst'
-
-    description = 'create a valid README.rst file'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        if os.path.isfile(self.READMEFILE):
-            return None
-        _write_text(self.READMEFILE, _gen_long_description())
-
-
-class PreBuild(Command):
+class Configure(Command):
     """
     Prepare for build
     """
-    ABOUTFILE = os.path.join(_PACKAGE_PATH, '__about__.py')
+    _ABOUTFILE = 'src/pyload/config/__about__.py'
 
     description = 'prepare for build'
     user_options = []
@@ -153,22 +73,20 @@ class PreBuild(Command):
         pass
 
     def _makeabout(self):
-        credits = ', '.join(str(info) for info in _CREDITS)
-        text = """# -*- coding: utf-8 -*-
+        write_text(self._ABOUTFILE, """# -*- coding: utf-8 -*-
 
 from semver import parse_version_info
 
-__namespace__ = '{0}'
-__package__ = '{1}'
-__package_name__ = '{2}'
-__version__ = '{3}'
+__namespace__ = 'pyload'
+__package__ = 'pyload.config'
+__package_name__ = 'pyload.config'
+__version__ = '{0}'
 __version_info__ = parse_version_info(__version__)
-__credits__ = ({4})
-""".format(_NAMESPACE, _PACKAGE, _PACKAGE_NAME, _get_version(), credits)
-        _write_text(self.ABOUTFILE, text)
+__credits__ = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),)
+""".format(read_text('VERSION')))
 
     def run(self):
-        if os.path.isfile(self.ABOUTFILE):
+        if os.path.isfile(self._ABOUTFILE):
             return None
         self._makeabout()
 
@@ -179,7 +97,7 @@ class BdistEgg(bdist_egg):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('prebuild')
+            self.run_command('configure')
         bdist_egg.run(self)
 
 
@@ -189,101 +107,72 @@ class BuildPy(build_py):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('prebuild')
+            self.run_command('configure')
         build_py.run(self)
 
 
-class Sdist(sdist):
+class Develop(develop):
     """
-    Custom ``sdist`` command
+    Custom ``develop`` command
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('makereadme')
-        sdist.run(self)
+            self.run_command('configure')
+        develop.run(self)
 
-
-NAME = _PACKAGE_NAME
-VERSION = _get_version()
-STATUS = "2 - Pre-Alpha"
-DESC = """pyLoad Config module"""
-LONG_DESC = _get_long_description()
-KEYWORDS = ["pyload"]
-URL = "https://pyload.net"
-DOWNLOAD_URL = "https://github.com/pyload/config/releases"
-LICENSE = "GNU Affero General Public License v3"
-AUTHOR = _CREDITS[0][0]
-AUTHOR_EMAIL = _CREDITS[0][1]
-PLATFORMS = ['any']
-PACKAGES = find_packages('src')
-PACKAGE_DIR = {'': 'src'}
-INCLUDE_PACKAGE_DATA = True
-NAMESPACE_PACKAGES = [_NAMESPACE]
-OBSOLETES = [_NAMESPACE]
-INSTALL_REQUIRES = _get_requires('install')
-SETUP_REQUIRES = _get_requires('setup')
-# TEST_SUITE = ''
-# TESTS_REQUIRE = []
-EXTRAS_REQUIRE = _get_requires('extra')
-PYTHON_REQUIRES = ">=2.6,!=3.0,!=3.1,!=3.2"
-CMDCLASS = {
-    'bdist_egg': BdistEgg,
-    'build_py': BuildPy,
-    'makereadme': MakeReadme,
-    'prebuild': PreBuild,
-    'sdist': Sdist
-}
-ZIP_SAFE = True
-CLASSIFIERS = [
-    "Development Status :: {0}".format(STATUS),
-    "Environment :: Web Environment",
-    "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: {0}".format(LICENSE),
-    "Natural Language :: English",
-    # "Operating System :: MacOS :: MacOS X",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.6",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.3",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: Implementation :: CPython",
-    # "Programming Language :: Python :: Implementation :: PyPy",
-    "Topic :: Communications",
-    "Topic :: Communications :: File Sharing",
-    "Topic :: Internet",
-    "Topic :: Internet :: File Transfer Protocol (FTP)",
-    "Topic :: Internet :: WWW/HTTP"
-]
 
 setup(
-    name=NAME,
-    version=VERSION,
-    description=DESC,
-    long_description=LONG_DESC,
-    keywords=KEYWORDS,
-    url=URL,
-    download_url=DOWNLOAD_URL,
-    license=LICENSE,
-    author=AUTHOR,
-    author_email=AUTHOR_EMAIL,
-    platforms=PLATFORMS,
-    packages=PACKAGES,
-    package_dir=PACKAGE_DIR,
-    include_package_data=INCLUDE_PACKAGE_DATA,
-    namespace_packages=NAMESPACE_PACKAGES,
-    obsoletes=OBSOLETES,
-    install_requires=INSTALL_REQUIRES,
-    setup_requires=SETUP_REQUIRES,
-    extras_require=EXTRAS_REQUIRE,
-    python_requires=PYTHON_REQUIRES,
-    cmdclass=CMDCLASS,
-    # test_suite=TEST_SUITE,
-    # tests_require=TESTS_REQUIRE,
-    zip_safe=ZIP_SAFE,
-    classifiers=CLASSIFIERS
-)
+    name='pyload.config',
+    version=read_text('VERSION'),
+    description='pyLoad Config Parser',
+    long_description=read_text('README.rst'),
+    keywords='pyload download download-manager download-station downloader '
+             'jdownloader one-click-hoster upload upload-manager '
+             'upload-station uploader',
+    url='https://pyload.net',
+    download_url='https://github.com/pyload/pyload/releases',
+    author='Walter Purcaro',
+    author_email='vuolter@gmail.com',
+    license='GNU Affero General Public License v3',
+    classifiers=[
+        "Development Status :: 1 - Planning",
+        "Environment :: Web Environment",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: GNU Affero General Public License v3",
+        "Natural Language :: English",
+        # "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: Implementation :: CPython",
+        # "Programming Language :: Python :: Implementation :: PyPy",
+        "Topic :: Communications",
+        "Topic :: Communications :: File Sharing",
+        "Topic :: Internet",
+        "Topic :: Internet :: File Transfer Protocol (FTP)",
+        "Topic :: Internet :: WWW/HTTP",
+        'Topic :: Software Development :: Libraries :: Python Modules'],
+    platforms=['any'],
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    include_package_data=True,
+    namespace_packages=['pyload'],
+    obsoletes=['pyload'],
+    install_requires=get_requires('install'),
+    setup_requires=get_requires('setup'),
+    extras_require=get_requires('extra'),
+    python_requires='>=2.6,!=3.0,!=3.1,!=3.2',
+    cmdclass={
+        'bdist_egg': BdistEgg,
+        'build_py': BuildPy,
+        'configure': Configure,
+        'develop': Develop
+    },
+    zip_safe=True)
