@@ -13,10 +13,10 @@ from contextlib import closing
 from future import standard_library
 
 import pycurl
+from pyload.requests.types import Connection
 from pyload.utils import purge
 from pyload.utils.fs import fullpath, lopen, remove
 
-from pyload.requests.types import Connection
 from ..chunk import ChunkInfo
 from ..cookie import CookieJar
 from ..download import DownloadRequest
@@ -57,7 +57,7 @@ class CurlDownload(DownloadRequest):
         # needed for speed calculation
         self.last_arrived = []
         self.speeds = []
-        self.last_speeds = (0, 0)
+        self.last_speeds = [0, 0]
 
     @property
     def speed(self):
@@ -223,7 +223,7 @@ class CurlDownload(DownloadRequest):
                 chunks_created = True
 
             while True:
-                ret, num_handles = self.__manager.perform()
+                ret, _ = self.__manager.perform()
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 

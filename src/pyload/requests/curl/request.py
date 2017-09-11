@@ -266,7 +266,7 @@ class CurlRequest(Request):
     def parse_cookies(self):
         for c in self.c.getinfo(pycurl.INFO_COOKIELIST):
             # http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
-            domain, flag, path, secure, expires, name, value = c.split("\t")
+            domain, _, path, secure, expires, name, value = c.split("\t")
             # http only was added in py 2.6
             domain = domain.replace("#HttpOnly_", "")
             self.cj.set(domain, name, value, path, expires, secure)
@@ -305,7 +305,7 @@ class CurlRequest(Request):
                     ("text" not in line and "application" not in line)):
                 continue
 
-            none, delemiter, charset = line.rpartition("charset=")
+            _, delemiter, charset = line.rpartition("charset=")
             if delemiter:
                 charset = charset.split(";")
                 if charset:
