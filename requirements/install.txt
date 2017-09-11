@@ -7,6 +7,6 @@ portalocker
 psutil
 setproctitle
 semver
-setuptools
+setuptools>=0.6.39
 tld
 validators
