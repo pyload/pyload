@@ -1,4 +1,3 @@
-aenum;python_version<"3.4"
 future
 nose
 pycurl

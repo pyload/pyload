@@ -12,26 +12,29 @@
 
 from __future__ import absolute_import
 
-import io
+import codecs
 import os
 import re
 import shutil
-# import subprocess
-
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
+from setuptools.command.develop import develop
+
+# import subprocess
+
+
 
 
 def read_text(path):
-    with io.open(path, encoding='utf-8', errors='ignore') as fp:
+    with codecs.open(path, encoding='utf-8', errors='ignore') as fp:
         return fp.read().strip()
 
 
 def write_text(path, text):
-    with io.open(path, mode='w', encoding='utf-8') as fp:
+    with codecs.open(path, mode='w', encoding='utf-8') as fp:
         fp.write(text.strip() + '\n')
 
 
@@ -106,7 +109,7 @@ class BuildLocale(Command):
 # raise NotImplementedError
 
 
-class PreBuild(Command):
+class Configure(Command):
     """
     Prepare for build
     """
@@ -149,7 +152,7 @@ class BdistEgg(bdist_egg):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('prebuild')
+            self.run_command('configure')
         bdist_egg.run(self)
 
 
@@ -159,8 +162,18 @@ class BuildPy(build_py):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('prebuild')
+            self.run_command('configure')
         build_py.run(self)
+
+
+class Develop(develop):
+    """
+    Custom ``develop`` command
+    """
+    def run(self):
+        if not self.dry_run:
+            self.run_command('configure')
+        develop.run(self)
 
 
 setup(
@@ -213,15 +226,16 @@ setup(
     setup_requires=get_requires('setup'),
     extras_require=get_requires('extra'),
     python_requires='>=2.6,!=3.0,!=3.1,!=3.2',
-    entry_points = {'console_scripts': ['pyload = pyload.core.cli:main']}
-    cmdclass = {
+    entry_points={'console_scripts': ['pyload = pyload.core.cli:main']},
+    cmdclass={
         'bdist_egg': BdistEgg,
         'build_locale': BuildLocale,
         'build_py': BuildPy,
-        # 'download_catalog': DownloadCatalog,
-        'prebuild': PreBuild
-    }
-    message_extractors = {'src/pyload/core': [('**.py', 'python', None)]}
+        'configure': Configure,
+        'develop': Develop
+        # 'download_catalog': DownloadCatalog
+    },
+    message_extractors={'src/pyload/core': [('**.py', 'python', None)]},
     # test_suite='nose.collector',
     # tests_require=get_requires('test'),
     zip_safe=False)
