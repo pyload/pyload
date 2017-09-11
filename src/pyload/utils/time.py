@@ -16,9 +16,10 @@ def compare(start, end):
         return True
 
     now = time.localtime()[3:5]
-    if (start < now < end or
-        start < now > end < start or
-            start > end and (now > start or now < end)):
+    if start < now < end or start < now > end < start:
+        return True
+        
+    elif start > end and (now > start or now < end):
         return True
 
     return False

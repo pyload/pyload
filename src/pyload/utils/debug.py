@@ -62,18 +62,20 @@ def print_dump(obj, file=None):
 def _format_framestack(frame=None, limit=None):
     limit = None if not limit else abs(limit)
     stack = []
-    etype, value, tb = sys.exc_info(frame)
+    _, value, tb = sys.exc_info(frame)
     try:
         while tb:
             stack.append(tb.tb_frame)
             tb = tb.tb_next
         dump = []
-        for frame in stack[1:limit]:
+        for _frame in stack[1:limit]:
             msg = "Frame {0} in {1} at line {2}"
             frame_name = msg.format(
-                frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno)
+                _frame.f_code.co_name, 
+                _frame.f_code.co_filename, 
+                _frame.f_lineno)
             frame_dump = []
-            for attr_name, value in frame.f_locals.items():
+            for attr_name, value in _frame.f_locals.items():
                 try:
                     attr_dump = pprint.pformat(value)
                 except Exception as e:
@@ -81,7 +83,7 @@ def _format_framestack(frame=None, limit=None):
                         str(e))
                 frame_dump.append((attr_name, attr_dump))
             dump.append((frame_name, frame_dump))
-            del frame
+            del _frame
         return dump
     finally:
         del stack[:]  # delete all just to be sure...

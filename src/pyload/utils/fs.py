@@ -97,8 +97,7 @@ def exists(path, strict=False):
     if os.path.exists(path):
         dirpath, name = os.path.split(path)
         return name in os.listdir(dirpath)
-    else:
-        return False
+    return False
 
 
 def filesize(filename):
@@ -193,7 +192,7 @@ def lopen(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
     else:
         flags = portalocker.LOCK_EX | portalocker.LOCK_NB
     with _open(filename, mode, buffering, encoding,
-              errors, newline, closefd) as fp:
+               errors, newline, closefd) as fp:
         portalocker.lock(fp, flags)
         yield fp
 

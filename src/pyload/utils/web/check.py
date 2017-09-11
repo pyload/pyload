@@ -98,12 +98,12 @@ def isresource(url, *args, **kwargs):
     mime = ""
     content = r.headers.get('content-type')
     if content:
-        mime, delemiter, charset = content.rpartition("charset=")
+        mime, _, _ = content.rpartition("charset=")
     else:
         from . import parse
 
         name = parse.name(url)
-        root, ext = os.path.splitext(name)
+        _, ext = os.path.splitext(name)
         if ext:
             mime = parse.mime(name)
 

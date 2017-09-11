@@ -12,7 +12,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 
-def chars(text, chars, repl=''):
+def char(text, chars, repl=''):
     return re.sub(r'[{0}]+'.format(chars), repl, text)
 
 
@@ -37,10 +37,10 @@ def name(text, sep='_', allow_whitespaces=False):
     repl = r''.join(bc)
     if not allow_whitespaces:
         repl += ' '
-    name = chars(text, repl, sep).strip()
-    if os.name == 'nt' and name.lower() in _WINBADWORDS:
-        name = sep + name
-    return name
+    res = char(text, repl, sep).strip()
+    if os.name == 'nt' and res.lower() in _WINBADWORDS:
+        res = sep + res
+    return res
 
 
 def pattern(text, rules):
@@ -62,7 +62,7 @@ def truncate(text, offset):
     return "{0}~{1}".format(text[:trunc * 2], text[-trunc:])
 
 
-def uniqify(seq):
+def uniquify(seq):
     """
     Remove duplicates from list preserving order.
     """

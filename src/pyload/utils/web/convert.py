@@ -29,12 +29,12 @@ def splitaddress(address):
 
 
 def host_to_ip(hostname):
-    hostname, aliaslist, ipaddrlist = socket.gethostbyname_ex(hostname)
+    _, _, ipaddrlist = socket.gethostbyname_ex(hostname)
     return ipaddrlist
 
 
 def ip_to_host(ipaddress):
-    hostname, aliaslist, ipaddrlist = socket.gethostbyaddr(ipaddress)
+    hostname, aliaslist, _ = socket.gethostbyaddr(ipaddress)
     return [hostname] + aliaslist
 
 

@@ -17,4 +17,4 @@ def get_ip():
 
 def translate(text, in_lang='auto', out_lang='en'):
     translator = googletrans.Translator()
-    return translator.translate(text, out_lang, in_lang)
+    return translator.translate(text, out_lang, in_lang).text

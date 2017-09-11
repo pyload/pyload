@@ -39,7 +39,7 @@ def endpoint(text):
 # TODO: Recheck result format
 def attr(text, name=None):
     pattr = r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'
-    pattr = pattr.format(name or '\w+')
+    pattr = pattr.format(name or r'\w+')
     m = re.search(pattr, text, flags=re.I)
     return m.group(2) if m is not None else None
 

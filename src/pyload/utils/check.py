@@ -13,11 +13,11 @@ from .layer.legacy.collections_ import Iterable, Mapping
 standard_library.install_aliases()
 
 
-def bitset(bits, cmp):
+def bitset(bits, bset):
     """
-    Checks if all bits are set in cmp or bits is zero.
+    Checks if all bits are set in bset or bits is zero.
     """
-    return bits == (bits & cmp)
+    return bits == (bits & bset)
 
 
 def cmp(x, y):
@@ -62,7 +62,7 @@ def isiterable(obj, strict=False):
     Check if object is iterable (`<type 'str'>` excluded if strict=False).
     """
     return (isinstance(obj, Iterable) and (
-        strict or not (isinstance(obj, str) or isinstance(obj, bytes))))
+        strict or not isinstance(obj, (bytes, str))))
 
 
 def ismapping(obj):
@@ -77,7 +77,7 @@ def ismodule(name, path=None):
     Check if exists a module with given name.
     """
     try:
-        fp, fname, desc = imp.find_module(name, path)
+        fp, _, _ = imp.find_module(name, path)
         if fp is not None:
             fp.close()
         return True

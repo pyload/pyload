@@ -40,7 +40,7 @@ class InscDict(MutableMapping):
 
     def __eq__(self, other):
         if not isinstance(other, Mapping):
-            return NotImplementedError
+            raise TypeError
         # Compare insensitively
         return self.loweritems() == InscDict(other).loweritems()
 

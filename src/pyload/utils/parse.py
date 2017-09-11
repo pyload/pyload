@@ -33,7 +33,7 @@ def boolean(text):
 def entries(text, allow_whitespaces=False):
     chars = ';,|'
     if not allow_whitespaces:
-        chars += '\s'
+        chars += r'\s'
     pattr = r'[{0}]+'.format(chars)
     return [entry for entry in re.split(pattr, text) if entry]
 

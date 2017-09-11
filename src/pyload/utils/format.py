@@ -32,12 +32,12 @@ def attributes(obj, ignore=None):
 
 def items(obj, ignore=None):
     if ignore is None:
-        items = ("{0}={1}".format(k, v) for k, v in obj.items())
+        res = ("{0}={1}".format(k, v) for k, v in obj.items())
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        items = (
-            "{0}={1}".format(k, v) for k, v in obj.items() if k not in ignored)
-    return items
+        res = ("{0}={1}".format(k, v) for k, v in obj.items() 
+               if k not in ignored)
+    return res
 
 
 def path(*paths):
