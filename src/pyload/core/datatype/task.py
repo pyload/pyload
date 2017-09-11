@@ -5,15 +5,11 @@ from __future__ import absolute_import, unicode_literals
 
 import time
 from builtins import int
+from enum import IntEnum
 
 from future import standard_library
 
 from .init import BaseObject, InputType
-
-try:
-    from enum import IntEnum
-except ImportError:
-    from aenum import IntEnum
 
 standard_library.install_aliases()
 

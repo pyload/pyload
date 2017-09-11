@@ -22,6 +22,7 @@ from future import standard_library
 from pkg_resources import resource_filename
 
 from pyload.config import ConfigParser
+from pyload.core.network.factory import RequestFactory
 from pyload.utils import format
 from pyload.utils.check import ismodule
 from pyload.utils.fs import availspace, fullpath, makedirs
@@ -29,7 +30,6 @@ from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_name, set_process_user)
 
-from pyload.core.network.factory import RequestFactory
 from .__about__ import (__namespace__, __package__, __version__,
                         __version_info__)
 from .config import config_defaults, session_defaults

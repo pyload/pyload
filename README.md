@@ -436,7 +436,7 @@ You are allowed to use this software under the terms of the **GNU Affero
 General Public License** as published by the Free Software Foundation;
 either **version 3** of the License, or (at your option) any later version.
 
-Please refer to the included [LICENSE](/LICENSE.md) for the extended
+Please refer to the included [LICENSE](/LICENSE) for the extended
 _Open Source License_.
 
 ### Alternative License

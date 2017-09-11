@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from pyload.utils.purge import uniqify
+from pyload.utils.purge import uniquify
 
 from ..datatype.file import FileDoesNotExist
 from ..datatype.init import DownloadState, Permission
@@ -123,7 +123,7 @@ class FileApi(BaseApi):
     def search_suggestions(self, pattern):
         names = self.pyload.db.get_matching_filenames(pattern)
         # TODO: stemming and reducing the names to provide better suggestions
-        return uniqify(names)
+        return uniquify(names)
 
     @requireperm(Permission.All)
     def find_packages(self, tags):

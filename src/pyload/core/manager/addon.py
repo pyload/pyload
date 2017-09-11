@@ -12,14 +12,13 @@ from types import MethodType
 from _thread import start_new_thread
 from future import standard_library
 
+from pyload.core.datatype.init import (AddonInfo, AddonService,
+                                       ServiceDoesNotExist, ServiceException)
+from pyload.core.manager.base import BaseManager
+from pyload.core.thread import AddonThread
 from pyload.utils.layer.legacy.collections_ import namedtuple
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
-
-from pyload.core.datatype.init import (
-    AddonInfo, AddonService, ServiceDoesNotExist, ServiceException)
-from pyload.core.manager.base import BaseManager
-from pyload.core.thread import AddonThread
 
 standard_library.install_aliases()
 

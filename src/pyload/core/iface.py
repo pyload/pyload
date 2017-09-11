@@ -7,15 +7,14 @@ import os
 from builtins import DATADIR
 from tempfile import mkstemp
 
+import autoupgrade
+import daemonize
 from future import standard_library
 from pkg_resources import get_default_cache
 
-import autoupgrade
-import daemonize
-from pyload.utils.fs import makedirs, remove
-
 from pyload.core.__about__ import __namespace__, __package_name__, __version__
 from pyload.core.init import Core, _pmap
+from pyload.utils.fs import makedirs, remove
 
 standard_library.install_aliases()
 

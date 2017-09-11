@@ -11,7 +11,7 @@ from future import standard_library
 
 from pyload.utils import parse
 from pyload.utils.fs import lopen
-from pyload.utils.purge import uniqify
+from pyload.utils.purge import uniquify
 
 from ..datatype.check import OnlineCheck
 from ..datatype.init import DownloadStatus, LinkStatus, Permission
@@ -103,7 +103,7 @@ class PreDownloadApi(BaseApi):
             page = self.pyload.req.get_url(url)
             urls += [x[0] for x in _re_urlmatch.findall(page)]
 
-        return self.check_links(uniqify(urls))
+        return self.check_links(uniquify(urls))
 
     @requireperm(Permission.Add)
     def poll_results(self, rid):

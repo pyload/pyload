@@ -10,11 +10,10 @@ from builtins import object, str
 from future import standard_library
 from pkg_resources import resource_filename
 
-from pyload.utils.fs import fullpath
-
 from pyload.core.__about__ import __package__
 from pyload.core.manager.base import BaseManager
 from pyload.core.network.loader import LoaderFactory, PluginLoader
+from pyload.utils.fs import fullpath
 
 standard_library.install_aliases()
 

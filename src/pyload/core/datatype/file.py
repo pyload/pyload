@@ -6,22 +6,38 @@ from __future__ import absolute_import, unicode_literals
 import re
 import time
 from builtins import int
+from enum import IntEnum
 
 from future import standard_library
 
 from pyload.utils import purge
-from pyload.utils.decorator import trycatch
+from pyload.utils.debug import print_traceback
 from pyload.utils.struct.lock import RWLock, lock
 
 from .init import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
 
-try:
-    from enum import IntEnum
-except ImportError:
-    from aenum import IntEnum
-
 standard_library.install_aliases()
+
+
+def trycatch(callback):
+    """
+    Decorator that executes the function and returns the value or fallback on
+    any exception.
+    """
+    def wrapper(func):
+        def new(self, *args, **kwargs):
+            try:
+                return func(self, *args, **kwargs)
+            except Exception as e:
+                msg = "Error executing `{0}` | {1}".format(
+                    func.__name__, str(e))
+                self.__pyload.log.debug(msg)
+                if self.__pyload.debug:
+                    print_traceback()
+                return callback(e)
+        return new
+    return wrapper
 
 
 statusmap = {

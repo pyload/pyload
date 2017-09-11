@@ -131,7 +131,7 @@ class DatabaseBackend(Thread):
         self.__pyload = core
         self._ = core._
         self.__manager = None  # set later
-        self.error = None
+        self.error = None  # TODO: Recheck...
         self.__running = Event()
 
         self.jobs = Queue()

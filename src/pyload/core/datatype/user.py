@@ -3,16 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from enum import IntEnum
+
 from future import standard_library
 
 from pyload.utils.check import bitset
 
 from .init import BaseObject, ExceptionObject, Permission
-
-try:
-    from enum import IntEnum
-except ImportError:
-    from aenum import IntEnum
 
 standard_library.install_aliases()
 

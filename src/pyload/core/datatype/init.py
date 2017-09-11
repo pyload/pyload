@@ -3,13 +3,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from builtins import object
+from enum import IntEnum
 
 from future import standard_library
-
-try:
-    from enum import IntEnum
-except ImportError:
-    from aenum import IntEnum
 
 standard_library.install_aliases()
 

@@ -7,10 +7,9 @@ import json
 from future import standard_library
 
 from pyload.config import ConfigParser
+from pyload.core.datatype.init import InvalidConfigSection
 # from pyload.config.convert import from_string
 from pyload.utils.layer.legacy.collections_ import OrderedDict
-
-from pyload.core.datatype.init import InvalidConfigSection
 
 standard_library.install_aliases()
 

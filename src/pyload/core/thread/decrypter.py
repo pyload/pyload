@@ -7,14 +7,13 @@ from builtins import str
 
 from future import standard_library
 
-from pyload.utils.misc import accumulate
-from pyload.utils.purge import uniqify
-
-from pyload.core.datatype.init import (
-    DownloadStatus, LinkStatus, ProgressInfo, ProgressType)
+from pyload.core.datatype.init import (DownloadStatus, LinkStatus,
+                                       ProgressInfo, ProgressType)
 from pyload.core.datatype.package import Package
 from pyload.core.network.base import Abort, Retry
 from pyload.core.thread.plugin import PluginThread
+from pyload.utils.misc import accumulate
+from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 
@@ -153,4 +152,4 @@ class DecrypterThread(PluginThread):
                         packs[pack.name] = pack
                 else:
                     urls.append(pack)
-        return uniqify(urls), list(packs.values())
+        return uniquify(urls), list(packs.values())
