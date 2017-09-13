@@ -9,7 +9,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -39,6 +39,7 @@ class MultiHoster(SimpleHoster):
         return SimpleHoster._log(self, level, plugintype, pluginname, messages)
 
     def setup(self):
+        self.no_fallback = True
         self.chunk_limit = 1
         self.multiDL = bool(self.account)
         self.resume_download = self.premium

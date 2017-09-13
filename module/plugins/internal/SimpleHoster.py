@@ -14,14 +14,13 @@ from .misc import encode, parse_name, parse_size, parse_time, replace_patterns
 class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
-    __version__ = "2.26"
+    __version__ = "2.27"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
@@ -211,8 +210,10 @@ class SimpleHoster(Hoster):
         self.direct_dl = False
         self.leech_dl = False
 
-        if self.LOGIN_PREMIUM and not self.premium:
-            self.fail(_("Required premium account not found"))
+        if self.LOGIN_PREMIUM:
+            self.no_fallback = True
+            if not self.premium:
+                self.fail(_("Required premium account not found"))
 
         if self.LOGIN_ACCOUNT and not self.account:
             self.fail(_("Required account not found"))

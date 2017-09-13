@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -74,10 +74,14 @@ class Hoster(Base):
         #: Restart flag
         self.restart_free = False  # @TODO: Recheck in 0.4.10
 
+        #: Download is possible with premium account only, don't fallback to free download
+        self.no_fallback = False
+
     def setup_base(self):
         self.last_download = None
         self.last_check = None
         self.restart_free = False
+        self.no_fallback = False
 
         if self.account:
             self.chunk_limit = -1  #: -1 for unlimited
@@ -116,7 +120,7 @@ class Hoster(Base):
                 self._check_download()
 
             except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
-                if self.config.get('fallback', True) and self.premium:
+                if self.no_fallback is False and self.config.get('fallback', True) and self.premium:
                     self.log_warning(_("Premium download failed"), e)
                     self.restart(premium=False)
 
