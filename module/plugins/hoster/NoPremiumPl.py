@@ -7,17 +7,15 @@ from ..internal.MultiHoster import MultiHoster
 class NoPremiumPl(MultiHoster):
     __name__ = "NoPremiumPl"
     __type__ = "hoster"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'https?://direct\.nopremium\.pl.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", False),
+                  ("fallback", "bool", "Fallback to free download if premium fails", False),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("revert_failed", "bool", "Revert to standard download if fails", True)]
 
     __description__ = """NoPremium.pl multi-hoster plugin"""
@@ -56,7 +54,6 @@ class NoPremiumPl(MultiHoster):
         return self.load(self.API_URL, post=query, redirect=20)
 
     def handle_premium(self, pyfile):
-        self.log_debug("handle_premium")
         try:
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
@@ -82,9 +79,8 @@ class NoPremiumPl(MultiHoster):
 
         if "sdownload" in parsed:
             if parsed['sdownload'] == "1":
-                self.fail(
-                    _("Download from %s is possible only using NoPremium.pl website \
-                    directly") % parsed['hosting'])
+                self.fail(_("Download from %s is possible only using NoPremium.pl website  directly")
+                          % parsed['hosting'])
 
         pyfile.name = parsed['filename']
         pyfile.size = parsed['filesize']
