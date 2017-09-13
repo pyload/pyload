@@ -1,31 +1,35 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+from threading import Event
 
 import hashlib
 import os
 import re
+import time
 import zlib
 
 from ..internal.Addon import Addon
-from ..internal.misc import encode, fsjoin
+from ..internal.misc import encode, format_time, fsjoin, threaded
 
-
-def compute_checksum(local_file, algorithm, progress_notify=None):
+def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
     file_size = os.stat(local_file).st_size
     processed = 0
     if progress_notify:
         progress_notify(0)
 
     try:
-        if algorithm in getattr(
-                hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
+        if algorithm in getattr(hashlib, "algorithms", ("md5", "sha1", "sha224", "sha256", "sha384", "sha512")):
             h = getattr(hashlib, algorithm)()
 
             with open(local_file, 'rb') as f:
                 for chunk in iter(lambda: f.read(128 * h.block_size), ''):
+                    if abort and abort():
+                        return False
+
                     h.update(chunk)
                     processed += len(chunk)
+
                     if progress_notify:
                         progress_notify(processed * 100 / file_size)
 
@@ -37,8 +41,12 @@ def compute_checksum(local_file, algorithm, progress_notify=None):
 
             with open(local_file, 'rb') as f:
                 for chunk in iter(lambda: f.read(8192), ''):
+                    if abort and abort():
+                        return False
+
                     last = hf(chunk, last)
                     processed += len(chunk)
+
                     if progress_notify:
                         progress_notify(processed * 100 / file_size)
 
@@ -55,19 +63,14 @@ def compute_checksum(local_file, algorithm, progress_notify=None):
 class Checksum(Addon):
     __name__ = "Checksum"
     __type__ = "hook"
-    __version__ = "0.33"
-    __status__ = "broken"
+    __version__ = "0.34"
+    __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
-                  ("check_checksum",
-                   "bool",
-                   "Check checksum? (If False only size will be verified)",
-                   True),
-                  ("check_action", "fail;retry;nothing",
-                   "What to do if check fails?", "retry"),
+                  ("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
+                  ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
                   ("max_tries", "int", "Number of retries", 2),
-                  ("retry_action", "fail;nothing",
-                   "What to do if all retries fail?", "fail"),
+                  ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
                   ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
 
     __description__ = """Verify downloaded file size and checksum"""
@@ -97,6 +100,8 @@ class Checksum(Addon):
         self.algorithms.extend(["crc32", "adler32"])
 
         self.formats = self.algorithms + ["sfv", "crc", "hash"]
+
+        self.retries = {}
 
     def download_finished(self, pyfile):
         """
@@ -158,14 +163,21 @@ class Checksum(Addon):
                     if key in data['hash']:
                         pyfile.setCustomStatus(_("checksum verifying"))
                         try:
-                            checksum = compute_checksum(local_file, key.replace("-", "").lower(), progress_notify=pyfile.setProgress)
+                            checksum = compute_checksum(local_file,
+                                                        key.replace("-", "").lower(),
+                                                        progress_notify=pyfile.setProgress,
+                                                        abort=lambda: pyfile.abort)
                         finally:
                             pyfile.setStatus("processing")
 
-                        if checksum:
-                            if checksum == data['hash'][key].lower():
+                        if checksum is False:
+                            continue
+
+                        elif checksum is not None:
+                            if checksum.lower() == data['hash'][key].lower():
                                 self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
-                                              (pyfile.name, key.upper(), checksum))
+                                              (pyfile.name, key.upper(), checksum.lower()))
+                                pyfile.error = _("checksum verified")
                                 break
 
                             else:
@@ -201,38 +213,138 @@ class Checksum(Addon):
         pyfile.plugin.fail(msg)
 
     def package_finished(self, pypack):
-        dl_folder = fsjoin(
-            self.pyload.config.get(
-                "general",
-                "download_folder"),
-            pypack.folder,
-            "")
+        event_finished = Event()
+        self.verify_package(pypack, event_finished)
+        event_finished.wait()  #: Postpone `all_downloads_processed` event until we actually finish
 
-        for fid, fdata in pypack.getChildren().items():
-            file_type = os.path.splitext(fdata['name'])[1][1:].lower()
+    @threaded
+    def verify_package(self, pypack, event_finished, thread=None):
+        try:
+            dl_folder = fsjoin(
+                self.pyload.config.get(
+                    "general",
+                    "download_folder"),
+                pypack.folder,
+                "")
 
-            if file_type not in self.formats:
-                continue
+            pdata = pypack.getChildren().items()
+            files_ids = dict([(fdata['name'], fdata['id']) for fid, fdata in pdata])
+            failed_queue = []
+            for fid, fdata in pdata:
+                file_type = os.path.splitext(fdata['name'])[1][1:].lower()
 
-            hash_file = encode(fsjoin(dl_folder, fdata['name']))
-            if not os.path.isfile(hash_file):
-                self.log_warning(_("File not found"), fdata['name'])
-                continue
+                if file_type not in self.formats:
+                    continue
 
-            with open(hash_file) as f:
-                text = f.read()
+                hash_file = encode(fsjoin(dl_folder, fdata['name']))
+                if not os.path.isfile(hash_file):
+                    self.log_warning(_("File not found"), fdata['name'])
+                    continue
 
-            for m in re.finditer(self._regexmap.get(file_type, self._regexmap['default']), text, re.M):
-                data = m.groupdict()
-                self.log_debug(fdata['name'], data)
+                with open(hash_file) as f:
+                    text = f.read()
 
-                local_file = encode(fsjoin(dl_folder, data['NAME']))
-                algorithm = self._methodmap.get(file_type, file_type)
-                checksum = compute_checksum(local_file, algorithm)
+                failed = []
+                for m in re.finditer(self._regexmap.get(file_type, self._regexmap['default']), text, re.M):
+                    data = m.groupdict()
+                    self.log_debug(fdata['name'], data)
 
-                if checksum.lower() == data['HASH'].lower():
-                    self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
-                                  (data['NAME'], algorithm, checksum.upper()))
+                    local_file = encode(fsjoin(dl_folder, data['NAME']))
+                    algorithm = self._methodmap.get(file_type, file_type)
+
+                    pyfile = None
+                    fid = files_ids.get(data['NAME'], None)
+                    if fid is not None:
+                        pyfile = self.pyload.files.getFile(fid)
+                        pyfile.setCustomStatus(_("checksum verifying"))
+                        thread.addActive(pyfile)
+                        try:
+                            checksum = compute_checksum(local_file, algorithm,
+                                                        progress_notify=pyfile.setProgress,
+                                                        abort=lambda: pyfile.abort)
+                        finally:
+                            thread.finishFile(pyfile)
+
+                    else:
+                        checksum = compute_checksum(local_file, algorithm)
+
+                    if checksum is False:
+                        continue
+
+                    elif checksum is not None:
+                        if checksum.lower() == data['HASH'].lower():
+                            self.retries.pop(fid, 0)
+                            self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
+                                          (data['NAME'], algorithm, checksum))
+
+                            if pyfile is not None:
+                                pyfile.error = _("checksum verified")
+                                pyfile.setStatus("finished")
+                                pyfile.release()
+
+                        else:
+                            self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
+                                             (algorithm.upper(), data['NAME'], checksum.lower(), data['HASH'].lower()))
+
+                            if fid is not None:
+                                failed.append((fid, local_file))
+                    else:
+                        self.log_warning(_("Unsupported hashing algorithm"), algorithm.upper())
+
+                if failed:
+                    failed_queue.extend(failed)
+
                 else:
-                    self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
-                                     (algorithm, data['NAME'], checksum.upper(), data['HASH']))
+                    self.log_info(_('All files specified by "%s" verified successfully') % fdata['name'])
+
+            if failed_queue:
+                self.package_check_failed(failed_queue, thread, "Checksums do not match")
+
+        finally:
+            event_finished.set()
+
+    @threaded
+    def package_check_failed(self, failed_queue, parent_thread,  msg):
+        parent_thread.join()  #: wait for calling thread to finish
+        time.sleep(1)
+
+        check_action = self.config.get('check_action')
+        retry_action = self.config.get('retry_action')
+
+        for fid, local_file in failed_queue:
+            pyfile = self.pyload.files.getFile(fid)
+            try:
+                if check_action == "retry":
+                    retry_count = self.retries.get(fid, 0)
+                    max_tries = self.config.get('max_tries')
+                    if retry_count < max_tries:
+                        if local_file:
+                            os.remove(local_file)
+
+                        self.retries[fid] = retry_count + 1
+
+                        wait_time = self.config.get('wait_time')
+                        self.log_info(_("Waiting %s...") % format_time(wait_time))
+                        time.sleep(wait_time)
+
+                        pyfile.package().setFinished = False  #: Force `package_finished` event again
+                        self.pyload.files.restartFile(fid)
+                        continue
+
+                    else:
+                        self.retries.pop(fid, 0)
+                        if retry_action == "nothing":
+                            continue
+
+                else:
+                    self.retries.pop(fid, 0)
+                    if check_action == "nothing":
+                        continue
+
+                os.remove(local_file)
+
+                pyfile.error = msg
+                pyfile.setStatus("failed")
+
+            finally:
+                pyfile.release()
