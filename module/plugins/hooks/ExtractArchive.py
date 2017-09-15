@@ -7,7 +7,7 @@ import sys
 
 from ..internal.Addon import Addon
 from ..internal.Extractor import ArchiveError, CRCError, PasswordError
-from ..internal.misc import Expose, encode, exists, fsjoin, threaded, uniqify
+from ..internal.misc import Expose, encode, exists, fsjoin, safename, threaded, uniqify
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.64"
+    __version__ = "1.65"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -263,7 +263,8 @@ class ExtractArchive(Addon):
                 "")  #: Force trailing slash
 
             if subfolder:
-                extract_folder = fsjoin(extract_folder, pypack.name)
+                extract_folder = fsjoin(extract_folder,
+                                        pypack.folder or safename(pypack.name.replace("http://", "")))
 
             if not exists(extract_folder):
                 os.makedirs(extract_folder)
