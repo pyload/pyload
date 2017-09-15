@@ -7,7 +7,7 @@ from ..internal.MultiHoster import MultiHoster
 class AlldebridCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.|s\d+\.)?alldebrid\.com/dl/[\w^_]+'
@@ -27,6 +27,7 @@ class AlldebridCom(MultiHoster):
     API_URL = "https://api.alldebrid.com/"
 
     def api_response(self, method, **kwargs):
+        kwargs['agent'] = "pyLoad/" + self.pyload.version
         html = self.load(self.API_URL + method, get=kwargs)
         return json.loads(html)
 

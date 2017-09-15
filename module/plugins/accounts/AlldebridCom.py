@@ -7,7 +7,7 @@ from ..internal.misc import json
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.39"
+    __version__ = "0.40"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -23,16 +23,20 @@ class AlldebridCom(MultiAccount):
     API_URL = "https://api.alldebrid.com/"
 
     def api_response(self, method, **kwargs):
+        kwargs['agent'] = "pyLoad/" + self.pyload.version
         html = self.load(self.API_URL + method, get=kwargs)
         return json.loads(html)
 
     def grab_hosters(self, user, password, data):
-        json_data = self.api_response("hosts/domains")
+        json_data = self.api_response("user/hosts", token=data['token'])
         if json_data.get("error", False):
             return []
 
         else:
-            return [x for x in json_data['hosts'] if x]
+            return reduce(lambda x, y: x + y,
+                          [[_h['domain']] + _h.get('altDomains', [])
+                           for _h in json_data['hosts'].values()
+                           if _h['status'] is True])
 
     def grab_info(self, user, password, data):
         json_data = self.api_response("user/login", token=data['token'])
