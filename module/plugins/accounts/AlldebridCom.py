@@ -7,7 +7,7 @@ from ..internal.misc import json
 class AlldebridCom(MultiAccount):
     __name__ = "AlldebridCom"
     __type__ = "account"
-    __version__ = "0.40"
+    __version__ = "0.41"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -23,7 +23,8 @@ class AlldebridCom(MultiAccount):
     API_URL = "https://api.alldebrid.com/"
 
     def api_response(self, method, **kwargs):
-        kwargs['agent'] = "pyLoad/" + self.pyload.version
+        kwargs['agent'] = "pyLoad"
+        kwargs['version'] = self.pyload.version
         html = self.load(self.API_URL + method, get=kwargs)
         return json.loads(html)
 
