@@ -12,7 +12,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
-    __version__ = "0.91"
+    __version__ = "0.92"
     __status__ = "testing"
 
     __pattern__ = r'http://www\d{0,3}\.zippyshare\.com/v(/|iew\.jsp.*key=)(?P<KEY>[\w^_]+)'
@@ -57,6 +57,9 @@ class ZippyshareCom(SimpleHoster):
 
         else:
             self.link = self.fixurl(self.get_link())
+            if ".com/pd/" in self.link:
+                self.load(self.link)
+                self.link = self.link.replace(".com/pd/", ".com/d/")
 
         if self.link and pyfile.name == "file.html":
             pyfile.name = urllib.unquote(self.link.split('/')[-1])
@@ -98,3 +101,4 @@ class ZippyshareCom(SimpleHoster):
         scripts = inits + scripts + ['document.dlbutton.href']
 
         return self.js.eval('\n'.join(scripts))
+
