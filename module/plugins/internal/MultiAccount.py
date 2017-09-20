@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.18"
+    __version__ = "0.19"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -113,6 +113,7 @@ class MultiAccount(Account):
             if hosterlist and isinstance(hosterlist, list):
                 domains = self.parse_domains(hosterlist)
                 self.info['data']['hosters'] = sorted(domains)
+                self.sync(reverse=True)
 
         except Exception, e:
             self.log_warning(_("Error loading hoster list for user `%s`") % self.user, e, trace=True)
@@ -295,6 +296,13 @@ class MultiAccount(Account):
                     self.deactivate()
 
                 return
+
+        #: Make sure we have one active hook
+        try:
+            self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
+
+        except ValueError:
+            pass
 
         self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
 
