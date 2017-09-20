@@ -1,40 +1,33 @@
 # -*- coding: utf-8 -*
-#
-# Test links:
-#   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
-
 
 from module.network.HTTPRequest import BadHeader
 
-from ..internal.Hoster import Hoster
+from ..internal.Crypter import Crypter
 from ..internal.misc import json
 
 
-class GoogledriveCom(Hoster):
-    __name__ = "GoogledriveCom"
-    __type__ = "hoster"
-    __version__ = "0.27"
+class GoogledriveComDereferer(Crypter):
+    __name__ = "GoogledriveComDereferer"
+    __type__ = "crypter"
+    __version__ = "0.01"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/(?:file/d/|uc\?.*id=)(?P<ID>[-\w]+)'
+    __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/open\?(?:.+;)?id=(?P<ID>[-\w]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """Drive.google.com hoster plugin"""
+    __description__ = """Drive.google.com dereferer plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+
+    NAME_PATTERN = r"folderName: '(?P<N>.+?)'"
+    OFFLINE_PATTERN = r'<TITLE>'
 
     API_URL = "https://www.googleapis.com/drive/v3/"
     API_KEY = "AIzaSyAcA9c4evtwSY1ifuvzo6HKBkeot5Bk_U4"
-
-    def setup(self):
-        self.multiDL = True
-        self.resume_download = True
-        self.chunk_limit = 1
 
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
@@ -59,26 +52,8 @@ class GoogledriveCom(Hoster):
                                "Error code: %s" % e.code)
             return None
 
-    def api_download(self):
-        try:
-            self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
-                          get={'alt': "media",
-                               # 'acknowledgeAbuse': "true",
-                               'key': self.API_KEY})
-
-        except BadHeader, e:
-            if e.code == 404:
-                self.offline()
-
-            elif e.code == 403:
-                self.temp_offline()
-
-            else:
-                raise
-
-    def process(self, pyfile):
-        json_data = self.api_response("files/" + self.info['pattern']['ID'], fields="md5Checksum,name,size")
-
+    def decrypt(self, pyfile):
+        json_data = self.api_response("files/%s" % self.info['pattern']['ID'])
         if json_data is None:
             self.fail("API error")
 
@@ -89,8 +64,8 @@ class GoogledriveCom(Hoster):
             else:
                 self.fail(json_data['error']['message'])
 
-        pyfile.size = long(json_data['size'])
-        pyfile.name = json_data['name']
-        self.info['md5'] = json_data['md5Checksum']
+        link = "https://drive.google.com/%s/%s" % \
+               (("file/d" if json_data['mimeType'] != "application/vnd.google-apps.folder" else "drive/folders"),
+                self.info['pattern']['ID'])
 
-        self.api_download()
+        self.packages = [(pyfile.package().folder, [link], pyfile.package().name)]

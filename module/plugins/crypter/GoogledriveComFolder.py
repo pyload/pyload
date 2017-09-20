@@ -9,16 +9,14 @@ from ..internal.misc import json
 class GoogledriveComFolder(Crypter):
     __name__ = "GoogledriveComFolder"
     __type__ = "crypter"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?drive\.google\.com/(?:folderview\?.*id=|drive/(?:.+?/)?folders/)(?P<ID>[-\w]+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No",
-                   "Create folder for each package", "Default"),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("dl_subfolders", "bool", "Download subfolders", False),
                   ("package_subfolder", "bool", "Subfolder as a seperate package", False)]
 
@@ -36,22 +34,24 @@ class GoogledriveComFolder(Crypter):
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
         try:
-            json_data = json.loads(
-                self.load(
-                    "%s%s" %
-                    (self.API_URL, cmd), get=kwargs))
+            json_data = json.loads(self.load("%s%s" % (self.API_URL, cmd),
+                                             get=kwargs))
             self.log_debug("API response: %s" % json_data)
             return json_data
 
         except BadHeader, e:
-            self.log_error(
-                "API Error: %s" %
-                cmd,
-                e,
-                "ID: %s" %
-                self.info['pattern']['ID'],
-                "Error code: %s" %
-                e.code)
+            try:
+                json_data = json.loads(e.content)
+                self.log_error("API Error: %s" % cmd,
+                               json_data['error']['message'],
+                               "ID: %s" % self.info['pattern']['ID'],
+                               "Error code: %s" % e.code)
+
+            except ValueError:
+                self.log_error("API Error: %s" % cmd,
+                               e,
+                               "ID: %s" % self.info['pattern']['ID'],
+                               "Error code: %s" % e.code)
             return None
 
     def enum_folder(self, folder_id):
