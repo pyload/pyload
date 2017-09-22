@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -80,7 +80,7 @@ class MultiAccount(Account):
             self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
 
     def plugins_updated(self, type_plugins):
-        if not any([t == "internal" or t == "hook" for t,n in type_plugins]):  #: do nothing if restart required
+        if not any([t in ("internal", "hook") for t,n in type_plugins]):  #: do nothing if restart required
             self.reactivate()
 
     def periodical_task(self):
