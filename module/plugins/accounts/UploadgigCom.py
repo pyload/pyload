@@ -9,7 +9,7 @@ from ..internal.Account import Account
 class UploadgigCom(Account):
     __name__ = "UploadgigCom"
     __type__ = "account"
-    __version__ = "0.02"
+    __version__ = "0.03"
     __status__ = "testing"
 
     __description__ = """UploadgigCom account plugin"""
@@ -59,7 +59,28 @@ class UploadgigCom(Account):
         html = self.load("https://uploadgig.com/login/do_login",
                          post={'email': user,
                                'pass': password,
-                               'csrf_tester': m.group(1)})
+                               'csrf_tester': m.group(1),
+                               'rememberme': 1})
 
         if not '"state":"1"' in html:
             self.fail_login()
+
+    @property
+    def logged(self):
+        """
+        Checks if user is still logged in
+        """
+        if not self.user:
+            return False
+
+        self.sync()
+
+        if self.info['login']['timestamp'] == 0 or \
+                    self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time() or \
+                    self.req and not self.req.cj.parseCookie('fs_secure'):
+
+            self.log_debug("Reached login timeout for user `%s`" % self.user)
+            return False
+        else:
+            return True
+
