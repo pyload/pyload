@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import re
+import urlparse
+
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -7,17 +10,15 @@ from ..internal.SimpleHoster import SimpleHoster
 class VimeoCom(SimpleHoster):
     __name__ = "VimeoCom"
     __type__ = "hoster"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int",
-                   "Reconnect if waiting time is greater than minutes", 10),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
                   ("quality", "Lowest;360p;540p;720p;1080p;Highest", "Quality", "Highest")]
 
     __description__ = """Vimeo.com hoster plugin"""
@@ -29,13 +30,13 @@ class VimeoCom(SimpleHoster):
     OFFLINE_PATTERN = r'class="exception_header"'
     TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://www.vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://vimeo.com/\g<ID>')]
 
     COOKIES = [("vimeo.com", "language", "en")]
 
     @classmethod
     def get_info(cls, url="", html=""):
-        info = SimpleHoster.get_info(url, html)
+        info = super(VimeoCom, cls).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
         if 'name' in info:
@@ -49,9 +50,30 @@ class VimeoCom(SimpleHoster):
         self.chunk_limit = -1
 
     def handle_free(self, pyfile):
-        json_data = self.load(
-            "https://player.vimeo.com/video/%s/config" %
-            self.info['pattern']['ID'])
+        url, inputs = self.parse_html_form('id="pw_form"')
+        if url:
+            password = self.get_password()
+
+            if not password:
+                self.fail(_("Video is password protected"))
+
+            token = re.search(r'"vimeo":{"xsrft":"(.+?)"}', self.data).group(1)
+            inputs['token'] = token
+            inputs['password'] = password
+
+            self.data = self.load(urlparse.urljoin(pyfile.url, url),
+                                  post=inputs)
+
+            if "Sorry, that password was incorrect. Please try again." in self.data:
+                self.fail(_("Wrong password"))
+
+        m = re.search(r'clip_page_config = ({.+?});', self.data)
+        if m is None:
+            self.fail("Clip config pattern not found")
+
+        player_config_url = json.loads(m.group(1))['player']['config_url']
+
+        json_data = self.load(player_config_url)
 
         if not json_data.startswith('{'):
             self.fail(_("Unexpected response, expected JSON data"))
@@ -73,7 +95,7 @@ class VimeoCom(SimpleHoster):
 
         for q in qlevel:
             if q in videos.keys():
-                self.link = videos[q]
+                self.download(videos[q], fixurl=False)
                 return
 
             else:
