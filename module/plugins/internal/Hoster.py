@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.67"
+    __version__ = "0.68"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -251,7 +251,7 @@ class Hoster(Base):
             self.captcha.correct()
 
     def download(self, url, get={}, post={}, ref=True, cookies=True,
-                 disposition=True, resume=None, chunks=None):
+                 disposition=True, resume=None, chunks=None, fixurl=True):
         """
         Downloads the content at url to download folder
 
@@ -271,7 +271,7 @@ class Hoster(Base):
                            *["%s=%s" % (key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
-        dl_url = self.fixurl(url)
+        dl_url = self.fixurl(url) if fixurl else url
         dl_basename = parse_name(self.pyfile.name)
 
         self.pyfile.name = dl_basename
