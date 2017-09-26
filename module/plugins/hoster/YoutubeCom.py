@@ -43,15 +43,12 @@ class BIGHTTPRequest(HTTPRequest):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.60"
+    __version__ = "0.61"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
     __config__ = [("activated", "bool", "Activated", True),
-                  ("quality",
-                   "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p",
-                   "Quality Setting",
-                   "hd"),
+                  ("quality", "sd;hd;fullhd;240p;360p;480p;720p;1080p;3072p", "Quality Setting", "hd"),
                   ("fmt", "int", "FMT/ITAG Number (0 for auto)", 0),
                   (".mp4", "bool", "Allow .mp4", True),
                   (".flv", "bool", "Allow .flv", True),
@@ -96,10 +93,7 @@ class YoutubeCom(Hoster):
     def _decrypt_signature(self, encrypted_sig):
         """Turn the encrypted 's' field into a working signature"""
         try:
-            player_url = json.loads(
-                re.search(
-                    r'"assets":.+?"js":\s*("[^"]+")',
-                    self.data).group(1))
+            player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
         except (AttributeError, IndexError):
             self.fail(_("Player URL not found"))
 
@@ -118,19 +112,16 @@ class YoutubeCom(Hoster):
                           'cache': {}}
             cache_dirty = True
 
-        if player_url in cache_info['cache'] and time.time() < cache_info['cache'][
-                player_url]['time'] + 24 * 60 * 60:
+        if player_url in cache_info['cache'] and time.time() < cache_info['cache'][player_url]['time'] + 24 * 60 * 60:
             self.log_debug("Using cached decode function to decrypt the URL")
-            decrypt_func = lambda s: ''.join(
-                s[_i] for _i in cache_info['cache'][player_url]['decrypt_map'])
+            decrypt_func = lambda s: ''.join(s[_i] for _i in cache_info['cache'][player_url]['decrypt_map'])
             decrypted_sig = decrypt_func(encrypted_sig)
 
         else:
             player_data = self.load(self.fixurl(player_url))
 
             m = re.search(r'\.sig\|\|(?P<sig>[a-zA-Z0-9$]+)\(', player_data) or \
-                re.search(
-                    r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
+                re.search(r'(["\'])signature\1\s*,\s*(?P<sig>[a-zA-Z0-9$]+)\(', player_data)
 
             try:
                 function_name = m.group('sig')
@@ -140,13 +131,11 @@ class YoutubeCom(Hoster):
 
             try:
                 jsi = JSInterpreter(player_data)
-                decrypt_func = lambda s: jsi.extract_function(
-                    function_name)([s])
+                decrypt_func = lambda s: jsi.extract_function(function_name)([s])
 
                 #: Since Youtube just scrambles the order of the characters in the signature
                 #: and does not change any byte value, we can store just a transformation map as a cached function
-                decrypt_map = [ord(c) for c in decrypt_func(
-                    ''.join(map(unichr, range(len(encrypted_sig)))))]
+                decrypt_map = [ord(c) for c in decrypt_func(''.join(map(unichr, range(len(encrypted_sig)))))]
                 cache_info['cache'][player_url] = {'decrypt_map': decrypt_map,
                                                    'time': time.time()}
                 cache_dirty = True
@@ -186,8 +175,8 @@ class YoutubeCom(Hoster):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
         self.data = self.load(pyfile.url)
 
-        if re.search(
-                r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">', self.data):
+        if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">',
+                     self.data):
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in self.data:
@@ -213,9 +202,7 @@ class YoutubeCom(Hoster):
             desired_fmt = 0
 
         #: Parse available streams
-        streams = re.search(
-            r'"url_encoded_fmt_stream_map":"(.+?)",',
-            self.data).group(1)
+        streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",',self.data).group(1)
         streams = [x.split('\u0026') for x in streams.split(',')]
         streams = [dict((y.split('=', 1)) for y in x) for x in streams]
         streams = [(int(x['itag']),
@@ -251,13 +238,8 @@ class YoutubeCom(Hoster):
             sel = lambda x: self.formats[x][3]  #: Select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
-            self.log_debug(
-                "Choosing nearest fmt: %s" % [
-                    (x,
-                     allowed(x),
-                        comp(
-                         x,
-                         desired_fmt)) for x in fmt_dict.keys()])
+            self.log_debug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt))
+                                                         for x in fmt_dict.keys()])
 
             choosen_fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
                                  sel(x) > sel(y) else y, fmt_dict.keys())
@@ -279,21 +261,27 @@ class YoutubeCom(Hoster):
             url += "&ratebypass=yes"
 
         #: Set file name
-        file_suffix = self.formats[choosen_fmt][
-            0] if choosen_fmt in self.formats else ".flv"
-        file_name_pattern = '<meta name="title" content="(.+?)">'
-        name = re.search(
-            file_name_pattern,
-            self.data).group(1).replace(
-            "/",
-            "")
+        file_suffix = self.formats[choosen_fmt][0] if choosen_fmt in self.formats else ".flv"
+        m = re.search(r'<meta name="title" content="(.+?)">', self.data)
+        if m is not None:
+            name = html_unescape(m.group(1)).replace("/", "").replace("\"", "״")
+
+        else:
+            m = re.search(r'ytplayer.config = ({.+?});', self.data, re.M)
+            if m is not None:
+                name = json.loads(m.group(1))['args']['title']
+
+            else:
+                self.log_warning(_("Could not find name pattern"))
+                name = pyfile.name
 
         #: Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
         for c in self.invalid_chars:
             name = name.replace(c, '_')
 
-        pyfile.name = html_unescape(name)
+        pyfile.name = name
+
 
         time = re.search(r't=((\d+)m)?(\d+)s', pyfile.url)
         ffmpeg = which("ffmpeg")
@@ -392,8 +380,7 @@ class JSInterpreter(object):
                     parens_count -= 1
                     if parens_count == 0:
                         sub_expr = expr[1:m.start()]
-                        sub_result = self.interpret_expression(
-                            sub_expr, local_vars, allow_recursion)
+                        sub_result = self.interpret_expression(sub_expr, local_vars, allow_recursion)
                         remaining_expr = expr[m.end():].strip()
                         if not remaining_expr:
                             return sub_result
@@ -401,22 +388,18 @@ class JSInterpreter(object):
                             expr = json.dumps(sub_result) + remaining_expr
                         break
             else:
-                raise JSInterpreterError(
-                    'Premature end of parens in %r' % expr)
+                raise JSInterpreterError('Premature end of parens in %r' % expr)
 
         for op, opfunc in self._ASSIGN_OPERATORS:
-            m = re.match(
-                r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' %
-                (self._VARNAME_PATTERN, re.escape(op)), expr)
+            m = re.match(r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' %
+                         (self._VARNAME_PATTERN, re.escape(op)), expr)
             if m is None:
                 continue
-            right_val = self.interpret_expression(
-                m.group('expr'), local_vars, allow_recursion - 1)
+            right_val = self.interpret_expression(m.group('expr'), local_vars, allow_recursion - 1)
 
             if m.groupdict().get('index'):
                 lvar = local_vars[m.group('out')]
-                idx = self.interpret_expression(
-                    m.group('index'), local_vars, allow_recursion)
+                idx = self.interpret_expression(m.group('index'), local_vars, allow_recursion)
                 assert isinstance(idx, int)
                 cur = lvar[idx]
                 val = opfunc(cur, right_val)
@@ -431,9 +414,7 @@ class JSInterpreter(object):
         if expr.isdigit():
             return int(expr)
 
-        var_m = re.match(
-            r'(?!if|return|true|false)(?P<name>%s)$' %
-            self._VARNAME_PATTERN, expr)
+        var_m = re.match(r'(?!if|return|true|false)(?P<name>%s)$' % self._VARNAME_PATTERN, expr)
         if var_m:
             return local_vars[var_m.group('name')]
 
@@ -442,9 +423,7 @@ class JSInterpreter(object):
         except ValueError:
             pass
 
-        m = re.match(
-            r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' %
-            self._VARNAME_PATTERN, expr)
+        m = re.match(r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' % self._VARNAME_PATTERN, expr)
         if m is not None:
             variable = m.group('var')
             member = m.group('member')
@@ -468,8 +447,7 @@ class JSInterpreter(object):
             if arg_str == '':
                 argvals = tuple()
             else:
-                argvals = tuple(self.interpret_expression(
-                    v, local_vars, allow_recursion) for v in arg_str.split(','))
+                argvals = tuple(self.interpret_expression(v, local_vars, allow_recursion) for v in arg_str.split(','))
 
             if member == 'split':
                 assert argvals == ('',)
@@ -498,13 +476,10 @@ class JSInterpreter(object):
 
             return obj[member](argvals)
 
-        m = re.match(
-            r'(?P<in>%s)\[(?P<idx>.+)\]$' %
-            self._VARNAME_PATTERN, expr)
+        m = re.match(r'(?P<in>%s)\[(?P<idx>.+)\]$' % self._VARNAME_PATTERN, expr)
         if m is not None:
             val = local_vars[m.group('in')]
-            idx = self.interpret_expression(
-                m.group('idx'), local_vars, allow_recursion - 1)
+            idx = self.interpret_expression(m.group('idx'), local_vars, allow_recursion - 1)
             return val[idx]
 
         for op, opfunc in self._OPERATORS:
@@ -512,25 +487,17 @@ class JSInterpreter(object):
             if m is None:
                 continue
 
-            x, abort = self.interpret_statement(
-                m.group('x'), local_vars, allow_recursion - 1)
+            x, abort = self.interpret_statement(m.group('x'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError(
-                    'Premature left-side return of %s in %r' %
-                    (op, expr))
+                raise JSInterpreterError('Premature left-side return of %s in %r' % (op, expr))
 
-            y, abort = self.interpret_statement(
-                m.group('y'), local_vars, allow_recursion - 1)
+            y, abort = self.interpret_statement(m.group('y'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError(
-                    'Premature right-side return of %s in %r' %
-                    (op, expr))
+                raise JSInterpreterError('Premature right-side return of %s in %r' % (op, expr))
 
             return opfunc(x, y)
 
-        m = re.match(
-            r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' %
-            self._VARNAME_PATTERN, expr)
+        m = re.match(r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' % self._VARNAME_PATTERN, expr)
         if m is not None:
             fname = m.group('func')
             argvals = tuple(int(v) if v.isdigit() else local_vars[v]
@@ -547,13 +514,10 @@ class JSInterpreter(object):
                           % re.escape(objname), self.code)
         fields = obj_m.group('fields')
         # Currently, it only supports function definitions
-        fields_m = re.finditer(
-            r'(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}',
-            fields)
+        fields_m = re.finditer(r'(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}', fields)
         for f in fields_m:
             argnames = f.group('args').split(',')
-            obj[f.group('key')] = self.build_function(
-                argnames, f.group('code'))
+            obj[f.group('key')] = self.build_function(argnames, f.group('code'))
 
         return obj
 
@@ -561,9 +525,7 @@ class JSInterpreter(object):
         func_m = re.search(r'(?x)(?:function\s+%s|[{;,]\s*%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
                            % (re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
         if func_m is None:
-            raise JSInterpreterError(
-                'Could not find JS function %r' %
-                function_name)
+            raise JSInterpreterError('Could not find JS function %r' % function_name)
 
         argnames = func_m.group('args').split(',')
 
