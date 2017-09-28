@@ -9,7 +9,7 @@ from ..internal.misc import json
 class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __type__ = "account"
-    __version__ = "0.23"
+    __version__ = "0.24"
     __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -19,7 +19,7 @@ class RapidgatorNet(Account):
 
     TUNE_TIMEOUT = False
 
-    API_URL = "http://rapidgator.net/api/user/"
+    API_URL = "https://rapidgator.net/api/user/"
 
     def api_response(self, method, **kwargs):
         json_data = self.load(self.API_URL + method,

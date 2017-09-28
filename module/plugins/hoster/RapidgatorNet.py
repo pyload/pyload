@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
@@ -55,7 +55,7 @@ class RapidgatorNet(SimpleHoster):
 
     URL_REPLACEMENTS = [(r'//(?:www\.)?rg\.to/', "//rapidgator.net/")]
 
-    API_URL = "http://rapidgator.net/api/"
+    API_URL = "https://rapidgator.net/api/"
 
     def api_response(self, method, **kwargs):
         try:
