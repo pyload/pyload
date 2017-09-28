@@ -9,7 +9,7 @@ from ..internal.misc import json
 class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __type__ = "account"
-    __version__ = "0.22"
+    __version__ = "0.23"
     __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""
@@ -21,27 +21,23 @@ class RapidgatorNet(Account):
 
     API_URL = "http://rapidgator.net/api/user/"
 
+    def api_response(self, method, **kwargs):
+        json_data = self.load(self.API_URL + method,
+                              get=kwargs)
+        return json.loads(json_data)
+
     def grab_info(self, user, password, data):
         validuntil = None
         trafficleft = None
         premium = False
-        sid = None
 
         try:
-            sid = data.get('sid', None)
-
-            html = self.load(urlparse.urljoin(self.API_URL, "info"),
-                             get={'sid': sid})
-
-            self.log_debug("API:USERINFO", html)
-
-            json_data = json.loads(html)
+            json_data = self.api_response("info", sid=data['sid'])
 
             if json_data['response_status'] == 200:
                 validuntil = json_data['response']['expire_date']
                 # @TODO: Remove `/ 1024` in 0.4.10
-                trafficleft = float(
-                    json_data['response']['traffic_left']) / 1024
+                trafficleft = float(json_data['response']['traffic_left']) / 1024
                 premium = True
 
             else:
@@ -52,18 +48,11 @@ class RapidgatorNet(Account):
 
         return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
-                'premium': premium,
-                'sid': sid}
+                'premium': premium}
 
     def signin(self, user, password, data):
         try:
-            html = self.load(urlparse.urljoin(self.API_URL, "login"),
-                             post={'username': user,
-                                   'password': password})
-
-            self.log_debug("API:LOGIN", html)
-
-            json_data = json.loads(html)
+            json_data = self.api_response("login", username=user, password=password)
 
             if json_data['response_status'] == 200:
                 data['sid'] = str(json_data['response']['session_id'])

@@ -33,8 +33,6 @@ class RapidgatorNet(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]
 
-    API_URL = "http://rapidgator.net/api/file"
-
     COOKIES = [("rapidgator.net", "lang", "en")]
 
     NAME_PATTERN = r'<title>Download file (?P<N>.*)</title>'
@@ -57,30 +55,17 @@ class RapidgatorNet(SimpleHoster):
 
     URL_REPLACEMENTS = [(r'//(?:www\.)?rg\.to/', "//rapidgator.net/")]
 
-    def setup(self):
-        if self.account:
-            self.sid = self.account.get_data('sid')
-        else:
-            self.sid = None
+    API_URL = "http://rapidgator.net/api/"
 
-        if self.sid:
-            self.premium = True
-
-        self.resume_download = self.multiDL = self.premium
-        self.chunk_limit = 1
-
-    def api_response(self, cmd):
+    def api_response(self, method, **kwargs):
         try:
-            html = self.load('%s/%s' % (self.API_URL, cmd),
-                             get={'sid': self.sid,
-                                  'url': self.pyfile.url})
-            self.log_debug("API:%s" % cmd, html, "SID: %s" % self.sid)
+            html = self.load(self.API_URL + method,
+                             get=kwargs)
             json_data = json.loads(html)
             status = json_data['response_status']
             message = json_data['response_details']
 
         except BadHeader, e:
-            self.log_error("API: %s" % cmd, e, "SID: %s" % self.sid)
             status = e.code
             message = e.message
 
@@ -94,14 +79,23 @@ class RapidgatorNet(SimpleHoster):
             self.account.relogin()
             self.retry(wait=60)
 
+    def setup(self):
+        self.resume_download = self.multiDL = self.premium
+        self.chunk_limit = -1 if self.premium else 1
+
     def handle_premium(self, pyfile):
-        self.api_data = self.api_response('info')
-        self.api_data['md5'] = self.api_data['hash']
+        json_data = self.api_response("file/info",
+                                      sid=self.account.info['data']['sid'],
+                                      url=pyfile.url)
 
-        pyfile.name = self.api_data['filename']
-        pyfile.size = self.api_data['size']
+        self.info['md5'] = json_data['hash']
+        pyfile.name = json_data['filename']
+        pyfile.size = json_data['size']
 
-        self.link = self.api_response('download')['url']
+        json_data = self.api_response("file/download",
+                                      sid=self.account.info['data']['sid'],
+                                      url=pyfile.url)
+        self.link = json_data['url']
 
     def check_errors(self):
         SimpleHoster.check_errors(self)
@@ -172,14 +166,10 @@ class RapidgatorNet(SimpleHoster):
                 return captcha
 
     def get_json_response(self, url):
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            ["X-Requested-With: XMLHttpRequest"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
 
         res = self.load(url, ref=self.pyfile.url)
-        self.req.http.c.setopt(
-            pycurl.HTTPHEADER,
-            ["X-Requested-With:"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With:"])
 
         if not res.startswith('{'):
             self.retry()
