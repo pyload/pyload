@@ -151,7 +151,7 @@ def renice(pid=None, niceness=None):
     psp.nice(value)
 
 
-def ionice(pid=None, ioclass=psutil.IOPRIO_CLASS_IDLE, niceness=None):
+def ionice(pid=None, ioclass=None, niceness=None):
     """
     Unix notation process I/O nicener.
     """

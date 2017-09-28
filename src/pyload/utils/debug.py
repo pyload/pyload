@@ -71,8 +71,8 @@ def _format_framestack(frame=None, limit=None):
         for _frame in stack[1:limit]:
             msg = "Frame {0} in {1} at line {2}"
             frame_name = msg.format(
-                _frame.f_code.co_name, 
-                _frame.f_code.co_filename, 
+                _frame.f_code.co_name,
+                _frame.f_code.co_filename,
                 _frame.f_lineno)
             frame_dump = []
             for attr_name, value in _frame.f_locals.items():

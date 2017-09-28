@@ -7,9 +7,8 @@ import mimetypes
 import re
 import urllib.parse
 
-from future import standard_library
-
 import tld
+from future import standard_library
 
 from . import format, purge
 from ..check import isiterable

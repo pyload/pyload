@@ -13,9 +13,8 @@ from contextlib import contextmanager
 
 import portalocker
 import psutil
-from future import standard_library
-
 import send2trash
+from future import standard_library
 
 from .layer.legacy import hashlib_ as hashlib
 

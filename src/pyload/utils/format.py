@@ -35,7 +35,7 @@ def items(obj, ignore=None):
         res = ("{0}={1}".format(k, v) for k, v in obj.items())
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        res = ("{0}={1}".format(k, v) for k, v in obj.items() 
+        res = ("{0}={1}".format(k, v) for k, v in obj.items()
                if k not in ignored)
     return res
 
