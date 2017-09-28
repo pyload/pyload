@@ -9,9 +9,9 @@ import os
 from builtins import bytes, int, object, oct, str
 from contextlib import closing
 
+import semver
 from future import standard_library
 
-import semver
 from pyload.utils import parse
 from pyload.utils.check import isiterable, ismapping
 from pyload.utils.fs import fullpath, open

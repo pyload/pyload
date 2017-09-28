@@ -15,7 +15,6 @@ from __future__ import absolute_import
 import codecs
 import os
 import re
-
 from itertools import chain
 
 from setuptools import Command, find_packages, setup
