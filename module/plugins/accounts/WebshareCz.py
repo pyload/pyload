@@ -4,7 +4,13 @@ import hashlib
 import re
 import time
 
-import passlib.hash
+try:
+    import passlib.hash
+except ImportError:
+    passlib = None
+
+
+from module.network.RequestFactory import getURL as get_url
 
 from ..internal.Account import Account
 
@@ -12,61 +18,71 @@ from ..internal.Account import Account
 class WebshareCz(Account):
     __name__ = "WebshareCz"
     __type__ = "account"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("rush", "radek.senfeld@gmail.com")]
+    __authors__ = [("rush", "radek.senfeld@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    VALID_UNTIL_PATTERN = r'<vip_until>(.+)</vip_until>'
+    VALID_UNTIL_PATTERN = r'<vip_until>(.*)</vip_until>'
 
-    TRAFFIC_LEFT_PATTERN = r'<bytes>(.+)</bytes>'
+    TRAFFIC_LEFT_PATTERN = r'<bytes>(.+?)</bytes>'
+
+    API_URL = "https://webshare.cz/api/"
+
+    @classmethod
+    def api_response(cls, method, **kwargs):
+        return get_url(cls.API_URL + method + "/",
+                       post=kwargs)
 
     def grab_info(self, user, password, data):
-        html = self.load("https://webshare.cz/api/user_data/",
-                         post={'wst': data.get('wst', None)})
+        user_data = self.api_response("user_data", wst=data['wst'])
 
-        self.log_debug("Response: " + html)
+        expiredate = re.search(self.VALID_UNTIL_PATTERN, user_data).group(1)
+        if expiredate:
+            validuntil = time.mktime(time.strptime(expiredate, "%Y-%m-%d %H:%M:%S"))
+            premium = validuntil > time.time()
 
-        expiredate = re.search(self.VALID_UNTIL_PATTERN, html).group(1)
-        self.log_debug("Expire date: " + expiredate)
+        else:
+            validuntil = -1
+            premium = False
 
-        validuntil = time.mktime(
-            time.strptime(
-                expiredate,
-                "%Y-%m-%d %H:%M:%S"))
-        trafficleft = self.parse_traffic(
-            re.search(
-                self.TRAFFIC_LEFT_PATTERN,
-                html).group(1))
-        premium = validuntil > time.time()
+        # trafficleft = self.parse_traffic(re.search(self.TRAFFIC_LEFT_PATTERN, user_data).group(1))
 
         return {'validuntil': validuntil,
-                'trafficleft': -1, 'premium': premium}
+                'trafficleft': -1,
+                'premium': premium}
 
     def signin(self, user, password, data):
-        salt = self.load("https://webshare.cz/api/salt/",
-                         post={'username_or_email': user,
-                               'wst': ""})
+        if passlib:
+            salt = self.api_response("salt", username_or_email=user, wst="")
 
-        if "<status>OK</status>" not in salt:
-            self.fail_login()
+            if "<status>OK</status>" not in salt:
+                message = re.search(r'<message>(.+?)</message>', salt).group(1)
+                self.log_warning(message)
+                self.fail_login()
 
-        salt = re.search('<salt>(.+)</salt>', salt).group(1)
-        password = hashlib.sha1(
-            passlib.hash.md5_crypt.encrypt(
-                password, salt=salt)).hexdigest()
-        digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
+            salt = re.search('<salt>(.+?)</salt>', salt).group(1)
 
-        login = self.load("https://webshare.cz/api/login/",
-                          post={'digest': digest,
-                                'keep_logged_in': 1,
-                                'password': password,
-                                'username_or_email': user,
-                                'wst': ""})
+            password = hashlib.sha1(passlib.hash.md5_crypt.encrypt(password, salt=salt)).hexdigest()
+            digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
-        if "<status>OK</status>" not in login:
-            self.fail_login()
+            login = self.api_response("login",
+                                      digest=digest,
+                                      keep_logged_in=1,
+                                      username_or_email=user,
+                                      password=password,
+                                      wst="")
 
-        data['wst'] = re.search('<token>(.+)</token>', login).group(1)
+            if "<status>OK</status>" not in login:
+                message = re.search(r'<message>(.+?)</message>', salt).group(1)
+                self.log_warning(message)
+                self.fail_login()
+
+            data['wst'] = re.search('<token>(.+?)</token>', login).group(1)
+
+        else:
+            self.log_warning(_("passlib is not installed"))
+            self.fail_login(_("passlib is not installed"))
