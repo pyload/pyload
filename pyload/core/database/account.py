@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ..datatype.init import AccountInfo
+from ..datatype.base import AccountInfo
 from .backend import DatabaseMethods, async, queue
 
 standard_library.install_aliases()

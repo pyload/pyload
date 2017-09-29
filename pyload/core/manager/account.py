@@ -8,7 +8,7 @@ import random
 
 from future import standard_library
 
-from ..datatype.init import AccountInfo
+from ..datatype.base import AccountInfo
 from .base import BaseManager
 from ...utils.struct.lock import lock
 

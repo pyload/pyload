@@ -12,7 +12,7 @@ from types import MethodType
 from _thread import start_new_thread
 from future import standard_library
 
-from ..datatype.init import (AddonInfo, AddonService,
+from ..datatype.base import (AddonInfo, AddonService,
                                        ServiceDoesNotExist, ServiceException)
 from .base import BaseManager
 from ..thread import AddonThread

@@ -4,13 +4,13 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ...utils.purge import uniquify
+from ..utils.purge import uniquify
 
-from ..datatype.file import FileDoesNotExist
-from ..datatype.init import DownloadState, Permission
-from ..datatype.package import PackageDoesNotExist, PackageStatus
+from ..core.datatype.file import FileDoesNotExist
+from ..core.datatype.base import DownloadState, Permission
+from ..core.datatype.package import PackageDoesNotExist, PackageStatus
 from .base import BaseApi
-from .init import requireperm
+from .base import requireperm
 
 standard_library.install_aliases()
 

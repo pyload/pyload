@@ -14,7 +14,7 @@ from ...utils import purge
 from ...utils.debug import print_traceback
 from ...utils.struct.lock import RWLock, lock
 
-from .init import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
+from .base import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
 
 standard_library.install_aliases()

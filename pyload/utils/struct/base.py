@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from builtins import super
+
 from future import standard_library
 
 from ..layer.legacy.collections_ import Mapping, MutableMapping
@@ -10,6 +12,18 @@ from ..layer.legacy.collections_ import Mapping, MutableMapping
 standard_library.install_aliases()
 
 
+class Singleton(type):
+    """
+    A metaclass that creates a Singleton base class when called.
+    """
+    _inst = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._inst:
+            cls._inst[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._inst[cls]
+        
+        
 class InscDict(MutableMapping):
     """
     Improved version of the header dictionary

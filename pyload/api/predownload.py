@@ -9,14 +9,14 @@ from itertools import chain
 
 from future import standard_library
 
-from ...utils import parse
-from ...utils.fs import lopen
-from ...utils.purge import uniquify
+from ..utils import parse
+from ..utils.fs import lopen
+from ..utils.purge import uniquify
 
-from ..datatype.check import OnlineCheck
-from ..datatype.init import DownloadStatus, LinkStatus, Permission
+from ..core.datatype.check import OnlineCheck
+from ..core.datatype.base import DownloadStatus, LinkStatus, Permission
 from .base import BaseApi
-from .init import requireperm
+from .base import requireperm
 
 standard_library.install_aliases()
 

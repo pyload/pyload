@@ -11,7 +11,7 @@ from ...utils import parse
 from ...utils.check import hasmethod
 from ...utils.misc import accumulate
 
-from ..datatype.init import LinkStatus, ProgressInfo, ProgressType
+from ..datatype.base import LinkStatus, ProgressInfo, ProgressType
 from .decrypter import DecrypterThread
 from .plugin import PluginThread
 

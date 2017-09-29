@@ -8,7 +8,7 @@ from base64 import standard_b64encode
 
 from future import standard_library
 
-from ..datatype.init import Input, InputType
+from ..datatype.base import Input, InputType
 from ..datatype.task import Interaction, InteractionTask
 from .base import BaseManager
 from ...utils.check import bitset

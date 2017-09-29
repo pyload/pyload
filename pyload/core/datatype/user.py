@@ -9,7 +9,7 @@ from future import standard_library
 
 from ...utils.check import bitset
 
-from .init import BaseObject, ExceptionObject, Permission
+from .base import BaseObject, ExceptionObject, Permission
 
 standard_library.install_aliases()
 

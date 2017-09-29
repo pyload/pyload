@@ -6,7 +6,7 @@ import time
 
 from future import standard_library
 
-from .init import BaseObject
+from .base import BaseObject
 
 standard_library.install_aliases()
 

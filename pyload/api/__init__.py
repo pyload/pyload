@@ -3,8 +3,7 @@
 
 from __future__ import absolute_import
 
-from .init import Api, requireperm, statestring
-from .base import AbstractApi, BaseApi
+from .base import AbstractApi, Api, BaseApi, requireperm, statestring
 from .account import AccountApi
 from .addon import AddonApi
 from .config import ConfigApi

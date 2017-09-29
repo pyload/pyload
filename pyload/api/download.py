@@ -7,12 +7,12 @@ from builtins import str
 
 from future import standard_library
 
-from ...utils.fs import lopen
+from ..utils.fs import lopen
 
-from ..datatype.init import Permission
-from ..datatype.user import Role
+from ..core.datatype.base import Permission
+from ..core.datatype.user import Role
 from .base import BaseApi
-from .init import requireperm
+from .base import requireperm
 
 standard_library.install_aliases()
 

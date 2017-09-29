@@ -7,7 +7,7 @@ from builtins import str
 
 from future import standard_library
 
-from ..datatype.init import (DownloadStatus, LinkStatus,
+from ..datatype.base import (DownloadStatus, LinkStatus,
                                        ProgressInfo, ProgressType)
 from ..datatype.package import Package
 from ..network.base import Abort, Retry

@@ -8,7 +8,7 @@ from traceback import print_exc
 
 from future import standard_library
 
-from ..datatype.init import ProgressInfo, ProgressType
+from ..datatype.base import ProgressInfo, ProgressType
 from .plugin import PluginThread
 
 standard_library.install_aliases()

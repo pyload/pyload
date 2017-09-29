@@ -272,7 +272,7 @@ class Core(Process):
             # self.svm.start()
 
     def _init_api(self):
-        from .api import Api
+        from ..api import Api
         self.api = Api(self)
 
     def _init_database(self):

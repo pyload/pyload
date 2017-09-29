@@ -7,7 +7,7 @@ import json
 from future import standard_library
 
 from ...config import ConfigParser
-from ..datatype.init import InvalidConfigSection
+from ..datatype.base import InvalidConfigSection
 # from ...config.convert import from_string
 from ...utils.layer.legacy.collections_ import OrderedDict
 

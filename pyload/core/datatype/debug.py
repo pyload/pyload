@@ -6,7 +6,7 @@ from future import standard_library
 
 from .check import OnlineCheck
 from .file import FileInfo
-from .init import *
+from .base import *
 from .package import PackageInfo, PackageStats
 from .task import InteractionTask
 from .user import UserData

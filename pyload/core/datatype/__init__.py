@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-from .init import *
+from .base import *
 from .check import OnlineCheck
 from .file import File, FileDoesNotExist, FileInfo, FileStatus
 from .package import (Package, PackageDoesNotExist, PackageInfo, PackageStats,

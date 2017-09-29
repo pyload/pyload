@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from future import standard_library
 
-from ..datatype.init import DownloadStatus
+from ..datatype.base import DownloadStatus
 from .base import BaseManager
 from ..thread import DecrypterThread, DownloadThread
 from ...utils.fs import availspace

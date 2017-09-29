@@ -9,9 +9,9 @@ from future import standard_library
 
 from ...utils.layer.legacy.collections_ import OrderedDict
 
-from ..api.init import statestring
+from ...api import statestring
 from ..datatype.file import FileInfo, guess_type
-from ..datatype.init import DownloadInfo, DownloadState
+from ..datatype.base import DownloadInfo, DownloadState
 from ..datatype.package import PackageInfo, PackageStats
 from .backend import DatabaseMethods, async, inner, queue
 

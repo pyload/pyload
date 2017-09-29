@@ -10,7 +10,7 @@ from functools import reduce
 from future import standard_library
 
 from ..datatype.file import File
-from ..datatype.init import DownloadStatus, TreeCollection
+from ..datatype.base import DownloadStatus, TreeCollection
 from ..datatype.package import (Package, PackageDoesNotExist,
                                           PackageStatus, RootPackage)
 from .base import BaseManager

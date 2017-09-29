@@ -6,12 +6,12 @@ import os
 
 from future import standard_library
 
-from ...utils.fs import availspace, lopen
+from ..utils.fs import availspace, lopen
 
-from ..datatype.init import Permission, StatusInfo
-from ..datatype.task import Interaction
+from ..core.datatype.base import Permission, StatusInfo
+from ..core.datatype.task import Interaction
 from .base import BaseApi
-from .init import requireperm
+from .base import requireperm
 
 standard_library.install_aliases()
 

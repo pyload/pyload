@@ -37,5 +37,5 @@ locale.setlocale(locale.LC_ALL, '')
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
-from . import core, config, requests, utils
-from .iface import cleanup, quit, restart, start, status, version, upgrade
+from . import core, config, requests, utils, api
+from .__main__ import cleanup, quit, restart, start, status, version, upgrade

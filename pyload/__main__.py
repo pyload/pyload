@@ -13,7 +13,7 @@ from future import standard_library
 from pkg_resources import get_default_cache
 
 from .__about__ import __package__, __package_name__, __version__
-from .core.init import Core, _pmap
+from .core.process import Core, _pmap
 from .utils.fs import makedirs, remove
 
 standard_library.install_aliases()

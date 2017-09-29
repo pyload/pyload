@@ -9,7 +9,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from .init import BaseObject, ExceptionObject
+from .base import BaseObject, ExceptionObject
 
 standard_library.install_aliases()
 

@@ -4,10 +4,10 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ..datatype.init import Permission
-from ..datatype.task import Interaction
+from ..core.datatype.base import Permission
+from ..core.datatype.task import Interaction
 from .base import BaseApi
-from .init import requireperm
+from .base import requireperm
 
 standard_library.install_aliases()
 

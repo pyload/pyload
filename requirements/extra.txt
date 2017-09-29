@@ -4,8 +4,7 @@ bitmath
 [dbus]
 dbus-python;os_name!="nt"
 
-[colorize]
-colorclass
+[colorlog]
 colorlog
 
 [magic]
