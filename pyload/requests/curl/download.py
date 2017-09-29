@@ -13,7 +13,7 @@ from contextlib import closing
 from future import standard_library
 
 import pycurl
-from ...requests.types import Connection
+from ..types import Connection
 from ...utils import purge
 from ...utils.fs import fullpath, lopen, remove
 

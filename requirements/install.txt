@@ -1,7 +1,15 @@
-argparse;python_version<"2.7"
+Send2Trash
 autoupgrade-ng
-daemonize
+configparser;python_version<"3.5"
+filetype
 future
+googletrans
+idna
+portalocker
+psutil
 pycurl
 semver
+setproctitle
 setuptools>=0.6.39
+tld
+validators

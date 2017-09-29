@@ -20,7 +20,7 @@ from ..utils.struct import InscDict
 from ..utils.web.check import isendpoint
 from ..utils.web.parse import endpoint, socket
 
-from .__about__ import __version_info__
+from ..__about__ import __version_info__
 from .exceptions import (AlreadyExistsKeyError, InvalidValueError,
                          VersionMismatchError)
 from .types import InputType

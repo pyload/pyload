@@ -8,12 +8,12 @@ from builtins import DATADIR
 from tempfile import mkstemp
 
 import autoupgrade
-import daemonize
+# import daemonize
 from future import standard_library
 from pkg_resources import get_default_cache
 
-from .__about__ import __namespace__, __package_name__, __version__
-from .init import Core, _pmap
+from .__about__ import __package__, __package_name__, __version__
+from .core.init import Core, _pmap
 from .utils.fs import makedirs, remove
 
 standard_library.install_aliases()
@@ -24,7 +24,7 @@ def _mkdprofile(profile=None, rootdir=None):
     if not profile:
         profile = DEFAULT_PROFILE
     if rootdir is None:
-        dirname = '.' + __namespace__ if os.name != 'nt' else __namespace__
+        dirname = '.' + __package__ if os.name != 'nt' else __package__
         configdir = os.path.join(DATADIR, dirname)
     else:
         configdir = os.path.expanduser(rootdir)
@@ -60,19 +60,17 @@ def quit(profile=None, configdir=None, **kwargs):
     inst.shutdown()
 
 
-def start(
-        profile=None, configdir=None, tmpdir=None, debug=None, restore=None,
-        daemon=False):
+def start(profile=None, configdir=None, tmpdir=None, debug=None, restore=None):
     profiledir = _mkdprofile(profile, configdir)
 
     inst = Core(profiledir, tmpdir, debug, restore)
     inst.start()
 
-    if daemon:
-        pidfile = mkstemp(
-            suffix='.pid', prefix='daemon-', dir=inst.cachedir)[1]
-        d = daemonize.Daemonize("pyLoad", pidfile, inst.join, logger=inst.log)
-        d.start()
+    # if daemon:
+        # pidfile = mkstemp(
+            # suffix='.pid', prefix='daemon-', dir=inst.cachedir)[1]
+        # d = daemonize.Daemonize("pyLoad", pidfile, inst.join, logger=inst.log)
+        # d.start()
 
     return inst  # returns process instance
 

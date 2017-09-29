@@ -21,11 +21,8 @@ from itertools import chain
 from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
-from setuptools.command.develop import develop
 
 # import subprocess
-
-
 
 
 def read_text(path):
@@ -70,9 +67,7 @@ class BuildLocale(Command):
     """
     Build the locales
     """
-    _LOCALEDIR = 'src/pyload/core/locale'
-
-    description = 'build the locales'
+    description = 'build locales'
     user_options = []
 
     def initialize_options(self):
@@ -83,7 +78,7 @@ class BuildLocale(Command):
 
     def run(self):
         try:
-            os.makedirs(self._LOCALEDIR)
+            os.makedirs('pyload/locale')
         except OSError as e:
             print(str(e))
         self.run_command('extract_messages')
@@ -109,50 +104,13 @@ class BuildLocale(Command):
 # raise NotImplementedError
 
 
-class Configure(Command):
-    """
-    Prepare for build
-    """
-    _ABOUTFILE = 'src/pyload/core/__about__.py'
-    _ICONFILE = 'media/icon.ico'
-
-    description = 'prepare for build'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def _makeabout(self):
-        write_text(self._ABOUTFILE, """# -*- coding: utf-8 -*-
-
-from semver import parse_version_info
-
-__namespace__ = 'pyload'
-__package__ = 'pyload.core'
-__package_name__ = 'pyload.core'
-__version__ = '{0}'
-__version_info__ = parse_version_info(__version__)
-__credits__ = (('Walter Purcaro', 'vuolter@gmail.com', '2015-2017'),
-               ('pyLoad Team', 'info@pyload.net', '2009-2015'))
-""".format(read_text('VERSION')))
-
-    def run(self):
-        if not os.path.isfile(self._ABOUTFILE):
-            self._makeabout()
-        shutil.copy(self._ICONFILE, 'src/pyload/core')
-        self.run_command('build_locale')
-
-
 class BdistEgg(bdist_egg):
     """
     Custom ``bdist_egg`` command
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('configure')
+            self.run_command('build_locale')
         bdist_egg.run(self)
 
 
@@ -162,22 +120,12 @@ class BuildPy(build_py):
     """
     def run(self):
         if not self.dry_run:
-            self.run_command('configure')
+            self.run_command('build_locale')
         build_py.run(self)
 
 
-class Develop(develop):
-    """
-    Custom ``develop`` command
-    """
-    def run(self):
-        if not self.dry_run:
-            self.run_command('configure')
-        develop.run(self)
-
-
 setup(
-    name='pyload.core',
+    name='pyload-ng',
     version=read_text('VERSION'),
     description='Free and Open Source download manager written in Pure Python '
                 'and designed to be extremely lightweight, fully customizable '
@@ -217,25 +165,21 @@ setup(
         "Topic :: Internet :: WWW/HTTP",
         'Topic :: Software Development :: Libraries :: Python Modules'],
     platforms=['any'],
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
+    packages=['pyload'],
     include_package_data=True,
-    namespace_packages=['pyload'],
-    obsoletes=['pyload'],
+    # obsoletes=['pyload'],
     install_requires=get_requires('install'),
     setup_requires=get_requires('setup'),
     extras_require=get_requires('extra'),
     python_requires='>=2.6,!=3.0,!=3.1,!=3.2',
-    entry_points={'console_scripts': ['pyload = pyload.core.cli:main']},
+    # entry_points={'console_scripts': ['pyload = pyload.cli:main']},
     cmdclass={
         'bdist_egg': BdistEgg,
         'build_locale': BuildLocale,
         'build_py': BuildPy,
-        'configure': Configure,
-        'develop': Develop
         # 'download_catalog': DownloadCatalog
     },
-    message_extractors={'src/pyload/core': [('**.py', 'python', None)]},
+    message_extractors={'pyload': [('**.py', 'python', None)]},
     # test_suite='nose.collector',
     # tests_require=get_requires('test'),
-    zip_safe=False)
+    zip_safe=True)

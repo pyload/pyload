@@ -13,6 +13,7 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 standard_library.install_aliases()
+
 import builtins
 import locale
 import os
@@ -26,16 +27,15 @@ builtins.TMPDIR = tempfile.gettempdir()
 # TODO: Remove
 builtins.ADDONMANAGER = None
 
-# from .__about__ import __package__
+# from .__about__ import __package_name__
 # from pkg_resources import resource_filename
-# from .utils.misc import install_translation
+# from ..utils.misc import install_translation
 
 locale.setlocale(locale.LC_ALL, '')
-# install_translation('core', resource_filename(__package__, 'locale'))
+# install_translation('core', resource_filename(__package_name__, 'locale'))
 
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
-from . import api, config, database, datatype, manager, network, thread
+from . import core, config, requests, utils
 from .iface import cleanup, quit, restart, start, status, version, upgrade
-from .init import Core, Restart, Shutdown
