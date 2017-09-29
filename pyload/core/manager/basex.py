@@ -20,10 +20,10 @@ class BaseManager(object):
         """
         Constructor.
         """
-        self.__pyload = core
+        self.pyload = core
         self._ = core._
         self.lock = Lock()
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload

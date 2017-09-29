@@ -167,12 +167,11 @@ setup(
     platforms=['any'],
     packages=['pyload'],
     include_package_data=True,
-    # obsoletes=['pyload'],
+    obsoletes=['pyload'],
     install_requires=get_requires('install'),
     setup_requires=get_requires('setup'),
     extras_require=get_requires('extra'),
     python_requires='>=2.6,!=3.0,!=3.1,!=3.2',
-    # entry_points={'console_scripts': ['pyload = pyload.cli:main']},
     cmdclass={
         'bdist_egg': BdistEgg,
         'build_locale': BuildLocale,

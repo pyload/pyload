@@ -128,7 +128,7 @@ class DatabaseBackend(Thread):
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.__pyload = core
+        self.pyload = core
         self._ = core._
         self.__manager = None  # set later
         self.error = None  # TODO: Recheck...
@@ -140,7 +140,7 @@ class DatabaseBackend(Thread):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     @property
     def running(self):

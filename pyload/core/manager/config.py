@@ -35,7 +35,7 @@ class ConfigManager(ConfigParser):
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!
 
-        self.__pyload = core
+        self.pyload = core
 
         # The config parser, holding the core config
         self.__parser = parser
@@ -54,7 +54,7 @@ class ConfigManager(ConfigParser):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     @convertkeyerror
     def get(self, section, option, user=None):

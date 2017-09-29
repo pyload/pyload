@@ -17,15 +17,15 @@ standard_library.install_aliases()
 class RequestFactory(object):
 
     def __init__(self, core):
-        self.__pyload = core
+        self.pyload = core
         self.bucket = Bucket()
         self.update_bucket()
 
-        self.__pyload.evm.listen_to("config:changed", self.update_config)
+        self.pyload.evm.listen_to("config:changed", self.update_config)
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     def get_url(self, *args, **kwargs):
         """

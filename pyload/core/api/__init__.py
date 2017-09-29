@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+from __future__ import absolute_import
+
 from .init import Api, requireperm, statestring
 from .base import AbstractApi, BaseApi
 from .account import AccountApi

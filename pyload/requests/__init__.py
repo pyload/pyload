@@ -9,6 +9,8 @@
 #          \  /
 #           \/
 
+from __future__ import absolute_import
+
 from .bucket import Bucket
 from .cookie import CookieJar
 from .download import DownloadRequest

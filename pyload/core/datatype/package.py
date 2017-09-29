@@ -91,7 +91,7 @@ class Package(BaseObject):
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
         self.__manager = manager
-        self.__pyload = manager.pyload
+        self.pyload = manager.pyload
 
         self.pid = pid
         self.name = name
@@ -113,7 +113,7 @@ class Package(BaseObject):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     def is_stale(self):
         return self.timestamp + 30 * 60 > time.time()

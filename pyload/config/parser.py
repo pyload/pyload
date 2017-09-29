@@ -83,12 +83,10 @@ class ConfigOption(object):
     def _set_type(self, input_type):
         if not input_type:
             input_type = self.DEFAULT_TYPE
-        try:
-            InputType[input_type]
-        except KeyError:
-            raise InvalidValueError(input_type)
-        else:
+        if input_type in InputType:
             self.type = input_type
+        else:
+            raise InvalidValueError(input_type)
 
     def _set_value(self, value):
         self.value = self.default = self._normalize_value(value)

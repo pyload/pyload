@@ -32,8 +32,8 @@ def trycatch(callback):
             except Exception as e:
                 msg = "Error executing `{0}` | {1}".format(
                     func.__name__, str(e))
-                self.__pyload.log.debug(msg)
-                if self.__pyload.debug:
+                self.pyload.log.debug(msg)
+                if self.pyload.debug:
                     print_traceback()
                 return callback(e)
         return new
@@ -147,7 +147,7 @@ class File(BaseObject):
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
         self.__manager = manager
-        self.__pyload = manager.pyload
+        self.pyload = manager.pyload
 
         self.fid = int(fid)
         self._name = purge.name(name)
@@ -178,7 +178,7 @@ class File(BaseObject):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     def get_size(self):
         """

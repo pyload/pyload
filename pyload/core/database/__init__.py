@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
+from __future__ import absolute_import
+
 from .backend import DatabaseBackend, DatabaseMethods, async, inner, queue
 from .account import AccountMethods
 from .config import ConfigMethods

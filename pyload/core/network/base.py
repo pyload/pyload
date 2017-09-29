@@ -89,7 +89,7 @@ class Base(object):
         self.__name__ = self.__class__.__name__
 
         # Core instance
-        self.__pyload = core
+        self.pyload = core
         self._ = core._
 
         if owner is not None:
@@ -115,7 +115,7 @@ class Base(object):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     def log_info(self, *args, **kwargs):
         """

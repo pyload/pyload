@@ -72,13 +72,13 @@ class Api(AbstractApi):
     EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
-        self.__pyload = core
+        self.pyload = core
         self._ = core._
         self.user_apis = {}
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     @property
     def user(self):
@@ -185,7 +185,7 @@ class UserApi(Api):
     """
     def __init__(self, core, user):
         # No need to init super class
-        self.__pyload = core
+        self.pyload = core
         self._user = user
 
     def with_user_context(self, uid):

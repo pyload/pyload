@@ -31,7 +31,7 @@ from ..utils.system import (ionice, renice, set_process_group,
                                  set_process_name, set_process_user)
 
 from ..__about__ import __package__, __package_name__, __version__, __version_info__
-from ..config import config_defaults, session_defaults
+from .config import config_defaults, session_defaults
 
 standard_library.install_aliases()
 

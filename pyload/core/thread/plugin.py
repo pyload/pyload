@@ -29,14 +29,14 @@ class PluginThread(Thread):
         Thread.__init__(self)
         self.setDaemon(True)
         self.__manager = manager  # Thread manager
-        self.__pyload = manager.pyload
-        self._ = self.__pyload._
+        self.pyload = manager.pyload
+        self._ = self.pyload._
         # Owner of the thread, every type should set it or overwrite user
         self.owner = owner
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
     @property
     def user(self):

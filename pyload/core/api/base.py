@@ -21,7 +21,7 @@ class BaseApi(AbstractApi):
         from ..datatype.user import User
         assert isinstance(core, Core)
         assert issubclass(BaseApi, AbstractApi)
-        self.__pyload = core
+        self.pyload = core
         self._ = core._
         assert isinstance(user, User)
         self.user = user
@@ -30,7 +30,7 @@ class BaseApi(AbstractApi):
 
     @property
     def pyload(self):
-        return self.__pyload
+        return self.pyload
 
 
 class AbstractApi(object):
