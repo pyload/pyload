@@ -34,7 +34,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.68"
+    __version__ = "0.69"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -120,8 +120,10 @@ class Hoster(Base):
                 self._check_download()
 
             except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
+                self.log_warning(_("Premium download failed") if self.premium else
+                                 _("Free download failed"),
+                                 e)
                 if self.no_fallback is False and self.config.get('fallback', True) and self.premium:
-                    self.log_warning(_("Premium download failed"), e)
                     self.restart(premium=False)
 
                 else:
