@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import time
 from builtins import object
 
+from functools import partial, wraps
 from future import standard_library
 
 from pyload.utils.layer.safethreading import (Condition, Lock, RLock,
@@ -15,17 +16,24 @@ standard_library.install_aliases()
 
 
 # NOTE: decorator
-def lock(blocking=True, timeout=None, shared=False):
-    def wrapper(func):
-        def new(self, *args, **kwargs):
-            try:
-                with self.lock(blocking, timeout, shared):
-                    return func(self, *args, **kwargs)
-            except TypeError:
-                with self.lock(blocking=blocking):
-                    return func(self, *args, **kwargs)
-        return new
-    return wrapper
+def lock(func=None, **kwgs):
+    # If the decorator was used with parameters, then `func` will be empty.
+    # If that is the case, return the decorator with the parameters set.
+    # This allows using it as `@lock` or `@lock(shared=True)`.
+    # Explanation can be found at:
+    # https://blogs.it.ox.ac.uk/inapickle/2012/01/05/python-decorators-with-optional-arguments/
+    if func is None:
+        return partial(lock, **kwgs)
+
+    @wraps(func)
+    def wrapped(self, *args, **kwargs):
+        self.lock.acquire(**kwgs)
+        try:
+            return func(self, *args, **kwargs)
+        finally:
+            self.lock.release()
+
+    return wrapped
 
 
 # Read-Write lock thread lock implementation
