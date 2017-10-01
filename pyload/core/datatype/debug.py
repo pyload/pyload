@@ -4,9 +4,9 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
+from .base import *
 from .check import OnlineCheck
 from .file import FileInfo
-from .base import *
 from .package import PackageInfo, PackageStats
 from .task import InteractionTask
 from .user import UserData
@@ -15,16 +15,16 @@ standard_library.install_aliases()
 
 
 enums = [
-    "DownloadState",
-    "DownloadStatus",
-    "FileStatus",
-    "InputType",
-    "Interaction",
-    "MediaType",
-    "PackageStatus",
-    "Permission",
-    "ProgressType",
-    "Role"
+    'DownloadState',
+    'DownloadStatus',
+    'FileStatus',
+    'InputType',
+    'Interaction',
+    'MediaType',
+    'PackageStatus',
+    'Permission',
+    'ProgressType',
+    'Role'
 ]
 
 classes = {

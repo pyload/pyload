@@ -32,10 +32,10 @@ def attributes(obj, ignore=None):
 
 def items(obj, ignore=None):
     if ignore is None:
-        res = ("{0}={1}".format(k, v) for k, v in obj.items())
+        res = ('{0}={1}'.format(k, v) for k, v in obj.items())
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        res = ("{0}={1}".format(k, v) for k, v in obj.items()
+        res = ('{0}={1}'.format(k, v) for k, v in obj.items()
                if k not in ignored)
     return res
 
@@ -55,10 +55,10 @@ def size(obj):
     except AttributeError:
         for prefix in __byte_prefixes[:-1]:
             if abs(num) < KIB:
-                return "{0:3.2f} {1}B".format(num, prefix)
+                return '{0:3.2f} {1}B'.format(num, prefix)
             else:
                 num /= KIB
-        return "{0:.2f} {1}B".format(num, __byte_prefixes[-1])
+        return '{0:.2f} {1}B'.format(num, __byte_prefixes[-1])
 
 
 def speed(obj):
@@ -71,8 +71,8 @@ def time(obj):
     days = dt.day - 1 if dt.day else 0
     attrlist = ('hour', 'minute', 'second')
     timelist = (
-        "{0:d} {1}s".format(getattr(dt, attr), attr)
+        '{0:d} {1}s'.format(getattr(dt, attr), attr)
         for attr in attrlist if getattr(dt, attr))
     if days:
-        timelist.append("{0:d} days".format(days))
+        timelist.append('{0:d} days'.format(days))
     return timelist

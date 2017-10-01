@@ -24,22 +24,21 @@ if os.name != 'nt':
 
 
 class Reconnect(Exception):
-    """
-    Raised when reconnected.
-    """
+    """Raised when reconnected."""
     __slots__ = []
 
 
 class Skip(Exception):
-    """
-    Raised when download should be skipped.
-    """
+    """Raised when download should be skipped."""
     __slots__ = []
 
 
 class Hoster(Base):
-    """
-    Base plugin for hoster plugin. Overwrite get_info for online status retrieval, process for downloading.
+    """Base plugin for hoster plugin.
+
+    Overwrite get_info for online status retrieval, process for
+    downloading.
+
     """
     # Class used to make requests with `self.load`
     REQUEST_CLASS = CurlRequest
@@ -49,15 +48,15 @@ class Hoster(Base):
 
     @staticmethod
     def get_info(urls):
-        """
-        This method is used to retrieve the online status of files for hoster plugins.
+        """This method is used to retrieve the online status of files for
+        hoster plugins.
 
         :param urls: List of urls
         :return: yield list of :class:`LinkStatus` as result
-        """
-        pass
 
-    __type__ = "hoster"
+        """
+
+    __type__ = 'hoster'
 
     def __init__(self, file):
         # TODO: file.owner, but it's not correct yet
@@ -99,7 +98,7 @@ class Hoster(Base):
         self.thread = None  # holds thread in future
 
         # location where the last call to download was saved
-        self.last_download = ""
+        self.last_download = ''
         # re match of the last call to `check_download`
         self.last_check = None
 
@@ -111,7 +110,7 @@ class Hoster(Base):
     @property
     def user(self):
         self.log_debug(
-            "Deprecated usage of self.user -> use self.account.loginname")
+            'Deprecated usage of self.user -> use self.account.loginname')
         if self.account:
             return self.account.loginname
 
@@ -132,8 +131,8 @@ class Hoster(Base):
 
     def get_download_limit(self):
         if self.account:
-            limit = self.account.options.get("limitDL", 0)
-            if limit == "":
+            limit = self.account.options.get('limitDL', 0)
+            if limit == '':
                 limit = 0
             if self.limit_dl > 0:  # a limit is already set, we use the minimum
                 return min(int(limit), self.limit_dl)
@@ -146,21 +145,14 @@ class Hoster(Base):
         return self.__name__
 
     def init(self):
-        """
-        Initialize the plugin (in addition to `__init__`).
-        """
-        pass
+        """Initialize the plugin (in addition to `__init__`)."""
 
     def setup(self):
-        """
-        Setup for environment and other things, called before downloading (possibly more than one time).
-        """
-        pass
+        """Setup for environment and other things, called before downloading
+        (possibly more than one time)."""
 
     def preprocessing(self, thread):
-        """
-        Handles important things to do before starting.
-        """
+        """Handles important things to do before starting."""
         self.thread = thread
 
         if self.account:
@@ -171,53 +163,52 @@ class Hoster(Base):
 
         self.setup()
 
-        self.file.set_status("starting")
+        self.file.set_status('starting')
 
         return self.process(self.file)
 
     def process(self, file):
-        """
-        The 'main' method of every plugin, you **have to** overwrite it.
-        """
+        """The 'main' method of every plugin, you **have to** overwrite it."""
         raise NotImplementedError
 
     def abort(self):
         return self.file.abort
 
     def reset_account(self):
-        """
-        Don't use account and retry download.
-        """
+        """Don't use account and retry download."""
         self.account = None
         self.req = self.pyload.req.get_request(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
-        """
-        return codes:
+        """return codes:
+
         0  - checksum ok
         1  - checksum wrong
         5  - can't get checksum
         10 - not implemented
         20 - unknown error
+
         """
         # TODO: checksum check addon
         return True, 10
 
     def set_wait(self, seconds, reconnect=None):
-        """
-        Set a specific wait time later used with `wait`
+        """Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
+
         """
         if reconnect is not None:
             self.want_reconnect = reconnect
         self.file.wait_until = time.time() + int(seconds)
 
     def wait(self, seconds=None, reconnect=None):
-        """
-        Waits the time previously set or use these from arguments. See `set_wait`.
+        """Waits the time previously set or use these from arguments.
+
+        See `set_wait`.
+
         """
         if seconds is not None:
             self.set_wait(seconds, reconnect)
@@ -226,7 +217,7 @@ class Hoster(Base):
 
     def _wait(self):
         self.waiting = True
-        self.file.set_status("waiting")
+        self.file.set_status('waiting')
 
         while self.file.wait_until > time.time():
             self.thread.get_manager().reconnecting.wait(2)
@@ -237,34 +228,31 @@ class Hoster(Base):
                 raise Reconnect
 
         self.waiting = False
-        self.file.set_status("starting")
+        self.file.set_status('starting')
 
     def offline(self):
-        """
-        Fail and indicate file is offline.
-        """
-        raise Fail("offline")
+        """Fail and indicate file is offline."""
+        raise Fail('offline')
 
     def temp_offline(self):
-        """
-        Fail and indicates file ist temporary offline, the core may take consequences.
-        """
-        raise Fail("temp. offline")
+        """Fail and indicates file ist temporary offline, the core may take
+        consequences."""
+        raise Fail('temp. offline')
 
     def retry(self, max_tries=3, wait_time=1,
               reason='', backoff=lambda x, y: x):
-        """
-        Retries and begin again from the beginning
+        """Retries and begin again from the beginning.
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
         :param reason: reason for retrying, will be passed to fail if max_tries reached
         :param backoff: Function to backoff the wait time, takes initial time and number of retry as argument.
                         defaults to no backoff / fixed wait time
+
         """
         if 0 < max_tries <= self.retries:
             if not reason:
-                reason = "Max retries reached"
+                reason = 'Max retries reached'
             raise Fail(reason)
 
         self.want_reconnect = False
@@ -276,17 +264,17 @@ class Hoster(Base):
 
     def download(self, url, get={}, post={}, ref=True,
                  cookies=True, disposition=False):
-        """
-        Downloads the content at url to download folder
+        """Downloads the content at url to download folder.
 
         :param disposition: if True and server provides content-disposition header
         the filename will be changed if needed
         :return: The location where the file was saved
+
         """
         self.check_for_same_files()
         self.check_abort()
 
-        self.file.set_status("downloading")
+        self.file.set_status('downloading')
 
         download_folder = self.pyload.config.get('general', 'storage_folder')
 
@@ -307,14 +295,14 @@ class Hoster(Base):
                     os.chown(location, uid, gid)
                 except Exception as e:
                     self.pyload.log.warning(
-                        self._("Setting User and Group failed: {0}").format(
+                        self._('Setting User and Group failed: {0}').format(
                             str(e)))
 
         name = self.file.name
 
         filepath = os.path.join(location, name)
 
-        self.pyload.adm.fire("download:start", self.file, url, filepath)
+        self.pyload.adm.fire('download:start', self.file, url, filepath)
 
         # Create the class used for downloading
         self.dl = self.pyload.req.get_download_request(
@@ -332,7 +320,7 @@ class Hoster(Base):
 
         if disposition and newname and newname != name:  # triple check, just to be sure
             self.pyload.log.info(
-                self._("{0} saved as {1}").format(name, newname))
+                self._('{0} saved as {1}').format(name, newname))
             self.file.name = newname
             filepath = os.path.join(location, newname)
 
@@ -354,7 +342,7 @@ class Hoster(Base):
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.pyload.log.warning(
-                    self._("Setting User and Group failed: {0}").format(
+                    self._('Setting User and Group failed: {0}').format(
                         str(e)))
 
         self.last_download = fs_filename
@@ -362,8 +350,8 @@ class Hoster(Base):
 
     def check_download(self, rules, api_size=0,
                        max_size=50000, delete=True, read_size=0):
-        """
-        Checks the content of the last downloaded file, re match is saved to `last_check`
+        """Checks the content of the last downloaded file, re match is saved to
+        `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
@@ -371,6 +359,7 @@ class Hoster(Base):
         :param delete: delete if matched
         :param read_size: amount of bytes to read from files larger then max_size
         :return: dictionary key of the first rule that matched
+
         """
         if not os.path.isfile(self.last_download):
             return
@@ -382,7 +371,7 @@ class Hoster(Base):
             return
         elif size > max_size and not read_size:
             return
-        self.pyload.log.debug("Download Check triggered")
+        self.pyload.log.debug('Download Check triggered')
         with io.open(self.last_download, mode='rb') as fp:
             content = fp.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
@@ -393,7 +382,7 @@ class Hoster(Base):
                     if delete:
                         remove(self.last_download, trash=True)
                     return name
-            elif hasattr(rule, "search"):
+            elif hasattr(rule, 'search'):
                 m = rule.search(content)
                 if m is not None:
                     if delete:
@@ -402,20 +391,18 @@ class Hoster(Base):
                     return name
 
     def get_password(self):
-        """
-        Get the password the user provided in the package.
-        """
+        """Get the password the user provided in the package."""
         password = self.file.package().password
         if not password:
-            return ""
+            return ''
         return password
 
     def check_for_same_files(self, starting=False):
-        """
-        Checks if same file was/is downloaded within same package
+        """Checks if same file was/is downloaded within same package.
 
         :param starting: indicates that the current download is going to start
         :raises Skip:
+
         """
         pack = self.file.package()
 
@@ -435,7 +422,7 @@ class Hoster(Base):
                 'connection', 'skip') and os.path.isfile(location):
             size = os.stat(location).st_size
             if size >= self.file.size:
-                raise Skip("File exists")
+                raise Skip('File exists')
 
         file = self.pyload.db.find_duplicates(
             self.file.fid, self.file.package().folder, self.file.name)
@@ -444,21 +431,19 @@ class Hoster(Base):
                 raise Skip(file[0])
 
             self.pyload.log.debug(
-                "File {0} not skipped, because it does not exists".format(
+                'File {0} not skipped, because it does not exists'.format(
                     self.file.name))
 
     def clean(self):
-        """
-        Clean everything and remove references.
-        """
-        if hasattr(self, "file"):
+        """Clean everything and remove references."""
+        if hasattr(self, 'file'):
             del self.file
-        if hasattr(self, "req"):
+        if hasattr(self, 'req'):
             self.req.close()
             del self.req
-        if hasattr(self, "dl"):
+        if hasattr(self, 'dl'):
             del self.dl
-        if hasattr(self, "thread"):
+        if hasattr(self, 'thread'):
             del self.thread
-        if hasattr(self, "html"):
+        if hasattr(self, 'html'):
             del self.html

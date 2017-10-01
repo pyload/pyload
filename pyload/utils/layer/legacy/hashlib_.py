@@ -45,12 +45,12 @@ if sys.version_info < (2, 7):
         _trans_36 = b''.join(chr(i ^ 0x36) for i in range(256))
 
         def pbkdf2_hmac(hash_name, password, salt, iterations, dklen=None):
-            """
-            Password based key derivation function 2 (PKCS #5 v2.0)
+            """Password based key derivation function 2 (PKCS #5 v2.0)
 
-            This Python implementations based on the hmac module about as fast
-            as OpenSSL's PKCS5_PBKDF2_HMAC for short passwords and much faster
-            for long passwords.
+            This Python implementations based on the hmac module about
+            as fast as OpenSSL's PKCS5_PBKDF2_HMAC for short passwords
+            and much faster for long passwords.
+
             """
             if not isinstance(hash_name, str):
                 raise TypeError(hash_name)
@@ -86,7 +86,7 @@ if sys.version_info < (2, 7):
             if dklen < 1:
                 raise ValueError(dklen)
 
-            hex_format_string = "%%0%ix" % (new(hash_name).digest_size * 2)
+            hex_format_string = '%%0%ix' % (new(hash_name).digest_size * 2)
 
             dkey = b''
             loop = 1

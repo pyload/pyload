@@ -14,7 +14,6 @@ from contextlib import closing
 from future import standard_library
 
 import pycurl
-from ..types import Connection
 from pyload.utils import purge
 from pyload.utils.fs import fullpath, remove
 
@@ -22,6 +21,7 @@ from ..chunk import ChunkInfo
 from ..cookie import CookieJar
 from ..download import DownloadRequest
 from ..request import Abort, ResponseException
+from ..types import Connection
 from .chunk import CurlChunk
 
 standard_library.install_aliases()
@@ -29,9 +29,7 @@ standard_library.install_aliases()
 
 # TODO: save content-disposition for resuming
 class CurlDownload(DownloadRequest):
-    """
-    Loads an url, http + ftp supported.
-    """
+    """Loads an url, http + ftp supported."""
     # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None,
     #              bucket=None, options={}, disposition=False):
 
@@ -79,13 +77,13 @@ class CurlDownload(DownloadRequest):
         init = self.info.get_chunk_name(0)  # initial chunk name
 
         if self.info.get_count() > 1:
-            with io.open(init, "rb+") as fpo:  # first chunkfile
+            with io.open(init, 'rb+') as fpo:  # first chunkfile
                 for i in range(1, self.info.get_count()):
                     # input file
                     # seek to beginning of chunk,
                     # to get rid of overlapping chunks
                     fpo.seek(self.info.get_chunk_range(i - 1)[1] + 1)
-                    filename = "{0}.chunk{1:d}".format(self.path, i)
+                    filename = '{0}.chunk{1:d}'.format(self.path, i)
                     buf = 32 << 10
                     with io.open(filename, mode='rb') as fpi:
                         while True:  # copy in chunks, consumes less memory
@@ -98,7 +96,7 @@ class CurlDownload(DownloadRequest):
                         remove(init)
                         self.info.remove()  # there are probably invalid chunks
                         raise Exception(
-                            "Downloaded content was smaller than expected")
+                            'Downloaded content was smaller than expected')
                     remove(filename)  # remove chunk
 
         if self.name:
@@ -133,9 +131,7 @@ class CurlDownload(DownloadRequest):
 
     def download(self, uri, filename, get={}, post={}, referer=True,
                  disposition=False, chunks=1, resume=False, cookies=True):
-        """
-        Returns new filename or None.
-        """
+        """Returns new filename or None."""
         self.set_path(filename)
 
         self.url = uri
@@ -156,7 +152,7 @@ class CurlDownload(DownloadRequest):
             code = e.args[0]
             if code == 33:
                 # try again without resume
-                self.log.debug("Errno 33 -> Restart without resume")
+                self.log.debug('Errno 33 -> Restart without resume')
 
                 # remove old handles
                 for chunk in self.chunks:
@@ -173,7 +169,7 @@ class CurlDownload(DownloadRequest):
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.add_chunk("{0}.chunk0".format(
+            self.info.add_chunk('{0}.chunk0'.format(
                 self.path), (0, 0))  # create an initial entry
 
         self.chunks = []
@@ -218,7 +214,7 @@ class CurlDownload(DownloadRequest):
                         self.manager.add_handle(handle)
                     else:
                         # close immediately
-                        self.log.debug("Invalid curl handle -> closed")
+                        self.log.debug('Invalid curl handle -> closed')
                         c.close()
 
                 chunks_created = True
@@ -249,7 +245,7 @@ class CurlDownload(DownloadRequest):
                         chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug(
-                            "Chunk {0:d} failed: {1}".format(
+                            'Chunk {0:d} failed: {1}'.format(
                                 chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
@@ -260,11 +256,11 @@ class CurlDownload(DownloadRequest):
                     curl, errno, msg = c
                     chunk = self.find_chunk(curl)
                     # test if chunk was finished
-                    if errno != 23 or "0 !=" not in msg:
+                    if errno != 23 or '0 !=' not in msg:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(
-                            "Chunk {0:d} failed: {1}".format(chunk.id + 1, ex))
+                            'Chunk {0:d} failed: {1}'.format(chunk.id + 1, ex))
                         continue
                     # check if the header implies success,
                     # else add it to failed list
@@ -272,7 +268,7 @@ class CurlDownload(DownloadRequest):
                         chunk.verify_header()
                     except ResponseException as e:
                         self.log.debug(
-                            "Chunk {0:d} failed: {1}".format(
+                            'Chunk {0:d} failed: {1}'.format(
                                 chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
@@ -288,8 +284,8 @@ class CurlDownload(DownloadRequest):
                         if init in failed or init.c in chunks_done:
                             raise ex
                         self.log.error(
-                            "Download chunks failed, fallback to "
-                            "single connection | {0}".format(ex))
+                            'Download chunks failed, fallback to '
+                            'single connection | {0}'.format(ex))
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -302,7 +298,7 @@ class CurlDownload(DownloadRequest):
                         # info file
                         init.reset_range()
                         self.info.clear()
-                        self.info.add_chunk("{0}.chunk0".format(
+                        self.info.add_chunk('{0}.chunk0'.format(
                             self.path), (0, self.size))
                         self.info.save()
 
@@ -311,7 +307,7 @@ class CurlDownload(DownloadRequest):
                     if len(chunks_done) >= len(self.chunks):
                         if len(chunks_done) > len(self.chunks):
                             self.log.warning(
-                                "Finished download chunks size incorrect")
+                                'Finished download chunks size incorrect')
                         done = True  # all chunks loaded
 
                     break
@@ -342,10 +338,8 @@ class CurlDownload(DownloadRequest):
         self._copy_chunks()
 
     def find_chunk(self, handle):
-        """
-        Linear search to find a chunk
-        (should be ok since chunk size is usually low).
-        """
+        """Linear search to find a chunk (should be ok since chunk size is
+        usually low)."""
         for chunk in self.chunks:
             if chunk.c == handle:
                 return chunk
@@ -354,14 +348,12 @@ class CurlDownload(DownloadRequest):
         try:
             self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
-            self.log.debug("Error removing chunk: {0}".format(str(e)))
+            self.log.debug('Error removing chunk: {0}'.format(str(e)))
         finally:
             chunk.close()
 
     def close(self):
-        """
-        Cleanup.
-        """
+        """Cleanup."""
         for chunk in self.chunks:
             self.close_chunk(chunk)
 
@@ -376,5 +368,5 @@ class CurlDownload(DownloadRequest):
         if hasattr(self, 'manager'):
             self.manager.close()
             del self.manager
-        if hasattr(self, "info"):
+        if hasattr(self, 'info'):
             del self.info

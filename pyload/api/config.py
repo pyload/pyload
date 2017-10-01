@@ -10,28 +10,26 @@ standard_library.install_aliases()
 
 
 class ConfigApi(BaseApi):
-    """
-    Everything related to configuration.
-    """
+    """Everything related to configuration."""
 
     def get_config_value(self, section, option):
-        """
-        Retrieve config value.
+        """Retrieve config value.
 
         :param section: name of category, or plugin
         :param option: config option
         :rtype: str
         :return: config value as string
+
         """
         return self.pyload.config.get(section, option)
 
     def set_config_value(self, section, option, value):
-        """
-        Set new config value.
+        """Set new config value.
 
         :param section:
         :param option:
         :param value: new config value
+
         """
         self.pyload.config.set(section, option, value)
 

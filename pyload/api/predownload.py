@@ -13,10 +13,9 @@ from future import standard_library
 from pyload.utils import parse
 from pyload.utils.purge import uniquify
 
-from ..core.datatype.check import OnlineCheck
 from ..core.datatype.base import DownloadStatus, LinkStatus, Permission
-from .base import BaseApi
-from .base import requireperm
+from ..core.datatype.check import OnlineCheck
+from .base import BaseApi, requireperm
 
 standard_library.install_aliases()
 
@@ -27,16 +26,14 @@ _re_urlmatch = re.compile(
 
 
 class PreDownloadApi(BaseApi):
-    """
-    All kind of methods to parse links or retrieve online status.
-    """
+    """All kind of methods to parse links or retrieve online status."""
     @requireperm(Permission.Add)
     def parse_links(self, links):
-        """
-        Gets urls and returns pluginname mapped to list of matching urls.
+        """Gets urls and returns pluginname mapped to list of matching urls.
 
         :param links:
         :return: {plugin: urls}
+
         """
         data, crypter = self.pyload.pgm.parse_urls(links)
         plugins = {}
@@ -51,12 +48,12 @@ class PreDownloadApi(BaseApi):
 
     @requireperm(Permission.Add)
     def check_links(self, links):
-        """
-        Initiates online status check, will also decrypt files.
+        """Initiates online status check, will also decrypt files.
 
         :param links:
         :return: initial set of data as :class:`OnlineCheck` instance
         containing the result id
+
         """
         hoster, crypter = self.pyload.pgm.parse_urls(links)
 
@@ -73,12 +70,12 @@ class PreDownloadApi(BaseApi):
 
     @requireperm(Permission.Add)
     def check_container(self, filename, data):
-        """
-        Checks online status of urls and a submitted container file
+        """Checks online status of urls and a submitted container file.
 
         :param filename: name of the file
         :param data: file content
         :return: :class:`OnlineCheck`
+
         """
         storagedir = self.pyload.config.get('general', 'storage_folder')
         filename = 'tmp_{0}'.format(filename)
@@ -89,12 +86,12 @@ class PreDownloadApi(BaseApi):
 
     @requireperm(Permission.Add)
     def check_html(self, html, url):
-        """
-        Parses html content or any arbitrary text for links
-        and returns result of `check_urls`
+        """Parses html content or any arbitrary text for links and returns
+        result of `check_urls`
 
         :param html: html source
         :return:
+
         """
         urls = []
         if html:
@@ -107,12 +104,12 @@ class PreDownloadApi(BaseApi):
 
     @requireperm(Permission.Add)
     def poll_results(self, rid):
-        """
-        Polls the result available for ResultID
+        """Polls the result available for ResultID.
 
         :param rid: `ResultID`
         :return: `OnlineCheck`, if rid is -1 then there is
         no more data available
+
         """
         result = self.pyload.iom.get_info_result(rid)
         if result:
@@ -120,11 +117,11 @@ class PreDownloadApi(BaseApi):
 
     @requireperm(Permission.Add)
     def generate_packages(self, links):
-        """
-        Parses links, generates packages names from urls
+        """Parses links, generates packages names from urls.
 
         :param links: list of urls
         :return: package names mapped to urls
+
         """
         result = parse.packs((x, x) for x in links)
         return result

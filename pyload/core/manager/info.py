@@ -7,25 +7,22 @@ import time
 
 from future import standard_library
 
-from ..datatype.check import OnlineCheck
-from .base import BaseManager
-from ..thread import InfoThread
 from pyload.utils.convert import to_list
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
+
+from ..datatype.check import OnlineCheck
+from ..thread import InfoThread
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
 class InfoManager(BaseManager):
-    """
-    Manages all non download related threads and jobs.
-    """
+    """Manages all non download related threads and jobs."""
 
     def __init__(self, core):
-        """
-        Constructor.
-        """
+        """Constructor."""
         BaseManager.__init__(self, core)
 
         self.thread = []  # thread list
@@ -52,26 +49,20 @@ class InfoManager(BaseManager):
 
     @lock
     def remove_thread(self, thread):
-        """
-        Remove a thread from the local list.
-        """
+        """Remove a thread from the local list."""
         if thread in self.thread:
             self.thread.remove(thread)
 
     @lock
     def create_info_thread(self, data, pid):
-        """
-        Start a thread which fetches online status and other info's.
-        """
+        """Start a thread which fetches online status and other info's."""
         self.timestamp = time.time() + 5 * 60
         thread = InfoThread(self, None, data, pid)
         thread.start()
 
     @lock
     def create_result_thread(self, user, data):
-        """
-        Creates a thread to fetch online status, returns result id.
-        """
+        """Creates a thread to fetch online status, returns result id."""
         self.timestamp = time.time() + 5 * 60
 
         rid = self.result_ids
@@ -90,7 +81,7 @@ class InfoManager(BaseManager):
         return self.info_results.get(rid)
 
     def set_info_results(self, oc, result):
-        self.pyload.evm.fire("linkcheck:updated", oc.rid,
+        self.pyload.evm.fire('linkcheck:updated', oc.rid,
                              result, owner=oc.owner)
         oc.update(result)
 
@@ -107,13 +98,11 @@ class InfoManager(BaseManager):
         return info
 
     def work(self):
-        """
-        Run all task which have to be done
-        (this is for repetitive call by core).
-        """
+        """Run all task which have to be done (this is for repetitive call by
+        core)."""
         if self.info_cache and self.timestamp < time.time():
             self.info_cache.clear()
-            self.pyload.log.debug("Cleared Result cache")
+            self.pyload.log.debug('Cleared Result cache')
 
         for rid in self.info_results:
             if self.info_results[rid].is_stale():

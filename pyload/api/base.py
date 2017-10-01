@@ -308,7 +308,7 @@ def requireperm(bits):
 statemap = {
     DownloadState.All:
         frozenset(getattr(DownloadStatus, x)
-                  for x in dir(DownloadStatus) if not x.startswith("_")),
+                  for x in dir(DownloadStatus) if not x.startswith('_')),
     DownloadState.Finished:
         frozenset((DownloadStatus.Finished, DownloadStatus.Skipped)),
     DownloadState.Unfinished: None,  # set below
@@ -323,7 +323,7 @@ statemap[DownloadState.Unfinished] = frozenset(
 
 
 def statestring(state):
-    return ",".join(str(x) for x in statemap[state])
+    return ','.join(str(x) for x in statemap[state])
 
 
 class Api(AbstractApi):
@@ -359,20 +359,21 @@ class Api(AbstractApi):
         # return self.user.primary if self.user else None
 
     def has_access(self, obj):
-        """
-        Helper method to determine if a user has access to a resource.
-        Works for obj that provides .owner attribute.
-        Core admin has always access.
+        """Helper method to determine if a user has access to a resource.
+
+        Works for obj that provides .owner attribute. Core admin has
+        always access.
+
         """
         return self.user is None or self.user.has_access(obj)
 
     @classmethod
     def extend(cls, api):
-        """
-        Takes all params from api and extends cls with it.
-        Api class can be removed afterwards.
+        """Takes all params from api and extends cls with it. Api class can be
+        removed afterwards.
 
         :param api: Class with methods to extend
+
         """
         if cls.EXTEND:
             for name, func in api.__dict__.items():
@@ -382,11 +383,11 @@ class Api(AbstractApi):
         return cls.EXTEND
 
     def with_user_context(self, uid):
-        """
-        Returns a proxy version of the api, to call method in user context
+        """Returns a proxy version of the api, to call method in user context.
 
         :param uid: user or userData instance or uid
         :return: :class:`UserApi`
+
         """
         if isinstance(uid, User):
             uid = uid.uid
@@ -407,25 +408,25 @@ class Api(AbstractApi):
 
     @requireperm(Permission.All)
     def login(self, username, password, remoteip=None):
-        """
-        Login into pyLoad, this **must** be called when using rpc before
-        any methods can be used.
+        """Login into pyLoad, this **must** be called when using rpc before any
+        methods can be used.
 
         :param username:
         :param password:
         :param remoteip: Omit this argument, its only used internal
         :return: bool indicating login was successful
+
         """
         return True if self.check_auth(username, password, remoteip) else False
 
     def check_auth(self, username, password, remoteip=None):
-        """
-        Check authentication and returns details
+        """Check authentication and returns details.
 
         :param username:
         :param password:
         :param remoteip:
         :return: dict with info, empty when login is incorrect
+
         """
         self.pyload.log.info(
             self._("User '{0}' tries to log in").format(username))
@@ -434,12 +435,12 @@ class Api(AbstractApi):
 
     @staticmethod
     def is_authorized(func, user):
-        """
-        Checks if the user is authorized for specific method
+        """Checks if the user is authorized for specific method.
 
         :param func: function name
         :param user: `User`
         :return: boolean
+
         """
         if user.is_admin():
             return True
@@ -450,9 +451,7 @@ class Api(AbstractApi):
 
 
 class UserApi(Api):
-    """
-    Proxy object for api that provides all methods in user context.
-    """
+    """Proxy object for api that provides all methods in user context."""
 
     def __init__(self, core, user):
         # No need to init super class
@@ -460,7 +459,7 @@ class UserApi(Api):
         self._user = user
 
     def with_user_context(self, uid):
-        raise Exception("Not allowed")
+        raise Exception('Not allowed')
 
     @property
     def user(self):

@@ -6,33 +6,30 @@ from future import standard_library
 
 from ..core.datatype.base import Permission
 from ..core.datatype.task import Interaction
-from .base import BaseApi
-from .base import requireperm
+from .base import BaseApi, requireperm
 
 standard_library.install_aliases()
 
 
 class UserExchangeApi(BaseApi):
-    """
-    Everything needed for user interaction.
-    """
+    """Everything needed for user interaction."""
     @requireperm(Permission.Interaction)
     def is_interaction_waiting(self, mode):
-        """
-        Check if task is waiting.
+        """Check if task is waiting.
 
         :param mode: binary or'ed output type
         :return: boolean
+
         """
         return self.pyload.im.is_task_waiting(mode)
 
     @requireperm(Permission.Interaction)
     def get_interaction_tasks(self, mode):
-        """
-        Retrieve task for specific mode.
+        """Retrieve task for specific mode.
 
         :param mode: binary or'ed interaction types which should be retrieved
         :rtype list of :class:`InteractionTask`
+
         """
         tasks = self.pyload.im.get_tasks(mode)
         # retrieved tasks count as seen
@@ -45,12 +42,12 @@ class UserExchangeApi(BaseApi):
 
     @requireperm(Permission.Interaction)
     def set_interaction_result(self, iid, result):
-        """
-        Set Result for a interaction task.
-        It will be immediately removed from task queue afterwards
+        """Set Result for a interaction task. It will be immediately removed
+        from task queue afterwards.
 
         :param iid: interaction id
         :param result: result as json string
+
         """
         task = self.pyload.im.get_task_by_id(iid)
         if task:

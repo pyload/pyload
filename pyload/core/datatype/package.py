@@ -72,9 +72,7 @@ class PackageStats(BaseObject):
 
 
 class Package(BaseObject):
-    """
-    Represents a package object at runtime.
-    """
+    """Represents a package object at runtime."""
     __slots__ = ['added', 'comment', 'comment', 'folder', 'manager', 'name',
                  'ownerid', 'packageorder', 'password', 'password', 'pid',
                  'root', 'set_finished', 'shared', 'site', 'site', 'status',
@@ -121,17 +119,13 @@ class Package(BaseObject):
             self.status, self.shared, self.packageorder)
 
     def update_from_info_data(self, pack):
-        """
-        Updated allowed values from info data.
-        """
+        """Updated allowed values from info data."""
         for attr in PackageInfo.__slots__:
-            if attr in ("site", "comment", "password"):
+            if attr in ('site', 'comment', 'password'):
                 setattr(self, attr, getattr(pack, attr))
 
     def get_files(self):
-        """
-        Get contaied files data.
-        """
+        """Get contaied files data."""
         return self.pyload.db.get_all_files(package=self.pid)
 
     def get_path(self, name=''):
@@ -140,15 +134,11 @@ class Package(BaseObject):
             self.root).get_path(), self.folder, name)
 
     def sync(self):
-        """
-        Sync with db.
-        """
+        """Sync with db."""
         self.manager.update_package(self)
 
     def release(self):
-        """
-        Sync and delete from cache.
-        """
+        """Sync and delete from cache."""
         self.sync()
         self.manager.release_package(self.id)
 
@@ -156,16 +146,14 @@ class Package(BaseObject):
         self.manager.remove_package(self.id)
 
     def delete_if_empty(self):
-        """
-        True if deleted.
-        """
+        """True if deleted."""
         if not len(self.get_files()):
             self.delete()
             return True
         return False
 
     def notify_change(self):
-        self.pyload.evm.fire("packageUpdated", self.id)
+        self.pyload.evm.fire('packageUpdated', self.id)
 
 
 class RootPackage(Package):
@@ -173,7 +161,7 @@ class RootPackage(Package):
     __slots__ = []
 
     def __init__(self, m, owner):
-        Package.__init__(self, m, -1, "root", '', owner, -2,
+        Package.__init__(self, m, -1, 'root', '', owner, -2,
                          '', '', '', 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=''):

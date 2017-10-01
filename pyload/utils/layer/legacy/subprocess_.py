@@ -29,9 +29,10 @@ if sys.version_info < (2, 7) and os.name != 'nt':
 
     # Unsued timeout option for older python version
     def wait(self, timeout=0):
-        """
-        Wait for child process to terminate.  Returns returncode
-        attribute
+        """Wait for child process to terminate.
+
+        Returns returncode attribute
+
         """
         if self.returncode is None:
             try:

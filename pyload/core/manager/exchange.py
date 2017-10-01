@@ -8,20 +8,23 @@ from base64 import standard_b64encode
 
 from future import standard_library
 
-from ..datatype.base import Input, InputType
-from ..datatype.task import Interaction, InteractionTask
-from .base import BaseManager
 from pyload.utils.check import bitset
 from pyload.utils.layer.legacy.collections_ import OrderedDict
 from pyload.utils.struct.lock import lock
+
+from ..datatype.base import Input, InputType
+from ..datatype.task import Interaction, InteractionTask
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
 class ExchangeManager(BaseManager):
-    """
-    Class that gives ability to interact with the user.
-    Arbitrary tasks with predefined output and input types can be set off
+    """Class that gives ability to interact with the user.
+
+    Arbitrary tasks with predefined output and input types can be set
+    off
+
     """
     # number of seconds a client is classified as active
     CLIENT_THRESHOLD = 60
@@ -55,14 +58,14 @@ class ExchangeManager(BaseManager):
     @lock
     def create_notification(self, title, content,
                             desc='', plugin='', owner=None):
-        """
-        Creates and queues a new Notification
+        """Creates and queues a new Notification.
 
         :param title: short title
         :param content: text content
         :param desc: short form of the notification
         :param plugin: plugin name
         :return: :class:`InteractionTask`
+
         """
         task = InteractionTask(
             self.ids, Interaction.Notification,
@@ -82,7 +85,7 @@ class ExchangeManager(BaseManager):
                 "'Input' class expected not '{0}'".format(type(input)))
 
         task = InteractionTask(self.ids, Interaction.Query, input, self._(
-            "Query"), desc, plugin, owner=owner)
+            'Query'), desc, plugin, owner=owner)
         self.ids += 1
         self.queue_task(task)
         return task
@@ -90,13 +93,13 @@ class ExchangeManager(BaseManager):
     @lock
     def create_captcha_task(self, img, format, filename,
                             plugin='', type_=InputType.Str, owner=None):
-        """
-        Createss a new captcha task.
+        """Createss a new captcha task.
 
         :param img: image content (not base encoded)
         :param format: img format
         :param type_: :class:`InputType`
         :return:
+
         """
         if type_ == 'textual':
             type_ = InputType.Str
@@ -108,7 +111,7 @@ class ExchangeManager(BaseManager):
         # TODO: title desc plugin
         task = InteractionTask(
             self.ids, Interaction.Captcha, input,
-            self._("Captcha request"), self._("Please solve the captcha"),
+            self._('Captcha request'), self._('Please solve the captcha'),
             plugin, owner=owner)
 
         self.ids += 1
@@ -119,7 +122,7 @@ class ExchangeManager(BaseManager):
     def remove_task(self, task):
         if task.iid in self.tasks:
             del self.tasks[task.iid]
-            self.pyload.evm.fire("interaction:deleted", task.iid)
+            self.pyload.evm.fire('interaction:deleted', task.iid)
 
     @lock
     def get_task_by_id(self, iid):
@@ -166,4 +169,4 @@ class ExchangeManager(BaseManager):
                 pass
 
         self.tasks[task.iid] = task
-        self.pyload.evm.fire("interaction:added", task)
+        self.pyload.evm.fire('interaction:added', task)

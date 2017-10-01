@@ -7,7 +7,6 @@ from builtins import dict, str
 
 from future import standard_library
 
-from .cookie import CookieJar
 from pyload.utils import format, parse
 from pyload.utils.convert import to_str
 from pyload.utils.layer.safethreading import RLock
@@ -17,6 +16,7 @@ from pyload.utils.time import compare
 # from pyload.config.convert import from_string, to_configdata
 from ..datatype import AccountInfo, ConfigItem
 from .base import Base
+from .cookie import CookieJar
 
 standard_library.install_aliases()
 
@@ -28,12 +28,14 @@ class WrongPassword(Exception):
 
 # noinspection PyUnresolvedReferences
 class Account(Base):
-    """
-    Base class for every account plugin.
-    Just overwrite `login` and cookies will be stored and the account becomes accessible in
-    associated hoster plugin. Plugin should also provide `load_account_info`.
-    An instance of this class is created for every entered account, it holds all
-    fields of AccountInfo ttype, and can be set easily at runtime
+    """Base class for every account plugin.
+
+    Just overwrite `login` and cookies will be stored and the account
+    becomes accessible in associated hoster plugin. Plugin should also
+    provide `load_account_info`. An instance of this class is created
+    for every entered account, it holds all fields of AccountInfo ttype,
+    and can be set easily at runtime
+
     """
     # constants for special values
     UNKNOWN = -1
@@ -57,7 +59,7 @@ class Account(Base):
                    if info.activated else False, True
                    if info.shared else False, password, options)
 
-    __type__ = "account"
+    __type__ = 'account'
 
     def __init__(self, manager, aid, loginname, owner,
                  activated, shared, password, options):
@@ -82,7 +84,7 @@ class Account(Base):
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
         except Exception as e:
-            self.log_error(self._("Invalid config: {0}").format(str(e)))
+            self.log_error(self._('Invalid config: {0}').format(str(e)))
             self.config_data = {}
 
         self.init()
@@ -104,10 +106,8 @@ class Account(Base):
         pass
 
     def get_config(self, option):
-        """
-        Gets an option that was configured via the account options dialog and
-        is only valid for this specific instance.
-        """
+        """Gets an option that was configured via the account options dialog
+        and is only valid for this specific instance."""
         if option not in self.config_data:
             return Base.get_config(self, option)
 
@@ -117,8 +117,10 @@ class Account(Base):
         return self.config_data[option].input.default
 
     def set_config(self, option, value):
-        """
-        Sets a config value for this account instance. Modifying the global values is not allowed.
+        """Sets a config value for this account instance.
+
+        Modifying the global values is not allowed.
+
         """
         if option not in self.config_data:
             return
@@ -133,17 +135,16 @@ class Account(Base):
                 value, self.config_data[option].input.type)
 
     def login(self, req):
-        """
-        Login into account, the cookies will be saved so the user can be recognized
+        """Login into account, the cookies will be saved so the user can be
+        recognized.
 
         :param req: `Request` instance
+
         """
         raise NotImplementedError
 
     def relogin(self):
-        """
-        Force a login.
-        """
+        """Force a login."""
         with self.get_account_request() as req:
             return self._login(req)
 
@@ -157,19 +158,19 @@ class Account(Base):
                 self.login(req)
             except TypeError:  # TODO: temporary
                 self.log_debug(
-                    "Deprecated .login(...) signature omit user, data")
+                    'Deprecated .login(...) signature omit user, data')
                 self.login(self.loginname, {'password': self.password}, req)
 
             self.valid = True
         except WrongPassword:
             self.log_warning(
-                self._("Could not login with account {0} | {1}").format(
-                    self.loginname, self._("Wrong Password")))
+                self._('Could not login with account {0} | {1}').format(
+                    self.loginname, self._('Wrong Password')))
             self.valid = False
 
         except Exception as e:
             self.log_warning(
-                self._("Could not login with account {0} | {1}").format(
+                self._('Could not login with account {0} | {1}').format(
                     self.loginname, str(e)))
             self.valid = False
             # self.pyload.print_exc()
@@ -183,9 +184,8 @@ class Account(Base):
         self.premium = Account.premium
 
     def set_login(self, loginname, password):
-        """
-        Updates the loginname and password and returns true if anything changed.
-        """
+        """Updates the loginname and password and returns true if anything
+        changed."""
         if password != self.password or loginname != self.loginname:
             self.login_ts = 0
             self.valid = True  # set valid, so the login will be retried
@@ -197,9 +197,7 @@ class Account(Base):
         return False
 
     def update_config(self, items):
-        """
-        Updates the accounts options from config items.
-        """
+        """Updates the accounts options from config items."""
         for item in items:
             # Check if a valid option
             if item.name in self.config_data:
@@ -209,11 +207,11 @@ class Account(Base):
         return self.pyload.req.get_request(self.cj)
 
     def get_download_settings(self):
-        """
-        Can be overwritten to change download settings.
-        Default is no chunkLimit, max dl limit, resumeDownload
+        """Can be overwritten to change download settings. Default is no
+        chunkLimit, max dl limit, resumeDownload.
 
         :return: (chunkLimit, limitDL, resumeDownload) / (int, int, bool)
+
         """
         return -1, 0, True
 
@@ -221,13 +219,13 @@ class Account(Base):
     # the data if needed
     @lock
     def get_account_info(self, force=False):
-        """
-        Retrieve account info's for an user, do **not** overwrite this method!
-        just use it to retrieve info's in hoster plugins.
-        See `load_account_info`
+        """Retrieve account info's for an user, do **not** overwrite this
+        method! just use it to retrieve info's in hoster plugins. See
+        `load_account_info`
 
         :param name: username
         :param force: reloads cached account information
+
         """
         if force or self.timestamp + self.info_threshold * 60 < time.time():
 
@@ -235,17 +233,17 @@ class Account(Base):
             with self.get_account_request() as req:
                 self.check_login(req)
                 self.log_info(
-                    self._("Get Account Info for {0}").format(self.loginname))
+                    self._('Get Account Info for {0}').format(self.loginname))
                 try:
                     try:
                         infos = self.load_account_info(req)
                     except TypeError:  # TODO: temporary
                         self.log_debug(
-                            "Deprecated .load_account_info(...) signature, omit user argument")
+                            'Deprecated .load_account_info(...) signature, omit user argument')
                         infos = self.load_account_info(self.loginname, req)
                 except Exception as e:
                     infos = {'error': str(e)}
-                    self.log_error(self._("Error: {0}").format(str(e)))
+                    self.log_error(self._('Error: {0}').format(str(e)))
 
             self.restore_defaults()  # reset to initial state
             if isinstance(infos, dict):  # copy result from dict to class
@@ -254,36 +252,35 @@ class Account(Base):
                         setattr(self, k, v)
                     else:
                         self.log_debug(
-                            "Unknown attribute {0}={1}".format(k, v))
+                            'Unknown attribute {0}={1}'.format(k, v))
 
-            self.log_debug("Account Info: {0}".format(infos))
+            self.log_debug('Account Info: {0}'.format(infos))
             self.timestamp = time.time()
-            self.pyload.evm.fire("account:loaded", self.to_info_data())
+            self.pyload.evm.fire('account:loaded', self.to_info_data())
 
     # TODO: remove user
     def load_account_info(self, req):
-        """
-        Overwrite this method and set account attributes within this method.
+        """Overwrite this method and set account attributes within this method.
 
         :param user: Deprecated
         :param req: Request instance
         :return:
+
         """
-        pass
 
     def get_account_cookies(self, user):
         self.log_debug(
-            "Deprecated method .get_account_cookies -> use account.cj")
+            'Deprecated method .get_account_cookies -> use account.cj')
         return self.cj
 
     def select_account(self, *args):
         self.log_debug(
-            "Deprecated method .select_account() -> use fields directly")
+            'Deprecated method .select_account() -> use fields directly')
         return self.loginname, self.get_account_data()
 
     def get_account_data(self, *args):
         self.log_debug(
-            "Deprecated method .get_account_data -> use fields directly")
+            'Deprecated method .get_account_data -> use fields directly')
         return {
             'password': self.password,
             'premium': self.premium,
@@ -293,27 +290,25 @@ class Account(Base):
 
     def is_premium(self, user=None):
         if user:
-            self.log_debug("Deprecated Argument user for .is_premium()", user)
+            self.log_debug('Deprecated Argument user for .is_premium()', user)
         return self.premium
 
     def is_usable(self):
-        """
-        Check several constraints to determine if account should be used.
-        """
+        """Check several constraints to determine if account should be used."""
         if not self.valid or not self.activated:
             return False
 
         # TODO: not in ui currently
-        if "time" in self.options and self.options['time']:
-            time_data = ""
+        if 'time' in self.options and self.options['time']:
+            time_data = ''
             try:
                 time_data = self.options['time']
-                start, end = time_data.split("-")
-                if not compare(start.split(":"), end.split(":")):
+                start, end = time_data.split('-')
+                if not compare(start.split(':'), end.split(':')):
                     return False
             except Exception:
                 self.log_warning(
-                    self._("Your Time {0} has a wrong format, use: 1:22-3:44").format(time_data))
+                    self._('Your Time {0} has a wrong format, use: 1:22-3:44').format(time_data))
 
         if 0 <= self.validuntil < time.time():
             return False
@@ -335,10 +330,10 @@ class Account(Base):
 
     def empty(self, user=None):
         if user:
-            self.log_debug("Deprecated argument user for .empty()", user)
+            self.log_debug('Deprecated argument user for .empty()', user)
 
         self.log_warning(
-            self._("Account {0} has not enough traffic, checking again in 30min").format(
+            self._('Account {0} has not enough traffic, checking again in 30min').format(
                 self.login))
 
         self.trafficleft = 0
@@ -346,34 +341,30 @@ class Account(Base):
 
     def expired(self, user=None):
         if user:
-            self.log_debug("Deprecated argument user for .expired()", user)
+            self.log_debug('Deprecated argument user for .expired()', user)
 
         self.log_warning(
-            self._("Account {0} is expired, checking again in 1h").format(user))
+            self._('Account {0} is expired, checking again in 1h').format(user))
 
         self.validuntil = time.time() - 1
         self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):
-        """
-        Add a task for refreshing the account info to the scheduler.
-        """
+        """Add a task for refreshing the account info to the scheduler."""
         self.log_debug(
-            "Scheduled Account refresh for {0} in {1} seconds".format(
+            'Scheduled Account refresh for {0} in {1} seconds'.format(
                 self.loginname, time))
         self.pyload.scheduler.enter(time, 1, self.get_account_info, [force])
 
     @lock
     def check_login(self, req):
-        """
-        Checks if the user is still logged in.
-        """
+        """Checks if the user is still logged in."""
         if self.login_ts + self.login_timeout * 60 < time.time():
             if self.login_ts:  # separate from fresh login to have better debug logs
                 self.log_debug(
-                    "Reached login timeout for {0}".format(self.loginname))
+                    'Reached login timeout for {0}'.format(self.loginname))
             else:
-                self.log_info(self._("Login with {0}").format(self.loginname))
+                self.log_info(self._('Login with {0}').format(self.loginname))
 
             self._login(req)
             return False

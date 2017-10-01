@@ -10,39 +10,34 @@ from builtins import object, str
 from future import standard_library
 from pkg_resources import resource_filename
 
-from ...__about__ import __package_name__
-from .base import BaseManager
-from ..network.loader import LoaderFactory, PluginLoader
 from pyload.utils.fs import fullpath
+
+from ...__about__ import __package_name__
+from ..network.loader import LoaderFactory, PluginLoader
+from .base import BaseManager
 
 standard_library.install_aliases()
 
 
 class PluginMatcher(object):
-    """
-    Abstract class that allows modify which plugins to match and to load.
-    """
+    """Abstract class that allows modify which plugins to match and to load."""
 
     def match_url(self, url):
-        """
-        Returns (type, name) of a plugin if a match is found.
-        """
+        """Returns (type, name) of a plugin if a match is found."""
         return
 
     def match_plugin(self, plugin, name):
-        """
-        Returns (type, name) of the plugin that will be loaded instead.
-        """
+        """Returns (type, name) of the plugin that will be loaded instead."""
         return
 
 
 class PluginManager(BaseManager):
 
-    ROOT = "pyload.core.plugin"
-    LOCALROOT = "userplugins"
+    ROOT = 'pyload.core.plugin'
+    LOCALROOT = 'userplugins'
 
     MATCH_HISTORY = 10
-    DEFAULT_PLUGIN = "BasePlugin"
+    DEFAULT_PLUGIN = 'BasePlugin'
 
     def __init__(self, core):
         BaseManager.__init__(self, core)
@@ -70,9 +65,7 @@ class PluginManager(BaseManager):
         self.matcher = []
 
     def add_matcher(self, matcher, index=0):
-        """
-        Inserts matcher at given index, first position by default.
-        """
+        """Inserts matcher at given index, first position by default."""
         if not isinstance(matcher, PluginMatcher):
             raise TypeError(
                 "Expected type of PluginMatcher, got '{0}' instead".format(
@@ -84,22 +77,19 @@ class PluginManager(BaseManager):
         self.matcher.insert(index, matcher)
 
     def remove_matcher(self, matcher):
-        """
-        Removes a matcher if it exists.
-        """
+        """Removes a matcher if it exists."""
         if matcher in self.matcher:
             self.matcher.remove(matcher)
 
     def parse_urls(self, urls):
-        """
-        Parse plugins for given list of urls, separate to crypter and hoster.
-        """
+        """Parse plugins for given list of urls, separate to crypter and
+        hoster."""
         res = {'hoster': [], 'crypter': []}  # tupels of (url, plugin)
 
         for url in urls:
             if not isinstance(url, str):
                 self.pyload.log.debug(
-                    "Parsing invalid type {0}".format(type(url)))
+                    'Parsing invalid type {0}'.format(type(url)))
                 continue
 
             found = False
@@ -129,7 +119,7 @@ class PluginManager(BaseManager):
             if found:
                 continue
 
-            for _type in ("crypter", "hoster"):
+            for _type in ('crypter', 'hoster'):
                 for loader in self.loader:
                     for name, info in loader.get_plugins(_type).items():
                         if info.re.match(url):
@@ -150,31 +140,25 @@ class PluginManager(BaseManager):
         return res['hoster'], res['crypter']
 
     def find_type(self, name):
-        """
-        Finds the type to a plugin name.
-        """
+        """Finds the type to a plugin name."""
         return self.loader.find_type(name)
 
     def get_plugin(self, type_, name):
-        """
-        Retrieves the plugin tuple for a single plugin or none.
-        """
+        """Retrieves the plugin tuple for a single plugin or none."""
         return self.loader.get_plugin(type_, name)
 
     def get_plugins(self, type_):
-        """
-        Get all plugins of a certain type in a dict.
-        """
+        """Get all plugins of a certain type in a dict."""
         plugins = {}
         for loader in self.loader:
             plugins.update(loader.get_plugins(type_))
         return plugins
 
     def get_plugin_class(self, type_, name, overwrite=True):
-        """
-        Gives the plugin class of a hoster or crypter plugin
+        """Gives the plugin class of a hoster or crypter plugin.
 
         :param overwrite: allow the use of overwritten plugins
+
         """
         if overwrite:
             for m in self.matcher:
@@ -190,10 +174,10 @@ class PluginManager(BaseManager):
         return {}
 
     def load_module(self, type_, name):
-        """
-        Returns loaded module for plugin
+        """Returns loaded module for plugin.
 
         :param type: plugin type, subfolder of module.plugins
+
         """
         if (type_, name) in self.modules:
             return self.modules[(type_, name)]
@@ -206,14 +190,12 @@ class PluginManager(BaseManager):
                     return module
                 except Exception as e:
                     self.pyload.log.error(
-                        self._("Error importing {0}: {1}").format(
+                        self._('Error importing {0}: {1}').format(
                             name, str(e)))
                     # self.pyload.print_exc()
 
     def load_class(self, type_, name):
-        """
-        Returns the class of a plugin with the same name.
-        """
+        """Returns the class of a plugin with the same name."""
         module = self.load_module(type_, name)
         try:
             if module:
@@ -229,9 +211,9 @@ class PluginManager(BaseManager):
                 continue
 
             # TODO: not well tested
-            offset = 1 - loader.package.count(".")
+            offset = 1 - loader.package.count('.')
 
-            split = fullname.split(".")
+            split = fullname.split('.')
             if len(split) != 4 - offset:
                 return
             type, name = split[2 - offset:4 - offset]
@@ -243,13 +225,11 @@ class PluginManager(BaseManager):
                     return self
 
         # TODO: Remove when all plugin imports are adapted
-        if "module" in fullname:
+        if 'module' in fullname:
             return self
 
     def reload_plugins(self, type_plugins):
-        """
-        Reloads and reindexes plugins.
-        """
+        """Reloads and reindexes plugins."""
         raise NotImplementedError
         # TODO
         # check if reloadable
@@ -259,26 +239,22 @@ class PluginManager(BaseManager):
         # reload accounts
 
     def is_user_plugin(self, name):
-        """
-        A plugin suitable for multiple user.
-        """
+        """A plugin suitable for multiple user."""
         return any(l.is_user_plugin(name) for l in self.loader)
 
     def get_category(self, name):
-        plugin = self.loader.get_plugin("addon", name)
+        plugin = self.loader.get_plugin('addon', name)
         if plugin:
-            return plugin.category or "addon"
+            return plugin.category or 'addon'
 
     def load_icon(self, name):
-        """
-        Load icon for single plugin, base64 encoded.
-        """
+        """Load icon for single plugin, base64 encoded."""
         raise NotImplementedError
 
     def check_dependencies(self, type_, name):
-        """
-        Check deps for given plugin
+        """Check deps for given plugin.
 
         :return: List of unfullfilled dependencies
+
         """
         raise NotImplementedError

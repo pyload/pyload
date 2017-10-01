@@ -19,9 +19,8 @@ def comments(value):
 
 
 def escape(text):
-    """
-    Removes HTML or XML character references and entities from a text string.
-    """
+    """Removes HTML or XML character references and entities from a text
+    string."""
     h = html.parser.HTMLParser()
     return h.unescape(text)
 

@@ -41,10 +41,8 @@ class Bucket(object):
         self.timestamp = now
 
     def consumed(self, amount):
-        """
-        Return the time the process has to sleep,
-        after it consumed a specified amount
-        """
+        """Return the time the process has to sleep, after it consumed a
+        specified amount."""
         if self.rate < self.MIN_RATE:
             return 0  # NOTE: May become unresponsive otherwise
         self._calc_token()

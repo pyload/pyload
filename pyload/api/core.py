@@ -11,22 +11,17 @@ from pyload.utils.fs import availspace
 
 from ..core.datatype.base import Permission, StatusInfo
 from ..core.datatype.task import Interaction
-from .base import BaseApi
-from .base import requireperm
+from .base import BaseApi, requireperm
 
 standard_library.install_aliases()
 
 
 class CoreApi(BaseApi):
-    """
-    This module provides methods for general interaction with the core,
-    like status or progress retrieval.
-    """
+    """This module provides methods for general interaction with the core, like
+    status or progress retrieval."""
     @requireperm(Permission.All)
     def get_server_version(self):
-        """
-        PyLoad Core version.
-        """
+        """PyLoad Core version."""
         return self.pyload.version
 
     def is_ws_secure(self):
@@ -46,10 +41,10 @@ class CoreApi(BaseApi):
 
     @requireperm(Permission.All)
     def get_status_info(self):
-        """
-        Some general information about the current status of pyLoad.
+        """Some general information about the current status of pyLoad.
 
         :return: `StatusInfo`
+
         """
         queue = self.pyload.files.get_queue_stats()
         total = self.pyload.files.get_download_stats()
@@ -72,70 +67,60 @@ class CoreApi(BaseApi):
 
     @requireperm(Permission.All)
     def get_progress_info(self):
-        """
-        Status of all currently running tasks
+        """Status of all currently running tasks.
 
         :rtype: list of :class:`ProgressInfo`
+
         """
         return (self.pyload.tsm.get_progress_list() +
                 self.pyload.iom.get_progress_list())
 
     def pause_server(self):
-        """
-        Pause server: It won't start any new downloads,
-        but nothing gets aborted.
-        """
+        """Pause server: It won't start any new downloads, but nothing gets
+        aborted."""
         self.pyload.tsm.pause = True
 
     def unpause_server(self):
-        """
-        Unpause server: New Downloads will be started.
-        """
+        """Unpause server: New Downloads will be started."""
         self.pyload.tsm.pause = False
 
     def toggle_pause(self):
-        """
-        Toggle pause state.
+        """Toggle pause state.
 
         :return: new pause state
+
         """
         self.pyload.tsm.pause ^= True
         return self.pyload.tsm.pause
 
     def toggle_reconnect(self):
-        """
-        Toggle reconnect activation.
+        """Toggle reconnect activation.
 
         :return: new reconnect state
+
         """
         self.pyload.config['reconnect']['activated'] ^= True
         return self.pyload.config.get('reconnect', 'activated')
 
     def avail_space(self):
-        """
-        Available free space at download directory in bytes.
-        """
+        """Available free space at download directory in bytes."""
         return availspace(self.pyload.config.get(
             'general', 'storage_folder'))
 
     def shutdown(self):
-        """
-        Clean way to quit pyLoad.
-        """
+        """Clean way to quit pyLoad."""
         self.pyload._Core__do_exit = True
 
     def restart(self):
-        """
-        Restart pyload core.
-        """
+        """Restart pyload core."""
         self.pyload._Core__do_restart = True
 
     def get_log(self, offset=0):
-        """
-        Returns most recent log entries.
+        """Returns most recent log entries.
 
         :param offset: line offset
         :return: List of log entries
+
         """
         # TODO: Rewrite!
         logfile_folder = self.config.get('log', 'logfile_folder')

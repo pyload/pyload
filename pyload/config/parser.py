@@ -37,12 +37,12 @@ class ConfigOption(object):
 
     _convert_map = {
         InputType.NA: lambda x: x,
-        InputType.Str: lambda x: "" if x is None else str(x),
+        InputType.Str: lambda x: '' if x is None else str(x),
         InputType.Int: lambda x: 0 if x is None else int(x),
-        InputType.File: lambda x: "" if x is None else fullpath(x),
+        InputType.File: lambda x: '' if x is None else fullpath(x),
         InputType.Folder:
-            lambda x: "" if x is None else os.path.dirname(fullpath(x)),
-        InputType.Password: lambda x: "" if x is None else str(x),
+            lambda x: '' if x is None else os.path.dirname(fullpath(x)),
+        InputType.Password: lambda x: '' if x is None else str(x),
         InputType.Bool:
             lambda x: parse.boolean(x) if isinstance(x, str) else bool(x),
         InputType.Float: lambda x: 0.0 if x is None else float(x),
@@ -77,8 +77,8 @@ class ConfigOption(object):
         self._set_info(label, desc)
 
     def _set_info(self, label, desc):
-        self.label = "" if label is None else str(label)
-        self.desc = "" if desc is None else str(desc)
+        self.label = '' if label is None else str(label)
+        self.desc = '' if desc is None else str(desc)
 
     def _set_type(self, input_type):
         if not input_type:
@@ -122,20 +122,16 @@ class ConfigOption(object):
 
 
 class ConfigSection(InscDict):
-    """
-    Provides dictionary like access for configparser.
-    """
+    """Provides dictionary like access for configparser."""
     __slots__ = ['desc', 'label', 'parser']
 
     SECTION_SEPARATOR = ':'
 
     def __init__(self, parser, config=None, label=None, desc=None):
-        """
-        Constructor.
-        """
+        """Constructor."""
         self.parser = parser
-        self.label = "" if label is None else str(label)
-        self.desc = "" if desc is None else str(desc)
+        self.label = '' if label is None else str(label)
+        self.desc = '' if desc is None else str(desc)
         self.update(config or ())
 
     def _to_configentry(self, value):

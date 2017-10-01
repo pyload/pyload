@@ -7,17 +7,16 @@ import json
 from future import standard_library
 
 from pyload.config import ConfigParser
-from ..datatype.base import InvalidConfigSection
 # from pyload.config.convert import from_string
 from pyload.utils.layer.legacy.collections_ import OrderedDict
+
+from ..datatype.base import InvalidConfigSection
 
 standard_library.install_aliases()
 
 
 def convertkeyerror(func):
-    """
-    Converts KeyError into InvalidConfigSection.
-    """
+    """Converts KeyError into InvalidConfigSection."""
     def conv(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -28,9 +27,10 @@ def convertkeyerror(func):
 
 
 class ConfigManager(ConfigParser):
-    """
-    Manages the core config and configs for addons and single user.
+    """Manages the core config and configs for addons and single user.
+
     Has similar interface to ConfigParser.
+
     """
 
     def __init__(self, core, parser):
@@ -55,9 +55,10 @@ class ConfigManager(ConfigParser):
 
     @convertkeyerror
     def get(self, section, option, user=None):
-        """
-        Get config value, core config only available for admins.
+        """Get config value, core config only available for admins.
+
         if user is not valid default value will be returned.
+
         """
         # Core config loaded from parser, when no user is given or he is admin
         if section in self.parser and user is None:
@@ -88,9 +89,7 @@ class ConfigManager(ConfigParser):
 
     @convertkeyerror
     def set(self, section, option, value, sync=True, user=None):
-        """
-        Set config value.
-        """
+        """Set config value."""
         changed = False
         if section in self.parser and user is None:
             changed = self.parser.set(section, option, value, sync)
@@ -107,7 +106,7 @@ class ConfigManager(ConfigParser):
                     self.save_values(user, section)
 
         if changed:
-            self.pyload.evm.fire("config:changed", section, option, value)
+            self.pyload.evm.fire('config:changed', section, option, value)
         return changed
 
     def save_values(self, user, section):
@@ -118,24 +117,23 @@ class ConfigManager(ConfigParser):
                 self.values[user, section]), user)
 
     def delete(self, section, user=None):
-        """
-        Deletes values saved in db and cached values for given user,
-        NOT meta data.
+        """Deletes values saved in db and cached values for given user, NOT
+        meta data.
+
         Does not trigger an error when nothing was deleted.
+
         """
         if (user, section) in self.values:
             del self.values[user, section]
 
         self.pyload.db.delete_config(section, user)
-        self.pyload.evm.fire("config:deleted", section, user)
+        self.pyload.evm.fire('config:deleted', section, user)
 
     # def iter_core_sections(self):
         # return self.parser.iter_sections()
 
     def iter_sections(self, user=None):
-        """
-        Yields: section, metadata, values.
-        """
+        """Yields: section, metadata, values."""
         values = self.pyload.db.load_configs_for_user(user)
 
         # Every section needs to be json decoded

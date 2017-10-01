@@ -46,7 +46,7 @@ class InfoThread(DecrypterThread):
         cb = self.update_db if self.pid > 1 else self.update_result
 
         # filter out crypter plugins
-        for name in self.pyload.pgm.get_plugins("crypter"):
+        for name in self.pyload.pgm.get_plugins('crypter'):
             if name in plugins:
                 crypter[name] = plugins[name]
                 del plugins[name]
@@ -70,21 +70,21 @@ class InfoThread(DecrypterThread):
             accumulate(hoster + crypter, plugins)
 
         self.__pi = ProgressInfo(
-            "BasePlugin", '', self._("online check"), 0, 0,
+            'BasePlugin', '', self._('online check'), 0, 0,
             sum(len(urls) for urls in plugins.values()), self.owner,
             ProgressType.LinkCheck
         )
         for pluginname, urls in plugins.items():
-            plugin = self.pyload.pgm.load_module("hoster", pluginname)
+            plugin = self.pyload.pgm.load_module('hoster', pluginname)
             klass = self.pyload.pgm.get_plugin_class(
-                "hoster", pluginname, overwrite=False)
-            if hasmethod(klass, "get_info"):
+                'hoster', pluginname, overwrite=False)
+            if hasmethod(klass, 'get_info'):
                 self.fetch_for_plugin(klass, urls, cb)
             # TODO: this branch can be removed in the future
-            elif hasmethod(plugin, "get_info"):
+            elif hasmethod(plugin, 'get_info'):
                 self.pyload.log.debug(
-                    "Deprecated .get_info() method on module level, "
-                    "use staticmethod instead")
+                    'Deprecated .get_info() method on module level, '
+                    'use staticmethod instead')
                 self.fetch_for_plugin(plugin, urls, cb)
 
         if self.oc:
@@ -125,14 +125,12 @@ class InfoThread(DecrypterThread):
         self.manager.set_info_results(self.oc, data)
 
     def fetch_for_plugin(self, plugin, urls, cb):
-        """
-        Executes info fetching for given plugin and urls.
-        """
+        """Executes info fetching for given plugin and urls."""
         # also works on module names
-        pluginname = plugin.__name__.split(".")[-1]
+        pluginname = plugin.__name__.split('.')[-1]
 
         self.__pi.plugin = pluginname
-        self.__pi.name = self._("Checking {0:d} links").format(len(urls))
+        self.__pi.name = self._('Checking {0:d} links').format(len(urls))
 
         # final number of links to be checked
         done = self.__pi.done + len(urls)
@@ -147,7 +145,7 @@ class InfoThread(DecrypterThread):
 
             if cached:
                 self.manager.log.debug(
-                    "Fetched {0:d} links from cache for {1}".format(
+                    'Fetched {0:d} links from cache for {1}'.format(
                         len(cached),
                         pluginname))
                 self.__pi.done += len(cached)
@@ -155,7 +153,7 @@ class InfoThread(DecrypterThread):
 
             if process:
                 self.manager.log.debug(
-                    "Run Info Fetching for {0}".format(pluginname))
+                    'Run Info Fetching for {0}'.format(pluginname))
                 for result in plugin.get_info(process):
                     # result = [ .. (name, size, status, url) .. ]
                     if not isinstance(result, list):
@@ -179,7 +177,7 @@ class InfoThread(DecrypterThread):
                                 res[1]), res[2], pluginname, res[4]))
                         else:
                             self.manager.log.debug(
-                                "Invalid get_info result: {0}".format(result))
+                                'Invalid get_info result: {0}'.format(result))
 
                     # put them on the cache
                     for link in links:
@@ -189,10 +187,10 @@ class InfoThread(DecrypterThread):
                     cb(links)
 
             self.manager.log.debug(
-                "Finished Info Fetching for {0}".format(pluginname))
+                'Finished Info Fetching for {0}'.format(pluginname))
         except Exception as e:
             self.manager.log.warning(
-                self._("Info Fetching for {0} failed | {1}").format(
+                self._('Info Fetching for {0} failed | {1}').format(
                     pluginname, str(e)))
             # self.pyload.print_exc()
         finally:

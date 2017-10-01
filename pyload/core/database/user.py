@@ -20,7 +20,7 @@ alphnum = letters + digits
 
 
 def random_salt():
-    return "".join(random.choice(alphnum) for _i in range(0, 5))
+    return ''.join(random.choice(alphnum) for _i in range(0, 5))
 
 
 class UserMethods(DatabaseMethods):
@@ -47,7 +47,7 @@ class UserMethods(DatabaseMethods):
         try:
             self.c.execute(
                 'INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
-                (uid, "debugUser", random_salt()))
+                (uid, 'debugUser', random_salt()))
         except Exception:
             pass
 
@@ -58,19 +58,19 @@ class UserMethods(DatabaseMethods):
             'dllimit, dlquota, hddquota, user, template FROM "users" WHERE ')
 
         if name is not None:
-            self.c.execute(qry + "name=?", (name,))
+            self.c.execute(qry + 'name=?', (name,))
             r = self.c.fetchone()
             if r:
                 return UserData(*r)
 
         elif uid is not None:
-            self.c.execute(qry + "uid=?", (uid,))
+            self.c.execute(qry + 'uid=?', (uid,))
             r = self.c.fetchone()
             if r:
                 return UserData(*r)
 
         elif role is not None:
-            self.c.execute(qry + "role=?", (role,))
+            self.c.execute(qry + 'role=?', (role,))
             r = self.c.fetchone()
             if r:
                 return UserData(*r)
@@ -122,7 +122,7 @@ class UserMethods(DatabaseMethods):
             password = salt + h.hexdigest()
 
             self.c.execute(
-                "UPDATE users SET password=? WHERE name=?", (password, user))
+                'UPDATE users SET password=? WHERE name=?', (password, user))
             return True
 
         return False
@@ -130,7 +130,7 @@ class UserMethods(DatabaseMethods):
     # TODO: update methods
     @async
     def remove_user_by_name(self, name):
-        self.c.execute("SELECT uid FROM users WHERE name=?", (name,))
+        self.c.execute('SELECT uid FROM users WHERE name=?', (name,))
         uid = self.c.fetchone()
         if uid:
             # deletes user and all associated accounts

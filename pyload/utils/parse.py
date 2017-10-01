@@ -52,7 +52,7 @@ def hash(text):
     checksum = m.group('H')
     algorithm = m.group('D1') or m.group('D2')
     if algorithm == 'crc':
-        algorithm = "crc32"
+        algorithm = 'crc32'
 
     return checksum, algorithm
 
@@ -66,12 +66,12 @@ def name(text, strict=True):
 
 
 _ONEWORDS = (
-    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
-    "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-    "sixteen", "seventeen", "eighteen", "nineteen")
+    'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
+    'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
+    'sixteen', 'seventeen', 'eighteen', 'nineteen')
 _TENWORDS = (
-    "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty",
-    "ninety")
+    'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty',
+    'ninety')
 _RE_NUMBER = re.compile(r'[\s-]+')
 
 
@@ -94,7 +94,7 @@ _RE_PACKS = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
 
 
 def packs(nameurls):
-    DEFAULT_URLNAME = "Unknown"
+    DEFAULT_URLNAME = 'Unknown'
 
     packs = {}
     for urlname, url in nameurls:
@@ -129,7 +129,7 @@ def bytesize(text, unit=None):  # returns integer bytes
     return int(convert.size(size, unit, 'byte'))
 
 
-_TIMEWORDS = ("this", "a", "an", "next")
+_TIMEWORDS = ('this', 'a', 'an', 'next')
 _TIMEMAP = {
     'day': 60 ** 2 * 12, 'hr': 60 ** 2, 'hour': 60 ** 2, 'min': 60, 'sec': 1}
 _RE_TIME = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')

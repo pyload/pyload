@@ -4,10 +4,8 @@
 from __future__ import absolute_import, unicode_literals
 
 import io
-import locale
 import os
 import shutil
-import sys
 from builtins import dict, int, next
 
 import portalocker
@@ -87,9 +85,7 @@ def copy(src, dst, overwrite=None, preserve_metadata=True):
 
 
 def exists(path, strict=False):
-    """
-    Case-sensitive os.path.exists.
-    """
+    """Case-sensitive os.path.exists."""
     if not strict:
         return os.path.exists(path)
     if os.path.exists(path):
@@ -123,14 +119,12 @@ def fullpath(path):
 
 
 def blksize(path):
-    """
-    Get optimal file system buffer size (in bytes) for I/O calls.
-    """
+    """Get optimal file system buffer size (in bytes) for I/O calls."""
     if os.name != 'nt':
         size = os.statvfs(path).f_bsize
     else:
         import ctypes
-        drive = "{0}\\".format(os.path.splitdrive(os.path.abspath(path))[0])
+        drive = '{0}\\'.format(os.path.splitdrive(os.path.abspath(path))[0])
         cluster_sectors = ctypes.c_longlong(0)
         sector_size = ctypes.c_longlong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceW(
@@ -152,7 +146,7 @@ def _crcsum(filename, chkname, buffering):
     with io.open(filename, mode='rb') as fp:
         for chunk in bufread(fp, buffering):
             last = call(chunk, last)
-    return "{0:x}".format(last & 0xffffffff)
+    return '{0:x}'.format(last & 0xffffffff)
 
 
 def _hashsum(filename, chkname, buffering):
@@ -190,7 +184,7 @@ def lopen(*args, **kwargs):
 
 def flush(filename, exist_ok=False):
     if not exist_ok and not os.path.exists(filename):
-        raise OSError("Path not exists")
+        raise OSError('Path not exists')
     with io.open(filename) as fp:
         fp.flush()
         os.fsync(fp.fileno())
@@ -221,7 +215,7 @@ def filesystem(path):
 
 def mkfile(filename, size=None):
     if os.path.isfile(filename):
-        raise OSError("Path already exists")
+        raise OSError('Path already exists')
     with io.open(filename, mode='wb') as fp:
         if size and os.name == 'nt':
             fp.truncate(size)
@@ -322,7 +316,7 @@ def remove(path, trash=False, ignore_errors=False):
     if not os.path.exists(path):
         if ignore_errors:
             return
-        raise OSError("Path not exists")
+        raise OSError('Path not exists')
     if trash:
         send2trash.send2trash(path)
     elif os.path.isdir(path):
@@ -335,7 +329,7 @@ def remove(path, trash=False, ignore_errors=False):
 
 def empty(path, trash=False, exist_ok=True):
     if not exist_ok and not os.path.exists(path):
-        raise OSError("Path not exists")
+        raise OSError('Path not exists')
     if os.path.isfile(path):
         if trash:
             origfile = path + '.orig'

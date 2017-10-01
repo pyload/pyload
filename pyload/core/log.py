@@ -9,9 +9,10 @@ import logging.handlers
 import os
 import sys
 
-from ..__about__ import __package__
 from pyload.utils.check import ismodule
 from pyload.utils.fs import makedirs
+
+from ..__about__ import __package__
 
 try:
     import colorlog
@@ -78,30 +79,31 @@ class Logger(object):
         self.logger.critical(self._pack_msg(msg, messages, **options))
 
     def _init_console(self):
-        if self.pyload.config.get('log', 'color_console') and ismodule('colorlog'):
-            fmt = "%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s"
-            datefmt = "%Y-%m-%d  %H:%M:%S"
+        if self.pyload.config.get(
+                'log', 'color_console') and ismodule('colorlog'):
+            fmt = '%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s'
+            datefmt = '%Y-%m-%d  %H:%M:%S'
             primary_colors = {
-                'DEBUG': "bold,cyan",
-                'WARNING': "bold,yellow",
-                'ERROR': "bold,red",
-                'CRITICAL': "bold,purple",
+                'DEBUG': 'bold,cyan',
+                'WARNING': 'bold,yellow',
+                'ERROR': 'bold,red',
+                'CRITICAL': 'bold,purple',
             }
             secondary_colors = {
                 'label': {
-                    'DEBUG': "bold,white,bg_cyan",
-                    'INFO': "bold,white,bg_green",
-                    'WARNING': "bold,white,bg_yellow",
-                    'ERROR': "bold,white,bg_red",
-                    'CRITICAL': "bold,white,bg_purple",
+                    'DEBUG': 'bold,white,bg_cyan',
+                    'INFO': 'bold,white,bg_green',
+                    'WARNING': 'bold,white,bg_yellow',
+                    'ERROR': 'bold,white,bg_red',
+                    'CRITICAL': 'bold,white,bg_purple',
                 }
             }
             consoleform = colorlog.ColoredFormatter(
                 fmt, datefmt, primary_colors,
                 secondary_log_colors=secondary_colors)
         else:
-            fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
-            datefmt = "%Y-%m-%d %H:%M:%S"
+            fmt = '%(asctime)s  %(levelname)-8s  %(message)s'
+            datefmt = '%Y-%m-%d %H:%M:%S'
             consoleform = logging.Formatter(fmt, datefmt)
 
         consolehdlr = logging.StreamHandler(sys.stdout)
@@ -110,8 +112,8 @@ class Logger(object):
 
     def _init_syslogger(self):
         # try to mimic to normal syslog messages
-        fmt = "%(asctime)s %(name)s: %(message)s"
-        datefmt = "%b %e %H:%M:%S"
+        fmt = '%(asctime)s %(name)s: %(message)s'
+        datefmt = '%b %e %H:%M:%S'
         syslogform = logging.Formatter(fmt, datefmt)
         syslogaddr = None
 
@@ -134,8 +136,8 @@ class Logger(object):
         self.logger.addHandler(sysloghdlr)
 
     def _init_filelogger(self):
-        fmt = "%(asctime)s  %(levelname)-8s  %(message)s"
-        datefmt = "%Y-%m-%d %H:%M:%S"
+        fmt = '%(asctime)s  %(levelname)-8s  %(message)s'
+        datefmt = '%Y-%m-%d %H:%M:%S'
         fileform = logging.Formatter(fmt, datefmt)
 
         logfile_folder = self.pyload.config.get('log', 'logfile_folder')

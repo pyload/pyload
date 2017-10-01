@@ -40,17 +40,15 @@ def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
 
 
 def size(value, in_unit, out_unit):
-    """
-    Convert file size.
-    """
+    """Convert file size."""
     in_unit = in_unit.strip()[0].upper()
     out_unit = out_unit.strip()[0].upper()
 
     if in_unit == out_unit:
         return value
 
-    in_unit += "yte" if in_unit == 'B' else "iB"
-    out_unit += "yte" if out_unit == 'B' else "iB"
+    in_unit += 'yte' if in_unit == 'B' else 'iB'
+    out_unit += 'yte' if out_unit == 'B' else 'iB'
 
     try:
         # Create a bitmath instance representing the input value with its
@@ -81,9 +79,7 @@ def size(value, in_unit, out_unit):
 
 
 def to_bool(value, default=None, exc=Exception):
-    """
-    Convert value to boolean or return default.
-    """
+    """Convert value to boolean or return default."""
     try:
         return bool(value)
     except exc:
@@ -91,9 +87,7 @@ def to_bool(value, default=None, exc=Exception):
 
 
 def to_bytes(value, default=None, exc=Exception):
-    """
-    Convert value to bytes or return default.
-    """
+    """Convert value to bytes or return default."""
     try:
         try:
             return value.encode('utf-8')
@@ -104,9 +98,7 @@ def to_bytes(value, default=None, exc=Exception):
 
 
 def to_dict(obj, default=None, exc=Exception):
-    """
-    Convert object to dictionary or return default.
-    """
+    """Convert object to dictionary or return default."""
     try:
         return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
     except exc:
@@ -114,9 +106,7 @@ def to_dict(obj, default=None, exc=Exception):
 
 
 def to_float(value, default=None, exc=Exception):
-    """
-    Convert value to fractional or return default.
-    """
+    """Convert value to fractional or return default."""
     try:
         return float(value)
     except exc:
@@ -124,9 +114,7 @@ def to_float(value, default=None, exc=Exception):
 
 
 def to_int(value, default=None, exc=Exception):
-    """
-    Convert value to integer or return default.
-    """
+    """Convert value to integer or return default."""
     try:
         return int(value)
     except exc:
@@ -134,9 +122,7 @@ def to_int(value, default=None, exc=Exception):
 
 
 def to_list(value, default=None, exc=Exception):
-    """
-    Convert value to a list with value inside or return default.
-    """
+    """Convert value to a list with value inside or return default."""
     try:
         if isinstance(value, list):
             res = value
@@ -154,9 +140,7 @@ def to_list(value, default=None, exc=Exception):
 
 
 def to_str(value, default=None, exc=Exception):
-    """
-    Convert value to unicode or return default.
-    """
+    """Convert value to unicode or return default."""
     try:
         try:
             return value.decode('utf-8')

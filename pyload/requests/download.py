@@ -14,9 +14,7 @@ standard_library.install_aliases()
 
 
 class DownloadRequest(Request):
-    """
-    Abstract class for download request.
-    """
+    """Abstract class for download request."""
 
     def __init__(self, bucket, request=None, logger=None):
         if logger is None:
@@ -37,10 +35,8 @@ class DownloadRequest(Request):
         self.bucket = bucket
 
     def download(self, uri, filename, *args, **kwargs):
-        """
-        Downloads the resource with additional options
-        depending on implementation.
-        """
+        """Downloads the resource with additional options depending on
+        implementation."""
         raise NotImplementedError
 
     @property
@@ -49,28 +45,20 @@ class DownloadRequest(Request):
 
     @property
     def size(self):
-        """
-        Size in bytes.
-        """
+        """Size in bytes."""
         return self._size
 
     @property
     def name(self):
-        """
-        Name of the resource if known.
-        """
+        """Name of the resource if known."""
         return self._name
 
     @property
     def speed(self):
-        """
-        Download rate in bytes per second.
-        """
+        """Download rate in bytes per second."""
         return 0
 
     @property
     def arrived(self):
-        """
-        Number of bytes already loaded.
-        """
+        """Number of bytes already loaded."""
         return 0

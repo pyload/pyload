@@ -37,9 +37,7 @@ def safeurlencode(data):
 
 
 class CurlRequest(Request):
-    """
-    Request class based on libcurl.
-    """
+    """Request class based on libcurl."""
     CONTEXT_CLASS = CookieJar
 
     def __init__(self, *args, **kwargs):
@@ -49,7 +47,7 @@ class CurlRequest(Request):
         self.rep = io.StringIO()
         self.last_url = None
         self.last_effective_url = None
-        self.header = ""
+        self.header = ''
 
         # cookiejar defines the context
         self.cj = self.context
@@ -66,7 +64,7 @@ class CurlRequest(Request):
 
     @property
     def http(self):
-        print("Deprecated usage of req.http, just use req instead")
+        print('Deprecated usage of req.http, just use req instead')
         return self
 
     def init_context(self):
@@ -83,15 +81,13 @@ class CurlRequest(Request):
         self.c.unsetopt(option)
 
     def init_handle(self):
-        """
-        Sets common options to curl handle.
-        """
+        """Sets common options to curl handle."""
         self.setopt(pycurl.FOLLOWLOCATION, 1)
         self.setopt(pycurl.MAXREDIRS, 5)
         self.setopt(pycurl.CONNECTTIMEOUT, 30)
         self.setopt(pycurl.NOSIGNAL, 1)
         self.setopt(pycurl.NOPROGRESS, 1)
-        if hasattr(pycurl, "AUTOREFERER"):
+        if hasattr(pycurl, 'AUTOREFERER'):
             self.setopt(pycurl.AUTOREFERER, 1)
         self.setopt(pycurl.SSL_VERIFYPEER, 0)
         # Interval for low speed, detects connection loss, but can abort dl if
@@ -113,24 +109,24 @@ class CurlRequest(Request):
             self.setopt(pycurl.ENCODING, 'gzip,deflate')
 
         self.headers.update(
-            {'Accept': "*/*",
-             'Accept-Language': "en-US,en",
-             'Accept-Charset': "ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-             'Connection': "keep-alive",
-             'Keep-Alive': "300",
-             'Expect': ""})
+            {'Accept': '*/*',
+             'Accept-Language': 'en-US,en',
+             'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+             'Connection': 'keep-alive',
+             'Keep-Alive': '300',
+             'Expect': ''})
 
     def set_interface(self, options):
         interface, proxy, ipv6 = options[
             'interface'], options['proxies'], options['ipv6']
 
-        if interface and interface.lower() != "none":
+        if interface and interface.lower() != 'none':
             self.setopt(pycurl.INTERFACE, interface)
 
         if proxy:
-            if proxy['type'] == "socks4":
+            if proxy['type'] == 'socks4':
                 self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS4)
-            elif proxy['type'] == "socks5":
+            elif proxy['type'] == 'socks5':
                 self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
             else:
                 self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
@@ -139,7 +135,7 @@ class CurlRequest(Request):
             self.setopt(pycurl.PROXYPORT, proxy['port'])
 
             if proxy['username']:
-                userpwd = "{0}:{1}".format(
+                userpwd = '{0}:{1}'.format(
                     proxy['username'], proxy['password'])
                 self.setopt(pycurl.PROXYUSERPWD, userpwd)
 
@@ -148,16 +144,14 @@ class CurlRequest(Request):
         else:
             self.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_V4)
 
-        if "timeout" in options:
+        if 'timeout' in options:
             self.setopt(pycurl.LOW_SPEED_TIME, options['timeout'])
 
-        if "auth" in options:
+        if 'auth' in options:
             self.setopt(pycurl.USERPWD, self.options['auth'])
 
     def init_options(self, options):
-        """
-        Sets same options as available in pycurl.
-        """
+        """Sets same options as available in pycurl."""
         for k, v in options.items():
             if not hasattr(pycurl, k):
                 continue
@@ -165,14 +159,12 @@ class CurlRequest(Request):
 
     def set_request_context(self, url, get, post,
                             referer, cookies, multipart=False):
-        """
-        Sets everything needed for the request.
-        """
+        """Sets everything needed for the request."""
         url = safequote(url)
 
         if get:
             get = urlencode(get)
-            url = "{0}?{1}".format(url, get)
+            url = '{0}?{1}'.format(url, get)
 
         self.setopt(pycurl.URL, url)
 
@@ -195,7 +187,7 @@ class CurlRequest(Request):
         if referer and self.last_url:
             self.headers['Referer'] = str(self.last_url)
         else:
-            self.headers['Referer'] = ""
+            self.headers['Referer'] = ''
 
         if cookies:
             for c in self.cj.output().splitlines():
@@ -205,22 +197,20 @@ class CurlRequest(Request):
             self.setopt(pycurl.COOKIELIST, 'ALL')
 
         # TODO: remove auth again
-        if "auth" in self.options:
+        if 'auth' in self.options:
             self.setopt(pycurl.USERPWD, self.options['auth'])
 
         self.setopt(pycurl.HTTPHEADER, self.headers.list())
 
     def load(self, url, get={}, post={}, referer=True, cookies=True,
              just_header=False, multipart=False, decode=False):
-        """
-        Load and returns a given page.
-        """
+        """Load and returns a given page."""
         self.set_request_context(url, get, post, referer, cookies, multipart)
 
         # TODO: use http/rfc message instead
-        self.header = ""
+        self.header = ''
 
-        if "header" in self.options:
+        if 'header' in self.options:
             # TODO
             # print("custom header not implemented")
             self.setopt(pycurl.HTTPHEADER, self.options['header'])
@@ -265,48 +255,42 @@ class CurlRequest(Request):
     def parse_cookies(self):
         for c in self.c.getinfo(pycurl.INFO_COOKIELIST):
             # http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
-            domain, _, path, secure, expires, name, value = c.split("\t")
+            domain, _, path, secure, expires, name, value = c.split('\t')
             # http only was added in py 2.6
-            domain = domain.replace("#HttpOnly_", "")
+            domain = domain.replace('#HttpOnly_', '')
             self.cj.set(domain, name, value, path, expires, secure)
 
     def verify_header(self):
-        """
-        Raise an exceptions on bad headers.
-        """
+        """Raise an exceptions on bad headers."""
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in BAD_HEADERS:
             raise ResponseException(
-                code, responses.get(code, "Unknown statuscode"))
+                code, responses.get(code, 'Unknown statuscode'))
         return code
 
     def get_response(self):
-        """
-        Retrieve response from string io.
-        """
+        """Retrieve response from string io."""
         if self.rep is None:
-            return ""
+            return ''
         value = self.rep.getvalue()
         self.rep.close()
         self.rep = io.StringIO()
         return value
 
     def decode_response(self, rep):
-        """
-        Decode with correct encoding, relies on header.
-        """
+        """Decode with correct encoding, relies on header."""
         header = self.header.splitlines()
-        encoding = "utf8"  # default encoding
+        encoding = 'utf8'  # default encoding
 
         for line in header:
-            line = line.lower().replace(" ", "")
-            if (not line.startswith("content-type:") or
-                    ("text" not in line and "application" not in line)):
+            line = line.lower().replace(' ', '')
+            if (not line.startswith('content-type:') or
+                    ('text' not in line and 'application' not in line)):
                 continue
 
-            _, delemiter, charset = line.rpartition("charset=")
+            _, delemiter, charset = line.rpartition('charset=')
             if delemiter:
-                charset = charset.split(";")
+                charset = charset.split(';')
                 if charset:
                     encoding = charset[0]
 
@@ -315,37 +299,33 @@ class CurlRequest(Request):
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
 
-            decoder = getincrementaldecoder(encoding)("replace")
+            decoder = getincrementaldecoder(encoding)('replace')
             rep = decoder.decode(rep, True)
 
             # TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder found for {0}".format(encoding))
+            self.log.debug('No Decoder found for {0}'.format(encoding))
         except Exception:
             self.log.debug(
-                "Error when decoding string from {0}".format(encoding))
+                'Error when decoding string from {0}'.format(encoding))
 
         return rep
 
     def write(self, buf):
-        """
-        Writes response.
-        """
+        """Writes response."""
         if self.rep.tell() > 1000000 or self.__abort:
             rep = self.get_response()
             if self.__abort:
                 raise Abort
-            with io.open("response.dump", mode='wb') as fp:
+            with io.open('response.dump', mode='wb') as fp:
                 fp.write(rep)
-            raise Exception("Loaded Url exceeded limit")
+            raise Exception('Loaded Url exceeded limit')
 
         self.rep.write(buf)
 
     def write_header(self, buf):
-        """
-        Writes header.
-        """
+        """Writes header."""
         self.header += buf
 
     def reset(self):
@@ -353,12 +333,10 @@ class CurlRequest(Request):
         self.options.clear()
 
     def close(self):
-        """
-        Cleanup, unusable after this.
-        """
+        """Cleanup, unusable after this."""
         self.rep.close()
-        if hasattr(self, "cj"):
+        if hasattr(self, 'cj'):
             del self.cj
-        if hasattr(self, "c"):
+        if hasattr(self, 'c'):
             self.c.close()
             del self.c

@@ -15,15 +15,11 @@ standard_library.install_aliases()
 
 
 class AddonThread(PluginThread):
-    """
-    Thread for addons.
-    """
+    """Thread for addons."""
     __slots__ = ['_progress', 'active', 'args', 'func', 'kwargs']
 
     def __init__(self, manager, func, args, kwargs):
-        """
-        Constructor.
-        """
+        """Constructor."""
         PluginThread.__init__(self, manager)
 
         self.func = func
@@ -41,9 +37,7 @@ class AddonThread(PluginThread):
         return self.active
 
     def get_progress_info(self):
-        """
-        Progress of the thread.
-        """
+        """Progress of the thread."""
         if not self.active:
             return
         active = self.active[0]
@@ -52,9 +46,8 @@ class AddonThread(PluginThread):
             self.__pi, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, file):
-        """
-        Adds a file to active list and thus will be displayed on overview.
-        """
+        """Adds a file to active list and thus will be displayed on
+        overview."""
         if file in self.active:
             return
         self.active.append(file)
@@ -78,9 +71,9 @@ class AddonThread(PluginThread):
                 del self.kwgs['thread']
                 self.func(*self.args, **self.kwgs)
         except Exception as e:
-            if hasattr(self.func, "im_self"):
+            if hasattr(self.func, 'im_self'):
                 addon = self.func.__self__
-                addon.log_error(self._("An Error occurred"), str(e))
+                addon.log_error(self._('An Error occurred'), str(e))
                 if self.pyload.debug:
                     print_exc()
                     # self.debug_report(addon.__name__, plugin=addon)

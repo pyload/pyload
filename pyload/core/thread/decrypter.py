@@ -7,21 +7,20 @@ from builtins import str
 
 from future import standard_library
 
-from ..datatype.base import (DownloadStatus, LinkStatus,
-                             ProgressInfo, ProgressType)
+from pyload.utils.misc import accumulate
+from pyload.utils.purge import uniquify
+
+from ..datatype.base import (DownloadStatus, LinkStatus, ProgressInfo,
+                             ProgressType)
 from ..datatype.package import Package
 from ..network.base import Abort, Retry
 from ..thread.plugin import PluginThread
-from pyload.utils.misc import accumulate
-from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 
 
 class DecrypterThread(PluginThread):
-    """
-    Thread for decrypting.
-    """
+    """Thread for decrypting."""
     __slots__ = ['_progress', 'data', 'error', 'fid', 'pid']
 
     def __init__(self, manager, data, fid, pid, owner):
@@ -51,7 +50,7 @@ class DecrypterThread(PluginThread):
 
         if links:
             self.pyload.log.info(
-                self._("Decrypted {0:d} links into package {1}").format(
+                self._('Decrypted {0:d} links into package {1}').format(
                     len(links),
                     pack.name))
             api.add_links(self.pid, [l.url for l in links])
@@ -65,13 +64,13 @@ class DecrypterThread(PluginThread):
         self.manager.done(self)
 
     def _decrypt(self, name, urls, password):
-        klass = self.pyload.pgm.load_class("crypter", name)
+        klass = self.pyload.pgm.load_class('crypter', name)
         plugin = None
         result = []
 
         # updating progress
         self.__pi.plugin = name
-        self.__pi.name = self._("Decrypting {0} links").format(
+        self.__pi.name = self._('Decrypting {0} links').format(
             len(urls) if len(urls) > 1 else urls[0])
 
         # TODO: dependency check, there is a new error code for this
@@ -95,13 +94,13 @@ class DecrypterThread(PluginThread):
             except Retry:
                 time.sleep(1)
                 result = plugin._decrypt(urls)
-            plugin.log_debug("Decrypted", result)
+            plugin.log_debug('Decrypted', result)
 
         except Abort:
-            plugin.log_info(self._("Decrypting aborted"))
+            plugin.log_info(self._('Decrypting aborted'))
 
         except Exception as e:
-            plugin.log_error(self._("Decrypting failed"), str(e))
+            plugin.log_error(self._('Decrypting failed'), str(e))
 
             self.error = True
             # generate error linkStatus
@@ -123,7 +122,7 @@ class DecrypterThread(PluginThread):
     def decrypt(self, plugin_map, password=None):
         result = []
         self.__pi = ProgressInfo(
-            "BasePlugin", '', self._("decrypting"), 0, 0, len(
+            'BasePlugin', '', self._('decrypting'), 0, 0, len(
                 self.data), self.owner,
             ProgressType.Decrypting
         )

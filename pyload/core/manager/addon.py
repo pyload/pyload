@@ -12,13 +12,14 @@ from types import MethodType
 from _thread import start_new_thread
 from future import standard_library
 
-from ..datatype.base import (AddonInfo, AddonService,
-                             ServiceDoesNotExist, ServiceException)
-from .base import BaseManager
-from ..thread import AddonThread
 from pyload.utils.layer.legacy.collections_ import namedtuple
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
+
+from ..datatype.base import (AddonInfo, AddonService, ServiceDoesNotExist,
+                             ServiceException)
+from ..thread import AddonThread
+from .base import BaseManager
 
 standard_library.install_aliases()
 
@@ -27,9 +28,7 @@ AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 
 
 class AddonManager(BaseManager):
-    """
-    Manages addons, loading, unloading.
-    """
+    """Manages addons, loading, unloading."""
 
     def __init__(self, core):
         BaseManager.__init__(self, core)
@@ -48,19 +47,15 @@ class AddonManager(BaseManager):
         self.create_index()
 
         # manage addons on config change
-        self.listen_to("config:changed", self.manage_addon)
+        self.listen_to('config:changed', self.manage_addon)
 
     def iter_addons(self):
-        """
-        Yields (name, meta_data) of all addons.
-        """
+        """Yields (name, meta_data) of all addons."""
         return iter(self.plugins.items())
 
     @lock
     def call_in_hooks(self, event, event_name, *args):
-        """
-        Calls a method in all addons and catch / log errors.
-        """
+        """Calls a method in all addons and catch / log errors."""
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, event, *args)
@@ -72,13 +67,11 @@ class AddonManager(BaseManager):
             return func(*args)
         except Exception as e:
             plugin.log_error(
-                self._("Error when executing {0}".format(f)), str(e))
+                self._('Error when executing {0}'.format(f)), str(e))
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
-        """
-        Invokes a registered method.
-        """
+        """Invokes a registered method."""
         if plugin not in self.plugins and func_name not in self.plugins[
                 plugin].handler:
             raise ServiceDoesNotExist(plugin, func_name)
@@ -95,16 +88,16 @@ class AddonManager(BaseManager):
         active = []
         deactive = []
 
-        for pluginname in self.pyload.pgm.get_plugins("addon"):
+        for pluginname in self.pyload.pgm.get_plugins('addon'):
             try:
                 # check first for builtin plugin
-                attrs = self.pyload.pgm.load_attributes("addon", pluginname)
-                internal = attrs.get("internal", False)
+                attrs = self.pyload.pgm.load_attributes('addon', pluginname)
+                internal = attrs.get('internal', False)
 
                 if internal or self.pyload.config.get(
-                        pluginname, "activated"):
+                        pluginname, 'activated'):
                     pluginclass = self.pyload.pgm.load_class(
-                        "addon", pluginname)
+                        'addon', pluginname)
 
                     if not pluginclass:
                         continue
@@ -117,31 +110,31 @@ class AddonManager(BaseManager):
                         active.append(pluginclass.__name__)
                     else:
                         self.pyload.log.debug(
-                            "Loaded internal plugin: {0}".format(
+                            'Loaded internal plugin: {0}'.format(
                                 pluginclass.__name__))
                 else:
                     deactive.append(pluginname)
 
             except Exception:
                 self.pyload.log.warning(
-                    self._("Failed activating {0}").format(pluginname))
+                    self._('Failed activating {0}').format(pluginname))
                 # self.pyload.print_exc()
 
         self.pyload.log.info(
-            self._("Activated addons: {0}").format(", ".join(sorted(active))))
-        self.pyload.log.info(self._("Deactivated addons: {0}").format(
-            ", ".join(sorted(deactive))))
+            self._('Activated addons: {0}').format(', '.join(sorted(active))))
+        self.pyload.log.info(self._('Deactivated addons: {0}').format(
+            ', '.join(sorted(deactive))))
 
     def manage_addon(self, plugin, name, value):
         # TODO: multi user
 
         # check if section was a plugin
-        if plugin not in self.pyload.pgm.get_plugins("addon"):
+        if plugin not in self.pyload.pgm.get_plugins('addon'):
             return
 
-        if name == "activated" and value:
+        if name == 'activated' and value:
             self.activate_addon(plugin)
-        elif name == "activated" and not value:
+        elif name == 'activated' and not value:
             self.deactivate_addon(plugin)
 
     @lock
@@ -150,12 +143,12 @@ class AddonManager(BaseManager):
         if plugin in self.plugins:
             return
 
-        pluginclass = self.pyload.pgm.load_class("addon", plugin)
+        pluginclass = self.pyload.pgm.load_class('addon', plugin)
 
         if not pluginclass:
             return
 
-        self.pyload.log.debug("Plugin loaded: {0}".format(plugin))
+        self.pyload.log.debug('Plugin loaded: {0}'.format(plugin))
 
         plugin = pluginclass(self.pyload, self)
         self.plugins[pluginclass.__name__].instances.append(plugin)
@@ -174,11 +167,11 @@ class AddonManager(BaseManager):
         if addon.__internal__:
             return
 
-        self.call(addon, "deactivate")
-        self.pyload.log.debug("Plugin deactivated: {0}".format(plugin))
+        self.call(addon, 'deactivate')
+        self.pyload.log.debug('Plugin deactivated: {0}'.format(plugin))
 
         # remove periodic call
-        self.pyload.log.debug("Removed callback {0}".format(
+        self.pyload.log.debug('Removed callback {0}'.format(
             self.pyload.scheduler.cancel(addon.cb)))
 
         # TODO: only delete instances, meta data is lost otherwise
@@ -187,40 +180,38 @@ class AddonManager(BaseManager):
         # TODO: could be improved
         # remove event listener
         for fname in dir(addon):
-            if fname.startswith("__") or not isinstance(
+            if fname.startswith('__') or not isinstance(
                     getattr(addon, fname), MethodType):
                 continue
             self.pyload.evm.remove_from_events(getattr(addon, fname))
 
     def activate_addons(self):
-        self.pyload.log.info(self._("Activating addons ..."))
+        self.pyload.log.info(self._('Activating addons ...'))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.is_activated():
-                    self.call(inst, "activate")
+                    self.call(inst, 'activate')
 
         self.register_events()
 
     def deactivate_addons(self):
-        """
-        Called when core is shutting down.
-        """
-        self.pyload.log.info(self._("Deactivating addons ..."))
+        """Called when core is shutting down."""
+        self.pyload.log.info(self._('Deactivating addons ...'))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
-                self.call(inst, "deactivate")
+                self.call(inst, 'deactivate')
 
     def download_preparing(self, file):
-        self.call_in_hooks("pre_download", "download:preparing", file)
+        self.call_in_hooks('pre_download', 'download:preparing', file)
 
     def download_finished(self, file):
-        self.call_in_hooks("download_finished", "download:finished", file)
+        self.call_in_hooks('download_finished', 'download:finished', file)
 
     def download_failed(self, file):
-        self.call_in_hooks("download_failed", "download:failed", file)
+        self.call_in_hooks('download_failed', 'download:failed', file)
 
     def package_finished(self, package):
-        self.call_in_hooks("package_finished", "package:finished", package)
+        self.call_in_hooks('package_finished', 'package:finished', package)
 
     @lock
     def start_thread(self, func, *args, **kwargs):
@@ -229,37 +220,29 @@ class AddonManager(BaseManager):
         return thread
 
     def active_plugins(self):
-        """
-        Returns all active plugins.
-        """
+        """Returns all active plugins."""
         return [inst for plugin in self.plugins.values()
                 for inst in plugin.instances if inst.is_activated()]
 
     def get_info(self, plugin):
-        """
-        Retrieves all info data for a plugin.
-        """
+        """Retrieves all info data for a plugin."""
         data = []
         # TODO
         if plugin in self.plugins:
             if plugin.instances:
                 for attr in dir(plugin.instances[0]):
-                    if attr.startswith("__Property"):
+                    if attr.startswith('__Property'):
                         info = self.info_props[attr]
                         info.value = getattr(plugin.instances[0], attr)
                         data.append(info)
         return data
 
     def add_event_listener(self, plugin, func, event):
-        """
-        Add the event to the list.
-        """
+        """Add the event to the list."""
         self.plugins[plugin].events.append((func, event))
 
     def register_events(self):
-        """
-        Actually register all saved events.
-        """
+        """Actually register all saved events."""
         for name, plugin in self.plugins.items():
             for func, event in plugin.events:
                 for inst in plugin.instances:
@@ -267,16 +250,12 @@ class AddonManager(BaseManager):
 
     def add_addon_handler(self, plugin, func, label,
                           desc, args, package, media):
-        """
-        Registers addon service description.
-        """
+        """Registers addon service description."""
         self.plugins[plugin].handler[func] = AddonService(
             func, gettext(label), gettext(desc), args, package, media)
 
     def add_info_property(self, h, name, desc):
-        """
-        Register property as :class:`AddonInfo`.
-        """
+        """Register property as :class:`AddonInfo`."""
         self.info_props[h] = AddonInfo(name, desc)
 
     def listen_to(self, *args):

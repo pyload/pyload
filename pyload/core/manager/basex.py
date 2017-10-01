@@ -13,14 +13,10 @@ standard_library.install_aliases()
 
 
 class BaseManager(object):
-    """
-    Base manager
-    """
+    """Base manager."""
 
     def __init__(self, core):
-        """
-        Constructor.
-        """
+        """Constructor."""
         self.pyload = core
         self._ = core._
         self.lock = Lock()

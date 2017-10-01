@@ -36,8 +36,7 @@ def lock(blocking=True, timeout=None, shared=False):
 #
 # http://code.activestate.com/recipes/502283-read-write-lock-class-rlock-like/
 class RWLock(object):
-    """
-    Read-Write lock class. A read-write lock differs from a standard
+    """Read-Write lock class. A read-write lock differs from a standard
     threading.RLock() by allowing multiple threads to simultaneously hold a
     read lock, while allowing only a single thread to hold a write lock at the
     same point of time.
@@ -60,15 +59,14 @@ class RWLock(object):
     occur. After the write lock has been granted, the thread will hold a
     full write lock, and not be downgraded after the upgrading call to
     acquirewrite() has been match by a corresponding release().
+
     """
     __slots__ = ['__condition', '__pendingwriters', '__readers',
                  '__upgradewritercount', '__upgradewritercount', '__writer',
                  '__writercount']
 
     def __init__(self):
-        """
-        Initialize this read-write lock.
-        """
+        """Initialize this read-write lock."""
         # Condition variable, used to signal waiters of a change in object
         # state.
         self.__condition = Condition(Lock())
@@ -89,15 +87,15 @@ class RWLock(object):
             self.acquirewrite(timeout)
 
     def acquireread(self, blocking=True, timeout=True):
-        """
-        Acquire a read lock for the current thread, waiting at most
-        timeout seconds or doing a non-blocking check in case timeout is <= 0.
+        """Acquire a read lock for the current thread, waiting at most timeout
+        seconds or doing a non-blocking check in case timeout is <= 0.
 
         In case timeout is None, the call to acquireread blocks until the
         lock request can be serviced.
 
         In case the timeout expires before the lock could be serviced, a
         RuntimeError is thrown.
+
         """
         if not blocking:
             endtime = -1
@@ -133,7 +131,7 @@ class RWLock(object):
                     remaining = endtime - time.time()
                     if remaining <= 0:
                         # Timeout has expired, signal caller of this.
-                        raise RuntimeError("Acquiring read lock timed out")
+                        raise RuntimeError('Acquiring read lock timed out')
                     self.__condition.wait(remaining)
                 else:
                     self.__condition.wait()
@@ -141,9 +139,8 @@ class RWLock(object):
             self.__condition.release()
 
     def acquirewrite(self, timeout=None):
-        """
-        Acquire a write lock for the current thread, waiting at most
-        timeout seconds or doing a non-blocking check in case timeout is <= 0.
+        """Acquire a write lock for the current thread, waiting at most timeout
+        seconds or doing a non-blocking check in case timeout is <= 0.
 
         In case the write lock cannot be serviced due to the deadlock
         condition mentioned above, a ValueError is raised.
@@ -153,6 +150,7 @@ class RWLock(object):
 
         In case the timeout expires before the lock could be serviced, a
         RuntimeError is thrown.
+
         """
         if timeout is not None:
             endtime = time.time() + timeout
@@ -173,10 +171,10 @@ class RWLock(object):
                     # Signal this to user.
                     if timeout is not None:
                         raise RuntimeError(
-                            "Write lock upgrade would deadlock until timeout")
+                            'Write lock upgrade would deadlock until timeout')
                     else:
                         raise ValueError(
-                            "Inevitable dead lock, denying write lock")
+                            'Inevitable dead lock, denying write lock')
                 upgradewriter = True
                 self.__upgradewritercount = self.__readers.pop(me)
             else:
@@ -224,7 +222,7 @@ class RWLock(object):
                             # We were a simple pending writer, just remove us
                             # from the FIFO list.
                             self.__pendingwriters.remove(me)
-                        raise RuntimeError("Acquiring write lock timed out")
+                        raise RuntimeError('Acquiring write lock timed out')
                     self.__condition.wait(remaining)
                 else:
                     self.__condition.wait()
@@ -232,10 +230,11 @@ class RWLock(object):
             self.__condition.release()
 
     def release(self):
-        """
-        Release the currently held lock.
+        """Release the currently held lock.
 
-        In case the current thread holds no lock, a ValueError is thrown.
+        In case the current thread holds no lock, a ValueError is
+        thrown.
+
         """
         me = current_thread()
         self.__condition.acquire()
@@ -259,7 +258,7 @@ class RWLock(object):
                         # circumstances.
                         self.__condition.notifyAll()
             else:
-                raise ValueError("Trying to release unheld lock")
+                raise ValueError('Trying to release unheld lock')
         finally:
             self.__condition.release()
 

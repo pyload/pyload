@@ -11,6 +11,7 @@ from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
+
 from pyload.utils.fs import remove
 from pyload.utils.layer.safethreading import Event, Thread
 
@@ -84,7 +85,7 @@ class DatabaseJob(object):
 
     def __repr__(self):
         # frame = self.frame.f_back
-        output = ""
+        output = ''
         # for i in range(5):
         # output += "\t{0}:{1}, {2}\n".format(
         # os.path.basename(
@@ -92,7 +93,7 @@ class DatabaseJob(object):
         # frame = frame.f_back
         # del frame
         # del self.frame
-        return "DataBase Job {0}:{1}{2}{3}Result: {4}".format(
+        return 'DataBase Job {0}:{1}{2}{3}Result: {4}'.format(
             self.func.__name__, self.args[1:], os.linesep, output, self.result)
 
     def process_job(self):
@@ -101,7 +102,7 @@ class DatabaseJob(object):
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.func.__name__,
+                print('Database Error @', self.func.__name__,
                       self.args[1:], self.kwgs, str(e))
             except Exception:
                 pass
@@ -118,8 +119,8 @@ class DatabaseBackend(Thread):
 
     subs = []
 
-    DB_FILE = "pyload.db"
-    VERSION_FILE = "db.version"
+    DB_FILE = 'pyload.db'
+    VERSION_FILE = 'db.version'
 
     def __init__(self, core):
         Thread.__init__(self)
@@ -146,9 +147,7 @@ class DatabaseBackend(Thread):
         self.__running.wait()
 
     def init(self):
-        """
-        Main loop, which executes commands.
-        """
+        """Main loop, which executes commands."""
         version = self._check_version()
 
         self.conn = sqlite3.connect(self.DB_FILE)
@@ -166,13 +165,13 @@ class DatabaseBackend(Thread):
 
                 try:
                     self.pyload.log.warning(
-                        self._("Database was deleted "
-                               "due to incompatible version"))
+                        self._('Database was deleted '
+                               'due to incompatible version'))
                 except Exception:
-                    print("Database was deleted due to incompatible version")
+                    print('Database was deleted due to incompatible version')
 
                 remove(self.VERSION_FILE)
-                shutil.move(self.DB_FILE, self.DB_FILE + ".bak")
+                shutil.move(self.DB_FILE, self.DB_FILE + '.bak')
                 with io.open(self.VERSION_FILE, mode='wb') as fp:
                     fp.write(str(DB_VERSION))
 
@@ -193,7 +192,7 @@ class DatabaseBackend(Thread):
 
         while True:
             j = self.jobs.get()
-            if j == "quit":
+            if j == 'quit':
                 self.c.close()
                 self.conn.commit()
                 self.conn.close()
@@ -205,13 +204,11 @@ class DatabaseBackend(Thread):
     def shutdown(self):
         self.__running.clear()
         self.closing = Event()
-        self.jobs.put("quit")
+        self.jobs.put('quit')
         self.closing.wait(1)
 
     def _check_version(self):
-        """
-        Get db version.
-        """
+        """Get db version."""
         try:
             with io.open(self.VERSION_FILE, mode='rb') as fp:
                 v = int(fp.read().strip())
@@ -223,7 +220,7 @@ class DatabaseBackend(Thread):
 
     def _convert_db(self, v):
         try:
-            return getattr(self, "_convertV{0:d}".format(v))()
+            return getattr(self, '_convertV{0:d}'.format(v))()
         except Exception:
             return False
 
@@ -235,9 +232,7 @@ class DatabaseBackend(Thread):
     # -- convert scripts end --
 
     def _create_tables(self):
-        """
-        Create tables for database.
-        """
+        """Create tables for database."""
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "packages" ('
             '"pid" INTEGER PRIMARY KEY AUTOINCREMENT, '
@@ -413,13 +408,13 @@ class DatabaseBackend(Thread):
         fid = self.c.fetchone()[0]
         fid = int(fid) if fid else 0
         self.c.execute(
-            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "files"))
+            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, 'files'))
 
         self.c.execute('SELECT max(pid) FROM packages')
         pid = self.c.fetchone()[0]
         pid = int(pid) if pid else 0
         self.c.execute(
-            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, 'packages'))
 
         self.c.execute('VACUUM')
 

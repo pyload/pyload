@@ -57,7 +57,7 @@ def call_cmd(command, *args, **kwargs):
         if not ignore_errors:
             raise
         returncode = 1
-        stdoutdata = ""
+        stdoutdata = ''
         stderrdata = str(e).strip()
     else:
         returncode = sp.returncode
@@ -69,7 +69,7 @@ def call_cmd(command, *args, **kwargs):
 def console_encoding(enc):
     if os.name != 'nt':
         return 'utf-8'
-    return "cp850" if enc == "cp65001" else enc  # aka UTF-8 under Windows
+    return 'cp850' if enc == 'cp65001' else enc  # aka UTF-8 under Windows
 
 
 def _get_psutil_process(pid, ctime):
@@ -122,9 +122,7 @@ def kill_process(pid=None, timeout=None):
 
 
 def renice(pid=None, niceness=None):
-    """
-    Unix notation process nicener.
-    """
+    """Unix notation process nicener."""
     ctime = None
     value = None
 
@@ -152,9 +150,7 @@ def renice(pid=None, niceness=None):
 
 
 def ionice(pid=None, ioclass=None, niceness=None):
-    """
-    Unix notation process I/O nicener.
-    """
+    """Unix notation process I/O nicener."""
     if os.name == 'nt':
         ioclass = {0: 2, 1: 2, 2: 2, 3: 0}[ioclass]
 
@@ -191,7 +187,7 @@ def set_console_title(value):
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)
     else:
-        sys.stdout.write("\x1b]2;{0}\x07".format(title))
+        sys.stdout.write('\x1b]2;{0}\x07'.format(title))
 
 
 def set_process_group(value):
@@ -212,7 +208,7 @@ def shutdown():
     if os.name == 'nt':
         call_cmd('rundll32.exe user.exe,ExitWindows')
 
-    elif sys.platform == "darwin":
+    elif sys.platform == 'darwin':
         call_cmd('osascript -e tell app "System Events" to shut down')
 
     else:
@@ -225,7 +221,7 @@ def shutdown():
                 '/org/freedesktop/ConsoleKit/Manager')
             ck_iface = dbus.Interface(
                 ck_srv, 'org.freedesktop.ConsoleKit.Manager')
-            stop_method = ck_iface.get_dbus_method("Stop")
+            stop_method = ck_iface.get_dbus_method('Stop')
             stop_method()
         except AttributeError:
             call_cmd('stop -h now')  # NOTE: Root privileges needed

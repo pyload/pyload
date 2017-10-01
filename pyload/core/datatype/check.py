@@ -12,9 +12,7 @@ standard_library.install_aliases()
 
 
 class OnlineCheck(BaseObject):
-    """
-    Helper class that holds result of an initiated online check.
-    """
+    """Helper class that holds result of an initiated online check."""
     __slots__ = ['done', 'owner', 'result', 'rid', 'timestamp']
 
     def __init__(self, rid=None, owner=None):
@@ -25,9 +23,7 @@ class OnlineCheck(BaseObject):
         self.timestamp = time.time()
 
     def is_stale(self, timeout=5):
-        """
-        Checks if the data was updated or accessed recently.
-        """
+        """Checks if the data was updated or accessed recently."""
         return self.timestamp + timeout * 60 < time.time()
 
     def update(self, result):

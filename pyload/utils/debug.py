@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import io
 import inspect
+import io
 import os
 import pprint
 import sys
@@ -22,7 +22,7 @@ standard_library.install_aliases()
 def report(value, dirname):
     frame = inspect.currentframe()
     try:
-        filename = "{0}_line{1}.report".format(
+        filename = '{0}_line{1}.report'.format(
             frame.f_back.f_code.co_name, frame.f_back.f_lineno)
         filepath = os.path.join(dirname, filename)
         makefile(filepath, exist_ok=True)
@@ -35,20 +35,20 @@ def report(value, dirname):
 def _format_dump(obj):
     dump = []
     for attr_name in proprieties(obj):
-        if attr_name.endswith("__"):
+        if attr_name.endswith('__'):
             continue
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
         except Exception as e:
-            attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(str(e))
+            attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(str(e))
         dump.append((attr_name, attr_dump))
     return dump
 
 
 def format_dump(obj):
-    title = "DUMP {0!r}:".format(obj)
+    title = 'DUMP {0!r}:'.format(obj)
     body = os.linesep.join(
-        "\t{0:20} = {1}".format(attr_name, attr_dump)
+        '\t{0:20} = {1}'.format(attr_name, attr_dump)
         for attr_name, attr_dump in _format_dump(obj))
     return os.linesep.join((title, body))
 
@@ -70,7 +70,7 @@ def _format_framestack(frame=None, limit=None):
             tb = tb.tb_next
         dump = []
         for _frame in stack[1:limit]:
-            msg = "Frame {0} in {1} at line {2}"
+            msg = 'Frame {0} in {1} at line {2}'
             frame_name = msg.format(
                 _frame.f_code.co_name,
                 _frame.f_code.co_filename,
@@ -80,7 +80,7 @@ def _format_framestack(frame=None, limit=None):
                 try:
                     attr_dump = pprint.pformat(value)
                 except Exception as e:
-                    attr_dump = "<ERROR WHILE PRINTING VALUE> {0}".format(
+                    attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(
                         str(e))
                 frame_dump.append((attr_name, attr_dump))
             dump.append((frame_name, frame_dump))
@@ -95,11 +95,11 @@ def format_framestack(frame=None, limit=None):
     stack_desc = []
     for frame_name, frame_dump in framestack:
         dump = os.linesep.join(
-            "\t{0:20} = {1}".format(attr_name, attr_dump)
+            '\t{0:20} = {1}'.format(attr_name, attr_dump)
             for attr_name, attr_dump in frame_dump)
-        stack_desc.append("{0}{1}{2}".format(frame_name, os.linesep, dump))
+        stack_desc.append('{0}{1}{2}'.format(frame_name, os.linesep, dump))
 
-    title = "FRAMESTACK {0!r}:".format(frame)
+    title = 'FRAMESTACK {0!r}:'.format(frame)
     body = (os.linesep * 2).join(stack_desc)
     return os.linesep.format((title, body))
 
@@ -112,9 +112,7 @@ def print_framestack(frame=None, limit=None, file=None):
 
 
 def _format_traceback(frame=None, limit=None, offset=None):
-    """
-    Format call-stack and exception information (if available).
-    """
+    """Format call-stack and exception information (if available)."""
     limit = None if not limit else abs(limit)
     offset = 1 if not offset else abs(offset) + 1
     etype, value, tb = sys.exc_info()
@@ -143,7 +141,7 @@ def _format_traceback(frame=None, limit=None, offset=None):
 def format_traceback(frame=None, limit=None, offset=None):
     offset = 1 if not offset else abs(offset) + 1
     stack, exception = _format_traceback(frame, limit, offset)
-    title = "Traceback (most recent call last):"
+    title = 'Traceback (most recent call last):'
     body = ''.join(stack + exception)
     return os.linesep.format((title, body))
 

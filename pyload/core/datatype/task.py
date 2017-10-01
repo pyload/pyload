@@ -23,10 +23,8 @@ class Interaction(IntEnum):
 
 # noinspection PyUnresolvedReferences
 class InteractionTask(BaseObject):
-    """
-    General Interaction Task extends ITask defined by api
-    with additional fields and methods.
-    """
+    """General Interaction Task extends ITask defined by api with additional
+    fields and methods."""
     __slots__ = ['description', 'error', 'handler', 'iid', 'input', 'locked',
                  'owner', 'plugin', 'result', 'seen', 'shared', 'storage',
                  'title', 'type', 'wait_until']
@@ -64,18 +62,14 @@ class InteractionTask(BaseObject):
         return self.result
 
     def set_shared(self):
-        """
-        Enable shared mode, should not be reversed.
-        """
+        """Enable shared mode, should not be reversed."""
         self.shared = True
 
     def set_result(self, value):
         self.result = self.convert_result(value)
 
     def set_waiting(self, sec, lock=False):
-        """
-        Sets waiting in seconds from now, < 0 can be used as infinitive.
-        """
+        """Sets waiting in seconds from now, < 0 can be used as infinitive."""
         if not self.locked:
             if sec < 0:
                 self.wait_until = -1

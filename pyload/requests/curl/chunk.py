@@ -42,7 +42,7 @@ class CurlChunk(CurlRequest):
 
         self.c = pycurl.Curl()
 
-        self.header = ""
+        self.header = ''
         # indicates if the header has been processed
         self.header_parsed = False
         self.headers = HeaderDict()
@@ -61,7 +61,7 @@ class CurlChunk(CurlRequest):
         self._nlast_size = 0
 
     def __repr__(self):
-        return "<CurlChunk id={0:d}, size={1:d}, arrived={2:d}>".format(
+        return '<CurlChunk id={0:d}, size={1:d}, arrived={2:d}>'.format(
             self.id, self.size, self.arrived)
 
     @property
@@ -69,9 +69,7 @@ class CurlChunk(CurlRequest):
         return self.p.context
 
     def get_handle(self):
-        """
-        Returns a Curl handle ready to use for perform/multiperform.
-        """
+        """Returns a Curl handle ready to use for perform/multiperform."""
         self.set_request_context(
             self.p.url, self.p.get, self.p.post,
             self.p.referer, self.p.cookies)
@@ -105,22 +103,22 @@ class CurlChunk(CurlRequest):
                         self.arrived + self.range[0],
                         min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked resume with range {0}".format(range))
+                self.log.debug('Chunked resume with range {0}'.format(range))
                 self.setopt(pycurl.RANGE, range)
             else:
-                self.log.debug("Resume File from {0:d}".format(self.arrived))
+                self.log.debug('Resume File from {0:d}'.format(self.arrived))
                 self.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
                 if self.id == len(self.p.info.chunks) - 1:  # see above
-                    range = "{0:d}-".format(self.range[0])
+                    range = '{0:d}-'.format(self.range[0])
                 else:
-                    range = "{0:d}-{1:d}".format(
+                    range = '{0:d}-{1:d}'.format(
                         self.range[0],
                         min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked with range {0}".format(range))
+                self.log.debug('Chunked with range {0}'.format(range))
                 self.setopt(pycurl.RANGE, range)
 
             self.fp = io.open(filename, mode='wb')
@@ -135,8 +133,8 @@ class CurlChunk(CurlRequest):
         if not self.range and self.header.endswith(os.linesep * 2):
             self.parse_header()
         # ftp file size parsing
-        elif (not self.range and buf.startswith("150") and
-              "data connection" in buf):
+        elif (not self.range and buf.startswith('150') and
+              'data connection' in buf):
             size = re.search(r"(\d+) bytes", buf)
             if size is not None:
                 self.p._size = int(size.group(1))
@@ -181,12 +179,10 @@ class CurlChunk(CurlRequest):
             return 0  # close if we have enough data
 
     def parse_header(self):
-        """
-        Parse data from received header.
-        """
+        """Parse data from received header."""
         for orgline in self.decode_response(self.header).splitlines():
             line = orgline.strip().lower()
-            if line.startswith("accept-ranges") and "bytes" in line:
+            if line.startswith('accept-ranges') and 'bytes' in line:
                 self.p.chunk_support = True
 
             if 'content-disposition' in line:
@@ -194,24 +190,20 @@ class CurlChunk(CurlRequest):
                 if m is not None:
                     name = purge.name(m.groupdict()['name'])
                     self.p._name = name
-                    self.log.debug("Content-Disposition: {0}".format(name))
+                    self.log.debug('Content-Disposition: {0}'.format(name))
 
             if not self.resume and line.startswith('content-length'):
-                self.p._size = int(line.split(":")[1])
+                self.p._size = int(line.split(':')[1])
 
         self.header_parsed = True
 
     def stop(self):
-        """
-        The download will not proceed after next call of write_body.
-        """
+        """The download will not proceed after next call of write_body."""
         self.range = [0, 0]
         self.size = 0
 
     def reset_range(self):
-        """
-        Reset the range, so the download will load all data available.
-        """
+        """Reset the range, so the download will load all data available."""
         self.range = None
 
     def set_range(self, range):
@@ -219,22 +211,18 @@ class CurlChunk(CurlRequest):
         self.size = range[1] - range[0]
 
     def flush_file(self):
-        """
-        Flush and close file.
-        """
+        """Flush and close file."""
         # needs to be closed, or merging chunks will fail
         with closing(self.fp) as fp:
             fp.flush()
             os.fsync(fp.fileno())  # make sure everything was written to disk
 
     def close(self):
-        """
-        Closes everything, unusable after this.
-        """
+        """Closes everything, unusable after this."""
         try:
             self.fp.close()
         except AttributeError:
             pass
         self.c.close()
-        if hasattr(self, "p"):
+        if hasattr(self, 'p'):
             del self.p

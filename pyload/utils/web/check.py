@@ -96,10 +96,10 @@ def isresource(url, *args, **kwargs):
     if 'content-disposition' in r.headers:
         return True
 
-    mime = ""
+    mime = ''
     content = r.headers.get('content-type')
     if content:
-        mime, _, _ = content.rpartition("charset=")
+        mime, _, _ = content.rpartition('charset=')
     else:
         from . import parse
 

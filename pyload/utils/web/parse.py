@@ -55,11 +55,11 @@ def _extract_inputs(form):
     taginputs = {}
     for inputtag in _RE_FORM.finditer(
             purge.comments(form.group('CONTENT'))):
-        tagname = attr(inputtag.group(1), "name")
+        tagname = attr(inputtag.group(1), 'name')
         if not tagname:
             continue
-        tagvalue = attr(inputtag.group(1), "value")
-        taginputs[tagname] = tagvalue or inputtag.group(3) or ""
+        tagvalue = attr(inputtag.group(1), 'value')
+        taginputs[tagname] = tagvalue or inputtag.group(3) or ''
     return taginputs
 
 
@@ -80,10 +80,10 @@ def _same_inputs(taginputs, inputs):
 
 def form(text, name=None, inputs={}):
     pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
-    pattr = pattr.format(name or "")
+    pattr = pattr.format(name or '')
     for form in re.finditer(pattr, text, flags=re.I | re.S):
         taginputs = _extract_inputs(form)
-        formaction = attr(form.group('TAG'), "action")
+        formaction = attr(form.group('TAG'), 'action')
         # Check input attributes
         if not inputs or _same_inputs(taginputs, inputs):
             return formaction, taginputs  # Passed attribute check
@@ -111,7 +111,7 @@ def header(text):
 
 
 def mime(text, strict=False):
-    DEFAULT_MIMETYPE = "application/octet-stream"
+    DEFAULT_MIMETYPE = 'application/octet-stream'
     mimetype = mimetypes.guess_type(text.strip(), strict)[0]
     return mimetype or DEFAULT_MIMETYPE
 

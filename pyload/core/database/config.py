@@ -28,7 +28,7 @@ class ConfigMethods(DatabaseMethods):
             (plugin, user))
 
         r = self.c.fetchone()
-        return r[0] if r else ""
+        return r[0] if r else ''
 
     @async
     def delete_config(self, plugin, user=None):

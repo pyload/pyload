@@ -13,9 +13,7 @@ standard_library.install_aliases()
 
 
 class Singleton(type):
-    """
-    A metaclass that creates a Singleton base class when called.
-    """
+    """A metaclass that creates a Singleton base class when called."""
     _inst = {}
 
     def __call__(cls, *args, **kwargs):
@@ -25,10 +23,8 @@ class Singleton(type):
 
 
 class InscDict(MutableMapping):
-    """
-    Improved version of the header dictionary
-    from `requests.structures.CaseInsensitiveDict`.
-    """
+    """Improved version of the header dictionary from
+    `requests.structures.CaseInsensitiveDict`."""
 
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)
@@ -60,15 +56,11 @@ class InscDict(MutableMapping):
         return self.loweritems() == InscDict(other).loweritems()
 
     def lowerkeys(self):
-        """
-        Like `keys`, but with all lowercase keys.
-        """
+        """Like `keys`, but with all lowercase keys."""
         return self.__dict__.keys()
 
     def loweritems(self):
-        """
-        Like `items`, but with all lowercase keys.
-        """
+        """Like `items`, but with all lowercase keys."""
         return ((lowerkey, val)
                 for lowerkey, (key, val) in self.__dict__.items())
 
@@ -87,15 +79,13 @@ class HeaderDict(InscDict):
         return """<Header {0}>""".format(self.__dict__)
 
     def list(self):
-        """
-        Converts all entries to header list usable by curl.
-        """
+        """Converts all entries to header list usable by curl."""
         header = []
         for key, val in self.__dict__.values():
             fields = ','.join(val)
             if fields:
-                header.append("{0}: {1}".format(key, fields))
+                header.append('{0}: {1}'.format(key, fields))
             else:
                 # NOTE: curl will remove this header
-                header.append("{0}:".format(key))
+                header.append('{0}:'.format(key))
         return header

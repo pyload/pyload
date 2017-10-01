@@ -26,9 +26,7 @@ _WINBADWORDS = (
 
 
 def name(text, sep='_', allow_whitespaces=False):
-    """
-    Remove invalid characters.
-    """
+    """Remove invalid characters."""
     if os.name == 'nt':
         bc = _WINBADCHARS
     elif sys.platform == 'darwin':
@@ -58,15 +56,13 @@ def pattern(text, rules):
 def truncate(text, offset):
     maxtrunc = len(text) // 2
     if offset > maxtrunc:
-        raise ValueError("String too short to truncate")
+        raise ValueError('String too short to truncate')
     trunc = (len(text) - offset) // 3
-    return "{0}~{1}".format(text[:trunc * 2], text[-trunc:])
+    return '{0}~{1}'.format(text[:trunc * 2], text[-trunc:])
 
 
 def uniquify(seq):
-    """
-    Remove duplicates from list preserving order.
-    """
+    """Remove duplicates from list preserving order."""
     seen = set()
     seen_add = seen.add
     return type(seq)(x for x in seq if x not in seen and not seen_add(x))

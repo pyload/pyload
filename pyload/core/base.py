@@ -7,30 +7,24 @@ import atexit
 import locale
 import os
 import sched
-import signal
-import sys
-import tempfile
 import time
-from builtins import TMPDIR, USERDIR, int, str
+from builtins import USERDIR, str
 from contextlib import closing
-from pyload.utils.layer.safethreading import Event
 
-import psutil
 from future import standard_library
 from pkg_resources import resource_filename
 
-from .log import Logger
-from pyload.config import ConfigParser
-from .network.factory import RequestFactory
+from pyload.config import ConfigParser, config_defaults
 from pyload.utils import format
-
 from pyload.utils.fs import availspace, fullpath, makedirs
+from pyload.utils.layer.safethreading import Event
 from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_name, set_process_user)
 
 from ..__about__ import __package_name__, __version__, __version_info__
-from pyload.config import config_defaults
+from .log import Logger
+from .network.factory import RequestFactory
 
 standard_library.install_aliases()
 
@@ -74,7 +68,8 @@ class Core(object):
     def running(self):
         return self.__running.is_set()
 
-    def __init__(self, cfgdir, tmpdir, debug=None, verbose=None, restore=False):
+    def __init__(self, cfgdir, tmpdir, debug=None,
+                 verbose=None, restore=False):
         self.__running = Event()
         self.__do_restart = False
         self.__do_exit = False
@@ -118,7 +113,7 @@ class Core(object):
                 Permission.All)
         if restore:
             self.log.warning(
-                self._("Restored default login credentials `admin|pyload`"))
+                self._('Restored default login credentials `admin|pyload`'))
 
     def _init_managers(self):
         from pyload.core.manager import (
@@ -150,14 +145,14 @@ class Core(object):
                 group = self.config.get('permission', 'group')
                 set_process_group(group)
             except Exception as e:
-                self.log.error(self._("Unable to change gid: %s"), str(e))
+                self.log.error(self._('Unable to change gid: %s'), str(e))
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
                 set_process_user(user)
             except Exception as e:
-                self.log.error(self._("Unable to change uid: %s"), str(e))
+                self.log.error(self._('Unable to change uid: %s'), str(e))
 
     def set_language(self, lang):
         localedir = resource_filename(__package_name__, 'locale')
@@ -169,7 +164,7 @@ class Core(object):
             self._ = trans.gettext
 
     def _setup_language(self):
-        self.log.debug("Loading language ...")
+        self.log.debug('Loading language ...')
         lang = self.config.get('general', 'language')
         default = self.DEFAULT_LANGUAGE
         if not lang:
@@ -183,8 +178,8 @@ class Core(object):
 
             self.log.warning(
                 self._(
-                    "Unable to load `%(lang)s` language, using default "
-                    "`%(default)s`: %(error)s",
+                    'Unable to load `%(lang)s` language, using default '
+                    '`%(default)s`: %(error)s',
                 ),
                 {'lang': lang, 'default': default, 'error': str(e)},
             )
@@ -200,22 +195,22 @@ class Core(object):
         storage_folder = self.config.get('general', 'storage_folder')
         if not storage_folder:
             storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGEDIRNAME)
-        self.log.debug("Storage: {0}".format(storage_folder))
+        self.log.debug('Storage: {0}'.format(storage_folder))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
         self.log.info(
-            self._("Available storage space: {0}").format(avail_space))
+            self._('Available storage space: {0}').format(avail_space))
 
     def _setup_network(self):
         # TODO: Move to accountmanager
-        self.log.info(self._("Activating accounts ..."))
+        self.log.info(self._('Activating accounts ...'))
         self.acm.load_accounts()
         # self.scheduler.enter(0, 0, self.acm.load_accounts)
         self.adm.activate_addons()
 
     def run(self):
         try:
-            self.log.info(self._("Running pyLoad ..."))
+            self.log.info(self._('Running pyLoad ...'))
             self.evm.fire('pyload:starting')
             self.__running.set()
 
@@ -226,9 +221,9 @@ class Core(object):
             # self._setup_niceness()
 
             self.log.info(
-                self._("Welcome to pyLoad v{0}").format(self.version))
-            self.log.info(self._("Config directory: {0}").format(self.cfgdir))
-            self.log.info(self._("Temp directory: {0}").format(self.tmpdir))
+                self._('Welcome to pyLoad v{0}').format(self.version))
+            self.log.info(self._('Config directory: {0}').format(self.cfgdir))
+            self.log.info(self._('Temp directory: {0}').format(self.tmpdir))
             self.evm.fire('pyload:started')
 
             # # some memory stats
@@ -276,14 +271,14 @@ class Core(object):
 
     def restart(self):
         self.stop()
-        self.log.info(self._("Restarting pyLoad ..."))
+        self.log.info(self._('Restarting pyLoad ...'))
         self.evm.fire('pyload:restarting')
         self.run()
 
     @atexit.register
     def exit(self):
         self.stop()
-        self.log.info(self._("Exiting pyLoad ..."))
+        self.log.info(self._('Exiting pyLoad ...'))
         self.tsm.exit()
         self.db.exit()  # NOTE: Why here?
         self.config.close()
@@ -294,7 +289,7 @@ class Core(object):
 
     def stop(self):
         try:
-            self.log.info(self._("Stopping pyLoad ..."))
+            self.log.info(self._('Stopping pyLoad ...'))
             self.evm.fire('pyload:stopping')
             self.adm.deactivate_addons()
             self.api.stop_all_downloads()

@@ -20,8 +20,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import logging
 import io
+import logging
 import os
 from builtins import object, range
 
@@ -52,25 +52,20 @@ class OCR(object):
         self.result_captcha = ''
 
     def unload(self):
-        """
-        Delete all tmp images.
-        """
-        pass
+        """Delete all tmp images."""
 
     def threshold(self, value):
         self.image = self.image.point(lambda a: a * value + 10)
 
     def run(self, command):
-        """
-        Run a command.
-        """
+        """Run a command."""
         popen = Popen(
             command, bufsize=-1, stdout=PIPE, stderr=PIPE)
         popen.wait()
-        output = "{0} | {1}".format(popen.stdout.read(), popen.stderr.read())
+        output = '{0} | {1}'.format(popen.stdout.read(), popen.stderr.read())
         popen.stdout.close()
         popen.stderr.close()
-        self.log.debug("Tesseract ReturnCode {0} Output: {1}".format(
+        self.log.debug('Tesseract ReturnCode {0} Output: {1}'.format(
             popen.returncode, output))
 
     def run_tesser(self, subset=False, digits=True,
@@ -78,17 +73,17 @@ class OCR(object):
         # self.log.debug("create tmp tif")
 
         # tmp = tempfile.NamedTemporaryFile(suffix=".tif")
-        tmp_path = os.path.join("tmpTif_{0}.tif".format(self.__name__))
+        tmp_path = os.path.join('tmpTif_{0}.tif'.format(self.__name__))
         tmp = io.open(tmp_path, mode='wb')
         tmp.close()
         # self.log.debug("create tmp txt")
         # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
-        tmp_txt_path = os.path.join("tmp_txt_{0}.txt".format(
+        tmp_txt_path = os.path.join('tmp_txt_{0}.txt'.format(
             self.__name__))
         tmp_txt = io.open(tmp_txt_path, mode='wb')
         tmp_txt.close()
 
-        self.log.debug("save tiff")
+        self.log.debug('save tiff')
         self.image.save(tmp.name, 'TIFF')
 
         if os.name == 'nt':
@@ -97,32 +92,32 @@ class OCR(object):
         else:
             tessparams = ['tesseract']
 
-        tessparams.extend([tmp.name, tmp_txt.name.replace(".txt", "")])
+        tessparams.extend([tmp.name, tmp_txt.name.replace('.txt', '')])
 
         if subset and (digits or lowercase or uppercase):
             # self.log.debug("create temp subset config")
             # tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with io.open(os.path.join("tmp_sub_{0}.subset".format(self.__name__)), mode='wb') as tmp_sub:
-                tmp_sub.write("tessedit_char_whitelist ")
+            with io.open(os.path.join('tmp_sub_{0}.subset'.format(self.__name__)), mode='wb') as tmp_sub:
+                tmp_sub.write('tessedit_char_whitelist ')
                 if digits:
-                    tmp_sub.write("0123456789")
+                    tmp_sub.write('0123456789')
                 if lowercase:
-                    tmp_sub.write("abcdefghijklmnopqrstuvwxyz")
+                    tmp_sub.write('abcdefghijklmnopqrstuvwxyz')
                 if uppercase:
-                    tmp_sub.write("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                    tmp_sub.write('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
                 tmp_sub.write(os.linesep)
-                tessparams.append("nobatch")
+                tessparams.append('nobatch')
                 tessparams.append(tmp_sub.name)
 
-        self.log.debug("run tesseract")
+        self.log.debug('run tesseract')
         self.run(tessparams)
-        self.log.debug("read txt")
+        self.log.debug('read txt')
 
         try:
             with io.open(tmp_txt.name) as fp:
-                self.result_captcha = fp.read().replace(os.linesep, "")
+                self.result_captcha = fp.read().replace(os.linesep, '')
         except Exception:
-            self.result_captcha = ""
+            self.result_captcha = ''
 
         self.log.debug(self.result_captcha)
         try:
@@ -199,9 +194,7 @@ class OCR(object):
         self.pixels = pixels
 
     def derotate_by_average(self):
-        """
-        Rotate by checking each angle and guess most suitable.
-        """
+        """Rotate by checking each angle and guess most suitable."""
         w, h = self.image.size
         pixels = self.pixels
 

@@ -15,7 +15,7 @@ standard_library.install_aliases()
 
 class RemoteManager(BaseManager):
 
-    available = ["WebSocketBackend"]
+    available = ['WebSocketBackend']
 
     def __init__(self, core):
         BaseManager.__init__(self, core)
@@ -27,7 +27,7 @@ class RemoteManager(BaseManager):
 
         for b in self.available:
             klass = getattr(
-                __import__("pyload.rpc.{0}".format(b.lower()),
+                __import__('pyload.rpc.{0}'.format(b.lower()),
                            globals(), locals(), [b.lower()], -1), b
             )
             backend = klass(self)
@@ -36,10 +36,10 @@ class RemoteManager(BaseManager):
             try:
                 backend.setup(host, port)
                 self.pyload.log.info(
-                    self._("Starting {0}: {1}:{2}").format(b, host, port))
+                    self._('Starting {0}: {1}:{2}').format(b, host, port))
             except Exception as e:
                 self.pyload.log.error(
-                    self._("Failed loading backend {0} | {1}").format(
+                    self._('Failed loading backend {0} | {1}').format(
                         b, str(e)))
                 if self.pyload.debug:
                     print_exc()

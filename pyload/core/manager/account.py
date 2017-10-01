@@ -8,22 +8,19 @@ import random
 
 from future import standard_library
 
+from pyload.utils.struct.lock import lock
+
 from ..datatype.base import AccountInfo
 from .base import BaseManager
-from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 
 
 class AccountManager(BaseManager):
-    """
-    Manages all accounts.
-    """
+    """Manages all accounts."""
 
     def __init__(self, core):
-        """
-        Constructor.
-        """
+        """Constructor."""
         BaseManager.__init__(self, core)
 
         # PluginName mapped to list of account instances
@@ -36,19 +33,19 @@ class AccountManager(BaseManager):
         loginname = info.loginname
         # Owner != None must be enforced
         if info.owner is None:
-            raise ValueError("Owner must not be null")
+            raise ValueError('Owner must not be null')
 
-        klass = self.pyload.pgm.load_class("account", plugin)
+        klass = self.pyload.pgm.load_class('account', plugin)
         if not klass:
             self.pyload.log.warning(
-                self._("Account plugin {0} not available").format(plugin))
-            raise ValueError("Account plugin {0} not available".format(plugin))
+                self._('Account plugin {0} not available').format(plugin))
+            raise ValueError('Account plugin {0} not available'.format(plugin))
 
         if plugin not in self.accounts:
             self.accounts[plugin] = []
 
         self.pyload.log.debug(
-            "Create account {0}:{1}".format(plugin, loginname))
+            'Create account {0}:{1}'.format(plugin, loginname))
 
         # New account instance
         account = klass.from_info_data(self, info, password, options)
@@ -56,9 +53,7 @@ class AccountManager(BaseManager):
         return account
 
     def load_accounts(self):
-        """
-        Loads all accounts available from db.
-        """
+        """Loads all accounts available from db."""
         for info, password, options in self.pyload.db.load_accounts():
             # put into options as used in other context
             options = json.loads(options) if options else {}
@@ -66,21 +61,17 @@ class AccountManager(BaseManager):
                 self._create_account(info, password, options)
             except Exception:
                 self.pyload.log.error(
-                    self._("Could not load account {0}").format(info))
+                    self._('Could not load account {0}').format(info))
                 # self.pyload.print_exc()
 
     def iter_accounts(self):
-        """
-        Yields login, account  for all accounts.
-        """
+        """Yields login, account  for all accounts."""
         for plugin, accounts in self.accounts.items():
             for account in accounts:
                 yield plugin, account
 
     def save_accounts(self):
-        """
-        Save all account information.
-        """
+        """Save all account information."""
         data = []
         for plugin, accounts in self.accounts.items():
             data.extend(
@@ -91,9 +82,7 @@ class AccountManager(BaseManager):
         self.pyload.db.save_accounts(data)
 
     def get_account(self, aid, plugin, user=None):
-        """
-        Find a account by specific user (if given).
-        """
+        """Find a account by specific user (if given)."""
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
                 if acc.aid == aid and (
@@ -102,23 +91,19 @@ class AccountManager(BaseManager):
 
     @lock
     def create_account(self, plugin, loginname, password, uid):
-        """
-        Creates a new account.
-        """
+        """Creates a new account."""
         aid = self.pyload.db.create_account(plugin, loginname, password, uid)
         info = AccountInfo(aid, plugin, loginname, uid, activated=True)
         account = self._create_account(info, password, {})
         account.schedule_refresh()
         self.save_accounts()
 
-        self.pyload.evm.fire("account:created", account.to_info_data())
+        self.pyload.evm.fire('account:created', account.to_info_data())
         return account
 
     @lock
     def update_account(self, aid, plugin, loginname, password, user):
-        """
-        Add or update account.
-        """
+        """Add or update account."""
         account = self.get_account(aid, plugin, user)
         if not account:
             return
@@ -127,28 +112,24 @@ class AccountManager(BaseManager):
             self.save_accounts()
             account.schedule_refresh(force=True)
 
-        self.pyload.evm.fire("account:updated", account.to_info_data())
+        self.pyload.evm.fire('account:updated', account.to_info_data())
         return account
 
     @lock
     def remove_account(self, aid, plugin, uid):
-        """
-        Remove account.
-        """
+        """Remove account."""
         if plugin in self.accounts:
             for acc in self.accounts[plugin]:
                 # admins may delete accounts
                 if acc.aid == aid and (not uid or acc.owner == uid):
                     self.accounts[plugin].remove(acc)
                     self.pyload.db.remove_account(aid)
-                    self.pyload.evm.fire("account:deleted", aid, user=uid)
+                    self.pyload.evm.fire('account:deleted', aid, user=uid)
                     break
 
     @lock
     def select_account(self, plugin, user):
-        """
-        Determines suitable plugins and select one.
-        """
+        """Determines suitable plugins and select one."""
         if plugin in self.accounts:
             uid = user.true_primary if user else None
             # TODO: temporary allowed None user
@@ -159,9 +140,7 @@ class AccountManager(BaseManager):
 
     @lock
     def get_all_accounts(self, uid):
-        """
-        Return account info for every visible account.
-        """
+        """Return account info for every visible account."""
         # NOTE: filter by owner / shared, but admins see all accounts
         accounts = []
         for plugin, accs in self.accounts.items():
@@ -172,9 +151,7 @@ class AccountManager(BaseManager):
         return accounts
 
     def refresh_all_accounts(self):
-        """
-        Force a refresh of every account.
-        """
+        """Force a refresh of every account."""
         for accounts in self.accounts.values():
             for acc in accounts:
                 acc.get_account_info(True)

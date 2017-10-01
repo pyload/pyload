@@ -21,16 +21,14 @@ standard_library.install_aliases()
 
 
 def trycatch(callback):
-    """
-    Decorator that executes the function and returns the value or fallback on
-    any exception.
-    """
+    """Decorator that executes the function and returns the value or fallback
+    on any exception."""
     def wrapper(func):
         def new(self, *args, **kwargs):
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
-                msg = "Error executing `{0}` | {1}".format(
+                msg = 'Error executing `{0}` | {1}'.format(
                     func.__name__, str(e))
                 self.pyload.log.debug(msg)
                 if self.pyload.debug:
@@ -122,9 +120,7 @@ class FileInfo(BaseObject):
 
 
 class File(BaseObject):
-    """
-    Represents a file object at runtime.
-    """
+    """Represents a file object at runtime."""
     __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid',
                  'fileorder', 'filestatus', 'hash', 'lock', 'manager', 'media',
                  'owner', 'packageid', 'plugin', 'pluginclass', 'pluginname',
@@ -177,9 +173,7 @@ class File(BaseObject):
         self.statusname = None
 
     def get_size(self):
-        """
-        Get size of download.
-        """
+        """Get size of download."""
         if self.plugin.dl.size is not None:
             self.self._size(self.plugin.dl.size)
         return self._size
@@ -200,9 +194,7 @@ class File(BaseObject):
             return self._name
 
     def set_name(self, name):
-        """
-        Only set unicode or utf8 strings as name.
-        """
+        """Only set unicode or utf8 strings as name."""
         name = purge.name(name)
 
         # media type is updated if needed
@@ -213,30 +205,25 @@ class File(BaseObject):
     name = property(get_name, set_name)
 
     def __repr__(self):
-        return "<File {0}: {1}@{2}>".format(
+        return '<File {0}: {1}@{2}>'.format(
             self.id, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):
-        """
-        Inits plugin instance.
-        """
+        """Inits plugin instance."""
         if not self.plugin:
             self.pluginclass = self.pyload.pgm.get_plugin_class(
-                "hoster", self.pluginname)
+                'hoster', self.pluginname)
             self.plugin = self.pluginclass(self)
 
     @lock(shared=True)
     def has_plugin(self):
-        """
-        Thread safe way to determine this file has initialized plugin attribute.
-        """
+        """Thread safe way to determine this file has initialized plugin
+        attribute."""
         return self.plugin is not None
 
     def package(self):
-        """
-        Return package instance.
-        """
+        """Return package instance."""
         return self.manager.get_package(self.packageid)
 
     def set_status(self, status):
@@ -244,7 +231,7 @@ class File(BaseObject):
         # needs to sync so status is written to database
         self.sync()
 
-    def set_custom_status(self, msg, status="processing"):
+    def set_custom_status(self, msg, status='processing'):
         self.statusname = msg
         self.set_status(status)
 
@@ -258,16 +245,12 @@ class File(BaseObject):
         return statusmap[status] == self.status
 
     def sync(self):
-        """
-        Sync File instance with database.
-        """
+        """Sync File instance with database."""
         self.manager.update_file(self)
 
     @lock
     def release(self):
-        """
-        Sync and remove from cache.
-        """
+        """Sync and remove from cache."""
         if self.plugin is not None:
             self.plugin.clean()
             self.plugin = None
@@ -291,9 +274,7 @@ class File(BaseObject):
 
     # TODO: Recheck
     def abort_download(self):
-        """
-        Abort file if possible.
-        """
+        """Abort file if possible."""
         while self.fid in self.pyload.tsm.processing_ids():
             with self.lock(shared=True):
                 self.abort = True
@@ -304,19 +285,17 @@ class File(BaseObject):
             time.sleep(0.5)
 
         self.abort = False
-        self.set_status("aborted")
+        self.set_status('aborted')
         self.release()
 
     def finish_if_done(self):
-        """
-        Set status to finish and release file if every thread
-        is finished with it.
-        """
+        """Set status to finish and release file if every thread is finished
+        with it."""
         # TODO: this is wrong now, it should check if addons are using it
         if self.id in self.pyload.tsm.processing_ids():
             return False
 
-        self.set_status("finished")
+        self.set_status('finished')
         self.release()
         self.manager.check_all_links_finished()
         return True
@@ -326,16 +305,12 @@ class File(BaseObject):
 
     @trycatch(0)
     def get_speed(self):
-        """
-        Calculates speed.
-        """
+        """Calculates speed."""
         return self.plugin.dl.speed
 
     @trycatch(0)
     def get_eta(self):
-        """
-        Gets estimated time of arrival / or waiting time.
-        """
+        """Gets estimated time of arrival / or waiting time."""
         if self.status == DownloadStatus.Waiting:
             return self.wait_until - time.time()
 
@@ -343,16 +318,12 @@ class File(BaseObject):
 
     @trycatch(0)
     def get_bytes_arrived(self):
-        """
-        Gets bytes arrived.
-        """
+        """Gets bytes arrived."""
         return self.plugin.dl.arrived
 
     @trycatch(0)
     def get_bytes_left(self):
-        """
-        Gets bytes left.
-        """
+        """Gets bytes left."""
         return self.plugin.dl.size - self.plugin.dl.arrived
 
     @trycatch(0)

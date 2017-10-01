@@ -3,7 +3,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from builtins import range
-from copy import deepcopy
 
 from future import standard_library
 
@@ -106,7 +105,7 @@ def _gen_config_defaults():
         ('group',
             ('option', 'users', 'Groupname', None, None, InputType.Str)),
         ('foldermode',
-            ('option', 0o755, 'Folder mode',  None, None, InputType.Octal)),
+            ('option', 0o755, 'Folder mode', None, None, InputType.Octal)),
         ('filemode',
             ('option', 0o644, 'File mode', None, None, InputType.Octal)),
         ('change_user',
@@ -147,7 +146,7 @@ def _gen_config_defaults():
     )
     reconn_config = (
         ('activated',
-            ('option', False, 'Activated',  None, None, InputType.Bool)),
+            ('option', False, 'Activated', None, None, InputType.Bool)),
         ('script',
             ('option', None, 'Script file', None, None, InputType.File)),
         ('wait',

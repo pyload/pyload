@@ -17,15 +17,11 @@ standard_library.install_aliases()
 
 
 class PluginThread(Thread):
-    """
-    Abstract base class for thread types.
-    """
+    """Abstract base class for thread types."""
     __slots__ = ['manager', 'owner', 'pyload']
 
     def __init__(self, manager, owner=None):
-        """
-        Constructor
-        """
+        """Constructor."""
         Thread.__init__(self)
         self.setDaemon(True)
         self.manager = manager  # Thread manager
@@ -46,18 +42,15 @@ class PluginThread(Thread):
         return self.manager
 
     def finished(self):
-        """
-        Remove thread from list.
-        """
+        """Remove thread from list."""
         self.manager.remove_thread(self)
 
     def get_progress_info(self):
-        """
-        Retrieves progress information about the current running task
+        """Retrieves progress information about the current running task.
 
         :return: :class:`ProgressInfo`
+
         """
-        pass
 
     def _gen_reports(self, file):
         si_entries = (
@@ -68,9 +61,9 @@ class PluginThread(Thread):
             ('file-system encoding', sys.getfilesystemencoding()),
             ('current working directory', os.getcwd())
         )
-        si_title = "SYSTEM INFO:"
+        si_title = 'SYSTEM INFO:'
         si_body = os.linesep.join(
-            "\t{0:20} = {1}".format(name, value) for name, value in si_entries)
+            '\t{0:20} = {1}'.format(name, value) for name, value in si_entries)
         sysinfo = os.linesep.join((si_title, si_body))
 
         # TODO: Add config setting dump
@@ -105,8 +98,8 @@ class PluginThread(Thread):
         reportdir = os.path.join('crashes', 'plugins', file.pluginname)
         makedirs(reportdir, exist_ok=True)
 
-        filename = "debug-report_{0}_{1}.zip".format(
-            file.pluginname, time.strftime("%d-%m-%Y_%H-%M-%S"))
+        filename = 'debug-report_{0}_{1}.zip'.format(
+            file.pluginname, time.strftime('%d-%m-%Y_%H-%M-%S'))
         filepath = os.path.join(reportdir, filename)
 
         reports = self._gen_reports(file)

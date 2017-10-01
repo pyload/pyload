@@ -12,8 +12,7 @@ standard_library.install_aliases()
 
 
 class EventManager(BaseManager):
-    """
-    Handles all event-related tasks, also stores an event queue for clients,
+    """Handles all event-related tasks, also stores an event queue for clients,
     so they can retrieve them later.
 
     **Known Events:**
@@ -37,6 +36,7 @@ class EventManager(BaseManager):
 
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished
+
     """
 
     def __init__(self, core):
@@ -44,40 +44,32 @@ class EventManager(BaseManager):
         self.events = {'event': []}
 
     def listen_to(self, event, func):
-        """
-        Adds an event listener for event name.
-        """
+        """Adds an event listener for event name."""
         if event in self.events:
             if func in self.events[event]:
                 self.pyload.log.debug(
-                    "Function already registered {0}".format(func))
+                    'Function already registered {0}'.format(func))
             else:
                 self.events[event].append(func)
         else:
             self.events[event] = [func]
 
     def remove_event(self, event, func):
-        """
-        Removes previously added event listener.
-        """
+        """Removes previously added event listener."""
         if event in self.events:
             self.events[event].remove(func)
 
     def remove_from_events(self, func):
-        """
-        Removes func from all known events.
-        """
+        """Removes func from all known events."""
         for name, events in self.events.items():
             if func in events:
                 events.remove(func)
 
     def fire(self, event, *args, **kwargs):
-        """
-        Dispatches event with args.
-        """
+        """Dispatches event with args."""
         # dispatch the meta event
-        if event != "event":
-            self.fire("event", *(event,) + args, **kwargs)
+        if event != 'event':
+            self.fire('event', *(event,) + args, **kwargs)
 
         if event in self.events:
             for func in self.events[event]:
@@ -85,7 +77,7 @@ class EventManager(BaseManager):
                     func(*args, **kwargs)
                 except Exception as e:
                     self.pyload.log.warning(
-                        "Error calling event handler "
-                        "{0}: {1}, {2}, {3}".format(event, func, args, str(e))
+                        'Error calling event handler '
+                        '{0}: {1}, {2}, {3}'.format(event, func, args, str(e))
                     )
                     # self.pyload.print_exc()

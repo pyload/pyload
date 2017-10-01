@@ -14,14 +14,10 @@ QUOTA_UNLIMITED = -1
 
 
 class StatisticsApi(BaseApi):
-    """
-    Retrieve download statistics and quota.
-    """
+    """Retrieve download statistics and quota."""
 
     def record_download(self, file):
-        """
-        Add download record to the statistics.
-        """
+        """Add download record to the statistics."""
         del CACHE[:]
         raise NotImplementedError
 
@@ -29,7 +25,5 @@ class StatisticsApi(BaseApi):
         return QUOTA_UNLIMITED
 
     def get_quota(self):
-        """
-        Number of bytes the user has left for download.
-        """
+        """Number of bytes the user has left for download."""
         return self.calc_quota(self.user.true_primary)
