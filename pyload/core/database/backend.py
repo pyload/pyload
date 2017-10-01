@@ -202,7 +202,7 @@ class DatabaseBackend(Thread):
             j.process_job()
 
     # TODO: Recheck...
-    def shutdown(self):
+    def exit(self):
         self.__running.clear()
         self.closing = Event()
         self.jobs.put('quit')

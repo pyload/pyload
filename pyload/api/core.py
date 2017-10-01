@@ -106,7 +106,7 @@ class CoreApi(BaseApi):
         return availspace(self.pyload.config.get(
             'general', 'storage_folder'))
 
-    def shutdown(self):
+    def exit(self):
         """Clean way to quit pyLoad."""
         self.pyload._Core__do_exit = True
 

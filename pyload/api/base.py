@@ -211,7 +211,7 @@ class AbstractApi(object):
     def poll_results(self, rid):
         pass
 
-    def shutdown(self):
+    def exit(self):
         pass
 
     def recheck_package(self, pid):

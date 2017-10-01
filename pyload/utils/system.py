@@ -197,7 +197,7 @@ def set_process_user(value):
     os.setuid(uid)
 
 
-def shutdown():
+def exit():
     if os.name == 'nt':
         call_cmd('rundll32.exe user.exe,ExitWindows')
 

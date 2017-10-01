@@ -163,7 +163,7 @@ class Core(object):
             self._ = trans.gettext
 
     def _setup_language(self):
-        self.log.debug('Loading language ...')
+        self.log.debug('Loading language...')
         lang = self.config.get('general', 'language')
         default = self.DEFAULT_LANGUAGE
         if not lang:
@@ -199,14 +199,14 @@ class Core(object):
 
     def _setup_network(self):
         # TODO: Move to accountmanager
-        self.log.info(self._('Activating accounts ...'))
+        self.log.info(self._('Activating accounts...'))
         self.acm.load_accounts()
         # self.scheduler.enter(0, 0, self.acm.load_accounts)
         self.adm.activate_addons()
 
     def run(self):
         try:
-            self.log.info(self._('Running pyLoad ...'))
+            self.log.info(self._('Running pyLoad...'))
             self.evm.fire('pyload:starting')
             self.__running.set()
 
@@ -254,6 +254,7 @@ class Core(object):
 
         except Exception as exc:
             self.log.critical(exc)
+            raise
             self.exit()
             raise
 
@@ -267,25 +268,25 @@ class Core(object):
 
     def restart(self):
         self.stop()
-        self.log.info(self._('Restarting pyLoad ...'))
+        self.log.info(self._('Restarting pyLoad...'))
         self.evm.fire('pyload:restarting')
         self.run()
 
     @atexit.register
     def exit(self):
         self.stop()
-        self.log.info(self._('Exiting pyLoad ...'))
+        self.log.info(self._('Exiting pyLoad...'))
         self.tsm.exit()
         self.db.exit()  # NOTE: Why here?
         self.config.close()
         self._remove_loggers()
         # if cleanup:
-        # self.log.info(self._("Deleting temp files ..."))
+        # self.log.info(self._("Deleting temp files..."))
         # remove(self.tmpdir, ignore_errors=True)
 
     def stop(self):
         try:
-            self.log.info(self._('Stopping pyLoad ...'))
+            self.log.info(self._('Stopping pyLoad...'))
             self.evm.fire('pyload:stopping')
             self.adm.deactivate_addons()
             self.api.stop_all_downloads()

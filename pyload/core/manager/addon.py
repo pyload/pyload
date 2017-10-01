@@ -185,7 +185,7 @@ class AddonManager(BaseManager):
             self.pyload.evm.remove_from_events(getattr(addon, fname))
 
     def activate_addons(self):
-        self.pyload.log.info(self._('Activating addons ...'))
+        self.pyload.log.info(self._('Activating addons...'))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 if inst.is_activated():
@@ -195,7 +195,7 @@ class AddonManager(BaseManager):
 
     def deactivate_addons(self):
         """Called when core is shutting down."""
-        self.pyload.log.info(self._('Deactivating addons ...'))
+        self.pyload.log.info(self._('Deactivating addons...'))
         for plugin in self.plugins.values():
             for inst in plugin.instances:
                 self.call(inst, 'deactivate')

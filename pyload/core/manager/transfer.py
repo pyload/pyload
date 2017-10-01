@@ -122,7 +122,7 @@ class TransferManager(BaseManager):
         return [x.fid for x in self.active_downloads(None)]
 
     @lock(shared=True)
-    def shutdown(self):
+    def exit(self):
         """End all threads."""
         self.pause = True
         for thread in self.downloading + self.free:
