@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -116,7 +118,7 @@ _RE_SIZE = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 def bytesize(text, unit=None):  # returns integer bytes
     DEFAULT_INPUTUNIT = 'byte'
 
-    m = _RE_SIZE.match(str(text))
+    m = _RE_SIZE.match(to_str(text))
     if m is None:
         return None
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 import io
@@ -119,7 +121,7 @@ class DownloadApi(BaseApi):
         filename = 'tmp_{0}'.format(filename)
         filepath = os.path.join(storagedir, filename)
         with io.open(filepath, mode='wb') as fp:
-            fp.write(str(data))
+            fp.write(to_str(data))
             return self.add_package(fp.name, [fp.name])
 
     @requireperm(Permission.Delete)

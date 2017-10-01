@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -147,9 +149,10 @@ class CurlDownload(DownloadRequest):
 
         try:
             self._download(chunks, resume)
-        except pycurl.error as e:
+            
+        except pycurl.error as exc:
             # code 33 - no resume
-            code = e.args[0]
+            code = exc.args[0]
             if code == 33:
                 # try again without resume
                 self.log.debug('Errno 33 -> Restart without resume')
@@ -243,12 +246,12 @@ class CurlDownload(DownloadRequest):
                     # else add it to failed list
                     try:
                         chunk.verify_header()
-                    except ResponseException as e:
+                    except ResponseException as exc:
                         self.log.debug(
                             'Chunk {0:d} failed: {1}'.format(
-                                chunk.id + 1, str(e)))
+                                chunk.id + 1, exc))
                         failed.append(chunk)
-                        ex = e
+                        ex = exc
                     else:
                         chunks_done.add(c)
 
@@ -266,12 +269,12 @@ class CurlDownload(DownloadRequest):
                     # else add it to failed list
                     try:
                         chunk.verify_header()
-                    except ResponseException as e:
+                    except ResponseException as exc:
                         self.log.debug(
                             'Chunk {0:d} failed: {1}'.format(
-                                chunk.id + 1, str(e)))
+                                chunk.id + 1, exc))
                         failed.append(chunk)
-                        ex = e
+                        ex = exc
                     else:
                         chunks_done.add(curl)
                 if not num_q:  # no more info to get
@@ -347,8 +350,10 @@ class CurlDownload(DownloadRequest):
     def close_chunk(self, chunk):
         try:
             self.manager.remove_handle(chunk.c)
-        except pycurl.error as e:
-            self.log.debug('Error removing chunk: {0}'.format(str(e)))
+            
+        except pycurl.error as exc:
+            self.log.debug('Error removing chunk', exc)
+            
         finally:
             chunk.close()
 

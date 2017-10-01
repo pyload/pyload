@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 import time
@@ -188,10 +190,10 @@ class InfoThread(DecrypterThread):
 
             self.manager.log.debug(
                 'Finished Info Fetching for {0}'.format(pluginname))
-        except Exception as e:
+        except Exception as exc:
             self.manager.log.warning(
                 self._('Info Fetching for {0} failed | {1}').format(
-                    pluginname, str(e)))
+                    pluginname, exc))
             # self.pyload.print_exc()
         finally:
             self.__pi.done = done

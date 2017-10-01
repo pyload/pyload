@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -188,10 +190,10 @@ class PluginManager(BaseManager):
                     # cache import
                     self.modules[(type_, name)] = module
                     return module
-                except Exception as e:
+                except Exception as exc:
                     self.pyload.log.error(
-                        self._('Error importing {0}: {1}').format(
-                            name, str(e)))
+                        self._('Error importing {0}').format(
+                            name), exc)
                     # self.pyload.print_exc()
 
     def load_class(self, type_, name):

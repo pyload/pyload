@@ -157,10 +157,11 @@ class PluginLoader(object):
             try:
                 attrs[m[0]] = ast.literal_eval(
                     m[-1].replace('self._(', '(').replace('_(', '('))
-            except Exception as e:
+            
+            except Exception as exc:
                 self.log_debug(
                     folder, name, 'Error when parsing: {0}'.format(m[-1]))
-                self.log.debug(str(e))
+                self.log.debug(exc)
 
             if not hasattr(Base, '__{0}__'.format(m[0])):
                 # TODO: remove type from all plugins, its not needed

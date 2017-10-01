@@ -54,7 +54,7 @@ if sys.version_info < (2, 7):
 
             """
             if len(args) > 1:
-                msg = 'expected at most 1 arguments, got {}'
+                msg = 'expected at most 1 arguments, got {0}'
                 raise TypeError(msg.format(len(args)))
             try:
                 self.__root
@@ -191,7 +191,7 @@ if sys.version_info < (2, 7):
             if len(args) > 2:
                 raise TypeError(
                     'update() takes at most 2 positional arguments '
-                    '({} given)'.format(len(args)))
+                    '({0} given)'.format(len(args)))
             elif not args:
                 raise TypeError('update() takes at least 1 argument (0 given)')
             self = args[0]

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
@@ -37,10 +39,10 @@ class RemoteManager(BaseManager):
                 backend.setup(host, port)
                 self.pyload.log.info(
                     self._('Starting {0}: {1}:{2}').format(b, host, port))
-            except Exception as e:
+            except Exception as exc:
                 self.pyload.log.error(
-                    self._('Failed loading backend {0} | {1}').format(
-                        b, str(e)))
+                    self._('Failed loading backend {0}').format(
+                        b), exc)
                 if self.pyload.debug:
                     print_exc()
             else:

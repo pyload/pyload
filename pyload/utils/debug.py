@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -39,8 +41,10 @@ def _format_dump(obj):
             continue
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
-        except Exception as e:
-            attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(str(e))
+            
+        except Exception as exc:
+            attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(exc)
+            
         dump.append((attr_name, attr_dump))
     return dump
 
@@ -79,9 +83,8 @@ def _format_framestack(frame=None, limit=None):
             for attr_name, value in _frame.f_locals.items():
                 try:
                     attr_dump = pprint.pformat(value)
-                except Exception as e:
-                    attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(
-                        str(e))
+                except Exception as exc:
+                    attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(exc)
                 frame_dump.append((attr_name, attr_dump))
             dump.append((frame_name, frame_dump))
             del _frame

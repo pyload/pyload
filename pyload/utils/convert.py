@@ -31,9 +31,9 @@ def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
             res = type(obj)(convert(i, *cvargs) for i in obj)
         else:
             res = obj
-    except Exception as e:
+    except Exception as exc:
         if callable(fallback):
-            fbargs = cvargs[:-1] + (e,)
+            fbargs = cvargs[:-1] + (exc,)
             return fallback(obj, *fbargs)
         raise
     return res

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 import io
@@ -293,10 +295,10 @@ class Hoster(Base):
                         'permission', 'group'))[2]
 
                     os.chown(location, uid, gid)
-                except Exception as e:
+                except Exception as exc:
                     self.pyload.log.warning(
                         self._('Setting User and Group failed: {0}').format(
-                            str(e)))
+                           exc))
 
         name = self.file.name
 
@@ -340,10 +342,10 @@ class Hoster(Base):
                     'permission', 'group'))[2]
 
                 os.chown(fs_filename, uid, gid)
-            except Exception as e:
+            except Exception as exc:
                 self.pyload.log.warning(
                     self._('Setting User and Group failed: {0}').format(
-                        str(e)))
+                       exc))
 
         self.last_download = fs_filename
         return self.last_download

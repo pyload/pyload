@@ -1,5 +1,5 @@
 Send2Trash
-autoupgrade-ng
+bcrypt
 configparser;python_version<"3.5"
 filetype
 future
@@ -9,7 +9,6 @@ portalocker
 psutil
 pycurl
 semver
-setproctitle
 setuptools>=0.6.39
 tld
 validators

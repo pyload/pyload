@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -22,10 +24,6 @@ try:
     import dbus
 except ImportError:
     dbus = None
-try:
-    import setproctitle
-except ImportError:
-    setproctitle = None
 try:
     import grp
 except ImportError:
@@ -53,12 +51,12 @@ def call_cmd(command, *args, **kwargs):
     try:
         sp = exec_cmd(command, *args, **kwargs)
 
-    except Exception as e:
+    except Exception as exc:
         if not ignore_errors:
             raise
         returncode = 1
         stdoutdata = ''
-        stderrdata = str(e).strip()
+        stderrdata = to_str(exc).strip()
     else:
         returncode = sp.returncode
         stdoutdata, stderrdata = map(str.strip, sp.communicate())
@@ -193,10 +191,6 @@ def set_console_title(value):
 def set_process_group(value):
     gid = grp.getgrnam(value)[2]
     os.setgid(gid)
-
-
-def set_process_name(value):
-    setproctitle.setproctitle(value)
 
 
 def set_process_user(value):

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -20,7 +22,7 @@ from pyload.utils.fs import availspace, fullpath, makedirs
 from pyload.utils.layer.safethreading import Event
 from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
-                                 set_process_name, set_process_user)
+                                 set_process_user)
 
 from pyload.__about__ import __package__, __version__, __version_info__
 from pyload.core.log import Logger
@@ -144,15 +146,15 @@ class Core(object):
             try:
                 group = self.config.get('permission', 'group')
                 set_process_group(group)
-            except Exception as e:
-                self.log.error(self._('Unable to change gid: %s'), str(e))
+            except Exception as exc:
+                self.log.error(self._('Unable to change gid'), exc)
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
                 set_process_user(user)
-            except Exception as e:
-                self.log.error(self._('Unable to change uid: %s'), str(e))
+            except Exception as exc:
+                self.log.error(self._('Unable to change uid'), exc)
 
     def set_language(self, lang):
         localedir = resource_filename(__package__, 'locale')
@@ -172,17 +174,13 @@ class Core(object):
             lang = default if code is None else code.lower().split('_', 1)[0]
         try:
             self.set_language(lang)
-        except Exception as e:
+        except Exception as exc:
             if lang == default:
                 raise
 
             self.log.warning(
-                self._(
-                    'Unable to load `%(lang)s` language, using default '
-                    '`%(default)s`: %(error)s',
-                ),
-                {'lang': lang, 'default': default, 'error': str(e)},
-            )
+                self._('Unable to load `{0}` language, using default `{1}`').format(lang, default),
+                exc)
             self.set_language(default)
 
     # def _setup_niceness(self):
@@ -256,8 +254,8 @@ class Core(object):
         except (Exit, KeyboardInterrupt, SystemExit):
             pass
 
-        except Exception as e:
-            self.log.critical(str(e))
+        except Exception as exc:
+            self.log.critical(exc)
             self.exit()
             raise
 

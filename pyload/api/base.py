@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 from builtins import object, str
@@ -323,7 +325,7 @@ statemap[DownloadState.Unfinished] = frozenset(
 
 
 def statestring(state):
-    return ','.join(str(x) for x in statemap[state])
+    return ','.join(map(to_str, statemap[state]))
 
 
 class Api(AbstractApi):

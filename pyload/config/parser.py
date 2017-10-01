@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -38,12 +40,12 @@ class ConfigOption(object):
 
     _convert_map = {
         InputType.NA: lambda x: x,
-        InputType.Str: lambda x: '' if x is None else str(x),
+        InputType.Str: lambda x: '' if x is None else to_str(x),
         InputType.Int: lambda x: 0 if x is None else int(x),
         InputType.File: lambda x: '' if x is None else fullpath(x),
         InputType.Folder:
             lambda x: '' if x is None else os.path.dirname(fullpath(x)),
-        InputType.Password: lambda x: '' if x is None else str(x),
+        InputType.Password: lambda x: '' if x is None else to_str(x),
         InputType.Bool:
             lambda x: parse.boolean(x) if isinstance(x, str) else bool(x),
         InputType.Float: lambda x: 0.0 if x is None else float(x),
@@ -51,14 +53,14 @@ class ConfigOption(object):
         InputType.Octal: lambda x: 0 if x is None else oct(x),
         InputType.Size:
             lambda x: 0 if x is None else (
-                -1 if str(x) == '-1' else parse.bytesize(x)),
+                -1 if to_str(x) == '-1' else parse.bytesize(x)),
         InputType.Address:
             lambda x: (None, None) if x is None else (
                 endpoint if isendpoint(x) else socket)(x),
         InputType.Bytes: lambda x: b"" if x is None else bytes(x),
         InputType.StrList:
             lambda l: [
-                str(x) for x in l] if isiterable(l) else parse.entries(l)
+               to_str(x) for x in l] if isiterable(l) else parse.entries(l)
     }
 
     def __init__(self, parser, value, label=None, desc=None,
@@ -78,8 +80,8 @@ class ConfigOption(object):
         self._set_info(label, desc)
 
     def _set_info(self, label, desc):
-        self.label = '' if label is None else str(label)
-        self.desc = '' if desc is None else str(desc)
+        self.label = '' if label is None else to_str(label)
+        self.desc = '' if desc is None else to_str(desc)
 
     def _set_type(self, input_type):
         if not input_type:
@@ -131,8 +133,8 @@ class ConfigSection(InscDict):
     def __init__(self, parser, config=None, label=None, desc=None):
         """Constructor."""
         self.parser = parser
-        self.label = '' if label is None else str(label)
-        self.desc = '' if desc is None else str(desc)
+        self.label = '' if label is None else to_str(label)
+        self.desc = '' if desc is None else to_str(desc)
         self.update(config or ())
 
     def _to_configentry(self, value):
@@ -255,12 +257,15 @@ class ConfigParser(ConfigSection):
     def _retrieve_fileconfig(self):
         try:
             return self.retrieve()
+            
         except VersionMismatchError:
             self.fp.close()
             os.rename(self.path, self.path + '.old')
             self.fp = io.open(self.path, mode='ab+')
-        except Exception as e:
-            self.log.error(str(e))
+            
+        except Exception as exc:
+            self.log.error(exc)
+            
         self.log.warning(
             'Unable to parse configuration from `{0}`'.format(self.path))
 

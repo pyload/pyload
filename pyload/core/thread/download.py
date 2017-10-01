@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -54,7 +56,7 @@ class DownloadThread(PluginThread):
 
     def _handle_retry(self, file, reason):
         self.pyload.log.info(
-            self._('Download restarted: {0} | {1}').format(file.name, reason))
+            self._('Download restarted: {0}').format(file.name), reason)
         self.queue.put(file)
 
     def _handle_notimplement(self, file):
@@ -80,7 +82,7 @@ class DownloadThread(PluginThread):
     def _handle_failed(self, file, errmsg):
         file.set_status('failed')
         self.pyload.log.warning(
-            self._('Download failed: {0} | {1}').format(file.name, errmsg))
+            self._('Download failed: {0}').format(file.name), errmsg)
         file.error = errmsg
 
         if self.pyload.debug:
@@ -103,7 +105,7 @@ class DownloadThread(PluginThread):
         else:
             file.set_status('failed')
             self.pyload.log.warning(
-                self._('Download failed: {0} | {1}').format(file.name, errmsg))
+                self._('Download failed: {0}').format(file.name), errmsg)
             file.error = errmsg
 
         self.pyload.adm.download_failed(file)
@@ -220,28 +222,28 @@ class DownloadThread(PluginThread):
             except Reconnect:
                 self._handle_reconnect(file)
                 continue
-            except Retry as e:
-                self._handle_retry(file, e.args[0])
+            except Retry as exc:
+                self._handle_retry(file, exc.args[0])
                 continue
-            except Fail as e:
-                self._handle_fail(file, e.args[0])
+            except Fail as exc:
+                self._handle_fail(file, exc.args[0])
                 continue
-            except pycurl.error as e:
+            except pycurl.error as exc:
                 errcode = None
-                errmsg = e.args
-                if len(e.args) == 2:
-                    errcode, errmsg = e.args
+                errmsg = exc.args
+                if len(exc.args) == 2:
+                    errcode, errmsg = exc.args
                 self._handle_error(file, errmsg, errcode)
                 self.clean(file)
                 continue
-            except Skip as e:
-                self._handle_skip(file, str(e))
+            except Skip as exc:
+                self._handle_skip(file,to_str(exc))
                 continue
-            except Exception as e:
-                if isinstance(e, ResponseException) and e.code == 500:
+            except Exception as exc:
+                if isinstance(exc, ResponseException) and exc.code == 500:
                     self._handle_tempoffline(file)
                 else:
-                    self._handle_failed(file, str(e))
+                    self._handle_failed(file, to_str(exc))
                 continue
             finally:
                 self._finalize(file)

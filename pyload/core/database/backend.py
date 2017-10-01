@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN, mkaay
 
 from __future__ import absolute_import, unicode_literals
@@ -99,15 +101,15 @@ class DatabaseJob(object):
     def process_job(self):
         try:
             self.result = self.func(*self.args, **self.kwgs)
-        except Exception as e:
+        except Exception as exc:
             print_exc()
             try:
                 print('Database Error @', self.func.__name__,
-                      self.args[1:], self.kwgs, str(e))
+                      self.args[1:], self.kwgs,to_str(exc))
             except Exception:
                 pass
 
-            self.exception = e
+            self.exception = exc
         finally:
             self.done.set()
 
@@ -173,7 +175,7 @@ class DatabaseBackend(Thread):
                 remove(self.VERSION_FILE)
                 shutil.move(self.DB_FILE, self.DB_FILE + '.bak')
                 with io.open(self.VERSION_FILE, mode='wb') as fp:
-                    fp.write(str(DB_VERSION))
+                    fp.write(to_str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
                 os.chmod(self.DB_FILE, 0o600)
@@ -185,8 +187,8 @@ class DatabaseBackend(Thread):
     def run(self):
         try:
             self.init()
-        except Exception as e:
-            self.error = e
+        except Exception as exc:
+            self.error = exc
         finally:
             self.__running.set()
 
@@ -214,7 +216,7 @@ class DatabaseBackend(Thread):
                 v = int(fp.read().strip())
         except IOError:
             with io.open(self.VERSION_FILE, mode='wb') as fp:
-                fp.write(str(DB_VERSION))
+                fp.write(to_str(DB_VERSION))
             return
         return v
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 from builtins import str
@@ -63,17 +65,19 @@ class AddonThread(PluginThread):
             try:
                 self.kwgs['thread'] = self
                 self.func(*self.args, **self.kwgs)
-            except TypeError as e:
+                
+            except TypeError as exc:
                 # dirty method to filter out exceptions
-                if "unexpected keyword argument 'thread'" not in e.args[0]:
+                if "unexpected keyword argument 'thread'" not in exc.args[0]:
                     raise
 
                 del self.kwgs['thread']
                 self.func(*self.args, **self.kwgs)
-        except Exception as e:
+                
+        except Exception as exc:
             if hasattr(self.func, 'im_self'):
                 addon = self.func.__self__
-                addon.log_error(self._('An Error occurred'), str(e))
+                addon.log_error(self._('An Error occurred'), exc)
                 if self.pyload.debug:
                     print_exc()
                     # self.debug_report(addon.__name__, plugin=addon)

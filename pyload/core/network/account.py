@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.utils.convert import to_str
+
 from __future__ import absolute_import, unicode_literals
 
 import time
@@ -83,8 +85,9 @@ class Account(Base):
 
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
-        except Exception as e:
-            self.log_error(self._('Invalid config: {0}').format(str(e)))
+            
+        except Exception as exc:
+            self.log_error(self._('Invalid config'), exc)
             self.config_data = {}
 
         self.init()
@@ -164,14 +167,13 @@ class Account(Base):
             self.valid = True
         except WrongPassword:
             self.log_warning(
-                self._('Could not login with account {0} | {1}').format(
-                    self.loginname, self._('Wrong Password')))
+                self._('Could not login with account {0}').format(
+                    self.loginname, self._('Wrong Password'))
             self.valid = False
 
-        except Exception as e:
+        except Exception as exc:
             self.log_warning(
-                self._('Could not login with account {0} | {1}').format(
-                    self.loginname, str(e)))
+                self._('Could not login with account {0}').format(self.loginname), exc)
             self.valid = False
             # self.pyload.print_exc()
 
@@ -241,9 +243,9 @@ class Account(Base):
                         self.log_debug(
                             'Deprecated .load_account_info(...) signature, omit user argument')
                         infos = self.load_account_info(self.loginname, req)
-                except Exception as e:
-                    infos = {'error': str(e)}
-                    self.log_error(self._('Error: {0}').format(str(e)))
+                except Exception as exc:
+                    infos = {'error': to_str(exc)}
+                    self.log_error(self._('Error: {0}'), exc)
 
             self.restore_defaults()  # reset to initial state
             if isinstance(infos, dict):  # copy result from dict to class

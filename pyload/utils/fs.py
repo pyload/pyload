@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -224,9 +226,10 @@ def mkfile(filename, size=None):
 def makedirs(dirname, mode=0o777, exist_ok=False):
     try:
         os.makedirs(dirname, mode)
-    except OSError as e:
+        
+    except OSError as exc:
         if not os.path.isdir(dirname) or not exist_ok:
-            raise OSError(e)
+            raise OSError(exc)
 
 
 def makefile(filepath, mode=0o700, size=None, exist_ok=False):
@@ -234,9 +237,10 @@ def makefile(filepath, mode=0o700, size=None, exist_ok=False):
     makedirs(dirname, mode, exist_ok=True)
     try:
         mkfile(filepath, size)
-    except OSError as e:
+        
+    except OSError as exc:
         if not os.path.isfile(filepath) or not exist_ok:
-            raise OSError(e)
+            raise OSError(exc)
 
 
 def _moverc(src, dst, overwrite):
@@ -312,7 +316,6 @@ def cleanpy(dirname, recursive=True):
 
 
 def remove(path, trash=False, ignore_errors=False):
-    trash = True  #: testing
     if not os.path.exists(path):
         if ignore_errors:
             return

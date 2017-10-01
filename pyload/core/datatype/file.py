@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -27,13 +29,13 @@ def trycatch(callback):
         def new(self, *args, **kwargs):
             try:
                 return func(self, *args, **kwargs)
-            except Exception as e:
-                msg = 'Error executing `{0}` | {1}'.format(
-                    func.__name__, str(e))
-                self.pyload.log.debug(msg)
+            except Exception as exc:
+                msg = 'Error executing `{0}`'.format(
+                    func.__name__)
+                self.pyload.log.debug(msg, exc)
                 if self.pyload.debug:
                     print_traceback()
-                return callback(e)
+                return callback(exc)
         return new
     return wrapper
 

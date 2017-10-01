@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -185,7 +187,7 @@ class CurlRequest(Request):
             self.setopt(pycurl.POST, 0)
 
         if referer and self.last_url:
-            self.headers['Referer'] = str(self.last_url)
+            self.headers['Referer'] = to_str(self.last_url)
         else:
             self.headers['Referer'] = ''
 

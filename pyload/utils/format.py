@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -23,10 +25,10 @@ except ImportError:
 
 def attributes(obj, ignore=None):
     if ignore is None:
-        attrs = (str(x) for x in obj)
+        attrs = tuple(map(to_str, obj))
     else:
         ignored = ignore if isiterable(ignore) else (ignore,)
-        attrs = (str(x) for x in obj if x not in ignored)
+        attrs = (to_str(x) for x in obj if x not in ignored)
     return attrs
 
 

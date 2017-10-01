@@ -3,5 +3,5 @@
 
 from __future__ import absolute_import
 
-from pyload.core import database, datatype, manager, network, thread
+from pyload.core import database, datatype, thread, manager, network
 from pyload.core.base import Core, Restart, Exit

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 #
 # Monkey patch bug in python 2.6 and earlier
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,
@@ -22,8 +24,9 @@ if sys.version_info < (2, 7) and os.name != 'nt':
         while True:
             try:
                 return func(*args)
-            except OSError as e:
-                if e.errno == errno.EINTR:
+                
+            except OSError as exc:
+                if exc.errno == errno.EINTR:
                     continue
                 raise
 
@@ -37,14 +40,17 @@ if sys.version_info < (2, 7) and os.name != 'nt':
         if self.returncode is None:
             try:
                 pid, sts = _eintr_retry_call(os.waitpid, self.pid, 0)
-            except OSError as e:
-                if e.errno != errno.ECHILD:
+                
+            except OSError as exc:
+                if exc.errno != errno.ECHILD:
                     raise Exception()
                 # This happens if SIGCLD is set to be ignored or waiting
                 # For child processes has otherwise been disabled for our
                 # process.  This child is dead, we can't get the status.
                 sts = 0
+                
             self._handle_exitstatus(sts)
+            
         return self.returncode
 
     Popen.wait = wait

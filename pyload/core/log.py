@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -10,6 +12,7 @@ import os
 import sys
 
 from pyload.utils.check import ismodule
+from pyload.utils.convert import to_str
 from pyload.utils.fs import makedirs
 
 from pyload.__about__ import __package__
@@ -50,14 +53,14 @@ class Logger(object):
         if core.config.get('log', 'logfile'):
             self._init_filelogger()
 
-    # TODO: Unicode encoding
     def _pack_msg(self, msg, messages, label=None, separator=' | '):
         if self.verbose:
             messages.insert(msg)
-            text = separator.join(messages)
+            body = separator.join(map(to_str, messages))
         else:
-            text = msg
-        return '{0} {1}'.format(label or '', text)
+            body = to_str(msg)
+        header = to_str(label) if label else ''
+        return '{0} {1}'.format(header, body)
 
     def echo(self, level, msg, messages, **options):
         log = getattr(self.logger, level)

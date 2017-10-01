@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -65,9 +67,9 @@ class AddonManager(BaseManager):
         try:
             func = getattr(plugin, f)
             return func(*args)
-        except Exception as e:
+        except Exception as exc:
             plugin.log_error(
-                self._('Error when executing {0}'.format(f)), str(e))
+                self._('Error when executing {0}'.format(f)), exc)
             # self.pyload.print_exc()
 
     def invoke(self, plugin, func_name, args):
@@ -80,8 +82,9 @@ class AddonManager(BaseManager):
         try:
             func = getattr(self.plugins[plugin].instances[0], func_name)
             return func(*args)
-        except Exception as e:
-            raise ServiceException(str(e))
+            
+        except Exception as exc:
+            raise ServiceException(exc)
 
     @lock
     def create_index(self):
