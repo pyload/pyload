@@ -8,8 +8,8 @@ from traceback import print_exc
 
 from future import standard_library
 
-from ..datatype.base import ProgressInfo, ProgressType
-from .plugin import PluginThread
+from pyload.core.datatype.base import ProgressInfo, ProgressType
+from pyload.core.thread.plugin import PluginThread
 
 standard_library.install_aliases()
 

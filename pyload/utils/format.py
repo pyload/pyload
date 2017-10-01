@@ -9,8 +9,8 @@ from builtins import int, str
 
 from future import standard_library
 
-from .check import isiterable
-from .fs import fullpath
+from pyload.utils.check import isiterable
+from pyload.utils.fs import fullpath
 
 standard_library.install_aliases()
 

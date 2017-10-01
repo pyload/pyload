@@ -13,7 +13,7 @@ import psutil
 import send2trash
 from future import standard_library
 
-from .layer.legacy import hashlib_ as hashlib
+from pyload.utils.layer.legacy import hashlib
 
 standard_library.install_aliases()
 
@@ -106,7 +106,7 @@ def filetype(filename):
     return guess_mime(filename)
 
 
-def fsdecode(path):
+def decode(path):
     try:
         upath = unicode(path)
     except NameError:

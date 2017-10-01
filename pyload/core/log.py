@@ -12,7 +12,7 @@ import sys
 from pyload.utils.check import ismodule
 from pyload.utils.fs import makedirs
 
-from ..__about__ import __package__
+from pyload.__about__ import __package__
 
 try:
     import colorlog

@@ -3,10 +3,10 @@
 
 from __future__ import absolute_import
 
-from .backend import DatabaseBackend, DatabaseMethods, async, inner, queue
-from .account import AccountMethods
-from .config import ConfigMethods
-from .file import FileMethods
-from .stat import StatisticMethods
-from .storage import StorageMethods
-from .user import UserMethods
+from pyload.core.database.backend import DatabaseBackend, DatabaseMethods, async, inner, queue
+from pyload.core.database.account import AccountMethods
+from pyload.core.database.config import ConfigMethods
+from pyload.core.database.file import FileMethods
+from pyload.core.database.stat import StatisticMethods
+from pyload.core.database.storage import StorageMethods
+from pyload.core.database.user import UserMethods

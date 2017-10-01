@@ -6,40 +6,32 @@ from __future__ import absolute_import, unicode_literals
 import random
 from builtins import range
 from hashlib import sha1
-from string import digits, letters
 
+import bcrypt
 from future import standard_library
 
-from ..datatype.user import UserData
-from .backend import DatabaseMethods, async, queue
+from pyload.core.datatype.user import UserData
+from pyload.core.database.backend import DatabaseMethods, async, queue
+from pyload.utils.convert import to_bytes
 
 standard_library.install_aliases()
-
-
-alphnum = letters + digits
-
-
-def random_salt():
-    return ''.join(random.choice(alphnum) for _i in range(0, 5))
 
 
 class UserMethods(DatabaseMethods):
 
     @queue
     def add_user(self, user, password, role, permission):
-        salt = random_salt()
-        h = sha1(salt + password)
-        password = salt + h.hexdigest()
+        hashed_pw = bcrypt.hashpw(to_bytes(password), bcrypt.gensalt())
 
         self.c.execute('SELECT name FROM users WHERE name=?', (user,))
         if self.c.fetchone() is not None:
             self.c.execute(
                 'UPDATE users SET password=?, role=?, permission=? '
-                'WHERE name=?', (password, role, permission, user))
+                'WHERE name=?', (hashed_pw, role, permission, user))
         else:
             self.c.execute(
                 'INSERT INTO users (name, role, permission, password) '
-                'VALUES (?, ?, ?, ?)', (user, role, permission, password))
+                'VALUES (?, ?, ?, ?)', (user, role, permission, hashed_pw))
 
     @queue
     def add_debug_user(self, uid):
@@ -47,7 +39,7 @@ class UserMethods(DatabaseMethods):
         try:
             self.c.execute(
                 'INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
-                (uid, 'debugUser', random_salt()))
+                (uid, 'debugUser', bcrypt.gensalt()))
         except Exception:
             pass
 
@@ -112,17 +104,12 @@ class UserMethods(DatabaseMethods):
         r = self.c.fetchone()
         if not r:
             return False
-
-        salt = r[2][:5]
-        pw = r[2][5:]
-        h = sha1(salt + oldpw)
-        if h.hexdigest() == pw:
-            salt = random_salt()
-            h = sha1(salt + newpw)
-            password = salt + h.hexdigest()
-
+            
+        hashed_pw = r[2]
+        if bcrypt.checkpw(to_bytes(oldpw), hashed_pw):
+            new_hpw = bcrypt.hashpw(to_bytes(newpw), bcrypt.gensalt())
             self.c.execute(
-                'UPDATE users SET password=? WHERE name=?', (password, user))
+                'UPDATE users SET password=? WHERE name=?', (new_hpw, user))
             return True
 
         return False

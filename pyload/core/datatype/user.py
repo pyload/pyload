@@ -9,7 +9,7 @@ from future import standard_library
 
 from pyload.utils.check import bitset
 
-from .base import BaseObject, ExceptionObject, Permission
+from pyload.core.datatype.base import BaseObject, ExceptionObject, Permission
 
 standard_library.install_aliases()
 

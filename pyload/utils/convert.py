@@ -7,7 +7,7 @@ from builtins import bytes, dict, int, str
 
 from future import standard_library
 
-from .check import isiterable, ismapping
+from pyload.utils.check import isiterable, ismapping
 
 standard_library.install_aliases()
 
@@ -77,74 +77,42 @@ def size(value, in_unit, out_unit):
 
         return integer + decimal
 
-
-def to_bool(value, default=None, exc=Exception):
-    """Convert value to boolean or return default."""
+        
+def to_bytes(obj, encoding='utf-8', errors='strict'):
     try:
-        return bool(value)
-    except exc:
-        return default
-
-
-def to_bytes(value, default=None, exc=Exception):
-    """Convert value to bytes or return default."""
-    try:
+        return obj.encode(encoding, errors)
+    except AttributeError:
         try:
-            return value.encode('utf-8')
-        except Exception:
-            return bytes(value)
-    except exc:
-        return default
+            return bytes(obj)
+        except NameError:
+            return str(obj)
+            
+            
+def to_str(obj, encoding='utf-8', errors='strict'):
+    try:
+        return obj.decode(encoding, errors)
+    except AttributeError:
+        try:
+            return unicode(obj)
+        except NameError:
+            return str(obj)
+        
 
-
-def to_dict(obj, default=None, exc=Exception):
+def to_dict(obj):
     """Convert object to dictionary or return default."""
-    try:
-        return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
-    except exc:
-        return default
+    return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
+    
 
-
-def to_float(value, default=None, exc=Exception):
-    """Convert value to fractional or return default."""
-    try:
-        return float(value)
-    except exc:
-        return default
-
-
-def to_int(value, default=None, exc=Exception):
-    """Convert value to integer or return default."""
-    try:
-        return int(value)
-    except exc:
-        return default
-
-
-def to_list(value, default=None, exc=Exception):
+def to_list(obj):
     """Convert value to a list with value inside or return default."""
-    try:
-        if isinstance(value, list):
-            res = value
-        elif ismapping(value):
-            res = list(value.items())
-        elif isiterable(value, strict=False):
-            res = list(value)
-        elif value is not None:
-            res = [value]
-        else:
-            res = list(value)
-    except exc:
-        return default
-    return res
-
-
-def to_str(value, default=None, exc=Exception):
-    """Convert value to unicode or return default."""
-    try:
-        try:
-            return value.decode('utf-8')
-        except Exception:
-            return str(value)
-    except exc:
-        return default
+    if isinstance(obj, list):
+        res = obj
+    elif ismapping(obj):
+        res = list(obj.items())
+    elif isiterable(obj, strict=False):
+        res = list(obj)
+    elif obj is not None:
+        res = [obj]
+    else:
+        res = list(obj)
+        

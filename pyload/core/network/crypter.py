@@ -13,7 +13,7 @@ from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
 from pyload.utils.fs import makedirs, remove
 
-from .base import Base, Fail, Retry
+from pyload.core.network.base import Base, Fail, Retry
 
 standard_library.install_aliases()
 

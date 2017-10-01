@@ -6,10 +6,10 @@ from future import standard_library
 
 from pyload.utils.purge import uniquify
 
-from ..core.datatype.base import DownloadState, Permission
-from ..core.datatype.file import FileDoesNotExist
-from ..core.datatype.package import PackageDoesNotExist, PackageStatus
-from .base import BaseApi, requireperm
+from pyload.core.datatype.base import DownloadState, Permission
+from pyload.core.datatype.file import FileDoesNotExist
+from pyload.core.datatype.package import PackageDoesNotExist, PackageStatus
+from pyload.api.base import BaseApi, requireperm
 
 standard_library.install_aliases()
 

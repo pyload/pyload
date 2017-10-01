@@ -131,7 +131,7 @@ class Base(object):
 
         strings = []
         for obj in args:
-            strings.append(to_str(obj, obj))
+            strings.append(to_str(obj))
 
         getattr(self.log, level)('{0}: {1}'.format(
             self.__name__, sep.join(strings)))

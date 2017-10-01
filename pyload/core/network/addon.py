@@ -9,7 +9,7 @@ from future import standard_library
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
 
-from .base import Base
+from pyload.core.network.base import Base
 
 standard_library.install_aliases()
 

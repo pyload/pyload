@@ -13,8 +13,8 @@ from builtins import str
 
 from future import standard_library
 
-from .check import proprieties
-from .fs import makefile
+from pyload.utils.check import proprieties
+from pyload.utils.fs import makefile
 
 standard_library.install_aliases()
 

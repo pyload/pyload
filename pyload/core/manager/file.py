@@ -11,11 +11,11 @@ from future import standard_library
 
 from pyload.utils.struct.lock import RWLock, lock
 
-from ..datatype.base import DownloadStatus, TreeCollection
-from ..datatype.file import File
-from ..datatype.package import (Package, PackageDoesNotExist, PackageStatus,
+from pyload.core.datatype.base import DownloadStatus, TreeCollection
+from pyload.core.datatype.file import File
+from pyload.core.datatype.package import (Package, PackageDoesNotExist, PackageStatus,
                                 RootPackage)
-from .base import BaseManager
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 

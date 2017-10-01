@@ -4,8 +4,8 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ..core.datatype.base import Permission
-from .base import BaseApi, requireperm
+from pyload.core.datatype.base import Permission
+from pyload.api.base import BaseApi, requireperm
 
 standard_library.install_aliases()
 

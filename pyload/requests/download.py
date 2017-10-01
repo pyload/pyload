@@ -8,7 +8,7 @@ from future import standard_library
 
 from pyload.utils.layer.safethreading import Event
 
-from .request import Request
+from pyload.requests.request import Request
 
 standard_library.install_aliases()
 

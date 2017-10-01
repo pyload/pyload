@@ -9,7 +9,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from .base import BaseObject, InputType
+from pyload.core.datatype.base import BaseObject, InputType
 
 standard_library.install_aliases()
 

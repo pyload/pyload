@@ -12,8 +12,8 @@ import requests
 import validators
 from future import standard_library
 
-from . import format
-from .convert import splitaddress
+from pyload.utils.web import format
+from pyload.utils.web.convert import splitaddress
 
 standard_library.install_aliases()
 
@@ -101,7 +101,7 @@ def isresource(url, *args, **kwargs):
     if content:
         mime, _, _ = content.rpartition('charset=')
     else:
-        from . import parse
+        from pyload.utils.web import parse
 
         name = parse.name(url)
         _, ext = os.path.splitext(name)

@@ -6,7 +6,7 @@ import time
 
 from future import standard_library
 
-from .base import BaseObject
+from pyload.core.datatype.base import BaseObject
 
 standard_library.install_aliases()
 

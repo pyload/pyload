@@ -3,4 +3,4 @@
 
 from __future__ import absolute_import
 
-from . import legacy
+from pyload.utils.layer import legacy

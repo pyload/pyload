@@ -12,10 +12,10 @@ from urllib.parse import quote, urlencode
 from future import standard_library
 
 import pycurl
-from pyload.utils import convert
+from pyload.utils.convert import to_bytes
 
-from ..cookie import CookieJar
-from ..request import Abort, Request, ResponseException
+from pyload.requests.cookie import CookieJar
+from pyload.requests.request import Abort, Request, ResponseException
 
 standard_library.install_aliases()
 
@@ -26,13 +26,13 @@ BAD_HEADERS = list(range(400, 418)) + list(range(500, 506))
 
 
 def safequote(url):
-    return quote(convert.to_bytes(url, url), safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(to_bytes(url), safe="%/:=&?~#+!$,;'@()*[]")
 
 
 def safeurlencode(data):
     data = dict(data)
     return urlencode(
-        dict((convert.to_bytes(x, x), convert.to_bytes(y, y))
+        dict((to_bytes(x), to_bytes(y))
              for x, y in data.items()))
 
 
@@ -75,7 +75,7 @@ class CurlRequest(Request):
             self.init_options(self.config)
 
     def setopt(self, option, value):
-        self.c.setopt(option, convert.to_bytes(value, value))
+        self.c.setopt(option, to_bytes(value))
 
     def unsetopt(self, option):
         self.c.unsetopt(option)
@@ -172,13 +172,13 @@ class CurlRequest(Request):
             self.setopt(pycurl.POST, 1)
             if not multipart:
                 if isinstance(post, str):
-                    post = convert.to_bytes(post, post)
+                    post = to_bytes(post)
                 elif not isinstance(post, bytes):
                     post = safeurlencode(post)
 
                 self.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, convert.to_bytes(y, y))
+                post = [(x, to_bytes(y))
                         for x, y in post.items()]
                 self.setopt(pycurl.HTTPPOST, post)
         else:

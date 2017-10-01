@@ -14,9 +14,9 @@ from pyload.utils.struct.lock import lock
 from pyload.utils.time import compare
 
 # from pyload.config.convert import from_string, to_configdata
-from ..datatype import AccountInfo, ConfigItem
-from .base import Base
-from .cookie import CookieJar
+from pyload.core.datatype import AccountInfo, ConfigItem
+from pyload.core.network.base import Base
+from pyload.core.network.cookie import CookieJar
 
 standard_library.install_aliases()
 
@@ -98,7 +98,7 @@ class Account(Base):
         info.config = [
             ConfigItem(
                 name, item.label, item.description, item.input,
-                to_str(self.get_config(name), self.get_config(name)))
+                to_str(self.get_config(name)))
             for name, item in self.config_data.items()]
         return info
 

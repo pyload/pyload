@@ -3,17 +3,17 @@
 
 from __future__ import absolute_import
 
-from .base import AbstractApi, Api, BaseApi, requireperm, statestring
-from .account import AccountApi
-from .addon import AddonApi
-from .config import ConfigApi
-from .core import CoreApi
-from .download import DownloadApi
-from .exchange import UserExchangeApi
-from .file import FileApi
-from .predownload import PreDownloadApi
-from .stat import StatisticsApi
-from .user import UserApi
+from pyload.api.base import AbstractApi, Api, BaseApi, requireperm, statestring
+from pyload.api.account import AccountApi
+from pyload.api.addon import AddonApi
+from pyload.api.config import ConfigApi
+from pyload.api.core import CoreApi
+from pyload.api.download import DownloadApi
+from pyload.api.exchange import UserExchangeApi
+from pyload.api.file import FileApi
+from pyload.api.predownload import PreDownloadApi
+from pyload.api.stat import StatisticsApi
+from pyload.api.user import UserApi
 
 # Populate Api
 Api.EXTEND = True

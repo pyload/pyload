@@ -30,9 +30,9 @@ from pkg_resources import resource_filename
 
 import Image
 from pyload.utils.fs import remove
-from pyload.utils.layer.legacy.subprocess_ import PIPE, Popen
+from pyload.utils.layer.legacy.subprocess import PIPE, Popen
 
-from ...__about__ import __package_name__
+from pyload.__about__ import __package__
 
 standard_library.install_aliases()
 
@@ -88,7 +88,7 @@ class OCR(object):
 
         if os.name == 'nt':
             tessparams = [resource_filename(
-                __package_name__, 'tesseract/tesseract.exe')]
+                __package__, 'tesseract/tesseract.exe')]
         else:
             tessparams = ['tesseract']
 

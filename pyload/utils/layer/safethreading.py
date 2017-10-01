@@ -11,6 +11,6 @@ standard_library.install_aliases()
 
 
 try:
-    pass
+    from threading import *
 except ImportError:
-    pass
+    from dummy_threading import *

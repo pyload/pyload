@@ -11,4 +11,4 @@
 
 from __future__ import absolute_import
 
-from . import layer, struct, web
+from pyload.utils import layer, struct, web

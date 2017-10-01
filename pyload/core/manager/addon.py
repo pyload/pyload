@@ -12,14 +12,14 @@ from types import MethodType
 from _thread import start_new_thread
 from future import standard_library
 
-from pyload.utils.layer.legacy.collections_ import namedtuple
+from pyload.utils.layer.legacy.collections import namedtuple
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
 
-from ..datatype.base import (AddonInfo, AddonService, ServiceDoesNotExist,
+from pyload.core.datatype.base import (AddonInfo, AddonService, ServiceDoesNotExist,
                              ServiceException)
-from ..thread import AddonThread
-from .base import BaseManager
+from pyload.core.thread import AddonThread
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 

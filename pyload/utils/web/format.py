@@ -9,7 +9,7 @@ from builtins import str
 
 from future import standard_library
 
-from . import purge
+from pyload.utils.web import purge
 
 standard_library.install_aliases()
 

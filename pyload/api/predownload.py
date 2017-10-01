@@ -13,9 +13,9 @@ from future import standard_library
 from pyload.utils import parse
 from pyload.utils.purge import uniquify
 
-from ..core.datatype.base import DownloadStatus, LinkStatus, Permission
-from ..core.datatype.check import OnlineCheck
-from .base import BaseApi, requireperm
+from pyload.core.datatype.base import DownloadStatus, LinkStatus, Permission
+from pyload.core.datatype.check import OnlineCheck
+from pyload.api.base import BaseApi, requireperm
 
 standard_library.install_aliases()
 

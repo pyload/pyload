@@ -7,7 +7,7 @@ from builtins import object
 
 from future import standard_library
 
-from .backend import DatabaseBackend, queue
+from pyload.core.database.backend import DatabaseBackend, queue
 
 standard_library.install_aliases()
 

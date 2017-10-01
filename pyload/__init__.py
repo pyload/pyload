@@ -27,14 +27,14 @@ builtins.TMPDIR = tempfile.gettempdir()
 # TODO: Remove
 builtins.ADDONMANAGER = None
 
-# from .__about__ import __package_name__
+# from pyload.__about__ import __package__
 # from pkg_resources import resource_filename
 # from pyload.utils.misc import install_translation
 
 locale.setlocale(locale.LC_ALL, '')
-# install_translation('core', resource_filename(__package_name__, 'locale'))
+# install_translation('core', resource_filename(__package__, 'locale'))
 
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
-from . import core, config, requests, utils, api
+from pyload import core, config, requests, utils, api

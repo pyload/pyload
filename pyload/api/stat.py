@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from .base import BaseApi
+from pyload.api.base import BaseApi
 
 standard_library.install_aliases()
 

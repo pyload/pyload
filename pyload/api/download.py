@@ -8,9 +8,9 @@ from builtins import str
 
 from future import standard_library
 
-from ..core.datatype.base import Permission
-from ..core.datatype.user import Role
-from .base import BaseApi, requireperm
+from pyload.core.datatype.base import Permission
+from pyload.core.datatype.user import Role
+from pyload.api.base import BaseApi, requireperm
 
 standard_library.install_aliases()
 

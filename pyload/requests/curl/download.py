@@ -17,12 +17,12 @@ import pycurl
 from pyload.utils import purge
 from pyload.utils.fs import fullpath, remove
 
-from ..chunk import ChunkInfo
-from ..cookie import CookieJar
-from ..download import DownloadRequest
-from ..request import Abort, ResponseException
-from ..types import Connection
-from .chunk import CurlChunk
+from pyload.requests.chunk import ChunkInfo
+from pyload.requests.cookie import CookieJar
+from pyload.requests.download import DownloadRequest
+from pyload.requests.request import Abort, ResponseException
+from pyload.requests.types import Connection
+from pyload.requests.curl.chunk import CurlChunk
 
 standard_library.install_aliases()
 

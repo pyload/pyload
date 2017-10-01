@@ -7,7 +7,7 @@ from builtins import super
 
 from future import standard_library
 
-from ..layer.legacy.collections_ import Mapping, MutableMapping
+from pyload.utils.layer.legacy.collections import Mapping, MutableMapping
 
 standard_library.install_aliases()
 

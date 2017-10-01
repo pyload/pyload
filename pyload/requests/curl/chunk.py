@@ -16,7 +16,7 @@ import pycurl
 from pyload.utils import purge
 from pyload.utils.struct import HeaderDict
 
-from .request import CurlRequest
+from pyload.requests.curl.request import CurlRequest
 
 standard_library.install_aliases()
 

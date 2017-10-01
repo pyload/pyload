@@ -3,10 +3,10 @@
 
 from __future__ import absolute_import
 
-from .base import *
-from .check import OnlineCheck
-from .file import File, FileDoesNotExist, FileInfo, FileStatus
-from .package import (Package, PackageDoesNotExist, PackageInfo, PackageStats,
+from pyload.core.datatype.base import *
+from pyload.core.datatype.check import OnlineCheck
+from pyload.core.datatype.file import File, FileDoesNotExist, FileInfo, FileStatus
+from pyload.core.datatype.package import (Package, PackageDoesNotExist, PackageInfo, PackageStats,
                       PackageStatus, RootPackage)
-from .task import Interaction, InteractionTask
-from .user import Role, User, UserData, UserDoesNotExist
+from pyload.core.datatype.task import Interaction, InteractionTask
+from pyload.core.datatype.user import Role, User, UserData, UserDoesNotExist

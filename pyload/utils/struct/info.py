@@ -7,8 +7,8 @@ from builtins import dict
 
 from future import standard_library
 
-from ..layer.legacy.collections_ import MutableMapping
-from .base import InscDict
+from pyload.utils.layer.legacy.collections import MutableMapping
+from pyload.utils.struct.base import InscDict
 
 standard_library.install_aliases()
 

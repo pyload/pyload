@@ -8,7 +8,7 @@ from builtins import map, range
 
 from future import standard_library
 
-from .layer.legacy.collections_ import Iterable, Mapping
+from pyload.utils.layer.legacy.collections import Iterable, Mapping
 
 standard_library.install_aliases()
 

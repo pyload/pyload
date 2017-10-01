@@ -11,9 +11,9 @@ from pyload.utils import parse
 from pyload.utils.check import hasmethod
 from pyload.utils.misc import accumulate
 
-from ..datatype.base import LinkStatus, ProgressInfo, ProgressType
-from .decrypter import DecrypterThread
-from .plugin import PluginThread
+from pyload.core.datatype.base import LinkStatus, ProgressInfo, ProgressType
+from pyload.core.thread.decrypter import DecrypterThread
+from pyload.core.thread.plugin import PluginThread
 
 standard_library.install_aliases()
 

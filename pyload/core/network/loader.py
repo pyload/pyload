@@ -14,9 +14,9 @@ from builtins import object, range, str
 from future import standard_library
 
 from pyload.utils.fs import fullpath, makefile
-from pyload.utils.layer.legacy.collections_ import defaultdict, namedtuple
+from pyload.utils.layer.legacy.collections import defaultdict, namedtuple
 
-from .base import Base
+from pyload.core.network.base import Base
 
 standard_library.install_aliases()
 

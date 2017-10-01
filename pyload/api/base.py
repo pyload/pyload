@@ -7,8 +7,8 @@ from types import MethodType
 
 from future import standard_library
 
-from ..core.datatype.base import DownloadState, DownloadStatus, Permission
-from ..core.datatype.user import User
+from pyload.core.datatype.base import DownloadState, DownloadStatus, Permission
+from pyload.core.datatype.user import User
 
 standard_library.install_aliases()
 
@@ -21,8 +21,8 @@ class BaseApi(AbstractApi):
 
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
-        from ..core import Core
-        from ..core.datatype.user import User
+        from pyload.core import Core
+        from pyload.core.datatype.user import User
         assert isinstance(core, Core)
         assert issubclass(BaseApi, AbstractApi)
         self.pyload = core

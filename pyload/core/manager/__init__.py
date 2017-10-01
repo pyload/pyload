@@ -3,13 +3,13 @@
 
 from __future__ import absolute_import
 
-from .plugin import PluginManager
-from .account import AccountManager
-from .addon import AddonManager
-from .base import BaseManager
-from .config import ConfigManager
-from .event import EventManager
-from .exchange import ExchangeManager
-from .file import FileManager
-from .info import InfoManager
-from .transfer import TransferManager
+from pyload.core.manager.plugin import PluginManager
+from pyload.core.manager.account import AccountManager
+from pyload.core.manager.addon import AddonManager
+from pyload.core.manager.base import BaseManager
+from pyload.core.manager.config import ConfigManager
+from pyload.core.manager.event import EventManager
+from pyload.core.manager.exchange import ExchangeManager
+from pyload.core.manager.file import FileManager
+from pyload.core.manager.info import InfoManager
+from pyload.core.manager.transfer import TransferManager

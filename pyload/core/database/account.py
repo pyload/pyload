@@ -4,8 +4,8 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ..datatype.base import AccountInfo
-from .backend import DatabaseMethods, async, queue
+from pyload.core.datatype.base import AccountInfo
+from pyload.core.database.backend import DatabaseMethods, async, queue
 
 standard_library.install_aliases()
 

@@ -11,9 +11,9 @@ from builtins import map, str
 import psutil
 from future import standard_library
 
-from . import convert
-from .check import isiterable
-from .layer.legacy.subprocess_ import PIPE, Popen
+from pyload.utils import convert
+from pyload.utils.check import isiterable
+from pyload.utils.layer.legacy.subprocess import PIPE, Popen
 
 standard_library.install_aliases()
 
@@ -39,7 +39,7 @@ except ImportError:
 # TODO: Recheck...
 def exec_cmd(command, *args, **kwargs):
     cmd = shlex.split(command)
-    cmd.extend(convert.to_bytes(x, x) for x in args)
+    cmd.extend(map(convert.to_bytes, args))
     xargs = {'bufsize': -1,
              'stdout': PIPE,
              'stderr': PIPE}
@@ -182,7 +182,7 @@ def set_console_icon(iconpath):
 
 
 def set_console_title(value):
-    title = convert.to_bytes(value, value)
+    title = convert.to_bytes(value)
     if os.name == 'nt':
         import ctypes
         ctypes.windll.kernel32.SetConsoleTitleA(title)

@@ -9,7 +9,7 @@ from builtins import map
 
 from future import standard_library
 
-from .check import ismapping
+from pyload.utils.check import ismapping
 
 standard_library.install_aliases()
 

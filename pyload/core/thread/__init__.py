@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import
 
-from .plugin import PluginThread
-from .addon import AddonThread
-from .decrypter import DecrypterThread
-from .download import DownloadThread
-from .info import InfoThread
+from pyload.core.thread.plugin import PluginThread
+from pyload.core.thread.addon import AddonThread
+from pyload.core.thread.decrypter import DecrypterThread
+from pyload.core.thread.download import DownloadThread
+from pyload.core.thread.info import InfoThread

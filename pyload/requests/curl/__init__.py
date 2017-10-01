@@ -3,6 +3,6 @@
 
 from __future__ import absolute_import
 
-from .chunk import CurlChunk
-from .download import CurlDownload
-from .request import CurlRequest
+from pyload.requests.curl.chunk import CurlChunk
+from pyload.requests.curl.download import CurlDownload
+from pyload.requests.curl.request import CurlRequest

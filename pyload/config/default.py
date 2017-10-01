@@ -6,7 +6,7 @@ from builtins import range
 
 from future import standard_library
 
-from .types import InputType
+from pyload.config.types import InputType
 
 standard_library.install_aliases()
 

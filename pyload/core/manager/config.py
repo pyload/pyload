@@ -8,9 +8,9 @@ from future import standard_library
 
 from pyload.config import ConfigParser
 # from pyload.config.convert import from_string
-from pyload.utils.layer.legacy.collections_ import OrderedDict
+from pyload.utils.layer.legacy.collections import OrderedDict
 
-from ..datatype.base import InvalidConfigSection
+from pyload.core.datatype.base import InvalidConfigSection
 
 standard_library.install_aliases()
 

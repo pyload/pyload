@@ -3,8 +3,8 @@
 
 from __future__ import absolute_import
 
-from .default import config_defaults
-from .exceptions import (AlreadyExistsKeyError, InvalidValueError,
+from pyload.config.default import config_defaults
+from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
                          VersionMismatchError)
-from .parser import ConfigOption, ConfigParser, ConfigSection
-from .types import InputType
+from pyload.config.parser import ConfigOption, ConfigParser, ConfigSection
+from pyload.config.types import InputType

@@ -4,12 +4,12 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from .base import *
-from .check import OnlineCheck
-from .file import FileInfo
-from .package import PackageInfo, PackageStats
-from .task import InteractionTask
-from .user import UserData
+from pyload.core.datatype.base import *
+from pyload.core.datatype.check import OnlineCheck
+from pyload.core.datatype.file import FileInfo
+from pyload.core.datatype.package import PackageInfo, PackageStats
+from pyload.core.datatype.task import InteractionTask
+from pyload.core.datatype.user import UserData
 
 standard_library.install_aliases()
 

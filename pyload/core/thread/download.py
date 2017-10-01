@@ -15,9 +15,9 @@ import pycurl
 from pyload.requests.request import ResponseException
 from pyload.utils.layer.safethreading import Event
 
-from ..network.base import Abort, Fail, Retry
-from ..network.hoster import Reconnect, Skip
-from .plugin import PluginThread
+from pyload.core.network.base import Abort, Fail, Retry
+from pyload.core.network.hoster import Reconnect, Skip
+from pyload.core.thread.plugin import PluginThread
 
 standard_library.install_aliases()
 

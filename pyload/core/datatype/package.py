@@ -9,7 +9,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from .base import BaseObject, ExceptionObject
+from pyload.core.datatype.base import BaseObject, ExceptionObject
 
 standard_library.install_aliases()
 

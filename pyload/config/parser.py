@@ -4,6 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import configparser
+import io
 import logging
 import os
 from builtins import bytes, int, object, oct, str
@@ -15,15 +16,15 @@ from future import standard_library
 from pyload.utils import parse
 from pyload.utils.check import isiterable, ismapping
 from pyload.utils.fs import fullpath
-from pyload.utils.layer.legacy.collections_ import OrderedDict
+from pyload.utils.layer.legacy.collections import OrderedDict
 from pyload.utils.struct import InscDict
 from pyload.utils.web.check import isendpoint
 from pyload.utils.web.parse import endpoint, socket
 
-from ..__about__ import __version_info__
-from .exceptions import (AlreadyExistsKeyError, InvalidValueError,
+from pyload.__about__ import __version_info__
+from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
                          VersionMismatchError)
-from .types import InputType
+from pyload.config.types import InputType
 
 standard_library.install_aliases()
 

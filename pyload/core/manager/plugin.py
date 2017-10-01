@@ -12,9 +12,9 @@ from pkg_resources import resource_filename
 
 from pyload.utils.fs import fullpath
 
-from ...__about__ import __package_name__
-from ..network.loader import LoaderFactory, PluginLoader
-from .base import BaseManager
+from pyload.__about__ import __package__
+from pyload.core.network.loader import LoaderFactory, PluginLoader
+from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 
@@ -55,7 +55,7 @@ class PluginManager(BaseManager):
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
                          self.LOCALROOT, self.pyload.config),
-            PluginLoader(resource_filename(__package_name__, 'network'),
+            PluginLoader(resource_filename(__package__, 'core/network'),
                          self.ROOT, self.pyload.config),
         )
 

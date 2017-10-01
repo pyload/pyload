@@ -14,7 +14,7 @@ from pyload.utils import purge
 from pyload.utils.debug import print_traceback
 from pyload.utils.struct.lock import RWLock, lock
 
-from .base import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
+from pyload.core.datatype.base import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
 
 standard_library.install_aliases()

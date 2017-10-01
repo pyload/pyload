@@ -11,7 +11,7 @@
 
 from __future__ import absolute_import
 
-from .bucket import Bucket
-from .cookie import CookieJar
-from .download import DownloadRequest
-from .request import Request, ResponseException
+from pyload.requests.bucket import Bucket
+from pyload.requests.cookie import CookieJar
+from pyload.requests.download import DownloadRequest
+from pyload.requests.request import Request, ResponseException

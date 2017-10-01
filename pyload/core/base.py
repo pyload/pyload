@@ -22,9 +22,9 @@ from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_name, set_process_user)
 
-from ..__about__ import __package_name__, __version__, __version_info__
-from .log import Logger
-from .network.factory import RequestFactory
+from pyload.__about__ import __package__, __version__, __version_info__
+from pyload.core.log import Logger
+from pyload.core.network.factory import RequestFactory
 
 standard_library.install_aliases()
 
@@ -155,7 +155,7 @@ class Core(object):
                 self.log.error(self._('Unable to change uid: %s'), str(e))
 
     def set_language(self, lang):
-        localedir = resource_filename(__package_name__, 'locale')
+        localedir = resource_filename(__package__, 'locale')
         lc = locale.locale_alias[lang.lower()].split('_', 1)[0]
         trans = get_translation('core', localedir, (lc,))
         try:
