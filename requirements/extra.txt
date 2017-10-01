@@ -4,8 +4,14 @@ bitmath
 [dbus]
 dbus-python;os_name!="nt"
 
+# [cli]
+# pyload-cli~=0.7
+
 [colorlog]
 colorlog
 
 [magic]
 python-magic;os_name!="nt"
+
+# [webui]
+# pyload-webui~=0.7
