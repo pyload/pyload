@@ -72,21 +72,21 @@ def _gen_config_defaults():
             ('option', 0, 'Process I/O priority', None, range(0, 3), InputType.Int))
     )
     log_config = (
-        ('activated',
-            ('option', True, 'Activated', None, None, InputType.Bool)),
+        ('console',
+            ('option', True, 'Print log to console', None, None, InputType.Bool)),
         ('syslog',
             ('option', None, 'Sent log to syslog', None, (None, 'remote', 'local'), InputType.Str)),
         ('syslog_folder',
             ('option', None, 'Syslog local folder', None, None, InputType.Folder)),
         ('syslog_host',
             ('option', 'localhost:514', 'Syslog remote IP address', None, None, InputType.Address)),
-        ('logfile',
+        ('filelog',
             ('option', False, 'Save log to file', None, None, InputType.Bool)),
-        ('logfile_size',
+        ('filelog_size',
             ('option', 100, 'Max file size (in KiB)', None, None, InputType.Size)),
-        ('logfile_folder',
+        ('filelog_folder',
             ('option', 'logs', 'File folder', None, None, InputType.Folder)),
-        ('logfile_name',
+        ('filelog_name',
             ('option', 'pyload.log', 'File name', None, None, InputType.File)),
         ('max_logfiles',
             ('option', 5, 'Max log files', None, None, InputType.Int)),
@@ -96,8 +96,8 @@ def _gen_config_defaults():
             ('option', False, 'Debug mode', None, None, InputType.Bool)),
         ('verbose',
             ('option', False, 'Verbose mode', None, None, InputType.Bool)),
-        ('color_console',
-            ('option', True, 'Color console', None, None, InputType.Bool))
+        ('colorlog',
+            ('option', True, 'Color log (console only)', None, None, InputType.Bool))
     )
     perm_config = (
         ('user',

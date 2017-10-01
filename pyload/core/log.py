@@ -22,13 +22,13 @@ except ImportError:
 
 class Logger(object):
 
+    DEFAULT_SEPARATOR = ' | '
+
     def __init__(self, core, debug=None, verbose=None, name=__package__):
         self.pyload = core
 
         if debug is None:
-            self.debug = core.config.get('log', 'debug')
-        else:
-            self.debug = bool(debug)
+            debug = core.config.get('log', 'debug')
 
         if verbose is None:
             self.verbose = core.config.get('log', 'verbose')
@@ -37,50 +37,60 @@ class Logger(object):
 
         # Init logger
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG if self.debug else logging.INFO)
+        self.logger.setLevel(logging.DEBUG if debug else logging.INFO)
 
         # Set console handler
-        self._init_console()
+        if core.config.get('log', 'console'):
+            self._init_console()
 
         # Set syslog handler
         if core.config.get('log', 'syslog'):
-            self._init_syslogger()
+            self._init_syslog()
 
         # Set file handler
-        if core.config.get('log', 'logfile'):
-            self._init_filelogger()
+        if core.config.get('log', 'filelog'):
+            self._init_filelog()
 
-    def _pack_msg(self, msg, messages, label=None, separator=' | '):
+    def level(self):
+        return self.logger.getEffectiveLevel()
+
+    def log(self, level, msg, *msgs, **kwgs):
+        label = kwgs.pop('label')
+        sep = kwgs.pop('separator', self.DEFAULT_SEPARATOR)
+
         if self.verbose:
-            messages.insert(msg)
-            body = separator.join(map(to_str, messages))
+            msgs.insert(msg)
+            body = sep.join(map(to_str, msgs))
         else:
             body = to_str(msg)
+
         header = to_str(label) if label else ''
-        return '{0} {1}'.format(header, body)
+        message = '[{0}] {1}'.format(header, body)
 
-    def echo(self, level, msg, messages, **options):
         log = getattr(self.logger, level)
-        log(self._pack_msg(*args, **options))
+        log(message, **kwgs)
 
-    def debug(self, msg, *messages, **options):
-        self.logger.debug(self._pack_msg(msg, messages, **options))
+    def debug(self, msg, *msgs, **kwgs):
+        self.log('debug', msg, *msgs, **kwgs)
 
-    def info(self, msg, *messages, **options):
-        self.logger.info(self._pack_msg(msg, messages, **options))
+    def info(self, msg, *msgs, **kwgs):
+        self.log('info', msg, *msgs, **kwgs)
 
-    def warning(self, msg, *messages, **options):
-        self.logger.warning(self._pack_msg(msg, messages, **options))
+    def warning(self, msg, *msgs, **kwgs):
+        self.log('warning', msg, *msgs, **kwgs)
 
-    def error(self, msg, *messages, **options):
-        self.logger.error(self._pack_msg(msg, messages, **options))
+    def error(self, msg, *msgs, **kwgs):
+        self.log('error', msg, *msgs, **kwgs)
 
-    def critical(self, msg, *messages, **options):
-        self.logger.critical(self._pack_msg(msg, messages, **options))
+    def critical(self, msg, *msgs, **kwgs):
+        self.log('critical', msg, *msgs, **kwgs)
+
+    def exception(self, msg, *msgs, **kwgs):
+        self.log('exception', msg, *msgs, **kwgs)
 
     def _init_console(self):
         if self.pyload.config.get(
-                'log', 'color_console') and ismodule('colorlog'):
+                'log', 'colorlog') and ismodule('colorlog'):
             fmt = '%(label)s %(levelname)-8s %(reset)s %(log_color)s%(asctime)s  %(message)s'
             datefmt = '%Y-%m-%d  %H:%M:%S'
             primary_colors = {
@@ -110,7 +120,7 @@ class Logger(object):
         consolehdlr.setFormatter(consoleform)
         self.logger.addHandler(consolehdlr)
 
-    def _init_syslogger(self):
+    def _init_syslog(self):
         # try to mimic to normal syslog messages
         fmt = '%(asctime)s %(name)s: %(message)s'
         datefmt = '%b %e %H:%M:%S'
@@ -135,26 +145,26 @@ class Logger(object):
         sysloghdlr.setFormatter(syslogform)
         self.logger.addHandler(sysloghdlr)
 
-    def _init_filelogger(self):
+    def _init_filelog(self):
         fmt = '%(asctime)s  %(levelname)-8s  %(message)s'
         datefmt = '%Y-%m-%d %H:%M:%S'
         fileform = logging.Formatter(fmt, datefmt)
 
-        logfile_folder = self.pyload.config.get('log', 'logfile_folder')
-        makedirs(logfile_folder, exist_ok=True)
+        filelog_folder = self.pyload.config.get('log', 'filelog_folder')
+        makedirs(filelog_folder, exist_ok=True)
 
-        logfile_name = self.pyload.config.get('log', 'logfile_name')
-        logfile = os.path.join(logfile_folder, logfile_name)
+        filelog_name = self.pyload.config.get('log', 'filelog_name')
+        filelog = os.path.join(filelog_folder, filelog_name)
 
         if self.pyload.config.get('log', 'rotate'):
-            logfile_size = self.pyload.config.get('log', 'logfile_size') << 10
+            filelog_size = self.pyload.config.get('log', 'filelog_size') << 10
             max_logfiles = self.pyload.config.get('log', 'max_logfiles')
             filehdlr = logging.handlers.RotatingFileHandler(
-                logfile, maxBytes=logfile_size, backupCount=max_logfiles,
+                filelog, maxBytes=filelog_size, backupCount=max_logfiles,
                 encoding=locale.getpreferredencoding(do_setlocale=False))
         else:
             filehdlr = logging.FileHandler(
-                logfile, encoding=locale.getpreferredencoding(
+                filelog, encoding=locale.getpreferredencoding(
                     do_setlocale=False))
 
         filehdlr.setFormatter(fileform)
