@@ -3,17 +3,17 @@
     <img src="media/banner.png?raw=true" alt="pyLoad" />
   </a>
   <h2>The Free and Open Source download manager written in Pure Python</h2>
-  <a href="https://pypi.python.org/pypi/pyload.core">
-    <img src="https://img.shields.io/pypi/status/pyload.core.svg" alt="PyPI Status" />
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img src="https://img.shields.io/pypi/status/pyload-ng.svg" alt="PyPI Status" />
   </a>
-  <a href="https://pypi.python.org/pypi/pyload.core">
-    <img src="https://img.shields.io/pypi/v/pyload.core.svg" alt="PyPI Version" />
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img src="https://img.shields.io/pypi/v/pyload-ng.svg" alt="PyPI Version" />
   </a>
-  <a href="https://pypi.python.org/pypi/pyload.core">
-    <img src="https://img.shields.io/pypi/pyversions/pyload.core.svg" alt="PyPI Python Versions" />
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img src="https://img.shields.io/pypi/pyversions/pyload-ng.svg" alt="PyPI Python Versions" />
   </a>
-  <a href="https://pypi.python.org/pypi/pyload.core">
-    <img src="https://img.shields.io/pypi/l/pyload.core.svg" alt="PyPI License" />
+  <a href="https://pypi.python.org/pypi/pyload-ng">
+    <img src="https://img.shields.io/pypi/l/pyload-ng.svg" alt="PyPI License" />
   </a>
   <br>
   <br>
@@ -146,23 +146,23 @@ to **install** the pyLoad package.
 
 Type in your command shell **with _administrator/root_ privileges**:
 
-    pip install pyload.core[full]
+    pip install pyload-ng[full]
 
 Under Unix based systems this usually means you have to use `sudo`:
 
-    sudo pip install pyload.core[full]
+    sudo pip install pyload-ng[full]
 
 The `full` option ensures that all the optional packages will downloaded and
 installed as well as the mandatory ones.
 
 You can install just the essential dependencies typing:
 
-    pip install pyload.core
+    pip install pyload-ng
 
 If the above commands fail, consider using the
 [`--user`](https://pip.pypa.io/en/latest/user_guide/#user-installs) option:
 
-    pip install --user pyload.core
+    pip install --user pyload-ng
 
 If this command fails too, try the [others install methods](#installation).
 Leaves as last resort to [report your issue](#report-an-issue).
@@ -271,7 +271,7 @@ To **restart** a pyLoad instance, type:
 
 To import `pyLoad` in your script, enter:
 
-    import pyload.core
+    import pyload
 
 Available methods:
 
