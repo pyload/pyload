@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import shutil
 from builtins import int, object, str
@@ -10,9 +11,8 @@ from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
-
-from ...utils.fs import lopen, remove
-from ...utils.layer.safethreading import Event, Thread
+from pyload.utils.fs import remove
+from pyload.utils.layer.safethreading import Event, Thread
 
 standard_library.install_aliases()
 
@@ -36,7 +36,6 @@ def queue(f):
     def x(*args, **kwargs):
         if DB:
             return DB.queue(f, *args, **kwargs)
-
     return x
 
 
@@ -45,7 +44,6 @@ def async(f):
     def x(*args, **kwargs):
         if DB:
             return DB.async(f, *args, **kwargs)
-
     return x
 
 
@@ -54,12 +52,10 @@ def inner(f):
     def x(*args, **kwargs):
         if DB:
             return f(DB, *args, **kwargs)
-
     return x
 
 
 class DatabaseMethods(object):
-
     # stubs for autocompletion
     core = None
     manager = None
@@ -130,17 +126,13 @@ class DatabaseBackend(Thread):
         self.setDaemon(True)
         self.pyload = core
         self._ = core._
-        self.__manager = None  # set later
+        self.manager = None  # set later
         self.error = None  # TODO: Recheck...
         self.__running = Event()
 
         self.jobs = Queue()
 
         set_db(self)
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     @property
     def running(self):
@@ -181,7 +173,7 @@ class DatabaseBackend(Thread):
 
                 remove(self.VERSION_FILE)
                 shutil.move(self.DB_FILE, self.DB_FILE + ".bak")
-                with lopen(self.VERSION_FILE, mode='wb') as fp:
+                with io.open(self.VERSION_FILE, mode='wb') as fp:
                     fp.write(str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
@@ -221,12 +213,12 @@ class DatabaseBackend(Thread):
         Get db version.
         """
         try:
-            with lopen(self.VERSION_FILE, mode='rb') as fp:
+            with io.open(self.VERSION_FILE, mode='rb') as fp:
                 v = int(fp.read().strip())
         except IOError:
-            with lopen(self.VERSION_FILE, mode='wb') as fp:
+            with io.open(self.VERSION_FILE, mode='wb') as fp:
                 fp.write(str(DB_VERSION))
-            return None
+            return
         return v
 
     def _convert_db(self, v):

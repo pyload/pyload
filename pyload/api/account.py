@@ -45,7 +45,7 @@ class AccountApi(BaseApi):
 
         # Admins can see and refresh accounts
         if not account:
-            return None
+            return
 
         if refresh:
             # reload account in place
@@ -81,7 +81,7 @@ class AccountApi(BaseApi):
         inst = self.pyload.acm.get_account(
             account.aid, account.plugin, self.user)
         if not inst:
-            return None
+            return
 
         inst.activated = bool(account.activated)
         inst.shared = bool(account.shared)

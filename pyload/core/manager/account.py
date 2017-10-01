@@ -10,7 +10,7 @@ from future import standard_library
 
 from ..datatype.base import AccountInfo
 from .base import BaseManager
-from ...utils.struct.lock import lock
+from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 
@@ -19,6 +19,7 @@ class AccountManager(BaseManager):
     """
     Manages all accounts.
     """
+
     def __init__(self, core):
         """
         Constructor.
@@ -120,7 +121,7 @@ class AccountManager(BaseManager):
         """
         account = self.get_account(aid, plugin, user)
         if not account:
-            return None
+            return
 
         if account.set_login(loginname, password):
             self.save_accounts()

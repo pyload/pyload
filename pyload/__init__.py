@@ -29,7 +29,7 @@ builtins.ADDONMANAGER = None
 
 # from .__about__ import __package_name__
 # from pkg_resources import resource_filename
-# from ..utils.misc import install_translation
+# from pyload.utils.misc import install_translation
 
 locale.setlocale(locale.LC_ALL, '')
 # install_translation('core', resource_filename(__package_name__, 'locale'))
@@ -38,4 +38,3 @@ locale.setlocale(locale.LC_ALL, '')
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
 from . import core, config, requests, utils, api
-from .__main__ import cleanup, quit, restart, start, status, version, upgrade

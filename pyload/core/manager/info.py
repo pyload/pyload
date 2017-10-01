@@ -10,9 +10,9 @@ from future import standard_library
 from ..datatype.check import OnlineCheck
 from .base import BaseManager
 from ..thread import InfoThread
-from ...utils.convert import to_list
-from ...utils.layer.safethreading import RLock
-from ...utils.struct.lock import lock
+from pyload.utils.convert import to_list
+from pyload.utils.layer.safethreading import RLock
+from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 
@@ -21,6 +21,7 @@ class InfoManager(BaseManager):
     """
     Manages all non download related threads and jobs.
     """
+
     def __init__(self, core):
         """
         Constructor.
@@ -90,7 +91,7 @@ class InfoManager(BaseManager):
 
     def set_info_results(self, oc, result):
         self.pyload.evm.fire("linkcheck:updated", oc.rid,
-                               result, owner=oc.owner)
+                             result, owner=oc.owner)
         oc.update(result)
 
     def get_progress_list(self, user=None):

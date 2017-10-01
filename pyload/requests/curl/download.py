@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import shutil
 import sys
@@ -14,8 +15,8 @@ from future import standard_library
 
 import pycurl
 from ..types import Connection
-from ...utils import purge
-from ...utils.fs import fullpath, lopen, remove
+from pyload.utils import purge
+from pyload.utils.fs import fullpath, remove
 
 from ..chunk import ChunkInfo
 from ..cookie import CookieJar
@@ -52,7 +53,7 @@ class CurlDownload(DownloadRequest):
         self.chunks = []
         self.chunk_support = None
 
-        self.__manager = pycurl.CurlMulti()
+        self.manager = pycurl.CurlMulti()
 
         # needed for speed calculation
         self.last_arrived = []
@@ -78,7 +79,7 @@ class CurlDownload(DownloadRequest):
         init = self.info.get_chunk_name(0)  # initial chunk name
 
         if self.info.get_count() > 1:
-            with lopen(init, "rb+") as fpo:  # first chunkfile
+            with io.open(init, "rb+") as fpo:  # first chunkfile
                 for i in range(1, self.info.get_count()):
                     # input file
                     # seek to beginning of chunk,
@@ -86,7 +87,7 @@ class CurlDownload(DownloadRequest):
                     fpo.seek(self.info.get_chunk_range(i - 1)[1] + 1)
                     filename = "{0}.chunk{1:d}".format(self.path, i)
                     buf = 32 << 10
-                    with lopen(filename, mode='rb') as fpi:
+                    with io.open(filename, mode='rb') as fpi:
                         while True:  # copy in chunks, consumes less memory
                             data = fpi.read(buf)
                             if not data:
@@ -181,7 +182,7 @@ class CurlDownload(DownloadRequest):
         init = CurlChunk(0, self, None, resume)
 
         self.chunks.append(init)
-        self.__manager.add_handle(init.get_handle())
+        self.manager.add_handle(init.get_handle())
 
         last_finish_check = 0
         last_time_check = 0
@@ -214,7 +215,7 @@ class CurlDownload(DownloadRequest):
                     handle = c.get_handle()
                     if handle:
                         self.chunks.append(c)
-                        self.__manager.add_handle(handle)
+                        self.manager.add_handle(handle)
                     else:
                         # close immediately
                         self.log.debug("Invalid curl handle -> closed")
@@ -223,7 +224,7 @@ class CurlDownload(DownloadRequest):
                 chunks_created = True
 
             while True:
-                ret, _ = self.__manager.perform()
+                ret, _ = self.manager.perform()
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
 
@@ -239,7 +240,7 @@ class CurlDownload(DownloadRequest):
                 # save only last exception, we can only raise one anyway
                 ex = Exception()
 
-                num_q, ok_list, err_list = self.__manager.info_read()
+                num_q, ok_list, err_list = self.manager.info_read()
                 for c in ok_list:
                     chunk = self.find_chunk(c)
                     # check if the header implies success,
@@ -333,7 +334,7 @@ class CurlDownload(DownloadRequest):
             if self.__abort:
                 raise Abort
 
-            self.__manager.select(1)
+            self.manager.select(1)
 
         for chunk in self.chunks:
             chunk.flush_file()  # make sure downloads are written to disk
@@ -351,7 +352,7 @@ class CurlDownload(DownloadRequest):
 
     def close_chunk(self, chunk):
         try:
-            self.__manager.remove_handle(chunk.c)
+            self.manager.remove_handle(chunk.c)
         except pycurl.error as e:
             self.log.debug("Error removing chunk: {0}".format(str(e)))
         finally:
@@ -368,12 +369,12 @@ class CurlDownload(DownloadRequest):
         # any curl handles
         if hasattr(self, 'manager'):
             with closing(pycurl.Curl()) as c:
-                self.__manager.add_handle(c)
-                self.__manager.remove_handle(c)
+                self.manager.add_handle(c)
+                self.manager.remove_handle(c)
 
         self.chunks = []
         if hasattr(self, 'manager'):
-            self.__manager.close()
-            del self.__manager
+            self.manager.close()
+            del self.manager
         if hasattr(self, "info"):
             del self.info

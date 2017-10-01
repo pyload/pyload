@@ -9,9 +9,9 @@ import zipfile
 
 from future import standard_library
 
-from ...utils import debug
-from ...utils.fs import makedirs
-from ...utils.layer.safethreading import Thread
+from pyload.utils import debug
+from pyload.utils.fs import makedirs
+from pyload.utils.layer.safethreading import Thread
 
 standard_library.install_aliases()
 
@@ -28,15 +28,11 @@ class PluginThread(Thread):
         """
         Thread.__init__(self)
         self.setDaemon(True)
-        self.__manager = manager  # Thread manager
+        self.manager = manager  # Thread manager
         self.pyload = manager.pyload
         self._ = self.pyload._
         # Owner of the thread, every type should set it or overwrite user
         self.owner = owner
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     @property
     def user(self):
@@ -47,13 +43,13 @@ class PluginThread(Thread):
         return self.get_progress_info()
 
     def get_manager(self):
-        return self.__manager
+        return self.manager
 
     def finished(self):
         """
         Remove thread from list.
         """
-        self.__manager.remove_thread(self)
+        self.manager.remove_thread(self)
 
     def get_progress_info(self):
         """
@@ -101,7 +97,7 @@ class PluginThread(Thread):
                 zip.writestr(arcname, data)
 
     def debug_report(self, file):
-        dumpdir = os.path.join(self.pyload.cachedir,
+        dumpdir = os.path.join(self.pyload.tmpdir,
                                'plugins', file.pluginname)
         makedirs(dumpdir, exist_ok=True)
 

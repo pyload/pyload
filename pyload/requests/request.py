@@ -7,7 +7,7 @@ from builtins import object
 
 from future import standard_library
 
-from ..utils.struct import HeaderDict
+from pyload.utils.struct import HeaderDict
 
 standard_library.install_aliases()
 
@@ -23,7 +23,7 @@ class ResponseException(Exception):
 
     __slots__ = ['code']
 
-    def __init__(self, code, content=""):
+    def __init__(self, code, content=''):
         Exception.__init__(
             self, "Server response error: {0} {1}".format(code, content))
         self.code = code
@@ -37,10 +37,14 @@ class Request(object):
 
     # Class that will be instantiated and associated with the request,
     # and if needed copied and reused
-    CONTEXT_CLASS = lambda: None
+    def CONTEXT_CLASS(): return None
 
     def __init__(self, config, context=None, options=None, logger=None):
-        self.log = self._get_logger(logger)
+        if logger is None:
+            self.log = logging.getLogger('null')
+            self.log.addHandler(logging.NullHandler())
+        else:
+            self.log = logger
 
         # Global config, holds some configurable parameter
         self.config = config
@@ -66,13 +70,6 @@ class Request(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
-
-    def _get_logger(self, value):
-        if value is False:
-            logger = lambda *args, **kwgs: None
-        else:
-            logger = logging.getLogger(value)
-        return logger
 
     def init_context(self):
         """

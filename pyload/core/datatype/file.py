@@ -10,9 +10,9 @@ from enum import IntEnum
 
 from future import standard_library
 
-from ...utils import purge
-from ...utils.debug import print_traceback
-from ...utils.struct.lock import RWLock, lock
+from pyload.utils import purge
+from pyload.utils.debug import print_traceback
+from pyload.utils.struct.lock import RWLock, lock
 
 from .base import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
                    ExceptionObject, MediaType, ProgressInfo, ProgressType)
@@ -133,8 +133,8 @@ class File(BaseObject):
     @staticmethod
     def from_info_data(m, info):
         file = File(m, info.fid, info.name, info.size, info.status, info.media,
-                    info.added, info.fileorder, "", "", "", DownloadStatus.NA,
-                    "", info.package, info.owner)
+                    info.added, info.fileorder, '', '', '', DownloadStatus.NA,
+                    '', info.package, info.owner)
         if info.download:
             file.url = info.download.url
             file.pluginname = info.download.plugin
@@ -146,7 +146,7 @@ class File(BaseObject):
     def __init__(
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
-        self.__manager = manager
+        self.manager = manager
         self.pyload = manager.pyload
 
         self.fid = int(fid)
@@ -175,10 +175,6 @@ class File(BaseObject):
         self.abort = False
         self.reconnected = False
         self.statusname = None
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     def get_size(self):
         """
@@ -241,7 +237,7 @@ class File(BaseObject):
         """
         Return package instance.
         """
-        return self.__manager.get_package(self.packageid)
+        return self.manager.get_package(self.packageid)
 
     def set_status(self, status):
         self.status = statusmap[status]
@@ -254,7 +250,7 @@ class File(BaseObject):
 
     def get_status_name(self):
         if self.status not in (15, 16) or not self.statusname:
-            return self.__manager.status_msg[self.status]
+            return self.manager.status_msg[self.status]
         else:
             return self.statusname
 
@@ -265,7 +261,7 @@ class File(BaseObject):
         """
         Sync File instance with database.
         """
-        self.__manager.update_file(self)
+        self.manager.update_file(self)
 
     @lock
     def release(self):
@@ -276,7 +272,7 @@ class File(BaseObject):
             self.plugin.clean()
             self.plugin = None
 
-        self.__manager.release_file(self.fid)
+        self.manager.release_file(self.fid)
 
     def to_info_data(self):
         return FileInfo(self.fid, self.get_name(),
@@ -322,11 +318,11 @@ class File(BaseObject):
 
         self.set_status("finished")
         self.release()
-        self.__manager.check_all_links_finished()
+        self.manager.check_all_links_finished()
         return True
 
     def check_if_processed(self):
-        self.__manager.check_all_links_processed(self.id)
+        self.manager.check_all_links_processed(self.id)
 
     @trycatch(0)
     def get_speed(self):

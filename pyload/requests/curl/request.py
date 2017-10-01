@@ -12,8 +12,7 @@ from urllib.parse import quote, urlencode
 from future import standard_library
 
 import pycurl
-from ...utils import convert
-from ...utils.fs import lopen
+from pyload.utils import convert
 
 from ..cookie import CookieJar
 from ..request import Abort, Request, ResponseException
@@ -337,7 +336,7 @@ class CurlRequest(Request):
             rep = self.get_response()
             if self.__abort:
                 raise Abort
-            with lopen("response.dump", mode='wb') as fp:
+            with io.open("response.dump", mode='wb') as fp:
                 fp.write(rep)
             raise Exception("Loaded Url exceeded limit")
 

@@ -8,8 +8,7 @@ import locale
 import os
 import shutil
 import sys
-from builtins import dict, int, next, open
-from contextlib import contextmanager
+from builtins import dict, int, next
 
 import portalocker
 import psutil
@@ -49,9 +48,9 @@ def _shdo(func, src, dst, overwrite=None, ref=None):
     try:
         if os.path.isfile(dst):
             if overwrite is None and mtime(src) <= mtime(dst):
-                return None
+                return
             elif not overwrite:
-                return None
+                return
             if os.name == 'nt':
                 os.remove(dst)
         func(src, dst)
@@ -111,6 +110,14 @@ def filetype(filename):
     return guess_mime(filename)
 
 
+def fsdecode(path):
+    try:
+        upath = unicode(path)
+    except NameError:
+        upath = os.fsdecode(path)
+    return upath
+
+
 def fullpath(path):
     return os.path.realpath(os.path.expanduser(path))
 
@@ -142,7 +149,7 @@ def bufread(fp, buffering=-1, sentinel=b''):
 def _crcsum(filename, chkname, buffering):
     last = 0
     call = getattr(zlib, chkname)
-    with lopen(filename, mode='rb') as fp:
+    with io.open(filename, mode='rb') as fp:
         for chunk in bufread(fp, buffering):
             last = call(chunk, last)
     return "{0:x}".format(last & 0xffffffff)
@@ -151,7 +158,7 @@ def _crcsum(filename, chkname, buffering):
 def _hashsum(filename, chkname, buffering):
     h = hashlib.new(chkname)
     buffering *= h.block_size
-    with lopen(filename, mode='rb') as fp:
+    with io.open(filename, mode='rb') as fp:
         for chunk in bufread(fp, buffering):
             h.update(chunk)
     return h.hexdigest()
@@ -171,42 +178,27 @@ def isexec(filename):
     return os.path.isfile(filename) and os.access(filename, os.X_OK)
 
 
-_open = open if sys.version_info > (2,) else io.open
-
-@contextmanager
-def open(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
-         newline=None, closefd=True):
-    if encoding is None:
-        encoding = locale.getpreferredencoding(do_setlocale=False) or 'utf-8'
-    with _open(filename, mode, buffering, encoding,
-               errors, newline, closefd) as fp:
-        yield fp
-
-
-@contextmanager
-def lopen(filename, mode='r', buffering=-1, encoding='utf-8', errors=None,
-          newline=None, closefd=True, blocking=True):
-    if blocking:
+def lopen(*args, **kwargs):
+    if kwargs.get('blocking', True):
         flags = portalocker.LOCK_EX
     else:
         flags = portalocker.LOCK_EX | portalocker.LOCK_NB
-    with _open(filename, mode, buffering, encoding,
-               errors, newline, closefd) as fp:
-        portalocker.lock(fp, flags)
-        yield fp
+    fp = io.open(*args, **kwargs)
+    portalocker.lock(fp, flags)
+    return fp
 
 
 def flush(filename, exist_ok=False):
     if not exist_ok and not os.path.exists(filename):
         raise OSError("Path not exists")
-    with lopen(filename) as fp:
+    with io.open(filename) as fp:
         fp.flush()
         os.fsync(fp.fileno())
 
 
 def merge(dst_file, src_file):
-    with lopen(dst_file, mode='ab') as dfp:
-        with lopen(src_file, mode='rb') as sfp:
+    with io.open(dst_file, mode='ab') as dfp:
+        with io.open(src_file, mode='rb') as sfp:
             for chunk in bufread(sfp):
                 dfp.write(chunk)
 
@@ -230,7 +222,7 @@ def filesystem(path):
 def mkfile(filename, size=None):
     if os.path.isfile(filename):
         raise OSError("Path already exists")
-    with lopen(filename, mode='wb') as fp:
+    with io.open(filename, mode='wb') as fp:
         if size and os.name == 'nt':
             fp.truncate(size)
 
@@ -308,7 +300,7 @@ def _cleanpy2(dirpath, filenames):
 def _cleanpy3(dirpath, dirnames):
     cname = '__pycache__'
     if cname not in dirnames:
-        return None
+        return
     dirnames.remove(cname)
     try:
         os.remove(os.path.join(dirpath, cname))
@@ -326,9 +318,10 @@ def cleanpy(dirname, recursive=True):
 
 
 def remove(path, trash=False, ignore_errors=False):
+    trash = True  #: testing
     if not os.path.exists(path):
         if ignore_errors:
-            return None
+            return
         raise OSError("Path not exists")
     if trash:
         send2trash.send2trash(path)
@@ -350,7 +343,7 @@ def empty(path, trash=False, exist_ok=True):
             shutil.copy2(origfile, path)
             remove(path, trash)
             os.rename(origfile, path)
-        fp = open(path, mode='wb')
+        fp = io.open(path, mode='wb')
         fp.close()
     elif os.path.isdir(path):
         for name in os.listdir(path):

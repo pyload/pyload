@@ -2,12 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 from builtins import str
 
 from future import standard_library
 
-from ..utils.fs import lopen
 
 from ..core.datatype.base import Permission
 from ..core.datatype.user import Role
@@ -22,6 +22,7 @@ class DownloadApi(BaseApi):
     Component to create, add, delete or modify downloads.
     """
     # TODO: workaround for link adding without owner
+
     def true_primary(self):
         if self.user:
             return self.user.true_primary
@@ -29,8 +30,8 @@ class DownloadApi(BaseApi):
             return self.pyload.db.get_user_data(role=Role.Admin).uid
 
     @requireperm(Permission.Add)
-    def create_package(self, name, folder, root, password="",
-                       site="", comment="", paused=False):
+    def create_package(self, name, folder, root, password='',
+                       site='', comment='', paused=False):
         """
         Create a new package.
 
@@ -58,7 +59,7 @@ class DownloadApi(BaseApi):
         return pid
 
     @requireperm(Permission.Add)
-    def add_package(self, name, links, password="", paused=False):
+    def add_package(self, name, links, password='', paused=False):
         """
         Convenient method to add a package to the top-level
         and for adding links.
@@ -124,7 +125,7 @@ class DownloadApi(BaseApi):
         storagedir = self.pyload.config.get('general', 'storage_folder')
         filename = 'tmp_{0}'.format(filename)
         filepath = os.path.join(storagedir, filename)
-        with lopen(filepath, mode='wb') as fp:
+        with io.open(filepath, mode='wb') as fp:
             fp.write(str(data))
             return self.add_package(fp.name, [fp.name])
 

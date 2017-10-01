@@ -6,8 +6,8 @@ from builtins import ADDONMANAGER, object, str
 
 from future import standard_library
 
-from ...utils.check import hasmethod
-from ...utils.convert import to_list
+from pyload.utils.check import hasmethod
+from pyload.utils.convert import to_list
 
 from .base import Base
 
@@ -78,7 +78,7 @@ def addon_property(name, desc, default=None, fire_event=True):
 
     def _set(self, value):
         if fire_event:
-            self.__manager.fire("addon:property:change", value)
+            self.manager.fire("addon:property:change", value)
 
         return setattr(self, h, value)
 
@@ -116,7 +116,7 @@ class Addon(Base):
         self.cb = None
 
         # `AddonManager`
-        self.__manager = manager
+        self.manager = manager
 
         self.init()
 

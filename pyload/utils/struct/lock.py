@@ -111,7 +111,7 @@ class RWLock(object):
             if self.__writer is me:
                 # If we are the writer, grant a new read lock, always.
                 self.__writercount += 1
-                return None
+                return
             while True:
                 if self.__writer is None:
                     # Only test anything if there is no current writer.
@@ -122,13 +122,13 @@ class RWLock(object):
                             # This means that writers can't easily get starved
                             # (but see below, readers can).
                             self.__readers[me] += 1
-                            return None
+                            return
                             # No, we aren't a reader (yet), wait for our turn.
                     else:
                         # Grant a new read lock, always, in case there are
                         # no pending writers (and no writer).
                         self.__readers[me] = self.__readers.get(me, 0) + 1
-                        return None
+                        return
                 if timeout is not None:
                     remaining = endtime - time.time()
                     if remaining <= 0:
@@ -162,7 +162,7 @@ class RWLock(object):
             if self.__writer is me:
                 # If we are the writer, grant a new write lock, always.
                 self.__writercount += 1
-                return None
+                return
             elif me in self.__readers:
                 # If we are a reader, no need to add us to pendingwriters,
                 # we get the upgradewriter slot.
@@ -193,7 +193,7 @@ class RWLock(object):
                             self.__writer = me
                             self.__writercount = self.__upgradewritercount + 1
                             self.__upgradewritercount = 0
-                            return None
+                            return
                             # There is a writer to upgrade, but it's not us.
                             # Always leave the upgrade writer the advance slot,
                             # because he presumes he'll get a write lock
@@ -206,7 +206,7 @@ class RWLock(object):
                         self.__writer = me
                         self.__writercount = 1
                         self.__pendingwriters = self.__pendingwriters[1:]
-                        return None
+                        return
                 if timeout is not None:
                     remaining = endtime - time.time()
                     if remaining <= 0:

@@ -7,9 +7,9 @@ from builtins import int
 
 from future import standard_library
 
-from ...utils.layer.legacy.collections_ import OrderedDict
+from pyload.utils.layer.legacy.collections_ import OrderedDict
 
-from ...api import statestring
+from pyload.api import statestring
 from ..datatype.file import FileInfo, guess_type
 from ..datatype.base import DownloadInfo, DownloadState
 from ..datatype.package import PackageInfo, PackageStats
@@ -201,7 +201,7 @@ class FileMethods(DatabaseMethods):
                     r[9],
                     r[10],
                     r[11],
-                    self.__manager.status_msg[r[11]],
+                    self.manager.status_msg[r[11]],
                     r[12])
             data[r[0]] = finfo
 
@@ -310,7 +310,7 @@ class FileMethods(DatabaseMethods):
             'WHERE fid=?', (fid,))
         r = self.c.fetchone()
         if not r:
-            return None
+            return
         finfo = FileInfo(r[0], r[1], r[13], r[2], r[3], r[4], r[5], r[6], r[7])
         if r[11] > 0 or force:
             finfo.download = DownloadInfo(
@@ -318,7 +318,7 @@ class FileMethods(DatabaseMethods):
                 r[9],
                 r[10],
                 r[11],
-                self.__manager.status_msg[r[11]],
+                self.manager.status_msg[r[11]],
                 r[12])
         return finfo
 
@@ -337,7 +337,7 @@ class FileMethods(DatabaseMethods):
 
         r = self.c.fetchone()
         if not r:
-            return None
+            return
         else:
             return PackageInfo(
                 r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[
@@ -457,7 +457,7 @@ class FileMethods(DatabaseMethods):
     def restart_file(self, fid):
         # status -> queued
         self.c.execute(
-            'UPDATE files SET dlstatus=3, error="" WHERE fid=?', (fid,))
+            'UPDATE files SET dlstatus=3, error='' WHERE fid=?', (fid,))
 
     @async
     def restart_package(self, pid):

@@ -6,10 +6,10 @@ import json
 
 from future import standard_library
 
-from ...config import ConfigParser
+from pyload.config import ConfigParser
 from ..datatype.base import InvalidConfigSection
-# from ...config.convert import from_string
-from ...utils.layer.legacy.collections_ import OrderedDict
+# from pyload.config.convert import from_string
+from pyload.utils.layer.legacy.collections_ import OrderedDict
 
 standard_library.install_aliases()
 
@@ -32,13 +32,14 @@ class ConfigManager(ConfigParser):
     Manages the core config and configs for addons and single user.
     Has similar interface to ConfigParser.
     """
+
     def __init__(self, core, parser):
         # No __init__ call to super class is needed!
 
         self.pyload = core
 
         # The config parser, holding the core config
-        self.__parser = parser
+        self.parser = parser
 
         # similar to parser, separated meta data and values
         self.config = OrderedDict()
@@ -50,11 +51,7 @@ class ConfigManager(ConfigParser):
         # TODO: similar to a cache, could be deleted periodically
 
     def save(self):
-        self.__parser.store()
-
-    @property
-    def pyload(self):
-        return self.pyload
+        self.parser.store()
 
     @convertkeyerror
     def get(self, section, option, user=None):
@@ -63,8 +60,8 @@ class ConfigManager(ConfigParser):
         if user is not valid default value will be returned.
         """
         # Core config loaded from parser, when no user is given or he is admin
-        if section in self.__parser and user is None:
-            return self.__parser.get(section, option)
+        if section in self.parser and user is None:
+            return self.parser.get(section, option)
         else:
             # We need the id and not the instance
             # Will be None for admin user and so the same as internal access
@@ -95,8 +92,8 @@ class ConfigManager(ConfigParser):
         Set config value.
         """
         changed = False
-        if section in self.__parser and user is None:
-            changed = self.__parser.set(section, option, value, sync)
+        if section in self.parser and user is None:
+            changed = self.parser.set(section, option, value, sync)
         else:
             data = self.config[section].config[option]
             value = from_string(value, data.input.type)
@@ -114,7 +111,7 @@ class ConfigManager(ConfigParser):
         return changed
 
     def save_values(self, user, section):
-        if section in self.__parser and user is None:
+        if section in self.parser and user is None:
             self.save()
         elif (user, section) in self.values:
             self.pyload.db.save_config(section, json.dumps(
@@ -133,7 +130,7 @@ class ConfigManager(ConfigParser):
         self.pyload.evm.fire("config:deleted", section, user)
 
     # def iter_core_sections(self):
-        # return self.__parser.iter_sections()
+        # return self.parser.iter_sections()
 
     def iter_sections(self, user=None):
         """
@@ -153,8 +150,8 @@ class ConfigManager(ConfigParser):
             yield name, config, values[name] if name in values else {}
 
     def get_section(self, section, user=None):
-        if section in self.__parser and user is None:
-            return self.__parser.get_section(section)
+        if section in self.parser and user is None:
+            return self.parser.get_section(section)
 
         values = self.load_values(user, section)
         return self.config.get(section), values

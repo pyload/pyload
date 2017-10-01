@@ -8,13 +8,13 @@ from builtins import dict, str
 from future import standard_library
 
 from .cookie import CookieJar
-from ...utils import format, parse
-from ...utils.convert import to_str
-from ...utils.layer.safethreading import RLock
-from ...utils.struct.lock import lock
-from ...utils.time import compare
+from pyload.utils import format, parse
+from pyload.utils.convert import to_str
+from pyload.utils.layer.safethreading import RLock
+from pyload.utils.struct.lock import lock
+from pyload.utils.time import compare
 
-# from ...config.convert import from_string, to_configdata
+# from pyload.config.convert import from_string, to_configdata
 from ..datatype import AccountInfo, ConfigItem
 from .base import Base
 
@@ -71,7 +71,7 @@ class Account(Base):
         self.password = password
         self.options = options
 
-        self.__manager = manager
+        self.manager = manager
 
         self.lock = RLock()
         self.timestamp = 0
@@ -121,7 +121,7 @@ class Account(Base):
         Sets a config value for this account instance. Modifying the global values is not allowed.
         """
         if option not in self.config_data:
-            return None
+            return
 
         value = from_string(value, self.config_data[option].input.type)
         # given value is the default value and does not need to be saved at all

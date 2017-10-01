@@ -13,7 +13,7 @@ from pkg_resources import resource_filename
 from ...__about__ import __package_name__
 from .base import BaseManager
 from ..network.loader import LoaderFactory, PluginLoader
-from ...utils.fs import fullpath
+from pyload.utils.fs import fullpath
 
 standard_library.install_aliases()
 
@@ -22,17 +22,18 @@ class PluginMatcher(object):
     """
     Abstract class that allows modify which plugins to match and to load.
     """
+
     def match_url(self, url):
         """
         Returns (type, name) of a plugin if a match is found.
         """
-        return None
+        return
 
     def match_plugin(self, plugin, name):
         """
         Returns (type, name) of the plugin that will be loaded instead.
         """
-        return None
+        return
 
 
 class PluginManager(BaseManager):
@@ -232,7 +233,7 @@ class PluginManager(BaseManager):
 
             split = fullname.split(".")
             if len(split) != 4 - offset:
-                return None
+                return
             type, name = split[2 - offset:4 - offset]
 
             # check if a different loader than the current one has the plugin

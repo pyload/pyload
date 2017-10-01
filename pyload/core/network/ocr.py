@@ -21,6 +21,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import logging
+import io
 import os
 from builtins import object, range
 
@@ -28,8 +29,8 @@ from future import standard_library
 from pkg_resources import resource_filename
 
 import Image
-from ...utils.fs import lopen, remove
-from ...utils.layer.legacy.subprocess_ import PIPE, Popen
+from pyload.utils.fs import remove
+from pyload.utils.layer.legacy.subprocess_ import PIPE, Popen
 
 from ...__about__ import __package_name__
 
@@ -78,13 +79,13 @@ class OCR(object):
 
         # tmp = tempfile.NamedTemporaryFile(suffix=".tif")
         tmp_path = os.path.join("tmpTif_{0}.tif".format(self.__name__))
-        tmp = lopen(tmp_path, mode='wb')
+        tmp = io.open(tmp_path, mode='wb')
         tmp.close()
         # self.log.debug("create tmp txt")
         # tmp_txt = tempfile.NamedTemporaryFile(suffix=".txt")
         tmp_txt_path = os.path.join("tmp_txt_{0}.txt".format(
             self.__name__))
-        tmp_txt = lopen(tmp_txt_path, mode='wb')
+        tmp_txt = io.open(tmp_txt_path, mode='wb')
         tmp_txt.close()
 
         self.log.debug("save tiff")
@@ -101,7 +102,7 @@ class OCR(object):
         if subset and (digits or lowercase or uppercase):
             # self.log.debug("create temp subset config")
             # tmp_sub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with lopen(os.path.join("tmp_sub_{0}.subset".format(self.__name__)), mode='wb') as tmp_sub:
+            with io.open(os.path.join("tmp_sub_{0}.subset".format(self.__name__)), mode='wb') as tmp_sub:
                 tmp_sub.write("tessedit_char_whitelist ")
                 if digits:
                     tmp_sub.write("0123456789")
@@ -118,7 +119,7 @@ class OCR(object):
         self.log.debug("read txt")
 
         try:
-            with lopen(tmp_txt.name) as fp:
+            with io.open(tmp_txt.name) as fp:
                 self.result_captcha = fp.read().replace(os.linesep, "")
         except Exception:
             self.result_captcha = ""

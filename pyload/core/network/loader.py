@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import ast
 import logging
+import io
 import os
 import re
 import time
@@ -12,8 +13,8 @@ from builtins import object, range, str
 
 from future import standard_library
 
-from ...utils.fs import fullpath, lopen, makefile
-from ...utils.layer.legacy.collections_ import defaultdict, namedtuple
+from pyload.utils.fs import fullpath, makefile
+from pyload.utils.layer.legacy.collections_ import defaultdict, namedtuple
 
 from .base import Base
 
@@ -27,6 +28,7 @@ class BaseAttributes(defaultdict):
     """
     Dictionary that loads defaults values from Base object.
     """
+
     def __missing__(self, key):
         attr = "__{0}__".format(key)
         if not hasattr(Base, attr):
@@ -39,6 +41,7 @@ class LoaderFactory(object):
     """
     Container for multiple plugin loaders.
     """
+
     def __init__(self, *loader):
         self.loader = list(loader)
 
@@ -68,7 +71,7 @@ class LoaderFactory(object):
                 if loader.has_plugin(type_, name):
                     return type_
 
-        return None
+        return
 
     def get_plugin(self, type_, name):
         """
@@ -155,11 +158,11 @@ class PluginLoader(object):
 
         return plugins
 
-    def parse_attributes(self, filename, name, folder=""):
+    def parse_attributes(self, filename, name, folder=''):
         """
         Parse attribute dict from plugin.
         """
-        with lopen(filename, mode='rb') as fp:
+        with io.open(filename, mode='rb') as fp:
             content = fp.read()
 
         attrs = BaseAttributes()
@@ -221,7 +224,7 @@ class PluginLoader(object):
         """
         attrs = self.parse_attributes(filename, name, folder)
         if not attrs:
-            return None
+            return
 
         version = 0
         if "version" in attrs:
@@ -313,7 +316,7 @@ class PluginLoader(object):
         try:
             return self.plugins[type_][name]
         except KeyError:
-            return None
+            return
 
     def get_plugins(self, type_):
         """
@@ -334,7 +337,7 @@ class PluginLoader(object):
                 del self.plugins[type_][name]
         # no errors are thrown if the plugin didn't existed
         except KeyError:
-            return None
+            return
 
     def is_user_plugin(self, name):
         """

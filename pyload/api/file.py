@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from ..utils.purge import uniquify
+from pyload.utils.purge import uniquify
 
 from ..core.datatype.file import FileDoesNotExist
 from ..core.datatype.base import DownloadState, Permission

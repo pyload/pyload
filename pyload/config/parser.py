@@ -12,13 +12,13 @@ from contextlib import closing
 import semver
 from future import standard_library
 
-from ..utils import parse
-from ..utils.check import isiterable, ismapping
-from ..utils.fs import fullpath, open
-from ..utils.layer.legacy.collections_ import OrderedDict
-from ..utils.struct import InscDict
-from ..utils.web.check import isendpoint
-from ..utils.web.parse import endpoint, socket
+from pyload.utils import parse
+from pyload.utils.check import isiterable, ismapping
+from pyload.utils.fs import fullpath
+from pyload.utils.layer.legacy.collections_ import OrderedDict
+from pyload.utils.struct import InscDict
+from pyload.utils.web.check import isendpoint
+from pyload.utils.web.parse import endpoint, socket
 
 from ..__about__ import __version_info__
 from .exceptions import (AlreadyExistsKeyError, InvalidValueError,
@@ -115,7 +115,7 @@ class ConfigOption(object):
         if self.allowed_values and norm_value not in self.allowed_values:
             raise InvalidValueError(value)
         if self.value == norm_value:
-            return None
+            return
         self.value = norm_value
         if store:
             self.parser.store()
@@ -127,7 +127,7 @@ class ConfigSection(InscDict):
     """
     __slots__ = ['desc', 'label', 'parser']
 
-    SECTION_SEP = ':'
+    SECTION_SEPARATOR = ':'
 
     def __init__(self, parser, config=None, label=None, desc=None):
         """
@@ -194,7 +194,7 @@ class ConfigSection(InscDict):
 
     def add_section(
             self, name, config=None, label=None, desc=None, store=None):
-        if self.SECTION_SEP in name:
+        if self.SECTION_SEPARATOR in name:
             raise InvalidValueError(name)
         if name.lower() in self.lowerkeys():
             raise AlreadyExistsKeyError(name)
@@ -240,8 +240,13 @@ class ConfigParser(ConfigSection):
         self.path = fullpath(filename)
         self.version, self.version_info = self._parse_version(version)
 
-        self.log = self._get_logger(logger)
-        self.fp = open(filename, mode='ab+')
+        self.fp = io.open(filename, mode='ab+')
+
+        if logger is None:
+            self.log = logging.getLogger('null')
+            self.log.addHandler(logging.NullHandler())
+        else:
+            self.log = logger
 
         ConfigSection.__init__(self, self, config)
         self._retrieve_fileconfig()
@@ -250,20 +255,13 @@ class ConfigParser(ConfigSection):
         with closing(self.fp):
             self.store()
 
-    def _get_logger(self, value):
-        if value is False:
-            logger = lambda *args, **kwgs: None
-        else:
-            logger = logging.getLogger(value)
-        return logger
-
     def _retrieve_fileconfig(self):
         try:
             return self.retrieve()
         except VersionMismatchError:
             self.fp.close()
             os.rename(self.path, self.path + '.old')
-            self.fp = open(self.path, mode='ab+')
+            self.fp = io.open(self.path, mode='ab+')
         except Exception as e:
             self.log.error(str(e))
         self.log.warning(
@@ -278,7 +276,7 @@ class ConfigParser(ConfigSection):
         return version, version_info
 
     def _make_sections(self, section_id):
-        section_names = section_id.split(self.SECTION_SEP)
+        section_names = section_id.split(self.SECTION_SEPARATOR)
         section = self
         for idx, name in enumerate(section_names):
             try:
@@ -338,7 +336,7 @@ class ConfigParser(ConfigSection):
         for name, item in section.loweritems():
             if section.is_section(name):
                 sub_name = '{0}{1}{2}'.format(
-                    section_name, self.SECTION_SEP, name)
+                    section_name, self.SECTION_SEPARATOR, name)
                 fc = self._to_fileconfig(item, sub_name)
                 config.update(fc)
             else:

@@ -3,12 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 from builtins import int, object, range
 
 from future import standard_library
 
-from ..utils.fs import bufread, fullpath, lopen, remove
+from pyload.utils.fs import bufread, fullpath, remove
 
 standard_library.install_aliases()
 
@@ -48,7 +49,7 @@ class ChunkInfo(object):
 
     def save(self):
         filename = "{0}.chunks".format(self.path)
-        with lopen(filename, mode='w') as fp:
+        with io.open(filename, mode='w') as fp:
             fp.write("name:{0}{1}".format(self.path, os.linesep))
             fp.write("size:{0}{1}".format(self.size, os.linesep))
             for i, c in enumerate(self.chunks):
@@ -62,7 +63,7 @@ class ChunkInfo(object):
         filename = "{0}.chunks".format(name)
         if not os.path.isfile(filename):
             raise IOError
-        with lopen(filename) as fp:
+        with io.open(filename) as fp:
             name = fp.readline()[:-1]
             size = fp.readline()[:-1]
             if name.startswith("name:") and size.startswith("size:"):

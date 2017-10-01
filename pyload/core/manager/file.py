@@ -12,9 +12,9 @@ from future import standard_library
 from ..datatype.file import File
 from ..datatype.base import DownloadStatus, TreeCollection
 from ..datatype.package import (Package, PackageDoesNotExist,
-                                          PackageStatus, RootPackage)
+                                PackageStatus, RootPackage)
 from .base import BaseManager
-from ...utils.struct.lock import RWLock, lock
+from pyload.utils.struct.lock import RWLock, lock
 
 standard_library.install_aliases()
 
@@ -130,7 +130,7 @@ class FileManager(BaseManager):
         pinfo = self.db.get_package_info(pid)
 
         self.pyload.evm.fire("package:inserted", pid,
-                               pinfo.root, pinfo.packageorder)
+                             pinfo.root, pinfo.packageorder)
         return pid
 
     @lock
@@ -147,7 +147,7 @@ class FileManager(BaseManager):
         else:
             info = self.db.get_package_info(pid, False)
             if not info:
-                return None
+                return
 
             pack = Package.from_info_data(self, info)
             self.packages[pid] = pack
@@ -168,7 +168,7 @@ class FileManager(BaseManager):
             pinfo = self.db.get_package_info(pid)
 
         if not pinfo:
-            return None
+            return
 
         # TODO: what does this todo mean?!
         # TODO: fill child packs and files
@@ -192,7 +192,7 @@ class FileManager(BaseManager):
         else:
             info = self.db.get_file_info(fid)
             if not info:
-                return None
+                return
 
             f = File.from_info_data(self, info)
             self.files[fid] = f
@@ -345,7 +345,7 @@ class FileManager(BaseManager):
         """
         pack = self.get_package(pid)
         if not pack:
-            return None
+            return
 
         oldorder = pack.packageorder
         root = pack.root
@@ -371,7 +371,7 @@ class FileManager(BaseManager):
         """
         file = self.get_file(fid)
         if not file:
-            return None
+            return
 
         pid = file.packageid
         order = file.fileorder
@@ -643,7 +643,7 @@ class FileManager(BaseManager):
                 urls.append((file.url, file.pluginname))
 
         if not urls:
-            return None
+            return
 
         self.pyload.iom.create_info_thread(urls, pid)
 

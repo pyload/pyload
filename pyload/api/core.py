@@ -2,11 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 
 from future import standard_library
 
-from ..utils.fs import availspace, lopen
+from pyload.utils.fs import availspace
 
 from ..core.datatype.base import Permission, StatusInfo
 from ..core.datatype.task import Interaction
@@ -121,7 +122,7 @@ class CoreApi(BaseApi):
         """
         Clean way to quit pyLoad.
         """
-        self.pyload._Core__do_shutdown = True
+        self.pyload._Core__do_exit = True
 
     def restart(self):
         """
@@ -145,7 +146,7 @@ class CoreApi(BaseApi):
             logfile_name = self.DEFAULT_LOGFILENAME
         filepath = os.path.join(logfile_folder, logfile_name)
         try:
-            with lopen(filepath) as fp:
+            with io.open(filepath) as fp:
                 lines = fp.readlines()
             if offset >= len(lines):
                 return []

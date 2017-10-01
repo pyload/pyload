@@ -50,6 +50,7 @@ def domain(url):
 _RE_FORM = re.compile(
     r'(<(input|textarea).*?>)([^<]*(?=</\2)|)', flags=re.I | re.S)
 
+
 def _extract_inputs(form):
     taginputs = {}
     for inputtag in _RE_FORM.finditer(
@@ -92,6 +93,8 @@ def form(text, name=None, inputs={}):
 _RE_HEADER = re.compile(r' *(?P<key>.+?) *: *(?P<value>.+?) *\r?\n')
 
 # TODO: Rewrite...
+
+
 def header(text):
     hdict = HeaderDict()
     for key, value in _RE_HEADER.findall(text):

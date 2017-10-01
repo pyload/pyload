@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import random
 import time
@@ -10,8 +11,8 @@ from builtins import object
 
 from future import standard_library
 
-from ...utils.convert import to_str
-from ...utils.fs import lopen, makedirs, remove
+from pyload.utils.convert import to_str
+from pyload.utils.fs import makedirs, remove
 
 standard_library.install_aliases()
 
@@ -112,10 +113,6 @@ class Base(object):
         Retrieves meta data attribute.
         """
         return getattr(self, "__{0}__".format(item))
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     def log_info(self, *args, **kwargs):
         """
@@ -245,13 +242,13 @@ class Base(object):
             from inspect import currentframe
 
             frame = currentframe()
-            dumpdir = os.path.join(self.pyload.cachedir,
+            dumpdir = os.path.join(self.pyload.tmpdir,
                                    'plugins', self.__name__)
             makedirs(dumpdir, exist_ok=True)
 
             filepath = os.path.join(dumpdir, "dump_{0}_line{1}.html".format(
                 frame.f_back.f_code.co_name, frame.f_back.f_lineno))
-            with lopen(filepath, mode='wb') as fp:
+            with io.open(filepath, mode='wb') as fp:
                 fp.write(res)
             del frame  # delete the frame or it wont be cleaned
 
@@ -317,7 +314,7 @@ class Base(object):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = "{0:.2f}".format(time.time())[-6:].replace(".", "")
-        with lopen(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+        with io.open(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
             fp.write(img)
 
             name = "{0}OCR".format(self.__name__)

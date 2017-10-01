@@ -7,7 +7,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from ...utils.check import bitset
+from pyload.utils.check import bitset
 
 from .base import BaseObject, ExceptionObject, Permission
 
@@ -102,7 +102,7 @@ class User(UserData):
         Only Admins have no primary id.
         """
         if self.has_role(Role.Admin):
-            return None
+            return
         return self.true_primary
 
     @property

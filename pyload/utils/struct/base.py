@@ -22,13 +22,14 @@ class Singleton(type):
         if cls not in cls._inst:
             cls._inst[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._inst[cls]
-        
-        
+
+
 class InscDict(MutableMapping):
     """
     Improved version of the header dictionary
     from `requests.structures.CaseInsensitiveDict`.
     """
+
     def __init__(self, *args, **kwargs):
         self.update(*args, **kwargs)
 

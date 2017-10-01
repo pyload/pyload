@@ -21,7 +21,7 @@ class BaseApi(AbstractApi):
 
     def __init__(self, core, user):
         # Only for auto completion, this class can not be instantiated
-        from .core import Core
+        from ..core import Core
         from ..core.datatype.user import User
         assert isinstance(core, Core)
         assert issubclass(BaseApi, AbstractApi)
@@ -31,10 +31,6 @@ class BaseApi(AbstractApi):
         self.user = user
         # No instantiating!
         raise Exception
-
-    @property
-    def pyload(self):
-        return self.pyload
 
 
 class AbstractApi(object):
@@ -292,7 +288,7 @@ class AbstractApi(object):
     def upload_container(self, filename, data):
         pass
 
-        
+
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
 perm_map = {}
@@ -355,12 +351,8 @@ class Api(AbstractApi):
         self.user_apis = {}
 
     @property
-    def pyload(self):
-        return self.pyload
-
-    @property
     def user(self):
-        return None  # TODO: return default user?
+        return  # TODO: return default user?
 
     # @property
     # def primary_uid(self):
@@ -402,7 +394,7 @@ class Api(AbstractApi):
         if uid not in self.user_apis:
             user = self.pyload.db.get_user_data(uid=uid)
             if not user:  # TODO: anonymous user?
-                return None
+                return
 
             self.user_apis[uid] = UserApi(
                 self.pyload, User.from_user_data(self, user))
@@ -461,6 +453,7 @@ class UserApi(Api):
     """
     Proxy object for api that provides all methods in user context.
     """
+
     def __init__(self, core, user):
         # No need to init super class
         self.pyload = core
@@ -472,4 +465,3 @@ class UserApi(Api):
     @property
     def user(self):
         return self._user
-        

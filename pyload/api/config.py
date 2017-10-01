@@ -13,6 +13,7 @@ class ConfigApi(BaseApi):
     """
     Everything related to configuration.
     """
+
     def get_config_value(self, section, option):
         """
         Retrieve config value.

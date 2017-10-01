@@ -13,12 +13,12 @@ from _thread import start_new_thread
 from future import standard_library
 
 from ..datatype.base import (AddonInfo, AddonService,
-                                       ServiceDoesNotExist, ServiceException)
+                             ServiceDoesNotExist, ServiceException)
 from .base import BaseManager
 from ..thread import AddonThread
-from ...utils.layer.legacy.collections_ import namedtuple
-from ...utils.layer.safethreading import RLock
-from ...utils.struct.lock import lock
+from pyload.utils.layer.legacy.collections_ import namedtuple
+from pyload.utils.layer.safethreading import RLock
+from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 
@@ -30,6 +30,7 @@ class AddonManager(BaseManager):
     """
     Manages addons, loading, unloading.
     """
+
     def __init__(self, core):
         BaseManager.__init__(self, core)
 
@@ -136,7 +137,7 @@ class AddonManager(BaseManager):
 
         # check if section was a plugin
         if plugin not in self.pyload.pgm.get_plugins("addon"):
-            return None
+            return
 
         if name == "activated" and value:
             self.activate_addon(plugin)
@@ -147,12 +148,12 @@ class AddonManager(BaseManager):
     def activate_addon(self, plugin):
         # check if already loaded
         if plugin in self.plugins:
-            return None
+            return
 
         pluginclass = self.pyload.pgm.load_class("addon", plugin)
 
         if not pluginclass:
-            return None
+            return
 
         self.pyload.log.debug("Plugin loaded: {0}".format(plugin))
 
@@ -166,12 +167,12 @@ class AddonManager(BaseManager):
     @lock
     def deactivate_addon(self, plugin):
         if plugin not in self.plugins:
-            return None
+            return
         else:  # TODO: multiple instances
             addon = self.plugins[plugin].instances[0]
 
         if addon.__internal__:
-            return None
+            return
 
         self.call(addon, "deactivate")
         self.pyload.log.debug("Plugin deactivated: {0}".format(plugin))

@@ -13,6 +13,7 @@ standard_library.install_aliases()
 
 _RE_COMMENTS = re.compile(r'<!--.*?-->', flags=re.S)
 
+
 def comments(value):
     return _RE_COMMENTS.sub('', value).strip()
 
@@ -26,6 +27,7 @@ def escape(text):
 
 
 _RE_TAGS = re.compile(r'<[^<]+?>')
+
 
 def tags(value):
     return _RE_TAGS.sub('', value).strip()

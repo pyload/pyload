@@ -54,11 +54,11 @@ def endpoint_to_socket(endpoint):
 # def code_to_status(code):
     # code = int(code)
     # if code < 400:
-        # status = 'online'
+    # status = 'online'
     # elif code < 500:
-        # status = 'offline'
+    # status = 'offline'
     # elif code < 600:
-        # status = 'tempoffline'
+    # status = 'tempoffline'
     # else:
-        # status = 'unknown'
+    # status = 'unknown'
     # return status

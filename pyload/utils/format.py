@@ -46,6 +46,7 @@ def path(*paths):
 
 __byte_prefixes = ('', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yi')
 
+
 def size(obj):
     KIB = 1024.0
     num = float(obj)

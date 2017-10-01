@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import inspect
 import os
 import pprint
@@ -13,7 +14,7 @@ from builtins import str
 from future import standard_library
 
 from .check import proprieties
-from .fs import lopen, makefile
+from .fs import makefile
 
 standard_library.install_aliases()
 
@@ -25,7 +26,7 @@ def report(value, dirname):
             frame.f_back.f_code.co_name, frame.f_back.f_lineno)
         filepath = os.path.join(dirname, filename)
         makefile(filepath, exist_ok=True)
-        with lopen(filepath, mode='wb') as fp:
+        with io.open(filepath, mode='wb') as fp:
             fp.write(value)
     finally:
         del frame  # delete it just now or wont be cleaned by gc

@@ -13,8 +13,8 @@ from future import standard_library
 
 import pycurl
 
-from ...requests.request import ResponseException
-from ...utils.layer.safethreading import Event
+from pyload.requests.request import ResponseException
+from pyload.utils.layer.safethreading import Event
 
 from ..network.base import Abort, Fail, Retry
 from ..network.hoster import Reconnect, Skip
@@ -54,7 +54,7 @@ class DownloadThread(PluginThread):
     def _handle_reconnect(self, file):
         self.queue.put(file)
         # file.req.clear_cookies()
-        while self.__manager.reconnecting.isSet():
+        while self.manager.reconnecting.isSet():
             time.sleep(0.5)
 
     def _handle_retry(self, file, reason):
@@ -196,7 +196,7 @@ class DownloadThread(PluginThread):
         self.__running.set()
         # only done when job was not put back
         if self.queue.empty():
-            self.__manager.done(self)
+            self.manager.done(self)
 
     def run(self):
         """
@@ -211,7 +211,7 @@ class DownloadThread(PluginThread):
 
             if self.active == "quit":
                 self.active = None
-                self.__manager.discard(self)
+                self.manager.discard(self)
                 return True
 
             try:
@@ -260,7 +260,7 @@ class DownloadThread(PluginThread):
 
     def get_progress_info(self):
         if not self.active:
-            return None
+            return
         return self.active.get_progress_info()
 
     def put(self, job):

@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import re
 import time
@@ -12,9 +13,8 @@ from contextlib import closing
 from future import standard_library
 
 import pycurl
-from ...utils import purge
-from ...utils.fs import lopen
-from ...utils.struct import HeaderDict
+from pyload.utils import purge
+from pyload.utils.struct import HeaderDict
 
 from .request import CurlRequest
 
@@ -87,7 +87,7 @@ class CurlChunk(CurlRequest):
         # defect arihmetic unit
         filename = self.p.info.get_chunk_name(self.id)
         if self.resume:
-            self.fp = lopen(filename, mode='ab')
+            self.fp = io.open(filename, mode='ab')
             self.arrived = self.fp.tell()
             if not self.arrived:
                 self.arrived = os.stat(filename).st_size
@@ -95,7 +95,7 @@ class CurlChunk(CurlRequest):
             if self.range:
                 # do nothing if chunk already finished
                 if self.arrived + self.range[0] >= self.range[1]:
-                    return None
+                    return
 
                 # as last chunk dont set end range, so we get everything
                 if self.id == len(self.p.info.chunks) - 1:
@@ -123,7 +123,7 @@ class CurlChunk(CurlRequest):
                 self.log.debug("Chunked with range {0}".format(range))
                 self.setopt(pycurl.RANGE, range)
 
-            self.fp = lopen(filename, mode='wb')
+            self.fp = io.open(filename, mode='wb')
 
         return self.c
 

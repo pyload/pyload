@@ -13,11 +13,11 @@ from future import standard_library
 from ..datatype.base import DownloadStatus
 from .base import BaseManager
 from ..thread import DecrypterThread, DownloadThread
-from ...utils.fs import availspace
-from ...utils.layer.legacy import subprocess_ as subprocess
-from ...utils.layer.safethreading import Event
-from ...utils.struct.lock import RWLock, lock
-from ...utils.web.misc import get_ip
+from pyload.utils.fs import availspace
+from pyload.utils.layer.legacy import subprocess_ as subprocess
+from pyload.utils.layer.safethreading import Event
+from pyload.utils.struct.lock import RWLock, lock
+from pyload.utils.web.misc import get_ip
 
 standard_library.install_aliases()
 
@@ -26,6 +26,7 @@ class TransferManager(BaseManager):
     """
     Schedules and manages download and decrypter jobs.
     """
+
     def __init__(self, core):
         BaseManager.__init__(self, core)
 
@@ -273,7 +274,7 @@ class TransferManager(BaseManager):
         if not os.path.isfile(script):
             self.pyload.config.set('reconnect', 'activated', False)
             self.pyload.log.warning(self._("Reconnect script not found!"))
-            return None
+            return
 
         self.reconnecting.set()
 
@@ -301,7 +302,7 @@ class TransferManager(BaseManager):
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
             # self.pyload.print_exc()
-            return None
+            return
 
         time.sleep(1)
         ip = get_ip()

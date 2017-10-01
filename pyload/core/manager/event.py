@@ -38,6 +38,7 @@ class EventManager(BaseManager):
     | Notes:
     |    download:allProcessed is *always* called before download:allFinished
     """
+
     def __init__(self, core):
         BaseManager.__init__(self, core)
         self.events = {'event': []}

@@ -75,7 +75,7 @@ class UserMethods(DatabaseMethods):
             if r:
                 return UserData(*r)
 
-        return None
+        return
 
     @queue
     def get_all_user_data(self):
@@ -96,14 +96,14 @@ class UserMethods(DatabaseMethods):
             'FROM "users" WHERE name=?', (user,))
         r = self.c.fetchone()
         if not r:
-            return None
+            return
         salt = r[-1][:5]
         pw = r[-1][5:]
         h = sha1(salt + password)
         if h.hexdigest() == pw:
             return UserData(*r[:-1])
         else:
-            return None
+            return
 
     @queue
     def change_password(self, user, oldpw, newpw):

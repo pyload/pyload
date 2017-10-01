@@ -90,7 +90,7 @@ class Package(BaseObject):
     def __init__(
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
-        self.__manager = manager
+        self.manager = manager
         self.pyload = manager.pyload
 
         self.pid = pid
@@ -110,10 +110,6 @@ class Package(BaseObject):
 
         # Finish event already fired
         self.set_finished = False
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     def is_stale(self):
         return self.timestamp + 30 * 60 > time.time()
@@ -138,26 +134,26 @@ class Package(BaseObject):
         """
         return self.pyload.db.get_all_files(package=self.pid)
 
-    def get_path(self, name=""):
+    def get_path(self, name=''):
         self.timestamp = time.time()
-        return os.path.join(self.__manager.get_package(
+        return os.path.join(self.manager.get_package(
             self.root).get_path(), self.folder, name)
 
     def sync(self):
         """
         Sync with db.
         """
-        self.__manager.update_package(self)
+        self.manager.update_package(self)
 
     def release(self):
         """
         Sync and delete from cache.
         """
         self.sync()
-        self.__manager.release_package(self.id)
+        self.manager.release_package(self.id)
 
     def delete(self):
-        self.__manager.remove_package(self.id)
+        self.manager.remove_package(self.id)
 
     def delete_if_empty(self):
         """
@@ -177,10 +173,10 @@ class RootPackage(Package):
     __slots__ = []
 
     def __init__(self, m, owner):
-        Package.__init__(self, m, -1, "root", "", owner, -2,
-                         "", "", "", 0, [], PackageStatus.Ok, False, 0)
+        Package.__init__(self, m, -1, "root", '', owner, -2,
+                         '', '', '', 0, [], PackageStatus.Ok, False, 0)
 
-    def get_path(self, name=""):
+    def get_path(self, name=''):
         return os.path.join(self.pyload.config.get(
             'general', 'storage_folder'), name)
 

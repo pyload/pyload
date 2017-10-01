@@ -17,6 +17,7 @@ class StatisticsApi(BaseApi):
     """
     Retrieve download statistics and quota.
     """
+
     def record_download(self, file):
         """
         Add download record to the statistics.

@@ -2,15 +2,16 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import time
 from builtins import int, str
 
 from future import standard_library
 
-from ...requests.curl.download import CurlDownload
-from ...requests.curl.request import CurlRequest
-from ...utils.fs import lopen, makedirs, remove
+from pyload.requests.curl.download import CurlDownload
+from pyload.requests.curl.request import CurlRequest
+from pyload.utils.fs import makedirs, remove
 
 from .base import Base, Fail, Retry
 
@@ -251,7 +252,7 @@ class Hoster(Base):
         raise Fail("temp. offline")
 
     def retry(self, max_tries=3, wait_time=1,
-              reason="", backoff=lambda x, y: x):
+              reason='', backoff=lambda x, y: x):
         """
         Retries and begin again from the beginning
 
@@ -372,17 +373,17 @@ class Hoster(Base):
         :return: dictionary key of the first rule that matched
         """
         if not os.path.isfile(self.last_download):
-            return None
+            return
 
         size = os.stat(self.last_download)
         size = size.st_size
 
         if api_size and api_size <= size:
-            return None
+            return
         elif size > max_size and not read_size:
-            return None
+            return
         self.pyload.log.debug("Download Check triggered")
-        with lopen(self.last_download, mode='rb') as fp:
+        with io.open(self.last_download, mode='rb') as fp:
             content = fp.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         #self.pyload.log.debug("Content: {0}".format(content))

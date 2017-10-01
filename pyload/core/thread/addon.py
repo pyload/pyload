@@ -34,7 +34,7 @@ class AddonThread(PluginThread):
         self.__pi = None  # ProgressInfo
 
     def start(self):
-        self.__manager.add_thread(self)
+        self.manager.add_thread(self)
         PluginThread.start(self)
 
     def get_active_files(self):
@@ -45,7 +45,7 @@ class AddonThread(PluginThread):
         Progress of the thread.
         """
         if not self.active:
-            return None
+            return
         active = self.active[0]
         return ProgressInfo(
             active.pluginname, active.name, active.get_status_name(), 0,
@@ -56,7 +56,7 @@ class AddonThread(PluginThread):
         Adds a file to active list and thus will be displayed on overview.
         """
         if file in self.active:
-            return None
+            return
         self.active.append(file)
 
     def finish_file(self, file):

@@ -34,7 +34,7 @@ class Bucket(object):
 
     def _calc_token(self):
         if self.token >= self.rate:
-            return None
+            return
         now = time.time()
         delta = self.rate * (now - self.timestamp)
         self.token = min(self.rate, self.token + delta)

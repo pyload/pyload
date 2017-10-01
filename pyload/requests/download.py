@@ -6,7 +6,7 @@ import logging
 
 from future import standard_library
 
-from ..utils.layer.safethreading import Event
+from pyload.utils.layer.safethreading import Event
 
 from .request import Request
 
@@ -17,8 +17,13 @@ class DownloadRequest(Request):
     """
     Abstract class for download request.
     """
+
     def __init__(self, bucket, request=None, logger=None):
-        self.log = self._get_logger(logger)
+        if logger is None:
+            self.log = logging.getLogger('null')
+            self.log.addHandler(logging.NullHandler())
+        else:
+            self.log = logger
 
         # Copies the context
         context = request.get_context() if request else [{}]
@@ -30,13 +35,6 @@ class DownloadRequest(Request):
 
         # bucket used for rate limiting
         self.bucket = bucket
-
-    def _get_logger(self, value):
-        if value is False:
-            logger = lambda *args, **kwgs: None
-        else:
-            logger = logging.getLogger(value)
-        return logger
 
     def download(self, uri, filename, *args, **kwargs):
         """

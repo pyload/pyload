@@ -17,6 +17,7 @@ standard_library.install_aliases()
 
 _RE_ALIAS = re.compile(r'[\d.-_]+')
 
+
 def alias(text):
     chunks = _RE_ALIAS.split(purge.name(text))
     return ''.join(word.capitalize() for word in chunks if word)
@@ -25,6 +26,7 @@ def alias(text):
 _BOOLEANMAP = {
     '1': True, 'yes': True, 'true': True, 'on': True,
     '0': False, 'no': False, 'false': False, 'off': False}
+
 
 def boolean(text):
     return _BOOLEANMAP.get(text.strip().lower())
@@ -72,6 +74,7 @@ _TENWORDS = (
     "ninety")
 _RE_NUMBER = re.compile(r'[\s-]+')
 
+
 def number(text):
     try:
         text = web.misc.translate(text).lower()
@@ -88,6 +91,7 @@ def number(text):
 
 
 _RE_PACKS = re.compile(r'[^a-z0-9]+(?:(cd|part).*?\d+)?', flags=re.I)
+
 
 def packs(nameurls):
     DEFAULT_URLNAME = "Unknown"
@@ -107,6 +111,7 @@ def packs(nameurls):
 
 
 _RE_SIZE = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
+
 
 def bytesize(text, unit=None):  # returns integer bytes
     DEFAULT_INPUTUNIT = 'byte'
@@ -128,6 +133,7 @@ _TIMEWORDS = ("this", "a", "an", "next")
 _TIMEMAP = {
     'day': 60 ** 2 * 12, 'hr': 60 ** 2, 'hour': 60 ** 2, 'min': 60, 'sec': 1}
 _RE_TIME = re.compile(r'(\d+|[a-zA-Z-]+)\s*(day|hr|hour|min|sec)|(\d+)')
+
 
 def seconds(text):
     try:

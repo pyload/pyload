@@ -7,9 +7,9 @@ from builtins import object
 
 from future import standard_library
 
-from ...requests.bucket import Bucket
-from ...requests.curl.download import CurlDownload
-from ...requests.curl.request import CurlRequest
+from pyload.requests.bucket import Bucket
+from pyload.requests.curl.download import CurlDownload
+from pyload.requests.curl.request import CurlRequest
 
 standard_library.install_aliases()
 
@@ -22,10 +22,6 @@ class RequestFactory(object):
         self.update_bucket()
 
         self.pyload.evm.listen_to("config:changed", self.update_config)
-
-    @property
-    def pyload(self):
-        return self.pyload
 
     def get_url(self, *args, **kwargs):
         """

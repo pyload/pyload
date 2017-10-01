@@ -8,12 +8,12 @@ from builtins import str
 from future import standard_library
 
 from ..datatype.base import (DownloadStatus, LinkStatus,
-                                       ProgressInfo, ProgressType)
+                             ProgressInfo, ProgressType)
 from ..datatype.package import Package
 from ..network.base import Abort, Retry
 from ..thread.plugin import PluginThread
-from ...utils.misc import accumulate
-from ...utils.purge import uniquify
+from pyload.utils.misc import accumulate
+from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 
@@ -62,7 +62,7 @@ class DecrypterThread(PluginThread):
         self.pyload.files.set_download_status(
             self.fid, DownloadStatus.Finished
             if not self.error else DownloadStatus.Failed)
-        self.__manager.done(self)
+        self.manager.done(self)
 
     def _decrypt(self, name, urls, password):
         klass = self.pyload.pgm.load_class("crypter", name)
@@ -86,7 +86,7 @@ class DecrypterThread(PluginThread):
             self.pyload.log.debug(
                 "Plugin '{0}' for decrypting was not loaded".format(name))
             self.__pi.done += len(urls)
-            return None
+            return
 
         try:
             plugin = klass(self.pyload, password)
@@ -123,7 +123,7 @@ class DecrypterThread(PluginThread):
     def decrypt(self, plugin_map, password=None):
         result = []
         self.__pi = ProgressInfo(
-            "BasePlugin", "", self._("decrypting"), 0, 0, len(
+            "BasePlugin", '', self._("decrypting"), 0, 0, len(
                 self.data), self.owner,
             ProgressType.Decrypting
         )

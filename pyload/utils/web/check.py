@@ -44,6 +44,7 @@ def isport(value):
 
 _RE_ISH = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
 
+
 def ishost(value):
     MAX_HOSTNAME_LEN = 253
     try:

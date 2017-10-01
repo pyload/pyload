@@ -11,9 +11,9 @@ from future import standard_library
 from ..datatype.base import Input, InputType
 from ..datatype.task import Interaction, InteractionTask
 from .base import BaseManager
-from ...utils.check import bitset
-from ...utils.layer.legacy.collections_ import OrderedDict
-from ...utils.struct.lock import lock
+from pyload.utils.check import bitset
+from pyload.utils.layer.legacy.collections_ import OrderedDict
+from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 
@@ -54,7 +54,7 @@ class ExchangeManager(BaseManager):
 
     @lock
     def create_notification(self, title, content,
-                            desc="", plugin="", owner=None):
+                            desc='', plugin='', owner=None):
         """
         Creates and queues a new Notification
 
@@ -73,7 +73,7 @@ class ExchangeManager(BaseManager):
         return task
 
     @lock
-    def create_query_task(self, input, desc, plugin="", owner=None):
+    def create_query_task(self, input, desc, plugin='', owner=None):
         # input type was given, create a input widget
         if isinstance(input, int):
             input = Input(input)
@@ -89,7 +89,7 @@ class ExchangeManager(BaseManager):
 
     @lock
     def create_captcha_task(self, img, format, filename,
-                            plugin="", type_=InputType.Str, owner=None):
+                            plugin='', type_=InputType.Str, owner=None):
         """
         Createss a new captcha task.
 

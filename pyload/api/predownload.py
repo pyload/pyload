@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import io
 import os
 import re
 from builtins import str
@@ -9,9 +10,8 @@ from itertools import chain
 
 from future import standard_library
 
-from ..utils import parse
-from ..utils.fs import lopen
-from ..utils.purge import uniquify
+from pyload.utils import parse
+from pyload.utils.purge import uniquify
 
 from ..core.datatype.check import OnlineCheck
 from ..core.datatype.base import DownloadStatus, LinkStatus, Permission
@@ -83,7 +83,7 @@ class PreDownloadApi(BaseApi):
         storagedir = self.pyload.config.get('general', 'storage_folder')
         filename = 'tmp_{0}'.format(filename)
         filepath = os.path.join(storagedir, filename)
-        with lopen(filepath, mode='wb') as fp:
+        with io.open(filepath, mode='wb') as fp:
             fp.write(str(data))
             return self.check_links([fp.name])
 

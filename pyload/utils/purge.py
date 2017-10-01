@@ -24,6 +24,7 @@ _WINBADWORDS = (
     'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
     'con', 'prn')
 
+
 def name(text, sep='_', allow_whitespaces=False):
     """
     Remove invalid characters.
