@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
 
 from __future__ import absolute_import, unicode_literals
-
-from builtins import str
 
 from future import standard_library
 
@@ -81,5 +78,5 @@ class EventManager(BaseManager):
                     self.pyload.log.warning(
                         'Error calling event handler '
                         '{0}: {1}, {2}'.format(event, func, args), exc)
-                    
+
                     # self.pyload.print_exc()

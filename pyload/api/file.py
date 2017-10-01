@@ -4,12 +4,11 @@ from __future__ import absolute_import, unicode_literals
 
 from future import standard_library
 
-from pyload.utils.purge import uniquify
-
+from pyload.api.base import BaseApi, requireperm
 from pyload.core.datatype.base import DownloadState, Permission
 from pyload.core.datatype.file import FileDoesNotExist
 from pyload.core.datatype.package import PackageDoesNotExist, PackageStatus
-from pyload.api.base import BaseApi, requireperm
+from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 

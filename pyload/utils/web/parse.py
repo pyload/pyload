@@ -10,9 +10,9 @@ import urllib.parse
 import tld
 from future import standard_library
 
-from pyload.utils.web import format, purge
 from pyload.utils.check import isiterable
 from pyload.utils.struct import HeaderDict
+from pyload.utils.web import format, purge
 from pyload.utils.web.check import ishost, isip, isport
 from pyload.utils.web.convert import host_to_ip, ip_to_host, splitaddress
 

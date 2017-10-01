@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
 
 import sys
 import time
-from builtins import str
 from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
 
 import pycurl
-from pyload.requests.request import ResponseException
-from pyload.utils.layer.safethreading import Event
-
 from pyload.core.network.base import Abort, Fail, Retry
 from pyload.core.network.hoster import Reconnect, Skip
 from pyload.core.thread.plugin import PluginThread
+from pyload.requests.request import ResponseException
+from pyload.utils.convert import to_str
+from pyload.utils.layer.safethreading import Event
 
 standard_library.install_aliases()
 
@@ -237,7 +234,7 @@ class DownloadThread(PluginThread):
                 self.clean(file)
                 continue
             except Skip as exc:
-                self._handle_skip(file,to_str(exc))
+                self._handle_skip(file, to_str(exc))
                 continue
             except Exception as exc:
                 if isinstance(exc, ResponseException) and exc.code == 500:

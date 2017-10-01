@@ -7,11 +7,10 @@ import os
 
 from future import standard_library
 
-from pyload.utils.fs import availspace
-
+from pyload.api.base import BaseApi, requireperm
 from pyload.core.datatype.base import Permission, StatusInfo
 from pyload.core.datatype.task import Interaction
-from pyload.api.base import BaseApi, requireperm
+from pyload.utils.fs import availspace
 
 standard_library.install_aliases()
 

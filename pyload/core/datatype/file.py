@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -12,12 +10,13 @@ from enum import IntEnum
 
 from future import standard_library
 
+from pyload.core.datatype.base import (BaseObject, DownloadInfo,
+                                       DownloadProgress, DownloadStatus,
+                                       ExceptionObject, MediaType,
+                                       ProgressInfo, ProgressType)
 from pyload.utils import purge
 from pyload.utils.debug import print_traceback
 from pyload.utils.struct.lock import RWLock, lock
-
-from pyload.core.datatype.base import (BaseObject, DownloadInfo, DownloadProgress, DownloadStatus,
-                   ExceptionObject, MediaType, ProgressInfo, ProgressType)
 
 standard_library.install_aliases()
 

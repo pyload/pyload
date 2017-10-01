@@ -33,7 +33,8 @@ class Request(object):
 
     # Class that will be instantiated and associated with the request,
     # and if needed copied and reused
-    def CONTEXT_CLASS(): return None
+    def CONTEXT_CLASS():
+        return None
 
     def __init__(self, config, context=None, options=None, logger=None):
         if logger is None:

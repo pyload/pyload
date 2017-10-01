@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -12,11 +10,10 @@ from builtins import object, str
 from future import standard_library
 from pkg_resources import resource_filename
 
-from pyload.utils.fs import fullpath
-
 from pyload.__about__ import __package__
-from pyload.core.network.loader import LoaderFactory, PluginLoader
 from pyload.core.manager.base import BaseManager
+from pyload.core.network.loader import LoaderFactory, PluginLoader
+from pyload.utils.fs import fullpath
 
 standard_library.install_aliases()
 

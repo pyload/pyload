@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -14,10 +12,9 @@ from urllib.parse import quote, urlencode
 from future import standard_library
 
 import pycurl
-from pyload.utils.convert import to_bytes
-
 from pyload.requests.cookie import CookieJar
 from pyload.requests.request import Abort, Request, ResponseException
+from pyload.utils.convert import to_bytes, to_str
 
 standard_library.install_aliases()
 

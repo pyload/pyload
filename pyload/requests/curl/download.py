@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
@@ -10,21 +8,20 @@ import os
 import shutil
 import sys
 import time
-from builtins import range, str
+from builtins import range
 from contextlib import closing
 
 from future import standard_library
 
 import pycurl
-from pyload.utils import purge
-from pyload.utils.fs import fullpath, remove
-
 from pyload.requests.chunk import ChunkInfo
 from pyload.requests.cookie import CookieJar
+from pyload.requests.curl.chunk import CurlChunk
 from pyload.requests.download import DownloadRequest
 from pyload.requests.request import Abort, ResponseException
 from pyload.requests.types import Connection
-from pyload.requests.curl.chunk import CurlChunk
+from pyload.utils import purge
+from pyload.utils.fs import fullpath, remove
 
 standard_library.install_aliases()
 
@@ -149,7 +146,7 @@ class CurlDownload(DownloadRequest):
 
         try:
             self._download(chunks, resume)
-            
+
         except pycurl.error as exc:
             # code 33 - no resume
             code = exc.args[0]
@@ -350,10 +347,10 @@ class CurlDownload(DownloadRequest):
     def close_chunk(self, chunk):
         try:
             self.manager.remove_handle(chunk.c)
-            
+
         except pycurl.error as exc:
             self.log.debug('Error removing chunk', exc)
-            
+
         finally:
             chunk.close()
 

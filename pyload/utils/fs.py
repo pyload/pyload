@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -226,7 +224,7 @@ def mkfile(filename, size=None):
 def makedirs(dirname, mode=0o777, exist_ok=False):
     try:
         os.makedirs(dirname, mode)
-        
+
     except OSError as exc:
         if not os.path.isdir(dirname) or not exist_ok:
             raise OSError(exc)
@@ -237,7 +235,7 @@ def makefile(filepath, mode=0o700, size=None, exist_ok=False):
     makedirs(dirname, mode, exist_ok=True)
     try:
         mkfile(filepath, size)
-        
+
     except OSError as exc:
         if not os.path.isfile(filepath) or not exist_ok:
             raise OSError(exc)

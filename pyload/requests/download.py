@@ -6,9 +6,8 @@ import logging
 
 from future import standard_library
 
-from pyload.utils.layer.safethreading import Event
-
 from pyload.requests.request import Request
+from pyload.utils.layer.safethreading import Event
 
 standard_library.install_aliases()
 

@@ -8,10 +8,9 @@ import random
 
 from future import standard_library
 
-from pyload.utils.struct.lock import lock
-
 from pyload.core.datatype.base import AccountInfo
 from pyload.core.manager.base import BaseManager
+from pyload.utils.struct.lock import lock
 
 standard_library.install_aliases()
 

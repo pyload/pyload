@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 #
 # Copyright (C) 2009 kingzero, RaNaN
 #
@@ -29,10 +28,9 @@ from future import standard_library
 from pkg_resources import resource_filename
 
 import Image
+from pyload.__about__ import __package__
 from pyload.utils.fs import remove
 from pyload.utils.layer.legacy.subprocess import PIPE, Popen
-
-from pyload.__about__ import __package__
 
 standard_library.install_aliases()
 
@@ -305,7 +303,6 @@ class OCR(object):
         return letters
 
     def correct(self, values, var=None):
-
         if var:
             result = var
         else:

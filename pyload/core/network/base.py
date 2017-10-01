@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN, vuolter
 
 from __future__ import absolute_import, unicode_literals

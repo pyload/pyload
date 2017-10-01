@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -11,6 +9,7 @@ import re
 from future import standard_library
 
 from pyload.utils import convert, purge, web
+from pyload.utils.convert import to_str
 from pyload.utils.layer.legacy import hashlib
 from pyload.utils.time import seconds_to_midnight
 
@@ -144,21 +143,21 @@ def seconds(text):
             return int(obj)
         except ValueError:
             return None
-            
+
     try:
         text = web.misc.translate(text).lower()
     except Exception:
         text = text.lower()
-        
+
     pattr = r'({0})\s+day|today|daily'.format('|'.join(_TIMEWORDS))
     m = re.search(pattr, text)
     if m is not None:
         return seconds_to_midnight()
-        
+
     seconds = sum(
         (w in _TIMEWORDS or to_int(i or w) or number(w) or 1) *
         _TIMEMAP.get(u, 1) for w, u, i in _RE_TIME.findall(text))
-        
+
     return seconds
 
 

@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
-
 from __future__ import absolute_import, unicode_literals
 
 import io
 import os
 import re
-from builtins import str
 from itertools import chain
 
 from future import standard_library
 
-from pyload.utils import parse
-from pyload.utils.purge import uniquify
-
+from pyload.api.base import BaseApi, requireperm
 from pyload.core.datatype.base import DownloadStatus, LinkStatus, Permission
 from pyload.core.datatype.check import OnlineCheck
-from pyload.api.base import BaseApi, requireperm
+from pyload.utils import parse
+from pyload.utils.convert import to_str
+from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 

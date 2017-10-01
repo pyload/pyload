@@ -13,10 +13,9 @@ from contextlib import closing
 from future import standard_library
 
 import pycurl
+from pyload.requests.curl.request import CurlRequest
 from pyload.utils import purge
 from pyload.utils.struct import HeaderDict
-
-from pyload.requests.curl.request import CurlRequest
 
 standard_library.install_aliases()
 

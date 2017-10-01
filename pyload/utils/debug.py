@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -11,7 +9,6 @@ import os
 import pprint
 import sys
 import traceback
-from builtins import str
 
 from future import standard_library
 
@@ -41,10 +38,10 @@ def _format_dump(obj):
             continue
         try:
             attr_dump = pprint.pformat(getattr(obj, attr_name))
-            
+
         except Exception as exc:
             attr_dump = '<ERROR WHILE PRINTING VALUE> {0}'.format(exc)
-            
+
         dump.append((attr_name, attr_dump))
     return dump
 

@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
 
 import datetime
 import os
-from builtins import int, str
+from builtins import int
 
 from future import standard_library
 
 from pyload.utils.check import isiterable
+from pyload.utils.convert import to_str
 from pyload.utils.fs import fullpath
 
 standard_library.install_aliases()

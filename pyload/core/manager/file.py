@@ -9,13 +9,12 @@ from functools import reduce
 
 from future import standard_library
 
-from pyload.utils.struct.lock import RWLock, lock
-
 from pyload.core.datatype.base import DownloadStatus, TreeCollection
 from pyload.core.datatype.file import File
-from pyload.core.datatype.package import (Package, PackageDoesNotExist, PackageStatus,
-                                RootPackage)
+from pyload.core.datatype.package import (Package, PackageDoesNotExist,
+                                          PackageStatus, RootPackage)
 from pyload.core.manager.base import BaseManager
+from pyload.utils.struct.lock import RWLock, lock
 
 standard_library.install_aliases()
 

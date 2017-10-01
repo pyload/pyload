@@ -3,18 +3,16 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from builtins import str
 
 from future import standard_library
 
-from pyload.utils.misc import accumulate
-from pyload.utils.purge import uniquify
-
-from pyload.core.datatype.base import (DownloadStatus, LinkStatus, ProgressInfo,
-                             ProgressType)
+from pyload.core.datatype.base import (DownloadStatus, LinkStatus,
+                                       ProgressInfo, ProgressType)
 from pyload.core.datatype.package import Package
 from pyload.core.network.base import Abort, Retry
 from pyload.core.thread.plugin import PluginThread
+from pyload.utils.misc import accumulate
+from pyload.utils.purge import uniquify
 
 standard_library.install_aliases()
 

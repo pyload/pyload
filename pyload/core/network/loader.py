@@ -9,14 +9,13 @@ import logging
 import os
 import re
 import time
-from builtins import object, range, str
+from builtins import object, range
 
 from future import standard_library
 
+from pyload.core.network.base import Base
 from pyload.utils.fs import fullpath, makefile
 from pyload.utils.layer.legacy.collections import defaultdict, namedtuple
-
-from pyload.core.network.base import Base
 
 standard_library.install_aliases()
 
@@ -157,7 +156,7 @@ class PluginLoader(object):
             try:
                 attrs[m[0]] = ast.literal_eval(
                     m[-1].replace('self._(', '(').replace('_(', '('))
-            
+
             except Exception as exc:
                 self.log_debug(
                     folder, name, 'Error when parsing: {0}'.format(m[-1]))

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -15,18 +13,18 @@ from contextlib import closing
 import semver
 from future import standard_library
 
+from pyload.__about__ import __version_info__
+from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
+                                      VersionMismatchError)
+from pyload.config.types import InputType
 from pyload.utils import parse
 from pyload.utils.check import isiterable, ismapping
+from pyload.utils.convert import to_str
 from pyload.utils.fs import fullpath
 from pyload.utils.layer.legacy.collections import OrderedDict
 from pyload.utils.struct import InscDict
 from pyload.utils.web.check import isendpoint
 from pyload.utils.web.parse import endpoint, socket
-
-from pyload.__about__ import __version_info__
-from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
-                         VersionMismatchError)
-from pyload.config.types import InputType
 
 standard_library.install_aliases()
 
@@ -60,7 +58,7 @@ class ConfigOption(object):
         InputType.Bytes: lambda x: b"" if x is None else bytes(x),
         InputType.StrList:
             lambda l: [
-               to_str(x) for x in l] if isiterable(l) else parse.entries(l)
+            to_str(x) for x in l] if isiterable(l) else parse.entries(l)
     }
 
     def __init__(self, parser, value, label=None, desc=None,
@@ -257,15 +255,15 @@ class ConfigParser(ConfigSection):
     def _retrieve_fileconfig(self):
         try:
             return self.retrieve()
-            
+
         except VersionMismatchError:
             self.fp.close()
             os.rename(self.path, self.path + '.old')
             self.fp = io.open(self.path, mode='ab+')
-            
+
         except Exception as exc:
             self.log.error(exc)
-            
+
         self.log.warning(
             'Unable to parse configuration from `{0}`'.format(self.path))
 

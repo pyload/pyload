@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: mkaay
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import str
 from traceback import print_exc
 
 from future import standard_library

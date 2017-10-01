@@ -3,15 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import random
-from builtins import range
 from hashlib import sha1
 
 import bcrypt
 from future import standard_library
 
-from pyload.core.datatype.user import UserData
 from pyload.core.database.backend import DatabaseMethods, async, queue
+from pyload.core.datatype.user import UserData
 from pyload.utils.convert import to_bytes
 
 standard_library.install_aliases()
@@ -104,7 +102,7 @@ class UserMethods(DatabaseMethods):
         r = self.c.fetchone()
         if not r:
             return False
-            
+
         hashed_pw = r[2]
         if bcrypt.checkpw(to_bytes(oldpw), hashed_pw):
             new_hpw = bcrypt.hashpw(to_bytes(newpw), bcrypt.gensalt())

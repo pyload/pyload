@@ -7,9 +7,8 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.utils.check import bitset
-
 from pyload.core.datatype.base import BaseObject, ExceptionObject, Permission
+from pyload.utils.check import bitset
 
 standard_library.install_aliases()
 

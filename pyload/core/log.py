@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -11,11 +9,10 @@ import logging.handlers
 import os
 import sys
 
+from pyload.__about__ import __package__
 from pyload.utils.check import ismodule
 from pyload.utils.convert import to_str
 from pyload.utils.fs import makedirs
-
-from pyload.__about__ import __package__
 
 try:
     import colorlog

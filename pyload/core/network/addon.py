@@ -2,14 +2,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import ADDONMANAGER, object, str
+from builtins import ADDONMANAGER, object
 
 from future import standard_library
 
+from pyload.core.network.base import Base
 from pyload.utils.check import hasmethod
 from pyload.utils.convert import to_list
-
-from pyload.core.network.base import Base
 
 standard_library.install_aliases()
 
@@ -158,7 +157,7 @@ class Addon(Base):
         try:
             if self.is_activated():
                 self.periodical()
-                
+
         except Exception as exc:
             self.pyload.log.error(
                 self._('Error executing addon'), exc)

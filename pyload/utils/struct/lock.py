@@ -8,7 +8,8 @@ from builtins import object
 
 from future import standard_library
 
-from pyload.utils.layer.safethreading import Condition, Lock, RLock, current_thread
+from pyload.utils.layer.safethreading import (Condition, Lock, RLock,
+                                              current_thread)
 
 standard_library.install_aliases()
 

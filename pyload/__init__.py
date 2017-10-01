@@ -17,11 +17,10 @@ standard_library.install_aliases()
 import builtins
 import locale
 import os
-import tempfile
 
 builtins.USERDIR = os.path.expanduser('~')
 # builtins.DATADIR = os.getenv(
-    # 'APPDATA') if os.name == 'nt' else builtins.USERDIR
+# 'APPDATA') if os.name == 'nt' else builtins.USERDIR
 # builtins.TMPDIR = tempfile.gettempdir()
 
 # from pyload.__about__ import __package__

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
@@ -10,23 +8,22 @@ import locale
 import os
 import sched
 import time
-from builtins import USERDIR, str
+from builtins import USERDIR
 from contextlib import closing
 
 from future import standard_library
 from pkg_resources import resource_filename
 
+from pyload.__about__ import __package__, __version__, __version_info__
 from pyload.config import ConfigParser, config_defaults
+from pyload.core.log import Logger
+from pyload.core.network.factory import RequestFactory
 from pyload.utils import format
 from pyload.utils.fs import availspace, fullpath, makedirs
 from pyload.utils.layer.safethreading import Event
 from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_user)
-
-from pyload.__about__ import __package__, __version__, __version_info__
-from pyload.core.log import Logger
-from pyload.core.network.factory import RequestFactory
 
 standard_library.install_aliases()
 
@@ -179,7 +176,8 @@ class Core(object):
                 raise
 
             self.log.warning(
-                self._('Unable to load `{0}` language, using default `{1}`').format(lang, default),
+                self._('Unable to load `{0}` language, using default `{1}`').format(
+                    lang, default),
                 exc)
             self.set_language(default)
 

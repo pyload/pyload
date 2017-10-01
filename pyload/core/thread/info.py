@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
 
 from __future__ import absolute_import, unicode_literals
 
 import time
-from builtins import int, str
+from builtins import int
 
 from future import standard_library
-
-from pyload.utils import parse
-from pyload.utils.check import hasmethod
-from pyload.utils.misc import accumulate
 
 from pyload.core.datatype.base import LinkStatus, ProgressInfo, ProgressType
 from pyload.core.thread.decrypter import DecrypterThread
 from pyload.core.thread.plugin import PluginThread
+from pyload.utils import parse
+from pyload.utils.check import hasmethod
+from pyload.utils.misc import accumulate
 
 standard_library.install_aliases()
 

@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN
 
 from __future__ import absolute_import, unicode_literals
 
 import builtins
-from builtins import str
 from collections import defaultdict
 from gettext import gettext
 from types import MethodType
@@ -14,14 +11,13 @@ from types import MethodType
 from _thread import start_new_thread
 from future import standard_library
 
+from pyload.core.datatype.base import (AddonInfo, AddonService,
+                                       ServiceDoesNotExist, ServiceException)
+from pyload.core.manager.base import BaseManager
+from pyload.core.thread import AddonThread
 from pyload.utils.layer.legacy.collections import namedtuple
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
-
-from pyload.core.datatype.base import (AddonInfo, AddonService, ServiceDoesNotExist,
-                             ServiceException)
-from pyload.core.thread import AddonThread
-from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 
@@ -82,7 +78,7 @@ class AddonManager(BaseManager):
         try:
             func = getattr(self.plugins[plugin].instances[0], func_name)
             return func(*args)
-            
+
         except Exception as exc:
             raise ServiceException(exc)
 

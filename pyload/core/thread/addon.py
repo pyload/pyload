@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import str
 from copy import copy
 from traceback import print_exc
 
@@ -65,7 +63,7 @@ class AddonThread(PluginThread):
             try:
                 self.kwgs['thread'] = self
                 self.func(*self.args, **self.kwgs)
-                
+
             except TypeError as exc:
                 # dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in exc.args[0]:
@@ -73,7 +71,7 @@ class AddonThread(PluginThread):
 
                 del self.kwgs['thread']
                 self.func(*self.args, **self.kwgs)
-                
+
         except Exception as exc:
             if hasattr(self.func, 'im_self'):
                 addon = self.func.__self__

@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: vuolter
 
 from __future__ import absolute_import, unicode_literals
 
 import re
 import urllib.parse
-from builtins import str
 
 from future import standard_library
 
+from pyload.utils.convert import to_str
 from pyload.utils.web import purge
 
 standard_library.install_aliases()

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pyload.utils.convert import to_str
 # @author: RaNaN, mkaay
 
 from __future__ import absolute_import, unicode_literals
@@ -8,12 +6,13 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import shutil
-from builtins import int, object, str
+from builtins import int, object
 from queue import Queue
 from traceback import print_exc
 
 from future import standard_library
 
+from pyload.utils.convert import to_str
 from pyload.utils.fs import remove
 from pyload.utils.layer.safethreading import Event, Thread
 
@@ -105,7 +104,7 @@ class DatabaseJob(object):
             print_exc()
             try:
                 print('Database Error @', self.func.__name__,
-                      self.args[1:], self.kwgs,to_str(exc))
+                      self.args[1:], self.kwgs, to_str(exc))
             except Exception:
                 pass
 

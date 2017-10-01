@@ -10,15 +10,14 @@ from collections import defaultdict
 
 from future import standard_library
 
+from pyload.core.datatype.base import DownloadStatus
+from pyload.core.manager.base import BaseManager
+from pyload.core.thread import DecrypterThread, DownloadThread
 from pyload.utils.fs import availspace
 from pyload.utils.layer.legacy import subprocess
 from pyload.utils.layer.safethreading import Event
 from pyload.utils.struct.lock import RWLock, lock
 from pyload.utils.web.misc import get_ip
-
-from pyload.core.datatype.base import DownloadStatus
-from pyload.core.thread import DecrypterThread, DownloadThread
-from pyload.core.manager.base import BaseManager
 
 standard_library.install_aliases()
 

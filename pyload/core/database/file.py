@@ -8,12 +8,11 @@ from builtins import int
 from future import standard_library
 
 from pyload.api import statestring
-from pyload.utils.layer.legacy.collections import OrderedDict
-
+from pyload.core.database.backend import DatabaseMethods, async, inner, queue
 from pyload.core.datatype.base import DownloadInfo, DownloadState
 from pyload.core.datatype.file import FileInfo, guess_type
 from pyload.core.datatype.package import PackageInfo, PackageStats
-from pyload.core.database.backend import DatabaseMethods, async, inner, queue
+from pyload.utils.layer.legacy.collections import OrderedDict
 
 standard_library.install_aliases()
 

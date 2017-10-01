@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
 
 from __future__ import absolute_import, unicode_literals
 
@@ -11,11 +10,10 @@ from builtins import int, str
 
 from future import standard_library
 
+from pyload.core.network.base import Base, Fail, Retry
 from pyload.requests.curl.download import CurlDownload
 from pyload.requests.curl.request import CurlRequest
 from pyload.utils.fs import makedirs, remove
-
-from pyload.core.network.base import Base, Fail, Retry
 
 standard_library.install_aliases()
 
@@ -298,7 +296,7 @@ class Hoster(Base):
                 except Exception as exc:
                     self.pyload.log.warning(
                         self._('Setting User and Group failed: {0}').format(
-                           exc))
+                            exc))
 
         name = self.file.name
 
@@ -345,7 +343,7 @@ class Hoster(Base):
             except Exception as exc:
                 self.pyload.log.warning(
                     self._('Setting User and Group failed: {0}').format(
-                       exc))
+                        exc))
 
         self.last_download = fs_filename
         return self.last_download

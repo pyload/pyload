@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pyload.utils.convert import to_str
-
 from __future__ import absolute_import, unicode_literals
 
 import time
@@ -9,16 +7,15 @@ from builtins import dict, str
 
 from future import standard_library
 
+# from pyload.config.convert import from_string, to_configdata
+from pyload.core.datatype import AccountInfo, ConfigItem
+from pyload.core.network.base import Base
+from pyload.core.network.cookie import CookieJar
 from pyload.utils import format, parse
 from pyload.utils.convert import to_str
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
 from pyload.utils.time import compare
-
-# from pyload.config.convert import from_string, to_configdata
-from pyload.core.datatype import AccountInfo, ConfigItem
-from pyload.core.network.base import Base
-from pyload.core.network.cookie import CookieJar
 
 standard_library.install_aliases()
 
@@ -85,7 +82,7 @@ class Account(Base):
 
         try:
             self.config_data = dict(to_configdata(x) for x in self.__config__)
-            
+
         except Exception as exc:
             self.log_error(self._('Invalid config'), exc)
             self.config_data = {}
@@ -169,31 +166,31 @@ class Account(Base):
             self.log_warning(
                 self._('Could not login with account {0}').format(
                     self.loginname, self._('Wrong Password'))
-            self.valid = False
+            self.valid=False
 
         except Exception as exc:
             self.log_warning(
                 self._('Could not login with account {0}').format(self.loginname), exc)
-            self.valid = False
+            self.valid=False
             # self.pyload.print_exc()
 
         return self.valid
 
     def restore_defaults(self):
-        self.validuntil = Account.validuntil
-        self.trafficleft = Account.trafficleft
-        self.maxtraffic = Account.maxtraffic
-        self.premium = Account.premium
+        self.validuntil=Account.validuntil
+        self.trafficleft=Account.trafficleft
+        self.maxtraffic=Account.maxtraffic
+        self.premium=Account.premium
 
     def set_login(self, loginname, password):
         """Updates the loginname and password and returns true if anything
         changed."""
         if password != self.password or loginname != self.loginname:
-            self.login_ts = 0
-            self.valid = True  # set valid, so the login will be retried
+            self.login_ts=0
+            self.valid=True  # set valid, so the login will be retried
 
-            self.loginname = loginname
-            self.password = password
+            self.loginname=loginname
+            self.password=password
             return True
 
         return False
@@ -238,13 +235,13 @@ class Account(Base):
                     self._('Get Account Info for {0}').format(self.loginname))
                 try:
                     try:
-                        infos = self.load_account_info(req)
+                        infos=self.load_account_info(req)
                     except TypeError:  # TODO: temporary
                         self.log_debug(
                             'Deprecated .load_account_info(...) signature, omit user argument')
-                        infos = self.load_account_info(self.loginname, req)
+                        infos=self.load_account_info(self.loginname, req)
                 except Exception as exc:
-                    infos = {'error': to_str(exc)}
+                    infos={'error': to_str(exc)}
                     self.log_error(self._('Error: {0}'), exc)
 
             self.restore_defaults()  # reset to initial state
@@ -257,7 +254,7 @@ class Account(Base):
                             'Unknown attribute {0}={1}'.format(k, v))
 
             self.log_debug('Account Info: {0}'.format(infos))
-            self.timestamp = time.time()
+            self.timestamp=time.time()
             self.pyload.evm.fire('account:loaded', self.to_info_data())
 
     # TODO: remove user
@@ -302,10 +299,10 @@ class Account(Base):
 
         # TODO: not in ui currently
         if 'time' in self.options and self.options['time']:
-            time_data = ''
+            time_data=''
             try:
-                time_data = self.options['time']
-                start, end = time_data.split('-')
+                time_data=self.options['time']
+                start, end=time_data.split('-')
                 if not compare(start.split(':'), end.split(':')):
                     return False
             except Exception:
@@ -338,7 +335,7 @@ class Account(Base):
             self._('Account {0} has not enough traffic, checking again in 30min').format(
                 self.login))
 
-        self.trafficleft = 0
+        self.trafficleft=0
         self.schedule_refresh(30 * 60)
 
     def expired(self, user=None):
@@ -348,7 +345,7 @@ class Account(Base):
         self.log_warning(
             self._('Account {0} is expired, checking again in 1h').format(user))
 
-        self.validuntil = time.time() - 1
+        self.validuntil=time.time() - 1
         self.schedule_refresh(60 * 60)
 
     def schedule_refresh(self, time=0, force=True):

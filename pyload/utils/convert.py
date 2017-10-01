@@ -77,7 +77,7 @@ def size(value, in_unit, out_unit):
 
         return integer + decimal
 
-        
+
 def to_bytes(obj, encoding='utf-8', errors='strict'):
     try:
         return obj.encode(encoding, errors)
@@ -86,8 +86,8 @@ def to_bytes(obj, encoding='utf-8', errors='strict'):
             return bytes(obj)
         except NameError:
             return str(obj)
-            
-            
+
+
 def to_str(obj, encoding='utf-8', errors='strict'):
     try:
         return obj.decode(encoding, errors)
@@ -96,12 +96,12 @@ def to_str(obj, encoding='utf-8', errors='strict'):
             return unicode(obj)
         except NameError:
             return str(obj)
-        
+
 
 def to_dict(obj):
     """Convert object to dictionary or return default."""
     return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
-    
+
 
 def to_list(obj):
     """Convert value to a list with value inside or return default."""
@@ -115,4 +115,3 @@ def to_list(obj):
         res = [obj]
     else:
         res = list(obj)
-        
