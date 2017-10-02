@@ -12,7 +12,7 @@ from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __description__ = """7-Zip extractor plugin"""
@@ -27,7 +27,7 @@ class SevenZip(Extractor):
                   "iso", "msi", "doc", "xls", "ppt", "dmg", "xar", "hfs", "exe",
                   "ntfs", "fat", "vhd", "mbr", "squashfs", "cramfs", "scap"]
 
-    _RE_PART = re.compile(r'\.7z\.\d{3}', re.I)
+    _RE_PART = re.compile(r'\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
     _RE_FILES = re.compile(r'([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
     _RE_BADPWD = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
     _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
