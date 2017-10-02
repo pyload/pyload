@@ -78,7 +78,7 @@ def _same_inputs(taginputs, inputs):
     return True
 
 
-def form(text, name=None, inputs={}):
+def form(text, name=None, inputs=None):
     pattr = r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'
     pattr = pattr.format(name or '')
     for form in re.finditer(pattr, text, flags=re.I | re.S):

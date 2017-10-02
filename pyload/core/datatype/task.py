@@ -29,7 +29,7 @@ class InteractionTask(BaseObject):
                  'owner', 'plugin', 'result', 'seen', 'shared', 'storage',
                  'title', 'type', 'wait_until']
 
-    def __init__(self, iid=None, type_=None, input=None, title=None,
+    def init(self, iid=None, type_=None, input=None, title=None,
                  description=None, plugin=None, owner=None, shared=False):
         self.iid = iid
         self.type = type_
@@ -89,7 +89,9 @@ class InteractionTask(BaseObject):
         return time.time() > self.wait_until > -1
 
     def correct(self):
-        [x.task_correct(self) for x in self.handler]
-
+        for x in self.handler:
+            x.task_correct(self)
+            
     def invalid(self):
-        [x.task_invalid(self) for x in self.handler]
+        for x in self.handler:
+            x.task_invalid(self)

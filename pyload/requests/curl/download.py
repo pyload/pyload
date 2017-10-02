@@ -29,8 +29,8 @@ standard_library.install_aliases()
 # TODO: save content-disposition for resuming
 class CurlDownload(DownloadRequest):
     """Loads an url, http + ftp supported."""
-    # def __init__(self, url, filename, get={}, post={}, referer=None, cj=None,
-    #              bucket=None, options={}, disposition=False):
+    # def __init__(self, url, filename, get=None, post={}, referer=None, cj=None,
+    #              bucket=None, options=None, disposition=False):
 
     CONTEXT_CLASS = CookieJar
 
@@ -128,15 +128,15 @@ class CurlDownload(DownloadRequest):
 
         self.path = os.path.join(dirname, filename)
 
-    def download(self, uri, filename, get={}, post={}, referer=True,
+    def download(self, uri, filename, get=None, post=None, referer=True,
                  disposition=False, chunks=1, resume=False, cookies=True):
         """Returns new filename or None."""
         self.set_path(filename)
 
         self.url = uri
         self.disposition = disposition
-        self.get = get
-        self.post = post
+        self.get = get or {}
+        self.post = post or {}
         self.referer = referer
         self.cookies = cookies
 

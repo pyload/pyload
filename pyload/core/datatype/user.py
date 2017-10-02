@@ -32,7 +32,7 @@ class UserData(BaseObject):
                  'traffic', 'dllimit', 'dlquota', 'hddquota', 'user',
                  'templatename']
 
-    def __init__(self, uid=None, name=None, email=None, role=None,
+    def init(self, uid=None, name=None, email=None, role=None,
                  permission=None, folder=None, traffic=None, dllimit=None,
                  dlquota=None, hddquota=None, user=None, templatename=None):
         self.uid = uid

@@ -187,7 +187,7 @@ class Base(object):
         if self.abort():
             raise Abort
 
-    def load(self, url, get={}, post={}, ref=True,
+    def load(self, url, get=None, post=None, ref=True,
              cookies=True, just_header=False, decode=False):
         """Load content at url and returns it.
 
@@ -263,8 +263,7 @@ class Base(object):
         self.correct_task()
 
     def decrypt_captcha(
-            self, url, get={},
-            post={},
+            self, url, get=None, post=None,
             cookies=True, forceuser=False, imgtype='jpg',
             result_type='textual'):
         """Loads a captcha and decrypts it with ocr, plugin, user input.

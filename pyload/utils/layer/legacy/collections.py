@@ -4,7 +4,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import sys
 from builtins import dict
 from collections import *
 
@@ -17,7 +16,10 @@ standard_library.install_aliases()
 # and pypy.
 # Passes Python 2.7's test suite and incorporates all the latest updates.
 # http://code.activestate.com/recipes/576693/
-if sys.version_info < (2, 7):
+try:
+    OrderedDict
+    
+except NameError:
 
     class OrderedDict(dict):
         """Dictionary that remembers insertion order."""

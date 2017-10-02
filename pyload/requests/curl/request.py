@@ -201,7 +201,7 @@ class CurlRequest(Request):
 
         self.setopt(pycurl.HTTPHEADER, self.headers.list())
 
-    def load(self, url, get={}, post={}, referer=True, cookies=True,
+    def load(self, url, get=None, post=None, referer=True, cookies=True,
              just_header=False, multipart=False, decode=False):
         """Load and returns a given page."""
         self.set_request_context(url, get, post, referer, cookies, multipart)

@@ -36,7 +36,7 @@ class PackageInfo(BaseObject):
         'password', 'added', 'tags', 'status', 'shared', 'packageorder',
         'stats', 'fids', 'pids']
 
-    def __init__(
+    def init(
             self, pid=None, name=None, folder=None, root=None, owner=None,
             site=None, comment=None, password=None, added=None, tags=None,
             status=None, shared=None, packageorder=None, stats=None, fids=None,
@@ -63,7 +63,7 @@ class PackageStats(BaseObject):
 
     __slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
 
-    def __init__(self, linkstotal=None, linksdone=None,
+    def init(self, linkstotal=None, linksdone=None,
                  sizetotal=None, sizedone=None):
         self.linkstotal = linkstotal
         self.linksdone = linksdone
@@ -85,7 +85,7 @@ class Package(BaseObject):
             site, info.comment, info.password, info.added, info.tags, info.
             status, info.shared, info.packageorder)
 
-    def __init__(
+    def init(
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
         self.manager = manager

@@ -18,7 +18,9 @@ except ImportError:
     bitmath = None
 
 
-def convert(obj, rule, func, args=(), kwargs={}, fallback=None):
+def convert(obj, rule, func, args=(), kwargs=None, fallback=None):
+    if kwargs is None:
+        kwargs = {}
     res = None
     cvargs = (rule, func, args, kwargs, fallback)
     try:

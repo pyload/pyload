@@ -102,7 +102,7 @@ class FileInfo(BaseObject):
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
 
-    def __init__(self, fid=None, name=None, package=None, owner=None,
+    def init(self, fid=None, name=None, package=None, owner=None,
                  size=None, status=None, media=None, added=None,
                  fileorder=None, download=None):
         self.fid = fid
@@ -137,7 +137,7 @@ class File(BaseObject):
             file.error = info.download.error
         return file
 
-    def __init__(
+    def init(
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
         self.manager = manager

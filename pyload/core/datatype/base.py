@@ -13,6 +13,13 @@ standard_library.install_aliases()
 class BaseObject(object):
 
     __slots__ = []
+    
+    def __init__(self, *args, **kwargs):
+        super(BaseObject).__init__()
+        self.init(*args, **kwargs)
+        
+    def init(self, *args, **kwargs):
+        pass
 
     def __str__(self):
         return '<{0} {1}>'.format(self.__class__.__name__, ', '.join(
@@ -34,6 +41,7 @@ class InvalidConfigSection(Exception):
     __slots__ = ['section']
 
     def __init__(self, section=None):
+        super(InvalidConfigSection, self).__init__()
         self.section = section
 
 
@@ -42,6 +50,7 @@ class ServiceDoesNotExist(Exception):
     __slots__ = ['plugin', 'func']
 
     def __init__(self, plugin=None, func=None):
+        super(ServiceDoesNotExist, self).__init__()
         self.plugin = plugin
         self.func = func
 
@@ -51,6 +60,7 @@ class ServiceException(Exception):
     __slots__ = ['msg']
 
     def __init__(self, msg=None):
+        super(ServiceException, self).__init__()
         self.msg = msg
 
 
@@ -149,7 +159,7 @@ class AccountInfo(BaseObject):
         'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared',
         'config']
 
-    def __init__(
+    def init(
             self, aid=None, plugin=None, loginname=None, owner=None,
             valid=None, validuntil=None, trafficleft=None, maxtraffic=None,
             premium=None, activated=None, shared=None, config=None):
@@ -171,7 +181,7 @@ class AddonInfo(BaseObject):
 
     __slots__ = ['name', 'description', 'value']
 
-    def __init__(self, name=None, description=None, value=None):
+    def init(self, name=None, description=None, value=None):
         self.name = name
         self.description = description
         self.value = value
@@ -182,7 +192,7 @@ class AddonService(BaseObject):
     __slots__ = ['__name__', 'func_name', 'label',
                  'description', 'arguments', 'pack', 'media']
 
-    def __init__(self, func_name=None, label=None, description=None,
+    def init(self, func_name=None, label=None, description=None,
                  arguments=None, pack=None, media=None):
         self.__name__ = func_name
         self.label = label
@@ -197,7 +207,7 @@ class ConfigHolder(BaseObject):
     __slots__ = ['name', 'label', 'description',
                  'explanation', 'items', 'info']
 
-    def __init__(self, name=None, label=None, description=None,
+    def init(self, name=None, label=None, description=None,
                  explanation=None, items=None, info=None):
         self.name = name
         self.label = label
@@ -212,7 +222,7 @@ class ConfigInfo(BaseObject):
     __slots__ = ['name', 'label', 'description',
                  'category', 'user_context', 'activated']
 
-    def __init__(self, name=None, label=None, description=None,
+    def init(self, name=None, label=None, description=None,
                  category=None, user_context=None, activated=None):
         self.name = name
         self.label = label
@@ -226,7 +236,7 @@ class ConfigItem(BaseObject):
 
     __slots__ = ['name', 'label', 'description', 'input', 'value']
 
-    def __init__(self, name=None, label=None,
+    def init(self, name=None, label=None,
                  description=None, input=None, value=None):
         self.name = name
         self.label = label
@@ -239,7 +249,7 @@ class DownloadInfo(BaseObject):
 
     __slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
 
-    def __init__(self, url=None, plugin=None, hash=None,
+    def init(self, url=None, plugin=None, hash=None,
                  status=None, statusmsg=None, error=None):
         self.url = url
         self.plugin = plugin
@@ -252,7 +262,7 @@ class DownloadInfo(BaseObject):
 class DownloadProgress(BaseObject):
     __slots__ = ['fid', 'pid', 'speed', 'conn', 'status']
 
-    def __init__(self, fid=None, pid=None, speed=None, conn=None, status=None):
+    def init(self, fid=None, pid=None, speed=None, conn=None, status=None):
         self.fid = fid
         self.pid = pid
         self.speed = speed
@@ -264,7 +274,7 @@ class EventInfo(BaseObject):
 
     __slots__ = ['eventname', 'event_args']
 
-    def __init__(self, eventname=None, event_args=None):
+    def init(self, eventname=None, event_args=None):
         self.eventname = eventname
         self.event_args = event_args
 
@@ -273,7 +283,7 @@ class Input(BaseObject):
 
     __slots__ = ['type', 'default', 'data']
 
-    def __init__(self, type_=None, default=None, data=None):
+    def init(self, type_=None, default=None, data=None):
         self.type = type_
         self.default = default
         self.data = data
@@ -283,7 +293,7 @@ class LinkStatus(BaseObject):
 
     __slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
-    def __init__(self, url=None, name=None, size=None,
+    def init(self, url=None, name=None, size=None,
                  status=None, plugin=None, hash=None):
         self.url = url
         self.name = name
@@ -298,7 +308,7 @@ class ProgressInfo(BaseObject):
     __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
                  'done', 'total', 'owner', 'type', 'download']
 
-    def __init__(self, plugin=None, name=None, statusmsg=None, eta=None,
+    def init(self, plugin=None, name=None, statusmsg=None, eta=None,
                  done=None, total=None, owner=None, type_=None, download=None):
         self.plugin = plugin
         self.name = name
@@ -317,7 +327,7 @@ class StatusInfo(BaseObject):
         'speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue',
         'notifications', 'paused', 'download', 'reconnect', 'quota']
 
-    def __init__(self, speed=None, linkstotal=None, linksqueue=None,
+    def init(self, speed=None, linkstotal=None, linksqueue=None,
                  sizetotal=None, sizequeue=None, notifications=None,
                  paused=None, download=None, reconnect=None, quota=None):
         self.speed = speed
@@ -336,7 +346,7 @@ class TreeCollection(BaseObject):
 
     __slots__ = ['root', 'files', 'packages']
 
-    def __init__(self, root=None, files=None, packages=None):
+    def init(self, root=None, files=None, packages=None):
         self.root = root
         self.files = files
         self.packages = packages

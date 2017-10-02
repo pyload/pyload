@@ -262,7 +262,7 @@ class Hoster(Base):
 
         raise Retry(reason)
 
-    def download(self, url, get={}, post={}, ref=True,
+    def download(self, url, get=None, post=None, ref=True,
                  cookies=True, disposition=False):
         """Downloads the content at url to download folder.
 

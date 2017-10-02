@@ -26,6 +26,7 @@ class CurlChunk(CurlRequest):
         r'filename(?P<type>=|\*=(?P<enc>.+)\'\')(?P<name>.*)',
         flags=re.I)
 
+    # NOTE: Don't init CurlRequest
     def __init__(self, id, parent, range=None, resume=False):
         self.set_context(*parent.get_context())
 

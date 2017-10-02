@@ -15,7 +15,7 @@ class OnlineCheck(BaseObject):
     """Helper class that holds result of an initiated online check."""
     __slots__ = ['done', 'owner', 'result', 'rid', 'timestamp']
 
-    def __init__(self, rid=None, owner=None):
+    def init(self, rid=None, owner=None):
         self.rid = rid
         self.owner = owner
         self.result = {}
