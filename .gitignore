@@ -153,6 +153,7 @@ coverage.xml
 
 # Translations
 *.mo
+*.po
 *.pot
 
 # Django stuff:
@@ -203,3 +204,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# PyCharm
+.idea/
