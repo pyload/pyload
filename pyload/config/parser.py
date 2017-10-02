@@ -19,7 +19,7 @@ from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
 from pyload.config.types import InputType
 from pyload.utils import parse
 from pyload.utils.check import isiterable, ismapping
-from pyload.utils.convert import to_str
+from pyload.utils.convert import to_bytes, to_str
 from pyload.utils.fs import fullpath
 from pyload.utils.layer.legacy.collections import OrderedDict
 from pyload.utils.struct import InscDict
@@ -29,38 +29,35 @@ from pyload.utils.web.parse import endpoint, socket
 standard_library.install_aliases()
 
 
+def _parse_address(value):
+    address = value.replace(',', ':')
+    return (endpoint if isendpoint(address) else socket)(address)
+
+
+convert_map = {
+    InputType.NA: lambda x: x,
+    InputType.Str: to_str,
+    InputType.Int: int,
+    InputType.File: fullpath,
+    InputType.Folder: lambda x: os.path.dirname(fullpath(x)),
+    InputType.Password: to_str,
+    InputType.Bool: bool,
+    InputType.Float: float,
+    InputType.Octal: oct,
+    InputType.Size: parse.bytesize,
+    InputType.Address: _parse_address,
+    InputType.Bytes: to_bytes,
+    InputType.StrList: parse.entries
+}
+    
+
 class ConfigOption(object):
 
     __slots__ = ['allowed_values', 'default', 'desc', 'label', 'parser',
                  'type', 'value']
 
     DEFAULT_TYPE = InputType.Str
-
-    _convert_map = {
-        InputType.NA: lambda x: x,
-        InputType.Str: lambda x: '' if x is None else to_str(x),
-        InputType.Int: lambda x: 0 if x is None else int(x),
-        InputType.File: lambda x: '' if x is None else fullpath(x),
-        InputType.Folder:
-            lambda x: '' if x is None else os.path.dirname(fullpath(x)),
-        InputType.Password: lambda x: '' if x is None else to_str(x),
-        InputType.Bool:
-            lambda x: parse.boolean(x) if isinstance(x, str) else bool(x),
-        InputType.Float: lambda x: 0.0 if x is None else float(x),
-        InputType.Tristate: lambda x: x if x is None else bool(x),
-        InputType.Octal: lambda x: 0 if x is None else oct(x),
-        InputType.Size:
-            lambda x: 0 if x is None else (
-                -1 if to_str(x) == '-1' else parse.bytesize(x)),
-        InputType.Address:
-            lambda x: (None, None) if x is None else (
-                endpoint if isendpoint(x) else socket)(x),
-        InputType.Bytes: lambda x: b"" if x is None else bytes(x),
-        InputType.StrList:
-            lambda l: [
-            to_str(x) for x in l] if isiterable(l) else parse.entries(l)
-    }
-
+    
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
         self.parser = parser
@@ -100,7 +97,7 @@ class ConfigOption(object):
         self.allowed_values = tuple(self._normalize_value(v) for v in allowed)
 
     def _normalize_value(self, value):
-        return self._convert_map[self.type](value)
+        return value if value is None else convert_map[self.type](value)
 
     def reset(self):
         self.value = self.default
@@ -153,10 +150,8 @@ class ConfigSection(InscDict):
         if ismapping(iterable):
             iterable = iterable.items()
 
-        config = [
-            (name, self._to_configentry(value))
-            for name, value in iterable
-        ]
+        config = [(name, self._to_configentry(value)) 
+                  for name, value in iterable]
         InscDict.update(self, config)
 
     def is_section(self, name):
@@ -329,7 +324,7 @@ class ConfigParser(ConfigSection):
             self._make_options(section, parser[section_id])
 
     def _to_filevalue(self, value):
-        return ','.join(value) if isiterable(value) else value
+        return ','.join(map(to_str, value)) if isiterable(value) else value
 
     def _to_fileconfig(self, section, section_name):
         config = OrderedDict()

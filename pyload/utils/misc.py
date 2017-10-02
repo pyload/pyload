@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import gettext
 import socket
 from builtins import map
 
@@ -40,24 +39,24 @@ def forward(source, destination, buffering=1024):
         destination.shutdown(socket.SHUT_WR)
 
 
-def get_translation(domain, localedir=None, languages=None, class_=None,
-                    fallback=False, codeset=None):
-    try:
-        trans = gettext.translation(
-            domain, localedir, languages, class_, False, codeset)
-    except (IOError, OSError):
-        if not fallback:
-            raise
-        trans = gettext.translation(
-            domain, localedir, None, class_, fallback, codeset)
-    return trans
+# def get_translation(domain, localedir=None, languages=None, class_=None,
+                    # fallback=False, codeset=None):
+    # try:
+        # trans = gettext.translation(
+            # domain, localedir, languages, class_, False, codeset)
+    # except (IOError, OSError):
+        # if not fallback:
+            # raise
+        # trans = gettext.translation(
+            # domain, localedir, None, class_, fallback, codeset)
+    # return trans
 
 
-def install_translation(domain, localedir=None, languages=None,
-                        class_=None, fallback=False, codeset=None):
-    trans = get_translation(
-        domain, localedir, languages, class_, fallback, codeset)
-    try:
-        trans.install(str=True)
-    except TypeError:
-        trans.install()
+# def install_translation(domain, localedir=None, languages=None,
+                        # class_=None, fallback=False, codeset=None):
+    # trans = get_translation(
+        # domain, localedir, languages, class_, fallback, codeset)
+    # try:
+        # trans.install(str=True)
+    # except TypeError:
+        # trans.install()

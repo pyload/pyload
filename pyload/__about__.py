@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# @author: vuolter
 
 from pkg_resources import get_distribution
 from semver import parse_version_info

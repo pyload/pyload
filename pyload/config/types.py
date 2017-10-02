@@ -25,5 +25,4 @@ class InputType(IntEnum):
     Time = 11
     Click = 12
     Address = 13
-    Tristate = 14
     StrList = 15

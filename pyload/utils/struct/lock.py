@@ -271,12 +271,6 @@ class RWLock(object):
         finally:
             self.__condition.release()
 
-    def __enter__(self):
-        return self.acquireread()
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.release()
-
     def __delete__(self, instance):  # pragma: no cover
         instance.release()
 

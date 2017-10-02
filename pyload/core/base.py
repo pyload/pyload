@@ -4,6 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import atexit
+import gettext
 import locale
 import os
 import sched
@@ -21,7 +22,6 @@ from pyload.core.network.factory import RequestFactory
 from pyload.utils import format
 from pyload.utils.fs import availspace, fullpath, makedirs
 from pyload.utils.layer.safethreading import Event
-from pyload.utils.misc import get_translation
 from pyload.utils.system import (ionice, renice, set_process_group,
                                  set_process_user)
 
@@ -133,6 +133,8 @@ class Core(object):
         self.db.manager = self.files  # ugly?
 
     def _setup_permissions(self):
+        self.log.debug('Setup permissions...')
+        
         if os.name == 'nt':
             return
 
@@ -154,33 +156,32 @@ class Core(object):
                 self.log.error(self._('Unable to change uid'), exc)
 
     def set_language(self, lang):
+        domain = 'core'
         localedir = resource_filename(__package__, 'locale')
-        lc = locale.locale_alias[lang.lower()].split('_', 1)[0]
-        trans = get_translation('core', localedir, (lc,))
+        languages = (locale.locale_alias[lang.lower()].split('_', 1)[0],)
+        self._set_language(domain, localedir, languages)
+
+    def _set_language(self, *args, **kwargs):
+        trans = gettext.translation(*args, **kwargs)
         try:
             self._ = trans.ugettext
         except AttributeError:
             self._ = trans.gettext
 
     def _setup_language(self):
-        self.log.debug('Loading language...')
+        self.log.debug('Setup language...')
+        
         lang = self.config.get('general', 'language')
-        default = self.DEFAULT_LANGUAGE
         if not lang:
-            code = locale.getlocale()[0] or locale.getdefaultlocale()[0]
-            lang = default if code is None else code.lower().split('_', 1)[0]
+            lc = locale.getlocale()[0] or locale.getdefaultlocale()[0]
+            lang = lc.split('_', 1)[0] if lc else 'en'
+        
         try:
             self.set_language(lang)
-        except Exception as exc:
-            if lang == default:
-                raise
-
-            self.log.warning(
-                self._('Unable to load `{0}` language, using default `{1}`').format(
-                    lang, default),
-                exc)
-            self.set_language(default)
-
+        except IOError as exc:
+            self.log.error(exc)
+            self._set_language('core', fallback=True)
+            
     # def _setup_niceness(self):
         # niceness = self.config.get('general', 'niceness')
         # renice(niceness=niceness)
@@ -188,6 +189,8 @@ class Core(object):
         # ionice(niceness=ioniceness)
 
     def _setup_storage(self):
+        self.log.debug('Setup storage...')
+        
         storage_folder = self.config.get('general', 'storage_folder')
         if not storage_folder:
             storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGEDIRNAME)
@@ -198,6 +201,8 @@ class Core(object):
             self._('Available storage space: {0}').format(avail_space))
 
     def _setup_network(self):
+        self.log.debug('Setup network...')
+        
         # TODO: Move to accountmanager
         self.log.info(self._('Activating accounts...'))
         self.acm.load_accounts()
@@ -253,8 +258,7 @@ class Core(object):
             pass
 
         except Exception as exc:
-            self.log.critical(exc)
-            raise
+            self.log.critical(exc, exc_info=True)
             self.exit()
             raise
 

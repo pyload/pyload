@@ -77,10 +77,6 @@ class BuildLocale(Command):
         pass
 
     def run(self):
-        try:
-            os.makedirs('pyload/locale')
-        except OSError as e:
-            print(str(e))
         self.run_command('extract_messages')
         self.run_command('init_catalog')
         # self.run_command('download_catalog')

@@ -277,12 +277,16 @@ class File(BaseObject):
     def abort_download(self):
         """Abort file if possible."""
         while self.fid in self.pyload.tsm.processing_ids():
-            with self.lock(shared=True):
-                self.abort = True
-                if self.plugin and self.plugin.req:
+            if self.plugin and self.plugin.req:
+                self.lock.acquire(shared=True)
+                try:
+                    self.abort = True
                     self.plugin.req.abort()
                     if self.plugin.dl:
                         self.plugin.dl.abort()
+                finally:
+                    self.lock.release()
+
             time.sleep(0.5)
 
         self.abort = False

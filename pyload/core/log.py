@@ -55,7 +55,7 @@ class Logger(object):
         return self.logger.getEffectiveLevel()
 
     def log(self, level, msg, *msgs, **kwgs):
-        label = kwgs.pop('label')
+        label = kwgs.pop('label', None)
         sep = kwgs.pop('separator', self.DEFAULT_SEPARATOR)
 
         if self.verbose:
@@ -64,8 +64,8 @@ class Logger(object):
         else:
             body = to_str(msg)
 
-        header = to_str(label) if label else ''
-        message = '[{0}] {1}'.format(header, body)
+        header = '[{0}]'.format(label) if label else ''
+        message = '{0} {1}'.format(header, body)
 
         log = getattr(self.logger, level)
         log(message, **kwgs)
