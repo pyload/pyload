@@ -165,7 +165,7 @@ class ExchangeManager(BaseManager):
             try:
                 plugin.new_interaction_task(task)
             except Exception:
-                # self.pyload.print_exc()
+                self.log.exception(exc)
                 pass
 
         self.tasks[task.iid] = task

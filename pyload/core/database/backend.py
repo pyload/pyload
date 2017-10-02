@@ -8,7 +8,6 @@ import os
 import shutil
 from builtins import int, object
 from queue import Queue
-from traceback import print_exc
 
 from future import standard_library
 
@@ -101,7 +100,7 @@ class DatabaseJob(object):
         try:
             self.result = self.func(*self.args, **self.kwgs)
         except Exception as exc:
-            print_exc()
+            self.log.exception(exc)
             try:
                 print('Database Error @', self.func.__name__,
                       self.args[1:], self.kwgs, to_str(exc))

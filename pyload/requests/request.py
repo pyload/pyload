@@ -37,8 +37,7 @@ class Request(object):
 
     # Class that will be instantiated and associated with the request,
     # and if needed copied and reused
-    def CONTEXT_CLASS():
-        return None
+    CONTEXT_CLASS = None
 
     def __init__(self, config, context=None, options=None, logger=None):
         if logger is None:
@@ -51,7 +50,7 @@ class Request(object):
         self.config = config
 
         # Create a new context if not given
-        self.context = self.CONTEXT_CLASS() if context is None else context
+        self.context = self.CONTEXT_CLASS if context is None else context
 
         # Store options in dict
         self.options = {} if options is None else options

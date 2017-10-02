@@ -14,7 +14,6 @@ from pyload.core.datatype.base import (BaseObject, DownloadInfo,
                                        DownloadProgress, DownloadStatus,
                                        MediaType, ProgressInfo, ProgressType)
 from pyload.utils import purge
-from pyload.utils.debug import print_traceback
 from pyload.utils.struct.lock import RWLock, lock
 
 standard_library.install_aliases()
@@ -30,9 +29,8 @@ def trycatch(callback):
             except Exception as exc:
                 msg = 'Error executing `{0}`'.format(
                     func.__name__)
-                self.pyload.log.debug(msg, exc)
-                if self.pyload.debug:
-                    print_traceback()
+                self.pyload.log.debug(msg)
+                self.log.exception(exc)
                 return callback(exc)
         return new
     return wrapper

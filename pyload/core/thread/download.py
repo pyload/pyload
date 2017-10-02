@@ -6,7 +6,6 @@ from __future__ import absolute_import, unicode_literals
 import sys
 import time
 from queue import Queue
-from traceback import print_exc
 
 from future import standard_library
 
@@ -70,7 +69,7 @@ class DownloadThread(PluginThread):
         file.error = self._('Internal Server Error')
 
         if self.pyload.debug:
-            print_exc()
+            self.log.exception(exc)
             self.debug_report(file)
 
         self.pyload.adm.download_failed(file)
@@ -81,9 +80,9 @@ class DownloadThread(PluginThread):
         self.pyload.log.warning(
             self._('Download failed: {0}').format(file.name), errmsg)
         file.error = errmsg
-
+        
         if self.pyload.debug:
-            print_exc()
+            self.log.exception(exc)
             self.debug_report(file)
 
         self.pyload.adm.download_failed(file)
@@ -153,8 +152,9 @@ class DownloadThread(PluginThread):
             file.set_status('failed')
             self.pyload.log.error(
                 self._('pycurl error {0}: {1}').format(errcode, errmsg))
+                
             if self.pyload.debug:
-                print_exc()
+                self.log.exception(exc)
                 self.debug_report(file)
 
             self.pyload.adm.download_failed(file)

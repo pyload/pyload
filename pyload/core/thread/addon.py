@@ -4,7 +4,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from copy import copy
-from traceback import print_exc
 
 from future import standard_library
 
@@ -75,9 +74,9 @@ class AddonThread(PluginThread):
         except Exception as exc:
             if hasattr(self.func, 'im_self'):
                 addon = self.func.__self__
-                addon.log_error(self._('An Error occurred'), exc)
+                addon.log_error(self._('An Error occurred'))
+                self.log.exception(exc)
                 if self.pyload.debug:
-                    print_exc()
                     # self.debug_report(addon.__name__, plugin=addon)
 
         finally:

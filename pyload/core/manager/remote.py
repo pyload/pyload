@@ -3,8 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from traceback import print_exc
-
 from future import standard_library
 
 from pyload.core.manager.base import BaseManager
@@ -39,9 +37,8 @@ class RemoteManager(BaseManager):
             except Exception as exc:
                 self.pyload.log.error(
                     self._('Failed loading backend {0}').format(
-                        b), exc)
-                if self.pyload.debug:
-                    print_exc()
+                        b))
+                    self.log.exception(exc)
             else:
                 backend.start()
                 self.backends.append(backend)

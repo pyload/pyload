@@ -146,14 +146,16 @@ class Core(object):
                 group = self.config.get('permission', 'group')
                 set_process_group(group)
             except Exception as exc:
-                self.log.error(self._('Unable to change gid'), exc)
+                self.log.error(self._('Unable to change gid'))
+                self.log.exception(exc)
 
         if change_user:
             try:
                 user = self.config.get('permission', 'user')
                 set_process_user(user)
             except Exception as exc:
-                self.log.error(self._('Unable to change uid'), exc)
+                self.log.error(self._('Unable to change uid'))
+                self.log.exception(exc)
 
     def set_language(self, lang):
         domain = 'core'
@@ -179,7 +181,7 @@ class Core(object):
         try:
             self.set_language(lang)
         except IOError as exc:
-            self.log.error(exc)
+            self.log.exception(exc)
             self._set_language('core', fallback=True)
 
     # def _setup_niceness(self):

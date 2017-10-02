@@ -234,7 +234,7 @@ class CurlDownload(DownloadRequest):
 
                 # TODO: Rewrite...
                 # save only last exception, we can only raise one anyway
-                ex = Exception()
+                exc = Exception()
 
                 num_q, ok_list, err_list = self.manager.info_read()
                 for c in ok_list:
@@ -245,10 +245,10 @@ class CurlDownload(DownloadRequest):
                         chunk.verify_header()
                     except ResponseException as exc:
                         self.log.debug(
-                            'Chunk {0:d} failed: {1}'.format(
-                                chunk.id + 1, exc))
+                            'Chunk {0:d} failed'.format(
+                                chunk.id + 1))
+                        self.log.exception(exc)
                         failed.append(chunk)
-                        ex = exc
                     else:
                         chunks_done.add(c)
 
@@ -258,9 +258,10 @@ class CurlDownload(DownloadRequest):
                     # test if chunk was finished
                     if errno != 23 or '0 !=' not in msg:
                         failed.append(chunk)
-                        ex = pycurl.error(errno, msg)
+                        exc = pycurl.error(errno, msg)
                         self.log.debug(
-                            'Chunk {0:d} failed: {1}'.format(chunk.id + 1, ex))
+                            'Chunk {0:d} failed'.format(chunk.id + 1))
+                        self.log.exception(exc)
                         continue
                     # check if the header implies success,
                     # else add it to failed list
@@ -268,10 +269,10 @@ class CurlDownload(DownloadRequest):
                         chunk.verify_header()
                     except ResponseException as exc:
                         self.log.debug(
-                            'Chunk {0:d} failed: {1}'.format(
-                                chunk.id + 1, exc))
+                            'Chunk {0:d} failed'.format(
+                                chunk.id + 1))
+                        self.log.exception(exc)
                         failed.append(chunk)
-                        ex = exc
                     else:
                         chunks_done.add(curl)
                 if not num_q:  # no more info to get
@@ -282,10 +283,10 @@ class CurlDownload(DownloadRequest):
                     # downloaded with initial connection
                     if failed:
                         if init in failed or init.c in chunks_done:
-                            raise ex
+                            raise exc
                         self.log.error(
                             'Download chunks failed, fallback to '
-                            'single connection | {0}'.format(ex))
+                            'single connection | {0}'.format(exc))
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -349,7 +350,8 @@ class CurlDownload(DownloadRequest):
             self.manager.remove_handle(chunk.c)
 
         except pycurl.error as exc:
-            self.log.debug('Error removing chunk', exc)
+            self.log.debug('Error removing chunk')
+            self.log.exception(exc)
 
         finally:
             chunk.close()

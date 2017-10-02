@@ -82,7 +82,7 @@ class ConfigManager(ConfigParser):
                 self.values[user, section] = json.loads(conf) if conf else {}
             except ValueError:  # Something did go wrong when parsing
                 self.values[user, section] = {}
-                # self.pyload.print_exc()
+                self.log.exception(exc)
 
         return self.values[user, section]
 
@@ -141,7 +141,7 @@ class ConfigManager(ConfigParser):
                 values[section] = json.loads(data) if data else {}
             except ValueError:
                 values[section] = {}
-                # self.pyload.print_exc()
+                self.log.exception(exc)
 
         for name, config in self.config.items():
             yield name, config, values[name] if name in values else {}

@@ -190,8 +190,8 @@ class PluginManager(BaseManager):
                 except Exception as exc:
                     self.pyload.log.error(
                         self._('Error importing {0}').format(
-                            name), exc)
-                    # self.pyload.print_exc()
+                            name))
+                    self.log.exception(exc)
 
     def load_class(self, type_, name):
         """Returns the class of a plugin with the same name."""

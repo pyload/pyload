@@ -65,8 +65,8 @@ class AddonManager(BaseManager):
             return func(*args)
         except Exception as exc:
             plugin.log_error(
-                self._('Error when executing {0}'.format(f)), exc)
-            # self.pyload.print_exc()
+                self._('Error when executing {0}'.format(f)))
+            self.log.exception(exc)
 
     def invoke(self, plugin, func_name, args):
         """Invokes a registered method."""
@@ -117,7 +117,7 @@ class AddonManager(BaseManager):
             except Exception:
                 self.pyload.log.warning(
                     self._('Failed activating {0}').format(pluginname))
-                # self.pyload.print_exc()
+                self.log.exception(exc)
 
         self.pyload.log.info(
             self._('Activated addons: {0}').format(', '.join(sorted(active))))

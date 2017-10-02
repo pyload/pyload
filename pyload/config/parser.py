@@ -258,7 +258,7 @@ class ConfigParser(ConfigSection):
             self.fp = io.open(self.path, mode='ab+')
 
         except Exception as exc:
-            self.log.error(exc)
+            self.log.exception(exc)
 
         self.log.warning(
             'Unable to parse configuration from `{0}`'.format(self.path))
