@@ -80,7 +80,7 @@ class ConfigManager(ConfigParser):
             conf = self.pyload.db.load_config(section, user)
             try:
                 self.values[user, section] = json.loads(conf) if conf else {}
-            except ValueError:  # Something did go wrong when parsing
+            except ValueError as exc:  # Something did go wrong when parsing
                 self.values[user, section] = {}
                 self.log.exception(exc)
 
@@ -139,7 +139,7 @@ class ConfigManager(ConfigParser):
         for section, data in values.items():
             try:
                 values[section] = json.loads(data) if data else {}
-            except ValueError:
+            except ValueError as exc:
                 values[section] = {}
                 self.log.exception(exc)
 

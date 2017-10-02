@@ -58,7 +58,7 @@ class AccountManager(BaseManager):
             options = json.loads(options) if options else {}
             try:
                 self._create_account(info, password, options)
-            except Exception:
+            except Exception as exc:
                 self.pyload.log.error(
                     self._('Could not load account {0}').format(info))
                 self.log.exception(exc)

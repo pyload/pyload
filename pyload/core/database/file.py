@@ -141,7 +141,7 @@ class FileMethods(DatabaseMethods):
                 'AND package=? AND owner=?', (order, package, owner))
 
     @queue
-    def get_all_files(self, package=None, search=None, state=None, owner=None):
+    def get_all_files(self, package=None, state=None, owner=None):
         """Return dict with file information.
 
         :param package: optional package to filter out
@@ -165,10 +165,10 @@ class FileMethods(DatabaseMethods):
         if package is not None:
             arg.append(package)
             qry += 'package=? AND '
-        if search is not None:
-            search = '%%{0}%%'.format(search.strip('%'))
-            arg.append(search)
-            qry += 'name LIKE ? '
+        # if search is not None:
+            # search = '%%{0}%%'.format(search.strip('%'))
+            # arg.append(search)
+            # qry += 'name LIKE ? '
 
         # make qry valid
         if qry.endswith('WHERE '):

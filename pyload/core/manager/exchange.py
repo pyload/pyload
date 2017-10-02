@@ -164,7 +164,7 @@ class ExchangeManager(BaseManager):
         for plugin in self.pyload.adm.active_plugins():
             try:
                 plugin.new_interaction_task(task)
-            except Exception:
+            except Exception as exc:
                 self.log.exception(exc)
                 pass
 

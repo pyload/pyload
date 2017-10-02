@@ -189,9 +189,9 @@ class FileManager(BaseManager):
             return self.files[fid].to_info_data()
         return self.db.get_file_info(fid)
 
-    def _get_tree_files(self, root, state, owner, search):
+    def _get_tree_files(self, root, state, owner):
         files = self.db.get_all_files(
-            package=root, state=state, search=search, owner=owner)
+            package=root, state=state, owner=owner)
         # updating from cache
         for fid, file in self.files.items():
             if fid not in files:

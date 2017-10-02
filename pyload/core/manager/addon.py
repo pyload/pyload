@@ -114,7 +114,7 @@ class AddonManager(BaseManager):
                 else:
                     deactive.append(pluginname)
 
-            except Exception:
+            except Exception as exc:
                 self.pyload.log.warning(
                     self._('Failed activating {0}').format(pluginname))
                 self.log.exception(exc)

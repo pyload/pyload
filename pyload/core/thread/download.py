@@ -62,11 +62,11 @@ class DownloadThread(PluginThread):
         file.error = 'Plugin does not work'
         self.clean(file)
 
-    def _handle_tempoffline(self, file):
+    def _handle_tempoffline(self, file, exc):
         file.set_status('temp. offline')
         self.pyload.log.warning(
             self._('Download is temporary offline: {0}').format(file.name))
-        file.error = self._('Internal Server Error')
+        file.error = to_str(exc)
 
         if self.pyload.debug:
             self.log.exception(exc)
@@ -75,12 +75,12 @@ class DownloadThread(PluginThread):
         self.pyload.adm.download_failed(file)
         self.clean(file)
 
-    def _handle_failed(self, file, errmsg):
+    def _handle_failed(self, file, exc):
         file.set_status('failed')
         self.pyload.log.warning(
-            self._('Download failed: {0}').format(file.name), errmsg)
-        file.error = errmsg
-        
+            self._('Download failed: {0}').format(file.name))
+        file.error = to_str(exc)
+
         if self.pyload.debug:
             self.log.exception(exc)
             self.debug_report(file)
@@ -89,7 +89,8 @@ class DownloadThread(PluginThread):
         self.clean(file)
 
     # TODO: activate former skipped downloads
-    def _handle_fail(self, file, errmsg):
+    def _handle_fail(self, file, exc):
+        errmsg = to_str(exc)
         if errmsg == 'offline':
             file.set_status('offline')
             self.pyload.log.warning(
@@ -101,18 +102,20 @@ class DownloadThread(PluginThread):
         else:
             file.set_status('failed')
             self.pyload.log.warning(
-                self._('Download failed: {0}').format(file.name), errmsg)
+                self._('Download failed: {0}').format(file.name))
             file.error = errmsg
 
         self.pyload.adm.download_failed(file)
         self.clean(file)
 
-    def _handle_skip(self, file, errmsg):
+    def _handle_skip(self, file, exc):
         file.set_status('skipped')
 
         self.pyload.log.info(
             self._('Download skipped: {0} due to {1}').format(
-                file.name, errmsg))
+                file.name, exc))
+        if self.pyload.debug:
+            self.log.exception(exc)
 
         self.clean(file)
 
@@ -121,7 +124,12 @@ class DownloadThread(PluginThread):
         self.active = None
         self.pyload.files.save()
 
-    def _handle_error(self, file, errmsg, errcode=None):
+    def _handle_error(self, file, exc):
+        errcode = None
+        errmsg = exc.args
+        if len(exc.args) == 2:
+            errcode, errmsg = exc.args
+
         self.pyload.log.debug(
             'pycurl exception {0}: {1}'.format(errcode, errmsg))
 
@@ -152,7 +160,7 @@ class DownloadThread(PluginThread):
             file.set_status('failed')
             self.pyload.log.error(
                 self._('pycurl error {0}: {1}').format(errcode, errmsg))
-                
+
             if self.pyload.debug:
                 self.log.exception(exc)
                 self.debug_report(file)
@@ -226,21 +234,17 @@ class DownloadThread(PluginThread):
                 self._handle_fail(file, exc.args[0])
                 continue
             except pycurl.error as exc:
-                errcode = None
-                errmsg = exc.args
-                if len(exc.args) == 2:
-                    errcode, errmsg = exc.args
-                self._handle_error(file, errmsg, errcode)
+                self._handle_error(file, exc)
                 self.clean(file)
                 continue
             except Skip as exc:
-                self._handle_skip(file, to_str(exc))
+                self._handle_skip(file, exc)
                 continue
             except Exception as exc:
                 if isinstance(exc, ResponseException) and exc.code == 500:
-                    self._handle_tempoffline(file)
+                    self._handle_tempoffline(file, exc)
                 else:
-                    self._handle_failed(file, to_str(exc))
+                    self._handle_failed(file, exc)
                 continue
             finally:
                 self._finalize(file)

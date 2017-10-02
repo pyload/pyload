@@ -91,7 +91,7 @@ class InfoManager(BaseManager):
             # skip if not belong to current user
             if user is not None and thread.owner != user:
                 continue
-            progress_info = thread.get_progress_info():
+            progress_info = thread.get_progress_info()
             if progress_info:
                 info.append(progress_info)
 
