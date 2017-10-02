@@ -20,14 +20,14 @@ class AddonThread(PluginThread):
 
     def __init__(self, manager, func, args, kwargs):
         """Constructor."""
-        PluginThread.__init__(self, manager)
+        super(AddonThread, self).__init__(manager)
 
         self.func = func
         self.args = args
         self.kwgs = kwargs
 
         self.active = []
-        self.__pi = None  # ProgressInfo
+        self.__progress_info = None  # ProgressInfo
 
     def start(self):
         self.manager.add_thread(self)
@@ -43,7 +43,7 @@ class AddonThread(PluginThread):
         active = self.active[0]
         return ProgressInfo(
             active.pluginname, active.name, active.get_status_name(), 0,
-            self.__pi, 100, self.owner, ProgressType.Addon)
+            self.__progress_info, 100, self.owner, ProgressType.Addon)
 
     def add_active(self, file):
         """Adds a file to active list and thus will be displayed on

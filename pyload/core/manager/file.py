@@ -38,7 +38,7 @@ class FileManager(BaseManager):
 
     def __init__(self, core):
         """Constructor."""
-        BaseManager.__init__(self, core)
+        super(FileManager, self).__init__(core)
 
         # translations
         self.status_msg = [

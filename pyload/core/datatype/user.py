@@ -7,7 +7,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.core.datatype.base import BaseObject, ExceptionObject, Permission
+from pyload.core.datatype.base import BaseObject, Permission
 from pyload.utils.check import bitset
 
 standard_library.install_aliases()
@@ -18,7 +18,7 @@ class Role(IntEnum):
     User = 1
 
 
-class UserDoesNotExist(ExceptionObject):
+class UserDoesNotExist(Exception):
 
     __slots__ = ['user']
 
@@ -63,7 +63,7 @@ class User(UserData):
             hddquota, user.user, user.templatename)
 
     def __init__(self, api, *args, **kwargs):
-        UserData.__init__(self, *args, **kwargs)
+        super(User, self).__init__(*args, **kwargs)
         self.api = api
 
     def to_user_data(self):

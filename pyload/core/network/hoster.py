@@ -60,7 +60,7 @@ class Hoster(Base):
 
     def __init__(self, file):
         # TODO: file.owner, but it's not correct yet
-        Base.__init__(self, file.manager.pyload)
+        super(Hoster, self).__init__(file.manager.pyload)
 
         self.want_reconnect = False
         # enables simultaneous processing of multiple downloads

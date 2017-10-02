@@ -19,22 +19,17 @@ class BaseObject(object):
             '{0}={1}'.format(k, getattr(self, k)) for k in self.__slots__))
 
 
-class ExceptionObject(Exception):
+class Conflict(Exception):
 
     __slots__ = []
 
 
-class Conflict(ExceptionObject):
+class Forbidden(Exception):
 
     __slots__ = []
 
 
-class Forbidden(ExceptionObject):
-
-    __slots__ = []
-
-
-class InvalidConfigSection(ExceptionObject):
+class InvalidConfigSection(Exception):
 
     __slots__ = ['section']
 
@@ -42,7 +37,7 @@ class InvalidConfigSection(ExceptionObject):
         self.section = section
 
 
-class ServiceDoesNotExist(ExceptionObject):
+class ServiceDoesNotExist(Exception):
 
     __slots__ = ['plugin', 'func']
 
@@ -51,7 +46,7 @@ class ServiceDoesNotExist(ExceptionObject):
         self.func = func
 
 
-class ServiceException(ExceptionObject):
+class ServiceException(Exception):
 
     __slots__ = ['msg']
 
@@ -59,7 +54,7 @@ class ServiceException(ExceptionObject):
         self.msg = msg
 
 
-class Unauthorized(ExceptionObject):
+class Unauthorized(Exception):
 
     __slots__ = []
 

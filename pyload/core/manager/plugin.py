@@ -39,7 +39,7 @@ class PluginManager(BaseManager):
     DEFAULT_PLUGIN = 'BasePlugin'
 
     def __init__(self, core):
-        BaseManager.__init__(self, core)
+        super(PluginManager, self).__init__(core)
 
         # cached modules (type, name)
         self.modules = {}

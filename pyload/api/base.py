@@ -408,7 +408,7 @@ class Api(AbstractApi):
     #############################
 
     @requireperm(Permission.All)
-    def login(self, username, password, remoteip=None):
+    def login(self, username, password):
         """Login into pyLoad, this **must** be called when using rpc before any
         methods can be used.
 
@@ -418,9 +418,9 @@ class Api(AbstractApi):
         :return: bool indicating login was successful
 
         """
-        return True if self.check_auth(username, password, remoteip) else False
+        return True if self.check_auth(username, password) else False
 
-    def check_auth(self, username, password, remoteip=None):
+    def check_auth(self, username, password):
         """Check authentication and returns details.
 
         :param username:

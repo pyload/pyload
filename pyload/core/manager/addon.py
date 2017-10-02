@@ -29,7 +29,7 @@ class AddonManager(BaseManager):
     """Manages addons, loading, unloading."""
 
     def __init__(self, core):
-        BaseManager.__init__(self, core)
+        super(AddonManager, self).__init__(core)
 
         # needed to let addons register themselves
         builtins.ADDONMANAGER = self

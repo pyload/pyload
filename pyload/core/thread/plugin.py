@@ -23,7 +23,7 @@ class PluginThread(Thread):
 
     def __init__(self, manager, owner=None):
         """Constructor."""
-        Thread.__init__(self)
+        super(PluginThread, self).__init__()
         self.setDaemon(True)
         self.manager = manager  # Thread manager
         self.pyload = manager.pyload

@@ -41,7 +41,7 @@ class CurlRequest(Request):
 
     def __init__(self, *args, **kwargs):
         self.c = pycurl.Curl()
-        Request.__init__(self, *args, **kwargs)
+        super(CurlRequest, self).__init__(*args, **kwargs)
 
         self.rep = io.StringIO()
         self.last_url = None

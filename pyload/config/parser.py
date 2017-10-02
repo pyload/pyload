@@ -7,7 +7,7 @@ import configparser
 import io
 import logging
 import os
-from builtins import bytes, int, object, oct, str
+from builtins import int, object, oct
 from contextlib import closing
 
 import semver
@@ -49,7 +49,7 @@ convert_map = {
     InputType.Bytes: to_bytes,
     InputType.StrList: parse.entries
 }
-    
+
 
 class ConfigOption(object):
 
@@ -57,7 +57,7 @@ class ConfigOption(object):
                  'type', 'value']
 
     DEFAULT_TYPE = InputType.Str
-    
+
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
         self.parser = parser
@@ -150,7 +150,7 @@ class ConfigSection(InscDict):
         if ismapping(iterable):
             iterable = iterable.items()
 
-        config = [(name, self._to_configentry(value)) 
+        config = [(name, self._to_configentry(value))
                   for name, value in iterable]
         InscDict.update(self, config)
 
@@ -240,7 +240,7 @@ class ConfigParser(ConfigSection):
         else:
             self.log = logger
 
-        ConfigSection.__init__(self, self, config)
+        super(ConfigParser, self).__init__(self, config)
         self._retrieve_fileconfig()
 
     def close(self):
@@ -253,6 +253,7 @@ class ConfigParser(ConfigSection):
 
         except VersionMismatchError:
             self.fp.close()
+            print 'VersionMismatchError'
             os.rename(self.path, self.path + '.old')
             self.fp = io.open(self.path, mode='ab+')
 

@@ -26,7 +26,7 @@ class TransferManager(BaseManager):
     """Schedules and manages download and decrypter jobs."""
 
     def __init__(self, core):
-        BaseManager.__init__(self, core)
+        super(TransferManager, self).__init__(core)
 
         # won't start download when true
         self.pause = True
@@ -113,7 +113,7 @@ class TransferManager(BaseManager):
         # decrypter progress could be none
         return [
             x for x in [
-                thd.progress for thd in self.downloading + self.decrypting
+                thd.get_progress_info() for thd in self.downloading + self.decrypting
                 if uid is None or thd.owner == uid]
             if x is not None]
 

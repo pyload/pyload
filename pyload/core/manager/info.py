@@ -22,7 +22,7 @@ class InfoManager(BaseManager):
 
     def __init__(self, core):
         """Constructor."""
-        BaseManager.__init__(self, core)
+        super(InfoManager, self).__init__(core)
 
         self.thread = []  # thread list
 
@@ -91,8 +91,9 @@ class InfoManager(BaseManager):
             # skip if not belong to current user
             if user is not None and thread.owner != user:
                 continue
-            if thread.progress:
-                info.extend(to_list(thread.progress, []))
+            progress_info = thread.get_progress_info():
+            if progress_info:
+                info.append(progress_info)
 
         return info
 

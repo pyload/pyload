@@ -22,18 +22,18 @@ class DecrypterThread(PluginThread):
     __slots__ = ['_progress', 'data', 'error', 'fid', 'pid']
 
     def __init__(self, manager, data, fid, pid, owner):
-        PluginThread.__init__(self, manager, owner)
+        super(DecrypterThread, self).__init__(manager, owner)
         # [...(url, plugin)...]
         self.data = data
         self.fid = fid
         self.pid = pid
         # holds the ProgressInfo, while running
-        self.__pi = None
+        self.__progress_info = None
         # holds if an error happened
         self.error = False
 
     def get_progress_info(self):
-        return self.__pi
+        return self.__progress_info
 
     def run(self):
         pack = self.pyload.files.get_package(self.pid)
@@ -67,8 +67,8 @@ class DecrypterThread(PluginThread):
         result = []
 
         # updating progress
-        self.__pi.plugin = name
-        self.__pi.name = self._('Decrypting {0} links').format(
+        self.__progress_info.plugin = name
+        self.__progress_info.name = self._('Decrypting {0} links').format(
             len(urls) if len(urls) > 1 else urls[0])
 
         # TODO: dependency check, there is a new error code for this
@@ -82,7 +82,7 @@ class DecrypterThread(PluginThread):
                 for url in urls)
             self.pyload.log.debug(
                 "Plugin '{0}' for decrypting was not loaded".format(name))
-            self.__pi.done += len(urls)
+            self.__progress_info.done += len(urls)
             return
 
         try:
@@ -113,13 +113,13 @@ class DecrypterThread(PluginThread):
         finally:
             if plugin:
                 plugin.clean()
-            self.__pi.done += len(urls)
+            self.__progress_info.done += len(urls)
 
         return result
 
     def decrypt(self, plugin_map, password=None):
         result = []
-        self.__pi = ProgressInfo(
+        self.__progress_info = ProgressInfo(
             'BasePlugin', '', self._('decrypting'), 0, 0, len(
                 self.data), self.owner,
             ProgressType.Decrypting
@@ -129,7 +129,7 @@ class DecrypterThread(PluginThread):
             self._decrypt(name, urls, password) for name,
             urls in plugin_map.items())
         # clear the progress
-        self.__pi = None
+        self.__progress_info = None
         return result
 
     def _pack_result(self, result):

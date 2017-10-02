@@ -20,7 +20,7 @@ class AccountManager(BaseManager):
 
     def __init__(self, core):
         """Constructor."""
-        BaseManager.__init__(self, core)
+        super(AccountManager, self).__init__(core)
 
         # PluginName mapped to list of account instances
         self.accounts = {}

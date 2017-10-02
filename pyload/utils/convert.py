@@ -106,12 +106,12 @@ def to_dict(obj):
 def to_list(obj):
     """Convert value to a list with value inside or return default."""
     if isinstance(obj, list):
-        res = obj
+        pass
     elif ismapping(obj):
-        res = list(obj.items())
+        return list(obj.items())
     elif isiterable(obj, strict=False):
-        res = list(obj)
+        return list(obj)
     elif obj is not None:
-        res = [obj]
+        return [obj]
     else:
-        res = list(obj)
+        return list(obj)

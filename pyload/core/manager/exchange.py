@@ -31,7 +31,8 @@ class ExchangeManager(BaseManager):
     MAX_NOTIFICATIONS = 50
 
     def __init__(self, core):
-        BaseManager.__init__(self, core)
+        super(ExchangeManager, self).__init__(core)
+
         self.tasks = OrderedDict()  # task store, for all outgoing tasks
         self.last_clients = {}
         self.ids = 0  # uniue interaction ids

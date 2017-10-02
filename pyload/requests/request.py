@@ -22,8 +22,12 @@ class ResponseException(Exception):
     __slots__ = ['code']
 
     def __init__(self, code, content=''):
-        Exception.__init__(
-            self, 'Server response error: {0} {1}'.format(code, content))
+        super(
+            ResponseException,
+            self).__init__(
+            'Server response error: {0} {1}'.format(
+                code,
+                content))
         self.code = code
 
 

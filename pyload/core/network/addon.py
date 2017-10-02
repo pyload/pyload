@@ -26,7 +26,7 @@ def add_event_listener(event):
     """
     class klass(object):
         def __new__(cls, func, *args, **kwargs):
-            for ev in to_list(event, []):
+            for ev in to_list(event):
                 ADDONMANAGER.add_event_listener(
                     class_name(func.__module__), func.__name__, ev)
             return func
@@ -108,7 +108,7 @@ class Addon(Base):
     __type__ = 'addon'
 
     def __init__(self, core, manager, user=None):
-        Base.__init__(self, core, user)
+        super(Addon, self).__init__(core, user)
 
         # Callback of periodical job task, used by AddonManager
         self.cb = None

@@ -24,7 +24,7 @@ class DownloadRequest(Request):
 
         # Copies the context
         context = request.get_context() if request else [{}]
-        Request.__init__(self, *context)
+        super(DownloadRequest, self).__init__(*context)
 
         self.__running = Event()
         self._name = None

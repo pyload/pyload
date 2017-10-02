@@ -49,11 +49,11 @@ class Exit(Exception):
 #  improve external scripts
 class Core(object):
 
-    DEFAULT_CONFIGFILENAME = 'config.ini'
+    DEFAULT_CONFIGNAME = 'config.ini'
     DEFAULT_LANGUAGE = 'english'
     DEFAULT_USERNAME = 'admin'
     DEFAULT_PASSWORD = 'pyload'
-    DEFAULT_STORAGEDIRNAME = 'downloads'
+    DEFAULT_STORAGENAME = 'downloads'
 
     @property
     def version(self):
@@ -86,7 +86,7 @@ class Core(object):
         # cleanpy(PACKDIR)
 
         self.config = ConfigParser(
-            self.DEFAULT_CONFIGFILENAME, config_defaults)
+            self.DEFAULT_CONFIGNAME, config_defaults)
         self.log = Logger(self, debug, verbose)
         self._init_database(restore)
         self._init_managers()
@@ -134,7 +134,7 @@ class Core(object):
 
     def _setup_permissions(self):
         self.log.debug('Setup permissions...')
-        
+
         if os.name == 'nt':
             return
 
@@ -170,18 +170,18 @@ class Core(object):
 
     def _setup_language(self):
         self.log.debug('Setup language...')
-        
+
         lang = self.config.get('general', 'language')
         if not lang:
             lc = locale.getlocale()[0] or locale.getdefaultlocale()[0]
             lang = lc.split('_', 1)[0] if lc else 'en'
-        
+
         try:
             self.set_language(lang)
         except IOError as exc:
             self.log.error(exc)
             self._set_language('core', fallback=True)
-            
+
     # def _setup_niceness(self):
         # niceness = self.config.get('general', 'niceness')
         # renice(niceness=niceness)
@@ -190,10 +190,10 @@ class Core(object):
 
     def _setup_storage(self):
         self.log.debug('Setup storage...')
-        
+
         storage_folder = self.config.get('general', 'storage_folder')
-        if not storage_folder:
-            storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGEDIRNAME)
+        if storage_folder is None:
+            storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGENAME)
         self.log.debug('Storage: {0}'.format(storage_folder))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
@@ -202,7 +202,7 @@ class Core(object):
 
     def _setup_network(self):
         self.log.debug('Setup network...')
-        
+
         # TODO: Move to accountmanager
         self.log.info(self._('Activating accounts...'))
         self.acm.load_accounts()
@@ -210,8 +210,9 @@ class Core(object):
         self.adm.activate_addons()
 
     def run(self):
+        self.log.info('Welcome to pyLoad v{0}'.format(self.version))
         try:
-            self.log.info(self._('Running pyLoad...'))
+            self.log.info(self._('Starting pyLoad...'))
             self.evm.fire('pyload:starting')
             self.__running.set()
 
@@ -221,8 +222,6 @@ class Core(object):
             self._setup_network()
             # self._setup_niceness()
 
-            self.log.info(
-                self._('Welcome to pyLoad v{0}').format(self.version))
             self.log.info(self._('Config directory: {0}').format(self.cfgdir))
             self.log.info(self._('Temp directory: {0}').format(self.tmpdir))
             self.evm.fire('pyload:started')

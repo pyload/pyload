@@ -39,7 +39,7 @@ class EventManager(BaseManager):
     """
 
     def __init__(self, core):
-        BaseManager.__init__(self, core)
+        super(EventManager, self).__init__(core)
         self.events = {'event': []}
 
     def listen_to(self, event, func):

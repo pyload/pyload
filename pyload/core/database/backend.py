@@ -124,7 +124,7 @@ class DatabaseBackend(Thread):
     VERSION_FILE = 'db.version'
 
     def __init__(self, core):
-        Thread.__init__(self)
+        super(DatabaseBackend, self).__init__()
         self.setDaemon(True)
         self.pyload = core
         self._ = core._

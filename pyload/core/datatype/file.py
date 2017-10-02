@@ -12,8 +12,7 @@ from future import standard_library
 
 from pyload.core.datatype.base import (BaseObject, DownloadInfo,
                                        DownloadProgress, DownloadStatus,
-                                       ExceptionObject, MediaType,
-                                       ProgressInfo, ProgressType)
+                                       MediaType, ProgressInfo, ProgressType)
 from pyload.utils import purge
 from pyload.utils.debug import print_traceback
 from pyload.utils.struct.lock import RWLock, lock
@@ -92,7 +91,7 @@ class FileStatus(IntEnum):
     Remote = 2
 
 
-class FileDoesNotExist(ExceptionObject):
+class FileDoesNotExist(Exception):
 
     __slots__ = ['fid']
 

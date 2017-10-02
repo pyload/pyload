@@ -42,7 +42,7 @@ class CurlDownload(DownloadRequest):
         PATH_MAXLEN = 4096
 
     def __init__(self, *args, **kwargs):
-        DownloadRequest.__init__(self, *args, **kwargs)
+        super(CurlDownload, self).__init__(*args, **kwargs)
 
         self.path = None
         self.disposition = False

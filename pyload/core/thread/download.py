@@ -27,7 +27,7 @@ class DownloadThread(PluginThread):
 
     def __init__(self, manager):
         """Constructor."""
-        PluginThread.__init__(self, manager)
+        super(DownloadThread, self).__init__(manager)
 
         self.__running = Event()
         self.queue = Queue()  # job queue

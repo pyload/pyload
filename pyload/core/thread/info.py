@@ -10,7 +10,6 @@ from future import standard_library
 
 from pyload.core.datatype.base import LinkStatus, ProgressInfo, ProgressType
 from pyload.core.thread.decrypter import DecrypterThread
-from pyload.core.thread.plugin import PluginThread
 from pyload.utils import parse
 from pyload.utils.check import hasmethod
 from pyload.utils.misc import accumulate
@@ -23,7 +22,7 @@ class InfoThread(DecrypterThread):
     __slots__ = ['_progress', 'data', 'oc', 'pid']
 
     def __init__(self, manager, owner, data, pid=-1, oc=None):
-        PluginThread.__init__(self, manager, owner)
+        super(InfoThread, self).__init__(manager, owner)
 
         # [...(url, plugin)...]
         self.data = data
@@ -32,7 +31,7 @@ class InfoThread(DecrypterThread):
         # urls that already have a package name
         self.names = {}
 
-        self.__pi = None  # ProgressInfo
+        self.__progress_info = None  # ProgressInfo
 
     def start(self):
         self.manager.add_thread(self)
@@ -69,7 +68,7 @@ class InfoThread(DecrypterThread):
                 l.url for l in links)
             accumulate(hoster + crypter, plugins)
 
-        self.__pi = ProgressInfo(
+        self.__progress_info = ProgressInfo(
             'BasePlugin', '', self._('online check'), 0, 0,
             sum(len(urls) for urls in plugins.values()), self.owner,
             ProgressType.LinkCheck
@@ -92,7 +91,7 @@ class InfoThread(DecrypterThread):
 
         self.names.clear()
         self.manager.timestamp = time.time() + 5 * 60
-        self.__pi = None
+        self.__progress_info = None
         self.finished()
 
     def update_db(self, result):
@@ -129,11 +128,12 @@ class InfoThread(DecrypterThread):
         # also works on module names
         pluginname = plugin.__name__.split('.')[-1]
 
-        self.__pi.plugin = pluginname
-        self.__pi.name = self._('Checking {0:d} links').format(len(urls))
+        self.__progress_info.plugin = pluginname
+        self.__progress_info.name = self._(
+            'Checking {0:d} links').format(len(urls))
 
         # final number of links to be checked
-        done = self.__pi.done + len(urls)
+        done = self.__progress_info.done + len(urls)
         try:
             cached = []  # results loaded from cache
             process = []  # urls to process
@@ -148,7 +148,7 @@ class InfoThread(DecrypterThread):
                     'Fetched {0:d} links from cache for {1}'.format(
                         len(cached),
                         pluginname))
-                self.__pi.done += len(cached)
+                self.__progress_info.done += len(cached)
                 cb(cached)
 
             if process:
@@ -183,7 +183,7 @@ class InfoThread(DecrypterThread):
                     for link in links:
                         self.manager.info_cache[link.url] = link
 
-                    self.__pi.done += len(links)
+                    self.__progress_info.done += len(links)
                     cb(links)
 
             self.manager.log.debug(
@@ -194,4 +194,4 @@ class InfoThread(DecrypterThread):
                     pluginname, exc))
             # self.pyload.print_exc()
         finally:
-            self.__pi.done = done
+            self.__progress_info.done = done
