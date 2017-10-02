@@ -249,6 +249,7 @@ class Core(object):
                 if self.__do_exit:
                     raise Exit
                 self.scheduler.run()
+                time.sleep(1)
 
         except Restart:
             self.restart()

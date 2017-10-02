@@ -165,7 +165,7 @@ class Account(Base):
         except WrongPassword:
             self.log_warning(
                 self._('Could not login with account {0}').format(
-                    self.loginname, self._('Wrong Password')))
+                    self.loginname), self._('Wrong Password'))
             self.valid=False
 
         except Exception as exc:
