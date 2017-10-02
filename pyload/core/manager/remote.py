@@ -38,7 +38,7 @@ class RemoteManager(BaseManager):
                 self.pyload.log.error(
                     self._('Failed loading backend {0}').format(
                         b))
-                self.log.exception(exc)
+                self.pyload.log.exception(exc)
             else:
                 backend.start()
                 self.backends.append(backend)

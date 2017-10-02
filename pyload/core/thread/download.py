@@ -69,7 +69,7 @@ class DownloadThread(PluginThread):
         file.error = to_str(exc)
 
         if self.pyload.debug:
-            self.log.exception(exc)
+            self.pyload.log.exception(exc)
             self.debug_report(file)
 
         self.pyload.adm.download_failed(file)
@@ -82,7 +82,7 @@ class DownloadThread(PluginThread):
         file.error = to_str(exc)
 
         if self.pyload.debug:
-            self.log.exception(exc)
+            self.pyload.log.exception(exc)
             self.debug_report(file)
 
         self.pyload.adm.download_failed(file)
@@ -115,7 +115,7 @@ class DownloadThread(PluginThread):
             self._('Download skipped: {0} due to {1}').format(
                 file.name, exc))
         if self.pyload.debug:
-            self.log.exception(exc)
+            self.pyload.log.exception(exc)
 
         self.clean(file)
 
@@ -162,7 +162,7 @@ class DownloadThread(PluginThread):
                 self._('pycurl error {0}: {1}').format(errcode, errmsg))
 
             if self.pyload.debug:
-                self.log.exception(exc)
+                self.pyload.log.exception(exc)
                 self.debug_report(file)
 
             self.pyload.adm.download_failed(file)
