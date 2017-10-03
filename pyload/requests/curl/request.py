@@ -13,7 +13,8 @@ from future import standard_library
 
 import pycurl
 from pyload.requests.cookie import CookieJar
-from pyload.requests.request import Abort, Request, ResponseException
+from pyload.requests.base.request import Abort, ResponseException
+from pyload.requests.base.load import LoadRequest
 from pyload.utils.convert import to_bytes, to_str
 
 standard_library.install_aliases()
@@ -35,7 +36,7 @@ def safeurlencode(data):
              for x, y in data.items()))
 
 
-class CurlRequest(Request):
+class CurlRequest(LoadRequest):
     """Request class based on libcurl."""
     CONTEXT_CLASS = CookieJar
 

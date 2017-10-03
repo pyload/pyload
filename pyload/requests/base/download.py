@@ -4,15 +4,18 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 
-from future import standard_library
+from abc import ABCMeta, abstractmethod
 
-from pyload.requests.request import Request
+from future import standard_library
+from future.utils import with_metaclass
+
+from pyload.requests.base.request import Request
 from pyload.utils.layer.safethreading import Event
 
 standard_library.install_aliases()
 
 
-class DownloadRequest(Request):
+class DownloadRequest(with_metaclass(ABCMeta, Request)):
     """Abstract class for download request."""
 
     def __init__(self, bucket, request=None, logger=None):
@@ -33,10 +36,10 @@ class DownloadRequest(Request):
         # bucket used for rate limiting
         self.bucket = bucket
 
+    @abstractmethod
     def download(self, uri, filename, *args, **kwargs):
         """Downloads the resource with additional options depending on
         implementation."""
-        raise NotImplementedError
 
     @property
     def running(self):

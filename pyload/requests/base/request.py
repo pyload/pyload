@@ -3,9 +3,12 @@
 from __future__ import absolute_import, unicode_literals
 
 import logging
+
+from abc import ABCMeta
 from builtins import object
 
 from future import standard_library
+from future.utils import with_metaclass
 
 from pyload.utils.struct import HeaderDict
 
@@ -31,7 +34,7 @@ class ResponseException(Exception):
         self.code = code
 
 
-class Request(object):
+class Request(with_metaclass(ABCMeta, object)):
     """Abstract class to support different types of request, most methods
     should be overwritten."""
 
@@ -71,6 +74,7 @@ class Request(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
+    @abstractmethod
     def init_context(self):
         """Should be used to initialize everything from given context and
         options."""
@@ -104,14 +108,6 @@ class Request(object):
         """Removes authentication from the request."""
         self.unset_option('auth')
 
-    def load(self, uri, *args, **kwargs):
-        """Loads given resource from given uri.
-
-        Args and kwargs depends on implementation.
-
-        """
-        raise NotImplementedError
-
     def abort(self):
         self.__abort = True
 
@@ -119,6 +115,6 @@ class Request(object):
         """Resets the context to initial state."""
         self.unset_option('')
 
+    @abstractmethod
     def close(self):
         """Close and clean everything."""
-        raise NotImplementedError

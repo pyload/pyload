@@ -17,8 +17,8 @@ import pycurl
 from pyload.requests.chunk import ChunkInfo
 from pyload.requests.cookie import CookieJar
 from pyload.requests.curl.chunk import CurlChunk
-from pyload.requests.download import DownloadRequest
-from pyload.requests.request import Abort, ResponseException
+from pyload.requests.base.download import DownloadRequest
+from pyload.requests.base.request import Abort, ResponseException
 from pyload.requests.types import Connection
 from pyload.utils import purge
 from pyload.utils.fs import fullpath, remove
