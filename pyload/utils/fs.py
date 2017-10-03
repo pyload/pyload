@@ -13,6 +13,7 @@ import psutil
 import send2trash
 from future import standard_library
 
+from pyload.utils.convert import to_bytes, to_str
 from pyload.utils.layer.legacy import hashlib
 
 standard_library.install_aliases()
@@ -105,13 +106,19 @@ def filetype(filename):
         pass
     return guess_mime(filename)
 
-
+    
+def encode(path):
+    try:
+        return os.fsencode(path)
+    except AttributeError:
+        return to_bytes(path)
+    
+    
 def decode(path):
     try:
-        upath = unicode(path)
-    except NameError:
-        upath = os.fsdecode(path)
-    return upath
+        return os.fsdecode(path)
+    except AttributeError:
+        return to_str(path)
 
 
 def fullpath(path):
