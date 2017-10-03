@@ -197,7 +197,7 @@ def set_process_user(value):
     os.setuid(uid)
 
 
-def exit():
+def shutdown_os():
     if os.name == 'nt':
         call_cmd('rundll32.exe user.exe,ExitWindows')
 
@@ -217,4 +217,4 @@ def exit():
             stop_method = ck_iface.get_dbus_method('Stop')
             stop_method()
         except AttributeError:
-            call_cmd('stop -h now')  # NOTE: Root privileges needed
+            call_cmd('shutdown -h now')  # NOTE: Root privileges needed
