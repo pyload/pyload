@@ -192,6 +192,6 @@ class InfoThread(DecrypterThread):
             self.manager.log.warning(
                 self._('Info Fetching for {0} failed').format(
                     pluginname))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
         finally:
             self.__progress_info.done = done

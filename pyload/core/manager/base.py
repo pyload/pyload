@@ -22,7 +22,7 @@ class BaseManager(with_metaclass(ABCMeta, object)):
         self._ = core._
         self.pyload = core
         self.lock = Lock()
-        # self.init()
+        self.setup()
 
     @abstractmethod
     def setup(self):

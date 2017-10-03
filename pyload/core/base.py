@@ -17,8 +17,8 @@ from future import standard_library
 from pkg_resources import resource_filename
 
 from pyload.__about__ import __package__, __version__, __version_info__
-from pyload.config import ConfigParser, config_defaults
-from pyload.core.log import Logger
+from pyload.config import ConfigParser
+from pyload.core.log import LoggerFactory
 from pyload.core.network.factory import RequestFactory
 from pyload.utils import format
 from pyload.utils.fs import availspace, fullpath, makedirs
@@ -68,8 +68,7 @@ class Core(object):
     def running(self):
         return self.__running.is_set()
 
-    def __init__(self, cfgdir, tmpdir, debug=None,
-                 verbose=None, restore=False):
+    def __init__(self, cfgdir, tmpdir, debug=None, restore=False):
         self.__running = Event()
         self.__do_restart = False
         self.__do_exit = False
@@ -86,12 +85,15 @@ class Core(object):
         # if refresh:
         # cleanpy(PACKDIR)
 
-        self.config = ConfigParser(
-            self.DEFAULT_CONFIGNAME, config_defaults)
-        self.log = Logger(self, debug, verbose)
+        self.config = ConfigParser(self.DEFAULT_CONFIGNAME)
+        self.debug = self.config.get('log', 'debug') if debug is None else debug
+        self.log = LoggerFactory(self, self.debug)
+        
         self._init_database(restore)
         self._init_managers()
+        
         self.request = self.req = RequestFactory(self)
+        
         self._init_api()
 
     def _init_api(self):
@@ -150,7 +152,7 @@ class Core(object):
                 set_process_group(group)
             except Exception as exc:
                 self.log.error(self._('Unable to change gid'))
-                self.log.exception(exc)
+                self.log.error(exc, exc_info=self.debug)
 
         if change_user:
             try:
@@ -158,7 +160,7 @@ class Core(object):
                 set_process_user(user)
             except Exception as exc:
                 self.log.error(self._('Unable to change uid'))
-                self.log.exception(exc)
+                self.log.error(exc, exc_info=self.debug)
 
     def set_language(self, lang):
         domain = 'core'
@@ -184,7 +186,7 @@ class Core(object):
         try:
             self.set_language(lang)
         except IOError as exc:
-            self.log.exception(exc)
+            self.log.error(exc, exc_info=self.debug)
             self._set_language('core', fallback=True)
 
     # def _setup_niceness(self):
@@ -200,7 +202,7 @@ class Core(object):
         if storage_folder is None:
             storage_folder = os.path.join(
                 builtins.USERDIR, self.DEFAULT_STORAGENAME)
-        self.log.debug('Storage: {0}'.format(storage_folder))
+        self.log.info(self._('Storage: {0}'.format(storage_folder)))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))
         self.log.info(
@@ -217,8 +219,10 @@ class Core(object):
 
     def run(self):
         self.log.info('Welcome to pyLoad v{0}'.format(self.version))
+        if self.debug:
+            self.log.warning('*** DEBUG MODE ***')
         try:
-            self.log.info(self._('Starting pyLoad...'))
+            self.log.debug('Starting pyLoad...')
             self.evm.fire('pyload:starting')
             self.__running.set()
 
@@ -229,7 +233,7 @@ class Core(object):
             # self._setup_niceness()
 
             self.log.info(self._('Config directory: {0}').format(self.cfgdir))
-            self.log.info(self._('Temp directory: {0}').format(self.tmpdir))
+            self.log.info(self._('Cache directory: {0}').format(self.tmpdir))
             self.evm.fire('pyload:started')
 
             # # some memory stats
@@ -243,6 +247,8 @@ class Core(object):
             # from meliae import scanner
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
+            self.log.debug('pyLoad is up and running')
+            
             self.tsm.pause = False  # NOTE: Recheck...
             while True:
                 self.__running.wait()
@@ -294,7 +300,7 @@ class Core(object):
 
     def stop(self):
         try:
-            self.log.info(self._('Stopping pyLoad...'))
+            self.log.debug('Stopping pyLoad...')
             self.evm.fire('pyload:stopping')
             self.adm.deactivate_addons()
             self.api.stop_all_downloads()

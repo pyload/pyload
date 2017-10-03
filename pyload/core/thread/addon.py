@@ -75,7 +75,7 @@ class AddonThread(PluginThread):
             if hasattr(self.func, 'im_self'):
                 addon = self.func.__self__
                 addon.log_error(self._('An Error occurred'))
-                self.pyload.log.exception(exc)
+                self.pyload.log.error(exc, exc_info=self.pyload.debug)
                 # if self.pyload.debug:
                 # self.debug_report(addon.__name__, plugin=addon)
 

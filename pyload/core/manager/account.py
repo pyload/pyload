@@ -57,7 +57,7 @@ class AccountManager(BaseManager):
             except Exception as exc:
                 self.pyload.log.error(
                     self._('Could not load account {0}').format(info))
-                self.pyload.log.exception(exc)
+                self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
     def iter_accounts(self):
         """Yields login, account  for all accounts."""

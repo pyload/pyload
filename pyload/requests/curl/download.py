@@ -247,7 +247,7 @@ class CurlDownload(DownloadRequest):
                         self.log.debug(
                             'Chunk {0:d} failed'.format(
                                 chunk.id + 1))
-                        self.log.exception(exc)
+                        self.log.debug(exc, exc_info=True)
                         failed.append(chunk)
                     else:
                         chunks_done.add(c)
@@ -261,7 +261,7 @@ class CurlDownload(DownloadRequest):
                         exc = pycurl.error(errno, msg)
                         self.log.debug(
                             'Chunk {0:d} failed'.format(chunk.id + 1))
-                        self.log.exception(exc)
+                        self.log.debug(exc, exc_info=True)
                         continue
                     # check if the header implies success,
                     # else add it to failed list
@@ -271,7 +271,7 @@ class CurlDownload(DownloadRequest):
                         self.log.debug(
                             'Chunk {0:d} failed'.format(
                                 chunk.id + 1))
-                        self.log.exception(exc)
+                        self.log.debug(exc, exc_info=True)
                         failed.append(chunk)
                     else:
                         chunks_done.add(curl)
@@ -351,7 +351,7 @@ class CurlDownload(DownloadRequest):
 
         except pycurl.error as exc:
             self.log.debug('Error removing chunk')
-            self.log.exception(exc)
+            self.log.debug(exc, exc_info=True)
 
         finally:
             chunk.close()

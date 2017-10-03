@@ -85,7 +85,7 @@ class Account(Base):
 
         except Exception as exc:
             self.log_error(self._('Invalid config'))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
             self.config_data = {}
 
         self.init()
@@ -172,7 +172,7 @@ class Account(Base):
         except Exception as exc:
             self.log_warning(
                 self._('Could not login with account {0}').format(self.loginname))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
             self.valid = False
 
         return self.valid
@@ -243,7 +243,7 @@ class Account(Base):
                         infos = self.load_account_info(self.loginname, req)
                 except Exception as exc:
                     infos = {'error': to_str(exc)}
-                    self.pyload.log.exception(exc)
+                    self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
             self.restore_defaults()  # reset to initial state
             if isinstance(infos, dict):  # copy result from dict to class

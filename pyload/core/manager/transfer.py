@@ -267,7 +267,7 @@ class TransferManager(BaseManager):
         except Exception as exc:
             self.pyload.log.warning(
                 self._('Failed executing reconnect script!'))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
             self.pyload.config.set('reconnect', 'activated', False)
             self.reconnecting.clear()
             return

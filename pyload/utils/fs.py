@@ -296,7 +296,7 @@ def _cleanpy2(root, filenames):
             continue
         try:
             remove(join(root, fname))
-        except IOError:
+        except OSError:
             pass
 
 
@@ -307,7 +307,7 @@ def _cleanpy3(root, dirnames):
     dirnames.remove(name)
     try:
         os.remove(os.path.join(root, name))
-    except IOError:
+    except OSError:
         pass
 
 

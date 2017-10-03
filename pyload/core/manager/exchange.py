@@ -163,7 +163,7 @@ class ExchangeManager(BaseManager):
             try:
                 plugin.new_interaction_task(task)
             except Exception as exc:
-                self.pyload.log.exception(exc)
+                self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
         self.tasks[task.iid] = task
         self.pyload.evm.fire('interaction:added', task)

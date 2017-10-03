@@ -64,7 +64,7 @@ class CurlRequest(LoadRequest):
 
     @property
     def http(self):
-        print('Deprecated usage of req.http, just use req instead')
+        self.log.debug('Deprecated usage of req.http, just use req instead')
         return self
 
     def init_context(self):

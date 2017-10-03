@@ -99,7 +99,7 @@ class DecrypterThread(PluginThread):
 
         except Exception as exc:
             plugin.log_error(self._('Decrypting failed'))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
             self.error = True
             # generate error linkStatus
@@ -109,7 +109,7 @@ class DecrypterThread(PluginThread):
 
             # no debug for intentional errors
             # if self.pyload.debug and not isinstance(e, Fail):
-            # self.pyload.log.exception(exc)
+            # self.pyload.log.error(exc, exc_info=self.pyload.debug)
             # self.debug_report(plugin.__name__, plugin=plugin)
         finally:
             if plugin:

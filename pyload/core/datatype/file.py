@@ -30,7 +30,7 @@ def trycatch(callback):
                 msg = 'Error executing `{0}`'.format(
                     func.__name__)
                 self.pyload.log.debug(msg)
-                self.pyload.log.exception(exc)
+                self.pyload.log.error(exc, exc_info=self.pyload.debug)
                 return callback(exc)
         return new
     return wrapper

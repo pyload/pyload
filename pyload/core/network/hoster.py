@@ -296,7 +296,7 @@ class Hoster(Base):
                 except Exception as exc:
                     self.pyload.log.warning(
                         self._('Setting User and Group failed'))
-                    self.pyload.log.exception(exc)
+                    self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
         name = self.file.name
 
@@ -343,7 +343,7 @@ class Hoster(Base):
             except Exception as exc:
                 self.pyload.log.warning(
                     self._('Setting User and Group failed'))
-                self.pyload.log.exception(exc)
+                self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
         self.last_download = fs_filename
         return self.last_download

@@ -77,4 +77,4 @@ class EventManager(BaseManager):
                     self.pyload.log.warning(
                         'Error calling event handler '
                         '{0}: {1}, {2}'.format(event, func, args))
-                    self.pyload.log.exception(exc)
+                    self.pyload.log.error(exc, exc_info=self.pyload.debug)

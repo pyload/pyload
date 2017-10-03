@@ -161,7 +161,7 @@ class Addon(Base):
         except Exception as exc:
             self.pyload.log.error(
                 self._('Error executing addon'))
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
 
         if self.cb:
             self.cb = self.pyload.scheduler.enter(

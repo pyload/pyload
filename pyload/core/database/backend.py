@@ -100,7 +100,7 @@ class DatabaseJob(object):
         try:
             self.result = self.func(*self.args, **self.kwgs)
         except Exception as exc:
-            self.pyload.log.exception(exc)
+            self.pyload.log.error(exc, exc_info=self.pyload.debug)
             self.exception = exc
         finally:
             self.done.set()
@@ -157,15 +157,10 @@ class DatabaseBackend(Thread):
                 self.c.close()
                 self.conn.close()
 
-                try:
-                    self.pyload.log.warning(
-                        self._('Database was deleted '
-                               'due to incompatible version'))
-                except Exception:
-                    print('Database was deleted due to incompatible version')
-
                 remove(self.VERSION_FILE)
                 shutil.move(self.DB_FILE, self.DB_FILE + '.bak')
+                self.pyload.log.warning(self._('Database was deleted due to incompatible version'))
+                
                 with io.open(self.VERSION_FILE, mode='wb') as fp:
                     fp.write(to_str(DB_VERSION))
 
