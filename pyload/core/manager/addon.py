@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import builtins
 from collections import defaultdict
 from gettext import gettext
 from types import MethodType
@@ -29,9 +28,6 @@ class AddonManager(BaseManager):
     """Manages addons, loading, unloading."""
 
     def init(self):
-        # needed to let addons register themselves
-        builtins.ADDONMANAGER = self
-
         # TODO: multiuser addons
 
         # maps plugin names to info tuple

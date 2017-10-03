@@ -84,20 +84,14 @@ def to_bytes(obj, encoding='utf-8', errors='strict'):
     try:
         return obj.encode(encoding, errors)
     except AttributeError:
-        try:
-            return bytes(obj)
-        except NameError:
-            return str(obj)
+        return bytes(obj, encoding)
 
 
 def to_str(obj, encoding='utf-8', errors='strict'):
     try:
         return obj.decode(encoding, errors)
     except AttributeError:
-        try:
-            return unicode(obj)
-        except NameError:
-            return str(obj)
+        return str(obj)
 
 
 def to_dict(obj):

@@ -6,16 +6,18 @@ import time
 
 from future import standard_library
 
-from pyload.core.datatype.base import BaseData
+from pyload.core.datatype.base import BaseObject
 
 standard_library.install_aliases()
 
 
-class OnlineCheck(BaseData):
+class OnlineCheck(BaseObject):
     """Helper class that holds result of an initiated online check."""
     __slots__ = ['done', 'owner', 'result', 'rid', 'timestamp']
 
-    def init(self, rid=None, owner=None):
+    def __init__(self, rid=None, owner=None):
+        super(OnlineCheck, self).__init__()
+        
         self.rid = rid
         self.owner = owner
         self.result = {}

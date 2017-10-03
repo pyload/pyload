@@ -10,7 +10,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.core.datatype.base import (BaseData, DownloadInfo,
+from pyload.core.datatype.base import (BaseObject, DownloadInfo,
                                        DownloadProgress, DownloadStatus,
                                        MediaType, ProgressInfo, ProgressType)
 from pyload.utils import purge
@@ -94,17 +94,20 @@ class FileDoesNotExist(Exception):
     __slots__ = ['fid']
 
     def __init__(self, fid=None):
+        super(FileDoesNotExist, self).__init__()
         self.fid = fid
 
 
-class FileInfo(BaseData):
+class FileInfo(BaseObject):
 
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
 
-    def init(self, fid=None, name=None, package=None, owner=None,
+    def __init__(self, fid=None, name=None, package=None, owner=None,
                  size=None, status=None, media=None, added=None,
                  fileorder=None, download=None):
+        super(FileInfo, self).__init__()
+        
         self.fid = fid
         self.name = name
         self.package = package
@@ -117,7 +120,7 @@ class FileInfo(BaseData):
         self.download = download
 
 
-class File(BaseData):
+class File(BaseObject):
     """Represents a file object at runtime."""
     __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid',
                  'fileorder', 'filestatus', 'hash', 'lock', 'manager', 'media',
@@ -137,9 +140,11 @@ class File(BaseData):
             file.error = info.download.error
         return file
 
-    def init(
+    def __init__(
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
+        super(File, self).__init__()
+        
         self.manager = manager
         self.pyload = manager.pyload
 

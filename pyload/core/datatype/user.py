@@ -7,7 +7,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.core.datatype.base import BaseData, Permission
+from pyload.core.datatype.base import BaseObject, Permission
 from pyload.utils.check import bitset
 
 standard_library.install_aliases()
@@ -26,15 +26,16 @@ class UserDoesNotExist(Exception):
         self.user = user
 
 
-class UserData(BaseData):
+class UserData(BaseObject):
 
     __slots__ = ['uid', 'name', 'email', 'role', 'permission', 'folder',
                  'traffic', 'dllimit', 'dlquota', 'hddquota', 'user',
                  'templatename']
 
-    def init(self, uid=None, name=None, email=None, role=None,
+    def __init__(self, uid=None, name=None, email=None, role=None,
                  permission=None, folder=None, traffic=None, dllimit=None,
                  dlquota=None, hddquota=None, user=None, templatename=None):
+        super(UserData, self).__init__()
         self.uid = uid
         self.name = name
         self.email = email

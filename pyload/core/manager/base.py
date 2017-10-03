@@ -17,14 +17,14 @@ standard_library.install_aliases()
 class BaseManager(with_metaclass(ABCMeta, object)):
     """Base manager."""
 
-    def __init__(self, core, *args, **kwargs):
+    def __init__(self, core):
         """Constructor."""
         self._ = core._
         self.pyload = core
         self.lock = Lock()
-        self.init(*args, **kwargs)
+        self.init()
         
     @abstractmethod
-    def init(self, *args, **kwargs):
+    def init(self):
         pass
         

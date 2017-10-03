@@ -3,15 +3,13 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from abc import ABCMeta, abstractmethod
 import os
 import time
 from enum import IntEnum
 
 from future import standard_library
-from future.utils import with_metaclass
 
-from pyload.core.datatype.base import BaseData
+from pyload.core.datatype.base import BaseObject
 
 standard_library.install_aliases()
 
@@ -31,18 +29,20 @@ class PackageDoesNotExist(Exception):
         self.pid = pid
 
 
-class PackageInfo(BaseData):
+class PackageInfo(BaseObject):
 
     __slots__ = [
         'pid', 'name', 'folder', 'root', 'owner', 'site', 'comment',
         'password', 'added', 'tags', 'status', 'shared', 'packageorder',
         'stats', 'fids', 'pids']
 
-    def init(
+    def __init__(
             self, pid=None, name=None, folder=None, root=None, owner=None,
             site=None, comment=None, password=None, added=None, tags=None,
             status=None, shared=None, packageorder=None, stats=None, fids=None,
             pids=None):
+        super(PackageInfo, self).__init__()
+        
         self.pid = pid
         self.name = name
         self.folder = folder
@@ -61,19 +61,21 @@ class PackageInfo(BaseData):
         self.pids = pids
 
 
-class PackageStats(BaseData):
+class PackageStats(BaseObject):
 
     __slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
 
-    def init(self, linkstotal=None, linksdone=None,
+    def __init__(self, linkstotal=None, linksdone=None,
                  sizetotal=None, sizedone=None):
+        super(PackageStats, self).__init__()
+        
         self.linkstotal = linkstotal
         self.linksdone = linksdone
         self.sizetotal = sizetotal
         self.sizedone = sizedone
 
 
-class Package(BaseData):
+class Package(BaseObject):
     """Represents a package object at runtime."""
     __slots__ = ['added', 'comment', 'comment', 'folder', 'manager', 'name',
                  'ownerid', 'packageorder', 'password', 'password', 'pid',
@@ -87,9 +89,11 @@ class Package(BaseData):
             site, info.comment, info.password, info.added, info.tags, info.
             status, info.shared, info.packageorder)
 
-    def init(
+    def __init__(
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
+        super(Package, self).__init__()
+        
         self.manager = manager
         self.pyload = manager.pyload
 
@@ -158,7 +162,7 @@ class Package(BaseData):
         self.pyload.evm.fire('packageUpdated', self.id)
 
 
-class RootPackage(with_metaclass(ABCMeta, Package)):
+class RootPackage(Package):
 
     __slots__ = []
 
@@ -171,14 +175,11 @@ class RootPackage(with_metaclass(ABCMeta, Package)):
             'general', 'storage_folder'), name)
 
     # no database operations
-    @abstractmethod
     def sync(self):
         raise NotImplementedError
 
-    @abstractmethod
     def delete(self):
         raise NotImplementedError
 
-    @abstractmethod
     def release(self):
         raise NotImplementedError

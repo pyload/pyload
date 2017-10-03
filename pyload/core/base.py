@@ -4,12 +4,13 @@
 from __future__ import absolute_import, unicode_literals
 
 import atexit
+import builtins
 import gettext
 import locale
 import os
 import sched
 import time
-from builtins import USERDIR
+
 from contextlib import closing
 
 from future import standard_library
@@ -127,7 +128,8 @@ class Core(object):
         self.accountmanager = self.acm = AccountManager(self)
         self.infomanager = self.iom = InfoManager(self)
         self.transfermanager = self.tsm = TransferManager(self)
-        self.addonmanager = self.adm = AddonManager(self)
+        # TODO: Remove builtins.ADDONMANAGER
+        builtins.ADDONMANAGER = self.addonmanager = self.adm = AddonManager(self)
         # self.remotemanager = self.rem = RemoteManager(self)
         # self.servermanager = self.svm = ServerManager(self)
         self.db.manager = self.files  # ugly?
@@ -195,7 +197,7 @@ class Core(object):
 
         storage_folder = self.config.get('general', 'storage_folder')
         if storage_folder is None:
-            storage_folder = os.path.join(USERDIR, self.DEFAULT_STORAGENAME)
+            storage_folder = os.path.join(builtins.USERDIR, self.DEFAULT_STORAGENAME)
         self.log.debug('Storage: {0}'.format(storage_folder))
         makedirs(storage_folder, exist_ok=True)
         avail_space = format.size(availspace(storage_folder))

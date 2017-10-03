@@ -12,18 +12,10 @@ from future.utils import with_metaclass
 standard_library.install_aliases()
 
 
-class BaseData(with_metaclass(ABCMeta, object)):
+class BaseObject(with_metaclass(ABCMeta, object)):
 
     __slots__ = []
     
-    def __init__(self, *args, **kwargs):
-        super(BaseData).__init__()
-        self.init(*args, **kwargs)
-        
-    @abstractmethod
-    def init(self, *args, **kwargs):
-        pass
-
     def __str__(self):
         return '<{0} {1}>'.format(self.__class__.__name__, ', '.join(
             '{0}={1}'.format(k, getattr(self, k)) for k in self.__slots__))
@@ -155,17 +147,19 @@ class ProgressType(IntEnum):
     FileOperation = 32
 
 
-class AccountInfo(BaseData):
+class AccountInfo(BaseObject):
 
     __slots__ = [
         'aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
         'trafficleft', 'maxtraffic', 'premium', 'activated', 'shared',
         'config']
 
-    def init(
+    def __init__(
             self, aid=None, plugin=None, loginname=None, owner=None,
             valid=None, validuntil=None, trafficleft=None, maxtraffic=None,
             premium=None, activated=None, shared=None, config=None):
+        super(AccountInfo, self).__init__()
+        
         self.aid = aid
         self.plugin = plugin
         self.loginname = loginname
@@ -180,23 +174,27 @@ class AccountInfo(BaseData):
         self.config = config
 
 
-class AddonInfo(BaseData):
+class AddonInfo(BaseObject):
 
     __slots__ = ['name', 'description', 'value']
 
-    def init(self, name=None, description=None, value=None):
+    def __init__(self, name=None, description=None, value=None):
+        super(AddonInfo, self).__init__()
+        
         self.name = name
         self.description = description
         self.value = value
 
 
-class AddonService(BaseData):
+class AddonService(BaseObject):
 
     __slots__ = ['__name__', 'func_name', 'label',
                  'description', 'arguments', 'pack', 'media']
 
-    def init(self, func_name=None, label=None, description=None,
+    def __init__(self, func_name=None, label=None, description=None,
                  arguments=None, pack=None, media=None):
+        super(AddonService, self).__init__()
+        
         self.__name__ = func_name
         self.label = label
         self.description = description
@@ -205,13 +203,15 @@ class AddonService(BaseData):
         self.media = media
 
 
-class ConfigHolder(BaseData):
+class ConfigHolder(BaseObject):
 
     __slots__ = ['name', 'label', 'description',
                  'explanation', 'items', 'info']
 
-    def init(self, name=None, label=None, description=None,
+    def __init__(self, name=None, label=None, description=None,
                  explanation=None, items=None, info=None):
+        super(ConfigHolder, self).__init__()
+        
         self.name = name
         self.label = label
         self.description = description
@@ -220,13 +220,15 @@ class ConfigHolder(BaseData):
         self.info = info
 
 
-class ConfigInfo(BaseData):
+class ConfigInfo(BaseObject):
 
     __slots__ = ['name', 'label', 'description',
                  'category', 'user_context', 'activated']
 
-    def init(self, name=None, label=None, description=None,
+    def __init__(self, name=None, label=None, description=None,
                  category=None, user_context=None, activated=None):
+        super(ConfigInfo, self).__init__()
+        
         self.name = name
         self.label = label
         self.description = description
@@ -235,12 +237,14 @@ class ConfigInfo(BaseData):
         self.activated = activated
 
 
-class ConfigItem(BaseData):
+class ConfigItem(BaseObject):
 
     __slots__ = ['name', 'label', 'description', 'input', 'value']
 
-    def init(self, name=None, label=None,
+    def __init__(self, name=None, label=None,
                  description=None, input=None, value=None):
+        super(ConfigItem, self).__init__()
+        
         self.name = name
         self.label = label
         self.description = description
@@ -248,12 +252,14 @@ class ConfigItem(BaseData):
         self.value = value
 
 
-class DownloadInfo(BaseData):
+class DownloadInfo(BaseObject):
 
     __slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
 
-    def init(self, url=None, plugin=None, hash=None,
+    def __init__(self, url=None, plugin=None, hash=None,
                  status=None, statusmsg=None, error=None):
+        super(DownloadInfo, self).__init__()
+        
         self.url = url
         self.plugin = plugin
         self.hash = hash
@@ -262,10 +268,12 @@ class DownloadInfo(BaseData):
         self.error = error
 
 
-class DownloadProgress(BaseData):
+class DownloadProgress(BaseObject):
     __slots__ = ['fid', 'pid', 'speed', 'conn', 'status']
 
-    def init(self, fid=None, pid=None, speed=None, conn=None, status=None):
+    def __init__(self, fid=None, pid=None, speed=None, conn=None, status=None):
+        super(DownloadProgress, self).__init__()
+        
         self.fid = fid
         self.pid = pid
         self.speed = speed
@@ -273,31 +281,35 @@ class DownloadProgress(BaseData):
         self.status = status
 
 
-class EventInfo(BaseData):
+class EventInfo(BaseObject):
 
     __slots__ = ['eventname', 'event_args']
 
-    def init(self, eventname=None, event_args=None):
+    def __init__(self, eventname=None, event_args=None):
+        super(EventInfo, self).__init__()
         self.eventname = eventname
         self.event_args = event_args
 
 
-class Input(BaseData):
+class Input(BaseObject):
 
     __slots__ = ['type', 'default', 'data']
 
-    def init(self, type_=None, default=None, data=None):
+    def __init__(self, type_=None, default=None, data=None):
+        super(Input, self).__init__()        
         self.type = type_
         self.default = default
         self.data = data
 
 
-class LinkStatus(BaseData):
+class LinkStatus(BaseObject):
 
     __slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
-    def init(self, url=None, name=None, size=None,
+    def __init__(self, url=None, name=None, size=None,
                  status=None, plugin=None, hash=None):
+        super(LinkStatus, self).__init__()
+        
         self.url = url
         self.name = name
         self.size = size
@@ -306,13 +318,15 @@ class LinkStatus(BaseData):
         self.hash = hash
 
 
-class ProgressInfo(BaseData):
+class ProgressInfo(BaseObject):
 
     __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
                  'done', 'total', 'owner', 'type', 'download']
 
-    def init(self, plugin=None, name=None, statusmsg=None, eta=None,
+    def __init__(self, plugin=None, name=None, statusmsg=None, eta=None,
                  done=None, total=None, owner=None, type_=None, download=None):
+        super(ProgressInfo, self).__init__()
+        
         self.plugin = plugin
         self.name = name
         self.statusmsg = statusmsg
@@ -324,15 +338,17 @@ class ProgressInfo(BaseData):
         self.download = download
 
 
-class StatusInfo(BaseData):
+class StatusInfo(BaseObject):
 
     __slots__ = [
         'speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue',
         'notifications', 'paused', 'download', 'reconnect', 'quota']
 
-    def init(self, speed=None, linkstotal=None, linksqueue=None,
+    def __init__(self, speed=None, linkstotal=None, linksqueue=None,
                  sizetotal=None, sizequeue=None, notifications=None,
                  paused=None, download=None, reconnect=None, quota=None):
+        super(StatusInfo, self).__init__()
+        
         self.speed = speed
         self.linkstotal = linkstotal
         self.linksqueue = linksqueue
@@ -345,11 +361,13 @@ class StatusInfo(BaseData):
         self.quota = quota
 
 
-class TreeCollection(BaseData):
+class TreeCollection(BaseObject):
 
     __slots__ = ['root', 'files', 'packages']
 
-    def init(self, root=None, files=None, packages=None):
+    def __init__(self, root=None, files=None, packages=None):
+        super(TreeCollection, self).__init__()
+        
         self.root = root
         self.files = files
         self.packages = packages

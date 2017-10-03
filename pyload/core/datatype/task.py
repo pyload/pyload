@@ -9,7 +9,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.core.datatype.base import BaseData, InputType
+from pyload.core.datatype.base import BaseObject, InputType
 
 standard_library.install_aliases()
 
@@ -22,15 +22,16 @@ class Interaction(IntEnum):
 
 
 # noinspection PyUnresolvedReferences
-class InteractionTask(BaseData):
+class InteractionTask(BaseObject):
     """General Interaction Task extends ITask defined by api with additional
     fields and methods."""
     __slots__ = ['description', 'error', 'handler', 'iid', 'input', 'locked',
                  'owner', 'plugin', 'result', 'seen', 'shared', 'storage',
                  'title', 'type', 'wait_until']
 
-    def init(self, iid=None, type_=None, input=None, title=None,
+    def __init__(self, iid=None, type_=None, input=None, title=None,
                  description=None, plugin=None, owner=None, shared=False):
+        super(InteractionTask, self).__init__()
         self.iid = iid
         self.type = type_
         self.input = input
