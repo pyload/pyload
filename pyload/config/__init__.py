@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-from pyload.config.default import config_defaults
+from pyload.config.default import config
 from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
                                       VersionMismatchError)
 from pyload.config.parser import ConfigOption, ConfigParser, ConfigSection

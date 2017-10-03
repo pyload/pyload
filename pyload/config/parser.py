@@ -14,6 +14,7 @@ import semver
 from future import standard_library
 
 from pyload.__about__ import __version_info__
+from pyload.config import default
 from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
                                       VersionMismatchError)
 from pyload.config.types import InputType
@@ -228,7 +229,7 @@ class ConfigParser(ConfigSection):
     DEFAULT_SECTION = configparser.DEFAULTSECT
     SELF_SECTION = ''
 
-    def __init__(self, filename, config=None, version=__version_info__,
+    def __init__(self, filename, config=default.config, version=__version_info__,
                  logger=None):
         self.path = fullpath(filename)
         self.version, self.version_info = self._parse_version(version)
@@ -248,6 +249,17 @@ class ConfigParser(ConfigSection):
         with closing(self.fp):
             self.store()
 
+    def _backup_fileconfig(self):
+        path = self.path
+        rename = os.rename        
+        idx = 0
+        while True:
+            try:
+                return rename(path, '{0}{1}.old'.format(
+                    path, '({0})'.format(idx) if idx else ''))
+            except OSError:
+                idx += 1
+    
     def _retrieve_fileconfig(self):
         try:
             return self.retrieve()
@@ -255,11 +267,11 @@ class ConfigParser(ConfigSection):
         except VersionMismatchError:
             self.fp.close()
             print 'VersionMismatchError'
-            os.rename(self.path, self.path + '.old')
+            self._backup_fileconfig()
             self.fp = io.open(self.path, mode='ab+')
 
         except Exception as exc:
-            self.log.exception(exc)
+            self.log.debug(exc, exc_info=True)
 
         self.log.warning(
             'Unable to parse configuration from `{0}`'.format(self.path))

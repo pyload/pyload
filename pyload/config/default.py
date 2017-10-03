@@ -54,7 +54,7 @@ standard_library.install_aliases()
 
 
 # TODO: write descriptions
-def _gen_config_defaults():
+def _gen_config():
     general_config = (
         ('language',
             ('option', None, 'Language', None, (None, 'english'), InputType.Str)),
@@ -94,8 +94,8 @@ def _gen_config_defaults():
             ('option', True, 'Log rotate', None, None, InputType.Bool)),
         ('debug',
             ('option', False, 'Debug mode', None, None, InputType.Bool)),
-        ('verbose',
-            ('option', False, 'Verbose mode', None, None, InputType.Bool)),
+        # ('verbose',
+            # ('option', False, 'Verbose mode', None, None, InputType.Bool)),
         ('colorlog',
             ('option', True, 'Color log (console only)', None, None, InputType.Bool))
     )
@@ -175,7 +175,7 @@ def _gen_config_defaults():
             ('option', 1, 'Check interval (in days)', None, None, InputType.Int))
     )
 
-    defaults = (
+    root_config = (
         ('general',
             ('section', general_config, 'General', None)),
         ('log',
@@ -193,7 +193,7 @@ def _gen_config_defaults():
         ('update',
             ('section', up_config, 'Updates', None))
     )
-    return defaults
+    return root_config
 
 
-config_defaults = _gen_config_defaults()
+config = _gen_config()
