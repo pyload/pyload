@@ -281,41 +281,41 @@ def mtime(path):
     if not os.path.isdir(path):
         return getmtime(path)
 
-    mtimes = (getmtime(join(dirpath, fname))
-              for dirpath, dirnames, filenames in os.walk(path)
+    mtimes = (getmtime(join(root, fname))
+              for root, dirnames, filenames in os.walk(path)
               for fname in filenames)
 
     return max(0, 0, *mtimes)
 
 
-def _cleanpy2(dirpath, filenames):
+def _cleanpy2(root, filenames):
     join = os.path.join
     remove = os.remove
     for fname in filenames:
         if fname[-4:] not in ('.pyc', '.pyo', '.pyd'):
             continue
         try:
-            remove(join(dirpath, fname))
-        except Exception:
-            continue
+            remove(join(root, fname))
+        except IOError:
+            pass
 
 
-def _cleanpy3(dirpath, dirnames):
-    cname = '__pycache__'
-    if cname not in dirnames:
+def _cleanpy3(root, dirnames):
+    name = '__pycache__'
+    if name not in dirnames:
         return
-    dirnames.remove(cname)
+    dirnames.remove(name)
     try:
-        os.remove(os.path.join(dirpath, cname))
-    except Exception:
+        os.remove(os.path.join(root, name))
+    except IOError:
         pass
 
 
 def cleanpy(dirname, recursive=True):
-    walkpath = os.walk(dirname)
+    walk_it = os.walk(dirname)
     if not recursive:
-        walkpath = (next(walkpath))
-    for dirpath, dirnames, filenames in walkpath:
+        walk_it = (next(walk_it))
+    for dirpath, dirnames, filenames in walk_it:
         _cleanpy2(dirpath, filenames)
         _cleanpy3(dirpath, dirnames)
 

@@ -25,7 +25,7 @@ standard_library.install_aliases()
 class TransferManager(BaseManager):
     """Schedules and manages download and decrypter jobs."""
 
-    def init(self):
+    def setup(self):
         # won't start download when true
         self.pause = True
 

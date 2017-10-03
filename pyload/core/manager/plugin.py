@@ -38,7 +38,7 @@ class PluginManager(BaseManager):
     MATCH_HISTORY = 10
     DEFAULT_PLUGIN = 'BasePlugin'
 
-    def init(self):
+    def setup(self):
         # cached modules (type, name)
         self.modules = {}
         # match history to speedup parsing (type, name)

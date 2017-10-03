@@ -22,8 +22,8 @@ class BaseManager(with_metaclass(ABCMeta, object)):
         self._ = core._
         self.pyload = core
         self.lock = Lock()
-        self.init()
+        # self.init()
 
     @abstractmethod
-    def init(self):
+    def setup(self):
         pass

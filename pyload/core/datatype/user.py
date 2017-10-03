@@ -76,14 +76,14 @@ class User(UserData):
         """Accepts permission bit or name."""
         try:
             perms = getattr(Permission, perms)
-        except Exception:
+        except AttributeError:
             pass
         return bitset(perms, self.permission)
 
     def has_role(self, role):
         try:
             role = getattr(Role, role)
-        except Exception:
+        except AttributeError:
             pass
         return self.role == role
 

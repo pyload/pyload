@@ -33,7 +33,7 @@ class Info(MutableMapping):
     __deleteable__ = True
 
     def __init__(self, *args, **kwargs):
-        self.update(*args, **kwargs)
+        super(Info, self).__init__(*args, **kwargs)
 
     def __getattr__(self, name):
         return self.__getitem__(name)

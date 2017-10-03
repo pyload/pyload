@@ -37,8 +37,8 @@ class EventManager(BaseManager):
     |    download:allProcessed is *always* called before download:allFinished
 
     """
-
-    def init(self):
+    
+    def setup(self):
         self.events = {'event': []}
 
     def listen_to(self, event, func):

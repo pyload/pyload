@@ -7,6 +7,11 @@ from __future__ import absolute_import, unicode_literals
 from builtins import dict
 from collections import *
 
+try:
+    from collections.abc import *
+except ImportError:
+    pass
+
 from future import standard_library
 
 standard_library.install_aliases()

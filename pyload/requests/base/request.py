@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from builtins import object
 
 from future import standard_library

@@ -18,7 +18,7 @@ standard_library.install_aliases()
 class AccountManager(BaseManager):
     """Manages all accounts."""
 
-    def init(self):
+    def setup(self):
         # PluginName mapped to list of account instances
         self.accounts = {}
         self.load_accounts()

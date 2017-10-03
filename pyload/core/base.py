@@ -258,15 +258,13 @@ class Core(object):
 
         except Restart:
             self.restart()
-            return
 
         except (Exit, KeyboardInterrupt, SystemExit):
-            pass
+            self.exit()
 
         except Exception as exc:
             self.log.critical(exc, exc_info=True)
             self.exit()
-            raise
 
         else:
             self.exit()

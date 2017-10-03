@@ -36,7 +36,7 @@ class FileManager(BaseManager):
     ROOT_PACKAGE = -1
     ROOT_OWNER = -1
 
-    def init(self):
+    def setup(self):
         # translations
         self.status_msg = [
             self._('none'),

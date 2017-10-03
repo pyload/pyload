@@ -30,7 +30,7 @@ class ExchangeManager(BaseManager):
     NOTIFICATION_TIMEOUT = 60 * 60 * 30
     MAX_NOTIFICATIONS = 50
 
-    def init(self):
+    def setup(self):
         self.tasks = OrderedDict()  # task store, for all outgoing tasks
         self.last_clients = {}
         self.ids = 0  # uniue interaction ids

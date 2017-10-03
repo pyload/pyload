@@ -13,7 +13,7 @@ import pycurl
 from pyload.core.network.base import Abort, Fail, Retry
 from pyload.core.network.hoster import Reconnect, Skip
 from pyload.core.thread.plugin import PluginThread
-from pyload.requests.request import ResponseException
+from pyload.requests.base.request import ResponseException
 from pyload.utils.convert import to_str
 from pyload.utils.layer.safethreading import Event
 

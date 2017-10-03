@@ -27,7 +27,7 @@ AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 class AddonManager(BaseManager):
     """Manages addons, loading, unloading."""
 
-    def init(self):
+    def setup(self):
         # TODO: multiuser addons
 
         # maps plugin names to info tuple
