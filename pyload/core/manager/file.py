@@ -36,10 +36,7 @@ class FileManager(BaseManager):
     ROOT_PACKAGE = -1
     ROOT_OWNER = -1
 
-    def __init__(self, core):
-        """Constructor."""
-        super(FileManager, self).__init__(core)
-
+    def init(self):
         # translations
         self.status_msg = [
             self._('none'),

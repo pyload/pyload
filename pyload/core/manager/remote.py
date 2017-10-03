@@ -14,8 +14,7 @@ class RemoteManager(BaseManager):
 
     available = ['WebSocketBackend']
 
-    def __init__(self, core):
-        super(RemoteManager, self).__init__(core)
+    def init(self):
         self.backends = []
 
     def start(self):

@@ -2,22 +2,25 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from abc import ABCMeta, abstractmethod
 from builtins import object
 from enum import IntEnum
 
 from future import standard_library
+from future.utils import with_metaclass
 
 standard_library.install_aliases()
 
 
-class BaseObject(object):
+class BaseData(with_metaclass(ABCMeta, object)):
 
     __slots__ = []
     
     def __init__(self, *args, **kwargs):
-        super(BaseObject).__init__()
+        super(BaseData).__init__()
         self.init(*args, **kwargs)
         
+    @abstractmethod
     def init(self, *args, **kwargs):
         pass
 
@@ -152,7 +155,7 @@ class ProgressType(IntEnum):
     FileOperation = 32
 
 
-class AccountInfo(BaseObject):
+class AccountInfo(BaseData):
 
     __slots__ = [
         'aid', 'plugin', 'loginname', 'owner', 'valid', 'validuntil',
@@ -177,7 +180,7 @@ class AccountInfo(BaseObject):
         self.config = config
 
 
-class AddonInfo(BaseObject):
+class AddonInfo(BaseData):
 
     __slots__ = ['name', 'description', 'value']
 
@@ -187,7 +190,7 @@ class AddonInfo(BaseObject):
         self.value = value
 
 
-class AddonService(BaseObject):
+class AddonService(BaseData):
 
     __slots__ = ['__name__', 'func_name', 'label',
                  'description', 'arguments', 'pack', 'media']
@@ -202,7 +205,7 @@ class AddonService(BaseObject):
         self.media = media
 
 
-class ConfigHolder(BaseObject):
+class ConfigHolder(BaseData):
 
     __slots__ = ['name', 'label', 'description',
                  'explanation', 'items', 'info']
@@ -217,7 +220,7 @@ class ConfigHolder(BaseObject):
         self.info = info
 
 
-class ConfigInfo(BaseObject):
+class ConfigInfo(BaseData):
 
     __slots__ = ['name', 'label', 'description',
                  'category', 'user_context', 'activated']
@@ -232,7 +235,7 @@ class ConfigInfo(BaseObject):
         self.activated = activated
 
 
-class ConfigItem(BaseObject):
+class ConfigItem(BaseData):
 
     __slots__ = ['name', 'label', 'description', 'input', 'value']
 
@@ -245,7 +248,7 @@ class ConfigItem(BaseObject):
         self.value = value
 
 
-class DownloadInfo(BaseObject):
+class DownloadInfo(BaseData):
 
     __slots__ = ['url', 'plugin', 'hash', 'status', 'statusmsg', 'error']
 
@@ -259,7 +262,7 @@ class DownloadInfo(BaseObject):
         self.error = error
 
 
-class DownloadProgress(BaseObject):
+class DownloadProgress(BaseData):
     __slots__ = ['fid', 'pid', 'speed', 'conn', 'status']
 
     def init(self, fid=None, pid=None, speed=None, conn=None, status=None):
@@ -270,7 +273,7 @@ class DownloadProgress(BaseObject):
         self.status = status
 
 
-class EventInfo(BaseObject):
+class EventInfo(BaseData):
 
     __slots__ = ['eventname', 'event_args']
 
@@ -279,7 +282,7 @@ class EventInfo(BaseObject):
         self.event_args = event_args
 
 
-class Input(BaseObject):
+class Input(BaseData):
 
     __slots__ = ['type', 'default', 'data']
 
@@ -289,7 +292,7 @@ class Input(BaseObject):
         self.data = data
 
 
-class LinkStatus(BaseObject):
+class LinkStatus(BaseData):
 
     __slots__ = ['url', 'name', 'size', 'status', 'plugin', 'hash']
 
@@ -303,7 +306,7 @@ class LinkStatus(BaseObject):
         self.hash = hash
 
 
-class ProgressInfo(BaseObject):
+class ProgressInfo(BaseData):
 
     __slots__ = ['plugin', 'name', 'statusmsg', 'eta',
                  'done', 'total', 'owner', 'type', 'download']
@@ -321,7 +324,7 @@ class ProgressInfo(BaseObject):
         self.download = download
 
 
-class StatusInfo(BaseObject):
+class StatusInfo(BaseData):
 
     __slots__ = [
         'speed', 'linkstotal', 'linksqueue', 'sizetotal', 'sizequeue',
@@ -342,7 +345,7 @@ class StatusInfo(BaseObject):
         self.quota = quota
 
 
-class TreeCollection(BaseObject):
+class TreeCollection(BaseData):
 
     __slots__ = ['root', 'files', 'packages']
 

@@ -10,7 +10,7 @@ from enum import IntEnum
 
 from future import standard_library
 
-from pyload.core.datatype.base import (BaseObject, DownloadInfo,
+from pyload.core.datatype.base import (BaseData, DownloadInfo,
                                        DownloadProgress, DownloadStatus,
                                        MediaType, ProgressInfo, ProgressType)
 from pyload.utils import purge
@@ -97,7 +97,7 @@ class FileDoesNotExist(Exception):
         self.fid = fid
 
 
-class FileInfo(BaseObject):
+class FileInfo(BaseData):
 
     __slots__ = ['fid', 'name', 'package', 'owner', 'size',
                  'status', 'media', 'added', 'fileorder', 'download']
@@ -117,7 +117,7 @@ class FileInfo(BaseObject):
         self.download = download
 
 
-class File(BaseObject):
+class File(BaseData):
     """Represents a file object at runtime."""
     __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid',
                  'fileorder', 'filestatus', 'hash', 'lock', 'manager', 'media',

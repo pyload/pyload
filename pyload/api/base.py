@@ -2,10 +2,12 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from abc import ABCMeta, abstractmethod
 from builtins import object
 from types import MethodType
 
 from future import standard_library
+from future.utils import with_metaclass
 
 from pyload.core.datatype.base import DownloadState, DownloadStatus, Permission
 from pyload.core.datatype.user import User
@@ -34,258 +36,342 @@ class BaseApi(AbstractApi):
         raise Exception
 
 
-class AbstractApi(object):
+class AbstractApi(with_metaclass(ABCMeta, object)):
 
+    @abstractmethod
     def add_links(self, pid, links):
         pass
 
+    @abstractmethod
     def add_local_file(self, pid, name, path):
         pass
 
+    @abstractmethod
     def add_package(self, name, links, password):
         pass
 
+    @abstractmethod
     def add_package_child(self, name, links, password, root, paused):
         pass
 
+    @abstractmethod
     def addPackageP(self, name, links, password, paused):
         pass
 
+    @abstractmethod
     def add_user(self, username, password):
         pass
 
+    @abstractmethod
     def check_container(self, filename, data):
         pass
 
+    @abstractmethod
     def check_html(self, html, url):
         pass
 
+    @abstractmethod
     def check_links(self, links):
         pass
 
+    @abstractmethod
     def create_account(self, plugin, loginname, password):
         pass
 
+    @abstractmethod
     def create_package(self, name, folder, root,
                        password, site, comment, paused):
         pass
 
+    # @abstractmethod
     # def delete_config(self, plugin):
         # pass
 
+    @abstractmethod
     def delete_files(self, fids):
         pass
 
+    @abstractmethod
     def delete_packages(self, pids):
         pass
 
+    @abstractmethod
     def find_files(self, pattern):
         pass
 
+    @abstractmethod
     def find_packages(self, tags):
         pass
 
+    @abstractmethod
     def avail_space(self):
         pass
 
+    @abstractmethod
     def generate_download_link(self, fid, timeout):
         pass
 
+    @abstractmethod
     def generate_packages(self, links):
         pass
 
+    @abstractmethod
     def get_account_info(self, aid, plugin, refresh):
         pass
 
+    @abstractmethod
     def get_account_types(self):
         pass
 
+    @abstractmethod
     def get_accounts(self):
         pass
 
+    @abstractmethod
     def get_addon_handler(self):
         pass
 
+    @abstractmethod
     def get_all_files(self):
         pass
 
+    @abstractmethod
     def get_all_info(self):
         pass
 
+    @abstractmethod
     def get_all_user_data(self):
         pass
 
+    # @abstractmethod
     # def get_available_plugins(self):
         # pass
 
+    # @abstractmethod
     # def get_config(self):
         # pass
 
+    @abstractmethod
     def get_config_value(self, section, option):
         pass
 
+    # @abstractmethod
     # def get_core_config(self):
         # pass
 
+    @abstractmethod
     def get_file_info(self, fid):
         pass
 
+    @abstractmethod
     def get_file_tree(self, pid, full):
         pass
 
+    @abstractmethod
     def get_filtered_file_tree(self, pid, full, state):
         pass
 
+    @abstractmethod
     def get_filtered_files(self, state):
         pass
 
+    @abstractmethod
     def get_info_by_plugin(self, plugin):
         pass
 
+    @abstractmethod
     def get_interaction_tasks(self, mode):
         pass
 
+    @abstractmethod
     def get_log(self, offset):
         pass
 
+    @abstractmethod
     def get_package_content(self, pid):
         pass
 
+    @abstractmethod
     def get_package_info(self, pid):
         pass
 
+    # @abstractmethod
     # def get_plugin_config(self):
         # pass
 
+    @abstractmethod
     def get_progress_info(self):
         pass
 
+    @abstractmethod
     def get_quota(self):
         pass
 
+    @abstractmethod
     def get_server_version(self):
         pass
 
+    @abstractmethod
     def get_status_info(self):
         pass
 
+    @abstractmethod
     def get_user_data(self):
         pass
 
+    # @abstractmethod
     # def get_ws_address(self):
         # pass
 
+    @abstractmethod
     def invoke_addon(self, plugin, func, func_args):
         pass
 
+    @abstractmethod
     def invoke_addon_handler(self, plugin, func, pid_or_fid):
         pass
 
+    @abstractmethod
     def is_interaction_waiting(self, mode):
         pass
 
+    # @abstractmethod
     # def load_config(self, name):
         # pass
 
+    @abstractmethod
     def login(self, username, password):
         pass
 
+    @abstractmethod
     def move_files(self, fids, pid):
         pass
 
+    @abstractmethod
     def move_package(self, pid, root):
         pass
 
+    @abstractmethod
     def order_files(self, fids, pid, position):
         pass
 
+    @abstractmethod
     def order_package(self, pids, position):
         pass
 
+    @abstractmethod
     def parse_links(self, links):
         pass
 
+    @abstractmethod
     def pause_server(self):
         pass
 
+    @abstractmethod
     def poll_results(self, rid):
         pass
 
+    @abstractmethod
     def exit(self):
         pass
 
+    @abstractmethod
     def recheck_package(self, pid):
         pass
 
+    @abstractmethod
     def remove_account(self, account):
         pass
 
+    @abstractmethod
     def remove_files(self, fids):
         pass
 
+    @abstractmethod
     def remove_packages(self, pids):
         pass
 
+    @abstractmethod
     def remove_user(self, uid):
         pass
 
+    @abstractmethod
     def restart(self):
         pass
 
+    @abstractmethod
     def restart_failed(self):
         pass
 
+    @abstractmethod
     def restart_file(self, fid):
         pass
 
+    @abstractmethod
     def restart_package(self, pid):
         pass
 
+    # @abstractmethod
     # def save_config(self, config):
         # pass
 
+    @abstractmethod
     def search_suggestions(self, pattern):
         pass
 
+    @abstractmethod
     def set_config_value(self, section, option, value):
         pass
 
+    @abstractmethod
     def set_interaction_result(self, iid, result):
         pass
 
+    @abstractmethod
     def set_package_paused(self, pid, paused):
         pass
 
+    @abstractmethod
     def set_password(self, username, old_password, new_password):
         pass
 
+    @abstractmethod
     def stop_all_downloads(self):
         pass
 
+    @abstractmethod
     def stop_downloads(self, fids):
         pass
 
+    @abstractmethod
     def toggle_pause(self):
         pass
 
+    @abstractmethod
     def toggle_reconnect(self):
         pass
 
+    @abstractmethod
     def unpause_server(self):
         pass
 
+    @abstractmethod
     def update_account(self, aid, plugin, loginname, password):
         pass
 
+    @abstractmethod
     def update_account_info(self, account):
         pass
 
+    @abstractmethod
     def update_package(self, pack):
         pass
 
+    @abstractmethod
     def update_user_data(self, data):
         pass
 
+    @abstractmethod
     def upload_container(self, filename, data):
         pass
 

@@ -3,13 +3,15 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from abc import ABCMeta, abstractmethod
 import os
 import time
 from enum import IntEnum
 
 from future import standard_library
+from future.utils import with_metaclass
 
-from pyload.core.datatype.base import BaseObject
+from pyload.core.datatype.base import BaseData
 
 standard_library.install_aliases()
 
@@ -29,7 +31,7 @@ class PackageDoesNotExist(Exception):
         self.pid = pid
 
 
-class PackageInfo(BaseObject):
+class PackageInfo(BaseData):
 
     __slots__ = [
         'pid', 'name', 'folder', 'root', 'owner', 'site', 'comment',
@@ -59,7 +61,7 @@ class PackageInfo(BaseObject):
         self.pids = pids
 
 
-class PackageStats(BaseObject):
+class PackageStats(BaseData):
 
     __slots__ = ['linkstotal', 'linksdone', 'sizetotal', 'sizedone']
 
@@ -71,7 +73,7 @@ class PackageStats(BaseObject):
         self.sizedone = sizedone
 
 
-class Package(BaseObject):
+class Package(BaseData):
     """Represents a package object at runtime."""
     __slots__ = ['added', 'comment', 'comment', 'folder', 'manager', 'name',
                  'ownerid', 'packageorder', 'password', 'password', 'pid',
@@ -156,7 +158,7 @@ class Package(BaseObject):
         self.pyload.evm.fire('packageUpdated', self.id)
 
 
-class RootPackage(Package):
+class RootPackage(with_metaclass(ABCMeta, Package)):
 
     __slots__ = []
 
@@ -169,11 +171,14 @@ class RootPackage(Package):
             'general', 'storage_folder'), name)
 
     # no database operations
+    @abstractmethod
     def sync(self):
         raise NotImplementedError
 
+    @abstractmethod
     def delete(self):
         raise NotImplementedError
 
+    @abstractmethod
     def release(self):
         raise NotImplementedError

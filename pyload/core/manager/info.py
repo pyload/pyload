@@ -20,10 +20,7 @@ standard_library.install_aliases()
 class InfoManager(BaseManager):
     """Manages all non download related threads and jobs."""
 
-    def __init__(self, core):
-        """Constructor."""
-        super(InfoManager, self).__init__(core)
-
+    def init(self):
         self.thread = []  # thread list
 
         self.lock = RLock()

@@ -28,9 +28,7 @@ AddonTuple = namedtuple('AddonTuple', 'instances events handler')
 class AddonManager(BaseManager):
     """Manages addons, loading, unloading."""
 
-    def __init__(self, core):
-        super(AddonManager, self).__init__(core)
-
+    def init(self):
         # needed to let addons register themselves
         builtins.ADDONMANAGER = self
 

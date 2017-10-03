@@ -30,9 +30,7 @@ class ExchangeManager(BaseManager):
     NOTIFICATION_TIMEOUT = 60 * 60 * 30
     MAX_NOTIFICATIONS = 50
 
-    def __init__(self, core):
-        super(ExchangeManager, self).__init__(core)
-
+    def init(self):
         self.tasks = OrderedDict()  # task store, for all outgoing tasks
         self.last_clients = {}
         self.ids = 0  # uniue interaction ids
@@ -166,7 +164,6 @@ class ExchangeManager(BaseManager):
                 plugin.new_interaction_task(task)
             except Exception as exc:
                 self.pyload.log.exception(exc)
-                pass
 
         self.tasks[task.iid] = task
         self.pyload.evm.fire('interaction:added', task)
