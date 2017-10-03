@@ -57,27 +57,27 @@ after_script:
 before_deploy:
   - test $TRAVIS_TEST_RESULT -eq 0
   - test $TRAVIS_OS_NAME = linux
-deploy:
-  - provider: pypi
-    user:
-      secure: "mluJyTHPamuHJoPV/tA4fbmJ6t89lCKyIGlc32EnZqUWklu138xGGBtQhGYxcTKzh6L4lhDFpGVyYJeSvtOqsfhDHnElnzA89zplqDOR//Y5tayps1q2E8KI9zkNSL9Eq3G6cONVZCF3AbFxIdP3g2zNA2hcC3OoaXjM8N7270Y="
-    password:
-      secure: "YdhzNRg2x5eoLmjpoer2WmbzHy5sSC3K3/1v1cAVv2DSwuFas13Bp4S4kMhz0eXU+yqNvM16tDM488PY6Kjtw1663A4oVNANA71bUc61yWUqN1G9NYNiA9HM4GAG1wjUFjDUKcArX7d9I5Pw14T/AfP9A8AmkDgt3tNz45jKg9k="
-    distributions: sdist bdist_wheel
-    skip_cleanup: true
-    skip_upload_docs: true
-    on:
-      python: 3.5
-      tags: true
-  - provider: releases
-    api-key:
-      secure: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
-    file_glob: true
-    file: dist/*
-    skip_cleanup: true
-    on:
-      python: 3.5
-      tags: true
+# deploy:
+  # - provider: pypi
+    # user:
+      # secure: "mluJyTHPamuHJoPV/tA4fbmJ6t89lCKyIGlc32EnZqUWklu138xGGBtQhGYxcTKzh6L4lhDFpGVyYJeSvtOqsfhDHnElnzA89zplqDOR//Y5tayps1q2E8KI9zkNSL9Eq3G6cONVZCF3AbFxIdP3g2zNA2hcC3OoaXjM8N7270Y="
+    # password:
+      # secure: "YdhzNRg2x5eoLmjpoer2WmbzHy5sSC3K3/1v1cAVv2DSwuFas13Bp4S4kMhz0eXU+yqNvM16tDM488PY6Kjtw1663A4oVNANA71bUc61yWUqN1G9NYNiA9HM4GAG1wjUFjDUKcArX7d9I5Pw14T/AfP9A8AmkDgt3tNz45jKg9k="
+    # distributions: sdist bdist_wheel
+    # skip_cleanup: true
+    # skip_upload_docs: true
+    # on:
+      # python: 3.5
+      # tags: true
+  # - provider: releases
+    # api-key:
+      # secure: "LDbvOV6EIV2itKUOSQE24RctMJTj7trF8eRQIMQJFa50W/fT03HpHiRVzhddUo4UadzAy5XNm5fRZY5AMNOomQk023mHwTUuPIhQDLVl1Esati7OZpekhKE1v4+sbLfVvvv+rRuDfcn+qjiZ358UU6D4SuZ4zClu6hUxnt0Qc70="
+    # file_glob: true
+    # file: dist/*
+    # skip_cleanup: true
+    # on:
+      # python: 3.5
+      # tags: true
 notifications:
   webhooks:
     urls:
