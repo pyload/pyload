@@ -92,7 +92,7 @@ class InteractionTask(BaseObject):
     def correct(self):
         for x in self.handler:
             x.task_correct(self)
-            
+
     def invalid(self):
         for x in self.handler:
             x.task_invalid(self)

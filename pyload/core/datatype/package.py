@@ -26,6 +26,7 @@ class PackageDoesNotExist(Exception):
     __slots__ = ['pid']
 
     def __init__(self, pid=None):
+        super(PackageDoesNotExist, self).__init__()
         self.pid = pid
 
 
@@ -42,7 +43,7 @@ class PackageInfo(BaseObject):
             status=None, shared=None, packageorder=None, stats=None, fids=None,
             pids=None):
         super(PackageInfo, self).__init__()
-        
+
         self.pid = pid
         self.name = name
         self.folder = folder
@@ -68,7 +69,7 @@ class PackageStats(BaseObject):
     def __init__(self, linkstotal=None, linksdone=None,
                  sizetotal=None, sizedone=None):
         super(PackageStats, self).__init__()
-        
+
         self.linkstotal = linkstotal
         self.linksdone = linksdone
         self.sizetotal = sizetotal
@@ -93,7 +94,7 @@ class Package(BaseObject):
             self, manager, pid, name, folder, root, owner, site, comment,
             password, added, tags, status, shared, packageorder):
         super(Package, self).__init__()
-        
+
         self.manager = manager
         self.pyload = manager.pyload
 

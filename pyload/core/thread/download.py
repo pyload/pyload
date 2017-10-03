@@ -37,11 +37,8 @@ class DownloadThread(PluginThread):
         return self.__running.is_set()
 
     def _handle_abort(self, file):
-        try:
-            self.pyload.log.info(
-                self._('Download aborted: {0}').format(file.name))
-        except Exception:
-            pass
+        self.pyload.log.info(
+            self._('Download aborted: {0}').format(file.name))
         file.set_status('aborted')
 
     def _handle_reconnect(self, file):

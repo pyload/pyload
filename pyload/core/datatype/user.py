@@ -23,6 +23,7 @@ class UserDoesNotExist(Exception):
     __slots__ = ['user']
 
     def __init__(self, user=None):
+        super(UserDoesNotExist, self).__init__()
         self.user = user
 
 

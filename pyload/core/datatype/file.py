@@ -107,7 +107,7 @@ class FileInfo(BaseObject):
                  size=None, status=None, media=None, added=None,
                  fileorder=None, download=None):
         super(FileInfo, self).__init__()
-        
+
         self.fid = fid
         self.name = name
         self.package = package
@@ -144,7 +144,7 @@ class File(BaseObject):
         self, manager, fid, name, size, filestatus, media, added,
             fileorder, url, pluginname, hash, status, error, package, owner):
         super(File, self).__init__()
-        
+
         self.manager = manager
         self.pyload = manager.pyload
 

@@ -34,12 +34,9 @@ class UserMethods(DatabaseMethods):
     @queue
     def add_debug_user(self, uid):
         # just add a user with uid to db
-        try:
-            self.c.execute(
-                'INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
-                (uid, 'debugUser', bcrypt.gensalt()))
-        except Exception:
-            pass
+        self.c.execute(
+            'INSERT INTO users (uid, name, password) VALUES (?, ?, ?)',
+            (uid, 'debugUser', bcrypt.gensalt()))
 
     @queue
     def get_user_data(self, name=None, uid=None, role=None):

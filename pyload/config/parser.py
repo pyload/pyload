@@ -127,7 +127,7 @@ class ConfigSection(InscDict):
 
     def __init__(self, parser, config=None, label=None, desc=None):
         super(ConfigSection, self).__init__()
-        
+
         self.parser = parser
         self.label = '' if label is None else to_str(label)
         self.desc = '' if desc is None else to_str(desc)

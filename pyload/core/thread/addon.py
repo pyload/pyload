@@ -77,7 +77,7 @@ class AddonThread(PluginThread):
                 addon.log_error(self._('An Error occurred'))
                 self.pyload.log.exception(exc)
                 # if self.pyload.debug:
-                    # self.debug_report(addon.__name__, plugin=addon)
+                # self.debug_report(addon.__name__, plugin=addon)
 
         finally:
             local = copy(self.active)

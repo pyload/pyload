@@ -106,14 +106,14 @@ def filetype(filename):
         pass
     return guess_mime(filename)
 
-    
+
 def encode(path):
     try:
         return os.fsencode(path)
     except AttributeError:
         return to_bytes(path)
-    
-    
+
+
 def decode(path):
     try:
         return os.fsdecode(path)

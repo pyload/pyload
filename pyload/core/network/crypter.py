@@ -220,9 +220,9 @@ class Hoster(Base):
         self.file.set_status('waiting')
 
         while self.file.wait_until > time.time():
-            self.thread.get_manager().reconnecting.wait(2)
+            self.thread.manager.reconnecting.wait(2)
             self.check_abort()
-            if self.thread.get_manager().reconnecting.isSet():
+            if self.thread.manager.reconnecting.isSet():
                 self.waiting = False
                 self.want_reconnect = False
                 raise Reconnect

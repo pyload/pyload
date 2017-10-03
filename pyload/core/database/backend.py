@@ -101,12 +101,6 @@ class DatabaseJob(object):
             self.result = self.func(*self.args, **self.kwgs)
         except Exception as exc:
             self.pyload.log.exception(exc)
-            try:
-                print('Database Error @', self.func.__name__,
-                      self.args[1:], self.kwgs, to_str(exc))
-            except Exception:
-                pass
-
             self.exception = exc
         finally:
             self.done.set()

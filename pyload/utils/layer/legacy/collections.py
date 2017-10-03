@@ -18,7 +18,7 @@ standard_library.install_aliases()
 # http://code.activestate.com/recipes/576693/
 try:
     OrderedDict
-    
+
 except NameError:
 
     class OrderedDict(dict):
@@ -244,8 +244,10 @@ except NameError:
             self[key] = default
             return default
 
-        def __repr__(self, _repr_running={}):
+        def __repr__(self, _repr_running=None):
             """od.__repr__() <==> repr(od)"""
+            if _repr_running is None:
+                _repr_running = {}
             call_key = id(self), _get_ident()
             if call_key in _repr_running:
                 return '...'

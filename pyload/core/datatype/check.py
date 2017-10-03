@@ -17,7 +17,7 @@ class OnlineCheck(BaseObject):
 
     def __init__(self, rid=None, owner=None):
         super(OnlineCheck, self).__init__()
-        
+
         self.rid = rid
         self.owner = owner
         self.result = {}

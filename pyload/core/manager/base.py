@@ -23,8 +23,7 @@ class BaseManager(with_metaclass(ABCMeta, object)):
         self.pyload = core
         self.lock = Lock()
         self.init()
-        
+
     @abstractmethod
     def init(self):
         pass
-        

@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from builtins import object
 from enum import IntEnum
 
@@ -15,7 +15,7 @@ standard_library.install_aliases()
 class BaseObject(with_metaclass(ABCMeta, object)):
 
     __slots__ = []
-    
+
     def __str__(self):
         return '<{0} {1}>'.format(self.__class__.__name__, ', '.join(
             '{0}={1}'.format(k, getattr(self, k)) for k in self.__slots__))
@@ -159,7 +159,7 @@ class AccountInfo(BaseObject):
             valid=None, validuntil=None, trafficleft=None, maxtraffic=None,
             premium=None, activated=None, shared=None, config=None):
         super(AccountInfo, self).__init__()
-        
+
         self.aid = aid
         self.plugin = plugin
         self.loginname = loginname
@@ -180,7 +180,7 @@ class AddonInfo(BaseObject):
 
     def __init__(self, name=None, description=None, value=None):
         super(AddonInfo, self).__init__()
-        
+
         self.name = name
         self.description = description
         self.value = value
@@ -194,7 +194,7 @@ class AddonService(BaseObject):
     def __init__(self, func_name=None, label=None, description=None,
                  arguments=None, pack=None, media=None):
         super(AddonService, self).__init__()
-        
+
         self.__name__ = func_name
         self.label = label
         self.description = description
@@ -211,7 +211,7 @@ class ConfigHolder(BaseObject):
     def __init__(self, name=None, label=None, description=None,
                  explanation=None, items=None, info=None):
         super(ConfigHolder, self).__init__()
-        
+
         self.name = name
         self.label = label
         self.description = description
@@ -228,7 +228,7 @@ class ConfigInfo(BaseObject):
     def __init__(self, name=None, label=None, description=None,
                  category=None, user_context=None, activated=None):
         super(ConfigInfo, self).__init__()
-        
+
         self.name = name
         self.label = label
         self.description = description
@@ -244,7 +244,7 @@ class ConfigItem(BaseObject):
     def __init__(self, name=None, label=None,
                  description=None, input=None, value=None):
         super(ConfigItem, self).__init__()
-        
+
         self.name = name
         self.label = label
         self.description = description
@@ -259,7 +259,7 @@ class DownloadInfo(BaseObject):
     def __init__(self, url=None, plugin=None, hash=None,
                  status=None, statusmsg=None, error=None):
         super(DownloadInfo, self).__init__()
-        
+
         self.url = url
         self.plugin = plugin
         self.hash = hash
@@ -273,7 +273,7 @@ class DownloadProgress(BaseObject):
 
     def __init__(self, fid=None, pid=None, speed=None, conn=None, status=None):
         super(DownloadProgress, self).__init__()
-        
+
         self.fid = fid
         self.pid = pid
         self.speed = speed
@@ -296,7 +296,7 @@ class Input(BaseObject):
     __slots__ = ['type', 'default', 'data']
 
     def __init__(self, type_=None, default=None, data=None):
-        super(Input, self).__init__()        
+        super(Input, self).__init__()
         self.type = type_
         self.default = default
         self.data = data
@@ -309,7 +309,7 @@ class LinkStatus(BaseObject):
     def __init__(self, url=None, name=None, size=None,
                  status=None, plugin=None, hash=None):
         super(LinkStatus, self).__init__()
-        
+
         self.url = url
         self.name = name
         self.size = size
@@ -326,7 +326,7 @@ class ProgressInfo(BaseObject):
     def __init__(self, plugin=None, name=None, statusmsg=None, eta=None,
                  done=None, total=None, owner=None, type_=None, download=None):
         super(ProgressInfo, self).__init__()
-        
+
         self.plugin = plugin
         self.name = name
         self.statusmsg = statusmsg
@@ -348,7 +348,7 @@ class StatusInfo(BaseObject):
                  sizetotal=None, sizequeue=None, notifications=None,
                  paused=None, download=None, reconnect=None, quota=None):
         super(StatusInfo, self).__init__()
-        
+
         self.speed = speed
         self.linkstotal = linkstotal
         self.linksqueue = linksqueue
@@ -367,7 +367,7 @@ class TreeCollection(BaseObject):
 
     def __init__(self, root=None, files=None, packages=None):
         super(TreeCollection, self).__init__()
-        
+
         self.root = root
         self.files = files
         self.packages = packages

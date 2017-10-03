@@ -21,7 +21,6 @@ class AccountManager(BaseManager):
     def init(self):
         # PluginName mapped to list of account instances
         self.accounts = {}
-
         self.load_accounts()
 
     def _create_account(self, info, password, options):

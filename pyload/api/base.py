@@ -433,8 +433,8 @@ class Api(AbstractApi):
     EXTEND = False  # only extendable when set too true
 
     def __init__(self, core):
-        self.pyload = core
         self._ = core._
+        self.pyload = core
         self.user_apis = {}
 
     @property
@@ -541,8 +541,7 @@ class UserApi(Api):
     """Proxy object for api that provides all methods in user context."""
 
     def __init__(self, core, user):
-        # No need to init super class
-        self.pyload = core
+        super(UserApi, self).__init__(core)
         self._user = user
 
     def with_user_context(self, uid):
