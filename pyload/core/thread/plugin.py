@@ -3,12 +3,14 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from abc import ABCMeta, abstractmethod
 import os
 import sys
 import time
 import zipfile
 
 from future import standard_library
+from future.utils import with_metaclass
 
 from pyload.utils import debug
 from pyload.utils.fs import makedirs
@@ -17,7 +19,7 @@ from pyload.utils.layer.safethreading import Thread
 standard_library.install_aliases()
 
 
-class PluginThread(Thread):
+class PluginThread(with_metaclass(ABCMeta, Thread)):
     """Abstract base class for thread types."""
     __slots__ = ['manager', 'owner', 'pyload']
 
@@ -39,13 +41,11 @@ class PluginThread(Thread):
     def progress_info(self):
         return self.get_progress_info()
 
-    def get_manager(self):
-        return self.manager
-
     def finished(self):
         """Remove thread from list."""
         self.manager.remove_thread(self)
 
+    @abstractmethod
     def get_progress_info(self):
         """Retrieves progress information about the current running task.
 
