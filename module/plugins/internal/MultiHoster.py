@@ -9,7 +9,7 @@ from .SimpleHoster import SimpleHoster
 class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -28,7 +28,6 @@ class MultiHoster(SimpleHoster):
     OFFLINE_PATTERN = r'^unmatchable$'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
-    DIRECT_LINK = None
     LEECH_HOSTER = False
 
     def init(self):
