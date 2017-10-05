@@ -846,7 +846,14 @@ class main(QObject):
         pe(); self.mainWindow.newPackDock.setFloating(False)
         pe(); self.mainWindow.newLinkDock.setFloating(False)
         pe(); self.mainWindow.eD["pCount"] = 0
-        self.mainWindow.show()
+        if self.fixFirstShowFromTrayWhenLoadedMaximized:
+            if s["maximized"]:
+                self.mainWindow.showMaximized()     # needed on mate when started maximized and hidden to tray straightaway
+            else:
+                self.mainWindow.show()
+            self.fixFirstShowFromTrayWhenLoadedMaximized = False
+        else:
+            self.mainWindow.show()
         self.waitForPaintEvents(1)
         numOfPaintEventsToWait = 1  # ignore maximize/unmaximize events until num paintEvents happened
         self.mainWindow.eD["pCount"] = 0
@@ -973,6 +980,7 @@ class main(QObject):
             s["restore_unmaxed_geo"] = False
             self.log.debug4("main.slotMaximizeToggled: geometry stored,     pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
         else:           # maximized flag was unset
+            self.fixFirstShowFromTrayWhenLoadedMaximized = False    # fix not needed when the mainWindow was unmaximized in the meantime
             if not s["maximized"]:
                 self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
@@ -2289,6 +2297,7 @@ class main(QObject):
         self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
         self.mainWindow.captchaDialog.geo = self.geoOther["captchaDialog"]
+        self.fixFirstShowFromTrayWhenLoadedMaximized = self.geoUnmaximized["maximized"]
 
         if not (self.mainWindow.newPackDock.isFloating() or self.mainWindow.newPackDock.isHidden()):
             self.waitForPaintEvents(1)
