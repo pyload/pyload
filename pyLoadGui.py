@@ -1283,7 +1283,7 @@ class main(QObject):
         dm("21"); self.messageBox_21(optCat)
         dm("22"); self.messageBox_22()
         dm("23"); self.messageBox_23(pidfile, pid)
-        dm("24"); self.internalCoreRestartMsgBoxVisible = False; self.messageBox_24()
+        dm("24"); self.messageBox_24()
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
@@ -1655,13 +1655,17 @@ class main(QObject):
                     def __init__(self):
                         Core.__init__(self)
                         self.signal = CoreSignal()
+                        self.internal_core_restart = False
                     # Workaround os._exit() called when the Core quits. This is possible because the present Core code calls os._exit() right after calling removeLogger()
                     def removeLogger(self):
                          Core.removeLogger(self)
                          thread.exit()
                     # Workaround Core restart invoked by the UpdateManager plugin 
                     def restart(self):
-                        self.do_restart = False
+                        if self.internal_core_restart:
+                            return
+                        self.internal_core_restart = True
+                        self.threadManager.pause = True
                         self.signal.emit(SIGNAL("coreRestart()"))
 
                 del sys.argv[1:] # do not pass our command-line arguments to the core
@@ -1679,7 +1683,6 @@ class main(QObject):
                 else:
                     pid = self.core.checkPidFile()
                     if pid and not self.messageBox_23(pf, pid): self.init(); return
-                self.internalCoreRestartMsgBoxVisible = False
                 self.connect(self.core.signal, SIGNAL("coreRestart()"), self.slotCoreRestart, Qt.QueuedConnection)
                 self.core.startedInGui = True
                 try:
@@ -1717,8 +1720,10 @@ class main(QObject):
         """
             the internal server wants to restart
         """
-        if self.messageBox_24():
-            self.slotQuit()
+        self.log.info("The internal server wants to restart, exiting pyLoad Client")
+        QTimer.singleShot(60000, self.slotQuit)
+        self.messageBox_24()
+        QTimer.singleShot(0, self.slotQuit)
 
     def messageBox_22(self):
         text = _("Cannot start the internal server because the server is not configured.\n"
@@ -1754,16 +1759,13 @@ class main(QObject):
         self.msgBoxOk(text, "C")
 
     def messageBox_24(self):
-        if self.internalCoreRestartMsgBoxVisible:
-            return False
         text = _("The internal server wants to restart.")
         text += "\n" + _("Probably for plugin updates to take effect.")
-        text += "\n" + _("Therefore, you must exit the application and start all over again.") 
-        text += "\n\n" + _("Do you want to exit the application now?")
-        self.internalCoreRestartMsgBoxVisible = True
-        ret = self.msgBoxYesNo(text, "I")
-        self.internalCoreRestartMsgBoxVisible = False
-        return ret
+        text += "\n\n" + _("Therefore, we must exit the application")
+        text += "\n" + _("and you have to restart it manually.")
+        text += "\n\n" + _("Exiting in 60 seconds ...")
+        text += "\n" + _("Close this window to exit immediately.")
+        self.msgBoxOk(text, "I")
 
     def refreshConnections(self, name=None):
         """
