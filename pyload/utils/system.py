@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import shlex
 import sys
-from builtins import map, str
+from future.builtins import map, str
 
 import psutil
 from future import standard_library

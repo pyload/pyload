@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 # from abc import ABCMeta, abstractmethod
-from builtins import object
+from future.builtins import object
 from types import MethodType
 
 from future import standard_library
@@ -26,11 +26,8 @@ class BaseApi(AbstractApi):
         # Only for auto completion, this class can not be instantiated
         from pyload.core import Core
         from pyload.core.datatype.user import User
-        assert isinstance(core, Core)
-        assert issubclass(BaseApi, AbstractApi)
         self.pyload = core
         self._ = core._
-        assert isinstance(user, User)
         self.user = user
         # No instantiating!
         raise Exception
@@ -376,7 +373,7 @@ class AbstractApi(object):
     def upload_container(self, filename, data):
         pass
 
-        
+
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
 perm_map = {}

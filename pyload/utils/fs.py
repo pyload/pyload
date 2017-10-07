@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import shutil
-from builtins import dict, int, next
+from future.builtins import dict, int, next
 
 import portalocker
 import psutil
@@ -55,7 +55,7 @@ def _shdo(func, src, dst, overwrite=None, ref=None):
         func(src, dst)
         if isinstance(ref, list):
             del ref[:]
-    except Exception:
+    except (IOError, OSError):
         pass
 
 

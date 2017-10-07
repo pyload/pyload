@@ -4,7 +4,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import dict
+from future.builtins import dict
 from collections import *
 
 try:

@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import imp
-from builtins import map, range
+from future.builtins import map, range
 
 from future import standard_library
 from past.builtins import basestring

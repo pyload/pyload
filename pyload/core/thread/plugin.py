@@ -84,7 +84,7 @@ class PluginThread(with_metaclass(ABCMeta, Thread)):
                 try:
                     arcname = os.path.join(filename, fname)
                     zip.write(os.path.join(dumpdir, fname), arcname)
-                except Exception:
+                except (OSError, RuntimeError):
                     pass
             for fname, data in reports:
                 arcname = os.path.join(filename, fname)

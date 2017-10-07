@@ -7,7 +7,7 @@ import configparser
 import io
 import logging
 import os
-from builtins import int, object, oct
+from future.builtins import int, object, oct
 from contextlib import closing
 
 import semver
@@ -250,13 +250,16 @@ class ConfigParser(InscDict):
             self.log = logger
 
         try:
-            return self.retrieve()
+            self.retrieve()
 
         except VersionMismatchError:
             self._backup_fileconfig()
 
         except IOError:
             pass
+
+        else:
+            return
 
         self.store()
 

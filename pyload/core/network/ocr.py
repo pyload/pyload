@@ -22,7 +22,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import logging
 import os
-from builtins import object, range
+from future.builtins import object, range
 
 from future import standard_library
 from pkg_resources import resource_filename
@@ -123,7 +123,7 @@ class OCR(object):
             remove(tmp_txt.name)
             if subset and (digits or lowercase or uppercase):
                 remove(tmp_sub.name)
-        except Exception:
+        except OSError:
             pass
 
     def get_captcha(self, name):

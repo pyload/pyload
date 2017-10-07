@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import sys
-from builtins import object, str
+from future.builtins import object, str
 
 from future import standard_library
 from pkg_resources import resource_filename

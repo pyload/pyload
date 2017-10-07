@@ -4,17 +4,19 @@
 from __future__ import absolute_import, unicode_literals
 
 import socket
-from builtins import int
+from future.builtins import int
 
 import idna
 from future import standard_library
+
+from pyload.utils.convert import to_str
 
 standard_library.install_aliases()
 
 
 def splitaddress(address):
     try:
-        address = idna.encode(address)
+        address = to_str(idna.encode(address))
     except (AttributeError, idna.IDNAError):
         pass
     sep = ']:' if address.split(':', 2)[2:] else ':'

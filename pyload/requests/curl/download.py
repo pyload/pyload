@@ -8,7 +8,7 @@ import os
 import shutil
 import sys
 import time
-from builtins import range
+from future.builtins import range
 from contextlib import closing
 
 from future import standard_library

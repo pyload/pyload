@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import datetime
 import os
-from builtins import int
+from future.builtins import int
 
 from future import standard_library
 

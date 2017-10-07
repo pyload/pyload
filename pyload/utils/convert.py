@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import bytes, dict, int, str
+from future.builtins import bytes, dict, int, str
 
 from future import standard_library
 

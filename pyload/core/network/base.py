@@ -7,7 +7,7 @@ import io
 import os
 import random
 import time
-from builtins import object
+from future.builtins import object
 
 from future import standard_library
 
@@ -333,7 +333,7 @@ class Base(object):
             if not self.pyload.debug:
                 try:
                     remove(fp.name)
-                except Exception:
+                except OSError:
                     pass
 
         return result

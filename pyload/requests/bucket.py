@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from builtins import int, object
+from future.builtins import int, object
 
 from future import standard_library
 

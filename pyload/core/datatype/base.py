@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from abc import ABCMeta
-from builtins import object
+from future.builtins import object
 from enum import IntEnum
 
 from future import standard_library

@@ -5,16 +5,17 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import sys
-from builtins import bytes, chr, int, range
+from future.builtins import bytes, chr, int, range
 from hashlib import *
 
 from future import standard_library
 
 standard_library.install_aliases()
 
+try:
+    algorithms
 
-if sys.version_info < (2, 7):
+except NameError:
     # This tuple and __get_builtin_constructor() must be modified if a new
     # always available algorithm is added.
     __always_supported = (
@@ -37,6 +38,7 @@ if sys.version_info < (2, 7):
     try:
         # OpenSSL's PKCS5_PBKDF2_HMAC requires OpenSSL 1.0+ with HMAC and SHA
         from _hashlib import pbkdf2_hmac
+
     except ImportError:
         import binascii
         import struct

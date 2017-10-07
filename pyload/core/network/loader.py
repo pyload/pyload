@@ -9,7 +9,7 @@ import logging
 import os
 import re
 import time
-from builtins import object, range
+from future.builtins import object, range
 
 from future import standard_library
 

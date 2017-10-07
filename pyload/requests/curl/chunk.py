@@ -7,7 +7,7 @@ import io
 import os
 import re
 import time
-from builtins import int
+from future.builtins import int
 from contextlib import closing
 
 from future import standard_library

@@ -61,7 +61,6 @@ Status
 ------
 
 [![Travis Build Status](https://travis-ci.org/pyload/pyload.svg?branch=master)](https://travis-ci.org/pyload/pyload)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/86d5f83kmw6soyfq/branch/master?svg=true)](https://ci.appveyor.com/project/vuolter/pyload/branch/master)
 [![Requirements Status](https://requires.io/github/pyload/pyload/requirements.svg?branch=master)](https://requires.io/github/pyload/pyload/requirements/?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/240a2201eee54680b1c34bf86a32abd0)](https://www.codacy.com/app/pyLoad/pyload?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pyload/pyload&amp;utm_campaign=Badge_Grade)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pyload/pyload/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pyload/pyload/?branch=master)

@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import io
-from builtins import bytes, dict, int, range, str
+from future.builtins import bytes, dict, int, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from http.client import responses
 from urllib.parse import quote, urlencode
@@ -29,8 +29,8 @@ BAD_HEADERS = list(range(400, 418)) + list(range(500, 506))
 def safequote(url):
     return quote(to_bytes(url), safe="%/:=&?~#+!$,;'@()*[]")
 
-    
-def safeurlencode(data):    
+
+def safeurlencode(data):
     if isiterable(data):
         res = urlencode(
             dict((to_bytes(x), to_bytes(y)) for x, y in dict(data).items()))

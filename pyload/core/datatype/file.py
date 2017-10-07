@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 import time
-from builtins import int
+from future.builtins import int
 from enum import IntEnum
 
 from future import standard_library

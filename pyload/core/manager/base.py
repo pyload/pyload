@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from abc import ABCMeta, abstractmethod
-from builtins import object
+from future.builtins import object
 
 from future import standard_library
 from future.utils import with_metaclass

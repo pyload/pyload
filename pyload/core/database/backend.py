@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import shutil
-from builtins import int, object
+from future.builtins import int, object
 from queue import Queue
 
 from future import standard_library
@@ -157,7 +157,7 @@ class DatabaseBackend(Thread):
                 remove(self.VERSION_FILE)
                 shutil.move(self.DB_FILE, self.DB_FILE + '.bak')
                 self.pyload.log.warning(self._('Database was deleted due to incompatible version'))
-                
+
                 with io.open(self.VERSION_FILE, mode='wb') as fp:
                     fp.write(to_str(DB_VERSION))
 
@@ -195,7 +195,7 @@ class DatabaseBackend(Thread):
 
     def _check_version(self):
         """Get db version."""
-        if not os.path.isfile(self.VERSION_FILE) or os.stat(self.VERSION_FILE).st_size == 0:
+        if not os.path.isfile(self.VERSION_FILE) or not os.path.getsize(self.VERSION_FILE):
             with io.open(self.VERSION_FILE, mode='w') as fp:
                 fp.write(to_str(DB_VERSION))
         with io.open(self.VERSION_FILE, mode='r') as fp:

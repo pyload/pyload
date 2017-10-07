@@ -6,7 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import time
-from builtins import int, str
+from future.builtins import int, str
 
 from future import standard_library
 
@@ -364,8 +364,7 @@ class Hoster(Base):
         if not os.path.isfile(self.last_download):
             return
 
-        size = os.stat(self.last_download)
-        size = size.st_size
+        size = os.stat(self.last_download).st_size
 
         if api_size and api_size <= size:
             return

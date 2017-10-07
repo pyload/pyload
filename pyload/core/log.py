@@ -40,7 +40,7 @@ class LoggerFactory(object):
         # Set file handler
         if core.config.get('log', 'filelog'):
             cls._setup_filelog(logger, config)
-            
+
         return logger
 
     @staticmethod

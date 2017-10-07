@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import socket
-from builtins import map
+from future.builtins import map
 
 from future import standard_library
 

@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from builtins import int
+from future.builtins import int
 from http.cookies import SimpleCookie
 
 from future import standard_library

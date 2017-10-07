@@ -4,7 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from builtins import object
+from future.builtins import object
 
 from functools import partial, wraps
 from future import standard_library

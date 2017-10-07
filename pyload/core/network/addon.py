@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from builtins import ADDONMANAGER, object
+from future.builtins import ADDONMANAGER, object
 
 from future import standard_library
 
