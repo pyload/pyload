@@ -467,7 +467,7 @@ class Api(AbstractApi):
             for name, func in api.__dict__.items():
                 if name.startswith('_'):
                     continue
-                setattr(cls, name, MethodType(func, None, cls))
+                setattr(cls, name, MethodType(func, cls))
         return cls.EXTEND
 
     def with_user_context(self, uid):
