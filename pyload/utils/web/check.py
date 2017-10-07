@@ -48,7 +48,8 @@ _RE_ISH = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
 def ishost(value):
     MAX_HOSTNAME_LEN = 253
     try:
-        value = idna.encode(value)
+        value = idna.encode(value)  # returns bytestring
+        value = value.decode()  # encode to string
     except AttributeError:
         pass
     if value.endswith('.'):
