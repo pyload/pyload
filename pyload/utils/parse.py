@@ -111,7 +111,7 @@ def packs(nameurls):
     return packs
 
 
-_RE_SIZE = re.compile(r'(?P<S>[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
+_RE_SIZE = re.compile(r'(?P<S>-?[\d.,]+)\s*(?P<U>[a-zA-Z]*)')
 
 
 def bytesize(text, unit=None):  # returns integer bytes
