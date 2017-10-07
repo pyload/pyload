@@ -52,7 +52,7 @@ class PluginManager(BaseManager):
         self.loader = LoaderFactory(
             PluginLoader(fullpath(self.LOCALROOT),
                          self.LOCALROOT, self.pyload.config),
-            PluginLoader(resource_filename(__package__, 'core/network'),
+            PluginLoader(resource_filename(__package__, 'core/plugin'),
                          self.ROOT, self.pyload.config),
         )
 
