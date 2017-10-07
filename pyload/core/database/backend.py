@@ -33,7 +33,6 @@ def set_db(db):
 
 
 def queue(f):
-    @staticmethod
     def x(*args, **kwargs):
         if DB:
             return DB.queue(f, *args, **kwargs)
@@ -41,7 +40,6 @@ def queue(f):
 
 
 def async(f):
-    @staticmethod
     def x(*args, **kwargs):
         if DB:
             return DB.async(f, *args, **kwargs)
@@ -49,7 +47,6 @@ def async(f):
 
 
 def inner(f):
-    @staticmethod
     def x(*args, **kwargs):
         if DB:
             return f(DB, *args, **kwargs)
@@ -198,13 +195,11 @@ class DatabaseBackend(Thread):
 
     def _check_version(self):
         """Get db version."""
-        try:
-            with io.open(self.VERSION_FILE, mode='rb') as fp:
-                v = int(fp.read().strip())
-        except IOError:
-            with io.open(self.VERSION_FILE, mode='wb') as fp:
+        if not os.path.isfile(self.VERSION_FILE) or os.stat(self.VERSION_FILE).st_size == 0:
+            with io.open(self.VERSION_FILE, mode='w') as fp:
                 fp.write(to_str(DB_VERSION))
-            return
+        with io.open(self.VERSION_FILE, mode='r') as fp:
+            v = int(fp.read().strip())
         return v
 
     def _convert_db(self, v):
