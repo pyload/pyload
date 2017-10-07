@@ -10,7 +10,6 @@ from future import standard_library
 from pyload.core.datatype.check import OnlineCheck
 from pyload.core.manager.base import BaseManager
 from pyload.core.thread import InfoThread
-from pyload.utils.convert import to_list
 from pyload.utils.layer.safethreading import RLock
 from pyload.utils.struct.lock import lock
 

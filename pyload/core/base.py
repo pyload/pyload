@@ -228,13 +228,13 @@ class Core(object):
 
             self._setup_language()
             self._setup_permissions()
-            self._setup_storage()
-            self._setup_network()
-            # self._setup_niceness()
-
+            
             self.log.info(self._('Config directory: {0}').format(self.cfgdir))
             self.log.info(self._('Cache directory: {0}').format(self.tmpdir))
-            self.evm.fire('pyload:started')
+            
+            self._setup_storage() 
+            self._setup_network()
+            # self._setup_niceness()           
 
             # # some memory stats
             # from guppy import hpy
@@ -248,6 +248,7 @@ class Core(object):
             # scanner.dump_all_objects(os.path.join(PACKDIR, 'objs.json'))
 
             self.log.debug('pyLoad is up and running')
+            self.evm.fire('pyload:started')
             
             self.tsm.pause = False  # NOTE: Recheck...
             while True:

@@ -70,9 +70,9 @@ def _same_inputs(taginputs, inputs):
         tagvalue = taginputs[key]
         if hasattr(value, 'search') and re.match(value, tagvalue):
             continue
-        elif isinstance(value, str) and tagvalue == value:
-            continue
         elif isiterable(value) and tagvalue in value:
+            continue
+        elif tagvalue == value:
             continue
         return False
     return True

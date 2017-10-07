@@ -15,7 +15,8 @@ import pycurl
 from pyload.requests.cookie import CookieJar
 from pyload.requests.base.request import Abort, ResponseException
 from pyload.requests.base.load import LoadRequest
-from pyload.utils.convert import to_bytes, to_str
+from pyload.utils.check import isiterable
+from pyload.utils.convert import to_bytes
 
 standard_library.install_aliases()
 
@@ -28,12 +29,14 @@ BAD_HEADERS = list(range(400, 418)) + list(range(500, 506))
 def safequote(url):
     return quote(to_bytes(url), safe="%/:=&?~#+!$,;'@()*[]")
 
-
-def safeurlencode(data):
-    data = dict(data)
-    return urlencode(
-        dict((to_bytes(x), to_bytes(y))
-             for x, y in data.items()))
+    
+def safeurlencode(data):    
+    if isiterable(data):
+        res = urlencode(
+            dict((to_bytes(x), to_bytes(y)) for x, y in dict(data).items()))
+    else:
+        res = urlencode(to_bytes(data))
+    return res
 
 
 class CurlRequest(LoadRequest):
@@ -171,11 +174,7 @@ class CurlRequest(LoadRequest):
         if post:
             self.setopt(pycurl.POST, 1)
             if not multipart:
-                if isinstance(post, str):
-                    post = to_bytes(post)
-                elif not isinstance(post, bytes):
-                    post = safeurlencode(post)
-
+                post = safeurlencode(post)
                 self.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [(x, to_bytes(y))
@@ -185,9 +184,9 @@ class CurlRequest(LoadRequest):
             self.setopt(pycurl.POST, 0)
 
         if referer and self.last_url:
-            self.headers['Referer'] = to_str(self.last_url)
+            self.headers['Referer'] = to_bytes(self.last_url)
         else:
-            self.headers['Referer'] = ''
+            self.headers['Referer'] = b''
 
         if cookies:
             for c in self.cj.output().splitlines():

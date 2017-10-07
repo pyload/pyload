@@ -94,13 +94,13 @@ def to_str(obj, encoding='utf-8', errors='strict'):
         return str(obj)
 
 
-def to_dict(obj):
-    """Convert object to dictionary or return default."""
-    return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
+# def to_dict(obj):
+    # """Convert object to dictionary."""
+    # return dict((attr, getattr(obj, attr)) for attr in obj.__slots__)
 
 
 def to_list(obj):
-    """Convert value to a list with value inside or return default."""
+    """Convert value to a list with value inside."""
     if isinstance(obj, list):
         pass
     elif ismapping(obj):
