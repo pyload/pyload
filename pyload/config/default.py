@@ -14,38 +14,38 @@ standard_library.install_aliases()
 # def _gen_session_defaults():
 # profile_section = (
 # ('path',
-# ('option', None, 'Path', None, None, InputType.Folder)),
+# (False, None, 'Path', None, None, InputType.Folder)),
 # ('pid',
-# ('option', None, 'PID', None, None, InputType.Int)),
+# (False, None, 'PID', None, None, InputType.Int)),
 # ('ctime',
-# ('option', None, 'CTime', None, None, InputType.Float)),
+# (False, None, 'CTime', None, None, InputType.Float)),
 # )
 # cache_section = (
 # ('path',
-# ('option', None, 'Path', None, None, InputType.Folder)),
+# (False, None, 'Path', None, None, InputType.Folder)),
 # )
 # log_section = (
 # ('path',
-# ('option', None, 'Path', None, None, InputType.Folder)),
+# (False, None, 'Path', None, None, InputType.Folder)),
 # ('name',
-# ('option', None, 'Name', None, None, InputType.Str)),
+# (False, None, 'Name', None, None, InputType.Str)),
 # )
 
 # current_config = (
 # ('id',
-# ('option', None, 'ID', None, None, InputType.Float)),
+# (False, None, 'ID', None, None, InputType.Float)),
 # ('profile',
-# ('section', profile_section, 'Profile', None)),
+# (True, profile_section, 'Profile', None)),
 # ('cache',
-# ('section', cache_section, 'Cache', None)),
+# (True, cache_section, 'Cache', None)),
 # ('log',
-# ('section', log_section, 'Logging', None)),
+# (True, log_section, 'Logging', None)),
 # )
 # previous_config = deepcopy(current_config)
 
 # defaults = (
-# ('current', ('section', current_config, 'Current', None)),
-# ('previous', ('section', previous_config, 'Previous', None)),
+# ('current', (True, current_config, 'Current', None)),
+# ('previous', (True, previous_config, 'Previous', None)),
 # )
 # return defaults
 
@@ -57,141 +57,141 @@ standard_library.install_aliases()
 def _gen_config():
     general_config = (
         ('language',
-            ('option', None, 'Language', None, (None, 'english'), InputType.Str)),
+            (None, 'Language', None, (None, 'english'), InputType.Str)),
         ('storage_folder',
-            ('option', '.', 'Storage folder', None, None, InputType.Folder)),
+            ('.', 'Storage folder', None, None, InputType.Folder)),
         ('min_storage_size',
-            ('option', 1024, 'Min storage space (in MiB)', None, None, InputType.Size)),
+            (1024, 'Min storage space (in MiB)', None, None, InputType.Size)),
         ('folder_pack',
-            ('option', True, 'Create folder for each package', None, None, InputType.Bool)),
+            (True, 'Create folder for each package', None, None, InputType.Bool)),
         ('local_access',
-            ('option', True, 'No authentication on local access', None, None, InputType.Bool)),
+            (True, 'No authentication on local access', None, None, InputType.Bool)),
         ('niceness',
-            ('option', 0, 'Process priority', None, range(-19, 20), InputType.Int)),
+            (0, 'Process priority', None, range(-19, 20), InputType.Int)),
         ('ioniceness',
-            ('option', 0, 'Process I/O priority', None, range(0, 3), InputType.Int))
+            (0, 'Process I/O priority', None, range(0, 3), InputType.Int))
     )
     log_config = (
         ('console',
-            ('option', True, 'Print log to console', None, None, InputType.Bool)),
+            (True, 'Print log to console', None, None, InputType.Bool)),
         ('syslog',
-            ('option', None, 'Sent log to syslog', None, (None, 'remote', 'local'), InputType.Str)),
+            (None, 'Sent log to syslog', None, (None, 'remote', 'local'), InputType.Str)),
         ('syslog_folder',
-            ('option', None, 'Syslog local folder', None, None, InputType.Folder)),
+            (None, 'Syslog local folder', None, None, InputType.Folder)),
         ('syslog_host',
-            ('option', 'localhost:514', 'Syslog remote IP address', None, None, InputType.Address)),
+            ('localhost:514', 'Syslog remote IP address', None, None, InputType.Address)),
         ('filelog',
-            ('option', False, 'Save log to file', None, None, InputType.Bool)),
+            (False, 'Save log to file', None, None, InputType.Bool)),
         ('filelog_size',
-            ('option', 100, 'Max file size (in KiB)', None, None, InputType.Size)),
+            (100, 'Max file size (in KiB)', None, None, InputType.Size)),
         ('filelog_folder',
-            ('option', 'logs', 'File folder', None, None, InputType.Folder)),
+            ('logs', 'File folder', None, None, InputType.Folder)),
         ('filelog_name',
-            ('option', 'pyload.log', 'File name', None, None, InputType.File)),
+            ('pyload.log', 'File name', None, None, InputType.File)),
         ('max_logfiles',
-            ('option', 5, 'Max log files', None, None, InputType.Int)),
+            (5, 'Max log files', None, None, InputType.Int)),
         ('rotate',
-            ('option', True, 'Log rotate', None, None, InputType.Bool)),
+            (True, 'Log rotate', None, None, InputType.Bool)),
         ('debug',
-            ('option', False, 'Debug mode', None, None, InputType.Bool)),
+            (False, 'Debug mode', None, None, InputType.Bool)),
         # ('verbose',
-            # ('option', False, 'Verbose mode', None, None, InputType.Bool)),
+            # (False, 'Verbose mode', None, None, InputType.Bool)),
         ('colorlog',
-            ('option', True, 'Color log (console only)', None, None, InputType.Bool))
+            (True, 'Color log (console only)', None, None, InputType.Bool))
     )
     perm_config = (
         ('user',
-            ('option', 'user', 'Username', None, None, InputType.Str)),
+            ('user', 'Username', None, None, InputType.Str)),
         ('group',
-            ('option', 'users', 'Groupname', None, None, InputType.Str)),
+            ('users', 'Groupname', None, None, InputType.Str)),
         ('foldermode',
-            ('option', 0o755, 'Folder mode', None, None, InputType.Octal)),
+            (0o755, 'Folder mode', None, None, InputType.Octal)),
         ('filemode',
-            ('option', 0o644, 'File mode', None, None, InputType.Octal)),
+            (0o644, 'File mode', None, None, InputType.Octal)),
         ('change_user',
-            ('option', False, 'Change user of pyLoad process', None, None, InputType.Bool)),
+            (False, 'Change user of pyLoad process', None, None, InputType.Bool)),
         ('change_group',
-            ('option', False, 'Change group of pyLoad process', None, None, InputType.Bool)),
+            (False, 'Change group of pyLoad process', None, None, InputType.Bool)),
         ('change_fileowner',
-            ('option', False, 'Change user and group of saved files', None, None, InputType.Bool)),
+            (False, 'Change user and group of saved files', None, None, InputType.Bool)),
         ('change_filemode',
-            ('option', False, 'Change file mode of saved files', None, None, InputType.Bool))
+            (False, 'Change file mode of saved files', None, None, InputType.Bool))
     )
     conn_config = (
         ('max_transfers',
-            ('option', 5, 'Max parallel transfers', None, None, InputType.Int)),
+            (5, 'Max parallel transfers', None, None, InputType.Int)),
         ('max_speed',
-            ('option', -1, 'Max transfer speed (in KiB/s)', None, None, InputType.Size)),
+            (-1, 'Max transfer speed (in KiB/s)', None, None, InputType.Size)),
         ('max_chunks',
-            ('option', -1, 'Max connections for single transfer', None, None, InputType.Int)),
+            (-1, 'Max connections for single transfer', None, None, InputType.Int)),
         # TODO: Recheck...
         ('wait',
-            ('option', 2, 'Active transfers while waiting', None, None, InputType.Int)),
+            (2, 'Active transfers while waiting', None, None, InputType.Int)),
         ('skip',
-            ('option', False, 'Skip existing files', None, None, InputType.Bool)),
+            (False, 'Skip existing files', None, None, InputType.Bool)),
         ('preallocate',
-            ('option', True, 'Pre-allocate files on disk', None, None, InputType.Bool)),
+            (True, 'Pre-allocate files on disk', None, None, InputType.Bool)),
         ('interface',
-            ('option', None, 'Interface address to bind', None, None, InputType.Address)),
+            (None, 'Interface address to bind', None, None, InputType.Address)),
         ('ipv6',
-            ('option', False, 'Allow IPv6', None, None, InputType.Bool)),
+            (False, 'Allow IPv6', None, None, InputType.Bool)),
     )
     ssl_config = (
         ('activated',
-            ('option', False, 'Activated', None, None, InputType.Bool)),
+            (False, 'Activated', None, None, InputType.Bool)),
         ('cert',
-            ('option', 'ssl.crt', 'Cert file', None, None, InputType.File)),
+            ('ssl.crt', 'Cert file', None, None, InputType.File)),
         ('key',
-            ('option', 'ssl.key', 'Key file', None, None, InputType.File))
+            ('ssl.key', 'Key file', None, None, InputType.File))
     )
     reconn_config = (
         ('activated',
-            ('option', False, 'Activated', None, None, InputType.Bool)),
+            (False, 'Activated', None, None, InputType.Bool)),
         ('script',
-            ('option', None, 'Script file', None, None, InputType.File)),
+            (None, 'Script file', None, None, InputType.File)),
         ('wait',
-            ('option', False, 'Don\'t reconnect while waiting', None, None, InputType.Bool))
+            (False, 'Don\'t reconnect while waiting', None, None, InputType.Bool))
     )
     proxy_config = (
         ('activated',
-            ('option', False, 'Activated', None, None, InputType.Bool)),
+            (False, 'Activated', None, None, InputType.Bool)),
         ('type',
-            ('option', 'http', 'Protocol', None, ('http', 'socks4', 'socks5'), InputType.Str)),
+            ('http', 'Protocol', None, ('http', 'socks4', 'socks5'), InputType.Str)),
         ('host',
-            ('option', 'localhost:7070', 'IP address', None, None, InputType.Address)),
+            ('localhost:7070', 'IP address', None, None, InputType.Address)),
         ('username',
-            ('option', None, 'Username', None, None, InputType.Str)),
+            (None, 'Username', None, None, InputType.Str)),
         ('password',
-            ('option', None, 'Password', None, None, InputType.Password))
+            (None, 'Password', None, None, InputType.Password))
     )
     up_config = (
         ('activated',
-            ('option', False, 'Activated', None, None, InputType.Bool)),
+            (False, 'Activated', None, None, InputType.Bool)),
         ('nodebug',
-            ('option', False, 'Don\'t update in debug mode', None, None, InputType.Bool)),
+            (False, 'Don\'t update in debug mode', None, None, InputType.Bool)),
         ('periodical',
-            ('option', True, 'Check for updates on schedule', None, None, InputType.Bool)),
+            (True, 'Check for updates on schedule', None, None, InputType.Bool)),
         ('interval',
-            ('option', 1, 'Check interval (in days)', None, None, InputType.Int))
+            (1, 'Check interval (in days)', None, None, InputType.Int))
     )
 
     root_config = (
         ('general',
-            ('section', general_config, 'General', None)),
+            (general_config, 'General', None)),
         ('log',
-            ('section', log_config, 'Logging', None)),
+            (log_config, 'Logging', None)),
         ('permission',
-            ('section', perm_config, 'Permissions', None)),
+            (perm_config, 'Permissions', None)),
         ('connection',
-            ('section', conn_config, 'Connections', None)),
+            (conn_config, 'Connections', None)),
         ('ssl',
-            ('section', ssl_config, 'SSL', None)),
+            (ssl_config, 'SSL', None)),
         ('reconnect',
-            ('section', reconn_config, 'Reconnection', None)),
+            (reconn_config, 'Reconnection', None)),
         ('proxy',
-            ('section', proxy_config, 'Proxy', None)),
+            (proxy_config, 'Proxy', None)),
         ('update',
-            ('section', up_config, 'Updates', None))
+            (up_config, 'Updates', None))
     )
     return root_config
 
