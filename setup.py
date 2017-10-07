@@ -22,8 +22,6 @@ from setuptools import Command, find_packages, setup
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.build_py import build_py
 
-# import subprocess
-
 
 def read_text(path):
     with codecs.open(path, encoding='utf-8', errors='ignore') as fp:
@@ -69,12 +67,6 @@ class BuildLocale(Command):
     """
     description = 'build locales'
     user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
 
     def run(self):
         self.run_command('extract_messages')
