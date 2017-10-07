@@ -223,9 +223,6 @@ class ConfigSection(InscDict):
         # func = self.add_section if sectflag or not optflag else self.add_option
         # return func(*args, **kwargs)
 
-    # def __str__(self):
-        # pass
-
 
 class ConfigParser(InscDict):
 
@@ -271,6 +268,18 @@ class ConfigParser(InscDict):
                     name, '({0})'.format(idx) if idx else '', ext))
             except OSError:
                 idx += 1
+
+        except VersionMismatchError:
+            self.fp.close()
+            print('VersionMismatchError')
+            self._backup_fileconfig()
+            self.fp = io.open(self.path, mode='ab+')
+
+        except Exception as exc:
+            self.log.debug(exc, exc_info=True)
+
+        self.log.warning(
+            'Unable to parse configuration from `{0}`'.format(self.path))
 
     def _parse_version(self, value):
         if isinstance(value, semver.VersionInfo):
@@ -412,6 +421,3 @@ class ConfigParser(InscDict):
         parser.read_dict(config)
         with io.open(self.path, 'w') as fp:
             parser.write(fp)
-
-    # def __str__(self):
-        # pass
