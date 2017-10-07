@@ -7,6 +7,7 @@ import imp
 from builtins import map, range
 
 from future import standard_library
+from past.builtins import basestring
 
 from pyload.utils.layer.legacy.collections import Iterable, Mapping
 
@@ -49,7 +50,7 @@ def isiterable(obj, strict=False):
     """Check if object is iterable (`<type 'str'>` excluded if
     strict=False)."""
     return (isinstance(obj, Iterable) and (
-        strict or not isinstance(obj, (bytes, str))))
+        strict or not isinstance(obj, basestring)))
 
 
 def ismapping(obj):
