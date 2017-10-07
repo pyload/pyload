@@ -22,7 +22,7 @@ standard_library.install_aliases()
 
 class DownloadThread(PluginThread):
     """Thread for downloading files from 'real' hoster plugins."""
-    __slots__ = ['active', 'queue', 'running']
+    __slots__ = ['active', 'queue']
 
     def __init__(self, manager):
         """Constructor."""
