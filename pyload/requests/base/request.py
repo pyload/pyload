@@ -11,7 +11,6 @@ try:
 except ImportError:
     from http.client import responses
 
-
 from future import standard_library
 from future.utils import with_metaclass
 
@@ -55,7 +54,8 @@ class ResponseException(Exception):
             ResponseException,
             self).__init__(
             'Server response error: {0} {1}'.format(
-                code, http_responses.get(int(code), 'Unknown status code')))
+                code,
+                http_responses.get(int(code), 'Unknown status code')))
         self.code = code
         self.content = content
         self.header = header

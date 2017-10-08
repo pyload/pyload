@@ -12,7 +12,7 @@ from future import standard_library
 
 import pycurl
 from pyload.requests.cookie import CookieJar
-from pyload.requests.base.request import BAD_HTTP_RESPONSES, Abort, ResponseException, http_responses
+from pyload.requests.base.request import BAD_HTTP_RESPONSES, Abort, ResponseException
 from pyload.requests.base.load import LoadRequest
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_bytes
