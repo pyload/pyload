@@ -6,14 +6,13 @@ from __future__ import absolute_import, unicode_literals
 import io
 from future.builtins import bytes, dict, int, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
-from http.client import responses
 from urllib.parse import quote, urlencode
 
 from future import standard_library
 
 import pycurl
 from pyload.requests.cookie import CookieJar
-from pyload.requests.base.request import Abort, ResponseException
+from pyload.requests.base.request import BAD_HTTP_RESPONSES, Abort, ResponseException, http_responses
 from pyload.requests.base.load import LoadRequest
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_bytes
@@ -22,8 +21,6 @@ standard_library.install_aliases()
 
 
 pycurl.global_init(pycurl.GLOBAL_DEFAULT)
-
-BAD_HEADERS = list(range(400, 418)) + list(range(500, 506))
 
 
 def safequote(url):
@@ -45,9 +42,10 @@ class CurlRequest(LoadRequest):
 
     def __init__(self, *args, **kwargs):
         self.c = pycurl.Curl()
+        self.limit = kwargs.pop('limit', 1000000) or 1000000
         super(CurlRequest, self).__init__(*args, **kwargs)
 
-        self.rep = io.StringIO()
+        self.rep = None
         self.last_url = None
         self.last_effective_url = None
         self.header = ''
@@ -163,6 +161,7 @@ class CurlRequest(LoadRequest):
     def set_request_context(self, url, get, post,
                             referer, cookies, multipart=False):
         """Sets everything needed for the request."""
+        self.rep = io.StringIO()
         url = safequote(url)
 
         if get:
@@ -241,7 +240,12 @@ class CurlRequest(LoadRequest):
         self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
         if self.last_effective_url:
             self.last_url = self.last_effective_url
-        self.code = self.verify_header()
+
+        try:
+            self.code = self.verify_header()
+        finally:
+            self.rep.close()
+            self.rep = None
 
         if cookies:
             self.parse_cookies()
@@ -262,19 +266,19 @@ class CurlRequest(LoadRequest):
     def verify_header(self):
         """Raise an exceptions on bad headers."""
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
-        if code in BAD_HEADERS:
+        if code in BAD_HTTP_RESPONSES:
             raise ResponseException(
-                code, responses.get(code, 'Unknown statuscode'))
+                code,
+                self.get_response(),
+                self.header)
         return code
 
     def get_response(self):
         """Retrieve response from string io."""
         if self.rep is None:
             return ''
-        value = self.rep.getvalue()
-        self.rep.close()
-        self.rep = io.StringIO()
-        return value
+        else:
+            return self.rep.getvalue()
 
     def decode_response(self, rep):
         """Decode with correct encoding, relies on header."""
@@ -313,8 +317,9 @@ class CurlRequest(LoadRequest):
 
     def write(self, buf):
         """Writes response."""
-        if self.rep.tell() > 1000000 or self.__abort:
+        if self.rep.tell() > self.limit or self.__abort:
             rep = self.get_response()
+            self.close()
             if self.__abort:
                 raise Abort
             with io.open('response.dump', mode='wb') as fp:
@@ -333,7 +338,9 @@ class CurlRequest(LoadRequest):
 
     def close(self):
         """Cleanup, unusable after this."""
-        self.rep.close()
+        if self.rep is not None:
+            self.rep.close()
+            del self.rep
         if hasattr(self, 'cj'):
             del self.cj
         if hasattr(self, 'c'):
