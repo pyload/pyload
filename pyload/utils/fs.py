@@ -6,12 +6,12 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import shutil
-from future.builtins import dict, int, next
 
 import portalocker
 import psutil
 import send2trash
 from future import standard_library
+from future.builtins import dict, int, next
 
 from pyload.utils.convert import to_bytes, to_str
 from pyload.utils.layer.legacy import hashlib

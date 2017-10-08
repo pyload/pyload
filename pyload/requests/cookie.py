@@ -3,10 +3,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from future.builtins import int
 from http.cookies import SimpleCookie
 
 from future import standard_library
+from future.builtins import int
 
 from pyload.utils.convert import to_str
 

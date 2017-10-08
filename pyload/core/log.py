@@ -11,7 +11,6 @@ import sys
 
 from pyload.__about__ import __package__
 from pyload.utils.check import ismodule
-from pyload.utils.convert import to_str
 from pyload.utils.fs import makedirs
 
 try:

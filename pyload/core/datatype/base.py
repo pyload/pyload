@@ -3,10 +3,10 @@
 from __future__ import absolute_import, unicode_literals
 
 from abc import ABCMeta
-from future.builtins import object
 from enum import IntEnum
 
 from future import standard_library
+from future.builtins import object
 from future.utils import with_metaclass
 
 standard_library.install_aliases()

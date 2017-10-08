@@ -5,10 +5,10 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 import time
-from future.builtins import int
 from enum import IntEnum
 
 from future import standard_library
+from future.builtins import int
 
 from pyload.core.datatype.base import (BaseObject, DownloadInfo,
                                        DownloadProgress, DownloadStatus,

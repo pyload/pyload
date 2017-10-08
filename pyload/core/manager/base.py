@@ -4,9 +4,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from abc import ABCMeta, abstractmethod
-from future.builtins import object
 
 from future import standard_library
+from future.builtins import object
 from future.utils import with_metaclass
 
 from pyload.utils.layer.safethreading import Lock

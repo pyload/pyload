@@ -4,9 +4,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import imp
-from future.builtins import map, range
 
 from future import standard_library
+from future.builtins import map, range
 from past.builtins import basestring
 
 from pyload.utils.layer.legacy.collections import Iterable, Mapping

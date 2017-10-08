@@ -3,9 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import bytes, dict, int, str
-
 from future import standard_library
+from future.builtins import bytes, dict, int, str
 
 from pyload.utils.check import isiterable, ismapping
 

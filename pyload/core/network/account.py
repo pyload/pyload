@@ -3,9 +3,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from future.builtins import dict
 
 from future import standard_library
+from future.builtins import dict
 
 # from pyload.config.convert import from_string, to_configdata
 from pyload.core.datatype import AccountInfo, ConfigItem

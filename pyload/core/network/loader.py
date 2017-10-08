@@ -9,9 +9,9 @@ import logging
 import os
 import re
 import time
-from future.builtins import object, range
 
 from future import standard_library
+from future.builtins import object, range
 
 from pyload.core.network.base import Base
 from pyload.utils.fs import fullpath, makefile

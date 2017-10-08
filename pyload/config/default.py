@@ -2,9 +2,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import range
-
 from future import standard_library
+from future.builtins import range
 
 from pyload.config.types import InputType
 
@@ -95,7 +94,7 @@ def _gen_config():
         ('debug',
             (False, 'Debug mode', None, None, InputType.Bool)),
         # ('verbose',
-            # (False, 'Verbose mode', None, None, InputType.Bool)),
+        # (False, 'Verbose mode', None, None, InputType.Bool)),
         ('colorlog',
             (True, 'Color log (console only)', None, None, InputType.Bool))
     )

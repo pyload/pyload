@@ -5,9 +5,9 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import sys
-from future.builtins import object, str
 
 from future import standard_library
+from future.builtins import object, str
 from pkg_resources import resource_filename
 
 from pyload.__about__ import __package__

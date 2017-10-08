@@ -4,10 +4,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from future.builtins import object
-
 from functools import partial, wraps
+
 from future import standard_library
+from future.builtins import object
 
 from pyload.utils.layer.safethreading import (Condition, Lock, RLock,
                                               current_thread)

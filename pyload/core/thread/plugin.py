@@ -3,11 +3,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from abc import ABCMeta, abstractmethod
 import os
 import sys
 import time
 import zipfile
+from abc import ABCMeta, abstractmethod
 
 from future import standard_library
 from future.utils import with_metaclass

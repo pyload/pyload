@@ -5,9 +5,9 @@ from __future__ import absolute_import, unicode_literals
 
 import io
 import os
-from future.builtins import int, object, range
 
 from future import standard_library
+from future.builtins import int, object, range
 
 from pyload.utils.fs import bufread, fullpath, remove
 

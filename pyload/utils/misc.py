@@ -4,9 +4,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import socket
-from future.builtins import map
 
 from future import standard_library
+from future.builtins import map
 
 from pyload.utils.check import ismapping
 

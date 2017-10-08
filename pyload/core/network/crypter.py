@@ -6,9 +6,9 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import time
-from future.builtins import int, str
 
 from future import standard_library
+from future.builtins import int, str
 
 from pyload.core.network.base import Base, Fail, Retry
 from pyload.requests.curl.download import CurlDownload

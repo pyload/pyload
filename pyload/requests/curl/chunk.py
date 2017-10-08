@@ -7,10 +7,10 @@ import io
 import os
 import re
 import time
-from future.builtins import int
 from contextlib import closing
 
 from future import standard_library
+from future.builtins import int
 
 import pycurl
 from pyload.requests.curl.request import CurlRequest

@@ -4,15 +4,16 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import dict
 from collections import *
+
+from future import standard_library
+from future.builtins import dict
 
 try:
     from collections.abc import *
 except ImportError:
     pass
 
-from future import standard_library
 
 standard_library.install_aliases()
 

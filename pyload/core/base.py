@@ -10,7 +10,6 @@ import locale
 import os
 import sched
 import time
-
 from contextlib import closing
 
 from future import standard_library
@@ -86,7 +85,8 @@ class Core(object):
         # cleanpy(PACKDIR)
 
         self.config = ConfigParser(self.DEFAULT_CONFIGNAME)
-        self.debug = self.config.get('log', 'debug') if debug is None else debug
+        self.debug = self.config.get(
+            'log', 'debug') if debug is None else debug
         self.log = LoggerFactory(self, self.debug)
 
         self._init_database(restore)

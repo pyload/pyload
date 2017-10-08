@@ -6,10 +6,10 @@ from __future__ import absolute_import, unicode_literals
 import os
 import shlex
 import sys
-from future.builtins import map, str
 
 import psutil
 from future import standard_library
+from future.builtins import map, str
 
 from pyload.utils import convert
 from pyload.utils.check import isiterable

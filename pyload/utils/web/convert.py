@@ -4,10 +4,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import socket
-from future.builtins import int
 
 import idna
 from future import standard_library
+from future.builtins import int
 
 from pyload.utils.convert import to_str
 

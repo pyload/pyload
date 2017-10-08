@@ -3,9 +3,9 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from future.builtins import int, object
 
 from future import standard_library
+from future.builtins import int, object
 
 standard_library.install_aliases()
 

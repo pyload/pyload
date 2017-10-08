@@ -3,9 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import object
-
 from future import standard_library
+from future.builtins import object
 
 from pyload.core.database.backend import DatabaseBackend, queue
 

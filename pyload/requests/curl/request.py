@@ -4,16 +4,17 @@
 from __future__ import absolute_import, unicode_literals
 
 import io
-from future.builtins import bytes, dict, int, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from urllib.parse import quote, urlencode
 
 from future import standard_library
+from future.builtins import dict, int
 
 import pycurl
-from pyload.requests.cookie import CookieJar
-from pyload.requests.base.request import BAD_HTTP_RESPONSES, Abort, ResponseException
 from pyload.requests.base.load import LoadRequest
+from pyload.requests.base.request import (BAD_HTTP_RESPONSES, Abort,
+                                          ResponseException)
+from pyload.requests.cookie import CookieJar
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_bytes
 
@@ -40,11 +41,12 @@ class CurlRequest(LoadRequest):
     """Request class based on libcurl."""
     CONTEXT_CLASS = CookieJar
     DEFAULT_LIMIT = 1 << 20
-    
+
     def __init__(self, *args, **kwargs):
         self.c = pycurl.Curl()
-        self.limit = kwargs.pop('limit', self.DEFAULT_LIMIT)  # TODO: Rename `limit`
-        
+        self.limit = kwargs.pop(
+            'limit', self.DEFAULT_LIMIT)  # TODO: Rename `limit`
+
         super(CurlRequest, self).__init__(*args, **kwargs)
 
         self.rep = None

@@ -7,11 +7,10 @@ import configparser
 import io
 import logging
 import os
-from future.builtins import int, object, oct
-from contextlib import closing
 
 import semver
 from future import standard_library
+from future.builtins import int, object, oct
 
 from pyload.__about__ import __version_info__
 from pyload.config import default

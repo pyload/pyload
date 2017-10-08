@@ -2,9 +2,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import ADDONMANAGER, object
-
 from future import standard_library
+from future.builtins import ADDONMANAGER, object
 
 from pyload.core.network.base import Base
 from pyload.utils.check import hasmethod

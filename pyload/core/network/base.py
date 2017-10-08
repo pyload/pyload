@@ -7,9 +7,9 @@ import io
 import os
 import random
 import time
-from future.builtins import object
 
 from future import standard_library
+from future.builtins import object
 
 from pyload.utils.convert import to_str
 from pyload.utils.fs import makedirs, remove

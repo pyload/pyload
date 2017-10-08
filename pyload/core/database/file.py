@@ -3,9 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import int
-
 from future import standard_library
+from future.builtins import int
 
 from pyload.api import statestring
 from pyload.core.database.backend import DatabaseMethods, async, inner, queue

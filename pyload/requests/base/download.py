@@ -3,7 +3,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import logging
-
 from abc import ABCMeta, abstractmethod
 
 from future import standard_library

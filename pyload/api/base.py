@@ -2,16 +2,17 @@
 
 from __future__ import absolute_import, unicode_literals
 
-# from abc import ABCMeta, abstractmethod
-from future.builtins import object
 from types import MethodType
 
 from future import standard_library
-# from future.utils import with_metaclass
+# from abc import ABCMeta, abstractmethod
+from future.builtins import object
 
 from pyload.core.datatype.base import DownloadState, DownloadStatus, Permission
 from pyload.core.datatype.user import User
 from pyload.utils.convert import to_str
+
+# from future.utils import with_metaclass
 
 standard_library.install_aliases()
 

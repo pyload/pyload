@@ -22,9 +22,9 @@ from __future__ import absolute_import, unicode_literals
 import io
 import logging
 import os
-from future.builtins import object, range
 
 from future import standard_library
+from future.builtins import object, range
 from pkg_resources import resource_filename
 
 import Image

@@ -4,10 +4,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-from future.builtins import dict
 from functools import reduce
 
 from future import standard_library
+from future.builtins import dict
 
 from pyload.core.datatype.base import DownloadStatus, TreeCollection
 from pyload.core.datatype.file import File

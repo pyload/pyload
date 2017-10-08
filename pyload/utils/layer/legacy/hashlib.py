@@ -5,10 +5,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import bytes, chr, int, range
 from hashlib import *
 
 from future import standard_library
+from future.builtins import bytes, chr, int, range
 
 standard_library.install_aliases()
 

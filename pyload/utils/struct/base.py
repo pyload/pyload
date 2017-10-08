@@ -3,9 +3,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from future.builtins import super
-
 from future import standard_library
+from future.builtins import super
 
 from pyload.utils.layer.legacy.collections import Mapping, MutableMapping
 

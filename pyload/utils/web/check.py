@@ -5,12 +5,12 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 import re
-from future.builtins import map
 
 import idna
 import requests
 import validators
 from future import standard_library
+from future.builtins import map
 
 from pyload.utils.convert import to_str
 from pyload.utils.web import format
@@ -49,7 +49,8 @@ _RE_ISH = re.compile(r'(?!-)[\w^_]{1,63}(?<!-)$', flags=re.I)
 def ishost(value):
     MAX_HOSTNAME_LEN = 253
     try:
-        value = to_str(idna.encode(value))  # returns bytestring, then encode to str
+        # returns bytestring, then encode to str
+        value = to_str(idna.encode(value))
     except AttributeError:
         pass
     if value.endswith('.'):

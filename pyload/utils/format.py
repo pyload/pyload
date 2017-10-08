@@ -5,9 +5,9 @@ from __future__ import absolute_import, unicode_literals
 
 import datetime
 import os
-from future.builtins import int
 
 from future import standard_library
+from future.builtins import int
 
 from pyload.utils.check import isiterable
 from pyload.utils.convert import to_str
