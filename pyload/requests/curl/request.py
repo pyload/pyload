@@ -39,10 +39,12 @@ def safeurlencode(data):
 class CurlRequest(LoadRequest):
     """Request class based on libcurl."""
     CONTEXT_CLASS = CookieJar
-
+    DEFAULT_LIMIT = 1 << 20
+    
     def __init__(self, *args, **kwargs):
         self.c = pycurl.Curl()
-        self.limit = kwargs.pop('limit', 1000000) or 1000000
+        self.limit = kwargs.pop('limit', self.DEFAULT_LIMIT)  # TODO: Rename `limit`
+        
         super(CurlRequest, self).__init__(*args, **kwargs)
 
         self.rep = None

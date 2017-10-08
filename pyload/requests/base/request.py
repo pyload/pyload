@@ -6,10 +6,7 @@ import logging
 
 from abc import ABCMeta, abstractmethod
 from future.builtins import object
-try:
-    from httplib import responses
-except ImportError:
-    from http.client import responses
+from http.client import responses
 
 from future import standard_library
 from future.utils import with_metaclass
