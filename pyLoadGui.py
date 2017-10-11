@@ -1015,9 +1015,9 @@ class main(QObject):
         self.mainWindow.newPackDock.paintEventCounter = 0
         self.mainWindow.newLinkDock.paintEventCounter = 0
         self.mainWindow.restoreState(self.mainWindowStateFirstUnmax, self.mainWindow.version)  # also restores floating state of docks
-        if self.mainWindow.newPackDock.isFloating():
+        if self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden():
             self.waitForPackDockPaintEvents(1)
-        if self.mainWindow.newLinkDock.isFloating():
+        if self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden():
             self.waitForLinkDockPaintEvents(1)
         self.mainWindow.raise_()
         self.mainWindow.tabw.setFocus(Qt.OtherFocusReason)
