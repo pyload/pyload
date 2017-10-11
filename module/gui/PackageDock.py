@@ -35,7 +35,7 @@ class NewPackageDock(QDockWidget):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
-        self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
+        self.setAllowedAreas(Qt.RightDockWidgetArea)
         self.hide()
     
     def slotDone(self):

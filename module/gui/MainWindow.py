@@ -68,7 +68,7 @@ class MainWindow(QMainWindow):
         
         #init docks
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowTabbedDocks | QMainWindow.ForceTabbedDocks)
-        self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea, QTabWidget.North)
+        self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
         self.newPackDock = NewPackageDock()
         self.addDockWidget(Qt.RightDockWidgetArea, self.newPackDock)
         self.connect(self.newPackDock, SIGNAL("done"), self.slotAddPackage)
