@@ -281,7 +281,7 @@ class Hoster(Base):
         location = os.path.join(download_folder, self.file.package().folder)
 
         if not os.path.isdir(location):
-            mode = int(self.pyload.config.get('permission', 'foldermode'), 8)
+            mode = self.pyload.config.get('permission', 'foldermode')
             makedirs(location, mode, exist_ok=True)
 
             if self.pyload.config.get(
@@ -327,8 +327,8 @@ class Hoster(Base):
         fs_filename = filepath
 
         if self.pyload.config.get('permission', 'change_filemode'):
-            os.chmod(fs_filename, int(self.pyload.config.get(
-                'permission', 'filemode'), 8))
+            os.chmod(fs_filename, self.pyload.config.get(
+                'permission', 'filemode'))
 
         if self.pyload.config.get(
                 'permission', 'change_fileowner') and os.name != 'nt':

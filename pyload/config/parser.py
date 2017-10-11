@@ -43,7 +43,7 @@ convert_map = {
     InputType.Password: to_str,
     InputType.Bool: bool,
     InputType.Float: float,
-    InputType.Octal: lambda x: oct(int(x)),
+    InputType.Octal: lambda x: oct(int(x, 8)),
     InputType.Size: parse.bytesize,
     InputType.Address: _parse_address,
     InputType.Bytes: to_bytes,

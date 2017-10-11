@@ -228,7 +228,7 @@ def mkfile(filename, size=None):
             fp.truncate(size)
 
 
-def makedirs(dirname, mode=0o777, exist_ok=False):
+def makedirs(dirname, mode='0o777', exist_ok=False):
     try:
         os.makedirs(dirname, mode)
 
@@ -237,7 +237,7 @@ def makedirs(dirname, mode=0o777, exist_ok=False):
             raise OSError(exc)
 
 
-def makefile(filepath, mode=0o700, size=None, exist_ok=False):
+def makefile(filepath, mode='0o700', size=None, exist_ok=False):
     dirname, _ = os.path.split(filepath)
     makedirs(dirname, mode, exist_ok=True)
     try:
