@@ -142,7 +142,7 @@ class DatabaseBackend(Thread):
         version = self._check_version()
 
         self.conn = sqlite3.connect(self.DB_FILE)
-        os.chmod(self.DB_FILE, '0o600')
+        os.chmod(self.DB_FILE, 0o600)
 
         self.c = self.conn.cursor()
 
@@ -163,7 +163,7 @@ class DatabaseBackend(Thread):
                     fp.write(to_str(DB_VERSION))
 
                 self.conn = sqlite3.connect(self.DB_FILE)
-                os.chmod(self.DB_FILE, '0o600')
+                os.chmod(self.DB_FILE, 0o600)
                 self.c = self.conn.cursor()
 
         self._create_tables()
