@@ -6,6 +6,7 @@ from __future__ import absolute_import, unicode_literals
 import io
 import os
 import shutil
+from functools import wraps
 from queue import Queue
 
 from future import standard_library
@@ -33,22 +34,28 @@ def set_db(db):
 
 
 def queue(f):
+    @wraps(f)
     def x(*args, **kwargs):
         if DB:
+            args = args[1:] if len(args) > 0 and DB == args[0] else args
             return DB.queue(f, *args, **kwargs)
     return x
 
 
 def async(f):
+    @wraps(f)
     def x(*args, **kwargs):
         if DB:
+            args = args[1:] if len(args) > 0 and DB == args[0] else args
             return DB.async(f, *args, **kwargs)
     return x
 
 
 def inner(f):
+    @wraps(f)
     def x(*args, **kwargs):
         if DB:
+            args = args[1:] if len(args) > 0 and DB == args[0] else args
             return f(DB, *args, **kwargs)
     return x
 
