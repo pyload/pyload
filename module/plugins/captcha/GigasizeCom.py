@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.OCR import OCR
+from ..internal.OCR import OCR
 
 
 class GigasizeCom(OCR):
-    __name__    = "GigasizeCom"
-    __type__    = "ocr"
-    __version__ = "0.16"
-    __status__  = "testing"
+    __name__ = "GigasizeCom"
+    __type__ = "ocr"
+    __version__ = "0.17"
+    __status__ = "testing"
 
     __description__ = """Gigasize.com ocr plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("pyLoad Team", "admin@pyload.org")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("pyLoad Team", "admin@pyload.org")]
 
     def recognize(self, image):
         self.load_image(image)

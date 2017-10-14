@@ -2,22 +2,20 @@
 
 import re
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class QuickshareCz(Account):
-    __name__    = "QuickshareCz"
-    __type__    = "account"
-    __version__ = "0.09"
-    __status__  = "testing"
+    __name__ = "QuickshareCz"
+    __type__ = "account"
+    __version__ = "0.11"
+    __status__ = "testing"
 
     __description__ = """Quickshare.cz account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
-
 
     def grab_info(self, user, password, data):
         html = self.load("http://www.quickshare.cz/premium")
@@ -32,10 +30,9 @@ class QuickshareCz(Account):
 
         return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
 
-
     def signin(self, user, password, data):
         html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
-                         post={'akce' : u'Přihlásit',
+                         post={'akce': u'Přihlásit',
                                'heslo': password,
                                'jmeno': user})
 

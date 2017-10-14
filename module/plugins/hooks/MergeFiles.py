@@ -5,25 +5,23 @@ from __future__ import with_statement
 import os
 import re
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import fsjoin, threaded
+from ..internal.Addon import Addon
+from ..internal.misc import fsjoin, threaded
 
 
 class MergeFiles(Addon):
-    __name__    = "MergeFiles"
-    __type__    = "hook"
-    __version__ = "0.20"
-    __status__  = "testing"
+    __name__ = "MergeFiles"
+    __type__ = "hook"
+    __version__ = "0.21"
+    __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Merges parts splitted with hjsplit"""
-    __license__     = "GPLv3"
-    __authors__     = [("and9000", "me@has-no-mail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("and9000", "me@has-no-mail.com")]
 
     BUFFER_SIZE = 4096
-
 
     @threaded
     def package_finished(self, pack):
@@ -56,13 +54,18 @@ class MergeFiles(Addon):
                     try:
                         with open(fsjoin(dl_folder, splitted_file), "rb") as s_file:
                             size_written = 0
-                            s_file_size = int(os.path.getsize(os.path.join(dl_folder, splitted_file)))
+                            s_file_size = int(
+                                os.path.getsize(
+                                    os.path.join(
+                                        dl_folder,
+                                        splitted_file)))
                             while True:
                                 f_buffer = s_file.read(self.BUFFER_SIZE)
                                 if f_buffer:
                                     final_file.write(f_buffer)
                                     size_written += self.BUFFER_SIZE
-                                    pyfile.setProgress((size_written * 100) / s_file_size)
+                                    pyfile.setProgress(
+                                        (size_written * 100) / s_file_size)
                                 else:
                                     break
                         self.log_debug("Finished merging part", splitted_file)

@@ -2,28 +2,28 @@
 
 import re
 
-from module.plugins.captcha.SolveMedia import SolveMedia
-from module.plugins.internal.SimpleHoster import SimpleHoster
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class KingfilesNet(SimpleHoster):
-    __name__    = "KingfilesNet"
-    __type__    = "hoster"
-    __version__ = "0.12"
-    __status__  = "testing"
+    __name__ = "KingfilesNet"
+    __type__ = "hoster"
+    __version__ = "0.13"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})'
-    __config__  = [("activated"   , "bool", "Activated"                                        , True),
-                   ("use_premium" , "bool", "Use premium account if available"                 , True),
-                   ("fallback"    , "bool", "Fallback to free download if premium fails"       , True),
-                   ("chk_filesize", "bool", "Check file size"                                  , True),
-                   ("max_wait"    , "int" , "Reconnect if waiting time is greater than minutes", 10  )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("fallback", "bool",
+                   "Fallback to free download if premium fails", True),
+                  ("chk_filesize", "bool", "Check file size", True),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Kingfiles.net hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zapp-brannigan", "fuerst.reinje@web.de"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     NAME_PATTERN = r'name="fname" value="(?P<N>.+?)">'
     SIZE_PATTERN = r'>Size: .+?">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
@@ -34,19 +34,17 @@ class KingfilesNet(SimpleHoster):
 
     LINK_FREE_PATTERN = r'var download_url = \'(.+)\';'
 
-
     def setup(self):
         self.resume_download = True
-        self.multiDL        = True
-
+        self.multiDL = True
 
     def handle_free(self, pyfile):
         #: Click the free user button
-        post_data = {'op'         : "download1",
-                     'usr_login'  : "",
-                     'id'         : self.info['pattern']['ID'],
-                     'fname'      : pyfile.name,
-                     'referer'    : "",
+        post_data = {'op': "download1",
+                     'usr_login': "",
+                     'id': self.info['pattern']['ID'],
+                     'fname': pyfile.name,
+                     'referer': "",
                      'method_free': "+"}
 
         self.data = self.load(pyfile.url, post=post_data)
@@ -62,15 +60,15 @@ class KingfilesNet(SimpleHoster):
         rand = m.group(1)
         self.log_debug("rand = " + rand)
 
-        post_data = {'op'              : "download2",
-                     'id'              : self.info['pattern']['ID'],
-                     'rand'            : rand,
-                     'referer'         : pyfile.url,
-                     'method_free'     : "+",
-                     'method_premium'  : "",
-                     'adcopy_response' : response,
+        post_data = {'op': "download2",
+                     'id': self.info['pattern']['ID'],
+                     'rand': rand,
+                     'referer': pyfile.url,
+                     'method_free': "+",
+                     'method_premium': "",
+                     'adcopy_response': response,
                      'adcopy_challenge': challenge,
-                     'down_direct'     : "1"}
+                     'down_direct': "1"}
 
         self.data = self.load(pyfile.url, post=post_data)
 

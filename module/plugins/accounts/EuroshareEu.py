@@ -3,36 +3,40 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import json
+from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class EuroshareEu(Account):
-    __name__    = "EuroshareEu"
-    __type__    = "account"
-    __version__ = "0.11"
-    __status__  = "testing"
+    __name__ = "EuroshareEu"
+    __type__ = "account"
+    __version__ = "0.12"
+    __status__ = "testing"
 
     __description__ = """Euroshare.eu account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", "zoidberg@mujmail.cz"        ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def grab_info(self, user, password, data):
         html = self.load("http://euroshare.eu/",
                          get={'lang': "en"})
 
-        m = re.search(r'<span class="btn btn--nav green darken-3">Premium account until: (\d+/\d+/\d+ \d+:\d+:\d+)<', html)
+        m = re.search(
+            r'<span class="btn btn--nav green darken-3">Premium account until: (\d+/\d+/\d+ \d+:\d+:\d+)<',
+            html)
         if m is None:
-            premium    = False
+            premium = False
             validuntil = -1
         else:
             premium = True
-            validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y %H:%M:%S"))
+            validuntil = time.mktime(
+                time.strptime(
+                    m.group(1),
+                    "%d/%m/%Y %H:%M:%S"))
 
-        return {'validuntil': validuntil, 'trafficleft': -1, 'premium': premium}
-
+        return {'validuntil': validuntil,
+                'trafficleft': -1, 'premium': premium}
 
     def signin(self, user, password, data):
         html = self.load("http://euroshare.eu/login.html")

@@ -1,31 +1,29 @@
 # -*- coding: utf-8 -*-
 
-import re
 
-from module.plugins.internal.SimpleCrypter import SimpleCrypter
-from module.plugins.internal.misc import json
+from ..internal.misc import json
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class TurbobitNetFolder(SimpleCrypter):
-    __name__    = "TurbobitNetFolder"
-    __type__    = "crypter"
-    __version__ = "0.10"
-    __status__  = "broken"
+    __name__ = "TurbobitNetFolder"
+    __type__ = "crypter"
+    __version__ = "0.11"
+    __status__ = "broken"
 
     __pattern__ = r'http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)'
-    __config__  = [("activated"         , "bool"          , "Activated"                                        , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available"                 , True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"                   , "Default"),
-                   ("max_wait"          , "int"           , "Reconnect if waiting time is greater than minutes", 10       )]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No",
+                   "Create folder for each package", "Default"),
+                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """Turbobit.net folder decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it"),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it"),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     NAME_PATTERN = r'src=\'/js/lib/grid/icon/folder.png\'> <span>(?P<N>.+?)</span>'
-
 
     def _get_links(self, id, page=1):
         gridFile = self.load("http://turbobit.net/downloadfolder/gridFile",
@@ -40,6 +38,6 @@ class TurbobitNetFolder(SimpleCrypter):
         else:
             return
 
-
     def get_links(self):
-        return ["http://turbobit.net/%s.html" % id for id in self._get_links(self.info['pattern']['ID'])]
+        return ["http://turbobit.net/%s.html" %
+                id for id in self._get_links(self.info['pattern']['ID'])]

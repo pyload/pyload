@@ -1,72 +1,69 @@
 # -*- coding: utf-8 -*-
 
-import hashlib
-
-from module.plugins.internal.MultiAccount import MultiAccount
-from module.plugins.internal.misc import json
+from ..internal.misc import json
+from ..internal.MultiAccount import MultiAccount
 
 
 class LinksnappyCom(MultiAccount):
-    __name__    = "LinksnappyCom"
-    __type__    = "account"
-    __version__ = "0.12"
-    __status__  = "testing"
+    __name__ = "LinksnappyCom"
+    __type__ = "account"
+    __version__ = "0.17"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """Linksnappy.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("stickell", "l.stickell@yahoo.it")]
+    __license__ = "GPLv3"
+    __authors__ = [("stickell", "l.stickell@yahoo.it"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    API_URL = "https://linksnappy.com/api/"
+
+    def api_response(self, method, **kwargs):
+        return json.loads(self.load(self.API_URL + method,
+                                    get=kwargs))
 
     def grab_hosters(self, user, password, data):
-        json_data = self.load("http://gen.linksnappy.com/lseAPI.php", get={'act': "FILEHOSTS"})
-        json_data = json.loads(json_data)
-
+        json_data = self.api_response("FILEHOSTS")
         return json_data['return'].keys()
 
-
     def grab_info(self, user, password, data):
-        r = self.load('http://gen.linksnappy.com/lseAPI.php',
-                      get={'act'     : 'USERDETAILS',
-                           'username': user,
-                           'password': hashlib.md5(password).hexdigest()})
+        premium = True
+        validuntil = None
+        trafficleft = None
 
-        self.log_debug("JSON data: " + r)
+        json_data = self.api_response("USERDETAILS", username=user, password=password)
 
-        j = json.loads(r)
-
-        if j['error']:
-            return {'premium': False}
-
-        validuntil = j['return']['expire']
-
-        if validuntil == "lifetime":
-            validuntil = -1
-
-        elif validuntil == "expired":
-            return {'premium': False}
+        if json_data['status'] != "OK":
+            self.log_error(json_data['error'])
 
         else:
-            validuntil = float(validuntil)
+            validuntil = json_data['return']['expire']
 
-        if 'trafficleft' not in j['return'] or isinstance(j['return']['trafficleft'], str):
-            trafficleft = -1
-        else:
-            trafficleft = self.parse_traffic(j['return']['trafficleft'], "MB")
+            if validuntil == "lifetime":
+                validuntil = -1
 
-        return {'premium'    : True       ,
-                'validuntil' : validuntil ,
+            elif validuntil == "expired":
+                premium = False
+
+            else:
+                validuntil = float(validuntil)
+
+            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], basestring):
+                trafficleft = -1
+
+            else:
+                # @TODO: Remove `/ 1024` in 0.4.10
+                trafficleft = float(json_data['return']['trafficleft']) / 1024
+
+        return {'premium': premium,
+                'validuntil': validuntil,
                 'trafficleft': trafficleft}
 
-
     def signin(self, user, password, data):
-        html = self.load("https://gen.linksnappy.com/lseAPI.php",
-                         get={'act'     : 'USERDETAILS',
-                              'username': user,
-                              'password': hashlib.md5(password).hexdigest()})
+        json_data = self.api_response("AUTHENTICATE", username=user, password=password)
 
-        if "Invalid Account Details" in html:
-            self.fail_login()
+        if json_data['status'] != "OK":
+            self.fail_login(json_data['error'])

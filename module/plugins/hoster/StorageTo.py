@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from ..internal.DeadHoster import DeadHoster
 
 
 class StorageTo(DeadHoster):
-    __name__    = "StorageTo"
-    __type__    = "hoster"
-    __version__ = "0.05"
-    __status__  = "stable"
+    __name__ = "StorageTo"
+    __type__ = "hoster"
+    __version__ = "0.06"
+    __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'
-    __config__  = []  #@TODO: Remove in 0.4.10
+    __config__ = []  # @TODO: Remove in 0.4.10
 
     __description__ = """Storage.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("mkaay", "mkaay@mkaay.de")]
+    __license__ = "GPLv3"
+    __authors__ = [("mkaay", "mkaay@mkaay.de")]

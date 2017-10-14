@@ -3,28 +3,26 @@
 import re
 import urllib
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class ShareplaceCom(Hoster):
-    __name__    = "ShareplaceCom"
-    __type__    = "hoster"
-    __version__ = "0.17"
-    __status__  = "testing"
+    __name__ = "ShareplaceCom"
+    __type__ = "hoster"
+    __version__ = "0.18"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?shareplace\.(com|org)/\?\w+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Shareplace.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("ACCakut", None)]
-
+    __license__ = "GPLv3"
+    __authors__ = [("ACCakut", None)]
 
     def process(self, pyfile):
         self.pyfile = pyfile
         self.prepare()
         self.download(self.get_file_url())
-
 
     def prepare(self):
         if not self.file_exists():
@@ -33,7 +31,6 @@ class ShareplaceCom(Hoster):
         self.pyfile.name = self.get_file_name()
 
         self.wait(self.get_waiting_time())
-
 
     def get_waiting_time(self):
         if not self.data:
@@ -48,11 +45,12 @@ class ShareplaceCom(Hoster):
 
         return sec
 
-
     def download_html(self):
-        url = re.sub("shareplace.com\/\?", "shareplace.com//index1.php/?a=", self.pyfile.url)
+        url = re.sub(
+            "shareplace.com\/\?",
+            "shareplace.com//index1.php/?a=",
+            self.pyfile.url)
         self.data = self.load(url)
-
 
     def get_file_url(self):
         """
@@ -69,13 +67,11 @@ class ShareplaceCom(Hoster):
         else:
             self.error(_("Absolute filepath not found"))
 
-
     def get_file_name(self):
         if not self.data:
             self.download_html()
 
         return re.search("<title>\s*(.*?)\s*</title>", self.data).group(1)
-
 
     def file_exists(self):
         """

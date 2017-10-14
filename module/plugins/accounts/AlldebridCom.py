@@ -1,74 +1,64 @@
 # -*- coding: utf-8 -*-
 
-import re
-import time
-import xml.dom.minidom as dom
-
-import BeautifulSoup
-
-from module.plugins.internal.MultiAccount import MultiAccount
+from ..internal.MultiAccount import MultiAccount
+from ..internal.misc import json
 
 
 class AlldebridCom(MultiAccount):
-    __name__    = "AlldebridCom"
-    __type__    = "account"
-    __version__ = "0.30"
-    __status__  = "testing"
+    __name__ = "AlldebridCom"
+    __type__ = "account"
+    __version__ = "0.41"
+    __status__ = "testing"
 
-    __config__ = [("mh_mode"    , "all;listed;unlisted", "Filter hosters to use"        , "all"),
-                  ("mh_list"    , "str"                , "Hoster list (comma separated)", ""   ),
-                  ("mh_interval", "int"                , "Reload interval in minutes"   , 60   )]
+    __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
+                  ("mh_list", "str", "Hoster list (comma separated)", ""),
+                  ("mh_interval", "int", "Reload interval in hours", 12)]
 
     __description__ = """AllDebrid.com account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Andy Voigt", "spamsales@online.de")]
+    __license__ = "GPLv3"
+    __authors__ = [("Andy Voigt", "spamsales@online.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
+    # See https://docs.alldebrid.com/
+    API_URL = "https://api.alldebrid.com/"
+
+    def api_response(self, method, **kwargs):
+        kwargs['agent'] = "pyLoad"
+        kwargs['version'] = self.pyload.version
+        html = self.load(self.API_URL + method, get=kwargs)
+        return json.loads(html)
 
     def grab_hosters(self, user, password, data):
-        html = self.load("https://www.alldebrid.com/api.php",
-                         get={'action': "get_host"})
-        return [x for x in map(str.strip, html.replace("\"", "").split(",")) if x]
+        json_data = self.api_response("user/hosts", token=data['token'])
+        if json_data.get("error", False):
+            return []
 
+        else:
+            return reduce(lambda x, y: x + y,
+                          [[_h['domain']] + _h.get('altDomains', [])
+                           for _h in json_data['hosts'].values()
+                           if _h['status'] is True])
 
     def grab_info(self, user, password, data):
-        html = self.load("http://www.alldebrid.com/account/")
-        soup = BeautifulSoup.BeautifulSoup(html)
+        json_data = self.api_response("user/login", token=data['token'])
 
-        #: Try to parse expiration date directly from the control panel page (better accuracy)
-        try:
-            time_text = soup.find('div', attrs={'class': 'remaining_time_text'}).strong.string
+        if json_data.get("error", False):
+            premium = False
+            validuntil = -1
 
-            self.log_debug("Account expires in: %s" % time_text)
+        else:
+            premium = json_data['user']['isPremium']
+            validuntil = json_data['user']['premiumUntil'] or -1
 
-            p = re.compile('\d+')
-            exp_data = p.findall(time_text)
-            exp_time = time.time() + int(exp_data[0]) * 24 * 60 * 60 + int(
-                exp_data[1]) * 60 * 60 + (int(exp_data[2]) - 1) * 60
-
-        #: Get expiration date from API
-        except Exception:
-            html = self.load("https://www.alldebrid.com/api.php",
-                             get={'action': "info_user",
-                                  'login' : user,
-                                  'pw'    : password})
-
-            self.log_debug(html)
-
-            xml = dom.parseString(html)
-            exp_time = time.time() + int(xml.getElementsByTagName("date")[0].childNodes[0].nodeValue) * 24 * 60 * 60
-
-        return {'validuntil' : exp_time,
-                'trafficleft': -1      ,
-                'premium'    : True    }
-
+        return {'validuntil': validuntil,
+                'trafficleft': -1,
+                'premium': premium}
 
     def signin(self, user, password, data):
-        html = self.load("https://www.alldebrid.com/register/",
-                         get={'action'        : "login",
-                              'login_login'   : user,
-                              'login_password': password})
+        json_data = self.api_response("user/login", username=user, password=password)
 
-        if "This login doesn't exist" in html \
-           or "The password is not valid" in html \
-           or "Invalid captcha" in html:
-            self.fail_login()
+        if json_data.get("error", False):
+            self.fail_login(json_data['error'])
+
+        else:
+            data['token'] = json_data['token']

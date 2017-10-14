@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 import pycurl
 
-from module.plugins.internal.Crypter import Crypter
+from ..internal.Crypter import Crypter
 
 
 class ShSt(Crypter):
-    __name__    = "ShSt"
-    __type__    = "crypter"
-    __version__ = "0.08"
-    __status__  = "testing"
+    __name__ = "ShSt"
+    __type__ = "crypter"
+    __version__ = "0.09"
+    __status__ = "testing"
 
     __pattern__ = r'http://sh\.st/\w+'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Sh.St decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Frederik Möllers", "fred-public@posteo.de")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Frederik Möllers", "fred-public@posteo.de")]
 
     NAME_PATTERN = r'<title>(?P<N>.+?) -'
-
 
     def decrypt(self, pyfile):
         #: If we use curl as a user agent, we will get a straight redirect (no waiting!)

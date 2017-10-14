@@ -6,10 +6,10 @@ import base64
 import re
 
 import pycurl
-
 from module.network.RequestFactory import getRequest as get_request
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import threaded
+
+from ..internal.Addon import Addon
+from ..internal.misc import threaded
 
 
 class ImageTyperzException(Exception):
@@ -17,46 +17,41 @@ class ImageTyperzException(Exception):
     def __init__(self, err):
         self.err = err
 
-
     def get_code(self):
         return self.err
 
-
     def __str__(self):
         return "<ImageTyperzException %s>" % self.err
-
 
     def __repr__(self):
         return "<ImageTyperzException %s>" % self.err
 
 
 class ImageTyperz(Addon):
-    __name__    = "ImageTyperz"
-    __type__    = "hook"
-    __version__ = "0.13"
-    __status__  = "testing"
+    __name__ = "ImageTyperz"
+    __type__ = "hook"
+    __version__ = "0.14"
+    __status__ = "testing"
 
-    __config__ = [("activated"   , "bool"    , "Activated"                       , False),
-                  ("username"    , "str"     , "Username"                        , ""   ),
-                  ("password"    , "password", "Password"                        , ""   ),
-                  ("check_client", "bool"    , "Don't use if client is connected", True )]
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("username", "str", "Username", ""),
+                  ("password", "password", "Password", ""),
+                  ("check_client", "bool", "Don't use if client is connected", True)]
 
     __description__ = """Send captchas to ImageTyperz.com"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN"   , "RaNaN@pyload.org"   ),
-                       ("zoidberg", "zoidberg@mujmail.cz")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+                   ("zoidberg", "zoidberg@mujmail.cz")]
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
 
-
     def get_credits(self):
         res = self.load(self.GETCREDITS_URL,
-                     post={'action': "REQUESTBALANCE",
-                           'username': self.config.get('username'),
-                           'password': self.config.get('password')})
+                        post={'action': "REQUESTBALANCE",
+                              'username': self.config.get('username'),
+                              'password': self.config.get('password')})
 
         if res.startswith('ERROR'):
             raise ImageTyperzException(res)
@@ -69,7 +64,6 @@ class ImageTyperz(Addon):
 
         self.log_info(_("Account balance: $%s left") % res)
         return balance
-
 
     def submit(self, captcha, captchaType="file", match=None):
         req = get_request()
@@ -107,7 +101,6 @@ class ImageTyperz(Addon):
 
         return ticket, result
 
-
     def captcha_task(self, task):
         if "service" in task.data:
             return False
@@ -130,20 +123,20 @@ class ImageTyperz(Addon):
         else:
             self.log_info(_("Your account has not enough credits"))
 
-
     def captcha_invalid(self, task):
         if task.data['service'] == self.classname and "ticket" in task.data:
             res = self.load(self.RESPOND_URL,
-                         post={'action': "SETBADIMAGE",
-                               'username': self.config.get('username'),
-                               'password': self.config.get('password'),
-                               'imageid': task.data['ticket']})
+                            post={'action': "SETBADIMAGE",
+                                  'username': self.config.get('username'),
+                                  'password': self.config.get('password'),
+                                  'imageid': task.data['ticket']})
 
             if res == "SUCCESS":
-                self.log_info(_("Bad captcha solution received, requested refund"))
+                self.log_info(
+                    _("Bad captcha solution received, requested refund"))
             else:
-                self.log_error(_("Bad captcha solution received, refund request failed"), res)
-
+                self.log_error(
+                    _("Bad captcha solution received, refund request failed"), res)
 
     @threaded
     def _process_captcha(self, task):

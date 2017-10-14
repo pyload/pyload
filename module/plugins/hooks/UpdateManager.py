@@ -8,35 +8,33 @@ import re
 import sys
 import time
 
-from module.plugins.internal.Addon import Addon
-from module.plugins.internal.misc import encode, exists, Expose, fsjoin, threaded
+from ..internal.Addon import Addon
+from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 
 
 class UpdateManager(Addon):
-    __name__    = "UpdateManager"
-    __type__    = "hook"
-    __version__ = "1.15"
-    __status__  = "testing"
+    __name__ = "UpdateManager"
+    __type__ = "hook"
+    __version__ = "1.19"
+    __status__ = "testing"
 
-    __config__ = [("activated"    , "bool", "Activated"                                , True ),
-                  ("checkinterval", "int" , "Check interval in hours"                  , 6    ),
-                  ("autorestart"  , "bool", "Auto-restart pyLoad when required"        , True ),
-                  ("checkonstart" , "bool", "Check for updates on startup"             , True ),
-                  ("checkperiod"  , "bool", "Check for updates periodically"           , True ),
-                  ("reloadplugins", "bool", "Monitor plugin code changes in debug mode", True ),
-                  ("nodebugupdate", "bool", "Don't update plugins in debug mode"       , False)]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("checkinterval", "int", "Check interval in hours", 6),
+                  ("autorestart", "bool", "Auto-restart pyLoad when required", True),
+                  ("checkonstart", "bool", "Check for updates on startup", True),
+                  ("checkperiod", "bool", "Check for updates periodically", True),
+                  ("reloadplugins", "bool", "Monitor plugin code changes in debug mode", True),
+                  ("nodebugupdate", "bool", "Don't update plugins in debug mode", False)]
 
     __description__ = """Check for updates"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
     # SERVER_URL     = "http://updatemanager.pyload.org"
-    SERVER_URL     = "http://updatemanager-spyload.rhcloud.com"
+    SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
-
 
     def activate(self):
         if self.checkonstart:
@@ -48,10 +46,12 @@ class UpdateManager(Addon):
 
         self.periodical.start(10)
 
-
     def init(self):
-        self.info      = {'pyload': False, 'plugins': False, 'last_check': time.time()}
-        self.mtimes    = {}  #: Store modification time for each plugin
+        self.info.update({
+            'pyload': False,
+            'plugins': False,
+            'last_check': time.time()})
+        self.mtimes = {}  #: Store modification time for each plugin
         self.event_map = {'allDownloadsProcessed': "all_downloads_processed"}
 
         if self.config.get('checkonstart'):
@@ -62,11 +62,9 @@ class UpdateManager(Addon):
 
         self.do_restart = False
 
-
     def all_downloads_processed(self):
         if self.do_restart is True:
             self.pyload.api.restart()
-
 
     def periodical_task(self):
         if self.pyload.debug:
@@ -80,6 +78,9 @@ class UpdateManager(Addon):
            time.time() - max(self.CHECK_INTERVAL, self.config.get('checkinterval') * 60 * 60) > self.info['last_check']:
             self.update()
 
+        if self.do_restart is True:
+            if self.pyload.threadManager.pause and not self.pyload.api.statusDownloads():
+                self.pyload.api.restart()
 
     #: Deprecated method, use `autoreload_plugins` instead
     @Expose
@@ -88,7 +89,6 @@ class UpdateManager(Addon):
         See `autoreload_plugins`
         """
         return self.autoreload_plugins(*args, **kwargs)
-
 
     @Expose
     def autoreload_plugins(self):
@@ -99,7 +99,7 @@ class UpdateManager(Addon):
         modules = filter(
             lambda m: m and (m.__name__.startswith("module.plugins.") or
                              m.__name__.startswith("userplugins.")) and
-                             m.__name__.count(".") >= 2, sys.modules.values()
+            m.__name__.count(".") >= 2, sys.modules.values()
         )
         for m in modules:
             root, plugin_type, plugin_name = m.__name__.rsplit(".", 2)
@@ -120,7 +120,6 @@ class UpdateManager(Addon):
 
         return True if self.pyload.pluginManager.reloadPlugins(reloads) else False
 
-
     def server_response(self, line=None):
         try:
             html = self.load(self.SERVER_URL,
@@ -140,7 +139,6 @@ class UpdateManager(Addon):
 
             return res
 
-
     @Expose
     @threaded
     def update(self):
@@ -153,15 +151,15 @@ class UpdateManager(Addon):
         if not self.pyload.api.statusDownloads():
             self.pyload.api.restart()
         else:
-            self.do_restart = True
-            self.log_warning(_("pyLoad restart scheduled"), _("Downloads are active, pyLoad restart postponed once the download is done"))
+            self.log_warning(_("pyLoad restart scheduled"),
+                             _("Downloads are active, pyLoad restart postponed once the download is done"))
             self.pyload.api.pauseServer()
-
+            self.do_restart = True
 
     def _update(self):
         newversion = self.server_response(0)
 
-        self.info['pyload']     = False
+        self.info['pyload'] = False
         self.info['last_check'] = time.time()
 
         if not newversion:
@@ -187,7 +185,6 @@ class UpdateManager(Addon):
         #:   2 = Plugins updated, but restart required
         return exitcode
 
-
     @Expose
     def update_plugins(self):
         server_data = self.server_response()
@@ -207,7 +204,11 @@ class UpdateManager(Addon):
                 self.info['plugins'] = True
                 exitcode = 2
 
+            paused = self.pyload.threadManager.pause
+            self.pyload.api.pauseServer()
             self.manager.dispatchEvent("plugin_updated", updated)
+            if not paused:
+                self.pyload.api.unpauseServer()
         else:
             self.log_info(_("All plugins are up to date!"))
             exitcode = 0
@@ -218,15 +219,14 @@ class UpdateManager(Addon):
         #:   2 = Plugins updated, but restart required
         return exitcode
 
-
     def parse_updates(self, server_data):
         schema = server_data[2].split('|')
 
         if "BLACKLIST" in server_data:
-            blacklist  = server_data[server_data.index('BLACKLIST') + 1:]
+            blacklist = server_data[server_data.index('BLACKLIST') + 1:]
             updatelist = server_data[3:server_data.index('BLACKLIST')]
         else:
-            blacklist  = []
+            blacklist = []
             updatelist = server_data[3:]
 
         for l in updatelist, blacklist:
@@ -237,11 +237,11 @@ class UpdateManager(Addon):
                 nl.append(d)
             l[:] = nl
 
-        updatelist = sorted(updatelist, key=operator.itemgetter("type", "name"))
-        blacklist  = sorted(blacklist, key=operator.itemgetter("type", "name"))
+        updatelist = sorted(updatelist,
+                            key=operator.itemgetter("type", "name"))
+        blacklist = sorted(blacklist, key=operator.itemgetter("type", "name"))
 
         return updatelist, blacklist
-
 
     def _update_plugins(self, server_data):
         """
@@ -258,10 +258,11 @@ class UpdateManager(Addon):
             #@NOTE: Protect UpdateManager from self-removing
             if os.name == "nt":
                 #@NOTE: Windows filesystem is case insensitive, make sure we do not delete legitimate plugins
-                whitelisted_plugins = [(plugin['type'], plugin['name'].upper()) for plugin in updatelist]
+                whitelisted_plugins = [
+                    (plugin['type'], plugin['name'].upper()) for plugin in updatelist]
                 blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
-                                       if not (plugin['name'] == self.classname and plugin['type'] == self.__type__) \
-                                          and (plugin['type'], plugin['name'].upper()) not in whitelisted_plugins]
+                                       if not (plugin['name'] == self.classname and plugin['type'] == self.__type__)
+                                       and (plugin['type'], plugin['name'].upper()) not in whitelisted_plugins]
             else:
                 blacklisted_plugins = [(plugin['type'], plugin['name']) for plugin in blacklist
                                        if not (plugin['name'] == self.classname and plugin['type'] == self.__type__)]
@@ -281,17 +282,17 @@ class UpdateManager(Addon):
                     break
 
             for t, n in self.remove_plugins(blacklisted_plugins):
-                self.log_info(_("Removed blacklisted plugin: %(type)s %(name)s") % {
-                    'type': t.upper(),
-                    'name': n,
-                })
+                self.log_info(_("Removed blacklisted plugin: %(type)s %(name)s") %
+                              {'type': t.upper(),
+                               'name': n,})
 
         for plugin in updatelist:
-            plugin_name    = plugin['name']
-            plugin_type    = plugin['type']
+            plugin_name = plugin['name']
+            plugin_type = plugin['type']
             plugin_version = plugin['version']
 
-            plugins = getattr(self.pyload.pluginManager, "%sPlugins" % plugin_type.rstrip('s'))  #@TODO: Remove rstrip in 0.4.10
+            plugins = getattr(self.pyload.pluginManager,
+                              "%sPlugins" % plugin_type.rstrip('s'))  # @TODO: Remove rstrip in 0.4.10
 
             oldver = float(plugins[plugin_name]['v']) if plugin_name in plugins else None
             try:
@@ -308,8 +309,8 @@ class UpdateManager(Addon):
             else:
                 continue
 
-            self.log_info(_(msg) % {'type'  : plugin_type.rstrip('s').upper(),  #@TODO: Remove rstrip in 0.4.10
-                                    'name'  : plugin_name,
+            self.log_info(_(msg) % {'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.4.10
+                                    'name': plugin_name,
                                     'oldver': oldver,
                                     'newver': newver})
             try:
@@ -328,10 +329,11 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception, e:
-                self.log_error(_("Error updating plugin: %s %s") % (plugin_type.rstrip('s').upper(), plugin_name), e)    #@TODO: Remove rstrip in 0.4.10
+                self.log_error(_("Error updating plugin: %s %s") %
+                               (plugin_type.rstrip('s').upper(), plugin_name),
+                               e)  # @TODO: Remove rstrip in 0.4.10
 
         return updated
-
 
     #: Deprecated method, use `remove_plugins` instead
     @Expose
@@ -340,7 +342,6 @@ class UpdateManager(Addon):
         See `remove_plugins`
         """
         return self.remove_plugins(*args, **kwargs)
-
 
     @Expose
     def remove_plugins(self, plugin_ids):
@@ -358,7 +359,7 @@ class UpdateManager(Addon):
             rootplugins = os.path.join(pypath, "module", "plugins")
 
             for basedir in ("userplugins", rootplugins):
-                py_filename  = fsjoin(basedir, plugin_type, plugin_name + ".py")
+                py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 
                 if plugin_type == "hook":
@@ -382,4 +383,5 @@ class UpdateManager(Addon):
                         plugin_id = (plugin_type, plugin_name)
                         removed.add(plugin_id)
 
-        return list(removed)  #: Return a list of the plugins successfully removed
+        #: Return a list of the plugins successfully removed
+        return list(removed)

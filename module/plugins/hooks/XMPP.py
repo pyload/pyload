@@ -3,35 +3,33 @@
 import pyxmpp
 import pyxmpp.all
 import pyxmpp.interfaces
-
 from pyxmpp.jabber.client import JabberClient
 
-from module.plugins.hooks.IRC import IRC
+from .IRC import IRC
 
 
 class XMPP(IRC, JabberClient):
-    __name__    = "XMPP"
-    __type__    = "hook"
-    __version__ = "0.17"
-    __status__  = "testing"
+    __name__ = "XMPP"
+    __type__ = "hook"
+    __version__ = "0.18"
+    __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated"                                    , False                                    ),
-                  ("jid"      , "str" , "Jabber ID"                                    , "user@exmaple-jabber-server.org"         ),
-                  ("pw"       , "str" , "Password"                                     , ""                                       ),
-                  ("tls"      , "bool", "Use TLS"                                      , False                                    ),
-                  ("owners"   , "str" , "List of JIDs accepting commands from"         , "me@icq-gateway.org;some@msn-gateway.org"),
-                  ("keepalive", "int" , "Keepalive interval in seconds (0 to disable)" , 0                                        ),
-                  ("info_file", "bool", "Inform about every file finished"             , False                                    ),
-                  ("info_pack", "bool", "Inform about every package finished"          , True                                     ),
-                  ("captcha"  , "bool", "Send captcha requests"                        , True                                     )]
+    __config__ = [("activated", "bool", "Activated", False),
+                  ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
+                  ("pw", "str", "Password", ""),
+                  ("tls", "bool", "Use TLS", False),
+                  ("owners", "str", "List of JIDs accepting commands from",
+                   "me@icq-gateway.org;some@msn-gateway.org"),
+                  ("keepalive", "int", "Keepalive interval in seconds (0 to disable)", 0),
+                  ("info_file", "bool", "Inform about every file finished", False),
+                  ("info_pack", "bool", "Inform about every package finished", True),
+                  ("captcha", "bool", "Send captcha requests", True)]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
-    __license__     = "GPLv3"
-    __authors__     = [("RaNaN", "RaNaN@pyload.org")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
 
     pyxmpp.interface.implements(pyxmpp.interfaces.IMessageHandlersProvider)
-
 
     def __init__(self, *args, **kwargs):
         IRC.__init__(self, *args, **kwargs)
@@ -44,7 +42,8 @@ class XMPP(IRC, JabberClient):
             self.jid = pyxmpp.all.JID(self.jid.node, self.jid.domain, "pyLoad")
 
         if self.config.get('tls'):
-            tls_settings = pyxmpp.streamtls.TLSSettings(require=True, verify_peer=False)
+            tls_settings = pyxmpp.streamtls.TLSSettings(
+                require=True, verify_peer=False)
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
             tls_settings = None
@@ -61,12 +60,10 @@ class XMPP(IRC, JabberClient):
             self,
         ]
 
-
     def activate(self):
         self.new_package = {}
 
         self.start()
-
 
     def package_finished(self, pypack):
         try:
@@ -75,7 +72,6 @@ class XMPP(IRC, JabberClient):
 
         except Exception:
             pass
-
 
     def download_finished(self, pyfile):
         try:
@@ -86,7 +82,6 @@ class XMPP(IRC, JabberClient):
         except Exception:
             pass
 
-
     def run(self):
         #: Connect to IRC etc.
         self.connect()
@@ -96,7 +91,6 @@ class XMPP(IRC, JabberClient):
         except Exception, ex:
             self.log_error(ex)
 
-
     def stream_state_changed(self, state, arg):
         """
         This one is called when the state of stream connecting the component
@@ -105,18 +99,14 @@ class XMPP(IRC, JabberClient):
         """
         self.log_debug("*** State changed: %s %r ***" % (state, arg))
 
-
     def disconnected(self):
         self.log_debug("Client was disconnected")
-
 
     def stream_closed(self, stream):
         self.log_debug("Stream was closed", stream)
 
-
     def stream_error(self, err):
         self.log_debug("Stream Error", err)
-
 
     def get_message_handlers(self):
         """
@@ -126,7 +116,6 @@ class XMPP(IRC, JabberClient):
         in a client session.
         """
         return [("normal", self.message)]
-
 
     def message(self, stanza):
         """
@@ -149,7 +138,6 @@ class XMPP(IRC, JabberClient):
 
         # j = pyxmpp.all.JID()
         to_name = to_jid.as_utf8()
-        from_name = from_jid.as_utf8()
 
         names = self.config.get('owners').split(";")
 
@@ -189,10 +177,8 @@ class XMPP(IRC, JabberClient):
         else:
             return True
 
-
     def response(self, msg, origin=""):
         return self.announce(msg)
-
 
     def announce(self, message):
         """
@@ -215,10 +201,8 @@ class XMPP(IRC, JabberClient):
 
             stream.send(m)
 
-
     def before_reconnect(self, ip):
         self.disconnect()
-
 
     def after_reconnect(self, ip, oldip):
         self.connect()
@@ -231,15 +215,15 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results.
     """
-    pyxmpp.interface.implements(pyxmpp.interfaces.IIqHandlersProvider, pyxmpp.interfaces.IFeaturesProvider)
-
+    pyxmpp.interface.implements(
+        pyxmpp.interfaces.IIqHandlersProvider,
+        pyxmpp.interfaces.IFeaturesProvider)
 
     def __init__(self, client):
         """
         Just remember who created this.
         """
         self.client = client
-
 
     def get_features(self):
         """
@@ -248,7 +232,6 @@ class VersionHandler(object):
         """
         return ["jabber:iq:version"]
 
-
     def get_iq_get_handlers(self):
         """
         Return list of tuples (element_name, namespace, handler) describing
@@ -256,13 +239,11 @@ class VersionHandler(object):
         """
         return [("query", "jabber:iq:version", self.get_version)]
 
-
     def get_iq_set_handlers(self):
         """
         Return empty list, as this class provides no <iq type='set'/> stanza handler.
         """
         return []
-
 
     def get_version(self, iq):
         """

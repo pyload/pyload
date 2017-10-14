@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from module.plugins.internal.DeadHoster import DeadHoster
+from ..internal.DeadHoster import DeadHoster
 
 
 class StahnuTo(DeadHoster):
-    __name__    = "StahnuTo"
-    __type__    = "hoster"
-    __version__ = "0.15"
-    __status__  = "stable"
+    __name__ = "StahnuTo"
+    __type__ = "hoster"
+    __version__ = "0.16"
+    __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?stahnu\.to/(files/get/|.*\?file=)([^/]+).*'
-    __config__  = []
+    __config__ = []
 
     __description__ = """Stahnu.to hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("zoidberg", None)]
+    __license__ = "GPLv3"
+    __authors__ = [("zoidberg", None)]

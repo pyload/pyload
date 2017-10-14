@@ -2,29 +2,27 @@
 
 import re
 
-from module.plugins.internal.Hoster import Hoster
+from ..internal.Hoster import Hoster
 
 
 class VeehdCom(Hoster):
-    __name__    = "VeehdCom"
-    __type__    = "hoster"
-    __version__ = "0.28"
-    __status__  = "testing"
+    __name__ = "VeehdCom"
+    __type__ = "hoster"
+    __version__ = "0.29"
+    __status__ = "testing"
 
     __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__  = [("activated", "bool", "Activated", True),
-                   ("filename_spaces", "bool", "Allow spaces in filename", False),
-                   ("replacement_char", "str", "Filename replacement character", "_")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("filename_spaces", "bool", "Allow spaces in filename", False),
+                  ("replacement_char", "str", "Filename replacement character", "_")]
 
     __description__ = """Veehd.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("cat", "cat@pyload")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("cat", "cat@pyload")]
 
     def setup(self):
         self.multiDL = True
         self.req.canContinue = True
-
 
     def process(self, pyfile):
         self.download_html()
@@ -34,12 +32,10 @@ class VeehdCom(Hoster):
         pyfile.name = self.get_file_name()
         self.download(self.get_file_url())
 
-
     def download_html(self):
         url = self.pyfile.url
         self.log_debug("Requesting page: %s" % url)
         self.data = self.load(url)
-
 
     def file_exists(self):
         if not self.data:
@@ -48,7 +44,6 @@ class VeehdCom(Hoster):
         if '<title>Veehd</title>' in self.data:
             return False
         return True
-
 
     def get_file_name(self):
         if not self.data:
@@ -66,8 +61,8 @@ class VeehdCom(Hoster):
         else:
             pattern = '[^\w.]+'
 
-        return re.sub(pattern, self.config.get('replacement_char'), name) + '.avi'
-
+        return re.sub(pattern, self.config.get(
+            'replacement_char'), name) + '.avi'
 
     def get_file_url(self):
         """
@@ -77,7 +72,7 @@ class VeehdCom(Hoster):
             self.download_html()
 
         m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
-                          self.data)
+                      self.data)
         if m is None:
             self.error(_("Embedded video url not found"))
 

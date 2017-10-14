@@ -2,32 +2,30 @@
 
 import re
 
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.captcha.ReCaptcha import ReCaptcha
-from module.plugins.internal.misc import seconds_to_midnight
+from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.Hoster import Hoster
+from ..internal.misc import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):
-    __name__    = "FreakshareCom"
-    __type__    = "hoster"
-    __version__ = "0.48"
-    __status__  = "testing"
+    __name__ = "FreakshareCom"
+    __type__ = "hoster"
+    __version__ = "0.49"
+    __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?freakshare\.(net|com)/files/\S*?/'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Freakshare.com hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("sitacuisses", "sitacuisses@yahoo.de"),
-                       ("spoob", "spoob@pyload.org"),
-                       ("mkaay", "mkaay@mkaay.de"),
-                       ("Toilal", "toilal.dev@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
+                   ("spoob", "spoob@pyload.org"),
+                   ("mkaay", "mkaay@mkaay.de"),
+                   ("Toilal", "toilal.dev@gmail.com")]
 
     def setup(self):
         self.multiDL = False
         self.req_opts = []
-
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -46,10 +44,10 @@ class FreakshareCom(Hoster):
             self.download(pyfile.url, post=self.req_opts)
 
             check = self.scan_download({
-                'bad'           : "bad try",
-                'paralell'      : "> Sorry, you cant download more then 1 files at time. <",
-                'empty'         : "Warning: Unknown: Filename cannot be empty",
-                'wrong_captcha' : "Wrong Captcha!",
+                'bad': "bad try",
+                'paralell': "> Sorry, you cant download more then 1 files at time. <",
+                'empty': "Warning: Unknown: Filename cannot be empty",
+                'wrong_captcha': "Wrong Captcha!",
                 'downloadserver': "No Downloadserver. Please try again later!"
             })
 
@@ -69,7 +67,6 @@ class FreakshareCom(Hoster):
             elif check == "downloadserver":
                 self.retry(5, 15 * 60, _("No Download server"))
 
-
     def prepare(self):
         pyfile = self.pyfile
 
@@ -87,11 +84,10 @@ class FreakshareCom(Hoster):
 
         return True
 
-
     def download_html(self):
-        self.load("http://freakshare.com/index.php", {'language': "EN"})  #: Set english language in server session
+        #: Set english language in server session
+        self.load("http://freakshare.com/index.php", {'language': "EN"})
         self.data = self.load(self.pyfile.url)
-
 
     def get_file_url(self):
         """
@@ -100,19 +96,21 @@ class FreakshareCom(Hoster):
         if not self.data:
             self.download_html()
         if not self.wantReconnect:
-            self.req_opts = self.get_download_options()  #: Get the Post options for the Request
+            #: Get the Post options for the Request
+            self.req_opts = self.get_download_options()
             # file_url = self.pyfile.url
             # return file_url
         else:
             self.offline()
-
 
     def get_file_name(self):
         if not self.data:
             self.download_html()
 
         if not self.wantReconnect:
-            m = re.search(r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)', self.data)
+            m = re.search(
+                r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">([^ ]+)',
+                self.data)
             if m is not None:
                 file_name = m.group(1)
             else:
@@ -122,21 +120,21 @@ class FreakshareCom(Hoster):
         else:
             return self.pyfile.url
 
-
     def get_file_size(self):
         size = 0
         if not self.data:
             self.download_html()
 
         if not self.wantReconnect:
-            m = re.search(r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte', self.data)
+            m = re.search(
+                r'<h1\sclass=\"box_heading\"\sstyle=\"text-align:center;\">[^ ]+ - ([^ ]+) (\w\w)yte',
+                self.data)
             if m is not None:
                 units = float(m.group(1).replace(",", ""))
                 pow = {'KB': 1, 'MB': 2, 'GB': 3}[m.group(2)]
                 size = int(units * 1024 ** pow)
 
         return size
-
 
     def get_waiting_time(self):
         if not self.data:
@@ -146,12 +144,13 @@ class FreakshareCom(Hoster):
             self.wantReconnect = True
             return seconds_to_midnight()
 
-        timestring = re.search('\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;', self.data)
+        timestring = re.search(
+            '\s*var\s(?:downloadWait|time)\s=\s(\d*)[\d.]*;',
+            self.data)
         if timestring:
             return int(timestring.group(1))
         else:
             return 60
-
 
     def file_exists(self):
         """
@@ -164,19 +163,26 @@ class FreakshareCom(Hoster):
         else:
             return True
 
-
     def get_download_options(self):
         re_envelope = re.search(r'.*?value=\"Free\sDownload\".*?\n*?(.*?<.*?>\n*)*?\n*\s*?</form>',
                                 self.data).group(0)  #: Get the whole request
-        to_sort = re.findall(r'<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>', re_envelope)
+        to_sort = re.findall(
+            r'<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>',
+            re_envelope)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        herewego = self.load(self.pyfile.url, None, request_options)  #: The actual download-Page
+        herewego = self.load(
+            self.pyfile.url,
+            None,
+            request_options)  #: The actual download-Page
 
-        to_sort = re.findall(r'<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>', herewego)
+        to_sort = re.findall(
+            r'<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>',
+            herewego)
         request_options = dict((n, v) for (v, n) in to_sort)
 
-        challenge = re.search(r'http://api\.recaptcha\.net/challenge\?k=(\w+)', herewego)
+        challenge = re.search(
+            r'http://api\.recaptcha\.net/challenge\?k=(\w+)', herewego)
 
         if challenge:
             re_captcha = ReCaptcha(self.pyfile)

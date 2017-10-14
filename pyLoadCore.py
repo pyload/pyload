@@ -455,10 +455,16 @@ class Core(object):
         locals().clear()
 
         while True:
-            sleep(2)
+            try:
+                sleep(2)
+            except IOError, e:
+                if e.errno != 4:  # errno.EINTR
+                    raise
+
             if self.do_restart:
                 self.log.info(_("restarting pyLoad"))
                 self.restart()
+
             if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))

@@ -3,21 +3,20 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
-from module.plugins.internal.misc import json
+from ..internal.Account import Account
+from ..internal.misc import json
 
 
 class RapiduNet(Account):
-    __name__    = "RapiduNet"
-    __type__    = "account"
-    __version__ = "0.11"
-    __status__  = "testing"
+    __name__ = "RapiduNet"
+    __type__ = "account"
+    __version__ = "0.12"
+    __status__ = "testing"
 
     __description__ = """Rapidu.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("prOq", None),
-                       ("Walter Purcaro", "vuolter@gmail.com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("prOq", None),
+                   ("Walter Purcaro", "vuolter@gmail.com")]
 
     PREMIUM_PATTERN = r'>Account: <b>Premium'
 
@@ -25,11 +24,10 @@ class RapiduNet(Account):
 
     TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>([\d.,]+)\s*([\w^_]*)<'
 
-
     def grab_info(self, user, password, data):
-        validuntil  = None
+        validuntil = None
         trafficleft = -1
-        premium     = False
+        premium = False
 
         html = self.load("https://rapidu.net/")
 
@@ -44,20 +42,20 @@ class RapiduNet(Account):
         if m is not None:
             trafficleft = self.parse_traffic(m.group(1), m.group(2))
 
-        return {'validuntil': validuntil, 'trafficleft': trafficleft, 'premium': premium}
-
+        return {'validuntil': validuntil,
+                'trafficleft': trafficleft, 'premium': premium}
 
     def signin(self, user, password, data):
         self.load("https://rapidu.net/ajax.php",
                   get={'a': "getChangeLang"},
-                  post={'_go' : "",
+                  post={'_go': "",
                         'lang': "en"})
 
         html = self.load("https://rapidu.net/ajax.php",
                          get={'a': "getUserLogin"},
-                         post={'_go'     : "",
-                               'login'   : user,
-                               'pass'    : password,
+                         post={'_go': "",
+                               'login': user,
+                               'pass': password,
                                'remember': "1"})
         json_data = json.loads(html)
 

@@ -2,24 +2,22 @@
 
 import re
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.CaptchaService import CaptchaService
+from ..internal.CaptchaService import CaptchaService
+from ..internal.misc import json
 
 
 class AdYouLike(CaptchaService):
-    __name__    = "AdYouLike"
-    __type__    = "captcha"
-    __version__ = "0.10"
-    __status__  = "testing"
+    __name__ = "AdYouLike"
+    __type__ = "captcha"
+    __version__ = "0.11"
+    __status__ = "testing"
 
     __description__ = """AdYouLike captcha service plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com")]
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-
-    AYL_PATTERN      = r'Adyoulike\.create\s*\((.+?)\)'
+    AYL_PATTERN = r'Adyoulike\.create\s*\((.+?)\)'
     CALLBACK_PATTERN = r'(Adyoulike\.g\._jsonp_\d+)'
-
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
@@ -34,7 +32,6 @@ class AdYouLike(CaptchaService):
             self.log_debug("Ayl or callback pattern not found")
             return None
 
-
     def challenge(self, key=None, data=None):
         ayl, callback = key or self.retrieve_key(data)
 
@@ -43,11 +40,15 @@ class AdYouLike(CaptchaService):
         ayl = json.loads(ayl)
 
         html = self.pyfile.plugin.load("http://api-ayl.appspot.com/challenge",
-                                    get={'key'     : ayl['adyoulike']['key'],
-                                         'env'     : ayl['all']['env'],
-                                         'callback': callback})
+                                       get={'key': ayl['adyoulike']['key'],
+                                            'env': ayl['all']['env'],
+                                            'callback': callback})
         try:
-            challenge = json.loads(re.search(callback + r'\s*\((.+?)\)', html).group(1))
+            challenge = json.loads(
+                re.search(
+                    callback +
+                    r'\s*\((.+?)\)',
+                    html).group(1))
 
         except AttributeError:
             self.fail(_("AdYouLike challenge pattern not found"))
@@ -55,7 +56,6 @@ class AdYouLike(CaptchaService):
         self.log_debug("Challenge: %s" % challenge)
 
         return self.result(ayl, challenge), challenge
-
 
     def result(self, server, challenge):
         #: Adyoulike.g._jsonp_5579316662423138
@@ -75,16 +75,18 @@ class AdYouLike(CaptchaService):
             challenge = json.loads(challenge)
 
         try:
-            instructions_visual = challenge['translations'][server['all']['lang']]['instructions_visual']
-            response = re.search(u'«(.+?)»', instructions_visual).group(1).strip()
+            instructions_visual = challenge['translations'][
+                server['all']['lang']]['instructions_visual']
+            response = re.search(
+                u'«(.+?)»', instructions_visual).group(1).strip()
 
         except AttributeError:
             self.fail(_("AdYouLike result not found"))
 
-        result = {'_ayl_captcha_engine' : "adyoulike",
-                  '_ayl_env'            : server['all']['env'],
-                  '_ayl_tid'            : challenge['tid'],
+        result = {'_ayl_captcha_engine': "adyoulike",
+                  '_ayl_env': server['all']['env'],
+                  '_ayl_tid': challenge['tid'],
                   '_ayl_token_challenge': challenge['token'],
-                  '_ayl_response'       : response}
+                  '_ayl_response': response}
 
         return result

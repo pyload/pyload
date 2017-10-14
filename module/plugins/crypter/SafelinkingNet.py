@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-
 from module.network.HTTPRequest import BadHeader
-from module.plugins.internal.Crypter import Crypter
-from module.plugins.internal.misc import json
-from module.plugins.captcha.SolveMedia import SolveMedia
+
+from ..captcha.SolveMedia import SolveMedia
+from ..internal.Crypter import Crypter
+from ..internal.misc import json
 
 
 class SafelinkingNet(Crypter):
-    __name__    = "SafelinkingNet"
-    __type__    = "crypter"
-    __version__ = "0.21"
-    __status__  = "testing"
+    __name__ = "SafelinkingNet"
+    __type__ = "crypter"
+    __version__ = "0.22"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/(?P<TYPE>[pd]/)?(?P<ID>\w{7})'
-    __config__  = [("activated"         , "bool"          , "Activated"                       , True     ),
-                   ("use_premium"       , "bool"          , "Use premium account if available", True     ),
-                   ("folder_per_package", "Default;Yes;No", "Create folder for each package"  , "Default")]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("use_premium", "bool", "Use premium account if available", True),
+                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
 
     __description__ = """Safelinking.net decrypter plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("quareevo",  "quareevo@arcor.de"         ),
-                       ("tbsn",      "tbsnpy_github@gmx.de"      ),
-                       ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("quareevo", "quareevo@arcor.de"),
+                   ("tbsn", "tbsnpy_github@gmx.de"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     # Safelinking seems to use a static SolveMedia key
     SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
-
 
     def api_response(self, url, post_data):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*",
@@ -50,7 +49,6 @@ class SafelinkingNet(Crypter):
 
         return res
 
-
     def decrypt(self, pyfile):
         # Process direct links
         if self.info['pattern']['TYPE'] == "d/":
@@ -67,7 +65,8 @@ class SafelinkingNet(Crypter):
 
             post_data = {'hash': self.info['pattern']['ID']}
 
-            link_info = self.api_response("http://safelinking.net/v1/protected", post_data)
+            link_info = self.api_response(
+                "http://safelinking.net/v1/protected", post_data)
 
             if "messsage" in link_info:
                 self.log_error(link_info['messsage'])
@@ -81,7 +80,7 @@ class SafelinkingNet(Crypter):
 
             if link_info['security'].get('usePassword', False):
                 if self.package_password:
-                    self.log_debug(_("Using package password"))
+                    self.log_debug("Using package password")
                     post_data['password'] = self.package_password
 
                 else:
@@ -89,13 +88,15 @@ class SafelinkingNet(Crypter):
 
             if link_info['security'].get('useCaptcha', False):
                 self.captcha = SolveMedia(pyfile)
-                response, challenge = self.captcha.challenge(self.SOLVEMEDIA_KEY)
+                response, challenge = self.captcha.challenge(
+                    self.SOLVEMEDIA_KEY)
 
-                post_data['answer']      = response
+                post_data['answer'] = response
                 post_data['challengeId'] = challenge
-                post_data['type']        = "0"
+                post_data['type'] = "0"
 
-            json_res = self.api_response("https://safelinking.net/v1/captcha", post_data)
+            json_res = self.api_response(
+                "https://safelinking.net/v1/captcha", post_data)
 
             # Evaluate response
             if json_res is None:
@@ -103,7 +104,9 @@ class SafelinkingNet(Crypter):
 
             # Response: Wrong password
             elif "passwordFail" in json_res:
-                self.log_error(_('Wrong password: "%s"') % self.package_password)
+                self.log_error(
+                    _('Wrong password: "%s"') %
+                    self.package_password)
                 self.fail(_("Wrong password"))
 
             elif "captchaFail" in json_res:
@@ -111,7 +114,7 @@ class SafelinkingNet(Crypter):
 
             # Response: Error message
             elif "message" in json_res:
-                self.log_error(_("Site error: %s") % json_res['message'] )
+                self.log_error(_("Site error: %s") % json_res['message'])
                 self.retry(wait=60, msg=json_res['message'])
 
             # Response: Links

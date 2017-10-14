@@ -3,25 +3,24 @@
 import re
 import time
 
-from module.plugins.internal.Account import Account
+from ..internal.Account import Account
 
 
 class UpleaCom(Account):
-    __name__    = "UpleaCom"
-    __type__    = "account"
-    __version__ = "0.01"
-    __status__  = "testing"
+    __name__ = "UpleaCom"
+    __type__ = "account"
+    __version__ = "0.02"
+    __status__ = "testing"
 
     __description__ = """UpleaCom account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __license__ = "GPLv3"
+    __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    LOGIN_URL           = r'http://uplea.com'
-    LOGIN_SKIP_PATTERN  = r'>DISCONNECT</span> <span class="agbold">ME NOW<'
+    LOGIN_URL = r'http://uplea.com'
+    LOGIN_SKIP_PATTERN = r'>DISCONNECT</span> <span class="agbold">ME NOW<'
 
-    PREMIUM_PATTERN     = r'Uplea premium member <'
+    PREMIUM_PATTERN = r'Uplea premium member <'
     VALID_UNTIL_PATTERN = r'You\'re premium member until .+?>([\d/]+)'
-
 
     def grab_info(self, user, password, data):
         trafficleft = -1
@@ -39,8 +38,8 @@ class UpleaCom(Account):
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y"))
 
-        return {'premium': premium, 'trafficleft': trafficleft, 'validuntil': validuntil}
-
+        return {'premium': premium, 'trafficleft': trafficleft,
+                'validuntil': validuntil}
 
     def signin(self, user, password, data):
         html = self.load("http://uplea.com")
@@ -49,9 +48,9 @@ class UpleaCom(Account):
             self.skip_login()
 
         html = self.load("http://uplea.com",
-                         post={'login'     : user,
-                               'password'  : password,
-                               'remember'  : 0,
+                         post={'login': user,
+                               'password': password,
+                               'remember': 0,
                                'login-form': ""})
 
         if not self.LOGIN_SKIP_PATTERN in html:

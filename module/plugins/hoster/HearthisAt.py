@@ -2,28 +2,25 @@
 
 import re
 
-from module.plugins.internal.misc import json
-from module.plugins.internal.Hoster import Hoster
-
+from ..internal.Hoster import Hoster
+from ..internal.misc import json
 
 
 class HearthisAt(Hoster):
-    __name__    = "HearthisAt"
-    __type__    = "hoster"
-    __version__ = "0.01"
-    __status__  = "testing"
+    __name__ = "HearthisAt"
+    __type__ = "hoster"
+    __version__ = "0.02"
+    __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?hearthis\.at/'
-    __config__  = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hearthis.at hoster plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("GammaC0de", "nitzo2001{AT]yahoo{DOT]com")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("GammaC0de", "nitzo2001{AT]yahoo{DOT]com")]
 
     def setup(self):
         self.multiDL = True
-
 
     def process(self, pyfile):
         html = self.load(pyfile.url)

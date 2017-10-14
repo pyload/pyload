@@ -3,9 +3,8 @@
 import os
 import re
 
-from module.PyFile import PyFile
-from module.plugins.internal.Plugin import Plugin
-from module.plugins.internal.misc import encode
+from .misc import encode
+from .Plugin import Plugin
 
 
 class ArchiveError(Exception):
@@ -21,32 +20,58 @@ class PasswordError(Exception):
 
 
 class Extractor(Plugin):
-    __name__    = "Extractor"
-    __type__    = "extractor"
-    __version__ = "0.43"
-    __status__  = "stable"
+    __name__ = "Extractor"
+    __type__ = "extractor"
+    __version__ = "0.48"
+    __status__ = "stable"
 
     __description__ = """Base extractor plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("Walter Purcaro", "vuolter@gmail.com"),
-                       ("Immenz"        , "immenz@gmx.net"   )]
-
+    __license__ = "GPLv3"
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Immenz", "immenz@gmx.net"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     EXTENSIONS = []
-    REPAIR     = False
-    VERSION    = None
+    REPAIR = False
+    VERSION = None
 
+    _RE_PART = re.compile(r'')
+
+    @classmethod
+    def archivetype(cls, filename):
+        """
+        Get archive default extension from filename
+        :param filename: file name to test
+        :return: Extension or None
+        """
+        name = os.path.basename(filename).lower()
+        for ext in cls.EXTENSIONS:
+            if isinstance(ext, basestring):
+                if name.endswith('.' + ext):
+                    return ext
+
+            elif isinstance(ext, tuple):
+                if re.search("\." + ext[1] + "$", name):
+                    return ext[0]
+        return None
 
     @classmethod
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
-        return any(name.endswith('.' + ext) for ext in cls.EXTENSIONS)
+        for ext in cls.EXTENSIONS:
+            if isinstance(ext, basestring):
+                if name.endswith('.' + ext):
+                    return True
 
+            elif isinstance(ext, tuple):
+                if re.search("\." + ext[1] + "$", name):
+                    return True
+
+        return False
 
     @classmethod
     def ismultipart(cls, filename):
         return False
-
 
     @classmethod
     def find(cls):
@@ -55,7 +80,6 @@ class Extractor(Plugin):
         """
         pass
 
-
     @classmethod
     def get_targets(cls, files_ids):
         """
@@ -63,7 +87,7 @@ class Extractor(Plugin):
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
-        targets   = []
+        targets = []
         processed = []
 
         for id, fname, fout in files_ids:
@@ -71,7 +95,7 @@ class Extractor(Plugin):
                 continue
 
             if cls.ismultipart(fname):
-                pname = re.sub(cls._RE_PART, "", fname)
+                pname = cls._RE_PART.sub("", fname)
             else:
                 pname = os.path.splitext(fname)[0]
 
@@ -82,7 +106,6 @@ class Extractor(Plugin):
             targets.append((id, fname, fout))
 
         return targets
-
 
     def __init__(self, pyfile, filename, out,
                  fullpath=True,
@@ -95,29 +118,26 @@ class Extractor(Plugin):
         """
         self._init(pyfile.m.core)
 
-        self.pyfile       = pyfile
-        self.filename     = filename
-        self.name         = os.path.basename(filename)
-        self.out          = out
-        self.fullpath     = fullpath
-        self.overwrite    = overwrite
+        self.pyfile = pyfile
+        self.filename = filename
+        self.name = os.path.basename(filename)
+        self.out = out
+        self.fullpath = fullpath
+        self.overwrite = overwrite
         self.excludefiles = excludefiles
-        self.priority     = priority
-        self.keepbroken   = keepbroken
-        self.files        = None
+        self.priority = priority
+        self.keepbroken = keepbroken
+        self.files = None
 
         self.init()
-
 
     @property
     def target(self):
         return encode(self.filename)
 
-
     @property
     def dest(self):
         return encode(self.out)
-
 
     def verify(self, password=None):
         """
@@ -126,10 +146,8 @@ class Extractor(Plugin):
         """
         pass
 
-
     def repair(self):
         pass
-
 
     def extract(self, password=None):
         """
@@ -138,13 +156,11 @@ class Extractor(Plugin):
         """
         raise NotImplementedError
 
-
     def chunks(self):
         """
         Return list of archive parts
         """
         return [self.filename]
-
 
     def list(self, password=None):
         """

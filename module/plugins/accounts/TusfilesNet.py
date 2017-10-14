@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import re
-import time
 
-from module.plugins.internal.XFSAccount import XFSAccount
+from ..internal.XFSAccount import XFSAccount
 
 
 class TusfilesNet(XFSAccount):
-    __name__    = "TusfilesNet"
-    __type__    = "account"
-    __version__ = "0.10"
-    __status__  = "testing"
+    __name__ = "TusfilesNet"
+    __type__ = "account"
+    __version__ = "0.11"
+    __status__ = "testing"
 
     __description__ = """Tusfile.net account plugin"""
-    __license__     = "GPLv3"
-    __authors__     = [("guidobelix", "guidobelix@hotmail.it")]
-
+    __license__ = "GPLv3"
+    __authors__ = [("guidobelix", "guidobelix@hotmail.it")]
 
     PLUGIN_DOMAIN = "tusfiles.net"
 
