@@ -2,8 +2,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from types import MethodType
-
 from future import standard_library
 # from abc import ABCMeta, abstractmethod
 from future.builtins import object
@@ -465,7 +463,7 @@ class Api(AbstractApi):
             for name, func in api.__dict__.items():
                 if name.startswith('_'):
                     continue
-                setattr(cls, name, MethodType(func, cls))
+                setattr(cls, name, func)
         return cls.EXTEND
 
     def with_user_context(self, uid):
