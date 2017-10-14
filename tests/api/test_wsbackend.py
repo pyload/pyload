@@ -29,7 +29,7 @@ class TestWebSocketBackend(object):
         self.client.logout()
 
     def test_wronglogin(self):
-        ret = self.client.login("WrongUser", "wrongpw")
+        ret = self.client.login('WrongUser', 'wrongpw')
         assert ret is False
 
     @raises(Forbidden)

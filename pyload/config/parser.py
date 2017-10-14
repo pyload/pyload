@@ -10,7 +10,7 @@ import os
 
 import semver
 from future import standard_library
-from future.builtins import int, object, oct
+from future.builtins import int, object
 
 from pyload.__about__ import __version_info__
 from pyload.config import default
@@ -225,8 +225,12 @@ class ConfigParser(InscDict):
     DEFAULTSECT = configparser.DEFAULTSECT
     SEPARATOR = '|'
 
-    def __init__(self, filename, config=default.config, version=__version_info__,
-                 logger=None):
+    def __init__(
+            self,
+            filename,
+            config=default.config,
+            version=__version_info__,
+            logger=None):
         super(ConfigParser, self).__init__()
         if config is not None:
             self.update(config)

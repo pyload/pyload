@@ -374,7 +374,7 @@ class Hoster(Base):
         with io.open(self.last_download, mode='rb') as fp:
             content = fp.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
-        #self.pyload.log.debug("Content: {0}".format(content))
+        # self.pyload.log.debug("Content: {0}".format(content))
         for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:

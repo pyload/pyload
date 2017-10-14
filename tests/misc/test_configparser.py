@@ -24,12 +24,12 @@ class TestConfig(object):
 
         assert self.config.get('general', 'language')
         self.config.set('general', 'language', 'en')
-        assert self.config.get('general', 'language') == "en"
+        assert self.config.get('general', 'language') == 'en'
 
     def test_contains(self):
 
-        assert "general" in self.config
-        assert "foobaar" not in self.config
+        assert 'general' in self.config
+        assert 'foobaar' not in self.config
 
     def test_iter(self):
         for section, config, values in self.config.iter_sections():
@@ -38,7 +38,7 @@ class TestConfig(object):
             assert isinstance(values, dict)
 
     def test_get(self):
-        assert self.config.get_section("general")[0].config
+        assert self.config.get_section('general')[0].config
 
     @raises(KeyError)
     def test_invalid_config(self):

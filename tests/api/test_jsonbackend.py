@@ -28,12 +28,12 @@ class TestJSONBackend(object):
         self.client.logout()
 
     def test_wronglogin(self):
-        ret = self.client.login("WrongUser", "wrongpw")
+        ret = self.client.login('WrongUser', 'wrongpw')
         assert ret is False
 
     def test_httpauth(self):
         # cheap http auth
-        ret = requests.get(webaddress + "/getServerVersion",
+        ret = requests.get(webaddress + '/getServerVersion',
                            auth=HTTPBasicAuth(*credentials))
         assertEqual(ret.status_code, 200)
         assert ret.text
@@ -43,7 +43,7 @@ class TestJSONBackend(object):
         headers = {'content-type': 'application/json'}
 
         ret = requests.get(
-            webaddress + "/getConfigValue", headers=headers,
+            webaddress + '/getConfigValue', headers=headers,
             auth=HTTPBasicAuth(*credentials),
             data=json.dumps(payload))
 

@@ -15,9 +15,7 @@ standard_library.install_aliases()
 
 
 class TestAPI(TestCase):
-    """
-    Test all available testers randomly and on all backends.
-    """
+    """Test all available testers randomly and on all backends."""
     _multiprocess_can_split_ = True
     core = None
 

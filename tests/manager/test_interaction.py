@@ -33,7 +33,7 @@ class TestExchangeManager(TestCase):
         self.assert_empty(self.exm.get_tasks(self.ADMIN))
 
     def test_notifications(self):
-        n = self.exm.create_notification("test", "notify")
+        n = self.exm.create_notification('test', 'notify')
 
         self.assert_true(self.exm.is_task_waiting(self.ADMIN))
         self.assert_list_equal(self.exm.get_tasks(self.ADMIN), [n])
@@ -42,14 +42,14 @@ class TestExchangeManager(TestCase):
         self.assert_false(self.exm.is_task_waiting(self.ADMIN))
 
         for i in range(10):
-            self.exm.create_notification("title", "test")
+            self.exm.create_notification('title', 'test')
 
         self.assertEqual(len(self.exm.get_tasks(self.ADMIN)), 11)
         self.assert_false(self.exm.get_tasks(self.USER))
         self.assert_false(self.exm.get_tasks(self.ADMIN, Interaction.Query))
 
     def test_captcha(self):
-        tsk = self.exm.create_captcha_task("1", "png", "", owner=self.ADMIN)
+        tsk = self.exm.create_captcha_task('1', 'png', '', owner=self.ADMIN)
 
         self.assertEqual(tsk.type, Interaction.Captcha)
         self.assert_list_equal(self.exm.get_tasks(self.ADMIN), [tsk])
@@ -57,7 +57,7 @@ class TestExchangeManager(TestCase):
         tsk.set_shared()
         self.assert_list_equal(self.exm.get_tasks(self.USER), [tsk])
 
-        t2 = self.exm.create_captcha_task("2", "png", "", owner=self.USER)
+        t2 = self.exm.create_captcha_task('2', 'png', '', owner=self.USER)
         self.assert_true(self.exm.is_task_waiting(self.USER))
         self.assert_empty(self.exm.get_tasks(self.USER, Interaction.Query))
         self.exm.remove_task(tsk)
@@ -67,9 +67,9 @@ class TestExchangeManager(TestCase):
 
     def test_query(self):
         tsk = self.exm.create_query_task(
-            InputType.Text, "text", owner=self.ADMIN)
+            InputType.Text, 'text', owner=self.ADMIN)
 
-        self.assertEqual(tsk.description, "text")
+        self.assertEqual(tsk.description, 'text')
         self.assert_list_equal(self.exm.get_tasks(
             self.ADMIN, Interaction.Query), [tsk])
         self.assert_empty(self.exm.get_tasks(Interaction.Captcha))
@@ -81,5 +81,5 @@ class TestExchangeManager(TestCase):
         self.assert_false(self.exm.is_client_connected(self.USER))
 
     def test_users(self):
-        tsk = self.exm.create_captcha_task("1", "png", "", owner=self.USER)
+        tsk = self.exm.create_captcha_task('1', 'png', '', owner=self.USER)
         self.assert_list_equal(self.exm.get_tasks(self.ADMIN), [tsk])

@@ -14,9 +14,8 @@ standard_library.install_aliases()
 
 
 class ApiProxy(object):
-    """
-    Proxy that does type checking on the api.
-    """
+    """Proxy that does type checking on the api."""
+
     def __init__(self, api, user=credentials[0], pw=credentials[1]):
         self.api = api
         self.user = user
@@ -50,14 +49,14 @@ class ApiProxy(object):
                         self.assert_type(v, type_[2])
 
             # Struct - Api class
-            elif hasattr(result, "__name__") and result.__name__ in classes:
+            elif hasattr(result, '__name__') and result.__name__ in classes:
                 for attr, atype in zip(result.__slots__, classes[
                                        result.__name__]):
                     self.assert_type(getattr(result, attr), atype)
             else:  # simple object
                 assert isinstance(result, type_)
         except AssertionError:
-            print("Assertion for {0} as {1} failed".format(result, type_))
+            print('Assertion for {0} as {1} failed'.format(result, type_))
             raise
 
     def call(self, func, *args, **kwargs):
@@ -77,5 +76,5 @@ if __name__ == '__main__':
 
     from pyload.rpc.jsonclient import JSONClient
 
-    api = ApiProxy(JSONClient(), "User", "test")
+    api = ApiProxy(JSONClient(), 'User', 'test')
     api.get_server_version()

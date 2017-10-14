@@ -23,11 +23,11 @@ class CrypterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, flag):
 
-        print("{0}: {1}".format(name, url))
-        log(DEBUG, "{0}: {1}".format(name, url))
+        print('{0}: {1}'.format(name, url))
+        log(DEBUG, '{0}: {1}'.format(name, url))
 
-        plugin = self.pyload.pgm.get_plugin_class("crypter", name)
-        thd = plugin(self.pyload, None, "")
+        plugin = self.pyload.pgm.get_plugin_class('crypter', name)
+        thd = plugin(self.pyload, None, '')
         self.thread.plugin = thd
 
         try:
@@ -37,7 +37,7 @@ class CrypterPluginTester(PluginTester):
                 assert int(flag) == len(result)
 
         except Exception as e:
-            if isinstance(e, Fail) and flag == "fail":
+            if isinstance(e, Fail) and flag == 'fail':
                 pass
             else:
                 raise
@@ -50,15 +50,15 @@ c = Core()
 urls = []
 flags = {}
 
-crypterlinks = os.path.join(os.path.dirname(__file__), "crypterlinks.txt")
+crypterlinks = os.path.join(os.path.dirname(__file__), 'crypterlinks.txt')
 with lopen(crypterlinks) as fp:
     links = (line.strip() for line in bufread(fp, buffering=1))
     for l in links:
-        if not l or l.startswith("#"):
+        if not l or l.startswith('#'):
             continue
-        if l.startswith("http"):
-            if "||" in l:
-                l, flag = l.split("||")
+        if l.startswith('http'):
+            if '||' in l:
+                l, flag = l.split('||')
                 flags[l] = flag
             urls.append(l)
 
@@ -82,7 +82,7 @@ for plugin, urls in plugins.items():
             _test.__name__ = sig
             return _test
 
-        sig = "test_LINK{0:d}".format(i)
+        sig = 'test_LINK{0:d}'.format(i)
         setattr(_testerClass, sig, meta(
             plugin, url, flags.get(url, None), sig))
         print(url)

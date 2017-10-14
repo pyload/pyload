@@ -24,7 +24,7 @@ from tests.helper.stubs import Core
 standard_library.install_aliases()
 
 
-DL_DIR = "Storage"
+DL_DIR = 'Storage'
 
 
 class HosterPluginTester(PluginTester):
@@ -47,12 +47,12 @@ class HosterPluginTester(PluginTester):
     @nottest
     def test_plugin(self, name, url, status):
         # Print to stdout to see whats going on
-        print("{0}: {1}, {2}".format(name, url, status))
-        log(DEBUG, "{0}: {1}, {2}".format(name, url, status))
+        print('{0}: {1}, {2}'.format(name, url, status))
+        log(DEBUG, '{0}: {1}, {2}'.format(name, url, status))
 
         # url and plugin should be only important thing
         file = File(self.pyload, -1, url, url, 0, 0,
-                    0, 0, url, name, "", 0, 0, 0, 0)
+                    0, 0, url, name, '', 0, 0, 0, 0)
         file.init_plugin()
 
         self.thread.file = file
@@ -62,21 +62,21 @@ class HosterPluginTester(PluginTester):
             a = time.time()
             file.plugin.preprocessing(self.thread)
 
-            log(DEBUG, "downloading took {0:d}s".format(time.time() - a))
-            log(DEBUG, "size {0:d} KiB".format(file.size >> 10))
+            log(DEBUG, 'downloading took {0:d}s'.format(time.time() - a))
+            log(DEBUG, 'size {0:d} KiB'.format(file.size >> 10))
 
-            if status == "offline":
-                raise Exception("No offline Exception raised")
+            if status == 'offline':
+                raise Exception('No offline Exception raised')
 
             if file.name not in self.files:
                 raise Exception(
-                    "Filename {0} not recognized".format(file.name))
+                    'Filename {0} not recognized'.format(file.name))
 
             hash = md5()
             path = os.path.join(DL_DIR, file.name)
 
             if not os.path.exists(path):
-                raise Exception("File {0} does not exists".format(file.name))
+                raise Exception('File {0} does not exists'.format(file.name))
 
             with lopen(path, mode='rb') as fp:
                 while True:
@@ -86,20 +86,20 @@ class HosterPluginTester(PluginTester):
                     hash.update(buf)
 
             if hash.hexdigest() != self.files[file.name]:
-                log(DEBUG, "Hash is {0}".format(hash.hexdigest()))
+                log(DEBUG, 'Hash is {0}'.format(hash.hexdigest()))
 
                 size = os.stat(fp.name).st_size
                 if size < 10 << 20:  # 10MB
                     # Copy for debug report
-                    log(DEBUG, "Downloaded file copied to report")
+                    log(DEBUG, 'Downloaded file copied to report')
                     shutil.move(fp.name, os.path.join(plugin, fp.name))
 
-                raise Exception("Hash does not match")
+                raise Exception('Hash does not match')
 
         except Exception as e:
-            if isinstance(e, Fail) and status == "failed":
+            if isinstance(e, Fail) and status == 'failed':
                 pass
-            elif isinstance(e, Fail) and status == "offline" and str(e) == "offline":
+            elif isinstance(e, Fail) and status == 'offline' and str(e) == 'offline':
                 pass
             else:
                 raise
@@ -108,11 +108,11 @@ class HosterPluginTester(PluginTester):
 # setup methods
 c = Core()
 
-hosterlinks = os.path.join(os.path.dirname(__file__), "hosterlinks.txt")
+hosterlinks = os.path.join(os.path.dirname(__file__), 'hosterlinks.txt')
 sections = parse_config(hosterlinks)
 
 for link in sections['files']:
-    name, hash = link.rsplit(" ", 1)
+    name, hash = link.rsplit(' ', 1)
     HosterPluginTester.files[name] = str(hash)
 
 del sections['files']
@@ -122,7 +122,7 @@ status = {}
 
 for k, v in sections.items():
     if k not in statusmap:
-        print("Unknown status {0}".format(k))
+        print('Unknown status {0}'.format(k))
     for url in v:
         urls.append(url)
         status[url] = k
@@ -149,10 +149,10 @@ for plugin, urls in plugins.items():
             return _test
 
         tmp_status = status.get(url)
-        if tmp_status != "online":
-            sig = "test_LINK{0:d}_{1}".format(i, tmp_status)
+        if tmp_status != 'online':
+            sig = 'test_LINK{0:d}_{1}'.format(i, tmp_status)
         else:
-            sig = "test_LINK{0:d}".format(i)
+            sig = 'test_LINK{0:d}'.format(i)
 
         # set test method
         setattr(_testerClass, sig, meta(plugin, url, tmp_status, sig))

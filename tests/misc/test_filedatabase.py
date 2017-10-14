@@ -21,10 +21,10 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 
 class TestDatabase(BenchmarkTest):
-    bench = ["insert", "insert_links", "insert_many", "get_packages",
-             "get_files", "get_files_queued", "get_package_childs",
-             "get_package_files", "get_package_data", "get_file_data",
-             "find_files", "collector", "purge"]
+    bench = ['insert', 'insert_links', 'insert_many', 'get_packages',
+             'get_files', 'get_files_queued', 'get_package_childs',
+             'get_package_files', 'get_package_data', 'get_file_data',
+             'find_files', 'collector', 'purge']
     pids = None
     fids = None
     owner = 123
@@ -59,19 +59,19 @@ class TestDatabase(BenchmarkTest):
     def test_insert(self, n=200):
         for i in range(n):
             pid = self.db.add_package(
-                "name", "folder", random.choice(self.pids),
-                "password", "site", "comment", self.pstatus, self.owner)
+                'name', 'folder', random.choice(self.pids),
+                'password', 'site', 'comment', self.pstatus, self.owner)
             self.pids.append(pid)
 
     def test_insert_links(self):
         for i in range(10000):
-            fid = self.db.add_link("url {0}".format(
-                i), "name", "plugin", random.choice(self.pids), self.owner)
+            fid = self.db.add_link('url {0}'.format(
+                i), 'name', 'plugin', random.choice(self.pids), self.owner)
             self.fids.append(fid)
 
     def test_insert_many(self):
         for pid in self.pids:
-            self.db.add_links((("url {0}".format(i), "plugin")
+            self.db.add_links((('url {0}'.format(i), 'plugin')
                                for i in range(50)), pid, self.owner)
 
     def test_get_packages(self):
@@ -79,7 +79,7 @@ class TestDatabase(BenchmarkTest):
         n = len(packs)
         assert n == len(self.pids) - 1
 
-        print("Fetched {0:d} packages".format(n))
+        print('Fetched {0:d} packages'.format(n))
         self.assert_pack(random.choice(packs.values()))
 
     def test_get_files(self):
@@ -87,12 +87,12 @@ class TestDatabase(BenchmarkTest):
         n = len(files)
         assert n >= len(self.pids)
 
-        print("Fetched {0:d} files".format(n))
+        print('Fetched {0:d} files'.format(n))
         self.assert_file(random.choice(files.values()))
 
     def test_get_files_queued(self):
         files = self.db.get_all_files(state=DownloadState.Unfinished)
-        print("Fetched {0:d} files queued".format(len(files)))
+        print('Fetched {0:d} files queued'.format(len(files)))
 
     def test_delete(self):
         pid = random.choice(self.pids)
@@ -103,14 +103,14 @@ class TestDatabase(BenchmarkTest):
         pid = random.choice(self.pids)
         packs = self.db.get_all_packages(root=pid)
 
-        print("Package {0:d} has {1:d} packages".format(pid, len(packs)))
+        print('Package {0:d} has {1:d} packages'.format(pid, len(packs)))
         self.assert_pack(random.choice(packs.values()))
 
     def test_get_package_files(self):
         pid = random.choice(self.pids)
         files = self.db.get_all_files(package=pid)
 
-        print("Package {0:d} has {1:d} files".format(pid, len(files)))
+        print('Package {0:d} has {1:d} files'.format(pid, len(files)))
         self.assert_file(random.choice(files.values()))
 
     def test_get_package_data(self, stats=False):
@@ -127,18 +127,18 @@ class TestDatabase(BenchmarkTest):
         self.assert_file(finfo)
 
     def test_find_files(self):
-        files = self.db.get_all_files(search="1")
-        print("Found {0} files".format(len(files)))
+        files = self.db.get_all_files(search='1')
+        print('Found {0} files'.format(len(files)))
         finfo = random.choice(files.values())
 
-        assert "1" in finfo.name
-        names = self.db.get_matching_filenames("1")
+        assert '1' in finfo.name
+        names = self.db.get_matching_filenames('1')
         for name in names:
-            assert "1" in name
+            assert '1' in name
 
     def test_collector(self):
-        self.db.save_collector(0, "data")
-        assert self.db.retrieve_collector(0) == "data"
+        self.db.save_collector(0, 'data')
+        assert self.db.retrieve_collector(0) == 'data'
         self.db.delete_collector(0)
 
     def test_purge(self):
@@ -148,25 +148,25 @@ class TestDatabase(BenchmarkTest):
         self.db.purge_all()
 
         p1 = self.db.add_package(
-            "name",
-            "folder",
+            'name',
+            'folder',
             0,
-            "password",
-            "site",
-            "comment",
+            'password',
+            'site',
+            'comment',
             self.pstatus,
             0)
-        self.db.add_link("url", "name", "plugin", p1, 0)
+        self.db.add_link('url', 'name', 'plugin', p1, 0)
         p2 = self.db.add_package(
-            "name",
-            "folder",
+            'name',
+            'folder',
             0,
-            "password",
-            "site",
-            "comment",
+            'password',
+            'site',
+            'comment',
             self.pstatus,
             1)
-        self.db.add_link("url", "name", "plugin", p2, 1)
+        self.db.add_link('url', 'name', 'plugin', p2, 1)
 
         assert len(self.db.get_all_packages(owner=0)) == 1 == len(
             self.db.get_all_files(owner=0))
@@ -198,34 +198,34 @@ class TestDatabase(BenchmarkTest):
 
     def test_update(self):
         p1 = self.db.add_package(
-            "name",
-            "folder",
+            'name',
+            'folder',
             0,
-            "password",
-            "site",
-            "comment",
+            'password',
+            'site',
+            'comment',
             self.pstatus,
             0)
         pack = self.db.get_package_info(p1)
         assert isinstance(pack, PackageInfo)
 
-        pack.folder = "new folder"
-        pack.comment = "lol"
-        pack.tags.append("video")
+        pack.folder = 'new folder'
+        pack.comment = 'lol'
+        pack.tags.append('video')
 
         self.db.update_package(pack)
 
         pack = self.db.get_package_info(p1)
-        assert pack.folder == "new folder"
-        assert pack.comment == "lol"
-        assert "video" in pack.tags
+        assert pack.folder == 'new folder'
+        assert pack.comment == 'lol'
+        assert 'video' in pack.tags
 
     def assert_file(self, finfo):
         try:
             assert finfo is not None
             assert isinstance(finfo, FileInfo)
-            self.assert_in(finfo, ("fid", "status", "size", "media",
-                                   "fileorder", "added", "package", "owner"))
+            self.assert_in(finfo, ('fid', 'status', 'size', 'media',
+                                   'fileorder', 'added', 'package', 'owner'))
             assert finfo.status in range(5)
             assert finfo.owner == self.owner
             assert finfo.media in range(1024)
@@ -239,8 +239,8 @@ class TestDatabase(BenchmarkTest):
         try:
             assert pinfo is not None
             assert isinstance(pinfo, PackageInfo)
-            self.assert_in(pinfo, ("pid", "root", "added",
-                                   "status", "packageorder", "owner"))
+            self.assert_in(pinfo, ('pid', 'root', 'added',
+                                   'status', 'packageorder', 'owner'))
             assert pinfo.pid in self.pids
             assert pinfo.owner == self.owner
             assert pinfo.status in range(5)

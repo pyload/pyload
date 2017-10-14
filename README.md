@@ -78,6 +78,7 @@ Contact Us
 
 Description
 -----------
+
 `pyLoad` is the Free and Open Source download manager written in Pure Python
 and designed to be extremely lightweight, fully customizable and remotely
 manageable.
@@ -255,8 +256,8 @@ Shorten:
 > choosed for Windows platforms and `~/.pyload` otherwise.
 
 > **Notice:**
-> **When a new profile is declared, a directory with the same name is created
-> inside the config directory.**
+> When a new profile is declared, a directory with the same name is created
+> inside the config directory.
 
 To **quit** a pyLoad instance, type:
 
@@ -415,7 +416,7 @@ Please, follow the
 ### Localization
 
 > **Notice:**
-> **Localization not yet available.**
+> Localization not yet available.
 
 You can download the latest locale files from
 ~~<https://crowdin.com/download/project/pyload.zip>~~.
@@ -423,7 +424,7 @@ You can download the latest locale files from
 ### Performances
 
 > **Notice:**
-> **Stats not yet available.**
+> Stats not yet available.
 
 
 Licensing

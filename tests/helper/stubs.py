@@ -61,7 +61,7 @@ class TestCore(Core):
         self.log = LogStub()
 
     def get_server_version(self):
-        return "TEST_RUNNER on {0}".format(time.strftime("%d %h %Y"))
+        return 'TEST_RUNNER on {0}'.format(time.strftime('%d %h %Y'))
 
     def init_logger(self, level):
         # init with empty logger
@@ -86,7 +86,7 @@ class Thread(PluginThread):
         self.plugin = None
 
     def debug_report(self):
-        if hasattr(self, "file"):
+        if hasattr(self, 'file'):
             dump = PluginThread.debug_report(
                 self, self.plugin.__name__, file=self.file)
         else:
@@ -105,7 +105,7 @@ other_user = User(None, uid=2, role=Role.User)
 
 # fixes the module paths because we changed the directory
 for name, m in sys.modules.items():
-    if not name.startswith("tests") or not m or not hasattr(m, "__path__"):
+    if not name.startswith('tests') or not m or not hasattr(m, '__path__'):
         continue
 
-    m.__path__[0] = os.path.join("..", "..", m.__path__[0])
+    m.__path__[0] = os.path.join('..', '..', m.__path__[0])

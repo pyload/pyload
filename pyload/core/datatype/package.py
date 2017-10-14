@@ -168,8 +168,8 @@ class RootPackage(Package):
     __slots__ = []
 
     def __init__(self, m, owner):
-        super(RootPackage, self).__init__(m, -1, 'root', '', owner, -2,
-                                          '', '', '', 0, [], PackageStatus.Ok, False, 0)
+        super(RootPackage, self).__init__(m, -1, 'root', '', owner, - \
+              2, '', '', '', 0, [], PackageStatus.Ok, False, 0)
 
     def get_path(self, name=''):
         return os.path.join(self.pyload.config.get(

@@ -171,7 +171,8 @@ class Account(Base):
 
         except Exception as exc:
             self.log_warning(
-                self._('Could not login with account {0}').format(self.loginname))
+                self._('Could not login with account {0}').format(
+                    self.loginname))
             self.pyload.log.error(exc, exc_info=self.pyload.debug)
             self.valid = False
 

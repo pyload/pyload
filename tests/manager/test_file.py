@@ -21,9 +21,9 @@ DatabaseBackend.async = DatabaseBackend.queue
 
 
 class TestFileManager(BenchmarkTest):
-    bench = ["add_packages", "add_files", "get_files_root", "get",
-             "get_package_content", "get_package_tree",
-             "order_package", "order_files", "move"]
+    bench = ['add_packages', 'add_files', 'get_files_root', 'get',
+             'get_package_content', 'get_package_tree',
+             'order_package', 'order_files', 'move']
 
     pids = [-1]
     count = 100
@@ -53,8 +53,8 @@ class TestFileManager(BenchmarkTest):
 
     def test_add_packages(self):
         for i in range(100):
-            pid = self.manager.add_package("name", "folder", random.choice(
-                self.pids), "", "", "", False, normal_user.uid)
+            pid = self.manager.add_package('name', 'folder', random.choice(
+                self.pids), '', '', '', False, normal_user.uid)
             self.pids.append(pid)
 
         if -1 in self.pids:
@@ -63,8 +63,8 @@ class TestFileManager(BenchmarkTest):
     def test_add_files(self):
         for pid in self.pids:
             self.manager.add_links(
-                (("plugin {0:d}".format(i),
-                  "url {0}".format(i)) for i in range(self.count)),
+                (('plugin {0:d}'.format(i),
+                  'url {0}'.format(i)) for i in range(self.count)),
                 pid, normal_user.uid)
 
         count = self.manager.get_queue_stats()[0]
@@ -80,11 +80,11 @@ class TestFileManager(BenchmarkTest):
         file = self.manager.get_file(fid)
         assert file.fid in self.manager.files
 
-        file.name = "new name"
+        file.name = 'new name'
         file.sync()
         finfo = self.manager.get_file_info(fid)
         assert finfo is not None
-        assert finfo.name == "new name"
+        assert finfo.name == 'new name'
 
         pack = self.manager.get_package(random.choice(self.pids))
         assert pack is not None
@@ -137,13 +137,13 @@ class TestFileManager(BenchmarkTest):
 
     def test_order_package(self):
         parent = self.manager.add_package(
-            "order", "", -1, "", "", "", False, normal_user.uid)
-        self.manager.add_links((("url", "plugin")
+            'order', '', -1, '', '', '', False, normal_user.uid)
+        self.manager.add_links((('url', 'plugin')
                                 for i in range(100)), parent, normal_user.uid)
 
         pids = [
             self.manager.add_package(
-                "c", "", parent, "", "", "", False, normal_user.uid)
+                'c', '', parent, '', '', '', False, normal_user.uid)
             for i in range(5)]
         v = self.manager.get_tree(parent, False, None)
         self.assert_ordered(pids, 0, 5, v.root.pids, v.packages, True)
@@ -160,8 +160,8 @@ class TestFileManager(BenchmarkTest):
 
     def test_order_files(self):
         parent = self.manager.add_package(
-            "order", "", -1, "", "", "", False, normal_user.uid)
-        self.manager.add_links((("url", "plugin")
+            'order', '', -1, '', '', '', False, normal_user.uid)
+        self.manager.add_links((('url', 'plugin')
                                 for i in range(100)), parent, normal_user.uid)
         v = self.manager.get_tree(parent, False, None)
 

@@ -24,13 +24,13 @@ class TestSyntax(TestCase):
 
 for dir, dirnames, filenames in os.walk(PACKDIR):
     for fname in filenames:
-        if not fname.endswith(".py") or fname.startswith("__"):
+        if not fname.endswith('.py') or fname.startswith('__'):
             continue
         path = os.path.join(PACKDIR, fname)
-        pack = path.replace(PACKDIR, "")[1:-3]  # replace / and  .py
-        imp = pack.replace("/", ".")
-        packages = imp.split(".")
-        #__import__(imp)
+        pack = path.replace(PACKDIR, '')[1:-3]  # replace / and  .py
+        imp = pack.replace('/', '.')
+        packages = imp.split('.')
+        # __import__(imp)
 
         # currying
         def meta(imp, sig):
@@ -41,5 +41,5 @@ for dir, dirnames, filenames in os.walk(PACKDIR):
             return _test
 
         # generate test methods
-        sig = "test_{0}_{1}".format(packages[-2], packages[-1])
+        sig = 'test_{0}_{1}'.format(packages[-2], packages[-1])
         setattr(TestSyntax, sig, meta(imp, sig))

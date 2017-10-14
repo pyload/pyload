@@ -23,7 +23,7 @@ class TestNoArgs(ApiTester):
 
 # Setup test_methods dynamically, only these which require no arguments
 for name in dir(AbstractApi):
-    if name.startswith("_") or name in IGNORE:
+    if name.startswith('_') or name in IGNORE:
         continue
 
     spec = inspect.getargspec(getattr(AbstractApi, name))
@@ -31,9 +31,9 @@ for name in dir(AbstractApi):
         def meta_test(name):  # retain local scope
             def test(self):
                 getattr(self.api, name)()
-            test.__name__ = "test_{0}".format(name)
+            test.__name__ = 'test_{0}'.format(name)
             return test
 
-        setattr(TestNoArgs, "test_{0}".format(name), meta_test(name))
+        setattr(TestNoArgs, 'test_{0}'.format(name), meta_test(name))
 
         del meta_test

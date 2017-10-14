@@ -25,18 +25,16 @@ standard_library.install_aliases()
 
 
 def _wait(self):
-    """
-    Waits the time previously set.
-    """
+    """Waits the time previously set."""
     self.waiting = True
 
     waittime = self.file.wait_until - time.time()
-    log(DEBUG, "waiting {0}s".format(waittime))
+    log(DEBUG, 'waiting {0}s'.format(waittime))
 
     if self.want_reconnect and waittime > 300:
-        raise Fail("Would wait for reconnect {0}s".format(waittime))
+        raise Fail('Would wait for reconnect {0}s'.format(waittime))
     elif waittime > 300:
-        raise Fail("Would wait {0}s".format(waittime))
+        raise Fail('Would wait {0}s'.format(waittime))
 
     while self.file.wait_until > time.time():
         time.sleep(1)
@@ -44,7 +42,7 @@ def _wait(self):
             raise Abort
 
     self.waiting = False
-    self.file.set_status("starting")
+    self.file.set_status('starting')
 
 
 Hoster.wait = _wait
@@ -56,15 +54,15 @@ def decrypt_captcha(self, url, get={},
                     result_type='textual'):
     img = self.load(url, get=get, post=post, cookies=cookies)
 
-    id = "{0:.2f}".format(time.time())[-6:].replace(".", "")
-    with lopen(os.path.join("tmp_captcha_{0}_{1}.{2}".format(self.__name__, id, imgtype)), mode='wb') as fp:
+    id = '{0:.2f}'.format(time.time())[-6:].replace('.', '')
+    with lopen(os.path.join('tmp_captcha_{0}_{1}.{2}'.format(self.__name__, id, imgtype)), mode='wb') as fp:
         fp.write(img)
 
-    log(DEBUG, "Using ct for captcha")
+    log(DEBUG, 'Using ct for captcha')
     # put username and passkey into two lines in ct.conf
-    conf = os.path.join(os.path.expanduser("~"), "ct.conf")
+    conf = os.path.join(os.path.expanduser('~'), 'ct.conf')
     if not os.path.exists(conf):
-        raise Exception("CaptchaService config {0} not found".format(conf))
+        raise Exception('CaptchaService config {0} not found'.format(conf))
 
     with lopen(conf, mode='rb') as fp:
         with get_request() as req:  # TODO: Check get_request
@@ -72,12 +70,12 @@ def decrypt_captcha(self, url, get={},
             req.c.setopt(LOW_SPEED_TIME, 300)
 
             json = req.load(
-                "http://captchatrader.com/api/submit",
-                post={'api_key': "9f65e7f381c3af2b076ea680ae96b0b7",
+                'http://captchatrader.com/api/submit',
+                post={'api_key': '9f65e7f381c3af2b076ea680ae96b0b7',
                       'username': fp.readline().strip(),
                       'password': fp.readline().strip(),
                       'value': (FORM_FILE, fp.name),
-                      'type': "file"},
+                      'type': 'file'},
                 multipart=True)
 
     response = loads(json)
@@ -93,14 +91,14 @@ Hoster.decrypt_captcha = decrypt_captcha
 
 
 def invalid_captcha(self):
-    log(DEBUG, "Captcha invalid")
+    log(DEBUG, 'Captcha invalid')
 
 
 Hoster.invalid_captcha = invalid_captcha
 
 
 def correct_captcha(self):
-    log(DEBUG, "Captcha correct")
+    log(DEBUG, 'Captcha correct')
 
 
 Hoster.correct_captcha = correct_captcha
@@ -113,16 +111,16 @@ class PluginTester(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.core = Core()
-        name = "{0}.{1}".format(cls.__module__, cls.__name__)
-        for fname in glob(os.path.join(name, "debug_*")):
+        name = '{0}.{1}'.format(cls.__module__, cls.__name__)
+        for fname in glob(os.path.join(name, 'debug_*')):
             remove(fname, trash=True)
 
     # Copy debug report to attachment dir for jenkins
     @classmethod
     def tearDownClass(cls):
-        name = "{0}.{1}".format(cls.__module__, cls.__name__)
+        name = '{0}.{1}'.format(cls.__module__, cls.__name__)
         makedirs(name, exist_ok=True)
-        for fname in glob("debug_*"):
+        for fname in glob('debug_*'):
             shutil.move(fname, os.path.join(name, fname))
 
     def setUp(self):
