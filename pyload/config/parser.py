@@ -43,7 +43,7 @@ convert_map = {
     InputType.Password: to_str,
     InputType.Bool: bool,
     InputType.Float: float,
-    InputType.Octal: lambda x: oct(int(x, 8)),
+    # InputType.Octal: lambda x: oct(int(x, 8)),
     InputType.Size: parse.bytesize,
     InputType.Address: _parse_address,
     InputType.Bytes: to_bytes,
@@ -61,40 +61,32 @@ class ConfigOption(object):
     def __init__(self, parser, value, label=None, desc=None,
                  allowed_values=None, input_type=None):
         self.parser = parser
+        self._setup_type(input_type)
+        self._setup_value(value)
+        self._setup_allowed(allowed_values)
+        self._setup_info(label, desc)
 
-        self.type = None
-        self.value = None
-        self.default = None
-        self.label = None
-        self.desc = None
-        self.allowed_values = ()
-
-        self._set_type(input_type)
-        self._set_value(value)
-        self._set_allowed(allowed_values)
-        self._set_info(label, desc)
-
-    def _set_info(self, label, desc):
+    def _setup_info(self, label, desc):
         self.label = '' if label is None else to_str(label)
         self.desc = '' if desc is None else to_str(desc)
 
-    def _set_type(self, input_type):
-        if not input_type:
-            input_type = self.DEFAULT_TYPE
-        if input_type in InputType:
+    def _setup_type(self, input_type):
+        if input_type is None:
+            self.type = self.DEFAULT_TYPE
+        elif input_type in InputType:
             self.type = input_type
         else:
             raise InvalidValueError(input_type)
 
-    def _set_value(self, value):
+    def _setup_value(self, value):
         self.value = self.default = self._normalize_value(value)
 
-    def _set_allowed(self, allowed):
-        if not allowed:
+    def _setup_allowed(self, allowed):
+        if allowed is None:
             self.allowed_values = ()
-            return
-
-        self.allowed_values = tuple(self._normalize_value(v) for v in allowed)
+        else:
+            self.allowed_values = tuple(
+                self._normalize_value(v) for v in allowed)
 
     def _normalize_value(self, value):
         return value if value is None else convert_map[self.type](value)
