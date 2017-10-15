@@ -342,7 +342,16 @@ class main(QObject):
             self.setExcepthook(False)
             self.removeLogger()
         if self.debugLogLevel != None:
-            exec("lvl = logging.DEBUG" + str(self.debugLogLevel))
+            if self.debugLogLevel == 0: lvl = logging.DEBUG0
+            elif self.debugLogLevel == 1: lvl = logging.DEBUG1
+            elif self.debugLogLevel == 2: lvl = logging.DEBUG2
+            elif self.debugLogLevel == 3: lvl = logging.DEBUG3
+            elif self.debugLogLevel == 4: lvl = logging.DEBUG4
+            elif self.debugLogLevel == 5: lvl = logging.DEBUG5
+            elif self.debugLogLevel == 6: lvl = logging.DEBUG6
+            elif self.debugLogLevel == 7: lvl = logging.DEBUG7
+            elif self.debugLogLevel == 8: lvl = logging.DEBUG8
+            elif self.debugLogLevel == 9: lvl = logging.DEBUG9
             self.init_logger(lvl)               # logging level
         else:
             self.init_logger(logging.INFO)      # logging level

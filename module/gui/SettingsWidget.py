@@ -363,7 +363,7 @@ class Section(QGroupBox):
         hb = QWidget()
         hb.setLayout(QHBoxLayout())
         hb.layout().addWidget(self)
-        hb.layout().addSpacing(20)  # extra space left of the scrollbar 
+        hb.layout().addSpacing(20)  # extra space left of the scrollbar
         
         sw = QWidget()
         sw.setLayout(QVBoxLayout())

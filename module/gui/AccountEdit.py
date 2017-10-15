@@ -22,7 +22,7 @@ from PyQt4.QtGui import *
 import logging
 from os.path import join
 
-from module.gui.Tools import WhatsThisButton, WtDialogButtonBox
+from module.gui.Tools import WtDialogButtonBox
 
 class AccountEdit(QDialog):
     """
@@ -116,7 +116,7 @@ class AccountEdit(QDialog):
         
         w.changePw.setChecked(True)
         w.acctype.addItems(types)
-        i = w.acctype.findText(base.type) 
+        i = w.acctype.findText(base.type)
         w.acctype.setCurrentIndex(i)
         w.acctype.setEnabled(False)
         

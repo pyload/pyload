@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import sys
 from socket import error
 from os.path import dirname, abspath, join

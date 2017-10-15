@@ -34,9 +34,9 @@ from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
-from module.gui.Tools import whatsThisFormat, WhatsThisButton, WtDialogButtonBox
+from module.gui.Tools import whatsThisFormat, WtDialogButtonBox
 
-from module.remote.thriftbackend.ThriftClient import AccountInfo, DownloadStatus
+from module.remote.thriftbackend.ThriftClient import DownloadStatus
 
 class MainWindow(QMainWindow):
     
@@ -363,7 +363,7 @@ class MainWindow(QMainWindow):
         self.tabs["accounts"]["w"].setEnabled(corePermissions["ACCOUNTS"])
         self.actions["add_account"].setEnabled(corePermissions["ACCOUNTS"])
         
-        # Disable toolbar 'Add' button when all popup-menu entries are disabled 
+        # Disable toolbar 'Add' button when all popup-menu entries are disabled
         disableAdd = True
         for act in self.addMenu.actions():
             if act.isSeparator():
@@ -376,6 +376,7 @@ class MainWindow(QMainWindow):
             self.mactions["quitcore"].setEnabled(False)      # main menu entry: File -> Quit pyLoad Server
             self.mactions["restartcore"].setEnabled(False)   # main menu entry: File -> Restart pyLoad Server
     
+    @classmethod
     def createPopupMenu(self):
         """
             disables default popup menu
@@ -790,7 +791,7 @@ class MainWindow(QMainWindow):
     def slotReload(self):
         """
             from view-menu (mainmenu)
-            force reload queue and collector tab 
+            force reload queue and collector tab
         """
         self.emit(SIGNAL("reloadQueue"))
         self.emit(SIGNAL("reloadCollector"))
@@ -954,7 +955,6 @@ class MainWindow(QMainWindow):
         """
             custom context menu in queue view requested
         """
-        globalPos = self.tabs["queue"]["view"].mapToGlobal(pos)
         i = self.tabs["queue"]["view"].indexAt(pos)
         if not i:
             return
@@ -998,7 +998,6 @@ class MainWindow(QMainWindow):
         """
             custom context menu in package collector view requested
         """
-        globalPos = self.tabs["collector"]["view"].mapToGlobal(pos)
         i = self.tabs["collector"]["view"].indexAt(pos)
         if not i:
             return
@@ -1199,7 +1198,6 @@ class MainWindow(QMainWindow):
         self.connector.proxy.removeAccount(data.type, data.login)
     
     def slotAccountContextMenu(self, pos):
-        globalPos = self.tabs["accounts"]["view"].mapToGlobal(pos)
         i = self.tabs["accounts"]["view"].indexAt(pos)
         if not i:
             return
@@ -1396,7 +1394,7 @@ class NotificationOptions(QDialog):
     
     def dict2checkBoxStates(self):
         self.cbEnableNotify.setChecked    (self.settings["EnableNotify"])
-        self.cbPackageFinished.setChecked (self.settings["PackageFinished"]) 
+        self.cbPackageFinished.setChecked (self.settings["PackageFinished"])
         self.cbFinished.setChecked        (self.settings["Finished"])
         self.cbOffline.setChecked         (self.settings["Offline"])
         self.cbSkipped.setChecked         (self.settings["Skipped"])

@@ -30,7 +30,7 @@ from os.path import join
 
 from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
-from module.gui.Tools import MessageBox, WhatsThisButton, WtDialogButtonBox
+from module.gui.Tools import MessageBox, WtDialogButtonBox
 
 class Connector(QObject):
     """
@@ -92,15 +92,15 @@ class Connector(QObject):
         except socket.timeout:
             timeout = True
         except:
-            pass
+            self.log.debug0("Connector.connectProxy: Quick test: Failed to connect to the server for whatever reason")
         try:
             soc.shutdown(socket.SHUT_RD)
         except:
-            pass
+            self.log.debug0("Connector.connectProxy: Quick test: Failed to shut down the read side of the server connection socket. Don't worry about it!")
         try:
             soc.shutdown(socket.SHUT_WR)
         except:
-             pass
+            self.log.debug0("Connector.connectProxy: Quick test: Failed to shut down the write side of the server connection socket. Don't worry about it!")
         soc.close()
         if gaierror:
             if firstAttempt:

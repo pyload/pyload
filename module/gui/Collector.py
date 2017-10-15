@@ -216,7 +216,7 @@ class CollectorModel(QAbstractItemModel):
             self.log.debug0("%s.applyViewItemStates:currentItem: <none>" % self.cname)
         # selection
         self.view.clearSelection()
-        for i, ids in enumerate(self.selectedItems):
+        for ids in self.selectedItems:
             itemIsPackage = (ids[0] == ids[1])
             index = None
             for p, package in enumerate(self._data):
@@ -247,7 +247,7 @@ class CollectorModel(QAbstractItemModel):
         self.view.clearSelection()
         self.view.setCurrentIndex(QModelIndex())
         smodel = self.view.selectionModel()
-        for p, package in enumerate(self._data):
+        for p in xrange(len(self._data)):
             index = self.index(p, 0)
             smodel.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
     
@@ -727,6 +727,7 @@ class CollectorModel(QAbstractItemModel):
             defaultFlags &= ~(Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled)
         return defaultFlags
     
+    @classmethod
     def supportedDropActions(self):
         return Qt.MoveAction | Qt.IgnoreAction
     
@@ -778,7 +779,6 @@ class CollectorModel(QAbstractItemModel):
                             self.connector.proxy.orderPackage(p[0], destorder + 1)
             else:
                 self.log.debug0("%s.slotDropEvent: PACKORDER: selection lost" % self.cname)
-                pass
         
         elif self.dnd.actionOnDrop == self.dnd.ACT.LINKORDER:
             self.dnd.getSrcLinks()
@@ -1236,7 +1236,6 @@ class DragAndDrop(QObject):
                 self.srcLinks.append([id, url, pid, order, row])
 
     def canDrop(self, pos):
-        ACT = self.ACT
         """
             Check if we can drop the selection at the mouse cursor position
             Sets: actionOnDrop
@@ -1256,6 +1255,7 @@ class DragAndDrop(QObject):
                 selection: packages and links
                       action NONE: no action
         """
+        ACT = self.ACT
         self.actionOnDrop = ACT.NONE
         if not self.getDestInfo(pos):
             self.log.debug0("%s.canDrop: Invalid drop location" % self.cname)
@@ -1292,7 +1292,7 @@ class DragAndDrop(QObject):
                     self.log.debug0("%s.canDrop: Selection lost" % self.cname)
                     return
                 # check selected links' package ids against target package id
-                for idx, l in enumerate(self.srcLinks):
+                for l in self.srcLinks:
                     if l[2] == self.destPackId:
                         self.log.debug0("%s.canDrop: Can't move links from their own package to their own package" % self.cname)
                         return

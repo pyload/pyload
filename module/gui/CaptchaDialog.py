@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay
 """
 
@@ -23,7 +23,7 @@ from PyQt4.QtGui import *
 import logging
 from os.path import join
 
-from module.gui.Tools import WhatsThisButton, WtDialogButtonBox
+from module.gui.Tools import WtDialogButtonBox
 
 class CaptchaDialog(QDialog):
     """
