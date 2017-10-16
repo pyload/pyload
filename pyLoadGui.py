@@ -1406,7 +1406,7 @@ class main(QObject):
             fh = open(filename, "r")
             lines = fh.readlines()
             fh.close()
-        except:
+        except Exception:
             return ['No log available'], True
         if offset == len(lines):
             return [], False
@@ -1417,7 +1417,7 @@ class main(QObject):
             fh = open(filename, "r")
             oldlines = fh.readlines()
             fh.close()
-        except:
+        except Exception:
             return [], True
         if offset >= len(oldlines):
             return [], True
@@ -1552,7 +1552,7 @@ class main(QObject):
         try:
             self.parseConnection(data)
             self.parser.saveData()
-        except:
+        except Exception:
             raise RuntimeError("Failed to save the data to the configuration file")
         self.refreshConnections()
 
@@ -1683,7 +1683,7 @@ class main(QObject):
 
                 try:
                     self.core = Core_()
-                except:
+                except Exception:
                     return self.errorInternalCoreStartup(self.messageBox_14)
                 if self.configdir: pf = self.homedir + sep + self.core.pidfile
                 else:              pf = abspath(self.core.pidfile)
@@ -1697,7 +1697,7 @@ class main(QObject):
                 self.core.startedInGui = True
                 try:
                     thread.start_new_thread(self.core.start, (False, True))
-                except:
+                except Exception:
                     return self.errorInternalCoreStartup(self.messageBox_16)
                 # wait max 15sec for startup
                 for dummy in range(0, 150):
@@ -2310,7 +2310,7 @@ class main(QObject):
 
         try:
             visSpeed = literal_eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
-        except:
+        except Exception:
             visSpeed = True
         self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)
@@ -2688,7 +2688,7 @@ class main(QObject):
                 password = None
             self.changePackageData(self.packageEdit.id, name, folder, password)
             self.packageEdit.close()
-        except:
+        except Exception:
             raise
 
     def changePackageData(self, pid, name, folder, password):
@@ -2860,7 +2860,7 @@ class main(QObject):
                 self.quitInternal()
                 self.stopMain()
                 return
-            except:
+            except Exception:
                 pass
             self.log.error("main.slotConnectionLost: Unexpected error while trying to connect to the server.")
             self.log.error("                         If this happens again and this is your default connection,")
@@ -3078,7 +3078,7 @@ class main(QObject):
         try:
             enab_str = self.connector.proxy.getConfigValue("download", "limit_speed", "core")
             rate_str = self.connector.proxy.getConfigValue("download", "max_speed",   "core")
-        except:
+        except Exception:
             self.mainWindow.actions["speedlimit_enabled"].setEnabled(False)
             self.mainWindow.actions["speedlimit_rate"].setEnabled(False)
             self.log.error("main.updateToolbarSpeedLimitFromCore: Failed to get the Speed Limit settings from the server.")
@@ -3111,7 +3111,7 @@ class main(QObject):
         try:
             enab_str = self.connector.proxy.getConfigValue("download", "limit_speed", "core")
             rate_str = self.connector.proxy.getConfigValue("download", "max_speed",   "core")
-        except:
+        except Exception:
             self.log.error("main.slotToolbarSpeedLimitEdited: Failed to get the Speed Limit settings from the server.")
             err = True
         if not err:
@@ -3126,7 +3126,7 @@ class main(QObject):
                         self.connector.proxy.setConfigValue("download", "limit_speed", new_enab_str, "core")
                     if rate_str != new_rate_str:
                         self.connector.proxy.setConfigValue("download", "max_speed", new_rate_str, "core")
-                except:
+                except Exception:
                     self.log.error("main.slotToolbarSpeedLimitEdited: Failed to apply the Speed Limit settings to the server.")
                     err = True
         if not err:
@@ -3229,7 +3229,7 @@ class AboutBox(QDialog):
             cfg = Configuration()
             sipver = cfg.sip_version_str
             pyqtver = cfg.pyqt_version_str
-        except:
+        except Exception:
             from PyQt4.Qt import PYQT_VERSION_STR
             from sip import SIP_VERSION_STR
             sipver = SIP_VERSION_STR
@@ -4104,7 +4104,7 @@ class ClickNLoadForwarder(QObject):
                 self.log.info("ClickNLoadForwarder.server: If you are pretty sure that the port should be free, try waiting 2-3 minutes for the operating system to close the port.")
             self.onRaise()
             raise
-        except:
+        except Exception:
             self.onRaise()
             raise
         while True:
@@ -4126,7 +4126,7 @@ class ClickNLoadForwarder(QObject):
                 else:
                     self.onRaise()
                     raise
-            except:
+            except Exception:
                 self.onRaise()
                 raise
             try:
@@ -4134,7 +4134,7 @@ class ClickNLoadForwarder(QObject):
                 self.server_socket.connect((self.extIp, self.extPort))
                 thread.start_new_thread(self.forward, (self.client_socket, self.server_socket))
                 thread.start_new_thread(self.forward, (self.server_socket, self.client_socket))
-            except:
+            except Exception:
                 if self.doStop:
                     self.log.debug9("ClickNLoadForwarder.server: stopped (3)")
                     self.exitOnStop()
@@ -4164,7 +4164,7 @@ class ClickNLoadForwarder(QObject):
                 elif not self.forwardError:
                     self.forwardError = True
                     self.log.error("ClickNLoadForwarder.forward: Unexpected socket error")
-            except:
+            except Exception:
                 if not self.forwardError:
                     self.forwardError = True
                     self.log.error("ClickNLoadForwarder.forward: Unexpected error")
@@ -4600,7 +4600,7 @@ class Notification(QObject):
                 return
             try:
                 self.usePynotify = pynotify.init(_("pyLoad Client"))
-            except:
+            except Exception:
                 self.usePynotify = False
             if not self.usePynotify:
                 self.log.error("Notification: Pynotify initialization failed")
@@ -4610,8 +4610,8 @@ class Notification(QObject):
             n = pynotify.Notification(_("pyLoad Client"), body, join(pypath, "icons", "logo.png"))
             try:
                 n.set_hint_string("x-canonical-append", "")
-            except:
-                pass
+            except Exception:
+                self.log.debug9("Notification: set_hint_string failed")
             n.show()
         else:
             self.tray.showMessage(_("pyLoad Client"), body)
