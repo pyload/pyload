@@ -32,7 +32,7 @@ from module.gui.Tools import WtDialogButtonBox, LineView
 import logging.handlers
 from os import makedirs, sep
 
-from uuid import uuid4 as uuid # should be above PyQt imports
+from uuid import uuid4 as uuid      # import before PyQt
 from time import sleep, time
 from base64 import b64decode
 
@@ -46,7 +46,6 @@ import module.common.pylgettext as gettext
 import socket
 import errno
 import thread
-import os
 from os.path import abspath
 from os.path import join
 from os.path import basename
@@ -152,6 +151,7 @@ class main(QObject):
                 exit()
 
         self.fileLogIsEnabled = None
+        self.connManagerDisableConnect = False
         if not self.checkConfigFiles():
             exit()
         if self.noConsole:
@@ -259,7 +259,6 @@ class main(QObject):
         """
             set main things up
         """
-        noconnect = False if first else self.connector.internal
         self.tray = None
         self.mainWindowPaintEventAction = {}
         self.mainWindowMaximizedSize = None
@@ -282,7 +281,7 @@ class main(QObject):
             try:
                 self.loggingOptions.settings = literal_eval(str(QByteArray.fromBase64(str(optlog))))
                 self.loggingOptions.dict2dialogState()
-            except:
+            except Exception:
                 self.loggingOptions.defaultSettings()
         self.initLogging(first)
 
@@ -291,7 +290,8 @@ class main(QObject):
             self.log.info("Starting pyLoad Client %s" % CURRENT_VERSION)
         else:
             self.log.info("Reinitializing pyLoad Client %s" % CURRENT_VERSION)
-        self.log.info("Using home directory: %s" % self.homedir)
+        self.log.debug9("User's home directory: %s" % InitHomeDir.homedir)
+        self.log.info("Configuration directory: %s" % self.homedir)
         #self.log.info("Using pid file: %s" % self.pidfile)
         if self.debugLogLevel != None:
             self.log.info("Debug messages at level %d and higher" % self.debugLogLevel)
@@ -309,7 +309,7 @@ class main(QObject):
         self.automaticReloadingOptions = AutomaticReloadingOptions(self.mainWindow)
         self.languageOptions = LanguageOptions(self.mainWindow)
         self.captchaOptions = CaptchaOptions(self.mainWindow)
-        self.connWindow = ConnectionManager(noconnect)
+        self.connWindow = ConnectionManager(self.connManagerDisableConnect)
         self.clickNLoadForwarder = ClickNLoadForwarder()
         self.mainloop = self.Loop(self)
         self.connectSignals()
@@ -1710,6 +1710,7 @@ class main(QObject):
                 self.translation.install(unicode=True) # restore the gui language
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
+                self.connManagerDisableConnect = True
 
             self.mainWindow.mactions["quitcore"].setEnabled(False)
             self.mainWindow.mactions["restartcore"].setEnabled(False)
@@ -2622,7 +2623,7 @@ class main(QObject):
             return
         selection = self.queue.getSelection(True, True)
         for s in selection:
-            (pid, fid, isPack) = s
+            (pid, dummy, isPack) = s
             if isPack:
                 self.connector.proxy.pullFromQueue(pid)
 
@@ -2799,11 +2800,11 @@ class main(QObject):
         self.saveOptionsToConfig()
         self.quitInternal()
         self.log.info("pyLoad Client quit")
-        self.removeLogger()
         try:
             self.tray.deleteLater()
-        except:
-            pass
+        except Exception:
+            self.log.debug4("main.slotQuit_continue: tray was already deleted by the garbage collector")
+        self.removeLogger()
         self.app.quit()
 
     def slotQuitConnWindow(self):
@@ -4191,23 +4192,23 @@ class ClickNLoadForwarder(QObject):
 
     def closeSockets(self):
         try:    self.server_socket.shutdown(socket.SHUT_RD)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (1) when shutting down the read side of the socket")
         try:    self.server_socket.shutdown(socket.SHUT_WR)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (1) when shutting down the write side of the socket")
         try:    self.server_socket.close()
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (1) when closing the socket")
         try:    self.client_socket.shutdown(socket.SHUT_RD)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (2) when shutting down the read side of the socket")
         try:    self.client_socket.shutdown(socket.SHUT_WR)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (2) when shutting down the write side of the socket")
         try:    self.client_socket.close()
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (2) when closing the socket")
         try:    self.dock_socket.shutdown(socket.SHUT_RD)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (3) when shutting down the read side of the socket")
         try:    self.dock_socket.shutdown(socket.SHUT_WR)
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (3) when shutting down the write side of the socket")
         try:    self.dock_socket.close()
-        except: pass
+        except Exception: self.log.debug9("ClickNLoadForwarder.closeSockets: Exception (3) when closing the socket")
 
     def messageBox_19(self):
         self.emit(SIGNAL("msgBoxError"), _("Failed to stop ClickNLoad port forwarding."))

@@ -91,16 +91,16 @@ class Connector(QObject):
             gaierror = True
         except socket.timeout:
             timeout = True
-        except:
-            self.log.debug0("Connector.connectProxy: Quick test: Failed to connect to the server for whatever reason")
+        except Exception:
+            self.log.debug9("Connector.connectProxy: Quick test: Failed to connect to the server for whatever reason")
         try:
             soc.shutdown(socket.SHUT_RD)
-        except:
-            self.log.debug0("Connector.connectProxy: Quick test: Failed to shut down the read side of the server connection socket. Don't worry about it!")
+        except Exception:
+            self.log.debug9("Connector.connectProxy: Quick test: Failed to shut down the read side of the server connection socket. Don't worry about it!")
         try:
             soc.shutdown(socket.SHUT_WR)
-        except:
-            self.log.debug0("Connector.connectProxy: Quick test: Failed to shut down the write side of the server connection socket. Don't worry about it!")
+        except Exception:
+            self.log.debug9("Connector.connectProxy: Quick test: Failed to shut down the write side of the server connection socket. Don't worry about it!")
         soc.close()
         if gaierror:
             if firstAttempt:
