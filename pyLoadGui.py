@@ -2123,59 +2123,59 @@ class main(QObject):
         # Desktop Notifications
         d = base64ToDict(optionsNotifications)
         if d is not None:
-            try:    self.mainWindow.notificationOptions.settings = d; self.mainWindow.notificationOptions.dict2checkBoxStates()
+            try:              self.mainWindow.notificationOptions.settings = d; self.mainWindow.notificationOptions.dict2checkBoxStates()
             except Exception: self.mainWindow.notificationOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Desktop Notifications")); reset = True
         # Client Log
         d = base64ToDict(optionsLogging)
         if d is not None:
-            try:    self.loggingOptions.settings = d; self.loggingOptions.dict2dialogState()
-            except: self.loggingOptions.defaultSettings(); d = None
+            try:              self.loggingOptions.settings = d; self.loggingOptions.dict2dialogState()
+            except Exception: self.loggingOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Client Log")); reset = True
         # ClickNLoad Forwarding -> Local Port
         err = False
-        try:    self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder); self.clickNLoadForwarderOptions.dict2dialogState(True)
-        except: self.clickNLoadForwarderOptions.defaultFromPort(); err = True
+        try:              self.clickNLoadForwarderOptions.settings["fromPort"] = int(optionsClickNLoadForwarder); self.clickNLoadForwarderOptions.dict2dialogState(True)
+        except Exception: self.clickNLoadForwarderOptions.defaultFromPort(); err = True
         if err: self.messageBox_21(_("ClickNLoad Forwarding") + " -> " + _("Local Port")); reset = True
         # Automatic Reloading
         d = base64ToDict(optionsAutomaticReloading)
         if d is not None:
-            try:    self.automaticReloadingOptions.settings = d; self.automaticReloadingOptions.dict2dialogState()
-            except: self.automaticReloadingOptions.defaultSettings(); d = None
+            try:              self.automaticReloadingOptions.settings = d; self.automaticReloadingOptions.dict2dialogState()
+            except Exception: self.automaticReloadingOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Automatic Reloading")); reset = True
         # Captcha Solving
         d = base64ToDict(optionsCaptcha)
         if d is not None:
-            try:    self.captchaOptions.settings = d; self.captchaOptions.dict2dialogState()
-            except: self.captchaOptions.defaultSettings(); d = None
+            try:              self.captchaOptions.settings = d; self.captchaOptions.dict2dialogState()
+            except Exception: self.captchaOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Captcha Solving")); reset = True
         self.mainWindow.captchaDialog.adjSize = self.captchaOptions.settings["AdjSize"]
         # Fonts
         d = base64ToDict(optionsFonts)
         if d is not None:
-            try:    self.fontOptions.settings = d; self.fontOptions.dict2dialogState()
-            except: self.fontOptions.defaultSettings(); d = None
+            try:              self.fontOptions.settings = d; self.fontOptions.dict2dialogState()
+            except Exception: self.fontOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Fonts")); reset = True
         self.fontOptions.applySettings()
         # Tray Icon
         d = base64ToDict(optionsTray)
         if d is not None:
-            try:    self.mainWindow.trayOptions.settings = d; self.mainWindow.trayOptions.dict2checkBoxStates()
-            except: self.mainWindow.trayOptions.defaultSettings(); d = None
+            try:              self.mainWindow.trayOptions.settings = d; self.mainWindow.trayOptions.dict2checkBoxStates()
+            except Exception: self.mainWindow.trayOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Tray Icon")); reset = True
         # What's This
         d = base64ToDict(optionsWhatsThis)
         if d is not None:
-            try:    self.whatsThisOptions.settings = d; self.whatsThisOptions.dict2dialogState()
-            except: self.whatsThisOptions.defaultSettings(); d = None
+            try:              self.whatsThisOptions.settings = d; self.whatsThisOptions.dict2dialogState()
+            except Exception: self.whatsThisOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("What's This")); reset = True
         self.whatsThisOptions.applySettings()
         self.whatsThisOptions.choosenColors = None
         # Other
         d = base64ToDict(optionsOther)
         if d is not None:
-            try:    self.mainWindow.otherOptions.settings = d; self.mainWindow.otherOptions.dict2checkBoxStates()
-            except: self.mainWindow.otherOptions.defaultSettings(); d = None
+            try:              self.mainWindow.otherOptions.settings = d; self.mainWindow.otherOptions.dict2checkBoxStates()
+            except Exception: self.mainWindow.otherOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Other")); reset = True
         # Last folder from where a container file has been loaded
         self.mainWindow.lastAddContainerDir = lastAddContainerDir
@@ -2228,28 +2228,33 @@ class main(QObject):
         self.waitForPaintEvents(1)
         self.app.processEvents()   # needed on deepin
         self.log.debug4("main.loadWindowFromConfig: restoreState() done")
-        gUnmax = {}
-        try:
-            gUnmax = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))
-            gUnmax["unmaxed_pos"]
-            gUnmax["unmaxed_size"]
-            gUnmax["maximized"]
-        except:
-            gUnmax["unmaxed_pos"] = gUnmax["unmaxed_size"] = 0
-            gUnmax["maximized"] = False
+
+        gUnmaxError = False
+        try: gUnmax = literal_eval(str(QByteArray.fromBase64(geoUnmaxed)))
+        except Exception: gUnmaxError = True
+        if not gUnmaxError:
+            if not isinstance(gUnmax, dict):
+                gUnmaxError = True
+            elif not (("unmaxed_pos" in gUnmax) and ("unmaxed_size" in gUnmax) and ("maximized" in gUnmax)):
+                gUnmaxError = True
+        if gUnmaxError:
+            gUnmax = {}; gUnmax["unmaxed_pos"] = gUnmax["unmaxed_size"] = 0 ; gUnmax["maximized"] = False
         self.geoUnmaximized = {}
         self.geoUnmaximized["unmaxed_pos"] = None if (gUnmax["unmaxed_pos"] == 0) else QPoint(gUnmax["unmaxed_pos"][0], gUnmax["unmaxed_pos"][1])
         self.geoUnmaximized["unmaxed_size"] = None if (gUnmax["unmaxed_size"] == 0) else QSize(gUnmax["unmaxed_size"][0], gUnmax["unmaxed_size"][1])
         self.geoUnmaximized["maximized"] = gUnmax["maximized"]
-        gOther = {}
-        try:
-            gOther = literal_eval(str(QByteArray.fromBase64(geoOther)))
-            gOther["packDockIsFloating"]; gOther["linkDockIsFloating"]
-            gOther["packDock"]; gOther["linkDock"]
-            gOther["packDockTray"]; gOther["linkDockTray"]
-            gOther["captchaDialog"]
-        except:
-            gOther["packDockIsFloating"] = gOther["linkDockIsFloating"] = False
+
+        gOtherError = False
+        try: gOther = literal_eval(str(QByteArray.fromBase64(geoOther)))
+        except Exception: gOtherError = True
+        if not gOtherError:
+            if not isinstance(gOther, dict):
+                gOtherError = True
+            elif not (("packDockIsFloating" in gOther) and ("linkDockIsFloating" in gOther) and ("packDock" in gOther) and
+                      ("linkDock" in gOther) and ("packDockTray" in gOther) and ("linkDockTray" in gOther) and ("captchaDialog" in gOther)):
+                gOtherError = True
+        if gOtherError:
+            gOther = {}; gOther["packDockIsFloating"] = gOther["linkDockIsFloating"] = False
             gOther["packDock"] = gOther["linkDock"] = gOther["packDockTray"] = gOther["linkDockTray"] = gOther["captchaDialog"] = 0
         self.geoOther["packDock"] = None if (gOther["packDock"] == 0) else QRect(gOther["packDock"][0], gOther["packDock"][1], gOther["packDock"][2], gOther["packDock"][3])
         self.geoOther["linkDock"] = None if (gOther["linkDock"] == 0) else QRect(gOther["linkDock"][0], gOther["linkDock"][1], gOther["linkDock"][2], gOther["linkDock"][3])
@@ -2273,7 +2278,7 @@ class main(QObject):
         else:
             self.mainWindow.eD["pCount"] = 0
             self.mainWindow.showMaximized()
-            cnt = self.waitForPaintEvents(1)
+            self.waitForPaintEvents(1)
             self.mainWindow.newPackDock.setFloating(False)   # needed on enlightenment
             self.mainWindow.newLinkDock.setFloating(False)   # needed on enlightenment
             if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:
@@ -2282,7 +2287,7 @@ class main(QObject):
                 self.app.processEvents()
                 self.mainWindow.eD["pCount"] = 0
                 self.mainWindow.show()
-                cnt = self.waitForPaintEvents(1)
+                self.waitForPaintEvents(1)
                 self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
                 self.app.processEvents()
             self.mainWindow.eD["pCount"] = 0
@@ -2414,9 +2419,9 @@ class main(QObject):
             if dm: actmsg.append("restoreDocks")
         if len(actmsg) > 0:
             am = "main.slotMainWindowPaintEvent: "
-            for i in range(len(actmsg)):
+            for i, msg in enumerate(actmsg):
                 if i > 0: am += ", "
-                am += actmsg[i]
+                am += msg
             self.log.debug4(am)
         if a["showFromTrayContinue"] > 0:
             a["showFromTrayContinue"] -= 1
@@ -2437,7 +2442,7 @@ class main(QObject):
             return
         selection = self.collector.getSelection(True, True)
         for s in selection:
-            (pid, fid, isPack) = s
+            (pid, dummy, isPack) = s
             if isPack:
                 self.connector.proxy.pushToQueue(pid)
 
@@ -2662,7 +2667,7 @@ class main(QObject):
             self.packageEdit.folder.setText(folder)
             self.packageEdit.folder.home(True)
             self.packageEdit.password.setPlainText(password)
-            retval = self.packageEdit.exec_() 
+            retval = self.packageEdit.exec_()
             if retval == self.packageEdit.CANCELALL:
                 break
 
@@ -3263,17 +3268,17 @@ class InfoCorePermissions(QDialog):
 
         admLbl = QLabel(admin[0])
         admVal = LineView(admin[1])
-        admKlbl = QLabel(admin[2])
+        #admKlbl = QLabel(admin[2])
         admLbl.setWhatsThis(p(admin[0], admin[3]) + d(admin[4]))
 
         grid.addWidget(admLbl,  1, 0)
         grid.addWidget(admVal,  1, 1)
         #grid.addWidget(admKlbl, 1, 3)
         for i, perm in enumerate(plist):
-            lbl = QLabel(plist[i][0])
-            val = LineView(plist[i][1])
-            klbl = QLabel(plist[i][2])
-            lbl.setWhatsThis(p(plist[i][0], plist[i][3]) + d(plist[i][4]))
+            lbl = QLabel(perm[0])
+            val = LineView(perm[1])
+            klbl = QLabel(perm[2])
+            lbl.setWhatsThis(p(perm[0], perm[3]) + d(perm[4]))
             lbl. setDisabled(self.perms["admin"])
             val. setDisabled(self.perms["admin"])
             klbl.setDisabled(self.perms["admin"])
@@ -4074,7 +4079,7 @@ class ClickNLoadForwarder(QObject):
             return
         self.doStop = True
         # wait max 10sec
-        for t in range(0, 100):
+        for dummy in range(0, 100):
             if not self.running:
                 break
             sleep(0.1)

@@ -639,7 +639,7 @@ class CollectorModel(QAbstractItemModel):
         elif parent.isValid():
             try:
                 pointer = parent.internalPointer().children[row]
-            except:
+            except Exception:
                 return QModelIndex()
             index = self.createIndex(row, column, pointer)
         else:
@@ -843,7 +843,6 @@ class CollectorModel(QAbstractItemModel):
                 self.connector.proxy.addFiles(self.dnd.destPackId, links)
             else:
                 self.log.debug0("%s.slotDropEvent: LINKMOVE: selection lost" % self.cname)
-                pass
         else:
             raise ValueError("%s: Unknown drop action" % self.cname)
         self.view.clearSelection()
@@ -1269,7 +1268,6 @@ class DragAndDrop(QObject):
                 self.actionOnDrop = ACT.PACKORDER
             else:
                 self.log.debug0("%s.canDrop: Can't drop packages on a link" % self.cname)
-                pass
             return
         else:
             # links selected
@@ -1279,7 +1277,6 @@ class DragAndDrop(QObject):
                     self.actionOnDrop = ACT.LINKORDER
                 else:
                     self.log.debug0("%s.canDrop: Can't drop links from the same package on a link from a different package" % self.cname)
-                    pass
                 return
             if self.destIsPack:
                 if not self.allowLinkMove:
