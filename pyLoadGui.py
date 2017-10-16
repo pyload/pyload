@@ -2856,12 +2856,14 @@ class main(QObject):
     def slotConnectionLost(self):
         if not self.connectionLost:
             self.connectionLost = True
+            error = False
             try:
                 self.quitInternal()
                 self.stopMain()
-                return
             except Exception:
-                pass
+                error = True
+            if not error:
+                return
             self.log.error("main.slotConnectionLost: Unexpected error while trying to connect to the server.")
             self.log.error("                         If this happens again and this is your default connection,")
             self.log.error("                         use command line argument '-c' with a nonexistent connection-name")
@@ -2870,7 +2872,7 @@ class main(QObject):
             self.removeLogger()
             exit()
 
-    class Loop():
+    class Loop(object):
         def __init__(self, parent):
             self.log = logging.getLogger("guilog")
             self.parent = parent
@@ -3207,7 +3209,7 @@ class AboutBox(QDialog):
 
     def exec_(self, version, internalversion):
         import platform
-        import os
+#       import os
         import struct
         from PyQt4.QtCore import QT_VERSION_STR
         txt1 = _("pyLoad Client") + " v" + version
