@@ -828,7 +828,6 @@ class CollectorModel(QAbstractItemModel):
                             self.connector.proxy.orderFile(l[0], destorder + 1)
             else:
                 self.log.debug0("%s.slotDropEvent: LINKORDER: selection lost" % self.cname)
-                pass
         
         elif self.dnd.actionOnDrop == self.dnd.ACT.LINKMOVE:
             self.dnd.getSrcLinks()

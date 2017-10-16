@@ -161,6 +161,7 @@ class main(QObject):
         QTextCodec.setCodecForCStrings(QTextCodec.codecForName("UTF-8"))
         self.init(True)
 
+    @classmethod
     def icontest(self):
         print "Test of the desktop environment icon theme."
         print "  This will crash (Segmentation fault) if an icon fails to load."
@@ -194,6 +195,7 @@ class main(QObject):
             print "OK"
         print "\nNo errors."
 
+    @classmethod
     def print_help(self):
         print ""
         print "pyLoad Client v%s     2008-2016 the pyLoad Team" % CURRENT_VERSION
@@ -241,6 +243,7 @@ class main(QObject):
         self.newConfigFile = not guiFileFound
         return True
 
+    @classmethod
     def hideWindowsCommandPrompt(self, hide=True):
         if os.name == "nt":
             import ctypes
@@ -407,7 +410,7 @@ class main(QObject):
             self.messageBox_07()
             return port
         pcfg = self.connector.proxy.getPluginConfig()
-        for k, section in pcfg.iteritems():
+        for dummy, section in pcfg.iteritems():
             if section.name == "ClickNLoad":
                 for item in section.items:
                     if item.name == "port":
@@ -625,7 +628,7 @@ class main(QObject):
         self.connect(self.mainWindow.newPackDock, SIGNAL("topLevelChanged(bool)"), self.slotNewPackDockTopLevelChanged, Qt.QueuedConnection)
         self.connect(self.mainWindow.newLinkDock, SIGNAL("newLinkDockPaintEvent"), self.slotActivateNewLinkDock, Qt.QueuedConnection)
         self.connect(self.mainWindow.newLinkDock, SIGNAL("newLinkDockClosed"), self.slotNewLinkDockClosed)
-        self.connect(self.mainWindow.newLinkDock, SIGNAL("topLevelChanged(bool)"), self.slotNewLinkDockTopLevelChanged, Qt.QueuedConnection)        
+        self.connect(self.mainWindow.newLinkDock, SIGNAL("topLevelChanged(bool)"), self.slotNewLinkDockTopLevelChanged, Qt.QueuedConnection)
 
         self.packageEdit.connect(self.packageEdit.saveBtn, SIGNAL("clicked()"), self.slotEditPackageSave)
 
@@ -901,7 +904,7 @@ class main(QObject):
             else:
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
             s["showFromTrayShowTime"] = self.mainWindow.time_msec()
-            for i in range(numOfPaintEventsToWait + 2):
+            for dummy in range(numOfPaintEventsToWait + 2):
                 self.mainWindow.update();pe();pe();pe();pe();pe()
 
     def showFromTray_continue(self):
@@ -1266,17 +1269,15 @@ class main(QObject):
         # Connector
         host = "looooooooooooooooooooooooong.hostname.com"
         port = 66666
-        user = "BananaJoe"
-        password = "tomato"
         server_version = '42'
         dm("01"); self.connector.messageBox_01(host, port)
         dm("02"); self.connector.messageBox_02(host, port)                          # no explicit parent
-        dm("03"); self.connector.messageBox_03(host, port, user, password)          # no explicit parent, class AskForUserAndPassword
+        dm("03"); self.connector.messageBox_03(host, port, "BananaJoe", "tomato")   # no explicit parent, class AskForUserAndPassword
         dm("04"); self.connector.messageBox_04(host, port)
         dm("05"); self.connector.messageBox_05(host, port)
         dm("06"); self.connector.messageBox_06(server_version, host, port)
         # main
-        pidfile = "/tmp/pyload.pid"
+        pidfile = "bob/pyload.pid"
         pid = 536485
         optCat = "FooBar"
         dm("07"); self.messageBox_07()
@@ -1669,7 +1670,7 @@ class main(QObject):
                     def removeLogger(self):
                          Core.removeLogger(self)
                          thread.exit()
-                    # Workaround Core restart invoked by the UpdateManager plugin 
+                    # Workaround Core restart invoked by the UpdateManager plugin
                     def restart(self):
                         if self.internal_core_restart:
                             return
@@ -1699,7 +1700,7 @@ class main(QObject):
                 except:
                     return self.errorInternalCoreStartup(self.messageBox_16)
                 # wait max 15sec for startup
-                for t in range(0, 150):
+                for dummy in range(0, 150):
                     if self.core.running:
                         break
                     sleep(0.1)
@@ -1836,7 +1837,7 @@ class main(QObject):
             txt = _("Collector")
         packs = []
         for s in selection:
-            (pid, fid, isPack) = s
+            (pid, dummy, isPack) = s
             if isPack:
                 packs.append(pid)
         if len(packs) == 1:
@@ -2113,9 +2114,9 @@ class main(QObject):
         def base64ToDict(b64):
             try:
                 d = literal_eval(str(QByteArray.fromBase64(b64)))
-            except:
+            except Exception:
                 d = None
-            if d and (type(d) is not dict):
+            if d and not isinstance(d, dict):
                 d = None
             return d
 
@@ -2123,7 +2124,7 @@ class main(QObject):
         d = base64ToDict(optionsNotifications)
         if d is not None:
             try:    self.mainWindow.notificationOptions.settings = d; self.mainWindow.notificationOptions.dict2checkBoxStates()
-            except: self.mainWindow.notificationOptions.defaultSettings(); d = None
+            except Exception: self.mainWindow.notificationOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Desktop Notifications")); reset = True
         # Client Log
         d = base64ToDict(optionsLogging)

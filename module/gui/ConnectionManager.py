@@ -144,7 +144,7 @@ class ConnectionManager(QDialog):
     def cleanDict(self, data):
         tmp = {}
         for k, d in data.items():
-            if type(d) == QString:
+            if isinstance(d, QString):
                 tmp[str(k)] = unicode(d)    # get rid of QString asap
             else:
                 tmp[str(k)] = d
@@ -185,7 +185,7 @@ class ConnectionManager(QDialog):
     
     def slotItemDoubleClicked(self, item):
         # this fixes a segfault that happens when emitting "connect" directly from here
-        QTimer.singleShot(0, self.slotConnect) 
+        QTimer.singleShot(0, self.slotConnect)
     
     def slotDefault(self):
         currentRow = self.connList.currentRow()
