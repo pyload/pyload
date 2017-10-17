@@ -21,7 +21,9 @@ CURRENT_VERSION = '0.4.9'
 CURRENT_INTERNAL_VERSION = '2017-10-12'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
 import os
-if os.name != "nt":
+if os.name == "nt":
+    import ctypes
+else:
     import gtk
 import sys
 
@@ -52,7 +54,6 @@ from os.path import basename
 from os.path import commonprefix
 from os.path import exists
 from threading import Timer
-from subprocess import call
 
 from module import InitHomeDir
 from module.gui.ConnectionManager import *
@@ -246,7 +247,6 @@ class main(QObject):
     @classmethod
     def hideWindowsCommandPrompt(self, hide=True):
         if os.name == "nt":
-            import ctypes
             hWnd = ctypes.windll.kernel32.GetConsoleWindow()
             if hWnd:
                 if hide:
@@ -2818,14 +2818,16 @@ class main(QObject):
         self.log.info("Terminating pyLoad Client")
         self.setExcepthook(False)
         self.removeLogger()
-        pid = str(os.getpid())
-        # kill the process because the qt eventloop is blocked
-        if os.name != "nt":
-            call(["kill", "-9", pid])
-        else:
-            call(["taskkill", "/F", "/PID", pid])
-        while True:
-            sleep(0.5)
+        pid = os.getpid()
+        os.kill(pid, 9)
+        if os.name == "nt":
+            self.win_os_kill(pid)   # in case that the above failed on windows os
+        sleep(3)
+        print ("Error: Failed to terminate the pyLoad Client process")
+
+    def win_os_kill(self, pid):
+        handle = ctypes.windll.kernel32.OpenProcess(1, 0, pid)
+        ctypes.windll.kernel32.TerminateProcess(handle, 0)
 
     def quitInternal(self):
         if self.core:
