@@ -21,14 +21,18 @@ CURRENT_VERSION = '0.4.9'
 CURRENT_INTERNAL_VERSION = '2017-10-12'         # YYYY-MM-DD, append a lowercase letter for a new version on the same day
 
 import os
-if os.name == "nt":
-    import ctypes
-else:
-    import gtk
 import sys
-
 from sys import argv
 from getopt import getopt, GetoptError
+
+if os.name == "nt":
+    import ctypes
+try:
+    havePynotify = True
+    import pynotify                 # import before LoggingLevels to avoid gtk warning on some systems
+except ImportError:
+    havePynotify = False
+
 from module.gui import LoggingLevels
 from module.gui.Tools import WtDialogButtonBox, LineView
 import logging.handlers
@@ -72,12 +76,6 @@ from module.utils import formatSize, formatSpeed
 
 from module.remote.thriftbackend.ThriftClient import DownloadStatus
 from module.Api import has_permission, PERMS, ROLE
-
-try:
-    havePynotify = True
-    import pynotify
-except ImportError:
-    havePynotify = False
 
 class main(QObject):
     def pyLoadGuiExcepthook(self, type, value, tback):
@@ -2825,6 +2823,7 @@ class main(QObject):
         sleep(3)
         print ("Error: Failed to terminate the pyLoad Client process")
 
+    @classmethod
     def win_os_kill(self, pid):
         handle = ctypes.windll.kernel32.OpenProcess(1, 0, pid)
         ctypes.windll.kernel32.TerminateProcess(handle, 0)
