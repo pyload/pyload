@@ -381,6 +381,14 @@ class QueueModel(CollectorModel):
             elif index.column() == 9: #Order
                 item = index.internalPointer()
                 return QVariant(item.data["order"])
+        elif role == Qt.ToolTipRole and self.showToolTips:
+            rect = self.view.visualRect(index)
+            if rect.isValid():
+                txt = self.data(index, Qt.DisplayRole).toString()
+                textWidth = self.view.fontMetrics().width(txt)
+                textWidth += 6
+                if textWidth > rect.width():
+                    return QVariant(txt)
         return QVariant()
     
 class QueueView(CollectorView):

@@ -1437,8 +1437,9 @@ class TrayOptions(QDialog):
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
         url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
-        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
         self.lblUrl.setTextFormat(Qt.RichText)
+        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
+        self.lblUrl.setToolTip(url)
         self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self.lblUrl.setOpenExternalLinks(True)
         
@@ -1557,8 +1558,9 @@ class OtherOptions(QDialog):
         desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
         urltext  = "Options.txt"
         url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
-        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
         self.lblUrl.setTextFormat(Qt.RichText)
+        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
+        self.lblUrl.setToolTip(url)
         self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
         self.lblUrl.setOpenExternalLinks(True)
         

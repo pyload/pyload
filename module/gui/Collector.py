@@ -61,6 +61,8 @@ class CollectorModel(QAbstractItemModel):
         self.dirtyReloadDelayMin = float(4.5)   # const seconds
         self.dirtyReloadDelayMax = float(9.5)   # const seconds
         
+        self.showToolTips = True
+        
         global translatedStatusMap # workaround because i18n is not running at import time
         translatedStatusMap = {
             "finished":      _("finished"),
@@ -625,6 +627,14 @@ class CollectorModel(QAbstractItemModel):
             elif index.column() == 7: #Order
                 item = index.internalPointer()
                 return QVariant(item.data["order"])
+        elif role == Qt.ToolTipRole and self.showToolTips:
+            rect = self.view.visualRect(index)
+            if rect.isValid():
+                txt = self.data(index, Qt.DisplayRole).toString()
+                textWidth = self.view.fontMetrics().width(txt)
+                textWidth += 6
+                if textWidth > rect.width():
+                    return QVariant(txt)
         return QVariant()
     
     def index(self, row, column, parent=QModelIndex()):
