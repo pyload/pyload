@@ -736,6 +736,7 @@ class main(QObject):
             self.connect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.debugTray)
             self.connect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
             self.connect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
+            self.connect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.debugKill)
         self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.connect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
@@ -758,6 +759,7 @@ class main(QObject):
             self.disconnect(self.tray.debugTrayAction,        SIGNAL("triggered()"), self.debugTray)
             self.disconnect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
             self.disconnect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
+            self.disconnect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.debugKill)
         self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
         self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
         self.disconnect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
@@ -1295,6 +1297,10 @@ class main(QObject):
         # ClickNLoadForwarder
         dm("19"); self.clickNLoadForwarder.messageBox_19()
         dm("20"); self.clickNLoadForwarder.messageBox_20()
+
+    def debugKill(self):
+        self.log.debug9("main.debugKill: terminate process")
+        self.quitConnTimeout()
 
     def slotNotificationMessage(self, status, name):
         """
@@ -4343,6 +4349,7 @@ class TrayIcon(QSystemTrayIcon):
             self.debugTrayAction = self.menuDebug.addAction("Tray")
             self.debugMsgBoxTest1Action = self.menuDebug.addAction("MessageBox Test 1")
             self.debugMsgBoxTest2Action = self.menuDebug.addAction("MessageBox Test 2")
+            self.debugKillAction = self.menuDebug.addAction("kill")
 
         # disable/greyout menu entries
         self.showAction.setEnabled(False)
