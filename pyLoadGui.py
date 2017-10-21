@@ -2939,6 +2939,10 @@ class main(QObject):
             """
                 methods to call
             """
+            if self.parent.connectionLost:
+                self.stop()
+                return
+
             self.parent.refreshServerStatus()
             if self.lastSpaceCheck + 5 < time():
                 self.lastSpaceCheck = time()
