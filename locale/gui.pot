@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pyLoad 0.4.9\n"
 "Report-Msgid-Bugs-To: 'bugs@pyload.org'\n"
-"POT-Creation-Date: 2017-10-05 07:56+0200\n"
+"POT-Creation-Date: 2017-10-21 11:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyLoadGui.py:378
+#: pyLoadGui.py:392
 msgid "File Log is disabled"
 msgstr ""
 
-#: pyLoadGui.py:411
+#: pyLoadGui.py:425
 msgid ""
 "Failed to start ClickNLoad port forwarding.\n"
 "Insufficient server permissions for 'Get Remote Port from Server Settings'."
 msgstr ""
 
-#: pyLoadGui.py:481
+#: pyLoadGui.py:495
 msgid "Lost connection to the server."
 msgstr ""
 
-#: pyLoadGui.py:548
+#: pyLoadGui.py:562
 msgid ""
 "Could not get information about our permissions for this remote login.\n"
 "This happens when the server is running on the localhost\n"
@@ -41,76 +41,76 @@ msgid ""
 "since we were allowed to login."
 msgstr ""
 
-#: pyLoadGui.py:1162
+#: pyLoadGui.py:1179
 msgid "Do you really want to quit the pyLoad server?"
 msgstr ""
 
-#: pyLoadGui.py:1178
+#: pyLoadGui.py:1195
 msgid "Do you really want to restart the pyLoad server?"
 msgstr ""
 
-#: pyLoadGui.py:1178
+#: pyLoadGui.py:1195
 msgid "This does not work when the server is running on a Windows OS."
 msgstr ""
 
-#: pyLoadGui.py:1299
+#: pyLoadGui.py:1318
 msgid "Package download finished"
 msgstr ""
 
-#: pyLoadGui.py:1302
+#: pyLoadGui.py:1321
 msgid "Download finished"
 msgstr ""
 
-#: pyLoadGui.py:1305
+#: pyLoadGui.py:1324
 msgid "Download offline"
 msgstr ""
 
-#: pyLoadGui.py:1308
+#: pyLoadGui.py:1327
 msgid "Download skipped"
 msgstr ""
 
-#: pyLoadGui.py:1311
+#: pyLoadGui.py:1330
 msgid "Download temporarily offline"
 msgstr ""
 
-#: pyLoadGui.py:1314
+#: pyLoadGui.py:1333
 msgid "Download failed"
 msgstr ""
 
-#: pyLoadGui.py:1317
+#: pyLoadGui.py:1336
 msgid "Download aborted"
 msgstr ""
 
-#: pyLoadGui.py:1320
+#: pyLoadGui.py:1339
 msgid "Captcha arrived"
 msgstr ""
 
-#: pyLoadGui.py:1383
+#: pyLoadGui.py:1402
 msgid "Paused"
 msgstr ""
 
-#: pyLoadGui.py:1385 pyLoadGui.py:4027
+#: pyLoadGui.py:1404 module/gui/Options.py:319
 msgid "Running"
 msgstr ""
 
-#: pyLoadGui.py:1462
+#: pyLoadGui.py:1481
 msgid ""
 "************ Log Rotation - Possibly, one or more lines are not shown here "
 "************"
 msgstr ""
 
-#: pyLoadGui.py:1564
+#: pyLoadGui.py:1583
 msgid "UNNAMED CONNECTION"
 msgstr ""
 
-#: pyLoadGui.py:1624 pyLoadGui.py:1627 pyLoadGui.py:1637 pyLoadGui.py:1707
-#: pyLoadGui.py:3197 pyLoadGui.py:4586 pyLoadGui.py:4594 pyLoadGui.py:4601
-#: module/gui/MainWindow.py:60 module/gui/Tools.py:101
+#: pyLoadGui.py:1643 pyLoadGui.py:1646 pyLoadGui.py:1656 pyLoadGui.py:1727
+#: pyLoadGui.py:3301 pyLoadGui.py:3816 pyLoadGui.py:3824 pyLoadGui.py:3831
+#: module/gui/MainWindow.py:60 module/gui/Tools.py:103
 #: module/gui/connector.py:261
 msgid "pyLoad Client"
 msgstr ""
 
-#: pyLoadGui.py:1729
+#: pyLoadGui.py:1749
 msgid ""
 "Cannot start the internal server because the server is not configured.\n"
 "Please run the server setup from console, respectively from\n"
@@ -119,538 +119,406 @@ msgid ""
 "For example:\n"
 msgstr ""
 
-#: pyLoadGui.py:1735
+#: pyLoadGui.py:1755
 msgid "Internal server initialization failed."
 msgstr ""
 
-#: pyLoadGui.py:1739
+#: pyLoadGui.py:1759
 msgid "Cannot start the internal server."
 msgstr ""
 
-#: pyLoadGui.py:1740
+#: pyLoadGui.py:1760
 msgid "A pyLoad server for this configuration is already running."
 msgstr ""
 
-#: pyLoadGui.py:1746
+#: pyLoadGui.py:1766
 msgid "A pyLoad server for this configuration is already running"
 msgstr ""
 
-#: pyLoadGui.py:1747
+#: pyLoadGui.py:1767
 msgid "or the server was not shut down properly last time."
 msgstr ""
 
-#: pyLoadGui.py:1748
+#: pyLoadGui.py:1768
 msgid "PID-file: "
 msgstr ""
 
-#: pyLoadGui.py:1750
+#: pyLoadGui.py:1770
 msgid "Do you want to start the internal server anyway?"
 msgstr ""
 
-#: pyLoadGui.py:1754
+#: pyLoadGui.py:1774
 msgid "Failed to start internal server thread."
 msgstr ""
 
-#: pyLoadGui.py:1758
+#: pyLoadGui.py:1778
 msgid "Failed to start internal server."
 msgstr ""
 
-#: pyLoadGui.py:1762
+#: pyLoadGui.py:1782
 msgid "The internal server wants to restart."
 msgstr ""
 
-#: pyLoadGui.py:1763
+#: pyLoadGui.py:1783
 msgid "Probably for plugin updates to take effect."
 msgstr ""
 
-#: pyLoadGui.py:1764
+#: pyLoadGui.py:1784
 msgid "Therefore, we must exit the application"
 msgstr ""
 
-#: pyLoadGui.py:1765
+#: pyLoadGui.py:1785
 msgid "and you have to restart it manually."
 msgstr ""
 
-#: pyLoadGui.py:1766
+#: pyLoadGui.py:1786
 msgid "Exiting in 60 seconds ..."
 msgstr ""
 
-#: pyLoadGui.py:1767
+#: pyLoadGui.py:1787
 msgid "Close this window to exit immediately."
 msgstr ""
 
-#: pyLoadGui.py:1824 pyLoadGui.py:3590 module/gui/LinkDock.py:88
-#: module/gui/MainWindow.py:246 module/gui/PackageDock.py:108
+#: pyLoadGui.py:1844 module/gui/LinkDock.py:100 module/gui/MainWindow.py:246
+#: module/gui/PackageDock.py:120 module/gui/Options.py:515
 msgid "Queue"
 msgstr ""
 
-#: pyLoadGui.py:1827 pyLoadGui.py:3595 module/gui/LinkDock.py:89
-#: module/gui/MainWindow.py:247 module/gui/PackageDock.py:109
+#: pyLoadGui.py:1847 module/gui/LinkDock.py:101 module/gui/MainWindow.py:247
+#: module/gui/PackageDock.py:121 module/gui/Options.py:520
 msgid "Collector"
 msgstr ""
 
-#: pyLoadGui.py:1837
+#: pyLoadGui.py:1857
 #, python-format
 msgid "Error, no package selected in %s."
 msgstr ""
 
-#: pyLoadGui.py:1839
+#: pyLoadGui.py:1859
 #, python-format
 msgid "Error, multiple packages selected in %s."
 msgstr ""
 
-#: pyLoadGui.py:2118 module/gui/MainWindow.py:179
+#: pyLoadGui.py:2148 module/gui/MainWindow.py:179
 msgid "Desktop Notifications"
 msgstr ""
 
-#: pyLoadGui.py:2124 module/gui/MainWindow.py:180
+#: pyLoadGui.py:2154 module/gui/MainWindow.py:180
 msgid "Client Log"
 msgstr ""
 
-#: pyLoadGui.py:2129 module/gui/MainWindow.py:181
+#: pyLoadGui.py:2159 module/gui/MainWindow.py:181
 msgid "ClickNLoad Forwarding"
 msgstr ""
 
-#: pyLoadGui.py:2129 pyLoadGui.py:3935
+#: pyLoadGui.py:2159 module/gui/Options.py:227
 msgid "Local Port"
 msgstr ""
 
-#: pyLoadGui.py:2135 pyLoadGui.py:3848 pyLoadGui.py:3870
-#: module/gui/MainWindow.py:182
+#: pyLoadGui.py:2165 module/gui/MainWindow.py:182 module/gui/Options.py:343
+#: module/gui/Options.py:365
 msgid "Automatic Reloading"
 msgstr ""
 
-#: pyLoadGui.py:2141 module/gui/MainWindow.py:183
+#: pyLoadGui.py:2171 module/gui/MainWindow.py:183
 msgid "Captcha Solving"
 msgstr ""
 
-#: pyLoadGui.py:2148 module/gui/MainWindow.py:184
+#: pyLoadGui.py:2178 module/gui/MainWindow.py:184
 msgid "Fonts"
 msgstr ""
 
-#: pyLoadGui.py:2155 module/gui/MainWindow.py:185
+#: pyLoadGui.py:2185 module/gui/MainWindow.py:185
 msgid "Tray Icon"
 msgstr ""
 
-#: pyLoadGui.py:2161 module/gui/MainWindow.py:186
+#: pyLoadGui.py:2191 module/gui/MainWindow.py:186
 msgid "What's This"
 msgstr ""
 
-#: pyLoadGui.py:2169 module/gui/MainWindow.py:187
-#: module/gui/MainWindow.py:1525
+#: pyLoadGui.py:2199 module/gui/MainWindow.py:187 module/gui/Options.py:1015
 msgid "Other"
 msgstr ""
 
-#: pyLoadGui.py:2176
+#: pyLoadGui.py:2206
 msgid "The following options had to be reset:"
 msgstr ""
 
-#: pyLoadGui.py:2698
+#: pyLoadGui.py:2747
 msgid "The package to edit does not exist anymore."
 msgstr ""
 
-#: pyLoadGui.py:2699 pyLoadGui.py:4290 module/gui/MainWindow.py:443
-#: module/gui/MainWindow.py:557 module/gui/MainWindow.py:600
+#: pyLoadGui.py:2748 pyLoadGui.py:3665 module/gui/MainWindow.py:440
+#: module/gui/MainWindow.py:554 module/gui/MainWindow.py:597
 #: module/gui/Overview.py:103
 msgid "Package"
 msgstr ""
 
-#: pyLoadGui.py:2699 module/gui/Collector.py:714 module/gui/Queue.py:220
+#: pyLoadGui.py:2748 module/gui/Collector.py:724 module/gui/Queue.py:220
 msgid "ID"
 msgstr ""
 
-#: pyLoadGui.py:2823
+#: pyLoadGui.py:2889
 msgid "Shutting down the internal server"
 msgstr ""
 
-#: pyLoadGui.py:3133 module/gui/MainWindow.py:194
+#: pyLoadGui.py:3237 module/gui/MainWindow.py:194
 msgid "About pyLoad Client"
 msgstr ""
 
-#: pyLoadGui.py:3173 pyLoadGui.py:3410 pyLoadGui.py:3494 pyLoadGui.py:3640
-#: pyLoadGui.py:3877 pyLoadGui.py:3976 pyLoadGui.py:4239 pyLoadGui.py:4385
-#: module/gui/CaptchaDock.py:64 module/gui/MainWindow.py:1358
-#: module/gui/MainWindow.py:1467 module/gui/MainWindow.py:1576
-#: module/gui/Tools.py:159 module/gui/Tools.py:164 module/gui/connector.py:275
+#: pyLoadGui.py:3277 module/gui/CaptchaDock.py:64 module/gui/Tools.py:170
+#: module/gui/Tools.py:179 module/gui/connector.py:275
+#: module/gui/Options.py:54 module/gui/Options.py:158
+#: module/gui/Options.py:268 module/gui/Options.py:372
+#: module/gui/Options.py:440 module/gui/Options.py:565
+#: module/gui/Options.py:813 module/gui/Options.py:893
+#: module/gui/Options.py:1067 module/gui/Options.py:1153
 msgid "OK"
 msgstr ""
 
-#: pyLoadGui.py:3174
+#: pyLoadGui.py:3278
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: pyLoadGui.py:3241
+#: pyLoadGui.py:3345
 msgid "Information"
 msgstr ""
 
-#: pyLoadGui.py:3278 module/gui/MainWindow.py:175
+#: pyLoadGui.py:3382 module/gui/MainWindow.py:175
 msgid "Server Permissions"
 msgstr ""
 
-#: pyLoadGui.py:3281
+#: pyLoadGui.py:3385
 msgid "Permissons were changed.<br>"
 msgstr ""
 
-#: pyLoadGui.py:3281 pyLoadGui.py:4222 module/gui/MainWindow.py:1432
+#: pyLoadGui.py:3385 module/gui/Options.py:777 module/gui/Options.py:1136
 msgid "Takes effect on next login."
 msgstr ""
 
-#: pyLoadGui.py:3286
+#: pyLoadGui.py:3390
 msgid "Close"
 msgstr ""
 
-#: pyLoadGui.py:3305
+#: pyLoadGui.py:3409
 msgid "Administrator"
 msgstr ""
 
-#: pyLoadGui.py:3306
+#: pyLoadGui.py:3410
 msgid "Administrator has all permissions"
 msgstr ""
 
-#: pyLoadGui.py:3307
+#: pyLoadGui.py:3411
 msgid "Needed for:<br>- Restart pyLoad Server<br>- Quit pyLoad Server"
 msgstr ""
 
-#: pyLoadGui.py:3311 pyLoadGui.py:3376 module/gui/Tools.py:171
+#: pyLoadGui.py:3415 pyLoadGui.py:3480 module/gui/Tools.py:190
 msgid "Yes"
 msgstr ""
 
-#: pyLoadGui.py:3311 pyLoadGui.py:3376 module/gui/Tools.py:172
+#: pyLoadGui.py:3415 pyLoadGui.py:3480 module/gui/Tools.py:191
 msgid "No"
 msgstr ""
 
-#: pyLoadGui.py:3315 pyLoadGui.py:3600 module/gui/MainWindow.py:248
+#: pyLoadGui.py:3419 module/gui/MainWindow.py:248 module/gui/Options.py:525
 msgid "Accounts"
 msgstr ""
 
-#: pyLoadGui.py:3316
+#: pyLoadGui.py:3420
 msgid "Access Accounts"
 msgstr ""
 
-#: pyLoadGui.py:3317
+#: pyLoadGui.py:3421
 msgid "Needed for:<br>- Managing file hosting service accounts"
 msgstr ""
 
-#: pyLoadGui.py:3320 pyLoadGui.py:4289 module/gui/LinkDock.py:99
-#: module/gui/MainWindow.py:408 module/gui/MainWindow.py:556
-#: module/gui/MainWindow.py:599 module/gui/MainWindow.py:628
+#: pyLoadGui.py:3424 pyLoadGui.py:3664 module/gui/LinkDock.py:111
+#: module/gui/MainWindow.py:405 module/gui/MainWindow.py:553
+#: module/gui/MainWindow.py:596 module/gui/MainWindow.py:625
 msgid "Add"
 msgstr ""
 
-#: pyLoadGui.py:3321
+#: pyLoadGui.py:3425
 msgid "Add packages and links to Collector and Queue"
 msgstr ""
 
-#: pyLoadGui.py:3322
+#: pyLoadGui.py:3426
 msgid ""
 "Also needed for:<br>- Queue: Add Container<br>- Collector: Moving links to "
 "another package<br>- Toolbar: Check Clipboard"
 msgstr ""
 
-#: pyLoadGui.py:3327
+#: pyLoadGui.py:3431
 msgid "Delete"
 msgstr ""
 
-#: pyLoadGui.py:3328
+#: pyLoadGui.py:3432
 msgid "Remove packages and links from Collector and Queue"
 msgstr ""
 
-#: pyLoadGui.py:3329
+#: pyLoadGui.py:3433
 msgid "Also needed for:<br>- Collector: Moving links to another package"
 msgstr ""
 
-#: pyLoadGui.py:3332
+#: pyLoadGui.py:3436
 msgid "Download"
 msgstr ""
 
-#: pyLoadGui.py:3333
+#: pyLoadGui.py:3437
 msgid "Download from webinterface"
 msgstr ""
 
-#: pyLoadGui.py:3334
+#: pyLoadGui.py:3438
 msgid ""
 "Needed for:<br>- Downloading files from the server to your local machine"
 msgstr ""
 
-#: pyLoadGui.py:3337
+#: pyLoadGui.py:3441
 msgid "List"
 msgstr ""
 
-#: pyLoadGui.py:3338
+#: pyLoadGui.py:3442
 msgid "View Queue and Collector"
 msgstr ""
 
-#: pyLoadGui.py:3339
+#: pyLoadGui.py:3443
 msgid ""
 "Needed for:<br>- Overview tab<br>- Queue tab<br>- Collector tab<br>- Status "
 "bar"
 msgstr ""
 
-#: pyLoadGui.py:3345 pyLoadGui.py:3605
+#: pyLoadGui.py:3449 module/gui/Options.py:530
 msgid "Logs"
 msgstr ""
 
-#: pyLoadGui.py:3346
+#: pyLoadGui.py:3450
 msgid "View Server Log"
 msgstr ""
 
-#: pyLoadGui.py:3347
+#: pyLoadGui.py:3451
 msgid "Needed for:<br>- Server Log tab"
 msgstr ""
 
-#: pyLoadGui.py:3350
+#: pyLoadGui.py:3454
 msgid "Modify"
 msgstr ""
 
-#: pyLoadGui.py:3351
+#: pyLoadGui.py:3455
 msgid "Modify some attributes of downloads"
 msgstr ""
 
-#: pyLoadGui.py:3352
+#: pyLoadGui.py:3456
 msgid ""
 "Needed for:<br>- Toolbar: Abort All and Restart Failed<br>- Queue and "
 "Collector: Push to Queue, Pull Out, Restart, Edit and Abort<br>- Add "
 "Package: Password<br>- Sorting packages and sorting links within packages"
 msgstr ""
 
-#: pyLoadGui.py:3358 pyLoadGui.py:3951 module/gui/ConnectionManager.py:300
+#: pyLoadGui.py:3462 module/gui/ConnectionManager.py:300
+#: module/gui/Options.py:243
 msgid "Settings"
 msgstr ""
 
-#: pyLoadGui.py:3359
+#: pyLoadGui.py:3463
 msgid "Access settings"
 msgstr ""
 
-#: pyLoadGui.py:3360
+#: pyLoadGui.py:3464
 msgid ""
 "Needed for:<br>- Server Settings tab<br>- Toolbar: Download Speed Limit<br>- "
 "ClickNLoad Forwarding: Get Remote Port from Server Settings"
 msgstr ""
 
-#: pyLoadGui.py:3365 pyLoadGui.py:3843 pyLoadGui.py:3845 pyLoadGui.py:3944
-#: module/gui/Collector.py:706 module/gui/MainWindow.py:136
+#: pyLoadGui.py:3469 module/gui/Collector.py:716 module/gui/MainWindow.py:136
 #: module/gui/MainWindow.py:138 module/gui/Queue.py:208
+#: module/gui/Options.py:236 module/gui/Options.py:338
+#: module/gui/Options.py:340
 msgid "Status"
 msgstr ""
 
-#: pyLoadGui.py:3366
+#: pyLoadGui.py:3470
 msgid "View and change server status"
 msgstr ""
 
-#: pyLoadGui.py:3367
+#: pyLoadGui.py:3471
 msgid ""
 "Needed for:<br>- Updating Overview, Queue and Collector<br>- Toolbar: Toggle "
 "Pause and Abort All for setting pause mode<br>- Captcha solving<br>- Status "
 "bar: Free space in the download folder"
 msgstr ""
 
-#: pyLoadGui.py:3394 pyLoadGui.py:3455 pyLoadGui.py:3578 pyLoadGui.py:3855
-#: pyLoadGui.py:3931 pyLoadGui.py:4217 pyLoadGui.py:4361
-#: module/gui/MainWindow.py:169 module/gui/MainWindow.py:1328
-#: module/gui/MainWindow.py:1424 module/gui/MainWindow.py:1522
-msgid "Options"
-msgstr ""
-
-#: pyLoadGui.py:3397
-msgid "Adjust dialog box size to its content"
-msgstr ""
-
-#: pyLoadGui.py:3402
-msgid "Enable Captcha Solving"
-msgstr ""
-
-#: pyLoadGui.py:3411 pyLoadGui.py:3495 pyLoadGui.py:3641 pyLoadGui.py:3878
-#: pyLoadGui.py:3977 pyLoadGui.py:4240 pyLoadGui.py:4386 pyLoadGui.py:4547
-#: module/gui/AccountEdit.py:62 module/gui/CaptchaDock.py:65
-#: module/gui/ConnectionManager.py:316 module/gui/MainWindow.py:1359
-#: module/gui/MainWindow.py:1468 module/gui/MainWindow.py:1577
-#: module/gui/Tools.py:165 module/gui/connector.py:277
-msgid "Cancel"
-msgstr ""
-
-#: pyLoadGui.py:3458
-msgid "Enable File Log"
-msgstr ""
-
-#: pyLoadGui.py:3461 pyLoadGui.py:4524 module/gui/Collector.py:710
-#: module/gui/Queue.py:216
-msgid "Folder"
-msgstr ""
-
-#: pyLoadGui.py:3464
-msgid "Log Rotation"
-msgstr ""
-
-#: pyLoadGui.py:3466
-msgid "Size in kb"
-msgstr ""
-
-#: pyLoadGui.py:3469
-msgid "Count"
-msgstr ""
-
-#: pyLoadGui.py:3481
-msgid "Log Exceptions"
-msgstr ""
-
-#: pyLoadGui.py:3581
-msgid "Enable Custom Fonts"
-msgstr ""
-
-#: pyLoadGui.py:3583
-msgid "Application"
-msgstr ""
-
-#: pyLoadGui.py:3587 pyLoadGui.py:3594 pyLoadGui.py:3599 pyLoadGui.py:3604
-#: pyLoadGui.py:3609 pyLoadGui.py:4365 pyLoadGui.py:4367
-msgid "Choose"
-msgstr ""
-
-#: pyLoadGui.py:3642 pyLoadGui.py:4387
-msgid "Reset"
-msgstr ""
-
-#: pyLoadGui.py:3842
-msgid ""
-"This is useful when there are several clients connected to the server, to "
-"reflect all changes made by others.<br>Also, to reflect your own changes "
-"when you do not have"
-msgstr ""
-
-#: pyLoadGui.py:3843
-msgid ""
-"permission.<br>However, you can always trigger a Reload from the View menu "
-"manually.<br><br>This should stay disabled, if you have"
-msgstr ""
-
-#: pyLoadGui.py:3845
-msgid "permission and you are the only active user on the server."
-msgstr ""
-
-#: pyLoadGui.py:3858
-msgid "Every"
-msgstr ""
-
-#: pyLoadGui.py:3862
-msgid "seconds"
-msgstr ""
-
-#: pyLoadGui.py:3870 pyLoadGui.py:3934
-msgid "Enable"
-msgstr ""
-
-#: pyLoadGui.py:3939 module/gui/ConnectionManager.py:296
-msgid "Remote Port"
-msgstr ""
-
-#: pyLoadGui.py:3943 module/gui/ConnectionManager.py:299
-#: module/gui/ConnectionManager.py:300
-msgid "Get Remote Port from Server Settings"
-msgstr ""
-
-#: pyLoadGui.py:3948
-msgid ""
-"This should usually stay on port 9666. At least Firefox with FlashGot only "
-"works reliable with its default address setting:<br>http://127.0.0.1:9666/"
-"flashgot"
-msgstr ""
-
-#: pyLoadGui.py:3951 module/gui/ConnectionManager.py:300
-msgid "Needs"
-msgstr ""
-
-#: pyLoadGui.py:3951 module/gui/ConnectionManager.py:300
-msgid "permission on the server."
-msgstr ""
-
-#: pyLoadGui.py:3970
-msgid "ClickNLoad Port Forwarding"
-msgstr ""
-
-#: pyLoadGui.py:4029
-msgid "Not Running"
-msgstr ""
-
-#: pyLoadGui.py:4031
-msgid "ERROR"
-msgstr ""
-
-#: pyLoadGui.py:4198
+#: pyLoadGui.py:3647
 msgid "Failed to stop ClickNLoad port forwarding."
 msgstr ""
 
-#: pyLoadGui.py:4201
+#: pyLoadGui.py:3650
 msgid "ClickNLoad port forwarding stopped due to an error."
 msgstr ""
 
-#: pyLoadGui.py:4232 module/gui/MainWindow.py:188
-msgid "Language"
-msgstr ""
-
-#: pyLoadGui.py:4287
+#: pyLoadGui.py:3662
 msgid "Waiting Captcha"
 msgstr ""
 
-#: pyLoadGui.py:4291 module/gui/MainWindow.py:131 module/gui/MainWindow.py:133
-#: module/gui/MainWindow.py:444 module/gui/MainWindow.py:558
-#: module/gui/MainWindow.py:601
+#: pyLoadGui.py:3666 module/gui/MainWindow.py:131 module/gui/MainWindow.py:133
+#: module/gui/MainWindow.py:441 module/gui/MainWindow.py:555
+#: module/gui/MainWindow.py:598
 msgid "Links"
 msgstr ""
 
-#: pyLoadGui.py:4292 module/gui/MainWindow.py:445 module/gui/MainWindow.py:559
+#: pyLoadGui.py:3667 module/gui/MainWindow.py:442 module/gui/MainWindow.py:556
 msgid "Container"
 msgstr ""
 
-#: pyLoadGui.py:4294 module/gui/MainWindow.py:178
+#: pyLoadGui.py:3669 module/gui/MainWindow.py:178
 msgid "Exit"
 msgstr ""
 
-#: pyLoadGui.py:4320
+#: pyLoadGui.py:3696
 msgid "Show pyLoad Client"
 msgstr ""
 
-#: pyLoadGui.py:4322
+#: pyLoadGui.py:3698
 msgid "Hide pyLoad Client"
 msgstr ""
 
-#: pyLoadGui.py:4364
-msgid "Text color"
-msgstr ""
-
-#: pyLoadGui.py:4366
-msgid "Background color"
-msgstr ""
-
-#: pyLoadGui.py:4368
-msgid "What's This Preview"
-msgstr ""
-
-#: pyLoadGui.py:4376
-msgid "Enable Custom Colors"
-msgstr ""
-
-#: pyLoadGui.py:4512
+#: pyLoadGui.py:3742
 msgid "Edit Package"
 msgstr ""
 
-#: pyLoadGui.py:4518 module/gui/Collector.py:702
-#: module/gui/ConnectionManager.py:247 module/gui/PackageDock.py:96
+#: pyLoadGui.py:3748 module/gui/Collector.py:712
+#: module/gui/ConnectionManager.py:247 module/gui/PackageDock.py:108
 #: module/gui/Queue.py:204
 msgid "Name"
 msgstr ""
 
-#: pyLoadGui.py:4530 module/gui/AccountEdit.py:99 module/gui/Collector.py:712
-#: module/gui/ConnectionManager.py:252 module/gui/PackageDock.py:98
+#: pyLoadGui.py:3754 module/gui/Collector.py:720 module/gui/Queue.py:216
+#: module/gui/Options.py:125
+msgid "Folder"
+msgstr ""
+
+#: pyLoadGui.py:3760 module/gui/AccountEdit.py:99 module/gui/Collector.py:722
+#: module/gui/ConnectionManager.py:252 module/gui/PackageDock.py:110
 #: module/gui/Queue.py:218 module/gui/connector.py:269
 msgid "Password"
 msgstr ""
 
-#: pyLoadGui.py:4543 module/gui/AccountEdit.py:61
+#: pyLoadGui.py:3773 module/gui/AccountEdit.py:61
 #: module/gui/ConnectionManager.py:315 module/gui/SettingsWidget.py:150
 msgid "Save"
 msgstr ""
 
-#: pyLoadGui.py:4551
+#: pyLoadGui.py:3777 module/gui/AccountEdit.py:62 module/gui/CaptchaDock.py:65
+#: module/gui/ConnectionManager.py:316 module/gui/Tools.py:180
+#: module/gui/connector.py:277 module/gui/Options.py:55
+#: module/gui/Options.py:159 module/gui/Options.py:269
+#: module/gui/Options.py:373 module/gui/Options.py:441
+#: module/gui/Options.py:566 module/gui/Options.py:814
+#: module/gui/Options.py:894 module/gui/Options.py:1068
+#: module/gui/Options.py:1154
+msgid "Cancel"
+msgstr ""
+
+#: pyLoadGui.py:3781
 msgid "Cancel All"
 msgstr ""
 
@@ -700,92 +568,80 @@ msgstr ""
 msgid "Traffic left"
 msgstr ""
 
-#: module/gui/CaptchaDialog.py:50 module/gui/CaptchaDock.py:29
+#: module/gui/CaptchaDock.py:29 module/gui/CaptchaDialog.py:50
 msgid "Captcha"
 msgstr ""
 
-#: module/gui/CaptchaDialog.py:62
-msgid "Submit"
-msgstr ""
-
-#: module/gui/CaptchaDialog.py:63
-msgid "Ignore"
-msgstr ""
-
-#: module/gui/CaptchaDialog.py:159
-msgid "There is no captcha waiting."
-msgstr ""
-
-#: module/gui/Collector.py:66
+#: module/gui/Collector.py:68
 msgid "finished"
 msgstr ""
 
-#: module/gui/Collector.py:67
+#: module/gui/Collector.py:69
 msgid "offline"
 msgstr ""
 
-#: module/gui/Collector.py:68
+#: module/gui/Collector.py:70
 msgid "online"
 msgstr ""
 
-#: module/gui/Collector.py:69
+#: module/gui/Collector.py:71
 msgid "queued"
 msgstr ""
 
-#: module/gui/Collector.py:70
+#: module/gui/Collector.py:72
 msgid "skipped"
 msgstr ""
 
-#: module/gui/Collector.py:71
+#: module/gui/Collector.py:73
 msgid "waiting"
 msgstr ""
 
-#: module/gui/Collector.py:72
+#: module/gui/Collector.py:74
 msgid "temp. offline"
 msgstr ""
 
-#: module/gui/Collector.py:73
+#: module/gui/Collector.py:75
 msgid "starting"
 msgstr ""
 
-#: module/gui/Collector.py:74
+#: module/gui/Collector.py:76
 msgid "failed"
 msgstr ""
 
-#: module/gui/Collector.py:75
+#: module/gui/Collector.py:77
 msgid "aborted"
 msgstr ""
 
-#: module/gui/Collector.py:76
+#: module/gui/Collector.py:78
 msgid "decrypting"
 msgstr ""
 
-#: module/gui/Collector.py:77
+#: module/gui/Collector.py:79
 msgid "custom"
 msgstr ""
 
-#: module/gui/Collector.py:78 module/gui/Overview.py:156
+#: module/gui/Collector.py:80 module/gui/Overview.py:156
 msgid "downloading"
 msgstr ""
 
-#: module/gui/Collector.py:79
+#: module/gui/Collector.py:81
 msgid "processing"
 msgstr ""
 
-#: module/gui/Collector.py:704 module/gui/Queue.py:206
+#: module/gui/Collector.py:714 module/gui/Queue.py:206
 msgid "Plugin"
 msgstr ""
 
-#: module/gui/Collector.py:708 module/gui/Overview.py:163
+#: module/gui/Collector.py:718 module/gui/Overview.py:163
 #: module/gui/Overview.py:165 module/gui/Queue.py:210
 msgid "Size"
 msgstr ""
 
-#: module/gui/Collector.py:716 module/gui/Queue.py:222
+#: module/gui/Collector.py:726 module/gui/Queue.py:222
 msgid "Order"
 msgstr ""
 
-#: module/gui/Collector.py:963 module/gui/Queue.py:400
+#: module/gui/Collector.py:971 module/gui/Queue.py:408
 msgid ""
 "- Column visibility can be toggled by right-clicking on the header row<br>- "
 "Column order can be changed by Drag'n'Drop<br>- Context menu by right-"
@@ -793,11 +649,11 @@ msgid ""
 "Drag'n'Drop<br>- Link order within a package can be changed by Drag'n'Drop"
 msgstr ""
 
-#: module/gui/Collector.py:969
+#: module/gui/Collector.py:977
 msgid "<br>- Links can be moved to another package by Drag'n'Drop"
 msgstr ""
 
-#: module/gui/Collector.py:970
+#: module/gui/Collector.py:978
 msgid "Collector View"
 msgstr ""
 
@@ -814,8 +670,8 @@ msgid "New"
 msgstr ""
 
 #: module/gui/ConnectionManager.py:53 module/gui/ConnectionManager.py:120
-#: module/gui/MainWindow.py:546 module/gui/MainWindow.py:589
-#: module/gui/MainWindow.py:629
+#: module/gui/MainWindow.py:543 module/gui/MainWindow.py:586
+#: module/gui/MainWindow.py:626
 msgid "Edit"
 msgstr ""
 
@@ -827,8 +683,8 @@ msgstr ""
 msgid "Toggles the default connection."
 msgstr ""
 
-#: module/gui/ConnectionManager.py:56 module/gui/MainWindow.py:549
-#: module/gui/MainWindow.py:592 module/gui/MainWindow.py:630
+#: module/gui/ConnectionManager.py:56 module/gui/MainWindow.py:546
+#: module/gui/MainWindow.py:589 module/gui/MainWindow.py:627
 msgid "Remove"
 msgstr ""
 
@@ -880,6 +736,23 @@ msgstr ""
 msgid "Connects to a remote server."
 msgstr ""
 
+#: module/gui/ConnectionManager.py:296 module/gui/Options.py:231
+msgid "Remote Port"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:299 module/gui/ConnectionManager.py:300
+#: module/gui/Options.py:235
+msgid "Get Remote Port from Server Settings"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:300 module/gui/Options.py:243
+msgid "Needs"
+msgstr ""
+
+#: module/gui/ConnectionManager.py:300 module/gui/Options.py:243
+msgid "permission on the server."
+msgstr ""
+
 #: module/gui/ConnectionManager.py:308
 msgid "Enable ClickNLoad Port Forwarding"
 msgstr ""
@@ -888,20 +761,24 @@ msgstr ""
 msgid "Add Links"
 msgstr ""
 
-#: module/gui/LinkDock.py:45 module/gui/PackageDock.py:53
+#: module/gui/LinkDock.py:46 module/gui/PackageDock.py:54
 msgid "Error, no URLs given."
 msgstr ""
 
-#: module/gui/LinkDock.py:85 module/gui/PackageDock.py:101
+#: module/gui/LinkDock.py:97 module/gui/PackageDock.py:113
 msgid "Drop or Paste URLs here"
 msgstr ""
 
-#: module/gui/LinkDock.py:96 module/gui/PackageDock.py:116
+#: module/gui/LinkDock.py:106 module/gui/PackageDock.py:126
+msgid "Select with tab"
+msgstr ""
+
+#: module/gui/LinkDock.py:108 module/gui/PackageDock.py:128
 #: module/gui/SettingsWidget.py:108
 msgid "Clear"
 msgstr ""
 
-#: module/gui/LinkDock.py:97 module/gui/PackageDock.py:117
+#: module/gui/LinkDock.py:109 module/gui/PackageDock.py:129
 msgid "Filter URLs"
 msgstr ""
 
@@ -930,7 +807,7 @@ msgid "The free space in the download folder."
 msgstr ""
 
 #: module/gui/MainWindow.py:146 module/gui/MainWindow.py:148
-#: module/gui/MainWindow.py:417 module/gui/Overview.py:157
+#: module/gui/MainWindow.py:414 module/gui/Overview.py:157
 msgid "Speed"
 msgstr ""
 
@@ -940,6 +817,15 @@ msgstr ""
 
 #: module/gui/MainWindow.py:168
 msgid "File"
+msgstr ""
+
+#: module/gui/MainWindow.py:169 module/gui/Options.py:24
+#: module/gui/Options.py:119 module/gui/Options.py:223
+#: module/gui/Options.py:350 module/gui/Options.py:424
+#: module/gui/Options.py:503 module/gui/Options.py:769
+#: module/gui/Options.py:869 module/gui/Options.py:1012
+#: module/gui/Options.py:1131
+msgid "Options"
 msgstr ""
 
 #: module/gui/MainWindow.py:170
@@ -956,6 +842,10 @@ msgstr ""
 
 #: module/gui/MainWindow.py:177
 msgid "Restart pyLoad Server"
+msgstr ""
+
+#: module/gui/MainWindow.py:188 module/gui/Options.py:1146
+msgid "Language"
 msgstr ""
 
 #: module/gui/MainWindow.py:189 module/gui/SettingsWidget.py:148
@@ -982,7 +872,7 @@ msgstr ""
 msgid "Log"
 msgstr ""
 
-#: module/gui/MainWindow.py:250 module/gui/MainWindow.py:416
+#: module/gui/MainWindow.py:250 module/gui/MainWindow.py:413
 msgid "Server Settings"
 msgstr ""
 
@@ -990,263 +880,126 @@ msgstr ""
 msgid "Server Log"
 msgstr ""
 
-#: module/gui/MainWindow.py:343
+#: module/gui/MainWindow.py:339
 msgid "Cannot set pause mode!"
 msgstr ""
 
-#: module/gui/MainWindow.py:358
+#: module/gui/MainWindow.py:354
 msgid "Insufficient server permissions."
 msgstr ""
 
-#: module/gui/MainWindow.py:395
+#: module/gui/MainWindow.py:392
 msgid "Toggle Pause"
 msgstr ""
 
-#: module/gui/MainWindow.py:395
+#: module/gui/MainWindow.py:392
 msgid ""
 "When the server is in pause mode, no further downloads will be started. "
 "Ongoing downloads continue."
 msgstr ""
 
-#: module/gui/MainWindow.py:402
+#: module/gui/MainWindow.py:399
 msgid "Abort All"
 msgstr ""
 
-#: module/gui/MainWindow.py:402
+#: module/gui/MainWindow.py:399
 msgid "Aborts all ongoing downloads and sets the server to pause mode."
 msgstr ""
 
-#: module/gui/MainWindow.py:408
+#: module/gui/MainWindow.py:405
 msgid ""
 "- Create a new package<br>- Add links to an existing package<br>- Add a "
 "container file to the Queue<br>- Add an account"
 msgstr ""
 
-#: module/gui/MainWindow.py:411
+#: module/gui/MainWindow.py:408
 msgid "Check Clipboard"
 msgstr ""
 
-#: module/gui/MainWindow.py:411
+#: module/gui/MainWindow.py:408
 msgid ""
 "Watches the clipboard, extracts URLs from copied text and creates a package "
 "with the URLs in the Collector."
 msgstr ""
 
-#: module/gui/MainWindow.py:416
+#: module/gui/MainWindow.py:413
 msgid "Download Speed Limit in kb/s"
 msgstr ""
 
-#: module/gui/MainWindow.py:416
+#: module/gui/MainWindow.py:413
 msgid "This is just a shortcut to:"
 msgstr ""
 
-#: module/gui/MainWindow.py:431
+#: module/gui/MainWindow.py:428
 msgid "Restart Failed"
 msgstr ""
 
-#: module/gui/MainWindow.py:431
+#: module/gui/MainWindow.py:428
 msgid ""
 "Restarts (resumes if supported) all failed, aborted and temporary offline "
 "downloads."
 msgstr ""
 
-#: module/gui/MainWindow.py:433
+#: module/gui/MainWindow.py:430
 msgid "Remove Finished"
 msgstr ""
 
-#: module/gui/MainWindow.py:433
+#: module/gui/MainWindow.py:430
 msgid "Removes all finished downloads from the Queue and the Collector."
 msgstr ""
 
-#: module/gui/MainWindow.py:447
+#: module/gui/MainWindow.py:444
 msgid "Account"
 msgstr ""
 
-#: module/gui/MainWindow.py:459
+#: module/gui/MainWindow.py:456
 msgid "Pull Out Selected Packages"
 msgstr ""
 
-#: module/gui/MainWindow.py:461 module/gui/MainWindow.py:488
+#: module/gui/MainWindow.py:458 module/gui/MainWindow.py:485
 msgid ""
 "To drop the items in the order they were selected, hold the ALT key when "
 "releasing the mouse button!"
 msgstr ""
 
-#: module/gui/MainWindow.py:486
+#: module/gui/MainWindow.py:483
 msgid "Push Selected Packages to Queue"
 msgstr ""
 
-#: module/gui/MainWindow.py:530
+#: module/gui/MainWindow.py:527
 msgid "New Account"
 msgstr ""
 
-#: module/gui/MainWindow.py:545
+#: module/gui/MainWindow.py:542
 msgid "Pull Out"
 msgstr ""
 
-#: module/gui/MainWindow.py:547 module/gui/MainWindow.py:590
+#: module/gui/MainWindow.py:544 module/gui/MainWindow.py:587
 msgid "Abort"
 msgstr ""
 
-#: module/gui/MainWindow.py:548 module/gui/MainWindow.py:591
+#: module/gui/MainWindow.py:545 module/gui/MainWindow.py:588
 msgid "Restart"
 msgstr ""
 
-#: module/gui/MainWindow.py:550 module/gui/MainWindow.py:593
+#: module/gui/MainWindow.py:547 module/gui/MainWindow.py:590
 msgid "Select All Packages"
 msgstr ""
 
-#: module/gui/MainWindow.py:551 module/gui/MainWindow.py:594
+#: module/gui/MainWindow.py:548 module/gui/MainWindow.py:591
 msgid "Deselect All"
 msgstr ""
 
-#: module/gui/MainWindow.py:552 module/gui/MainWindow.py:595
+#: module/gui/MainWindow.py:549 module/gui/MainWindow.py:592
 msgid "Expand All"
 msgstr ""
 
-#: module/gui/MainWindow.py:553 module/gui/MainWindow.py:596
+#: module/gui/MainWindow.py:550 module/gui/MainWindow.py:593
 msgid "Collapse All"
 msgstr ""
 
-#: module/gui/MainWindow.py:588
+#: module/gui/MainWindow.py:585
 msgid "Push to Queue"
-msgstr ""
-
-#: module/gui/MainWindow.py:1331
-msgid "Package Download Finished"
-msgstr ""
-
-#: module/gui/MainWindow.py:1332
-msgid "Download Finished"
-msgstr ""
-
-#: module/gui/MainWindow.py:1333
-msgid "Download Offline"
-msgstr ""
-
-#: module/gui/MainWindow.py:1334
-msgid "Download Skipped"
-msgstr ""
-
-#: module/gui/MainWindow.py:1335
-msgid "Download Temporarily Offline"
-msgstr ""
-
-#: module/gui/MainWindow.py:1336
-msgid "Download Failed"
-msgstr ""
-
-#: module/gui/MainWindow.py:1337
-msgid "Download Aborted"
-msgstr ""
-
-#: module/gui/MainWindow.py:1338
-msgid "Captcha Arrived"
-msgstr ""
-
-#: module/gui/MainWindow.py:1350
-msgid "Enable Desktop Notifications"
-msgstr ""
-
-#: module/gui/MainWindow.py:1427
-msgid "Restore normal window geometry on show"
-msgstr ""
-
-#: module/gui/MainWindow.py:1428
-msgid "Hide in tray when minimized"
-msgstr ""
-
-#: module/gui/MainWindow.py:1429
-msgid "Hide in tray on close button click"
-msgstr ""
-
-#: module/gui/MainWindow.py:1430
-msgid "Icon size"
-msgstr ""
-
-#: module/gui/MainWindow.py:1435
-msgid ""
-"Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop "
-"environments (Compiz window manager)."
-msgstr ""
-
-#: module/gui/MainWindow.py:1439 module/gui/MainWindow.py:1559
-msgid "Hints for some desktop environments: "
-msgstr ""
-
-#: module/gui/MainWindow.py:1460
-msgid "Enable Tray Icon"
-msgstr ""
-
-#: module/gui/MainWindow.py:1528
-msgid "Workaround for broken window geometry after unmaximize"
-msgstr ""
-
-#: module/gui/MainWindow.py:1530
-msgid ""
-"Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main "
-"window position and/or size does not get correctly restored when "
-"unmaximizing a maximized window that was hidden or loaded from previously "
-"saved settings."
-msgstr ""
-
-#: module/gui/MainWindow.py:1533
-msgid "Extra fix for show from tray"
-msgstr ""
-
-#: module/gui/MainWindow.py:1534
-msgid "Apply second last known geometry"
-msgstr ""
-
-#: module/gui/MainWindow.py:1535
-msgid "Extra fix on application start"
-msgstr ""
-
-#: module/gui/MainWindow.py:1536
-msgid "Always restore geometry"
-msgstr ""
-
-#: module/gui/MainWindow.py:1539
-msgid ""
-"Additional tweak, try enable this if<br>the size is correct but the position "
-"is slightly shifted<br>after showing the (previously maximized and hidden) "
-"application from tray and unmaximizing it again.<br><br>Can be required on "
-"some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments."
-msgstr ""
-
-#: module/gui/MainWindow.py:1541
-msgid ""
-"Additional tweak, try enable this if<br>- unmaximize has no "
-"effect<br>or<br>- position and/or size is totally wrong<br>after showing the "
-"(previously maximized and hidden) application from tray and unmaximizing it "
-"again.<br><br>Can be required on some Xfce desktop environments."
-msgstr ""
-
-#: module/gui/MainWindow.py:1543
-msgid ""
-"Additional tweak, try enable this if<br>- unmaximize has no "
-"effect<br>or<br>- position and/or size is totally wrong<br>after starting "
-"the application maximized (previously exited when maximized) and "
-"unmaximizing it.<br><br>Can be required on some Xfce desktop environments."
-msgstr ""
-
-#: module/gui/MainWindow.py:1545
-msgid ""
-"Additional tweak, try enable this if<br>the size is correct but the position "
-"is slightly shifted<br>after maximizing and then unmaximizing the "
-"application (without been hidden in between).<br><br>Usually not required."
-msgstr ""
-
-#: module/gui/MainWindow.py:1555
-msgid "Fix for resize"
-msgstr ""
-
-#: module/gui/MainWindow.py:1556
-msgid ""
-"Try enable this if the mainwindow gets slightly shifted when resizing it the "
-"first time after starting the application or when resizing it after showing "
-"the application from tray.<br><br>Can be required on some LXDE desktop "
-"environments."
 msgstr ""
 
 #: module/gui/Overview.py:153 module/gui/Queue.py:212
@@ -1261,7 +1014,7 @@ msgstr ""
 msgid "New Package"
 msgstr ""
 
-#: module/gui/PackageDock.py:119
+#: module/gui/PackageDock.py:131
 msgid "Create"
 msgstr ""
 
@@ -1269,11 +1022,11 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
-#: module/gui/Queue.py:406
+#: module/gui/Queue.py:414
 msgid "Queue View"
 msgstr ""
 
-#: module/gui/Queue.py:480
+#: module/gui/Queue.py:488
 #, python-format
 msgid "waiting %d seconds"
 msgstr ""
@@ -1310,11 +1063,11 @@ msgstr ""
 msgid "Match"
 msgstr ""
 
-#: module/gui/Tools.py:112
+#: module/gui/Tools.py:117
 msgid "Warning"
 msgstr ""
 
-#: module/gui/Tools.py:115
+#: module/gui/Tools.py:123
 msgid "Error"
 msgstr ""
 
@@ -1354,4 +1107,264 @@ msgstr ""
 #: module/gui/connector.py:228
 #, python-format
 msgid "but we need version %s"
+msgstr ""
+
+#: module/gui/CaptchaDialog.py:62
+msgid "Submit"
+msgstr ""
+
+#: module/gui/CaptchaDialog.py:63
+msgid "Ignore"
+msgstr ""
+
+#: module/gui/CaptchaDialog.py:159
+msgid "There is no captcha waiting."
+msgstr ""
+
+#: module/gui/Options.py:27
+msgid "Package Download Finished"
+msgstr ""
+
+#: module/gui/Options.py:28
+msgid "Download Finished"
+msgstr ""
+
+#: module/gui/Options.py:29
+msgid "Download Offline"
+msgstr ""
+
+#: module/gui/Options.py:30
+msgid "Download Skipped"
+msgstr ""
+
+#: module/gui/Options.py:31
+msgid "Download Temporarily Offline"
+msgstr ""
+
+#: module/gui/Options.py:32
+msgid "Download Failed"
+msgstr ""
+
+#: module/gui/Options.py:33
+msgid "Download Aborted"
+msgstr ""
+
+#: module/gui/Options.py:34
+msgid "Captcha Arrived"
+msgstr ""
+
+#: module/gui/Options.py:46
+msgid "Enable Desktop Notifications"
+msgstr ""
+
+#: module/gui/Options.py:122
+msgid "Enable File Log"
+msgstr ""
+
+#: module/gui/Options.py:128
+msgid "Log Rotation"
+msgstr ""
+
+#: module/gui/Options.py:130
+msgid "Size in kb"
+msgstr ""
+
+#: module/gui/Options.py:133
+msgid "Count"
+msgstr ""
+
+#: module/gui/Options.py:145
+msgid "Log Exceptions"
+msgstr ""
+
+#: module/gui/Options.py:226 module/gui/Options.py:365
+msgid "Enable"
+msgstr ""
+
+#: module/gui/Options.py:240
+msgid ""
+"This should usually stay on port 9666. At least Firefox with FlashGot only "
+"works reliable with its default address setting:<br>http://127.0.0.1:9666/"
+"flashgot"
+msgstr ""
+
+#: module/gui/Options.py:262
+msgid "ClickNLoad Port Forwarding"
+msgstr ""
+
+#: module/gui/Options.py:321
+msgid "Not Running"
+msgstr ""
+
+#: module/gui/Options.py:323
+msgid "ERROR"
+msgstr ""
+
+#: module/gui/Options.py:337
+msgid ""
+"This is useful when there are several clients connected to the server, to "
+"reflect all changes made by others.<br>Also, to reflect your own changes "
+"when you do not have"
+msgstr ""
+
+#: module/gui/Options.py:338
+msgid ""
+"permission.<br>However, you can always trigger a Reload from the View menu "
+"manually.<br><br>This should stay disabled, if you have"
+msgstr ""
+
+#: module/gui/Options.py:340
+msgid "permission and you are the only active user on the server."
+msgstr ""
+
+#: module/gui/Options.py:353
+msgid "Every"
+msgstr ""
+
+#: module/gui/Options.py:357
+msgid "seconds"
+msgstr ""
+
+#: module/gui/Options.py:427
+msgid "Adjust dialog box size to its content"
+msgstr ""
+
+#: module/gui/Options.py:432
+msgid "Enable Captcha Solving"
+msgstr ""
+
+#: module/gui/Options.py:506
+msgid "Enable Custom Fonts"
+msgstr ""
+
+#: module/gui/Options.py:508
+msgid "Application"
+msgstr ""
+
+#: module/gui/Options.py:512 module/gui/Options.py:519
+#: module/gui/Options.py:524 module/gui/Options.py:529
+#: module/gui/Options.py:534 module/gui/Options.py:873
+#: module/gui/Options.py:875
+msgid "Choose"
+msgstr ""
+
+#: module/gui/Options.py:567 module/gui/Options.py:895
+msgid "Reset"
+msgstr ""
+
+#: module/gui/Options.py:772
+msgid "Restore normal window geometry on show"
+msgstr ""
+
+#: module/gui/Options.py:773
+msgid "Hide in tray when minimized"
+msgstr ""
+
+#: module/gui/Options.py:774
+msgid "Hide in tray on close button click"
+msgstr ""
+
+#: module/gui/Options.py:775
+msgid "Icon size"
+msgstr ""
+
+#: module/gui/Options.py:780
+msgid ""
+"Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop "
+"environments (Compiz window manager)."
+msgstr ""
+
+#: module/gui/Options.py:784 module/gui/Options.py:1049
+msgid "Hints for some desktop environments: "
+msgstr ""
+
+#: module/gui/Options.py:806
+msgid "Enable Tray Icon"
+msgstr ""
+
+#: module/gui/Options.py:872
+msgid "Text color"
+msgstr ""
+
+#: module/gui/Options.py:874
+msgid "Background color"
+msgstr ""
+
+#: module/gui/Options.py:876
+msgid "What's This Preview"
+msgstr ""
+
+#: module/gui/Options.py:884
+msgid "Enable Custom Colors"
+msgstr ""
+
+#: module/gui/Options.py:1018
+msgid "Workaround for broken window geometry after unmaximize"
+msgstr ""
+
+#: module/gui/Options.py:1020
+msgid ""
+"Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main "
+"window position and/or size does not get correctly restored when "
+"unmaximizing a maximized window that was hidden or loaded from previously "
+"saved settings."
+msgstr ""
+
+#: module/gui/Options.py:1023
+msgid "Extra fix for show from tray"
+msgstr ""
+
+#: module/gui/Options.py:1024
+msgid "Apply second last known geometry"
+msgstr ""
+
+#: module/gui/Options.py:1025
+msgid "Extra fix on application start"
+msgstr ""
+
+#: module/gui/Options.py:1026
+msgid "Always restore geometry"
+msgstr ""
+
+#: module/gui/Options.py:1029
+msgid ""
+"Additional tweak, try enable this if<br>the size is correct but the position "
+"is slightly shifted<br>after showing the (previously maximized and hidden) "
+"application from tray and unmaximizing it again.<br><br>Can be required on "
+"some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments."
+msgstr ""
+
+#: module/gui/Options.py:1031
+msgid ""
+"Additional tweak, try enable this if<br>- unmaximize has no "
+"effect<br>or<br>- position and/or size is totally wrong<br>after showing the "
+"(previously maximized and hidden) application from tray and unmaximizing it "
+"again.<br><br>Can be required on some Xfce desktop environments."
+msgstr ""
+
+#: module/gui/Options.py:1033
+msgid ""
+"Additional tweak, try enable this if<br>- unmaximize has no "
+"effect<br>or<br>- position and/or size is totally wrong<br>after starting "
+"the application maximized (previously exited when maximized) and "
+"unmaximizing it.<br><br>Can be required on some Xfce desktop environments."
+msgstr ""
+
+#: module/gui/Options.py:1035
+msgid ""
+"Additional tweak, try enable this if<br>the size is correct but the position "
+"is slightly shifted<br>after maximizing and then unmaximizing the "
+"application (without been hidden in between).<br><br>Usually not required."
+msgstr ""
+
+#: module/gui/Options.py:1045
+msgid "Fix for resize"
+msgstr ""
+
+#: module/gui/Options.py:1046
+msgid ""
+"Try enable this if the mainwindow gets slightly shifted when resizing it the "
+"first time after starting the application or when resizing it after showing "
+"the application from tray.<br><br>Can be required on some LXDE desktop "
+"environments."
 msgstr ""
