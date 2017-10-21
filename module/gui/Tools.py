@@ -95,12 +95,12 @@ class MessageBox(QDialog):
 
         if noTranslation:
             self.log.debug8("MessageBox.__init__: without language translation")
-            translate = unicode
-        else:
-            translate = _
 
         # icon and window title
-        title = translate("pyLoad Client")
+        if noTranslation:
+            title = unicode("pyLoad Client")
+        else:
+            title = _("pyLoad Client")
         self.iconLabel = QLabel()
         tmpIcon = QIcon()
         style = QApplication.style()
@@ -111,10 +111,16 @@ class MessageBox(QDialog):
             tmpIcon = style.standardIcon(QStyle.SP_MessageBoxInformation, None, self)
         elif icon == "W":
             tmpIcon = style.standardIcon(QStyle.SP_MessageBoxWarning, None, self)
-            title += " - " + translate("Warning")
+            if noTranslation:
+                title += " - " + unicode("Warning")
+            else:
+                title += " - " + _("Warning")
         elif icon == "C":
             tmpIcon = style.standardIcon(QStyle.SP_MessageBoxCritical, None, self)
-            title += " - " + translate("Error")
+            if noTranslation:
+                title += " - " + unicode("Error")
+            else:
+                title += " - " + _("Error")
         withIcon = not tmpIcon.isNull()
         if withIcon:
             self.iconLabel.setPixmap(tmpIcon.pixmap(iconSize, iconSize))
@@ -158,20 +164,31 @@ class MessageBox(QDialog):
         self.buttonBox = QDialogButtonBox()
         if btnSet == "OK":
             self.okBtn = self.buttonBox.addButton(QDialogButtonBox.Ok)
-            self.buttonBox.button(QDialogButtonBox.Ok).setText(translate("OK"))
+            if noTranslation:
+                self.buttonBox.button(QDialogButtonBox.Ok).setText(unicode("OK"))
+            else:
+                self.buttonBox.button(QDialogButtonBox.Ok).setText(_("OK"))
             self.connect(self.okBtn, SIGNAL("clicked()"), self.accept)
         elif btnSet == "OK_CANCEL":
             self.okBtn     = self.buttonBox.addButton(QDialogButtonBox.Ok)
             self.cancelBtn = self.buttonBox.addButton(QDialogButtonBox.Cancel)
-            self.buttonBox.button(QDialogButtonBox.Ok).    setText(translate("OK"))
-            self.buttonBox.button(QDialogButtonBox.Cancel).setText(translate("Cancel"))
+            if noTranslation:
+                self.buttonBox.button(QDialogButtonBox.Ok).    setText(unicode("OK"))
+                self.buttonBox.button(QDialogButtonBox.Cancel).setText(unicode("Cancel"))
+            else:
+                self.buttonBox.button(QDialogButtonBox.Ok).    setText(_("OK"))
+                self.buttonBox.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
             self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
             self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
         elif btnSet == "YES_NO":
             self.yesBtn = self.buttonBox.addButton(QDialogButtonBox.Yes)
             self.noBtn  = self.buttonBox.addButton(QDialogButtonBox.No)
-            self.buttonBox.button(QDialogButtonBox.Yes).setText(translate("Yes"))
-            self.buttonBox.button(QDialogButtonBox.No). setText(translate("No"))
+            if noTranslation:
+                self.buttonBox.button(QDialogButtonBox.Yes).setText(unicode("Yes"))
+                self.buttonBox.button(QDialogButtonBox.No). setText(unicode("No"))
+            else:
+                self.buttonBox.button(QDialogButtonBox.Yes).setText(_("Yes"))
+                self.buttonBox.button(QDialogButtonBox.No). setText(_("No"))
             self.connect(self.yesBtn, SIGNAL("clicked()"), self.accept)
             self.connect(self.noBtn,  SIGNAL("clicked()"), self.reject)
 
