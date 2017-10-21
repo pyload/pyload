@@ -287,10 +287,6 @@ class MainWindow(QMainWindow):
         self.connect(self.tabs["accounts"]["view"], SIGNAL('customContextMenuRequested(const QPoint &)'), self.slotAccountContextMenu)
         
         self.connect(self.tabw, SIGNAL("currentChanged(int)"), self.slotTabChanged)
-        
-        self.notificationOptions = NotificationOptions(self)
-        self.trayOptions = TrayOptions(self)
-        self.otherOptions = OtherOptions(self)
     
     def setCorePermissions(self, corePermissions):
         self.corePermissions = corePermissions
@@ -717,15 +713,7 @@ class MainWindow(QMainWindow):
             somebody wants to close me!
         """
         event.ignore()
-        # quit when the option to minimize is disabled
-        if not (self.trayOptions.settings["EnableTray"] and self.trayOptions.settings["Close2Tray"]):
-            self.emit(SIGNAL("Quit"))
-        # quit when no tray is available (Connection Manager)
-        elif not QSystemTrayIcon.isSystemTrayAvailable():
-            self.emit(SIGNAL("Quit"))
-        # hide in tray
-        else:
-            self.emit(SIGNAL("hideInTray"))
+        self.emit(SIGNAL("mainWindowClose"))
     
     def slotShowAbout(self):
         """
@@ -1218,77 +1206,33 @@ class MainWindow(QMainWindow):
         self.accountContext.exec_(menuPos)
     
     def slotShowLoggingOptions(self):
-        """
-            popup the logging options dialog
-        """
         self.emit(SIGNAL("showLoggingOptions"))
     
     def slotShowClickNLoadForwarderOptions(self):
-        """
-            popup the ClickNLoad port forwarder options dialog
-        """
         self.emit(SIGNAL("showClickNLoadForwarderOptions"))
     
     def slotShowAutomaticReloadingOptions(self):
-        """
-            popup the automatic reloading options dialog
-        """
         self.emit(SIGNAL("showAutomaticReloadingOptions"))
     
     def slotShowCaptchaOptions(self):
-        """
-            popup the captcha options dialog
-        """
         self.emit(SIGNAL("showCaptchaOptions"))
     
     def slotShowFontOptions(self):
-        """
-            popup the font options dialog
-        """
         self.emit(SIGNAL("showFontOptions"))
     
     def slotShowNotificationOptions(self):
-        """
-            popup the notification options dialog
-        """
-        self.notificationOptions.dict2checkBoxStates()
-        retval = self.notificationOptions.exec_()
-        if retval == QDialog.Accepted:
-            self.notificationOptions.checkBoxStates2dict()
+        self.emit(SIGNAL("showNotificationOptions"))
     
     def slotShowTrayOptions(self):
-        """
-            popup the tray options dialog
-        """
-        self.trayOptions.dict2checkBoxStates()
-        retval = self.trayOptions.exec_()
-        if retval == QDialog.Accepted:
-            self.trayOptions.checkBoxStates2dict()
-            if self.trayOptions.settings["EnableTray"]:
-                self.emit(SIGNAL("showTrayIcon"))
-            else:
-                self.emit(SIGNAL("hideTrayIcon"))
-            self.emit(SIGNAL("setupIcon"), self.trayOptions.settings["IconFile"])
+        self.emit(SIGNAL("showTrayOptions"))
     
     def slotShowWhatsThisOptions(self):
-        """
-            popup the whatsthis options dialog
-        """
         self.emit(SIGNAL("showWhatsThisOptions"))
     
     def slotShowOtherOptions(self):
-        """
-            popup the other options dialog
-        """
-        self.otherOptions.dict2checkBoxStates()
-        retval = self.otherOptions.exec_()
-        if retval == QDialog.Accepted:
-            self.otherOptions.checkBoxStates2dict()
+        self.emit(SIGNAL("showOtherOptions"))
     
     def slotShowLanguageOptions(self):
-        """
-            popup the language options dialog
-        """
         self.emit(SIGNAL("showLanguageOptions"))
 
 class SpinBox(QSpinBox):
@@ -1312,316 +1256,4 @@ class SpinBox(QSpinBox):
                 self.clearFocus()
         QAbstractSpinBox.keyPressEvent(self, event)
 
-class NotificationOptions(QDialog):
-    """
-        notification options dialog
-    """
-    
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-        
-        self.settings = {}
-        
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-        
-        self.cbPackageFinished = QCheckBox(_("Package Download Finished"))
-        self.cbFinished        = QCheckBox(_("Download Finished"))
-        self.cbOffline         = QCheckBox(_("Download Offline"))
-        self.cbSkipped         = QCheckBox(_("Download Skipped"))
-        self.cbTempOffline     = QCheckBox(_("Download Temporarily Offline"))
-        self.cbFailed          = QCheckBox(_("Download Failed"))
-        self.cbAborted         = QCheckBox(_("Download Aborted"))
-        self.cbCaptcha         = QCheckBox(_("Captcha Arrived"))
-        
-        vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbPackageFinished)
-        vboxCb.addWidget(self.cbFinished)
-        vboxCb.addWidget(self.cbOffline)
-        vboxCb.addWidget(self.cbSkipped)
-        vboxCb.addWidget(self.cbTempOffline)
-        vboxCb.addWidget(self.cbFailed)
-        vboxCb.addWidget(self.cbAborted)
-        vboxCb.addWidget(self.cbCaptcha)
-        
-        self.cbEnableNotify = QGroupBox(_("Enable Desktop Notifications") + "     ")
-        self.cbEnableNotify.setCheckable(True)
-        self.cbEnableNotify.setLayout(vboxCb)
-        
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnableNotify)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-        
-        self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
-        
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-    
-    def defaultSettings(self):
-        self.settings.clear()
-        self.cbEnableNotify.setChecked(False)
-        self.cbPackageFinished.setChecked(False)
-        self.cbFinished.setChecked(False)
-        self.cbOffline.setChecked(True)
-        self.cbSkipped.setChecked(True)
-        self.cbTempOffline.setChecked(True)
-        self.cbFailed.setChecked(True)
-        self.cbAborted.setChecked(False)
-        self.cbCaptcha.setChecked(False)
-        self.checkBoxStates2dict()
-    
-    def checkBoxStates2dict(self):
-        self.settings["EnableNotify"]    = self.cbEnableNotify.isChecked()
-        self.settings["PackageFinished"] = self.cbPackageFinished.isChecked()
-        self.settings["Finished"]        = self.cbFinished.isChecked()
-        self.settings["Offline"]         = self.cbOffline.isChecked()
-        self.settings["Skipped"]         = self.cbSkipped.isChecked()
-        self.settings["TempOffline"]     = self.cbTempOffline.isChecked()
-        self.settings["Failed"]          = self.cbFailed.isChecked()
-        self.settings["Aborted"]         = self.cbAborted.isChecked()
-        self.settings["Captcha"]         = self.cbCaptcha.isChecked()
-    
-    def dict2checkBoxStates(self):
-        self.cbEnableNotify.setChecked    (self.settings["EnableNotify"])
-        self.cbPackageFinished.setChecked (self.settings["PackageFinished"])
-        self.cbFinished.setChecked        (self.settings["Finished"])
-        self.cbOffline.setChecked         (self.settings["Offline"])
-        self.cbSkipped.setChecked         (self.settings["Skipped"])
-        self.cbTempOffline.setChecked     (self.settings["TempOffline"])
-        self.cbFailed.setChecked          (self.settings["Failed"])
-        self.cbAborted.setChecked         (self.settings["Aborted"])
-        self.cbCaptcha.setChecked         (self.settings["Captcha"])
-    
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
 
-class TrayOptions(QDialog):
-    """
-        tray options dialog
-    """
-    
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-        
-        self.settings = {}
-        
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-        
-        self.cbRestoreGeo    = QCheckBox(_("Restore normal window geometry on show"))
-        self.cbMinimize2Tray = QCheckBox(_("Hide in tray when minimized"))
-        self.cbClose2Tray    = QCheckBox(_("Hide in tray on close button click"))
-        self.lblIconFile     = QLabel(_("Icon size"))
-        self.cobIconFile     = QComboBox()
-        self.lblIconFileNote = QLabel("<i>" + _("Takes effect on next login.") + "</i>")
-        self.lblUrl          = QLabel()
-        
-        whatsThis = (self.cbRestoreGeo.text(), _("Additional tweak.<br><br>Can be required on some Ubuntu/Unity desktop environments (Compiz window manager)."))
-        self.cbRestoreGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        self.cobIconFile.addItem("24x24")
-        self.cobIconFile.addItem("64x64")
-        desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
-        urltext  = "Options.txt"
-        url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
-        self.lblUrl.setTextFormat(Qt.RichText)
-        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
-        self.lblUrl.setToolTip(url)
-        self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        self.lblUrl.setOpenExternalLinks(True)
-        
-        hboxIconFile = QHBoxLayout()
-        hboxIconFile.addWidget(self.lblIconFile)
-        hboxIconFile.addWidget(self.cobIconFile)
-        hboxIconFile.addWidget(self.lblIconFileNote)
-        hboxIconFile.addStretch(1)
-        
-        vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbRestoreGeo)
-        vboxCb.addWidget(self.cbMinimize2Tray)
-        vboxCb.addWidget(self.cbClose2Tray)
-        vboxCb.addLayout(hboxIconFile)
-        vboxCb.addWidget(self.lblUrl)
-        
-        self.cbEnableTray = QGroupBox(_("Enable Tray Icon") + "     ")
-        self.cbEnableTray.setCheckable(True)
-        self.cbEnableTray.setLayout(vboxCb)
-        
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnableTray)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-        
-        self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
-        
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-    
-    def defaultSettings(self):
-        self.settings.clear()
-        self.settings["EnableTray"]    = True
-        self.settings["RestoreGeo"]    = False
-        self.settings["Minimize2Tray"] = False
-        self.settings["Close2Tray"]    = False
-        self.settings["IconFile"]      = "24x24"
-        self.dict2checkBoxStates()
-    
-    def checkBoxStates2dict(self):
-        self.settings["EnableTray"]    = self.cbEnableTray.isChecked()
-        self.settings["RestoreGeo"]    = self.cbRestoreGeo.isChecked()
-        self.settings["Minimize2Tray"] = self.cbMinimize2Tray.isChecked()
-        self.settings["Close2Tray"]    = self.cbClose2Tray.isChecked()
-        self.settings["IconFile"]      = str(self.cobIconFile.currentText())
-    
-    def dict2checkBoxStates(self):
-        self.cbEnableTray.setChecked    (self.settings["EnableTray"])
-        self.cbRestoreGeo.setChecked    (self.settings["RestoreGeo"])
-        self.cbMinimize2Tray.setChecked (self.settings["Minimize2Tray"])
-        self.cbClose2Tray.setChecked    (self.settings["Close2Tray"])
-        self.cobIconFile.setCurrentIndex(self.cobIconFile.findText(self.settings["IconFile"]))
-    
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
-class OtherOptions(QDialog):
-    """
-        other options dialog
-    """
-    
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-        
-        self.settings = {}
-        self.lastFont = None
-        
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-        
-        self.gb = QGroupBox(_("Other") + "     ")
-        self.gb.setCheckable(False)
-        
-        self.cbRestoreUnmaximizedGeo = QGroupBox(_("Workaround for broken window geometry after unmaximize") + "     ")
-        self.cbRestoreUnmaximizedGeo.setCheckable(True)
-        whatsThis = (self.cbRestoreUnmaximizedGeo.title(), _("Due to a bug in the GUI framework (QTBUG-21371) on some platforms, the main window position and/or size does not get correctly restored when unmaximizing a maximized window that was hidden or loaded from previously saved settings."))
-        self.cbRestoreUnmaximizedGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        
-        self.cbHideShowOnUnmax     = QCheckBox(_("Extra fix for show from tray"))
-        self.cbSecondLastNormalGeo = QCheckBox(_("Apply second last known geometry"))
-        self.cbHideShowOnStart     = QCheckBox(_("Extra fix on application start"))
-        self.cbAlwaysRestore       = QCheckBox(_("Always restore geometry"))
-        self.lblUrl                = QLabel()
-        
-        whatsThis = (self.cbHideShowOnUnmax.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some GNOME, Budgie, Cinnamon, MATE or LXDE desktop environments."))
-        self.cbHideShowOnUnmax.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbSecondLastNormalGeo.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after showing the (previously maximized and hidden) application from tray and unmaximizing it again.<br><br>Can be required on some Xfce desktop environments."))
-        self.cbSecondLastNormalGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbHideShowOnStart.text(), _("Additional tweak, try enable this if<br>- unmaximize has no effect<br>or<br>- position and/or size is totally wrong<br>after starting the application maximized (previously exited when maximized) and unmaximizing it.<br><br>Can be required on some Xfce desktop environments."))
-        self.cbHideShowOnStart.setWhatsThis(whatsThisFormat(*whatsThis))
-        whatsThis = (self.cbAlwaysRestore.text(), _("Additional tweak, try enable this if<br>the size is correct but the position is slightly shifted<br>after maximizing and then unmaximizing the application (without been hidden in between).<br><br>Usually not required."))
-        self.cbAlwaysRestore.setWhatsThis(whatsThisFormat(*whatsThis))
-        
-        vboxCb1 = QVBoxLayout()
-        vboxCb1.addWidget(self.cbHideShowOnUnmax)
-        vboxCb1.addWidget(self.cbSecondLastNormalGeo)
-        vboxCb1.addWidget(self.cbHideShowOnStart)
-        vboxCb1.addWidget(self.cbAlwaysRestore)
-        self.cbRestoreUnmaximizedGeo.setLayout(vboxCb1)
-        
-        self.cbRefreshGeo = QCheckBox(_("Fix for resize"))
-        whatsThis = (self.cbRefreshGeo.text(), _("Try enable this if the mainwindow gets slightly shifted when resizing it the first time after starting the application or when resizing it after showing the application from tray.<br><br>Can be required on some LXDE desktop environments."))
-        self.cbRefreshGeo.setWhatsThis(whatsThisFormat(*whatsThis))
-        
-        desctext = "<i>" + _("Hints for some desktop environments: ") + "</i>"
-        urltext  = "Options.txt"
-        url      = "https://github.com/snilt/pyload/blob/forkreadme/Options.txt"
-        self.lblUrl.setTextFormat(Qt.RichText)
-        self.lblUrl.setText(desctext + "<a href=\"" + url + "\">" + urltext + "</a>")
-        self.lblUrl.setToolTip(url)
-        self.lblUrl.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        self.lblUrl.setOpenExternalLinks(True)
-        
-        vboxGb = QVBoxLayout()
-        vboxGb.addWidget(self.cbRestoreUnmaximizedGeo)
-        vboxGb.addWidget(self.cbRefreshGeo)
-        vboxGb.addWidget(self.lblUrl)
-        self.gb.setLayout(vboxGb)
-        
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.gb)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-        
-        self.adjustSize()
-        #self.setFixedSize(self.width(), self.height())
-        
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-    
-    def exec_(self):
-        # It does not resize very well when the font size has changed
-        if self.font() != self.lastFont:
-            self.lastFont = self.font()
-            self.adjustSize()
-        return QDialog.exec_(self)
-    
-    def defaultSettings(self):
-        self.settings.clear()
-        self.settings["RestoreUnmaximizedGeo"] = False
-        self.settings["HideShowOnUnmax"]       = False
-        self.settings["SecondLastNormalGeo"]   = False
-        self.settings["HideShowOnStart"]       = False
-        self.settings["AlwaysRestore"]         = False
-        self.settings["RefreshGeo"]            = False
-        self.dict2checkBoxStates()
-    
-    def checkBoxStates2dict(self):
-        self.settings["RestoreUnmaximizedGeo"] = self.cbRestoreUnmaximizedGeo.isChecked()
-        self.settings["HideShowOnUnmax"]       = self.cbHideShowOnUnmax.isChecked()
-        self.settings["SecondLastNormalGeo"]   = self.cbSecondLastNormalGeo.isChecked()
-        self.settings["HideShowOnStart"]       = self.cbHideShowOnStart.isChecked()
-        self.settings["AlwaysRestore"]         = self.cbAlwaysRestore.isChecked()
-        self.settings["RefreshGeo"]            = self.cbRefreshGeo.isChecked()
-    
-    def dict2checkBoxStates(self):
-        self.cbRestoreUnmaximizedGeo.setChecked (self.settings["RestoreUnmaximizedGeo"])
-        self.cbHideShowOnUnmax.setChecked       (self.settings["HideShowOnUnmax"])
-        self.cbSecondLastNormalGeo.setChecked   (self.settings["SecondLastNormalGeo"])
-        self.cbHideShowOnStart.setChecked       (self.settings["HideShowOnStart"])
-        self.cbAlwaysRestore.setChecked         (self.settings["AlwaysRestore"])
-        self.cbRefreshGeo.setChecked            (self.settings["RefreshGeo"])
-    
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()

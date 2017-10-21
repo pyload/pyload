@@ -68,6 +68,7 @@ from module.gui.Overview import *
 from module.gui.Collector import *
 from module.gui.XMLParser import *
 from module.gui.CoreConfigParser import ConfigParser
+from module.gui.Options import *
 from module.gui.Tools import MessageBox
 
 from module.lib.rename_process import renameProcess
@@ -298,6 +299,9 @@ class main(QObject):
         self.connector = Connector(first)
         self.inSlotToolbarSpeedLimitEdited = False
         self.mainWindow = MainWindow(self.corePermissions, self.connector)
+        self.notificationOptions = NotificationOptions(self.mainWindow)
+        self.otherOptions = OtherOptions(self.mainWindow)
+        self.trayOptions = TrayOptions(self.mainWindow)
         self.loggingOptions.setParent(self.mainWindow, self.loggingOptions.windowFlags())
         self.packageEdit = PackageEdit(self.mainWindow)
         self.setupGuiLogTab(self.loggingOptions.settings["file_log"])
@@ -449,10 +453,10 @@ class main(QObject):
         self.mainWindow.actions["clipboard"].setChecked(self.checkClipboard)
         self.mainWindow.tabs["settings"]["w"].setConnector(self.connector)
         self.createTrayIcon()
-        if self.mainWindow.trayOptions.settings["EnableTray"]:
-            self.tray.show()
+        if self.trayOptions.settings["EnableTray"]:
+            self.emit(SIGNAL("showTrayIcon"))
         else:
-            self.tray.hide()
+            self.emit(SIGNAL("hideTrayIcon"))
         self.mainloop.start()
         self.allowUserActions(True)
 
@@ -587,6 +591,9 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("quitCore"), self.slotQuitCore)
         self.connect(self.mainWindow,          SIGNAL("restartCore"), self.slotRestartCore)
         self.connect(self.mainWindow,          SIGNAL("showLoggingOptions"), self.slotShowLoggingOptions)
+        self.connect(self.mainWindow,          SIGNAL("showNotificationOptions"), self.slotShowNotificationOptions)
+        self.connect(self.mainWindow,          SIGNAL("showOtherOptions"), self.slotShowOtherOptions)
+        self.connect(self.mainWindow,          SIGNAL("showTrayOptions"), self.slotShowTrayOptions)
         self.connect(self.mainWindow,          SIGNAL("showClickNLoadForwarderOptions"), self.slotShowClickNLoadForwarderOptions)
         self.connect(self.mainWindow,          SIGNAL("showAutomaticReloadingOptions"), self.slotShowAutomaticReloadingOptions)
         self.connect(self.mainWindow,          SIGNAL("showCaptchaOptions"), self.slotShowCaptchaOptions)
@@ -617,7 +624,7 @@ class main(QObject):
         self.connect(self.mainWindow,          SIGNAL("pullOutPackages"), self.slotPullOutPackages)
         self.connect(self.mainWindow,          SIGNAL("reloadAccounts"), self.slotReloadAccounts)
         self.connect(self.mainWindow,          SIGNAL("showAbout"), self.slotShowAbout)
-        self.connect(self.mainWindow,          SIGNAL("Quit"), self.slotQuit)
+        self.connect(self.mainWindow,          SIGNAL("mainWindowClose"), self.slotMainWindowClose)
 
         self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
         self.connect(self.mainWindow.captchaDialog, SIGNAL("done"), self.slotCaptchaDone)
@@ -720,8 +727,11 @@ class main(QObject):
         self.trayState["unmaxed_size"] = self.geoUnmaximized["unmaxed_size"]
         self.trayState["restore_unmaxed_geo"] = True if (self.trayState["maximized"]) and (self.trayState["unmaxed_pos"] is not None) and (self.trayState["unmaxed_size"] is not None) else False
         self.tray = TrayIcon()
-        self.tray.setupIcon(self.mainWindow.trayOptions.settings["IconFile"])
+        self.tray.setupIcon(self.trayOptions.settings["IconFile"])
         self.notification = Notification(self.tray)
+        self.connect(self, SIGNAL("showTrayIcon"),          self.tray.show)
+        self.connect(self, SIGNAL("hideTrayIcon"),          self.tray.hide)
+        self.connect(self, SIGNAL("setupIcon"),             self.tray.setupIcon)
         self.connect(self, SIGNAL("showMessage"),           self.notification.showMessage)
         self.connect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray, Qt.QueuedConnection)
         self.connect(self, SIGNAL("traySetShowActionText"), self.tray.setShowActionText)
@@ -737,14 +747,13 @@ class main(QObject):
             self.connect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
             self.connect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
             self.connect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.debugKill)
-        self.connect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
-        self.connect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
-        self.connect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
-        self.connect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
         self.connect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
         self.connect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
 
     def deleteTrayIcon(self):
+        self.disconnect(self, SIGNAL("showTrayIcon"),          self.tray.show)
+        self.disconnect(self, SIGNAL("hideTrayIcon"),          self.tray.hide)
+        self.disconnect(self, SIGNAL("setupIcon"),             self.tray.setupIcon)
         self.disconnect(self, SIGNAL("showMessage"),           self.notification.showMessage)
         self.disconnect(self, SIGNAL("minimize2Tray"),         self.slotMinimize2Tray)
         self.disconnect(self, SIGNAL("traySetShowActionText"), self.tray.setShowActionText)
@@ -760,10 +769,6 @@ class main(QObject):
             self.disconnect(self.tray.debugMsgBoxTest1Action, SIGNAL("triggered()"), self.debugMsgBoxTest1)
             self.disconnect(self.tray.debugMsgBoxTest2Action, SIGNAL("triggered()"), self.debugMsgBoxTest2)
             self.disconnect(self.tray.debugKillAction,        SIGNAL("triggered()"), self.debugKill)
-        self.disconnect(self.mainWindow, SIGNAL("showTrayIcon"),    self.tray.show)
-        self.disconnect(self.mainWindow, SIGNAL("hideTrayIcon"),    self.tray.hide)
-        self.disconnect(self.mainWindow, SIGNAL("setupIcon"),       self.tray.setupIcon)
-        self.disconnect(self.mainWindow, SIGNAL("hideInTray"),      self.hideInTray)
         self.disconnect(self.mainWindow, SIGNAL("minimizeToggled"), self.slotMinimizeToggled)
         self.disconnect(self.mainWindow, SIGNAL("maximizeToggled"), self.slotMaximizeToggled)
         self.tray.menu.deleteLater()
@@ -888,10 +893,10 @@ class main(QObject):
         else:
             plgeo = None
         if not s["maximized"]:
-            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+            if self.trayOptions.settings["RestoreGeo"]:
                 pe(); self.mainWindow.restoreGeometry(s["geo"])
             if prepForSave: return
-            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+            if self.trayOptions.settings["RestoreGeo"]:
                 self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), pdGeo=pdgeo, plGeo=plgeo)
             else:
                 self.scheduleMainWindowPaintEventAction()
@@ -899,7 +904,7 @@ class main(QObject):
             self.showFromTray_continue()
         else:
             if prepForSave: return
-            if self.mainWindow.trayOptions.settings["RestoreGeo"]:
+            if self.trayOptions.settings["RestoreGeo"]:
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait, pdGeo=pdgeo, plGeo=plgeo)
             else:
                 self.scheduleMainWindowPaintEventAction(showFromTrayContinue=numOfPaintEventsToWait)
@@ -923,7 +928,7 @@ class main(QObject):
         """
         if self.tray is None:
             return
-        if not self.mainWindow.trayOptions.settings["EnableTray"]:
+        if not self.trayOptions.settings["EnableTray"]:
             return
         if self.trayState["hiddenInTray"]:
             return
@@ -931,7 +936,7 @@ class main(QObject):
             return
         self.log.debug4("main.slotMinimizeToggled: %s" % minimized)
         if minimized:   # minimized flag was set
-            if self.mainWindow.trayOptions.settings["Minimize2Tray"] and (QApplication.activeModalWidget() is None):
+            if self.trayOptions.settings["Minimize2Tray"] and (QApplication.activeModalWidget() is None):
                 self.emit(SIGNAL("minimize2Tray"))   # queued connection
             else:
                 self.emit(SIGNAL("traySetShowActionText"), True)
@@ -967,7 +972,7 @@ class main(QObject):
             if s["maximized"]:
                 self.log.debug4("main.slotMaximizeToggled: repeated maximize")
                 return
-            if self.mainWindow.otherOptions.settings["SecondLastNormalGeo"]:
+            if self.otherOptions.settings["SecondLastNormalGeo"]:
                 if self.mainWindow.eD["2ndLastNormPos"] is not None:
                     s["unmaxed_pos"] = self.mainWindow.eD["2ndLastNormPos"]
                 else:
@@ -996,8 +1001,8 @@ class main(QObject):
             if not s["maximized"]:
                 self.log.debug4("main.slotMaximizeToggled: repeated unmaximize")
                 return
-            if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and (s["restore_unmaxed_geo"] or self.mainWindow.otherOptions.settings["AlwaysRestore"]) and not QApplication.activeModalWidget():
-                if self.mainWindow.otherOptions.settings["HideShowOnUnmax"]:
+            if self.otherOptions.settings["RestoreUnmaximizedGeo"] and (s["restore_unmaxed_geo"] or self.otherOptions.settings["AlwaysRestore"]) and not QApplication.activeModalWidget():
+                if self.otherOptions.settings["HideShowOnUnmax"]:
                     pdShownFloating = self.mainWindow.newPackDock.isFloating() and not self.mainWindow.newPackDock.isHidden()
                     ldShownFloating = self.mainWindow.newLinkDock.isFloating() and not self.mainWindow.newLinkDock.isHidden()
                     self.mainWindow.hide()
@@ -1008,7 +1013,7 @@ class main(QObject):
                     self.mainWindow.eD["pCount"] = 0
                     self.mainWindow.show()
                     self.waitForPaintEvents(1)
-                    self.log.debug4("main.slotMaximizeToggled: Option '%s' done, show()" % str(self.mainWindow.otherOptions.cbHideShowOnUnmax.text()))
+                    self.log.debug4("main.slotMaximizeToggled: Option '%s' done, show()" % str(self.otherOptions.cbHideShowOnUnmax.text()))
                     if pdShownFloating:
                         self.mainWindow.newPackDock.show()
                     if ldShownFloating:
@@ -1016,7 +1021,7 @@ class main(QObject):
                 restoreDocks = self.mainWindow.eD["pStateSig"]    # restore docked widgets width (divider position) at first unmaximize when the app was lauched maximized
                 if self.mainWindow.eD["pStateSig"]:
                     self.mainWindow.eD["pStateSig"] = False
-                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
+                self.scheduleMainWindowPaintEventAction(pos=s["unmaxed_pos"], size=s["unmaxed_size"], refreshGeo=self.otherOptions.settings["RefreshGeo"], restoreDocks=restoreDocks)
                 self.mainWindow.update()
                 self.log.debug4("main.slotMaximizeToggled: geometry restored,   pos: %s   size: %s" % (s["unmaxed_pos"], s["unmaxed_size"]))
             else:
@@ -1306,7 +1311,7 @@ class main(QObject):
         """
             notifications
         """
-        s = self.mainWindow.notificationOptions.settings
+        s = self.notificationOptions.settings
         if s["EnableNotify"]:
             if status == 100:
                 if s["PackageFinished"]:
@@ -1913,7 +1918,7 @@ class main(QObject):
             self.geoOther["captchaDialog"] = self.mainWindow.captchaDialog.geometry()
         else:
             self.geoOther["captchaDialog"] = self.mainWindow.captchaDialog.geo
-        if self.mainWindow.trayOptions.settings["EnableTray"] and self.trayState["hiddenInTray"]:
+        if self.trayOptions.settings["EnableTray"] and self.trayState["hiddenInTray"]:
             self.log.debug4("main.prepareForSaveOptionsAndWindow: showFromTray()")
             self.showFromTray(True)
             QTimer.singleShot(0, contFunc)
@@ -1933,15 +1938,15 @@ class main(QObject):
         if mainWindowNode.isNull():
             mainWindowNode = self.parser.xml.createElement("mainWindow")
             self.parser.root.appendChild(mainWindowNode)
-        optionsNotifications = str(QByteArray(str(self.mainWindow.notificationOptions.settings)).toBase64())
+        optionsNotifications = str(QByteArray(str(self.notificationOptions.settings)).toBase64())
         optionsLogging = str(QByteArray(str(self.loggingOptions.settings)).toBase64())
         optionsClickNLoadForwarder = str(self.clickNLoadForwarderOptions.settings["fromPort"])
         optionsAutomaticReloading = str(QByteArray(str(self.automaticReloadingOptions.settings)).toBase64())
         optionsCaptcha = str(QByteArray(str(self.captchaOptions.settings)).toBase64())
         optionsFonts = str(QByteArray(str(self.fontOptions.settings)).toBase64())
-        optionsTray = str(QByteArray(str(self.mainWindow.trayOptions.settings)).toBase64())
+        optionsTray = str(QByteArray(str(self.trayOptions.settings)).toBase64())
         optionsWhatsThis = str(QByteArray(str(self.whatsThisOptions.settings)).toBase64())
-        optionsOther = str(QByteArray(str(self.mainWindow.otherOptions.settings)).toBase64())
+        optionsOther = str(QByteArray(str(self.otherOptions.settings)).toBase64())
         lastAddContainerDir = self.mainWindow.lastAddContainerDir
         optionsNotificationsNode = mainWindowNode.toElement().elementsByTagName("optionsNotifications").item(0)
         optionsLoggingNode = mainWindowNode.toElement().elementsByTagName("optionsLogging").item(0)
@@ -2138,8 +2143,8 @@ class main(QObject):
         # Desktop Notifications
         d = base64ToDict(optionsNotifications)
         if d is not None:
-            try:              self.mainWindow.notificationOptions.settings = d; self.mainWindow.notificationOptions.dict2checkBoxStates()
-            except Exception: self.mainWindow.notificationOptions.defaultSettings(); d = None
+            try:              self.notificationOptions.settings = d; self.notificationOptions.dict2checkBoxStates()
+            except Exception: self.notificationOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Desktop Notifications")); reset = True
         # Client Log
         d = base64ToDict(optionsLogging)
@@ -2175,8 +2180,8 @@ class main(QObject):
         # Tray Icon
         d = base64ToDict(optionsTray)
         if d is not None:
-            try:              self.mainWindow.trayOptions.settings = d; self.mainWindow.trayOptions.dict2checkBoxStates()
-            except Exception: self.mainWindow.trayOptions.defaultSettings(); d = None
+            try:              self.trayOptions.settings = d; self.trayOptions.dict2checkBoxStates()
+            except Exception: self.trayOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Tray Icon")); reset = True
         # What's This
         d = base64ToDict(optionsWhatsThis)
@@ -2189,8 +2194,8 @@ class main(QObject):
         # Other
         d = base64ToDict(optionsOther)
         if d is not None:
-            try:              self.mainWindow.otherOptions.settings = d; self.mainWindow.otherOptions.dict2checkBoxStates()
-            except Exception: self.mainWindow.otherOptions.defaultSettings(); d = None
+            try:              self.otherOptions.settings = d; self.otherOptions.dict2checkBoxStates()
+            except Exception: self.otherOptions.defaultSettings(); d = None
         if d is None: self.messageBox_21(_("Other")); reset = True
         # Last folder from where a container file has been loaded
         self.mainWindow.lastAddContainerDir = lastAddContainerDir
@@ -2295,21 +2300,21 @@ class main(QObject):
             plGeo = self.geoOther["linkDock"]
             if not self.mainWindow.newLinkDock.isFloating() or self.mainWindow.newLinkDock.isHidden():
                 plGeo = None
-            self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.mainWindow.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
+            self.scheduleMainWindowPaintEventAction(pos=self.mainWindow.pos(), size=self.mainWindow.size(), refreshGeo=self.otherOptions.settings["RefreshGeo"], pdGeo=pdGeo, plGeo=plGeo)
         else:
             self.mainWindow.eD["pCount"] = 0
             self.mainWindow.showMaximized()
             self.waitForPaintEvents(1)
             self.mainWindow.newPackDock.setFloating(False)   # needed on enlightenment
             self.mainWindow.newLinkDock.setFloating(False)   # needed on enlightenment
-            if self.mainWindow.otherOptions.settings["RestoreUnmaximizedGeo"] and self.mainWindow.otherOptions.settings["HideShowOnStart"]:
-                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
+            if self.otherOptions.settings["RestoreUnmaximizedGeo"] and self.otherOptions.settings["HideShowOnStart"]:
+                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, showMaximized()" % str(self.otherOptions.cbHideShowOnStart.text()))
                 self.mainWindow.hide()
                 self.app.processEvents()
                 self.mainWindow.eD["pCount"] = 0
                 self.mainWindow.show()
                 self.waitForPaintEvents(1)
-                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.mainWindow.otherOptions.cbHideShowOnStart.text()))
+                self.log.debug4("main.loadWindowFromConfig: Option '%s' done, show() after hide()" % str(self.otherOptions.cbHideShowOnStart.text()))
                 self.app.processEvents()
             self.mainWindow.eD["pCount"] = 0
             self.mainWindow.newPackDock.setFloating(gOther["packDockIsFloating"])
@@ -2819,6 +2824,20 @@ class main(QObject):
     def slotReloadAccounts(self, force=False):
         self.mainWindow.tabs["accounts"]["view"].model.reloadData(force)
 
+    def slotMainWindowClose(self):
+        """
+            emitted from main window closeEvent()
+        """
+        # quit when the option to minimize is disabled
+        if not (self.trayOptions.settings["EnableTray"] and self.trayOptions.settings["Close2Tray"]):
+            QTimer.singleShot(0, self.slotQuit)
+        # quit when there is no system tray is available
+        elif not QSystemTrayIcon.isSystemTrayAvailable():
+            QTimer.singleShot(0, self.slotQuit)
+        # hide in tray
+        elif self.trayOptions.settings["EnableTray"] and (self.tray is not None):
+            QTimer.singleShot(0, self.hideInTray)
+
     def slotQuit(self):
         self.allowUserActions(False)
         self.prepareForSaveOptionsAndWindow(self.slotQuit_continue)
@@ -2966,6 +2985,38 @@ class main(QObject):
                     self.initLogging()
                 self.setupGuiLogTab(fl)
 
+    def slotShowNotificationOptions(self):
+        """
+            popup the notification options dialog
+        """
+        self.notificationOptions.dict2checkBoxStates()
+        retval = self.notificationOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.notificationOptions.checkBoxStates2dict()
+
+    def slotShowOtherOptions(self):
+        """
+            popup the other options dialog
+        """
+        self.otherOptions.dict2checkBoxStates()
+        retval = self.otherOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.otherOptions.checkBoxStates2dict()
+
+    def slotShowTrayOptions(self):
+        """
+            popup the tray options dialog
+        """
+        self.trayOptions.dict2checkBoxStates()
+        retval = self.trayOptions.exec_()
+        if retval == QDialog.Accepted:
+            self.trayOptions.checkBoxStates2dict()
+            if self.trayOptions.settings["EnableTray"]:
+                self.emit(SIGNAL("showTrayIcon"))
+            else:
+                self.emit(SIGNAL("hideTrayIcon"))
+            self.emit(SIGNAL("setupIcon"), self.trayOptions.settings["IconFile"])
+
     def slotShowClickNLoadForwarderOptions(self):
         """
             popup the ClickNLoad port forwarder options dialog
@@ -3036,9 +3087,9 @@ class main(QObject):
         self.clickNLoadForwarderOptions.appFontChanged()
         self.languageOptions.appFontChanged()
         self.packageEdit.appFontChanged()
-        self.mainWindow.notificationOptions.appFontChanged()
-        self.mainWindow.trayOptions.appFontChanged()
-        self.mainWindow.otherOptions.appFontChanged()
+        self.notificationOptions.appFontChanged()
+        self.trayOptions.appFontChanged()
+        self.otherOptions.appFontChanged()
         self.mainWindow.captchaDialog.appFontChanged()
         self.connWindow.appFontChanged()
         self.connector.pwBox.appFontChanged()
@@ -3427,661 +3478,6 @@ class InfoCorePermissions(QDialog):
         plist = sorted(plist, key=lambda d: d[0])
         return (admin, plist)
 
-class CaptchaOptions(QDialog):
-    """
-        captcha options dialog
-    """
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-
-        self.settings = {}
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.cbAdjSize = QCheckBox(_("Adjust dialog box size to its content"))
-
-        vboxCb = QVBoxLayout()
-        vboxCb.addWidget(self.cbAdjSize)
-
-        self.cbEnableDialog = QGroupBox(_("Enable Captcha Solving") + "     ")
-        self.cbEnableDialog.setCheckable(True)
-        self.cbEnableDialog.setLayout(vboxCb)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnableDialog)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-
-    def defaultSettings(self):
-        self.settings.clear()
-        self.settings["Enabled"] = True
-        self.settings["AdjSize"] = True
-        self.dict2dialogState()
-
-    def dialogState2dict(self):
-        self.settings["Enabled"] = self.cbEnableDialog.isChecked()
-        self.settings["AdjSize"] = self.cbAdjSize.isChecked()
-
-    def dict2dialogState(self):
-        self.cbEnableDialog.setChecked (self.settings["Enabled"])
-        self.cbAdjSize.setChecked      (self.settings["AdjSize"])
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
-class LoggingOptions(QDialog):
-    """
-        logging options dialog
-    """
-
-    def __init__(self):
-        QDialog.__init__(self)
-
-        self.settings = {}
-        self.lastFont = None
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.cbEnableFileLog = QGroupBox(_("Enable File Log") + "     ")
-        self.cbEnableFileLog.setCheckable(True)
-        self.cbEnableFileLog.setMinimumWidth(250)
-        folderLabel = QLabel(_("Folder"))
-        self.leFolder = QLineEdit()
-
-        self.cbRotate = QGroupBox(_("Log Rotation") + "     ")
-        self.cbRotate.setCheckable(True)
-        sizeLabel = QLabel(_("Size in kb"))
-        self.sbSize = QSpinBox()
-        self.sbSize.setMaximum(999999)
-        countLabel = QLabel(_("Count"))
-        self.sbCount = QSpinBox()
-        self.sbCount.setMaximum(999)
-
-        grid2 = QGridLayout()
-        grid2.addWidget(sizeLabel, 0, 0)
-        grid2.addWidget(self.sbSize, 0, 1)
-        grid2.addWidget(countLabel, 1, 0)
-        grid2.addWidget(self.sbCount, 1, 1)
-        grid2.setColumnStretch(3, 1)
-        self.cbRotate.setLayout(grid2)
-
-        self.cbException = QCheckBox(_("Log Exceptions"))
-
-        grid1 = QGridLayout()
-        grid1.addWidget(folderLabel,      0, 0, 1, 1)
-        grid1.addWidget(self.leFolder,    0, 1, 1, 1)
-        grid1.addWidget(self.cbRotate,    1, 0, 1, 2)
-        grid1.addWidget(self.cbException, 2, 0, 1, 2)
-        self.cbEnableFileLog.setLayout(grid1)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-
-        grid = QGridLayout()
-        grid.addWidget(self.cbEnableFileLog, 0, 0)
-        grid.setRowStretch(1, 1)
-        grid.addLayout(self.buttons.layout(), 2, 0)
-        self.setLayout(grid)
-
-        self.adjustSize()
-        #self.setFixedSize(self.width(), self.height())
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-
-    def exec_(self):
-        # It does not resize very well when the font size has changed
-        if self.font() != self.lastFont:
-            self.lastFont = self.font()
-            self.adjustSize()
-        return QDialog.exec_(self)
-
-    def defaultSettings(self):
-        self.settings.clear()
-        self.cbEnableFileLog.setChecked(False)
-        self.leFolder.setText("Logs")
-        self.cbRotate.setChecked(True)
-        self.sbSize.setValue(100)
-        self.sbCount.setValue(5)
-        self.cbException.setChecked(True)
-        self.dialogState2dict()
-
-    def dialogState2dict(self):
-        self.settings["file_log"]   = self.cbEnableFileLog.isChecked()
-        self.settings["log_folder"] = unicode(self.leFolder.text())
-        self.settings["log_rotate"] = self.cbRotate.isChecked()
-        self.settings["log_size"]   = self.sbSize.value()
-        self.settings["log_count"]  = self.sbCount.value()
-        self.settings["exception"]  = self.cbException.isChecked()
-
-    def dict2dialogState(self):
-        self.cbEnableFileLog.setChecked (self.settings["file_log"])
-        self.leFolder.setText           (self.settings["log_folder"])
-        self.cbRotate.setChecked        (self.settings["log_rotate"])
-        self.sbSize.setValue            (self.settings["log_size"])
-        self.sbCount.setValue           (self.settings["log_count"])
-        self.cbException.setChecked     (self.settings["exception"])
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
-class FontOptions(QDialog):
-    """
-        font options dialog
-    """
-
-    def __init__(self, defAppFont, mainWindow):
-        QDialog.__init__(self, mainWindow)
-        self.defaultApplicationFont = QFont(defAppFont)
-        self.mainWindow = mainWindow
-        self.log = logging.getLogger("guilog")
-
-        # references
-        self.applicationFont = QFont(self.defaultApplicationFont)
-        self.queueFont       = QFont(self.defaultApplicationFont)
-        self.collectorFont   = QFont(self.defaultApplicationFont)
-        self.accountsFont    = QFont(self.defaultApplicationFont)
-        self.logFont         = QFont(self.defaultApplicationFont)
-
-        self.settings = {"ECF":         {"enabled": False},
-                         "Application": {"enabled": False},
-                         "Queue":       {"enabled": False},
-                         "Collector":   {"enabled": False},
-                         "Accounts":    {"enabled": False},
-                         "Log":         {"enabled": False}}
-        self.settings["Application"]["font"] = str(self.applicationFont.toString())
-        self.settings["Queue"]      ["font"] = str(self.queueFont.toString())
-        self.settings["Collector"]  ["font"] = str(self.collectorFont.toString())
-        self.settings["Accounts"]   ["font"] = str(self.accountsFont.toString())
-        self.settings["Log"]        ["font"] = str(self.logFont.toString())
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.cbEnableCustomFonts = QGroupBox(_("Enable Custom Fonts") + "     ")
-        self.cbEnableCustomFonts.setCheckable(True)
-        self.cbApplication = QCheckBox(_("Application") + ":")
-        self.cbApplication.setChecked(True)
-        self.lblApplication = QLabel("Liberation Sans")
-        self.lblApplicationFont = QFont()
-        self.btnApplication = QPushButton(_("Choose"))
-
-        gb2 = QGroupBox()
-        self.cbQueue = QCheckBox(_("Queue") + ":")
-        self.cbQueue.setChecked(True)
-        self.lblQueue = QLabel("Liberation Sans")
-        self.lblQueueFont = QFont()
-        self.btnQueue = QPushButton(_("Choose"))
-        self.cbCollector = QCheckBox(_("Collector") + ":")
-        self.cbCollector.setChecked(True)
-        self.lblCollector = QLabel("Liberation Sans")
-        self.lblCollectorFont = QFont()
-        self.btnCollector = QPushButton(_("Choose"))
-        self.cbAccounts = QCheckBox(_("Accounts") + ":")
-        self.cbAccounts.setChecked(True)
-        self.lblAccounts = QLabel("Liberation Sans")
-        self.lblAccountsFont = QFont()
-        self.btnAccounts = QPushButton(_("Choose"))
-        self.cbLog = QCheckBox(_("Logs") + ":")
-        self.cbLog.setChecked(True)
-        self.lblLog = QLabel("Liberation Sans")
-        self.lblLogFont = QFont()
-        self.btnLog = QPushButton(_("Choose"))
-
-        grid2 = QGridLayout()
-        grid2.addWidget(self.cbQueue,      0, 0)
-        grid2.addWidget(self.lblQueue,     0, 1)
-        grid2.addWidget(self.btnQueue,     0, 2)
-        grid2.addWidget(self.cbCollector,  1, 0)
-        grid2.addWidget(self.lblCollector, 1, 1)
-        grid2.addWidget(self.btnCollector, 1, 2)
-        grid2.addWidget(self.cbAccounts,   2, 0)
-        grid2.addWidget(self.lblAccounts,  2, 1)
-        grid2.addWidget(self.btnAccounts,  2, 2)
-        grid2.addWidget(self.cbLog,        3, 0)
-        grid2.addWidget(self.lblLog,       3, 1)
-        grid2.addWidget(self.btnLog,       3, 2)
-        grid2.setColumnStretch(1, 1)
-        gb2.setLayout(grid2)
-
-        grid1 = QGridLayout()
-        grid1.addWidget(self.cbApplication,  0, 0, 1, 1)
-        grid1.addWidget(self.lblApplication, 0, 1, 1, 1)
-        grid1.addWidget(self.btnApplication, 0, 2, 1, 1)
-        grid1.addWidget(gb2,                 1, 0, 1, 3)
-        grid1.setColumnStretch(1, 1)
-        self.cbEnableCustomFonts.setLayout(grid1)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.resetBtn  = self.buttons.addButton(QDialogButtonBox.Reset)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        self.buttons.button(QDialogButtonBox.Reset).setText(_("Reset"))
-
-        vbox = QVBoxLayout()
-        vbox.setSizeConstraint(QLayout.SetMinAndMaxSize)
-        vbox.addWidget(self.cbEnableCustomFonts)
-        vbox.addStretch()
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.setMinimumWidth(250)
-        self.adjustSize()
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.slotResetBtn)
-
-        self.connect(self.cbApplication, SIGNAL("toggled(bool)"), self.cbApplicationToggled)
-        self.connect(self.cbQueue,       SIGNAL("toggled(bool)"), self.cbQueueToggled)
-        self.connect(self.cbCollector,   SIGNAL("toggled(bool)"), self.cbCollectorToggled)
-        self.connect(self.cbAccounts,    SIGNAL("toggled(bool)"), self.cbAccountsToggled)
-        self.connect(self.cbLog,         SIGNAL("toggled(bool)"), self.cbLogToggled)
-
-        self.connect(self.btnApplication, SIGNAL("clicked()"), self.chooseApplication)
-        self.connect(self.btnQueue,       SIGNAL("clicked()"), self.chooseQueue)
-        self.connect(self.btnCollector,   SIGNAL("clicked()"), self.chooseCollector)
-        self.connect(self.btnAccounts,    SIGNAL("clicked()"), self.chooseAccounts)
-        self.connect(self.btnLog,         SIGNAL("clicked()"), self.chooseLog)
-
-        self.dict2dialogState()
-
-    def cbApplicationToggled(self, checked):
-        if checked:
-            self.lblApplicationFont = QFont()
-            self.lblApplicationFont.fromString(self.settings["Application"]["font"])
-        else:
-            self.lblApplicationFont = QFont(self.defaultApplicationFont)
-        self.lblApplication.setFont(self.lblApplicationFont)
-        self.lblApplication.setText(self.lblApplicationFont.family())
-        self.lblApplication.setEnabled(checked)
-        self.btnApplication.setEnabled(checked)
-        # update the other labels fonts (if not checked/enabled)
-        self.cbQueueToggled(self.cbQueue.isChecked())
-        self.cbCollectorToggled(self.cbCollector.isChecked())
-        self.cbAccountsToggled(self.cbAccounts.isChecked())
-        self.cbLogToggled(self.cbLog.isChecked())
-
-    def cbQueueToggled(self, checked):
-        if checked:
-            self.lblQueueFont = QFont()
-            self.lblQueueFont.fromString(self.settings["Queue"]["font"])
-        else:
-            self.lblQueueFont = QFont(self.lblApplicationFont)
-        self.lblQueue.setFont(self.lblQueueFont)
-        self.lblQueue.setText(self.lblQueueFont.family())
-        self.lblQueue.setEnabled(checked)
-        self.btnQueue.setEnabled(checked)
-    def cbCollectorToggled(self, checked):
-        if checked:
-            self.lblCollectorFont = QFont()
-            self.lblCollectorFont.fromString(self.settings["Collector"]["font"])
-        else:
-            self.lblCollectorFont = QFont(self.lblApplicationFont)
-        self.lblCollector.setFont(self.lblCollectorFont)
-        self.lblCollector.setText(self.lblCollectorFont.family())
-        self.lblCollector.setEnabled(checked)
-        self.btnCollector.setEnabled(checked)
-    def cbAccountsToggled(self, checked):
-        if checked:
-            self.lblAccountsFont = QFont()
-            self.lblAccountsFont.fromString(self.settings["Accounts"]["font"])
-        else:
-            self.lblAccountsFont = QFont(self.lblApplicationFont)
-        self.lblAccounts.setFont(self.lblAccountsFont)
-        self.lblAccounts.setText(self.lblAccountsFont.family())
-        self.lblAccounts.setEnabled(checked)
-        self.btnAccounts.setEnabled(checked)
-    def cbLogToggled(self, checked):
-        if checked:
-            self.lblLogFont = QFont()
-            self.lblLogFont.fromString(self.settings["Log"]["font"])
-        else:
-            self.lblLogFont = QFont(self.lblApplicationFont)
-        self.lblLog.setFont(self.lblLogFont)
-        self.lblLog.setText(self.lblLogFont.family())
-        self.lblLog.setEnabled(checked)
-        self.btnLog.setEnabled(checked)
-
-    def chooseApplication(self):
-        (self.lblApplicationFont, ok) = QFontDialog.getFont(self.lblApplicationFont)
-        if ok:
-            self.settings["Application"]["font"] = str(self.lblApplicationFont.toString())
-            self.cbApplicationToggled(self.cbApplication.isChecked())
-    def chooseQueue(self):
-        (self.lblQueueFont, ok) = QFontDialog.getFont(self.lblQueueFont)
-        if ok:
-            self.settings["Queue"]["font"] = str(self.lblQueueFont.toString())
-            self.cbQueueToggled(self.cbQueue.isChecked())
-    def chooseCollector(self):
-        (self.lblCollectorFont, ok) = QFontDialog.getFont(self.lblCollectorFont)
-        if ok:
-            self.settings["Collector"]["font"] = str(self.lblCollectorFont.toString())
-            self.cbCollectorToggled(self.cbCollector.isChecked())
-    def chooseAccounts(self):
-        (self.lblAccountsFont, ok) = QFontDialog.getFont(self.lblAccountsFont)
-        if ok:
-            self.settings["Accounts"]["font"] = str(self.lblAccountsFont.toString())
-            self.cbAccountsToggled(self.cbAccounts.isChecked())
-    def chooseLog(self):
-        (self.lblLogFont, ok) = QFontDialog.getFont(self.lblLogFont)
-        if ok:
-            self.settings["Log"]["font"] = str(self.lblLogFont.toString())
-            self.cbLogToggled(self.cbLog.isChecked())
-
-    def slotResetBtn(self):
-        self.settings["ECF"]["enabled"]         = False
-        self.settings["Application"]["enabled"] = False
-        self.settings["Queue"]["enabled"]       = False
-        self.settings["Collector"]["enabled"]   = False
-        self.settings["Accounts"]["enabled"]    = False
-        self.settings["Log"]["enabled"]         = False
-        self.settings["Application"]["font"] = str(self.defaultApplicationFont.toString())
-        self.settings["Queue"]      ["font"] = str(self.defaultApplicationFont.toString())
-        self.settings["Collector"]  ["font"] = str(self.defaultApplicationFont.toString())
-        self.settings["Accounts"]   ["font"] = str(self.defaultApplicationFont.toString())
-        self.settings["Log"]        ["font"] = str(self.defaultApplicationFont.toString())
-        self.dict2dialogState()
-
-    def defaultSettings(self):
-        self.settings.clear()
-        self.slotResetBtn()
-
-    def dialogState2dict(self):
-        self.settings["ECF"]["enabled"]         = self.cbEnableCustomFonts.isChecked()
-        self.settings["Application"]["enabled"] = self.cbApplication.isChecked()
-        self.settings["Queue"]["enabled"]       = self.cbQueue.isChecked()
-        self.settings["Collector"]["enabled"]   = self.cbCollector.isChecked()
-        self.settings["Accounts"]["enabled"]    = self.cbAccounts.isChecked()
-        self.settings["Log"]["enabled"]         = self.cbLog.isChecked()
-
-    def dict2dialogState(self):
-        self.cbApplication.setChecked(self.settings["Application"]["enabled"])
-        self.cbApplicationToggled(self.cbApplication.isChecked())
-        self.cbQueue.setChecked(self.settings["Queue"]["enabled"])
-        self.cbQueueToggled(self.cbQueue.isChecked())
-        self.cbCollector.setChecked(self.settings["Collector"]["enabled"])
-        self.cbCollectorToggled(self.cbCollector.isChecked())
-        self.cbAccounts.setChecked(self.settings["Accounts"]["enabled"])
-        self.cbAccountsToggled(self.cbAccounts.isChecked())
-        self.cbLog.setChecked(self.settings["Log"]["enabled"])
-        self.cbLogToggled(self.cbLog.isChecked())
-        self.cbEnableCustomFonts.setChecked(not self.settings["ECF"]["enabled"]) # needs to be toggled to grey out the subwidgets accordingly
-        self.cbEnableCustomFonts.setChecked(self.settings["ECF"]["enabled"])
-
-    def applySettings(self):
-        self.applicationFont = QFont(self.defaultApplicationFont)
-        self.queueFont     = QFont(self.applicationFont)
-        self.collectorFont = QFont(self.applicationFont)
-        self.accountsFont  = QFont(self.applicationFont)
-        self.logFont       = QFont(self.applicationFont)
-        if self.settings["ECF"]["enabled"]:
-            if self.settings["Application"]["enabled"]:
-                self.applicationFont = QFont()
-                self.applicationFont.fromString(self.settings["Application"]["font"])
-                self.queueFont     = QFont(self.applicationFont)
-                self.collectorFont = QFont(self.applicationFont)
-                self.accountsFont  = QFont(self.applicationFont)
-                self.logFont       = QFont(self.applicationFont)
-            if self.settings["Queue"]["enabled"]:
-                self.queueFont = QFont()
-                self.queueFont.fromString(self.settings["Queue"]["font"])
-            if self.settings["Collector"]["enabled"]:
-                self.collectorFont = QFont()
-                self.collectorFont.fromString(self.settings["Collector"]["font"])
-            if self.settings["Accounts"]["enabled"]:
-                self.accountsFont = QFont()
-                self.accountsFont.fromString(self.settings["Accounts"]["font"])
-            if self.settings["Log"]["enabled"]:
-                self.logFont = QFont()
-                self.logFont.fromString(self.settings["Log"]["font"])
-        QApplication.setFont(self.applicationFont)
-        self.mainWindow.tabs["queue"]["view"].setFont(self.queueFont)
-        self.mainWindow.tabs["collector"]["view"].setFont(self.collectorFont)
-        self.mainWindow.tabs["accounts"]["view"].setFont(self.accountsFont)
-        self.mainWindow.tabs["guilog"]["text"].setFont(self.logFont)
-        self.mainWindow.tabs["corelog"]["text"].setFont(self.logFont)
-        self.emit(SIGNAL("appFontChanged"))
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
-class AutomaticReloadingOptions(QDialog):
-    """
-        automatic reloading options dialog
-    """
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-
-        wt = _(
-        "This is useful when there are several clients connected to the server, to reflect all changes made by others.<br>"
-        "Also, to reflect your own changes when you do not have") + " '" + _("Status") + "' (STATUS) " + _("permission.<br>"
-        "However, you can always trigger a Reload from the View menu manually.<br><br>"
-        "This should stay disabled, if you have")  + " '" + _("Status") + "' (STATUS) " + _("permission "
-        "and you are the only active user on the server."
-        )
-        self.setWhatsThis(whatsThisFormat(_("Automatic Reloading"), wt))
-
-        self.settings = {}
-        self.lastFont = None
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() &~ Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        lbl1 = QLabel(_("Every"))
-        self.sbInterval = QSpinBox()
-        self.sbInterval.setMinimum(10)
-        self.sbInterval.setMaximum(3600)
-        lbl2 = QLabel(_("seconds"))
-
-        hboxCb = QHBoxLayout()
-        hboxCb.addWidget(lbl1)
-        hboxCb.addWidget(self.sbInterval)
-        hboxCb.addWidget(lbl2)
-        hboxCb.addStretch(1)
-
-        self.cbEnabled = QGroupBox(_("Enable") + " " + _("Automatic Reloading") + "     ")
-        self.cbEnabled.setCheckable(True)
-        self.cbEnabled.setLayout(hboxCb)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnabled)
-        vbox.addStretch(1)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.setMinimumWidth(250)
-        self.adjustSize()
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.defaultSettings()
-
-    def exec_(self):
-        # It does not resize very well when the font size has changed
-        if self.font() != self.lastFont:
-            self.lastFont = self.font()
-            self.adjustSize()
-        return QDialog.exec_(self)
-
-    def defaultSettings(self):
-        self.settings.clear()
-        self.settings["enabled"]  = False
-        self.settings["interval"] = 300
-        self.dict2dialogState()
-
-    def dialogState2dict(self):
-        self.settings["enabled"] = self.cbEnabled.isChecked()
-        self.settings["interval"] = self.sbInterval.value()
-
-    def dict2dialogState(self):
-        self.cbEnabled.setChecked(self.settings["enabled"])
-        self.sbInterval.setValue(self.settings["interval"])
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
-class ClickNLoadForwarderOptions(QDialog):
-    """
-        ClickNLoad port forwarder options dialog
-    """
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-
-        self.settings = {}
-        self.lastFont = None
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.cbEnable = QCheckBox(_("Enable"))
-        self.lblFrom = QLabel(_("Local Port"))
-        self.sbFromPort = QSpinBox()
-        self.sbFromPort.setMinimum(1)
-        self.sbFromPort.setMaximum(65535)
-        lblTo = QLabel(_("Remote Port"))
-        self.sbToPort = QSpinBox()
-        self.sbToPort.setMinimum(1)
-        self.sbToPort.setMaximum(65535)
-        self.cbGetPort = QCheckBox(_("Get Remote Port from Server Settings"))
-        lblSta = QLabel(_("Status"))
-        self.lblStatus = LineView("Unknown")
-        self.lblStatus.setAlignment(Qt.AlignHCenter)
-
-        whatsThis = whatsThisFormat(self.lblFrom.text(), _("This should usually stay on port 9666. At least Firefox with FlashGot only works reliable with its default address setting:<br>http://127.0.0.1:9666/flashgot"))
-        self.lblFrom.setWhatsThis(whatsThis)
-        self.sbFromPort.setWhatsThis(whatsThis)
-        whatsThis = whatsThisFormat(self.cbGetPort.text(), _("Needs") + " '" + _("Settings") + "'" + " (SETTINGS) " + _("permission on the server."))
-        self.cbGetPort.setWhatsThis(whatsThis)
-
-        self.hboxStatus = QHBoxLayout()
-        self.hboxStatus.addWidget(lblSta)
-        self.hboxStatus.addWidget(self.lblStatus)
-
-        grid = QGridLayout()
-        grid.addWidget(self.cbEnable,   0, 0, 1, 2)
-        grid.addWidget(self.lblFrom,    1, 0)
-        grid.addWidget(self.sbFromPort, 1, 1)
-        grid.addWidget(lblTo,           2, 0)
-        grid.addWidget(self.sbToPort,   2, 1)
-        grid.addWidget(self.cbGetPort,  3, 0, 1, 3)
-        grid.setColumnStretch(2, 1)
-        grid.setRowMinimumHeight(4, 20)
-        grid.addLayout(self.hboxStatus, 5, 0, 1, 3)
-        grid.setRowStretch(6, 1)
-
-        gb = QGroupBox(_("ClickNLoad Port Forwarding") + "     ")
-        gb.setLayout(grid)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(gb)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.setMinimumWidth(250)
-        self.adjustSize()
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.cbGetPort, SIGNAL("toggled(bool)"), self.sbToPort.setDisabled)
-
-        # default settings
-        self.settings["enabled"]  = False
-        self.settings["fromIP"]   = "127.0.0.1"
-        self.settings["toIP"]     = "999.999.999.999"
-        self.settings["toPort"]   = 9666
-        self.settings["getPort"]  = False
-        self.defaultFromPort()
-
-    def exec_(self):
-        # It does not resize very well when the font size has changed
-        if self.font() != self.lastFont:
-            self.lastFont = self.font()
-            self.adjustSize()
-        return QDialog.exec_(self)
-
-    def defaultFromPort(self):
-        self.settings["fromPort"] = 9666
-        self.dict2dialogState(True)
-
-    def dialogState2dict(self):
-        self.settings["enabled"]  = self.cbEnable.isChecked()
-        self.settings["fromPort"] = self.sbFromPort.value()
-        self.settings["toPort"]   = self.sbToPort.value()
-        self.settings["getPort"]  = self.cbGetPort.isChecked()
-
-    def dict2dialogState(self, error):
-        self.cbEnable.setChecked(self.settings["enabled"])
-        if (self.settings["fromPort"] < self.sbFromPort.minimum()) or (self.settings["fromPort"] > self.sbFromPort.maximum()):
-            raise ValueError("fromPort out of range") # this is catched by main.loadOptionsFromConfig()
-        self.sbFromPort.setValue(self.settings["fromPort"])
-        #if (self.settings["toPort"] < self.sbToPort.minimum()) or (self.settings["toPort"] > self.sbToPort.maximum()):
-        #    raise ValueError("toPort out of range")
-        self.sbToPort.setValue(self.settings["toPort"])
-        self.cbGetPort.setChecked(self.settings["getPort"])
-        if not error:
-            if self.settings["enabled"]:
-                self.lblStatus.setText(_("Running"))
-            else:
-                self.lblStatus.setText(_("Not Running"))
-        else:
-            self.lblStatus.setText(_("ERROR"))
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
 class ClickNLoadForwarder(QObject):
     """
         Port forwarder to a remote Core's ClickNLoad plugin
@@ -4249,80 +3645,6 @@ class ClickNLoadForwarder(QObject):
     def messageBox_20(self):
         self.emit(SIGNAL("msgBoxError"), _("ClickNLoad port forwarding stopped due to an error."))
 
-class LanguageOptions(QDialog):
-    """
-        language options dialog
-    """
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-
-        self.settings = {}
-        self.lastFont = None
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.combo = QComboBox()
-        self.noteLbl = QLabel()
-        note = "<i>" + _("Takes effect on next login.") + "</i>"
-        self.noteLbl.setText(note)
-
-        hboxGp = QHBoxLayout()
-        hboxGp.addWidget(self.combo)
-        hboxGp.addStretch(1)
-        vboxGp = QVBoxLayout()
-        vboxGp.addLayout(hboxGp)
-        vboxGp.addWidget(self.noteLbl)
-
-        self.gb = QGroupBox(_("Language") + "     ")
-        self.gb.setLayout(vboxGp)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.gb)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.setMinimumWidth(250)
-        self.adjustSize()
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-
-        # default settings
-        self.settings["languageList"] = ["en"]
-        self.settings["language"] = "en"
-        self.dict2dialogState()
-
-    def exec_(self):
-        # It does not resize very well when the font size has changed
-        if self.font() != self.lastFont:
-            self.lastFont = self.font()
-            self.adjustSize()
-            self.resize(self.width(), 1)
-        return QDialog.exec_(self)
-
-    def dialogState2dict(self):
-        self.settings["language"] = self.combo.itemText(self.combo.currentIndex())
-
-    def dict2dialogState(self):
-        self.combo.clear()
-        self.combo.addItems(self.settings["languageList"])
-        self.combo.setCurrentIndex(self.combo.findText(self.settings["language"]))
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
-
 class TrayIcon(QSystemTrayIcon):
     def __init__(self):
         QSystemTrayIcon.__init__(self)
@@ -4391,152 +3713,6 @@ class TrayIcon(QSystemTrayIcon):
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.Trigger:
                 self.showAction.trigger()
-
-class WhatsThisOptions(QDialog):
-    """
-        whatsthis options dialog
-    """
-
-    def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.log = logging.getLogger("guilog")
-
-        self.defaultColors = (int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipText).rgba()), int(QApplication.palette().color(QPalette.Inactive, QPalette.ToolTipBase).rgba()))
-        self.choosenColors = None
-
-        self.settings = {}
-
-        self.setAttribute(Qt.WA_DeleteOnClose, False)
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
-        self.setWindowTitle(_("Options"))
-        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-
-        self.lblText = QLabel(_("Text color"))
-        self.btnText = QPushButton(_("Choose"))
-        self.lblBack = QLabel(_("Background color"))
-        self.btnBack = QPushButton(_("Choose"))
-        self.lvExample = LineView(_("What's This Preview"))
-
-        grid = QGridLayout()
-        grid.addWidget(self.lblText, 0, 0)
-        grid.addWidget(self.btnText, 0, 1)
-        grid.addWidget(self.lblBack, 1, 0)
-        grid.addWidget(self.btnBack, 1, 1)
-
-        self.cbEnable = QGroupBox(_("Enable Custom Colors") + "     ")
-        self.cbEnable.setCheckable(True)
-        self.cbEnable.setLayout(grid)
-
-        self.buttons = WtDialogButtonBox(Qt.Horizontal, self)
-        self.buttons.hideWhatsThisButton()
-        self.okBtn     = self.buttons.addButton(QDialogButtonBox.Ok)
-        self.cancelBtn = self.buttons.addButton(QDialogButtonBox.Cancel)
-        self.resetBtn  = self.buttons.addButton(QDialogButtonBox.Reset)
-        self.buttons.button(QDialogButtonBox.Ok).setText(_("OK"))
-        self.buttons.button(QDialogButtonBox.Cancel).setText(_("Cancel"))
-        self.buttons.button(QDialogButtonBox.Reset).setText(_("Reset"))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.cbEnable)
-        vbox.addWidget(self.lvExample)
-        vbox.addLayout(self.buttons.layout())
-        self.setLayout(vbox)
-
-        self.adjustSize()
-        self.setFixedSize(self.width() + 20, self.height())
-
-        self.connect(self.okBtn,     SIGNAL("clicked()"), self.accept)
-        self.connect(self.cancelBtn, SIGNAL("clicked()"), self.reject)
-        self.connect(self.resetBtn,  SIGNAL("clicked()"), self.resetBtnClicked)
-        self.connect(self.cbEnable,  SIGNAL("toggled(bool)"), self.cbEnableToggled)
-        self.connect(self.btnText,   SIGNAL("clicked()"),     self.chooseTextColor)
-        self.connect(self.btnBack,   SIGNAL("clicked()"),     self.chooseBackgroundColor)
-        self.defaultSettings()
-
-    def resetBtnClicked(self):
-        self.choosenColors = self.defaultColors
-        self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
-
-    def cbEnableToggled(self, enabled):
-        if enabled:
-            self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
-        else:
-            self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
-        self.resetBtn.setEnabled(enabled)
-
-    def chooseTextColor(self):
-        initCol = QColor()
-        initCol.setRgba(self.choosenColors[0])
-        col = QColorDialog.getColor(initCol, self, self.lblText.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
-        if not col.isValid():
-            self.log.error("WhatsThisOptions.chooseTextColor: Invalid color")
-            return
-        self.choosenColors = (int(col.rgba()), self.choosenColors[1])
-        self.setExampleColors(int(col.rgba()), None)
-
-    def chooseBackgroundColor(self):
-        initCol = QColor()
-        initCol.setRgba(self.choosenColors[1])
-        col = QColorDialog.getColor(initCol, self, self.lblBack.text(), QColorDialog.ShowAlphaChannel | QColorDialog.DontUseNativeDialog)
-        if not col.isValid():
-            self.log.error("WhatsThisOptions.chooseBackgroundColor: Invalid color")
-            return
-        self.choosenColors = (self.choosenColors[0], int(col.rgba()))
-        self.setExampleColors(None, int(col.rgba()))
-
-    def setExampleColors(self, textCol=None, backCol=None):
-        p = QPalette(self.lvExample.palette())
-        if textCol is not None:
-            qCol = QColor()
-            qCol.setRgba(textCol)
-            p.setColor(QPalette.Active,   self.lvExample.foregroundRole(), qCol)
-            p.setColor(QPalette.Inactive, self.lvExample.foregroundRole(), qCol)
-        if backCol is not None:
-            qCol = QColor()
-            qCol.setRgba(backCol)
-            p.setColor(QPalette.Active,   self.lvExample.backgroundRole(), qCol)
-            p.setColor(QPalette.Inactive, self.lvExample.backgroundRole(), qCol)
-        self.lvExample.setPalette(p)
-
-    def defaultSettings(self):
-        self.settings.clear()
-        self.settings["Enabled"] = False
-        (self.settings["TextColor"], self.settings["BackColor"]) = self.defaultColors
-        self.dict2dialogState()
-
-    def dialogState2dict(self):
-        self.settings["Enabled"] = self.cbEnable.isChecked()
-        (self.settings["TextColor"], self.settings["BackColor"]) = self.choosenColors
-
-    def dict2dialogState(self):
-        self.cbEnable.setChecked(self.settings["Enabled"])
-        if self.settings["Enabled"]:
-            self.choosenColors = (self.settings["TextColor"], self.settings["BackColor"])
-            self.setExampleColors(self.choosenColors[0], self.choosenColors[1])
-        else:
-            if self.choosenColors is None:
-                self.choosenColors = (self.settings["TextColor"], self.settings["BackColor"])
-            self.setExampleColors(self.defaultColors[0], self.defaultColors[1])
-
-    def applySettings(self):
-        if self.settings["Enabled"]:
-            textCol = self.settings["TextColor"]
-            backCol = self.settings["BackColor"]
-        else:
-            (textCol, backCol) = self.defaultColors
-        p = QApplication.palette()
-        qCol = QColor()
-        qCol.setRgba(textCol)
-        p.setColor(QPalette.Active,   QPalette.ToolTipText, qCol)
-        p.setColor(QPalette.Inactive, QPalette.ToolTipText, qCol)
-        qCol = QColor()
-        qCol.setRgba(backCol)
-        p.setColor(QPalette.Active,   QPalette.ToolTipBase, qCol)
-        p.setColor(QPalette.Inactive, QPalette.ToolTipBase, qCol)
-        QApplication.setPalette(p)
-
-    def appFontChanged(self):
-        self.buttons.updateWhatsThisButton()
 
 class PackageEdit(QDialog):
     """
