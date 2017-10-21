@@ -34,6 +34,7 @@ class NewLinkDock(QDockWidget):
         self.setObjectName("New Links Dock")
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         self.widget = NewLinkWindow(self)
+        self.setDefaultDestSettings()
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea)
         self.hide()
@@ -53,6 +54,17 @@ class NewLinkDock(QDockWidget):
     
     def parseUriResult(self, result):
         self.widget.box.setPlainText(result)
+    
+    def getDestSettings(self):
+        return { "queue": self.widget.destQueue.isChecked(), "autoSelect": self.widget.destAutoSelect.isChecked() }
+    
+    def setDestSettings(self, s):
+        self.widget.destQueue.setChecked(s["queue"])
+        self.widget.destCollector.setChecked(not s["queue"])
+        self.widget.destAutoSelect.setChecked(s["autoSelect"])
+    
+    def setDefaultDestSettings(self):
+        self.setDestSettings({ "queue": False, "autoSelect": True })
     
     def closeEvent(self, event):
         if self.isFloating():
@@ -87,11 +99,11 @@ class NewLinkWindow(QWidget):
         
         self.destQueue     = QRadioButton(_("Queue"))
         self.destCollector = QRadioButton(_("Collector"))
-        self.destCollector.setChecked(True)
         destBtnLayout = QHBoxLayout()
         destBtnLayout.addWidget(self.destQueue)
         destBtnLayout.addWidget(self.destCollector)
         destBtnLayout.addStretch(1)
+        self.destAutoSelect = QCheckBox(_("Select with tab"))
         
         self.clear = QPushButton(_("Clear"))
         self.filter = QPushButton(_("Filter URLs"))
@@ -111,6 +123,7 @@ class NewLinkWindow(QWidget):
         layout.addWidget(self.clear)
         layout.addWidget(self.filter)
         layout.addLayout(destBtnLayout)
+        layout.addWidget(self.destAutoSelect)
         layout.addLayout(hbox)
         
         self.adjustSize()

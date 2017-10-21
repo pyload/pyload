@@ -845,10 +845,6 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-package dock
         """
-        if self.tabw.currentIndex() == 1:
-            self.newPackDock.widget.destQueue.setChecked(True)
-        else:
-            self.newPackDock.widget.destCollector.setChecked(True)
         self.newPackDock.widget.nameInput.setText("")
         self.newPackDock.widget.passwordInput.setText("")
         self.newPackDock.widget.box.clear()
@@ -859,10 +855,6 @@ class MainWindow(QMainWindow):
             action from add-menu
             show new-links dock
         """
-        if self.tabw.currentIndex() == 1:
-            self.newLinkDock.widget.destQueue.setChecked(True)
-        else:
-            self.newLinkDock.widget.destCollector.setChecked(True)
         self.newLinkDock.widget.box.clear()
         self.emit(SIGNAL("showAddLinks"))
     
@@ -1135,6 +1127,16 @@ class MainWindow(QMainWindow):
             self.tabs["accounts"]["view"].model.timer.stop()
         if index == 5:
             self.tabs["settings"]["w"].loadConfig()
+        elif index == 1:
+            if self.newPackDock.widget.destAutoSelect.isChecked():
+                self.newPackDock.widget.destQueue.setChecked(True)
+            if self.newLinkDock.widget.destAutoSelect.isChecked():
+                self.newLinkDock.widget.destQueue.setChecked(True)
+        elif index == 2:
+            if self.newPackDock.widget.destAutoSelect.isChecked():
+                self.newPackDock.widget.destCollector.setChecked(True)
+            if self.newLinkDock.widget.destAutoSelect.isChecked():
+                self.newLinkDock.widget.destCollector.setChecked(True)
     
     def slotNewAccount(self):
         if not self.corePermissions["ACCOUNTS"]:

@@ -2022,6 +2022,8 @@ class main(QObject):
         stateQueue = str(self.mainWindow.tabs["queue"]["view"].header().saveState().toBase64())
         stateCollector = str(self.mainWindow.tabs["collector"]["view"].header().saveState().toBase64())
         stateAccounts = str(self.mainWindow.tabs["accounts"]["view"].header().saveState().toBase64())
+        statePackageDock = str(QByteArray(str(self.mainWindow.newPackDock.getDestSettings())).toBase64())
+        stateLinkDock = str(QByteArray(str(self.mainWindow.newLinkDock.getDestSettings())).toBase64())
         visibilitySpeedLimit = str(QByteArray(str(self.mainWindow.actions["speedlimit_enabled"].isVisible())).toBase64())
         language = str(self.lang)
         stateNode = mainWindowNode.toElement().elementsByTagName("state").item(0)
@@ -2031,6 +2033,8 @@ class main(QObject):
         stateQueueNode = mainWindowNode.toElement().elementsByTagName("stateQueue").item(0)
         stateCollectorNode = mainWindowNode.toElement().elementsByTagName("stateCollector").item(0)
         stateAccountsNode = mainWindowNode.toElement().elementsByTagName("stateAccounts").item(0)
+        statePackageDockNode = mainWindowNode.toElement().elementsByTagName("statePackageDock").item(0)
+        stateLinkDockNode = mainWindowNode.toElement().elementsByTagName("stateLinkDock").item(0)
         visibilitySpeedLimitNode = mainWindowNode.toElement().elementsByTagName("visibilitySpeedLimit").item(0)
         languageNode = self.parser.xml.elementsByTagName("language").item(0)
         newStateNode = self.parser.xml.createTextNode(state)
@@ -2040,6 +2044,8 @@ class main(QObject):
         newStateQueueNode = self.parser.xml.createTextNode(stateQueue)
         newStateCollectorNode = self.parser.xml.createTextNode(stateCollector)
         newStateAccountsNode = self.parser.xml.createTextNode(stateAccounts)
+        newStatePackageDockNode = self.parser.xml.createTextNode(statePackageDock)
+        newStateLinkDockNode = self.parser.xml.createTextNode(stateLinkDock)
         newVisibilitySpeedLimitNode = self.parser.xml.createTextNode(visibilitySpeedLimit)
         newLanguageNode = self.parser.xml.createTextNode(language)
         stateNode.removeChild(stateNode.firstChild())
@@ -2056,6 +2062,10 @@ class main(QObject):
         stateCollectorNode.appendChild(newStateCollectorNode)
         stateAccountsNode.removeChild(stateAccountsNode.firstChild())
         stateAccountsNode.appendChild(newStateAccountsNode)
+        statePackageDockNode.removeChild(statePackageDockNode.firstChild())
+        statePackageDockNode.appendChild(newStatePackageDockNode)
+        stateLinkDockNode.removeChild(stateLinkDockNode.firstChild())
+        stateLinkDockNode.appendChild(newStateLinkDockNode)
         visibilitySpeedLimitNode.removeChild(visibilitySpeedLimitNode.firstChild())
         visibilitySpeedLimitNode.appendChild(newVisibilitySpeedLimitNode)
         languageNode.removeChild(languageNode.firstChild())
@@ -2202,6 +2212,10 @@ class main(QObject):
             mainWindowNode.appendChild(self.parser.xml.createElement("stateCollector"))
         if not nodes.get("stateAccounts"):
             mainWindowNode.appendChild(self.parser.xml.createElement("stateAccounts"))
+        if not nodes.get("statePackageDock"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("statePackageDock"))
+        if not nodes.get("stateLinkDock"):
+            mainWindowNode.appendChild(self.parser.xml.createElement("stateLinkDock"))
         if not nodes.get("visibilitySpeedLimit"):
             mainWindowNode.appendChild(self.parser.xml.createElement("visibilitySpeedLimit"))
         if not nodes.get("geometryOther"):
@@ -2215,6 +2229,8 @@ class main(QObject):
         stateQueue = str(nodes["stateQueue"].text())
         stateCollector = str(nodes["stateCollector"].text())
         stateAccounts = str(nodes["stateAccounts"].text())
+        statePackageDockBase64 = str(nodes["statePackageDock"].text())
+        stateLinkDockBase64 = str(nodes["stateLinkDock"].text())
         visibilitySpeedLimit = str(nodes["visibilitySpeedLimit"].text())
 
         # mainWindow restoreState
@@ -2306,9 +2322,17 @@ class main(QObject):
         self.mainWindow.tabs["collector"]["view"].header().restoreState(QByteArray.fromBase64(stateCollector))
         self.mainWindow.tabs["accounts"]["view"].header().restoreState(QByteArray.fromBase64(stateAccounts))
 
-        try:
+        # docks, buttons and checkboxes for selecting queue/collector
+        if statePackageDockBase64:
+            s = literal_eval(str(QByteArray.fromBase64(statePackageDockBase64)))
+            self.mainWindow.newPackDock.setDestSettings(s)
+        if stateLinkDockBase64:
+            s = literal_eval(str(QByteArray.fromBase64(stateLinkDockBase64)))
+            self.mainWindow.newLinkDock.setDestSettings(s)
+
+        if visibilitySpeedLimit:
             visSpeed = literal_eval(str(QByteArray.fromBase64(visibilitySpeedLimit)))
-        except Exception:
+        else:
             visSpeed = True
         self.mainWindow.mactions["showspeedlimit"].setChecked(not visSpeed)
         self.mainWindow.mactions["showspeedlimit"].setChecked(visSpeed)

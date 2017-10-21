@@ -17,6 +17,8 @@
         <stateQueue></stateQueue>
         <stateCollector></stateCollector>
         <stateAccounts></stateAccounts>
+        <statePackageDock></statePackageDock>
+        <stateLinkDock></stateLinkDock>
         <optionsNotifications></optionsNotifications>
         <optionsLogging></optionsLogging>
         <optionsClickNLoadForwarder></optionsClickNLoadForwarder>
