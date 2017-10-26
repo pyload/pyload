@@ -15,7 +15,7 @@ from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "1.19"
+    __version__ = "1.20"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -33,7 +33,8 @@ class UpdateManager(Addon):
     _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
     # SERVER_URL     = "http://updatemanager.pyload.org"
-    SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
+    # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
+    SERVER_URL = "https://github.com/pyload/updates/raw/master/plugins.txt"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
     def activate(self):
@@ -165,7 +166,7 @@ class UpdateManager(Addon):
         if not newversion:
             exitcode = 0
 
-        elif newversion == "None":
+        elif newversion == self.pyload.api.getServerVersion():
             self.log_info(_("pyLoad is up to date!"))
             exitcode = self.update_plugins()
 
@@ -189,7 +190,7 @@ class UpdateManager(Addon):
     def update_plugins(self):
         server_data = self.server_response()
 
-        if not server_data or server_data[0] != "None":
+        if not server_data or server_data[0] != self.pyload.api.getServerVersion():
             return 0
 
         updated = self._update_plugins(server_data)
