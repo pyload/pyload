@@ -96,6 +96,8 @@ class Core(object):
 
         self._init_api()
 
+        atexit.register(self.exit)
+
     def _init_api(self):
         from pyload.api import Api
         self.api = Api(self)
@@ -273,9 +275,6 @@ class Core(object):
             self.log.critical(exc, exc_info=True)
             self.exit()
 
-        else:
-            self.exit()
-
     def _remove_loggers(self):
         for handler in self.log.handlers:
             with closing(handler) as hdlr:
@@ -287,13 +286,11 @@ class Core(object):
         self.evm.fire('pyload:restarting')
         self.run()
 
-    @atexit.register
     def exit(self):
         self.stop()
         self.log.info(self._('Exiting pyLoad...'))
         self.tsm.exit()
         self.db.exit()  # NOTE: Why here?
-        self.config.close()
         self._remove_loggers()
         # if cleanup:
         # self.log.info(self._("Deleting temp files..."))
