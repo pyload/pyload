@@ -71,7 +71,7 @@ def timedtext_to_srt(timedtext):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.62"
+    __version__ = "0.63"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -337,7 +337,7 @@ class YoutubeCom(Hoster):
 
         subs_dl = self.config.get('subs_dl')
         if subs_dl != "off":
-            subs_dl_langs = [_x.strip() for _x in self.config.get('subtitles_lang_codes', "").split(',') if _x.strip()]
+            subs_dl_langs = [_x.strip() for _x in self.config.get('subs_dl_langs', "").split(',') if _x.strip()]
             if subs_dl_langs:
                 for _lang in subs_dl_langs:
                     if _lang in subtitles_urls:
