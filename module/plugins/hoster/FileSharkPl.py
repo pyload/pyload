@@ -9,10 +9,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class FileSharkPl(SimpleHoster):
     __name__ = "FileSharkPl"
     __type__ = "hoster"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
+    __pattern__ = r'https?://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -81,7 +81,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        link = urlparse.urljoin("http://fileshark.pl/", m.group(1))
+        link = urlparse.urljoin("https://fileshark.pl/", m.group(1))
 
         self.data = self.load(link)
 
@@ -91,7 +91,7 @@ class FileSharkPl(SimpleHoster):
             self.log_debug("Wait %s seconds" % seconds)
             self.wait(seconds)
 
-        action, inputs = self.parse_html_form('action=""')
+        action, inputs = self.parse_html_form('name="form" method="post"')
 
         m = re.search(self.TOKEN_PATTERN, self.data)
         if m is None:

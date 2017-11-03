@@ -6,12 +6,13 @@ import re
 import subprocess
 import time
 import urllib
+from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import html_unescape, json, replace_patterns, which, reduce
+from ..internal.misc import exists, json, reduce, replace_patterns, which
 from ..internal.Plugin import Abort
 
 
@@ -40,10 +41,37 @@ class BIGHTTPRequest(HTTPRequest):
         self.rep.write(buf)
 
 
+def timedtext_to_srt(timedtext):
+    def _format_srt_time(millisec):
+        sec, milli = divmod(millisec, 1000)
+        m, s = divmod(int(sec), 60)
+        h, m = divmod(m, 60)
+        return "%02d:%02d:%02d,%s" % (h, m, s, milli)
+    
+    i = 1
+    srt = ""
+    dom = parse_xml(timedtext)
+    body = dom.getElementsByTagName("body")[0]
+    paras = body.getElementsByTagName("p")
+    for para in paras:
+        srt += str(i) + "\n"
+        srt += _format_srt_time(int(para.attributes['t'].value)) + ' --> ' + \
+               _format_srt_time(int(para.attributes['t'].value) + int(para.attributes['d'].value)) + "\n"
+        for child in para.childNodes:
+            if child.nodeName == 'br':
+                srt += "\n"
+            elif child.nodeName == '#text':
+                srt += unicode(child.data)
+            srt += "\n\n"
+        i += 1
+
+    return srt
+
+
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.61"
+    __version__ = "0.64"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -54,7 +82,9 @@ class YoutubeCom(Hoster):
                   (".flv", "bool", "Allow .flv", True),
                   (".webm", "bool", "Allow .webm", False),
                   (".3gp", "bool", "Allow .3gp", False),
-                  ("3d", "bool", "Prefer 3D", False)]
+                  ("3d", "bool", "Prefer 3D", False),
+                  ("subs_dl", "off;all_specified;first_available", "Download subtitles", "off"),
+                  ("subs_dl_langs", "str", "Subtitle language codes (ISO639-1) to download (comma separated)", "")]
 
     __description__ = """Youtube.com hoster plugin"""
     __license__ = "GPLv3"
@@ -201,30 +231,36 @@ class YoutubeCom(Hoster):
             self.log_warning(_("FMT %d unknown, using default") % desired_fmt)
             desired_fmt = 0
 
+        m = re.search(r'ytplayer.config = ({.+?});', self.data)
+        if m is None:
+            self.fail(_("Player config pattern not found"))
+
+        player_config = json.loads(m.group(1))
+
         #: Parse available streams
-        streams = re.search(r'"url_encoded_fmt_stream_map":"(.+?)",',self.data).group(1)
-        streams = [x.split('\u0026') for x in streams.split(',')]
-        streams = [dict((y.split('=', 1)) for y in x) for x in streams]
-        streams = [(int(x['itag']),
-                    urllib.unquote(x['url']),
-                    x.get('s', x.get('sig', None)),
-                    True if 's' in x else False)
-                   for x in streams]
+        streams = player_config['args']['url_encoded_fmt_stream_map']
+        streams = [_s.split('&') for _s in streams.split(',')]
+        streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
+        streams = [(int(_s['itag']),
+                    urllib.unquote(_s['url']),
+                    _s.get('s', _s.get('sig', None)),
+                    True if 's' in _s else False)
+                   for _s in streams]
 
         # self.log_debug("Found links: %s" % streams)
 
-        self.log_debug("AVAILABLE STREAMS: %s" % [x[0] for x in streams])
+        self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in streams])
 
         #: Build dictionary of supported itags (3D/2D)
         allowed = lambda x: self.config.get(self.formats[x][0])
-        streams = [x for x in streams if x[0]
-                   in self.formats and allowed(x[0])]
+        streams = [_s for _s in streams if _s[0]
+                   in self.formats and allowed(_s[0])]
 
         if not streams:
             self.fail(_("No available stream meets your preferences"))
 
-        fmt_dict = dict([(x[0], x[1:])
-                         for x in streams if self.formats[x[0]][4] == use3d]
+        fmt_dict = dict([(_s[0], _s[1:])
+                         for _s in streams if self.formats[_s[0]][4] == use3d]
                         or streams)
 
         self.log_debug("DESIRED STREAM: ITAG:%d (%s) %sfound, %sallowed" %
@@ -238,8 +274,8 @@ class YoutubeCom(Hoster):
             sel = lambda x: self.formats[x][3]  #: Select quality index
             comp = lambda x, y: abs(sel(x) - sel(y))
 
-            self.log_debug("Choosing nearest fmt: %s" % [(x, allowed(x), comp(x, desired_fmt))
-                                                         for x in fmt_dict.keys()])
+            self.log_debug("Choosing nearest fmt: %s" % [(_s, allowed(_s), comp(_s, desired_fmt))
+                                                         for _s in fmt_dict.keys()])
 
             choosen_fmt = reduce(lambda x, y: x if comp(x, desired_fmt) <= comp(y, desired_fmt) and
                                  sel(x) > sel(y) else y, fmt_dict.keys())
@@ -260,20 +296,24 @@ class YoutubeCom(Hoster):
         if "&ratebypass=" not in url:
             url += "&ratebypass=yes"
 
+
+        subtitles_urls = {};
+        try:
+            subs = json.loads(player_config['args']['player_response'])['captions']['playerCaptionsTracklistRenderer']['captionTracks']
+            subtitles_urls = dict([(_subtitle['languageCode'],
+                                    urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
+                                   for _subtitle in subs])
+            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
+
+        except KeyError:
+            self.log_debug("AVAILABLE SUBTITLES: None") 
+
+
         #: Set file name
         file_suffix = self.formats[choosen_fmt][0] if choosen_fmt in self.formats else ".flv"
         m = re.search(r'<meta name="title" content="(.+?)">', self.data)
-        if m is not None:
-            name = html_unescape(m.group(1)).replace("/", "").replace("\"", "״")
 
-        else:
-            m = re.search(r'ytplayer.config = ({.+?});', self.data, re.M)
-            if m is not None:
-                name = json.loads(m.group(1))['args']['title']
-
-            else:
-                self.log_warning(_("Could not find name pattern"))
-                name = pyfile.name
+        name = player_config['args']['title']
 
         #: Cleaning invalid characters from the file name
         name = name.encode('ascii', 'replace')
@@ -281,7 +321,6 @@ class YoutubeCom(Hoster):
             name = name.replace(c, '_')
 
         pyfile.name = name
-
 
         time = re.search(r't=((\d+)m)?(\d+)s', pyfile.url)
         ffmpeg = which("ffmpeg")
@@ -293,7 +332,52 @@ class YoutubeCom(Hoster):
             pyfile.name += " (starting at %s:%s)" % (m, s)
 
         pyfile.name += file_suffix
+
         filename = self.download(url)
+
+        subs_dl = self.config.get('subs_dl')
+        if subs_dl != "off":
+            subs_dl_langs = [_x.strip() for _x in self.config.get('subs_dl_langs', "").split(',') if _x.strip()]
+            if subs_dl_langs:
+                for _lang in subs_dl_langs:
+                    if _lang in subtitles_urls:
+                        srt_filename = os.path.splitext(filename)[0] + "." + _lang + ".srt"
+
+                        if self.pyload.config.get('download', 'skip_existing') and \
+                                exists(srt_filename) and os.stat(srt_filename).st_size != 0:
+                            self.log_info("Download skipped: %s due to File exists", os.path.basename(srt_filename))
+                            continue
+
+                        timed_text = self.load(subtitles_urls[_lang], decode=False)
+                        srt = timedtext_to_srt(timed_text)
+
+                        with open(srt_filename, "w") as f:
+                            f.write(srt.encode('utf-8'))
+                        self.set_permissions(srt_filename)
+                        self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                        if subs_dl == "first_available":
+                            break
+
+            else:
+                # Download any available subtitle
+                for _subtitle in subtitles_urls.items():
+                    srt_filename = os.path.splitext(filename)[0] + "." + _subtitle[0] + ".srt"
+
+                    if self.pyload.config.get('download', 'skip_existing') and \
+                        exists(srt_filename) and os.stat(srt_filename).st_size != 0:
+                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
+                            continue
+
+                    timed_text = self.load(_subtitle[1], decode=False)
+                    srt = timedtext_to_srt(timed_text)
+
+                    with open(srt_filename, "w") as f:
+                        f.write(srt.encode('utf-8'))
+                    self.set_permissions(srt_filename)
+
+                    self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                    if subs_dl == "first_available":
+                            break
 
         if ffmpeg and time:
             inputfile = filename + "_"

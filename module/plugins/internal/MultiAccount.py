@@ -10,7 +10,7 @@ from .misc import decode, remove_chars, uniqify
 class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -223,8 +223,8 @@ class MultiAccount(Account):
         try:
             mh_mode = self.config.get('mh_mode', 'all')
             if mh_mode in ("listed", "unlisted"):
-                plugin_list = self.config.get('plugin_list', '').replace('|', ',').replace(';', ',').split(',')
-                config_set = set(plugin_list)
+                mh_list = self.config.get('mh_list', '').replace('|', ',').replace(';', ',').split(',')
+                config_set = set(mh_list)
 
                 if mh_mode == "listed":
                     plugin_set &= config_set
