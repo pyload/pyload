@@ -71,7 +71,7 @@ def timedtext_to_srt(timedtext):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.63"
+    __version__ = "0.64"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -305,7 +305,7 @@ class YoutubeCom(Hoster):
                                    for _subtitle in subs])
             self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
 
-        except (AttributeError, IndexError):
+        except KeyError:
             self.log_debug("AVAILABLE SUBTITLES: None") 
 
 
