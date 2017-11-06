@@ -35,7 +35,7 @@ def flash(id="0"):
 
 @route("/flash/add", method="POST")
 @local_check
-def add(request):
+def add():
     package = request.POST.get('referer', None)
     urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
 
