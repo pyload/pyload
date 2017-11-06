@@ -69,7 +69,7 @@ def addcrypted():
 @local_check
 def addcrypted2():
 
-    package = request.forms.get("source", None)
+    package = request.forms.get("package", request.forms.get("source", None))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
 
