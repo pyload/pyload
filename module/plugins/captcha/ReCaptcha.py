@@ -27,7 +27,7 @@ except ImportError:
 class ReCaptcha(CaptchaService):
     __name__ = 'ReCaptcha'
     __type__ = 'captcha'
-    __version__ = '0.36'
+    __version__ = '0.37'
     __status__ = 'testing'
 
     __description__ = 'ReCaptcha captcha service plugin'
@@ -311,18 +311,18 @@ class ReCaptcha(CaptchaService):
                 self.fail(_("ReCaptcha challenge pattern not found"))
 
             try:
-                challenge_msg = re.search(
-                    r'<label .*?class="fbc-imageselect-message-text">(.*?)</label>', html).group(1)
+                challenge_msg = re.search(r'<label .*?class="fbc-imageselect-message-text">(.*?)</label>',
+                                          html).group(1)
 
             except (AttributeError, IndexError):
                 try:
-                    challenge_msg = re.search(
-                        r'<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>', html).group(1)
+                    challenge_msg = re.search(r'<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>',
+                                              html).group(1)
 
                 except (AttributeError, IndexError):
                     self.fail(_("ReCaptcha challenge message not found"))
 
-            challenge_msg = re.sub(r'</?\w+?>', "", challenge_msg)
+            challenge_msg = re.sub(r'<.*?>', "", challenge_msg)
 
             image_url = urlparse.urljoin('http://www.google.com',
                                          re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
