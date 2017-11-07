@@ -9,6 +9,8 @@ import urlparse
 
 import Crypto.Cipher.AES
 
+from module.network.HTTPRequest import BadHeader
+
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Crypter import Crypter
@@ -17,7 +19,7 @@ from ..internal.Crypter import Crypter
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -105,29 +107,35 @@ class FilecryptCc(Crypter):
                                                     ref=True,
                                                     input_type="gif")
 
-                self.site_with_links = self.load(self.pyfile.url,
-                                                 post={'recaptcha_response_field': captcha_code})
+                try:
+                    self.site_with_links = self.load(self.pyfile.url,
+                                                     post={'recaptcha_response_field': captcha_code})
+                except BadHeader, e:
+                    if e.code == 500:
+                        self.site_with_links = e.content
+                    else:
+                        raise
 
             elif m2:  #: Circle captcha
-                self.log_debug(
-                    "Circle Captcha URL: %s" %
-                    urlparse.urljoin(
-                        self.pyfile.url,
-                        m2.group(1)))
+                self.log_debug("Circle Captcha URL: %s" %
+                               urlparse.urljoin(self.pyfile.url, m2.group(1)))
 
                 captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, m2.group(1)),
                                                     input_type="png", output_type='positional')
 
-                self.site_with_links = self.load(self.pyfile.url,
-                                                 post={'button.x': captcha_code[0],
-                                                       'button.y': captcha_code[1]})
+                try:
+                    self.site_with_links = self.load(self.pyfile.url,
+                                                     post={'button.x': captcha_code[0],
+                                                           'button.y': captcha_code[1]})
+                except BadHeader, e:
+                    if e.code == 500:
+                        self.site_with_links = e.content
+                    else:
+                        raise
 
             elif m3:  #: Solvemedia captcha
-                self.log_debug(
-                    "Solvemedia Captcha URL: %s" %
-                    urlparse.urljoin(
-                        self.pyfile.url,
-                        m3.group(1)))
+                self.log_debug("Solvemedia Captcha URL: %s" %
+                               urlparse.urljoin(self.pyfile.url, m3.group(1)))
 
                 solvemedia = SolveMedia(self.pyfile)
                 captcha_key = solvemedia.detect_key()
@@ -135,14 +143,19 @@ class FilecryptCc(Crypter):
                 if captcha_key:
                     self.captcha = solvemedia
                     response, challenge = solvemedia.challenge(captcha_key)
-                    self.site_with_links = self.load(self.pyfile.url,
-                                                     post={'adcopy_response': response,
-                                                           'adcopy_challenge': challenge})
+                    try:
+                        self.site_with_links = self.load(self.pyfile.url,
+                                                         post={'adcopy_response': response,
+                                                               'adcopy_challenge': challenge})
+                    except BadHeader, e:
+                        if e.code == 500:
+                            self.site_with_links = e.content
+                        else:
+                            raise
 
             elif m4:  #: Keycaptcha captcha
-                self.log_debug(
-                    "Keycaptcha Captcha URL: %s unsupported, retrying" %
-                    m4.group(1))
+                self.log_debug("Keycaptcha Captcha URL: %s unsupported, retrying" %
+                               m4.group(1))
                 self.retry()
 
             else:
@@ -158,8 +171,15 @@ class FilecryptCc(Crypter):
                     except Exception:
                         self.retry_captcha()
 
-                    self.site_with_links = self.load(self.pyfile.url,
-                                                     post={'g-recaptcha-response': response})
+                    try:
+                        self.site_with_links = self.load(self.pyfile.url,
+                                                         post={'g-recaptcha-response': response})
+                    except BadHeader, e:
+                        if e.code == 500:
+                            self.site_with_links = e.content
+                        else:
+                            raise
+
                 else:
                     self.log_info(_("Unknown captcha found, retrying"))
                     self.retry()
@@ -178,22 +198,14 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.urls.append(
-                urlparse.urljoin(
-                    self.pyfile.url,
-                    "/DLC/%s.dlc" %
-                    _dlc))
+            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
 
     def handle_weblinks(self):
         try:
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for _link in links:
-                res = self.load(
-                    urlparse.urljoin(
-                        self.pyfile.url,
-                        "/Link/%s.html" %
-                        _link))
+                res = self.load(urlparse.urljoin(self.pyfile.url, "/Link/%s.html" % _link))
                 link2 = re.search('<iframe .* noresize src="(.*)"></iframe>', res)
                 if link2:
                     res2 = self.load(link2.group(1), just_header=True)
