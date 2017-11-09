@@ -8,6 +8,8 @@ from shutil import copy
 from traceback import print_exc
 from utils import chmod
 
+from OrderedDict import OrderedDict
+
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
     "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
@@ -19,29 +21,25 @@ CONF_VERSION = 1
 class ConfigParser:
     """
     holds and manage the configuration
-    
     current dict layout:
-    
+
     {
-    
-     section : { 
-      option : { 
+     section : {
+      option : {
             value:
             type:
             desc:
       }
-      desc: 
-    
+      desc:
     }
-    
-    
+
     """
 
 
     def __init__(self):
         """Constructor"""
-        self.config = {} # the config values
-        self.plugin = {} # the config for plugins
+        self.config = OrderedDict() # the config values
+        self.plugin = OrderedDict() # the config for plugins
         self.oldRemoteData = {}
 
         self.pluginCB = None # callback when plugin config value is changed
@@ -120,7 +118,7 @@ class ConfigParser:
 
         config = config.splitlines()[1:]
 
-        conf = {}
+        conf = OrderedDict()
 
         section, option, value, typ, desc = "", "", "", "", ""
 
@@ -129,7 +127,7 @@ class ConfigParser:
         for line in config:
             comment = line.rfind("#")
             if line.find(":", comment) < 0 > line.find("=", comment) and comment > 0 and line[comment - 1].isspace():
-                line = line.rpartition("#") # removes comments            
+                line = line.rpartition("#") # removes comments
                 if line[1]:
                     line = line[0]
                 else:
@@ -144,7 +142,7 @@ class ConfigParser:
                     section, none, desc = line[:-1].partition('-')
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
-                    conf[section] = {"desc": desc}
+                    conf[section] = OrderedDict({"desc": desc})
                 else:
                     if listmode:
                         if line.endswith("]"):
@@ -256,6 +254,8 @@ class ConfigParser:
                 return value.encode("utf8")
             except:
                 return value
+        elif typ == "info":
+            return ""
         else:
             return value
 
@@ -319,29 +319,30 @@ class ConfigParser:
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
         if name not in self.plugin:
-            conf = {"desc": name,
-                    "outline": outline}
-            self.plugin[name] = conf
+            conf = OrderedDict({"desc": name,
+                                "outline": outline})
         else:
             conf = self.plugin[name]
-            conf["outline"] = outline
 
+        #Create new OrderedDict to inherit current order from plugin
+        new_conf = OrderedDict({"desc": name,
+                                "outline": outline})
+
+        #If value exists in user config, take value from there
         for item in config:
             if item[0] in conf:
-                conf[item[0]]["type"] = item[1]
-                conf[item[0]]["desc"] = item[2]
+                new_conf[item[0]] = {
+                    "desc": item[2],
+                    "type": item[1],
+                    "value": self.cast(item[1], conf[item[0]]["value"])
+                }
             else:
-                conf[item[0]] = {
+                new_conf[item[0]] = {
                     "desc": item[2],
                     "type": item[1],
                     "value": self.cast(item[1], item[3])
                 }
-
-        values = [x[0] for x in config] + ["desc", "outline"]
-        #delete old values
-        for item in conf.keys():
-            if item not in values:
-                del conf[item]
+        self.plugin[name] = new_conf
 
     def deleteConfig(self, name):
         """Removes a plugin config"""
