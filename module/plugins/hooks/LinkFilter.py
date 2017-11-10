@@ -1,13 +1,12 @@
 
 from ..internal.Addon import Addon
 
-import re
 from itertools import chain
 
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
     __type__ = "hook"
-    __version__ = "0.15"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -40,11 +39,11 @@ class LinkFilter(Addon):
         linkcount -= len(links)
 
         if linkcount > 0:
-            linkstring = '' if self.config.get('forceExecute') else 'hoster '
-            linkstring += 'links' if linkcount == 1 else 'links'
-            self.log_info(
-                'Whitelist filter removed %s %s not containing (%s)' % 
-                (linkcount, linkstring, ', '.join(filters)))
+                linkstring = '' if self.config.get('forceExecute') else 'hoster '
+                linkstring += 'links' if linkcount > 1 else 'link'
+                self.log_info(
+                    'Whitelist filter removed %s %s not containing (%s)' %
+                    (linkcount, linkstring, ', '.join(filters)))
 
     def blacklist(self, links, filters):
         for filter in filters:
@@ -56,7 +55,7 @@ class LinkFilter(Addon):
 
             if linkcount > 0:
                 linkstring = '' if self.config.get('forceExecute') else 'hoster '
-                linkstring += 'link' if linkcount == 1 else 'links'
+                linkstring += 'links' if linkcount > 1 else 'link'
                 self.log_info(
                     'Blacklist filter removed %s %s containing %s' %
                     (linkcount, linkstring, filter))
