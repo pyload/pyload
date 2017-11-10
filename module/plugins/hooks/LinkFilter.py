@@ -6,7 +6,7 @@ from itertools import chain
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
     __type__ = "hook"
-    __version__ = "0.14"
+    __version__ = "0.15"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
