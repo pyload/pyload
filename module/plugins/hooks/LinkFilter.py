@@ -39,11 +39,11 @@ class LinkFilter(Addon):
         linkcount -= len(links)
 
         if linkcount > 0:
-                linkstring = '' if self.config.get('forceExecute') else 'hoster '
-                linkstring += 'links' if linkcount > 1 else 'link'
-                self.log_info(
-                    'Whitelist filter removed %s %s not containing (%s)' %
-                    (linkcount, linkstring, ', '.join(filters)))
+            linkstring = '' if self.config.get('forceExecute') else 'hoster '
+            linkstring += 'link' if linkcount == 1 else 'links'
+            self.log_info(
+                'Whitelist filter removed %s %s not containing (%s)' %
+                (linkcount, linkstring, ', '.join(filters)))
 
     def blacklist(self, links, filters):
         for filter in filters:
@@ -55,7 +55,7 @@ class LinkFilter(Addon):
 
             if linkcount > 0:
                 linkstring = '' if self.config.get('forceExecute') else 'hoster '
-                linkstring += 'links' if linkcount > 1 else 'link'
+                linkstring += 'link' if linkcount == 1 else 'links'
                 self.log_info(
                     'Blacklist filter removed %s %s containing %s' %
                     (linkcount, linkstring, filter))
