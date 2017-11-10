@@ -987,16 +987,28 @@ class Api(Iface):
     @permission(PERMS.STATUS)
     def call(self, info):
         """Calls a service (a method in hook plugin).
-
         :param info: `ServiceCall`
         :return: result
         :raises: ServiceDoesNotExists, when its not available
         :raises: ServiceException, when a exception was raised
+        :raises: KeyError or AttributeError, when a parameter is missing
         """
-        plugin = info.plugin
-        func = info.func
-        args = info.arguments
-        parse = info.parseArguments
+        if type(info) is dict:
+            try:
+                plugin = info['plugin']
+                func = info['func']
+                args = info['arguments']
+                parse = info['parseArguments']
+            except KeyError, e:
+                raise KeyError(e.message)
+        else:
+            try:
+                plugin = info.plugin
+                func = info.func
+                args = info.arguments
+                parse = info.parseArguments
+            except AttributeError, e:
+                raise AttributeError(e.message)
 
         if not self.hasService(plugin, func):
             raise ServiceDoesNotExists(plugin, func)

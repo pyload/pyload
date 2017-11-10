@@ -37,8 +37,39 @@ from utils import render_to_response, parse_permissions, parse_userdata, \
 from filters import relpath, unquotepath
 
 from module.utils import formatSize, save_join, fs_encode, fs_decode
+from module.plugins.PluginManager import literal_eval
 
 # Helper
+def get_plugin_content():
+    """Retrieve additional resources to be added to the webpage.
+
+    :return: 'list' of resources, resources are of type 'dict' with keys 'type' and ('src' or 'content')
+    """
+    allServices = PYLOAD.getServices()
+    webServices = []
+    pluginContent = []
+
+    # Find plugins that provide additional content for the webinterface
+    for key in allServices:
+        if 'webinterface_add_plugin_content' in allServices[key]:
+            #When the config has been changed to 'activated=False' without restarting, 
+            # this plugin will still be listed in PYLOAD.getServices(),
+            # so well confirm this value here
+            if PYLOAD.getConfigValue(key, 'activated', 'plugin'):
+                webServices.append(key)
+    
+    # Request content to be added from each plugin
+    # Content is expected as 'string' of 'list' of resources, resources are of type 'dict' with keys 'type' and ('src' or 'content')
+    # str(   [{'src': 'http://sam.ple/Foo.js', 'type': 'javascript'}, {'content': 'body {zoom:0.5}', 'type': 'css'}]   )
+    for plugin in webServices:
+        RPC_result = literal_eval(PYLOAD.call(info={'plugin':plugin, 'func':'webinterface_add_plugin_content', 'arguments':None, 'parseArguments':False}))
+        if type(RPC_result) is list:
+            pluginContent.extend(RPC_result)
+        elif type(RPC_result) is dict:
+            pluginContent.append(RPC_result)
+        # else raise Error ???
+
+    return pluginContent
 
 def pre_processor():
     s = request.environ.get('beaker.session')
@@ -48,10 +79,12 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
+    pluginContent = []
     if user["is_authenticated"]:
         status = PYLOAD.statusServer()
         info = PYLOAD.getInfoByPlugin("UpdateManager")
         captcha = PYLOAD.isCaptchaWaiting()
+        pluginContent = get_plugin_content()
 
         # check if update check is available
         if info:
@@ -65,7 +98,8 @@ def pre_processor():
             'perms': perms,
             'url': request.url,
             'update': update,
-            'plugins': plugins}
+            'plugins': plugins,
+            'plugincontent': pluginContent}
 
 
 def base(messages):
@@ -99,6 +133,27 @@ def js_dynamic(path):
             return static_file(path, root=join(PROJECT_DIR, "media", "js"))
     except:
         return HTTPError(404, "Not Found")
+
+# render plugin content
+@route("/media/plugins/<path:path>")
+def plugin_dynamic(path):
+    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
+    response.headers['Cache-control'] = "public"
+
+    plugin_name = path.split('/')[0]
+    plugin_config = PYLOAD.getPluginConfigDict()[plugin_name]
+    
+    try:
+        if "static" not in path and "Static" not in path:
+            t = env.get_template("plugins/%s" % path)
+            return t.render(notifications=plugin_config)
+        else:
+            return static_file(path, root=join(os.getcwd(), 'tmp', 'plugins'))
+    except Exception, e:
+        return HTTPError(404, "Not Found " + str(e) + "  ---  " + str(sys.exc_info()[0]))
+    except:
+        return HTTPError(404, "Not Found" + str(sys.exc_info()[0]))
 
 @route('/media/<path:path>')
 def server_static(path):
