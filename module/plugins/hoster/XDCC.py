@@ -348,7 +348,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.44"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
