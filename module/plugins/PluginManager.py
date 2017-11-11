@@ -369,7 +369,7 @@ class PluginManager:
                         dst[name].update(src[name])
                     else:
                         for _k in set(src[name].keys()) - set(dst[name].keys()):
-                            dst[name][k] = src[name][k]
+                            dst[name][_k] = src[name][_k]
                 else:
                     dst[name] = src[name]
 
