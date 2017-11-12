@@ -35,7 +35,7 @@ class LinkFilter(Addon):
         linkcount = len(links)
         links[:] = [link for link in links if
             not self.isHosterLink(link) or
-            [True for filter in filters if link.find(filter) != -1]]
+            any(link.find(filter) != -1 for filter in filters)]
         linkcount -= len(links)
 
         if linkcount > 0:
@@ -64,7 +64,7 @@ class LinkFilter(Addon):
         #declare all links as hoster links so the filter will work on all links
         if self.config.get('forceExecute'):
             return True
-        for name, value in chain(self.pyload.pluginManager.hosterPlugins.iteritems()):
-            if value['re'].match(link):
+        for hoster in chain(self.pyload.pluginManager.hosterPlugins.iteritems()):
+            if hoster[1]['re'].match(link):
                 return True
         return False
