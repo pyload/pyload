@@ -333,8 +333,7 @@ class ConfigParser:
             conf["outline"] = outline
 
         for item in config:
-            if item[0] in conf:
-                conf[item[0]]["type"] = item[1]
+            if item[0] in conf and item[1] == conf[item[0]]["type"]:
                 conf[item[0]]["desc"] = item[2]
             else:
                 conf[item[0]] = {
