@@ -162,7 +162,7 @@ class PluginManager:
                     version = 0
 
                 # home contains plugins from pyload root
-                if home and name in home:
+                if isinstance(home, dict) and name in home:
                     if home[name]["v"] >= version:
                         continue
 
@@ -225,7 +225,7 @@ class PluginManager:
                     configs[name] = config
 
         if not home:
-            temp_plugins, temp_configs = self.parse(folder, pattern, plugins)
+            temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)
             plugins.update(temp_plugins)
             configs.update(temp_configs)
 
