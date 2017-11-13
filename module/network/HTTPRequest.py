@@ -38,9 +38,10 @@ def myurlencode(data):
 bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
 
 class BadHeader(Exception):
-    def __init__(self, code, content=""):
+    def __init__(self, code, header="", content=""):
         Exception.__init__(self, "Bad server response: %s %s" % (code, responses[int(code)]))
         self.code = code
+        self.header = header
         self.content = content
 
 
@@ -227,7 +228,7 @@ class HTTPRequest():
         code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
         if code in bad_headers:
             #404 will NOT raise an exception
-            raise BadHeader(code, self.getResponse())
+            raise BadHeader(code, self.header, self.getResponse())
         return code
 
     def checkHeader(self):
