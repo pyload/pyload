@@ -266,7 +266,7 @@ class IRC(object):
         if self.xdcc_request_time:
             self.plugin.log_info(_("Requesting XDCC resume of '%s' at position %s") % (file_name, resume_position))
 
-            self.irc_sock.send("PRIVMSG %s :\x01DCC RESUME \"%s\" %s %s\x01\r\n" % (bot, encode(file_name,'utf8'), dcc_port, resume_position))
+            self.irc_sock.send("PRIVMSG %s :\x01DCC RESUME \"%s\" %s %s\x01\r\n" % (bot, encode(file_name,'utf-8'), dcc_port, resume_position))
 
             start_time = time.time()
             while time.time() - start_time < 30:
@@ -280,7 +280,7 @@ class IRC(object):
                     and args[0][0:len(self.nick)] == self.nick \
                     and command in ("PRIVMSG", "NOTICE"):
 
-                    text = decode(args[1], 'utf8')
+                    text = decode(args[1], 'utf-8')
                     sender_nick = origin.split('@')[0].split('!')[0]
                     self.plugin.log_debug(_("PrivMsg: <%s> %s") % (sender_nick, text))
 
@@ -317,7 +317,7 @@ class IRC(object):
                 and args[0][0:len(self.nick)] == self.nick \
                 and command in ("PRIVMSG", "NOTICE"):
 
-                text = decode(args[1], 'utf8')
+                text = decode(args[1], 'utf-8')
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
                     self.plugin.log_debug(_("Filename: '%s'") % pack_info[1])
@@ -348,7 +348,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.44"
+    __version__ = "0.45"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -493,7 +493,7 @@ class XDCC(Hoster):
                 or command not in ("PRIVMSG", "NOTICE"):
             return
 
-        text = decode(args[1], 'utf8')
+        text = decode(args[1], 'utf-8')
         sender_nick = origin.split('@')[0].split('!')[0]
         self.log_debug(_("PrivMsg: <%s> %s") % (sender_nick, text))
 
