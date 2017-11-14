@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.50"
+    __version__ = "0.51"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
@@ -145,8 +145,7 @@ class RapidgatorNet(SimpleHoster):
 
             response, challenge = captcha.challenge()
 
-            import urlparse
-            self.data = self.load(urlparse.urljoin(self.pyfile.url, url),
+            self.data = self.load(url,
                                   post={'DownloadCaptchaForm[captcha]': "",
                                         'adcopy_challenge': challenge,
                                         'adcopy_response': response},
