@@ -75,10 +75,13 @@ if not exists(cache):
     makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, '%s.cache')
-loader = PrefixLoader({
-    "default": FileSystemLoader(join(PROJECT_DIR, "templates", "default")),
-    'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))
-})
+
+mapping = {'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))}
+for template in os.listdir(join(PROJECT_DIR, "templates")):
+    if os.path.isdir(join(PROJECT_DIR, "templates", template)):
+        mapping[template] = FileSystemLoader(join(PROJECT_DIR, "templates", template))
+
+loader = PrefixLoader(mapping)
 
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
     bytecode_cache=bcc)
