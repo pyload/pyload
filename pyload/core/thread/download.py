@@ -34,7 +34,7 @@ class DownloadThread(PluginThread):
 
     @property
     def running(self):
-        return self.__running.is_set()
+        return self.__running
 
     def _handle_abort(self, file):
         self.pyload.log.info(
@@ -190,7 +190,9 @@ class DownloadThread(PluginThread):
     def _finalize(self, file):
         self.pyload.files.save()
         file.check_if_processed()
-        sys.exc_clear()
+        if sys.version_info[0] < 3:
+            # not available in python 3
+            sys.exc_clear()
         # manager could still be waiting for it
         self.__running.set()
         # only done when job was not put back

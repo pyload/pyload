@@ -61,6 +61,7 @@ class Hoster(Base):
     def __init__(self, file):
         # TODO: file.owner, but it's not correct yet
         super(Hoster, self).__init__(file.manager.pyload)
+        self._ = self.pyload._
 
         self.want_reconnect = False
         # enables simultaneous processing of multiple downloads
@@ -94,7 +95,7 @@ class Hoster(Base):
         self.dl = None
 
         # associated file instance, see `File`
-        self.filename = file
+        self.file = file
         self.thread = None  # holds thread in future
 
         # location where the last call to download was saved

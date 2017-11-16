@@ -80,8 +80,8 @@ class Package(BaseObject):
     """Represents a package object at runtime."""
     __slots__ = ['added', 'comment', 'comment', 'folder', 'manager', 'name',
                  'ownerid', 'packageorder', 'password', 'password', 'pid',
-                 'root', 'set_finished', 'shared', 'site', 'site', 'status',
-                 'tags', 'timestamp']
+                 'pyload', 'root', 'set_finished', 'shared', 'site', 'site',
+                 'status', 'tags', 'timestamp']
 
     @staticmethod
     def from_info_data(m, info):

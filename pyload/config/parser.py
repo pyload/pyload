@@ -100,7 +100,7 @@ class ConfigOption(object):
     def get_default(self):
         return self.default
 
-    def set(self, value, store=True):
+    def set(self, value, store=False):
         norm_value = self._normalize_value(value)
         if self.allowed_values and norm_value not in self.allowed_values:
             raise InvalidValueError(value)
@@ -254,9 +254,8 @@ class ConfigParser(InscDict):
             pass
 
         else:
+            self.store()
             return
-
-        self.store()
 
     def _backup_fileconfig(self):
         path = self.path

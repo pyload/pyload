@@ -146,7 +146,7 @@ class PluginLoader(object):
 
     def parse_attributes(self, filename, name, folder=''):
         """Parse attribute dict from plugin."""
-        with io.open(filename, mode='rb') as fp:
+        with io.open(filename, mode='r') as fp:
             content = fp.read()
 
         attrs = BaseAttributes()
