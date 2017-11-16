@@ -61,10 +61,10 @@ def print_dump(obj, file=None):
     print(text)
 
 
-def _format_framestack(frame=None, limit=None):
+def _format_framestack(limit=None):
     limit = None if not limit else abs(limit)
     stack = []
-    _, value, tb = sys.exc_info(frame)
+    _, value, tb = sys.exc_info()
     try:
         while tb:
             stack.append(tb.tb_frame)
@@ -91,7 +91,7 @@ def _format_framestack(frame=None, limit=None):
 
 
 def format_framestack(frame=None, limit=None):
-    framestack = _format_framestack(frame, limit)
+    framestack = _format_framestack(limit)
     stack_desc = []
     for frame_name, frame_dump in framestack:
         dump = os.linesep.join(
