@@ -15,6 +15,7 @@ from future.builtins import int
 import pycurl
 from pyload.requests.curl.request import CurlRequest
 from pyload.utils import purge
+from pyload.utils.convert import to_str
 from pyload.utils.struct import HeaderDict
 
 standard_library.install_aliases()
@@ -38,9 +39,9 @@ class CurlChunk(CurlRequest):
 
         self.size = range[1] - range[0] if range else - 1
         self.arrived = 0
-        self.last_url = self.p.referer
+        self.last_url = None
 
-        self.c = pycurl.Curl()
+        self.curl = pycurl.Curl()
 
         self.header = ''
         # indicates if the header has been processed
@@ -123,9 +124,10 @@ class CurlChunk(CurlRequest):
 
             self.fp = io.open(filename, mode='wb')
 
-        return self.c
+        return self.curl
 
     def write_header(self, buf):
+        buf = to_str(buf) # everything uses buf as string, so a conversion is needed
         self.header += buf
         # TODO: forward headers?, this is possibly unneeded,
         # when we just parse valid 200 headers as first chunk,
@@ -145,7 +147,7 @@ class CurlChunk(CurlRequest):
     def write_body(self, buf):
         # ignore BOM, it confuses unrar
         if self.check_bom:
-            if [ord(b) for b in buf[:3]] == [239, 187, 191]:
+            if [b for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
             self.check_bom = False
 
@@ -223,6 +225,6 @@ class CurlChunk(CurlRequest):
             self.fp.close()
         except AttributeError:
             pass
-        self.c.close()
+        self.curl.close()
         if hasattr(self, 'p'):
             del self.p
