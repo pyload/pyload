@@ -32,10 +32,14 @@ def main():
         print("OpenSSL:", "missing")
 
     try:
-        import Image
+        from PIL import Image
         print("image libary:", Image.VERSION)
     except:
-        print("image libary:", "missing")
+        try:
+            import Image
+            print("image libary:", Image.VERSION)
+        except:
+            print("image libary:", "missing")
 
     try:
         import PyQt4.QtCore
@@ -67,9 +71,12 @@ def main():
         core_err.append("Your py-curl version is to old, please upgrade!")
 
     try:
-        import Image
+        from PIL import Image
     except:
-        core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
+        try:
+            import Image
+        except:
+            core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
 
     pipe = subprocess.PIPE
     try:
