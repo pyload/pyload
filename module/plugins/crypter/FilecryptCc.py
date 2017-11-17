@@ -9,17 +9,43 @@ import urlparse
 
 import Crypto.Cipher.AES
 
-from module.network.HTTPRequest import BadHeader
+from module.network.CookieJar import CookieJar
+from module.network.HTTPRequest import BadHeader, HTTPRequest
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Crypter import Crypter
 
 
+class BIGHTTPRequest(HTTPRequest):
+    """
+    Overcome HTTPRequest's load() size limit to allow
+    loading very big web pages by overrding HTTPRequest's write() function
+    """
+
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    def __init__(self, cookies=None, options=None, limit=1000000):
+        self.limit = limit
+        HTTPRequest.__init__(self, cookies=cookies, options=options)
+
+    def write(self, buf):
+        """ writes response """
+        if self.limit and self.rep.tell() > self.limit or self.abort:
+            rep = self.getResponse()
+            if self.abort:
+                raise Abort()
+            f = open("response.dump", "wb")
+            f.write(rep)
+            f.close()
+            raise Exception("Loaded Url exceeded limit")
+
+        self.rep.write(buf)
+
+
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
@@ -47,6 +73,16 @@ class FilecryptCc(Crypter):
 
     def setup(self):
         self.urls = []
+
+        try:
+            self.req.http.close()
+        except Exception:
+            pass
+
+        self.req.http = BIGHTTPRequest(
+            cookies=CookieJar(None),
+            options=self.pyload.requestFactory.getOptions(),
+            limit=2000000)
 
     def decrypt(self, pyfile):
         self.data = self._filecrypt_load_url(pyfile.url)
@@ -223,4 +259,3 @@ class FilecryptCc(Crypter):
                 return e.content
             else:
                 raise
-
