@@ -36,7 +36,7 @@ class PluginManager:
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
-    CONFIG = re.compile(r'__config__.*=.*\[([^\]]+)', re.MULTILINE)
+    CONFIG = re.compile(r'__config__.*=.*(\[[^\]]+\])', re.MULTILINE)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
 
@@ -56,6 +56,18 @@ class PluginManager:
     def createIndex(self):
         """create information for all plugins available"""
 
+        def merge(dst, src, overwrite=False):
+            """merge dict of dicts"""
+            for name in src:
+                if name in dst:
+                    if overwrite is True:
+                        dst[name].update(src[name])
+                    else:
+                        for _k in set(src[name].keys()) - set(dst[name].keys()):
+                            dst[name][_k] = src[name][_k]
+                else:
+                    dst[name] = src[name]
+
         sys.path.append(abspath(""))
 
         if not exists("userplugins"):
@@ -64,14 +76,41 @@ class PluginManager:
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
 
-        self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
-        self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
-        self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
+        self.crypterPlugins , config = self.parse("crypter", pattern=True)
+        self.plugins["crypter"] = self.crypterPlugins
+        default_config = config
 
-        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
-        self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
-        self.plugins["hooks"] = self.hookPlugins = self.parse("hooks")
-        self.plugins["internal"] = self.internalPlugins = self.parse("internal")
+        self.containerPlugins, config = self.parse("container", pattern=True)
+        self.plugins["container"] = self.containerPlugins
+        merge(default_config, config)
+
+        self.hosterPlugins, config = self.parse("hoster", pattern=True)
+        self.plugins["hoster"] = self.hosterPlugins
+        merge(default_config, config)
+
+        self.hookPlugins, config = self.parse("hooks")
+        self.plugins["hooks"] = self.hookPlugins
+        merge(default_config, config)
+
+        self.captchaPlugins, config = self.parse("captcha")
+        self.plugins["captcha"] = self.captchaPlugins
+        merge(default_config, config)
+
+        self.accountPlugins, config = self.parse("accounts")
+        self.plugins["accounts"] = self.accountPlugins
+        merge(default_config, config)
+
+        self.internalPlugins, config = self.parse("internal")
+        self.plugins["internal"] = self.internalPlugins
+        merge(default_config, config)
+
+        for name, config in default_config.items():
+            desc = config.pop('desc', "")
+            config = [[k] + list(v) for k, v in config.items()]
+            try:
+                self.core.config.addPluginConfig(name, config, desc)
+            except:
+                self.log.error("Invalid config in %s: %s" % (name, config))
 
         self.log.debug("created index of plugins")
 
@@ -97,9 +136,11 @@ class PluginManager:
         else:
             pfolder = join(pypath, "module", "plugins", folder)
 
+        configs = {}
         for f in listdir(pfolder):
-            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or f.endswith(
-                "_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc") or
+                    f.endswith("_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+
                 data = open(join(pfolder, f))
                 content = data.read()
                 data.close()
@@ -121,7 +162,7 @@ class PluginManager:
                     version = 0
 
                 # home contains plugins from pyload root
-                if home and name in home:
+                if isinstance(home, dict) and name in home:
                     if home[name]["v"] >= version:
                         continue
 
@@ -152,7 +193,6 @@ class PluginManager:
                     except:
                         self.log.error(_("%s has a invalid pattern.") % name)
 
-
                 # internals have no config
                 if folder == "internal":
                     self.core.config.deleteConfig(name)
@@ -164,39 +204,32 @@ class PluginManager:
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
 
-                    if type(config[0]) == tuple:
-                        config = [list(x) for x in config]
+                    if type(config) == list and all(type(c) == tuple for c in config):
+                        config = dict((x[0], x[1:]) for x in config)
                     else:
-                        config = [list(config)]
-
-                    if folder == "hooks":
-                        append = True
-                        for item in config:
-                            if item[0] == "activated": append = False
-
-                        # activated flag missing
-                        if append: config.append(["activated", "bool", "Activated", False])
-
-                    try:
-                        self.core.config.addPluginConfig(name, config, desc)
-                    except:
                         self.log.error("Invalid config in %s: %s" % (name, config))
+                        continue
 
-                elif folder == "hooks": #force config creation
+                    if folder == "hooks" and "activated" not in config:
+                            config['activated'] = ["bool", "Activated", False]
+
+                    config['desc'] = desc
+                    configs[name] = config
+
+                elif folder == "hooks":  # force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
-                    config = (["activated", "bool", "Activated", False],)
+                    config['activated'] = ["bool", "Activated", False]
 
-                    try:
-                        self.core.config.addPluginConfig(name, config, desc)
-                    except:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
+                    config['desc'] = desc
+                    configs[name] = config
 
         if not home:
-            temp = self.parse(folder, pattern, plugins)
-            plugins.update(temp)
+            temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)
+            plugins.update(temp_plugins)
+            configs.update(temp_configs)
 
-        return plugins
+        return plugins, configs
 
 
     def parseUrls(self, urls):
@@ -327,6 +360,20 @@ class PluginManager:
 
     def reloadPlugins(self, type_plugins):
         """ reloads and reindexes plugins """
+
+        def merge(dst, src, overwrite=False):
+            """merge dict of dicts"""
+            for name in src:
+                if name in dst:
+                    if overwrite is True:
+                        dst[name].update(src[name])
+                    else:
+                        for _k in set(src[name].keys()) - set(dst[name].keys()):
+                            dst[name][_k] = src[name][_k]
+                else:
+                    dst[name] = src[name]
+
+
         if not type_plugins: return False
 
         self.log.debug("Request reload of plugins: %s" % type_plugins)
@@ -350,11 +397,33 @@ class PluginManager:
                         reload(self.plugins[type][plugin]["module"])
 
         #index creation
-        self.plugins["crypter"] = self.crypterPlugins = self.parse("crypter", pattern=True)
-        self.plugins["container"] = self.containerPlugins = self.parse("container", pattern=True)
-        self.plugins["hoster"] = self.hosterPlugins = self.parse("hoster", pattern=True)
-        self.plugins["captcha"] = self.captchaPlugins = self.parse("captcha")
-        self.plugins["accounts"] = self.accountPlugins = self.parse("accounts")
+        self.crypterPlugins , config = self.parse("crypter", pattern=True)
+        self.plugins["crypter"] = self.crypterPlugins
+        default_config = config
+
+        self.containerPlugins, config = self.parse("container", pattern=True)
+        self.plugins["container"] = self.containerPlugins
+        merge(default_config, config)
+
+        self.hosterPlugins, config = self.parse("hoster", pattern=True)
+        self.plugins["hoster"] = self.hosterPlugins
+        merge(default_config, config)
+
+        self.captchaPlugins, config = self.parse("captcha")
+        self.plugins["captcha"] = self.captchaPlugins
+        merge(default_config, config)
+
+        self.accountPlugins, config = self.parse("accounts")
+        self.plugins["accounts"] = self.accountPlugins
+        merge(default_config, config)
+
+        for name, config in default_config.items():
+            desc = config.pop('desc', "")
+            config = [[k] + list(v) for k, v in config.items()]
+            try:
+                self.core.config.addPluginConfig(name, config, desc)
+            except:
+                self.log.error("Invalid config in %s: %s" % (name, config))
 
         if "accounts" in as_dict: #accounts needs to be reloaded
             self.core.accountManager.initPlugins()

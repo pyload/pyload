@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import with_statement
+
+import re
+
 from time import sleep
 from os.path import exists, join
 from shutil import copy
@@ -37,6 +40,7 @@ class ConfigParser:
     
     """
 
+    CONFLINE = re.compile(r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)')
 
     def __init__(self):
         """Constructor"""
@@ -58,11 +62,13 @@ class ConfigParser:
         try:
             if not exists("pyload.conf"):
                 copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
+                chmod("pyload.conf", 0600)
 
             if not exists("plugin.conf"):
                 f = open("plugin.conf", "wb")
                 f.write("version: " + str(CONF_VERSION))
                 f.close()
+                chmod("plugin.conf", 0600)
 
             f = open("pyload.conf", "rb")
             v = f.readline()
@@ -160,15 +166,12 @@ class ConfigParser:
 
 
                     else:
-                        content, none, value = line.partition("=")
+                        m = self.CONFLINE.search(line)
 
-                        content, none, desc = content.partition(":")
-
-                        desc = desc.replace('"', "").strip()
-
-                        typ, none, option = content.strip().rpartition(" ")
-
-                        value = value.strip()
+                        typ = m.group('T')
+                        option = m.group('N')
+                        desc = m.group('D').strip()
+                        value = m.group('V').strip()
 
                         if value.startswith("["):
                             if value.endswith("]"):
@@ -187,7 +190,8 @@ class ConfigParser:
                                                      "value": value}
 
             except Exception, e:
-                print "Config Warning"
+                print "Config Warning:"
+                print line
                 print_exc()
 
         f.close()
@@ -217,11 +221,12 @@ class ConfigParser:
         with open(filename, "wb") as f:
             chmod(filename, 0600)
             f.write("version: %i \n" % CONF_VERSION)
-            for section in config.iterkeys():
+            for section in sorted(config.iterkeys()):
                 f.write('\n%s - "%s":\n' % (section, config[section]["desc"]))
 
-                for option, data in config[section].iteritems():
-                    if option in ("desc", "outline"): continue
+                for option, data in sorted(config[section].items(), key=lambda _x: _x[0]):
+                    if option in ("desc", "outline"):
+                        continue
 
                     if isinstance(data["value"], list):
                         value = "[ \n"
@@ -307,7 +312,8 @@ class ConfigParser:
 
         value = self.cast(self.plugin[plugin][option]["type"], value)
 
-        if self.pluginCB: self.pluginCB(plugin, option, value)
+        if self.pluginCB:
+            self.pluginCB(plugin, option, value)
 
         self.plugin[plugin][option]["value"] = value
         self.save()
@@ -327,8 +333,7 @@ class ConfigParser:
             conf["outline"] = outline
 
         for item in config:
-            if item[0] in conf:
-                conf[item[0]]["type"] = item[1]
+            if item[0] in conf and item[1] == conf[item[0]]["type"]:
                 conf[item[0]]["desc"] = item[2]
             else:
                 conf[item[0]] = {
@@ -351,10 +356,10 @@ class ConfigParser:
 
     def deleteOldPlugins(self):
         """ remove old plugins from config """
-
         for name in IGNORE:
             if name in self.plugin:
                 del self.plugin[name]
+
 
 
 class Section:

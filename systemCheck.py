@@ -24,7 +24,6 @@ def main():
     except:
         print("py-crypto:", "missing")
 
-
     try:
         import OpenSSL
         print("OpenSSL:", OpenSSL.version.__version__)
@@ -32,16 +31,24 @@ def main():
         print("OpenSSL:", "missing")
 
     try:
-        import Image
-        print("image libary:", Image.VERSION)
+        from PIL import Image
+        print("image library:", Image.VERSION)
     except:
-        print("image libary:", "missing")
+        try:
+            import Image
+            print("image library:", Image.VERSION)
+        except:
+            print("image library:", "missing")
 
     try:
         import PyQt4.QtCore
         print("pyqt:", PyQt4.QtCore.PYQT_VERSION_STR)
     except:
         print("pyqt:", "missing")
+
+    from module.common import JsEngine
+    js = "available" if JsEngine.ENGINE else "missing"
+    print("JS engine", js)
 
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoadCore  ##")
@@ -60,16 +67,18 @@ def main():
     except:
         core_err.append("Please install py-curl to use pyLoad.")
 
-
     try:
         from pycurl import AUTOREFERER
     except:
         core_err.append("Your py-curl version is to old, please upgrade!")
 
     try:
-        import Image
+        from PIL import Image
     except:
-        core_err.append("Please install py-imaging/pil to use Hoster, which uses captchas.")
+        try:
+            import Image
+        except:
+            core_err.append("Please install py-imaging/pil/pillow to use Hoster, which uses captchas.")
 
     pipe = subprocess.PIPE
     try:
@@ -82,6 +91,10 @@ def main():
     except:
         core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
 
+    if not js:
+        print("no JavaScript engine found")
+        print("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
+
     if core_err:
         print("The system check has detected some errors:\n")
         for err in core_err:
@@ -93,7 +106,6 @@ def main():
         print("\nPossible improvements for pyload:\n")
         for line in core_info:
             print(line)
-
 
     print("\n##  pyLoadGui  ##")
 
@@ -111,7 +123,6 @@ def main():
     else:
         print("No Problems detected, pyLoadGui should work fine.")
 
-
     print("\n##  Webinterface  ##")
 
     web_err = []
@@ -121,7 +132,6 @@ def main():
         import flup
     except:
         web_info.append("Install Flup to use FastCGI or optional webservers.")
-
 
     if web_err:
         print("The system check has detected some errors:\n")
@@ -134,7 +144,6 @@ def main():
         print("\nPossible improvements for webinterface:\n")
         for line in web_info:
             print(line)
-        
 
 if __name__ == "__main__":
     main()

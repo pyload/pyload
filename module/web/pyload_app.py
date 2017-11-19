@@ -112,6 +112,11 @@ def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
 
 
+@route('/robots.txt')
+def robots():
+    return static_file("robots.txt", root=join(PROJECT_DIR, "media", "txt"))
+
+
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:

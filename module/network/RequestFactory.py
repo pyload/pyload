@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
     @author: mkaay, RaNaN
 """
 
@@ -26,6 +26,7 @@ from CookieJar import CookieJar
 
 from XDCCRequest import XDCCRequest
 
+
 class RequestFactory():
     def __init__(self, core):
         self.lock = Lock()
@@ -37,19 +38,23 @@ class RequestFactory():
     def iface(self):
         return self.core.config["download"]["interface"]
 
-    def getRequest(self, pluginName, account=None, type="HTTP"):
+    def getRequest(self, pluginName, account=None, type="HTTP", **kwargs):
         self.lock.acquire()
 
+        options = self.getOptions()
+        options.update(kwargs)  # submit kwargs as additional options
+
         if type == "XDCC":
-            return XDCCRequest(proxies=self.getProxies())
+            req = XDCCRequest(self.bucket, options)
 
-        req = Browser(self.bucket, self.getOptions())
-
-        if account:
-            cj = self.getCookieJar(pluginName, account)
-            req.setCookieJar(cj)
         else:
-            req.setCookieJar(CookieJar(pluginName))
+            req = Browser(self.bucket, options)
+
+            if account:
+                cj = self.getCookieJar(pluginName, account)
+                req.setCookieJar(cj)
+            else:
+                req.setCookieJar(CookieJar(pluginName))
 
         self.lock.release()
         return req
@@ -57,7 +62,7 @@ class RequestFactory():
     def getHTTPRequest(self, **kwargs):
         """ returns a http request, dont forget to close it ! """
         options = self.getOptions()
-        options.update(kwargs) # submit kwargs as additional options
+        options.update(kwargs)  # submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
 
     def getURL(self, *args, **kwargs):
@@ -67,7 +72,7 @@ class RequestFactory():
             rep = h.load(*args, **kwargs)
         finally:
             h.close()
-            
+
         return rep
 
     def getCookieJar(self, pluginName, account=None):
@@ -85,8 +90,10 @@ class RequestFactory():
         else:
             type = "http"
             setting = self.core.config["proxy"]["type"].lower()
-            if setting == "socks4": type = "socks4"
-            elif setting == "socks5": type = "socks5"
+            if setting == "socks4":
+                type = "socks4"
+            elif setting == "socks5":
+                type = "socks5"
 
             username = None
             if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
@@ -97,18 +104,19 @@ class RequestFactory():
                 pw = self.core.config["proxy"]["password"]
 
             return {
-                "type": type,
-                "address": self.core.config["proxy"]["address"],
-                "port": self.core.config["proxy"]["port"],
+                "type"    : type,
+                "address" : self.core.config["proxy"]["address"],
+                "port"    : self.core.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
-                }
+            }
+
 
     def getOptions(self):
         """returns options needed for pycurl"""
         return {"interface": self.iface(),
-                "proxies": self.getProxies(),
-                "ipv6": self.core.config["download"]["ipv6"]}
+                "proxies"  : self.getProxies(),
+                "ipv6"     : self.core.config["download"]["ipv6"]}
 
     def updateBucket(self):
         """ set values in the bucket according to settings"""
@@ -116,6 +124,7 @@ class RequestFactory():
             self.bucket.setRate(-1)
         else:
             self.bucket.setRate(self.core.config["download"]["max_speed"] * 1024)
+
 
 # needs pyreq in global namespace
 def getURL(*args, **kwargs):

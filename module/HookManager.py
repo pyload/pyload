@@ -292,7 +292,8 @@ class HookManager:
     def addEvent(self, event, func):
         """Adds an event listener for event name"""
         if event in self.events:
-            self.events[event].append(func)
+            if func not in self.events[event]:
+                self.events[event].append(func)
         else:
             self.events[event] = [func]
 

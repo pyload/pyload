@@ -13,150 +13,205 @@
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: jeix
+
+    @authors: jeix, GammaC0de
 """
 
+import errno
+import os
+import select
 import socket
-import re
-
-from os import remove
-from os.path import exists
-
-from time import time
-
 import struct
-from select import select
+import time
 
 from module.plugins.Plugin import Abort
 
 
 class XDCCRequest():
-    def __init__(self, timeout=30, proxies={}):
-        
-        self.proxies = proxies
-        self.timeout = timeout
-        
+    def __init__(self, bucket=None, options={}):
+        self.proxies = options.get('proxies', {})
+        self.bucket  = bucket
+
+        self.fh      = None
+        self.dccsock = None
+
         self.filesize = 0
-        self.recv = 0
-        self.speed = 0
-        
+        self.received = 0
+        self.speeds   = [0.0, 0.0, 0.0]
+
+        self.sleep = 0.000
+        self.last_recv_size = 0
+        self.send_64bits_ack = False
+
         self.abort = False
 
-    
+        self.progressNotify = None
+
+
     def createSocket(self):
         # proxytype = None
         # proxy = None
         # if self.proxies.has_key("socks5"):
-            # proxytype = socks.PROXY_TYPE_SOCKS5
-            # proxy = self.proxies["socks5"]
+        # proxytype = socks.PROXY_TYPE_SOCKS5
+        # proxy = self.proxies["socks5"]
         # elif self.proxies.has_key("socks4"):
-            # proxytype = socks.PROXY_TYPE_SOCKS4
-            # proxy = self.proxies["socks4"]
+        # proxytype = socks.PROXY_TYPE_SOCKS4
+        # proxy = self.proxies["socks4"]
         # if proxytype:
-            # sock = socks.socksocket()
-            # t = _parse_proxy(proxy)
-            # sock.setproxy(proxytype, addr=t[3].split(":")[0], port=int(t[3].split(":")[1]), username=t[1], password=t[2])
+        # sock = socks.socksocket()
+        # t = _parse_proxy(proxy)
+        # sock.setproxy(proxytype, addr=t[3].split(":")[0], port=int(t[3].split(":")[1]), username=t[1], password=t[2])
         # else:
-            # sock = socket.socket()
+        # sock = socket.socket()
         # return sock
-        
-        return socket.socket()
-    
-    def download(self, ip, port, filename, irc, progressNotify=None):
 
-        ircbuffer = ""
-        lastUpdate = time()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 16384)
+
+        return sock
+
+
+    def _write_func(self, buf):
+        size = len(buf)
+
+        self.received += size
+
+        self.fh.write(buf)
+
+        if self.bucket:
+            time.sleep(self.bucket.consumed(size))
+
+        else:
+            # Avoid small buffers, increasing sleep time slowly if buffer size gets smaller
+            # otherwise reduce sleep time percentequal (values are based on tests)
+            # So in general cpu time is saved without reducing bandwidth too much
+
+            if size < self.last_recv_size:
+                self.sleep += 0.002
+            else:
+                self.sleep *= 0.7
+
+            self.last_recv_size = size
+
+            time.sleep(self.sleep)
+
+
+    def _send_ack(self):
+        # acknowledge data by sending number of recceived bytes
+        try:
+            self.dccsock.send(struct.pack('!Q' if self.send_64bits_ack else '!I', self.received))
+
+        except socket.error:
+            pass
+
+
+    def download(self, ip, port, filename, progressNotify=None, resume=None):
+        self.progressNotify = progressNotify
+        self.send_64bits_ack = False if self.filesize < 1 << 32 else True
+
+        chunk_name = filename + ".chunk0"
+
+        if resume and os.path.exists(chunk_name):
+            self.fh = open(chunk_name, "ab")
+            resume_position = self.fh.tell()
+            if not resume_position:
+                resume_position = os.stat(chunk_name).st_size
+
+            resume_position = resume(resume_position)
+            self.fh.truncate(resume_position)
+            self.received = resume_position
+
+        else:
+            self.fh = open(chunk_name, "wb")
+
+        lastUpdate = time.time()
         cumRecvLen = 0
-        
-        dccsock = self.createSocket()
-        
-        dccsock.settimeout(self.timeout)
-        dccsock.connect((ip, port))
-        
-        if exists(filename):
-            i = 0
-            nameParts = filename.rpartition(".")
-            while True:
-                newfilename = "%s-%d%s%s" % (nameParts[0], i, nameParts[1], nameParts[2])
-                i += 1
-                
-                if not exists(newfilename):
-                    filename = newfilename
-                    break
-        
-        fh = open(filename, "wb")
-        
+
+        self.dccsock = self.createSocket()
+
+        recv_list = [self.dccsock]
+        self.dccsock.connect((ip, port))
+        self.dccsock.setblocking(0)
+
         # recv loop for dcc socket
         while True:
             if self.abort:
-                dccsock.close()
-                fh.close()
-                remove(filename)
+                self.dccsock.close()
+                self.fh.close()
                 raise Abort()
-            
-            self._keepAlive(irc, ircbuffer)
-            
-            data = dccsock.recv(4096)
-            dataLen = len(data)
-            self.recv += dataLen
-            
-            cumRecvLen += dataLen
-            
-            now = time()
+
+            fdset = select.select(recv_list, [], [], 0.1)
+            if self.dccsock in fdset[0]:
+                try:
+                    data = self.dccsock.recv(16384)
+
+                except socket.error, e:
+                    if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+                        continue
+
+                    else:
+                        raise
+
+                data_len = len(data)
+                if data_len == 0 or self.filesize and self.received + data_len > self.filesize:
+                    break
+
+                cumRecvLen += data_len
+
+                self._write_func(data)
+                self._send_ack()
+
+            now = time.time()
             timespan = now - lastUpdate
-            if timespan > 1:            
-                self.speed = cumRecvLen / timespan
+            if timespan > 1:
+                # calc speed once per second, averaging over 3 seconds
+                self.speeds[2] = self.speeds[1]
+                self.speeds[1] = self.speeds[0]
+                self.speeds[0] = float(cumRecvLen) / timespan
+
                 cumRecvLen = 0
                 lastUpdate = now
-                
-                if progressNotify:
-                    progressNotify(self.percent)
-            
-            
-            if not data:
-                break
-            
-            fh.write(data)
-            
-            # acknowledge data by sending number of recceived bytes
-            dccsock.send(struct.pack('!I', self.recv))
-        
-        dccsock.close()
-        fh.close()
-        
-        return filename
-    
-    def _keepAlive(self, sock, readbuffer):
-        fdset = select([sock], [], [], 0)
-        if sock not in fdset[0]:
-            return
-            
-        readbuffer += sock.recv(1024)
-        temp = readbuffer.split("\n")
-        readbuffer = temp.pop()
 
-        for line in temp:
-            line  = line.rstrip()
-            first = line.split()
-            if first[0] == "PING":
-                sock.send("PONG %s\r\n" % first[1])
+                self.updateProgress()
+
+        self.dccsock.close()
+        self.fh.close()
+
+        os.rename(chunk_name, filename)
+
+        return filename
+
 
     def abortDownloads(self):
         self.abort = True
-    
+
+
+    def updateProgress(self):
+        if self.progressNotify:
+            self.progressNotify(self.percent)
+
+
     @property
     def size(self):
         return self.filesize
 
+
     @property
     def arrived(self):
-        return self.recv
+        return self.received
+
+
+    @property
+    def speed(self):
+        speeds = [x for x in self.speeds if x]
+        return sum(speeds) / len(speeds)
+
 
     @property
     def percent(self):
         if not self.filesize: return 0
-        return (self.recv * 100) / self.filesize
+        return (self.received * 100) / self.filesize
+
 
     def close(self):
         pass
