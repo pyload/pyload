@@ -36,8 +36,8 @@ def flash(id="0"):
 @route("/flash/add", method="POST")
 @local_check
 def add():
-    package = request.POST.get('referer', None)
-    urls = filter(lambda x: x != "", request.POST['urls'].split("\n"))
+    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -49,8 +49,7 @@ def add():
 @route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
-
-    package = request.forms.get('referer', 'ClickAndLoad Package')
+    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
     dlc = request.forms['crypted'].replace(" ", "+")
 
     dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
@@ -68,8 +67,7 @@ def addcrypted():
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
-
-    package = request.forms.get("package", request.forms.get("source", None))
+    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
 
@@ -100,15 +98,15 @@ def addcrypted2():
     IV = Key
 
     obj = AES.new(Key, AES.MODE_CBC, IV)
-    result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+    urls = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
 
-    result = filter(lambda x: x != "", result)
+    urls = [x.strip() for x in urls if x.strip()]
 
     try:
         if package:
-            PYLOAD.addPackage(package, result, 0)
+            PYLOAD.addPackage(package, urls, 0)
         else:
-            PYLOAD.generateAndAddPackages(result, 0)
+            PYLOAD.generateAndAddPackages(urls, 0)
     except:
         return "failed can't add"
     else:
@@ -125,7 +123,7 @@ def flashgot():
 
     autostart = int(request.forms.get('autostart', 0))
     package = request.forms.get('package', None)
-    urls = filter(lambda x: x != "", request.forms['urls'].split("\n"))
+    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
     folder = request.forms.get('dir', None)
 
     if package:
@@ -149,7 +147,6 @@ def crossdomain():
 @route("/flash/checkSupportForUrl")
 @local_check
 def checksupport():
-
     url = request.GET.get("url")
     res = PYLOAD.checkURLs([url])
     supported = (not res[0][1] is None)
