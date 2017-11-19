@@ -34,7 +34,7 @@ from module.gui.Queue import QueueView
 from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
-from module.gui.Tools import whatsThisFormat, WtDialogButtonBox
+from module.gui.Tools import whatsThisFormat
 
 from module.remote.thriftbackend.ThriftClient import DownloadStatus
 
