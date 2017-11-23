@@ -12,10 +12,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class RockfileEu(SimpleHoster):
     __name__ = "RockfileEu"
     __type__ = "hoster"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?rockfile\.eu/(?P<ID>\w{12}).html'
+    __pattern__ = r'https?://(?:www\.)?rockfile\.(?:eu|co)/(?P<ID>\w{12}).html'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool", "Fallback to free download if premium fails", True),
