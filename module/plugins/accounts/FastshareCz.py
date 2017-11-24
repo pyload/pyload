@@ -9,7 +9,7 @@ from ..internal.misc import set_cookie
 class FastshareCz(Account):
     __name__ = "FastshareCz"
     __type__ = "account"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
     __description__ = """Fastshare.cz account plugin"""
@@ -25,7 +25,7 @@ class FastshareCz(Account):
         trafficleft = None
         premium = False
 
-        html = self.load("http://www.fastshare.cz/user")
+        html = self.load("https://www.fastshare.cz/user")
 
         m = re.search(self.CREDIT_PATTERN, html)
         if m is not None:
