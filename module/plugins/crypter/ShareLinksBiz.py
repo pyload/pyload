@@ -11,7 +11,7 @@ from ..internal.Crypter import Crypter
 class ShareLinksBiz(Crypter):
     __name__ = "ShareLinksBiz"
     __type__ = "crypter"
-    __version__ = "1.28"
+    __version__ = "1.29"
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
@@ -254,7 +254,7 @@ class ShareLinksBiz(Crypter):
         pack_links = []
         self.log_debug("Handling Container links")
 
-        pattern = r'javascript:_get\(\'(.+?)\', 0, \'(rsdf|ccf|dlc)\'\)'
+        pattern = r'javascript:_getm\(\'(.+?)\', 0, \'(rsdf|ccf|dlc)\''
 
         containers_links = re.findall(pattern, self.data)
 
@@ -274,7 +274,7 @@ class ShareLinksBiz(Crypter):
         pack_links = []
         self.log_debug("Handling CNL2 links")
 
-        if '/lib/cnl2/ClicknLoad.swf' in self.data:
+        if "click'n'load v2</span>" in self.data:
             try:
                 (crypted, jk) = self._get_cipher_params()
                 pack_links.extend(self._get_links(crypted, jk))
@@ -288,7 +288,7 @@ class ShareLinksBiz(Crypter):
 
     def _get_cipher_params(self):
         #: Request CNL2
-        code = re.search(r'ClicknLoad.swf\?code=(.*?)"', self.data).group(1)
+        code = re.search(r'javascript:_getm\(\'(.+?)\', 0, \'cnl\'', self.data).group(1)
         url = "%s/get/cnl2/%s" % (self.base_url, code)
         res = self.load(url)
         params = res.split(";;")
