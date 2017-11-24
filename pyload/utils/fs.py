@@ -321,10 +321,6 @@ def cleanpy(dirname, recursive=True):
 
 
 def remove(path, trash=False, ignore_errors=False):
-    trash = True  #: test
-    print('TRASH')
-    print(path)
-
     if not os.path.exists(path):
         if ignore_errors:
             return
