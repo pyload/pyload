@@ -75,7 +75,7 @@ class Request(with_metaclass(ABCMeta, object)):
         self.config = config
 
         # Create a new context if not given
-        self.context = self.CONTEXT_CLASS if context is None else context
+        self.context = self.CONTEXT_CLASS() if context is None else context  #instantiate CONTEXT_CLASS
 
         # Store options in dict
         self.options = {} if options is None else options
@@ -85,7 +85,7 @@ class Request(with_metaclass(ABCMeta, object)):
         # Last response code
         self.code = 0
         self.flags = 0
-        self.__abort = False
+        self._abort = False
         self.init_context()
 
         # TODO: content encoding? Could be handled globally
@@ -131,7 +131,7 @@ class Request(with_metaclass(ABCMeta, object)):
         self.unset_option('auth')
 
     def abort(self):
-        self.__abort = True
+        self._abort = True
 
     def reset(self):
         """Resets the context to initial state."""
