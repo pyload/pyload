@@ -9,10 +9,10 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.41"
+    __version__ = "0.42"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?fastshare\.cz/\d+/.+'
+    __pattern__ = r'https?://(?:www\.)?fastshare\.cz/\d+/.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("fallback", "bool",
@@ -33,7 +33,7 @@ class FastshareCz(SimpleHoster):
     OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
 
     LINK_FREE_PATTERN = r'id=form action=(.+?)>\s*<p><em>Enter the code\s*:</em>\s*<span><img src="(.+?)"'
-    LINK_PREMIUM_PATTERN = r'(http://\w+\.fastshare\.cz/download\.php\?id=\d+&)'
+    LINK_PREMIUM_PATTERN = r'(https?://\w+\.fastshare\.cz/download\.php\?id=\d+&)'
 
     SLOT_ERROR = "> 100% of FREE slots are full"
     CREDIT_ERROR = " credit for "
@@ -57,7 +57,7 @@ class FastshareCz(SimpleHoster):
         else:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        baseurl = "http://www.fastshare.cz"
+        baseurl = "https://www.fastshare.cz"
         captcha = self.captcha.decrypt(urlparse.urljoin(baseurl, captcha_src))
         self.download(
             urlparse.urljoin(
