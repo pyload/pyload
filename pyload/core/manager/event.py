@@ -67,6 +67,7 @@ class EventManager(BaseManager):
         """Dispatches event with args."""
         # dispatch the meta event
         if event != 'event':
+            self.pyload.log.debug(event)
             self.fire('event', *(event,) + args, **kwargs)
 
         if event in self.events:

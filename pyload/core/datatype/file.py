@@ -125,7 +125,8 @@ class File(BaseObject):
     __slots__ = ['_name', '_size', 'abort', 'added', 'error', 'fid',
                  'fileorder', 'filestatus', 'hash', 'lock', 'manager', 'media',
                  'owner', 'packageid', 'plugin', 'pluginclass', 'pluginname',
-                 'reconnected', 'status', 'statusname', 'url', 'wait_until']
+                 'pyload', 'reconnected', 'status', 'statusname', 'url',
+                 'wait_until']
 
     @staticmethod
     def from_info_data(m, info):
@@ -138,6 +139,8 @@ class File(BaseObject):
             file.hash = info.download.hash
             file.status = info.download.status
             file.error = info.download.error
+
+        file.init_plugin()
         return file
 
     def __init__(
@@ -177,8 +180,9 @@ class File(BaseObject):
 
     def get_size(self):
         """Get size of download."""
-        if self.plugin.dl.size is not None:
-            self.self._size(self.plugin.dl.size)
+        if self.plugin is not None and self.plugin.dl is not None \
+                and self.plugin.dl.size is not None:
+            self.set_size(self.plugin.dl.size)
         return self._size
 
     # NOTE: convert size to int
@@ -209,7 +213,7 @@ class File(BaseObject):
 
     def __repr__(self):
         return '<File {0}: {1}@{2}>'.format(
-            self.id, self.name, self.pluginname)
+            self.fid, self.name, self.pluginname)
 
     @lock
     def init_plugin(self):
@@ -299,7 +303,7 @@ class File(BaseObject):
         """Set status to finish and release file if every thread is finished
         with it."""
         # TODO: this is wrong now, it should check if addons are using it
-        if self.id in self.pyload.tsm.processing_ids():
+        if self.fid in self.pyload.tsm.processing_ids():
             return False
 
         self.set_status('finished')
@@ -308,7 +312,7 @@ class File(BaseObject):
         return True
 
     def check_if_processed(self):
-        self.manager.check_all_links_processed(self.id)
+        self.manager.check_all_links_processed(self.fid)
 
     @trycatch(0)
     def get_speed(self):

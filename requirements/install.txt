@@ -12,3 +12,4 @@ semver
 setuptools>=0.6.39
 tld
 validators
+enum34;python_version<="2.7"
