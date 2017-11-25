@@ -4,13 +4,13 @@ import hashlib
 import pycurl
 
 from ..internal.MultiHoster import MultiHoster
-from ..internal.misc import json
+from ..internal.misc import json, seconds_to_midnight
 
 
 class LinkifierCom(MultiHoster):
     __name__ = "AlldebridCom"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __status__ = "testing"
 
     __pattern__ = r'^unmatchable$'
@@ -49,7 +49,12 @@ class LinkifierCom(MultiHoster):
                                       url=pyfile.url)
 
         if json_data['hasErrors']:
-            self.fail(json_data['ErrorMSG'] or "Unknown error")
+            error_msg = json_data['ErrorMSG'] or "Unknown error"
+            if error_msg in ("Customer reached daily limit for current hoster",
+                             "Accounts are maxed out for current hoster"):
+                self.retry(wait=seconds_to_midnight())
+
+            self.fail(error_msg)
 
         self.resume_download = json_data['con_resume']
         self.chunk_limit = json_data.get('con_max', 1) or 1
