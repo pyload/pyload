@@ -4,7 +4,7 @@ from ..internal.Addon import Addon
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
     __type__ = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -33,10 +33,11 @@ class LinkFilter(Addon):
             self.blacklist(links, filters)
 
     def whitelist(self, links, filters):
+        plugindict = dict(self.pyload.pluginManager.parseUrls(links))
         linkcount = len(links)
         links[:] = [link for link in links if
                     any(link.find(_filter) != -1 for _filter in filters) or
-                    not self.is_hoster_link(link)]
+                    not self.is_hoster_link(link) and plugindict[link] != "BasePlugin"]
         linkcount -= len(links)
 
         if linkcount > 0:
