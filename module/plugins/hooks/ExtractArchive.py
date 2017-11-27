@@ -93,7 +93,7 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.65"
+    __version__ = "1.66"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -255,10 +255,14 @@ class ExtractArchive(Addon):
 
             self.log_info(_("Check package: %s") % pypack.name)
 
-            #: Determine output folder
-            extract_folder = fsjoin(
+            pack_dl_folder = fsjoin(
                 dl_folder,
                 pypack.folder,
+                "")  #: Force trailing slash
+
+            #: Determine output folder
+            extract_folder = fsjoin(
+                pack_dl_folder,
                 destination,
                 "")  #: Force trailing slash
 
@@ -274,7 +278,7 @@ class ExtractArchive(Addon):
 
             matched = False
             success = True
-            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(dl_folder, pypack.folder, fdata['name'])), extract_folder)) for fdata
+            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(pack_dl_folder, fdata['name'])), extract_folder)) for fdata
                              in pypack.getChildren().values()).values()  #: Remove duplicates
 
             #: Check as long there are unseen files
@@ -358,17 +362,17 @@ class ExtractArchive(Addon):
                 if success:
                     #: Delete empty pack folder if extract_folder resides outside download folder
                     if self.config.get('delete') and self.pyload.config.get('general', 'folder_per_package'):
-                        pack_dl_folder = fsjoin(dl_folder, pypack.folder)
-                        if len(os.listdir(pack_dl_folder)) == 0:
-                            try:
-                                os.rmdir(pack_dl_folder)
-                                self.log_debug("Successfully deleted pack folder %s" % pack_dl_folder)
+                        if not extract_folder.startswith(pack_dl_folder):
+                            if len(os.listdir(pack_dl_folder)) == 0:
+                                try:
+                                    os.rmdir(pack_dl_folder)
+                                    self.log_debug("Successfully deleted pack folder %s" % pack_dl_folder)
 
-                            except OSError:
-                                self.log_warning("Unable to delete pack folder %s" % pack_dl_folder)
+                                except OSError:
+                                    self.log_warning("Unable to delete pack folder %s" % pack_dl_folder)
 
-                        else:
-                            self.log_warning("Not deleting pack folder %s, folder not empty" % pack_dl_folder)
+                            else:
+                                self.log_warning("Not deleting pack folder %s, folder not empty" % pack_dl_folder)
 
                     extracted.append(pid)
                     self.manager.dispatchEvent("package_extracted", pypack)
