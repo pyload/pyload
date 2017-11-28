@@ -12,10 +12,10 @@ from ..internal.misc import fsjoin, threaded
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
     __type__ = "hook"
-    __version__ = "0.21"
+    __version__ = "0.22"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Merges parts splitted with hjsplit"""
     __license__ = "GPLv3"
