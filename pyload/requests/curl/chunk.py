@@ -147,7 +147,7 @@ class CurlChunk(CurlRequest):
     def write_body(self, buf):
         # ignore BOM, it confuses unrar
         if self.check_bom:
-            if [b for b in buf[:3]] == [239, 187, 191]:
+            if buf[:3] == b'\xef\xbb\xbf':
                 buf = buf[3:]
             self.check_bom = False
 
