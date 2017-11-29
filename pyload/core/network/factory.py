@@ -72,8 +72,7 @@ class RequestFactory(object):
 
             return {
                 'type': _type,
-                'address': self.pyload.config.get('proxy', 'host'),
-                'port': self.pyload.config.get('proxy', 'port'),
+                'host': self.pyload.config.get('proxy', 'host'),
                 'username': username,
                 'password': pw,
             }

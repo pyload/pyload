@@ -136,8 +136,8 @@ class CurlRequest(LoadRequest):
             else:
                 self.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_HTTP)
 
-            self.setopt(pycurl.PROXY, proxy['host'])
-            self.setopt(pycurl.PROXYPORT, proxy['port'])
+            self.setopt(pycurl.PROXY, proxy['host'][0])
+            self.setopt(pycurl.PROXYPORT, proxy['host'][1])
 
             if proxy['username']:
                 userpwd = '{0}:{1}'.format(

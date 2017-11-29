@@ -15,7 +15,7 @@ class InputType(IntEnum):
     Bool = 1
     Int = 2
     Float = 3
-    # Octal = 4
+    Octal = 4
     Str = 5
     Bytes = 6
     Size = 7

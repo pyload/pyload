@@ -8,6 +8,7 @@ import io
 import logging
 import os
 
+import bitmath
 import semver
 from future import standard_library
 from future.builtins import int, object
@@ -18,7 +19,6 @@ from pyload.config.exceptions import (AlreadyExistsKeyError, InvalidValueError,
                                       VersionMismatchError)
 from pyload.config.types import InputType
 from pyload.utils import parse
-from pyload.utils.check import isiterable
 from pyload.utils.convert import to_bytes, to_str
 from pyload.utils.fs import fullpath
 from pyload.utils.layer.legacy.collections import OrderedDict
@@ -30,29 +30,46 @@ standard_library.install_aliases()
 
 
 def _parse_address(value):
-    address = value.replace(',', ':')
-    return (endpoint if isendpoint(address) else socket)(address)
+    return (endpoint if isendpoint(value) else socket)(value)
 
 
-convert_map = {
+def _parse_bytesize(value):
+    try:
+        return bitmath.parse_string(value)
+    except ValueError:
+        # if no unit is give, parse_string_unsafe has to be used
+        # but it does not work with e.g. '1Byte' that is why parse_string is
+        # used first
+        return bitmath.parse_string_unsafe(value)
+
+
+convert_map_read = {
     InputType.NA: lambda x: x,
     InputType.Str: to_str,
     InputType.Int: int,
     InputType.File: fullpath,
     InputType.Folder: lambda x: os.path.dirname(fullpath(x)),
     InputType.Password: to_str,
-    InputType.Bool: bool,
+    InputType.Bool: lambda x: x == 'True',
     InputType.Float: float,
-    # InputType.Octal: lambda x: oct(int(x, 8)),
-    InputType.Size: parse.bytesize,
+    InputType.Octal: lambda x: int(x, 8),
+    InputType.Size: _parse_bytesize,
     InputType.Address: _parse_address,
     InputType.Bytes: to_bytes,
     InputType.StrList: parse.entries
 }
 
+convert_map_write = {
+    InputType.NA: lambda x: x,
+    InputType.Octal: lambda x: format(x, 'o'),
+    InputType.Address: lambda x: '{}:{}'.format(x[0], x[1])
+                                 if isinstance(x, tuple) and len(x) == 2
+                                 else x,
+    InputType.StrList: lambda x: ','.join(map(to_str, x))
+}
+
 
 class ConfigOption(object):
-
     __slots__ = ['allowed_values', 'default', 'desc', 'label', 'parser',
                  'type', 'value']
 
@@ -89,7 +106,8 @@ class ConfigOption(object):
                 self._normalize_value(v) for v in allowed)
 
     def _normalize_value(self, value):
-        return value if value is None else convert_map[self.type](value)
+        return value if value is None or value == '' else convert_map_read[
+            self.type](value)
 
     def reset(self):
         self.value = self.default
@@ -208,18 +226,8 @@ class ConfigSection(InscDict):
 
         return option
 
-    # def add(self, *args, **kwargs):
-        # sectflag = kwargs.pop('section', False)
-        # optflag = kwargs.pop('option', True)
-        # func = self.add_section if sectflag or not optflag else self.add_option
-        # return func(*args, **kwargs)
-
-    # def __str__(self):
-        # pass
-
 
 class ConfigParser(InscDict):
-
     __slots__ = ['log', 'parser', 'path', 'version', 'version_info']
 
     DEFAULTSECT = configparser.DEFAULTSECT
@@ -246,16 +254,12 @@ class ConfigParser(InscDict):
 
         try:
             self.retrieve()
-
         except VersionMismatchError:
             self._backup_fileconfig()
-
         except IOError:
             pass
-
         else:
             self.store()
-            return
 
     def _backup_fileconfig(self):
         path = self.path
@@ -300,9 +304,8 @@ class ConfigParser(InscDict):
         if version_info[:2] != self.version_info[:2]:
             raise VersionMismatchError
 
-    def _new_parser(self, defaults=None):
+    def _new_parser(self):
         return configparser.ConfigParser(
-            defaults=defaults,
             allow_no_value=True,
             default_section=self.DEFAULTSECT)
 
@@ -369,27 +372,30 @@ class ConfigParser(InscDict):
         with io.open(self.path) as fp:
             parser.read_file(fp)
 
-        version = parser.get(self.DEFAULTSECT, 'version', fallback=None)
+        version = parser.get('general', 'version', fallback=None)
         self._check_version(version)
 
         for section_id in parser.sections():
             section = self._make_sections(section_id)
             self._make_options(section, parser[section_id])
 
-    def _to_filevalue(self, value):
-        return ','.join(map(to_str, value)) if isiterable(value) else value
+    def _to_filevalue(self, option):
+        if option.type in convert_map_write:
+            return convert_map_write[option.type](option.get())
+        value = option.get()
+        return to_str(value) if value is not None else None
 
     def _to_fileconfig(self, section, section_name):
         config = OrderedDict()
 
-        for name, item in section.loweritems():
+        for name, item in sorted(section.loweritems(), key=lambda x: x[0]):
             if section.is_section(name):
                 sub_name = '{0}{1}{2}'.format(
                     section_name, self.SEPARATOR, name)
                 fc = self._to_fileconfig(item, sub_name)
                 config.update(fc)
             else:
-                fv = self._to_filevalue(item.get())
+                fv = self._to_filevalue(item)
                 config.setdefault(section_name, OrderedDict())[name] = fv
 
         return config
@@ -397,7 +403,7 @@ class ConfigParser(InscDict):
     def _gen_fileconfig(self):
         config = OrderedDict()
 
-        for name, item in self.loweritems():
+        for name, item in sorted(self.loweritems(), key=lambda x: x[0]):
             fc = self._to_fileconfig(item, name)
             config.update(fc)
 
@@ -405,10 +411,8 @@ class ConfigParser(InscDict):
 
     def store(self):
         config = self._gen_fileconfig()
-        parser = self._new_parser({'version': self.version})
+        parser = self._new_parser()
         parser.read_dict(config)
+        parser.set('general', 'version', self.version)
         with io.open(self.path, 'w') as fp:
             parser.write(fp)
-
-    # def __str__(self):
-        # pass
