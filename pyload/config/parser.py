@@ -379,7 +379,8 @@ class ConfigParser(InscDict):
             section = self._make_sections(section_id)
             self._make_options(section, parser[section_id])
 
-    def _to_filevalue(self, option):
+    @staticmethod
+    def _to_filevalue(option):
         if option.type in convert_map_write:
             return convert_map_write[option.type](option.get())
         value = option.get()
