@@ -8,6 +8,7 @@ import os
 import re
 import time
 from contextlib import closing
+from codecs import BOM_UTF8
 
 from future import standard_library
 from future.builtins import int
@@ -147,7 +148,7 @@ class CurlChunk(CurlRequest):
     def write_body(self, buf):
         # ignore BOM, it confuses unrar
         if self.check_bom:
-            if buf[:3] == b'\xef\xbb\xbf':
+            if buf[:3] == BOM_UTF8:
                 buf = buf[3:]
             self.check_bom = False
 
