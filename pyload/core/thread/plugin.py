@@ -79,7 +79,7 @@ class PluginThread(with_metaclass(ABCMeta, Thread)):
 
     def _zip(self, filepath, reports, dumpdir):
         filename = os.path.basename(filepath)
-        with zipfile.ZipFile(filepath, 'wb') as zip:
+        with zipfile.ZipFile(filepath, 'w') as zip:
             for fname in os.listdir(dumpdir):
                 try:
                     arcname = os.path.join(filename, fname)

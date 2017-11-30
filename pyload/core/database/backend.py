@@ -84,6 +84,8 @@ class DatabaseJob(object):
         self.result = None
         self.exception = False
 
+        self.pyload = self.args[0].pyload  # self.args[0] is DatabaseBackend
+
         # import inspect
         # self.frame = inspect.currentframe()
 

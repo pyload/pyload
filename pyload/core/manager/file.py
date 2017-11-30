@@ -102,7 +102,7 @@ class FileManager(BaseManager):
     @invalidate
     def add_links(self, data, pid, owner):
         """
-        Add links, data = (url, plugin) tuple. Internal method should use API.
+        Add links, data = [(url, plugin)] list of tuples. Internal method should use API.
         """
         self.db.add_links(data, pid, owner)
         self.pyload.evm.fire('package:updated', pid)

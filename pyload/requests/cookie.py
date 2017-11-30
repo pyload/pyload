@@ -21,7 +21,8 @@ class CookieJar(SimpleCookie):
 
     def set(self, domain, name, value, path='/', expires=None, secure=False,
             tailmatch=False):
-        self.__dict__[name] = to_str(value)
+        self.__dict__[name] = dict()
+        self.__dict__[name]['id'] = to_str(value)
         self.__dict__[name]['domain'] = to_str(domain)
         self.__dict__[name]['tailmatch'] = 'TRUE' if tailmatch else 'FALSE'
         self.__dict__[name]['path'] = to_str(path)
