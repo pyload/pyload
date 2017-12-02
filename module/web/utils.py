@@ -18,7 +18,7 @@
 """
 from bottle import request, HTTPError, redirect, ServerAdapter
 
-from webinterface import env, TEMPLATE
+from webinterface import env, TEMPLATE, PREFIX
 
 from module.Api import has_permission, PERMS, ROLE
 
@@ -108,19 +108,23 @@ def login_required(perm=None):
                         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                             return HTTPError(403, "Forbidden")
                         else:
-                            return redirect("/nopermission")
+                            return redirectTo("/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return HTTPError(403, "Forbidden")
                 else:
-                    return redirect("/login")
+                    return redirectTo("/login")
 
         return _view
 
     return _dec
 
+def redirectTo(url, code=None):
+    if PREFIX:
+        url = PREFIX + url
+    redirect(url, code)
 
 def toDict(obj):
     ret = {}

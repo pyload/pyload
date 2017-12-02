@@ -97,7 +97,7 @@ env.filters["decode"] = decode
 env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-if PREFIX:
+if not PREFIX:
     env.filters["url"] = lambda x: x
 else:
     env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x

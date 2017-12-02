@@ -27,12 +27,13 @@ from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
 from urllib import unquote
 
-from bottle import route, static_file, request, response, redirect, HTTPError, error
+from bottle import route, static_file, request, response, HTTPError, error
 
 from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, env
 
 from utils import render_to_response, parse_permissions, parse_userdata, \
-    login_required, get_permission, set_permission, permlist, toDict, set_session
+    login_required, get_permission, set_permission, permlist, toDict, \
+    set_session, redirectTo
 
 from filters import relpath, unquotepath
 
@@ -120,7 +121,7 @@ def robots():
 @route('/login', method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect("/setup")
+        redirectTo("/setup")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
@@ -141,7 +142,7 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect("/")
+    return redirectTo("/")
 
 
 @route("/logout")
@@ -160,7 +161,7 @@ def home():
     except:
         s = request.environ.get('beaker.session')
         s.delete()
-        return redirect("/login")
+        return redirectTo("/login")
 
     for link in res:
         if link["status"] == 12:
@@ -497,7 +498,7 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            
+
             for perm in request.POST.getall("%s|perms" % name):
                 user[name]["perms"][perm] = True
 
