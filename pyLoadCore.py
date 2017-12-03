@@ -52,6 +52,7 @@ from module.common.JsEngine import JsEngine
 from module import remote
 from module.remote.RemoteManager import RemoteManager
 from module.database import DatabaseBackend, FileHandler
+from module.database import UserMethods, LDAP_UserMethods, Dummy_UserMethods
 
 from module.utils import freeSpace, formatSize, get_console_encoding
 
@@ -104,6 +105,7 @@ class Core(object):
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
+                        self.__register_DB_backend()
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
@@ -111,6 +113,7 @@ class Core(object):
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
+                        self.__register_DB_backend()
                         s.start()
                         exit()
                     elif option == "--changedir":
@@ -474,7 +477,23 @@ class Core(object):
             self.threadManager.work()
             self.scheduler.work()
 
+    def __register_DB_backend(self):
+        # Register suitable user database methods
+        if (self.config['users']['auth'] is None or
+            self.config['users']['auth'] == 'internal'):
+            DatabaseBackend.registerSub(UserMethods)
+        elif self.config['users']['auth'] == 'LDAP':
+            LDAP_UserMethods.load_config(self.config)
+            DatabaseBackend.registerSub(LDAP_UserMethods)
+        elif self.config['users']['auth'] == 'dummy':
+            DatabaseBackend.registerSub(Dummy_UserMethods)
+        else:
+            raise ValueError("Invalid value for self.config['users']['auth'] : %s" % self.config['users']['auth'])
+
     def setupDB(self):
+        # Register suitable user database methods
+        self.__register_DB_backend()
+
         self.db = DatabaseBackend(self) # the backend
         self.db.setup()
 
