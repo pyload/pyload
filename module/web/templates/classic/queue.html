@@ -1,7 +1,7 @@
-{% extends 'default/base.html' %}
+{% extends 'classic/base.html' %}
 {% block head %}
 
-<script type="text/javascript" src="/media/js/package_ui.js"></script>
+<script type="text/javascript" src="/media/js/classic/package_ui.js"></script>
 
 <script type="text/javascript">
 
@@ -37,17 +37,17 @@ document.addEvent("domready", function(){
     <div class="order" style="display: none;">{{ package.order }}</div>
     
     <div class="packagename" style="cursor: pointer">
-        <img class="package_drag" src="/media/default/img/folder.png" style="cursor: move; margin-bottom: -2px">
+        <img class="package_drag" src="/media/classic/img/folder.png" style="cursor: move; margin-bottom: -2px">
         <span class="name">{{package.name}}</span>
         &nbsp;&nbsp;
         <span class="buttons" style="opacity:0">
-        <img title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/media/default/img/delete.png" />
+        <img title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/media/classic/img/delete.png" />
         &nbsp;&nbsp;
-        <img title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/arrow_refresh.png" />
+        <img title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/classic/img/arrow_refresh.png" />
         &nbsp;&nbsp;
-        <img title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/pencil.png" />
+        <img title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/classic/img/pencil.png" />
         &nbsp;&nbsp;
-        <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/default/img/package_go.png" />
+        <img title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/media/classic/img/package_go.png" />
         </span>
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}

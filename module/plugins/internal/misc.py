@@ -5,6 +5,7 @@
 from __future__ import with_statement
 
 # import HTMLParser  #@TODO: Use in 0.4.10
+import ast
 import datetime
 import hashlib
 import itertools
@@ -972,3 +973,50 @@ def move_tree(src, dst, overwrite=False):
             os.rmdir(src_dir)
         except OSError:
             pass
+
+def get_mro(filename, classname=None):
+    class HierarchyBuilder(ast.NodeVisitor):
+        def __init__(self):
+            self.imports = []
+            self.fromimports = {}
+            self.subclasess = []
+            self.classname = ""
+
+        def visit_ClassDef(self, node):
+            if node.name == self.classname:
+                self.subclasess += [n.id for n in node.bases if isinstance(n, ast.Name) and n.id != "object"]
+
+        def visit_Import(self, node):
+            self.imports += [n.name for n in node.names]
+
+        def visit_ImportFrom(self, node):
+            for n in node.names:
+                self.fromimports[n.name] = os.path.join('.' * node.level, *node.module.split('.')) + ".py"
+
+        def get_mro(self, filename, classname):
+            self.classname = classname
+            filename = os.path.abspath(filename)
+            path = os.path.dirname(filename)
+
+            self.imports = []
+            self.fromimports = {}
+            self.subclasess = []
+            with open(filename) as f:
+                text = f.read()
+            tree = ast.parse(text)
+            self.visit(tree)
+            imports = self.imports
+            fromimports = self.fromimports
+            subclasses = self.subclasess
+
+            res = subclasses
+            for submodule_classname in subclasses:
+                if submodule_classname in fromimports:
+                    submodule_filename = os.path.normpath(os.path.join(path, self.fromimports[submodule_classname]))
+                    if not os.path.exists(submodule_filename):
+                        pass
+                    res += self.get_mro(submodule_filename, submodule_classname)
+            return res
+
+    classname = classname or os.path.splitext(os.path.basename(filename))[0]
+    return [classname] + HierarchyBuilder().get_mro(filename, classname)

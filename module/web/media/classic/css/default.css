@@ -240,86 +240,86 @@ ul#page-actions-more a:hover, ul#page-actions-more a:focus{
 }
 
 a.action.index {
-	background:transparent url(/media/default/img/wiki-tools-index.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/wiki-tools-index.png) 0px 1px no-repeat;
 }
 a.action.recent {
-	background:transparent url(/media/default/img/wiki-tools-recent.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/wiki-tools-recent.png) 0px 1px no-repeat;
 }
 a.logout {
-	background:transparent url(/media/default/img/user-actions-logout.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/user-actions-logout.png) 0px 1px no-repeat;
 }
 
 a.info {
-    background:transparent url(/media/default/img/user-info.png) 0px 1px no-repeat;
+    background:transparent url(/media/classic/img/user-info.png) 0px 1px no-repeat;
 }
 
 a.admin {
-	background:transparent url(/media/default/img/user-actions-admin.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/user-actions-admin.png) 0px 1px no-repeat;
 }
 a.profile {
-	background:transparent url(/media/default/img/user-actions-profile.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/user-actions-profile.png) 0px 1px no-repeat;
 }
 a.create, a.edit {
-	background:transparent url(/media/default/img/page-tools-edit.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/page-tools-edit.png) 0px 1px no-repeat;
 }
 a.source, a.show {
-	background:transparent url(/media/default/img/page-tools-source.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/page-tools-source.png) 0px 1px no-repeat;
 }
 a.revisions {
-	background:transparent url(/media/default/img/page-tools-revisions.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/page-tools-revisions.png) 0px 1px no-repeat;
 }
 a.subscribe, a.unsubscribe {
-	background:transparent url(/media/default/img/page-tools-subscribe.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/page-tools-subscribe.png) 0px 1px no-repeat;
 }
 a.backlink {
-	background:transparent url(/media/default/img/page-tools-backlinks.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/page-tools-backlinks.png) 0px 1px no-repeat;
 }
 a.play {
-	background:transparent url(/media/default/img/control_play.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_play.png) 0px 1px no-repeat;
 }
 .time {
-	background:transparent url(/media/default/img/status_None.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/status_None.png) 0px 1px no-repeat;
         padding: 2px 0px 2px 18px;
         margin: 0px 3px;
 }
 .reconnect {
-	background:transparent url(/media/default/img/reconnect.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/reconnect.png) 0px 1px no-repeat;
         padding: 2px 0px 2px 18px;
         margin: 0px 3px;
 }
 a.play:hover {
-	background:transparent url(/media/default/img/control_play_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_play_blue.png) 0px 1px no-repeat;
 }
 a.cancel {
-	background:transparent url(/media/default/img/control_cancel.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_cancel.png) 0px 1px no-repeat;
 }
 a.cancel:hover {
-	background:transparent url(/media/default/img/control_cancel_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_cancel_blue.png) 0px 1px no-repeat;
 }
 a.pause {
-	background:transparent url(/media/default/img/control_pause.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_pause.png) 0px 1px no-repeat;
 }
 a.pause:hover {
-	background:transparent url(/media/default/img/control_pause_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_pause_blue.png) 0px 1px no-repeat;
 	font-weight: bold;
 }
 a.stop {
-	background:transparent url(/media/default/img/control_stop.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_stop.png) 0px 1px no-repeat;
 }
 a.stop:hover {
-	background:transparent url(/media/default/img/control_stop_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_stop_blue.png) 0px 1px no-repeat;
 }
 a.add {
-	background:transparent url(/media/default/img/control_add.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_add.png) 0px 1px no-repeat;
 }
 a.add:hover {
-	background:transparent url(/media/default/img/control_add_blue.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/control_add_blue.png) 0px 1px no-repeat;
 }
 a.cog {
-	background:transparent url(/media/default/img/cog.png) 0px 1px no-repeat;
+	background:transparent url(/media/classic/img/cog.png) 0px 1px no-repeat;
 }
 #head-panel {
-	background:#525252 url(/media/default/img/head_bg1.png) bottom left repeat-x;
+	background:#525252 url(/media/classic/img/head_bg1.png) bottom left repeat-x;
 }
 #head-panel h1 {
 	display:none;
@@ -337,7 +337,7 @@ a.cog {
 	overflow:visible;
 }
 #head-menu {
-	background:transparent url(/media/default/img/tabs-border-bottom.png) 0 100% repeat-x;
+	background:transparent url(/media/classic/img/tabs-border-bottom.png) 0 100% repeat-x;
 	width:100%;
 	float:left;
 	margin:0;
@@ -367,7 +367,7 @@ a.cog {
 	float:left;
 	text-decoration:none;
 	color:#555;
-	background:#eaeaea url(/media/default/img/tab-background.png) 0 100% repeat-x;
+	background:#eaeaea url(/media/classic/img/tab-background.png) 0 100% repeat-x;
 	padding:3px 7px 3px 7px;
 	border:2px solid #ccc;
 	border-bottom:0px solid transparent;
@@ -877,19 +877,19 @@ ul.nav ul ul {
 .purr-alert.error{
 	color:#F55;
 	padding-left:30px;
-	background:url(/media/default/img/error.png) no-repeat #000 7px 10px;
+	background:url(/media/classic/img/error.png) no-repeat #000 7px 10px;
 	width:280px;
 }
 .purr-alert.success{
 	color:#5F5;
 	padding-left:30px;
-	background:url(/media/default/img/success.png) no-repeat #000 7px 10px;
+	background:url(/media/classic/img/success.png) no-repeat #000 7px 10px;
 	width:280px;
 }
 .purr-alert.notice{
 	color:#99F;
 	padding-left:30px;
-	background:url(/media/default/img//notice.png) no-repeat #000 7px 10px;
+	background:url(/media/classic/img//notice.png) no-repeat #000 7px 10px;
 	width:280px;
 }
 

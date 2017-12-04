@@ -1,4 +1,4 @@
-{% extends 'default/base.html' %}
+{% extends 'classic/base.html' %}
 {% block head %}
 
 <script type="text/javascript">
@@ -129,7 +129,7 @@ var LinkEntry = new Class({
                 'html': item.percent+ '% / '+ humanFileSize(item.size-item.bleft)
                 }),
                 remove: new Element('img',{
-                'src': 'media/default/img/control_cancel.png',
+                'src': 'media/classic/img/control_cancel.png',
                 'styles':{
                     'vertical-align': 'middle',
                     'margin-right': '-20px',
@@ -208,25 +208,25 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="/" title=""><img src="/media/default/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
+    <a href="/" title=""><img src="/media/classic/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="/queue/" title=""><img src="/media/default/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
+    <a href="/queue/" title=""><img src="/media/classic/img/head-menu-queue.png" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="/collector/" title=""><img src="/media/default/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
+    <a href="/collector/" title=""><img src="/media/classic/img/head-menu-collector.png" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="/downloads/" title=""><img src="/media/default/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
+    <a href="/downloads/" title=""><img src="/media/classic/img/head-menu-development.png" alt="" /> {{_("Downloads")}}</a>
 </li>
 {#<li>#}
-{#    <a href="/filemanager/" title=""><img src="/media/default/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
+{#    <a href="/filemanager/" title=""><img src="/media/classic/img/head-menu-download.png" alt="" /> {{_("FileManager")}}</a>#}
 {#</li>#}
 <li class="right">
-    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
+    <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/classic/img/head-menu-index.png" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/default/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
+    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/classic/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
@@ -251,7 +251,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
         <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/default/img/control_cancel.png"/>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="media/classic/img/control_cancel.png"/>
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">
