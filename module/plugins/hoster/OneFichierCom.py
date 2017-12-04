@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class OneFichierCom(SimpleHoster):
     __name__ = "OneFichierCom"
     __type__ = "hoster"
-    __version__ = "1.10"
+    __version__ = "1.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:(?P<ID1>\w+)\.)?(?P<HOST>1fichier\.com|alterupload\.com|cjoint\.net|d(?:es)?fichiers\.com|dl4free\.com|megadl\.fr|mesfichiers\.org|piecejointe\.net|pjointe\.com|tenvoi\.com)(?:/\?(?P<ID2>\w+))?'
@@ -50,6 +50,7 @@ class OneFichierCom(SimpleHoster):
 
     def setup(self):
         self.multiDL = self.premium
+        self.chunk_limit = -1 if self.premium else 1
         self.resume_download = True
 
     @classmethod
@@ -110,6 +111,7 @@ class OneFichierCom(SimpleHoster):
             else:
                 self.fail(_("Download is password protected"))
 
+        inputs.pop('save', None)
         inputs['dl_no_ssl'] = "on"
 
         self.data = self.load(url, post=inputs)
