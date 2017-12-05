@@ -16,7 +16,7 @@ from pyload.requests.base.request import (BAD_HTTP_RESPONSES, Abort,
                                           ResponseException)
 from pyload.requests.cookie import CookieJar
 from pyload.utils.check import isiterable
-from pyload.utils.convert import to_bytes
+from pyload.utils.convert import to_bytes, to_str
 
 standard_library.install_aliases()
 
@@ -43,7 +43,7 @@ class CurlRequest(LoadRequest):
     DEFAULT_LIMIT = 1 << 20
 
     def __init__(self, *args, **kwargs):
-        self.c = pycurl.Curl()
+        self.curl = pycurl.Curl()
         self.limit = kwargs.pop(
             'limit', self.DEFAULT_LIMIT)  # TODO: Rename `limit`
 
@@ -60,11 +60,6 @@ class CurlRequest(LoadRequest):
         self.setopt(pycurl.WRITEFUNCTION, self.write)
         self.setopt(pycurl.HEADERFUNCTION, self.write_header)
 
-    # TODO: Rename to curl
-    @property
-    def c(self):
-        return self.c
-
     # TODO: addHeader
 
     @property
@@ -80,10 +75,10 @@ class CurlRequest(LoadRequest):
             self.init_options(self.config)
 
     def setopt(self, option, value):
-        self.c.setopt(option, to_bytes(value))
+        self.curl.setopt(option, value)
 
     def unsetopt(self, option):
-        self.c.unsetopt(option)
+        self.curl.unsetopt(option)
 
     def init_handle(self):
         """Sets common options to curl handle."""
@@ -165,7 +160,7 @@ class CurlRequest(LoadRequest):
     def set_request_context(self, url, get, post,
                             referer, cookies, multipart=False):
         """Sets everything needed for the request."""
-        self.rep = io.StringIO()
+        self.rep = io.BytesIO()
         url = safequote(url)
 
         if get:
@@ -187,9 +182,9 @@ class CurlRequest(LoadRequest):
             self.setopt(pycurl.POST, 0)
 
         if referer and self.last_url:
-            self.headers['Referer'] = to_bytes(self.last_url)
+            self.headers['Referer'] = self.last_url
         else:
-            self.headers['Referer'] = b''
+            self.headers['Referer'] = ''
 
         if cookies:
             for c in self.cj.output().splitlines():
@@ -228,7 +223,7 @@ class CurlRequest(LoadRequest):
                 self.setopt(pycurl.CUSTOMREQUEST, 'GET')
 
             try:
-                self.c.perform()
+                self.curl.perform()
                 rep = self.header
             finally:
                 self.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -236,12 +231,12 @@ class CurlRequest(LoadRequest):
                 self.unsetopt(pycurl.CUSTOMREQUEST)
 
         else:
-            self.c.perform()
+            self.curl.perform()
             rep = self.get_response()
 
         self.setopt(pycurl.POSTFIELDS, '')
         self.last_url = safequote(url)
-        self.last_effective_url = self.c.getinfo(pycurl.EFFECTIVE_URL)
+        self.last_effective_url = self.curl.getinfo(pycurl.EFFECTIVE_URL)
         if self.last_effective_url:
             self.last_url = self.last_effective_url
 
@@ -260,7 +255,7 @@ class CurlRequest(LoadRequest):
         return rep
 
     def parse_cookies(self):
-        for c in self.c.getinfo(pycurl.INFO_COOKIELIST):
+        for c in self.curl.getinfo(pycurl.INFO_COOKIELIST):
             # http://xiix.wordpress.com/2006/03/23/mozillafirefox-cookie-format
             domain, _, path, secure, expires, name, value = c.split('\t')
             # http only was added in py 2.6
@@ -269,7 +264,7 @@ class CurlRequest(LoadRequest):
 
     def verify_header(self):
         """Raise an exceptions on bad headers."""
-        code = int(self.c.getinfo(pycurl.RESPONSE_CODE))
+        code = int(self.curl.getinfo(pycurl.RESPONSE_CODE))
         if code in BAD_HTTP_RESPONSES:
             raise ResponseException(
                 code,
@@ -321,10 +316,10 @@ class CurlRequest(LoadRequest):
 
     def write(self, buf):
         """Writes response."""
-        if self.rep.tell() > self.limit or self.__abort:
+        if self.rep.tell() > self.limit or self._abort:
             rep = self.get_response()
             self.close()
-            if self.__abort:
+            if self._abort:
                 raise Abort
             with io.open('response.dump', mode='wb') as fp:
                 fp.write(rep)
@@ -334,7 +329,7 @@ class CurlRequest(LoadRequest):
 
     def write_header(self, buf):
         """Writes header."""
-        self.header += buf
+        self.header += to_str(buf)
 
     def reset(self):
         self.cj.clear()
@@ -348,5 +343,4 @@ class CurlRequest(LoadRequest):
         if hasattr(self, 'cj'):
             del self.cj
         if hasattr(self, 'c'):
-            self.c.close()
-            del self.c
+            self.curl.close()

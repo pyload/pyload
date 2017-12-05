@@ -57,6 +57,12 @@ class CurlDownload(DownloadRequest):
         self.speeds = []
         self.last_speeds = [0, 0]
 
+    def init_context(self):
+        """Should be used to initialize everything from given context and
+        options."""
+        #TODO: What should we do here?
+        pass
+
     @property
     def speed(self):
         last = [sum(x) for x in self.last_speeds if x]
@@ -103,7 +109,6 @@ class CurlDownload(DownloadRequest):
             self.set_path(filepath)
 
         shutil.move(init, self.path)
-        self.info.remove()  # remove info file
 
     def check_resume(self):
         try:
@@ -282,7 +287,7 @@ class CurlDownload(DownloadRequest):
                     # note that other chunks are closed and everything
                     # downloaded with initial connection
                     if failed:
-                        if init in failed or init.c in chunks_done:
+                        if init in failed or init.curl in chunks_done:
                             raise exc
                         self.log.error(
                             'Download chunks failed, fallback to '
@@ -328,7 +333,7 @@ class CurlDownload(DownloadRequest):
                 self.last_arrived = [c.arrived for c in self.chunks]
                 last_time_check = t
 
-            if self.__abort:
+            if self._abort:
                 raise Abort
 
             self.manager.select(1)
@@ -342,12 +347,12 @@ class CurlDownload(DownloadRequest):
         """Linear search to find a chunk (should be ok since chunk size is
         usually low)."""
         for chunk in self.chunks:
-            if chunk.c == handle:
+            if chunk.curl == handle:
                 return chunk
 
     def close_chunk(self, chunk):
         try:
-            self.manager.remove_handle(chunk.c)
+            self.manager.remove_handle(chunk.curl)
 
         except pycurl.error as exc:
             self.log.debug('Error removing chunk')
