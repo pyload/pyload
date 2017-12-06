@@ -12,7 +12,7 @@ import threading
 
 from module.plugins.Plugin import Abort
 from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import decode, encode, exists, fsjoin, lock, threaded
+from module.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
 
 
 class IRC(object):
@@ -206,18 +206,60 @@ class IRC(object):
 
 
     @lock
+    def nickserv_identify(self, password):
+        self.plugin.log_info(_("Authenticating nickname"))
+
+        bot = "nickserv"
+        bot_host = self.get_bot_host(bot)
+
+        if not bot_host:
+            self.plugin.log_warning(_("Server does not seems to support nickserv commands"))
+            return
+
+        self.irc_sock.send("PRIVMSG %s :identify %s\r\n" % (bot, password))
+
+        start_time = time.time()
+        while time.time() - start_time < 30:
+            origin, command, args = self.get_irc_command()
+
+            if origin is None \
+                    or command is None \
+                    or args is None:
+                return
+
+            # Private message from bot to us?
+            if '@' not in origin \
+                    or (origin[0:len(bot)] != bot and origin.split('@')[1] != bot_host) \
+                    or args[0][0:len(self.nick)] != self.nick \
+                    or command not in ("PRIVMSG", "NOTICE"):
+                continue
+
+            try:
+                text = unicode(args[1], 'utf-8')
+            except UnicodeDecodeError:
+                text = unicode(args[1], 'latin1', 'replace')
+
+            sender_nick = origin.split('@')[0].split('!')[0]
+            self.plugin.log_info(_("PrivMsg: <%s> %s") % (sender_nick, text))
+            break
+
+        else:
+            self.plugin.log_warning(_("'%s' did not respond to the request") % bot)
+
+
+    @lock
     def is_bot_online(self, bot):
         self.plugin.log_info(_("Checking if bot '%s' is online") % bot)
         self.irc_sock.send("WHOIS %s\r\n" % bot)
 
         start_time = time.time()
-        while time.time()-start_time < 30:
+        while time.time() - start_time < 30:
             origin, command, args = self.get_irc_command()
-            if command == '401' and args[0] == self.nick and args[1] == bot:  #: ERR_NOSUCHNICK
+            if command == '401' and args[0] == self.nick and args[1].lower() == bot.lower():  #: ERR_NOSUCHNICK
                 self.plugin.log_debug(_("Bot '%s' is offline") % bot)
                 return False
 
-            elif command == "311" and args[0] == self.nick and args[1] == bot:  #: RPL_WHOISUSER
+            elif command == "311" and args[0] == self.nick and args[1].lower() == bot.lower():  #: RPL_WHOISUSER
                 self.plugin.log_debug(_("Bot '%s' is online") % bot)
                 self.bot_host[bot] = args[3]  # bot host
                 return True
@@ -264,6 +306,8 @@ class IRC(object):
     @lock
     def xdcc_request_resume(self, bot, dcc_port, file_name, resume_position):
         if self.xdcc_request_time:
+            bot_host = self.get_bot_host(bot)
+
             self.plugin.log_info(_("Requesting XDCC resume of '%s' at position %s") % (file_name, resume_position))
 
             self.irc_sock.send("PRIVMSG %s :\x01DCC RESUME \"%s\" %s %s\x01\r\n" % (bot, encode(file_name,'utf-8'), dcc_port, resume_position))
@@ -273,14 +317,17 @@ class IRC(object):
                 origin, command, args = self.get_irc_command()
 
                 # Private message from bot to us?
-                bot_host = self.get_bot_host(bot)
                 if origin and command and args \
                     and '@' in origin \
                     and (origin[0:len(bot)] == bot or bot_host and origin.split('@')[1] == bot_host) \
                     and args[0][0:len(self.nick)] == self.nick \
                     and command in ("PRIVMSG", "NOTICE"):
 
-                    text = decode(args[1], 'utf-8')
+                    try:
+                        text = unicode(args[1], 'utf-8')
+                    except UnicodeDecodeError:
+                        text = unicode(args[1], 'latin1', 'replace')
+
                     sender_nick = origin.split('@')[0].split('!')[0]
                     self.plugin.log_debug(_("PrivMsg: <%s> %s") % (sender_nick, text))
 
@@ -302,6 +349,8 @@ class IRC(object):
 
     @lock
     def xdcc_get_pack_info(self, bot, pack):
+        bot_host = self.get_bot_host(bot)
+
         self.plugin.log_info(_("Requesting pack #%s info") % pack)
         self.irc_sock.send("PRIVMSG %s :xdcc info #%s\r\n" % (bot, pack))
 
@@ -311,13 +360,16 @@ class IRC(object):
             origin, command, args = self.get_irc_command()
 
             # Private message from bot to us?
-            bot_host = self.get_bot_host(bot)
             if origin and command and args \
                 and (origin[0:len(bot)] == bot or bot_host and origin.split('@')[1] == bot_host) \
                 and args[0][0:len(self.nick)] == self.nick \
                 and command in ("PRIVMSG", "NOTICE"):
 
-                text = decode(args[1], 'utf-8')
+                try:
+                    text = unicode(args[1], 'utf-8')
+                except UnicodeDecodeError:
+                    text = unicode(args[1], 'latin1', 'replace')
+
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
                     self.plugin.log_debug(_("Filename: '%s'") % pack_info[1])
@@ -348,14 +400,15 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.45"
+    __version__ = "0.46"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
-    __config__  = [("nick",       "str",  "Nickname",             "pyload"     ),
-                   ("ident",      "str",  "Ident",                "pyloadident"),
-                   ("realname",   "str",  "Realname",             "pyloadreal" ),
-                   ("try_resume", "bool", "Request XDCC resume?", True         )]
+    __config__  = [("nick",       "str",  "Nickname",                               "pyload"     ),
+                   ("ident",      "str",  "Ident",                                  "pyloadident"),
+                   ("realname",   "str",  "Realname",                               "pyloadreal" ),
+                   ("try_resume", "bool", "Request XDCC resume?",                    True         ),
+                   ("nick_pw",    "str",  "Registered nickname password (optional)", ""           )]
 
     __description__ = """Download from IRC XDCC bot"""
     __license__     = "GPLv3"
@@ -405,6 +458,7 @@ class XDCC(Hoster):
             self.fail(_("Invalid hostname for IRC Server: %s") % server)
 
         nick          = self.config.get('nick')
+        nick_pw       = self.config.get('nick_pw')
         ident         = self.config.get('ident')
         realname      = self.config.get('realname')
 
@@ -421,6 +475,9 @@ class XDCC(Hoster):
                     try:
                         if not self.irc_client.join_channel(chan):
                             self.fail(_("Cannot join channel"))
+
+                        if nick_pw:
+                            self.irc_client.nickserv_identify(nick_pw)
 
                         if not self.irc_client.is_bot_online(bot):
                             self.fail(_("Bot is offline"))
@@ -493,7 +550,11 @@ class XDCC(Hoster):
                 or command not in ("PRIVMSG", "NOTICE"):
             return
 
-        text = decode(args[1], 'utf-8')
+        try:
+            text = unicode(args[1], 'utf-8')
+        except UnicodeDecodeError:
+            text = unicode(args[1], 'latin1', 'replace')
+
         sender_nick = origin.split('@')[0].split('!')[0]
         self.log_debug(_("PrivMsg: <%s> %s") % (sender_nick, text))
 
