@@ -206,7 +206,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.65"
+    __version__ = "0.66"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -763,7 +763,7 @@ class YoutubeCom(Hoster):
         #: Everything is finished and final name can be set
         pyfile.name = os.path.basename(final_filename)
         pyfile.size = os.path.getsize(final_filename)
-        self._last_download = final_filename
+        self.last_download = final_filename
 
 
 """Credit to this awesome piece of code below goes to the 'youtube_dl' project, kudos!"""
