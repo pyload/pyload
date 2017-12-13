@@ -248,6 +248,51 @@ class IRC(object):
 
 
     @lock
+    def send_invite_request(self, bot, chan, password):
+        bot_host = self.get_bot_host(bot)
+        if bot_host:
+            self.plugin.log_info(_("Sending invite request for #%s to '%s'") % (chan, bot))
+        else:
+            self.plugin.log_warning(_("Cannot send invite request"))
+            return
+
+        self.irc_sock.send("PRIVMSG %s :enter #%s %s %s\r\n" % (bot, chan, self.nick, password))
+        start_time = time.time()
+        while time.time() - start_time < 30:
+            origin, command, args = self.get_irc_command()
+
+            if origin is None \
+                    or command is None \
+                    or args is None:
+                return
+
+            # Private message from bot to us?
+            if '@' not in origin \
+                    or (origin[0:len(bot)] != bot and origin.split('@')[1] != bot_host) \
+                    or args[0][0:len(self.nick)] != self.nick \
+                    or command not in ("PRIVMSG", "NOTICE", "INVITE"):
+                continue
+
+            try:
+                text = unicode(args[1], 'utf-8')
+            except UnicodeDecodeError:
+                text = unicode(args[1], 'latin1', 'replace')
+
+            sender_nick = origin.split('@')[0].split('!')[0]
+            if command == "INVITE":
+                self.plugin.log_info(_("Got invite to #%s") % chan)
+
+            else:
+                self.plugin.log_info(_("PrivMsg: <%s> %s") % (sender_nick, text))
+
+            break
+
+        else:
+            self.plugin.log_warning(_("'%s' did not respond to the request") % bot)
+
+
+
+    @lock
     def is_bot_online(self, bot):
         self.plugin.log_info(_("Checking if bot '%s' is online") % bot)
         self.irc_sock.send("WHOIS %s\r\n" % bot)
@@ -400,15 +445,16 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.46"
+    __version__ = "0.47"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
-    __config__  = [("nick",       "str",  "Nickname",                               "pyload"     ),
-                   ("ident",      "str",  "Ident",                                  "pyloadident"),
-                   ("realname",   "str",  "Realname",                               "pyloadreal" ),
-                   ("try_resume", "bool", "Request XDCC resume?",                    True         ),
-                   ("nick_pw",    "str",  "Registered nickname password (optional)", ""           )]
+    __config__  = [("nick", "str", "Nickname", "pyload"),
+                   ("ident", "str", "Ident", "pyloadident"),
+                   ("realname", "str", "Realname", "pyloadreal"),
+                   ("try_resume", "bool", "Request XDCC resume?", True),
+                   ("nick_pw", "str", "Registered nickname password (optional)", ""),
+                   ("invite_opts", "str", "Invite bots options (format ircserver/channel/invitebot/password, ...)", "")]
 
     __description__ = """Download from IRC XDCC bot"""
     __license__     = "GPLv3"
@@ -461,6 +507,9 @@ class XDCC(Hoster):
         nick_pw       = self.config.get('nick_pw')
         ident         = self.config.get('ident')
         realname      = self.config.get('realname')
+        invite_opts   = [_x.split('/')
+                         for _x in self.config.get('invite_opts').strip().split(',')
+                         if len(_x.split('/')) == 4]
 
         #: Change request type
         self.req.close()
@@ -473,11 +522,16 @@ class XDCC(Hoster):
             try:
                 if self.irc_client.connect_server(host, port):
                     try:
-                        if not self.irc_client.join_channel(chan):
-                            self.fail(_("Cannot join channel"))
-
                         if nick_pw:
                             self.irc_client.nickserv_identify(nick_pw)
+
+                        for opt in invite_opts:
+                            if opt[0].lower() == host.lower() and opt[1].lower() == chan.lower():
+                                self.irc_client.send_invite_request(opt[2], opt[1], opt[3])
+                                break
+
+                        if not self.irc_client.join_channel(chan):
+                            self.fail(_("Cannot join channel"))
 
                         if not self.irc_client.is_bot_online(bot):
                             self.fail(_("Bot is offline"))
