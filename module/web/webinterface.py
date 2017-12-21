@@ -17,6 +17,8 @@
     @author: RaNaN
 """
 
+from module.common.json_layer import json
+
 import sys
 import module.common.pylgettext as gettext
 
@@ -88,6 +90,7 @@ env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.auto
 
 from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
+env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
 env.filters["truncate"] = truncate
 env.filters["date"] = date
