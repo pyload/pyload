@@ -10,7 +10,7 @@ from ..internal.misc import parse_html_form
 class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
-    __version__ = "0.20"
+    __version__ = "0.21"
     __status__ = "testing"
 
     __description__ = """Fshare.vn account plugin"""
@@ -19,15 +19,19 @@ class FshareVn(Account):
                    ("stickell", "l.stickell@yahoo.it"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    VALID_UNTIL_PATTERN = r'</span> Expire: (.+?)</p>'
+    VALID_UNTIL_PATTERN = r'</span> Expire: (.+?)<'
     LIFETIME_PATTERN = ur'<dt>Lần đăng nhập trước:</dt>\s*<dd>.+?</dd>'
-    TRAFFIC_LEFT_PATTERN = r'<p>Used: ([\d.,]+) (?:([\w^_]+)) / ([\d.,]+) (?:([\w^_]+))</p>'
+    TRAFFIC_LEFT_PATTERN = r'>Used: ([\d.,]+) (?:([\w^_]+)) / ([\d.,]+) (?:([\w^_]+))<'
 
     def grab_info(self, user, password, data):
         html = self.load("https://www.fshare.vn")
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
-        trafficleft = (self.parse_traffic(m.group(3), m.group(4)) - self.parse_traffic(m.group(1), m.group(2))) if m else None
+        if m is not None:
+            trafficleft = (self.parse_traffic(m.group(3), m.group(4)) - self.parse_traffic(m.group(1), m.group(2))) if m else None
+
+        else:
+            self.log_error(_("TRAFFIC_LEFT_PATTERN not found"))
 
         if re.search(self.LIFETIME_PATTERN, html):
             self.log_debug("Lifetime membership detected")
