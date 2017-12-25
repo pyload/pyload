@@ -427,7 +427,7 @@ def logs(item=-1):
         item = 0
 
     if item < 1 or type(item) is not int:
-        item = 1 if len(log) - perpage + 1 < 1 else len(log) - perpage + 1
+        item = 1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
 
     if type(fro) is datetime: # we will search for datetime
         item = -1
