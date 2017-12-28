@@ -14,8 +14,9 @@
 <script type="text/javascript" src="/media/js/classic/MooDialog_static.js"></script>
 <script type="text/javascript" src="/media/js/classic/purr_static.js"></script>
 
-
 <script type="text/javascript" src="/media/js/classic/base.js"></script>
+
+<link rel="icon" href="/favicon.ico" />
 
 <title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
 
@@ -27,19 +28,16 @@
 
 <div id="head-panel">
 
-
     <div id="head-search-and-login">
     {% block headpanel %}
 
         {% if user.is_authenticated %}
-
 
 {% if update %}
 <span>
 <span style="font-weight: bold; margin: 0 2px 0 2px;">{{_("pyLoad Update available!")}}</span>
 </span>
 {% endif %}
-
 
 {% if plugins %}
 <span>
@@ -78,7 +76,6 @@
             {% if not name in url and right -%}class="right"{%- endif %}
         {%- endmacro %}
 
-
 		{% block menu %}
 		<li>
 		    <a href="/" title=""><img src="/media/classic/img/head-menu-home.png" alt="" /> {{_("Home")}}</a>
@@ -102,7 +99,7 @@
 		    <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><img src="/media/classic/img/head-menu-config.png" alt="" />{{_("Config")}}</a>
 		</li>
 		{% endblock %}
-		
+
 		</ul>
 	</div>
 
@@ -140,7 +137,6 @@
 
 {% block statusbar %}
 {% endblock %}
-
 
 <br/>
 
