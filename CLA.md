@@ -6,7 +6,7 @@ Thank you for your interest in contributing to **pyLoad** (*"We"* or *"Us"*).
 This contributor agreement (*"Agreement"*) documents the rights granted by
 contributors to Us. To make this document effective, please sign it and send it
 to Us by email, following the instructions at
-https://github.com/pyload/pyload/blob/master/LICENSE.md.
+https://github.com/pyload/pyload/blob/master/LICENSE.
 This is a legally binding document, so please read it carefully before agreeing
 to it. The Agreement may cover more than one software project managed by Us.
 
@@ -19,7 +19,7 @@ to it. The Agreement may cover more than one software project managed by Us.
 *"Contribution"* means any work of authorship that is Submitted by You to Us in
 which You own or assert ownership of the Copyright. If You do not own the
 Copyright in the entire work of authorship, please follow the instructions in
-https://github.com/pyload/pyload/blob/master/LICENSE.md.
+https://github.com/pyload/pyload/blob/master/LICENSE.
 
 *"Copyright"* means all rights protecting works of authorship owned or controlled
 by You, including copyright, moral and neighboring rights, as appropriate, for
@@ -118,7 +118,7 @@ the Entity version of this document. If You are less than eighteen years old,
 please have Your parents or guardian sign the Agreement.
 
 4. You have followed the instructions in
-https://github.com/pyload/pyload/blob/master/LICENSE.md, if You do not own the
+https://github.com/pyload/pyload/blob/master/LICENSE, if You do not own the
 Copyright in the entire work of authorship Submitted.
 
 
