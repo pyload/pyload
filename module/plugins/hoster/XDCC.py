@@ -445,7 +445,7 @@ class IRC(object):
 class XDCC(Hoster):
     __name__    = "XDCC"
     __type__    = "hoster"
-    __version__ = "0.47"
+    __version__ = "0.48"
     __status__  = "testing"
 
     __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
@@ -510,6 +510,11 @@ class XDCC(Hoster):
         invite_opts   = [_x.split('/')
                          for _x in self.config.get('invite_opts').strip().split(',')
                          if len(_x.split('/')) == 4]
+
+        #: Remove leading '#' from channel name
+        for opt in invite_opts:
+            if opt[1].startswith('#'):
+                opt[1] = opt[1][1:]
 
         #: Change request type
         self.req.close()
