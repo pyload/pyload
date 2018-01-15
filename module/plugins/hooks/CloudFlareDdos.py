@@ -49,7 +49,7 @@ class CloudFlare(object):
 
             header = parse_html_header(get_plugin_last_header(owner_plugin))
 
-            if header.get('server') == "cloudflare-nginx":
+            if header.get('server') in ("cloudflare-nginx", "cloudflare"):
                 if e.code == 403:
                     data = CloudFlare._solve_cf_security_check(
                         addon_plugin, owner_plugin, e.content)
@@ -175,7 +175,7 @@ class PreloadStub(object):
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]
