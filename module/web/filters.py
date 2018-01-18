@@ -3,7 +3,7 @@
 import os
 from os.path import abspath, commonprefix, join
 
-quotechar = "::/"
+quotechar = "::%2F"
 
 try:
     from os.path import relpath
@@ -22,10 +22,9 @@ except:
             return curdir
         return join(*rel_list)
 
-
 def quotepath(path):
     try:
-        return path.replace("../", quotechar)
+        return path.replace(".." + os.path.sep, quotechar)
     except AttributeError:
         return path
     except:
@@ -33,7 +32,7 @@ def quotepath(path):
 
 def unquotepath(path):
     try:
-        return path.replace(quotechar, "../")
+        return path.replace(quotechar, ".." + os.path.sep)
     except AttributeError:
         return path
     except:

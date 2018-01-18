@@ -71,6 +71,91 @@ def pre_processor():
 def base(messages):
     return render_to_response('base.html', {'messages': messages}, [pre_processor])
 
+def choose_path(browse_for, path=""):
+    path = os.path.normpath(unquotepath(path))
+
+    try:
+        path = path.decode("utf8")
+    except:
+        pass
+
+    if os.path.isfile(path):
+        oldfile = path
+        path = os.path.dirname(path)
+    else:
+        oldfile = ''
+
+    abs = False
+
+    if os.path.isdir(path):
+        if os.path.isabs(path):
+            cwd = os.path.abspath(path)
+            abs = True
+        else:
+            cwd = relpath(path)
+    else:
+        cwd = os.getcwd()
+
+    cwd = os.path.normpath(os.path.abspath(cwd))
+    parentdir = os.path.dirname(cwd)
+    if not abs:
+        if os.path.abspath(cwd) == os.path.abspath("/"):
+            cwd = relpath(cwd)
+        else:
+            cwd = relpath(cwd) + os.path.sep
+        parentdir = relpath(parentdir) + os.path.sep
+
+    if os.path.abspath(cwd) == os.path.abspath("/"):
+        parentdir = ""
+
+
+    # try:
+    #     cwd = cwd.encode("utf8")
+    # except:
+    #     pass
+    #
+    try:
+        folders = os.listdir(cwd)
+    except:
+        folders = []
+
+    files = []
+
+    for f in folders:
+        try:
+            # f = f.decode(getfilesystemencoding())
+            data = {'name': f, 'fullpath': join(cwd, f)}
+            data['sort'] = data['fullpath'].lower()
+            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
+            data['ext'] = os.path.splitext(f)[1]
+        except:
+            continue
+
+        if os.path.isdir(join(cwd, f)):
+            data['type'] = 'dir'
+        else:
+            data['type'] = 'file'
+
+        if os.path.isfile(join(cwd, f)):
+            data['size'] = os.path.getsize(join(cwd, f))
+
+            power = 0
+            while (data['size'] / 1024) > 0.3:
+                power += 1
+                data['size'] /= 1024.
+            units = ('', 'K', 'M', 'G', 'T')
+            data['unit'] = units[power] + 'Byte'
+        else:
+            data['size'] = ''
+
+        files.append(data)
+
+    files = sorted(files, key=itemgetter('type', 'sort'))
+
+    return render_to_response('pathchooser.html',
+            {'cwd'     : cwd, 'files': files, 'parentdir': parentdir, 'type': browse_for, 'oldfile': oldfile,
+             'absolute': abs}, [])
+
 
 ## Views
 @error(500)
@@ -293,93 +378,16 @@ def config():
 
 
 @route("/filechooser")
-@route("/pathchooser")
 @route("/filechooser/:file#.+#")
+@login_required('STATUS')
+def file(file=""):
+    return choose_path("file", file)
+
+@route("/pathchooser")
 @route("/pathchooser/:path#.+#")
 @login_required('STATUS')
-def path(file="", path=""):
-    if file:
-        type = "file"
-    else:
-        type = "folder"
-
-    path = os.path.normpath(unquotepath(path))
-
-    if os.path.isfile(path):
-        oldfile = path
-        path = os.path.dirname(path)
-    else:
-        oldfile = ''
-
-    abs = False
-
-    if os.path.isdir(path):
-        if os.path.isabs(path):
-            cwd = os.path.abspath(path)
-            abs = True
-        else:
-            cwd = relpath(path)
-    else:
-        cwd = os.getcwd()
-
-    try:
-        cwd = cwd.encode("utf8")
-    except:
-        pass
-
-    cwd = os.path.normpath(os.path.abspath(cwd))
-    parentdir = os.path.dirname(cwd)
-    if not abs:
-        if os.path.abspath(cwd) == "/":
-            cwd = relpath(cwd)
-        else:
-            cwd = relpath(cwd) + os.path.sep
-        parentdir = relpath(parentdir) + os.path.sep
-
-    if os.path.abspath(cwd) == "/":
-        parentdir = ""
-
-    try:
-        folders = os.listdir(cwd)
-    except:
-        folders = []
-
-    files = []
-
-    for f in folders:
-        try:
-            f = f.decode(getfilesystemencoding())
-            data = {'name': f, 'fullpath': join(cwd, f)}
-            data['sort'] = data['fullpath'].lower()
-            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
-            data['ext'] = os.path.splitext(f)[1]
-        except:
-            continue
-
-        if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
-        else:
-            data['type'] = 'file'
-
-        if os.path.isfile(join(cwd, f)):
-            data['size'] = os.path.getsize(join(cwd, f))
-
-            power = 0
-            while (data['size'] / 1024) > 0.3:
-                power += 1
-                data['size'] /= 1024.
-            units = ('', 'K', 'M', 'G', 'T')
-            data['unit'] = units[power] + 'Byte'
-        else:
-            data['size'] = ''
-
-        files.append(data)
-
-    files = sorted(files, key=itemgetter('type', 'sort'))
-
-    return render_to_response('pathchooser.html',
-            {'cwd': cwd, 'files': files, 'parentdir': parentdir, 'type': type, 'oldfile': oldfile,
-             'absolute': abs}, [])
+def path(path=""):
+    return choose_path("folder", path)
 
 
 @route("/logs")
