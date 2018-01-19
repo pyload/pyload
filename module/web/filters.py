@@ -40,14 +40,18 @@ def unquotepath(path):
 
 def path_make_absolute(path):
     p = os.path.abspath(path)
-    if p[-1] == os.path.sep:
+    if os.path.isfile(p):
+        return p
+    elif p[-1] == os.path.sep:
         return p
     else:
         return p + os.path.sep
 
 def path_make_relative(path):
     p = relpath(path)
-    if p[-1] == os.path.sep:
+    if os.path.isfile(p):
+        return p
+    elif p[-1] == os.path.sep:
         return p
     else:
         return p + os.path.sep
