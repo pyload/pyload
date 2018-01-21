@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.70"
+    __version__ = "0.71"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -506,8 +506,9 @@ class Hoster(Base):
 
         else:
             # Same file exists but it does not belongs to our pack, add a trailing counter
-            dl_n = int(re.match(r'.+(\(\d+\)|)$', self.pyfile.name).group(1).strip("()") or 1)
-            self.pyfile.name += " (%s)" % (dl_n + 1)
+            m = re.match(r'(.+?)(?: (\(\d+\)))?(\..+)?$', self.pyfile.name)
+            dl_n = int(m.group(2).strip("()")) or 1
+            self.pyfile.name += "%s (%s)%s" % (m.group(1), dl_n + 1, m.group(3) or "")
 
     #: Deprecated method (Recheck in 0.4.10)
     def checkForSameFiles(self, *args, **kwargs):
