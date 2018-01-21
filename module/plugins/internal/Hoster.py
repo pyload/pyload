@@ -10,8 +10,7 @@ import mimetypes
 from module.network.HTTPRequest import BadHeader
 
 from .Base import Base
-from .misc import (compute_checksum, encode, exists, fixurl, fsjoin,
-                   parse_name, safejoin)
+from .misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, safejoin
 from .Plugin import Fail
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
@@ -34,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.69"
+    __version__ = "0.70"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -482,8 +481,13 @@ class Hoster(Base):
 
         :raises Skip:
         """
-        pack_folder = self.pyfile.package().folder if self.pyload.config.get(
-            'general', 'folder_per_package') else ""
+        pack_folder = self.pyfile.package().folder
+
+        for pyfile in self.pyload.files.cache.values():
+            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack_folder:
+                if pyfile.status in (0, 12, 5, 7):  # finished / downloading / waiting / starting
+                    self.skip(pyfile.pluginname)
+
         dl_folder = self.pyload.config.get('general', 'download_folder')
         dl_file = fsjoin(dl_folder, pack_folder, self.pyfile.name)
 
@@ -496,15 +500,13 @@ class Hoster(Base):
             return
 
         if self.pyload.config.get('download', 'skip_existing'):
-            plugin = self.pyload.db.findDuplicates(
-                self.pyfile.id, pack_folder, self.pyfile.name)
+            plugin = self.pyload.db.findDuplicates(self.pyfile.id, pack_folder, self.pyfile.name)
             msg = plugin[0] if plugin else _("File exists")
             self.skip(msg)
+
         else:
-            dl_n = int(
-                re.match(
-                    r'.+(\(\d+\)|)$',
-                    self.pyfile.name).group(1).strip("()") or 1)
+            # Same file exists but it does not belongs to our pack, add a trailing counter
+            dl_n = int(re.match(r'.+(\(\d+\)|)$', self.pyfile.name).group(1).strip("()") or 1)
             self.pyfile.name += " (%s)" % (dl_n + 1)
 
     #: Deprecated method (Recheck in 0.4.10)
