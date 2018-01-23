@@ -19,11 +19,6 @@
 from getpass import getpass
 import module.common.pylgettext as gettext
 import os
-from os import makedirs
-from os.path import abspath
-from os.path import dirname
-from os.path import exists
-from os.path import join
 from subprocess import PIPE
 from subprocess import call
 import sys
@@ -43,8 +38,8 @@ class Setup():
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
         lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", join(self.path, "locale"), languages=[lang, "en"], fallback=True)
+        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("setup", os.path.join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)
 
         #Input shorthand for yes
@@ -115,31 +110,31 @@ class Setup():
 
         if len(avail) < 5:
             print _("Featues missing: ")
-            print
+            print ""
 
             if not self.check_module("Crypto"):
-                print _("no py-crypto available")
+                print _("** no py-crypto available **")
                 print _("You need this if you want to decrypt container files.")
                 print ""
 
             if not ssl:
-                print _("no SSL available")
+                print _("** no SSL available **")
                 print _("This is needed if you want to establish a secure connection to core or webinterface.")
                 print _("If you only want to access locally to pyLoad ssl is not usefull.")
                 print ""
 
             if not captcha:
-                print _("no Captcha Recognition available")
+                print _("** no Captcha OCR Recognition available **")
                 print _("Only needed for some hosters and as freeuser.")
                 print ""
 
             if not gui:
-                print _("Gui not available")
+                print _("** Gui not available **")
                 print _("The Graphical User Interface.")
                 print ""
 
             if not js:
-                print _("no JavaScript engine found")
+                print _("** no JavaScript engine found **")
                 print _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
 
             print _("You can abort the setup now and fix some dependicies if you want.")
@@ -150,7 +145,7 @@ class Setup():
             return False
 
         print ""
-        print _("Do you want to change the config path? Current is %s") % abspath("")
+        print _("Do you want to change the config path? Current is %s") % os.path.abspath("")
         print _(
             "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
         path = self.ask(_("Change config path?"), self.no, bool=True)
@@ -191,10 +186,10 @@ class Setup():
         print _("## System Check ##")
 
         if sys.version_info[:2] > (2, 7):
-            print _("Your python version is to new, Please use Python 2.6/2.7")
+            print _("Your python version is too new, Please use Python 2.6/2.7")
             python = False
         elif sys.version_info[:2] < (2, 5):
-            print _("Your python version is to old, Please use at least Python 2.5")
+            print _("Your python version is too old, Please use at least Python 2.5")
             python = False
         else:
             print _("Python Version: OK")
@@ -218,11 +213,11 @@ class Setup():
 
         print ""
 
-        pil = self.check_module("Image")
+        pil = self.check_module("Image") or self.check_module("PIL")
         self.print_dep("py-imaging", pil)
 
         if os.name == "nt":
-            tesser = self.check_prog([join(pypath, "tesseract", "tesseract.exe"), "-v"])
+            tesser = self.check_prog([os.path.join(pypath, "tesseract", "tesseract.exe"), "-v"])
         else:
             tesser = self.check_prog(["tesseract", "-v"])
 
@@ -247,7 +242,7 @@ class Setup():
                     print _("Your installed jinja2 version %s seems too old.") % jinja2.__version__
                     print _("You can safely continue but if the webinterface is not working,")
                     print _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary.")
-                    print
+                    print ""
                     jinja = False
         except:
             pass
@@ -321,13 +316,20 @@ class Setup():
         print "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
         print "\t", _("and copy bjoern.so to module/lib")
 
-        print
+        print ""
         print _(
             "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface")
         print _("come back here and change the builtin server to the threaded one here.")
 
         self.config["webinterface"]["server"] = self.ask(_("Server"), "builtin",
             ["builtin", "threaded", "fastcgi", "lightweight"])
+
+        print ""
+        print _("pyLoad offers several web user interface templates, please choose a webinterface template you like.")
+
+        templates = [t for t in os.listdir(os.path.join(pypath, "module", "web", "templates"))
+                     if os.path.isdir(os.path.join(pypath, "module", "web", "templates", t))]
+        self.config["webinterface"]["template"] = self.ask(_("Template"), "classic", templates)
 
     def conf_ssl(self):
         print ""
@@ -344,8 +346,8 @@ class Setup():
         self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
 
     def set_user(self):
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", join(self.path, "locale"),
+        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+        translation = gettext.translation("setup", os.path.join(self.path, "locale"),
             languages=[self.config["general"]["language"], "en"], fallback=True)
         translation.install(True)
 
@@ -395,18 +397,18 @@ class Setup():
 
     def conf_path(self, trans=False):
         if trans:
-            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-            translation = gettext.translation("setup", join(self.path, "locale"),
+            gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+            translation = gettext.translation("setup", os.path.join(self.path, "locale"),
                 languages=[self.config["general"]["language"], "en"], fallback=True)
             translation.install(True)
 
         print _("Setting new configpath, current configuration will not be transfered!")
-        path = self.ask(_("Configpath"), abspath(""))
+        path = self.ask(_("Configpath"), os.path.abspath(""))
         try:
-            path = join(pypath, path)
-            if not exists(path):
-                makedirs(path)
-            f = open(join(pypath, "module", "config", "configdir"), "wb")
+            path = os.path.join(pypath, path)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            f = open(os.path.join(pypath, "module", "config", "configdir"), "wb")
             f.write(path)
             f.close()
             print _("Configpath changed, setup will now close, please restart to go on.")
@@ -510,5 +512,5 @@ class Setup():
 
 
 if __name__ == "__main__":
-    test = Setup(join(abspath(dirname(__file__)), ".."), None)
+    test = Setup(os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."), None)
     test.start()
