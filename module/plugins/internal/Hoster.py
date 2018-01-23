@@ -33,7 +33,7 @@ if not hasattr(__builtin__.property, "setter"):
 class Hoster(Base):
     __name__ = "Hoster"
     __type__ = "hoster"
-    __version__ = "0.72"
+    __version__ = "0.73"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -506,8 +506,8 @@ class Hoster(Base):
 
         else:
             # Same file exists but it does not belongs to our pack, add a trailing counter
-            m = re.match(r'(.+?)(?: (\(\d+\)))?(\..+)?$', self.pyfile.name)
-            dl_n = int(m.group(2).strip("()")) or 1
+            m = re.match(r'(.+?)(?: \((\d+)\))?(\..+)?$', self.pyfile.name)
+            dl_n = int(m.group(2) or "0")
 
             while True:
                 name = "%s (%s)%s" % (m.group(1), dl_n + 1, m.group(3) or "")
