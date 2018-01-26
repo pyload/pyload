@@ -1,10 +1,10 @@
 {% extends 'pyplex/base.html' %}
 {% block head %}
-<link rel="stylesheet" href="/media/pyplex/css/home.css">
+<link rel="stylesheet" href="{{ "/media/pyplex/css/home.css"|url }}">
 {% endblock %}
 
 {% block footer %}
-<script type="text/javascript" src="/media/js/pyplex/home.js"></script>
+<script type="text/javascript" src="{{ "/media/js/pyplex/home.js"|url }}"></script>
 {% endblock %}
 
 {% block pageactions %}
