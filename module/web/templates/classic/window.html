@@ -1,7 +1,7 @@
 <iframe id="upload_target" name="upload_target" src="" style="display: none; width:0;height:0"></iframe>
 
 <div id="add_box" class="window_box">
-<form id="add_form" action="/json/add_package" method="POST" enctype="multipart/form-data">
+<form id="add_form" action="{{'/json/add_package'|url}}" method="POST" enctype="multipart/form-data">
 <h1>{{_("Add Package")}}</h1>
 <p>{{_("Paste your links or upload a container.")}}</p>
 <label for="add_name">{{_("Name")}}
@@ -12,7 +12,7 @@
 <label for="add_links">{{_("Links")}}
 <span class="small">{{_("Paste your links here or any text and press the filter button.")}}</span>
 <span class="small"> {{ _("Filter urls") }}
-<img alt="URIParsing" Title="Parse Uri" src="/media/classic/img/parseUri.png" style="cursor:pointer; vertical-align: text-bottom;" onclick="parseUri()"/>
+<img alt="URIParsing" Title="Parse Uri" src="{{'/media/classic/img/parseUri.png'|url}}" style="cursor:pointer; vertical-align: text-bottom;" onclick="parseUri()"/>
 </span>
 
 </label>

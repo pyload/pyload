@@ -4,9 +4,9 @@
 {% block subtitle %}{{ _("Config") }}{% endblock %}
 
 {% block head %}
-    <script type="text/javascript" src="/media/js/classic/tinytab_static.js"></script>
-    <script type="text/javascript" src="/media/js/classic/MooDropMenu_static.js"></script>
-    <script type="text/javascript" src="/media/js/classic/settings.js"></script>
+    <script type="text/javascript" src="{{'/media/js/classic/tinytab_static.js'|url}}"></script>
+    <script type="text/javascript" src="{{'/media/js/classic/MooDropMenu_static.js'|url}}"></script>
+    <script type="text/javascript" src="{{'/media/js/classic/settings.js'|url}}"></script>
 
 {% endblock %}
 
@@ -81,7 +81,7 @@
 
             <!-- Accounts -->
             <span id="accounts" class="tabContent">
-            <form id="account_form" action="/json/update_accounts" method="POST">
+            <form id="account_form" action="{{'/json/update_accounts'|url}}" method="POST">
 
                         <table class="settable wide">
 
@@ -172,7 +172,7 @@
 {% endblock %}
 {% block hidden %}
 <div id="account_box" class="window_box" style="z-index: 2">
-<form id="add_account_form" action="/json/add_account" method="POST" enctype="multipart/form-data">
+<form id="add_account_form" action="{{'/json/add_account'|url}}" method="POST" enctype="multipart/form-data">
 <h1>{{_("Add Account")}}</h1>
 <p>{{_("Enter your account data to use premium features.")}}</p>
 <label for="account_login">{{_("Login")}}
