@@ -83,7 +83,20 @@ select:focus {
         <button class="btn btn-bright" type="submit">{{ _("Submit") }}</button>
     </form>
 {% endblock %}
+
 {% block dialog %}
+<div id="restart_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_("pyLoad is restarting...")}}</p>
+  </div>
+</div>
+
+<div id="shutdown_msg" class="hidden" style="position:fixed; z-index: 1; width: 100%;">
+  <div align="center" class="alert alert-success">
+    <p style="font-weight: bold;">{{_("pyLoad was shut down, goodbye!")}}</p>
+  </div>
+</div>
+
 <div id="restart_box" class="modal" role="dialog">
   <div class="modal-dialog modal-sm">
     <!-- Modal content-->
@@ -145,5 +158,4 @@ select:focus {
     </div>
   </div>
 </div>
-
 {% endblock %}
