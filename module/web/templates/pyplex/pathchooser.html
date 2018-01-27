@@ -69,7 +69,7 @@
         setValid();
     }
   </script>
-  <link rel="stylesheet" type="text/css" href="/media/pyplex/css/pathchooser.css"/>
+  <link rel="stylesheet" type="text/css" href="{{ "/media/pyplex/css/pathchooser.css"|url }}"/>
 </head>
 <body {% if type == 'file' %}{% if oldfile %}onload="updateParent();"{% else %}onload="setInvalid();"{% endif %}{% else %}onload="updateParent();"{% endif %}>
  <table>

@@ -10,7 +10,7 @@ $(function() {
         if (i === g) {
             $.ajax({
                 method: "post",
-                url: "/json/change_password",
+                url: "{{'/json/change_password'|url}}",
                 data: $("#password_form").serialize(),
                 async: true,
                 success: function () {
@@ -35,13 +35,13 @@ $(function() {
     });
 
     $("#quit_box").on('click', '#quit_button', function () {
-        $.get( "/api/kill", function() {
+        $.get( "{{'/api/kill'|url}}", function() {
             $('#quit_box').modal('hide');
         });
     });
 
     $("#restart_box").on('click', '#restart_button', function () {
-        $.get( "/api/restart", function() {
+        $.get( "{{'/api/restart'|url}}", function() {
             alert("{{_('pyLoad restarted')}}");
             $('#restart_box').modal('hide');
         });

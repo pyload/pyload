@@ -86,7 +86,7 @@ SettingsUI = (function() {
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
         f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( '/json/load_config/' + c + '/' + g, function(e) {
+        $.get( "{{'/json/load_config/'|url}}" + c + '/' + g, function(e) {
                 f.html(e);
             });
     };
@@ -95,7 +95,7 @@ SettingsUI = (function() {
         c = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: "/json/save_config/" + c,
+            url: "{{'/json/save_config/'|url}}" + c,
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
@@ -111,7 +111,7 @@ SettingsUI = (function() {
     a.prototype.addAccount = function(c) {
         $.ajax({
             method: "post",
-            url: "/json/add_account",
+            url: "{{'/json/add_account'|url}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
@@ -126,7 +126,7 @@ SettingsUI = (function() {
     a.prototype.submitAccounts = function(c) {
         $.ajax({
             method: "post",
-            url: "/json/update_accounts",
+            url: "{{'/json/update_accounts'|url}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {

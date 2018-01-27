@@ -209,7 +209,7 @@ $(function() {
         } else {
             var form = new FormData(this);
             $.ajax({
-                    url: "/json/add_package",
+                    url: "{{'/json/add_package'|url}}",
                     method: "POST",
                     data: form,
                     processData: false,
@@ -230,10 +230,10 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("/api/unpauseServer", function () {
+        $.get("{{'/api/unpauseServer'|url}}", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{'/json/status'|url}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -242,14 +242,14 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("/api/stopAllDownloads");
+        $.get("{{'/api/stopAllDownloads'|url}}");
     });
 
     $("#action_stop").click(function() {
-        $.get("/api/pauseServer", function () {
+        $.get("{{'/api/pauseServer'|url}}", function () {
             $.ajax({
                 method: "post",
-                url: "/json/status",
+                url: "{{'/json/status'|url}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -269,7 +269,7 @@ $(function() {
     $("#cap_box #cap_positional").click(on_captcha_click);
     $.ajax({
         method:"post",
-        url:"/json/status",
+        url: "{{'/json/status'|url}}",
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -278,7 +278,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method:"post",
-            url:"/json/status",
+            url: "{{'/json/status'|url}}",
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -359,7 +359,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "/json/set_captcha",
+            url: "{{'/json/set_captcha'|url}}",
             async: true,
             method: b,
             data: a,

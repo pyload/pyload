@@ -117,7 +117,7 @@ var PackageUI = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: '/json/package_order/' + order[0],
+                url: "{{'/json/package_order/'|url}}" + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
@@ -181,7 +181,7 @@ var Package = new Class({
         indicateLoad();
         new Request.JSON({
             method: 'get',
-            url: '/json/package/' + this.id,
+            url: "{{'/json/package/'|url}}" + this.id,
             onSuccess: this.createLinks.bind(this),
             onFailure: indicateFail
         }).send();
@@ -198,13 +198,13 @@ var Package = new Class({
                 }
             });
 
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='/media/classic/img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{'/media/classic/img/{icon}'|url }}' style='width: 12px; height:12px;'/></span>\n".substitute({"icon": link.icon});
             html += "<span style='font-size: 15px'>{name}</span><br /><div class='child_secrow'>".substitute({"name": link.name});
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({"statusmsg": link.statusmsg, "error":link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({"format_size": link.format_size});
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({"plugin": link.plugin});
-            html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='/media/classic/img/delete.png' />&nbsp;&nbsp;";
-            html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='/media/classic/img/arrow_refresh.png' /></div>";
+            html += "<img title='{{_("Delete Link")}}' style='cursor: pointer;' width='10px' height='10px' src='{{'/media/classic/img/delete.png'|url }}' />&nbsp;&nbsp;";
+            html += "<img title='{{_("Restart Link")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{'/media/classic/img/arrow_refresh.png'|url }}' /></div>";
 
             var div = new Element("div", {
                 "id": "file_" + link.id,
@@ -322,7 +322,7 @@ var Package = new Class({
         indicateLoad();
         new Request({
             method: 'get',
-            url: '/json/move_package/' + ((this.ui.type + 1) % 2) + "/" + this.id,
+            url: "{{'/json/move_package/'|url}}" + ((this.ui.type + 1) % 2) + "/" + this.id,
             onSuccess: function() {
                 this.ele.nix();
                 indicateFinish();
@@ -366,7 +366,7 @@ var Package = new Class({
             indicateLoad();
             new Request.JSON({
                 method: 'get',
-                url: '/json/link_order/' + order[0],
+                url: "{{'/json/link_order/'|url}}" + order[0],
                 onSuccess: indicateFinish,
                 onFailure: indicateFail
             }).send();
