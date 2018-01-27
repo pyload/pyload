@@ -45,9 +45,9 @@ function EntryManager(){
 
         ids = [{% for link in content %}
         {% if forloop.last %}
-            {{ link.id }}
+            {{link.id}}
         {% else %}
-         {{ link.id }},
+         {{link.id}},
         {% endif %}
         {% endfor %}];
 
@@ -56,14 +56,14 @@ function EntryManager(){
         this.parseFromContent();
 
         // this.json.startTimer();
-    }
+    };
     this.parseFromContent = function (){
         $.each(ids,function(id,index){
             var entry = new LinkEntry(id);
             entry.parse();
             entries.push(entry)
         });
-    }
+    };
     this.update = function (data){
         try{
             ids = entries.map(function(item){
@@ -74,7 +74,7 @@ function EntryManager(){
                 });
 
             var temp=ids.filter(function(id){
-                if($.inArray(id,dataids)>-1)
+                if ($.inArray(id,dataids)>-1)
                     return false;
                 else
                     return true;
@@ -108,7 +108,7 @@ function EntryManager(){
         }catch(e){
             alert(e)
         }
-    }
+    };
     // initialize object
     this.initialize();
 }
@@ -119,12 +119,13 @@ function LinkEntry(id){
     this.initialize = function(id){
         this.fid = id;
         this.id = id;
-    }
+    };
 
     this.parse = function(){
         this.elements = {
             tr: $("#link_"+this.id),
             name: $("#link_"+this.id+"_name"),
+            hoster:$("#link_"+this.id+"_hoster"),
             status: $("#link_"+this.id+"_status"),
             info: $("#link_"+this.id+"_info"),
             bleft: $("#link_"+this.id+"_bleft"),
@@ -134,7 +135,7 @@ function LinkEntry(id){
             pgb: $("#link_"+this.id+"_pgb"),
         };
         this.initEffects();
-    }
+    };
     this.insert = function(item){
         try{
             var tr = document.createElement("tr");
@@ -148,6 +149,8 @@ function LinkEntry(id){
             $(statusspan).removeClass().addClass('label '+ labelcolor(item.status) + ' lbl_status');
             var name = document.createElement("td");
             $(name).html(item.name);
+            var hoster = document.createElement("td");
+            $(hoster).html(item.plugin);
             var info = document.createElement("td");
             $(info).html(item.info);
             var bleft = document.createElement("td");
@@ -191,6 +194,7 @@ function LinkEntry(id){
             status:status,
             statusspan:statusspan,
             name:name,
+            hoster:hoster,
             info:info,
             bleft:bleft,
             percent:percent,
@@ -198,13 +202,14 @@ function LinkEntry(id){
             pgbTr:pgbTr,
             progress:progress,
             pgb:pgb
-            }
+        };
 
 
         this.elements.status.appendChild(this.elements.statusspan);
         this.elements.progress.appendChild(this.elements.pgb);
         this.elements.tr.appendChild(this.elements.status);
         this.elements.tr.appendChild(this.elements.name);
+        this.elements.tr.appendChild(this.elements.hoster);
         this.elements.tr.appendChild(this.elements.info);
         this.elements.tr.appendChild(this.elements.bleft);
         this.elements.tr.appendChild(this.elements.bleft);
@@ -218,7 +223,7 @@ function LinkEntry(id){
         this.elements.tr.appendChild(child);
 
         var secondchild = document.createElement('td');
-        $(secondchild).attr('colspan',5);
+        $(secondchild).attr('colspan',6);
         secondchild.appendChild(this.elements.progress);
 
         this.elements.pgbTr.appendChild(secondchild);
@@ -227,7 +232,7 @@ function LinkEntry(id){
         }catch(e){
             alert(e);
         }
-    }
+    };
 
     this.initEffects = function(){
         //if(!operafix)
@@ -238,9 +243,10 @@ function LinkEntry(id){
 
         $(this.elements.remove).click(function(){
             $.get( "{{'/json/abort_link/'|url}}"+id)});
-    }
+    };
     this.update = function(item){
-            $(this.elements.name).text( item.name);
+            $(this.elements.name).text(item.name);
+            $(this.elements.hoster).text(item.plugin);
             $(this.elements.statusspan).text(item.statusmsg);
             $(this.elements.info).text(item.info);
             $(this.elements.bleft).text(item.format_size);
@@ -249,7 +255,7 @@ function LinkEntry(id){
             $(this.elements.pgb).css('width',item.percent+'%').animate({duration:'slow'});
             $(this.elements.pgb).html('' + item.percent + '%');
 
-    }
+    };
     this.remove = function(){
         $(this.fade).fadeOut("slow",function(){
             this.remove();
@@ -257,7 +263,7 @@ function LinkEntry(id){
         $(this.fadeBar).fadeOut("slow",function(){
             this.remove();
         });
-    }
+    };
     this.initialize(id);
 }
 

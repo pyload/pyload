@@ -14,15 +14,15 @@ $(function() {
                 data: $("#password_form").serialize(),
                 async: true,
                 success: function () {
-                    indicateSuccess('{{ _("Settings saved")}}');
+                    indicateSuccess("{{_('Settings saved')}}");
                 }
             })
             .fail(function() {
-                indicateFail('{{ _("Error occurred")}}');
+                indicateFail("{{_('Error occurred')}}");
             });
             $('#password_box').modal('hide');
         } else {
-            alert('{{_("Passwords did not match.")}}')
+            alert("{{_('Passwords did not match.')}}")
         }
         j.stopPropagation();
         j.preventDefault();

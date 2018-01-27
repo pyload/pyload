@@ -163,8 +163,8 @@ function Package (ui, id, ele){
                        "<span class='child_status' style='font-size: 12px; color:#eee; padding-left: 5px;'>" + link.statusmsg + "</span>&nbsp;" + link.error + "&nbsp;" +
                        "<span class='child_status' style='font-size: 12px; color:#eee;'>" + link.format_size + "</span>" +
                        "<span class='child_status' style='font-size: 12px; color:#eee;'> " + link.plugin + "</span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-trash' title='{{_("Delete Link")}}' style='cursor: pointer;  font-size: 12px; color:#eee;' ></span>&nbsp;&nbsp;" +
-                       "<span class='glyphicon glyphicon-repeat' title='{{_("Restart Link")}}' style='cursor: pointer; font-size: 12px; color:#eee;' ></span></div>";
+                       "<span class='glyphicon glyphicon-trash' title="{{_('Delete Link')}}" style='cursor: pointer;  font-size: 12px; color:#eee;' ></span>&nbsp;&nbsp;" +
+                       "<span class='glyphicon glyphicon-repeat' title="{{_('Restart Link')}}" style='cursor: pointer; font-size: 12px; color:#eee;' ></span></div>";
 
             var div = document.createElement("div");
             $(div).attr("id","file_" + link.id);
@@ -201,7 +201,7 @@ function Package (ui, id, ele){
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
-                    $(spans[1]).html("{{_("queued")}}");
+                    $(spans[1]).html("{{_('queued')}}");
                     indicateSuccess();
                 }).fail(indicateFail);
             });

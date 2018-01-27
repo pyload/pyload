@@ -12,7 +12,7 @@ function indicateFinish() {
 
 function indicateSuccess(message) {
    if(message === undefined) {
-      message = '{{_("Success")}}';
+      message = "{{_('Success')}}";
    }
 
     indicateFinish();
@@ -27,7 +27,7 @@ function indicateSuccess(message) {
 
 function indicateFail(message) {
    if(message === undefined) {
-      message = '{{_("Failed")}}';
+      message = "{{_('Failed')}}";
    }
 
     indicateFinish();
@@ -204,7 +204,7 @@ $(function() {
     $("#add_form").submit(function(event) {
         event.preventDefault();
         if ($("#add_name").value === "" && $("#add_file").value === "") {
-            alert('{{_("Please Enter a package name.")}}');
+            alert("{{_('Please Enter a package name.')}}");
             return false;
         } else {
             var form = new FormData(this);
@@ -296,7 +296,7 @@ function LoadJsonToContent(a) {
         var notificationVisible = ($("#cap_info").css("display") !== "none");
         if (!notificationVisible) {
             $("#cap_info").css('display','inline');
-            $.bootstrapPurr('{{_("New Captcha Request")}}',{
+            $.bootstrapPurr("{{_('New Captcha Request')}}",{
                 offset: { amount: 10},
                 align: 'center',
                 draggable: false,
@@ -306,7 +306,7 @@ function LoadJsonToContent(a) {
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
                 icon: '/favicon.ico',
-                body: '{{_("New Captcha Request")}}',
+                body: "{{_('New Captcha Request')}}",
                 tag: 'pyload_captcha'
             });
             notification.onclick = function (event) {
@@ -323,17 +323,17 @@ function LoadJsonToContent(a) {
         $("#cap_info").css('display','none');
     }
     if (a.download) {
-        $("#time").text(' {{_("on")}}');
+        $("#time").text(" {{_('on')}}");
         $("#time").css('background-color','#5cb85c');
     } else {
-        $("#time").text(' {{_("off")}}');
+        $("#time").text(" {{_('off')}}");
         $("#time").css('background-color',"#d9534f");
     }
     if (a.reconnect) {
-        $("#reconnect").text(' {{_("on")}}');
+        $("#reconnect").text(" {{_('on')}}");
         $("#reconnect").css('background-color',"#5cb85c");
     } else {
-        $("#reconnect").text(' {{_("off")}}');
+        $("#reconnect").text(" {{_('off')}}");
         $("#reconnect").css('background-color',"#d9534f");
     }
     return null
@@ -350,7 +350,7 @@ function set_captcha(a) {
     } else {
         if (a.result_type === "positional") {
             $("#cap_positional_img").attr("src", a.src);
-            $("#cap_box #cap_title").text('{{_("Please click on the right captcha position.")}}');
+            $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
             $("#cap_submit").css("display", "none");
             return $("#cap_textual").css("display", "none");
         }
@@ -376,7 +376,7 @@ function clear_captcha() {
     $("#cap_positional").css("display", "none");
     $("#cap_positional_img").attr("src", "");
     $("#cap_submit").css("display", "none");
-    $("#cap_box #cap_title").text('{{_("No Captchas to read.")}}');
+    $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
     $('#cap_box').modal('toggle');
 }
 

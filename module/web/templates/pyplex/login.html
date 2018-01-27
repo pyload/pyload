@@ -1,5 +1,5 @@
 {% extends 'pyplex/base.html' %}
-{% block title %}{{_("Login")}} - {{super()}} {% endblock %}
+{% block title %}{{_('Login')}} - {{super()}} {% endblock %}
 
 {% block head %}
 <style type="text/css">
@@ -40,13 +40,13 @@ img {
     <input type="hidden" name="do" value="login"/>
 
     <div class="login-logo">
-      <img alt="Pyload" src="{{ "/media/pyplex/img/pyload.png"|url }}">
+      <img alt="Pyload" src="{{'/media/pyplex/img/pyload.png'|url}}">
     </div>
 
     {% if errors %}
       <div class="col-sm-4 col-sm-offset-4">
         <div class="alert alert-danger" style="padding:8px;">
-          <p class="align-middle">{{_("Incorrect username/email or password.")}}</p>
+          <p class="align-middle">{{_('Incorrect username/email or password.')}}</p>
         </div>
       </div>
     {% endif %}

@@ -73,7 +73,7 @@ SettingsUI = (function() {
             }
         }
 
-        searchInput.attr('placeholder', 'Name of plugin');
+        searchInput.attr('placeholder', "{{_('Name of plugin')}}");
         searchInput.removeAttr('disabled');
         searchInput.on('input', function () {
             var query = searchInput.val();
@@ -106,11 +106,11 @@ SettingsUI = (function() {
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
-                indicateSuccess('{{ _("Settings saved")}}');
+                indicateSuccess("{{_('Settings saved')}}");
             }
         })
         .fail(function () {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         d.stopPropagation();
         d.preventDefault();
@@ -126,7 +126,7 @@ SettingsUI = (function() {
             }
         })
         .fail(function() {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         c.preventDefault();
     };
@@ -141,7 +141,7 @@ SettingsUI = (function() {
             }
         })
         .fail(function() {
-            indicateFail('{{ _("Error occurred")}}');
+            indicateFail("{{_('Error occurred')}}");
         });
         c.preventDefault();
     };
@@ -164,11 +164,11 @@ SettingsUI = (function() {
                 var val = targetInput ? $(targetInput).val().replace("../", "::%2F").replace("..\\", "::%2F") : "";
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
-                    $(this).find("#chooser_title").text('{{_("Select File")}}');
+                    $(this).find("#chooser_title").text("{{_('Select File')}}");
                     chooserIfrm.attr("src", "/filechooser/" + val);
                 }
                 else if (browseFor === "folder") {
-                    $(this).find("#chooser_title").text('{{_("Select Folder")}}');
+                    $(this).find("#chooser_title").text("{{_('Select Folder')}}");
                     chooserIfrm.attr("src", "/pathchooser/" + val);
                 }
             }

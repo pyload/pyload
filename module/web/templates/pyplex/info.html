@@ -1,7 +1,7 @@
 {% extends 'pyplex/base.html' %}
 
-{% block title %}{{ _("Support") }} - {{ super() }} {% endblock %}
-{% block subtitle %}{{ _("Support") }}{% endblock %}
+{% block title %}{{_('Support')}} - {{super()}} {% endblock %}
+{% block subtitle %}{{_('Support')}}{% endblock %}
 
 {% block head %}
 <style type="text/css">
@@ -68,46 +68,46 @@ $(function () {
 {% block content %}
 <ul>
   <li style="font-weight:bold;">
-    <a href="https://github.com/pyload/pyload/wiki" target="_blank">{{_("Wiki")}}</a>
+    <a href="https://github.com/pyload/pyload/wiki" target="_blank">{{_('Wiki')}}</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="https://github.com/pyload/pyload/issues" target="_blank">{{_("Forum")}}</a>
+    <a href="https://github.com/pyload/pyload/issues" target="_blank">{{_('Forum')}}</a>
     &nbsp;&nbsp;|&nbsp;&nbsp;
-    <a href="https://gitter.im/pyload" target="_blank">{{_("Chat")}}</a>
+    <a href="https://gitter.im/pyload" target="_blank">{{_('Chat')}}</a>
   </li>
-  <li style="font-weight:bold;"><a href="https://pyload.net" target="_blank">{{_("Homepage")}}</a></li>
-  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload" target="_blank">{{_("Development")}}</a></li>
-  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload/issues/new" target="_blank">{{_("Issue Tracker")}}</a></li>
+  <li style="font-weight:bold;"><a href="https://pyload.net" target="_blank">{{_('Homepage')}}</a></li>
+  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload" target="_blank">{{_('Development')}}</a></li>
+  <li style="font-weight:bold;"><a href="https://github.com/pyload/pyload/issues/new" target="_blank">{{_('Issue Tracker')}}</a></li>
 </ul>
 
-<h3>{{ _("System") }}</h3>
+<h3>{{_('System')}}</h3>
 <dl class="row">
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Python:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9 breakWords">{{ python }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("OS:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9 breakWords">{{ os }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("pyLoad version:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ version }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Installation Folder:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ folder }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Config Folder:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ config }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Download Folder:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ download }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Free Space:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ freespace }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Language:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ language }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Webinterface Theme:") }}</b></dt>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Python:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9 breakWords">{{python}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('OS:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9 breakWords">{{os}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('pyLoad version:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{version}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Installation Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{folder}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Config Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{config}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Download Folder:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{download}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Free Space:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{freespace}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Language:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{language}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Webinterface Theme:')}}</b></dt>
   <dd class="col-xs-12 col-sm-9">PyPlex by <a href="https://github.com/xunil75" target="_blank">Marco Fernandes</a> improved by Dogan Bagci and <a href="https://github.com/GammaC0de" target="_blank">GammaC0de</a></dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Webinterface Port:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ webif }}</dd>
-  <dt class="col-xs-12 col-sm-3"><b>{{ _("Remote Interface Port:") }}</b></dt>
-  <dd class="col-xs-12 col-sm-9">{{ remote }}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Webinterface Port:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{webif}}</dd>
+  <dt class="col-xs-12 col-sm-3"><b>{{_('Remote Interface Port:')}}</b></dt>
+  <dd class="col-xs-12 col-sm-9">{{remote}}</dd>
 </dl>
-<h3>{{ _("News") }}</h3>
-    <div id="twitter" class="row" style="padding-left: 25px;">{{_("Loading...")}}</div>
+<h3>{{_('News')}}</h3>
+    <div id="twitter" class="row" style="padding-left: 25px;">{{_('Loading...')}}</div>
 {% endblock %}
 
 {% block pageactions %}
-  <button type="button" class="btn btn-danger btn-sm text-uppercase" onclick="window.open('https://PayPal.Me/nitzo2001/0usd')">{{_("Donate")}}&nbsp;&nbsp;<span class="glyphicon glyphicon-heart" style="top: 1.5px;" aria-hidden="true"></span></button>
+  <button type="button" class="btn btn-danger btn-sm text-uppercase" onclick="window.open('https://PayPal.Me/nitzo2001/0usd')">{{_('Donate')}}&nbsp;&nbsp;<span class="glyphicon glyphicon-heart" style="top: 1.5px;" aria-hidden="true"></span></button>
 {% endblock %}
