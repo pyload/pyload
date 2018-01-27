@@ -30,6 +30,13 @@ select:focus {
 {% block subtitle %}{{ _("Administrate") }}{% endblock %}
 
 {% block content %}
+
+<div id="restart_msg" class="hidden col-sm-4 col-sm-offset-4" style="position:fixed; z-index: 1;">
+  <div align="center" class="alert alert-success" style="padding:8px;">
+    <p>{{_("pyLoad is restarting.")}}</p>
+  </div>
+</div>
+
 <div class="btn-group">
   <button id="quit-pyload" class="btn btn-danger" data-toggle="modal" data-target="#quit_box"><span class="glyphicon glyphicon-off"></span> {{_("Quit pyLoad")}}</button>
   <button id="restart-pyload" class="btn btn-success" data-toggle="modal" data-target="#restart_box"><span class="glyphicon glyphicon-repeat"></span> {{_("Restart pyLoad")}}</button>
@@ -145,5 +152,4 @@ select:focus {
     </div>
   </div>
 </div>
-
 {% endblock %}

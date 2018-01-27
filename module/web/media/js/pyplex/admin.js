@@ -42,8 +42,11 @@ $(function() {
 
     $("#restart_box").on('click', '#restart_button', function () {
         $.get( "{{'/api/restart'|url}}", function() {
-            alert("{{_('pyLoad restarted')}}");
             $('#restart_box').modal('hide');
+            $('#restart_msg').removeClass("hidden");
+            setTimeout(function() {
+                window.location = "{{'/home'|url}}";
+            }, 10000);
         });
     });
 }); 
