@@ -51,7 +51,7 @@
         <ul id="general-menu" style="float: left; height: 300px; overflow: auto; overflow-x: hidden; width: 100%; padding-left: 0;">
           {% for entry,name in conf.general %}
           <nobr>
-            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ name }}</li>
+            <li style="list-style-type: none; cursor: pointer; margin-top: 10px;" id="general|{{ entry }}">{{ _(name) }}</li>
           </nobr>
           {% endfor %}
         </ul>

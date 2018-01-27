@@ -198,7 +198,7 @@ function LinkEntry(id){
             pgbTr:pgbTr,
             progress:progress,
             pgb:pgb
-            }
+        }
 
 
         this.elements.status.appendChild(this.elements.statusspan);
