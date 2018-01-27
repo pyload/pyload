@@ -66,7 +66,7 @@ SettingsUI = (function() {
             }
         }
 
-        searchInput.attr('placeholder', 'Name of plugin');
+        searchInput.attr('placeholder', {{_('Name of plugin')}};
         searchInput.removeAttr('disabled');
         searchInput.on('input', function () {
             var query = searchInput.val();

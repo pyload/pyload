@@ -17,7 +17,7 @@
           {% elif ";" in option.type %}
             <select id="{{skey}}|{{okey}}" name="{{skey}}|{{okey}}">
               {% for entry in option.list %}
-                  <option {% if option.value== entry %}selected="selected" {% endif %}>{{ entry }}</option>
+                  <option {% if option.value == entry %}selected="selected" {% endif %}>{{ entry }}</option>
               {% endfor %}
             </select>
           {% elif option.type == "folder" %}
