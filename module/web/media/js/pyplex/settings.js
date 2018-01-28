@@ -165,22 +165,23 @@ SettingsUI = (function() {
                 $(this).data('targetinput', targetInput);
                 if (browseFor === "file") {
                     $(this).find("#chooser_title").text("{{_('Select File')}}");
-                    chooserIfrm.attr("src", "/filechooser/" + val);
+                    chooserIfrm.attr("src", "{{'/filechooser/'|url}}" + val);
                 }
                 else if (browseFor === "folder") {
                     $(this).find("#chooser_title").text("{{_('Select Folder')}}");
-                    chooserIfrm.attr("src", "/pathchooser/" + val);
+                    chooserIfrm.attr("src", "{{'/pathchooser/'|url}}" + val);
                 }
             }
         });
-        $("#path_chooser").on("click", function (event) {
-            var targetInput = $(this).data('targetinput');
+        $("#chooser_confirm_button").click(function () {
+            var dialog = $("#path_chooser");
+            var targetInput = dialog.data('targetinput');
             if (targetInput) {
-                $(targetInput).val($(this).find("#path_p").text());
+                $(targetInput).val(dialog.find("#path_p").text());
             }
-            $(this).modal('hide');
+            dialog.modal('hide');
             event.preventDefault();
-        })
+        });
     };
     a.prototype.pathchooserChanged = function(iframe) {
         var path_p = $("#path_p");
