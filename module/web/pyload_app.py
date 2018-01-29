@@ -320,7 +320,7 @@ def get_download(path):
 
     path = path.replace("..", "")
     try:
-        return static_file(fs_encode(path), fs_encode(root))
+        return static_file(fs_encode(path), fs_encode(root), download=True)
 
     except Exception, e:
         print e
