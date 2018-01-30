@@ -147,7 +147,7 @@ class Setup():
         print ""
         print _("Do you want to change the config path? Current is %s") % os.path.abspath("")
         print _(
-            "If you use pyLoad on a server or the home partition lives on an iternal flash it may be a good idea to change it.")
+            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
