@@ -44,18 +44,24 @@ $(function () {
           var el = $('<div></div>');
           el.html(data.result);
           var result = ["", ""];
+          var timestamps = {};
+          $('tr.tweet-header > td.timestamp > a', el).map(function () {
+              timestamps[$(this).attr('name')] = $(this).text();
+          });
           var tweets = $('td.tweet-content:not(:has(> div.tweet-reply-context)) > div.tweet-text', el).slice(0,10);
           tweets.each(function (i, s) {
-              var link = "https://mobile.twitter.com//pyload/status/" + $(s).data("id");
+              var id = $(s).data("id");
+              var link = "https://mobile.twitter.com//pyload/status/" + id;
               var text = $(s).find("div").clone().children().remove().end().text();
-              result[i % 2] += '<a href="' + link +'" target="_blank" ondragstart="return false;">' + text + '</a>';
+              var timestamp = timestamps['tweet_' + id] || 'N/A';
+              result[i % 2] += '<span class="noselect" style="font-size: 10px;">' + timestamp + '</span><a href="' + link +'" target="_blank" ondragstart="return false;">' + text + '</a>';
           });
           $("#twitter").html('<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">\n' +
                              '<div id="col0"></div>\n' +
                              '</div>\n' +
                              '<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">\n' +
                              '<div id="col1"></div>\n' +
-                             '</div>\n')
+                             '</div>\n');
           $('#col0').html(result[0]);
           $('#col1').html(result[1]);
         }
