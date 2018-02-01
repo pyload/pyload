@@ -37,7 +37,7 @@ except ImportError:
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
-    __version__ = "0.48"
+    __version__ = "0.49"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -830,7 +830,7 @@ def parse_html_form(attr_str, html, input_names={}):
             else:
                 return action, inputs  #: Passed attribute check
 
-    return {}, None  #: No matching form found
+    return None, None  #: No matching form found
 
 
 def chunks(iterable, size):
