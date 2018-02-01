@@ -8,6 +8,7 @@ from __future__ import with_statement
 import datetime
 import hashlib
 import itertools
+import json
 import os
 import re
 import shutil
@@ -21,11 +22,6 @@ import urllib
 import urlparse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
 
 try:
     from functools import reduce
