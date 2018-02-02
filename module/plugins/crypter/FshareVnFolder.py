@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import pycurl
 import re
 
 from ..internal.Crypter import Crypter
-from ..internal.misc import replace_patterns
+from ..internal.misc import json, replace_patterns
 
 
 class FshareVnFolder(Crypter):
     __name__ = "FshareVnFolder"
     __type__ = "crypter"
-    __version__ = "0.09"
+    __version__ = "0.10"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?fshare\.vn/folder/.+'
+    __pattern__ = r'https?://(?:www\.)?fshare\.vn/folder/(?P<ID>\w+)'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
                   ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
@@ -25,27 +26,30 @@ class FshareVnFolder(Crypter):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    OFFLINE_PATTERN = r'404</title>'
-    NAME_PATTERN = r'<title>Fshare - (.+?)</title>'
-
-    LINK_PATTERN = r'<a class="filename" .+? href="(.+?)"'
-    FOLDER_PATTERN = r'<a .*class="filename folder".+?data-id="(.+?)"'
+    OFFLINE_PATTERN = ur'Thư mục của bạn yêu cầu không tồn tại'
+    NAME_PATTERN = r'<title>Fshare - (.+?)(?: - Fshare)?</title>'
 
     URL_REPLACEMENTS = [("http://", "https://")]
 
-    def enum_folder(self, url):
-        self.data = self.load(url)
+    def enum_folder(self, folder_id):
+        links = []
 
-        links = re.findall(self.LINK_PATTERN, self.data)
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        self.data = self.load("https://www.fshare.vn/api/v3/files/folder",
+                              get={'linkcode': folder_id})
+        folder_items = json.loads(self.data)['items']
 
-        if self.config.get('dl_subfolders'):
-            for _f in re.findall(self.FOLDER_PATTERN, self.data):
-                _u = "https://www.fshare.vn/folder/" + _f
-                if self.config.get('package_subfolder'):
-                    links.append(_u)
+        for item in folder_items:
+            if item['type'] == 1:
+                links.append("https://www.fshare.vn/file/" + item['linkcode'])
+                
+            else:
+                if self.config.get('dl_subfolders'):
+                        if self.config.get('package_subfolder'):
+                            links.append("https://www.fshare.vn/folder/" + item['linkcode'])
 
-                else:
-                    links.extend(self.enum_folder(_u))
+                        else:
+                            links.extend(self.enum_folder(item['linkcode']))
 
         return links
 
@@ -60,7 +64,7 @@ class FshareVnFolder(Crypter):
         m = re.search(self.NAME_PATTERN, self.data)
         pack_name = m.group(1) if m is not None else pyfile.package().name
 
-        links = self.enum_folder(pyfile.url)
+        links = self.enum_folder(self.info['pattern']['ID'])
 
         if links:
             self.packages = [(pack_name, links, pack_name)]
