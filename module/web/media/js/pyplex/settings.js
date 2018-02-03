@@ -16,6 +16,13 @@ if (!String.prototype.startsWith) {
 SettingsUI = (function() {
     function a() {
         var c, e, b, d;
+
+        var activeTab = sessionStorage.getItem('activeTab');
+        if (activeTab) {
+            sessionStorage.removeItem('activeTab');
+            $('#toptabs a[href="' + activeTab + '"]').tab('show');
+        }
+
         generalPanel = $("#general_form_content");
         pluginPanel = $("#plugin_form_content");
         thisObject = this;
@@ -116,13 +123,15 @@ SettingsUI = (function() {
         d.preventDefault();
     };
     a.prototype.addAccount = function(c) {
+        $(this).addClass("disabled");
         $.ajax({
             method: "post",
             url: "{{'/json/add_account'|url}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
-                return window.location.reload()
+                sessionStorage.setItem("activeTab", "#accounts");
+                return window.location.reload();
             }
         })
         .fail(function() {
@@ -131,13 +140,15 @@ SettingsUI = (function() {
         c.preventDefault();
     };
     a.prototype.submitAccounts = function(c) {
+        indicateLoad();
         $.ajax({
             method: "post",
             url: "{{'/json/update_accounts'|url}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {
-                return window.location.reload()
+                sessionStorage.setItem("activeTab", "#accounts");
+                return window.location.reload();
             }
         })
         .fail(function() {
