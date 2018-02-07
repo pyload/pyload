@@ -165,7 +165,7 @@ var LinkEntry = new Class({
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
             
             this.elements.remove.addEvent('click', function(){
-                new Request({method: 'get', url: '/json/abort_link/'+this.id}).send();
+                new Request({method: 'get', url: {{'/json/abort_link/'|url}} + this.id}).send();
             }.bind(this));
             
         },
