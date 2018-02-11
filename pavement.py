@@ -17,6 +17,10 @@ sys.path.append(PROJECT_DIR)
 options = environment.options
 path('pyload').mkdir()
 
+extradeps = []
+if sys.version_info <= (2, 5):
+    extradeps += 'simplejson'
+
 setup(
     name="pyload",
     version="0.4.9",
@@ -36,7 +40,7 @@ setup(
     include_package_data=True,
     exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'],
+    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],

@@ -17,7 +17,7 @@ Documentation about extending pyLoad can be found at https://github.com/pyload/p
 Dependencies
 ============
 
-You need at least Python 2.7 to run pyLoad and all of these required libraries.
+You need at least Python 2.5 to run pyLoad and all of these required libraries.
 They should be automatically installed when using pip install.
 The prebuilt pyload packages also install these dependencies or have them included, so manuall install
 is only needed when installing pyLoad from source.
