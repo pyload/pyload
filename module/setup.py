@@ -343,7 +343,9 @@ class Setup():
         print ""
         print _("If you're done and everything went fine, you can activate ssl now.")
 
-        self.config["ssl"]["activated"] = self.ask(_("Activate SSL?"), self.yes, bool=True)
+        ssl = self.ask(_("Activate SSL?"), self.yes, bool=True)
+        self.config["ssl"]["activated"] = ssl
+        self.config["webinterface"]["https"] = ssl
 
     def set_user(self):
         gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
