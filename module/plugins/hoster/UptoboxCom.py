@@ -6,7 +6,7 @@ from ..internal.XFSHoster import XFSHoster
 class UptoboxCom(XFSHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.31"
+    __version__ = "0.32"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -23,11 +23,11 @@ class UptoboxCom(XFSHoster):
 
     PLUGIN_DOMAIN = "uptobox.com"
 
-    INFO_PATTERN = r'"para_title">(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
+    INFO_PATTERN = r'(?:"para_title">|<h1>)(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
     TEMP_OFFLINE_PATTERN = r'>Service Unavailable'
 
-    LINK_PATTERN = r'"(https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/d)/.*?)"'
+    LINK_PATTERN = r'"(https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)"'
 
     DL_LIMIT_PATTERN = r'>or you can wait (.+) to launch a new download<'
 
