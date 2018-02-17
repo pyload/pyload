@@ -45,11 +45,12 @@ class BIGHTTPRequest(HTTPRequest):
 class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
-    __version__ = "0.35"
+    __version__ = "0.36"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filecrypt\.cc/Container/\w+'
-    __config__ = [("activated", "bool", "Activated", True)]
+    __config__ = [("activated", "bool", "Activated", True),
+                  ("handle_mirror_pages", "bool", "Handle Mirror Pages", True)]
 
     __description__ = """Filecrypt.cc decrypter plugin"""
     __license__ = "GPLv3"
@@ -92,7 +93,8 @@ class FilecryptCc(Crypter):
 
         self.handle_password_protection()
         self.handle_captcha()
-        self.handle_mirror_pages()
+        if self.config.get('handle_mirror_pages'):
+            self.handle_mirror_pages()
 
         for handle in (self.handle_CNL, self.handle_weblinks,
                        self.handle_dlc_container):
