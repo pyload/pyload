@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from ..internal.XFSHoster import XFSHoster
+import re
+
+from ..internal.SimpleHoster import SimpleHoster
 
 
-class UptoboxCom(XFSHoster):
+class UptoboxCom(SimpleHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.32"
+    __version__ = "0.33"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -19,13 +21,15 @@ class UptoboxCom(XFSHoster):
 
     __description__ = """Uptobox.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     PLUGIN_DOMAIN = "uptobox.com"
 
     INFO_PATTERN = r'(?:"para_title">|<h1>)(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
     OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
     TEMP_OFFLINE_PATTERN = r'>Service Unavailable'
+    WAIT_PATTERN = r"data-remaining-time='(\d+)'"
 
     LINK_PATTERN = r'"(https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)"'
 
@@ -35,3 +39,15 @@ class UptoboxCom(XFSHoster):
         self.multiDL = True
         self.chunk_limit = 1
         self.resume_download = True
+
+    def handle_free(self, pyfile):
+        m = re.search(r"<input name='waitingToken' value='(.+?)'", self.data)
+        if m is not None:
+            self.data = self.load(pyfile.url,
+                                  post={'waitingToken': m.group(1),
+                                        'submit': "Free Download"})
+
+        m = re.search(self.LINK_PATTERN, self.data)
+        if m is not None:
+            self.link = m.group(1)
+
