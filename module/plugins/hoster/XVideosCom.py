@@ -9,10 +9,10 @@ from ..internal.Hoster import Hoster
 class XVideosCom(Hoster):
     __name__ = "XVideos.com"
     __type__ = "hoster"
-    __version__ = "0.16"
+    __version__ = "0.17"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?xvideos\.com/video(\d+)'
+    __pattern__ = r'https?://(?:www\.)?xvideos\.com/video(\d+)'
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """XVideos.com hoster plugin"""
@@ -21,12 +21,14 @@ class XVideosCom(Hoster):
 
     def process(self, pyfile):
         site = self.load(pyfile.url)
-        pyfile.name = "%s (%s).flv" % (
-            re.search(r'<h2>(.+?)<span', site).group(1),
-            re.match(self.__pattern__, pyfile.url).group(1),
+        title_search = re.search(r'<meta\s+property="og:title"\s+content="(.+?)"', site)
+        id_search = re.search(self.__pattern__, pyfile.url)
+        pyfile.name = "%s (%s).mp4" % (
+            title_search.group(1),
+            id_search.group(1),
         )
         self.download(
             urllib.unquote(
                 re.search(
-                    r'flv_url=([^&]+)&',
+                    r'html5player\.setVideoUrlHigh\(\'(.+?)\'\)',
                     site).group(1)))
