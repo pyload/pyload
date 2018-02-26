@@ -26,14 +26,14 @@ class UptoboxCom(SimpleHoster):
 
     PLUGIN_DOMAIN = "uptobox.com"
 
-    INFO_PATTERN = r'(?:"para_title">|<h1>)(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)'
-    OFFLINE_PATTERN = r'>(File not found|Access Denied|404 Not Found)'
-    TEMP_OFFLINE_PATTERN = r'>Service Unavailable'
-    WAIT_PATTERN = r"data-remaining-time='(\d+)'"
+    INFO_PATTERN = r"""(?:"para_title">|<h1>)(?P<N>.+) \((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)"""
+    OFFLINE_PATTERN = r"""(File not found|Access Denied|404 Not Found)"""
+    TEMP_OFFLINE_PATTERN = r"""">Service Unavailable"""
+    WAIT_PATTERN = r"""data-remaining-time=["'](\d+)["']"""
 
-    LINK_PATTERN = r'"(https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)"'
+    LINK_PATTERN = r"""["'](https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)["']"""
 
-    DL_LIMIT_PATTERN = r'>or you can wait (.+) to launch a new download<'
+    DL_LIMIT_PATTERN = r"""or you can wait (.+) to launch a new download"""
 
     def setup(self):
         self.multiDL = True
@@ -41,7 +41,7 @@ class UptoboxCom(SimpleHoster):
         self.resume_download = True
 
     def handle_free(self, pyfile):
-        m = re.search(r"<input name='waitingToken' value='(.+?)'", self.data)
+        m = re.search(r"""<input name=["']waitingToken["'] value=["'](.+?)["']""", self.data)
         if m is not None:
             self.data = self.load(pyfile.url,
                                   post={'waitingToken': m.group(1),
