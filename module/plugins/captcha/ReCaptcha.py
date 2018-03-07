@@ -4,6 +4,7 @@ import os
 import re
 import urllib
 import urlparse
+import time
 from StringIO import StringIO
 
 from ..internal.CaptchaService import CaptchaService
@@ -95,7 +96,8 @@ class ReCaptcha(CaptchaService):
 
         if version in (1, 2):
             return getattr(self, "_challenge_v%s" % version)(key, secure_token)
-
+        elif version == 'v2_javascript': # ReCaptcha V2 when "no JS fallback" is not allowed
+            return self._challenge_v2_js(key)
         else:
             return self.challenge(key,
                                   data,
@@ -354,3 +356,45 @@ class ReCaptcha(CaptchaService):
             self.fail(_("Recaptcha max retries exceeded"))
 
         return result, challenge
+
+    # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
+    def _challenge_v2_js(self, key):
+        self.log_debug("challenge ReCaptcha v2 interactive")
+        captchaManager = self.pyload.captchaManager
+
+        try:
+            time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
+            filename = "captcha_request_%s_%s.nofile" % (self.pyfile.plugin.__name__, time_ref)
+            # we don't have an actual image to decrypt -> pass the URL and the site-key for further use in plugins/hooks
+            img = {'url': self.pyfile.url, 'sitekey': self.retrieve_key(None)}
+            self.task = captchaManager.newTask(img, "interactive", filename , "interactive")
+
+            captchaManager.handleCaptcha(self.task)
+
+            # @TODO: Move to `CaptchaManager` in 0.4.10
+            self.task.setWaiting(120)
+            while self.task.isWaiting():
+                self.pyfile.plugin.check_status()
+                time.sleep(1)
+
+        finally:
+            captchaManager.removeTask(self.task)
+
+        result = self.task.result
+
+        if self.task.error:
+            if not self.task.handler and not self.pyload.isClientConnected():
+                self.log_warning(
+                    _("No Client connected for captcha decrypting"))
+                self.fail(_("No Client connected for captcha decrypting"))
+            else:
+                self.pyfile.plugin.retry_captcha(msg=self.task.error)
+
+        elif self.task.result:
+            self.log_info(_("Captcha result: `%s`") % (result,))
+
+        else:
+            self.pyfile.plugin.retry_captcha(
+                msg=_("No captcha result obtained in appropriate timing"))
+
+        return result

@@ -339,20 +339,45 @@ function LoadJsonToContent(a) {
     return null
 }
 
+// Recaptcha V2 for interactive captchas in iframe
+var recaptchaV2ResponseGrabber = null; 
+function recaptchaV2InteractiveIframeReadyFunction()
+{
+    $("#cap_box #cap_title").text('');
+    $("#interactiveCaptchaIframeId").css("display", "block");
+}
+
 function set_captcha(a) {
+    captcha_reset_default();
+    
     $("#cap_id").val(a.id);
     if (a.result_type === "textual") {
         $("#cap_textual_img").attr("src", a.src);
         $("#cap_submit").css("display", "inline");
         $("#cap_box #cap_title").text('');
         $("#cap_textual").css("display", "block");
-        return $("#cap_positional").css("display", "none");
-    } else {
-        if (a.result_type === "positional") {
-            $("#cap_positional_img").attr("src", a.src);
-            $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
-            $("#cap_submit").css("display", "none");
-            return $("#cap_textual").css("display", "none");
+        return true;
+    } else if (a.result_type === "positional") {
+        $("#cap_positional_img").attr("src", a.src);
+        $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
+        $("#cap_positional").css("display", "block");
+        return true;
+    } else if (a.result_type === "interactive") {
+        if(recaptchaV2ResponseGrabber == null)
+        {
+            recaptchaV2ResponseGrabber = new recaptchaV2InteractiveResponseGrabber("interactiveCaptchaIframeId","interactiveCaptchaIframeName",submit_captcha,recaptchaV2InteractiveIframeReadyFunction);
+        }
+        interactiveCaptchaRequest = JSON.parse(a.src);
+        if(
+            interactiveCaptchaRequest.url != undefined && 
+            interactiveCaptchaRequest.sitekey != undefined && 
+            interactiveCaptchaRequest.url.indexOf("http") >= 0 &&
+            interactiveCaptchaRequest.sitekey.length > 0
+        )
+        {
+            $("#cap_box #cap_title").html('<p style="max-width: 400px; position: absolute; top:10px;">{{_("The captcha may take a few seconds to load.")}}</p><p style="max-width: 400px; position: absolute; top:50px;"> {{_("Note: to solve this interactive captcha, please install the Tampermonkey add-on in your browser and add the pyload userscript.")}}</p>');
+            recaptchaV2ResponseGrabber.grabRecaptchaV2InteractiveResponse(interactiveCaptchaRequest.url, interactiveCaptchaRequest.sitekey);
+            $("#cap_interactive").css("display", "block");
         }
     }
 }
@@ -370,18 +395,38 @@ function load_captcha(b, a) {
     });
 }
 
-function clear_captcha() {
+function captcha_reset_default() {
     $("#cap_textual").css("display", "none");
     $("#cap_textual_img").attr("src", "");
     $("#cap_positional").css("display", "none");
     $("#cap_positional_img").attr("src", "");
     $("#cap_submit").css("display", "none");
     $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
-    $('#cap_box').modal('toggle');
+    $("#cap_interactive").css("display", "none");
+    $("#interactiveCaptchaIframeId").attr("src", "about:blank");
+    $("#interactiveCaptchaIframeId").css("display", "none");
+    if(recaptchaV2ResponseGrabber) {
+        recaptchaV2ResponseGrabber.clearEventlisteners();
+        interactiveLinkGrabber = null;
+    }
+    return true;
 }
 
-function submit_captcha() {
-    load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
+function clear_captcha() {
+    captcha_reset_default();
+    $('#cap_box').modal('toggle');
+    return true;
+}
+
+function submit_captcha(result=undefined) {
+    if(result== undefined)
+    {
+        load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
+    }
+    else
+    {
+        load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + result);
+    }
     $("#cap_result").val("");
     return false;
 }

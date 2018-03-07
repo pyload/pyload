@@ -5,10 +5,10 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header bg-info navbar-inverse text-center" style="padding: 5px" >{{_('Captcha reading')}}</div>
-        <div class="modal-body text-left">
-          <div id="cap_title"></div>
-         <form id="cap_form" class="form-group" action="{{'/json/set_captcha'|url}}" method="POST" enctype="multipart/form-data" onsubmit="return false;" style="margin-bottom: 40px;">
-          <div id="cap_textual">
+      <div class="modal-body text-left">
+        <div id="cap_title"></div>
+        <form id="cap_form" class="form-group" action="{{'/json/set_captcha'|url}}" method="POST" enctype="multipart/form-data" onsubmit="return false;" style="margin-bottom: 40px;">
+          <div id="cap_textual" style="display: none;">
             <input id="cap_id" name="cap_id" type="hidden" value=""/>
             <div class="form-group">
               <label for="cap_textual_img">{{_('Captcha')}}</label>
@@ -20,10 +20,14 @@
                           <div class="small">{{_('Input the text on the captcha.')}}</div>
             </div>
           </div>
-
-          <div id="cap_positional" style="text-align: center">
+          <div id="cap_positional" style="display: none; text-align: center">
               <img id="cap_positional_img" src="" style="margin: 10px; cursor:pointer">
             <div class="small">{{_('Please click on the right captcha position.')}}</div>
+          </div>
+          <div id="cap_interactive" style="display: none;">
+            <iframe src="about:blank" name="interactiveCaptchaIframeName" id="interactiveCaptchaIframeId" sandbox="allow-scripts allow-forms allow-same-origin">
+              <p>Your browser does not support iframes.</p>
+            </iframe>
           </div>
           <button class="btn btn-success pull-right" id="cap_submit" type="submit" style="margin-left: 5px;">{{_('Submit')}}</button>
           <div class="btn btn-warning pull-right" data-dismiss="modal" id="cap_reset" >{{_('Close')}}</div>

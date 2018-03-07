@@ -21,6 +21,7 @@ from base64 import standard_b64encode
 from os.path import join
 from time import time
 import re
+import json
 
 from PyFile import PyFile
 from utils import freeSpace, compare_time
@@ -805,7 +806,11 @@ class Api(Iface):
         if task:
             task.setWatingForUser(exclusive=exclusive)
             data, type, result = task.getCaptcha()
-            t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
+            if task.isInteractive() == 1:
+                data = json.dumps(data) #data = {url:..., sitekey:...}
+                t = CaptchaTask(int(task.id), data, type, result)
+            else:
+                t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
             return t
         else:
             return CaptchaTask(-1)

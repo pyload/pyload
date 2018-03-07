@@ -387,6 +387,12 @@ textarea.form-control:focus {
   border-top: none;
 }
 
+.modal-dialog {
+    display: flex;
+    width: initial;
+    justify-content: center;
+}
+
 .btn-form {
   padding: 4px 12px;
   margin: 5px 0 5px 0;
@@ -451,4 +457,20 @@ textarea.form-control:focus {
 .btn[disabled],
 fieldset[disabled] .btn {
   pointer-events: auto;
+}
+
+iframe#interactiveCaptchaIframeId
+{
+  position:relative;
+  width:465px;
+  height:597px;
+  border: 0px solid black;
+}
+div#cap_interactive
+{
+  overflow:hidden;
+  width:465px;
+  height:597px;
+  border: 0px solid black;
+  display:none;
 }

@@ -62,7 +62,10 @@ class CaptchaManager():
         cli = self.core.isClientConnected()
 
         if cli: #client connected -> should solve the captcha
-            task.setWaiting(50) #wait 50 sec for response
+            if task.isInteractive() == 1:
+                task.setWaiting(120) #wait 120 sec for response, interactive captcha can take some time
+            else:
+                task.setWaiting(50) #wait 50 sec for response
 
         for plugin in self.core.hookManager.activePlugins():
             try:
@@ -107,6 +110,8 @@ class CaptchaTask():
                 self.result = (int(parts[0]), int(parts[1]))
             except:
                 self.result = None
+        if self.isInteractive():
+            self.result = text
 
     def getResult(self):
         try:
@@ -137,7 +142,11 @@ class CaptchaTask():
     def isPositional(self):
         """ returns if user have to click a specific region on the captcha """
         return self.captchaResultType == 'positional'
-
+    
+    def isInteractive(self):
+        """ returns if user has to solve the captcha in an interactive iframe """
+        return self.captchaResultType == 'interactive'
+        
     def setWatingForUser(self, exclusive):
         if exclusive:
             self.status = "user"
