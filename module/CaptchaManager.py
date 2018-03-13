@@ -62,8 +62,8 @@ class CaptchaManager():
         cli = self.core.isClientConnected()
 
         if cli: #client connected -> should solve the captcha
-            if task.isInteractive() == 1:
-                task.setWaiting(120) #wait 120 sec for response, interactive captcha can take some time
+            if task.isInteractive():
+                task.setWaiting(300) #wait 300 sec for response, interactive captcha can take some time
             else:
                 task.setWaiting(50) #wait 50 sec for response
 

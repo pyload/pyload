@@ -84,7 +84,7 @@
                     document.getElementById("captchadiv"),
                     {sitekey:window.pyloadRecaptchaV2InteractiveSitekey, callback: pyloadCaptchaCompletedCallback}
                 );
-                
+
                 var returnObject = {actionCode: window.pyloadActionCodes.activated, value: true};
                 parent.postMessage(JSON.stringify(returnObject),"*");
             };

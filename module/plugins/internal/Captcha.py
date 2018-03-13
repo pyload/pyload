@@ -105,25 +105,28 @@ class Captcha(Plugin):
 
             result = self.task.result
 
-            if self.task.error:
-                if not self.task.handler and not self.pyload.isClientConnected():
-                    self.log_warning(
-                        _("No Client connected for captcha decrypting"))
-                    self.fail(_("No Client connected for captcha decrypting"))
-                else:
-                    self.pyfile.plugin.retry_captcha(msg=self.task.error)
-
-            elif self.task.result:
-                self.log_info(_("Captcha result: `%s`") % (result,))
-
-            else:
-                self.pyfile.plugin.retry_captcha(
-                    msg=_("No captcha result obtained in appropriate timing"))
+            self.check_captcha_result()
 
         if not self.pyload.debug:
             self.remove(img_f.name, trash=False)
 
         return result
+
+    def check_captcha_result(self):
+        if self.task.error:
+            if not self.task.handler and not self.pyload.isClientConnected():
+                self.log_warning(
+                    _("No Client connected for captcha decrypting"))
+                self.fail(_("No Client connected for captcha decrypting"))
+            else:
+                self.pyfile.plugin.retry_captcha(msg=self.task.error)
+
+        elif self.task.result:
+            self.log_info(_("Captcha result: `%s`") % (self.task.result,))
+
+        else:
+            self.pyfile.plugin.retry_captcha(
+                msg=_("No captcha result obtained in appropriate timing"))
 
     def invalid(self):
         if not self.task:

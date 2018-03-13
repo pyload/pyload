@@ -97,7 +97,7 @@ class ReCaptcha(CaptchaService):
         if version in (1, 2):
             return getattr(self, "_challenge_v%s" % version)(key, secure_token)
         elif version == 'v2_javascript': # ReCaptcha V2 when "no JS fallback" is not allowed
-            return self._challenge_v2_js(key)
+            return self._challenge_v2_js()
         else:
             return self.challenge(key,
                                   data,
@@ -358,7 +358,7 @@ class ReCaptcha(CaptchaService):
         return result, challenge
 
     # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
-    def _challenge_v2_js(self, key):
+    def _challenge_v2_js(self):
         self.log_debug("challenge ReCaptcha v2 interactive")
         captchaManager = self.pyload.captchaManager
 
@@ -372,7 +372,7 @@ class ReCaptcha(CaptchaService):
             captchaManager.handleCaptcha(self.task)
 
             # @TODO: Move to `CaptchaManager` in 0.4.10
-            self.task.setWaiting(120)
+            self.task.setWaiting(300)
             while self.task.isWaiting():
                 self.pyfile.plugin.check_status()
                 time.sleep(1)
@@ -382,19 +382,6 @@ class ReCaptcha(CaptchaService):
 
         result = self.task.result
 
-        if self.task.error:
-            if not self.task.handler and not self.pyload.isClientConnected():
-                self.log_warning(
-                    _("No Client connected for captcha decrypting"))
-                self.fail(_("No Client connected for captcha decrypting"))
-            else:
-                self.pyfile.plugin.retry_captcha(msg=self.task.error)
-
-        elif self.task.result:
-            self.log_info(_("Captcha result: `%s`") % (result,))
-
-        else:
-            self.pyfile.plugin.retry_captcha(
-                msg=_("No captcha result obtained in appropriate timing"))
+        self.check_captcha_result()
 
         return result

@@ -806,8 +806,8 @@ class Api(Iface):
         if task:
             task.setWatingForUser(exclusive=exclusive)
             data, type, result = task.getCaptcha()
-            if task.isInteractive() == 1:
-                data = json.dumps(data) #data = {url:..., sitekey:...}
+            if task.isInteractive():
+                data = json.dumps(data)  # data = {url:..., sitekey:...}
                 t = CaptchaTask(int(task.id), data, type, result)
             else:
                 t = CaptchaTask(int(task.id), standard_b64encode(data), type, result)
