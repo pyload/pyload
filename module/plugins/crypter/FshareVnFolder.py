@@ -10,7 +10,7 @@ from ..internal.misc import json, replace_patterns
 class FshareVnFolder(Crypter):
     __name__ = "FshareVnFolder"
     __type__ = "crypter"
-    __version__ = "0.10"
+    __version__ = "0.11"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fshare\.vn/folder/(?P<ID>\w+)'
@@ -37,19 +37,35 @@ class FshareVnFolder(Crypter):
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
         self.data = self.load("https://www.fshare.vn/api/v3/files/folder",
                               get={'linkcode': folder_id})
-        folder_items = json.loads(self.data)['items']
+        json_data = json.loads(self.data)
 
-        for item in folder_items:
-            if item['type'] == 1:
-                links.append("https://www.fshare.vn/file/" + item['linkcode'])
-                
-            else:
-                if self.config.get('dl_subfolders'):
-                        if self.config.get('package_subfolder'):
-                            links.append("https://www.fshare.vn/folder/" + item['linkcode'])
+        current_page = 1
+        last_page = int(re.search(r'&page=(\d+)', json_data['_links'].get('last', "&page=1")).group(1))
 
-                        else:
-                            links.extend(self.enum_folder(item['linkcode']))
+        while True:
+            folder_items = json_data['items']
+            for item in folder_items:
+                if item['type'] == 1:
+                    links.append("https://www.fshare.vn/file/" + item['linkcode'])
+
+                else:
+                    if self.config.get('dl_subfolders'):
+                            if self.config.get('package_subfolder'):
+                                links.append("https://www.fshare.vn/folder/" + item['linkcode'])
+
+                            else:
+                                links.extend(self.enum_folder(item['linkcode']))
+
+            current_page += 1
+            if current_page > last_page:
+                break
+
+            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+            self.data = self.load("https://www.fshare.vn/api/v3/files/folder",
+                                  get={'linkcode': folder_id,
+                                       'page': current_page})
+            json_data = json.loads(self.data)
+
 
         return links
 
