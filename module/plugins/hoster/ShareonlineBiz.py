@@ -70,7 +70,7 @@ class ShareonlineBiz(SimpleHoster):
     def handle_captcha(self):
         self.log_debug("start reCAPTCHA V2 javascript")
         self.captcha = ReCaptcha(self.pyfile)
-        challenge = self.captcha.challenge(self.RECAPTCHA_KEY, version='v2_javascript')
+        challenge = self.captcha.challenge(version='v2_javascript')
         response = challenge
 
         m = re.search(r'var wait=(\d+);', self.data)

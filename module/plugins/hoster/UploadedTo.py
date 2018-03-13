@@ -84,7 +84,7 @@ class UploadedTo(SimpleHoster):
 
         self.log_debug("start reCAPTCHA V2 javascript")
         self.captcha = ReCaptcha(pyfile)
-        challenge = self.captcha.challenge(self.RECAPTCHA_KEY, version='v2_javascript')
+        challenge = self.captcha.challenge(version='v2_javascript')
         response = challenge
 
         self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
