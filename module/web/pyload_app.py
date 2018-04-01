@@ -368,9 +368,9 @@ def config():
                 data.options["time"] = "0:00-0:00"
 
         if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
+            data.options["limitDL"] = data.options["limitDL"][0]
         else:
-            data.options["limitdl"] = "0"
+            data.options["limitDL"] = "0"
 
     return render_to_response('settings.html',
             {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
