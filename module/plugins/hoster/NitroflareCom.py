@@ -11,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -77,7 +77,7 @@ class NitroflareCom(SimpleHoster):
 
         self.check_errors()
 
-        self.wait(wait_time)
+        self.set_wait(wait_time)
 
         response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
 
