@@ -12,7 +12,7 @@ from .misc import encode
 class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
-    __version__ = "1.24"
+    __version__ = "1.25"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""
@@ -22,6 +22,10 @@ class UnZip(Extractor):
     VERSION = "%s.%s.%s" % (sys.version_info[0],
                             sys.version_info[1],
                             sys.version_info[2])
+
+    @classmethod
+    def archivetype(cls, filename):
+        return "zip" if cls.isarchive(filename) else None
 
     @classmethod
     def isarchive(cls, filename):
