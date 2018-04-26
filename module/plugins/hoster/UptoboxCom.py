@@ -8,7 +8,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UptoboxCom(SimpleHoster):
     __name__ = "UptoboxCom"
     __type__ = "hoster"
-    __version__ = "0.34"
+    __version__ = "0.35"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uptobox|uptostream)\.com/\w{12}'
@@ -34,6 +34,8 @@ class UptoboxCom(SimpleHoster):
     LINK_PATTERN = r"""["'](https?://(?:obwp\d+\.uptobox\.com|\w+\.uptobox\.com/dl?)/.*?)["']"""
 
     DL_LIMIT_PATTERN = r"""or you can wait (.+) to launch a new download"""
+
+    URL_REPLACEMENTS = [("http://", "https://")]
 
     def setup(self):
         self.multiDL = True
