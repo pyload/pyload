@@ -206,7 +206,7 @@ class Ffmpeg(object):
 class YoutubeCom(Hoster):
     __name__ = "YoutubeCom"
     __type__ = "hoster"
-    __version__ = "0.66"
+    __version__ = "0.67"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:[^/]*\.)?(?:youtu\.be/|youtube\.com/watch\?(?:.*&)?v=)[\w\-]+'
@@ -696,7 +696,7 @@ class YoutubeCom(Hoster):
         self.data = self.load(pyfile.url)
 
         if re.search(r'<div id="player-unavailable" class="\s*player-width player-height\s*(?:player-unavailable\s*)?">',
-                     self.data):
+                     self.data) or '"playabilityStatus":{"status":"ERROR"' in self.data:
             self.offline()
 
         if "We have been receiving a large volume of requests from your network." in self.data:
