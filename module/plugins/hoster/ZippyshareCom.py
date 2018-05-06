@@ -57,49 +57,13 @@ class ZippyshareCom(SimpleHoster):
                 self.error(e)
 
         else:
-            self.link = self.fixurl(self.get_link())
-            if ".com/pd/" in self.link:
-                self.load(self.link)
-                self.link = self.link.replace(".com/pd/", ".com/d/")
-
+            self.link = self.get_link()
         if self.link and pyfile.name == "file.html":
             pyfile.name = urllib.unquote(self.link.split('/')[-1])
-
     def get_link(self):
-        #: Get all the scripts inside the html body
-        soup = BeautifulSoup.BeautifulSoup(self.data)
-        scripts = [
-            s.getText() for s in soup.body.findAll(
-                'script',
-                type='text/javascript') if "('dlbutton').href =" in s.getText()]
-
-        #: Emulate a document in JS
-        inits = ['''
-                var document = {}
-                document.getElementById = function(x) {
-                    if (!this.hasOwnProperty(x)) {
-                        this[x] = {getAttribute : function(x) { return this[x] } }
-                    }
-                    return this[x]
-                }
-                ''']
-
-        #: inits is meant to be populated with the initialization of all the DOM elements found in the scripts
-        eltRE = r'getElementById\([\'"](.+?)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
-        for m in re.findall(eltRE, ' '.join(scripts)):
-            JSid, JSattr = m[0], m[3]
-            values = filter(None, (elt.get(JSattr, None)
-                                   for elt in soup.findAll(id=JSid)))
-            if values:
-                inits.append('document.getElementById("%s")["%s"] = "%s"' % (
-                    JSid, JSattr, values[-1]))
-
-        #: Add try/catch in JS to handle deliberate errors
-        scripts = ['\n'.join(('try{', script, '} catch(err){}'))
-                   for script in scripts]
-
-        #: Get the file's url by evaluating all the scripts
-        scripts = inits + scripts + ['document.dlbutton.href']
-
-        return self.js.eval('\n'.join(scripts))
+        reg = r"\(\'dlbutton\'\)\.href = (.+);"
+        m = re.search(reg, self.data)
+        m = ''.join(chr for chr in m.group(1) if chr not in ['"','(',')','+','%']).replace('  ',' ').split(' ')
+        return 'http://{}/d/{}/{}/{}'.format(self.info['pattern']['HOST'], self.info['pattern']['KEY'],
+                                             int(m[1]) % int(m[2]) + int(m[3]) % int(m[4]), self.info['pattern']['N'])
 
