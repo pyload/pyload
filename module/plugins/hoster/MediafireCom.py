@@ -31,7 +31,7 @@ class MediafireCom(SimpleHoster):
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
     OFFLINE_PATTERN = r'class="error_msg_title"'
 
-    LINK_FREE_PATTERN = r'kNO = "(.+?)"'
+    LINK_FREE_PATTERN = r'aria-label=\"Download file\"\s+href=\"(.+?)\"'
 
     PASSWORD_PATTERN = r'<form name="form_password"'
 
