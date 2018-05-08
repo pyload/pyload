@@ -452,3 +452,12 @@ textarea.form-control:focus {
 fieldset[disabled] .btn {
   pointer-events: auto;
 }
+
+.peek-a-bar {
+  margin: 0;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  text-align: center
+}
