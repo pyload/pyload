@@ -9,30 +9,30 @@ from ..internal.SimpleHoster import SimpleHoster
 class FastshareCz(SimpleHoster):
     __name__ = "FastshareCz"
     __type__ = "hoster"
-    __version__ = "0.42"
+    __version__ = "0.43"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?fastshare\.cz/\d+/.+'
     __config__ = [("activated", "bool", "Activated", True),
                   ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
+                  ("fallback", "bool", "Fallback to free download if premium fails", True),
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
     __description__ = """FastShare.cz hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     URL_REPLACEMENTS = [("#.*", "")]
 
     COOKIES = [("fastshare.cz", "lang", "en")]
 
-    NAME_PATTERN = r'<h3 class="section_title">(?P<N>.+?)<'
-    SIZE_PATTERN = r'>Size\s*:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found)'
+    NAME_PATTERN = r'<h2 title="(.+?)" class="section_title'
+    SIZE_PATTERN = r'<i class="fa fa-bars"></i> (?P<S>\d+)&nbsp;(?P<U>[\w^_]+)'
+    OFFLINE_PATTERN = r'>(The file has been deleted|Requested page not found|This file is no longer available)'
 
-    LINK_FREE_PATTERN = r'id=form action=(.+?)>\s*<p><em>Enter the code\s*:</em>\s*<span><img src="(.+?)"'
+    LINK_FREE_PATTERN = r'href="(.+?)" id=free-trigger>'
     LINK_PREMIUM_PATTERN = r'(https?://\w+\.fastshare\.cz/download\.php\?id=\d+&)'
 
     SLOT_ERROR = "> 100% of FREE slots are full"
@@ -52,21 +52,11 @@ class FastshareCz(SimpleHoster):
 
     def handle_free(self, pyfile):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
-        if m is not None:
-            action, captcha_src = m.groups()
-        else:
+        if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        baseurl = "https://www.fastshare.cz"
-        captcha = self.captcha.decrypt(urlparse.urljoin(baseurl, captcha_src))
-        self.download(
-            urlparse.urljoin(
-                baseurl,
-                action),
-            post={
-                'code': captcha,
-                'btn.x': 77,
-                'btn.y': 18})
+        self.link = urlparse.urljoin("https://fastshare.cz", m.group(1))
+        baseurl = "https://fastshare.cz"
 
     def check_download(self):
         check = self.scan_download({

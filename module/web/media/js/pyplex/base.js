@@ -16,13 +16,13 @@ function indicateSuccess(message) {
    }
 
     indicateFinish();
-    $.bootstrapPurr(message + '.', {
-        offset: {amount: 5},
-        type: 'success',
-        align: 'center',
-        draggable: false,
-        allowDismiss: false
+    var bar = new $.peekABar({
+        html: "<h4>" + message + '.' + "</h4>",
+        padding: "6px",
+        backgroundColor: '#B5BFC2',
+        autohide: true
     });
+    bar.show();
 }
 
 function indicateFail(message) {
@@ -31,13 +31,13 @@ function indicateFail(message) {
    }
 
     indicateFinish();
-    $.bootstrapPurr(message + '.', {
-        offset: {amount: 5},
-        type: 'danger',
-        align: 'center',
-        draggable: false,
-        allowDismiss: false
+    var bar = new $.peekABar({
+        html: "<h4>" + message + '.' + "</h4>",
+        padding: "6px",
+        backgroundColor: '#FF4500',
+        autohide: true
     });
+    bar.show();
 }
 
 function humanFileSize(f) {

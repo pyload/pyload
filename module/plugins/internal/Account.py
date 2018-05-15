@@ -12,7 +12,7 @@ from .Plugin import Plugin, Skip
 class Account(Plugin):
     __name__ = "Account"
     __type__ = "account"
-    __version__ = "0.83"
+    __version__ = "0.84"
     __status__ = "stable"
 
     __description__ = """Base account plugin"""
@@ -183,7 +183,7 @@ class Account(Plugin):
             x, dict) else [] if isiterable(x) else None
         self.info['data'] = dict((k, clear(v))
                                  for k, v in self.info['data'].items())
-        self.info['data']['options'] = {'limitdl': ['0']}
+        self.info['data']['options'] = {'limitDL': ['0']}
 
         self.syncback()
 
@@ -299,7 +299,7 @@ class Account(Plugin):
 
         d = {'login': user,
              'maxtraffic': None,
-             'options': options or {'limitdl': ['0']},
+             'options': options or {'limitDL': ['0']},
              'password': password or "",
              'plugin': self.pyload.accountManager.getAccountPlugin(self.classname),
              'premium': None,

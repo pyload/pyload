@@ -9,7 +9,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class SoundcloudCom(SimpleHoster):
     __name__ = "SoundcloudCom"
     __type__ = "hoster"
-    __version__ = "0.17"
+    __version__ = "0.18"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?soundcloud\.com/[\w\-]+/[\w\-]+'
@@ -36,10 +36,12 @@ class SoundcloudCom(SimpleHoster):
             self.error(_("Could not find song id"))
 
         try:
-            client_id = re.search(r'"clientID":"(.+?)"', self.data).group(1)
+            script = re.search(r'<script(?:\s+[^>]+|\s+)src=(["\'])([^>]*/app-[^>]*\.js)\1', self.data).group(2)
+            self.data = self.load(script)
+            client_id = re.search(r'\Wclient_id\s*:\s*(["\'])(\w+?)\1', self.data).group(2)
 
-        except Exception:
-            client_id = "02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea"
+        except (AttributeError, IndexError):
+            self.fail("Failed to retrieve client_id")
 
         #: Url to retrieve the actual song url
         html = self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,

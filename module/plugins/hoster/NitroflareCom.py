@@ -4,7 +4,6 @@ import re
 
 from module.network.RequestFactory import getURL as get_url
 
-from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -12,7 +11,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class NitroflareCom(SimpleHoster):
     __name__ = "NitroflareCom"
     __type__ = "hoster"
-    __version__ = "0.25"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
@@ -37,7 +36,6 @@ class NitroflareCom(SimpleHoster):
     FILE_ID_PATTERN = r'https?://(?:www\.)?nitroflare\.com/view/(?P<ID>[\w^_]+)'
     DIRECT_LINK = False
 
-    RECAPTCHA_KEY = "6Lenx_USAAAAAF5L1pmTWvWcH73dipAEzNnmNLgy"
     PREMIUM_ONLY_PATTERN = r'This file is available with Premium only'
     WAIT_PATTERN = r'You have to wait (\d+ minutes)'
     # ERROR_PATTERN        = r'downloading is not possible'
@@ -81,15 +79,13 @@ class NitroflareCom(SimpleHoster):
 
         self.set_wait(wait_time)
 
-        self.captcha = ReCaptcha(pyfile)
-        response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
+        response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
 
         self.wait()
 
         self.data = self.load("http://nitroflare.com/ajax/freeDownload.php",
                               post={'method': "fetchDownload",
-                                    'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field': response})
+                                    'captcha': response})
 
         if "The captcha wasn't entered correctly" in self.data:
             self.retry_captcha()

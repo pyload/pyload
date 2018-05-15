@@ -343,34 +343,48 @@ def config():
     for entry in sorted(plugin.keys()):
         plugin_menu.append((entry, plugin[entry].description))
 
-    accs = PYLOAD.getAccounts(False)
+    accs = []
 
-    for data in accs:
+    for data in PYLOAD.getAccounts(False):
         if data.trafficleft == -1:
-            data.trafficleft = _("unlimited")
+            trafficleft = _("unlimited")
         elif not data.trafficleft:
-            data.trafficleft = _("not available")
+            trafficleft = _("not available")
         else:
-            data.trafficleft = formatSize(data.trafficleft * 1024)
+            trafficleft = formatSize(data.trafficleft * 1024)
 
         if data.validuntil == -1:
-            data.validuntil  = _("unlimited")
+            validuntil  = _("unlimited")
         elif not data.validuntil :
-            data.validuntil  = _("not available")
+            validuntil  = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            data.validuntil  = time.strftime("%d.%m.%Y", t)
+            validuntil  = time.strftime("%d.%m.%Y", t)
 
         if "time" in data.options:
             try:
-                data.options["time"] = data.options["time"][0]
+                _time = data.options["time"][0]
             except:
-                data.options["time"] = "0:00-0:00"
+                _time = ""
+        else:
+            _time = ""
 
         if "limitDL" in data.options:
-            data.options["limitdl"] = data.options["limitDL"][0]
+            try:
+                limitdl = data.options["limitDL"][0]
+            except:
+                limitdl = "0"
         else:
-            data.options["limitdl"] = "0"
+            limitdl = "0"
+
+        accs.append({'type': data.type,
+                     'login': data.login,
+                     'valid': data.valid,
+                     'premium': data.premium,
+                     'trafficleft': trafficleft,
+                     'validuntil': validuntil,
+                     'limitdl': limitdl,
+                     'time': _time})
 
     return render_to_response('settings.html',
             {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
