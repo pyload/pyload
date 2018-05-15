@@ -37,7 +37,7 @@ class CaptchaBrotherhoodException(Exception):
 class CaptchaBrotherhood(Addon):
     __name__ = "CaptchaBrotherhood"
     __type__ = "hook"
-    __version__ = "0.15"
+    __version__ = "0.16"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -154,7 +154,7 @@ class CaptchaBrotherhood(Addon):
 
     @threaded
     def _process_captcha(self, task):
-        c = task.captchaFile
+        c = task.captchaParams['file']
         try:
             ticket, result = self.submit(c)
         except CaptchaBrotherhoodException, e:

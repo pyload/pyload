@@ -13,7 +13,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class UploadedTo(SimpleHoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
-    __version__ = "1.07"
+    __version__ = "1.08"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)'
@@ -30,8 +30,7 @@ class UploadedTo(SimpleHoster):
 
     CHECK_TRAFFIC = True
 
-    URL_REPLACEMENTS = [
-        (__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://uploaded.net/file/\g<ID>')]
 
     API_KEY = "lhF2IeeprweDfu9ccWlxXVVypA5nA3EL"
 
@@ -84,8 +83,7 @@ class UploadedTo(SimpleHoster):
         response, challenge = self.captcha.challenge()
 
         self.data = self.load("http://uploaded.net/io/ticket/captcha/%s" % self.info['pattern']['ID'],
-                              post={'recaptcha_challenge_field': challenge,
-                                    'recaptcha_response_field': response})
+                              post={'g-recaptcha-response': response})
         self.check_errors()
 
         SimpleHoster.handle_free(self, pyfile)

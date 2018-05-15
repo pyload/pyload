@@ -1,5 +1,6 @@
 {% autoescape true %}
 var desktopNotifications;
+var interactiveCaptchaHandlerInstance = null;
 //root = this;
 
 function indicateLoad() {
@@ -42,7 +43,7 @@ function indicateFail(message) {
 
 function humanFileSize(f) {
     var c, d, e, b;
-    d = new Array("B", "KiB", "MiB", "GiB", "TiB", "PiB");
+    d = ["B", "KiB", "MiB", "GiB", "TiB", "PiB"];
     b = Math.log(f) / Math.log(1024);
     e = Math.floor(b);
     c = Math.pow(1024, e);
@@ -55,11 +56,12 @@ function humanFileSize(f) {
 
 function parseUri() {
     var b, c, g, e, d, f, a;
-    b = $("#add_links").val();
+    var $add_links = $("#add_links");
+    b = $add_links.val();
     g = new RegExp("(?:ht|f)tp(?:s?)://[a-zA-Z0-9-./?=_&%#:]+(?:[<| |\\\"|'|\\r|\\n|\\t]{1}|$)", "gi");
     d = b.match(g);
     if (d === null) {
-        return $("#add_links").val("");
+        return $add_links.val("");
     }
     e = "";
     for (f = 0, a = d.length; f < a; f++) {
@@ -90,7 +92,7 @@ function parseUri() {
             }
         }
     }
-    return $("#add_links").val(e);
+    return $add_links.val(e);
 }
 
 Array.prototype.remove = function(d, c) {
@@ -124,7 +126,7 @@ function getScrollBarHeight() {
     var w1 = inner.offsetHeight;
     outer.style.overflow = 'scroll';
     var w2 = inner.offsetHeight;
-    if (w1 == w2) w2 = outer.clientHeight;
+    if (w1 === w2) w2 = outer.clientHeight;
 
     document.body.removeChild(outer);
 
@@ -132,18 +134,20 @@ function getScrollBarHeight() {
 }
 
 $(function() {
+    var $goto_top = $('#goto_top');
     var topbuttonVisible = $(window).scrollTop() > 100;
-    $('#goto_top').toggleClass('hidden', !topbuttonVisible).affix({offset: {top:100}});
+
+    $goto_top.toggleClass('hidden', !topbuttonVisible).affix({offset: {top:100}});
 
     $(window).scroll(function() {
         var visible = Boolean($(this).scrollTop() > 100);
         if (topbuttonVisible !== visible) {
-            $('#goto_top').toggleClass('hidden', !visible);
+            $goto_top.toggleClass('hidden', !visible);
             topbuttonVisible = visible;
         }
     });
 
-    $("#goto_top").click(function () {
+    $goto_top.click(function () {
         $('html,body').animate({scrollTop:0},'slow');
         return false;
     });
@@ -174,14 +178,14 @@ $(function() {
     }).draggable({ scroll: false });
 
 	$('input[type=password].reveal-pass').map(function() {
-	    var revealid;
+	    var reveal_id;
 
 	    $(this).wrap( "<div class=\"form-group has-feedback\"></div>" );
 		var button = $("<button class='close form-control-feedback hidden' type='button' style='pointer-events: auto;'><span class='glyphicon glyphicon-eye-close' style='font-size: 11px;'></span></button>");
-		revealid = Date.now();
-		button.attr("data-reveal-pass-id", revealid);
+		reveal_id = Date.now();
+		button.attr("data-reveal-pass-id", reveal_id);
 		$(this).after(button);
-		$(this).attr("data-reveal-pass-id", revealid);
+		$(this).attr("data-reveal-pass-id", reveal_id);
 		$(this).on('input', function () {
             var visible =  Boolean($(this).val());
             $(this).siblings('button[data-reveal-pass-id="' + $(this).attr("data-reveal-pass-id") + '"]').toggleClass('hidden', !visible);
@@ -262,11 +266,12 @@ $(function() {
     });
 
     $("#cap_submit").click(function() {
-            submit_captcha();
-            // stop()??
+        submit_captcha();
+        // stop()??
     });
 
-    $("#cap_box #cap_positional").click(on_captcha_click);
+    $("#cap_box #cap_positional").click(submit_positional_captcha);
+
     $.ajax({
         method:"post",
         url: "{{'/json/status'|url}}",
@@ -292,10 +297,11 @@ function LoadJsonToContent(a) {
     $("#aktiv").text(a.active);
     $("#aktiv_from").text(a.queue);
     $("#aktiv_total").text(a.total);
+    var $cap_info = $("#cap_info");
     if (a.captcha) {
-        var notificationVisible = ($("#cap_info").css("display") !== "none");
+        var notificationVisible = ($cap_info.css("display") !== "none");
         if (!notificationVisible) {
-            $("#cap_info").css('display','inline');
+            $cap_info.css('display','inline');
             $.bootstrapPurr("{{_('New Captcha Request')}}",{
                 offset: { amount: 10},
                 align: 'center',
@@ -320,41 +326,47 @@ function LoadJsonToContent(a) {
             }, 8000);
         }
     } else {
-        $("#cap_info").css('display','none');
+        $cap_info.css('display', 'none');
     }
     if (a.download) {
-        $("#time").text(" {{_('on')}}");
-        $("#time").css('background-color','#5cb85c');
+        $("#time").text(" {{_('on')}}").css('background-color', '#5cb85c');
     } else {
-        $("#time").text(" {{_('off')}}");
-        $("#time").css('background-color',"#d9534f");
+        $("#time").text(" {{_('off')}}").css('background-color', "#d9534f");
     }
     if (a.reconnect) {
-        $("#reconnect").text(" {{_('on')}}");
-        $("#reconnect").css('background-color',"#5cb85c");
+        $("#reconnect").text(" {{_('on')}}").css('background-color', "#5cb85c");
     } else {
-        $("#reconnect").text(" {{_('off')}}");
-        $("#reconnect").css('background-color',"#d9534f");
+        $("#reconnect").text(" {{_('off')}}").css('background-color', "#d9534f");
     }
-    return null
+    return null;
 }
 
 function set_captcha(a) {
+    captcha_reset_default();
+
+    params = JSON.parse(a.params);
     $("#cap_id").val(a.id);
     if (a.result_type === "textual") {
-        $("#cap_textual_img").attr("src", a.src);
+        $("#cap_textual_img").attr("src", params.src);
         $("#cap_submit").css("display", "inline");
-        $("#cap_box #cap_title").text('');
+        $("#cap_box #cap_title").text("");
         $("#cap_textual").css("display", "block");
-        return $("#cap_positional").css("display", "none");
-    } else {
-        if (a.result_type === "positional") {
-            $("#cap_positional_img").attr("src", a.src);
-            $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
-            $("#cap_submit").css("display", "none");
-            return $("#cap_textual").css("display", "none");
+    } else if (a.result_type === "positional") {
+        $("#cap_positional_img").attr("src", params.src);
+        $("#cap_box #cap_title").text("{{_('Please click on the right captcha position.')}}");
+        $("#cap_positional").css("display", "block");
+    } else if (a.result_type === "interactive") {
+        $("#cap_box #cap_title").text("");
+        if(interactiveCaptchaHandlerInstance == null) {
+            interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_interactive_loading", submit_interactive_captcha);
+        }
+        if(params.url !== undefined && params.url.indexOf("http") === 0) {
+            // $("#cap_box #cap_title").html('<p style="max-width: 400px; position: absolute; top:10px;">{{_("The captcha may take a few seconds to load.")}}</p><p style="max-width:400px; position:absolute; top:50px;">{{_("Note: to solve this interactive captcha, please install the Tampermonkey add-on in your browser and add the pyload userscript.")}}</p>');
+            $("#cap_interactive").css("display", "block");
+            interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
         }
     }
+    return true;
 }
 
 function load_captcha(b, a) {
@@ -364,29 +376,41 @@ function load_captcha(b, a) {
             method: b,
             data: a,
             success: function(c) {
-                set_captcha(c);
-                return (c.captcha ? void 0 : clear_captcha());
+                return (c.captcha ? set_captcha(c) : clear_captcha());
         }
     });
 }
 
-function clear_captcha() {
+function captcha_reset_default() {
     $("#cap_textual").css("display", "none");
     $("#cap_textual_img").attr("src", "");
     $("#cap_positional").css("display", "none");
     $("#cap_positional_img").attr("src", "");
+    $("#cap_interactive").css("display", "none");
     $("#cap_submit").css("display", "none");
-    $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
-    $('#cap_box').modal('toggle');
+    // $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
+    $("#cap_interactive_iframe").attr("src", "#").css("display", "none");
+    if(interactiveCaptchaHandlerInstance) {
+        interactiveCaptchaHandlerInstance.clearEventlisteners();
+        interactiveCaptchaHandlerInstance = null;
+    }
+    return true;
+}
+
+function clear_captcha() {
+    captcha_reset_default();
+    $('#cap_box').modal('hide');
+    return true;
 }
 
 function submit_captcha() {
-    load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
-    $("#cap_result").val("");
+    var $cap_result = $("#cap_result");
+    load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $cap_result.val());
+    $cap_result.val("");
     return false;
 }
 
-function on_captcha_click(c) {
+function submit_positional_captcha(c) {
     var b, a, d;
     // b = c.target.getPosition();
     var x = (c.pageX - $(this).offset().left).toFixed(0);
@@ -394,5 +418,88 @@ function on_captcha_click(c) {
     $("#cap_box #cap_result").val(x + ' , ' + y);
     return submit_captcha();
 }
+
+function submit_interactive_captcha(c) {
+    if (c.constructor === {}.constructor)
+        c = JSON.stringify(c);
+    else if (c.constructor !== "".constructor)
+        return;
+
+    $("#cap_box #cap_result").val(c);
+    return submit_captcha();
+}
+
+function interactiveCaptchaHandler(iframeId, loadingid, captchaResponseCallback) {
+    this._iframeId = iframeId;
+    this._loadingid = loadingid;
+    this._captchaResponseCallback = captchaResponseCallback;
+    this._active = false; // true: link grabbing is running, false: standby
+
+    $("#" + this._loadingid).css("display", "block");
+    $("#" + this._iframeId).on("load", this, this.iframeLoaded);
+
+    // Register event listener for communication with iframe
+    $(window).on('message', this, this.windowEventListener);
+}
+
+// This function is called when the iframe is loaded, and it activates the link grabber of the tampermonkey script
+interactiveCaptchaHandler.prototype.iframeLoaded = function(e) {
+    var interactiveHandlerInstance = e.data;
+    if(interactiveHandlerInstance._active) {
+        var requestMessage = {
+            actionCode: interactiveHandlerInstance.actionCodes.activate,
+            params: interactiveHandlerInstance._params};
+        // Notify TamperMonkey so it can do it's magic..
+        $("#" + interactiveHandlerInstance._iframeId).get(0).contentWindow.postMessage(JSON.stringify(requestMessage),"*");
+    }
+};
+
+interactiveCaptchaHandler.prototype.startInteraction = function(url, params) {
+    // Activate
+    this._active = true;
+
+    this._params = params;
+
+    $("#" + this._iframeId).attr("src", url);
+};
+
+// This function listens to messages from the TamperMonkey script in the iframe
+interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
+    var interactiveHandlerInstance = e.data;
+    var requestMessage = JSON.parse(e.originalEvent.data);
+
+    if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.submitResponse) {
+        // We got the response! pass it to the callback function
+        interactiveHandlerInstance._captchaResponseCallback(requestMessage.response);
+        this.clearEventlisteners();
+
+    } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
+        $("#" + interactiveHandlerInstance._loadingid).css("display", "none");
+        $("#" + interactiveHandlerInstance._iframeId).css("display", "block");
+
+    } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size)  {
+        var $iframe = $("#" + this._iframeId);
+        $iframe.width(requestMessage.params.width);
+        $iframe.height(requestMessage.params.height);
+    }
+};
+
+interactiveCaptchaHandler.prototype.clearEventlisteners = function() {
+    // Deactivate
+    this._active = false;
+
+    // Clean up event listeners
+    $("#" + this._iframeId).off("load", this.iframeLoaded);
+    $(window).off('message', this.windowEventListener);
+};
+
+// Action codes for communication with iframe via postMessage
+interactiveCaptchaHandler.prototype.actionCodes = {
+    activate: "pyloadActivateInteractive",
+    activated: "pyloadActivatedInteractive",
+    getSize: "pyloadIframeGetSize",
+    size: "pyloadIframeSize",
+    submitResponse: "pyloadSubmitResponse"
+};
 
 {% endautoescape %}

@@ -12,6 +12,7 @@ import Crypto.Cipher.AES
 from module.network.CookieJar import CookieJar
 from module.network.HTTPRequest import BadHeader, HTTPRequest
 
+from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.Crypter import Crypter
@@ -64,13 +65,13 @@ class FilecryptCc(Crypter):
 
     DLC_LINK_PATTERN = r'onclick="DownloadDLC\(\'(.+)\'\);">'
     WEBLINK_PATTERN = r"openLink.?'([\w\-]*)',"
+    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
 
     CAPTCHA_PATTERN = r'<h2>Security prompt</h2>'
     INTERNAL_CAPTCHA_PATTERN = r'<img id="nc" .* src="(.+?)"'
     CIRCLE_CAPTCHA_PATTERN = r'<input type="image" src="(.+?)"'
     KEY_CAPTCHA_PATTERN = r"<script language=JavaScript src='(http://backs\.keycaptcha\.com/swfs/cap\.js)'"
-    SOLVE_MEDIA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
-    MIRROR_PAGE_PATTERN = r'"[\w]*" href="(https?://(?:www\.)?filecrypt.cc/Container/\w+\.html\?mirror=\d+)">'
+    SOLVEMEDIA_CAPTCHA_PATTERN = r'<script type="text/javascript" src="(https?://api(?:-secure)?\.solvemedia\.com/papi/challenge.+?)"'
 
     def setup(self):
         self.urls = []
@@ -124,8 +125,7 @@ class FilecryptCc(Crypter):
         password = self.get_password()
 
         if not password:
-            self.fail(
-                _("Please enter the password in package section and try again"))
+            self.fail(_("Please enter the password in package section and try again"))
 
         self.data = self._filecrypt_load_url(self.pyfile.url, post={'password': password})
 
@@ -133,7 +133,7 @@ class FilecryptCc(Crypter):
         if re.search(self.CAPTCHA_PATTERN, self.data):
             m1 = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.data)
             m2 = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
-            m3 = re.search(self.SOLVE_MEDIA_PATTERN, self.data)
+            m3 = re.search(self.SOLVEMEDIA_CAPTCHA_PATTERN, self.data)
             m4 = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
 
             if m1:  #: Normal captcha
@@ -174,29 +174,38 @@ class FilecryptCc(Crypter):
                                                                           'adcopy_challenge': challenge})
 
             elif m4:  #: Keycaptcha captcha
-                self.log_debug("Keycaptcha Captcha URL: %s unsupported, retrying" %
-                               m4.group(1))
+                self.log_debug("Keycaptcha Captcha URL: %s unsupported, retrying" % m4.group(1))
                 self.retry()
 
             else:
-                recaptcha = ReCaptcha(self.pyfile)
-                captcha_key = recaptcha.detect_key()
+                coinhive = CoinHive(self.pyfile)
+                coinhive_key = coinhive.detect_key()
 
-                if captcha_key:
-                    self.captcha = recaptcha
-
-                    try:
-                        response, challenge = recaptcha.challenge(captcha_key)
-
-                    except Exception:
-                        self.retry_captcha()
-
+                if coinhive_key:
+                    self.captcha = coinhive
+                    token = coinhive.challenge(coinhive_key)
                     self.site_with_links = self._filecrypt_load_url(self.pyfile.url,
-                                                                    post={'g-recaptcha-response': response})
+                                                                    post={'coinhive-captcha-token': token})
 
                 else:
-                    self.log_info(_("Unknown captcha found, retrying"))
-                    self.retry()
+                    recaptcha = ReCaptcha(self.pyfile)
+                    captcha_key = recaptcha.detect_key()
+
+                    if captcha_key:
+                        self.captcha = recaptcha
+
+                        try:
+                            response, challenge = recaptcha.challenge(captcha_key)
+
+                        except Exception:
+                            self.retry_captcha()
+
+                        self.site_with_links = self._filecrypt_load_url(self.pyfile.url,
+                                                                        post={'g-recaptcha-response': response})
+
+                    else:
+                        self.log_info(_("Unknown captcha found, retrying"))
+                        self.retry()
 
             if re.search(self.CAPTCHA_PATTERN, self.site_with_links):
                 self.retry_captcha()

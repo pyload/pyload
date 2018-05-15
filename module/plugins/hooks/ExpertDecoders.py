@@ -16,7 +16,7 @@ from ..internal.misc import threaded
 class ExpertDecoders(Addon):
     __name__ = "ExpertDecoders"
     __type__ = "hook"
-    __version__ = "0.11"
+    __version__ = "0.12"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -50,7 +50,7 @@ class ExpertDecoders(Addon):
         task.data['ticket'] = ticket = uuid.uuid4()
         result = None
 
-        with open(task.captchaFile, 'rb') as f:
+        with open(task.captchaParams['file'], 'rb') as f:
             data = f.read()
 
         req = get_request()

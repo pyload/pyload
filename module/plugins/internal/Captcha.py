@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 
+import base64
 import os
 import time
 
@@ -11,7 +12,7 @@ from .Plugin import Plugin
 class Captcha(Plugin):
     __name__ = "Captcha"
     __type__ = "captcha"
-    __version__ = "0.55"
+    __version__ = "0.56"
     __status__ = "stable"
 
     __description__ = """Base anti-captcha plugin"""
@@ -28,8 +29,7 @@ class Captcha(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(
-            level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
 
     def recognize(self, image):
         """
@@ -76,8 +76,7 @@ class Captcha(Plugin):
             self.log_info(_("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, basestring):
-                _OCR = self.pyload.pluginManager.loadClass(
-                    "captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:
                 result = self.recognize(img_f.name)
@@ -87,15 +86,17 @@ class Captcha(Plugin):
 
         if not result:
             captchaManager = self.pyload.captchaManager
+            timeout = max(timeout, 50)
 
             try:
-                self.task = captchaManager.newTask(
-                    img, input_type, img_f.name, output_type)
+                params = {'src': "data:image/%s;base64,%s" % (input_type, base64.standard_b64encode(img)),
+                          'file': img_f.name,
+                          'captcha_plugin': self.__name__,
+                          'plugin': self.pyfile.plugin.__name__}
+                self.task = captchaManager.newTask(input_type, params, output_type)
 
-                captchaManager.handleCaptcha(self.task)
+                captchaManager.handleCaptcha(self.task, timeout)
 
-                # @TODO: Move to `CaptchaManager` in 0.4.10
-                self.task.setWaiting(max(timeout, 50))
                 while self.task.isWaiting():
                     self.pyfile.plugin.check_status()
                     time.sleep(1)
@@ -107,8 +108,7 @@ class Captcha(Plugin):
 
             if self.task.error:
                 if not self.task.handler and not self.pyload.isClientConnected():
-                    self.log_warning(
-                        _("No Client connected for captcha decrypting"))
+                    self.log_warning(_("No Client connected for captcha decrypting"))
                     self.fail(_("No Client connected for captcha decrypting"))
                 else:
                     self.pyfile.plugin.retry_captcha(msg=self.task.error)
@@ -117,19 +117,53 @@ class Captcha(Plugin):
                 self.log_info(_("Captcha result: `%s`") % (result,))
 
             else:
-                self.pyfile.plugin.retry_captcha(
-                    msg=_("No captcha result obtained in appropriate timing"))
+                self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing (%ss)") % timeout)
 
         if not self.pyload.debug:
             self.remove(img_f.name, trash=False)
 
         return result
 
-    def invalid(self):
+    def decrypt_interactive(self, params={}, timeout=120):
+        captchaManager = self.pyload.captchaManager
+        timeout = max(timeout, 50)
+
+        try:
+            params.update({'captcha_plugin': self.__name__,
+                           'plugin': self.pyfile.plugin.__name__})
+            self.task = captchaManager.newTask("interactive", params, "interactive")
+
+            captchaManager.handleCaptcha(self.task, timeout)
+
+            while self.task.isWaiting():
+                self.pyfile.plugin.check_status()
+                time.sleep(1)
+
+        finally:
+            captchaManager.removeTask(self.task)
+
+        result = self.task.result
+
+        if self.task.error:
+            if not self.task.handler and not self.pyload.isClientConnected():
+                self.log_warning(_("No Client connected for captcha decrypting"))
+                self.fail(_("No Client connected for captcha decrypting"))
+            else:
+                self.pyfile.plugin.retry_captcha(msg=self.task.error)
+
+        elif self.task.result:
+            self.log_info(_("Captcha result: `%s`") % (result,))
+
+        else:
+            self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing (%ss)") % timeout)
+
+        return result
+
+    def invalid(self, msg=""):
         if not self.task:
             return
 
-        self.log_warning(_("Invalid captcha"), self.task.result)
+        self.log_warning(_("Invalid captcha"), msg, self.task.result)
         self.task.invalid()
         self.task = None
 
