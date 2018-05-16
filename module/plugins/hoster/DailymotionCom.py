@@ -54,7 +54,10 @@ class DailymotionCom(Hoster):
 
     __description__ = """Dailymotion.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
+                   ("Synology PAT", "pat@synology.com")]
+
+    STREAM_PATTERN = r'\"(?P<URL>https?:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\"'
 
     def setup(self):
         self.resume_download = True
@@ -63,8 +66,7 @@ class DailymotionCom(Hoster):
     def get_streams(self):
         streams = []
 
-        for result in re.finditer(r'\"(?P<URL>http:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\"',
-                                  self.data):
+        for result in re.finditer(self.STREAM_PATTERN, self.data):
             url = result.group('URL')
             qf_width = result.group('QF_WIDTH')
             qf_height = result.group('QF_HEIGHT')
@@ -124,5 +126,8 @@ class DailymotionCom(Hoster):
 
         streams = self.get_streams()
         quality = self.get_quality()
+
+        if not streams:
+            self.fail(_("Failed to get any streams."))
 
         self.download(self.get_link(streams, quality))
