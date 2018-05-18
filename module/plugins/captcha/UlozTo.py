@@ -29,7 +29,8 @@ class UlozTo(OCR):
                 os.path.split(
                     clslib.__file__)[0],
                 'ulozto.cfg')
-            text = clslib.classify_audio_file(audio, cfg_file)
+            ext_file = os.path.splitext(audio)[1]
+            text = clslib.classify_audio_file(audio, cfg_file, ext_file)
             return text
 
         except NameError:
