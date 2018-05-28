@@ -45,7 +45,7 @@ class RealdebridCom(MultiAccount):
 
         return {'validuntil': validuntil,
                 'trafficleft': -1,
-                'premium': True}
+                'premium': True if account["premium"] > 0 else False}
 
     def signin(self, user, password, data):
         try:
