@@ -286,7 +286,7 @@ class ExtractArchive(Addon):
                 new_files_ids = []
 
                 if extensions:  #: Include only specified archive types
-                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1].lower()) in extensions
+                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1]) in extensions
                                                             for Extractor in self.extractors]), files_ids)
 
                 #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
