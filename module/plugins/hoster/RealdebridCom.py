@@ -11,7 +11,7 @@ def args(**kwargs):
 class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
-    __version__ = "0.76"
+    __version__ = "0.77"
     __status__ = "testing"
 
     __pattern__ = r'https?://((?:www\.|s\d+\.)?real-debrid\.com/dl?/|[\w^_]\.rdb\.so/d/)[\w^_]+'
@@ -28,7 +28,8 @@ class RealdebridCom(MultiHoster):
     __description__ = """Real-Debrid.com multi-hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+                   ("Synology PAT", "pat@synology.com")]
 
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
@@ -42,11 +43,11 @@ class RealdebridCom(MultiHoster):
 
     def handle_premium(self, pyfile):
         user = self.account.accounts.keys()[0]
-        api_token = self.account.accounts[user]["password"]
+        api_token = self.account.accounts[user]['auth_token']
 
         data = self.api_response("/unrestrict/link",
                                  args(auth_token=api_token),
-                                 args(link=pyfile.url, password=self.get_password()))
+                                 args(link=pyfile.url))
 
         self.log_debug("Returned Data: %s" % data)
 
