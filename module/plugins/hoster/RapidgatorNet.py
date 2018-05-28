@@ -15,7 +15,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class RapidgatorNet(SimpleHoster):
     __name__ = "RapidgatorNet"
     __type__ = "hoster"
-    __version__ = "0.51"
+    __version__ = "0.52"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:rapidgator\.net|rg\.to)/file/\w+'
@@ -53,7 +53,8 @@ class RapidgatorNet(SimpleHoster):
     ADSCAPTCHA_PATTERN = r'(http://api\.adscaptcha\.com/Get\.aspx[^"\']+)'
     SOLVEMEDIA_PATTERN = r'http://api\.solvemedia\.com/papi/challenge\.script\?k=(.*?)"'
 
-    URL_REPLACEMENTS = [(r'//(?:www\.)?rg\.to/', "//rapidgator.net/")]
+    URL_REPLACEMENTS = [(r'//(?:www\.)?rg\.to/', "//rapidgator.net/"),
+                        (r'(//rapidgator.net/file/[0-9A-z]+).*', r'\1')]
 
     API_URL = "https://rapidgator.net/api/"
 
@@ -71,6 +72,9 @@ class RapidgatorNet(SimpleHoster):
 
         if status == 200:
             return json_data['response']
+
+        elif status == 404:
+            self.offline()
 
         elif status == 423:
             self.restart(message, premium=False)
