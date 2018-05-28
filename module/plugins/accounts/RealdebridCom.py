@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import re
+import pycurl
 
 from module.network.HTTPRequest import BadHeader
 
@@ -15,7 +17,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.56"
+    __version__ = "0.57"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
@@ -25,8 +27,12 @@ class RealdebridCom(MultiAccount):
     __description__ = """Real-Debrid.com account plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Devirex Hazzard", "naibaf_11@yahoo.de"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+                   ("Synology PAT", "pat@synology.com")]
 
+    LOGIN_URL = "https://real-debrid.com/ajax/login.php"
+    API_TOKEN_URL = "https://real-debrid.com/apitoken"
+    API_TOKEN_PATTERN = r'querySelectorAll.+private_token.+=\s*\'([0-9A-z]+)\''
     API_URL = "https://api.real-debrid.com/rest/1.0"
 
     def api_response(self, namespace, get={}, post={}):
@@ -39,17 +45,26 @@ class RealdebridCom(MultiAccount):
         return hosters
 
     def grab_info(self, user, password, data):
-        account = self.api_response("/user", args(auth_token=password))
+        account = self.api_response("/user", args(auth_token=data['auth_token']))
 
         validuntil = time.time() + account["premium"]
 
         return {'validuntil': validuntil,
                 'trafficleft': -1,
-                'premium': True}
+                'premium': True if account["premium"] > 0 else False}
 
     def signin(self, user, password, data):
+        self._signin(user, password, data)
+
+        html = self.load(self.API_TOKEN_URL)
+        matched = re.search(self.API_TOKEN_PATTERN, html)
+        if matched is None:
+            self.fail_login('No api-token been found in response.')
+
+        data['auth_token'] = matched.group(1)
+
         try:
-            account = self.api_response("/user", args(auth_token=password))
+            account = self.api_response("/user", args(auth_token=data['auth_token']))
 
         except BadHeader, e:
             if e.code == 401:
@@ -61,3 +76,18 @@ class RealdebridCom(MultiAccount):
 
         if user != account["username"]:
             self.fail_login()
+
+    def _signin(self, user, password, data):
+        """ Sign in by username and password.
+
+        This will get cookie "auth". That makes request for api-token valid.
+        """
+
+        self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-Requested-With: XMLHttpRequest"])
+        self.load(self.LOGIN_URL, {
+            'user': user,
+            'pass': password,
+            'pin_challenge': '',
+            'pin_answer': "PIN: 000000",
+            'time': time.time()
+        })
