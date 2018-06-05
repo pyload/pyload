@@ -296,12 +296,14 @@ function LoadJsonToContent(a) {
         var notificationVisible = ($("#cap_info").css("display") !== "none");
         if (!notificationVisible) {
             $("#cap_info").css('display','inline');
-            $.bootstrapPurr("{{_('New Captcha Request')}}",{
-                offset: { amount: 10},
-                align: 'center',
-                draggable: false,
-                allowDismiss: false
+            var bar = new $.peekABar({
+                html: "<h4>{{_('New Captcha Request')}}</h4>",
+                padding: "6px",
+                backgroundColor: '#5CB85C',
+                delay: 5000,
+                autohide: true
             });
+            bar.show();
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
