@@ -302,12 +302,14 @@ function LoadJsonToContent(a) {
         var notificationVisible = ($cap_info.css("display") !== "none");
         if (!notificationVisible) {
             $cap_info.css('display','inline');
-            $.bootstrapPurr("{{_('New Captcha Request')}}",{
-                offset: { amount: 10},
-                align: 'center',
-                draggable: false,
-                allowDismiss: false
+            var bar = new $.peekABar({
+                html: "<h4>{{_('New Captcha Request')}}</h4>",
+                padding: "6px",
+                backgroundColor: '#5CB85C',
+                delay: 5000,
+                autohide: true
             });
+            bar.show();
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
@@ -389,7 +391,8 @@ function captcha_reset_default() {
     $("#cap_interactive").css("display", "none");
     $("#cap_submit").css("display", "none");
     // $("#cap_box #cap_title").text("{{_('No Captchas to read.')}}");
-    $("#cap_interactive_iframe").attr("src", "#").css("display", "none");
+    $("#cap_interactive_iframe").attr("src", "").css({display: "none", top: "", left: ""})
+        .parent().css({height: "", width: ""});
     if(interactiveCaptchaHandlerInstance) {
         interactiveCaptchaHandlerInstance.clearEventlisteners();
         interactiveCaptchaHandlerInstance = null;
@@ -470,17 +473,20 @@ interactiveCaptchaHandler.prototype.windowEventListener = function(e) {
 
     if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.submitResponse) {
         // We got the response! pass it to the callback function
-        interactiveHandlerInstance._captchaResponseCallback(requestMessage.response);
-        this.clearEventlisteners();
+        interactiveHandlerInstance._captchaResponseCallback(requestMessage.params.response);
+        interactiveHandlerInstance.clearEventlisteners();
 
     } else if(requestMessage.actionCode === interactiveHandlerInstance.actionCodes.activated) {
         $("#" + interactiveHandlerInstance._loadingid).css("display", "none");
         $("#" + interactiveHandlerInstance._iframeId).css("display", "block");
 
     } else if (requestMessage.actionCode === interactiveHandlerInstance.actionCodes.size)  {
-        var $iframe = $("#" + this._iframeId);
-        $iframe.width(requestMessage.params.width);
-        $iframe.height(requestMessage.params.height);
+        var $iframe = $("#" + interactiveHandlerInstance._iframeId);
+        var width = requestMessage.params.rect.right - requestMessage.params.rect.left;
+        var height = requestMessage.params.rect.bottom - requestMessage.params.rect.top;
+        $iframe.css({top : - requestMessage.params.rect.top + "px",
+            left : - requestMessage.params.rect.left + "px"})
+            .parent().width(width).height(height);
     }
 };
 
@@ -497,7 +503,6 @@ interactiveCaptchaHandler.prototype.clearEventlisteners = function() {
 interactiveCaptchaHandler.prototype.actionCodes = {
     activate: "pyloadActivateInteractive",
     activated: "pyloadActivatedInteractive",
-    getSize: "pyloadIframeGetSize",
     size: "pyloadIframeSize",
     submitResponse: "pyloadSubmitResponse"
 };

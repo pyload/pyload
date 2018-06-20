@@ -42,53 +42,66 @@ class ReCaptcha(CaptchaService):
 
     STOKEN_V2_PATTERN = r'data-stoken=["\']([\w\-]+)'
 
-    RECAPTCHA_INTERACTIVE_SIG = "52b3109db26ee0cce810a05f43ad1321b329f6cf2fadcb007aceb166281d6d132f2d10682b24b070" + \
-                                "f1a4ad68e81c02653aeba7bd119565696ae701a8a2172093637a8821f629b7634e5ac457580507e4" + \
-                                "a52b1cd351bed063a51e472cc55b0cd3dafbe863c3db009f2e9f8d3e694af6510cfe4b56453b86be" + \
-                                "00b3bdaba557cf7127a0208e8f32313ce708aad05228275419215a12fa59b46ba911b8b84c9a2598" + \
-                                "2d93f369c075ba2978cd3c8a286b003505f6780808e0d02bf2ea92e71ea556614813c6c80082ed67" + \
-                                "efd1eb0ae050e646a95a62d1d4148b27b65732b415f3e14718cca7c6e4fcc9ddfde7b61f03d1d9f5" + \
-                                "1e9302ddb3c1c37249409ce01364768a"
+    RECAPTCHA_INTERACTIVE_SIG = "7b99386315b3e035285946b842049575fc69a88ccc219e1bc96a9afd0f3c4b7456f09d36bf3dc530" + \
+                                "a08cd50f1b3128716cf727b30f7de4ab1513f15bb82776e84404089a764c6305d9c6033c99f8514e" + \
+                                "249bc3fd5530b475c00059797ce5a45d131adb626a440366af9acc9a50a3a7327b9d3dc28b59f83f" + \
+                                "32129feb89e0cfb74521c306e8ac0b9fff9df31d453eedc54a17d41528c2d866363fc13cb524ad77" + \
+                                "60483b28bf4a347de4a8b2b1480f83f66c4408ad9dbfec78f6f1525b8507b6e52cdd13e13f8e3bfc" + \
+                                "0bb5dd1860e6fc5db99ef0c915fd626c3aaec0bb5ead3a668ebb31dd2a08eacaefffdf51e3a0ba31" + \
+                                "cb636da134c24633f2b2b38f56dfbb92"
 
     RECAPTCHA_INTERACTIVE_JS = """
-        while(document.children[0].childElementCount > 0) {
-            document.children[0].removeChild(document.children[0].children[0]);
-        }
-        document.children[0].innerHTML = '<html><style>div{background-color:transparent!important;}</style><head></head><body style="display: inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+			while(document.children[0].childElementCount > 0) {
+				document.children[0].removeChild(document.children[0].children[0]);
+			}
+			document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
 
-        gpyload.data.sitekey = request.params.sitekey;
+			gpyload.data.sitekey = request.params.sitekey;
 
-        // checks if the captcha is completed
-        gpyload.isCaptchaCompleted = function() {
-            return grecaptcha && grecaptcha.getResponse().length !== 0;
-        };
+			gpyload.getFrameSize = function() {
+				var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
+					rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
+					rect;
+				var anchor = document.body.querySelector("iframe[src*='/anchor']");
+				if (anchor !== null && gpyload.isVisible(anchor)) {
+					rect = anchor.getBoundingClientRect();
+					rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+				}
+				var popup = document.body.querySelector("iframe[src*='/bframe']");
+				if (popup !== null && gpyload.isVisible(popup)) {
+					rect = popup.getBoundingClientRect();
+					rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+				}
+				var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+				var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+				var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+				var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+				return {top: top, left: left, bottom: bottom, right: right};
+			};
 
-        // function that is called when the captcha finished loading and is ready to interact
-        window.pyloadCaptchaOnLoadCallback = function() {
-            grecaptcha.render (
-                "captchadiv",
-                {size: "compact",
-                 'sitekey': gpyload.data.sitekey,
-                 'callback': function() {
-                        var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
-                        // now pass the response to the callback function on the pyload page
-                        var responseMessage = {actionCode: gpyload.actionCodes.submitResponse, response: recaptchaResponse};
-                        parent.postMessage(JSON.stringify(responseMessage),"*");
-                 }}
-            );
-            var responseMessage = {actionCode: gpyload.actionCodes.activated};
-            parent.postMessage(JSON.stringify(responseMessage),"*");
-        };
+			// function that is called when the captcha finished loading and is ready to interact
+			window.pyloadCaptchaOnLoadCallback = function() {
+				grecaptcha.render (
+					"captchadiv",
+					{size: "compact",
+					 'sitekey': gpyload.data.sitekey,
+					 'callback': function() {
+						var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+						gpyload.submitResponse(recaptchaResponse);
+					 }}
+				);
+				gpyload.activated();
+			};
 
-        if(typeof grecaptcha !== 'undefined' && grecaptcha) {
-            window.pyloadCaptchaOnLoadCallback();
-        } else {
-            var js_script = document.createElement('script');
-            js_script.type = "text/javascript";
-            js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
-            js_script.async = true;
-            document.getElementsByTagName('head')[0].appendChild(js_script);
-        }"""
+			if(typeof grecaptcha !== 'undefined' && grecaptcha) {
+				window.pyloadCaptchaOnLoadCallback();
+			} else {
+				var js_script = document.createElement('script');
+				js_script.type = "text/javascript";
+				js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
+				js_script.async = true;
+				document.getElementsByTagName('head')[0].appendChild(js_script);
+			}"""
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()

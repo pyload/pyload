@@ -15,15 +15,15 @@ class CoinHive(CaptchaService):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     KEY_PATTERN = r'class=[\'"]coinhive-captcha[\'"].+?data-key\s*=[\'"](\w+?)[\'"]'
-    HASHES_PATTERN = r'class=[\'"]coinhive-captcha[\'"].+?data-hashes\s*=[\'"](\w+?)[\'"]'
+    HASHES_PATTERN = r'class=[\'"]coinhive-captcha[\'"].+?data-hashes\s*=[\'"](\d+?)[\'"]'
 
-    COINHIVE_INTERACTIVE_SIG = "8034394f54542d58e938637dc70c4ccd5c11eb835ee575bb15e1b77fe2d938e1ef40487b74bbb8b9" + \
-                               "fc98b899004e5763af9a3a29ec6eb8fa3aaf6757b64452563e2104c6a98884a66ecb49c4448e32c8" + \
-                               "7ddc048fdd2b03c89f8c19f37c9325ed76b21d5a316f33e70b8f6d4f423d1fc5eb678edf2578658d" + \
-                               "95846b965540182b1c6111be825289187e492c89d1dc1ae7b030decdc23437833e6235c42396ed1c" + \
-                               "64825cef5ba233ccd2a50d45cdd4e07c325fe0068d83b13d098bb481ebe77dff3cb386ab37e97702" + \
-                               "5d99d0eaee8055e73e5ba4b07fef25bf9a3d0e4acc2d928c19c94a6deae62f770875905db114282a" + \
-                               "99410fb8807834b07670183aa4356525"
+    COINHIVE_INTERACTIVE_SIG = "792398cf130e9cb0d1c16363c87122a623d0bc7410bd981000f5cbfe1c6ec6708d16edf19bc2703b" + \
+                               "04291697cfde5194c5dc290a23b10af5ad6a26606867a5e38031aa24d715c7ec48a5c61272d757a5" + \
+                               "4835e77558933744a3f0ad245a72ea9447893284c4fd458544a9bff09c19b187321ec7b0f1b2b21e" + \
+                               "246bef741b27f3058b2467a192c100b78bb311300e5da0ce95b331bb77215e261fb4a6b78acd89a7" + \
+                               "13aefdc393fb19f3cdb4682b084c5747347f344fd49ed86bad7fba1ad2f059663ff1b800cffa8948" + \
+                               "bb9c12dddf0ae96831b85c4f9526460cd2a4355c4f800aeb4b541b5c5bee62dc5bfb18c6656c0304" + \
+                               "0b2a819edd07480911b6dadf430f6eb1"
 
     COINHIVE_INTERACTIVE_JS = """
             while(document.children[0].childElementCount > 0) {
@@ -31,9 +31,17 @@ class CoinHive(CaptchaService):
             }
             document.children[0].innerHTML = '<html><body><div class="coinhive-captcha"' + (request.params.hashes ? 'data-hashes="' + request.params.hashes +'"' : '') + ' data-key="' + request.params.key +'" data-callback="pyloadCaptchaFinishCallback"><em>Loading Coinhive Captcha...</em></div></body></html>';
 
+            gpyload.getFrameSize = function() {
+                var divCoinHive = document.body.querySelector("iframe[src*='authedmine.com/captcha/']");
+                if (divCoinHive !== null) {
+                    var rect = divCoinHive.getBoundingClientRect();
+                    return {top: Math.round(rect.top), right: Math.round(rect.right), bottom: Math.round(rect.bottom), left: Math.round(rect.left)};
+                } else {
+                    return {top: 0, right: 0, bottom: 0, left: 0};
+                };
+            };
             window.pyloadCaptchaFinishCallback = function(token){
-                var responseMessage = {actionCode: gpyload.actionCodes.submitResponse, response: token};
-                parent.postMessage(JSON.stringify(responseMessage),"*");
+                gpyload.submitResponse(token);
             }
             var js_script = document.createElement('script');
             js_script.type = "text/javascript";
@@ -41,8 +49,7 @@ class CoinHive(CaptchaService):
             js_script.async = true;
             document.getElementsByTagName('head')[0].appendChild(js_script);
 
-            var responseMessage = {actionCode: gpyload.actionCodes.activated};
-            parent.postMessage(JSON.stringify(responseMessage),"*");"""
+            gpyload.activated();"""
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
@@ -61,7 +68,7 @@ class CoinHive(CaptchaService):
         m = re.search(self.HASHES_PATTERN, html)
         if m is not None:
             self.hashes = m.group(1).strip()
-            self.log_debug("Hashes: %s" % self.key)
+            self.log_debug("Hashes: %s" % self.hashes)
             return self.hashes
         else:
             self.log_warning(_("Hashes pattern not found"))

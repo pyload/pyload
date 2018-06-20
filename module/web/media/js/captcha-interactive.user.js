@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         pyLoad Script for Interactive Captcha
 // @namespace    https://pyload.net/
-// @version      0.14
-// @author       Michi-F
+// @version      0.15
+// @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
 // @homepage     https://github.com/pyload/pyload
 // @icon         https://raw.githubusercontent.com/pyload/pyload/stable/module/web/media/img/favicon.ico
@@ -37,35 +37,11 @@
 (function() {
     'use strict';
 
-    window.gpyload = {
-        actionCodes : { // action codes for communication with pyload main page
-            activate: "pyloadActivateInteractive",
-            activated: "pyloadActivatedInteractive",
-            getSize: "pyloadIframeGetSize",
-            size: "pyloadIframeSize",
-            submitResponse: "pyloadSubmitResponse"
-        },
-        getElementSize : function(element) {
-            if (!element.getBoundingClientRect) {
-                return {
-                    width: element.offsetWidth,
-                    height: element.offsetHeight
-                }
-            }
-            var rect = element.getBoundingClientRect();
-            return {
-                width: Math.round(rect.width),
-                height: Math.round(rect.height)
-            }
-        },
-        data : {}
-    };
-
     // this function listens to messages from the pyload main page
     window.addEventListener('message', function(e) {
         var request = JSON.parse(e.data);
 
-        if(request.actionCode === gpyload.actionCodes.activate) {
+        if(request.actionCode === "pyloadActivateInteractive") {
             if (request.params.script) {
                 var sig = new KJUR.crypto.Signature({"alg": "SHA384withRSA", "prov": 'cryptojs/jsrsa'});
                 sig.init("-----BEGIN PUBLIC KEY-----\n" +
@@ -79,9 +55,72 @@
                     "-----END PUBLIC KEY----- ");
                 sig.updateString(request.params.script.code);
                 if (sig.verify(request.params.script.signature)) {
-                    eval(request.params.script.code);
+                    window.gpyload = {
+                        isVisible : function(element) {
+                            var style = window.getComputedStyle(element);
+                            return !(style.width === 0 ||
+                                    style.height === 0 ||
+                                    style.opacity === 0 ||
+                                    style.display ==='none' ||
+                                    style.visibility === 'hidden'
+                            );
+                        },
+                        debounce : function (fn, delay) {
+                          var timer = null;
+                          return function () {
+                            var context = this, args = arguments;
+                            clearTimeout(timer);
+                            timer = setTimeout(function () {
+                                fn.apply(context, args);
+                            }, delay);
+                          };
+                        },
+                        submitResponse: function(response) {
+                            if (typeof gpyload.observer !== 'undefined') {
+                                gpyload.observer.disconnect();
+                            }
+                            var responseMessage = {actionCode: "pyloadSubmitResponse", params: {response: response}};
+                            parent.postMessage(JSON.stringify(responseMessage),"*");
+                        },
+                        activated: function() {
+                            var responseMessage = {actionCode: "pyloadActivatedInteractive"};
+                            parent.postMessage(JSON.stringify(responseMessage),"*");
+                        },
+                        setSize : function(rect) {
+                            if (gpyload.data.rectDoc.left !== rect.left || gpyload.data.rectDoc.right !== rect.right || gpyload.data.rectDoc.top !== rect.top || gpyload.data.rectDoc.bottom !== rect.bottom) {
+                                gpyload.data.rectDoc = rect;
+                                var responseMessage = {actionCode: "pyloadIframeSize", params: {rect: rect}};
+                                parent.postMessage(JSON.stringify(responseMessage), "*");
+                            }
+                        },
+                        data : {
+                            debounceInterval: 1500,
+                            rectDoc: {top: 0, right: 0, bottom: 0, left: 0}
+                        }
+                    };
+
+                    try {
+                        eval(request.params.script.code);
+                    } catch(err) {
+                        console.error("pyLoad: Script aborted: " + err.name + ": " + err.message + " (" + err.stack +")");
+                        return;
+                    }
+                    if (typeof gpyload.getFrameSize === "function") {
+                        var checkDocSize = gpyload.debounce(function() {
+                            window.scrollTo(0,0);
+                            var rect = gpyload.getFrameSize();
+                            gpyload.setSize(rect);
+                        }, gpyload.data.debounceInterval);
+                        gpyload.observer = new MutationObserver(function(mutationsList) {
+                            checkDocSize();
+                        });
+                        var js_script = document.createElement("script");
+                        js_script.type = "text/javascript";
+                        js_script.innerHTML = "gpyload.observer.observe(document.querySelector('body'), {attributes:true, attributeOldValue:false, characterData:true, characterDataOldValue:false, childList:true, subtree:true});";
+                        document.getElementsByTagName('body')[0].appendChild(js_script);
+                    }
                 } else {
-                    console.log("pyLoad: Script signature verification failed")
+                    console.error("pyLoad: Script signature verification failed")
                 }
             }
         }
