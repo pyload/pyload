@@ -207,16 +207,19 @@ $(function() {
 
     $("#add_form").submit(function(event) {
         event.preventDefault();
-        if ($("#add_name").value === "" && $("#add_file").value === "") {
+        var formData = new FormData(this);
+        if (formData.get("add_name") === "" && formData.get("add_file") === "") {
             alert("{{_('Please Enter a package name.')}}");
             return false;
         } else {
             $.ajax({
                 url: "{{'/json/add_package'|url}}",
                 method: "POST",
-                data: $(this).serialize(),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function() {
-                    var queue = $("#add_dest").value === "1" ? "queue" : "collector";
+                    var queue = formData.get("add_dest") === "1" ? "queue" : "collector";
                     var re = new RegExp("/" + queue + "/?$", "i");
                     if (window.location.toString().match(re)) {
                         window.location.reload();
