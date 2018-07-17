@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import os
 
 from ..internal.misc import json, parse_name, timestamp
 from ..internal.SimpleHoster import SimpleHoster
@@ -15,7 +16,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.39"
+    __version__ = "1.40"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -124,7 +125,7 @@ class UlozTo(SimpleHoster):
             data = json.loads(xapca)
             if self.config.get("captcha") == "Sound":
                 captcha_value = self.captcha.decrypt(
-                    str(data['sound']), input_type='wav', ocr="UlozTo")
+                    str(data['sound']), input_type=os.path.splitext(data['sound'])[1], ocr="UlozTo")
             else:
                 captcha_value = self.captcha.decrypt(data['image'])
             self.log_debug(

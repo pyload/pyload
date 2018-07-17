@@ -15,7 +15,7 @@ def args(**kwargs):
 class RealdebridCom(MultiAccount):
     __name__ = "RealdebridCom"
     __type__ = "account"
-    __version__ = "0.56"
+    __version__ = "0.58"
     __status__ = "testing"
 
     __config__ = [("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),
