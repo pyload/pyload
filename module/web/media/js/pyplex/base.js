@@ -220,6 +220,9 @@ $(function() {
                     if (window.location.toString().match(re)) {
                         window.location.reload();
                     }
+                },
+                error: function() {
+                    indicateFail();
                 }
             });
             $("#add_box").modal('hide');
@@ -234,7 +237,7 @@ $(function() {
     $("#action_play").click(function() {
         $.get("{{'/api/unpauseServer'|url}}", function () {
             $.ajax({
-                method: "post",
+                method: "POST",
                 url: "{{'/json/status'|url}}",
                 async: true,
                 timeout: 3000,
@@ -250,7 +253,7 @@ $(function() {
     $("#action_stop").click(function() {
         $.get("{{'/api/pauseServer'|url}}", function () {
             $.ajax({
-                method: "post",
+                method: "POST",
                 url: "{{'/json/status'|url}}",
                 async: true,
                 timeout: 3000,
@@ -270,7 +273,7 @@ $(function() {
 
     $("#cap_box #cap_positional").click(on_captcha_click);
     $.ajax({
-        method:"post",
+        method: "POST",
         url: "{{'/json/status'|url}}",
         async: true,
         timeout: 3000,
@@ -279,7 +282,7 @@ $(function() {
 
     setInterval(function() {
         $.ajax({
-            method:"post",
+            method: "POST",
             url: "{{'/json/status'|url}}",
             async: true,
             timeout: 3000,
@@ -385,7 +388,7 @@ function clear_captcha() {
 }
 
 function submit_captcha() {
-    load_captcha("post", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
+    load_captcha("POST", "cap_id=" + $("#cap_id").val() + "&cap_result=" + $("#cap_result").val());
     $("#cap_result").val("");
     return false;
 }
