@@ -224,6 +224,9 @@ $(function() {
                     if (window.location.toString().match(re)) {
                         window.location.reload();
                     }
+                },
+                error: function() {
+                    indicateFail("{{_('Error occurred')}}");
                 }
             });
             $("#add_box").modal('hide');
