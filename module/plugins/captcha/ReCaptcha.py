@@ -379,7 +379,7 @@ class ReCaptcha(CaptchaService):
             html = self.pyfile.plugin.load(fallback_url, post=post_str, ref=fallback_url)
 
             try:
-                result = re.search(r'"this\.select\(\)">(.*?)</textarea>', html).group(1)
+                result = re.search(r'<div class="fbc-verification-token"><textarea .*readonly>(.*?)</textarea>', html).group(1)
                 self.correct()
                 break
 
