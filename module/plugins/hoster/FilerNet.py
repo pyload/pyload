@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-#
-# Test links:
-# http://filer.net/get/ivgf5ztw53et3ogd
-# http://filer.net/get/hgo14gzcng3scbvv
 
 import os
 import re
@@ -14,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.26"
+    __version__ = "0.27"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
@@ -27,7 +23,8 @@ class FilerNet(SimpleHoster):
     __description__ = """Filer.net hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+                   ("Walter Purcaro", "vuolter@gmail.com"),
+                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     INFO_PATTERN = r'<h1 class="page-header">Free Download (?P<N>\S+) <small>(?P<S>[\w.]+) (?P<U>[\w^_]+)</small></h1>'
     OFFLINE_PATTERN = r'Nicht gefunden'
@@ -44,8 +41,7 @@ class FilerNet(SimpleHoster):
 
         self.data = self.load(pyfile.url, post={'token': inputs['token']})
 
-        inputs = self.parse_html_form(
-            input_names={'hash': re.compile(r'.+')})[1]
+        inputs = self.parse_html_form(input_names={'hash': re.compile(r'.+')})[1]
         if 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
@@ -57,8 +53,7 @@ class FilerNet(SimpleHoster):
         self.captcha.task = None
 
         self.download(pyfile.url,
-                      post={'recaptcha_challenge_field': challenge,
-                            'recaptcha_response_field': response,
+                      post={'g-recaptcha-response': response,
                             'hash': inputs['hash']})
 
         #: Restore the captcha task
