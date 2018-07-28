@@ -204,7 +204,8 @@ $(function() {
     $("#add_form").submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
-        if (formData.get("add_name") === "" && formData.get("add_file") === "") {
+        var $this = $(this);
+        if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
             alert("{{_('Please Enter a package name.')}}");
             return false;
         } else {
@@ -215,14 +216,14 @@ $(function() {
                 processData: false,
                 contentType: false,
                 success: function() {
-                    var queue = formData.get("add_dest") === "1" ? "queue" : "collector";
+                    var queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
                     var re = new RegExp("/" + queue + "/?$", "i");
                     if (window.location.toString().match(re)) {
                         window.location.reload();
                     }
                 },
                 error: function() {
-                    indicateFail();
+                    indicateFail("{{_('Error occurred')}}");
                 }
             });
             $("#add_box").modal('hide');
