@@ -208,7 +208,8 @@ $(function() {
     $("#add_form").submit(function(event) {
         event.preventDefault();
         var formData = new FormData(this);
-        if (formData.get("add_name") === "" && formData.get("add_file") === "") {
+        var $this = $(this);
+        if ($this.find("#add_name").val() === "" && $this.find("#add_file").val() === "") {
             alert("{{_('Please Enter a package name.')}}");
             return false;
         } else {
@@ -219,7 +220,7 @@ $(function() {
                 processData: false,
                 contentType: false,
                 success: function() {
-                    var queue = formData.get("add_dest") === "1" ? "queue" : "collector";
+                    var queue = $this.find("#add_dest").val() === "1" ? "queue" : "collector";
                     var re = new RegExp("/" + queue + "/?$", "i");
                     if (window.location.toString().match(re)) {
                         window.location.reload();
@@ -368,7 +369,6 @@ function set_captcha(a) {
             interactiveCaptchaHandlerInstance = new interactiveCaptchaHandler("cap_interactive_iframe", "cap_interactive_loading", submit_interactive_captcha);
         }
         if(params.url !== undefined && params.url.indexOf("http") === 0) {
-            // $("#cap_box #cap_title").html('<p style="max-width: 400px; position: absolute; top:10px;">{{_("The captcha may take a few seconds to load.")}}</p><p style="max-width:400px; position:absolute; top:50px;">{{_("Note: to solve this interactive captcha, please install the Tampermonkey add-on in your browser and add the pyload userscript.")}}</p>');
             $("#cap_interactive").css("display", "block");
             interactiveCaptchaHandlerInstance.startInteraction(params.url, params);
         }
