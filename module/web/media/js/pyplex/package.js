@@ -14,7 +14,7 @@ function PackageUI (url, type){
 
     };
 
-    this.parsePackages = function() {
+    this.parsePackages = function () {
        $("#package-list").children("li").each(function(ele) {
             var id = this.id.match(/[0-9]+/);
             packages.push(new Package(thisObject, id, this));
@@ -46,7 +46,7 @@ function PackageUI (url, type){
         });
     };
 
-    this.deleteFinished = function() {
+    this.deleteFinished = function () {
         indicateLoad();
         $.get("{{'/api/deleteFinished'|url}}", function(data) {
             if (data.length > 0) {
@@ -57,7 +57,9 @@ function PackageUI (url, type){
                 });
             }
             indicateSuccess();
-        }).fail(indicateFail);
+        }).fail(function () {
+            indicateFail();
+        });
     };
 
     this.restartFailed = function () {
@@ -69,7 +71,9 @@ function PackageUI (url, type){
                 });
             }
             indicateSuccess();
-        }).fail(indicateFail);
+        }).fail(function () {
+            indicateFail();
+        });
     };
 
     this.initialize(url, type);
@@ -84,7 +88,7 @@ function Package (ui, id, ele){
     var password;
     var folder;
 
-    this.initialize = function() {
+    this.initialize = function () {
         thisObject = this;
         if (!ele) {
             this.createElement();
@@ -107,11 +111,11 @@ function Package (ui, id, ele){
         });
     };
 
-    this.createElement = function() {
+    this.createElement = function () {
         alert("create");
     };
 
-    this.parseElement = function() {
+    this.parseElement = function () {
         var imgs = $(ele).find('span');
 
         name = $(ele).find('.name');
@@ -127,9 +131,11 @@ function Package (ui, id, ele){
         $(ele).find('.packagename').click(this.toggle);
     };
 
-    this.loadLinks = function() {
+    this.loadLinks = function () {
         indicateLoad();
-        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks).fail(indicateFail);
+        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks).fail(function () {
+            indicateFail();
+        });
     };
 
     this.createLinks = function(data) {
@@ -185,25 +191,29 @@ function Package (ui, id, ele){
         thisObject.toggle();
     };
 
-    this.registerLinkEvents = function() {
+    this.registerLinkEvents = function () {
         $(ele).find('.children').children('ul').children("li").each(function(child) {
             var lid = $(this).find('.child').attr('id').match(/[0-9]+/);
             var imgs = $(this).find('.child_secrow span');
             $(imgs[3]).bind('click',{ lid: lid}, function(e) {
-                $.get("{{'/api/deleteFiles/['|url}}" + lid + "]", function() {
+                $.get("{{'/api/deleteFiles/['|url}}" + lid + "]", function () {
                     $('#file_' + lid).remove()
-                }).fail(indicateFail);
+                }).fail(function () {
+                    indicateFail();
+                });
             });
 
             $(imgs[4]).bind('click',{ lid: lid},function(e) {
-                $.get("{{'/api/restartFile/'|url}}" + lid, function() {
+                $.get("{{'/api/restartFile/'|url}}" + lid, function () {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
                     var spans = $(ele1).find(".child_status");
                     $(spans[1]).html("{{_('queued')}}");
                     indicateSuccess();
-                }).fail(indicateFail);
+                }).fail(function () {
+                    indicateFail();                    
+                });
             });
         });
 
@@ -235,7 +245,7 @@ function Package (ui, id, ele){
         });
     };
 
-    this.toggle = function() {
+    this.toggle = function () {
         var icon = $(ele).find('.packageicon');
         var child = $(ele).find('.children');
         if (child.css('display') == "block") {
@@ -255,10 +265,12 @@ function Package (ui, id, ele){
 
     this.deletePackage = function(event) {
         indicateLoad();
-        $.get("{{'/api/deletePackages/['|url}}" + id + "]", function() {
+        $.get("{{'/api/deletePackages/['|url}}" + id + "]", function () {
             $(ele).remove();
             indicateFinish();
-        }).fail(indicateFail);
+        }).fail(function () {
+            indicateFail();            
+        });
 
         event.stopPropagation();
         event.preventDefault();
@@ -266,15 +278,17 @@ function Package (ui, id, ele){
 
     this.restartPackage = function(event) {
         indicateLoad();
-        $.get("{{'/api/restartPackage/'|url}}" + id, function() {
+        $.get("{{'/api/restartPackage/'|url}}" + id, function () {
             thisObject.close();
             indicateSuccess();
-        }).fail(indicateFail);
+        }).fail(function () {
+            indicateFail();            
+        });
         event.stopPropagation();
         event.preventDefault();
     };
 
-    this.close = function() {
+    this.close = function () {
         var child = $(ele).find('.children');
         if (child.css('display') == "block") {
             $(child).fadeOut();
@@ -286,10 +300,12 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("{{'/json/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function() {
+        $.get("{{'/json/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function () {
             $(ele).remove();
             indicateFinish();
-        }).fail(indicateFail);
+        }).fail(function () {
+            indicateFail();            
+        });
         event.stopPropagation();
         event.preventDefault();
     };
@@ -300,7 +316,9 @@ function Package (ui, id, ele){
             length = data.links.length;
             for (i = 1; i <= length/2; i++){
                 order = data.links[length-i].fid + '|' + (i-1);
-                $.get( "{{'/json/link_order/'|url}}" + order).fail(indicateFail);
+                $.get( "{{'/json/link_order/'|url}}" + order).fail(function () {
+                    indicateFail();
+                });
             }
         });
         indicateFinish();
