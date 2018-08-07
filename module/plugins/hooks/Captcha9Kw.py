@@ -205,7 +205,8 @@ class Captcha9Kw(Addon):
             time.sleep(10)
 
         else:
-            self.fail(_("Too many captchas in queue"))
+            self.log_error(_("Too many captchas in queue"))
+            return
 
         for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
             details = map(str.strip, opt.split(':'))
