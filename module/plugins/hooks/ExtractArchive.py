@@ -93,10 +93,10 @@ class ArchiveQueue(object):
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
     __type__ = "hook"
-    __version__ = "1.66"
+    __version__ = "1.67"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True),
+    __config__ = [("activated", "bool", "Activated", False),
                   ("fullpath", "bool", "Extract with full paths", True),
                   ("overwrite", "bool", "Overwrite files", False),
                   ("keepbroken", "bool", "Try to extract broken archives", False),
@@ -107,10 +107,8 @@ class ExtractArchive(Addon):
                   ("deltotrash", "bool", "Move to trash instead delete", True),
                   ("subfolder", "bool", "Create subfolder for each package", False),
                   ("destination", "folder", "Extract files to folder", ""),
-                  ("extensions", "str", "Extract archives ending with extension",
-                   "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
-                  ("excludefiles", "str", "Don't extract the following files",
-                   "*.nfo,*.DS_Store,index.dat,thumb.db"),
+                  ("extensions", "str", "Extract archives ending with extension", "7z,bz2,bzip2,gz,gzip,lha,lzh,lzma,rar,tar,taz,tbz,tbz2,tgz,xar,xz,z,zip"),
+                  ("excludefiles", "str", "Don't extract the following files", "*.nfo,*.DS_Store,index.dat,thumb.db"),
                   ("recursive", "bool", "Extract archives in archives", True),
                   ("waitall", "bool", "Run after all downloads was processed", False),
                   ("priority", "int", "Process priority", 0)]
@@ -286,7 +284,7 @@ class ExtractArchive(Addon):
                 new_files_ids = []
 
                 if extensions:  #: Include only specified archive types
-                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1].lower()) in extensions
+                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1]) in extensions
                                                             for Extractor in self.extractors]), files_ids)
 
                 #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
@@ -342,8 +340,12 @@ class ExtractArchive(Addon):
                                          if fname not in chunks]
                             self.log_debug("Extracted files: %s" % new_files)
 
+                            new_folders = uniqify([os.path.dirname(_f) for _f in new_files])
+                            for foldername in new_folders:
+                                self.set_permissions(fsjoin(extract_folder, foldername))
+
                             for filename in new_files:
-                                self.set_permissions(filename)
+                                self.set_permissions(fsjoin(extract_folder, filename))
 
                             for filename in new_files:
                                 file = encode(fsjoin(os.path.dirname(archive.filename), filename))
