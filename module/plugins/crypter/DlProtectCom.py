@@ -9,7 +9,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 class DlProtectCom(SimpleCrypter):
     __name__ = "DlProtectCom"
     __type__ = "crypter"
-    __version__ = "0.12"
+    __version__ = "0.13"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect1\.com/\w+'
@@ -24,6 +24,10 @@ class DlProtectCom(SimpleCrypter):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def get_links(self):
+        if "Cliquez sur continuer pour voir le(s) lien" in self.data:
+            self.data = self.load(self.pyfile.url,
+                                  post={'submit': "Continuer"})
+
         if 'img src="captcha.php' in self.data:
             captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, "/captcha.php"), input_type="jpeg")
             self.data = self.load(self.pyfile.url,
