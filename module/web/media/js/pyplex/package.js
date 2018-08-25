@@ -291,6 +291,9 @@ function Package (ui, id, ele){
     this.close = function () {
         var child = $(ele).find('.children');
         if (child.css('display') == "block") {
+            var icon = $(ele).find('.packageicon');
+            icon.removeClass('glyphicon-folder-open');
+            icon.addClass('glyphicon-folder-close');
             $(child).fadeOut();
         }
         var ul = $("#sort_children_" + id);
