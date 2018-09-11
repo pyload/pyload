@@ -12,7 +12,7 @@ from .misc import encode, exists
 class Container(Crypter):
     __name__ = "Container"
     __type__ = "container"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -44,7 +44,7 @@ class Container(Crypter):
         self._create_packages()
 
     def _delete_tmpfile(self):
-        if self.pyfile.name.startswith("tmp_"):
+        if os.path.basename(self.pyfile.name).startswith("tmp_"):
             self.remove(self.pyfile.url, trash=False)
 
     def _make_tmpfile(self):
