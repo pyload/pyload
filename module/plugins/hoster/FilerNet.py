@@ -10,7 +10,7 @@ from ..internal.SimpleHoster import SimpleHoster
 class FilerNet(SimpleHoster):
     __name__ = "FilerNet"
     __type__ = "hoster"
-    __version__ = "0.27"
+    __version__ = "0.28"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?filer\.net/get/\w+'
@@ -34,15 +34,14 @@ class FilerNet(SimpleHoster):
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'href="([^"]+)">Get download</a>'
 
     def handle_free(self, pyfile):
-        inputs = self.parse_html_form(
-            input_names={'token': re.compile(r'.+')})[1]
-        if 'token' not in inputs:
-            self.error(_("Unable to detect token"))
+        inputs = self.parse_html_form(input_names={'token': re.compile(r'.+')})[1]
+        if inputs is None or 'token' not in inputs:
+            self.retry()
 
         self.data = self.load(pyfile.url, post={'token': inputs['token']})
 
         inputs = self.parse_html_form(input_names={'hash': re.compile(r'.+')})[1]
-        if 'hash' not in inputs:
+        if inputs is None or 'hash' not in inputs:
             self.error(_("Unable to detect hash"))
 
         self.captcha = ReCaptcha(pyfile)
@@ -59,8 +58,7 @@ class FilerNet(SimpleHoster):
         #: Restore the captcha task
         self.captcha.task = captcha_task
 
-        if self.scan_download(
-                {'html': re.compile(r'\A\s*<!DOCTYPE html')}) == "html":
+        if self.scan_download({'html': re.compile(r'\A\s*<!DOCTYPE html')}) == "html":
             self.log_warning(
                 _("There was HTML code in the downloaded file (%s)...bad captcha? The download will be restarted." %
                   self.pyfile.name))
