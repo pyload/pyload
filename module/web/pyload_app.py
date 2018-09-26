@@ -539,6 +539,7 @@ def setup():
 
 
 @route("/info")
+@login_required('STATUS')
 def info():
     conf = PYLOAD.getConfigDict()
 
