@@ -16,7 +16,7 @@ def convert_decimal_prefix(m):
 class UlozTo(SimpleHoster):
     __name__ = "UlozTo"
     __type__ = "hoster"
-    __version__ = "1.41"
+    __version__ = "1.42"
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)/(?:live/)?(?P<ID>[!\w]+/[^/?]*)'
@@ -39,9 +39,8 @@ class UlozTo(SimpleHoster):
     SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    URL_REPLACEMENTS = [(r'(?<=http://)([^/]+)', "www.ulozto.cz"),
-                        ("http://", "https://"),
-                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.cz")]
+    URL_REPLACEMENTS = [("http://", "https://"),
+                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
 
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
@@ -112,7 +111,7 @@ class UlozTo(SimpleHoster):
             #: New version - better to get new parameters (like captcha reload) because of image url - since 6.12.2013
             self.log_debug('Using "new" version')
 
-            xapca = self.load("https://www.ulozto.cz/reloadXapca.php",
+            xapca = self.load("https://ulozto.net/reloadXapca.php",
                               get={'rnd': timestamp()})
 
             xapca = xapca.replace(
@@ -154,7 +153,7 @@ class UlozTo(SimpleHoster):
         else:
             self.error(_("CAPTCHA form changed"))
 
-        domain = "https://www.pornfile.cz" if is_adult else "https://ulozto.cz"
+        domain = "https://pornfile.cz" if is_adult else "https://ulozto.net"
         jsvars = self.get_json_response(domain + action, inputs)
         self.download(jsvars['url'])
 
