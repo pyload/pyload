@@ -339,7 +339,7 @@ class ReCaptcha(CaptchaService):
 
         html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
 
-        if re.search(r'href="https://support.google.com/recaptcha/\?hl=\w+?#6223828"', html) is not None:
+        if re.search(r'href="https://support.google.com/recaptcha.*"', html) is not None:
             self.log_warning(_("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive"))
             return self._challenge_v2js(key, secure_token=secure_token)
 
