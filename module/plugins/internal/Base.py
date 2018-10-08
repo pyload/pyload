@@ -26,7 +26,7 @@ def parse_fileInfo(klass, url="", html=""):
 class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
-    __version__ = "0.33"
+    __version__ = "0.34"
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
@@ -441,15 +441,13 @@ class Base(Plugin):
             if self.premium:
                 self.restart_free = True
             else:
-                self.fail(
-                    "%s | %s" %
-                    (msg, _("Url was already processed as free")))
+                self.fail("%s | %s" % (msg, _("Url was already processed as free")))
 
         self.req.clearCookies()
 
         raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
-    def retry(self, attemps=5, wait=1, msg=""):
+    def retry(self, attemps=5, wait=1, msg="", msgfail=_("Max retries reached")):
         """
         Retries and begin again from the beginning
 
@@ -468,7 +466,7 @@ class Base(Plugin):
             self.retries[id] = 0
 
         if 0 < attemps <= self.retries[id]:
-            self.fail(msg or _("Max retries reached"))
+            self.fail(msgfail)
 
         self.retries[id] += 1
 
@@ -476,10 +474,9 @@ class Base(Plugin):
 
         raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
-    def retry_captcha(self, attemps=10, wait=1,
-                      msg=_("Max captcha retries reached")):
-        self.captcha.invalid()
-        self.retry(attemps, wait, msg)
+    def retry_captcha(self, attemps=10, wait=1, msg="", msgfail=_("Max captcha retries reached")):
+        self.captcha.invalid(msg)
+        self.retry(attemps, wait, msg=_("Retry Captcha"), msgfail=msgfail)
 
     def fixurl(self, url, baseurl=None, unquote=True):
         url = fixurl(url, unquote=True)

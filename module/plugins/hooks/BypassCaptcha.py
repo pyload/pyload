@@ -26,7 +26,7 @@ class BypassCaptchaException(Exception):
 class BypassCaptcha(Addon):
     __name__ = "BypassCaptcha"
     __type__ = "hook"
-    __version__ = "0.13"
+    __version__ = "0.14"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -118,7 +118,7 @@ class BypassCaptcha(Addon):
 
     @threaded
     def _process_captcha(self, task):
-        c = task.captchaFile
+        c = task.captchaParams['file']
         try:
             ticket, result = self.submit(c)
         except BypassCaptchaException, e:

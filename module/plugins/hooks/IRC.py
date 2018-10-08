@@ -18,7 +18,7 @@ from ..internal.Notifier import Notifier
 class IRC(Thread, Notifier):
     __name__ = "IRC"
     __type__ = "hook"
-    __version__ = "0.25"
+    __version__ = "0.26"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False),
@@ -75,7 +75,7 @@ class IRC(Thread, Notifier):
             task.setWaiting(60)
 
             html = self.load("http://www.freeimagehosting.net/upl.php",
-                             post={'file': (pycurl.FORM_FILE, task.captchaFile)})
+                             post={'file': (pycurl.FORM_FILE, task.captchaParams['file'])})
 
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(_("New Captcha Request: %s") % url)

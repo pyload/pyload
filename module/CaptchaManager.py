@@ -21,16 +21,18 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
+from common.json_layer import json
+
 class CaptchaManager():
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
-        self.tasks = [] #task store, for outgoing tasks only
+        self.tasks = []  # Task store, for outgoing tasks only
 
-        self.ids = 0 #only for internal purpose
+        self.ids = 0  # Only for internal purpose
 
-    def newTask(self, img, format, file, result_type):
-        task = CaptchaTask(self.ids, img, format, file, result_type)
+    def newTask(self, format, params, result_type):
+        task = CaptchaTask(self.ids, format, params, result_type)
         self.ids += 1
         return task
 
@@ -52,17 +54,19 @@ class CaptchaManager():
     def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
-            if task.id == str(tid): #task ids are strings
+            if task.id == str(tid):  # Task ids are strings
                 self.lock.release()
                 return task
         self.lock.release()
         return None
 
-    def handleCaptcha(self, task):
+    def handleCaptcha(self, task, timeout):
         cli = self.core.isClientConnected()
 
-        if cli: #client connected -> should solve the captcha
-            task.setWaiting(50) #wait 50 sec for response
+        task.setWaiting(timeout)
+
+        # if cli:  # Client connected -> should solve the captcha
+        #     task.setWaiting(50)  # Wait minimum 50 sec for response
 
         for plugin in self.core.hookManager.activePlugins():
             try:
@@ -71,7 +75,7 @@ class CaptchaManager():
                 if self.core.debug:
                     print_exc()
             
-        if task.handler or cli: #the captcha was handled
+        if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)
             return True
 
@@ -81,11 +85,10 @@ class CaptchaManager():
 
 
 class CaptchaTask():
-    def __init__(self, id, img, format, file, result_type='textual'):
+    def __init__(self, id, format, params={}, result_type='textual'):
         self.id = str(id)
-        self.captchaImg = img
+        self.captchaParams = params
         self.captchaFormat = format
-        self.captchaFile = file
         self.captchaResultType = result_type
         self.handler = [] #the hook plugins that will take care of the solution
         self.result = None
@@ -96,14 +99,15 @@ class CaptchaTask():
         self.data = {} #handler can store data here
 
     def getCaptcha(self):
-        return self.captchaImg, self.captchaFormat, self.captchaResultType
+        return self.captchaParams, self.captchaFormat, self.captchaResultType
 
-    def setResult(self, text):
-        if self.isTextual():
-            self.result = text
-        if self.isPositional():
+    def setResult(self, result):
+        if self.isTextual() or self.isInteractive():
+            self.result = result
+
+        elif self.isPositional():
             try:
-                parts = text.split(',')
+                parts = result.split(',')
                 self.result = (int(parts[0]), int(parts[1]))
             except:
                 self.result = None
@@ -137,7 +141,11 @@ class CaptchaTask():
     def isPositional(self):
         """ returns if user have to click a specific region on the captcha """
         return self.captchaResultType == 'positional'
-
+    
+    def isInteractive(self):
+        """ returns if user has to solve the captcha in an interactive iframe """
+        return self.captchaResultType == 'interactive'
+        
     def setWatingForUser(self, exclusive):
         if exclusive:
             self.status = "user"
