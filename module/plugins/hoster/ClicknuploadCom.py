@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 from ..internal.XFSHoster import XFSHoster
 

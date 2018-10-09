@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import json

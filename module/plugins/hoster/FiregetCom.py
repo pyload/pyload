@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import urllib
 
 from module.network.HTTPRequest import BadHeader
 

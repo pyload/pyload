@@ -34,7 +34,6 @@ class HearthisAtFolder(Crypter):
 
         else:
             #: Playlist
-            pass
             m = re.search(r'intInternalId = (\d+);', self.data)
             if m is None:
                 self.fail(_("Internal Id not found"))

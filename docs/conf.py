@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
 from os.path import dirname, join, abspath
 
 dir_name = join(dirname(abspath("")))

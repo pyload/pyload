@@ -9,7 +9,6 @@ except ImportError:
 
 from datetime import datetime, timedelta
 import os
-import string
 import types
 import weakref
 import warnings

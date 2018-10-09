@@ -12,7 +12,6 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
-import operator
 from jinja2.runtime import Undefined
 from jinja2.environment import Environment
 from jinja2.exceptions import SecurityError

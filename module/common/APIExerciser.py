@@ -2,8 +2,8 @@
 
 import string
 from threading import Thread
-from random import choice, random, sample, randint
-from time import time, sleep
+from random import choice, randint, sample
+from time import time
 from math import floor
 import gc
 
