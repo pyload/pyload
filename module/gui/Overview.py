@@ -154,7 +154,7 @@ class OverviewDelegate(QItemDelegate):
         else:
             speedline = QString(formatEta(eta) + "     " + _("Speed: %s") % formatSpeed(speed))
         
-        if progress in (0,100):
+        if progress in (0, 100):
             sizeline = QString(_("Size:") + "%s" % formatSize(maxSize))
         else:
             sizeline = QString(_("Size:") + "%s / %s" % (formatSize(currentSize), formatSize(maxSize)))

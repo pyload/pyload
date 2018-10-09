@@ -10,12 +10,12 @@ class DiscordNotifier(Notifier):
   __version__ = "0.1"
   __status__ = "testing"
 
-  __config__ = [("activated", "bool" , "Activated", False),
+  __config__ = [("activated", "bool", "Activated", False),
                 ("webhookurl", "string", "The URL of the webhook", ""),
                 ("captcha", "bool", "Notify captcha request", True),
                 ("reconnection", "bool", "Notify reconnection request", True),
                 ("downloadfinished", "bool", "Notify download finished", True),
-                ("downloadfailed", "bool" ,"Notify download failed", True),
+                ("downloadfailed", "bool", "Notify download failed", True),
                 ("packagefinished", "bool", "Notify package finished", True),
                 ("packagefailed", "bool", "Notify package failed", True),
                 ("update", "bool", "Notify pyload update", False),

@@ -53,7 +53,7 @@ class ConfigParser:
         
         conf = {}
         
-        section, option, value, typ, desc = "","","","",""
+        section, option, value, typ, desc = "", "", "", "", ""
         
         listmode = False
         
@@ -82,7 +82,7 @@ class ConfigParser:
                         
                         if line.endswith("]"):
                             listmode = False
-                            line = line.replace("]","")
+                            line = line.replace("]", "")
                             
                         value += [self.cast(typ, x.strip()) for x in line.split(",") if x]
                         
@@ -135,7 +135,7 @@ class ConfigParser:
         if typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1","true", "on", "an","yes") else False
+            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
         else:
             return value
         

@@ -30,7 +30,7 @@ class AccountEdit(QWidget):
         QMainWindow.__init__(self)
 
         self.setWindowTitle(_("Edit account"))
-        self.setWindowIcon(QIcon(join(pypath, "icons","logo.png")))
+        self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
         
         self.setLayout(QGridLayout())
         l = self.layout()

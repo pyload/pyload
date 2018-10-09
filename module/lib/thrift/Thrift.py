@@ -75,7 +75,7 @@ class TException(Exception):
   """Base class for all thrift exceptions."""
 
   # BaseException.message is deprecated in Python v[2.6,3.0)
-  if (2,6,0) <= sys.version_info < (3,0):
+  if (2, 6, 0) <= sys.version_info < (3, 0):
     def _get_message(self):
 	    return self._message
     def _set_message(self, message):

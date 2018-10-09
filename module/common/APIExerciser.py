@@ -23,7 +23,7 @@ def createURLs():
 
     return urls
 
-AVOID = (0,3,8)
+AVOID = (0, 3, 8)
 
 idPool = 0
 sumCalled = 0
@@ -95,7 +95,7 @@ class APIExerciser(Thread):
 
         m = ["statusDownloads", "statusServer", "addPackage", "getPackageData", "getFileData", "deleteFiles",
              "deletePackages", "getQueue", "getCollector", "getQueueData", "getCollectorData", "isCaptchaWaiting",
-             "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices" , "getAccounts", "getAllUserData"]
+             "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices", "getAccounts", "getAllUserData"]
 
         method = choice(m)
         #print "Testing:", method

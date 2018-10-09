@@ -321,7 +321,7 @@ class ConfigSection(TBase):
     None, # 0
     (1, TType.STRING, 'name', None, None, ), # 1
     (2, TType.STRING, 'description', None, None, ), # 2
-    (3, TType.LIST, 'items', (TType.STRUCT,(ConfigItem, ConfigItem.thrift_spec)), None, ), # 3
+    (3, TType.LIST, 'items', (TType.STRUCT, (ConfigItem, ConfigItem.thrift_spec)), None, ), # 3
     (4, TType.STRING, 'outline', None, None, ), # 4
   )
 
@@ -438,8 +438,8 @@ class PackageData(TBase):
     (9, TType.I64, 'sizedone', None, None, ), # 9
     (10, TType.I64, 'sizetotal', None, None, ), # 10
     (11, TType.I16, 'linkstotal', None, None, ), # 11
-    (12, TType.LIST, 'links', (TType.STRUCT,(FileData, FileData.thrift_spec)), None, ), # 12
-    (13, TType.LIST, 'fids', (TType.I32,None), None, ), # 13
+    (12, TType.LIST, 'links', (TType.STRUCT, (FileData, FileData.thrift_spec)), None, ), # 12
+    (13, TType.LIST, 'fids', (TType.I32, None), None, ), # 13
   )
 
   def __init__(self, pid=None, name=None, folder=None, site=None, password=None, dest=None, order=None, linksdone=None, sizedone=None, sizetotal=None, linkstotal=None, links=None, fids=None,):
@@ -488,10 +488,10 @@ class InteractionTask(TBase):
     None, # 0
     (1, TType.I32, 'iid', None, None, ), # 1
     (2, TType.I32, 'input', None, None, ), # 2
-    (3, TType.LIST, 'structure', (TType.STRING,None), None, ), # 3
-    (4, TType.LIST, 'preset', (TType.STRING,None), None, ), # 4
+    (3, TType.LIST, 'structure', (TType.STRING, None), None, ), # 3
+    (4, TType.LIST, 'preset', (TType.STRING, None), None, ), # 4
     (5, TType.I32, 'output', None, None, ), # 5
-    (6, TType.LIST, 'data', (TType.STRING,None), None, ), # 6
+    (6, TType.LIST, 'data', (TType.STRING, None), None, ), # 6
     (7, TType.STRING, 'title', None, None, ), # 7
     (8, TType.STRING, 'description', None, None, ), # 8
     (9, TType.STRING, 'plugin', None, None, ), # 9
@@ -634,7 +634,7 @@ class AccountInfo(TBase):
     None, # 0
     (1, TType.I64, 'validuntil', None, None, ), # 1
     (2, TType.STRING, 'login', None, None, ), # 2
-    (3, TType.MAP, 'options', (TType.STRING,None,TType.LIST,(TType.STRING,None)), None, ), # 3
+    (3, TType.MAP, 'options', (TType.STRING, None, TType.LIST, (TType.STRING, None)), None, ), # 3
     (4, TType.BOOL, 'valid', None, None, ), # 4
     (5, TType.I64, 'trafficleft', None, None, ), # 5
     (6, TType.I64, 'maxtraffic', None, None, ), # 6
@@ -673,7 +673,7 @@ class ServiceCall(TBase):
     None, # 0
     (1, TType.STRING, 'plugin', None, None, ), # 1
     (2, TType.STRING, 'func', None, None, ), # 2
-    (3, TType.LIST, 'arguments', (TType.STRING,None), None, ), # 3
+    (3, TType.LIST, 'arguments', (TType.STRING, None), None, ), # 3
     (4, TType.BOOL, 'parseArguments', None, None, ), # 4
   )
 
@@ -734,7 +734,7 @@ class OnlineCheck(TBase):
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'rid', None, None, ), # 1
-    (2, TType.MAP, 'data', (TType.STRING,None,TType.STRUCT,(OnlineStatus, OnlineStatus.thrift_spec)), None, ), # 2
+    (2, TType.MAP, 'data', (TType.STRING, None, TType.STRUCT, (OnlineStatus, OnlineStatus.thrift_spec)), None, ), # 2
   )
 
   def __init__(self, rid=None, data=None,):

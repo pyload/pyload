@@ -21,11 +21,11 @@ import beaker.ext.google as google
 
 # Initialize the basic available backends
 clsmap = {
-          'memory':container.MemoryNamespaceManager,
-          'dbm':container.DBMNamespaceManager,
-          'file':container.FileNamespaceManager,
-          'ext:memcached':memcached.MemcachedNamespaceManager,
-          'ext:database':database.DatabaseNamespaceManager,
+          'memory': container.MemoryNamespaceManager,
+          'dbm': container.DBMNamespaceManager,
+          'file': container.FileNamespaceManager,
+          'ext:memcached': memcached.MemcachedNamespaceManager,
+          'ext:database': database.DatabaseNamespaceManager,
           'ext:sqla': sqla.SqlaNamespaceManager,
           'ext:google': google.GoogleNamespaceManager,
           }

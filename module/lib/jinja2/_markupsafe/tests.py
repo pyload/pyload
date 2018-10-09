@@ -19,7 +19,7 @@ class MarkupTestCase(unittest.TestCase):
         } == '<em>&lt;bad user&gt;</em>'
 
         # an escaped object is markup too
-        assert type(Markup('foo') + 'bar') is Markup
+        assert isinstance(Markup('foo') + 'bar', Markup)
 
         # and it implements __html__ by returning itself
         x = Markup("foo")

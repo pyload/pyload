@@ -83,8 +83,8 @@ class GzipResponse(object):
 
     def gzip_start_response(self, status, headers, exc_info=None):
         self.headers = headers
-        ct = header_value(headers,'content-type')
-        ce = header_value(headers,'content-encoding')
+        ct = header_value(headers, 'content-type')
+        ce = header_value(headers, 'content-encoding')
         cl = header_value(headers, 'content-length')
         if cl:
             cl = int(cl)
@@ -129,5 +129,5 @@ class GzipResponse(object):
                     pass
 
         content_length = self.buffer.tell()
-        update_header(self.headers, "Content-Length" , str(content_length))
+        update_header(self.headers, "Content-Length", str(content_length))
         self.start_response(self.status, self.headers)

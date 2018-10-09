@@ -18,7 +18,7 @@
 #
 
 from cStringIO import StringIO
-from struct import pack,unpack
+from struct import pack, unpack
 from thrift.Thrift import TException
 
 class TTransportException(TException):
@@ -127,7 +127,7 @@ class TBufferedTransportFactory:
     return buffered
 
 
-class TBufferedTransport(TTransportBase,CReadableTransport):
+class TBufferedTransport(TTransportBase, CReadableTransport):
 
   """Class that wraps another transport and buffers its I/O.
 
