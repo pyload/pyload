@@ -2,8 +2,10 @@
 
 
 
+from future import standard_library
+standard_library.install_aliases()
 import os
-import urlparse
+import urllib.parse
 
 from .Crypter import Crypter
 from .misc import encode, exists
@@ -52,7 +54,7 @@ class Container(Crypter):
         Loads container to disk if its stored remotely and overwrite url,
         or check existent on several places at disk
         """
-        remote = bool(urlparse.urlparse(self.pyfile.url).netloc)
+        remote = bool(urllib.parse.urlparse(self.pyfile.url).netloc)
 
         if remote:
             content = self.load(self.pyfile.url)

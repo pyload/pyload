@@ -37,7 +37,7 @@ class EmbeduploadCom(Crypter):
         m = re.findall(self.LINK_PATTERN, self.data)
         if m is not None:
             prefered_set = set(self.config.get('preferedHoster').split('|'))
-            prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)
+            prefered_set = [s.lower().split('.')[0] for s in prefered_set]
 
             self.log_debug("PF: {}".format(prefered_set))
 
@@ -46,8 +46,7 @@ class EmbeduploadCom(Crypter):
 
             if not self.links:
                 ignored_set = set(self.config.get('ignoredHoster').split('|'))
-                ignored_set = map(
-                    lambda s: s.lower().split('.')[0], ignored_set)
+                ignored_set = [s.lower().split('.')[0] for s in ignored_set]
 
                 self.log_debug("IG: {}".format(ignored_set))
 

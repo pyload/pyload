@@ -3,6 +3,9 @@
 #@author: RaNaN
 
 
+from builtins import str
+from builtins import range
+from builtins import object
 from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
@@ -17,9 +20,9 @@ class WrongFormat(Exception):
     pass
 
 
-class ChunkInfo():
+class ChunkInfo(object):
     def __init__(self, name):
-        self.name = unicode(name)
+        self.name = str(name)
         self.size = 0
         self.resume = False
         self.chunks = []
@@ -90,7 +93,7 @@ class ChunkInfo():
             else:
                 raise WrongFormat()
 
-            ci.addChunk(name, (long(range[0]), long(range[1])))
+            ci.addChunk(name, (int(range[0]), int(range[1])))
         fh.close()
         return ci
 

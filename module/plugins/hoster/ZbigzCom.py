@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 import random
 import re
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json
@@ -26,9 +30,9 @@ class ZbigzCom(Hoster):
         current_millis = int(time.time() * 1000)
         json_callback = "jQuery" + call_id + "_" + str(current_millis)
 
-        urlp = urlparse.urlparse(url)
+        urlp = urllib.parse.urlparse(url)
         get_params = kwargs.copy()
-        get_params.update(urlparse.parse_qs(urlp.query))
+        get_params.update(urllib.parse.parse_qs(urlp.query))
 
         get_params['hash'] = file_id
         get_params['jsoncallback'] = json_callback
@@ -63,7 +67,7 @@ class ZbigzCom(Hoster):
             self.fail("Hash not found")
 
         file_id = m.group(1)
-        call_id = "".join(random.choice("0123456789") for _x in range(20))
+        call_id = "".join(random.choice("0123456789") for _x in list(range(20)))
 
         self.pyfile.setCustomStatus("torrent")
         self.pyfile.setProgress(0)

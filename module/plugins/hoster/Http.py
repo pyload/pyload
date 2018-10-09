@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Hoster import Hoster
 from module.network.HTTPRequest import BadHeader
@@ -26,7 +29,7 @@ class Http(Hoster):
 
     def process(self, pyfile):
         url = re.sub(r'^(jd|py)', "http", pyfile.url)
-        netloc = urlparse.urlparse(url).netloc
+        netloc = urllib.parse.urlparse(url).netloc
 
         for _i in range(2):
             try:

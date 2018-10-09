@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
+from future import standard_library
+standard_library.install_aliases()
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
@@ -32,7 +34,7 @@ class PremiumizeMe(MultiHoster):
         get_params = {'method': method,
                       'params[login]': user,
                       'params[pass]': password}
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             get_params["params[{}]".format(key)] = val
 
         json_data = self.load(self.API_URL, get=get_params)
@@ -51,8 +53,8 @@ class PremiumizeMe(MultiHoster):
             self.pyfile.size = res['result']['filesize']
 
             #@NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
-            urlp = urlparse.urlparse(res['result']['location'])
-            urlq = urlparse.parse_qsl(urlp.query)
+            urlp = urllib.parse.urlparse(res['result']['location'])
+            urlq = urllib.parse.parse_qsl(urlp.query)
             self.download("{}://{}{}".format(urlp.scheme, urlp.netloc, urlp.path),
                           get=urlq)
 

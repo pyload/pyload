@@ -2,6 +2,7 @@
 
 
 
+from builtins import object
 import inspect
 import os
 
@@ -173,7 +174,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in list(locals().items())
                              if key not in ("self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
@@ -269,7 +270,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("UPLOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in list(locals().items())
                              if key not in ("self", "url", "_[1]")])
 
         with open(path, 'rb') as f:

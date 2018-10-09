@@ -8,6 +8,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from builtins import str
 import re
 from jinja2.runtime import Undefined
 
@@ -70,12 +71,12 @@ def test_none(value):
 
 def test_lower(value):
     """Return true if the variable is lowercased."""
-    return unicode(value).islower()
+    return str(value).islower()
 
 
 def test_upper(value):
     """Return true if the variable is uppercased."""
-    return unicode(value).isupper()
+    return str(value).isupper()
 
 
 def test_string(value):
@@ -85,7 +86,7 @@ def test_string(value):
 
 def test_number(value):
     """Return true if the variable is a number."""
-    return isinstance(value, (int, long, float, complex))
+    return isinstance(value, (int, int, float, complex))
 
 
 def test_sequence(value):

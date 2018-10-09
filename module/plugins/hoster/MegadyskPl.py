@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
 import base64
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from module.network.RequestFactory import getURL as get_url
 
@@ -12,8 +15,8 @@ from ..internal.SimpleHoster import SimpleHoster
 
 def xor_decrypt(data, key):
     data = base64.b64decode(data)
-    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0].format(len(key))])), [
-                   (i, c) for i, c in enumerate(data)]))
+    return "".join([chr(ord(x[1]) ^ ord(key[x[0].format(len(key))])) for x in [
+                   (i, c) for i, c in enumerate(data)]])
 
 
 class MegadyskPl(SimpleHoster):
@@ -63,7 +66,7 @@ class MegadyskPl(SimpleHoster):
         key = m.group(1)
 
         res = xor_decrypt(encrypted_info, key)
-        json_data = json.loads(urllib.unquote(res))
+        json_data = json.loads(urllib.parse.unquote(res))
 
         if json_data['app']['maintenance']:
             info['status'] = 6

@@ -4,11 +4,17 @@
 
 from __future__ import division
 
-import cStringIO
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import str
+from builtins import range
+from builtins import object
+import io
 import math
 import operator
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import Image
 import ImageDraw
@@ -16,7 +22,7 @@ import ImageDraw
 from ..internal.OCR import OCR
 
 
-class ImageSequence:
+class ImageSequence(object):
 
     def __init__(self, im):
         self.im = im
@@ -49,8 +55,8 @@ class CircleCaptcha(OCR):
     def clean_image(self, im, pix):
         cleandeep = 1
 
-        imageheight = range(1, int(im.size[1]))
-        imagewidth = range(1, int(im.size[0]))
+        imageheight = list(range(1, int(im.size[1])))
+        imagewidth = list(range(1, int(im.size[0])))
         howmany = 0
 
         for y in imageheight:
@@ -106,7 +112,7 @@ class CircleCaptcha(OCR):
 
     def find_first_pixel_x(self, im, pix, curx, cury,
                            color=-1, ExitWithBlack=False):
-        imagewidth = range(curx + 1, int(im.size[0]))
+        imagewidth = list(range(curx + 1, int(im.size[0])))
         jump = True
         newx = (-1, -1)
         blackfound = 0
@@ -137,7 +143,7 @@ class CircleCaptcha(OCR):
 
     def find_last_pixel_x(self, im, pix, curx, cury,
                           color=-1, ExitWithBlack=False):
-        imagewidth = range(curx + 1, int(im.size[0]))
+        imagewidth = list(range(curx + 1, int(im.size[0])))
         newx = (-1, -1)
         blackfound = 0
         for x in imagewidth:
@@ -166,9 +172,9 @@ class CircleCaptcha(OCR):
     def find_last_pixel_y(self, im, pix, curx, cury,
                           DownToUp, color=-1, ExitWithBlack=False):
         if DownToUp is False:
-            imageheight = range(int(cury) + 1, int(im.size[1]) - 1)
+            imageheight = list(range(int(cury) + 1, int(im.size[1]) - 1))
         else:
-            imageheight = range(int(cury) - 1, 1, -1)
+            imageheight = list(range(int(cury) - 1, 1, -1))
         newy = (-1, -1)
         blackfound = 0
         for y in imageheight:
@@ -228,7 +234,7 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-        imagewidth = range(int(c[0] - c[2]), int(c[0] + c[2]))
+        imagewidth = list(range(int(c[0] - c[2]), int(c[0] + c[2])))
 
         min_ray = 15
         max_ray = 30
@@ -306,8 +312,8 @@ class CircleCaptcha(OCR):
                 -1 -> Not found circle
                 -2 -> Found black position then leave position
         """
-        imageheight = range(int(c[1] - c[2]), int(c[1] + c[2]))
-        imagewidth = range(int(c[0] - c[2]), int(c[0] + c[2]))
+        imageheight = list(range(int(c[1] - c[2]), int(c[1] + c[2])))
+        imagewidth = list(range(int(c[0] - c[2]), int(c[0] + c[2])))
 
         min_ray = 15
         max_ray = 30
@@ -536,11 +542,11 @@ class CircleCaptcha(OCR):
                 # if iDebugSaveFile < 7:
                 # continue
                 im.save("output" + str(iDebugSaveFile) + ".png", "png")
-                raw_input('frame: ' + str(im))
+                input('frame: ' + str(im))
 
             pix = im.load()
 
-            stepheight = range(1, im.size[1], 2)
+            stepheight = list(range(1, im.size[1], 2))
             #: stepheight = range(45, 47)
             lstPoints = []  # Declares an empty list for the points
             lstX = []  # CoordinateX
@@ -679,7 +685,7 @@ class CircleCaptcha(OCR):
                                     imdebug.save("debug.png", "png")
 
                                     if _pause != "":
-                                        valore = raw_input(
+                                        valore = input(
                                             'Found ' +
                                             _pause +
                                             ' CIRCLE circle press [Enter] = continue / [q] for Quit: ' +
@@ -755,7 +761,7 @@ class CircleCaptcha(OCR):
 
     #: Return coordinates of opened circle (eg (x, y))
     def decrypt_from_web(self, url):
-        file = cStringIO.StringIO(urllib.urlopen(url).read())
+        file = io.StringIO(urllib.request.urlopen(url).read())
         img = Image.open(file)
         coords = self.decrypt(img)
         self.log_info(_("Coords: {}").format(coords))

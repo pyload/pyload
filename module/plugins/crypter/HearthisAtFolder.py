@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Crypter import Crypter
 
@@ -43,7 +45,6 @@ class HearthisAtFolder(Crypter):
                                         'min': 0,
                                         'max': 200})
 
-            links = map(lambda x: urlparse.urljoin(pyfile.url, x) + "#pyload",
-                        re.findall(r'<a class="player-link".+?href="(.+?)".+?</a>', self.data, re.S))
+            links = [urllib.parse.urljoin(pyfile.url, x) + "#pyload" for x in re.findall(r'<a class="player-link".+?href="(.+?)".+?</a>', self.data, re.S)]
             self.packages = [(pyfile.package().name, links, pyfile.package().folder)]
 

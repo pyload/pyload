@@ -18,6 +18,8 @@
 # under the License.
 #
 
+from builtins import map
+from builtins import object
 from .TProtocol import *
 from struct import pack, unpack
 
@@ -71,7 +73,7 @@ def readVarint(trans):
       return result
     shift += 7
 
-class CompactType:
+class CompactType(object):
   STOP = 0x00
   TRUE = 0x01
   FALSE = 0x02
@@ -101,7 +103,7 @@ CTYPES = {TType.STOP: CompactType.STOP,
           }
 
 TTYPES = {}
-for k, v in CTYPES.items():
+for k, v in list(CTYPES.items()):
   TTYPES[v] = k
 TTYPES[CompactType.FALSE] = TType.BOOL
 del k
@@ -388,7 +390,7 @@ class TCompactProtocol(TProtocolBase):
     return TTYPES[byte & 0x0f]
 
 
-class TCompactProtocolFactory:
+class TCompactProtocolFactory(object):
   def __init__(self):
     pass
 

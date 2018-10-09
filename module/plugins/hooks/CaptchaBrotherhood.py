@@ -2,9 +2,12 @@
 
 
 
-import StringIO
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+import io
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
@@ -66,7 +69,7 @@ class CaptchaBrotherhood(Addon):
     def submit(self, captcha, captchaType="file", match=None):
         try:
             img = Image.open(captcha)
-            output = StringIO.StringIO()
+            output = io.StringIO()
             self.log_debug("CAPTCHA IMAGE", img, img.format, img.mode)
             if img.format in ("GIF", "JPEG"):
                 img.save(output, img.format)
@@ -84,7 +87,7 @@ class CaptchaBrotherhood(Addon):
         req = get_request()
 
         url = "{}sendNewCaptcha.aspx?{}".format(self.API_URL,
-                                            urllib.urlencode({'username': self.config.get('username'),
+                                            urllib.parse.urlencode({'username': self.config.get('username'),
                                                               'password': self.config.get('password'),
                                                               'captchaSource': "pyLoad",
                                                               'timeout': "80"}))

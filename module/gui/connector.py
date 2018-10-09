@@ -2,6 +2,7 @@
 #@author: mkaay
 
 
+from builtins import object
 SERVER_VERSION = "0.5.0"
 
 from uuid import uuid4 as uuid
@@ -91,7 +92,7 @@ class Connector(QObject):
         """
             dummy rpc proxy, to prevent errors
         """
-        def __nonzero__(self):
+        def __bool__(self):
             return False
 
         def __getattr__(self, attr):

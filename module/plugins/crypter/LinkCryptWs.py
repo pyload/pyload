@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import zip
+from builtins import filter
 import binascii
 import re
 
@@ -317,7 +319,7 @@ class LinkCryptWs(Crypter):
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = filter(bool, text.split('\n'))
+        links = list(filter(bool, text.split('\n')))
 
         #: Log and return
         self.log_debug("Package has {} links".format(len(links)))

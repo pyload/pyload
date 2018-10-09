@@ -8,6 +8,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
+from builtins import object
 from jinja2.nodes import Node
 
 

@@ -17,18 +17,22 @@
 # under the License.
 #
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
 import logging
 import sys
 import os
 import traceback
 import threading
-import Queue
+import queue
 
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol
 
-class TServer:
+class TServer(object):
 
   """Base interface for a server, which must have a serve method."""
 
@@ -132,7 +136,7 @@ class TThreadPoolServer(TServer):
 
   def __init__(self, *args, **kwargs):
     TServer.__init__(self, *args)
-    self.clients = Queue.Queue()
+    self.clients = queue.Queue()
     self.threads = 10
     self.daemon = kwargs.get("daemon", False)
 

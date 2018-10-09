@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from builtins import object
 import sys
 from .socket import error
 from os.path import dirname, abspath, join
@@ -32,7 +33,7 @@ class NoConnection(Exception):
 class NoSSL(Exception):
     pass
 
-class ThriftClient:
+class ThriftClient(object):
     def __init__(self, host="localhost", port=7227, user="", password=""):
 
         self.createConnection(host, port)

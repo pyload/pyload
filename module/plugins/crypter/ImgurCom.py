@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
+from builtins import str
 import re
 
 from ..internal.misc import json, uniqify
@@ -98,15 +100,15 @@ class ImgurCom(SimpleCrypter):
 
         # Get filename extensions for new IDs
         ids_json = self.get_ids_from_json()
-        ids_indirect = [id for id in ids_json.keys() if id not in ids_direct]
+        ids_indirect = [id for id in list(ids_json.keys()) if id not in ids_direct]
 
         # No additional images found
         if len(ids_indirect) == 0:
             return []
 
         # Translate new IDs to Direct-URLs
-        return map(lambda id: "http://i.imgur.com/{}{}" %
-                   (id, ids_json[id]), ids_indirect)
+        return ["http://i.imgur.com/{}{}" %
+                   (id, ids_json[id]) for id in ids_indirect]
 
     def setup(self):
         self.gallery_name = None
@@ -117,7 +119,7 @@ class ImgurCom(SimpleCrypter):
 
         f = lambda url: "http://" + re.sub(r'(\w{7})s\.', r'\1.', url)
         direct_links = uniqify(
-            map(f, re.findall(self.LINK_PATTERN, self.data)))
+            list(map(f, re.findall(self.LINK_PATTERN, self.data))))
 
         # Imgur Galleryies may contain more images than initially shown. Find
         # the rest now!

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster
@@ -33,7 +36,7 @@ class DepositfilesCom(SimpleHoster):
     OFFLINE_PATTERN = r'<span class="html_download_api-not_exists"></span>'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
-    NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: unichr(int(m.group(1), 16))),
+    NAME_REPLACEMENTS = [(r'\%u([0-9A-Fa-f]{4})', lambda m: chr(int(m.group(1), 16))),
                          (r'.*<b title="(?P<N>.+?)".*', "\g<N>")]
     URL_REPLACEMENTS = [(__pattern__ + ".*", "https://depositfiles.com/files/\g<ID>")]
 
@@ -75,7 +78,7 @@ class DepositfilesCom(SimpleHoster):
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
-            self.link = urllib.unquote(m.group(1))
+            self.link = urllib.parse.unquote(m.group(1))
 
     def handle_premium(self, pyfile):
         if '<span class="html_download_api-gold_traffic_limit">' in self.data:

@@ -36,4 +36,4 @@ class FileserveComFolder(Crypter):
 
         if new_links:
             self.links = [
-                map(lambda s: "http://fileserve.com{}".format(s), new_links)]
+                ["http://fileserve.com{}".format(s) for s in new_links]]

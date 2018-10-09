@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -61,7 +63,7 @@ class VimeoCom(SimpleHoster):
             inputs['token'] = token
             inputs['password'] = password
 
-            self.data = self.load(urlparse.urljoin(pyfile.url, url),
+            self.data = self.load(urllib.parse.urljoin(pyfile.url, url),
                                   post=inputs)
 
             if "Sorry, that password was incorrect. Please try again." in self.data:
@@ -94,7 +96,7 @@ class VimeoCom(SimpleHoster):
             qlevel = quality
 
         for q in qlevel:
-            if q in videos.keys():
+            if q in list(videos.keys()):
                 self.download(videos[q], fixurl=False)
                 return
 

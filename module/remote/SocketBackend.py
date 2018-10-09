@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
-import SocketServer
+from future import standard_library
+standard_library.install_aliases()
+import socketserver
 
 from .RemoteManager import BackendBase
 
-class RequestHandler(SocketServer.BaseRequestHandler):
+class RequestHandler(socketserver.BaseRequestHandler):
 
     def setup(self):
         pass
@@ -20,7 +22,7 @@ class SocketBackend(BackendBase):
 
     def setup(self, host, port):
         #local only
-        self.server = SocketServer.ThreadingTCPServer(("localhost", port), RequestHandler)
+        self.server = socketserver.ThreadingTCPServer(("localhost", port), RequestHandler)
 
     def serve(self):
         self.server.serve_forever()

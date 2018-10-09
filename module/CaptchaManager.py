@@ -3,13 +3,15 @@
 
 
 
+from builtins import str
+from builtins import object
 from time import time
 from traceback import print_exc
 from threading import Lock
 
 from .common.json_layer import json
 
-class CaptchaManager():
+class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.core = core
@@ -70,7 +72,7 @@ class CaptchaManager():
         return False
 
 
-class CaptchaTask():
+class CaptchaTask(object):
     def __init__(self, id, format, params={}, result_type='textual'):
         self.id = str(id)
         self.captchaParams = params

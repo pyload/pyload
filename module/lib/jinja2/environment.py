@@ -8,6 +8,11 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from builtins import filter
+from builtins import map
+from builtins import str
+from builtins import next
+from builtins import object
 import os
 import sys
 from jinja2 import nodes
@@ -292,7 +297,7 @@ class Environment(object):
         yet.  This is used by :ref:`extensions <writing-extensions>` to register
         callbacks and configuration values without breaking inheritance.
         """
-        for key, value in attributes.iteritems():
+        for key, value in attributes.items():
             if not hasattr(self, key):
                 setattr(self, key, value)
 
@@ -323,7 +328,7 @@ class Environment(object):
         rv.overlayed = True
         rv.linked_to = self
 
-        for key, value in args.iteritems():
+        for key, value in args.items():
             if value is not missing:
                 setattr(rv, key, value)
 
@@ -333,7 +338,7 @@ class Environment(object):
             rv.cache = copy_cache(self.cache)
 
         rv.extensions = {}
-        for key, value in self.extensions.iteritems():
+        for key, value in self.extensions.items():
             rv.extensions[key] = value.bind(rv)
         if extensions is not missing:
             rv.extensions.update(load_extensions(rv, extensions))
@@ -344,7 +349,7 @@ class Environment(object):
 
     def iter_extensions(self):
         """Iterates over the extensions by priority."""
-        return iter(sorted(self.extensions.values(),
+        return iter(sorted(list(self.extensions.values()),
                            key=lambda x: x.priority))
 
     def getitem(self, obj, argument):
@@ -407,7 +412,7 @@ class Environment(object):
         of the extensions to be applied you have to filter source through
         the :meth:`preprocess` method.
         """
-        source = unicode(source)
+        source = str(source)
         try:
             return self.lexer.tokeniter(source, name, filename)
         except TemplateSyntaxError:
@@ -420,7 +425,7 @@ class Environment(object):
         because there you usually only want the actual source tokenized.
         """
         return reduce(lambda s, e: e.preprocess(s, name, filename),
-                      self.iter_extensions(), unicode(source))
+                      self.iter_extensions(), str(source))
 
     def _tokenize(self, source, name, filename=None, state=None):
         """Called by the parser to do the preprocessing and filtering
@@ -642,7 +647,7 @@ class Environment(object):
             filter_func = lambda x: '.' in x and \
                                     x.rsplit('.', 1)[1] in extensions
         if filter_func is not None:
-            x = filter(filter_func, x)
+            x = list(filter(filter_func, x))
         return x
 
     def handle_exception(self, exc_info=None, rendered=False, source_hint=None):
@@ -997,7 +1002,7 @@ class TemplateModule(object):
         return Markup(concat(self._body_stream))
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     # unicode goes after __str__ because we configured 2to3 to rename
     # __unicode__ to __str__.  because the 2to3 tree is not designed to
@@ -1077,7 +1082,7 @@ class TemplateStream(object):
 
     def disable_buffering(self):
         """Disable the output buffering."""
-        self._next = self._gen.next
+        self._next = self._gen.__next__
         self.buffered = False
 
     def enable_buffering(self, size=5):
@@ -1105,12 +1110,12 @@ class TemplateStream(object):
                 c_size = 0
 
         self.buffered = True
-        self._next = generator(self._gen.next).next
+        self._next = generator(self._gen.__next__).__next__
 
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         return self._next()
 
 

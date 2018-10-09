@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 import re
 
 from ..internal.misc import seconds_to_midnight

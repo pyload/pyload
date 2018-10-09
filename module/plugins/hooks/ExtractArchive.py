@@ -2,6 +2,9 @@
 
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import os
 import sys
 
@@ -276,16 +279,16 @@ class ExtractArchive(Addon):
 
             matched = False
             success = True
-            files_ids = dict((fdata['name'], (fdata['id'], (fsjoin(pack_dl_folder, fdata['name'])), extract_folder)) for fdata
-                             in pypack.getChildren().values()).values()  #: Remove duplicates
+            files_ids = list(dict((fdata['name'], (fdata['id'], (fsjoin(pack_dl_folder, fdata['name'])), extract_folder)) for fdata
+                             in list(pypack.getChildren().values())).values())  #: Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:
                 new_files_ids = []
 
                 if extensions:  #: Include only specified archive types
-                    files_ids = filter(lambda file_id: any([Extractor.archivetype(file_id[1]) in extensions
-                                                            for Extractor in self.extractors]), files_ids)
+                    files_ids = [file_id for file_id in files_ids if any([Extractor.archivetype(file_id[1]) in extensions
+                                                            for Extractor in self.extractors])]
 
                 #: Sort by filename to ensure (or at least try) that a multivolume archive is targeted by its first part
                 #: This is important because, for example, UnRar ignores preceding parts in listing mode
@@ -456,7 +459,7 @@ class ExtractArchive(Addon):
                 self.log_debug("Extracting using password: {}".format(password or "None"))
                 archive.extract(password)
             else:
-                for pw in filter(None, uniqify([password] + self.get_passwords(False))):
+                for pw in [_f for _f in uniqify([password] + self.get_passwords(False)) if _f]:
                     try:
                         self.log_debug("Extracting using password: {}".format(pw))
 

@@ -2,7 +2,10 @@
 
 
 
-import __builtin__
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+import builtins
 import os
 import re
 
@@ -12,12 +15,11 @@ from module.network.HTTPRequest import BadHeader
 from .Base import Base
 from .misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, safejoin
 from .Plugin import Fail
+from future.utils import with_metaclass
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
-if not hasattr(__builtin__.property, "setter"):
-    class property(__builtin__.property):
-        __metaclass__ = type
-
+if not hasattr(builtins.property, "setter"):
+    class property(with_metaclass(type, __builtin__.property)):
         def setter(self, method):
             return property(self.fget, method, self.fdel)
 
@@ -139,7 +141,7 @@ class Hoster(Base):
             "download_processed", self.pyfile)
 
         try:
-            unfinished = any(fdata.get('status') in (3, 7) for fid, fdata in pypack.getChildren().items()
+            unfinished = any(fdata.get('status') in (3, 7) for fid, fdata in list(pypack.getChildren().items())
                              if fid != self.pyfile.id)
             if unfinished:
                 return
@@ -147,7 +149,7 @@ class Hoster(Base):
             self.pyload.hookManager.dispatchEvent("package_processed", pypack)
 
             failed = any(fdata.get('status') in (1, 6, 8, 9, 14)
-                         for fid, fdata in pypack.getChildren().items())
+                         for fid, fdata in list(pypack.getChildren().items()))
 
             if not failed:
                 return
@@ -269,7 +271,7 @@ class Hoster(Base):
 
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in list(locals().items())
                              if key not in ("self", "url", "_[1]")])
 
         dl_url = self.fixurl(url) if fixurl else url
@@ -352,7 +354,7 @@ class Hoster(Base):
 
         #: Produces encoding errors, better log to other file in the future?
         # self.log_debug("Content: {}".format(content))
-        for name, rule in rules.items():
+        for name, rule in list(rules.items()):
             if isinstance(rule, str):
                 if rule in content:
                     return name
@@ -480,7 +482,7 @@ class Hoster(Base):
         """
         pack_folder = self.pyfile.package().folder
 
-        for pyfile in self.pyload.files.cache.values():
+        for pyfile in list(self.pyload.files.cache.values()):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack_folder:
                 if pyfile.status in (0, 12, 5, 7):  # finished / downloading / waiting / starting
                     self.skip(pyfile.pluginname)

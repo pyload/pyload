@@ -2,10 +2,13 @@
 #@author: RaNaN
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import re
-from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from cgi import FieldStorage
-from urllib import unquote
+from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 
@@ -94,7 +97,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                          })
 
         self.post = {}
-        for name in form.keys():
+        for name in list(form.keys()):
             self.post[name] = form[name].value
 
         return self.do_GET()
@@ -104,7 +107,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
     def add(self):
         package = self.get_post('referer', 'ClickAndLoad Package')
-        urls = filter(lambda x: x != "", self.get_post('urls').split("\n"))
+        urls = [x for x in self.get_post('urls').split("\n") if x != ""]
 
         self.add_package(package, urls, 0)
 
@@ -128,7 +131,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         obj = AES.new(Key, AES.MODE_CBC, IV)
         result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
-        result = filter(lambda x: x != "", result)
+        result = [x for x in result if x != ""]
 
         self.add_package(package, result, 0)
 
@@ -136,7 +139,7 @@ class CNLHandler(BaseHTTPRequestHandler):
     def flashgot(self):
         autostart = int(self.get_post('autostart', 0))
         package = self.get_post('package', "FlashGot")
-        urls = filter(lambda x: x != "", self.get_post('urls').split("\n"))
+        urls = [x for x in self.get_post('urls').split("\n") if x != ""]
 
         self.add_package(package, urls, autostart)
 

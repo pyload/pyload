@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import os
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json
@@ -31,7 +34,7 @@ class RedtubeCom(Hoster):
             self.error(_("sources pattern not found"))
 
         sources = json.loads(m.group(1))
-        quality = str(max(int(q) for q in sources.keys()))
+        quality = str(max(int(q) for q in list(sources.keys())))
 
         link = sources[quality]
 
@@ -39,7 +42,7 @@ class RedtubeCom(Hoster):
         if m is None:
             self.error(_("name pattern not found"))
 
-        ext = os.path.splitext(urlparse.urlparse(link).path)[1]
+        ext = os.path.splitext(urllib.parse.urlparse(link).path)[1]
         pyfile.name = m.group(1) + ext
 
         self.download(link)

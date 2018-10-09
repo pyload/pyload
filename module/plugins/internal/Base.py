@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import inspect
 import re
 import time
-import urlparse
+import urllib.parse
 
 from .Captcha import Captcha
 from .misc import (decode, encode, fixurl, format_size, format_time,
@@ -481,10 +483,10 @@ class Base(Plugin):
         url = fixurl(url, unquote=True)
         baseurl = fixurl(baseurl or self.pyfile.url, unquote=True)
 
-        if not urlparse.urlparse(url).scheme:
-            url_p = urlparse.urlparse(baseurl)
+        if not urllib.parse.urlparse(url).scheme:
+            url_p = urllib.parse.urlparse(baseurl)
             baseurl = "{}://{}".format(url_p.scheme, url_p.netloc)
-            url = urlparse.urljoin(baseurl, url)
+            url = urllib.parse.urljoin(baseurl, url)
 
         return fixurl(url, unquote)
 

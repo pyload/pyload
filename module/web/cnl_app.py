@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from os.path import join
 import re
-from urllib import unquote
+from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
 

@@ -3,6 +3,8 @@
 #@author: RaNaN
 
 
+from builtins import str
+from builtins import object
 from os.path import exists
 from shutil import copy
 
@@ -13,7 +15,7 @@ from module.utils import chmod, lock
 
 ACC_VERSION = 1
 
-class AccountManager():
+class AccountManager(object):
     """manages all accounts"""
 
     #----------------------------------------------------------------------
@@ -48,7 +50,7 @@ class AccountManager():
         """ get all account instances"""
 
         plugins = []
-        for plugin in self.accounts.keys():
+        for plugin in list(self.accounts.keys()):
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
@@ -107,14 +109,14 @@ class AccountManager():
         f = open("accounts.conf", "wb")
         f.write("version: " + str(ACC_VERSION) + "\n")
 
-        for plugin, accounts in self.accounts.iteritems():
+        for plugin, accounts in self.accounts.items():
             f.write("\n")
             f.write(plugin+":\n")
 
-            for name, data in accounts.iteritems():
+            for name, data in accounts.items():
                 f.write("\n\t{}:{}\n".format(name, data['password']) )
                 if data['options']:
-                    for option, values in data['options'].iteritems():
+                    for option, values in data['options'].items():
                         f.write("\t@{} {}\n".format(option, " ".join(values)))
 
         f.close()
@@ -156,7 +158,7 @@ class AccountManager():
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
             force = False
 
-        for p in self.accounts.keys():
+        for p in list(self.accounts.keys()):
             if self.accounts[p]:
                 p = self.getAccountPlugin(p)
                 data[p.__name__] = p.getAllAccounts(force)

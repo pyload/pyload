@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import str
 import pycurl
 import re
 import os
@@ -85,7 +86,7 @@ class UlozTo(SimpleHoster):
         if not action or not inputs:
             self.error(_("Free download form not found"))
 
-        self.log_debug("inputs.keys = {}".format(inputs.keys()))
+        self.log_debug("inputs.keys = {}".format(list(inputs.keys())))
         #: Get and decrypt captcha
         if all(key in inputs for key in (
                 "captcha_value", "captcha_id", "captcha_key")):

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleCrypter import SimpleCrypter
 
@@ -29,7 +31,7 @@ class DlProtectCom(SimpleCrypter):
                                   post={'submit': "Continuer"})
 
         if 'img src="captcha.php' in self.data:
-            captcha_code = self.captcha.decrypt(urlparse.urljoin(self.pyfile.url, "/captcha.php"), input_type="jpeg")
+            captcha_code = self.captcha.decrypt(urllib.parse.urljoin(self.pyfile.url, "/captcha.php"), input_type="jpeg")
             self.data = self.load(self.pyfile.url,
                                   post={'captchaCode': captcha_code,
                                         'submit': ""})

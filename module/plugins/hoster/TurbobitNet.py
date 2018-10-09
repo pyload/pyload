@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import binascii
 import random
 import re
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import Crypto.Cipher.ARC4
 import pycurl
@@ -134,7 +137,7 @@ class TurbobitNet(SimpleHoster):
             url = "http://turbobit.net{}{}".format(m.groups())
         else:
             url = "http://turbobit.net/files/timeout.js?ver={}".format("".join(
-                random.choice('0123456789ABCDEF') for _i in range(32)))
+                random.choice('0123456789ABCDEF') for _i in list(range(32))))
 
         fun = self.load(url)
 
@@ -143,7 +146,7 @@ class TurbobitNet(SimpleHoster):
 
         for b in [1, 3]:
             self.jscode = "var id = \'{}\';var b = {:d};var inn = \'{}\';{}out".format(
-                          self.info['pattern']['ID'], b, urllib.quote(fun), rtUpdate)
+                          self.info['pattern']['ID'], b, urllib.parse.quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)

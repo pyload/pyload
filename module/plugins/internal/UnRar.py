@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
+from builtins import filter
 import os
 import re
 import string
@@ -168,7 +170,7 @@ class UnRar(Extractor):
         dir, name = os.path.split(self.filename)
 
         #: eventually Multipart Files
-        files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
+        files.extend(fsjoin(dir, os.path.basename(file)) for file in list(filter(self.ismultipart, os.listdir(dir)))
                      if self._RE_PART.sub("", name) == self._RE_PART.sub("", file))
 
         #: Actually extracted file
@@ -246,7 +248,7 @@ class UnRar(Extractor):
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = map(encode, call)
+        call = list(map(encode, call))
         p = subprocess.Popen(
             call,
             stdout=subprocess.PIPE,

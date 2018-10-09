@@ -1,7 +1,7 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 def asbool(obj):
-    if isinstance(obj, (str, unicode)):
+    if isinstance(obj, (str, str)):
         obj = obj.strip().lower()
         if obj in ['true', 'yes', 'on', 'y', 't', '1']:
             return True
@@ -13,7 +13,7 @@ def asbool(obj):
     return bool(obj)
 
 def aslist(obj, sep=None, strip=True):
-    if isinstance(obj, (str, unicode)):
+    if isinstance(obj, (str, str)):
         lst = obj.split(sep)
         if strip:
             lst = [v.strip() for v in lst]

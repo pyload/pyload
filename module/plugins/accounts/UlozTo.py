@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import pycurl
 import re
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.Account import Account
 from ..internal.misc import json
@@ -69,7 +71,7 @@ class UlozTo(Account):
         action = re.findall('<form action="(.+?)"', login_page)[1].replace('&amp;', '&')
         token = re.search('_token_" value="(.+?)"', login_page).group(1)
 
-        html = self.load(urlparse.urljoin("https://www.ulozto.net/", action),
+        html = self.load(urllib.parse.urljoin("https://www.ulozto.net/", action),
                          post={'_token_': token,
                                '_do': "loginForm-submit",
                                'login': u"Submit",

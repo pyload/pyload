@@ -3,6 +3,11 @@
 #@author: mkaay
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 import sys
 
 from uuid import uuid4 as uuid # should be above PyQt imports
@@ -66,9 +71,9 @@ class main(QObject):
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(lang), "en"], fallback=True)
         try:
-            translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
+            translation.install(str=(True if sys.stdout.encoding.lower().startswith("utf") else False))
         except Exception:
-            translation.install(unicode=False)
+            translation.install(str=False)
 
 
         self.connector = Connector()
@@ -406,14 +411,14 @@ class main(QObject):
         elif data["type"] == "internal":
             from pyLoadCore import Core
             from module.ConfigParser import ConfigParser as CoreConfig
-            import thread
+            import _thread
 
             if not self.core:
 
                 config = CoreConfig() #create so at least default config exists
                 self.core = Core()
                 self.core.startedInGui = True
-                thread.start_new_thread(self.core.start, (False, False))
+                _thread.start_new_thread(self.core.start, (False, False))
                 while not self.core.running:
                     sleep(0.5)
 
@@ -554,7 +559,7 @@ class main(QObject):
         """
         if isPack:
             data = self.connector.getFileOrder(id) #less data to transmit
-            self.connector.stopDownloads(data.values())
+            self.connector.stopDownloads(list(data.values()))
         else:
             self.connector.stopDownloads([id])
 
@@ -671,7 +676,7 @@ class main(QObject):
             m.exec_()
             self.slotQuit()
 
-    class Loop():
+    class Loop(object):
         def __init__(self, parent):
             self.parent = parent
             self.timer = QTimer()

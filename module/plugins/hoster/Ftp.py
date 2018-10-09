@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 import pycurl
 
@@ -29,7 +31,7 @@ class Ftp(Hoster):
         self.resume_download = True
 
     def process(self, pyfile):
-        p_url = urlparse.urlparse(pyfile.url)
+        p_url = urllib.parse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
         pyfile.name = parse_name(p_url.path.rpartition('/')[2])
@@ -74,7 +76,7 @@ class Ftp(Hoster):
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
                 pyfile.url = pyfile.url.rstrip('/')
                 pkgname = "/".join([pyfile.package().name,
-                                    urlparse.urlparse(pyfile.url).path.rpartition('/')[2]])
+                                    urllib.parse.urlparse(pyfile.url).path.rpartition('/')[2]])
 
                 pyfile.url += '/'
 

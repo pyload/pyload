@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
+from builtins import range
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -64,7 +68,7 @@ class UpleaCom(SimpleHoster):
             self.error(_("STEP_PATTERN not found"))
 
         self.data = self.load(
-            urlparse.urljoin(
+            urllib.parse.urljoin(
                 "http://uplea.com/",
                 m.group(1)))
 

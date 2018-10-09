@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
+from builtins import object
 from module.common import APIExerciser
 from nose.tools import nottest
 
 
-class TestApi:
+class TestApi(object):
 
     def __init__(self):
         self.api = APIExerciser.APIExerciser(None, True, "TestUser", "pwhere")

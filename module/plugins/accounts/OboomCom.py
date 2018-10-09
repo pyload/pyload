@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 

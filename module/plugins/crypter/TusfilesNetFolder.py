@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 import math
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.XFSCrypter import XFSCrypter
 
@@ -33,7 +37,7 @@ class TusfilesNetFolder(XFSCrypter):
          r'https://www.tusfiles.net/go/\g<ID>/')]
 
     def load_page(self, page_n):
-        return self.load(urlparse.urljoin(self.pyfile.url, str(page_n)))
+        return self.load(urllib.parse.urljoin(self.pyfile.url, str(page_n)))
 
     def handle_pages(self, pyfile):
         pages = re.search(self.PAGES_PATTERN, self.data)

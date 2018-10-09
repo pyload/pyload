@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import next
+from builtins import hex
+from builtins import str
+from builtins import object
 import inspect
 import re
-import urlparse
+import urllib.parse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -81,7 +87,7 @@ class CloudFlare(object):
             owner_plugin.set_wait(5)
 
             last_url = owner_plugin.req.lastEffectiveURL
-            urlp = urlparse.urlparse(last_url)
+            urlp = urllib.parse.urlparse(last_url)
             domain = urlp.netloc
             submit_url = "{}://{}/cdn-cgi/l/chk_jschl".format(urlp.scheme, domain)
 
@@ -190,7 +196,7 @@ class CloudFlareDdos(Addon):
 
     def deactivate(self):
         while len(self.stubs):
-            stub = next(self.stubs.itervalues())
+            stub = next(iter(self.stubs.values()))
             self._unoverride_preload(stub.owner_plugin)
 
         self._unoverride_get_url()

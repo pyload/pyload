@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import re
-import urlparse
+import urllib.parse
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster
@@ -43,7 +46,7 @@ class CrockoCom(SimpleHoster):
         for _i in range(5):
             m = re.search(self.CAPTCHA_PATTERN, self.data)
             if m is not None:
-                url = urlparse.urljoin("http://crocko.com/", m.group(1))
+                url = urllib.parse.urljoin("http://crocko.com/", m.group(1))
                 self.wait(m.group(2))
                 self.data = self.load(url)
             else:

@@ -17,6 +17,7 @@
     @author: mkaay
 """
 
+from builtins import object
 from module.PullEvents import UpdateEvent
 from module.utils import formatSize, lock
 

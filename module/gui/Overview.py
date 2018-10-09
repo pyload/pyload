@@ -2,6 +2,8 @@
 #@author: mkaay
 
 
+from __future__ import division
+from past.utils import old_div
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -62,7 +64,7 @@ class OverviewModel(QAbstractListModel):
             maxsize, currentsize = maxSize(p)
             speed = self.queue.getSpeed(p)
             if speed:
-                eta = (maxsize - (maxsize * (progress/100.0)))/speed
+                eta = old_div((maxsize - (maxsize * (old_div(progress,100.0)))),speed)
             else:
                 eta = 0
             if not speed and not progress:

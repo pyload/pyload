@@ -4,7 +4,10 @@
 
 
 
-from Queue import Queue
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from queue import Queue
 from threading import Thread
 from os import listdir, stat
 from os.path import join
@@ -88,7 +91,7 @@ class PluginThread(Thread):
                                                        frame.f_code.co_filename,
                                                        frame.f_lineno)
 
-            for key, value in frame.f_locals.items():
+            for key, value in list(frame.f_locals.items()):
                 dump += "\t%20s = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
@@ -496,14 +499,14 @@ class InfoThread(PluginThread):
 
         #directly write to database
         if self.pid > -1:
-            for pluginname, urls in plugins.iteritems():
+            for pluginname, urls in plugins.items():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
                     self.m.core.files.save()
 
         elif self.add:
-            for pluginname, urls in plugins.iteritems():
+            for pluginname, urls in plugins.items():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateCache, True)
@@ -544,7 +547,7 @@ class InfoThread(PluginThread):
 
             self.m.infoResults[self.rid] = {}
 
-            for pluginname, urls in plugins.iteritems():
+            for pluginname, urls in plugins.items():
                 plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateResult, True)
@@ -580,7 +583,7 @@ class InfoThread(PluginThread):
 
             data = parseNames(tmp)
             result = {}
-            for k, v in data.iteritems():
+            for k, v in data.items():
                 for url, status in v:
                     status.packagename = k
                     result[url] = status

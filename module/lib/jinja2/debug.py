@@ -10,6 +10,8 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from builtins import range
+from builtins import object
 import sys
 import traceback
 from jinja2.utils import CodeType, missing, internal_code
@@ -179,7 +181,7 @@ def fake_exc_info(exc_info, filename, lineno):
             locals = ctx.get_all()
         else:
             locals = {}
-        for name, value in real_locals.iteritems():
+        for name, value in real_locals.items():
             if name.startswith('l_') and value is not missing:
                 locals[name[2:]] = value
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import chr
 import re
 
 from ..internal.SimpleHoster import SimpleHoster
@@ -28,7 +29,7 @@ class FourSharedCom(SimpleHoster):
     SIZE_PATTERN = r'<span title="Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)">'
     OFFLINE_PATTERN = r'The file link that you requested is not valid\.|This file was deleted.'
 
-    NAME_REPLACEMENTS = [(r'&#(\d+).', lambda m: unichr(int(m.group(1))))]
+    NAME_REPLACEMENTS = [(r'&#(\d+).', lambda m: chr(int(m.group(1))))]
     SIZE_REPLACEMENTS = [(",", "")]
 
     DIRECT_LINK = False

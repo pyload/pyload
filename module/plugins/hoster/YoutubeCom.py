@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import map
+from builtins import range
+from builtins import object
 import operator
 import os
 import re
 import subprocess
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from xml.dom.minidom import parseString as parse_xml
 
 from module.network.CookieJar import CookieJar
@@ -339,7 +346,7 @@ class YoutubeCom(Hoster):
 
                 #: Since Youtube just scrambles the order of the characters in the signature
                 #: and does not change any byte value, we can store just a transformation map as a cached function
-                decrypt_map = [ord(c) for c in decrypt_func(''.join(map(unichr, range(len(encrypted_sig)))))]
+                decrypt_map = [ord(c) for c in decrypt_func(''.join(map(chr, list(range(len(encrypted_sig))))))]
                 cache_info['cache'][player_url] = {'decrypt_map': decrypt_map,
                                                    'time': time.time()}
                 cache_dirty = True
@@ -401,10 +408,10 @@ class YoutubeCom(Hoster):
             quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
 
             self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                                                         for _s in video_streams.keys()]))
+                                                         for _s in list(video_streams.keys())]))
 
             chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
-                                                  and quality_index(x) > quality_index(y) else y, video_streams.keys())
+                                                  and quality_index(x) > quality_index(y) else y, list(video_streams.keys()))
 
         self.log_debug("CHOSEN VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{})" %
                        (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['width'],
@@ -470,10 +477,10 @@ class YoutubeCom(Hoster):
             quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
 
             self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                                                         for _s in audio_streams.keys()]))
+                                                         for _s in list(audio_streams.keys())]))
 
             chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
-                                                  and quality_index(x) > quality_index(y) else y, audio_streams.keys())
+                                                  and quality_index(x) > quality_index(y) else y, list(audio_streams.keys()))
 
         self.log_debug("CHOSEN AUDIO STREAM: ITAG:{:d} ({} {} Q:{:d})" %
                        (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['acodec'],
@@ -528,7 +535,7 @@ class YoutubeCom(Hoster):
                     if child.nodeName == 'br':
                         srt += "\n"
                     elif child.nodeName == '#text':
-                        srt += unicode(child.data)
+                        srt += str(child.data)
                     srt += "\n\n"
                 i += 1
 
@@ -538,9 +545,9 @@ class YoutubeCom(Hoster):
         try:
             subs = json.loads(self.player_config['args']['player_response'])['captions']['playerCaptionsTracklistRenderer']['captionTracks']
             subtitles_urls = dict([(_subtitle['languageCode'],
-                                    urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
+                                    urllib.parse.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
                                    for _subtitle in subs])
-            self.log_debug("AVAILABLE SUBTITLES: {}".format(subtitles_urls.keys() or "None"))
+            self.log_debug("AVAILABLE SUBTITLES: {}".format(list(subtitles_urls.keys()) or "None"))
 
         except KeyError:
             self.log_debug("AVAILABLE SUBTITLES: None")
@@ -576,7 +583,7 @@ class YoutubeCom(Hoster):
 
             else:
                 # Download any available subtitle
-                for _subtitle in subtitles_urls.items():
+                for _subtitle in list(subtitles_urls.items()):
                     srt_filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                                 self.pyfile.package().folder,
                                                 os.path.splitext(self.file_name)[0] + "." + _subtitle[0] + ".srt")
@@ -718,7 +725,7 @@ class YoutubeCom(Hoster):
         self.start_time = (0, 0)
         m = re.search(r't=(?:(\d+)m)?(\d+)s', pyfile.url)
         if self.ffmpeg and m:
-            self.start_time = tuple(map(lambda _x: 0 if _x is None else int(_x), m.groups()))
+            self.start_time = tuple([0 if _x is None else int(_x) for _x in m.groups()])
             self.file_name += " (starting at {}m{}s)".format(self.start_time[0], self.start_time[1])
 
         #: Cleaning invalid characters from the file name
@@ -737,7 +744,7 @@ class YoutubeCom(Hoster):
             streams = [_s.split('&') for _s in streams.split(',')]
             streams = [dict((_x.split('=', 1)) for _x in _s) for _s in streams]
             streams = [(int(_s['itag']),
-                        urllib.unquote(_s['url']),
+                        urllib.parse.unquote(_s['url']),
                         _s.get('s', _s.get('sig', None)),
                         True if 's' in _s else False)
                        for _s in streams]
@@ -991,7 +998,7 @@ class JSInterpreter(object):
 
     def build_function(self, argnames, code):
         def resf(argvals):
-            local_vars = dict(zip(argnames, argvals))
+            local_vars = dict(list(zip(argnames, argvals)))
             for stmt in code.split(';'):
                 res, abort = self.interpret_statement(stmt, local_vars)
                 if abort:

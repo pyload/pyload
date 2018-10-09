@@ -1,5 +1,8 @@
 """Implementation of JSONDecoder
 """
+from builtins import chr
+from builtins import str
+from builtins import object
 import re
 import sys
 import struct
@@ -117,8 +120,8 @@ def py_scanstring(s, end, encoding=None, strict=True,
         content, terminator = chunk.groups()
         # Content is contains zero or more unescaped string characters
         if content:
-            if not isinstance(content, unicode):
-                content = unicode(content, encoding)
+            if not isinstance(content, str):
+                content = str(content, encoding)
             _append(content)
         # Terminator is the end of string, a literal control character,
         # or a backslash denoting that an escape sequence follows
@@ -164,7 +167,7 @@ def py_scanstring(s, end, encoding=None, strict=True,
                 uni2 = int(esc2, 16)
                 uni = 0x10000 + (((uni - 0xd800) << 10) | (uni2 - 0xdc00))
                 next_end += 6
-            char = unichr(uni)
+            char = chr(uni)
             end = next_end
         # Append the unescaped character
         _append(char)

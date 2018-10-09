@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
 import os
 import shutil
 import subprocess
@@ -70,7 +73,7 @@ class AntiVirus(Addon):
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
 
-            out, err = map(str.strip, p.communicate())
+            out, err = list(map(str.strip, p.communicate()))
 
             if out:
                 self.log_info(target_repr, out)

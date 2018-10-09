@@ -87,7 +87,7 @@ class XFileSharing(Addon):
             isXFS = lambda klass: any(k.__name__.startswith("XFS")
                                       for k in inspect.getmro(klass))
 
-            for p in self.pyload.pluginManager.plugins[type].values():
+            for p in list(self.pyload.pluginManager.plugins[type].values()):
                 try:
                     klass = self.pyload.pluginManager.loadClass(type, p[
                                                                 'name'])

@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import range
 import sys
 from os.path import join, abspath, dirname
 
@@ -18,7 +22,7 @@ from .Protocol import Protocol
 
 from time import time
 
-import xmlrpclib
+import xmlrpc.client
 
 def bench(f, *args, **kwargs):
     s = time()
@@ -31,7 +35,7 @@ def bench(f, *args, **kwargs):
     return ret
 
 from getpass import getpass
-user = raw_input("user ")
+user = input("user ")
 passwd = getpass("password ")
 
 server_url = "http{}://{}:{}@{}:{}/".format(
@@ -41,7 +45,7 @@ server_url = "http{}://{}:{}@{}:{}/".format(
   "127.0.0.1",
   7227
 )
-proxy = xmlrpclib.ServerProxy(server_url, allow_none=True)
+proxy = xmlrpc.client.ServerProxy(server_url, allow_none=True)
 
 bench(proxy.get_server_version)
 bench(proxy.status_server)

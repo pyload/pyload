@@ -51,7 +51,7 @@ class RapideoPl(MultiAccount):
         premium = False
         valid_untill = -1
 
-        if "expire" in result.keys() and result['expire']:
+        if "expire" in list(result.keys()) and result['expire']:
             premium = True
             valid_untill = time.mktime(datetime.datetime.fromtimestamp(
                 int(result['expire'])).timetuple())
@@ -72,7 +72,7 @@ class RapideoPl(MultiAccount):
         except Exception:
             self.fail_login()
 
-        if "errno" in response.keys():
+        if "errno" in list(response.keys()):
             self.fail_login()
 
     def create_auth_query(self):

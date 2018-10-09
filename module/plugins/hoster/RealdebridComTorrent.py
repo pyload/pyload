@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import os
 import pycurl
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from module.network.HTTPRequest import BadHeader
 
@@ -67,7 +70,7 @@ class RealdebridComTorrent(Hoster):
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
             else:
-                torrent_filename = urllib.url2pathname(self.pyfile.url[7:])
+                torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])
                 if not exists(torrent_filename):
                     self.fail(_("File does not exists"))
 
@@ -165,7 +168,7 @@ class RealdebridComTorrent(Hoster):
         if len(account_plugin.accounts) == 0:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
-        self.api_token = account_plugin.accounts[account_plugin.accounts.keys()[0]]["password"]
+        self.api_token = account_plugin.accounts[list(account_plugin.accounts.keys())[0]]["password"]
 
         torrent_id = self.send_request_to_server()
         torrent_url = self.wait_for_server_dl(torrent_id)

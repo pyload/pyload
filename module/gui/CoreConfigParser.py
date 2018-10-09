@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from builtins import object
 from os.path import exists
 from os.path import join
 
@@ -8,7 +9,7 @@ from os.path import join
 CONF_VERSION = 1
 
 ########################################################################
-class ConfigParser:
+class ConfigParser(object):
 
     #----------------------------------------------------------------------
     def __init__(self, configdir):
@@ -129,7 +130,7 @@ class ConfigParser:
     #----------------------------------------------------------------------
     def cast(self, typ, value):
         """cast value to given format"""
-        if type(value) not in (str, unicode):
+        if type(value) not in (str, str):
             return value
 
         if typ == "int":
@@ -150,7 +151,7 @@ class ConfigParser:
         return Section(self, section)
 
 ########################################################################
-class Section:
+class Section(object):
     """provides dictionary like access for configparser"""
 
     #----------------------------------------------------------------------

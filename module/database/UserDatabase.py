@@ -3,6 +3,9 @@
 
 
 
+from builtins import str
+from builtins import range
+from builtins import object
 from hashlib import sha1
 import random
 
@@ -10,7 +13,7 @@ from .DatabaseBackend import DatabaseBackend
 from .DatabaseBackend import style
 from functools import reduce
 
-class UserMethods():
+class UserMethods(object):
     @style.queue
     def checkAuth(db, user, password):
         c = db.c

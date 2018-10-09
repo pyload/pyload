@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import random
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -53,7 +55,7 @@ class NarodRu(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.captcha.correct()
-            self.link = urlparse.urljoin("http://narod.ru/", m.group(1))
+            self.link = urllib.parse.urljoin("http://narod.ru/", m.group(1))
 
         elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.data:
             self.retry_captcha()

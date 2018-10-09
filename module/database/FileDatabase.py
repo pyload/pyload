@@ -18,6 +18,10 @@
 """
 
 
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 from threading import RLock
 from time import time
 
@@ -33,7 +37,7 @@ except Exception:
     import sqlite3
 
 
-class FileHandler:
+class FileHandler(object):
     """Handles all request made to obtain information,
     modify status or other request for links or packages"""
 
@@ -76,11 +80,11 @@ class FileHandler:
     #----------------------------------------------------------------------
     def syncSave(self):
         """saves all data to backend and waits until all data are written"""
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             pyfile.sync()
 
-        pypacks = self.packageCache.values()
+        pypacks = list(self.packageCache.values())
         for pypack in pypacks:
             pypack.sync()
 
@@ -93,13 +97,13 @@ class FileHandler:
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
-        data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
+        data.update([(x.id, x.toDbDict()[x.id]) for x in list(self.cache.values())])
 
-        for x in self.packageCache.itervalues():
+        for x in self.packageCache.values():
             if x.queue != queue or x.id not in packs: continue
             packs[x.id].update(x.toDict()[x.id])
 
-        for key, value in data.iteritems():
+        for key, value in data.items():
             if value["package"] in packs:
                 packs[value["package"]]["links"][key] = value
 
@@ -110,7 +114,7 @@ class FileHandler:
         """gets a data representation without links"""
 
         packs = self.db.getAllPackages(queue)
-        for x in self.packageCache.itervalues():
+        for x in self.packageCache.values():
             if x.queue != queue or x.id not in packs: continue
             packs[x.id].update(x.toDict()[x.id])
 
@@ -158,7 +162,7 @@ class FileHandler:
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
 
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
 
         for pyfile in pyfiles:
             if pyfile.packageid == id:
@@ -172,7 +176,7 @@ class FileHandler:
         if id in self.packageCache:
             del self.packageCache[id]
 
-        packs = self.packageCache.values()
+        packs = list(self.packageCache.values())
         for pack in packs:
             if pack.queue == queue and pack.order > oldorder:
                 pack.order -= 1
@@ -207,7 +211,7 @@ class FileHandler:
         if not len(p.getChildren()):
             p.delete()
 
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             if pyfile.packageid == pid and pyfile.order > oldorder:
                 pyfile.order -= 1
@@ -264,7 +268,7 @@ class FileHandler:
 
         tmplist = []
 
-        cache = self.cache.values()
+        cache = list(self.cache.values())
         for x in cache:
             if int(x.toDbDict()[x.id]["package"]) == int(id):
                 tmplist.append((x.id, x.toDbDict()[x.id]))
@@ -340,7 +344,7 @@ class FileHandler:
         if "decrypt" in self.jobCache:
             return None
 
-        plugins = self.core.pluginManager.crypterPlugins.keys() + self.core.pluginManager.containerPlugins.keys()
+        plugins = list(self.core.pluginManager.crypterPlugins.keys()) + list(self.core.pluginManager.containerPlugins.keys())
         plugins = str(tuple(plugins))
 
         jobs = self.db.getPluginJob(plugins)
@@ -395,7 +399,7 @@ class FileHandler:
     @change
     def restartPackage(self, id):
         """restart package"""
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             if pyfile.packageid == id:
                 self.restartFile(pyfile.id)
@@ -444,7 +448,7 @@ class FileHandler:
 
         self.db.reorderPackage(p, -1, True)
 
-        packs = self.packageCache.values()
+        packs = list(self.packageCache.values())
         for pack in packs:
             if pack.queue != queue and pack.order > oldorder:
                 pack.order -= 1
@@ -466,7 +470,7 @@ class FileHandler:
         self.core.pullManager.addEvent(e)
         self.db.reorderPackage(p, position)
 
-        packs = self.packageCache.values()
+        packs = list(self.packageCache.values())
         for pack in packs:
             if pack.queue != p.queue or pack.order < 0 or pack == p: continue
             if p.order > position:
@@ -495,7 +499,7 @@ class FileHandler:
 
         self.db.reorderLink(f, position)
 
-        pyfiles = self.cache.values()
+        pyfiles = list(self.cache.values())
         for pyfile in pyfiles:
             if pyfile.packageid != f["package"] or pyfile.order < 0: continue
             if f["order"] > position:
@@ -539,7 +543,7 @@ class FileHandler:
 
         urls = []
 
-        for pyfile in data.itervalues():
+        for pyfile in data.values():
             if pyfile["status"] not in  (0, 12, 13):
                 urls.append((pyfile["url"], pyfile["plugin"]))
 
@@ -560,7 +564,7 @@ class FileHandler:
         #get new packages only from db
 
         deleted = []
-        for id in old_packs.iterkeys():
+        for id in old_packs.keys():
             if id not in new_packs:
                 deleted.append(id)
                 self.deletePackage(int(id))
@@ -573,7 +577,7 @@ class FileHandler:
         """ restart all failed links """
         self.db.restartFailed()
 
-class FileMethods():
+class FileMethods(object):
     @style.queue
     def filecount(self, queue):
         """returns number of files in queue"""

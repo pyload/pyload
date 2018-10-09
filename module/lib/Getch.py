@@ -1,4 +1,6 @@
-class Getch:
+from builtins import chr
+from builtins import object
+class Getch(object):
     """
     Gets a single character from standard input.  Does not echo to
     the screen.
@@ -16,7 +18,7 @@ class Getch:
     def __call__(self): return self.impl()
 
 
-class _GetchUnix:
+class _GetchUnix(object):
     def __init__(self):
         import tty
         import sys
@@ -36,7 +38,7 @@ class _GetchUnix:
         return ch
 
 
-class _GetchWindows:
+class _GetchWindows(object):
     def __init__(self):
         import msvcrt
 
@@ -45,7 +47,7 @@ class _GetchWindows:
 
         return msvcrt.getch()
 
-class _GetchMacCarbon:
+class _GetchMacCarbon(object):
     """
     A function which returns the current ASCII key that is down;
     if no ASCII key is down, the null string is returned.  The

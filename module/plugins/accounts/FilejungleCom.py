@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.Account import Account
 
@@ -37,7 +39,7 @@ class FilejungleCom(Account):
                 1, 'validuntil': validuntil}
 
     def signin(self, user, password, data):
-        html = self.load(urlparse.urljoin(self.URL, "login.php"),
+        html = self.load(urllib.parse.urljoin(self.URL, "login.php"),
                          post={'loginUserName': user,
                                'loginUserPassword': password,
                                'loginFormSubmit': "Login",

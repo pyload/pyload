@@ -8,22 +8,27 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 import re
 import sys
 import errno
 try:
-    from thread import allocate_lock
+    from _thread import allocate_lock
 except ImportError:
-    from dummy_thread import allocate_lock
+    from _dummy_thread import allocate_lock
 from collections import deque
-from itertools import imap
+
 
 
 _word_split_re = re.compile(r'(\s+)')
 _punctuation_re = re.compile(
     '^(?P<lead>(?:{})*)(?P<middle>.*?)(?P<trail>(?:{})*)$'.format(
-        '|'.join(imap(re.escape, ('(', '<', '&lt;'))),
-        '|'.join(imap(re.escape, ('.', ',', ')', '>', '\n', '&gt;')))
+        '|'.join(map(re.escape, ('(', '<', '&lt;'))),
+        '|'.join(map(re.escape, ('.', ',', ')', '>', '\n', '&gt;')))
     )
 )
 _simple_email_re = re.compile(r'^\S+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+$')
@@ -69,7 +74,7 @@ try:
     next = next
 except NameError:
     def next(x):
-        return x.next()
+        return x.__next__()
 
 
 # if this python version is unable to deal with unicode filenames
@@ -79,7 +84,7 @@ except NameError:
 # 3.x because compile cannot handle bytes
 if sys.version_info < (3, 0):
     def _encode_filename(filename):
-        if isinstance(filename, unicode):
+        if isinstance(filename, str):
             return filename.encode('utf-8')
         return filename
 else:
@@ -271,7 +276,7 @@ def urlize(text, trim_url_limit=None, nofollow=False):
     trim_url = lambda x, limit=trim_url_limit: limit is not None \
                          and (x[:limit] + (len(x) >=limit and '...'
                          or '')) or x
-    words = _word_split_re.split(unicode(escape(text)))
+    words = _word_split_re.split(str(escape(text)))
     nofollow_attr = nofollow and ' rel="nofollow"' or ''
     for i, word in enumerate(words):
         match = _punctuation_re.match(word)
@@ -499,15 +504,15 @@ class LRUCache(object):
 
     def iteritems(self):
         """Iterate over all items."""
-        return iter(self.items())
+        return iter(list(self.items()))
 
     def values(self):
         """Return a list of all values."""
-        return [x[1] for x in self.items()]
+        return [x[1] for x in list(self.items())]
 
     def itervalue(self):
         """Iterate over all values."""
-        return iter(self.values())
+        return iter(list(self.values()))
 
     def keys(self):
         """Return a list of all keys ordered by most recent usage."""
@@ -556,7 +561,7 @@ class Cycler(object):
         """Returns the current item."""
         return self.items[self.pos]
 
-    def next(self):
+    def __next__(self):
         """Goes one item ahead and returns it."""
         rv = self.current
         self.pos = (self.pos + 1).format(len(self.items))

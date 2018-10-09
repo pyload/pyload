@@ -2,6 +2,8 @@
 #@author: mkaay
 
 
+from __future__ import division
+from past.utils import old_div
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -55,8 +57,8 @@ class QueueModel(CollectorModel):
         """
         self._data = []
         order = self.connector.getPackageOrder(Destination.Queue)
-        self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        self.beginInsertRows(QModelIndex(), 0, len(list(order.values())))
+        for position, pid in order.items():
             pack = self.connector.getPackageData(pid)
             package = Package(pack)
             self._data.append(package)
@@ -200,7 +202,7 @@ class QueueModel(CollectorModel):
                     pass
             if count == 0:
                 return 0
-            return perc_sum/count
+            return old_div(perc_sum,count)
         return 0
 
     def getSpeed(self, item):

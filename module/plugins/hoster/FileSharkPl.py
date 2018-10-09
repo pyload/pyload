@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -81,7 +83,7 @@ class FileSharkPl(SimpleHoster):
         if m is None:
             self.error(_("Download url not found"))
 
-        link = urlparse.urljoin("https://fileshark.pl/", m.group(1))
+        link = urllib.parse.urljoin("https://fileshark.pl/", m.group(1))
 
         self.data = self.load(link)
 

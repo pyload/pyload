@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
 from .Base import Base
 from .misc import parse_name, safename
 
@@ -51,10 +52,10 @@ class Crypter(Base):
         """
         name = self.info['pattern'].get("N")
         if name is None:
-            links = map(self.fixurl, self.links)
+            links = list(map(self.fixurl, self.links))
             pdict = self.pyload.api.generatePackages(links)
             packages = [(_name, _links, parse_name(_name))
-                        for _name, _links in pdict.items()]
+                        for _name, _links in list(pdict.items())]
 
         else:
             packages = [(name, self.links, parse_name(name))]
@@ -81,7 +82,7 @@ class Crypter(Base):
             self.log_info(_("Create package: {}").format(name),
                           _("{:d} links").format(len(links)))
 
-            links = map(self.fixurl, links)
+            links = list(map(self.fixurl, links))
             self.log_debug("LINKS for package " + name, *links)
 
             pid = self.pyload.api.addPackage(name, links, pack_queue)

@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 import os
 import re
-import urllib
-import urlparse
-from StringIO import StringIO
+import urllib.request, urllib.parse, urllib.error
+import urllib.parse
+from io import StringIO
 
 from ..internal.CaptchaService import CaptchaService
 
@@ -108,7 +112,7 @@ class ReCaptcha(CaptchaService):
 
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m is not None:
-            self.key = urllib.unquote(m.group(1).strip())
+            self.key = urllib.parse.unquote(m.group(1).strip())
             self.log_debug("Key: {}".format(self.key))
             return self.key
         else:
@@ -186,7 +190,7 @@ class ReCaptcha(CaptchaService):
             self.fail(_("reCAPTCHA second challenge pattern not found"))
 
         self.log_debug("Second challenge: {}".format(challenge))
-        result = self.decrypt(urlparse.urljoin(server, "image"),
+        result = self.decrypt(urllib.parse.urljoin(server, "image"),
                               get={'c': challenge},
                               cookies=True,
                               input_type="jpg")
@@ -364,7 +368,7 @@ class ReCaptcha(CaptchaService):
 
             challenge_msg = re.sub(r'<.*?>', "", challenge_msg)
 
-            image_url = urlparse.urljoin('http://www.google.com',
+            image_url = urllib.parse.urljoin('http://www.google.com',
                                          re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
 
             img = self.pyfile.plugin.load(image_url, ref=fallback_url, decode=False)
@@ -373,7 +377,7 @@ class ReCaptcha(CaptchaService):
 
             response = self.decrypt_image(img)
 
-            post_str = "c=" + urllib.quote_plus(challenge) +\
+            post_str = "c=" + urllib.parse.quote_plus(challenge) +\
                        "".join("&response={}".format(str(int(k) - 1))
                                for k in response if k.isdigit())
             html = self.pyfile.plugin.load(fallback_url, post=post_str, ref=fallback_url)

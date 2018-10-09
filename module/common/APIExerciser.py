@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 import string
 from threading import Thread
 from random import choice, randint, sample
@@ -82,7 +85,7 @@ class APIExerciser(Thread):
 
             if not sumCalled % 1000: #not thread safe
                 self.core.log.info("Exercisers tested {:d} api calls".format(sumCalled))
-                persec = sumCalled / (time() - self.time)
+                persec = old_div(sumCalled, (time() - self.time))
                 self.core.log.info("Approx. {:2f} calls per second.".format(persec))
                 self.core.log.info("Approx. {:2f} ms per call.".format(1000 // persec))
                 self.core.log.info("Collected garbage: {:d}".format(gc.collect()))
@@ -135,7 +138,7 @@ class APIExerciser(Thread):
 
         pids = [p.pid for p in info]
         if len(pids):
-            pids = sample(pids, randint(1,  max(floor(len(pids) / 2.5), 1)))
+            pids = sample(pids, randint(1,  max(floor(old_div(len(pids), 2.5)), 1)))
             self.api.deletePackages(pids)
 
     def getFileData(self):

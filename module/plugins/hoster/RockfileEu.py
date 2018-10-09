@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from module.network.HTTPRequest import BadHeader
 
@@ -90,7 +93,7 @@ class RockfileEu(SimpleHoster):
             self.link = m.group(1)
 
         if self.link and pyfile.name == self.info['pattern']['ID'] + ".html":
-            pyfile.name = urllib.unquote(self.link.split('/')[-1])
+            pyfile.name = urllib.parse.unquote(self.link.split('/')[-1])
 
 
         try:

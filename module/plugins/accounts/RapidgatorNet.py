@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+import urllib.parse
 
 from ..internal.Account import Account
 from ..internal.misc import json

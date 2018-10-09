@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
@@ -48,14 +50,14 @@ class FshareVn(SimpleHoster):
             else:
                 self.fail(_("Download is password protected"))
 
-            url = urlparse.urljoin(pyfile.url, action)
+            url = urllib.parse.urljoin(pyfile.url, action)
 
             self.data = self.load(url, post=inputs)
             if ur'Sai mật khẩu' in self.data:
                 self.fail(_("Wrong password"))
 
         action, inputs = self.parse_html_form('id="form-download"', input_names={'withFcode5': "0"})
-        url = urlparse.urljoin(pyfile.url, action)
+        url = urllib.parse.urljoin(pyfile.url, action)
 
         if not inputs:
             self.error(_("Free Download form not found"))

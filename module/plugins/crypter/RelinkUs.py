@@ -2,6 +2,8 @@
 
 
 
+from builtins import filter
+from builtins import zip
 import binascii
 import re
 
@@ -325,7 +327,7 @@ class RelinkUs(Crypter):
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = filter(bool, text.split('\n'))
+        links = list(filter(bool, text.split('\n')))
 
         #: Log and return
         self.log_debug("Package has {:d} links".format(len(links)))

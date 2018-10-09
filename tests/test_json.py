@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from urllib import urlencode
-from urllib2 import urlopen, HTTPError
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+from urllib.parse import urlencode
+from urllib.request import urlopen
+from urllib.error import HTTPError
 from json import loads
 
 from logging import log
 
 url = "http://localhost:8001/api/{}"
 
-class TestJson:
+class TestJson(object):
 
     def call(self, name, post=None):
         if not post: post = {}

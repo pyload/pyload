@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
+from builtins import range
 import re
 
 from module.network.RequestFactory import getURL as get_url
@@ -68,13 +70,13 @@ class OneFichierCom(SimpleHoster):
                         if "filename=" in headers.get('content-disposition'):
                             _name = dict(
                                 _i.split("=") for _i in
-                                map(str.strip, headers['content-disposition'].split(";"))[1:])
+                                list(map(str.strip, headers['content-disposition'].split(";")))[1:])
                             name = _name['filename'].strip("\"'")
                         else:
                             name = url
 
                         info = {'name': name,
-                                'size': long(headers.get('content-length')),
+                                'size': int(headers.get('content-length')),
                                 'status': 7,
                                 'url': url}
 

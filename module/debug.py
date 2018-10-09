@@ -2,6 +2,9 @@
 #coding:utf-8
 
 
+from builtins import input
+from builtins import filter
+from builtins import object
 import re
 from . import InitHomeDir
 from os import listdir
@@ -44,7 +47,7 @@ def initReport():
     for i, f in enumerate(reports):
         print("{}. {}".format(i, f))
 
-    choice = raw_input("Choose Report: ")
+    choice = input("Choose Report: ")
 
     report = reports[int(choice)]
 
@@ -80,9 +83,9 @@ def initReport():
             dest.append(line)
 
 
-    frame_c = filter(filter_info, frame_c)
-    plugin_c = filter(filter_info, plugin_c)
-    pyfile_c = filter(filter_info, pyfile_c)
+    frame_c = list(filter(filter_info, frame_c))
+    plugin_c = list(filter(filter_info, plugin_c))
+    pyfile_c = list(filter(filter_info, pyfile_c))
 
     frame_c = appendName(frame_c, "frame")
     plugin_c = appendName(plugin_c, "plugin")

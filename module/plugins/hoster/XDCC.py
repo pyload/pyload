@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
+from builtins import range
+from builtins import object
 import os
 import re
 import select
@@ -235,9 +238,9 @@ class IRC(object):
                 continue
 
             try:
-                text = unicode(args[1], 'utf-8')
+                text = str(args[1], 'utf-8')
             except UnicodeDecodeError:
-                text = unicode(args[1], 'latin1', 'replace')
+                text = str(args[1], 'latin1', 'replace')
 
             sender_nick = origin.split('@')[0].split('!')[0]
             self.plugin.log_info(_("PrivMsg: <{}> {}").format(sender_nick, text))
@@ -274,9 +277,9 @@ class IRC(object):
                 continue
 
             try:
-                text = unicode(args[1], 'utf-8')
+                text = str(args[1], 'utf-8')
             except UnicodeDecodeError:
-                text = unicode(args[1], 'latin1', 'replace')
+                text = str(args[1], 'latin1', 'replace')
 
             sender_nick = origin.split('@')[0].split('!')[0]
             if command == "INVITE":
@@ -369,9 +372,9 @@ class IRC(object):
                     and command in ("PRIVMSG", "NOTICE"):
 
                     try:
-                        text = unicode(args[1], 'utf-8')
+                        text = str(args[1], 'utf-8')
                     except UnicodeDecodeError:
-                        text = unicode(args[1], 'latin1', 'replace')
+                        text = str(args[1], 'latin1', 'replace')
 
                     sender_nick = origin.split('@')[0].split('!')[0]
                     self.plugin.log_debug(_("PrivMsg: <{}> {}").format(sender_nick, text))
@@ -379,7 +382,7 @@ class IRC(object):
                     m = re.match(r'\x01DCC ACCEPT .*? {} (?P<RESUME_POS>\d+)\x01'.format(dcc_port), text)
                     if m:
                         self.plugin.log_debug(_("Bot '{}' acknowledged resume at position {}").format(sender_nick, m.group('RESUME_POS')))
-                        return long(m.group('RESUME_POS'))
+                        return int(m.group('RESUME_POS'))
 
                 else:
                     time.sleep(0.1)
@@ -411,9 +414,9 @@ class IRC(object):
                 and command in ("PRIVMSG", "NOTICE"):
 
                 try:
-                    text = unicode(args[1], 'utf-8')
+                    text = str(args[1], 'utf-8')
                 except UnicodeDecodeError:
-                    text = unicode(args[1], 'latin1', 'replace')
+                    text = str(args[1], 'latin1', 'replace')
 
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
@@ -610,9 +613,9 @@ class XDCC(Hoster):
             return
 
         try:
-            text = unicode(args[1], 'utf-8')
+            text = str(args[1], 'utf-8')
         except UnicodeDecodeError:
-            text = unicode(args[1], 'latin1', 'replace')
+            text = str(args[1], 'latin1', 'replace')
 
         sender_nick = origin.split('@')[0].split('!')[0]
         self.log_debug(_("PrivMsg: <{}> {}").format(sender_nick, text))
@@ -634,7 +637,7 @@ class XDCC(Hoster):
             self.dcc_port = int(m.group('PORT'))
             self.dcc_file_name = m.group('NAME')
             self.dcc_sender_bot = origin.split('@')[0].split('!')[0]
-            file_size = long(m.group('SIZE')) if m.group('SIZE') else 0
+            file_size = int(m.group('SIZE')) if m.group('SIZE') else 0
 
             self.do_download(ip, self.dcc_port, self.dcc_file_name, file_size)
 

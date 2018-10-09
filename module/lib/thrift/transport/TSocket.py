@@ -1,3 +1,4 @@
+from __future__ import division
 
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -18,6 +19,7 @@
 # under the License.
 #
 
+from past.utils import old_div
 from .TTransport import *
 import os
 import errno
@@ -64,7 +66,7 @@ class TSocket(TSocketBase):
     if ms is None:
       self._timeout = None
     else:
-      self._timeout = ms/1000.0
+      self._timeout = old_div(ms,1000.0)
 
     if self.handle is not None:
       self.handle.settimeout(self._timeout)

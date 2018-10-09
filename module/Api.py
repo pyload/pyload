@@ -4,6 +4,8 @@
 
 
 
+from builtins import str
+from builtins import object
 from os.path import join
 from time import time
 import re
@@ -42,7 +44,7 @@ def permission(bits):
 
 urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
 
-class PERMS:
+class PERMS(object):
     ALL = 0  # requires no permission, but login
     ADD = 1  # can add packages
     DELETE = 2 # can delete packages
@@ -54,7 +56,7 @@ class PERMS:
     ACCOUNTS = 256 # can access accounts
     LOGS = 512 # can see server logs
 
-class ROLE:
+class ROLE(object):
     ADMIN = 0  #admin has all permissions implicit
     USER = 1
 
@@ -90,10 +92,10 @@ class Api(Iface):
 
     def _convertConfigFormat(self, c):
         sections = {}
-        for sectionName, sub in c.iteritems():
+        for sectionName, sub in c.items():
             section = ConfigSection(sectionName, sub["desc"])
             items = []
-            for key, data in sub.iteritems():
+            for key, data in sub.items():
                 if key in ("desc", "outline"):
                     continue
                 item = ConfigItem()
@@ -373,7 +375,7 @@ class Api(Iface):
         data = parseNames(tmp)
         result = {}
 
-        for k, v in data.iteritems():
+        for k, v in data.items():
             for url, status in v:
                 status.packagename = k
                 result[url] = status
@@ -430,7 +432,7 @@ class Api(Iface):
         :return: list of package ids
         """
         return [self.addPackage(name, urls, dest) for name, urls
-                in self.generatePackages(links).iteritems()]
+                in self.generatePackages(links).items()]
 
     @permission(PERMS.ADD)
     def checkAndAddPackages(self, links, dest=Destination.Queue):
@@ -459,7 +461,7 @@ class Api(Iface):
 
         pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
                             data["queue"], data["order"],
-                            links=[self._convertPyFile(x) for x in data["links"].itervalues()])
+                            links=[self._convertPyFile(x) for x in data["links"].values()])
 
         return pdata
 
@@ -492,7 +494,7 @@ class Api(Iface):
         if not info:
             raise FileDoesNotExists(fid)
 
-        fdata = self._convertPyFile(info.values()[0])
+        fdata = self._convertPyFile(list(info.values())[0])
         return fdata
 
     @permission(PERMS.DELETE)
@@ -528,7 +530,7 @@ class Api(Iface):
                             pack["password"], pack["queue"], pack["order"],
                             pack["linksdone"], pack["sizedone"], pack["sizetotal"],
                             pack["linkstotal"])
-                for pack in self.core.files.getInfoData(Destination.Queue).itervalues()]
+                for pack in self.core.files.getInfoData(Destination.Queue).values()]
 
     @permission(PERMS.LIST)
     def getQueueData(self):
@@ -540,8 +542,8 @@ class Api(Iface):
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
                             pack["password"], pack["queue"], pack["order"],
                             pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
-                for pack in self.core.files.getCompleteData(Destination.Queue).itervalues()]
+                            links=[self._convertPyFile(x) for x in pack["links"].values()])
+                for pack in self.core.files.getCompleteData(Destination.Queue).values()]
 
     @permission(PERMS.LIST)
     def getCollector(self):
@@ -553,7 +555,7 @@ class Api(Iface):
                             pack["password"], pack["queue"], pack["order"],
                             pack["linksdone"], pack["sizedone"], pack["sizetotal"],
                             pack["linkstotal"])
-                for pack in self.core.files.getInfoData(Destination.Collector).itervalues()]
+                for pack in self.core.files.getInfoData(Destination.Collector).values()]
 
     @permission(PERMS.LIST)
     def getCollectorData(self):
@@ -564,8 +566,8 @@ class Api(Iface):
         return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
                             pack["password"], pack["queue"], pack["order"],
                             pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].itervalues()])
-                for pack in self.core.files.getCompleteData(Destination.Collector).itervalues()]
+                            links=[self._convertPyFile(x) for x in pack["links"].values()])
+                for pack in self.core.files.getCompleteData(Destination.Collector).values()]
 
 
     @permission(PERMS.ADD)
@@ -625,7 +627,7 @@ class Api(Iface):
     def stopAllDownloads(self):
         """Aborts all running downloads."""
 
-        pyfiles = self.core.files.cache.values()
+        pyfiles = list(self.core.files.cache.values())
         for pyfile in pyfiles:
             pyfile.abortDownload()
 
@@ -636,7 +638,7 @@ class Api(Iface):
         :param fids: list of file ids
         :return:
         """
-        pyfiles = self.core.files.cache.values()
+        pyfiles = list(self.core.files.cache.values())
 
         for pyfile in pyfiles:
             if pyfile.id in fids:
@@ -716,7 +718,7 @@ class Api(Iface):
         p = self.core.files.getPackage(pid)
         if not p: raise PackageDoesNotExists(pid)
 
-        for key, value in data.iteritems():
+        for key, value in data.items():
             if key == "id": continue
             setattr(p, key, value)
 
@@ -749,7 +751,7 @@ class Api(Iface):
 
         for pid in packs:
             pack = self.core.files.getPackageData(int(pid))
-            while pack["order"] in order.keys(): #just in case
+            while pack["order"] in list(order.keys()): #just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
@@ -763,8 +765,8 @@ class Api(Iface):
         """
         rawData = self.core.files.getPackageData(int(pid))
         order = {}
-        for id, pyfile in rawData["links"].iteritems():
-            while pyfile["order"] in order.keys(): #just in case
+        for id, pyfile in rawData["links"].items():
+            while pyfile["order"] in list(order.keys()): #just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order
@@ -861,7 +863,7 @@ class Api(Iface):
         """
         accs = self.core.accountManager.getAccountInfos(False, refresh)
         accounts = []
-        for group in accs.values():
+        for group in list(accs.values()):
             accounts.extend([AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
                                          acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
                              for acc in group])
@@ -873,7 +875,7 @@ class Api(Iface):
 
         :return: list
         """
-        return self.core.accountManager.accounts.keys()
+        return list(self.core.accountManager.accounts.keys())
 
     @permission(PERMS.ACCOUNTS)
     def updateAccount(self, plugin, account, password=None, options={}):
@@ -943,7 +945,7 @@ class Api(Iface):
     def getAllUserData(self):
         """returns all known user and info"""
         res = {}
-        for user, data in self.core.db.getAllUserData().iteritems():
+        for user, data in self.core.db.getAllUserData().items():
             res[user] = UserData(user, data["email"], data["role"], data["permission"], data["template"])
 
         return res
@@ -955,7 +957,7 @@ class Api(Iface):
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.core.hookManager.methods.iteritems():
+        for plugin, funcs in self.core.hookManager.methods.items():
             data[plugin] = funcs
 
         return data

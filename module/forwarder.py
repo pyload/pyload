@@ -2,15 +2,18 @@
 #@author: RaNaN
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from sys import argv
 from sys import exit
 
 import socket
-import thread
+import _thread
 
 from traceback import print_exc
 
-class Forwarder():
+class Forwarder(object):
 
     def __init__(self, extip,extport=9666):
         print("Start portforwarding to {}:{}".format(extip, extport))
@@ -30,8 +33,8 @@ def server(*settings):
             client_socket = dock_socket.accept()[0]
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_socket.connect((settings[0], settings[1]))
-            thread.start_new_thread(forward, (client_socket, server_socket))
-            thread.start_new_thread(forward, (server_socket, client_socket))
+            _thread.start_new_thread(forward, (client_socket, server_socket))
+            _thread.start_new_thread(forward, (server_socket, client_socket))
     except Exception:
         print_exc()
 

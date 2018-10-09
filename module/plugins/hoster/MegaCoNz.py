@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
+from builtins import range
+from builtins import object
 import base64
 import os
 import random
@@ -339,7 +342,7 @@ class MegaCoNz(Hoster):
             max_tries = self.config.get("max_tries", default=2, plugin="Checksum")
             retry_action = self.config.get("retry_action", default="fail", plugin="Checksum")
 
-            if all(_r < max_tries for _id, _r in self.retries.items()):
+            if all(_r < max_tries for _id, _r in list(self.retries.items())):
                 os.remove(local_file)
                 wait_time = self.config.get("wait_time", default=1, plugin="Checksum")
                 self.retry(max_tries, wait_time, msg)

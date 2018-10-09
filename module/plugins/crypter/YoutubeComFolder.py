@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import fsjoin, json
@@ -30,7 +33,7 @@ class YoutubeComFolder(Crypter):
 
     def api_response(self, ref, req):
         req.update({'key': self.API_KEY})
-        url = urlparse.urljoin("https://www.googleapis.com/youtube/v3/", ref)
+        url = urllib.parse.urljoin("https://www.googleapis.com/youtube/v3/", ref)
         html = self.load(url, get=req)
         return json.loads(html)
 
@@ -70,7 +73,7 @@ class YoutubeComFolder(Crypter):
                 yield item
 
     def get_playlists(self, ch_id):
-        return map(self.get_playlist, self._get_playlists(ch_id))
+        return list(map(self.get_playlist, self._get_playlists(ch_id)))
 
     def _get_videos_id(self, id, token=None):
         req = {'part': "contentDetails", 'maxResults': "50", 'playlistId': id}
@@ -108,17 +111,17 @@ class YoutubeComFolder(Crypter):
                 relatedplaylist = dict(
                     (p_name,
                      self.get_playlist(p_id)) for p_name,
-                    p_id in channel['relatedPlaylists'].items())
+                    p_id in list(channel['relatedPlaylists'].items()))
 
                 self.log_debug(
                     "Channel's related playlists found = {}" %
-                    relatedplaylist.keys())
+                    list(relatedplaylist.keys()))
 
                 relatedplaylist['uploads']['title'] = "Unplaylisted videos"
                 relatedplaylist['uploads'][
                     'checkDups'] = True  #: checkDups flag
 
-                for p_name, p_data in relatedplaylist.items():
+                for p_name, p_data in list(relatedplaylist.items()):
                     if self.config.get(p_name):
                         p_data['title'] += " of " + user
                         playlists.append(p_data)
@@ -155,7 +158,7 @@ class YoutubeComFolder(Crypter):
                     "{} video\s available on playlist \"{}\" after duplicates cleanup" %
                     (len(p_urls), p_name))
             else:
-                p_urls = map(urlize, p_videos)
+                p_urls = list(map(urlize, p_videos))
 
             #: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_urls, p_folder))

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.SimpleCrypter import SimpleCrypter
@@ -38,7 +40,7 @@ class Go4UpCom(SimpleCrypter):
         hosterslink_re = re.search(r'(/download/gethosts/.+?)"', self.data)
         if hosterslink_re:
             hosters = self.load(
-                urlparse.urljoin(
+                urllib.parse.urljoin(
                     "http://go4up.com/",
                     hosterslink_re.group(1)))
             for hoster in json.loads(hosters):

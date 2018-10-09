@@ -2,10 +2,14 @@
 #@author: RaNaN, mkaay
 
 
-import __builtin__
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import builtins
 
 import traceback
-from thread import start_new_thread
+from _thread import start_new_thread
 from threading import RLock
 
 from types import MethodType
@@ -14,7 +18,7 @@ from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
 from .utils import lock
 
-class HookManager:
+class HookManager(object):
     """Manages hooks, delegates and handles Events.
 
         Every plugin can define events, \
@@ -50,7 +54,7 @@ class HookManager:
         self.core = core
         self.config = self.core.config
 
-        __builtin__.hookManager = self #needed to let hooks register themself
+        builtins.hookManager = self #needed to let hooks register themself
 
         self.log = self.core.log
         self.plugins = []
@@ -259,10 +263,10 @@ class HookManager:
     def getAllInfo(self):
         """returns info stored by hook plugins"""
         info = {}
-        for name, plugin in self.pluginMap.iteritems():
+        for name, plugin in self.pluginMap.items():
             if plugin.info:
                 #copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, str) else y) for x, y in plugin.info.iteritems()])
+                info[name] = dict([(x, str(y) if not isinstance(y, str) else y) for x, y in plugin.info.items()])
         return info
 
 
@@ -270,7 +274,7 @@ class HookManager:
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
             info = dict([(x, str(y) if not isinstance(y, str) else y)
-                for x, y in self.pluginMap[plugin].info.iteritems()])
+                for x, y in self.pluginMap[plugin].info.items()])
 
         return info
 

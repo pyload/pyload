@@ -2,9 +2,10 @@
 #@author: mkaay, RaNaN
 
 
+from builtins import object
 from time import time
 
-class CookieJar():
+class CookieJar(object):
     def __init__(self, pluginname, account=None):
         self.cookies = {}
         self.plugin = pluginname
@@ -16,7 +17,7 @@ class CookieJar():
             self.cookies[name] = c
 
     def getCookies(self):
-        return self.cookies.values()
+        return list(self.cookies.values())
 
     def parseCookie(self, name):
         if name in self.cookies:

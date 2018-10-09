@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #@author: mkaay
 
+from builtins import str
 import re
 
 from PyQt4.QtCore import *

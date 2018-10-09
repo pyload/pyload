@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import filter
 import binascii
 import re
 
@@ -128,7 +129,7 @@ class ShareLinksBiz(Crypter):
         #: Get captcha map
         captcha_map = self._get_captcha_map()
         self.log_debug(
-            "Captcha map with [{:d}] positions".format(len(captcha_map.keys())))
+            "Captcha map with [{:d}] positions".format(len(list(captcha_map.keys()))))
 
         #: Request user for captcha coords
         m = re.search(
@@ -168,7 +169,7 @@ class ShareLinksBiz(Crypter):
 
     def _resolve_coords(self, coords, captcha_map):
         x, y = coords
-        for rect, href in captcha_map.items():
+        for rect, href in list(captcha_map.items()):
             x1, y1, x2, y2 = rect
             if (x >= x1 and x <= x2) and (y >= y1 and y <= y2):
                 return href
@@ -318,7 +319,7 @@ class ShareLinksBiz(Crypter):
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = filter(bool, text.split('\n'))
+        links = list(filter(bool, text.split('\n')))
 
         #: Log and return
         self.log_debug("Block has {:d} links".format(len(links)))

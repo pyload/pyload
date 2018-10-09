@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 import re
 
 from ..internal.Crypter import Crypter
@@ -44,4 +45,4 @@ class UlozToFolder(Crypter):
             self.log_info(_("Limit of 99 pages reached, aborting"))
 
         if new_links:
-            self.links = [map(lambda s: "http://ulozto.net/{}".format(s), new_links)]
+            self.links = [["http://ulozto.net/{}".format(s) for s in new_links]]

@@ -5,6 +5,11 @@
 
 
 # import HTMLParser  #@TODO: Use in 0.4.10
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import map
+from builtins import object
 import datetime
 import hashlib
 import itertools
@@ -17,8 +22,8 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib
-import urlparse
+import urllib.request, urllib.parse, urllib.error
+import urllib.parse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
 
@@ -114,7 +119,7 @@ class DB(object):
                 value = default
             else:
                 value = dict((k, json.loads(v.decode('base64')))
-                             for k, v in value.items())
+                             for k, v in list(value.items()))
 
         return value
 
@@ -280,8 +285,8 @@ def format_size(value):
 
 
 def compare_time(start, end):
-    start = map(int, start)
-    end = map(int, end)
+    start = list(map(int, start))
+    end = list(map(int, end))
 
     if start == end:
         return True
@@ -395,15 +400,15 @@ def decode(value, encoding=None, errors='strict'):
     Encoded string (default to own system encoding) -> unicode string
     """
     if isinstance(value, str):
-        res = unicode(
+        res = str(
             value, encoding or get_console_encoding(
                 sys.stdout.encoding), errors)
 
-    elif isinstance(value, unicode):
+    elif isinstance(value, str):
         res = value
 
     else:
-        res = unicode(value)
+        res = str(value)
 
     # Hotfix UnicodeDecodeError
     try:
@@ -422,7 +427,7 @@ def encode(value, encoding='utf-8', errors='backslashreplace'):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
-    if isinstance(value, unicode):
+    if isinstance(value, str):
         res = value.encode(encoding, errors)
 
     elif isinstance(value, str):
@@ -444,7 +449,7 @@ def exists(path):
     if os.path.exists(path):
         if os.name == "nt":
             dir, name = os.path.split(path.rstrip(os.sep))
-            return name.upper() in map(str.upper, os.listdir(dir))
+            return name.upper() in list(map(str.upper, os.listdir(dir)))
         else:
             return True
     else:
@@ -479,12 +484,12 @@ def remove_chars(value, repl):
     """
     Remove all chars in repl from string
     """
-    if isinstance(repl, unicode):
+    if isinstance(repl, str):
         for badc in list(repl):
             value = value.replace(badc, "")
         return value
 
-    elif isinstance(value, unicode):
+    elif isinstance(value, str):
         return value.translate(dict((ord(s), None) for s in repl))
 
     elif isinstance(value, str):
@@ -493,7 +498,7 @@ def remove_chars(value, repl):
 
 def fixurl(url, unquote=None):
     old = url
-    url = urllib.unquote(url)
+    url = urllib.parse.unquote(url)
 
     if unquote is None:
         unquote = url is old
@@ -508,7 +513,7 @@ def fixurl(url, unquote=None):
     url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
 
     if not unquote:
-        url = urllib.quote(url)
+        url = urllib.parse.quote(url)
 
     return url
 
@@ -533,7 +538,7 @@ def safepath(value):
         unt = ""
     drive, filename = os.path.splitdrive(value)
     filename = os.path.join(os.sep if os.path.isabs(
-        filename) else "", *map(safename, filename.split(os.sep)))
+        filename) else "", *list(map(safename, filename.split(os.sep))))
     path = unt + drive + filename
 
     try:
@@ -570,12 +575,12 @@ def safename(value):
 
 def parse_name(value, safechar=True):
     path = fixurl(decode(value), unquote=False)
-    url_p = urlparse.urlparse(path.rstrip('/'))
+    url_p = urllib.parse.urlparse(path.rstrip('/'))
     name = (url_p.path.split('/')[-1] or
             url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
             url_p.netloc.split('.', 1)[0])
 
-    name = urllib.unquote(name)
+    name = urllib.parse.unquote(name)
     return safename(name) if safechar else name
 
 
@@ -767,7 +772,7 @@ def replace_patterns(value, rules):
 #@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/',
                exp=time.time() + 180 * 24 * 3600):
-    args = map(encode, [domain, name, value, path]) + [int(exp)]
+    args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 
 
@@ -835,7 +840,7 @@ def parse_html_form(attr_str, html, input_names={}):
             return action, inputs
         else:
             #: Check input attributes
-            for key, value in input_names.items():
+            for key, value in list(input_names.items()):
                 if key in inputs:
                     if isinstance(value, str) and inputs[key] == value:
                         continue

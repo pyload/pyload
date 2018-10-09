@@ -2,10 +2,14 @@
 
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import range
 import base64
 import re
 import time
-import urlparse
+import urllib.parse
 
 from module.network.HTTPRequest import BadHeader
 
@@ -58,7 +62,7 @@ class Captcha9Kw(Addon):
     @threaded
     def _process_captcha(self, task):
         if task.isInteractive():
-            url_p = urlparse.urlparse(task.captchaParams['url'])
+            url_p = urllib.parse.urlparse(task.captchaParams['url'])
             if  url_p.scheme not in ("http", "https"):
                 self.log_error(_("Invalid url"))
                 return
@@ -93,7 +97,7 @@ class Captcha9Kw(Addon):
                   'cpm': self.config.get('captchapermin')}
 
         for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
-            details = map(str.strip, opt.split(';'))
+            details = list(map(str.strip, opt.split(';')))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue
@@ -209,7 +213,7 @@ class Captcha9Kw(Addon):
             return
 
         for opt in [x for x in self.config.get('hoster_options', "").split('|') if x]:
-            details = map(str.strip, opt.split(':'))
+            details = list(map(str.strip, opt.split(':')))
 
             if not details or details[0].lower() != pluginname.lower():
                 continue

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..internal.Hoster import Hoster
 
@@ -57,7 +59,7 @@ class YourfilesTo(Hoster):
         url = re.search(r"var bla = '(.*?)';", self.data)
         if url:
             url = url.group(1)
-            url = urllib.unquote(url.replace(
+            url = urllib.parse.unquote(url.replace(
                 "http://http:/http://", "http://").replace("dumdidum", ""))
             return url
         else:

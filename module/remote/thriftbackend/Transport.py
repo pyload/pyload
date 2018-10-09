@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 from thrift.transport.TTransport import TBufferedTransport
 from thrift.transport.TZlibTransport import TZlibTransport
 
@@ -19,12 +20,12 @@ class TransportCompressed(TZlibTransport):
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 
-class TransportFactory:
+class TransportFactory(object):
     def getTransport(self, trans):
         buffered = Transport(trans)
         return buffered
 
-class TransportFactoryCompressed:
+class TransportFactoryCompressed(object):
     _last_trans = None
     _last_z = None
 

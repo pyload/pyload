@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.MultiHoster import MultiHoster
@@ -48,5 +50,5 @@ class LinksnappyCom(MultiHoster):
 
     @staticmethod
     def _get_host(url):
-        host = urlparse.urlsplit(url).netloc
+        host = urllib.parse.urlsplit(url).netloc
         return re.search(r'[\w\-]+\.\w+$', host).group(0)

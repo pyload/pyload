@@ -2,8 +2,10 @@
 
 
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 import MultipartPostHandler
 
@@ -29,7 +31,7 @@ class CCF(Container):
 
     def decrypt(self, pyfile):
         fs_filename = encode(pyfile.url)
-        opener = urllib2.build_opener(
+        opener = urllib.request.build_opener(
             MultipartPostHandler.MultipartPostHandler)
 
         dlc_content = opener.open('http://service.jdownloader.net/dlcrypt/getDLC.php',

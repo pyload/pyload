@@ -2,16 +2,19 @@
 #@author: mkaay
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from time import time
 from heapq import heappop, heappush
-from thread import start_new_thread
+from _thread import start_new_thread
 from threading import Lock
 
 class AlreadyCalled(Exception):
     pass
 
 
-class Deferred():
+class Deferred(object):
     def __init__(self):
         self.call = []
         self.result = ()
@@ -29,7 +32,7 @@ class Deferred():
             f(*args ** kwargs)
 
 
-class Scheduler():
+class Scheduler(object):
     def __init__(self, core):
         self.core = core
 
@@ -73,7 +76,7 @@ class Scheduler():
                     break
 
 
-class Job():
+class Job(object):
     def __init__(self, time, call, args=[], kwargs={}, deferred=None, threaded=True):
         self.time = float(time)
         self.call = call
@@ -96,7 +99,7 @@ class Job():
             self.run()
 
 
-class PriorityQueue():
+class PriorityQueue(object):
     """ a non blocking priority queue """
 
     def __init__(self):

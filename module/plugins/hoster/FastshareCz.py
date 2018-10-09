@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -57,7 +59,7 @@ class FastshareCz(SimpleHoster):
         if m is None:
             self.error(_("LINK_FREE_PATTERN not found"))
 
-        self.link = urlparse.urljoin("https://fastshare.cz", m.group(1))
+        self.link = urllib.parse.urljoin("https://fastshare.cz", m.group(1))
         baseurl = "https://fastshare.cz"
 
     def check_download(self):

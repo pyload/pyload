@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import urllib
+from future import standard_library
+standard_library.install_aliases()
+import urllib.request, urllib.parse, urllib.error
 import re
 
 from ..internal.SimpleHoster import SimpleHoster
@@ -40,5 +42,5 @@ class ShareplaceCom(SimpleHoster):
 
         m = re.search(r"var beer = '(.+?)'", self.data)
         if m is not None:
-            self.link  = urllib.unquote(urllib.unquote(m.group(1).replace("vvvvvvvvv", "")
+            self.link  = urllib.parse.unquote(urllib.parse.unquote(m.group(1).replace("vvvvvvvvv", "")
                                                        .replace("lllllllll", "")).replace("teletubbies", ""))[13:]

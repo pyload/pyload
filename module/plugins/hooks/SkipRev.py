@@ -60,7 +60,7 @@ class SkipRev(Addon):
                     '.',
                     '\.'))
 
-            queued = [True for fid, fdata in pyfile.package().getChildren().items()
+            queued = [True for fid, fdata in list(pyfile.package().getChildren().items())
                       if fdata['status'] not in status_list and pyname.match(fdata['name'])].count(True)
 
             if not queued or queued < revtokeep:  #: Keep one rev at least in auto mode
@@ -87,7 +87,7 @@ class SkipRev(Addon):
                 '.',
                 '\.'))
 
-        for fid, fdata in pyfile.package().getChildren().items():
+        for fid, fdata in list(pyfile.package().getChildren().items()):
             if fdata['status'] == 4 and pyname.match(fdata['name']):
                 pyfile_new = self._create_pyFile(fdata)
 

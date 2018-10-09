@@ -66,7 +66,7 @@ class LinkFilter(Addon):
         #declare all links as hoster links so the filter will work on all links
         if self.config.get('filter_all'):
             return True
-        for item in self.pyload.pluginManager.hosterPlugins.items():
+        for item in list(self.pyload.pluginManager.hosterPlugins.items()):
             if item[1]['re'].match(link):
                 return True
         return False

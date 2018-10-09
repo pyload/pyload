@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Crypter import Crypter
 
@@ -44,7 +46,7 @@ class LixIn(Crypter):
         m = re.search(self.CAPTCHA_PATTERN, self.data)
         if m is not None:
             captcharesult = self.captcha.decrypt(
-                urlparse.urljoin("http://lix.in/", m.group(1)))
+                urllib.parse.urljoin("http://lix.in/", m.group(1)))
             self.data = self.load(
                 url,
                 post={

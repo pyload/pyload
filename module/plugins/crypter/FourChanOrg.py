@@ -2,8 +2,10 @@
 #
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.Crypter import Crypter
 
@@ -29,4 +31,4 @@ class FourChanOrg(Crypter):
             re.findall(
                 r'(images\.4chan\.org/[^/]*/src/[^"<]+)',
                 pagehtml))
-        self.links = [urlparse.urljoin("http://", image) for image in images]
+        self.links = [urllib.parse.urljoin("http://", image) for image in images]

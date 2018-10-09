@@ -2,6 +2,8 @@
 #@author: mkaay
 
 
+from builtins import str
+from builtins import range
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -133,7 +135,7 @@ class ConnectionManager(QWidget):
 
     def cleanDict(self, data):
         tmp = {}
-        for k, d in data.items():
+        for k, d in list(data.items()):
             tmp[str(k)] = d
         return tmp
 

@@ -49,7 +49,7 @@ def find(domain, localedir=None, languages=None, all=False):
         else:
             results.extend(res)
     if all is False:
-        results = filter(lambda x: x is not None, results)
+        results = [x for x in results if x is not None]
         if len(results) == 0:
             return None
         else:

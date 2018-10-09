@@ -3,9 +3,14 @@
 # Test links:
 #   http://filecrypt.cc/Container/64E039F859.html
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import filter
+from builtins import range
 import binascii
 import re
-import urlparse
+import urllib.parse
 
 import Crypto.Cipher.AES
 
@@ -169,7 +174,7 @@ class FilecryptCc(Crypter):
     def _handle_internal_captcha(self, url):
         m = re.search(self.INTERNAL_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
+            captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
             self.log_debug("Internal Captcha URL: {}".format(captcha_url))
 
@@ -184,9 +189,9 @@ class FilecryptCc(Crypter):
     def _handle_circle_captcha(self, url):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Circle Captcha URL: {}".format(urlparse.urljoin(self.pyfile.url, m.group(1))))
+            self.log_debug("Circle Captcha URL: {}".format(urllib.parse.urljoin(self.pyfile.url, m.group(1))))
 
-            captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
+            captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
             self.log_debug("Circle Captcha URL: {}".format(captcha_url))
 
@@ -202,7 +207,7 @@ class FilecryptCc(Crypter):
     def _handle_solvemedia_captcha(self, url):
         m = re.search(self.SOLVEMEDIA_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Solvemedia Captcha URL: {}".format(urlparse.urljoin(self.pyfile.url, m.group(1))))
+            self.log_debug("Solvemedia Captcha URL: {}".format(urllib.parse.urljoin(self.pyfile.url, m.group(1))))
 
             solvemedia = SolveMedia(self.pyfile)
             captcha_key = solvemedia.detect_key()
@@ -262,7 +267,7 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(_dlc)))
+            self.urls.append(urllib.parse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(_dlc)))
 
     def handle_weblinks(self):
         try:
@@ -308,7 +313,7 @@ class FilecryptCc(Crypter):
 
         #: Extract links
         text = text.replace("\x00", "").replace("\r", "")
-        links = filter(bool, text.split('\n'))
+        links = list(filter(bool, text.split('\n')))
 
         return links
 

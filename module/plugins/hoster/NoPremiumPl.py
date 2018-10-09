@@ -68,7 +68,7 @@ class NoPremiumPl(MultiHoster):
 
         self.log_debug(parsed)
 
-        if "errno" in parsed.keys():
+        if "errno" in list(parsed.keys()):
             if parsed['errno'] in self.ERROR_CODES:
                 #: Error code in known
                 self.fail(self.ERROR_CODES[parsed['errno']])

@@ -2,6 +2,7 @@
 
 
 
+from builtins import zip
 import operator
 import os
 import re
@@ -97,11 +98,9 @@ class UpdateManager(Addon):
         Reload and reindex all modified plugins
         """
         reloads = []
-        modules = filter(
-            lambda m: m and (m.__name__.startswith("module.plugins.") or
+        modules = [m for m in list(sys.modules.values()) if m and (m.__name__.startswith("module.plugins.") or
                              m.__name__.startswith("userplugins.")) and
-            m.__name__.count(".") >= 2, sys.modules.values()
-        )
+            m.__name__.count(".") >= 2]
         for m in modules:
             root, plugin_type, plugin_name = m.__name__.rsplit(".", 2)
             plugin_id = (plugin_type, plugin_name)
@@ -233,7 +232,7 @@ class UpdateManager(Addon):
         for l in updatelist, blacklist:
             nl = []
             for line in l:
-                d = dict(zip(schema, line.split('|')))
+                d = dict(list(zip(schema, line.split('|'))))
                 d['name'] = d['name'].rsplit('.py', 1)[0]
                 nl.append(d)
             l[:] = nl

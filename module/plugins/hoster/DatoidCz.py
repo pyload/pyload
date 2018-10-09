@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -34,9 +37,9 @@ class DatoidCz(SimpleHoster):
 
     def handle_free(self, pyfile):
         url = self.req.lastEffectiveURL
-        urlp = urlparse.urlparse(url)
+        urlp = urllib.parse.urlparse(url)
 
-        json_data = json.loads(self.load(urlparse.urljoin(
+        json_data = json.loads(self.load(urllib.parse.urljoin(
             url, "/f/" + urlp.path + str(int(time.time() * 1000)))))
         self.log_debug(json_data)
 
@@ -47,7 +50,7 @@ class DatoidCz(SimpleHoster):
 
     def handle_premium(self, pyfile):
         url = self.req.lastEffectiveURL
-        urlp = urlparse.urlparse(url)
+        urlp = urllib.parse.urlparse(url)
 
-        self.link = urlparse.urljoin(
+        self.link = urllib.parse.urljoin(
             url, "/f/" + urlp.path + str(int(time.time() * 1000)))

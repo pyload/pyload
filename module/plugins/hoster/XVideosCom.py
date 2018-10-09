@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..internal.Hoster import Hoster
 
@@ -28,7 +30,7 @@ class XVideosCom(Hoster):
             id_search.group(1),
         )
         self.download(
-            urllib.unquote(
+            urllib.parse.unquote(
                 re.search(
                     r'html5player\.setVideoUrlHigh\(\'(.+?)\'\)',
                     site).group(1)))

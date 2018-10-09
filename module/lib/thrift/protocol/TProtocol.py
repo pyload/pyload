@@ -17,6 +17,8 @@
 # under the License.
 #
 
+from builtins import range
+from builtins import object
 from thrift.Thrift import *
 
 class TProtocolException(TException):
@@ -33,7 +35,7 @@ class TProtocolException(TException):
     TException.__init__(self, message)
     self.type = type
 
-class TProtocolBase:
+class TProtocolBase(object):
 
   """Base class for Thrift protocol driver."""
 
@@ -359,7 +361,7 @@ class TProtocolBase:
     k_writer = getattr(self, ktype_name)
     v_writer = getattr(self, vtype_name)
     self.writeMapBegin(k_type, v_type, len(val))
-    for m_key, m_val in val.iteritems():
+    for m_key, m_val in val.items():
       if not k_is_container:
         k_writer(m_key)
       else:
@@ -398,7 +400,7 @@ class TProtocolBase:
     else:
       writer(val)
 
-class TProtocolFactory:
+class TProtocolFactory(object):
   def getProtocol(self, trans):
     pass
 

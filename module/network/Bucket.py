@@ -3,17 +3,20 @@
 #@author: RaNaN
 
 
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 from time import time
 from threading import Lock
 
-class Bucket:
+class Bucket(object):
     def __init__(self):
         self.rate = 0
         self.tokens = 0
         self.timestamp = time()
         self.lock = Lock()
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False if self.rate < 10240 else True
 
     def setRate(self, rate):
@@ -30,7 +33,7 @@ class Bucket:
         self.tokens -= amount
 
         if self.tokens < 0:
-            time = -self.tokens/float(self.rate)
+            time = old_div(-self.tokens,float(self.rate))
         else:
             time = 0
 

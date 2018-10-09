@@ -1,11 +1,12 @@
 ## {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
+from builtins import map
 import dis
 
-_const_codes = map(dis.opmap.__getitem__, [
+_const_codes = list(map(dis.opmap.__getitem__, [
     'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP',
     'BUILD_LIST', 'BUILD_MAP', 'BUILD_TUPLE',
     'LOAD_CONST', 'RETURN_VALUE', 'STORE_SUBSCR'
-    ])
+    ]))
 
 
 _load_names = ['False', 'True', 'null', 'true', 'false']

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -37,7 +40,7 @@ class UnibytesCom(SimpleHoster):
 
         for _i in range(3):
             self.log_debug(action, post_data)
-            self.data = self.load(urlparse.urljoin(domain, action),
+            self.data = self.load(urllib.parse.urljoin(domain, action),
                                   post=post_data,
                                   redirect=False)
 
@@ -68,4 +71,4 @@ class UnibytesCom(SimpleHoster):
 
             elif last_step in ("captcha", "last"):
                 post_data['captcha'] = self.captcha.decrypt(
-                    urlparse.urljoin(domain, "captcha.jpg"))
+                    urllib.parse.urljoin(domain, "captcha.jpg"))

@@ -57,7 +57,7 @@ class TXT(Container):
         txt.close()
 
         #: Empty packages fix
-        for key, value in packages.items():
+        for key, value in list(packages.items()):
             if not value:
                 packages.pop(key, None)
 
@@ -69,5 +69,5 @@ class TXT(Container):
             except IOError:
                 self.log_warning(_("Failed to flush list"))
 
-        for name, links in packages.items():
+        for name, links in list(packages.items()):
             self.packages.append((name, links, name))

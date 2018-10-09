@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import base64
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import json
@@ -36,10 +38,10 @@ class CloudMailRuFolder(Crypter):
         pack_links = ["https://cloud.mail.ru/dl?q={}" %
                       base64.b64encode(json.dumps({'u': "{}{}?etag={}&key={}" %
                                                         (json_data['dispatcher']['weblink_view'][0]['url'],
-                                                         urllib.quote(_link['weblink']),
+                                                         urllib.parse.quote(_link['weblink']),
                                                          _link['hash'],
                                                          json_data['params']['tokens']['download']),
-                                                   'n': urllib.quote_plus(_link['name']),
+                                                   'n': urllib.parse.quote_plus(_link['name']),
                                                    's': _link['size']}))
                       for _link in json_data['folders']['folder']['list']
                       if _link['kind'] == "file"]

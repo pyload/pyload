@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import os
 import re
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..internal.Container import Container
 from ..internal.misc import encode, safename
@@ -42,4 +44,4 @@ class TORRENT(Container):
         with open(torrent_filename, "wb") as f:
             f.write(torrent_content)
 
-        self.packages.append((pack_name, ["file://{}".format(urllib.pathname2url(torrent_filename))], pack_name))
+        self.packages.append((pack_name, ["file://{}".format(urllib.request.pathname2url(torrent_filename))], pack_name))

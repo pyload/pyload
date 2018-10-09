@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 import BeautifulSoup
 
@@ -63,7 +65,7 @@ class ZippyshareCom(SimpleHoster):
                 self.link = self.link.replace(".com/pd/", ".com/d/")
 
         if self.link and pyfile.name == "file.html":
-            pyfile.name = urllib.unquote(self.link.split('/')[-1])
+            pyfile.name = urllib.parse.unquote(self.link.split('/')[-1])
 
     def get_link(self):
         #: Get all the scripts inside the html body
@@ -88,8 +90,8 @@ class ZippyshareCom(SimpleHoster):
         eltRE = r'getElementById\([\'"](.+?)[\'"]\)(\.)?(getAttribute\([\'"])?(\w+)?([\'"]\))?'
         for m in re.findall(eltRE, ' '.join(scripts)):
             JSid, JSattr = m[0], m[3]
-            values = filter(None, (elt.get(JSattr, None)
-                                   for elt in soup.findAll(id=JSid)))
+            values = [_f for _f in (elt.get(JSattr, None)
+                                   for elt in soup.findAll(id=JSid)) if _f]
             if values:
                 inits.append('document.getElementById("{}")["{}"] = "{}"'.format(
                     JSid, JSattr, values[-1]))

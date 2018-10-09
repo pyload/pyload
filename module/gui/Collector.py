@@ -2,6 +2,8 @@
 #@author: mkaay
 
 
+from builtins import str
+from builtins import object
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -10,7 +12,7 @@ from module.utils import formatSize
 
 from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
 
-statusMapReverse = dict((v, k) for k, v in statusMap.iteritems())
+statusMapReverse = dict((v, k) for k, v in iter(statusMap.items()))
 
 translatedStatusMap = {} # -> CollectorModel.__init__
 
@@ -72,8 +74,8 @@ class CollectorModel(QAbstractItemModel):
         """
         self._data = []
         order = self.connector.getPackageOrder(Destination.Collector)
-        self.beginInsertRows(QModelIndex(), 0, len(order.values()))
-        for position, pid in order.iteritems():
+        self.beginInsertRows(QModelIndex(), 0, len(list(order.values())))
+        for position, pid in order.items():
             pack = self.connector.getPackageData(pid)
             package = Package(pack)
             self._data.append(package)

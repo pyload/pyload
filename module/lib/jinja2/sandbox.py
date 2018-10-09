@@ -12,6 +12,10 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 from jinja2.runtime import Undefined
 from jinja2.environment import Environment
 from jinja2.exceptions import SecurityError
@@ -46,7 +50,7 @@ _mutable_sequence_types = (list,)
 # on python 2.x we can register the user collection types
 try:
     from UserDict import UserDict, DictMixin
-    from UserList import UserList
+    from collections import UserList
     _mutable_mapping_types += (UserDict, DictMixin)
     _mutable_set_types += (UserList,)
 except ImportError:
@@ -90,7 +94,7 @@ def safe_range(*args):
     """A range that can't generate ranges with a length of more than
     MAX_RANGE items.
     """
-    rng = range(*args)
+    rng = list(range(*args))
     if len(rng) > MAX_RANGE:
         raise OverflowError('range too big, maximum size for range is {:d}' %
                             MAX_RANGE)

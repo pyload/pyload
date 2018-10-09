@@ -3,25 +3,30 @@
 #@author: RaNaN
 
 
-import cStringIO
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+import io
 import pycurl
 
 from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib import quote, urlencode
-from httplib import responses
+from urllib.parse import quote, urlencode
+from http.client import responses
 from logging import getLogger
 
 from module.plugins.Plugin import Abort
 
 def myquote(url):
-    return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
+    return quote(url.encode('utf_8') if isinstance(url, str) else url, safe="%/:=&?~#+!$,;'@()*[]")
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
-        y.encode('utf_8') if isinstance(y, unicode) else y ) for x, y in data.iteritems()))
+    return urlencode(dict((x.encode('utf_8') if isinstance(x, str) else x, \
+        y.encode('utf_8') if isinstance(y, str) else y ) for x, y in iter(data.items())))
 
-bad_headers = range(400, 404) + range(405, 418) + range(500, 506)
+bad_headers = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
 
 unofficial_responses = {
     440: "Login Timeout - The client's session has expired and must log in again.",
@@ -48,7 +53,7 @@ class BadHeader(Exception):
         self.content = content
 
 
-class HTTPRequest():
+class HTTPRequest(object):
     def __init__(self, cookies=None, options=None):
         self.c = pycurl.Curl()
         self.rep = None
@@ -150,7 +155,7 @@ class HTTPRequest():
     def setRequestContext(self, url, get, post, referer, cookies, multipart=False):
         """ sets everything needed for the request """
 
-        self.rep = cStringIO.StringIO()
+        self.rep = io.StringIO()
 
         url = myquote(url)
 
@@ -164,7 +169,7 @@ class HTTPRequest():
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if isinstance(post, unicode):
+                if isinstance(post, str):
                     post = str(post) #unicode not allowed
                 elif isinstance(post, str):
                     pass
@@ -173,7 +178,7 @@ class HTTPRequest():
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in post.iteritems()]
+                post = [(x, y.encode('utf8') if isinstance(y, str) else y ) for x, y in post.items()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)

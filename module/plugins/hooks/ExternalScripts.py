@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
 import os
 import subprocess
 
@@ -95,20 +96,20 @@ class ExternalScripts(Addon):
                 _s for _s in scripts if _s not in self.scripts[folder]]
 
             if new_scripts:
-                script_names = map(os.path.basename, new_scripts)
+                script_names = list(map(os.path.basename, new_scripts))
                 self.log_info(_("Activated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
 
             removed_scripts = [
                 _s for _s in self.scripts[folder] if _s not in scripts]
 
             if removed_scripts:
-                script_names = map(os.path.basename, removed_scripts)
+                script_names = list(map(os.path.basename, removed_scripts))
                 self.log_info(_("Deactivated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
 
             self.scripts[folder] = scripts
 
     def call_cmd(self, command, *args, **kwargs):
-        call = map(encode, [command] + list(args))
+        call = list(map(encode, [command] + list(args)))
 
         self.log_debug(
             "EXECUTE " + " ".join('"' + _arg + '"' if ' ' in _arg else _arg for _arg in call))

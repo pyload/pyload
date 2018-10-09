@@ -8,11 +8,17 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from __future__ import division
+from builtins import map
+from builtins import next
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import re
 import math
 from random import choice
 from operator import itemgetter
-from itertools import imap, groupby
+from itertools import groupby
 from jinja2.utils import Markup, escape, pformat, urlize, soft_unicode
 from jinja2.runtime import Undefined
 from jinja2.exceptions import FilterArgumentError, SecurityError
@@ -52,7 +58,7 @@ def do_forceescape(value):
     """Enforce HTML escaping.  This will probably double escape variables."""
     if hasattr(value, '__html__'):
         value = value.__html__()
-    return escape(unicode(value))
+    return escape(str(value))
 
 
 @evalcontextfilter
@@ -74,7 +80,7 @@ def do_replace(eval_ctx, s, old, new, count=None):
     if count is None:
         count = -1
     if not eval_ctx.autoescape:
-        return unicode(s).replace(unicode(old), unicode(new), count)
+        return str(s).replace(str(old), str(new), count)
     if hasattr(old, '__html__') or hasattr(new, '__html__') and \
        not hasattr(s, '__html__'):
         s = escape(s)
@@ -119,7 +125,7 @@ def do_xmlattr(_eval_ctx, d, autospace=True):
     """
     rv = u' '.join(
         u'{}="{}"'.format(escape(key), escape(value))
-        for key, value in d.iteritems()
+        for key, value in iter(d.items())
         if value is not None and not isinstance(value, Undefined)
     )
     if autospace and rv:
@@ -173,7 +179,7 @@ def do_dictsort(value, case_sensitive=False, by='key'):
             value = value.lower()
         return value
 
-    return sorted(value.items(), key=sort_func)
+    return sorted(list(value.items()), key=sort_func)
 
 
 def do_sort(value, reverse=False, case_sensitive=False):
@@ -238,7 +244,7 @@ def do_join(eval_ctx, value, d=u''):
     """
     # no automatic escaping?  joining is a lot eaiser then
     if not eval_ctx.autoescape:
-        return unicode(d).join(imap(unicode, value))
+        return str(d).join(map(str, value))
 
     # if the delimiter doesn't have an html representation we check
     # if any of the items has.  If yes we do a coercion to Markup
@@ -249,20 +255,20 @@ def do_join(eval_ctx, value, d=u''):
             if hasattr(item, '__html__'):
                 do_escape = True
             else:
-                value[idx] = unicode(item)
+                value[idx] = str(item)
         if do_escape:
             d = escape(d)
         else:
-            d = unicode(d)
+            d = str(d)
         return d.join(value)
 
     # no html involved, to normal joining
-    return soft_unicode(d).join(imap(soft_unicode, value))
+    return soft_unicode(d).join(map(soft_unicode, value))
 
 
 def do_center(value, width=80):
     """Centers the value in a field of a given width."""
-    return unicode(value).center(width)
+    return str(value).center(width)
 
 
 @environmentfilter
@@ -304,10 +310,10 @@ def do_filesizeformat(value, binary=False):
     if bytes < base:
         return "%d Byte{}".format(bytes, bytes != 1 and 's' or '')
     elif bytes < base * base:
-        return "{:1f} K{}B".format(bytes / base, middle)
+        return "{:1f} K{}B".format(old_div(bytes, base), middle)
     elif bytes < base * base * base:
-        return "{:1f} M{}B".format(bytes / (base * base), middle)
-    return "{:1f} G{}B".format(bytes / (base * base * base), middle)
+        return "{:1f} M{}B".format(old_div(bytes, (base * base)), middle)
+    return "{:1f} G{}B".format(old_div(bytes, (base * base * base)), middle)
 
 
 def do_pprint(value, verbose=False):
@@ -456,7 +462,7 @@ def do_striptags(value):
     """
     if hasattr(value, '__html__'):
         value = value.__html__()
-    return Markup(unicode(value)).striptags()
+    return Markup(str(value)).striptags()
 
 
 def do_slice(value, slices, fill_with=None):
@@ -558,7 +564,7 @@ def do_round(value, precision=0, method='common'):
     if method == 'common':
         return round(value, precision)
     func = getattr(math, method)
-    return func(value * (10 ** precision)) / (10 ** precision)
+    return old_div(func(value * (10 ** precision)), (10 ** precision))
 
 
 @environmentfilter
@@ -626,7 +632,7 @@ def do_mark_safe(value):
 
 def do_mark_unsafe(value):
     """Mark a value as unsafe.  This is the reverse operation for :func:`safe`."""
-    return unicode(value)
+    return str(value)
 
 
 def do_reverse(value):

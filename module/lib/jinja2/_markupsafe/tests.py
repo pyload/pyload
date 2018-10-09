@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import range
+from builtins import object
 import gc
 import unittest
 from jinja2._markupsafe import Markup, escape, escape_silent
@@ -9,7 +12,7 @@ class MarkupTestCase(unittest.TestCase):
         # adding two strings should escape the unsafe one
         unsafe = '<script type="application/x-some-script">alert("foo");</script>'
         safe = Markup('<em>username</em>')
-        assert unsafe + safe == unicode(escape(unsafe)) + unicode(safe)
+        assert unsafe + safe == str(escape(unsafe)) + str(safe)
 
         # string interpolations are safe to use too
         assert Markup('<em>{}</em>') % '<bad user>' == \

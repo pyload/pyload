@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import map
 import re
 import select
 import socket
@@ -349,11 +350,11 @@ class IRC(Thread, Notifier):
                 "ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
 
         if args[0] == "-p":
-            ret = self.pyload.api.deletePackages(map(int, args[1:]))
+            ret = self.pyload.api.deletePackages(list(map(int, args[1:])))
             return ["INFO: Deleted {:d} packages!".format(len(args[1:]))]
 
         elif args[0] == "-l":
-            ret = self.pyload.api.delLinks(map(int, args[1:]))
+            ret = self.pyload.api.delLinks(list(map(int, args[1:])))
             return ["INFO: Deleted {:d} links!".format(len(args[1:]))]
 
         else:

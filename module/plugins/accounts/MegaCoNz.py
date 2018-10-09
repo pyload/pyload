@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import chr
+from builtins import range
 import Crypto.PublicKey.RSA
 
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto
@@ -77,7 +79,7 @@ class MegaCoNz(Account):
 
         elif 'csid' in res:
             privk = MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(res['privk'], master_key))
-            rsa_private_key = [long(0), long(0), long(0), long(0)]
+            rsa_private_key = [int(0), int(0), int(0), int(0)]
 
             for i in range(4):
                 l = ((ord(privk[0]) * 256 + ord(privk[1]) + 7) // 8) + 2
@@ -88,14 +90,14 @@ class MegaCoNz(Account):
             rsa = Crypto.PublicKey.RSA.construct(
                 (rsa_private_key[0] *
                  rsa_private_key[1],
-                 long(0),
+                 int(0),
                  rsa_private_key[2],
                  rsa_private_key[0],
                  rsa_private_key[1]))
             sid = "{:x}".format(rsa.key._decrypt(encrypted_sid))
             sid = '0' * (-len(sid).format(2)) + sid
             sid = "".join(chr(int(sid[i: i + 2], 16))
-                          for i in range(0, len(sid), 2))
+                          for i in list(range(0, len(sid), 2)))
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
 
         else:
@@ -134,5 +136,5 @@ class MegaCoNz(Account):
 
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
-        return long("".join("%02x".format(ord(s[2:][x]))
-                           for x in range(0, len(s[2:]))), 16)
+        return int("".join("%02x".format(ord(s[2:][x]))
+                           for x in list(range(0, len(s[2:])))), 16)

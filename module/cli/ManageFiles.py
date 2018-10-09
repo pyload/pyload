@@ -19,6 +19,9 @@
 ###
 
 
+from builtins import map
+from builtins import str
+from builtins import range
 from itertools import islice
 from time import time
 
@@ -77,7 +80,7 @@ class ManageFiles(Handler):
             if self.mode == "d":
                 self.client.deleteFiles(links)
             elif self.mode == "r":
-                map(self.client.restartFile, links)
+                list(map(self.client.restartFile, links))
 
         else:
             #look into package
@@ -186,7 +189,7 @@ class ManageFiles(Handler):
             l, n, h = inp.partition("-")
             l = int(l)
             h = int(h)
-            r = range(l, h + 1)
+            r = list(range(l, h + 1))
 
             ret = []
             if package:

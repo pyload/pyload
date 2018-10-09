@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 import operator
 import random
 import re

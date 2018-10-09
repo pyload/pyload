@@ -37,7 +37,7 @@ class RealdebridCom(MultiHoster):
         self.chunk_limit = 3
 
     def handle_premium(self, pyfile):
-        user = self.account.accounts.keys()[0]
+        user = list(self.account.accounts.keys())[0]
         api_token = self.account.accounts[user]["password"]
 
         data = self.api_response("/unrestrict/link",

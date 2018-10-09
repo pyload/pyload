@@ -8,6 +8,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from builtins import object
 import os
 import sys
 import weakref
@@ -346,7 +347,7 @@ class PrefixLoader(BaseLoader):
 
     def list_templates(self):
         result = []
-        for prefix, loader in self.mapping.iteritems():
+        for prefix, loader in self.mapping.items():
             for template in loader.list_templates():
                 result.append(prefix + self.delimiter + template)
         return result

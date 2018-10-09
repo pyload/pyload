@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 #@author: spoob, sebnapi, RaNaN, mkaay
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 CURRENT_VERSION = '0.5.0'
 
-import __builtin__
+import builtins
 
 from getopt import getopt, GetoptError
 import module.common.pylgettext as gettext
@@ -366,7 +371,7 @@ class Core(object):
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
-        __builtin__.pyreq = self.requestFactory
+        builtins.pyreq = self.requestFactory
 
         self.lastClientConnected = 0
 
@@ -584,7 +589,7 @@ class Core(object):
 
             for thread in self.threadManager.threads:
                 thread.put("quit")
-            pyfiles = self.files.cache.values()
+            pyfiles = list(self.files.cache.values())
 
             for pyfile in pyfiles:
                 pyfile.abortDownload()

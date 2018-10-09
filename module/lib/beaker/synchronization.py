@@ -6,6 +6,7 @@ based on a string name.
 
 """
 
+from builtins import object
 import os
 import sys
 import tempfile

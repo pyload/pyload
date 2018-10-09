@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -29,7 +31,7 @@ class FlyFilesNet(SimpleHoster):
 
     def process(self, pyfile):
         name = re.search(self.NAME_PATTERN, pyfile.url).group(1)
-        pyfile.name = urllib.unquote_plus(name)
+        pyfile.name = urllib.parse.unquote_plus(name)
 
         session = re.search(self.SESSION_PATTERN, pyfile.url).group(1)
 

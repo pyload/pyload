@@ -1,3 +1,4 @@
+from builtins import input
 import os
 import subprocess
 import sys
@@ -149,4 +150,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-    raw_input("Press Enter to Exit.")
+    input("Press Enter to Exit.")

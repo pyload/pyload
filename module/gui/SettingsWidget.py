@@ -2,6 +2,7 @@
 #@author: mkaay
 
 
+from builtins import str
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sip import delete
@@ -33,7 +34,7 @@ class SettingsWidget(QWidget):
         if self.layout():
             delete(self.layout())
 
-        for s in self.sections.values()+self.psections.values():
+        for s in list(self.sections.values())+list(self.psections.values()):
             delete(s)
 
         self.sections = {}
@@ -64,11 +65,11 @@ class SettingsWidget(QWidget):
 
         self.data = self.connector.getConfig()
         self.pdata = self.connector.getPluginConfig()
-        for k, section in self.data.iteritems():
+        for k, section in self.data.items():
             s = Section(section, general)
             self.sections[k] = s
 
-        for k, section in self.pdata.iteritems():
+        for k, section in self.pdata.items():
             s = Section(section, plugins, "plugin")
             self.psections[k] = s
 

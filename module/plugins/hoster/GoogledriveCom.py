@@ -89,7 +89,7 @@ class GoogledriveCom(Hoster):
             else:
                 self.fail(json_data['error']['message'])
 
-        pyfile.size = long(json_data['size'])
+        pyfile.size = int(json_data['size'])
         pyfile.name = json_data['name']
         self.info['md5'] = json_data['md5Checksum']
 

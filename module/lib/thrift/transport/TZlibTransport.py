@@ -24,8 +24,11 @@ data compression.
 
 from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import zlib
-from cStringIO import StringIO
+from io import StringIO
 from .TTransport import TTransportBase, CReadableTransport
 
 class TZlibTransportFactory(object):

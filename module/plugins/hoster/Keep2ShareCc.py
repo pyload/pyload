@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 import re
 
 from module.network.HTTPRequest import BadHeader

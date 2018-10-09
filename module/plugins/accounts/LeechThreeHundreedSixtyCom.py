@@ -33,7 +33,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
     def grab_hosters(self, user, password, data):
         api_data = self.api_response("support", token=data['token'])
         valid_status = ("online", "vip") if self.info['data']['premium'] else ("online")
-        return [_h['hostname'] for _h in api_data['data'].values() if _h['status'] in valid_status]
+        return [_h['hostname'] for _h in list(api_data['data'].values()) if _h['status'] in valid_status]
 
     def grab_info(self, user, password, data):
         api_data = self.api_response("userinfo", token=data['token'])

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 import hashlib
 import os
 import time
-import urlparse
+import urllib.parse
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster
@@ -72,7 +76,7 @@ class StreamCz(SimpleHoster):
         episode = self.info['pattern']['EP']
         api_password = get_api_password(episode)
 
-        api_url = urlparse.urljoin(
+        api_url = urllib.parse.urljoin(
             "https://www.stream.cz/API/episode/", episode)
         self.req.putHeader("Api-Password", api_password)
         resp = self.load(api_url)

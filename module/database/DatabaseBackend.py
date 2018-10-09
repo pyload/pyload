@@ -16,13 +16,18 @@
     @author: RaNaN
     @author: mkaay
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from threading import Thread
 from threading import Event
 from os import remove
 from os.path import exists
 from shutil import move
 
-from Queue import Queue
+from queue import Queue
 from traceback import print_exc
 
 from module.utils import chmod
@@ -34,7 +39,7 @@ except Exception:
 
 DB_VERSION = 4
 
-class style():
+class style(object):
     db = None
 
     @classmethod
@@ -65,7 +70,7 @@ class style():
                 return cls.db.async(f, *args, **kwargs)
         return x
 
-class DatabaseJob():
+class DatabaseJob(object):
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
 

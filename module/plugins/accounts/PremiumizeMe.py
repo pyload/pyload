@@ -26,7 +26,7 @@ class PremiumizeMe(MultiAccount):
         get_params = {'method': method,
                       'params[login]': user,
                       'params[pass]': password}
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             get_params["params[{}]".format(key)] = val
 
         json_data = self.load(self.API_URL, get=get_params)

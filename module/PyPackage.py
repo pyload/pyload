@@ -17,10 +17,11 @@
     @author: mkaay
 """
 
+from builtins import object
 from module.PullEvents import UpdateEvent
 from module.utils import save_path
 
-class PyPackage():
+class PyPackage(object):
     """
     Represents a package object at runtime
     """

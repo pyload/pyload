@@ -3,6 +3,8 @@
 
 
 
+from builtins import str
+from builtins import object
 import re
 
 from time import sleep
@@ -20,7 +22,7 @@ IGNORE = (
 
 CONF_VERSION = 1
 
-class ConfigParser:
+class ConfigParser(object):
     """
     holds and manage the configuration
 
@@ -202,9 +204,9 @@ class ConfigParser:
     def updateValues(self, config, dest):
         """sets the config values from a parsed config file to values in destination"""
 
-        for section in config.iterkeys():
+        for section in config.keys():
             if section in dest:
-                for option in config[section].iterkeys():
+                for option in config[section].keys():
                     if option in ("desc", "outline"): continue
 
                     if option in dest[section]:
@@ -222,10 +224,10 @@ class ConfigParser:
         with open(filename, "wb") as f:
             chmod(filename, 0o600)
             f.write("version: %i \n".format(CONF_VERSION))
-            for section in sorted(config.iterkeys()):
+            for section in sorted(config.keys()):
                 f.write('\n{} - "{}":\n'.format(section, config[section]["desc"]))
 
-                for option, data in sorted(config[section].items(), key=lambda _x: _x[0]):
+                for option, data in sorted(list(config[section].items()), key=lambda _x: _x[0]):
                     if option in ("desc", "outline"):
                         continue
 
@@ -235,7 +237,7 @@ class ConfigParser:
                             value += "\t\t" + str(x) + ",\n"
                         value += "\t\t]\n"
                     else:
-                        if type(data["value"]) in (str, unicode):
+                        if type(data["value"]) in (str, str):
                             value = data["value"] + "\n"
                         else:
                             value = str(data["value"]) + "\n"
@@ -246,7 +248,7 @@ class ConfigParser:
 
     def cast(self, typ, value):
         """cast value to given format"""
-        if type(value) not in (str, unicode):
+        if type(value) not in (str, str):
             return value
 
         elif typ == "int":
@@ -282,7 +284,7 @@ class ConfigParser:
         """get value"""
         val = self.config[section][option]["value"]
         try:
-            if type(val) in (str, unicode):
+            if type(val) in (str, str):
                 return val.decode("utf8")
             else:
                 return val
@@ -301,7 +303,7 @@ class ConfigParser:
         """gets a value for a plugin"""
         val = self.plugin[plugin][option]["value"]
         try:
-            if type(val) in (str, unicode):
+            if type(val) in (str, str):
                 return val.decode("utf8")
             else:
                 return val
@@ -345,7 +347,7 @@ class ConfigParser:
 
         values = [x[0] for x in config] + ["desc", "outline"]
         #delete old values
-        for item in conf.keys():
+        for item in list(conf.keys()):
             if item not in values:
                 del conf[item]
 
@@ -363,7 +365,7 @@ class ConfigParser:
 
 
 
-class Section:
+class Section(object):
     """provides dictionary like access for configparser"""
 
     def __init__(self, parser, section):

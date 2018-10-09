@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+from builtins import object
 import sys
 from . import socket
 import errno
@@ -11,7 +12,7 @@ from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
 WantReadError = Exception #overwritten when ssl is used
 
-class SecureSocketConnection:
+class SecureSocketConnection(object):
     def __init__(self, connection):
         self.__dict__["connection"] = connection
 

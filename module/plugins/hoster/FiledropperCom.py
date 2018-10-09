@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -44,5 +46,5 @@ class FiledropperCom(SimpleHoster):
 
         m = re.search(r'method="post" action="(.+?)"', self.data)
         if m is not None:
-            self.download(urlparse.urljoin("http://www.filedropper.com/", m.group(1)),
+            self.download(urllib.parse.urljoin("http://www.filedropper.com/", m.group(1)),
                           post={'code': captcha_code})

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
 

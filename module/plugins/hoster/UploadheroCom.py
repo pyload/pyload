@@ -3,8 +3,10 @@
 # Test links:
 # http://uploadhero.co/dl/wQBRAVSM
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -48,7 +50,7 @@ class UploadheroCom(SimpleHoster):
             self.error(_("Captcha not found"))
 
         captcha = self.captcha.decrypt(
-            urlparse.urljoin(
+            urllib.parse.urljoin(
                 "http://uploadhero.co/",
                 m.group(1)))
 
@@ -64,7 +66,7 @@ class UploadheroCom(SimpleHoster):
         m = re.search(self.IP_BLOCKED_PATTERN, self.data)
         if m is not None:
             self.data = self.load(
-                urlparse.urljoin(
+                urllib.parse.urljoin(
                     "http://uploadhero.co/",
                     m.group(1)))
 

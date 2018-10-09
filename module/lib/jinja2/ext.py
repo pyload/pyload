@@ -10,6 +10,9 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
+from builtins import str
+from builtins import next
+from builtins import object
 from collections import deque
 from jinja2 import nodes
 from jinja2.defaults import *
@@ -17,6 +20,7 @@ from jinja2.environment import Environment
 from jinja2.runtime import Undefined, concat
 from jinja2.exceptions import TemplateAssertionError, TemplateSyntaxError
 from jinja2.utils import contextfunction, import_string, Markup, next
+from future.utils import with_metaclass
 
 
 # the only real useful gettext functions for a Jinja template.  Note
@@ -34,7 +38,7 @@ class ExtensionRegistry(type):
         return rv
 
 
-class Extension(object):
+class Extension(with_metaclass(ExtensionRegistry, object)):
     """Extensions can be used to add extra functionality to the Jinja template
     system at the parser level.  Custom extensions are bound to an environment
     but may not store environment specific data on `self`.  The reason for
@@ -52,7 +56,6 @@ class Extension(object):
     is a terrible name, ``fragment_cache_prefix`` on the other hand is a good
     name as includes the name of the extension (fragment cache).
     """
-    __metaclass__ = ExtensionRegistry
 
     #: if this extension parses this is the list of tags it's listening to.
     tags = set()
@@ -352,7 +355,7 @@ class InternationalizationExtension(Extension):
         # enough to handle the variable expansion and autoescape
         # handling itself
         if self.environment.newstyle_gettext:
-            for key, value in variables.iteritems():
+            for key, value in variables.items():
                 # the function adds that later anyways in case num was
                 # called num, so just skip it.
                 if num_called_num and key == 'num':
@@ -367,7 +370,7 @@ class InternationalizationExtension(Extension):
             if variables:
                 node = nodes.Mod(node, nodes.Dict([
                     nodes.Pair(nodes.Const(key), value)
-                    for key, value in variables.items()
+                    for key, value in list(variables.items())
                 ]))
         return nodes.Output([node])
 

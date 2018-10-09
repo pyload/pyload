@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from builtins import object
 from thrift.Thrift import *
 from thrift.protocol import TBinaryProtocol
 from thrift.transport import TTransport

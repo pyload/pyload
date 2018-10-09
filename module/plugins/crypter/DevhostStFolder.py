@@ -3,8 +3,10 @@
 # Test links:
 # http://d-h.st/users/shine/?fld_id=37263#files
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleCrypter import SimpleCrypter
 
@@ -43,7 +45,7 @@ class DevhostStFolder(SimpleCrypter):
 
             p = r'href="(.+?)">Back to \w+<'
             m = re.search(p, self.data)
-            html = self.load(urlparse.urljoin("http://d-h.st/", m.group(1)),
+            html = self.load(urllib.parse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 
             p = '\?fld_id={}.*?">(.+?)<'.format(self.info['pattern']['ID'])

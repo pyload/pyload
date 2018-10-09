@@ -49,7 +49,7 @@ class SoundcloudCom(SimpleHoster):
         streams = json.loads(html)
 
         _re = re.compile(r'[^\d]')
-        http_streams = sorted([(key, value) for key, value in streams.items() if key.startswith('http_')],
+        http_streams = sorted([(key, value) for key, value in list(streams.items()) if key.startswith('http_')],
                               key=lambda t: _re.sub(t[0], ''),
                               reverse=True)
 

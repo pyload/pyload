@@ -2,6 +2,8 @@
 #@author: mkaay, RaNaN
 
 
+from builtins import str
+from builtins import object
 import re
 import sys
 
@@ -14,7 +16,7 @@ from traceback import print_exc
 from module.lib.SafeEval import const_eval as literal_eval
 from module.ConfigParser import IGNORE
 
-class PluginManager:
+class PluginManager(object):
     ROOT = "module.plugins."
     USERROOT = "userplugins."
     TYPES = ("crypter", "container", "hoster", "captcha", "accounts", "hooks", "internal")
@@ -89,9 +91,9 @@ class PluginManager:
         self.plugins["internal"] = self.internalPlugins
         merge(default_config, config)
 
-        for name, config in default_config.items():
+        for name, config in list(default_config.items()):
             desc = config.pop('desc', "")
-            config = [[k] + list(v) for k, v in config.items()]
+            config = [[k] + list(v) for k, v in list(config.items())]
             try:
                 self.core.config.addPluginConfig(name, config, desc)
             except Exception:
@@ -224,15 +226,15 @@ class PluginManager:
         res = [] # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, unicode, buffer): continue
+            if type(url) not in (str, str, buffer): continue
             found = False
 
             if last and last[1]["re"].match(url):
                 res.append((url, last[0]))
                 continue
 
-            for name, value in chain(self.crypterPlugins.iteritems(), self.hosterPlugins.iteritems(),
-                self.containerPlugins.iteritems()):
+            for name, value in chain(iter(self.crypterPlugins.items()), iter(self.hosterPlugins.items()),
+                iter(self.containerPlugins.items())):
                 if value["re"].match(url):
                     res.append((url, name))
                     last = (name, value)
@@ -301,7 +303,7 @@ class PluginManager:
 
     def getAccountPlugins(self):
         """return list of account plugin names"""
-        return self.accountPlugins.keys()
+        return list(self.accountPlugins.keys())
 
     def find_module(self, fullname, path=None):
         #redirecting imports if necesarry
@@ -374,7 +376,7 @@ class PluginManager:
         if "hooks" in as_dict or "internal" in as_dict:
             return False
 
-        for type in as_dict.iterkeys():
+        for type in as_dict.keys():
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
                     if "module" in self.plugins[type][plugin]:
@@ -402,9 +404,9 @@ class PluginManager:
         self.plugins["accounts"] = self.accountPlugins
         merge(default_config, config)
 
-        for name, config in default_config.items():
+        for name, config in list(default_config.items()):
             desc = config.pop('desc', "")
-            config = [[k] + list(v) for k, v in config.items()]
+            config = [[k] + list(v) for k, v in list(config.items())]
             try:
                 self.core.config.addPluginConfig(name, config, desc)
             except Exception:

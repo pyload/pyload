@@ -3,6 +3,10 @@
 #@author: RaNaN
 
 
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
 from datetime import datetime
 from operator import itemgetter, attrgetter
 
@@ -12,7 +16,7 @@ import sys
 from os import listdir
 from os.path import isdir, isfile, join, abspath
 from sys import getfilesystemencoding
-from urllib import unquote
+from urllib.parse import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
@@ -127,7 +131,7 @@ def choose_path(browse_for, path=""):
             data['size'] = os.path.getsize(join(cwd, f))
 
             power = 0
-            while (data['size'] / 1024.0) > 0.3:
+            while (old_div(data['size'], 1024.0)) > 0.3:
                 power += 1
                 data['size'] /= 1024.0
             units = ('', 'K', 'M', 'G', 'T')
@@ -483,10 +487,10 @@ def logs(item=-1):
 @login_required("ADMIN")
 def admin():
     # convert to dict
-    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().iteritems()])
+    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().items()])
     perms = permlist()
 
-    for data in user.itervalues():
+    for data in user.values():
         data["perms"] = {}
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 try:
     from PIL import Image
 
@@ -31,7 +32,7 @@ class LinksaveIn(OCR):
         frame_nr = 0
 
         lut = im.resize((256, 1))
-        lut.putdata(range(256))
+        lut.putdata(list(range(256)))
         lut = list(lut.convert("RGB").getdata())
 
         new = Image.new("RGB", im.size)
@@ -62,11 +63,11 @@ class LinksaveIn(OCR):
             bg = Image.open(bgpath)
 
             bglut = bg.resize((256, 1))
-            bglut.putdata(range(256))
+            bglut.putdata(list(range(256)))
             bglut = list(bglut.convert("RGB").getdata())
 
             lut = img.resize((256, 1))
-            lut.putdata(range(256))
+            lut.putdata(list(range(256)))
             lut = list(lut.convert("RGB").getdata())
 
             bgpix = bg.load()
@@ -85,7 +86,7 @@ class LinksaveIn(OCR):
                         stat[bgpath] += 1
         max_p = 0
         bg = ""
-        for bgpath, value in stat.items():
+        for bgpath, value in list(stat.items()):
             if max_p < value:
                 bg = bgpath
                 max_p = value
@@ -96,11 +97,11 @@ class LinksaveIn(OCR):
         img = self.img.convert("P")
 
         bglut = bg.resize((256, 1))
-        bglut.putdata(range(256))
+        bglut.putdata(list(range(256)))
         bglut = list(bglut.convert("RGB").getdata())
 
         lut = img.resize((256, 1))
-        lut.putdata(range(256))
+        lut.putdata(list(range(256)))
         lut = list(lut.convert("RGB").getdata())
 
         bgpix = bg.load()

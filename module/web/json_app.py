@@ -177,8 +177,8 @@ def add_package():
 
     name = name.decode("utf8", "ignore")
 
-    links = map(lambda x: x.strip(), links)
-    links = filter(lambda x: x != "", links)
+    links = [x.strip() for x in links]
+    links = [x for x in links if x != ""]
 
     pack = PYLOAD.addPackage(name, links, queue)
     if pw:
@@ -243,7 +243,7 @@ def load_config(category, section):
     elif category == "plugin":
         conf = PYLOAD.getPluginConfigDict()
 
-    for key, option in conf[section].iteritems():
+    for key, option in conf[section].items():
         if key in ("desc", "outline"): continue
 
         if ";" in option["type"]:
@@ -257,7 +257,7 @@ def load_config(category, section):
 @route("/json/save_config/:category", method="POST")
 @login_required("SETTINGS")
 def save_config(category):
-    for key, value in request.POST.iteritems():
+    for key, value in request.POST.items():
         try:
             section, option = key.split("|")
         except Exception:
@@ -283,7 +283,7 @@ def add_account():
 def update_accounts():
     deleted = [] #dont update deleted accs or they will be created again
 
-    for name, value in request.POST.iteritems():
+    for name, value in request.POST.items():
         value = value.strip()
         if not value: continue
 

@@ -2,8 +2,10 @@
 
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 def matchFirst(string, *args):
     """ matches against list of regexp and returns first match"""

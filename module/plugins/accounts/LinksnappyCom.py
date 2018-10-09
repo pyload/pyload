@@ -27,7 +27,7 @@ class LinksnappyCom(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         json_data = self.api_response("FILEHOSTS")
-        return json_data['return'].keys()
+        return list(json_data['return'].keys())
 
     def grab_info(self, user, password, data):
         premium = True

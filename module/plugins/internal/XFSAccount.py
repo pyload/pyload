@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
 import time
-import urlparse
+import urllib.parse
 
 from .misc import parse_html_form, parse_time, set_cookie
 from .Account import Account
@@ -60,7 +62,7 @@ class XFSAccount(Account):
             self.PLUGIN_URL = "http://www.{}/".format(self.PLUGIN_DOMAIN)
 
         if not self.LOGIN_URL:
-            self.LOGIN_URL = urlparse.urljoin(self.PLUGIN_URL, "login.html")
+            self.LOGIN_URL = urllib.parse.urljoin(self.PLUGIN_URL, "login.html")
 
         if self.COOKIES:
             self._set_xfs_cookie()
@@ -185,7 +187,7 @@ class XFSAccount(Account):
                        'password': password})
 
         if action:
-            url = urlparse.urljoin("http://", action)
+            url = urllib.parse.urljoin("http://", action)
         else:
             url = self.LOGIN_URL
 

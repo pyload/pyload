@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from builtins import object
 from .TProtocol import *
 from struct import pack, unpack
 
@@ -221,7 +222,7 @@ class TBinaryProtocol(TProtocolBase):
     return str
 
 
-class TBinaryProtocolFactory:
+class TBinaryProtocolFactory(object):
   def __init__(self, strictRead=False, strictWrite=True):
     self.strictRead = strictRead
     self.strictWrite = strictWrite
@@ -255,6 +256,6 @@ class TBinaryProtocolAccelerated(TBinaryProtocol):
   pass
 
 
-class TBinaryProtocolAcceleratedFactory:
+class TBinaryProtocolAcceleratedFactory(object):
   def getProtocol(self, trans):
     return TBinaryProtocolAccelerated(trans)

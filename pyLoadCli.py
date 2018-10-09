@@ -18,6 +18,12 @@
 #
 ###
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import input
+from builtins import str
+from builtins import range
+from builtins import object
 from getopt import GetoptError, getopt
 
 import module.common.pylgettext as gettext
@@ -30,7 +36,7 @@ from threading import Thread, Lock
 from time import sleep
 from traceback import print_exc
 
-import ConfigParser
+import configparser
 
 from codecs import getwriter
 
@@ -51,7 +57,7 @@ from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection,
 from module.lib.Getch import Getch
 from module.lib.rename_process import renameProcess
 
-class Cli:
+class Cli(object):
     def __init__(self, client, command):
         self.client = client
         self.command = command
@@ -359,7 +365,7 @@ class Cli:
         while True:
             sleep(1)
             result = client.pollResults(rid)
-            for url, status in result.data.iteritems():
+            for url, status in result.data.items():
                 if status.status == 2: check = "Online"
                 elif status.status == 1: check = "Offline"
                 else: check = "Unknown"
@@ -483,7 +489,7 @@ def main():
     if (not exists(join(pypath, "locale", config["language"]))) or config["language"] == "":
         config["language"] = "en"
 
-    configFile = ConfigParser.ConfigParser()
+    configFile = configparser.ConfigParser()
     configFile.read(join(homedir, ".pyloadcli"))
 
     if configFile.has_section("cli"):
@@ -493,7 +499,7 @@ def main():
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
         languages=[config["language"], "en"], fallback=True)
-    translation.install(unicode=True)
+    translation.install(str=True)
 
     interactive = False
     command = None
@@ -519,7 +525,7 @@ def main():
                 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
                 translation = gettext.translation("pyLoadCli", join(pypath, "locale"),
                     languages=[config["language"], "en"], fallback=True)
-                translation.install(unicode=True)
+                translation.install(str=True)
             elif option in ("-h", "--help"):
                 print_help(config)
                 exit()
@@ -552,9 +558,9 @@ def main():
             config["port"] = False
 
         if not client:
-            if not config["addr"]: config["addr"] = raw_input(_("Address: "))
-            if not config["port"]: config["port"] = raw_input(_("Port: "))
-            if not username: username = raw_input(_("Username: "))
+            if not config["addr"]: config["addr"] = input(_("Address: "))
+            if not config["port"]: config["port"] = input(_("Port: "))
+            if not username: username = input(_("Username: "))
             if not password:
                 from getpass import getpass
 

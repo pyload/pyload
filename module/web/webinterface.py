@@ -4,6 +4,7 @@
 
 
 
+from builtins import str
 from module.common.json_layer import json
 
 import sys

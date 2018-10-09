@@ -1,7 +1,8 @@
+from builtins import object
 import zipfile
 import os
 
-class Unzip:
+class Unzip(object):
     def __init__(self):
         pass
 

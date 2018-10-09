@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import urlparse
+from future import standard_library
+standard_library.install_aliases()
+import urllib.parse
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import fsjoin, json
@@ -22,7 +24,7 @@ class DailymotionComFolder(Crypter):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def api_response(self, ref, data=None):
-        url = urlparse.urljoin("https://api.dailymotion.com/", ref)
+        url = urllib.parse.urljoin("https://api.dailymotion.com/", ref)
         html = self.load(url, get=data)
         return json.loads(html)
 

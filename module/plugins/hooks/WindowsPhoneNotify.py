@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-import httplib
+from future import standard_library
+standard_library.install_aliases()
+import http.client
 
 from ..internal.Notifier import Notifier
 
@@ -46,7 +48,7 @@ class WindowsPhoneNotify(Notifier):
         request = self.format_request(
             "{}: {}" %
             (event, msg) if msg else event)
-        webservice = httplib.HTTP(url)
+        webservice = http.client.HTTP(url)
 
         webservice.putrequest("POST", id)
         webservice.putheader("Host", url)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
 import re
 
 from ..internal.Hoster import Hoster

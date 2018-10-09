@@ -3,13 +3,15 @@
 
 
 
+from builtins import str
+from builtins import object
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 
 import os
 
-class XMLParser():
+class XMLParser(object):
     def __init__(self, data, dfile=""):
         self.mutex = QMutex()
         self.mutex.lock()

@@ -165,7 +165,7 @@ class Account(Plugin):
         else:
             d = {'login': {}, 'data': {}}
 
-            for k, v in u.items():
+            for k, v in list(u.items()):
                 if k in ('password', 'timestamp', 'valid'):
                     d['login'][k] = v
                 else:
@@ -182,7 +182,7 @@ class Account(Plugin):
         clear = lambda x: {} if isinstance(
             x, dict) else [] if isiterable(x) else None
         self.info['data'] = dict((k, clear(v))
-                                 for k, v in self.info['data'].items())
+                                 for k, v in list(self.info['data'].items()))
         self.info['data']['options'] = {'limitDL': ['0']}
 
         self.syncback()
@@ -263,7 +263,7 @@ class Account(Plugin):
         accounts = dict(self.accounts)
         self.accounts.clear()
 
-        for user, info in accounts.items():
+        for user, info in list(accounts.items()):
             self.add(user, info['password'], info['options'])
 
     @lock
@@ -383,7 +383,7 @@ class Account(Plugin):
             else:
                 free_accounts[user] = info
 
-        account_list = (premium_accounts or free_accounts).items()
+        account_list = list((premium_accounts or free_accounts).items())
 
         if not account_list:
             return None, None

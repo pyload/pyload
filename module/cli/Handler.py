@@ -17,7 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 ###
-class Handler:
+from builtins import object
+class Handler(object):
     def __init__(self, cli):
         self.cli = cli
         self.init()

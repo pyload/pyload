@@ -23,9 +23,13 @@ only from main thread.
 
 It also makes thread pool server in tasks terms, not connections.
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from builtins import object
 import threading
 import socket
-import Queue
+import queue
 import select
 import struct
 import logging
@@ -79,7 +83,7 @@ def socket_exception(func):
             self.close()
     return read
 
-class Connection:
+class Connection(object):
     """Basic class is represented connection.
 
     It can be in state:
@@ -212,7 +216,7 @@ class Connection:
         self.status = CLOSED
         self.socket.close()
 
-class TNonblockingServer:
+class TNonblockingServer(object):
     """Non-blocking server."""
     def __init__(self, processor, lsocket, inputProtocolFactory=None,
             outputProtocolFactory=None, threads=10):
@@ -222,7 +226,7 @@ class TNonblockingServer:
         self.out_protocol = outputProtocolFactory or self.in_protocol
         self.threads = int(threads)
         self.clients = {}
-        self.tasks = Queue.Queue()
+        self.tasks = queue.Queue()
         self._read, self._write = socket.socketpair()
         self.prepared = False
 
@@ -257,7 +261,7 @@ class TNonblockingServer:
         """Does select on open connections."""
         readable = [self.socket.handle.fileno(), self._read.fileno()]
         writable = []
-        for i, connection in self.clients.items():
+        for i, connection in list(self.clients.items()):
             if connection.is_readable():
                 readable.append(connection.fileno())
             if connection.is_writeable():

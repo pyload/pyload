@@ -2,6 +2,10 @@
 #@author: RaNaN, spoob, mkaay
 
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
+from builtins import object
 from time import time, sleep
 from random import randint
 
@@ -343,7 +347,7 @@ class Plugin(Base):
             Ocr = None
 
         if Ocr and not forceUser:
-            sleep(randint(3000, 5000) / 1000.0)
+            sleep(old_div(randint(3000, 5000), 1000.0))
             if self.pyfile.abort: raise Abort
 
             ocr = Ocr()
@@ -395,7 +399,7 @@ class Plugin(Base):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
-        if isinstance(url, unicode): url = str(url)
+        if isinstance(url, str): url = str(url)
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -535,8 +539,8 @@ class Plugin(Base):
         f.close()
         #produces encoding errors, better log to other file in the future?
         #self.log.debug("Content: {}".format(content))
-        for name, rule in rules.iteritems():
-            if type(rule) in (str, unicode):
+        for name, rule in rules.items():
+            if type(rule) in (str, str):
                 if rule in content:
                     if delete:
                         remove(lastDownload)
@@ -566,7 +570,7 @@ class Plugin(Base):
 
         pack = self.pyfile.package()
 
-        for pyfile in self.core.files.cache.values():
+        for pyfile in list(self.core.files.cache.values()):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12): #finished or downloading
                     raise SkipDownload(pyfile.pluginname)

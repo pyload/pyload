@@ -1,4 +1,9 @@
-import Cookie
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import object
+import http.cookies
 import os
 import random
 import time
@@ -17,11 +22,11 @@ __all__ = ['SignedCookie', 'Session']
 
 getpid = hasattr(os, 'getpid') and os.getpid or (lambda : '')
 
-class SignedCookie(Cookie.BaseCookie):
+class SignedCookie(http.cookies.BaseCookie):
     """Extends python cookie to give digital signature support"""
     def __init__(self, secret, input=None):
         self.secret = secret
-        Cookie.BaseCookie.__init__(self, input)
+        http.cookies.BaseCookie.__init__(self, input)
 
     def value_decode(self, val):
         val = val.strip('"')
@@ -99,10 +104,10 @@ class Session(dict):
             if secret:
                 try:
                     self.cookie = SignedCookie(secret, input=cookieheader)
-                except Cookie.CookieError:
+                except http.cookies.CookieError:
                     self.cookie = SignedCookie(secret, input=None)
             else:
-                self.cookie = Cookie.SimpleCookie(input=cookieheader)
+                self.cookie = http.cookies.SimpleCookie(input=cookieheader)
 
             if not self.id and self.key in self.cookie:
                 self.id = self.cookie[self.key].value
@@ -277,9 +282,9 @@ class Session(dict):
         self.namespace.acquire_write_lock()
         try:
             if accessed_only:
-                data = dict(self.accessed_dict.items())
+                data = dict(list(self.accessed_dict.items()))
             else:
-                data = dict(self.items())
+                data = dict(list(self.items()))
 
             # Save the data
             if not data and 'session' in self.namespace:
@@ -375,7 +380,7 @@ class CookieSession(Session):
 
         try:
             self.cookie = SignedCookie(validate_key, input=cookieheader)
-        except Cookie.CookieError:
+        except http.cookies.CookieError:
             self.cookie = SignedCookie(validate_key, input=None)
 
         self['_id'] = self._make_id()
@@ -573,7 +578,7 @@ class SessionObject(object):
 
     def __iter__(self):
         """Only works for proxying to a dict"""
-        return iter(self._session().keys())
+        return iter(list(self._session().keys()))
 
     def __contains__(self, key):
         return key in self._session()

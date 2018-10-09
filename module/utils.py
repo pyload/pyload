@@ -2,13 +2,17 @@
 
 """ Store all usefull functions here """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import chr
 import os
 import sys
 import time
 import re
 from os.path import join
 from string import maketrans
-from htmlentitydefs import name2codepoint
+from html.entities import name2codepoint
 
 def chmod(*args):
     try:
@@ -29,7 +33,7 @@ def remove_chars(string, repl):
     """ removes all chars in repl from string"""
     if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
-    elif isinstance(string, unicode):
+    elif isinstance(string, str):
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
@@ -43,7 +47,7 @@ def save_path(name):
 
 def save_join(*args):
     """ joins a path, encoding aware """
-    return fs_encode(join(*[x if isinstance(x, unicode) else decode(x) for x in args]))
+    return fs_encode(join(*[x if isinstance(x, str) else decode(x) for x in args]))
 
 
 # File System Encoding functions:
@@ -72,8 +76,8 @@ def get_console_encoding(enc):
     return enc
 
 def compare_time(start, end):
-    start = map(int, start)
-    end = map(int, end)
+    start = list(map(int, start))
+    end = list(map(int, end))
 
     if start == end: return True
 
@@ -175,16 +179,16 @@ def fixup(m):
         # character reference
         try:
             if text[:3] == "&#x":
-                return unichr(int(text[3:-1], 16))
+                return chr(int(text[3:-1], 16))
             else:
-                return unichr(int(text[2:-1]))
+                return chr(int(text[2:-1]))
         except ValueError:
             pass
     else:
         # named entity
         try:
             name = text[1:-1]
-            text = unichr(name2codepoint[name])
+            text = chr(name2codepoint[name])
         except KeyError:
             pass
 

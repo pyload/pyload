@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
 import re
 import time
 
@@ -138,7 +139,7 @@ class MultiAccount(Account):
 
         if self.plugintype == "hoster":
             plugin_map = dict((name.lower(), name)
-                              for name in self.pyload.pluginManager.hosterPlugins.keys())
+                              for name in list(self.pyload.pluginManager.hosterPlugins.keys()))
 
             account_list = [account.type.lower()
                             for account in self.pyload.api.getAccounts(False)
@@ -147,7 +148,7 @@ class MultiAccount(Account):
         else:
             plugin_map = {}
             account_list = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
-                            for name in self.pyload.pluginManager.crypterPlugins.keys()]
+                            for name in list(self.pyload.pluginManager.crypterPlugins.keys())]
 
         for plugin in self.get_plugins():
             name = remove_chars(plugin, "-.")

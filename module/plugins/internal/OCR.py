@@ -2,6 +2,9 @@
 
 
 
+from builtins import map
+from builtins import str
+from builtins import range
 import os
 import subprocess
 
@@ -58,7 +61,7 @@ class OCR(Plugin):
         call = (command,) + args
         self.log_debug("EXECUTE " + " ".join(call))
 
-        call = map(encode, call)
+        call = list(map(encode, call))
         popen = subprocess.Popen(
             call,
             bufsize=-1,
@@ -267,7 +270,7 @@ class OCR(Plugin):
             sum = 0
             cnt = 0
 
-            for x in count.values():
+            for x in list(count.values()):
                 if x != 0:
                     sum += x
                     cnt += 1
@@ -275,7 +278,7 @@ class OCR(Plugin):
             avg = sum // cnt
             counts[angle] = cnt
             highest[angle] = 0
-            for x in count.values():
+            for x in list(count.values()):
                 if x > highest[angle]:
                     highest[angle] = x
 
@@ -284,7 +287,7 @@ class OCR(Plugin):
         hkey = 0
         hvalue = 0
 
-        for key, value in highest.items():
+        for key, value in list(highest.items()):
             if value > hvalue:
                 hkey = key
                 hvalue = value
@@ -347,7 +350,7 @@ class OCR(Plugin):
         else:
             result = self.result_captcha
 
-        for key, item in values.items():
+        for key, item in list(values.items()):
 
             if key.__class__ is str:
                 result = result.replace(key, item)

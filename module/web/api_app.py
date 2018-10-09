@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-from urllib import unquote
+from future import standard_library
+standard_library.install_aliases()
+from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
 
@@ -55,7 +57,7 @@ def call_api(func, args=""):
     args = args.split("/")[1:]
     kwargs = {}
 
-    for x, y in chain(request.GET.iteritems(), request.POST.iteritems()):
+    for x, y in chain(iter(request.GET.items()), iter(request.POST.items())):
         if x in ("u", "p", "session"): continue
         kwargs[x] = unquote(y)
 
@@ -72,7 +74,7 @@ def callApi(func, *args, **kwargs):
         return HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
-                                   **dict([(x, literal_eval(y)) for x, y in kwargs.iteritems()]))
+                                   **dict([(x, literal_eval(y)) for x, y in kwargs.items()]))
 
     # null is invalid json  response
     if result is None: result = True

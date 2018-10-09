@@ -4,6 +4,11 @@
 
 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from os.path import exists, join
 import re
 from subprocess import Popen
@@ -20,7 +25,7 @@ from module.network.RequestFactory import getURL
 from module.utils import freeSpace, lock
 
 
-class ThreadManager:
+class ThreadManager(object):
     """manages the download threads, assign jobs, reconnect etc"""
 
 
@@ -249,7 +254,7 @@ class ThreadManager:
         free = [x for x in self.threads if not x.active]
 
         inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = map(lambda x : (x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])), inuse)
+        inuse = [(x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) for x in inuse]
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
         occ = sorted([x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit)

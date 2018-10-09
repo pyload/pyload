@@ -3,6 +3,7 @@
 #@author: jeix, GammaC0de
 
 
+from builtins import object
 import errno
 import os
 import select
@@ -13,7 +14,7 @@ import time
 from module.plugins.Plugin import Abort
 
 
-class XDCCRequest():
+class XDCCRequest(object):
     def __init__(self, bucket=None, options={}):
         self.proxies = options.get('proxies', {})
         self.bucket  = bucket

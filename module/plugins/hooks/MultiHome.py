@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
+from builtins import object
 import time
 
 from ..internal.Addon import Addon

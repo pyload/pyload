@@ -8,6 +8,11 @@ Advanced users can add new backends in beaker.backends
 
 """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import str
+from builtins import object
 import warnings
 
 import beaker.container as container
@@ -55,7 +60,7 @@ try:
             # Warn when there's a problem loading a NamespaceManager
             if not isinstance(sys.exc_info()[1], DistributionNotFound):
                 import traceback
-                from StringIO import StringIO
+                from io import StringIO
                 tb = StringIO()
                 traceback.print_exc(file=tb)
                 warnings.warn("Unable to load NamespaceManager entry point: '{}': "
@@ -221,7 +226,7 @@ class Cache(object):
     remove = remove_value
 
     def _get_value(self, key, **kw):
-        if isinstance(key, unicode):
+        if isinstance(key, str):
             key = key.encode('ascii', 'backslashreplace')
 
         if 'type' in kw:

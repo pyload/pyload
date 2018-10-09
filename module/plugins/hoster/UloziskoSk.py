@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from future import standard_library
+standard_library.install_aliases()
 import re
-import urlparse
+import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster
 
@@ -60,7 +62,7 @@ class UloziskoSk(SimpleHoster):
         if m is None:
             self.error(_("CAPTCHA_PATTERN not found"))
 
-        captcha_url = urlparse.urljoin("http://www.ulozisko.sk/", m.group(1))
+        captcha_url = urllib.parse.urljoin("http://www.ulozisko.sk/", m.group(1))
         captcha = self.captcha.decrypt(captcha_url, cookies=True)
 
         self.log_debug("CAPTCHA_URL:" + captcha_url + ' CAPTCHA:' + captcha)
