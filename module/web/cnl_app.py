@@ -128,7 +128,7 @@ def flashgot():
     autostart = int(request.forms.get('autostart', 0))
     package = request.forms.get('package', None)
     urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
-    folder = request.forms.get('dir', None)
+    # folder = request.forms.get('dir', None)
 
     if package:
         PYLOAD.addPackage(package, urls, autostart)

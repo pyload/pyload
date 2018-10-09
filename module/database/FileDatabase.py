@@ -507,7 +507,7 @@ class FileHandler(object):
     @change
     def updateFileInfo(self, data, pid):
         """ updates file info (name, size, status, url)"""
-        ids = self.db.updateLinkInfo(data)
+        self.db.updateLinkInfo(data)
         e = UpdateEvent("pack", pid, "collector" if not self.getPackage(pid).queue else "queue")
         self.core.pullManager.addEvent(e)
 

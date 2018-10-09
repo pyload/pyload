@@ -573,7 +573,7 @@ def main():
 
     if client:
         writeConfig(config)
-        cli = Cli(client, command)
+        Cli(client, command)
 
 
 if __name__ == "__main__":

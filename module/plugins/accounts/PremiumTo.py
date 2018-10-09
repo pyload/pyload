@@ -48,7 +48,7 @@ class PremiumTo(MultiAccount):
             return {'premium': False, 'trafficleft': None, 'validuntil': None}
 
     def signin(self, user, password, data):
-        authcode = self.api_response("getauthcode", user, password)
+        self.api_response("getauthcode", user, password)
 
         if self.req.code != 200:
             self.fail_login()

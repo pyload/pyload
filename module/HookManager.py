@@ -255,7 +255,7 @@ class HookManager(object):
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
-        t = HookThread(self.core.threadManager, function, args, kwargs)
+        return HookThread(self.core.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """
