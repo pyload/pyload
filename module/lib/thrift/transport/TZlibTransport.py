@@ -23,9 +23,10 @@ data compression.
 '''
 
 from __future__ import division
+from __future__ import absolute_import
 import zlib
 from cStringIO import StringIO
-from TTransport import TTransportBase, CReadableTransport
+from .TTransport import TTransportBase, CReadableTransport
 
 class TZlibTransportFactory(object):
   '''

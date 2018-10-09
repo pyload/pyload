@@ -486,7 +486,7 @@ class Plugin(Base):
                     gid = getgrnam(self.config["permission"]["group"])[2]
 
                     chown(location, uid, gid)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         # convert back to unicode
@@ -520,7 +520,7 @@ class Plugin(Base):
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
                 chown(fs_filename, uid, gid)
-            except Exception, e:
+            except Exception as e:
                 self.log.warning(_("Setting User and Group failed: %s") % str(e))
 
         self.lastDownload = filename

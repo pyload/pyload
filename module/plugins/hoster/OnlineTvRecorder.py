@@ -35,7 +35,7 @@ class OnlineTvRecorder(Http):
         try:
             return Http.process(self, pyfile)
 
-        except BadHeader, e:
+        except BadHeader as e:
             self.log_debug("OnlineTvRecorder httpcode: %d" % e.code)
             if e.code == 503:
                 # max queueing for 3 hours

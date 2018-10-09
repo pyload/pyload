@@ -92,7 +92,7 @@ class XFileSharing(Addon):
                     klass = self.pyload.pluginManager.loadClass(type, p[
                                                                 'name'])
 
-                except AttributeError, e:
+                except AttributeError as e:
                     self.log_debug(e, trace=True)
                     continue
 

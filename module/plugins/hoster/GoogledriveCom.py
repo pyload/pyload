@@ -44,7 +44,7 @@ class GoogledriveCom(Hoster):
             self.log_debug("API response: %s" % json_data)
             return json_data
 
-        except BadHeader, e:
+        except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
                 self.log_error("API Error: %s" % cmd,
@@ -66,7 +66,7 @@ class GoogledriveCom(Hoster):
                                # 'acknowledgeAbuse': "true",
                                'key': self.API_KEY})
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 404:
                 self.offline()
 

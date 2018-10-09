@@ -48,7 +48,7 @@ try:
         raise TypeError(_test_gen_bug)
         yield None
     _concat(_test_gen_bug())
-except TypeError, _error:
+except TypeError as _error:
     if not _error.args or _error.args[0] is not _test_gen_bug:
         def concat(gen):
             try:
@@ -101,7 +101,7 @@ def _func():
 FunctionType = type(_func)
 GeneratorType = type(_func())
 MethodType = type(_C.method)
-CodeType = type(_C.method.func_code)
+CodeType = type(_C.method.__code__)
 try:
     raise TypeError()
 except TypeError:
@@ -152,7 +152,7 @@ def environmentfunction(f):
 
 def internalcode(f):
     """Marks the function as internally used"""
-    internal_code.add(f.func_code)
+    internal_code.add(f.__code__)
     return f
 
 
@@ -222,7 +222,7 @@ def open_if_exists(filename, mode='rb'):
     """
     try:
         return open(filename, mode)
-    except IOError, e:
+    except IOError as e:
         if e.errno not in (errno.ENOENT, errno.EISDIR):
             raise
 

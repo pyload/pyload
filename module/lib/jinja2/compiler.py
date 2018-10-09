@@ -30,7 +30,7 @@ operators = {
 }
 
 try:
-    exec '(0 if 0 else 0)'
+    exec('(0 if 0 else 0)')
 except SyntaxError:
     have_condexpr = False
 else:
@@ -51,7 +51,7 @@ def unoptimize_before_dead_code():
     def f():
         if 0: dummy(x)
     return f
-unoptimize_before_dead_code = bool(unoptimize_before_dead_code().func_closure)
+unoptimize_before_dead_code = bool(unoptimize_before_dead_code().__closure__)
 
 
 def generate(node, environment, name, filename, stream=None,

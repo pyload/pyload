@@ -118,7 +118,7 @@ class Hoster(Base):
 
                 self._check_download()
 
-            except Fail, e:  # @TODO: Move to PluginThread in 0.4.10
+            except Fail as e:  # @TODO: Move to PluginThread in 0.4.10
                 self.log_warning(_("Premium download failed") if self.premium else
                                  _("Free download failed"),
                                  e)
@@ -229,11 +229,11 @@ class Hoster(Base):
                                             ref, cookies, chunks, resume,
                                             self.pyfile.setProgress, disposition)
 
-        except IOError, e:
+        except IOError as e:
             self.log_error(e.message)
             self.fail(_("IOError %s") % e.errno)
 
-        except BadHeader, e:
+        except BadHeader as e:
             self.req.http.code = e.code
             raise
 
@@ -292,7 +292,7 @@ class Hoster(Base):
             try:
                 os.makedirs(dl_dir)
 
-            except Exception, e:
+            except Exception as e:
                 self.fail(e.message)
 
         self.set_permissions(dl_dir)
@@ -314,7 +314,7 @@ class Hoster(Base):
                     new_file = fsjoin(dl_dirname, safename)
                     os.rename(old_file, new_file)
 
-                except OSError, e:
+                except OSError as e:
                     self.log_warning(_("Error renaming `%s` to `%s`")
                                      % (newname, safename), e)
                     safename = newname

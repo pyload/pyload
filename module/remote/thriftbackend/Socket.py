@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 import sys
-import socket
+from . import socket
 import errno
 
 from time import sleep
@@ -65,7 +66,7 @@ class Socket(TSocket):
     def read(self, sz):
         try:
             buff = self.handle.recv(sz)
-        except socket.error, e:
+        except socket.error as e:
             if (e.args[0] == errno.ECONNRESET and
                 (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
                 # freebsd and Mach don't follow POSIX semantic of recv
@@ -77,7 +78,7 @@ class Socket(TSocket):
                 buff = ''
             else:
                 raise
-        except Exception, e:
+        except Exception as e:
             # SSL connection was closed
             if e.args == (-1, 'Unexpected EOF'):
                 buff = ''

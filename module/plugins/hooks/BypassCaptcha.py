@@ -83,7 +83,7 @@ class BypassCaptcha(Addon):
         try:
             res = self.load(self.RESPOND_URL, post={'task_id': ticket, 'key': self.config.get('passkey'),
                                                     'cv': 1 if success else 0})
-        except BadHeader, e:
+        except BadHeader as e:
             self.log_error(_("Could not send response"), e)
 
     def captcha_task(self, task):
@@ -121,7 +121,7 @@ class BypassCaptcha(Addon):
         c = task.captchaParams['file']
         try:
             ticket, result = self.submit(c)
-        except BypassCaptchaException, e:
+        except BypassCaptchaException as e:
             task.error = e.get_code()
             return
 

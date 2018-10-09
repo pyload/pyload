@@ -51,7 +51,7 @@ class RealdebridCom(MultiAccount):
         try:
             account = self.api_response("/user", args(auth_token=password))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 401:
                 self.log_error(_("Password for Real-debrid should be the API token - get it from: https://real-debrid.com/apitoken"))
                 self.fail_login()

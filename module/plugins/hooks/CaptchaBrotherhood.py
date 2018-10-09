@@ -77,7 +77,7 @@ class CaptchaBrotherhood(Addon):
             data = output.getvalue()
             output.close()
 
-        except Exception, e:
+        except Exception as e:
             raise CaptchaBrotherhoodException(
                 "Reading or converting captcha image failed: %s" % e)
 
@@ -98,7 +98,7 @@ class CaptchaBrotherhood(Addon):
             req.c.perform()
             res = req.getResponse()
 
-        except Exception, e:
+        except Exception as e:
             raise CaptchaBrotherhoodException("Submit captcha image failed")
 
         req.close()
@@ -157,7 +157,7 @@ class CaptchaBrotherhood(Addon):
         c = task.captchaParams['file']
         try:
             ticket, result = self.submit(c)
-        except CaptchaBrotherhoodException, e:
+        except CaptchaBrotherhoodException as e:
             task.error = e.get_code()
             return
 

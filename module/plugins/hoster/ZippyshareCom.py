@@ -53,7 +53,7 @@ class ZippyshareCom(SimpleHoster):
                 self.link = re.search(self.LINK_PATTERN, self.data)
                 self.captcha.challenge()
 
-            except Exception, e:
+            except Exception as e:
                 self.error(e)
 
         else:

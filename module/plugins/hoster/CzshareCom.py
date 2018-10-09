@@ -68,7 +68,7 @@ class CzshareCom(SimpleHoster):
                     self.pyfile.name)
                 return True
 
-        except Exception, e:
+        except Exception as e:
             #: let's continue and see what happens...
             self.log_error(e, trace=True)
 
@@ -82,7 +82,7 @@ class CzshareCom(SimpleHoster):
                 re.S).group(1)
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
             self.restart(premium=False)
 
@@ -112,7 +112,7 @@ class CzshareCom(SimpleHoster):
             inputs = dict(re.findall(self.FORM_INPUT_PATTERN, form))
             pyfile.size = int(inputs['size'])
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e, trace=True)
             self.error(_("Form"))
 

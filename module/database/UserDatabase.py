@@ -15,12 +15,14 @@
 
     @author: mkaay
 """
+from __future__ import absolute_import
 
 from hashlib import sha1
 import random
 
-from DatabaseBackend import DatabaseBackend
-from DatabaseBackend import style
+from .DatabaseBackend import DatabaseBackend
+from .DatabaseBackend import style
+from functools import reduce
 
 class UserMethods():
     @style.queue

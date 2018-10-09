@@ -127,7 +127,7 @@ class ClickNLoad(Addon):
                             client_socket.close()
                             continue
 
-                        except Exception, e:
+                        except Exception as e:
                             self.log_error(_("SSL error: %s") % e.message)
                             client_socket.close()
                             continue
@@ -151,7 +151,7 @@ class ClickNLoad(Addon):
             self.log_debug("Connection timed out, retrying...")
             return self._server()
 
-        except socket.error, e:
+        except socket.error as e:
             self.log_error(e)
             time.sleep(240)
             return self._server()

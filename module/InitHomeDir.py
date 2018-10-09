@@ -75,7 +75,7 @@ else:
         configdir = path.join(homedir, "pyload")
 
 if not path.exists(configdir):
-    makedirs(configdir, 0700)
+    makedirs(configdir, 0o700)
 
 __builtin__.configdir = configdir
 chdir(configdir)

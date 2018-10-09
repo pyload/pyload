@@ -269,7 +269,7 @@ def do_center(value, width=80):
 def do_first(environment, seq):
     """Return the first item of a sequence."""
     try:
-        return iter(seq).next()
+        return next(iter(seq))
     except StopIteration:
         return environment.undefined('No first item, sequence was empty.')
 
@@ -278,7 +278,7 @@ def do_first(environment, seq):
 def do_last(environment, seq):
     """Return the last item of a sequence."""
     try:
-        return iter(reversed(seq)).next()
+        return next(iter(reversed(seq)))
     except StopIteration:
         return environment.undefined('No last item, sequence was empty.')
 
@@ -605,7 +605,8 @@ class _GroupTuple(tuple):
     grouper = property(itemgetter(0))
     list = property(itemgetter(1))
 
-    def __new__(cls, (key, value)):
+    def __new__(cls, xxx_todo_changeme):
+        (key, value) = xxx_todo_changeme
         return tuple.__new__(cls, (key, list(value)))
 
 

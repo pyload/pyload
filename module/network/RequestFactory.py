@@ -16,15 +16,16 @@
 
     @author: mkaay, RaNaN
 """
+from __future__ import absolute_import
 
 from threading import Lock
 
-from Browser import Browser
-from Bucket import Bucket
-from HTTPRequest import HTTPRequest
-from CookieJar import CookieJar
+from .Browser import Browser
+from .Bucket import Bucket
+from .HTTPRequest import HTTPRequest
+from .CookieJar import CookieJar
 
-from XDCCRequest import XDCCRequest
+from .XDCCRequest import XDCCRequest
 
 
 class RequestFactory():

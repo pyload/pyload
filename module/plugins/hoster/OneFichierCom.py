@@ -83,7 +83,7 @@ class OneFichierCom(SimpleHoster):
 
                     break
 
-            except Exception, e:
+            except Exception as e:
                 print(format_exc())
                 info = {'status': 8,
                         'error': e.message}

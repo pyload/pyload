@@ -329,7 +329,7 @@ class UpdateManager(Addon):
                 else:
                     raise Exception(_("Version mismatch"))
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(_("Error updating plugin: %s %s") %
                                (plugin_type.rstrip('s').upper(), plugin_name),
                                e)  # @TODO: Remove rstrip in 0.4.10
@@ -367,7 +367,7 @@ class UpdateManager(Addon):
                     try:
                         self.manager.deactivateHook(plugin_name)
 
-                    except Exception, e:
+                    except Exception as e:
                         self.log_debug(e, trace=True)
 
                 for filename in (py_filename, pyc_filename):
@@ -377,7 +377,7 @@ class UpdateManager(Addon):
                     try:
                         os.remove(filename)
 
-                    except OSError, e:
+                    except OSError as e:
                         self.log_warning(_("Error removing `%s`") % filename, e)
 
                     else:

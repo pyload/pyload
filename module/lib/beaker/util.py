@@ -98,7 +98,7 @@ class SyncDict(object):
         
     def get(self, key, createfunc, *args, **kwargs):
         try:
-            if self.has_key(key):
+            if key in self:
                 return self.dict[key]
             else:
                 return self.sync_get(key, createfunc, *args, **kwargs)
@@ -109,7 +109,7 @@ class SyncDict(object):
         self.mutex.acquire()
         try:
             try:
-                if self.has_key(key):
+                if key in self:
                     return self.dict[key]
                 else:
                     return self._create(key, createfunc, *args, **kwargs)
@@ -123,7 +123,7 @@ class SyncDict(object):
         return obj
 
     def has_key(self, key):
-        return self.dict.has_key(key)
+        return key in self.dict
         
     def __contains__(self, key):
         return self.dict.__contains__(key)
@@ -206,42 +206,42 @@ def verify_rules(params, ruleset):
 
 def coerce_session_params(params):
     rules = [
-        ('data_dir', (str, types.NoneType), "data_dir must be a string "
+        ('data_dir', (str, type(None)), "data_dir must be a string "
          "referring to a directory."),
-        ('lock_dir', (str, types.NoneType), "lock_dir must be a string referring to a "
+        ('lock_dir', (str, type(None)), "lock_dir must be a string referring to a "
          "directory."),
-        ('type', (str, types.NoneType), "Session type must be a string."),
+        ('type', (str, type(None)), "Session type must be a string."),
         ('cookie_expires', (bool, datetime, timedelta), "Cookie expires was "
          "not a boolean, datetime, or timedelta instance."),
-        ('cookie_domain', (str, types.NoneType), "Cookie domain must be a "
+        ('cookie_domain', (str, type(None)), "Cookie domain must be a "
          "string."),
         ('id', (str,), "Session id must be a string."),
         ('key', (str,), "Session key must be a string."),
-        ('secret', (str, types.NoneType), "Session secret must be a string."),
-        ('validate_key', (str, types.NoneType), "Session encrypt_key must be "
+        ('secret', (str, type(None)), "Session secret must be a string."),
+        ('validate_key', (str, type(None)), "Session encrypt_key must be "
          "a string."),
-        ('encrypt_key', (str, types.NoneType), "Session validate_key must be "
+        ('encrypt_key', (str, type(None)), "Session validate_key must be "
          "a string."),
-        ('secure', (bool, types.NoneType), "Session secure must be a boolean."),
-        ('timeout', (int, types.NoneType), "Session timeout must be an "
+        ('secure', (bool, type(None)), "Session secure must be a boolean."),
+        ('timeout', (int, type(None)), "Session timeout must be an "
          "integer."),
-        ('auto', (bool, types.NoneType), "Session is created if accessed."),
+        ('auto', (bool, type(None)), "Session is created if accessed."),
     ]
     return verify_rules(params, rules)
 
 
 def coerce_cache_params(params):
     rules = [
-        ('data_dir', (str, types.NoneType), "data_dir must be a string "
+        ('data_dir', (str, type(None)), "data_dir must be a string "
          "referring to a directory."),
-        ('lock_dir', (str, types.NoneType), "lock_dir must be a string referring to a "
+        ('lock_dir', (str, type(None)), "lock_dir must be a string referring to a "
          "directory."),
         ('type', (str,), "Cache type must be a string."),
-        ('enabled', (bool, types.NoneType), "enabled must be true/false "
+        ('enabled', (bool, type(None)), "enabled must be true/false "
          "if present."),
-        ('expire', (int, types.NoneType), "expire must be an integer representing "
+        ('expire', (int, type(None)), "expire must be an integer representing "
          "how many seconds the cache is valid for"),
-        ('regions', (list, tuple, types.NoneType), "Regions must be a "
+        ('regions', (list, tuple, type(None)), "Regions must be a "
          "comma seperated list of valid regions")
     ]
     return verify_rules(params, rules)
@@ -292,8 +292,8 @@ def func_namespace(func):
     """Generates a unique namespace for a function"""
     kls = None
     if hasattr(func, 'im_func'):
-        kls = func.im_class
-        func = func.im_func
+        kls = func.__self__.__class__
+        func = func.__func__
     
     if kls:
         return '%s.%s' % (kls.__module__, kls.__name__)

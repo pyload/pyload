@@ -17,6 +17,7 @@
     @author: RaNaN, mkaay
     @interface-version: 0.1
 """
+from __future__ import absolute_import
 import __builtin__
 
 import traceback
@@ -27,7 +28,7 @@ from types import MethodType
 
 from module.PluginThread import HookThread
 from module.plugins.PluginManager import literal_eval
-from utils import lock
+from .utils import lock
 
 class HookManager:
     """Manages hooks, delegates and handles Events.
@@ -86,7 +87,7 @@ class HookManager:
         def new(*args):
             try:
                 return func(*args)
-            except Exception, e:
+            except Exception as e:
                 args[0].log.error(_("Error executing hooks: %s") % str(e))
                 if args[0].core.debug:
                     traceback.print_exc()
@@ -309,7 +310,7 @@ class HookManager:
             for f in self.events[event]:
                 try:
                     f(*args)
-                except Exception, e:
+                except Exception as e:
                     self.log.warning("Error calling event handler %s: %s, %s, %s"
                     % (event, f, args, str(e)))
                     if self.core.debug:

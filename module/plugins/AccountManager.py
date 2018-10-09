@@ -132,7 +132,7 @@ class AccountManager():
                         f.write("\t@%s %s\n" % (option, " ".join(values)))
                     
         f.close()
-        chmod(f.name, 0600)
+        chmod(f.name, 0o600)
             
         
     #----------------------------------------------------------------------

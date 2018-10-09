@@ -71,5 +71,5 @@ class HotFolder(Addon):
                 self.log_info(_("Added %s from HotFolder") % f)
                 self.pyload.api.addPackage(f, [newpath], 1)
 
-        except (IOError, OSError), e:
+        except (IOError, OSError) as e:
             self.log_error(e, trace=True)

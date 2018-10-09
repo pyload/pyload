@@ -240,7 +240,7 @@ class SizeCheckWrapper(object):
         return self
     
     def next(self):
-        data = self.rfile.next()
+        data = next(self.rfile)
         self.bytes_read += len(data)
         self._check_length()
         return data
@@ -401,7 +401,7 @@ class HTTPRequest(object):
         # then all the http headers
         try:
             self.read_headers()
-        except ValueError, ex:
+        except ValueError as ex:
             self.simple_response("400 Bad Request", repr(ex.args))
             return
         
@@ -592,7 +592,7 @@ class HTTPRequest(object):
         
         try:
             self.wfile.sendall("".join(buf))
-        except socket.error, x:
+        except socket.error as x:
             if x.args[0] not in socket_errors_to_ignore:
                 raise
     
@@ -728,7 +728,7 @@ if not _fileobject_uses_str_type:
                 try:
                     bytes_sent = self.send(data)
                     data = data[bytes_sent:]
-                except socket.error, e:
+                except socket.error as e:
                     if e.args[0] not in socket_errors_nonblocking:
                         raise
 
@@ -745,7 +745,7 @@ if not _fileobject_uses_str_type:
             while True:
                 try:
                     return self._sock.recv(size)
-                except socket.error, e:
+                except socket.error as e:
                     if (e.args[0] not in socket_errors_nonblocking
                         and e.args[0] not in socket_error_eintr):
                         raise
@@ -906,7 +906,7 @@ else:
                 try:
                     bytes_sent = self.send(data)
                     data = data[bytes_sent:]
-                except socket.error, e:
+                except socket.error as e:
                     if e.args[0] not in socket_errors_nonblocking:
                         raise
 
@@ -923,7 +923,7 @@ else:
             while True:
                 try:
                     return self._sock.recv(size)
-                except socket.error, e:
+                except socket.error as e:
                     if (e.args[0] not in socket_errors_nonblocking
                         and e.args[0] not in socket_error_eintr):
                         raise
@@ -1065,7 +1065,7 @@ class SSL_fileobject(CP_fileobject):
                 time.sleep(self.ssl_retry)
             except SSL.WantWriteError:
                 time.sleep(self.ssl_retry)
-            except SSL.SysCallError, e:
+            except SSL.SysCallError as e:
                 if is_reader and e.args == (-1, 'Unexpected EOF'):
                     return ""
                 
@@ -1073,7 +1073,7 @@ class SSL_fileobject(CP_fileobject):
                 if is_reader and errnum in socket_errors_to_ignore:
                     return ""
                 raise socket.error(errnum)
-            except SSL.Error, e:
+            except SSL.Error as e:
                 if is_reader and e.args == (-1, 'Unexpected EOF'):
                     return ""
                 
@@ -1175,7 +1175,7 @@ class HTTPConnection(object):
                 if req.close_connection:
                     return
         
-        except socket.error, e:
+        except socket.error as e:
             errnum = e.args[0]
             if errnum == 'timed out':
                 if req and not req.sent_headers:
@@ -1187,7 +1187,7 @@ class HTTPConnection(object):
             return
         except (KeyboardInterrupt, SystemExit):
             raise
-        except FatalSSLAlert, e:
+        except FatalSSLAlert as e:
             # Close the connection.
             return
         except NoSSLError:
@@ -1198,7 +1198,7 @@ class HTTPConnection(object):
                     "The client sent a plain HTTP request, but "
                     "this server only speaks HTTPS on this port.")
                 self.linger = True
-        except Exception, e:
+        except Exception as e:
             if req and not req.sent_headers:
                 req.simple_response("500 Internal Server Error", format_exc())
     
@@ -1272,7 +1272,7 @@ class WorkerThread(threading.Thread):
                 finally:
                     conn.close()
                     self.conn = None
-        except (KeyboardInterrupt, SystemExit), exc:
+        except (KeyboardInterrupt, SystemExit) as exc:
             self.server.interrupt = exc
 
 
@@ -1369,7 +1369,7 @@ class ThreadPool(object):
                 except (AssertionError,
                         # Ignore repeated Ctrl-C.
                         # See http://www.cherrypy.org/ticket/691.
-                        KeyboardInterrupt), exc1:
+                        KeyboardInterrupt) as exc1:
                     pass
 
 
@@ -1392,13 +1392,13 @@ class SSLConnection:
               'sock_shutdown', 'get_peer_certificate', 'want_read',
               'want_write', 'set_connect_state', 'set_accept_state',
               'connect_ex', 'sendall', 'settimeout'):
-        exec """def %s(self, *args):
+        exec("""def %s(self, *args):
         self._lock.acquire()
         try:
             return self._ssl_conn.%s(*args)
         finally:
             self._lock.release()
-""" % (f, f)
+""" % (f, f))
 
 
 try:
@@ -1565,7 +1565,7 @@ class CherryPyWSGIServer(object):
             except: pass
             
             # So everyone can access the socket...
-            try: os.chmod(self.bind_addr, 0777)
+            try: os.chmod(self.bind_addr, 0o777)
             except: pass
             
             info = [(socket.AF_UNIX, socket.SOCK_STREAM, 0, "", self.bind_addr)]
@@ -1586,14 +1586,14 @@ class CherryPyWSGIServer(object):
             af, socktype, proto, canonname, sa = res
             try:
                 self.bind(af, socktype, proto)
-            except socket.error, msg:
+            except socket.error as msg:
                 if self.socket:
                     self.socket.close()
                 self.socket = None
                 continue
             break
         if not self.socket:
-            raise socket.error, msg
+            raise socket.error(msg)
         
         # Timeout so KeyboardInterrupt can be caught on Win32
         self.socket.settimeout(1)
@@ -1682,7 +1682,7 @@ class CherryPyWSGIServer(object):
             # notice keyboard interrupts on Win32, which don't interrupt
             # accept() by default
             return
-        except socket.error, x:
+        except socket.error as x:
             if x.args[0] in socket_error_eintr:
                 # I *think* this is right. EINTR should occur when a signal
                 # is received during the accept() call; all docs say retry
@@ -1719,7 +1719,7 @@ class CherryPyWSGIServer(object):
                 # Touch our own socket to make accept() return immediately.
                 try:
                     host, port = sock.getsockname()[:2]
-                except socket.error, x:
+                except socket.error as x:
                     if x.args[0] not in socket_errors_to_ignore:
                         raise
                 else:

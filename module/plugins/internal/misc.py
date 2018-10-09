@@ -181,7 +181,7 @@ class Periodical(object):
         try:
             self.task()
 
-        except Exception, e:
+        except Exception as e:
             self.plugin.log_error(_("Error performing periodical task"), e)
 
         if not self.stopped:

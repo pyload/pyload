@@ -116,7 +116,7 @@ class MultiAccount(Account):
                 self.info['data']['hosters'] = sorted(domains)
                 self.sync(reverse=True)
 
-        except Exception, e:
+        except Exception as e:
             self.log_warning(_("Error loading hoster list for user `%s`") % self.user, e, trace=True)
 
         finally:
@@ -212,7 +212,7 @@ class MultiAccount(Account):
                 plugin_set = set(self._grab_hosters())
                 break
 
-            except Exception, e:
+            except Exception as e:
                 self.log_warning(e, _("Waiting 1 minute and retry"), trace=True)
                 time.sleep(60)
 
@@ -232,7 +232,7 @@ class MultiAccount(Account):
                 else:
                     plugin_set -= config_set
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e)
 
         self.plugins = list(plugin_set)

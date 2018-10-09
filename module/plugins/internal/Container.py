@@ -68,7 +68,7 @@ class Container(Crypter):
                 with open(self.pyfile.url, "wb") as f:
                     f.write(encode(content))
 
-            except IOError, e:
+            except IOError as e:
                 self.fail(e.message)
 
         elif not exists(self.pyfile.url):

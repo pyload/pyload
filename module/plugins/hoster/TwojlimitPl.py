@@ -47,7 +47,7 @@ class TwojlimitPl(MultiHoster):
         try:
             data = self.run_file_query(pyfile.url, 'fileinfo')
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e)
             self.temp_offline("Query error #1")
 
@@ -78,7 +78,7 @@ class TwojlimitPl(MultiHoster):
         try:
             self.download(self.run_file_query(pyfile.url, 'filedownload'), fixurl=False)
 
-        except Exception, e:
+        except Exception as e:
             self.log_error(e)
             self.temp_offline("Query error #2")
 

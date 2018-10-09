@@ -18,11 +18,12 @@
 #
 ###
 
+from __future__ import absolute_import
 from itertools import islice
 from time import time
 
-from Handler import Handler
-from printer import *
+from .Handler import Handler
+from .printer import *
 
 from module.Api import Destination, PackageData
 
@@ -124,7 +125,7 @@ class ManageFiles(Handler):
                     println(line, mag(str(value.pid)) + ": " + value.name)
                     line += 1
                     i += 1
-                except Exception, e:
+                except Exception as e:
                     pass
             for x in range(5 - i):
                 println(line, "")
@@ -139,7 +140,7 @@ class ManageFiles(Handler):
                     value.name, value.statusmsg, value.plugin))
                     line += 1
                     i += 1
-                except Exception, e:
+                except Exception as e:
                     pass
             for x in range(5 - i):
                 println(line, "")

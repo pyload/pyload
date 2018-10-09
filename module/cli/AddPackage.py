@@ -18,8 +18,9 @@
 #
 ###
 
-from Handler import Handler
-from printer import *
+from __future__ import absolute_import
+from .Handler import Handler
+from .printer import *
 
 class AddPackage(Handler):
     """ let the user add packages """

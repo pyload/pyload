@@ -17,6 +17,7 @@
 
     @author: RaNaN
 """
+from __future__ import absolute_import
 
 from os.path import exists, join
 import re
@@ -28,7 +29,7 @@ from random import choice
 
 import pycurl
 
-import PluginThread
+from . import PluginThread
 from module.PyFile import PyFile
 from module.network.RequestFactory import getURL
 from module.utils import freeSpace, lock
@@ -133,7 +134,7 @@ class ThreadManager:
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
             self.tryReconnect()
-        except Exception, e:
+        except Exception as e:
             self.log.error(_("Reconnect Failed: %s") % str(e) )
             self.reconnecting.clear()
             if self.core.debug:
@@ -142,7 +143,7 @@ class ThreadManager:
 
         try:
             self.assignJob()
-        except Exception, e:
+        except Exception as e:
             self.log.warning("Assign job error", e)
             if self.core.debug:
                 print_exc()
@@ -274,7 +275,7 @@ class ThreadManager:
         if job:
             try:
                 job.initPlugin()
-            except Exception, e:
+            except Exception as e:
                 self.log.critical(str(e))
                 print_exc()
                 job.setStatus("failed")

@@ -290,7 +290,7 @@ class RelinkUs(Crypter):
 
                 pack_links.append(link)
 
-            except Exception, detail:
+            except Exception as detail:
                 self.log_debug(
                     "Error decrypting Web link %s, %s" % (index, detail))
 

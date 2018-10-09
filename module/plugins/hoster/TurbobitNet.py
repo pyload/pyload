@@ -151,7 +151,7 @@ class TurbobitNet(SimpleHoster):
                 if out.startswith('/download/'):
                     return "http://turbobit.net%s" % out.strip()
 
-            except Exception, e:
+            except Exception as e:
                 self.log_error(e, trace=True)
         else:
             if self.retries >= 2:

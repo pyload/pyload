@@ -104,7 +104,7 @@ class GoogleNamespaceManager(OpenResourceNamespaceManager):
         return self.hash[key]
 
     def __contains__(self, key): 
-        return self.hash.has_key(key)
+        return key in self.hash
         
     def __setitem__(self, key, value):
         self.hash[key] = value

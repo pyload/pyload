@@ -5,6 +5,7 @@ from module.network.HTTPRequest import BadHeader
 
 from ..internal.misc import encode, json, reduce
 from ..internal.MultiAccount import MultiAccount
+from functools import reduce
 
 
 def args(**kwargs):
@@ -46,7 +47,7 @@ class MegaDebridEu(MultiAccount):
         try:
             res = self.api_response("getHostersList")
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 405:
                 self.log_error(_("Unable to retrieve hosters list: Banned IP"))
 
@@ -86,7 +87,7 @@ class MegaDebridEu(MultiAccount):
         try:
             res = self.api_response("connectUser", args(login=user, password=password))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 401:
                 self.fail_login()
 

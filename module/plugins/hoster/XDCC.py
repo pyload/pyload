@@ -570,7 +570,7 @@ class XDCC(Hoster):
 
                 return
 
-            except socket.error, e:
+            except socket.error as e:
                 if hasattr(e, "errno") and e.errno is not None:
                     err_no = e.errno
 
@@ -659,7 +659,7 @@ class XDCC(Hoster):
                 try:
                     os.makedirs(dl_folder)
 
-                except Exception, e:
+                except Exception as e:
                     self.fail(e.message)
 
             self.set_permissions(dl_folder)
@@ -682,7 +682,7 @@ class XDCC(Hoster):
         except Abort:
             pass
 
-        except Exception, e:
+        except Exception as e:
             bot  = self.info['pattern']['BOT']
             self.irc_client.xdcc_cancel_pack(bot)
 

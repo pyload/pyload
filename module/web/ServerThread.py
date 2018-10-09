@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import with_statement
+from __future__ import absolute_import
 from os.path import exists
 
 import os
@@ -27,7 +28,7 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        import webinterface
+        from . import webinterface
         global webinterface
 
         if self.https:
@@ -52,7 +53,7 @@ class WebServer(threading.Thread):
         elif self.server == "lightweight":
             try:
                 import bjoern
-            except Exception, e:
+            except Exception as e:
                 log.error(_("Error importing lightweight server: %s") % e)
                 log.warning(_("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
                 log.warning(_("Copy the boern.so to module/lib folder or use setup.py install"))

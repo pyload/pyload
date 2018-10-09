@@ -43,10 +43,10 @@ class UnTar(Extractor):
         try:
             t = tarfile.open(self.filename, errorlevel=1)
 
-        except tarfile.CompressionError, e:
+        except tarfile.CompressionError as e:
             raise CRCError(e)
 
-        except (OSError, tarfile.TarError), e:
+        except (OSError, tarfile.TarError) as e:
             raise ArchiveError(e)
 
         else:
@@ -61,11 +61,11 @@ class UnTar(Extractor):
                 self.files = t.getnames()
             return self.files
 
-        except tarfile.ExtractError, e:
+        except tarfile.ExtractError as e:
             self.log_warning(e)
 
-        except tarfile.CompressionError, e:
+        except tarfile.CompressionError as e:
             raise CRCError(e)
 
-        except (OSError, tarfile.TarError), e:
+        except (OSError, tarfile.TarError) as e:
             raise ArchiveError(e)

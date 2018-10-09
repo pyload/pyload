@@ -222,7 +222,7 @@ class MegaClient(object):
                                    get=get_params,
                                    post=json.dumps([kwargs]))
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 500:
                 self.plugin.retry(wait_time=60, reason=_("Server busy"))
             else:
@@ -287,7 +287,7 @@ class MegaCoNz(Hoster):
             f = open(file_crypted, "rb")
             df = open(file_decrypted, "wb")
 
-        except IOError, e:
+        except IOError as e:
             self.fail(e.message)
 
         encrypted_size = os.path.getsize(file_crypted)
@@ -428,7 +428,7 @@ class MegaCoNz(Hoster):
         try:
             self.download(res['g'])
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 509:
                 self.fail(_("Bandwidth Limit Exceeded"))
 

@@ -58,5 +58,5 @@ def find(domain, localedir=None, languages=None, all=False):
         return results
 
 #Is there a smarter/cleaner pythonic way for this?
-translation.func_globals['find'] = find
-origfind.func_globals['find'] = origfind
+translation.__globals__['find'] = find
+origfind.__globals__['find'] = origfind

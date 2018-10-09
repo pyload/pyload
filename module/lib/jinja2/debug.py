@@ -18,7 +18,7 @@ from jinja2.exceptions import TemplateSyntaxError
 
 # how does the raise helper look like?
 try:
-    exec "raise TypeError, 'foo'"
+    exec("raise TypeError, 'foo'")
 except SyntaxError:
     raise_helper = 'raise __jinja_exception__[1]'
 except TypeError:
@@ -227,7 +227,7 @@ def fake_exc_info(exc_info, filename, lineno):
 
     # execute the code and catch the new traceback
     try:
-        exec code in globals, locals
+        exec(code, globals, locals)
     except:
         exc_info = sys.exc_info()
         new_tb = exc_info[2].tb_next

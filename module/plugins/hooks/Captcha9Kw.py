@@ -72,7 +72,7 @@ class Captcha9Kw(Addon):
                 with open(task.captchaParams['file'], 'rb') as f:
                     data = f.read()
 
-            except IOError, e:
+            except IOError as e:
                 self.log_error(e)
                 return
 
@@ -135,7 +135,7 @@ class Captcha9Kw(Addon):
             try:
                 res = self.load(self.API_URL, post=post_data)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 res = e.content
                 time.sleep(3)
 

@@ -21,6 +21,7 @@ from jinja2.exceptions import TemplateSyntaxError, TemplateNotFound, \
      TemplatesNotFound
 from jinja2.utils import import_string, LRUCache, Markup, missing, \
      concat, consume, internalcode, _encode_filename
+from functools import reduce
 
 
 # for direct template usage we have up to ten living environments
@@ -572,7 +573,7 @@ class Environment(object):
         def write_file(filename, data, mode):
             if zip:
                 info = ZipInfo(filename)
-                info.external_attr = 0755 << 16L
+                info.external_attr = 0o755 << 16
                 zip_file.writestr(info, data)
             else:
                 f = open(os.path.join(target, filename), mode)
@@ -596,7 +597,7 @@ class Environment(object):
                 source, filename, _ = self.loader.get_source(self, name)
                 try:
                     code = self.compile(source, name, filename, True, True)
-                except TemplateSyntaxError, e:
+                except TemplateSyntaxError as e:
                     if not ignore_errors:
                         raise
                     log_function('Could not compile "%s": %s' % (name, e))
@@ -836,7 +837,7 @@ class Template(object):
             'environment':  environment,
             '__file__':     code.co_filename
         }
-        exec code in namespace
+        exec(code, namespace)
         rv = cls._from_namespace(environment, namespace, globals)
         rv._uptodate = uptodate
         return rv

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -17,7 +18,7 @@
 # under the License.
 #
 
-from TProtocol import *
+from .TProtocol import *
 from struct import pack, unpack
 
 __all__ = ['TCompactProtocol', 'TCompactProtocolFactory']
@@ -228,7 +229,7 @@ class TCompactProtocol(TProtocolBase):
        else:
            self.__writeByte(CompactType.FALSE)
     else:
-      raise AssertionError, "Invalid state in compact protocol"
+      raise AssertionError("Invalid state in compact protocol")
 
   writeByte = writer(__writeByte)
   writeI16 = writer(__writeI16)
@@ -364,7 +365,7 @@ class TCompactProtocol(TProtocolBase):
     elif self.state == CONTAINER_READ:
       return self.__readByte() == CompactType.TRUE
     else:
-      raise AssertionError, "Invalid state in compact protocol: %d" % self.state
+      raise AssertionError("Invalid state in compact protocol: %d" % self.state)
 
   readByte = reader(__readByte)
   __readI16 = __readZigZag

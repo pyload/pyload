@@ -42,7 +42,7 @@ class TenluaVn(Account):
         try:
             login_info = self.api_response("user_login", user=user, password=password, permanent=False)
 
-        except BadHeader, e:
+        except BadHeader as e:
             if e.code == 401:
                 self.fail_login()
 

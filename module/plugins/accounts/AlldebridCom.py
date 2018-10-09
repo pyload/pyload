@@ -2,6 +2,7 @@
 
 from ..internal.MultiAccount import MultiAccount
 from ..internal.misc import json
+from functools import reduce
 
 
 class AlldebridCom(MultiAccount):

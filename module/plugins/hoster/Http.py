@@ -32,7 +32,7 @@ class Http(Hoster):
             try:
                 self.download(url, ref=False, disposition=True)
 
-            except BadHeader, e:
+            except BadHeader as e:
                 if e.code not in (401, 403, 404, 410):
                     raise
 

@@ -16,6 +16,7 @@
 
     @author: RaNaN
 """
+from __future__ import absolute_import
 
 from module.common.json_layer import json
 
@@ -38,7 +39,7 @@ import bottle
 from bottle import run, app
 
 from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
-from middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
+from .middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
@@ -88,7 +89,7 @@ loader = PrefixLoader(mapping)
 env = Environment(loader=loader, extensions=['jinja2.ext.i18n', 'jinja2.ext.autoescape'], trim_blocks=True, auto_reload=False,
     bytecode_cache=bcc)
 
-from filters import quotepath, path_make_relative, path_make_absolute, truncate, date
+from .filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
 env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
@@ -123,10 +124,10 @@ web = GZipMiddleWare(web)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-import pyload_app
-import json_app
-import cnl_app
-import api_app
+from . import pyload_app
+from . import json_app
+from . import cnl_app
+from . import api_app
 
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)
@@ -145,7 +146,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     CherryPyWSGIServer.numthreads = theads
 
-    from utils import CherryPyWSGI
+    from .utils import CherryPyWSGI
 
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 

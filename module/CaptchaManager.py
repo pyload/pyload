@@ -16,12 +16,13 @@
     
     @author: mkaay, RaNaN
 """
+from __future__ import absolute_import
 
 from time import time
 from traceback import print_exc
 from threading import Lock
 
-from common.json_layer import json
+from .common.json_layer import json
 
 class CaptchaManager():
     def __init__(self, core):

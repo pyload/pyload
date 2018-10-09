@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -17,8 +18,8 @@
 # under the License.
 #
 
-from protocol import TBinaryProtocol
-from transport import TTransport
+from .protocol import TBinaryProtocol
+from .transport import TTransport
 
 def serialize(thrift_object, protocol_factory = TBinaryProtocol.TBinaryProtocolFactory()):
     transport = TTransport.TMemoryBuffer()

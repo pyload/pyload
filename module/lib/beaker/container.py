@@ -211,7 +211,7 @@ class Value(object):
         """
         self.namespace.acquire_read_lock()
         try:    
-            return self.namespace.has_key(self.key)
+            return self.key in self.namespace
         finally:
             self.namespace.release_read_lock()
 
@@ -221,7 +221,7 @@ class Value(object):
     def has_current_value(self):
         self.namespace.acquire_read_lock()
         try:    
-            has_value = self.namespace.has_key(self.key)
+            has_value = self.key in self.namespace
             if has_value:
                 try:
                     stored, expired, value = self._get_value()
@@ -337,7 +337,7 @@ class Value(object):
         self.namespace.acquire_write_lock()
         try:
             debug("clear_value")
-            if self.namespace.has_key(self.key):
+            if self.key in self.namespace:
                 try:
                     del self.namespace[self.key]
                 except KeyError:
@@ -497,7 +497,7 @@ class DBMNamespaceManager(OpenResourceNamespaceManager):
         return cPickle.loads(self.dbm[key])
 
     def __contains__(self, key): 
-        return self.dbm.has_key(key)
+        return key in self.dbm
         
     def __setitem__(self, key, value):
         self.dbm[key] = cPickle.dumps(value)
@@ -575,7 +575,7 @@ class FileNamespaceManager(OpenResourceNamespaceManager):
     def do_remove(self):
         try:
             os.remove(self.file)
-        except OSError, err:
+        except OSError as err:
             # for instance, because we haven't yet used this cache,
             # but client code has asked for a clear() operation...
             pass
@@ -585,7 +585,7 @@ class FileNamespaceManager(OpenResourceNamespaceManager):
         return self.hash[key]
 
     def __contains__(self, key): 
-        return self.hash.has_key(key)
+        return key in self.hash
         
     def __setitem__(self, key, value):
         self.hash[key] = value

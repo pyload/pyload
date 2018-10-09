@@ -15,14 +15,15 @@
 
     @author: mkaay, RaNaN
 """
+from __future__ import absolute_import
 from os.path import exists
 
 from module.remote.RemoteManager import BackendBase
 
-from thriftbackend.Processor import Processor
-from thriftbackend.Protocol import ProtocolFactory
-from thriftbackend.Socket import ServerSocket
-from thriftbackend.Transport import TransportFactory
+from .thriftbackend.Processor import Processor
+from .thriftbackend.Protocol import ProtocolFactory
+from .thriftbackend.Socket import ServerSocket
+from .thriftbackend.Transport import TransportFactory
 #from thriftbackend.Transport import TransportFactoryCompressed
 
 from thrift.server import TServer

@@ -56,7 +56,7 @@ class Ftp(Hoster):
         try:
             headers = self.load(pyfile.url, just_header=True)
 
-        except pycurl.error, e:
+        except pycurl.error as e:
             if "530" in e.args[1]:
                 self.fail(_("Authorization required"))
             else:

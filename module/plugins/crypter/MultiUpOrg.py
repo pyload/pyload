@@ -55,7 +55,7 @@ class MultiUpOrg(SimpleCrypter):
                 mirror_page = urlparse.urljoin("http://www.multiup.eu/", url)
                 try:
                     response, challenge = recaptcha.challenge(captcha_key)
-                except BadHeader, e:
+                except BadHeader as e:
                     if e.code == 400 and "Please enable JavaScript to get a reCAPTCHA challenge" in e.content:
                         self.log_warning(_("Unsupported reCAPTCHA, retrying"))
                         self.retry()

@@ -31,7 +31,7 @@ class BackendBase(Thread):
         self.running = True
         try:
             self.serve()
-        except Exception, e:
+        except Exception as e:
             self.core.log.error(_("Remote backend error: %s") % e)
             if self.core.debug:
                 print_exc()
@@ -80,7 +80,7 @@ class RemoteManager():
             try:
                 backend.setup(host, port)
                 self.core.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
-            except Exception, e:
+            except Exception as e:
                 self.core.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
                 if self.core.debug:
                     print_exc()

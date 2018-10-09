@@ -576,7 +576,7 @@ class SessionObject(object):
         return iter(self._session().keys())
     
     def __contains__(self, key):
-        return self._session().has_key(key)
+        return key in self._session()
     
     def get_by_id(self, id):
         """Loads a session given a session ID"""

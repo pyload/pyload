@@ -54,7 +54,7 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
             validuntil = time.mktime(time.strptime(status, "%b d %Y %I:%M %p"))
 
         # @TODO: Remove `/ 1024` in 0.4.10
-        trafficleft = (536870912000l - int(api_data['data'].get('total_used', 0))) / 1024
+        trafficleft = (536870912000 - int(api_data['data'].get('total_used', 0))) / 1024
         return {'premium': premium,
                 'validuntil': validuntil ,
                 'trafficleft': trafficleft}

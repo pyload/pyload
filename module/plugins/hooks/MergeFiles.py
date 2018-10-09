@@ -70,7 +70,7 @@ class MergeFiles(Addon):
                                     break
                         self.log_debug("Finished merging part", splitted_file)
 
-                    except Exception, e:
+                    except Exception as e:
                         self.log_error(e, trace=True)
 
                     finally:

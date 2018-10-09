@@ -12,6 +12,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
+from __future__ import absolute_import
 import operator
 from itertools import chain, izip
 from collections import deque
@@ -141,7 +142,7 @@ class Node(object):
             setattr(self, attr, attributes.pop(attr, None))
         if attributes:
             raise TypeError('unknown attribute %r' %
-                            iter(attributes).next())
+                            next(iter(attributes)))
 
     def iter_fields(self, exclude=None, only=None):
         """This method iterates over all fields that are defined and yields
@@ -431,7 +432,7 @@ class Const(Literal):
         constant value in the generated code, otherwise it will raise
         an `Impossible` exception.
         """
-        from compiler import has_safe_repr
+        from .compiler import has_safe_repr
         if not has_safe_repr(value):
             raise Impossible()
         return cls(value, lineno=lineno, environment=environment)

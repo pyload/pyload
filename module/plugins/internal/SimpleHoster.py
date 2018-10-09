@@ -149,7 +149,7 @@ class SimpleHoster(Hoster):
                     html = get_url(
                         url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
-                except BadHeader, e:
+                except BadHeader as e:
                     info['error'] = "%d: %s" % (e.code, e.content)
 
                 except Exception:

@@ -115,7 +115,7 @@ class Plugin(object):
         try:
             remove(path, trash)
 
-        except (NameError, OSError), e:
+        except (NameError, OSError) as e:
             self.log_warning(
                 _("Error removing `%s`") %
                 os.path.abspath(path), e)
@@ -391,7 +391,7 @@ class Plugin(object):
 
                 f.write(html)
 
-        except IOError, e:
+        except IOError as e:
             self.log_error(e)
 
         finally:
