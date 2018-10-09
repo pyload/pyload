@@ -47,7 +47,7 @@ internal_code = set()
 # concatenate a list of strings and convert them to unicode.
 # unfortunately there is a bug in python 2.4 and lower that causes
 # unicode.join trash the traceback.
-_concat = u''.join
+_concat = ''.join
 try:
     def _test_gen_bug():
         raise TypeError(_test_gen_bug)
@@ -302,7 +302,7 @@ def urlize(text, trim_url_limit=None, nofollow=False):
                 middle = '<a href="mailto:{}">{}</a>'.format(middle, middle)
             if lead + middle + trail != word:
                 words[i] = lead + middle + trail
-    return u''.join(words)
+    return ''.join(words)
 
 
 def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
@@ -342,7 +342,7 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
             p.append(word)
 
         # ensure that the paragraph ends with a dot.
-        p = u' '.join(p)
+        p = ' '.join(p)
         if p.endswith(','):
             p = p[:-1] + '.'
         elif not p.endswith('.'):
@@ -350,8 +350,8 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
         result.append(p)
 
     if not html:
-        return u'\n\n'.join(result)
-    return Markup(u'\n'.join(u'<p>{}</p>'.format(escape(x) for x in result)))
+        return '\n\n'.join(result)
+    return Markup('\n'.join('<p>{}</p>'.format(escape(x) for x in result)))
 
 
 class LRUCache(object):
@@ -571,14 +571,14 @@ class Cycler(object):
 class Joiner(object):
     """A joining helper for templates."""
 
-    def __init__(self, sep=u', '):
+    def __init__(self, sep=', '):
         self.sep = sep
         self.used = False
 
     def __call__(self):
         if not self.used:
             self.used = True
-            return u''
+            return ''
         return self.sep
 
 

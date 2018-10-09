@@ -28,10 +28,10 @@ class NitrobitNet(SimpleHoster):
     LOGIN_PREMIUM = True
     URL_REPLACEMENTS = [(__pattern__ + ".*", r'http://www.nitrobit.net/view/\g<ID>')]
 
-    NAME_PATTERN = ur'<b>שם הקובץ: </b><span title="(?P<N>.+?)"'
-    SIZE_PATTERN = ur'<b>גודל הקובץ: </b><span dir="ltr" style="text-align: left;">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
+    NAME_PATTERN = r'<b>שם הקובץ: </b><span title="(?P<N>.+?)"'
+    SIZE_PATTERN = r'<b>גודל הקובץ: </b><span dir="ltr" style="text-align: left;">(?P<S>[\d.,]+) (?P<U>[\w^_]+)</span>'
 
-    DL_LIMIT_PATTERN = ur'daily downloadlimit reached|הורדת קובץ זה תעבור על המכסה היומית'
+    DL_LIMIT_PATTERN = r'daily downloadlimit reached|הורדת קובץ זה תעבור על המכסה היומית'
     LINK_PREMIUM_PATTERN = r'id="download" href="(.+?)"'
 
     def handle_premium(self, pyfile):

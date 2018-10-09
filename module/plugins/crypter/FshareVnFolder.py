@@ -26,7 +26,7 @@ class FshareVnFolder(Crypter):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    OFFLINE_PATTERN = ur'Thư mục của bạn yêu cầu không tồn tại'
+    OFFLINE_PATTERN = r'Thư mục của bạn yêu cầu không tồn tại'
     NAME_PATTERN = r'<title>Fshare - (.+?)(?: - Fshare)?</title>'
 
     URL_REPLACEMENTS = [("http://", "https://")]

@@ -709,7 +709,7 @@ def format_exc(frame=None):
     Format call-stack and display exception information (if availible)
     """
     exc_info = sys.exc_info()
-    exc_desc = u""
+    exc_desc = ""
 
     callstack = traceback.extract_stack(frame)
     callstack = callstack[:-1]
@@ -727,7 +727,7 @@ def format_exc(frame=None):
                         exc_info[0],
                         exc_info[1])))
 
-    msg = u"Traceback (most recent call last):\n"
+    msg = "Traceback (most recent call last):\n"
     msg += decode("".join(traceback.format_list(callstack)))
     msg += exc_desc
 

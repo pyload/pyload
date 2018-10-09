@@ -51,8 +51,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyLoad'
-copyright = u'2011, pyLoad Team'
+project = 'pyLoad'
+copyright = '2011, pyLoad Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -196,8 +196,8 @@ htmlhelp_basename = 'pyLoaddoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyLoad.tex', u'pyLoad Documentation',
-   u'pyLoad Team', 'manual'),
+  ('index', 'pyLoad.tex', 'pyLoad Documentation',
+   'pyLoad Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -229,8 +229,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pyload', u'pyLoad Documentation',
-     [u'pyLoad Team'], 1)
+    ('index', 'pyload', 'pyLoad Documentation',
+     ['pyLoad Team'], 1)
 ]
 
 

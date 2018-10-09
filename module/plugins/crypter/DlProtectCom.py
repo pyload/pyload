@@ -36,7 +36,7 @@ class DlProtectCom(SimpleCrypter):
                                   post={'captchaCode': captcha_code,
                                         'submit': ""})
 
-            if u"Le code de sécurité est incorrect" in self.data:
+            if "Le code de sécurité est incorrect" in self.data:
                 self.retry_captcha()
 
         return re.findall(r'<a href="(?P<id>[^/].+?)">(?P=id)</a>', self.data)

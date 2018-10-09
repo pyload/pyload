@@ -28,8 +28,8 @@ class MultishareCz(SimpleHoster):
     CHECK_TRAFFIC = True
     LEECH_HOSTER = True
 
-    INFO_PATTERN = ur'(?:<li>Název|Soubor): <strong>(?P<N>.+?)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>.+?)</strong>'
-    OFFLINE_PATTERN = ur'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
+    INFO_PATTERN = r'(?:<li>Název|Soubor): <strong>(?P<N>.+?)</strong><(?:/li><li|br)>Velikost: <strong>(?P<S>.+?)</strong>'
+    OFFLINE_PATTERN = r'<h1>Stáhnout soubor</h1><p><strong>Požadovaný soubor neexistuje.</strong></p>'
 
     def handle_free(self, pyfile):
         self.download(

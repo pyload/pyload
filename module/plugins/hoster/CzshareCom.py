@@ -121,7 +121,7 @@ class CzshareCom(SimpleHoster):
         inputs['captchastring2'] = self.captcha.decrypt(captcha_url)
         self.data = self.load(parsed_url, post=inputs)
 
-        if u"<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.data:
+        if "<li>Zadaný ověřovací kód nesouhlasí!</li>" in self.data:
             self.retry_captcha()
 
         elif re.search(self.MULTIDL_PATTERN, self.data):

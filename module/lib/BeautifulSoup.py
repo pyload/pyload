@@ -84,7 +84,7 @@ from builtins import map
 from builtins import str
 from builtins import range
 from builtins import object
-from __future__ import generators
+
 
 __author__ = "Leonard Richardson (leonardr@segfault.org)"
 __version__ = "3.0.8.1"
@@ -515,7 +515,7 @@ class Tag(PageElement):
             if self.convertXMLEntities:
                 return self.XML_ENTITIES_TO_SPECIAL_CHARS[x]
             else:
-                return u'&{};'.format(x)
+                return '&{};'.format(x)
         elif len(x) > 0 and x[0] == '#':
             # Handle numeric entities
             if len(x) > 1 and x[1] == 'x':
@@ -524,9 +524,9 @@ class Tag(PageElement):
                 return chr(int(x[1:]))
 
         elif self.escapeUnrecognizedEntities:
-            return u'&amp;{};'.format(x)
+            return '&amp;{};'.format(x)
         else:
-            return u'&{};'.format(x)
+            return '&{};'.format(x)
 
     def __init__(self, parser, name, attrs=None, parent=None,
                  previous=None):
@@ -567,9 +567,9 @@ class Tag(PageElement):
 
     string = property(getString, setString)
 
-    def getText(self, separator=u""):
+    def getText(self, separator=""):
         if not len(self.contents):
-            return u""
+            return ""
         stopNode = self._lastRecursiveChild().__next__
         strings = []
         current = self.contents[0]
@@ -1069,7 +1069,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
                        lambda x: '<!' + x.group(1) + '>')
                       ]
 
-    ROOT_TAG_NAME = u'[document]'
+    ROOT_TAG_NAME = '[document]'
 
     HTML_ENTITIES = "html"
     XML_ENTITIES = "xml"
@@ -1241,7 +1241,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
 
     def endData(self, containerClass=NavigableString):
         if self.currentData:
-            currentData = u''.join(self.currentData)
+            currentData = ''.join(self.currentData)
             if (currentData.translate(self.STRIP_ASCII_SPACES) == '' and
                 not set([tag.name for tag in self.tagStack]).intersection(
                     self.PRESERVE_WHITESPACE_TAGS)):
@@ -1388,7 +1388,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         object, possibly one with a %SOUP-ENCODING% slot into which an
         encoding will be plugged later."""
         if text[:3] == "xml":
-            text = u"xml version='1.0' encoding='%SOUP-ENCODING%'"
+            text = "xml version='1.0' encoding='%SOUP-ENCODING%'"
         self._toStringSubclass(text, ProcessingInstruction)
 
     def handle_comment(self, text):

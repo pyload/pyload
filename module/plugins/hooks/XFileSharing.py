@@ -68,7 +68,7 @@ class XFileSharing(Addon):
                 builtin_list = getattr(self, "BUILTIN_{}S".format(type.upper()))
                 plugin_set.update(builtin_list)
 
-            plugin_set.difference_update(('', u''))
+            plugin_set.difference_update(('', ''))
 
             if not plugin_set:
                 self.log_info(_("No {} to handle").format(type))

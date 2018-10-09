@@ -63,7 +63,7 @@ class Account(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
-        msg = u" | ".join(decode(a).strip() for a in messages if a)
+        msg = " | ".join(decode(a).strip() for a in messages if a)
 
         #: Hide any user/password
         try:

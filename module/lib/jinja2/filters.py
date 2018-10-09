@@ -8,7 +8,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
-from __future__ import division
+
 from builtins import map
 from builtins import next
 from builtins import str
@@ -123,13 +123,13 @@ def do_xmlattr(_eval_ctx, d, autospace=True):
     As you can see it automatically prepends a space in front of the item
     if the filter returned something unless the second parameter is false.
     """
-    rv = u' '.join(
-        u'{}="{}"'.format(escape(key), escape(value))
+    rv = ' '.join(
+        '{}="{}"'.format(escape(key), escape(value))
         for key, value in iter(d.items())
         if value is not None and not isinstance(value, Undefined)
     )
     if autospace and rv:
-        rv = u' ' + rv
+        rv = ' ' + rv
     if _eval_ctx.autoescape:
         rv = Markup(rv)
     return rv
@@ -206,7 +206,7 @@ def do_sort(value, reverse=False, case_sensitive=False):
     return sorted(value, key=sort_func, reverse=reverse)
 
 
-def do_default(value, default_value=u'', boolean=False):
+def do_default(value, default_value='', boolean=False):
     """If the value is undefined it will return the passed default value,
     otherwise the value of the variable:
 
@@ -229,7 +229,7 @@ def do_default(value, default_value=u'', boolean=False):
 
 
 @evalcontextfilter
-def do_join(eval_ctx, value, d=u''):
+def do_join(eval_ctx, value, d=''):
     """Return a string which is the concatenation of the strings in the
     sequence. The separator between elements is an empty string per
     default, you can define it with the optional parameter:
@@ -355,8 +355,8 @@ def do_indent(s, width=4, indentfirst=False):
         {{ mytext|indent(2, true) }}
             indent by two spaces and indent the first line too.
     """
-    indention = u' ' * width
-    rv = (u'\n' + indention).join(s.splitlines())
+    indention = ' ' * width
+    rv = ('\n' + indention).join(s.splitlines())
     if indentfirst:
         rv = indention + rv
     return rv
@@ -390,7 +390,7 @@ def do_truncate(s, length=255, killwords=False, end='...'):
             break
         result.append(word)
     result.append(end)
-    return u' '.join(result)
+    return ' '.join(result)
 
 
 def do_wordwrap(s, width=79, break_long_words=True):
@@ -401,7 +401,7 @@ def do_wordwrap(s, width=79, break_long_words=True):
     split words apart if they are longer than `width`.
     """
     import textwrap
-    return u'\n'.join(textwrap.wrap(s, width=width, expand_tabs=False,
+    return '\n'.join(textwrap.wrap(s, width=width, expand_tabs=False,
                                    replace_whitespace=False,
                                    break_long_words=break_long_words))
 

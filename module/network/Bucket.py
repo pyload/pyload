@@ -3,7 +3,7 @@
 #@author: RaNaN
 
 
-from __future__ import division
+
 from builtins import object
 from past.utils import old_div
 from time import time

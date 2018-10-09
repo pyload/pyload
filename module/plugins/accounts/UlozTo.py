@@ -74,7 +74,7 @@ class UlozTo(Account):
         html = self.load(urllib.parse.urljoin("https://www.ulozto.net/", action),
                          post={'_token_': token,
                                '_do': "loginForm-submit",
-                               'login': u"Submit",
+                               'login': "Submit",
                                'password': password,
                                'username': user})
 

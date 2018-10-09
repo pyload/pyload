@@ -247,7 +247,7 @@ class YoutubeCom(Hoster):
     URL_REPLACEMENTS = [(r'youtu\.be/', 'youtube.com/watch?v=')]
 
     #: Invalid characters that must be removed from the file name
-    invalid_chars = u'\u2605:?><"|\\'
+    invalid_chars = '\u2605:?><"|\\'
 
     #: name, width, height, quality ranking, 3D, type
     formats = {

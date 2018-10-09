@@ -17,7 +17,7 @@ c_encode_basestring_ascii, c_make_encoder = _import_speedups()
 
 from simplejson.decoder import PosInf
 
-ESCAPE = re.compile(ur'[\x00-\x1f\\"\b\f\n\r\t\u2028\u2029]')
+ESCAPE = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\u2028\u2029]')
 ESCAPE_ASCII = re.compile(r'([\\"]|[^\ -~])')
 HAS_UTF8 = re.compile(r'[\x80-\xff]')
 ESCAPE_DCT = {
@@ -28,8 +28,8 @@ ESCAPE_DCT = {
     '\n': '\\n',
     '\r': '\\r',
     '\t': '\\t',
-    u'\u2028': '\\u2028',
-    u'\u2029': '\\u2029',
+    '\u2028': '\\u2028',
+    '\u2029': '\\u2029',
 }
 for i in range(0x20):
     #ESCAPE_DCT.setdefault(chr(i), '\\u{0:04x}'.format(i))
@@ -45,7 +45,7 @@ def encode_basestring(s):
         s = s.decode('utf-8')
     def replace(match):
         return ESCAPE_DCT[match.group(0)]
-    return u'"' + ESCAPE.sub(replace, s) + u'"'
+    return '"' + ESCAPE.sub(replace, s) + '"'
 
 
 def py_encode_basestring_ascii(s):
@@ -233,7 +233,7 @@ class JSONEncoder(object):
         if self.ensure_ascii:
             return ''.join(chunks)
         else:
-            return u''.join(chunks)
+            return ''.join(chunks)
 
     def iterencode(self, o, _one_shot=False):
         """Encode the given object and yield each string
@@ -318,7 +318,7 @@ class JSONEncoderForHTML(JSONEncoder):
         if self.ensure_ascii:
             return ''.join(chunks)
         else:
-            return u''.join(chunks)
+            return ''.join(chunks)
 
     def iterencode(self, o, _one_shot=False):
         chunks = super(JSONEncoderForHTML, self).iterencode(o, _one_shot)

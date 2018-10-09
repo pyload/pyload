@@ -78,7 +78,7 @@ class AdYouLike(CaptchaService):
             instructions_visual = challenge['translations'][
                 server['all']['lang']]['instructions_visual']
             response = re.search(
-                u'«(.+?)»', instructions_visual).group(1).strip()
+                '«(.+?)»', instructions_visual).group(1).strip()
 
         except AttributeError:
             self.fail(_("AdYouLike result not found"))

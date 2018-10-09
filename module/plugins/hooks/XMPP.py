@@ -132,7 +132,7 @@ class XMPP(IRC, JabberClient):
             #: 'headline' messages should never be replied to
             return True
         if subject:
-            subject = u"Re: " + subject
+            subject = "Re: " + subject
 
         to_jid = stanza.get_from()
         from_jid = stanza.get_to()

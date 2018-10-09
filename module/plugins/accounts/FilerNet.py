@@ -18,7 +18,7 @@ class FilerNet(Account):
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     TOKEN_PATTERN = r'name="_csrf_token" value="(.+?)"'
-    VALID_UNTIL_PATTERN = ur'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
+    VALID_UNTIL_PATTERN = r'Der Premium-Zugang ist gültig bis (.+)\.\s*</td>'
     TRAFFIC_LEFT_PATTERN = r'Traffic</th>\s*<td>([\d.,]+) (?:([\w^_]+))</td>'
     FREE_PATTERN = r'Account Status</th>\s*<td>\s*Free'
 

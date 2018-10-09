@@ -79,7 +79,7 @@ class ProcessedTraceback(object):
     def render_as_html(self, full=False):
         """Return a unicode string with the traceback as rendered HTML."""
         from jinja2.debugrenderer import render_traceback
-        return u'{}\n\n<!--\n{}\n-->'.format(
+        return '{}\n\n<!--\n{}\n-->'.format(
             render_traceback(self, full=full),
             self.render_as_text().decode('utf-8', 'replace')
         )

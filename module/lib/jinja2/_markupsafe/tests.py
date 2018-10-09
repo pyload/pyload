@@ -51,7 +51,7 @@ class MarkupTestCase(unittest.TestCase):
     def test_escape_silent(self):
         assert escape_silent(None) == Markup()
         assert escape(None) == Markup(None)
-        assert escape_silent('<foo>') == Markup(u'&lt;foo&gt;')
+        assert escape_silent('<foo>') == Markup('&lt;foo&gt;')
 
 
 class MarkupLeakTestCase(unittest.TestCase):
@@ -62,8 +62,8 @@ class MarkupLeakTestCase(unittest.TestCase):
             for item in range(1000):
                 escape("foo")
                 escape("<foo>")
-                escape(u"foo")
-                escape(u"<foo>")
+                escape("foo")
+                escape("<foo>")
             counts.add(len(gc.get_objects()))
         assert len(counts) == 1, 'ouch, c extension seems to leak objects'
 

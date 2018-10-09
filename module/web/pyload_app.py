@@ -3,7 +3,7 @@
 #@author: RaNaN
 
 
-from __future__ import division
+
 from future import standard_library
 standard_library.install_aliases()
 from past.utils import old_div

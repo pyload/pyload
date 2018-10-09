@@ -26,7 +26,7 @@ class Setup(object):
 
     def start(self):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
-        lang = self.ask(u"Choose your Language / Wähle deine Sprache", "en", langs)
+        lang = self.ask("Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("setup", os.path.join(self.path, "locale"), languages=[lang, "en"], fallback=True)
         translation.install(True)

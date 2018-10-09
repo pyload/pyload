@@ -31,7 +31,7 @@ class NarodRu(SimpleHoster):
     SIZE_PATTERN = r'<dd class="size">(?P<S>\d.*?)</dd>'
     OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
-    SIZE_REPLACEMENTS = [(u'КБ', 'KB'), (u'МБ', 'MB'), (u'ГБ', 'GB')]
+    SIZE_REPLACEMENTS = [('КБ', 'KB'), ('МБ', 'MB'), ('ГБ', 'GB')]
     URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
                         (r'/start/\d+\.\w+\-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)', r'/disk/\1/\2')]
 
@@ -57,5 +57,5 @@ class NarodRu(SimpleHoster):
             self.captcha.correct()
             self.link = urllib.parse.urljoin("http://narod.ru/", m.group(1))
 
-        elif u'<b class="error-msg"><strong>Ошиблись?</strong>' in self.data:
+        elif '<b class="error-msg"><strong>Ошиблись?</strong>' in self.data:
             self.retry_captcha()

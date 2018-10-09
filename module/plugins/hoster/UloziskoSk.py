@@ -27,13 +27,13 @@ class UloziskoSk(SimpleHoster):
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
     NAME_PATTERN = r'<div class="down1">(?P<N>.+?)</div>'
-    SIZE_PATTERN = ur'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong><br />'
-    OFFLINE_PATTERN = ur'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
+    SIZE_PATTERN = r'Veľkosť súboru: <strong>(?P<S>[\d.,]+) (?P<U>[\w^_]+)</strong><br />'
+    OFFLINE_PATTERN = r'<span class = "red">Zadaný súbor neexistuje z jedného z nasledujúcich dôvodov:</span>'
 
     LINK_FREE_PATTERN = r'<form name = "formular" action = "(.+?)" method = "post">'
     ID_PATTERN = r'<input type = "hidden" name = "id" value = "(.+?)" />'
     CAPTCHA_PATTERN = r'<img src="(/obrazky/obrazky\.php\?fid=.+?)" alt="" />'
-    IMG_PATTERN = ur'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "(.+?)">'
+    IMG_PATTERN = r'<strong>PRE ZVÄČŠENIE KLIKNITE NA OBRÁZOK</strong><br /><a href = "(.+?)">'
 
     def process(self, pyfile):
         self.data = self.load(pyfile.url)

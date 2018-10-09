@@ -573,7 +573,7 @@ class Environment(object):
         if py_compile:
             import imp, struct, marshal
             py_header = imp.get_magic() + \
-                u'\xff\xff\xff\xff'.encode('iso-8859-15')
+                '\xff\xff\xff\xff'.encode('iso-8859-15')
 
         def write_file(filename, data, mode):
             if zip:
@@ -734,8 +734,8 @@ class Environment(object):
            from the function unchanged.
         """
         if not names:
-            raise TemplatesNotFound(message=u'Tried to select from an empty list '
-                                            u'of templates.')
+            raise TemplatesNotFound(message='Tried to select from an empty list '
+                                            'of templates.')
         globals = self.make_globals(globals)
         for name in names:
             if isinstance(name, Template):
