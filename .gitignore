@@ -32,6 +32,7 @@
 
 # https://raw.githubusercontent.com/github/gitignore/master/Global/Linux.gitignore
 
+# General
 *~
 
 # Temporary files which can be created if a process still has a handle open of a deleted file
@@ -58,7 +59,7 @@ ehthumbs_vista.db
 *.stackdump
 
 # Folder config file
-Desktop.ini
+[Dd]esktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
@@ -66,6 +67,7 @@ $RECYCLE.BIN/
 # Windows Installer files
 *.cab
 *.msi
+*.msix
 *.msm
 *.msp
 
@@ -75,7 +77,8 @@ $RECYCLE.BIN/
 
 # https://raw.githubusercontent.com/github/gitignore/master/Global/macOS.gitignore
 
-*.DS_Store
+# General
+.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -120,8 +123,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-# TODO: Activate this rule when dependencies are not handled in this repo anymore
-#lib/
+lib/
 lib64/
 parts/
 sdist/
@@ -130,6 +132,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -144,6 +147,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.nox/
 .coverage
 .coverage.*
 .cache
@@ -151,16 +155,16 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache/
 
-# TODO: Activate these rules when translations are not handled in this repo anymore
 # Translations
-#*.mo
-#*.po
-#*.pot
+*.mo
+*.pot
 
 # Django stuff:
 *.log
 local_settings.py
+db.sqlite3
 
 # Flask stuff:
 instance/
@@ -178,6 +182,10 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# IPython
+profile_default/
+ipython_config.py
+
 # pyenv
 .python-version
 
@@ -193,6 +201,8 @@ celerybeat-schedule
 env/
 venv/
 ENV/
+env.bak/
+venv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -206,6 +216,5 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-# PyCharm
-.idea/
+.dmypy.json
+dmypy.json
