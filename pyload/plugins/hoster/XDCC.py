@@ -13,9 +13,9 @@ import time
 import threading
 
 
-from module.plugins.Plugin import Abort
-from module.plugins.internal.Hoster import Hoster
-from module.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
+from pyload.plugins.Plugin import Abort
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
 
 
 class IRC(object):

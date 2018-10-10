@@ -2,8 +2,8 @@
 
 import re
 
-from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
+from pyload.network.CookieJar import CookieJar
+from pyload.network.HTTPRequest import HTTPRequest
 
 from ..internal.SimpleHoster import SimpleHoster
 

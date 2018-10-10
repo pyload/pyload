@@ -2,7 +2,7 @@
 
 import re
 
-from module.common.JsEngine import JsEngine
+from pyload.common.JsEngine import JsEngine
 
 from ..internal.SimpleHoster import SimpleHoster
 

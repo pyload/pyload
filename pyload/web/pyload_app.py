@@ -21,7 +21,7 @@ from .utils import render_to_response, parse_permissions, parse_userdata, \
 
 from .filters import relpath, unquotepath
 
-from module.utils import formatSize, save_join, fs_encode, fs_decode
+from pyload.utils import formatSize, save_join, fs_encode, fs_decode
 
 # Helper
 

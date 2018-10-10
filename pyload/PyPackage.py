@@ -2,8 +2,8 @@
 # @author: RaNaN, mkaay
 
 from builtins import object
-from module.PullEvents import UpdateEvent
-from module.utils import save_path
+from pyload.PullEvents import UpdateEvent
+from pyload.utils import save_path
 
 
 class PyPackage(object):

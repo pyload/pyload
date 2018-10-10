@@ -5,7 +5,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from module.utils import formatSpeed, formatSize
+from pyload.utils import formatSpeed, formatSize
 
 
 class OverviewModel(QAbstractListModel):

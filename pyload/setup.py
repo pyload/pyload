@@ -5,13 +5,13 @@ from builtins import input
 from builtins import str
 from builtins import object
 from getpass import getpass
-import module.common.pylgettext as gettext
+import pyload.common.pylgettext as gettext
 import os
 from subprocess import PIPE
 from subprocess import call
 import sys
 from sys import exit
-from module.utils import get_console_encoding
+from pyload.utils import get_console_encoding
 
 
 class Setup(object):
@@ -46,9 +46,9 @@ class Setup(object):
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
         #        if viaweb:
         #            try:
-        #                from module.web import ServerThread
+        #                from pyload.web import ServerThread
         #                ServerThread.setup = self
-        #                from module.web import webinterface
+        #                from pyload.web import webinterface
         #                webinterface.run_simple()
         #                return False
         #            except Exception as e:
@@ -260,7 +260,7 @@ class Setup(object):
 
         web = sqlite and beaker
 
-        from module.common import JsEngine
+        from pyload.common import JsEngine
 
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
@@ -274,7 +274,7 @@ class Setup(object):
         print("")
         print(_("The following logindata is valid for CLI, GUI and webinterface."))
 
-        from module.database import DatabaseBackend
+        from pyload.database import DatabaseBackend
 
         db = DatabaseBackend(None)
         db.setup()
@@ -331,7 +331,7 @@ class Setup(object):
             "lightweight:",
             _("Very fast alternative written in C, requires libev and linux knowlegde."))
         print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
-        print("\t", _("and copy bjoern.so to module/lib"))
+        print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print("")
         print(_(
@@ -349,12 +349,12 @@ class Setup(object):
             t for t in os.listdir(
                 os.path.join(
                     pypath,
-                    "module",
+                    "pyload",
                     "web",
                     "templates")) if os.path.isdir(
                 os.path.join(
                     pypath,
-                    "module",
+                    "pyload",
                     "web",
                     "templates",
                     t))]
@@ -384,7 +384,7 @@ class Setup(object):
                                           self.config["general"]["language"], "en"], fallback=True)
         translation.install(True)
 
-        from module.database import DatabaseBackend
+        from pyload.database import DatabaseBackend
 
         db = DatabaseBackend(None)
         db.setup()
@@ -442,7 +442,7 @@ class Setup(object):
             path = os.path.join(pypath, path)
             if not os.path.exists(path):
                 os.makedirs(path)
-            f = open(os.path.join(pypath, "module", "config", "configdir"), "wb")
+            f = open(os.path.join(pypath, "pyload", "config", "configdir"), "wb")
             f.write(path)
             f.close()
             print(_("Configpath changed, setup will now close, please restart to go on."))

@@ -63,7 +63,7 @@ class RemoteManager(object):
         for b in self.available:
             klass = getattr(
                 __import__(
-                    "module.remote.{}".format(
+                    "pyload.remote.{}".format(
                         b, globals(), locals(), [b], -1), b))
             backend = klass(self)
             if not backend.checkDeps():

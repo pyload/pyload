@@ -6,7 +6,7 @@
 # Note:
 # The remixshare.com website is very very slow, so
 # if your download not starts because of pycurl timeouts:
-# Adjust timeouts in /usr/share/pyload/module/network/HTTPRequest.py
+# Adjust timeouts in /usr/share/pyload/pyload/network/HTTPRequest.py
 
 import re
 

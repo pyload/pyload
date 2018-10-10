@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import json

@@ -8,7 +8,7 @@ import re
 import time
 import urllib.parse
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Addon import Addon
 from ..internal.misc import threaded

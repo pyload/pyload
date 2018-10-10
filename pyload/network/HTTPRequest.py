@@ -13,7 +13,7 @@ from urllib.parse import quote, urlencode
 from http.client import responses
 from logging import getLogger
 
-from module.plugins.Plugin import Abort
+from pyload.plugins.Plugin import Abort
 
 
 def myquote(url):

@@ -14,8 +14,8 @@ from threading import RLock
 
 from types import MethodType
 
-from module.PluginThread import HookThread
-from module.plugins.PluginManager import literal_eval
+from pyload.PluginThread import HookThread
+from pyload.plugins.PluginManager import literal_eval
 from .utils import lock
 
 

@@ -4,7 +4,7 @@
 import re
 import urllib.parse
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 from ..internal.SimpleCrypter import SimpleCrypter
 from ..captcha.ReCaptcha import ReCaptcha
 

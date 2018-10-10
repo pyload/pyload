@@ -4,7 +4,7 @@ from builtins import range
 import random
 import re
 
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json

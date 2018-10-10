@@ -2,7 +2,7 @@
 
 import re
 
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.Hoster import Hoster

@@ -10,7 +10,7 @@ from time import time
 from .Handler import Handler
 from .printer import *
 
-from module.Api import Destination, PackageData
+from pyload.Api import Destination, PackageData
 
 
 class ManageFiles(Handler):

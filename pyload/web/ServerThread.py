@@ -47,7 +47,7 @@ class WebServer(threading.Thread):
                 _("of course you can still use your existing {} with pyLoads fastcgi server").format(
                     self.server))
             log.warning(
-                _("sample configs are located in the module/web/servers directory"))
+                _("sample configs are located in the pyload/web/servers directory"))
             self.server = "builtin"
 
         if self.server == "fastcgi":
@@ -65,7 +65,7 @@ class WebServer(threading.Thread):
                 log.warning(
                     _("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
                 log.warning(
-                    _("Copy the boern.so to module/lib folder or use setup.py install"))
+                    _("Copy the boern.so to pyload/lib folder or use setup.py install"))
                 log.warning(
                     _("Of course you need to be familiar with linux and know how to compile software"))
                 self.server = "builtin"

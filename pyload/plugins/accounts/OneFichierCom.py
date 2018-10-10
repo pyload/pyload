@@ -3,7 +3,7 @@
 import re
 import time
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Account import Account
 

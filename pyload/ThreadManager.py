@@ -18,9 +18,9 @@ from random import choice
 import pycurl
 
 from . import PluginThread
-from module.PyFile import PyFile
-from module.network.RequestFactory import getURL
-from module.utils import freeSpace, lock
+from pyload.PyFile import PyFile
+from pyload.network.RequestFactory import getURL
+from pyload.utils import freeSpace, lock
 
 
 class ThreadManager(object):

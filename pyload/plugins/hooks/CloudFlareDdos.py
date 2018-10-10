@@ -9,7 +9,7 @@ import inspect
 import re
 import urllib.parse
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.Addon import Addon

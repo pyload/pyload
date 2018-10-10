@@ -478,7 +478,7 @@ class _FeedParserMixin:
                   'http://search.yahoo.com/mrss':                         'media',
                   #Version 1.1.2 of the Media RSS spec added the trailing slash on the namespace
                   'http://search.yahoo.com/mrss/':                         'media',
-                  'http://madskills.com/public/xml/rss/module/pingback/': 'pingback',
+                  'http://madskills.com/public/xml/rss/pyload/pingback/': 'pingback',
                   'http://prismstandard.org/namespaces/1.2/basic/':       'prism',
                   'http://www.w3.org/1999/02/22-rdf-syntax-ns#':          'rdf',
                   'http://www.w3.org/2000/01/rdf-schema#':                'rdfs',
@@ -495,7 +495,7 @@ class _FeedParserMixin:
                   'http://purl.org/rss/1.0/modules/taxonomy/':            'taxo',
                   'http://purl.org/rss/1.0/modules/threading/':           'thr',
                   'http://purl.org/rss/1.0/modules/textinput/':           'ti',
-                  'http://madskills.com/public/xml/rss/module/trackback/':'trackback',
+                  'http://madskills.com/public/xml/rss/pyload/trackback/':'trackback',
                   'http://wellformedweb.org/commentAPI/':                 'wfw',
                   'http://purl.org/rss/1.0/modules/wiki/':                'wiki',
                   'http://www.w3.org/1999/xhtml':                         'xhtml',

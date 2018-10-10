@@ -11,7 +11,7 @@ from .webinterface import PYLOAD
 
 from .utils import login_required, render_to_response, toDict
 
-from module.utils import decode, formatSize
+from pyload.utils import decode, formatSize
 
 
 def format_time(seconds):

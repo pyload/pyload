@@ -243,8 +243,8 @@ class MultiAccount(Account):
     def unload_plugin(self, plugin):
         #: Reset module
         hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
-        if "module" in hdict:
-            hdict.pop('module', None)
+        if "pyload" in hdict:
+            hdict.pop('pyload', None)
 
         if "new_module" in hdict:
             hdict.pop('new_module', None)

@@ -16,8 +16,8 @@ import urllib.parse
 import urllib.error
 from xml.dom.minidom import parseString as parse_xml
 
-from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import HTTPRequest
+from pyload.network.CookieJar import CookieJar
+from pyload.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, which

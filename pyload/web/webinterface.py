@@ -4,10 +4,10 @@
 
 
 from builtins import str
-from module.common.json_layer import json
+from pyload.common.json_layer import json
 
 import sys
-import module.common.pylgettext as gettext
+import pyload.common.pylgettext as gettext
 
 import os
 from os.path import join, abspath, dirname, exists
@@ -18,8 +18,8 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
-from module import InitHomeDir
-from module.utils import decode, formatSize
+from pyload import InitHomeDir
+from pyload.utils import decode, formatSize
 
 import bottle
 from bottle import run, app
@@ -30,7 +30,7 @@ from .middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 SETUP = None
 PYLOAD = None
 
-from module.web import ServerThread
+from pyload.web import ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -42,7 +42,7 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from module.common.JsEngine import JsEngine
+from pyload.common.JsEngine import JsEngine
 
 JS = JsEngine()
 

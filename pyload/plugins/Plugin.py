@@ -19,7 +19,7 @@ if os.name != "nt":
 
 from itertools import islice
 
-from module.utils import save_join, save_path, fs_encode, fs_decode
+from pyload.utils import save_join, save_path, fs_encode, fs_decode
 
 
 def chunks(iterable, size):

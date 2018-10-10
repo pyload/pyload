@@ -98,7 +98,7 @@ class UpdateManager(Addon):
         """
         reloads = []
         modules = [m for m in list(sys.modules.values()) if m and (m.__name__.startswith(
-            "module.plugins.") or m.__name__.startswith("userplugins.")) and m.__name__.count(".") >= 2]
+            "pyload.plugins.") or m.__name__.startswith("userplugins.")) and m.__name__.count(".") >= 2]
         for m in modules:
             root, plugin_type, plugin_name = m.__name__.rsplit(".", 2)
             plugin_id = (plugin_type, plugin_name)
@@ -361,7 +361,7 @@ class UpdateManager(Addon):
         self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
 
         for plugin_type, plugin_name in plugin_ids:
-            rootplugins = os.path.join(pypath, "module", "plugins")
+            rootplugins = os.path.join(pypath, "pyload", "plugins")
 
             for basedir in ("userplugins", rootplugins):
                 py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")

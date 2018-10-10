@@ -6,7 +6,7 @@ import os
 import subprocess
 import sys
 
-#from module import InitHomeDir
+#from pyload import InitHomeDir
 
 # very ugly prints, but at least it works with python 3
 
@@ -51,7 +51,7 @@ def main():
     except Exception:
         print("pyqt:", "missing")
 
-    from module.common import JsEngine
+    from pyload.common import JsEngine
     js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
     print("JS engine:", js)
 

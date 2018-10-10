@@ -9,7 +9,7 @@ from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
 from re import search
-from module.utils import fs_encode
+from pyload.utils import fs_encode
 import codecs
 import pycurl
 

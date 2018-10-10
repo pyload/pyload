@@ -2,7 +2,7 @@
 
 import re
 
-from module.PyFile import PyFile
+from pyload.PyFile import PyFile
 
 from ..internal.Addon import Addon
 

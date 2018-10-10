@@ -7,9 +7,9 @@ from PyQt4.QtGui import *
 
 from time import time
 
-from module.remote.thriftbackend.ThriftClient import Destination
-from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
-from module.utils import formatSize, formatSpeed
+from pyload.remote.thriftbackend.ThriftClient import Destination
+from pyload.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
+from pyload.utils import formatSize, formatSpeed
 
 
 class QueueModel(CollectorModel):

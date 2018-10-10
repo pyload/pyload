@@ -8,11 +8,11 @@ from builtins import range
 from builtins import object
 from threading import RLock
 
-from module.utils import formatSize, lock
-from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from module.PyPackage import PyPackage
-from module.PyFile import PyFile
-from module.database import style, DatabaseBackend
+from pyload.utils import formatSize, lock
+from pyload.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
+from pyload.PyPackage import PyPackage
+from pyload.PyFile import PyFile
+from pyload.database import style, DatabaseBackend
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

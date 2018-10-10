@@ -3,8 +3,8 @@
 
 
 from builtins import object
-from module.database import style
-from module.database import DatabaseBackend
+from pyload.database import style
+from pyload.database import DatabaseBackend
 
 
 class StorageMethods(object):

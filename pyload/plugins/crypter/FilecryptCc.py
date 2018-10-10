@@ -13,8 +13,8 @@ import urllib.parse
 
 import Crypto.Cipher.AES
 
-from module.network.CookieJar import CookieJar
-from module.network.HTTPRequest import BadHeader, HTTPRequest
+from pyload.network.CookieJar import CookieJar
+from pyload.network.HTTPRequest import BadHeader, HTTPRequest
 
 from ..captcha.CoinHive import CoinHive
 from ..captcha.ReCaptcha import ReCaptcha

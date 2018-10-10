@@ -17,25 +17,25 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import re
-import module.common.pylgettext as gettext
+import pyload.common.pylgettext as gettext
 import os
 from os.path import abspath
 from os.path import join
 from os.path import basename
 from os.path import commonprefix
 
-from module import InitHomeDir
-from module.gui.ConnectionManager import *
-from module.gui.Connector import Connector
-from module.gui.MainWindow import *
-from module.gui.Queue import *
-from module.gui.Overview import *
-from module.gui.Collector import *
-from module.gui.XMLParser import *
-from module.gui.CoreConfigParser import ConfigParser
+from pyload import InitHomeDir
+from pyload.gui.ConnectionManager import *
+from pyload.gui.Connector import Connector
+from pyload.gui.MainWindow import *
+from pyload.gui.Queue import *
+from pyload.gui.Overview import *
+from pyload.gui.Collector import *
+from pyload.gui.XMLParser import *
+from pyload.gui.CoreConfigParser import ConfigParser
 
-from module.lib.rename_process import renameProcess
-from module.utils import formatSize, formatSpeed
+from pyload.lib.rename_process import renameProcess
+from pyload.utils import formatSize, formatSpeed
 
 try:
     import pynotify
@@ -64,10 +64,10 @@ class main(QObject):
         self.parser = XMLParser(
             join(
                 self.configdir, "gui.xml"), join(
-                self.path, "module", "config", "gui_default.xml"))
+                self.path, "pyload", "config", "gui_default.xml"))
         lang = self.parser.xml.elementsByTagName("language").item(0).toElement().text()
         if not lang:
-            parser = XMLParser(join(self.path, "module", "config", "gui_default.xml"))
+            parser = XMLParser(join(self.path, "pyload", "config", "gui_default.xml"))
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
@@ -459,7 +459,7 @@ class main(QObject):
 
         elif data["type"] == "internal":
             from pyLoadCore import Core
-            from module.ConfigParser import ConfigParser as CoreConfig
+            from pyload.ConfigParser import ConfigParser as CoreConfig
             import _thread
 
             if not self.core:

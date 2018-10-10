@@ -12,7 +12,7 @@ CURRENT_VERSION = '0.5.0'
 import builtins
 
 from getopt import getopt, GetoptError
-import module.common.pylgettext as gettext
+import pyload.common.pylgettext as gettext
 from imp import find_module
 import logging
 import logging.handlers
@@ -26,21 +26,21 @@ from sys import argv, executable, exit
 from time import time, sleep
 from traceback import print_exc
 
-from module import InitHomeDir
-from module.plugins.AccountManager import AccountManager
-from module.CaptchaManager import CaptchaManager
-from module.ConfigParser import ConfigParser
-from module.plugins.PluginManager import PluginManager
-from module.PullEvents import PullManager
-from module.network.RequestFactory import RequestFactory
-from module.web.ServerThread import WebServer
-from module.Scheduler import Scheduler
-from module.common.JsEngine import JsEngine
-from module import remote
-from module.remote.RemoteManager import RemoteManager
-from module.database import DatabaseBackend, FileHandler
+from pyload import InitHomeDir
+from pyload.plugins.AccountManager import AccountManager
+from pyload.CaptchaManager import CaptchaManager
+from pyload.ConfigParser import ConfigParser
+from pyload.plugins.PluginManager import PluginManager
+from pyload.PullEvents import PullManager
+from pyload.network.RequestFactory import RequestFactory
+from pyload.web.ServerThread import WebServer
+from pyload.Scheduler import Scheduler
+from pyload.common.JsEngine import JsEngine
+from pyload import remote
+from pyload.remote.RemoteManager import RemoteManager
+from pyload.database import DatabaseBackend, FileHandler
 
-from module.utils import freeSpace, formatSize, get_console_encoding
+from pyload.utils import freeSpace, formatSize, get_console_encoding
 
 from codecs import getwriter
 
@@ -102,21 +102,21 @@ class Core(object):
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
                     elif option in ("-u", "--user"):
-                        from module.setup import Setup
+                        from pyload.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
-                        from module.setup import Setup
+                        from pyload.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
-                        from module.setup import Setup
+                        from pyload.setup import Setup
 
                         self.config = ConfigParser()
                         s = Setup(pypath, self.config)
@@ -266,7 +266,7 @@ class Core(object):
         self.version = CURRENT_VERSION
 
         if not exists("pyload.conf"):
-            from module.setup import Setup
+            from pyload.setup import Setup
 
             print("This is your first start, running configuration assistent now.")
             self.config = ConfigParser()
@@ -393,9 +393,9 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value
         # not set correctly
-        from module import Api
-        from module.HookManager import HookManager
-        from module.ThreadManager import ThreadManager
+        from pyload import Api
+        from pyload.HookManager import HookManager
+        from pyload.ThreadManager import ThreadManager
 
         if Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
@@ -457,7 +457,7 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         # test api
-#        from module.common.APIExerciser import startApiExerciser
+#        from pyload.common.APIExerciser import startApiExerciser
 #        startApiExerciser(self, 3)
 
         # some memory stats
@@ -687,7 +687,7 @@ def deamon():
 
 def main():
     # change name to 'pyLoadCore'
-    #from module.lib.rename_process import renameProcess
+    #from pyload.lib.rename_process import renameProcess
     # renameProcess('pyLoadCore')
     if "--daemon" in sys.argv:
         deamon()

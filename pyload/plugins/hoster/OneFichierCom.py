@@ -4,7 +4,7 @@ from builtins import map
 from builtins import range
 import re
 
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..internal.misc import format_exc
 from ..internal.SimpleHoster import SimpleHoster

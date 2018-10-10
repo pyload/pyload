@@ -3,8 +3,8 @@
 
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL as get_url
 
 from .Hoster import Hoster
 from .misc import encode, parse_name, parse_size, parse_time, replace_patterns

@@ -2,7 +2,7 @@
 
 from builtins import range
 from builtins import object
-from module.common import APIExerciser
+from pyload.common import APIExerciser
 from nose.tools import nottest
 
 

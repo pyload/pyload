@@ -7,10 +7,10 @@ from builtins import object
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from module.PyFile import statusMap
-from module.utils import formatSize
+from pyload.PyFile import statusMap
+from pyload.utils import formatSize
 
-from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
+from pyload.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExists, ElementType
 
 statusMapReverse = dict((v, k) for k, v in iter(statusMap.items()))
 

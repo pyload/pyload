@@ -10,7 +10,7 @@ import socket
 import struct
 import time
 
-from module.plugins.Plugin import Abort
+from pyload.plugins.Plugin import Abort
 
 
 class XDCCRequest(object):

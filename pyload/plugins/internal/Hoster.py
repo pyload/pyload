@@ -9,7 +9,7 @@ import os
 import re
 
 import mimetypes
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from .Base import Base
 from .misc import encode, exists, fsjoin, parse_name, safejoin

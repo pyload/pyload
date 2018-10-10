@@ -19,11 +19,11 @@ except Exception:
     pass
 
 try:
-    from module.common import JsEngine
+    from pyload.common import JsEngine
 except ImportError:
     import sys
     sys.path.append(join(abspath(dirname(__file__)), "..", ".."))
-    from module.common import JsEngine
+    from pyload.common import JsEngine
 
 js = JsEngine.JsEngine()
 core = None
@@ -186,8 +186,8 @@ class CNLHandler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     import xmlrpc.client
-    from module import InitHomeDir
-    from module.ConfigParser import ConfigParser
+    from pyload import InitHomeDir
+    from pyload.ConfigParser import ConfigParser
 
     config = ConfigParser()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from .Http import Http
 

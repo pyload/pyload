@@ -10,9 +10,9 @@ from bottle import route, request, response, HTTPError
 from .utils import toDict, set_session
 from .webinterface import PYLOAD
 
-from module.common.json_layer import json
-from module.lib.SafeEval import const_eval as literal_eval
-from module.Api import BaseObject
+from pyload.common.json_layer import json
+from pyload.lib.SafeEval import const_eval as literal_eval
+from pyload.Api import BaseObject
 
 # json encoder that accepts TBase objects
 

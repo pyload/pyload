@@ -3,8 +3,8 @@
 from builtins import range
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL as get_url
 
 from .Crypter import Crypter
 from .misc import parse_name, parse_time, replace_patterns

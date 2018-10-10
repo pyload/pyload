@@ -13,7 +13,7 @@ import builtins
 builtins.owd = path.abspath("")  # original working directory
 builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
 
-sys.path.append(join(pypath, "module", "lib"))
+sys.path.append(join(pypath, "pyload", "lib"))
 
 homedir = ""
 
@@ -48,8 +48,8 @@ if "--configdir=" in args:
         configdir = args[pos + 12:].strip()
     else:
         configdir = args[pos + 12:end].strip()
-elif path.exists(path.join(pypath, "module", "config", "configdir")):
-    f = open(path.join(pypath, "module", "config", "configdir"), "rb")
+elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
+    f = open(path.join(pypath, "pyload", "config", "configdir"), "rb")
     c = f.read().strip()
     f.close()
     configdir = path.join(pypath, c)

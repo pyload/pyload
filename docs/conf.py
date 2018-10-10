@@ -16,7 +16,7 @@ from os.path import dirname, join, abspath
 
 dir_name = join(dirname(abspath("")))
 sys.path.append(dir_name)
-sys.path.append(join(dir_name, "module", "lib"))
+sys.path.append(join(dir_name, "pyload", "lib"))
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -135,7 +135,7 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "module", "web", "media", "default",
+html_logo = join(dir_name, "pyload", "web", "media", "default",
                  "img", "pyload-logo-edited3.5-new-font-small.png")
 
 # The name of an image file (within the static path) to use as favicon of the

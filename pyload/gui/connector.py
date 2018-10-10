@@ -12,7 +12,7 @@ from PyQt4.QtGui import *
 
 import socket
 
-from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
+from pyload.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
 
 

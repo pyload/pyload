@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..internal.SimpleCrypter import SimpleCrypter
 from ..internal.misc import json

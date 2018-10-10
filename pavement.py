@@ -103,7 +103,7 @@ xargs = ["--from-code=utf-8",
 @needs('cog')
 def html():
     """Build html documentation"""
-    module = path("docs") / "module"
+    module = path("docs") / "pyload"
     module.rmtree()
     call_task('paver.doctools.html')
 
@@ -169,7 +169,7 @@ def thrift(options):
 
     print("add import for TApplicationException manually as long it is not fixed")
 
-    outdir = path("module") / "remote" / "thriftbackend"
+    outdir = path("pyload") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
 
     cmd = [
@@ -195,7 +195,7 @@ def thrift(options):
     (outdir / "gen-py").move(outdir / "thriftgen")
 
     # create light ttypes
-    from module.remote.socketbackend.create_ttypes import main
+    from pyload.remote.socketbackend.create_ttypes import main
     main()
 
 
@@ -203,7 +203,7 @@ def thrift(options):
 def compile_js():
     """ Compile .coffee files to javascript"""
 
-    root = path("module") / "web" / "media" / "js"
+    root = path("pyload") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
         print("generate", f)
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
@@ -222,25 +222,25 @@ def generate_locale():
 
     EXCLUDE = [
         "BeautifulSoup.py",
-        "module/gui",
-        "module/cli",
+        "pyload/gui",
+        "pyload/cli",
         "web/locale",
         "web/ajax",
         "web/cnl",
         "web/pyload",
         "setup.py"]
-    makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
+    makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
-    makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
-    makepot("setup", "", [], includes="./module/setup.py\n")
+    makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
+    makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")
+    makepot("setup", "", [], includes="./pyload/setup.py\n")
 
     EXCLUDE = ["ServerThread.py", "web/media/default"]
 
     # strings from js files
     strings = set()
 
-    for fi in path("module/web").walkfiles():
+    for fi in path("pyload/web").walkfiles():
         if not fi.name.endswith(".js") and not fi.endswith(".coffee"):
             continue
         with open(fi, "rb") as c:
@@ -249,13 +249,13 @@ def generate_locale():
             strings.update(re.findall(r"_\s*\(\s*\"([^\"]+)", content))
             strings.update(re.findall(r"_\s*\(\s*\'([^\']+)", content))
 
-    trans = path("module") / "web" / "translations.js"
+    trans = path("pyload") / "web" / "translations.js"
 
     with open(trans, "wb") as js:
         for s in strings:
             js.write('_("{}")\n'.format(s))
 
-    makepot("django", path("module/web"), EXCLUDE,
+    makepot("django", path("pyload/web"), EXCLUDE,
             "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
 
     trans.remove()

@@ -13,12 +13,12 @@ from sys import version_info
 from itertools import chain
 from traceback import print_exc
 
-from module.lib.SafeEval import const_eval as literal_eval
-from module.ConfigParser import IGNORE
+from pyload.lib.SafeEval import const_eval as literal_eval
+from pyload.ConfigParser import IGNORE
 
 
 class PluginManager(object):
-    ROOT = "module.plugins."
+    ROOT = "pyload.plugins."
     USERROOT = "userplugins."
     TYPES = (
         "crypter",
@@ -110,7 +110,7 @@ class PluginManager(object):
     def parse(self, folder, pattern=False, home={}):
         """
         returns dict with information
-        home contains parsed plugins from module.
+        home contains parsed plugins from pyload.
 
         {
         name : {path, version, config, (pattern, re), (plugin, class)}
@@ -127,7 +127,7 @@ class PluginManager(object):
                 f.close()
 
         else:
-            pfolder = join(pypath, "module", "plugins", folder)
+            pfolder = join(pypath, "pyload", "plugins", folder)
 
         configs = {}
         for f in listdir(pfolder):
@@ -296,8 +296,8 @@ class PluginManager(object):
         """
         plugins = self.plugins[type]
         if name in plugins:
-            if "module" in plugins[name]:
-                return plugins[name]["module"]
+            if "pyload" in plugins[name]:
+                return plugins[name]["pyload"]
             try:
                 module = __import__(
                     self.ROOT +
@@ -307,7 +307,7 @@ class PluginManager(object):
                     globals(),
                     locals(),
                     plugins[name]["name"])
-                plugins[name]["module"] = module  # cache import, maybe unneeded
+                plugins[name]["pyload"] = module  # cache import, maybe unneeded
                 return module
             except Exception as e:
                 self.log.error(_("Error importing {name}: {msg}").format(
@@ -406,9 +406,9 @@ class PluginManager(object):
         for type in as_dict.keys():
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
-                    if "module" in self.plugins[type][plugin]:
+                    if "pyload" in self.plugins[type][plugin]:
                         self.log.debug("Reloading {}".format(plugin))
-                        reload(self.plugins[type][plugin]["module"])
+                        reload(self.plugins[type][plugin]["pyload"])
 
         # index creation
         self.crypterPlugins, config = self.parse("crypter", pattern=True)

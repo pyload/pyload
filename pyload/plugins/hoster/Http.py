@@ -6,7 +6,7 @@ import re
 import urllib.parse
 
 from ..internal.Hoster import Hoster
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 
 class Http(Hoster):

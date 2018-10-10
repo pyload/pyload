@@ -13,12 +13,12 @@ First of all, you need to know what you can do with our API. It lets you do all 
 retrieving download status, manage queue, manage accounts, modify config and so on.
 
 This document is not intended to explain every function in detail, for a complete listing
-see :class:`Api <module.Api.Api>`.
+see :class:`Api <pyload.Api.Api>`.
 
 Of course its possible to access the ``core.api`` attribute in plugins and hooks, but much more
 interesting is the possibillity to call function from different programs written in many different languages.
 
-pyLoad uses thrift as backend and provides its :class:`Api <module.Api.Api>` as service.
+pyLoad uses thrift as backend and provides its :class:`Api <pyload.Api.Api>` as service.
 More information about thrift can be found here http://wiki.apache.org/thrift/.
 
 
@@ -26,7 +26,7 @@ Using Thrift
 ------------
 
 Every thrift service has to define all data structures and declare every method which should be usable via rpc.
-This file is located :file:`module/remote/thriftbackend/pyload.thrift`, its very helpful to inform about
+This file is located :file:`pyload/remote/thriftbackend/pyload.thrift`, its very helpful to inform about
 arguments and detailed structure of return types. However it does not contain any information about what the functions does.
 
 Assuming you want to use the API in any other language than python than check if it is
@@ -48,7 +48,7 @@ In case you want to use python, pyload has already all files included to access 
 
 A basic script that prints out some information: ::
 
-    from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin
+    from pyload.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin
 
     try:
         client = ThriftClient(host="127.0.0.1", port=7227, user="User", password="yourpw")
@@ -92,14 +92,14 @@ so pyLoad can authenticate you.
 Calling Methods
 ===============
 
-In general you can use any method listed at the :class:`Api <module.Api.Api>` documentation, which is also available to
+In general you can use any method listed at the :class:`Api <pyload.Api.Api>` documentation, which is also available to
 the thriftbackend.
 
 Access works simply via ``http://pyload-core/api/methodName``, where ``pyload-core`` is the ip address
 or hostname including the webinterface port. By default on local access this would be `localhost:8000`.
 
 The return value will be formatted in JSON, complex data types as dictionaries.
-As mentionted above for a documentation about the return types look at the thrift specification file  :file:`module/remote/thriftbackend/pyload.thrift`.
+As mentionted above for a documentation about the return types look at the thrift specification file  :file:`pyload/remote/thriftbackend/pyload.thrift`.
 
 ==================
 Passing parameters
@@ -107,7 +107,7 @@ Passing parameters
 
 To pass arguments you have two choices.
 Either use positional arguments, eg ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword arguments
-supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <module.Api.Api>`
+supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <pyload.Api.Api>`
 documentation.
 
 It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/getFileData/1`` is valid because

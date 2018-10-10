@@ -2,7 +2,7 @@
 
 import time
 
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount

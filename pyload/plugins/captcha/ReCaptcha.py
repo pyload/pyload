@@ -428,7 +428,7 @@ class ReCaptcha(CaptchaService):
 
 
 if __name__ == "__main__":
-    # Sign with the command `python -m module.plugins.captcha.ReCaptcha
+    # Sign with the command `python -m pyload.plugins.captcha.ReCaptcha
     # pyload.private.pem pem_passphrase`
     import sys
     from ..internal.misc import sign_string

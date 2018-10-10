@@ -3,7 +3,7 @@
 import re
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..captcha.AdsCaptcha import AdsCaptcha
 from ..captcha.ReCaptcha import ReCaptcha

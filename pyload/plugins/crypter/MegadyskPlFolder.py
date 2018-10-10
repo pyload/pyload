@@ -8,7 +8,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..internal.misc import json
 from ..internal.SimpleCrypter import SimpleCrypter

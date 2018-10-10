@@ -3,8 +3,8 @@
 from builtins import range
 import re
 
-from module.network.HTTPRequest import BadHeader
-from module.network.RequestFactory import getURL as get_url
+from pyload.network.HTTPRequest import BadHeader
+from pyload.network.RequestFactory import getURL as get_url
 
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json

@@ -9,7 +9,7 @@ from builtins import range
 from builtins import object
 from getopt import GetoptError, getopt
 
-import module.common.pylgettext as gettext
+import pyload.common.pylgettext as gettext
 import os
 from os import _exit
 from os.path import basename, exists, join
@@ -30,15 +30,15 @@ else:
 
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
-from module import InitHomeDir
-from module.cli.printer import *
-from module.cli import AddPackage, ManageFiles
+from pyload import InitHomeDir
+from pyload.cli.printer import *
+from pyload.cli import AddPackage, ManageFiles
 
-from module.Api import Destination
-from module.utils import formatSize, decode
-from module.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
-from module.lib.Getch import Getch
-from module.lib.rename_process import renameProcess
+from pyload.Api import Destination
+from pyload.utils import formatSize, decode
+from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
+from pyload.lib.Getch import Getch
+from pyload.lib.rename_process import renameProcess
 
 
 class Cli(object):

@@ -8,16 +8,16 @@ from PyQt4.QtGui import *
 
 from os.path import join
 
-from module.gui.PackageDock import *
-from module.gui.LinkDock import *
-from module.gui.CaptchaDock import CaptchaDock
-from module.gui.SettingsWidget import SettingsWidget
+from pyload.gui.PackageDock import *
+from pyload.gui.LinkDock import *
+from pyload.gui.CaptchaDock import CaptchaDock
+from pyload.gui.SettingsWidget import SettingsWidget
 
-from module.gui.Collector import CollectorView, Package, Link
-from module.gui.Queue import QueueView
-from module.gui.Overview import OverviewView
-from module.gui.Accounts import AccountView
-from module.gui.AccountEdit import AccountEdit
+from pyload.gui.Collector import CollectorView, Package, Link
+from pyload.gui.Queue import QueueView
+from pyload.gui.Overview import OverviewView
+from pyload.gui.Accounts import AccountView
+from pyload.gui.AccountEdit import AccountEdit
 
 
 class MainWindow(QMainWindow):

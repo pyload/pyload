@@ -63,7 +63,7 @@ class ConfigParser(object):
         """determines if config need to be copied"""
         try:
             if not exists("pyload.conf"):
-                copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
+                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 chmod("pyload.conf", 0o600)
 
             if not exists("plugin.conf"):
@@ -78,7 +78,7 @@ class ConfigParser(object):
             v = v[v.find(":") + 1:].strip()
 
             if not v or int(v) < CONF_VERSION:
-                copy(join(pypath, "module", "config", "default.conf"), "pyload.conf")
+                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print("Old version of config was replaced")
 
             f = open("plugin.conf", "rb")
@@ -101,7 +101,7 @@ class ConfigParser(object):
     def readConfig(self):
         """reads the config file"""
 
-        self.config = self.parseConfig(join(pypath, "module", "config", "default.conf"))
+        self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
 
         try:

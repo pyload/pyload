@@ -6,7 +6,7 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 
 from .webinterface import env, TEMPLATE, PREFIX
 
-from module.Api import has_permission, PERMS, ROLE
+from pyload.Api import has_permission, PERMS, ROLE
 
 
 def render_to_response(name, args={}, proc=[]):

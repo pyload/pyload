@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pycurl
-from module.network.HTTPRequest import BadHeader
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.misc import encode, json
 from ..internal.MultiHoster import MultiHoster
