@@ -1,7 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import object
 from urllib.parse import urlencode

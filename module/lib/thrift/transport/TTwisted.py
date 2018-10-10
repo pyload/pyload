@@ -16,8 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from zope.interface import implements, Interface, Attribute
 from twisted.internet.protocol import Protocol, ServerFactory, ClientFactory, \
     connectionDone

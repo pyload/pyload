@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: mkaay
 
@@ -66,11 +67,11 @@ class UserMethods(object):
         return False
 
 
-    @style.async
+    @style.async_
     def setPermission(db, user, perms):
         db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
 
-    @style.async
+    @style.async_
     def setRole(db, user, role):
         db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import range
 from builtins import object

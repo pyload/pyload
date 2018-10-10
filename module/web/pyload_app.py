@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
 
 
-from future import standard_library
-standard_library.install_aliases()
-from past.utils import old_div
+import builtins
+
+
 from datetime import datetime
 from operator import itemgetter, attrgetter
 
@@ -131,7 +132,7 @@ def choose_path(browse_for, path=""):
             data['size'] = os.path.getsize(join(cwd, f))
 
             power = 0
-            while (old_div(data['size'], 1024.0)) > 0.3:
+            while (data['size'] / 1024.0) > 0.3:
                 power += 1
                 data['size'] /= 1024.0
             units = ('', 'K', 'M', 'G', 'T')

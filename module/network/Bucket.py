@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
 
 
 from builtins import object
-from past.utils import old_div
+
 from time import time
 from threading import Lock
 
@@ -33,7 +34,7 @@ class Bucket(object):
         self.tokens -= amount
 
         if self.tokens < 0:
-            time = old_div(-self.tokens,float(self.rate))
+            time = -self.tokens / self.rate
         else:
             time = 0
 

@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 import re
 from http.server import HTTPServer, BaseHTTPRequestHandler

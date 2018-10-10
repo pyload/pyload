@@ -76,8 +76,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE, DAMMIT.
 
 """
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import chr
 from builtins import next
 from builtins import map

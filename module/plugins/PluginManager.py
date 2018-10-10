@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: mkaay, RaNaN
 
@@ -171,7 +172,7 @@ class PluginManager(object):
                     if pattern:
                         pattern = pattern[0][1]
                     else:
-                        pattern = "^unmachtable$"
+                        pattern = r"^unmachtable$"
 
                     plugins[name]["pattern"] = pattern
 

@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Test links:
 # http://d-h.st/users/shine/?fld_id=37263#files
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 import re
 import urllib.parse
 

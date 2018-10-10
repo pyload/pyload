@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: mkaay
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 from time import time
 from heapq import heappop, heappush

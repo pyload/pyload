@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
@@ -8,7 +9,7 @@
 from builtins import str
 from builtins import range
 from builtins import object
-from past.utils import old_div
+
 from os import remove, fsync
 from os.path import dirname
 from time import sleep, time
@@ -68,7 +69,7 @@ class HTTPDownload(object):
     @property
     def speed(self):
         last = [sum(x) for x in self.lastSpeeds if x]
-        return old_div((sum(self.speeds) + sum(last)), (1 + len(last)))
+        return (sum(self.speeds) + sum(last)) // (1 + len(last))
 
     @property
     def arrived(self):
@@ -270,7 +271,7 @@ class HTTPDownload(object):
 
                 self.lastSpeeds[1] = self.lastSpeeds[0]
                 self.lastSpeeds[0] = self.speeds
-                self.speeds = [old_div(float(a), (t - lastTimeCheck)) for a in diff]
+                self.speeds = [float(a) / (t - lastTimeCheck) for a in diff]
                 self.lastArrived = [c.arrived for c in self.chunks]
                 lastTimeCheck = t
                 self.updateProgress()

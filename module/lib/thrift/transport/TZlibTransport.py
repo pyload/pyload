@@ -24,8 +24,8 @@ data compression.
 
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 import zlib
 from io import StringIO

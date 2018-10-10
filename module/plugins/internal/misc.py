@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #@TODO: Move to misc directory in 0.4.10
@@ -5,8 +6,8 @@
 
 
 # import HTMLParser  #@TODO: Use in 0.4.10
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import map
 from builtins import object

@@ -17,8 +17,8 @@
 # under the License.
 #
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 from io import StringIO
 from struct import pack, unpack

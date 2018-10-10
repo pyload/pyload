@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Test links:
 #   http://filecrypt.cc/Container/64E039F859.html
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import filter
 from builtins import range

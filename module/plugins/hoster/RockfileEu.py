@@ -1,7 +1,8 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import chr
 import re
 import urllib.request, urllib.parse, urllib.error
@@ -36,7 +37,7 @@ class RockfileEu(SimpleHoster):
     DL_LIMIT_PATTERN = r'You have to wait (?:<b>)?(.+?)(?:</b>)? until you can start another download'
 
     OFFLINE_PATTERN = r'File Not Found'
-    TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error|You have reached the download limit"
+    TEMP_OFFLINE_PATTERN = r"Connection limit reached|Server error|You have reached the download limit"
 
     LINK_FREE_PATTERN = r'href="(http://.+?\.rfservers\.eu.+?)"'
 

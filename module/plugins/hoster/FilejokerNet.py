@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -26,7 +27,7 @@ class FilejokerNet(XFSHoster):
     WAIT_PATTERN = r'Please [Ww]ait (?:<span id="count" class="alert-success">)?([\w ]+?)(?:</span> seconds</p>| until the next download)'
     ERROR_PATTERN = r'Wrong Captcha'
 
-    PREMIUM_ONLY_PATTERN = 'Free Members can download files no bigger'
+    PREMIUM_ONLY_PATTERN = r'Free Members can download files no bigger'
 
     INFO_PATTERN = r'<div class="name-size">(?P<N>.+?) <small>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</small></div>'
     SIZE_REPLACEMENTS = [('Kb', 'KB'), ('Mb', 'MB'), ('Gb', 'GB')]

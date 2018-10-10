@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -25,7 +26,7 @@ class UploadrocketNet(XFSHoster):
 
     PLUGIN_DOMAIN = "uploadrocket.net"
     OFFLINE_PATTERN = r'>The file was removed'
-    TEMP_OFFLINE_PATTERN = ''
+    TEMP_OFFLINE_PATTERN = r''
     LINK_PATTERN = r'(https?://(?:www\.)?(?:[^/]*?uploadrocket\.net|\d+\.\d+\.\d+\.\d+)(?:\:\d+)?(?:/d/|(?:/files)?/\d+/\w+/).+?)["\'<]'
 
     def setup(self):

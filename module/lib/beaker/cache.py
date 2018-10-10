@@ -8,8 +8,8 @@ Advanced users can add new backends in beaker.backends
 
 """
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import map
 from builtins import str
 from builtins import object

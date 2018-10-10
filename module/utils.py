@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """ Store all usefull functions here """
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import map
 from builtins import chr
 import os

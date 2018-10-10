@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Bottle is a fast and simple micro-framework for small web applications. It
@@ -269,7 +270,7 @@ class Router(object):
         and details on the matching order are described in docs:`routing`.
     '''
 
-    default_pattern = '[^/]+'
+    default_pattern = r'[^/]+'
     default_filter   = 're'
     #: Sorry for the mess. It works. Trust me.
     rule_syntax = re.compile('(\\\\*)'\
@@ -335,7 +336,7 @@ class Router(object):
 
         # Build pattern and other structures for dynamic routes
         anons = 0      # Number of anonymous wildcards
-        pattern = ''   # Regular expression  pattern
+        pattern = r''   # Regular expression  pattern
         filters = []   # Lists of wildcard input filters
         builder = []   # Data structure for the URL builder
         is_static = True

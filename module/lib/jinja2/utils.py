@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     jinja2.utils
@@ -8,8 +9,8 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import range
 from builtins import object

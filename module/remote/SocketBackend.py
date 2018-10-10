@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 import socketserver
 
 from .RemoteManager import BackendBase

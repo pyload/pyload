@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     jinja2.bccache
@@ -14,8 +15,8 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 from os import path, listdir
 import marshal

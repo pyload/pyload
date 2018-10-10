@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -57,9 +58,9 @@ class VeehdCom(Hoster):
 
         #: Replace unwanted characters in filename
         if self.config.get('filename_spaces'):
-            pattern = '[^\w ]+'
+            pattern = r'[^\w ]+'
         else:
-            pattern = '[^\w.]+'
+            pattern = r'[^\w.]+'
 
         return re.sub(pattern, self.config.get(
             'replacement_char'), name) + '.avi'

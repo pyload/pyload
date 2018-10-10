@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: mkaay
 
 
 
-from past.utils import old_div
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -202,7 +203,7 @@ class QueueModel(CollectorModel):
                     pass
             if count == 0:
                 return 0
-            return old_div(perc_sum,count)
+            return perc_sum // count
         return 0
 
     def getSpeed(self, item):

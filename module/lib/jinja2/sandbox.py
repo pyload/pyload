@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
     jinja2.sandbox
@@ -12,8 +13,8 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD.
 """
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import range
 from jinja2.runtime import Undefined

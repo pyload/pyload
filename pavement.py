@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
 
-from future import standard_library
-standard_library.install_aliases()
-from past.utils import old_div
+import builtins
+
+
 from paver.easy import *
 from paver.setuputils import setup
 from paver.doctools import cog
@@ -29,7 +30,7 @@ setup(
     name="pyload",
     version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
-    long_description=open(old_div(PROJECT_DIR, "README")).read(),
+    long_description=open(PROJECT_DIR / "README").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.net",
     download_url='http://pyload.net/download',
@@ -102,7 +103,7 @@ xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=
 @needs('cog')
 def html():
     """Build html documentation"""
-    module = old_div(path("docs"), "module")
+    module = path("docs") / "module"
     module.rmtree()
     call_task('paver.doctools.html')
 
@@ -139,11 +140,11 @@ def get_source(options):
         if file.name.endswith(".py"):
             file.chmod(0o755)
 
-    (old_div(pyload, ".hgtags")).remove()
-    (old_div(pyload, ".gitignore")).remove()
+    (pyload / ".hgtags").remove()
+    (pyload / ".gitignore").remove()
     #(pyload / "docs").rmtree()
 
-    f = open(old_div(pyload, "__init__.py"), "wb")
+    f = open(pyload / "__init__.py", "wb")
     f.close()
 
     #options.setup.packages = find_packages()
@@ -167,9 +168,9 @@ def thrift(options):
     print("add import for TApplicationException manually as long it is not fixed")
 
     outdir = path("module") / "remote" / "thriftbackend"
-    (old_div(outdir, "gen-py")).rmtree()
+    (outdir / "gen-py").rmtree()
 
-    cmd = [options.thrift.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", old_div(outdir, "pyload.thrift")]
+    cmd = [options.thrift.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
 
     if options.gen:
         cmd.insert(len(cmd) - 1, "--gen")
@@ -180,8 +181,8 @@ def thrift(options):
     p = Popen(cmd)
     p.communicate()
 
-    (old_div(outdir, "thriftgen")).rmtree()
-    (old_div(outdir, "gen-py")).move(old_div(outdir, "thriftgen"))
+    (outdir / "thriftgen").rmtree()
+    (outdir / "gen-py").move(outdir / "thriftgen")
 
     #create light ttypes
     from module.remote.socketbackend.create_ttypes import main
@@ -198,7 +199,7 @@ def compile_js():
         yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
         content = yui.communicate()[0]
-        with open(old_div(root, f.name.replace(".coffee", ".js")), "wb") as js:
+        with open(root / f.name.replace(".coffee", ".js"), "wb") as js:
             js.write("{% autoescape true %}\n")
             js.write(content)
             js.write("\n{% endautoescape %}")
@@ -212,8 +213,8 @@ def generate_locale():
                "setup.py"]
     makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", old_div(path("module"), "gui"), [], includes="./pyLoadGui.py\n")
-    makepot("cli", old_div(path("module"), "cli"), [], includes="./pyLoadCli.py\n")
+    makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
+    makepot("cli", path("module") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./module/setup.py\n")
 
     EXCLUDE = ["ServerThread.py", "web/media/default"]

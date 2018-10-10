@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc

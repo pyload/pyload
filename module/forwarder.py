@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 from sys import argv
 from sys import exit

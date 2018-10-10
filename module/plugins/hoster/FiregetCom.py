@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from builtins import chr
@@ -33,7 +34,7 @@ class FiregetCom(SimpleHoster):
     DL_LIMIT_PATTERN = r'>You have to wait (.+?) till next download<'
 
     OFFLINE_PATTERN = r'File Not Found'
-    TEMP_OFFLINE_PATTERN = "Connection limit reached|Server error|You have reached the download limit"
+    TEMP_OFFLINE_PATTERN = r"Connection limit reached|Server error|You have reached the download limit"
 
     COOKIES = [("fireget.com", "lang", "english")]
 

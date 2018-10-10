@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 ####
@@ -41,8 +42,8 @@ Further Example:
   then uploads it to the W3C validator.
 """
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import object
 from urllib.parse import urlencode
 from urllib.request import BaseHandler, HTTPHandler, build_opener

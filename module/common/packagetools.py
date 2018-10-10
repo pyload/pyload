@@ -2,8 +2,8 @@
 
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 import re
 from urllib.parse import urlparse
 

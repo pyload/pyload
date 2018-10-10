@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from ..internal.SimpleHoster import SimpleHoster
@@ -22,7 +23,7 @@ class IronfilesNet(SimpleHoster):
 
     LOGIN_PREMIUM = True
 
-    OFFLINE_PATTERN = "^unmatchable$"
+    OFFLINE_PATTERN = r"^unmatchable$"
 
     API_URL = "https://ironfiles.net/api/"
 

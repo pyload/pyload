@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN, mkaay
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import str
 from builtins import range
 from builtins import object
@@ -49,11 +50,11 @@ class style(object):
         return x
 
     @classmethod
-    def async(cls, f):
+    def async_(cls, f):
         @staticmethod
         def x(*args, **kwargs):
             if cls.db:
-                return cls.db.async(f, *args, **kwargs)
+                return cls.db.async_(f, *args, **kwargs)
         return x
 
 class DatabaseJob(object):
@@ -259,7 +260,7 @@ class DatabaseBackend(Thread):
     def createCursor(self):
         return self.conn.cursor()
 
-    @style.async
+    @style.async_
     def commit(self):
         self.conn.commit()
 
@@ -267,11 +268,11 @@ class DatabaseBackend(Thread):
     def syncSave(self):
         self.conn.commit()
 
-    @style.async
+    @style.async_
     def rollback(self):
         self.conn.rollback()
 
-    def async(self, f, *args, **kwargs):
+    def async_(self, f, *args, **kwargs):
         args = (self, ) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)

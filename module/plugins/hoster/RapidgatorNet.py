@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import re
@@ -43,7 +44,7 @@ class RapidgatorNet(SimpleHoster):
 
     PREMIUM_ONLY_PATTERN = r'You can download files up to|This file can be downloaded by premium only<'
     DOWNLOAD_LIMIT_ERROR_PATTERN = r'You have reached your (daily|hourly) downloads limit'
-    IP_BLOCKED_ERROR_PATTERN = 'You can`t download more than 1 file at a time in free mode\.' \
+    IP_BLOCKED_ERROR_PATTERN = r'You can`t download more than 1 file at a time in free mode\.' \
                                ''
     WAIT_PATTERN = r'(?:Delay between downloads must be not less than|Try again in).+'
 

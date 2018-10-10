@@ -1,10 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #@author: RaNaN, spoob, mkaay
 
 
 
 from builtins import str
-from past.utils import old_div
+
 from builtins import object
 from time import time, sleep
 from random import randint
@@ -347,7 +348,7 @@ class Plugin(Base):
             Ocr = None
 
         if Ocr and not forceUser:
-            sleep(old_div(randint(3000, 5000), 1000.0))
+            sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort: raise Abort
 
             ocr = Ocr()

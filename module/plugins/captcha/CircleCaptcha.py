@@ -1,11 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #@TODO: Recheck all
 
 
 
-from future import standard_library
-standard_library.install_aliases()
+import builtins
+
 from builtins import input
 from builtins import str
 from builtins import range
