@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.utils import parse_size
+from pyload.plugins.utils import parse_size
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

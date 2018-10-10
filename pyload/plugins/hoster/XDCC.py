@@ -11,7 +11,7 @@ import time
 from builtins import object, range, str
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.utils import encode, exists, fsjoin, lock, threaded
+from pyload.plugins.utils import encode, exists, fsjoin, lock, threaded
 from pyload.plugins.Plugin import Abort
 
 

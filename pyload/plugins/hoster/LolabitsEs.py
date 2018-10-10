@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.utils import html_unescape
+from pyload.plugins.utils import html_unescape
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

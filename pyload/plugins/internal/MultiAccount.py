@@ -5,7 +5,7 @@ import time
 from builtins import range
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.utils import decode, remove_chars, uniqify
+from pyload.plugins.utils import decode, remove_chars, uniqify
 
 
 class MultiAccount(Account):

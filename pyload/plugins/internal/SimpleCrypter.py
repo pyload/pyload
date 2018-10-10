@@ -7,7 +7,7 @@ from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL as get_url
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import parse_name, parse_time, replace_patterns
+from pyload.plugins.utils import parse_name, parse_time, replace_patterns
 
 
 class SimpleCrypter(Crypter):

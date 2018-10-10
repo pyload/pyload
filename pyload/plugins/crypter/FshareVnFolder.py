@@ -5,7 +5,7 @@ import re
 import pycurl
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import json, replace_patterns
+from pyload.plugins.utils import json, replace_patterns
 
 
 class FshareVnFolder(Crypter):

@@ -9,7 +9,7 @@ import Crypto.Cipher.AES
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.Captcha import Captcha
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import fsjoin, replace_patterns
+from pyload.plugins.utils import fsjoin, replace_patterns
 
 
 class RelinkUs(Crypter):

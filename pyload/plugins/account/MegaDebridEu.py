@@ -5,7 +5,7 @@ from functools import reduce
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
-from pyload.plugins.internal.utils import encode, json, reduce
+from pyload.plugins.utils import encode, json, reduce
 from pyload.plugins.internal.MultiAccount import MultiAccount
 
 

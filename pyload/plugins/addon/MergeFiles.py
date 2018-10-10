@@ -4,7 +4,7 @@ import os
 import re
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import fsjoin, threaded
+from pyload.plugins.utils import fsjoin, threaded
 
 
 class MergeFiles(Addon):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.utils import set_cookie
+from pyload.plugins.utils import set_cookie
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

@@ -4,7 +4,7 @@ import re
 from builtins import str
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.utils import html_unescape
+from pyload.plugins.utils import html_unescape
 
 
 class MyvideoDe(Hoster):

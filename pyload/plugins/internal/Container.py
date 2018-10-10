@@ -4,7 +4,7 @@ import os
 import urllib.parse
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import encode, exists
+from pyload.plugins.utils import encode, exists
 
 
 class Container(Crypter):

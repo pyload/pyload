@@ -4,7 +4,7 @@ import os
 import subprocess
 from builtins import map, range, str
 
-from pyload.plugins.internal.utils import encode, fsjoin
+from pyload.plugins.utils import encode, fsjoin
 from pyload.plugins.internal.Plugin import Plugin
 
 try:

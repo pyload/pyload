@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.utils import json
+from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

@@ -6,7 +6,7 @@ from builtins import str
 import pycurl
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.utils import json
+from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

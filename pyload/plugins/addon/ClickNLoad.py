@@ -5,7 +5,7 @@ import threading
 import time
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import forward, lock, threaded
+from pyload.plugins.utils import forward, lock, threaded
 
 try:
     import ssl

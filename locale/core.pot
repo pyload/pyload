@@ -668,17 +668,17 @@ msgstr ""
 msgid "Activate direct Download in your Bitshare Account"
 msgstr ""
 
-#: pyload/plugins/PluginManager.py:153
+#: pyload/manager/PluginManager.py:153
 #, python-format
 msgid "%s has a invalid pattern."
 msgstr ""
 
-#: pyload/plugins/PluginManager.py:272
+#: pyload/manager/PluginManager.py:272
 #, python-format
 msgid "Error importing %(name)s: %(msg)s"
 msgstr ""
 
-#: pyload/plugins/AccountManager.py:88
+#: pyload/manager/AccountManager.py:88
 msgid "Account settings deleted, due to new config format."
 msgstr ""
 

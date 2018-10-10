@@ -6,7 +6,7 @@ from builtins import str
 
 import pycurl
 
-from pyload.plugins.internal.utils import json, parse_name, timestamp
+from pyload.plugins.utils import json, parse_name, timestamp
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

@@ -5,7 +5,7 @@ from builtins import object
 from threading import RLock
 from time import sleep, time
 
-from pyload.PullEvents import UpdateEvent
+from pyload.manager.PullEvents import UpdateEvent
 from pyload.utils.utils import formatSize, lock
 
 statusMap = {

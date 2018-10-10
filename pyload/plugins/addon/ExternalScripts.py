@@ -5,7 +5,7 @@ import subprocess
 from builtins import map
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import Expose, encode
+from pyload.plugins.utils import Expose, encode
 
 
 class ExternalScripts(Addon):

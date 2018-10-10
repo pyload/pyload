@@ -26,9 +26,9 @@ from pyload.utils.utils.JsEngine import JsEngine
 from pyload.config.ConfigParser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
 from pyload.network.RequestFactory import RequestFactory
-from pyload.plugins.AccountManager import AccountManager
-from pyload.plugins.PluginManager import PluginManager
-from pyload.PullEvents import PullManager
+from pyload.manager.AccountManager import AccountManager
+from pyload.manager.PluginManager import PluginManager
+from pyload.manager.PullEvents import PullManager
 from pyload.remote.RemoteManager import RemoteManager
 from pyload.Scheduler import Scheduler
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding

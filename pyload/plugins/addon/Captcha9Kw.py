@@ -9,7 +9,7 @@ from builtins import map, range
 from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import threaded
+from pyload.plugins.utils import threaded
 
 
 class Captcha9Kw(Addon):

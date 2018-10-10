@@ -5,7 +5,7 @@ import shutil
 import time
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import encode, fsjoin
+from pyload.plugins.utils import encode, fsjoin
 
 
 class HotFolder(Addon):

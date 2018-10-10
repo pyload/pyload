@@ -13,7 +13,7 @@ import Crypto.Cipher.ARC4
 import pycurl
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.utils import timestamp
+from pyload.plugins.utils import timestamp
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

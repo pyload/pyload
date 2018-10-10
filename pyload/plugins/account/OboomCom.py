@@ -20,7 +20,7 @@ except ImportError:
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.utils import json
+from pyload.plugins.utils import json
 
 
 class OboomCom(Account):

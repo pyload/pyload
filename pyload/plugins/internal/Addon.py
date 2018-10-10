@@ -2,7 +2,7 @@
 
 import threading
 
-from pyload.plugins.internal.utils import Periodical, isiterable
+from pyload.plugins.utils import Periodical, isiterable
 from pyload.plugins.internal.Plugin import Plugin
 
 

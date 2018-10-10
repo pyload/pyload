@@ -12,7 +12,7 @@ from threading import Thread
 import pycurl
 from pyload.Api import FileDoesNotExists, PackageDoesNotExists
 
-from pyload.plugins.internal.utils import format_size
+from pyload.plugins.utils import format_size
 from pyload.plugins.internal.Notifier import Notifier
 
 

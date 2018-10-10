@@ -6,7 +6,7 @@ import urllib.parse
 from builtins import str
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.utils import json
+from pyload.plugins.utils import json
 
 
 class RedtubeCom(Hoster):

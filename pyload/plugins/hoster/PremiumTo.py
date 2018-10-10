@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.utils import encode
+from pyload.plugins.utils import encode
 from pyload.plugins.internal.MultiHoster import MultiHoster
 
 

@@ -6,7 +6,7 @@ import subprocess
 from builtins import map
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.utils import Expose, encode, exists, fsjoin, threaded
+from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
 
 try:
     import send2trash

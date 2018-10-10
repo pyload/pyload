@@ -3,7 +3,7 @@
 import urllib.parse
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import fsjoin, json
+from pyload.plugins.utils import fsjoin, json
 
 
 class DailymotionComFolder(Crypter):

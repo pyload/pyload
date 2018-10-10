@@ -4,7 +4,7 @@ import sys
 import zipfile
 
 from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from pyload.plugins.internal.utils import encode
+from pyload.plugins.utils import encode
 
 
 class UnZip(Extractor):

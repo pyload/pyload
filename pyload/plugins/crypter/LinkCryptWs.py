@@ -8,7 +8,7 @@ import Crypto.Cipher.AES
 import pycurl
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.utils import html_unescape, set_cookie
+from pyload.plugins.utils import html_unescape, set_cookie
 
 
 class LinkCryptWs(Crypter):

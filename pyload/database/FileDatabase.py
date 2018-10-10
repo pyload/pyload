@@ -5,7 +5,7 @@ from builtins import object, range, str, zip
 from threading import RLock
 
 from pyload.database import DatabaseBackend, style
-from pyload.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
+from pyload.manager.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from pyload.datatype.PyFile import PyFile
 from pyload.datatype.PyPackage import PyPackage
 from pyload.utils.utils import formatSize, lock

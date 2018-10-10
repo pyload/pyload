@@ -6,7 +6,7 @@ import re
 import Crypto.Cipher.AES
 
 from pyload.plugins.internal.Container import Container
-from pyload.plugins.internal.utils import encode
+from pyload.plugins.utils import encode
 
 
 class RSDF(Container):

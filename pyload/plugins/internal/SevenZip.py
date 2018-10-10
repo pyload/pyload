@@ -7,7 +7,7 @@ import subprocess
 from builtins import filter, map
 
 from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from pyload.plugins.internal.utils import encode, fsjoin, renice
+from pyload.plugins.utils import encode, fsjoin, renice
 
 
 class SevenZip(Extractor):
