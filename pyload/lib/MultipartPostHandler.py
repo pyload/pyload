@@ -68,27 +68,30 @@ class Callable:
     def __init__(self, anycallable):
         self.__call__ = anycallable
 
+
 # Controls how sequences are uncoded. If true, elements may be given multiple values by
 #  assigning a sequence.
 doseq = 1
 
+
 class MultipartPostHandler(BaseHandler):
-    handler_order = HTTPHandler.handler_order - 10 # needs to run first
+    handler_order = HTTPHandler.handler_order - 10  # needs to run first
 
     def http_request(self, request):
         data = request.get_data()
-        if data is not None and type(data) != str:
+        if data is not None and not isinstance(data, str):
             v_files = []
             v_vars = []
             try:
-                 for(key, value) in data.items():
-                     if type(value) == file:
-                         v_files.append((key, value))
-                     else:
-                         v_vars.append((key, value))
+                for(key, value) in data.items():
+                    if isinstance(value, file):
+                        v_files.append((key, value))
+                    else:
+                        v_vars.append((key, value))
             except TypeError:
                 systype, value, traceback = sys.exc_info()
-                raise TypeError("not a valid non-string sequence or mapping object").with_traceback(traceback)
+                raise TypeError(
+                    "not a valid non-string sequence or mapping object").with_traceback(traceback)
 
             if len(v_files) == 0:
                 data = urlencode(v_vars, doseq)
@@ -98,14 +101,17 @@ class MultipartPostHandler(BaseHandler):
                 contenttype = 'multipart/form-data; boundary=%s' % boundary
                 if(request.has_header('Content-Type')
                    and request.get_header('Content-Type').find('multipart/form-data') != 0):
-                    print("Replacing %s with %s" % (request.get_header('content-type'), 'multipart/form-data'))
+                    print(
+                        "Replacing %s with %s" %
+                        (request.get_header('content-type'),
+                         'multipart/form-data'))
                 request.add_unredirected_header('Content-Type', contenttype)
 
             request.add_data(data)
 
         return request
 
-    def multipart_encode(vars, files, boundary = None, buf = None):
+    def multipart_encode(vars, files, boundary=None, buf=None):
         if boundary is None:
             boundary = mimetools.choose_boundary()
         if buf is None:
@@ -117,9 +123,12 @@ class MultipartPostHandler(BaseHandler):
         for(key, fd) in files:
             #file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
             filename = fd.name.split('/')[-1]
-            contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+            contenttype = mimetypes.guess_type(
+                filename)[0] or 'application/octet-stream'
             buf.write('--%s\r\n' % boundary)
-            buf.write('Content-Disposition: form-data; name="%s"; filename="%s"\r\n' % (key, filename))
+            buf.write(
+                'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %
+                (key, filename))
             buf.write('Content-Type: %s\r\n' % contenttype)
             # buffer += 'Content-Length: %s\r\n' % file_size
             fd.seek(0)
@@ -131,8 +140,10 @@ class MultipartPostHandler(BaseHandler):
 
     https_request = http_request
 
+
 def main():
-    import tempfile, sys
+    import tempfile
+    import sys
 
     validatorURL = "http://validator.w3.org/check"
     opener = build_opener(MultipartPostHandler)
@@ -140,9 +151,9 @@ def main():
     def validateFile(url):
         temp = tempfile.mkstemp(suffix=".html")
         write(temp[0], opener.open(url).read())
-        params = { "ss" : "0",            # show source
-                   "doctype" : "Inline",
-                   "uploaded_file" : open(temp[1], "rb") }
+        params = {"ss": "0",            # show source
+                  "doctype": "Inline",
+                  "uploaded_file": open(temp[1], "rb")}
         print(opener.open(validatorURL, params).read())
         remove(temp[1])
 
@@ -152,5 +163,6 @@ def main():
     else:
         validateFile("http://www.google.com")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

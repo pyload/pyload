@@ -1,4 +1,4 @@
-## {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
+# {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
 from __future__ import (
     absolute_import,
     division,
@@ -42,7 +42,7 @@ def _get_opcodes(codeobj):
 def test_expr(expr, allowed_codes):
     try:
         c = compile(expr, "", "eval")
-    except:
+    except BaseException:
         raise ValueError("%s is not a valid expression" % expr)
     codes, names = _get_opcodes(c)
     for code in codes:
@@ -57,4 +57,4 @@ def const_eval(expr):
     c = test_expr(expr, _const_codes)
     return eval(c, None, _locals)
 
-## end of http://code.activestate.com/recipes/286134/ }}}
+# end of http://code.activestate.com/recipes/286134/ }}}

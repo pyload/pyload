@@ -53,6 +53,7 @@ class _GetchWindows:
 
         return msvcrt.getch()
 
+
 class _GetchMacCarbon:
     """
     A function which returns the current ASCII key that is down;
@@ -63,12 +64,12 @@ class _GetchMacCarbon:
 
     def __init__(self):
         import Carbon
-        Carbon.Evt #see if it has this (in Unix, it doesn't)
+        Carbon.Evt  # see if it has this (in Unix, it doesn't)
 
     def __call__(self):
         import Carbon
 
-        if Carbon.Evt.EventAvail(0x0008)[0] == 0: # 0x0008 is the keyDownMask
+        if Carbon.Evt.EventAvail(0x0008)[0] == 0:  # 0x0008 is the keyDownMask
             return ''
         else:
             #
