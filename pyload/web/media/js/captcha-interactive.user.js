@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         pyLoad Script for Interactive Captcha
-// @namespace    https://pyload.net/
+// @namespace    https://pyload.net
 // @version      0.17
 // @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
