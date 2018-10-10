@@ -220,7 +220,7 @@ def generate_locale():
 
     EXCLUDE = [
         "BeautifulSoup.py",
-        "pyload/gui",
+        # "pyload/gui",
         "pyload/cli",
         "web/locale",
         "web/ajax",
@@ -229,7 +229,7 @@ def generate_locale():
         "setup.py"]
     makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
-    makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
+    # makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./pyload/setup.py\n")
 

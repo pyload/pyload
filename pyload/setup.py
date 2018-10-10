@@ -67,7 +67,7 @@ class Setup(object):
         print(_("When you are ready for system check, hit enter."))
         input()
 
-        basic, ssl, captcha, gui, web, js = self.system_check()
+        basic, ssl, captcha, web, js = self.system_check()
         print("")
 
         if not basic:
@@ -89,8 +89,8 @@ class Setup(object):
             avail.append(_("ssl connection"))
         if captcha:
             avail.append(_("automatic captcha decryption"))
-        if gui:
-            avail.append(_("GUI"))
+        # if gui:
+            # avail.append(_("GUI"))
         if web:
             avail.append(_("Webinterface"))
         if js:
@@ -125,10 +125,10 @@ class Setup(object):
                 print(_("Only needed for some hosters and as freeuser."))
                 print("")
 
-            if not gui:
-                print(_("** Gui not available **"))
-                print(_("The Graphical User Interface."))
-                print("")
+            # if not gui:
+                # print(_("** Gui not available **"))
+                # print(_("The Graphical User Interface."))
+                # print("")
 
             if not js:
                 print(_("** no JavaScript engine found **"))
@@ -228,8 +228,8 @@ class Setup(object):
 
         print("")
 
-        gui = self.check_module("PyQt4")
-        self.print_dep("PyQt4", gui)
+        # gui = self.check_module("PyQt4")
+        # self.print_dep("PyQt4", gui)
 
         print("")
         jinja = True
@@ -263,7 +263,7 @@ class Setup(object):
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
-        return basic, ssl, captcha, gui, web, js
+        return basic, ssl, captcha, web, js
 
     def conf_basic(self):
         print("")
