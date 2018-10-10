@@ -1,10 +1,5 @@
+# -*- coding: utf-8 -*-
 # {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
-from __future__ import (
-    absolute_import,
-    division,
-    print_function,
-    unicode_literals,
-)
 
 import dis
 
