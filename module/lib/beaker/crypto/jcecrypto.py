@@ -27,4 +27,4 @@ aesDecrypt = aesEncrypt
 
 def getKeyLength():
     maxlen = Cipher.getMaxAllowedKeyLength('AES/CTR/NoPadding')
-    return min(maxlen, 256) / 8
+    return min(maxlen, 256) // 8

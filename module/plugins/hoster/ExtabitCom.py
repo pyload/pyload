@@ -60,7 +60,7 @@ class ExtabitCom(SimpleHoster):
                 'challenge'] = self.captcha.challenge(captcha_key)
 
             html = self.load(
-                "http://extabit.com/file/%s/" %
+                "http://extabit.com/file/{}/" %
                 fileID, get=get_data)
             res = json.loads(html)
 
@@ -75,7 +75,7 @@ class ExtabitCom(SimpleHoster):
             self.error(_("Bad JSON response"))
 
         self.data = self.load(
-            "http://extabit.com/file/%s%s" %
+            "http://extabit.com/file/{}{}" %
             (fileID, res['href']))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)

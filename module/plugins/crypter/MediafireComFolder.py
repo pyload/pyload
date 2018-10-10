@@ -39,7 +39,7 @@ class MediafireComFolder(Crypter):
         pack_name = api_data['response']['folder_info'].get('name') or self.pyfile.package().name
 
         api_data = self.api_response("folder/get_content", folder_key=self.info['pattern']['ID'], content_type="files")
-        pack_links = ["http://www.mediafire.com/file/%s" % _f['quickkey']
+        pack_links = ["http://www.mediafire.com/file/{}".format(_f['quickkey'])
                       for _f in api_data['response']['folder_content']['files']]
 
         if pack_links:

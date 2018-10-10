@@ -36,7 +36,7 @@ class PushBullet(Notifier):
 
     def send(self, event, msg, key):
         req = get_request()
-        req.c.setopt(pycurl.HTTPHEADER, ["Access-Token: %s" % str(key)])
+        req.c.setopt(pycurl.HTTPHEADER, ["Access-Token: {}".format(str(key))])
 
         self.load("https://api.pushbullet.com/v2/pushes",
                   post={'type': 'note',

@@ -12,10 +12,10 @@ from ..internal.misc import parse_html_header
 
 
 def plugin_id(plugin):
-    return ("<%(plugintype)s %(pluginname)s%(id)s>" %
-            {'plugintype': plugin.__type__.upper(),
+    return "<{plugintype} {pluginname}{id}>".format(
+            **{'plugintype': plugin.__type__.upper(),
              'pluginname': plugin.__name__,
-             'id': "[%s]" % plugin.pyfile.id if plugin.pyfile else ""})
+             'id': "[{}]".format(plugin.pyfile.id if plugin.pyfile else "")})
 
 
 def is_simple_plugin(obj):
@@ -35,17 +35,17 @@ class CloudFlare(object):
     def handle_function(addon_plugin, owner_plugin,
                         func_name, orig_func, args):
         addon_plugin.log_debug(
-            "Calling %s() of %s" % (func_name, plugin_id(owner_plugin)))
+            "Calling {}() of {}".format(func_name, plugin_id(owner_plugin)))
 
         try:
             data = orig_func(*args[0], **args[1])
             addon_plugin.log_debug(
-                "%s() returned successfully" % func_name)
+                "{}() returned successfully".format(func_name))
             return data
 
         except BadHeader as e:
             addon_plugin.log_debug(
-                "%s(): got BadHeader exception %s" % (func_name, e.code))
+                "{}(): got BadHeader exception {}".format(func_name, e.code))
 
             header = parse_html_header(get_plugin_last_header(owner_plugin))
 
@@ -60,7 +60,7 @@ class CloudFlare(object):
 
                 else:
                     addon_plugin.log_warning(
-                        _("Unknown CloudFlare response code %s") % e.code)
+                        _("Unknown CloudFlare response code {}").format(e.code))
                     raise
 
                 if data is None:
@@ -83,7 +83,7 @@ class CloudFlare(object):
             last_url = owner_plugin.req.lastEffectiveURL
             urlp = urlparse.urlparse(last_url)
             domain = urlp.netloc
-            submit_url = "%s://%s/cdn-cgi/l/chk_jschl" % (urlp.scheme, domain)
+            submit_url = "{}://{}/cdn-cgi/l/chk_jschl".format(urlp.scheme, domain)
 
             get_params = {}
 
@@ -169,7 +169,7 @@ class PreloadStub(object):
             self.owner_plugin.data = data
 
     def __repr__(self):
-        return "<PreloadStub object at %s>" % hex(id(self))
+        return "<PreloadStub object at {}>".format(hex(id(self)))
 
 
 class CloudFlareDdos(Addon):
@@ -198,14 +198,14 @@ class CloudFlareDdos(Addon):
     def _unoverride_preload(self, plugin):
         if id(plugin) in self.stubs:
             self.log_debug(
-                "Unoverriding _preload() for %s" % plugin_id(plugin))
+                "Unoverriding _preload() for {}".format(plugin_id(plugin)))
 
             stub = self.stubs.pop(id(plugin))
             stub.owner_plugin._preload = stub.old_preload
 
         else:
             self.log_warning(
-                _("No _preload() override found for %s, cannot un-override>") %
+                _("No _preload() override found for {}, cannot un-override>") %
                 plugin_id(plugin))
 
     def _override_preload(self, plugin):
@@ -214,12 +214,12 @@ class CloudFlareDdos(Addon):
             self.stubs[id(plugin)] = stub
 
             self.log_debug(
-                "Overriding _preload() for %s" % plugin_id(plugin))
+                "Overriding _preload() for {}".format(plugin_id(plugin)))
             plugin._preload = stub.my_preload
 
         else:
             self.log_warning(
-                _("Already overrided _preload() for %s") %
+                _("Already overrided _preload() for {}") %
                 plugin_id(plugin))
 
     def _override_get_url(self):
@@ -256,13 +256,13 @@ class CloudFlareDdos(Addon):
     def download_preparing(self, pyfile):
         #: Only SimpleHoster and SimpleCrypter based plugins are supported
         if not is_simple_plugin(pyfile.plugin):
-            self.log_debug("Skipping plugin %s" % plugin_id(pyfile.plugin))
+            self.log_debug("Skipping plugin {}".format(plugin_id(pyfile.plugin)))
             return
 
         attr = getattr(pyfile.plugin, "_preload", None)
         if not attr and not callable(attr):
             self.log_error(
-                _("%s is missing _preload() function, cannot override!") %
+                _("{} is missing _preload() function, cannot override!") %
                 plugin_id(pyfile.plugin))
             return
 

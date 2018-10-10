@@ -90,9 +90,9 @@ def safe_range(*args):
     """A range that can't generate ranges with a length of more than
     MAX_RANGE items.
     """
-    rng = xrange(*args)
+    rng = range(*args)
     if len(rng) > MAX_RANGE:
-        raise OverflowError('range too big, maximum size for range is %d' %
+        raise OverflowError('range too big, maximum size for range is {:d}' %
                             MAX_RANGE)
     return rng
 
@@ -208,10 +208,10 @@ class SandboxedEnvironment(Environment):
         try:
             return obj[argument]
         except (TypeError, LookupError):
-            if isinstance(argument, basestring):
+            if isinstance(argument, str):
                 try:
                     attr = str(argument)
-                except:
+                except Exception:
                     pass
                 else:
                     try:
@@ -243,8 +243,8 @@ class SandboxedEnvironment(Environment):
 
     def unsafe_undefined(self, obj, attribute):
         """Return an undefined object for unsafe attributes."""
-        return self.undefined('access to attribute %r of %r '
-                              'object is unsafe.' % (
+        return self.undefined('access to attribute {!r} of {!r} '
+                              'object is unsafe.'.format(
             attribute,
             obj.__class__.__name__
         ), name=attribute, obj=obj, exc=SecurityError)
@@ -254,7 +254,7 @@ class SandboxedEnvironment(Environment):
         # the double prefixes are to avoid double keyword argument
         # errors when proxying the call.
         if not __self.is_safe_callable(__obj):
-            raise SecurityError('%r is not safely callable' % (__obj,))
+            raise SecurityError('{!r} is not safely callable'.format(__obj,))
         return __context.call(__obj, *args, **kwargs)
 
 

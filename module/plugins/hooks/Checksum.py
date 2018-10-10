@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 from threading import Event
 
 import hashlib
@@ -31,7 +31,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
                     processed += len(chunk)
 
                     if progress_notify:
-                        progress_notify(processed * 100 / file_size)
+                        progress_notify(processed * 100 // file_size)
 
             return h.hexdigest()
 
@@ -48,9 +48,9 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
                     processed += len(chunk)
 
                     if progress_notify:
-                        progress_notify(processed * 100 / file_size)
+                        progress_notify(processed * 100 // file_size)
 
-            return "%x" % ((2**32 + last) & 0xFFFFFFFF)  #: zlib sometimes return negative value
+            return "{:x}".format((2**32 + last) & 0xFFFFFFFF)  #: zlib sometimes return negative value
 
         else:
             return None
@@ -142,8 +142,7 @@ class Checksum(Addon):
             file_size = os.path.getsize(local_file)
 
             if api_size != file_size:
-                self.log_warning(_("File %s has incorrect size: %d B (%d expected)") %
-                                 (pyfile.name, file_size, api_size))
+                self.log_warning(_("File {} has incorrect size: {:d} B ({:d} expected)").format(pyfile.name, file_size, api_size))
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 
             data.pop('size', None)
@@ -175,13 +174,13 @@ class Checksum(Addon):
 
                         elif checksum is not None:
                             if checksum.lower() == data['hash'][key].lower():
-                                self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
+                                self.log_info(_('File integrity of "{}" verified by {} checksum ({})') %
                                               (pyfile.name, key.upper(), checksum.lower()))
                                 pyfile.error = _("checksum verified")
                                 break
 
                             else:
-                                self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
+                                self.log_warning(_("{} checksum for file {} does not match ({} != {})") %
                                                  (key.upper(), pyfile.name, checksum, data['hash'][key].lower()))
 
                                 self.check_failed(pyfile, local_file, "Checksums do not match")
@@ -190,7 +189,7 @@ class Checksum(Addon):
                             self.log_warning(_("Unsupported hashing algorithm"), key.upper())
 
                 else:
-                    self.log_warning(_('Unable to validate checksum for file: "%s"') % pyfile.name)
+                    self.log_warning(_('Unable to validate checksum for file: "{}"').format(pyfile.name))
 
     def check_failed(self, pyfile, local_file, msg):
         check_action = self.config.get('check_action')
@@ -274,7 +273,7 @@ class Checksum(Addon):
                     elif checksum is not None:
                         if checksum.lower() == data['HASH'].lower():
                             self.retries.pop(fid, 0)
-                            self.log_info(_('File integrity of "%s" verified by %s checksum (%s)') %
+                            self.log_info(_('File integrity of "{}" verified by {} checksum ({})') %
                                           (data['NAME'], algorithm, checksum))
 
                             if pyfile is not None:
@@ -283,7 +282,7 @@ class Checksum(Addon):
                                 pyfile.release()
 
                         else:
-                            self.log_warning(_("%s checksum for file %s does not match (%s != %s)") %
+                            self.log_warning(_("{} checksum for file {} does not match ({} != {})") %
                                              (algorithm.upper(), data['NAME'], checksum.lower(), data['HASH'].lower()))
 
                             if fid is not None:
@@ -295,7 +294,7 @@ class Checksum(Addon):
                     failed_queue.extend(failed)
 
                 else:
-                    self.log_info(_('All files specified by "%s" verified successfully') % fdata['name'])
+                    self.log_info(_('All files specified by "{}" verified successfully').format(fdata['name']))
 
             if failed_queue:
                 self.package_check_failed(failed_queue, thread, "Checksums do not match")
@@ -324,7 +323,7 @@ class Checksum(Addon):
                         self.retries[fid] = retry_count + 1
 
                         wait_time = self.config.get('wait_time')
-                        self.log_info(_("Waiting %s...") % format_time(wait_time))
+                        self.log_info(_("Waiting {}...").format(format_time(wait_time)))
                         time.sleep(wait_time)
 
                         pyfile.package().setFinished = False  #: Force `package_finished` event again

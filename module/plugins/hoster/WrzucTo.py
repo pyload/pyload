@@ -60,5 +60,5 @@ class WrzucTo(SimpleHoster):
         if len(data) != 4:
             self.error(_("No download URL"))
 
-        self.link = "http://%s.wrzuc.to/pobierz/%s" % (
+        self.link = "http://{}.wrzuc.to/pobierz/{}".format(
             data['server_id'], data['download_link'])

@@ -76,5 +76,5 @@ class DebridlinkFr(MultiHoster):
                                'maxLink': "Limitation of number links per day reached",
                                'maxLinkHost': "Limitation of number links per day for this host reached"}.get(err_code)
 
-                self.fail(err_message or "Unknown error: `%s`" % err_code)
+                self.fail(err_message or "Unknown error: `{}`".format(err_code))
 

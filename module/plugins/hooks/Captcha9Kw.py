@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import base64
 import re
@@ -34,7 +34,7 @@ class Captcha9Kw(Addon):
 
     __description__ = """Send captchas to 9kw.eu"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahho[DOT]com")]
 
@@ -48,7 +48,7 @@ class Captcha9Kw(Addon):
                              'action': "usercaptchaguthaben"})
 
         if res.isdigit():
-            self.log_info(_("%s credits left") % res)
+            self.log_info(_("{} credits left").format(res))
             credits = self.info['credits'] = int(res)
             return credits
         else:
@@ -63,7 +63,7 @@ class Captcha9Kw(Addon):
                 self.log_error(_("Invalid url"))
                 return
 
-            post_data = {'pageurl': "%s://%s/" % (url_p.scheme, url_p.netloc),
+            post_data = {'pageurl': "{}://{}/".format(url_p.scheme, url_p.netloc),
                          'data-sitekey': task.captchaParams['sitekey'],
                          'securetoken': task.captchaParams['securetoken'] or ""}
 
@@ -144,14 +144,14 @@ class Captcha9Kw(Addon):
                     break
 
         else:
-            self.log_error(_("Bad request: %s") % res)
+            self.log_error(_("Bad request: {}").format(res))
             return
 
-        self.log_debug("NewCaptchaID ticket: %s" % res, task.captchaParams.get('file', ""))
+        self.log_debug("NewCaptchaID ticket: {}".format(res, task.captchaParams.get('file', "")))
 
         task.data['ticket'] = res
 
-        for _i in range(int(self.config.get('timeout') / 5)):
+        for _i in range(int(self.config.get('timeout') // 5)):
             result = self.load(self.API_URL,
                                get={'apikey': self.config.get('passkey'),
                                     'id': res,
@@ -166,10 +166,10 @@ class Captcha9Kw(Addon):
                 break
 
         else:
-            self.log_debug("Could not send request: %s" % res)
+            self.log_debug("Could not send request: {}".format(res))
             result = None
 
-        self.log_info(_("Captcha result for ticket %s: %s") % (res, result))
+        self.log_info(_("Captcha result for ticket {}: {}").format(res, result))
 
         task.setResult(result)
 
@@ -234,7 +234,7 @@ class Captcha9Kw(Addon):
         request_type = "correct" if correct else "refund"
 
         if 'ticket' not in task.data:
-            self.log_debug("No CaptchaID for %s request (task: %s)" % (request_type, task))
+            self.log_debug("No CaptchaID for {} request (task: {})".format(request_type, task))
             return
 
         passkey = self.config.get('passkey')
@@ -249,14 +249,14 @@ class Captcha9Kw(Addon):
                                  'source': "pyload",
                                  'id': task.data['ticket']})
 
-            self.log_debug("Request %s: %s" % (request_type, res))
+            self.log_debug("Request {}: {}".format(request_type, res))
 
             if res == "OK":
                 break
 
             time.sleep(5)
         else:
-            self.log_debug("Could not send %s request: %s" % (request_type, res))
+            self.log_debug("Could not send {} request: {}".format(request_type, res))
 
     def captcha_correct(self, task):
         self._captcha_response(task, True)

@@ -102,7 +102,7 @@ class SimpleCrypter(Crypter):
                         url, cookies=cls.COOKIES, decode=cls.TEXT_ENCODING)
 
                 except BadHeader as e:
-                    info['error'] = "%d: %s" % (e.code, e.content)
+                    info['error'] = "{:d}: {}".format(e.code, e.content)
 
                 except Exception:
                     pass

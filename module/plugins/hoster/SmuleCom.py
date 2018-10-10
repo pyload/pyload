@@ -48,14 +48,14 @@ class SmuleCom(SimpleHoster):
             self.fail(_("Could not find any media URLs"))
 
         encoded_media_url = m.group(1)
-        self.log_debug("Found encoded media URL: %s" % encoded_media_url)
+        self.log_debug("Found encoded media URL: {}".format(encoded_media_url))
 
         m = re.search(self.COMMUNITY_JS_PATTERN, self.data)
         if m is None:
             self.fail(_("Could not find necessary javascript script to load"))
 
         community_js_url = m.group(1)
-        self.log_debug("Found community js at %s" % community_js_url)
+        self.log_debug("Found community js at {}".format(community_js_url))
 
         community_js_code = self.load(community_js_url)
 
@@ -85,8 +85,8 @@ class SmuleCom(SimpleHoster):
             process_function + \
             '; processRecording("' + encoded_media_url + '");'
 
-        self.log_debug("Running js script: %s" % new_js_code)
+        self.log_debug("Running js script: {}".format(new_js_code))
         js_result = js.eval(new_js_code)
-        self.log_debug("Result is: %s" % js_result)
+        self.log_debug("Result is: {}".format(js_result))
 
         self.link = js_result

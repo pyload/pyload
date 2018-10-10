@@ -40,11 +40,11 @@ def verify_directory(dir):
         try:
             tries += 1
             os.makedirs(dir)
-        except:
+        except Exception:
             if tries > 5:
                 raise
 
-    
+
 def deprecated(message):
     def wrapper(fn):
         def deprecated_method(*args, **kargs):
@@ -52,10 +52,10 @@ def deprecated(message):
             return fn(*args, **kargs)
         # TODO: use decorator ?  functools.wrapper ?
         deprecated_method.__name__ = fn.__name__
-        deprecated_method.__doc__ = "%s\n\n%s" % (message, fn.__doc__)
+        deprecated_method.__doc__ = "{}\n\n{}".format(message, fn.__doc__)
         return deprecated_method
     return wrapper
-    
+
 class ThreadLocal(object):
     """stores a value on a per-thread basis"""
 
@@ -63,39 +63,39 @@ class ThreadLocal(object):
 
     def __init__(self):
         self._tlocal = _tlocal()
-    
+
     def put(self, value):
         self._tlocal.value = value
-    
+
     def has(self):
         return hasattr(self._tlocal, 'value')
-            
+
     def get(self, default=None):
         return getattr(self._tlocal, 'value', default)
-            
+
     def remove(self):
         del self._tlocal.value
-    
+
 class SyncDict(object):
     """
     An efficient/threadsafe singleton map algorithm, a.k.a.
     "get a value based on this key, and create if not found or not
     valid" paradigm:
-    
+
         exists && isvalid ? get : create
 
     Designed to work with weakref dictionaries to expect items
-    to asynchronously disappear from the dictionary.  
+    to asynchronously disappear from the dictionary.
 
     Use python 2.3.3 or greater !  a major bug was just fixed in Nov.
     2003 that was driving me nuts with garbage collection/weakrefs in
     this section.
 
-    """    
+    """
     def __init__(self):
         self.mutex = _thread.allocate_lock()
         self.dict = {}
-        
+
     def get(self, key, createfunc, *args, **kwargs):
         try:
             if key in self:
@@ -124,7 +124,7 @@ class SyncDict(object):
 
     def has_key(self, key):
         return key in self.dict
-        
+
     def __contains__(self, key):
         return self.dict.__contains__(key)
     def __getitem__(self, key):
@@ -142,33 +142,33 @@ class WeakValuedRegistry(SyncDict):
         self.mutex = _threading.RLock()
         self.dict = weakref.WeakValueDictionary()
 
-sha1 = None            
+sha1 = None
 def encoded_path(root, identifiers, extension = ".enc", depth = 3,
                  digest_filenames=True):
-                 
+
     """Generate a unique file-accessible path from the given list of
     identifiers starting at the given root directory."""
     ident = "_".join(identifiers)
-    
+
     global sha1
     if sha1 is None:
         from beaker.crypto import sha1
-        
+
     if digest_filenames:
         if py3k:
             ident = sha1(ident.encode('utf-8')).hexdigest()
         else:
             ident = sha1(ident).hexdigest()
-    
+
     ident = os.path.basename(ident)
 
     tokens = []
     for d in range(1, depth):
         tokens.append(ident[0:d])
-    
+
     dir = os.path.join(root, *tokens)
     verify_directory(dir)
-    
+
     return os.path.join(dir, ident + extension)
 
 
@@ -186,14 +186,14 @@ def verify_options(opt, types, error):
                         typ = asbool
                     opt = typ(opt)
                 coerced = True
-            except:
+            except Exception:
                 pass
             if coerced:
                 break
         if not coerced:
             raise Exception(error)
     elif isinstance(opt, str) and not opt.strip():
-        raise Exception("Empty strings are invalid for: %s" % error)
+        raise Exception("Empty strings are invalid for: {}".format(error))
     return opt
 
 
@@ -250,10 +250,10 @@ def coerce_cache_params(params):
 def parse_cache_config_options(config, include_defaults=True):
     """Parse configuration options and validate for use with the
     CacheManager"""
-    
+
     # Load default cache options
     if include_defaults:
-        options= dict(type='memory', data_dir=None, expire=None, 
+        options= dict(type='memory', data_dir=None, expire=None,
                            log_file=None)
     else:
         options = {}
@@ -263,11 +263,11 @@ def parse_cache_config_options(config, include_defaults=True):
         if key.startswith('cache.'):
             options[key[6:]] = val
     coerce_cache_params(options)
-    
+
     # Set cache to enabled if not turned off
     if 'enabled' not in options:
         options['enabled'] = True
-    
+
     # Configure region dict if regions are available
     regions = options.pop('regions', None)
     if regions:
@@ -281,7 +281,7 @@ def parse_cache_config_options(config, include_defaults=True):
                                   expire=options.get('expire'))
             region_len = len(region) + 1
             for key in options.keys():
-                if key.startswith('%s.' % region):
+                if key.startswith('{}.'.format(region):)
                     region_options[key[region_len:]] = options.pop(key)
             coerce_cache_params(region_options)
             region_configs[region] = region_options
@@ -294,8 +294,8 @@ def func_namespace(func):
     if hasattr(func, 'im_func'):
         kls = func.__self__.__class__
         func = func.__func__
-    
+
     if kls:
-        return '%s.%s' % (kls.__module__, kls.__name__)
+        return '{}.{}'.format(kls.__module__, kls.__name__)
     else:
-        return '%s.%s' % (func.__module__, func.__name__)
+        return '{}.{}'.format(func.__module__, func.__name__)

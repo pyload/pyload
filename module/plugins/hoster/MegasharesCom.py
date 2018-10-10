@@ -29,7 +29,7 @@ class MegasharesCom(SimpleHoster):
     SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
-    LINK_PATTERN = r'<div id="show_download_button_%d".*?>\s*<a href="(.+?)">'
+    LINK_PATTERN = r'<div id="show_download_button_{:d}".*?>\s*<a href="(.+?)">'
 
     PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <.*?>(\w+).*?You have.*?<.*?>.*?([\d.]+) (\w+)'
     PASSPORT_RENEW_PATTERN = r'(\d+):<strong>(\d+)</strong>:<strong>(\d+)</strong>'
@@ -64,10 +64,10 @@ class MegasharesCom(SimpleHoster):
                                                get={'secgfx': "gfx", 'random_num': random_num})
 
             self.log_info(
-                _("Reactivating passport %s: %s %s") %
+                _("Reactivating passport {}: {} {}") %
                 (passport_num, random_num, verifyinput))
 
-            res = self.load("http://d01.megashares.com%s" % request_uri,
+            res = self.load("http://d01.megashares.com{}".format(request_uri),
                             get={'rs': "check_passport_renewal",
                                  'rsargs[]': verifyinput,
                                  'rsargs[]': random_num,
@@ -85,7 +85,7 @@ class MegasharesCom(SimpleHoster):
         if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
-            self.log_debug("Waiting %d seconds for a new passport" % renew)
+            self.log_debug("Waiting {:d} seconds for a new passport".format(renew))
             self.retry(wait=renew, msg=_("Passport renewal"))
 
         #: Check traffic left on passport
@@ -93,11 +93,10 @@ class MegasharesCom(SimpleHoster):
         if m is None:
             self.fail(_("Passport not found"))
 
-        self.log_info(_("Download passport: %s") % m.group(1))
+        self.log_info(_("Download passport: {}").format(m.group(1)))
         data_left = float(m.group(2)) * \
             1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
-        self.log_info(_("Data left: %s %s (%d MB needed)") %
-                      (m.group(2), m.group(3), self.pyfile.size / 1048576))
+        self.log_info(_("Data left: {} {} ({:d} MB needed)").format(m.group(2), m.group(3), self.pyfile.size // 1048576))
 
         if not data_left:
             self.retry(wait=600, msg=_("Passport renewal"))
@@ -105,10 +104,10 @@ class MegasharesCom(SimpleHoster):
         self.handle_download(False)
 
     def handle_download(self, premium=False):
-        m = re.search(self.LINK_PATTERN % (1 if premium else 2), self.data)
-        msg = _('%s download URL' % ('Premium' if premium else 'Free'))
+        m = re.search(self.LINK_PATTERN.format(1 if premium else 2), self.data)
+        msg = _('{} download URL').format('Premium' if premium else 'Free')
         if m is None:
             self.error(msg)
 
         self.link = m.group(1)
-        self.log_debug("%s: %s" % (msg, self.link))
+        self.log_debug("{}: {}".format(msg, self.link))

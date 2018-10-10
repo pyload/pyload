@@ -49,7 +49,7 @@ class MirrorcreatorCom(Crypter):
         pack_name, pack_folder = self.get_package_info()
 
         m = re.search(
-            r'"(/mstat\.php\?uid=%s.+?)"' %
+            r'"(/mstat\.php\?uid={}.+?)"' %
             self.info['pattern']['ID'],
             self.data)
         if m is None:
@@ -60,7 +60,7 @@ class MirrorcreatorCom(Crypter):
         hosters_data = {}
         for _tr in re.findall(r'<tr>(.+?)</tr>', self.data, re.S):
             m = re.search(
-                r'<a href="(/showlink\.php\?uid=%s.+?)".*&hname=(\w+)' %
+                r'<a href="(/showlink\.php\?uid={}.+?)".*&hname=(\w+)' %
                 self.info['pattern']['ID'], _tr, re.S)
             if m is not None:
                 hosters_data[m.group(2)] = m.group(1)
@@ -69,7 +69,7 @@ class MirrorcreatorCom(Crypter):
         # priority hosters goes first
         for _h in hosters_priority:
             if _h in hosters_data and _h not in ignored_hosters:
-                self.log_debug("Adding '%s' link" % _h)
+                self.log_debug("Adding '{}' link".format(_h))
                 choosen_hosters.append(_h)
                 if not self.config.get('grab_all'):
                     break
@@ -79,7 +79,7 @@ class MirrorcreatorCom(Crypter):
                 not self.config.get('grab_all') and not choosen_hosters):
             for _h in hosters_data:
                 if _h not in ignored_hosters and _h not in choosen_hosters:
-                    self.log_debug("Adding '%s' link" % _h)
+                    self.log_debug("Adding '{}' link".format(_h))
                     choosen_hosters.append(_h)
                     if not self.config.get('grab_all'):
                         break

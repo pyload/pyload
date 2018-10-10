@@ -99,6 +99,6 @@ class VimeoCom(SimpleHoster):
                 return
 
             else:
-                self.log_info(_("No %s quality video found") % q)
+                self.log_info(_("No {} quality video found").format(q))
         else:
             self.fail(_("No video found!"))

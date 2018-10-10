@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+
 from .thriftgen.pyload import Pyload
 
 class Processor(Pyload.Processor):
@@ -27,7 +27,7 @@ class Processor(Pyload.Processor):
         if name not in self._processMap:
             iprot.skip(Pyload.TType.STRUCT)
             iprot.readMessageEnd()
-            x = Pyload.TApplicationException(Pyload.TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % name)
+            x = Pyload.TApplicationException(Pyload.TApplicationException.UNKNOWN_METHOD, 'Unknown function {}'.format(name))
             oprot.writeMessageBegin(name, Pyload.TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()

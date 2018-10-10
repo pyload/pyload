@@ -36,7 +36,7 @@ class BezvadataCz(SimpleHoster):
         m = re.search(r'<a class="stahnoutSoubor".*?href="(.*?)"', self.data)
         if m is None:
             self.error(_("Page 1 URL not found"))
-        url = "http://bezvadata.cz%s" % m.group(1)
+        url = "http://bezvadata.cz{}".format(m.group(1))
 
         #: Captcha form
         self.data = self.load(url)
@@ -54,13 +54,13 @@ class BezvadataCz(SimpleHoster):
             m.group(1).decode('base64'), input_type='png')
 
         #: Download url
-        self.data = self.load("http://bezvadata.cz%s" % action, post=inputs)
+        self.data = self.load("http://bezvadata.cz{}".format(action, post=inputs))
         self.check_errors()
         m = re.search(r'<a class="stahnoutSoubor2" href="(.*?)">', self.data)
         if m is None:
             self.error(_("Page 2 URL not found"))
-        url = "http://bezvadata.cz%s" % m.group(1)
-        self.log_debug("DL URL %s" % url)
+        url = "http://bezvadata.cz{}".format(m.group(1))
+        self.log_debug("DL URL {}".format(url))
 
         #: countdown
         m = re.search(r'id="countdown">(\d\d):(\d\d)<', self.data)

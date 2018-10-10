@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import binascii
 import re
@@ -49,7 +49,7 @@ class RelinkUs(Crypter):
     FILE_NOTITLE = r'No title'
 
     CNL2_FORM_PATTERN = r'<form id="cnl_form-(.*?)</form>'
-    CNL2_FORMINPUT_PATTERN = r'<input.*?name="%s".*?value="(.*?)"'
+    CNL2_FORMINPUT_PATTERN = r'<input.*?name="{}".*?value="(.*?)"'
     CNL2_JK_KEY = "jk"
     CNL2_CRYPTED_KEY = "crypted"
 
@@ -129,11 +129,11 @@ class RelinkUs(Crypter):
         password = self.get_password()
 
         self.log_debug(
-            "Submitting password [%s] for protected links" %
+            "Submitting password [{}] for protected links" %
             password)
 
         if password:
-            passwd_url = self.PASSWORD_SUBMIT_URL + "?id=%s" % self.file_id
+            passwd_url = self.PASSWORD_SUBMIT_URL + "?id={}".format(self.file_id)
             passwd_data = {
                 'id': self.file_id,
                 'password': password,
@@ -153,7 +153,7 @@ class RelinkUs(Crypter):
                 input_type="png",
                 output_type='positional')  # , ocr="CircleCaptcha")
             self.log_debug(
-                "Captcha resolved, coords (%s,%s)" %
+                "Captcha resolved, coords ({},{})" %
                 (coords[0], coords[1]))
 
             post_data = {'button.x': coords[0],
@@ -195,7 +195,7 @@ class RelinkUs(Crypter):
             if not self.FILE_NOTITLE in title:
                 name = folder = title
                 self.log_debug(
-                    "Found name [%s] and folder [%s] in package info" %
+                    "Found name [{}] and folder [{}] in package info" %
                     (name, folder))
 
         #: Fallback to defaults
@@ -203,7 +203,7 @@ class RelinkUs(Crypter):
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [%s] and folder [%s]" %
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]" %
                 (name, folder))
 
         #: Return package info
@@ -227,7 +227,7 @@ class RelinkUs(Crypter):
         elif source == "web":
             return self.handle_WEB_links()
         else:
-            self.error(_('Unknown source type "%s"') % source)
+            self.error(_('Unknown source type "{}"').format(source))
 
     def handle_CNL2Links(self):
         self.log_debug("Search for CNL2 links")
@@ -250,9 +250,9 @@ class RelinkUs(Crypter):
         pack_links = []
         m = re.search(self.DLC_LINK_PATTERN, self.data)
         if m is not None:
-            container_url = self.DLC_DOWNLOAD_URL + "?id=%s&dlc=1" % self.file_id
+            container_url = self.DLC_DOWNLOAD_URL + "?id={}&dlc=1".format(self.file_id)
             self.log_debug(
-                "Downloading DLC container link [%s]" % container_url)
+                "Downloading DLC container link [{}]".format(container_url))
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.file_id + ".dlc"
@@ -276,14 +276,14 @@ class RelinkUs(Crypter):
         pack_links = []
         params = re.findall(self.WEB_FORWARD_PATTERN, self.data)
 
-        self.log_debug("Decrypting %d Web links" % len(params))
+        self.log_debug("Decrypting {:d} Web links".format(len(params)))
 
         for index, param in enumerate(params):
             try:
-                url = self.WEB_FORWARD_URL + "?%s" % param
+                url = self.WEB_FORWARD_URL + "?{}".format(param)
 
                 self.log_debug(
-                    "Decrypting Web link %d, %s" % (index + 1, url))
+                    "Decrypting Web link {:d}, {}".format(index + 1, url))
 
                 res = self.load(url)
                 link = re.search(self.WEB_LINK_PATTERN, res).group(1)
@@ -292,7 +292,7 @@ class RelinkUs(Crypter):
 
             except Exception as detail:
                 self.log_debug(
-                    "Error decrypting Web link %s, %s" % (index, detail))
+                    "Error decrypting Web link {}, {}".format(index, detail))
 
             self.wait(4)
 
@@ -300,21 +300,21 @@ class RelinkUs(Crypter):
 
     def _get_cipher_params(self, cnl2_form):
         #: Get jk
-        jk_re = self.CNL2_FORMINPUT_PATTERN % self.CNL2_JK_KEY
+        jk_re = self.CNL2_FORMINPUT_PATTERN.format(self.CNL2_JK_KEY)
         vjk = re.findall(jk_re, cnl2_form, re.I)
 
         #: Get crypted
-        crypted_re = self.CNL2_FORMINPUT_PATTERN % RelinkUs.CNL2_CRYPTED_KEY
+        crypted_re = self.CNL2_FORMINPUT_PATTERN.format(RelinkUs.CNL2_CRYPTED_KEY)
         vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         #: Log and return
-        self.log_debug("Detected %d crypted blocks" % len(vcrypted))
+        self.log_debug("Detected {:d} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval("%s f()" % jk)
-        self.log_debug("JsEngine returns value [%s]" % jreturn)
+        jreturn = self.js.eval("{} f()".format(jk))
+        self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -328,5 +328,5 @@ class RelinkUs(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug("Package has %d links" % len(links))
+        self.log_debug("Package has {:d} links".format(len(links)))
         return links

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import re
 import urllib2
@@ -24,7 +24,7 @@ class CCF(Container):
 
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Willnix", "Willnix@pyload.org"),
+    __authors__ = [("Willnix", "Willnix@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
     def decrypt(self, pyfile):
@@ -38,7 +38,7 @@ class CCF(Container):
                                    'upload': open(fs_filename, "rb")}).read()
 
         dl_folder = self.pyload.config.get('general', 'download_folder')
-        dlc_file = fsjoin(dl_folder, "tmp_%s.dlc" % pyfile.name)
+        dlc_file = fsjoin(dl_folder, "tmp_{}.dlc".format(pyfile.name))
 
         try:
             dlc = re.search(

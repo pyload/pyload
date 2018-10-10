@@ -27,7 +27,7 @@ class PremiumizeMe(MultiAccount):
                       'params[login]': user,
                       'params[pass]': password}
         for key, val in kwargs.items():
-            get_params["params[%s]" % key] = val
+            get_params["params[{}]".format(key)] = val
 
         json_data = self.load(self.API_URL, get=get_params)
 
@@ -52,7 +52,7 @@ class PremiumizeMe(MultiAccount):
             validuntil = float(res['result']['expires'])
 
             # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = max(0, res['result']['trafficleft_bytes'] / 1024)
+            trafficleft = max(0, res['result']['trafficleft_bytes'] // 1024)
 
             if res['result']['type'] != 'free':
                 premium = True

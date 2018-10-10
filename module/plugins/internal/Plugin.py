@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import inspect
 import os
@@ -41,8 +41,8 @@ class Plugin(object):
         self.init()
 
     def __repr__(self):
-        return "<%(type)s %(name)s>" % {'type': self.__type__.capitalize(),
-                                        'name': self.classname}
+        return "<{type} {name}>".format(**{'type': self.__type__.capitalize(),
+                                        'name': self.classname})
 
     @property
     def classname(self):
@@ -74,7 +74,7 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = u" | ".join(decode(a).strip() for a in messages if a)
-        log("%(plugintype)s %(pluginname)s: %(msg)s" %
+        log("{plugintype} {pluginname}: {msg}" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,
              'msg': msg})
@@ -117,7 +117,7 @@ class Plugin(object):
 
         except (NameError, OSError) as e:
             self.log_warning(
-                _("Error removing `%s`") %
+                _("Error removing `{}`") %
                 os.path.abspath(path), e)
             return False
 
@@ -173,7 +173,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("LOAD URL " + url,
-                           *["%s=%s" % (key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
@@ -201,7 +201,7 @@ class Plugin(object):
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
         #@TODO: Move to network in 0.4.10
-        if isinstance(ref, basestring):
+        if isinstance(ref, str):
             req.lastURL = ref
 
         html = req.load(
@@ -233,7 +233,7 @@ class Plugin(object):
             html = html_unescape(html)
 
         #@TODO: Move to network in 0.4.10
-        if isinstance(decode, basestring):
+        if isinstance(decode, str):
             html = _decode(html, decode)
 
         self.last_html = html
@@ -269,7 +269,7 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug("UPLOAD URL " + url,
-                           *["%s=%s" % (key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
         with open(path, 'rb') as f:
@@ -295,7 +295,7 @@ class Plugin(object):
                 # @NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
-            if isinstance(ref, basestring):
+            if isinstance(ref, str):
                 http_req.lastURL = ref
 
             http_req.setRequestContext(url, get, {}, bool(ref), bool(cookies), False)
@@ -353,7 +353,7 @@ class Plugin(object):
                 html = html_unescape(html)
 
             #@TODO: Move to network in 0.4.10
-            if isinstance(decode, basestring):
+            if isinstance(decode, str):
                 html = _decode(html, decode)
 
             self.last_html = html
@@ -377,8 +377,7 @@ class Plugin(object):
         frame = inspect.currentframe()
 
         try:
-            framefile = fsjoin("tmp", self.classname, "%s_line%s.dump.html"
-                               % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = fsjoin("tmp", self.classname, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
 
             if not exists(os.path.join("tmp", self.classname)):
                 os.makedirs(os.path.join("tmp", self.classname))

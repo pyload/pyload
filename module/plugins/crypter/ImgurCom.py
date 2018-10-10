@@ -28,7 +28,7 @@ class ImgurCom(SimpleCrypter):
     LINK_PATTERN = r'i\.imgur\.com/\w{7}s?\.(?:jpeg|jpg|png|gif|apng)'
 
     """ Imgur may only show the first 10 images of a gallery. The remaining bits may be found here: """
-    GALLERY_JSON = "http://imgur.com/ajaxalbums/getimages/%s/hit.json?all=true"
+    GALLERY_JSON = "http://imgur.com/ajaxalbums/getimages/{}/hit.json?all=true"
 
     def sanitize(self, name):
         """ Turn Imgur Gallery title into a safe Package and Folder name """
@@ -49,7 +49,7 @@ class ImgurCom(SimpleCrypter):
             # Extract some metadata (ID, Title, NumImages)
             gallery_id = embedded_json['hash']
             self.gallery_name = self.sanitize(
-                _("%s_%s") %
+                _("{}_{}") %
                 (gallery_id, embedded_json['title']))
             self.total_num_images = int(embedded_json['num_images'])
 
@@ -58,7 +58,7 @@ class ImgurCom(SimpleCrypter):
                           for e in embedded_json['album_images']['images'])
 
             self.log_debug(
-                "Found %s of %s expected links in embedded JSON" %
+                "Found {} of {} expected links in embedded JSON" %
                 (len(images), self.total_num_images))
 
             # Depeding on the gallery, the embedded JSON may not contain all image information, then we also try the external JSON
@@ -74,7 +74,7 @@ class ImgurCom(SimpleCrypter):
                     images = dict((e['hash'], e['ext'])
                                   for e in external_json['data']['images'])
                     self.log_debug(
-                        "Found %s of %s expected links in external JSON" %
+                        "Found {} of {} expected links in external JSON" %
                         (len(images), self.total_num_images))
 
                 except (KeyError, TypeError):
@@ -105,7 +105,7 @@ class ImgurCom(SimpleCrypter):
             return []
 
         # Translate new IDs to Direct-URLs
-        return map(lambda id: "http://i.imgur.com/%s%s" %
+        return map(lambda id: "http://i.imgur.com/{}{}" %
                    (id, ids_json[id]), ids_indirect)
 
     def setup(self):
@@ -124,12 +124,12 @@ class ImgurCom(SimpleCrypter):
         try:
             indirect_links = self.get_indirect_links(direct_links)
             self.log_debug(
-                "Found %s additional links" % (len(indirect_links)))
+                "Found {} additional links".format(len(indirect_links)))
 
         except (TypeError, KeyError, ValueError) as e:
             # Fail gracefull as we already had some success
             self.log_error(
-                _("Processing of additional links unsuccessful - %s: %s") %
+                _("Processing of additional links unsuccessful - {}: {}") %
                 (type(e).__name__, str(e)))
             indirect_links = []
 
@@ -137,7 +137,7 @@ class ImgurCom(SimpleCrypter):
         num_images_found = len(direct_links) + len(indirect_links)
         if num_images_found < self.total_num_images:
             self.log_error(
-                _("Could not save all images of this gallery: %s/%s") %
+                _("Could not save all images of this gallery: {}/{}") %
                 (num_images_found, self.total_num_images))
 
         # If we could extract a name, use this to create a specific package

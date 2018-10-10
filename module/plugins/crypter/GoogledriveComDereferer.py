@@ -32,28 +32,28 @@ class GoogledriveComDereferer(Crypter):
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
         try:
-            json_data = json.loads(self.load("%s%s" % (self.API_URL, cmd),
+            json_data = json.loads(self.load("{}{}".format(self.API_URL, cmd),
                                              get=kwargs))
-            self.log_debug("API response: %s" % json_data)
+            self.log_debug("API response: {}".format(json_data))
             return json_data
 
         except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                json_data['error']['message'],
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
 
             except ValueError:
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                e,
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
             return None
 
     def decrypt(self, pyfile):
-        json_data = self.api_response("files/%s" % self.info['pattern']['ID'])
+        json_data = self.api_response("files/{}".format(self.info['pattern']['ID']))
         if json_data is None:
             self.fail("API error")
 
@@ -64,8 +64,7 @@ class GoogledriveComDereferer(Crypter):
             else:
                 self.fail(json_data['error']['message'])
 
-        link = "https://drive.google.com/%s/%s" % \
-               (("file/d" if json_data['mimeType'] != "application/vnd.google-apps.folder" else "drive/folders"),
+        link = "https://drive.google.com/{}/{}".format(("file/d" if json_data['mimeType'] != "application/vnd.google-apps.folder" else "drive/folders"),
                 self.info['pattern']['ID'])
 
         self.packages = [(pyfile.package().folder, [link], pyfile.package().name)]

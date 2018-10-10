@@ -31,7 +31,7 @@ class TenluaVnFolder(SimpleCrypter):
 
     def decrypt(self, pyfile):
         folder_info = self.api_response("filemanager_gettree", p=self.info['pattern']['ID'], download=1)
-        pack_links = ["https://www.tenlua.vn/download/%s/%s" % (x['h'], x['ns'])
+        pack_links = ["https://www.tenlua.vn/download/{}/{}".format(x['h'], x['ns'])
                       for x in folder_info[0]['f']
                       if 'h' in x and 'ns' in x]
 

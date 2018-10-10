@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
+#@author: RaNaN, spoob, mkaay
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, spoob, mkaay
-"""
 
 from time import time, sleep
 from random import randint
@@ -76,16 +61,16 @@ class Base(object):
 
     #log functions
     def logInfo(self, *args):
-        self.log.info("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.info("{}: {}".format(self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logWarning(self, *args):
-        self.log.warning("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.warning("{}: {}".format(self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logError(self, *args):
-        self.log.error("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.error("{}: {}".format(self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
     def logDebug(self, *args):
-        self.log.debug("%s: %s" % (self.__name__, " | ".join([a if isinstance(a, basestring) else str(a) for a in args])))
+        self.log.debug("{}: {}".format(self.__name__, " | ".join([a if isinstance(a, str) else str(a) for a in args])))
 
 
     def setConf(self, option, value):
@@ -148,7 +133,7 @@ class Plugin(Base):
     __config__ = [("name", "type", "desc", "default")]
     __description__ = """Base Plugin"""
     __author_name__ = ("RaNaN", "spoob", "mkaay")
-    __author_mail__ = ("RaNaN@pyload.org", "spoob@pyload.org", "mkaay@mkaay.de")
+    __author_mail__ = ("RaNaN@pyload.net", "spoob@pyload.net", "mkaay@mkaay.de")
 
     def __init__(self, pyfile):
         Base.__init__(self, pyfile.m.core)
@@ -263,7 +248,7 @@ class Plugin(Base):
 
     def setWait(self, seconds, reconnect=False):
         """Set a specific wait time later used with `wait`
-        
+
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
         """
@@ -339,14 +324,14 @@ class Plugin(Base):
         :param result_type: 'textual' if text is written on the captcha\
         or 'positional' for captcha where the user have to click\
         on a specific region on the captcha
-        
+
         :return: result of decrypting
         """
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("%.2f" % time())[-6:].replace(".", "")
-        temp_file = open(join("tmp", "tmpCaptcha_%s_%s.%s" % (self.__name__, id, imgtype)), "wb")
+        id = ("{:2f}".format(time())[-6:].replace(".", ""))
+        temp_file = open(join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb")
         temp_file.write(img)
         temp_file.close()
 
@@ -385,12 +370,12 @@ class Plugin(Base):
                 self.fail(_("No captcha result obtained in appropiate time by any of the plugins."))
 
             result = task.result
-            self.log.debug("Received captcha result: %s" % str(result))
+            self.log.debug("Received captcha result: {}".format(str(result)))
 
         if not self.core.debug:
             try:
                 remove(temp_file.name)
-            except:
+            except Exception:
                 pass
 
         return result
@@ -422,13 +407,13 @@ class Plugin(Base):
                 makedirs(join("tmp", self.__name__))
 
             f = open(
-                join("tmp", self.__name__, "%s_line%s.dump.html" % (frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+                join("tmp", self.__name__, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
                 , "wb")
             del frame # delete the frame or it wont be cleaned
 
             try:
                 tmp = res.encode("utf8")
-            except:
+            except Exception:
                 tmp = res
 
             f.write(tmp)
@@ -487,7 +472,7 @@ class Plugin(Base):
 
                     chown(location, uid, gid)
                 except Exception as e:
-                    self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                    self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
 
         # convert back to unicode
         location = fs_decode(location)
@@ -505,7 +490,7 @@ class Plugin(Base):
             self.pyfile.size = self.req.size
 
         if disposition and newname and newname != name: #triple check, just to be sure
-            self.log.info("%(name)s saved as %(newname)s" % {"name": name, "newname": newname})
+            self.log.info("{name} saved as {newname}".format(**{"name": name, "newname": newname}))
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -521,14 +506,14 @@ class Plugin(Base):
 
                 chown(fs_filename, uid, gid)
             except Exception as e:
-                self.log.warning(_("Setting User and Group failed: %s") % str(e))
+                self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
 
         self.lastDownload = filename
         return self.lastDownload
 
     def checkDownload(self, rules, api_size=0, max_size=50000, delete=True, read_size=0):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
-        
+
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
         :param max_size: if the file is larger then it wont be checked
@@ -549,7 +534,7 @@ class Plugin(Base):
         content = f.read(read_size if read_size else -1)
         f.close()
         #produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: %s" % content)
+        #self.log.debug("Content: {}".format(content))
         for name, rule in rules.iteritems():
             if type(rule) in (str, unicode):
                 if rule in content:
@@ -602,7 +587,7 @@ class Plugin(Base):
             if exists(location):
                 raise SkipDownload(pyfile[0])
 
-            self.log.debug("File %s not skipped, because it does not exists." % self.pyfile.name)
+            self.log.debug("File {} not skipped, because it does not exists.".format(self.pyfile.name))
 
     def clean(self):
         """ clean everything and remove references """

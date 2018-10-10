@@ -77,7 +77,7 @@ class ProcessedTraceback(object):
     def render_as_html(self, full=False):
         """Return a unicode string with the traceback as rendered HTML."""
         from jinja2.debugrenderer import render_traceback
-        return u'%s\n\n<!--\n%s\n-->' % (
+        return u'{}\n\n<!--\n{}\n-->'.format(
             render_traceback(self, full=full),
             self.render_as_text().decode('utf-8', 'replace')
         )
@@ -128,7 +128,7 @@ def translate_exception(exc_info, initial_skip=0):
     frames = []
 
     # skip some internal frames if wanted
-    for x in xrange(initial_skip):
+    for x in range(initial_skip):
         if tb is not None:
             tb = tb.tb_next
     initial_tb = tb
@@ -214,7 +214,7 @@ def fake_exc_info(exc_info, filename, lineno):
             if function == 'root':
                 location = 'top-level template code'
             elif function.startswith('block_'):
-                location = 'block "%s"' % function[6:]
+                location = 'block "{}"'.format(function[6:])
             else:
                 location = 'template'
         code = CodeType(0, code.co_nlocals, code.co_stacksize,
@@ -222,13 +222,13 @@ def fake_exc_info(exc_info, filename, lineno):
                         code.co_names, code.co_varnames, filename,
                         location, code.co_firstlineno,
                         code.co_lnotab, (), ())
-    except:
+    except Exception:
         pass
 
     # execute the code and catch the new traceback
     try:
         exec(code, globals, locals)
-    except:
+    except Exception:
         exc_info = sys.exc_info()
         new_tb = exc_info[2].tb_next
 
@@ -303,6 +303,6 @@ try:
 except ImportError:
     try:
         tb_set_next = _init_ugly_crap()
-    except:
+    except Exception:
         tb_set_next = None
 del _init_ugly_crap

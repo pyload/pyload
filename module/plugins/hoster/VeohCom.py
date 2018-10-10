@@ -43,13 +43,13 @@ class VeohCom(SimpleHoster):
             quality = ("High", "Low")
 
         for q in quality:
-            pattern = r'"fullPreviewHash%sPath":"(.+?)"' % q
+            pattern = r'"fullPreviewHash{}Path":"(.+?)"'.format(q)
             m = re.search(pattern, self.data)
             if m is not None:
                 pyfile.name += ".mp4"
                 self.link = m.group(1).replace("\\", "")
                 return
             else:
-                self.log_info(_("No %s quality video found") % q.upper())
+                self.log_info(_("No {} quality video found").format(q.upper()))
         else:
             self.fail(_("No video found!"))

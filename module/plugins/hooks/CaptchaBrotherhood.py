@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import StringIO
 import time
@@ -28,10 +28,10 @@ class CaptchaBrotherhoodException(Exception):
         return self.err
 
     def __str__(self):
-        return "<CaptchaBrotherhoodException %s>" % self.err
+        return "<CaptchaBrotherhoodException {}>".format(self.err)
 
     def __repr__(self):
-        return "<CaptchaBrotherhoodException %s>" % self.err
+        return "<CaptchaBrotherhoodException {}>".format(self.err)
 
 
 class CaptchaBrotherhood(Addon):
@@ -47,7 +47,7 @@ class CaptchaBrotherhood(Addon):
 
     __description__ = """Send captchas to CaptchaBrotherhood.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
     API_URL = "http://www.captchabrotherhood.com/"
@@ -59,7 +59,7 @@ class CaptchaBrotherhood(Addon):
             raise CaptchaBrotherhoodException(res)
         else:
             credits = int(res[3:])
-            self.log_info(_("%d credits left") % credits)
+            self.log_info(_("{:d} credits left").format(credits))
             self.info['credits'] = credits
             return credits
 
@@ -79,11 +79,11 @@ class CaptchaBrotherhood(Addon):
 
         except Exception as e:
             raise CaptchaBrotherhoodException(
-                "Reading or converting captcha image failed: %s" % e)
+                "Reading or converting captcha image failed: {}".format(e))
 
         req = get_request()
 
-        url = "%ssendNewCaptcha.aspx?%s" % (self.API_URL,
+        url = "{}sendNewCaptcha.aspx?{}".format(self.API_URL,
                                             urllib.urlencode({'username': self.config.get('username'),
                                                               'password': self.config.get('password'),
                                                               'captchaSource': "pyLoad",
@@ -117,12 +117,12 @@ class CaptchaBrotherhood(Addon):
         raise CaptchaBrotherhoodException("No solution received in time")
 
     def api_response(self, api, ticket):
-        res = self.load("%s%s.aspx" % (self.API_URL, api),
+        res = self.load("{}{}.aspx".format(self.API_URL, api),
                         get={'username': self.config.get('username'),
                              'password': self.config.get('password'),
                              'captchaID': ticket})
         if not res.startswith("OK"):
-            raise CaptchaBrotherhoodException("Unknown response: %s" % res)
+            raise CaptchaBrotherhoodException("Unknown response: {}".format(res))
 
         return res
 

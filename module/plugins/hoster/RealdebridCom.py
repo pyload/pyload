@@ -44,10 +44,10 @@ class RealdebridCom(MultiHoster):
                                  args(auth_token=api_token),
                                  args(link=pyfile.url, password=self.get_password()))
 
-        self.log_debug("Returned Data: %s" % data)
+        self.log_debug("Returned Data: {}".format(data))
 
         if "error" in data:
-            self.fail("%s (code: %s)" % (data["error"], data["error_code"]))
+            self.fail("{} (code: {})".format(data["error"], data["error_code"]))
 
         else:
             if data['filename']:

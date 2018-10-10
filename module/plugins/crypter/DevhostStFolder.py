@@ -33,9 +33,9 @@ class DevhostStFolder(SimpleCrypter):
     # TODO: Rewrite
     def check_name_size(self, getinfo=True):
         if not self.info or getinfo:
-            self.log_debug("File info (BEFORE): %s" % self.info)
+            self.log_debug("File info (BEFORE): {}".format(self.info))
             self.info.update(self.get_info(self.pyfile.url, self.data))
-            self.log_debug("File info (AFTER): %s" % self.info)
+            self.log_debug("File info (AFTER): {}".format(self.info))
 
         try:
             if self.info['pattern']['ID'] == "0":
@@ -46,7 +46,7 @@ class DevhostStFolder(SimpleCrypter):
             html = self.load(urlparse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 
-            p = '\?fld_id=%s.*?">(.+?)<' % self.info['pattern']['ID']
+            p = '\?fld_id={}.*?">(.+?)<'.format(self.info['pattern']['ID'])
             m = re.search(p, html)
             self.pyfile.name = m.group(1)
 
@@ -60,5 +60,5 @@ class DevhostStFolder(SimpleCrypter):
         except Exception:
             pass
 
-        self.log_debug("File name: %s" % self.pyfile.name,
-                       "File folder: %s" % self.pyfile.name)
+        self.log_debug("File name: {}".format(self.pyfile.name),
+                       "File folder: {}".format(self.pyfile.name))

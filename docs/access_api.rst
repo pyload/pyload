@@ -52,16 +52,16 @@ A basic script that prints out some information: ::
 
     try:
         client = ThriftClient(host="127.0.0.1", port=7227, user="User", password="yourpw")
-    except:
-        print "Login was wrong"
+    except Exception:
+        print("Login was wrong")
         exit()
 
-    print "Server version:", client.getServerVersion()
-    print client.statusDownloads()
+    print("Server version:", client.getServerVersion())
+    print(client.statusDownloads())
     q = client.getQueue()
     for p in q:
       data = client.getPackageData(p.pid)
-      print "Package Name: ", data.name
+      print("Package Name: ", data.name)
 
 That's all for now, pretty easy isn't it?
 If you still have open questions come around in irc or post them at our pyload forum.

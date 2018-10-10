@@ -40,7 +40,7 @@ except SyntaxError:
     name_re = re.compile(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b')
 else:
     from jinja2 import _stringdefs
-    name_re = re.compile(r'[%s][%s]*' % (_stringdefs.xid_start,
+    name_re = re.compile(r'[{}][{}]*'.format(_stringdefs.xid_start,
                                          _stringdefs.xid_continue))
 
 float_re = re.compile(r'(?<!\.)\d+\.\d+')
@@ -129,7 +129,7 @@ operators = {
 
 reverse_operators = dict([(v, k) for k, v in operators.iteritems()])
 assert len(operators) == len(reverse_operators), 'operators dropped'
-operator_re = re.compile('(%s)' % '|'.join(re.escape(x) for x in
+operator_re = re.compile('({})'.format('|'.join(re.escape(x) for x in)
                          sorted(operators, key=lambda x: -len(x))))
 
 ignored_tokens = frozenset([TOKEN_COMMENT_BEGIN, TOKEN_COMMENT,
@@ -150,8 +150,8 @@ def _describe_token_type(token_type):
         TOKEN_LINECOMMENT:          'comment',
         TOKEN_BLOCK_BEGIN:          'begin of statement block',
         TOKEN_BLOCK_END:            'end of statement block',
-        TOKEN_VARIABLE_BEGIN:       'begin of print statement',
-        TOKEN_VARIABLE_END:         'end of print statement',
+        TOKEN_VARIABLE_BEGIN:       'begin of print(statement',)
+        TOKEN_VARIABLE_END:         'end of print(statement',)
         TOKEN_LINESTATEMENT_BEGIN:  'begin of line statement',
         TOKEN_LINESTATEMENT_END:    'end of line statement',
         TOKEN_DATA:                 'template data / text',
@@ -256,7 +256,7 @@ class Token(tuple):
         return False
 
     def __repr__(self):
-        return 'Token(%r, %r, %r)' % (
+        return 'Token({!r}, {!r}, {!r})'.format(
             self.lineno,
             self.type,
             self.value
@@ -320,7 +320,7 @@ class TokenStream(object):
 
     def skip(self, n=1):
         """Got n tokens ahead."""
-        for x in xrange(n):
+        for x in range(n):
             next(self)
 
     def next_if(self, expr):
@@ -360,10 +360,10 @@ class TokenStream(object):
             expr = describe_token_expr(expr)
             if self.current.type is TOKEN_EOF:
                 raise TemplateSyntaxError('unexpected end of template, '
-                                          'expected %r.' % expr,
+                                          'expected {!r}.'.format(expr,)
                                           self.current.lineno,
                                           self.name, self.filename)
-            raise TemplateSyntaxError("expected token %r, got %r" %
+            raise TemplateSyntaxError("expected token {!r}, got {!r}" %
                                       (expr, describe_token(self.current)),
                                       self.current.lineno,
                                       self.name, self.filename)
@@ -432,14 +432,14 @@ class Lexer(object):
         self.rules = {
             'root': [
                 # directives
-                (c('(.*?)(?:%s)' % '|'.join(
-                    [r'(?P<raw_begin>(?:\s*%s\-|%s)\s*raw\s*(?:\-%s\s*|%s))' % (
+                (c('(.*?)(?:{})'.format('|'.join()
+                    [r'(?P<raw_begin>(?:\s*{}\-|{})\s*raw\s*(?:\-{}\s*|{}))'.format(
                         e(environment.block_start_string),
                         e(environment.block_start_string),
                         e(environment.block_end_string),
                         e(environment.block_end_string)
                     )] + [
-                        r'(?P<%s_begin>\s*%s\-|%s)' % (n, r, r)
+                        r'(?P<{}_begin>\s*{}\-|{})'.format(n, r, r)
                         for n, r in root_tag_rules
                     ])), (TOKEN_DATA, '#bygroup'), '#bygroup'),
                 # data
@@ -447,7 +447,7 @@ class Lexer(object):
             ],
             # comments
             TOKEN_COMMENT_BEGIN: [
-                (c(r'(.*?)((?:\-%s\s*|%s)%s)' % (
+                (c(r'(.*?)((?:\-{}\s*|{}){})'.format(
                     e(environment.comment_end_string),
                     e(environment.comment_end_string),
                     block_suffix_re
@@ -456,7 +456,7 @@ class Lexer(object):
             ],
             # blocks
             TOKEN_BLOCK_BEGIN: [
-                (c('(?:\-%s\s*|%s)%s' % (
+                (c('(?:\-{}\s*|{}){}'.format(
                     e(environment.block_end_string),
                     e(environment.block_end_string),
                     block_suffix_re
@@ -464,14 +464,14 @@ class Lexer(object):
             ] + tag_rules,
             # variables
             TOKEN_VARIABLE_BEGIN: [
-                (c('\-%s\s*|%s' % (
+                (c('\-{}\s*|{}'.format(
                     e(environment.variable_end_string),
                     e(environment.variable_end_string)
                 )), TOKEN_VARIABLE_END, '#pop')
             ] + tag_rules,
             # raw block
             TOKEN_RAW_BEGIN: [
-                (c('(.*?)((?:\s*%s\-|%s)\s*endraw\s*(?:\-%s\s*|%s%s))' % (
+                (c('(.*?)((?:\s*{}\-|{})\s*endraw\s*(?:\-{}\s*|{}{}))'.format(
                     e(environment.block_start_string),
                     e(environment.block_start_string),
                     e(environment.block_end_string),
@@ -597,10 +597,9 @@ class Lexer(object):
                                     lineno += value.count('\n')
                                     break
                             else:
-                                raise RuntimeError('%r wanted to resolve '
+                                raise RuntimeError('{!r} wanted to resolve '
                                                    'the token dynamically'
-                                                   ' but no group matched'
-                                                   % regex)
+                                                   ' but no group matched'.format(regex))
                         # normal group
                         else:
                             data = m.group(idx + 1)
@@ -621,13 +620,13 @@ class Lexer(object):
                             balancing_stack.append(']')
                         elif data in ('}', ')', ']'):
                             if not balancing_stack:
-                                raise TemplateSyntaxError('unexpected \'%s\'' %
+                                raise TemplateSyntaxError('unexpected \'{}\'' %
                                                           data, lineno, name,
                                                           filename)
                             expected_op = balancing_stack.pop()
                             if expected_op != data:
-                                raise TemplateSyntaxError('unexpected \'%s\', '
-                                                          'expected \'%s\'' %
+                                raise TemplateSyntaxError('unexpected \'{}\', '
+                                                          'expected \'{}\'' %
                                                           (data, expected_op),
                                                           lineno, name,
                                                           filename)
@@ -653,7 +652,7 @@ class Lexer(object):
                                 stack.append(key)
                                 break
                         else:
-                            raise RuntimeError('%r wanted to resolve the '
+                            raise RuntimeError('{!r} wanted to resolve the '
                                                'new state dynamically but'
                                                ' no group matched' %
                                                regex)
@@ -665,8 +664,8 @@ class Lexer(object):
                 # this means a loop without break condition, avoid that and
                 # raise error
                 elif pos2 == pos:
-                    raise RuntimeError('%r yielded empty string without '
-                                       'stack change' % regex)
+                    raise RuntimeError('{!r} yielded empty string without '
+                                       'stack change'.format(regex))
                 # publish new function and start again
                 pos = pos2
                 break
@@ -677,6 +676,6 @@ class Lexer(object):
                 if pos >= source_length:
                     return
                 # something went wrong
-                raise TemplateSyntaxError('unexpected char %r at %d' %
+                raise TemplateSyntaxError('unexpected char {!r} at {:d}' %
                                           (source[pos], pos), lineno,
                                           name, filename)

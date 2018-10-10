@@ -20,7 +20,7 @@ class LinksaveIn(OCR):
 
     __description__ = """Linksave.in ocr plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def init(self):
         self.data_dir = os.path.dirname(os.path.abspath(
@@ -148,7 +148,7 @@ class LinksaveIn(OCR):
         final = ""
         for n, letter in enumerate(letters):
             self.img = letter
-            self.img.save(self.data_dir + "letter%d.png" % n)
+            self.img.save(self.data_dir + "letter{:d}.png".format(n))
             self.run_tesser(True, True, False, False)
             final += self.result_captcha
 

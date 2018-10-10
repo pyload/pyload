@@ -14,4 +14,4 @@ class StealthTo(DeadCrypter):
 
     __description__ = """Stealth.to decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __authors__ = [("spoob", "spoob@pyload.net")]

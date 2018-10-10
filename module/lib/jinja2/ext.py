@@ -203,7 +203,7 @@ class InternationalizationExtension(Extension):
             self.environment.globals.pop(key, None)
 
     def _extract(self, source, gettext_functions=GETTEXT_FUNCTIONS):
-        if isinstance(source, basestring):
+        if isinstance(source, str):
             source = self.environment.parse(source)
         return extract_from_ast(source, gettext_functions)
 
@@ -227,7 +227,7 @@ class InternationalizationExtension(Extension):
 
             name = parser.stream.expect('name')
             if name.value in variables:
-                parser.fail('translatable variable %r defined twice.' %
+                parser.fail('translatable variable {!r} defined twice.' %
                             name.value, name.lineno,
                             exc=TemplateAssertionError)
 
@@ -263,7 +263,7 @@ class InternationalizationExtension(Extension):
             if parser.stream.current.type != 'block_end':
                 name = parser.stream.expect('name')
                 if name.value not in variables:
-                    parser.fail('unknown variable %r for pluralization' %
+                    parser.fail('unknown variable {!r} for pluralization' %
                                 name.value, name.lineno,
                                 exc=TemplateAssertionError)
                 plural_expr = variables[name.value]
@@ -303,7 +303,7 @@ class InternationalizationExtension(Extension):
                 next(parser.stream)
                 name = parser.stream.expect('name').value
                 referenced.append(name)
-                buf.append('%%(%s)s' % name)
+                buf.append('%%({})s'.format(name))
                 parser.stream.expect('variable_end')
             elif parser.stream.current.type == 'block_begin':
                 next(parser.stream)
@@ -373,8 +373,8 @@ class InternationalizationExtension(Extension):
 
 
 class ExprStmtExtension(Extension):
-    """Adds a `do` tag to Jinja2 that works like the print statement just
-    that it doesn't print the return value.
+    """Adds a `do` tag to Jinja2 that works like the print(statement just)
+    that it doesn't print(the return value.)
     """
     tags = set(['do'])
 
@@ -474,7 +474,7 @@ def extract_from_ast(node, gettext_functions=GETTEXT_FUNCTIONS,
         strings = []
         for arg in node.args:
             if isinstance(arg, nodes.Const) and \
-               isinstance(arg.value, basestring):
+               isinstance(arg.value, str):
                 strings.append(arg.value)
             else:
                 strings.append(None)

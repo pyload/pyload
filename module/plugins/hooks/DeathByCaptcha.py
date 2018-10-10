@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import base64
 import re
@@ -37,10 +37,10 @@ class DeathByCaptchaException(Exception):
             return self.err
 
     def __str__(self):
-        return "<DeathByCaptchaException %s>" % self.err
+        return "<DeathByCaptchaException {}>".format(self.err)
 
     def __repr__(self):
-        return "<DeathByCaptchaException %s>" % self.err
+        return "<DeathByCaptchaException {}>".format(self.err)
 
 
 class DeathByCaptcha(Addon):
@@ -56,7 +56,7 @@ class DeathByCaptcha(Addon):
 
     __description__ = """Send captchas to DeathByCaptcha.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
     API_URL = "http://api.dbcapi.me/api/"
@@ -65,7 +65,7 @@ class DeathByCaptcha(Addon):
         req = get_request()
         req.c.setopt(
             pycurl.HTTPHEADER, [
-                "Accept: application/json", "User-Agent: pyLoad %s" %
+                "Accept: application/json", "User-Agent: pyLoad {}" %
                 self.pyload.version])
 
         if post:
@@ -76,7 +76,7 @@ class DeathByCaptcha(Addon):
 
         res = None
         try:
-            html = self.load("%s%s" % (self.API_URL, api),
+            html = self.load("{}{}".format(self.API_URL, api),
                              post=post,
                              multipart=multipart,
                              req=req)
@@ -145,14 +145,14 @@ class DeathByCaptcha(Addon):
 
         for _i in range(24):
             time.sleep(5)
-            res = self.api_response("captcha/%d" % ticket, False)
+            res = self.api_response("captcha/{:d}".format(ticket), False)
             if res['text'] and res['is_correct']:
                 break
         else:
             raise DeathByCaptchaException('timed-out')
 
         result = res['text']
-        self.log_debug("Result %s : %s" % (ticket, result))
+        self.log_debug("Result {} : {}".format(ticket, result))
 
         return ticket, result
 
@@ -178,7 +178,7 @@ class DeathByCaptcha(Addon):
 
         balance, rate = self.info['balance'], self.info['rate']
         self.log_info(_("Account balance"),
-                      _("US$%.3f (%d captchas left at %.2f cents each)") % (balance / 100,
+                      _("US${:3f} ({:d} captchas left at {:2f} cents each)").format(balance // 100,
                                                                             balance // rate, rate))
 
         if balance > rate:
@@ -191,8 +191,7 @@ class DeathByCaptcha(Addon):
         if task.data['service'] == self.classname and "ticket" in task.data:
             try:
                 res = self.api_response(
-                    "captcha/%d/report" %
-                    task.data['ticket'], True)
+                    "captcha/{:d}/report".format(task.data['ticket']), True)
 
             except DeathByCaptchaException as e:
                 self.log_error(e.message)

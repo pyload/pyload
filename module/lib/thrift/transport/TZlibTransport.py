@@ -23,7 +23,7 @@ data compression.
 '''
 
 from __future__ import division
-from __future__ import absolute_import
+
 import zlib
 from cStringIO import StringIO
 from .TTransport import TTransportBase, CReadableTransport
@@ -31,14 +31,14 @@ from .TTransport import TTransportBase, CReadableTransport
 class TZlibTransportFactory(object):
   '''
   Factory transport that builds zlib compressed transports.
-  
+
   This factory caches the last single client/transport that it was passed
   and returns the same TZlibTransport object that was created.
-  
+
   This caching means the TServer class will get the _same_ transport
   object for both input and output transports from this factory.
   (For non-threaded scenarios only, since the cache only holds one object)
-  
+
   The purpose of this caching is to allocate only one TZlibTransport where
   only one is really needed (since it must have separate read/write buffers),
   and makes the statistics from getCompSavings() and getCompRatio()
@@ -53,11 +53,11 @@ class TZlibTransportFactory(object):
     '''Wrap a transport , trans, with the TZlibTransport
     compressed transport class, returning a new
     transport to the caller.
-    
+
     @param compresslevel: The zlib compression level, ranging
     from 0 (no compression) to 9 (best compression).  Defaults to 9.
     @type compresslevel: int
-    
+
     This method returns a TZlibTransport which wraps the
     passed C{trans} TTransport derived instance.
     '''
@@ -84,7 +84,7 @@ class TZlibTransport(TTransportBase, CReadableTransport):
     '''
     Create a new TZlibTransport, wrapping C{trans}, another
     TTransport derived object.
-    
+
     @param trans: A thrift transport object, i.e. a TSocket() object.
     @type trans: TTransport
     @param compresslevel: The zlib compression level, ranging
@@ -128,17 +128,17 @@ class TZlibTransport(TTransportBase, CReadableTransport):
     '''
     Get the current measured compression ratios (in,out) from
     this transport.
-    
-    Returns a tuple of: 
+
+    Returns a tuple of:
     (inbound_compression_ratio, outbound_compression_ratio)
-    
+
     The compression ratios are computed as:
         compressed / uncompressed
 
     E.g., data that compresses by 10x will have a ratio of: 0.10
     and data that compresses to half of ts original size will
     have a ratio of 0.5
-    
+
     None is returned if no bytes have yet been processed in
     a particular direction.
     '''
@@ -153,10 +153,10 @@ class TZlibTransport(TTransportBase, CReadableTransport):
     '''
     Get the current count of saved bytes due to data
     compression.
-    
+
     Returns a tuple of:
     (inbound_saved_bytes, outbound_saved_bytes)
-    
+
     Note: if compression is actually expanding your
     data (only likely with very tiny thrift objects), then
     the values returned will be negative.

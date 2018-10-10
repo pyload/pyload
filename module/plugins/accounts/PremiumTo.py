@@ -15,7 +15,7 @@ class PremiumTo(MultiAccount):
 
     __description__ = """Premium.to account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("stickell", "l.stickell@yahoo.it"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
@@ -39,7 +39,7 @@ class PremiumTo(MultiAccount):
 
         if self.req.code == 200:
             # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = sum(map(float, traffic.split(';'))) / 1024
+            trafficleft = sum(map(float, traffic.split(';'))) // 1024
             return {'premium': True, 'trafficleft': trafficleft, 'validuntil': -1}
 
         else:

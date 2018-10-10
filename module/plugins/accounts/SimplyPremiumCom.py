@@ -38,7 +38,7 @@ class SimplyPremiumCom(MultiAccount):
         json_data = self.load(
             'http://www.simply-premium.com/api/user.php?format=json')
 
-        self.log_debug("JSON data: %s" % json_data)
+        self.log_debug("JSON data: {}".format(json_data))
 
         json_data = json.loads(json_data)
 
@@ -51,7 +51,7 @@ class SimplyPremiumCom(MultiAccount):
         if 'remain_traffic' in json_data[
                 'result'] and json_data['result']['remain_traffic']:
             # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = float(json_data['result']['remain_traffic']) / 1024
+            trafficleft = float(json_data['result']['remain_traffic']) // 1024
 
         return {'premium': premium, 'validuntil': validuntil,
                 'trafficleft': trafficleft}

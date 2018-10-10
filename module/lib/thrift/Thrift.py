@@ -77,9 +77,9 @@ class TException(Exception):
   # BaseException.message is deprecated in Python v[2.6,3.0)
   if (2, 6, 0) <= sys.version_info < (3, 0):
     def _get_message(self):
-	    return self._message
+        return self._message
     def _set_message(self, message):
-	    self._message = message
+        self._message = message
     message = property(_get_message, _set_message)
 
   def __init__(self, message=None):

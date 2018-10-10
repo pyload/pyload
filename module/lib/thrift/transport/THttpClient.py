@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -56,7 +56,7 @@ class THttpClient(TTransportBase):
       self.host = parsed.hostname
       self.path = parsed.path
       if parsed.query:
-        self.path += '?%s' % parsed.query
+        self.path += '?{}'.format(parsed.query)
     self.__wbuf = StringIO()
     self.__http = None
     self.__timeout = None

@@ -12,7 +12,7 @@ from ..internal.SimpleCrypter import SimpleCrypter
 
 def xor_decrypt(data, key):
     data = base64.b64decode(data)
-    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0] % len(key)])), [
+    return "".join(map(lambda x: chr(ord(x[1]) ^ ord(key[x[0].format(len(key))])), [
                    (i, c) for i, c in enumerate(data)]))
 
 

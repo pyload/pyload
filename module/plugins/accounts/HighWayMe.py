@@ -30,7 +30,7 @@ class HighWayMe(MultiAccount):
 
         json_data = self.load('https://high-way.me/api.php?user')
 
-        self.log_debug("JSON data: %s" % json_data)
+        self.log_debug("JSON data: {}".format(json_data))
 
         json_data = json.loads(json_data)
 
@@ -44,7 +44,7 @@ class HighWayMe(MultiAccount):
         if 'premium_traffic' in json_data[
                 'user'] and json_data['user']['premium_traffic']:
             # @TODO: Remove `/ 1024` in 0.4.10
-            trafficleft = float(json_data['user']['premium_traffic']) / 1024
+            trafficleft = float(json_data['user']['premium_traffic']) // 1024
 
         return {'premium': premium,
                 'validuntil': validuntil,

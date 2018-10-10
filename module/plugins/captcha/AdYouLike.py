@@ -26,7 +26,7 @@ class AdYouLike(CaptchaService):
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Ayl: %s | Callback: %s" % self.key)
+            self.log_debug("Ayl: {} | Callback: {}".format(self.key))
             return self.key   #: Key is the tuple(ayl, callback)
         else:
             self.log_debug("Ayl or callback pattern not found")
@@ -53,7 +53,7 @@ class AdYouLike(CaptchaService):
         except AttributeError:
             self.fail(_("AdYouLike challenge pattern not found"))
 
-        self.log_debug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: {}".format(challenge))
 
         return self.result(ayl, challenge), challenge
 
@@ -68,10 +68,10 @@ class AdYouLike(CaptchaService):
         #: 'big':{'y':0,'x':0,'w':300,'h':250},'hover':{'y':440,'x':0,'w':300,'h':60}},
         #: 'tid':"SqwuAdxT1EZoi4B5q0T63LN2AkiCJBg5"})
 
-        if isinstance(server, basestring):
+        if isinstance(server, str):
             server = json.loads(server)
 
-        if isinstance(challenge, basestring):
+        if isinstance(challenge, str):
             challenge = json.loads(challenge)
 
         try:

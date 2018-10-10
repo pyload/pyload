@@ -88,7 +88,7 @@ class BaseLoader(object):
         the template will be reloaded.
         """
         if not self.has_source_access:
-            raise RuntimeError('%s cannot provide access to the source' %
+            raise RuntimeError('{} cannot provide access to the source' %
                                self.__class__.__name__)
         raise TemplateNotFound(template)
 
@@ -153,7 +153,7 @@ class FileSystemLoader(BaseLoader):
     """
 
     def __init__(self, searchpath, encoding='utf-8'):
-        if isinstance(searchpath, basestring):
+        if isinstance(searchpath, str):
             searchpath = [searchpath]
         self.searchpath = list(searchpath)
         self.encoding = encoding
@@ -307,7 +307,7 @@ class FunctionLoader(BaseLoader):
         rv = self.load_func(template)
         if rv is None:
             raise TemplateNotFound(template)
-        elif isinstance(rv, basestring):
+        elif isinstance(rv, str):
             return rv, None, None
         return rv
 
@@ -402,12 +402,12 @@ class ModuleLoader(BaseLoader):
     has_source_access = False
 
     def __init__(self, path):
-        package_name = '_jinja2_module_templates_%x' % id(self)
+        package_name = '_jinja2_module_templates_{:x}'.format(id(self))
 
         # create a fake module that looks for the templates in the
         # path given.
         mod = _TemplateModule(package_name)
-        if isinstance(path, basestring):
+        if isinstance(path, str):
             path = [path]
         else:
             path = list(path)
@@ -433,7 +433,7 @@ class ModuleLoader(BaseLoader):
     @internalcode
     def load(self, environment, name, globals=None):
         key = self.get_template_key(name)
-        module = '%s.%s' % (self.package_name, key)
+        module = '{}.{}'.format(self.package_name, key)
         mod = getattr(self.module, module, None)
         if mod is None:
             try:

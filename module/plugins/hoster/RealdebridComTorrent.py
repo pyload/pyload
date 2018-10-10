@@ -43,7 +43,7 @@ class RealdebridComTorrent(Hoster):
             elif e.code == 403:
                 self.fail(_("Permission denied (account locked, not premium)"))
             elif e.code == 503:
-                self.fail(_("Service unavailable - %s") % error_msg)
+                self.fail(_("Service unavailable - {}").format(error_msg))
 
     def setup(self):
         self.resume_download = True
@@ -63,7 +63,7 @@ class RealdebridComTorrent(Hoster):
         if self.pyfile.url.endswith(".torrent"):
             if self.pyfile.url.startswith("http"):
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = os.path.join("tmp", "tmp_%s.torrent" % self.pyfile.package().name)
+                torrent_filename = os.path.join("tmp", "tmp_{}.torrent".format(self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
             else:
@@ -85,7 +85,7 @@ class RealdebridComTorrent(Hoster):
                     elif e.code == 403:
                         self.fail(_("Permission denied (account locked, not premium)"))
                     elif e.code == 503:
-                        self.fail(_("Service unavailable - %s") % error_msg)
+                        self.fail(_("Service unavailable - {}").format(error_msg))
 
             else:
                 self.fail(_("Illegal URL")) #: We don't allow files outside pyLoad's config directory
@@ -131,7 +131,7 @@ class RealdebridComTorrent(Hoster):
                                      get= {'auth_token': self.api_token},
                                      post={'link': torrent_url})
         if "error" in api_data:
-            self.fail("%s (code: %s)" % (api_data["error"], api_data["error_code"]))
+            self.fail("{} (code: {})".format(api_data["error"], api_data["error_code"]))
 
         else:
             self.pyfile.name = api_data['filename']
@@ -141,7 +141,7 @@ class RealdebridComTorrent(Hoster):
 
     def delete_torrent_from_server(self, torrent_id):
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, "%s/torrents/delete/%s?auth_token=%s" % (self.API_URL, torrent_id, self.api_token))
+        c.setopt(pycurl.URL, "{}/torrents/delete/{}?auth_token={}".format(self.API_URL, torrent_id, self.api_token))
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
         c.setopt(pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher"))
         c.setopt(pycurl.HTTPHEADER, ["Accept: */*",

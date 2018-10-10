@@ -62,11 +62,11 @@ copyright = u'2011, pyLoad Team'
 """ [[[cog
 from pavement import options
 v = options.version.split(".")
-cog.outl("version = '%s'" % ".".join(v[:2]))
-cog.outl("release = '%s'" % ".".join(v))
+cog.outl("version = '{}'".format(".".join(v[:2])))
+cog.outl("release = '{}'".format(".".join(v)))
 ]]]"""
 version = '0.4'
-release = '0.4.9'
+release = '0.5.0'
 # [[[end]]]
 
 

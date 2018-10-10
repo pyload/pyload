@@ -1,23 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#@author: RaNaN
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-from __future__ import absolute_import
 
 from os.path import exists, join
 import re
@@ -135,7 +120,7 @@ class ThreadManager:
         try:
             self.tryReconnect()
         except Exception as e:
-            self.log.error(_("Reconnect Failed: %s") % str(e) )
+            self.log.error(_("Reconnect Failed: {}").format(str(e)) )
             self.reconnecting.clear()
             if self.core.debug:
                 print_exc()
@@ -147,7 +132,7 @@ class ThreadManager:
             self.log.warning("Assign job error", e)
             if self.core.debug:
                 print_exc()
-            
+
             sleep(0.5)
             self.assignJob()
             #it may be failed non critical so we try it again
@@ -189,11 +174,11 @@ class ThreadManager:
 
         self.core.hookManager.beforeReconnecting(ip)
 
-        self.log.debug("Old IP: %s" % ip)
+        self.log.debug("Old IP: {}".format(ip))
 
         try:
             reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
-        except:
+        except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
             self.core.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
@@ -206,7 +191,7 @@ class ThreadManager:
         ip = self.getIP()
         self.core.hookManager.afterReconnecting(ip)
 
-        self.log.info(_("Reconnected, new IP: %s") % ip)
+        self.log.info(_("Reconnected, new IP: {}").format(ip))
 
         self.reconnecting.clear()
 
@@ -222,7 +207,7 @@ class ThreadManager:
                 ip = getURL(sv[0])
                 ip = re.match(sv[1], ip).group(1)
                 break
-            except:
+            except Exception:
                 ip = ""
                 sleep(1)
 
@@ -268,7 +253,7 @@ class ThreadManager:
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
         occ = [x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit
-        
+
         occ.sort()
         occ = tuple(set(occ))
         job = self.core.files.getJob(occ)
@@ -284,7 +269,7 @@ class ThreadManager:
                 return
 
             if job.plugin.__type__ == "hoster":
-                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) / 1024 / 1024
+                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) // 1024 // 1024
                 if spaceLeft < self.core.config["general"]["min_free_space"]:
                     self.log.warning(_("Not enough space left on device"))
                     self.pause = True

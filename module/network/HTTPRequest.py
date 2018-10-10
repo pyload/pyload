@@ -1,21 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-"""
 
 import cStringIO
 import pycurl
@@ -29,7 +15,7 @@ from module.plugins.Plugin import Abort
 
 def myquote(url):
     return quote(url.encode('utf_8') if isinstance(url, unicode) else url, safe="%/:=&?~#+!$,;'@()*[]")
-    
+
 def myurlencode(data):
     data = dict(data)
     return urlencode(dict((x.encode('utf_8') if isinstance(x, unicode) else x, \
@@ -55,7 +41,7 @@ unofficial_responses = {
 class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
-        Exception.__init__(self, "Bad server response: %s %s" %
+        Exception.__init__(self, "Bad server response: {} {}" %
                            (code, responses.get(int_code, unofficial_responses.get(int_code, "unknown error code"))))
         self.code = int_code
         self.header = header
@@ -132,7 +118,7 @@ class HTTPRequest():
             self.c.setopt(pycurl.PROXYPORT, proxy["port"])
 
             if proxy["username"]:
-                self.c.setopt(pycurl.PROXYUSERPWD, str("%s:%s" % (proxy["username"], proxy["password"])))
+                self.c.setopt(pycurl.PROXYUSERPWD, str("{}:{}".format(proxy["username"], proxy["password"])))
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
@@ -170,7 +156,7 @@ class HTTPRequest():
 
         if get:
             get = urlencode(get)
-            url = "%s?%s" % (url, get)
+            url = "{}?{}".format(url, get)
 
         self.c.setopt(pycurl.URL, url)
         self.c.lastUrl = url
@@ -278,19 +264,19 @@ class HTTPRequest():
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded %s" % encoding )
+            #self.log.debug("Decoded {}".format(encoding ))
             if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
                 encoding = 'utf-8-sig'
-            
+
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
             #TODO: html_unescape as default
 
         except LookupError:
-            self.log.debug("No Decoder foung for %s" % encoding)
+            self.log.debug("No Decoder foung for {}".format(encoding))
         except Exception:
-            self.log.debug("Error when decoding string from %s." % encoding)
+            self.log.debug("Error when decoding string from {}.".format(encoding))
 
         return rep
 
@@ -312,7 +298,7 @@ class HTTPRequest():
         self.header += buf
 
     def putHeader(self, name, value):
-        self.headers.append("%s: %s" % (name, value))
+        self.headers.append("{}: {}".format(name, value))
 
     def clearHeaders(self):
         self.headers = []
@@ -330,8 +316,3 @@ class HTTPRequest():
             self.c.close()
             del self.c
 
-if __name__ == "__main__":
-    url = "http://pyload.org"
-    c = HTTPRequest()
-    print c.load(url)
-    

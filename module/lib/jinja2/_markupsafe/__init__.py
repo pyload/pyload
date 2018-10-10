@@ -40,7 +40,7 @@ class Markup(unicode):
     >>> class Foo(object):
     ...  def __html__(self):
     ...   return '<a href="#">foo</a>'
-    ... 
+    ...
     >>> Markup(Foo())
     Markup(u'<a href="#">foo</a>')
 
@@ -53,10 +53,10 @@ class Markup(unicode):
     Operations on a markup string are markup aware which means that all
     arguments are passed through the :func:`escape` function:
 
-    >>> em = Markup("<em>%s</em>")
+    >>> em = Markup("<em>{}</em>")
     >>> em % "foo & bar"
     Markup(u'<em>foo &amp; bar</em>')
-    >>> strong = Markup("<strong>%(text)s</strong>")
+    >>> strong = Markup("<strong>{text}</strong>")
     >>> strong % {'text': '<blink>hacker here</blink>'}
     Markup(u'<strong>&lt;blink&gt;hacker here&lt;/blink&gt;</strong>')
     >>> Markup("<em>Hello</em> ") + "<foo>"
@@ -75,12 +75,12 @@ class Markup(unicode):
         return self
 
     def __add__(self, other):
-        if hasattr(other, '__html__') or isinstance(other, basestring):
+        if hasattr(other, '__html__') or isinstance(other, str):
             return self.__class__(unicode(self) + unicode(escape(other)))
         return NotImplemented
 
     def __radd__(self, other):
-        if hasattr(other, '__html__') or isinstance(other, basestring):
+        if hasattr(other, '__html__') or isinstance(other, str):
             return self.__class__(unicode(escape(other)) + unicode(self))
         return NotImplemented
 
@@ -98,7 +98,7 @@ class Markup(unicode):
         return self.__class__(unicode.__mod__(self, arg))
 
     def __repr__(self):
-        return '%s(%s)' % (
+        return '{}({})'.format(
             self.__class__.__name__,
             unicode.__repr__(self)
         )
@@ -198,7 +198,7 @@ class Markup(unicode):
 def _escape_argspec(obj, iterable):
     """Helper for various string-wrapped functions."""
     for key, value in iterable:
-        if hasattr(value, '__html__') or isinstance(value, basestring):
+        if hasattr(value, '__html__') or isinstance(value, str):
             obj[key] = escape(value)
     return obj
 

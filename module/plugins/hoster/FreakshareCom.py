@@ -19,7 +19,7 @@ class FreakshareCom(Hoster):
     __description__ = """Freakshare.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("sitacuisses", "sitacuisses@yahoo.de"),
-                   ("spoob", "spoob@pyload.org"),
+                   ("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Toilal", "toilal.dev@gmail.com")]
 

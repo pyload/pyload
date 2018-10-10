@@ -25,7 +25,7 @@ class ShareonlineBiz(SimpleHoster):
 
     __description__ = """Shareonline.biz hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
@@ -70,7 +70,7 @@ class ShareonlineBiz(SimpleHoster):
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
-        res = self.load("%s/free/captcha/%d" % (self.pyfile.url, int(time.time() * 1000)),
+        res = self.load("{}/free/captcha/{:d}".format(self.pyfile.url, int(time.time() * 1000)),
                         post={'dl_free': "1",
                               'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field': response})
@@ -83,7 +83,7 @@ class ShareonlineBiz(SimpleHoster):
     def handle_free(self, pyfile):
         self.wait(3)
 
-        self.data = self.load("%s/free/" % pyfile.url,
+        self.data = self.load("{}/free/".format(pyfile.url),
                               post={'dl_free': "1", 'choice': "free"})
 
         self.check_errors()

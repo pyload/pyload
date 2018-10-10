@@ -34,29 +34,29 @@ class GoogledriveComFolder(Crypter):
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
         try:
-            json_data = json.loads(self.load("%s%s" % (self.API_URL, cmd),
+            json_data = json.loads(self.load("{}{}".format(self.API_URL, cmd),
                                              get=kwargs))
-            self.log_debug("API response: %s" % json_data)
+            self.log_debug("API response: {}".format(json_data))
             return json_data
 
         except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                json_data['error']['message'],
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
 
             except ValueError:
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                e,
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
             return None
 
     def enum_folder(self, folder_id):
         links = []
-        json_data = self.api_response("files", q="'%s' in parents" % folder_id,
+        json_data = self.api_response("files", q="'{}' in parents".format(folder_id),
                                       pageSize=100,
                                       fields="files/id,files/mimeType,nextPageToken")
 
@@ -80,7 +80,7 @@ class GoogledriveComFolder(Crypter):
 
         next_page = json_data.get('nextPageToken', None)
         while next_page:
-            json_data = self.api_response("files", q="'%s' in parents" % folder_id,
+            json_data = self.api_response("files", q="'{}' in parents".format(folder_id),
                                           pageToken=next_page,
                                           pageSize=100,
                                           fields="files/id,files/mimeType,nextPageToken")
@@ -110,7 +110,7 @@ class GoogledriveComFolder(Crypter):
     def decrypt(self, pyfile):
         links = []
 
-        json_data = self.api_response("files/%s" % self.info['pattern']['ID'])
+        json_data = self.api_response("files/{}".format(self.info['pattern']['ID']))
         if json_data is None:
             self.fail("API error")
 

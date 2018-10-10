@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import operator
 import os
@@ -32,7 +32,7 @@ class UpdateManager(Addon):
 
     _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
-    # SERVER_URL     = "http://updatemanager.pyload.org"
+    # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
     SERVER_URL = "https://github.com/pyload/updates/raw/master/plugins.txt"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
@@ -171,7 +171,7 @@ class UpdateManager(Addon):
             exitcode = self.update_plugins()
 
         elif re.search(r'^\d+(?:\.\d+){0,3}[a-z]?$', newversion):
-            self.log_info(_("***  New pyLoad %s available  ***") % newversion)
+            self.log_info(_("***  New pyLoad {} available  ***").format(newversion))
             self.log_info(_("***  Get it here: https://github.com/pyload/pyload/releases  ***"))
             self.info['pyload'] = True
             exitcode = 3
@@ -283,7 +283,7 @@ class UpdateManager(Addon):
                     break
 
             for t, n in self.remove_plugins(blacklisted_plugins):
-                self.log_info(_("Removed blacklisted plugin: %(type)s %(name)s") %
+                self.log_info(_("Removed blacklisted plugin: {type} {name}") %
                               {'type': t.upper(),
                                'name': n,})
 
@@ -293,29 +293,29 @@ class UpdateManager(Addon):
             plugin_version = plugin['version']
 
             plugins = getattr(self.pyload.pluginManager,
-                              "%sPlugins" % plugin_type.rstrip('s'))  # @TODO: Remove rstrip in 0.4.10
+                              "{}Plugins".format(plugin_type.rstrip('s')))  # @TODO: Remove rstrip in 0.4.10)
 
             oldver = float(plugins[plugin_name]['v']) if plugin_name in plugins else None
             try:
                 newver = float(plugin_version)
             except ValueError:
-                self.log_error(_("Error updating plugin: %s %s") % (plugin_type.rstrip('s').upper(), plugin_name),
+                self.log_error(_("Error updating plugin: {} {}").format(plugin_type.rstrip('s').upper(), plugin_name),
                                _("Bad version number on the server"))
                 continue
 
             if not oldver:
-                msg = "New plugin: %(type)s %(name)s (v%(newver).2f)"
+                msg = "New plugin: {type} {name} (v{newver:.2f})"
             elif newver > oldver:
-                msg = "New version of plugin: %(type)s %(name)s (v%(oldver).2f -> v%(newver).2f)"
+                msg = "New version of plugin: {type} {name} (v{oldver:.2f} -> v{newver:.2f})"
             else:
                 continue
 
-            self.log_info(_(msg) % {'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.4.10
+            self.log_info(msg.format(**{'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.4.10
                                     'name': plugin_name,
                                     'oldver': oldver,
-                                    'newver': newver})
+                                    'newver': newver}))
             try:
-                content = self.load(url % plugin + ".py", decode=False, req=req)
+                content = self.load(url.format(plugin + ".py"), decode=False, req=req)
 
                 if req.code == 404:
                     raise Exception(_("URL not found"))
@@ -330,7 +330,7 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception as e:
-                self.log_error(_("Error updating plugin: %s %s") %
+                self.log_error(_("Error updating plugin: {} {}") %
                                (plugin_type.rstrip('s').upper(), plugin_name),
                                e)  # @TODO: Remove rstrip in 0.4.10
 
@@ -354,7 +354,7 @@ class UpdateManager(Addon):
 
         removed = set()
 
-        self.log_debug("Requested deletion of plugins: %s" % plugin_ids)
+        self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
 
         for plugin_type, plugin_name in plugin_ids:
             rootplugins = os.path.join(pypath, "module", "plugins")
@@ -378,7 +378,7 @@ class UpdateManager(Addon):
                         os.remove(filename)
 
                     except OSError as e:
-                        self.log_warning(_("Error removing `%s`") % filename, e)
+                        self.log_warning(_("Error removing `{}`").format(filename), e)
 
                     else:
                         plugin_id = (plugin_type, plugin_name)

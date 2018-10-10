@@ -41,7 +41,7 @@ class ZbigzCom(Hoster):
             urlp.path,
             get=get_params)
 
-        m = re.search("%s\((.+?)\);" % json_callback, jquery_data)
+        m = re.search("{}\((.+?)\);".format(json_callback, jquery_data))
 
         return json.loads(m.group(1)) if m else None
 
@@ -100,13 +100,13 @@ class ZbigzCom(Hoster):
         pyfile.setProgress(100)
 
         if len(json_data['files']) == 1:
-            download_url = "http://m.zbigz.com/file/%s/0" % file_id
+            download_url = "http://m.zbigz.com/file/{}/0".format(file_id)
 
         else:
-            self.data = self.load("http://m.zbigz.com/file/%s/-1" % file_id)
+            self.data = self.load("http://m.zbigz.com/file/{}/-1".format(file_id))
 
             m = re.search(
-                r'\'(http://\w+.zbigz.com/core/zipstate.php\?hash=%s&did=(\w+)).+?\'' %
+                r'\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\'' %
                 file_id, self.data)
             if m is None:
                 self.fail("Zip state URL not found")
@@ -115,7 +115,7 @@ class ZbigzCom(Hoster):
             download_id = m.group(2)
 
             m = re.search(
-                r'\'(http://\w+.zbigz.com/z/%s/.+?)\'' %
+                r'\'(http://\w+.zbigz.com/z/{}/.+?)\'' %
                 download_id, self.data)
             if m is None:
                 self.fail("Zip download URL not found")
@@ -144,4 +144,4 @@ class ZbigzCom(Hoster):
 
         self.download(download_url)
 
-        self.load("http://m.zbigz.com/delete.php?hash=%s" % file_id)
+        self.load("http://m.zbigz.com/delete.php?hash={}".format(file_id))

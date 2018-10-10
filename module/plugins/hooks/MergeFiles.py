@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import os
 import re
@@ -65,7 +65,7 @@ class MergeFiles(Addon):
                                     final_file.write(f_buffer)
                                     size_written += self.BUFFER_SIZE
                                     pyfile.setProgress(
-                                        (size_written * 100) / s_file_size)
+                                        (size_written * 100) // s_file_size)
                                 else:
                                     break
                         self.log_debug("Finished merging part", splitted_file)

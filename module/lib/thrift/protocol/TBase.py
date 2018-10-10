@@ -23,16 +23,16 @@ from thrift.transport import TTransport
 
 try:
   from thrift.protocol import fastbinary
-except:
+except Exception:
   fastbinary = None
 
 class TBase(object):
   __slots__ = []
 
   def __repr__(self):
-    L = ['%s=%r' % (key, getattr(self, key))
+    L = ['{}={!r}'.format(key, getattr(self, key))
               for key in self.__slots__ ]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{}({})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     if not isinstance(other, self.__class__):
@@ -43,10 +43,10 @@ class TBase(object):
       if my_val != other_val:
         return False
     return True
-    
+
   def __ne__(self, other):
     return not (self == other)
-  
+
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
       fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
@@ -63,10 +63,10 @@ class TExceptionBase(Exception):
   # old style class so python2.4 can raise exceptions derived from this
   #  This can't inherit from TBase because of that limitation.
   __slots__ = []
-  
+
   __repr__ = TBase.__repr__.__func__
   __eq__ = TBase.__eq__.__func__
   __ne__ = TBase.__ne__.__func__
   read = TBase.read.__func__
   write = TBase.write.__func__
-  
+

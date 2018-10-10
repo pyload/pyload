@@ -42,14 +42,14 @@ class IfolderRu(SimpleHoster):
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        url = "http://rusfolder.com/%s" % self.info['pattern']['ID']
+        url = "http://rusfolder.com/{}".format(self.info['pattern']['ID'])
         self.data = self.load(
-            "http://rusfolder.com/%s" %
+            "http://rusfolder.com/{}" %
             self.info['pattern']['ID'])
         self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.data).groups()
-        captcha_url = "http://ints.rusfolder.com/random/images/?session=%s" % session_id
+        captcha_url = "http://ints.rusfolder.com/random/images/?session={}".format(session_id)
 
         action, inputs = self.parse_html_form('id="download-step-one-form"')
         inputs['confirmed_number'] = self.captcha.decrypt(

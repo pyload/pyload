@@ -1,43 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
 
 from os.path import join
 from time import time
 import re
 
-from PyFile import PyFile
-from utils import freeSpace, compare_time
-from common.packagetools import parseNames
-from common.json_layer import json
-from network.RequestFactory import getURL
-from remote import activated
+from .PyFile import PyFile
+from .utils import freeSpace, compare_time
+from .common.packagetools import parseNames
+from .common.json_layer import json
+from .network.RequestFactory import getURL
+from .remote import activated
 
 if activated:
     try:
-        from remote.thriftbackend.thriftgen.pyload.ttypes import *
-        from remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+        from .remote.thriftbackend.thriftgen.pyload.ttypes import *
+        from .remote.thriftbackend.thriftgen.pyload.Pyload import Iface
         BaseObject = TBase
     except ImportError:
-        print "Thrift not imported"
-        from remote.socketbackend.ttypes import *
+        print("Thrift not imported")
+        from .remote.socketbackend.ttypes import *
 else:
-    from remote.socketbackend.ttypes import *
+    from .remote.socketbackend.ttypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only
@@ -49,7 +36,7 @@ def permission(bits):
         def __new__(cls, func, *args, **kwargs):
             permMap[func.__name__] = bits
             return func
-        
+
     return _Dec
 
 
@@ -112,7 +99,7 @@ class Api(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], basestring) else data["value"]
+                item.value = str(data["value"]) if not isinstance(data["value"], str) else data["value"]
                 item.type = data["type"]
                 items.append(item)
             section.items = items
@@ -135,7 +122,7 @@ class Api(Iface):
         else:
             value = self.core.config.getPlugin(category, option)
 
-        return str(value) if not isinstance(value, basestring) else value
+        return str(value) if not isinstance(value, str) else value
 
     @permission(PERMS.SETTINGS)
     def setConfigValue(self, category, option, value, section="core"):
@@ -160,7 +147,7 @@ class Api(Iface):
     @permission(PERMS.SETTINGS)
     def getConfig(self):
         """Retrieves complete config of core.
-        
+
         :return: list of `ConfigSection`
         """
         return self._convertConfigFormat(self.core.config.config)
@@ -219,7 +206,7 @@ class Api(Iface):
     @permission(PERMS.LIST)
     def statusServer(self):
         """Some general information about the current status of pyLoad.
-        
+
         :return: `ServerStatus`
         """
         serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
@@ -265,7 +252,7 @@ class Api(Iface):
             if offset >= len(lines):
                 return []
             return lines[offset:]
-        except:
+        except Exception:
             return ['No log available']
 
     @permission(PERMS.STATUS)
@@ -327,7 +314,7 @@ class Api(Iface):
 
         self.core.files.addLinks(links, pid)
 
-        self.core.log.info(_("Added package %(name)s containing %(count)d links") % {"name": name, "count": len(links)})
+        self.core.log.info(_("Added package {name} containing {count:d} links").format(**{"name": name, "count": len(links)}))
 
         self.core.files.save()
 
@@ -484,7 +471,7 @@ class Api(Iface):
         :return: `PackageData` with .fid attribute
         """
         data = self.core.files.getPackageData(int(pid))
-        
+
         if not data:
             raise PackageDoesNotExists(pid)
 
@@ -511,7 +498,7 @@ class Api(Iface):
     @permission(PERMS.DELETE)
     def deleteFiles(self, fids):
         """Deletes several file entries from pyload.
-        
+
         :param fids: list of file ids
         """
         for id in fids:
@@ -584,13 +571,13 @@ class Api(Iface):
     @permission(PERMS.ADD)
     def addFiles(self, pid, links):
         """Adds files to specific package.
-        
+
         :param pid: package id
         :param links: list of urls
         """
         self.core.files.addLinks(links, int(pid))
 
-        self.core.log.info(_("Added %(count)d links to package #%(package)d ") % {"count": len(links), "package": pid})
+        self.core.log.info(_("Added {count:d} links to package #{package:d} ").format(**{"count": len(links), "package": pid}))
         self.core.files.save()
 
     @permission(PERMS.MODIFY)
@@ -706,7 +693,7 @@ class Api(Iface):
         """Gives a package a new position.
 
         :param pid: package id
-        :param position: 
+        :param position:
         """
         self.core.files.reorderPackage(pid, position)
 
@@ -918,7 +905,7 @@ class Api(Iface):
 
         :param username:
         :param password:
-        :param remoteip: 
+        :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
         if self.core.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
@@ -1004,7 +991,7 @@ class Api(Iface):
         try:
             ret = self.core.hookManager.callRPC(plugin, func, args, parse)
             return str(ret)
-        except Exception, e:
+        except Exception as e:
             raise ServiceException(e.message)
 
     @permission(PERMS.STATUS)

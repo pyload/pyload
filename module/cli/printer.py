@@ -23,4 +23,4 @@ def white(string):
     return "\033[1;37m" + unicode(string) + "\033[0m"
 
 def println(line, content):
-        print "\033[" + str(line) + ";0H\033[2K" + content
+        print("\033[" + str(line) + ";0H\033[2K" + content)

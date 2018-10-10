@@ -203,5 +203,5 @@ SettingsUI = (function() {
         $("#path_type1").prop("checked", iframe.isabsolute ? "checked" : "");
     };
     return a;
-})(); 
+})();
 {% endautoescape %}

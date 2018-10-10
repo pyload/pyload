@@ -7,14 +7,14 @@ from os.path import join,abspath,dirname
 path = join((abspath(dirname(__file__))), "..","..", "lib")
 sys.path.append(path)
 
-from thriftgen.pyload import Pyload
-from thriftgen.pyload.ttypes import *
-from Socket import Socket
+from .thriftgen.pyload import Pyload
+from .thriftgen.pyload.ttypes import *
+from .Socket import Socket
 
 from thrift import Thrift
 from thrift.transport import TTransport
 
-from Protocol import Protocol
+from .Protocol import Protocol
 
 from time import time
 
@@ -25,16 +25,16 @@ def bench(f, *args, **kwargs):
     ret = [f(*args, **kwargs) for i in range(0,100)]
     e = time()
     try:
-        print "%s: %f s" % (f._Method__name, e-s)
+        print("{}: {:f} s".format(f._Method__name, e-s))
     except :
-        print "%s: %f s" % (f.__name__, e-s)
+        print("{}: {:f} s".format(f.__name__, e-s))
     return ret
 
 from getpass import getpass
 user = raw_input("user ")
 passwd = getpass("password ")
 
-server_url = "http%s://%s:%s@%s:%s/" % (
+server_url = "http{}://{}:{}@{}:{}/".format(
   "",
   user,
   passwd,
@@ -48,7 +48,7 @@ bench(proxy.status_server)
 bench(proxy.status_downloads)
 #bench(proxy.get_queue)
 #bench(proxy.get_collector)
-print
+print()
 try:
 
     # Make socket
@@ -66,7 +66,7 @@ try:
     # Connect!
     transport.open()
 
-    print "Login", client.login(user, passwd)
+    print("Login", client.login(user, passwd))
 
     bench(client.getServerVersion)
     bench(client.statusServer)
@@ -74,19 +74,19 @@ try:
     #bench(client.getQueue)
     #bench(client.getCollector)
 
-    print
-    print client.getServerVersion()
-    print client.statusServer()
-    print client.statusDownloads()
+    print()
+    print(client.getServerVersion())
+    print(client.statusServer())
+    print(client.statusDownloads())
     q = client.getQueue()
 
     for p in q:
       data = client.getPackageData(p.pid)
-      print data
-      print "Package Name: ", data.name
+      print(data)
+      print("Package Name: ", data.name)
 
     # Close!
     transport.close()
 
-except Thrift.TException, tx:
-    print 'ThriftExpection: %s' % tx.message
+except Thrift.TException as tx:
+    print('ThriftExpection: {}'.format(tx.message))

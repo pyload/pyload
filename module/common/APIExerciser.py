@@ -59,7 +59,7 @@ class APIExerciser(Thread):
 
     def run(self):
 
-        self.core.log.info("API Excerciser started %d" % self.id)
+        self.core.log.info("API Excerciser started {:d}".format(self.id))
 
         out = open("error.log", "ab")
         #core errors are not logged of course
@@ -70,22 +70,22 @@ class APIExerciser(Thread):
             try:
                 self.testAPI()
             except Exception:
-                self.core.log.error("Excerciser %d throw an execption" % self.id)
+                self.core.log.error("Excerciser {:d} throw an execption".format(self.id))
                 print_exc()
                 out.write(format_exc() + 2 * "\n")
                 out.flush()
 
             if not self.count % 100:
-                self.core.log.info("Exerciser %d tested %d api calls" % (self.id, self.count))
+                self.core.log.info("Exerciser {:d} tested {:d} api calls".format(self.id, self.count))
             if not self.count % 1000:
                 out.flush()
 
             if not sumCalled % 1000: #not thread safe
-                self.core.log.info("Exercisers tested %d api calls" % sumCalled)
+                self.core.log.info("Exercisers tested {:d} api calls".format(sumCalled))
                 persec = sumCalled / (time() - self.time)
-                self.core.log.info("Approx. %.2f calls per second." % persec)
-                self.core.log.info("Approx. %.2f ms per call." % (1000 / persec))
-                self.core.log.info("Collected garbage: %d" % gc.collect())
+                self.core.log.info("Approx. {:2f} calls per second.".format(persec))
+                self.core.log.info("Approx. {:2f} ms per call.".format(1000 // persec))
+                self.core.log.info("Collected garbage: {:d}".format(gc.collect()))
 
 
                 #sleep(random() / 500)
@@ -98,7 +98,7 @@ class APIExerciser(Thread):
              "getCaptchaTask", "stopAllDownloads", "getAllInfo", "getServices", "getAccounts", "getAllUserData"]
 
         method = choice(m)
-        #print "Testing:", method
+        #print("Testing:", method)
 
         if hasattr(self, method):
             res = getattr(self, method)()
@@ -108,7 +108,7 @@ class APIExerciser(Thread):
         self.count += 1
         sumCalled += 1
 
-        #print res
+        #print(res)
 
     def addPackage(self):
         name = "".join(sample(string.ascii_letters, 10))
@@ -125,7 +125,7 @@ class APIExerciser(Thread):
         fids = pack.links
 
         if len(fids):
-            fids = [f.fid for f in sample(fids, randint(1, max(len(fids) / 2, 1)))]
+            fids = [f.fid for f in sample(fids, randint(1, max(len(fids) // 2, 1)))]
             self.api.deleteFiles(fids)
 
 

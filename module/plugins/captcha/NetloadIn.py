@@ -11,7 +11,7 @@ class NetloadIn(OCR):
 
     __description__ = """Netload.in ocr plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def recognize(self, image):
         self.load_image(image)

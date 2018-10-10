@@ -46,7 +46,7 @@ class Extractor(Plugin):
         """
         name = os.path.basename(filename).lower()
         for ext in cls.EXTENSIONS:
-            if isinstance(ext, basestring):
+            if isinstance(ext, str):
                 if name.endswith('.' + ext):
                     return ext
 
@@ -59,7 +59,7 @@ class Extractor(Plugin):
     def isarchive(cls, filename):
         name = os.path.basename(filename).lower()
         for ext in cls.EXTENSIONS:
-            if isinstance(ext, basestring):
+            if isinstance(ext, str):
                 if name.endswith('.' + ext):
                     return True
 

@@ -47,12 +47,12 @@ class NitrobitNet(SimpleHoster):
         m = re.search(r'id="unlockedTick".+?alt="(\d+)"', self.data)
         if m is not None:
             validuntil = time.time() + float(m.group(1))
-            self.log_info(_("Account valid until %s") % time.strftime("%d/%m/%Y", time.gmtime(validuntil)))
+            self.log_info(_("Account valid until {}").format(time.strftime("%d/%m/%Y"), time.gmtime(validuntil)))
 
         m = re.search(r'id="dailyVolume" value="(\d+)?/(\d+)"', self.data)
         if m is not None:
             trafficleft = int(m.group(2)) - int((m.group(1) or "0"))
-            self.log_info(_("Daily traffic left %s") % format_size(trafficleft))
+            self.log_info(_("Daily traffic left {}").format(format_size(trafficleft)))
 
         m = re.search(self.LINK_PREMIUM_PATTERN, self.data)
         if m is not None:

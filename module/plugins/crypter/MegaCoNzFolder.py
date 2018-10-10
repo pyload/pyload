@@ -25,8 +25,8 @@ class MegaCoNzFolder(Crypter):
         master_key = self.info['pattern']['KEY']
 
         self.log_debug(
-            "ID: %s" % id,
-            "Key: %s" % master_key,
+            "ID: {}".format(id),
+            "Key: {}".format(master_key),
             "Type: public folder")
 
         master_key = MegaCrypto.base64_to_a32(master_key)
@@ -44,7 +44,7 @@ class MegaCoNzFolder(Crypter):
         get_node_key = lambda k: MegaCrypto.base64_encode(
             MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key)))
 
-        self.links = [_("https://mega.co.nz/#N!%s!%s###n=%s") %
+        self.links = [_("https://mega.co.nz/#N!{}!{}###n={}") %
                       (_f['h'],
                        get_node_key(_f['k'][_f['k'].index(':') + 1:]),
                        id)

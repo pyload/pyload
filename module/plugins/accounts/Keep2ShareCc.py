@@ -32,7 +32,7 @@ class Keep2ShareCc(Account):
         json_data = self.api_response("AccountInfo", auth_token=data['token'])
 
         return {'validuntil': json_data['account_expires'],
-                'trafficleft': json_data['available_traffic'] / 1024,  # @TODO: Remove `/ 1024` in 0.4.10
+                'trafficleft': json_data['available_traffic'] // 1024,  # @TODO: Remove `/ 1024` in 0.4.10
                 'premium': True}
 
     def signin(self, user, password, data):

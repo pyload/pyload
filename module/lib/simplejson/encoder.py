@@ -29,7 +29,7 @@ ESCAPE_DCT = {
 }
 for i in range(0x20):
     #ESCAPE_DCT.setdefault(chr(i), '\\u{0:04x}'.format(i))
-    ESCAPE_DCT.setdefault(chr(i), '\\u%04x' % (i,))
+    ESCAPE_DCT.setdefault(chr(i), '\\u%04x'.format(i,))
 
 FLOAT_REPR = repr
 
@@ -58,14 +58,14 @@ def py_encode_basestring_ascii(s):
             n = ord(s)
             if n < 0x10000:
                 #return '\\u{0:04x}'.format(n)
-                return '\\u%04x' % (n,)
+                return '\\u%04x'.format(n,)
             else:
                 # surrogate pair
                 n -= 0x10000
                 s1 = 0xd800 | ((n >> 10) & 0x3ff)
                 s2 = 0xdc00 | (n & 0x3ff)
                 #return '\\u{0:04x}\\u{1:04x}'.format(s1, s2)
-                return '\\u%04x\\u%04x' % (s1, s2)
+                return '\\u%04x\\u%04x'.format(s1, s2)
     return '"' + str(ESCAPE_ASCII.sub(replace, s)) + '"'
 
 
@@ -157,7 +157,7 @@ class JSONEncoder(object):
 
         If namedtuple_as_object is true (the default), tuple subclasses with
         ``_asdict()`` methods will be encoded as JSON objects.
-        
+
         If tuple_as_array is true (the default), tuple (and subclasses) will
         be encoded as JSON arrays.
         """
@@ -210,7 +210,7 @@ class JSONEncoder(object):
 
         """
         # This is for extremely simple cases and benchmarks.
-        if isinstance(o, basestring):
+        if isinstance(o, str):
             if isinstance(o, str):
                 _encoding = self.encoding
                 if (_encoding is not None
@@ -332,7 +332,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         False=False,
         True=True,
         ValueError=ValueError,
-        basestring=basestring,
+        str=str,
         Decimal=Decimal,
         dict=dict,
         float=float,
@@ -369,7 +369,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                 first = False
             else:
                 buf = separator
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 yield buf + _encoder(value)
             elif value is None:
                 yield buf + 'null'
@@ -431,7 +431,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         else:
             items = dct.iteritems()
         for key, value in items:
-            if isinstance(key, basestring):
+            if isinstance(key, str):
                 pass
             # JavaScript is weakly typed for these, so it makes sense to
             # also allow them.  Many encoders seem to do something like this.
@@ -455,7 +455,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                 yield item_separator
             yield _encoder(key)
             yield _key_separator
-            if isinstance(value, basestring):
+            if isinstance(value, str):
                 yield _encoder(value)
             elif value is None:
                 yield 'null'
@@ -492,7 +492,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             del markers[markerid]
 
     def _iterencode(o, _current_indent_level):
-        if isinstance(o, basestring):
+        if isinstance(o, str):
             yield _encoder(o)
         elif o is None:
             yield 'null'

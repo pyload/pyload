@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: mkaay
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
 
 from threading import Thread
 from traceback import print_exc
@@ -32,7 +18,7 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as e:
-            self.core.log.error(_("Remote backend error: %s") % e)
+            self.core.log.error(_("Remote backend error: {}").format(e))
             if self.core.debug:
                 print_exc()
         finally:
@@ -73,15 +59,15 @@ class RemoteManager():
         port = self.core.config["remote"]["port"]
 
         for b in self.available:
-            klass = getattr(__import__("module.remote.%s" % b, globals(), locals(), [b], -1), b)
+            klass = getattr(__import__("module.remote.{}".format(b, globals(), locals(), [b], -1), b))
             backend = klass(self)
             if not backend.checkDeps():
                 continue
             try:
                 backend.setup(host, port)
-                self.core.log.info(_("Starting %(name)s: %(addr)s:%(port)s") % {"name": b, "addr": host, "port": port})
+                self.core.log.info(_("Starting {name}: {addr}:{port}").format(**{"name": b, "addr": host, "port": port}))
             except Exception as e:
-                self.core.log.error(_("Failed loading backend %(name)s | %(error)s") % {"name": b, "error": str(e)})
+                self.core.log.error(_("Failed loading backend {name} | {error}").format(**{"name": b, "error": str(e)}))
                 if self.core.debug:
                     print_exc()
             else:

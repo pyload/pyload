@@ -212,7 +212,7 @@ function Package (ui, id, ele){
                     $(spans[1]).html("{{_('queued')}}");
                     indicateSuccess();
                 }).fail(function () {
-                    indicateFail();                    
+                    indicateFail();
                 });
             });
         });
@@ -269,7 +269,7 @@ function Package (ui, id, ele){
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
-            indicateFail();            
+            indicateFail();
         });
 
         event.stopPropagation();
@@ -282,7 +282,7 @@ function Package (ui, id, ele){
             thisObject.close();
             indicateSuccess();
         }).fail(function () {
-            indicateFail();            
+            indicateFail();
         });
         event.stopPropagation();
         event.preventDefault();
@@ -307,7 +307,7 @@ function Package (ui, id, ele){
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
-            indicateFail();            
+            indicateFail();
         });
         event.stopPropagation();
         event.preventDefault();

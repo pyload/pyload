@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import os
 import sys
@@ -144,15 +144,15 @@ class ExtractArchive(Addon):
 
             except OSError as e:
                 if e.errno == 2:
-                    self.log_warning(_("No %s installed") % p)
+                    self.log_warning(_("No {} installed").format(p))
                 else:
-                    self.log_warning(_("Could not activate: %s") % p, e)
+                    self.log_warning(_("Could not activate: {}").format(p), e)
 
             except Exception as e:
-                self.log_warning(_("Could not activate: %s") % p, e)
+                self.log_warning(_("Could not activate: {}").format(p), e)
 
         if self.extractors:
-            self.log_debug(*["Found %s %s" % (Extractor.__name__,
+            self.log_debug(*["Found {} {}".format(Extractor.__name__,
                                               Extractor.VERSION) for Extractor in self.extractors])
             self.extract_queued()  #: Resume unfinished extractions
         else:
@@ -236,7 +236,7 @@ class ExtractArchive(Addon):
         excludefiles = toList(self.config.get('excludefiles'))
 
         if extensions:
-            self.log_debug("Use for extensions: .%s" % "|.".join(extensions))
+            self.log_debug("Use for extensions: .{}".format("|.".join(extensions)))
 
         #: Reload from txt file
         self.reload_passwords()
@@ -251,7 +251,7 @@ class ExtractArchive(Addon):
                 self.queue.remove(pid)
                 continue
 
-            self.log_info(_("Check package: %s") % pypack.name)
+            self.log_info(_("Check package: {}").format(pypack.name))
 
             pack_dl_folder = fsjoin(
                 dl_folder,
@@ -294,7 +294,7 @@ class ExtractArchive(Addon):
                 for Extractor in self.extractors:
                     targets = Extractor.get_targets(files_ids)
                     if targets:
-                        self.log_debug("Targets for %s: %s" % (Extractor.__name__, targets))
+                        self.log_debug("Targets for {}: {}".format(Extractor.__name__, targets))
                         matched = True
 
                         for fid, fname, fout in targets:
@@ -304,7 +304,7 @@ class ExtractArchive(Addon):
                                 self.log_debug(name, "File not found")
                                 continue
 
-                            self.log_info(name, _("Extract to: %s") % fout)
+                            self.log_info(name, _("Extract to: {}").format(fout))
                             try:
                                 pyfile = self.pyload.files.getFile(fid)
                                 archive = Extractor(pyfile,
@@ -338,7 +338,7 @@ class ExtractArchive(Addon):
                             #: Remove processed file and related multiparts from list
                             files_ids = [(fid, fname, fout) for fid, fname, fout in files_ids
                                          if fname not in chunks]
-                            self.log_debug("Extracted files: %s" % new_files)
+                            self.log_debug("Extracted files: {}".format(new_files))
 
                             new_folders = uniqify([os.path.dirname(_f) for _f in new_files])
                             for foldername in new_folders:
@@ -350,7 +350,7 @@ class ExtractArchive(Addon):
                             for filename in new_files:
                                 file = encode(fsjoin(os.path.dirname(archive.filename), filename))
                                 if not exists(file):
-                                    self.log_debug("New file %s does not exists" % filename)
+                                    self.log_debug("New file {} does not exists".format(filename))
                                     continue
 
                                 if recursive and os.path.isfile(file):
@@ -368,13 +368,13 @@ class ExtractArchive(Addon):
                             if len(os.listdir(pack_dl_folder)) == 0:
                                 try:
                                     os.rmdir(pack_dl_folder)
-                                    self.log_debug("Successfully deleted pack folder %s" % pack_dl_folder)
+                                    self.log_debug("Successfully deleted pack folder {}".format(pack_dl_folder))
 
                                 except OSError:
-                                    self.log_warning("Unable to delete pack folder %s" % pack_dl_folder)
+                                    self.log_warning("Unable to delete pack folder {}".format(pack_dl_folder))
 
                             else:
-                                self.log_warning("Not deleting pack folder %s, folder not empty" % pack_dl_folder)
+                                self.log_warning("Not deleting pack folder {}, folder not empty".format(pack_dl_folder))
 
                     extracted.append(pid)
                     self.manager.dispatchEvent("package_extracted", pypack)
@@ -405,7 +405,7 @@ class ExtractArchive(Addon):
 
         encrypted = False
         try:
-            self.log_debug("Password: %s" % (password or "None provided"))
+            self.log_debug("Password: {}".format(password or "None provided"))
             passwords = uniqify([password] + self.get_passwords(False)) if \
                 self.config.get('usepasswordfile') else [password]
 
@@ -453,12 +453,12 @@ class ExtractArchive(Addon):
             pyfile.setProgress(0)
 
             if not encrypted or not self.config.get('usepasswordfile'):
-                self.log_debug("Extracting using password: %s" % (password or "None"))
+                self.log_debug("Extracting using password: {}".format(password or "None"))
                 archive.extract(password)
             else:
                 for pw in filter(None, uniqify([password] + self.get_passwords(False))):
                     try:
-                        self.log_debug("Extracting using password: %s" % pw)
+                        self.log_debug("Extracting using password: {}".format(pw))
 
                         archive.extract(pw)
                         self.add_password(pw)
@@ -478,7 +478,7 @@ class ExtractArchive(Addon):
             self.log_debug("Would delete: " + ", ".join(delfiles))
 
             if self.config.get('delete'):
-                self.log_info(_("Deleting %s files") % len(delfiles))
+                self.log_info(_("Deleting {} files").format(len(delfiles)))
 
                 deltotrash = self.config.get('deltotrash')
                 for f in delfiles:
@@ -494,15 +494,15 @@ class ExtractArchive(Addon):
                             send2trash.send2trash(file)
 
                         except NameError:
-                            self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
+                            self.log_warning(_("Unable to move {} to trash").format(os.path.basename(f)),
                                              _("Send2Trash lib not found"))
 
                         except Exception as e:
-                            self.log_warning(_("Unable to move %s to trash") % os.path.basename(f),
+                            self.log_warning(_("Unable to move {} to trash").format(os.path.basename(f)),
                                              e.message)
 
                         else:
-                            self.log_info(_("Moved %s to trash") % os.path.basename(f))
+                            self.log_info(_("Moved {} to trash").format(os.path.basename(f)))
 
             self.log_info(name, _("Extracting finished"))
 

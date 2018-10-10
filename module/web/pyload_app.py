@@ -1,21 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
 from datetime import datetime
 from operator import itemgetter, attrgetter
 
@@ -29,12 +16,12 @@ from urllib import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error
 
-from webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
+from .webinterface import PYLOAD, PYLOAD_DIR, PROJECT_DIR, SETUP, PREFIX, env
 
-from utils import render_to_response, parse_permissions, parse_userdata, \
+from .utils import render_to_response, parse_permissions, parse_userdata, \
     login_required, get_permission, set_permission, permlist, toDict, set_session
 
-from filters import relpath, unquotepath
+from .filters import relpath, unquotepath
 
 from module.utils import formatSize, save_join, fs_encode, fs_decode
 
@@ -76,7 +63,7 @@ def choose_path(browse_for, path=""):
 
     try:
         path = path.decode("utf8")
-    except:
+    except Exception:
         pass
 
     if os.path.isfile(path):
@@ -111,12 +98,12 @@ def choose_path(browse_for, path=""):
 
     # try:
     #     cwd = cwd.encode("utf8")
-    # except:
+    # except Exception:
     #     pass
     #
     try:
         folders = os.listdir(cwd)
-    except:
+    except Exception:
         folders = []
 
     files = []
@@ -128,7 +115,7 @@ def choose_path(browse_for, path=""):
             data['sort'] = data['fullpath'].lower()
             data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]
-        except:
+        except Exception:
             continue
 
         if os.path.isdir(join(cwd, f)):
@@ -140,9 +127,9 @@ def choose_path(browse_for, path=""):
             data['size'] = os.path.getsize(join(cwd, f))
 
             power = 0
-            while (data['size'] / 1024) > 0.3:
+            while (data['size'] / 1024.0) > 0.3:
                 power += 1
-                data['size'] /= 1024.
+                data['size'] /= 1024.0
             units = ('', 'K', 'M', 'G', 'T')
             data['unit'] = units[power] + 'Byte'
         else:
@@ -160,9 +147,9 @@ def choose_path(browse_for, path=""):
 ## Views
 @error(500)
 def error500(error):
-    print "An error occured while processing the request."
+    print("An error occured while processing the request.")
     if error.traceback:
-        print error.traceback
+        print(error.traceback)
 
     return base(["An Error occured, please enable debug mode to get more details.", error,
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
@@ -170,7 +157,7 @@ def error500(error):
 # render js
 @route("/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+    response.headers['Expires'] = time.strftime("%a, {:d} %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 2))
     response.headers['Cache-control'] = "public"
     response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
@@ -178,16 +165,16 @@ def js_dynamic(path):
     try:
         # static files are not rendered
         if "static" not in path and "mootools" not in path:
-            t = env.get_template("js/%s" % path)
+            t = env.get_template("js/{}".format(path))
             return t.render()
         else:
             return static_file(path, root=join(PROJECT_DIR, "media", "js"))
-    except:
+    except Exception:
         return HTTPError(404, "Not Found")
 
 @route('/media/<path:path>')
 def server_static(path):
-    response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+    response.headers['Expires'] = time.strftime("%a, {:d} %b %Y %H:%M:%S GMT",
                                                 time.gmtime(time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
@@ -242,14 +229,14 @@ def logout():
 def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
-    except:
+    except Exception:
         s = request.environ.get('beaker.session')
         s.delete()
         return redirect(PREFIX + "/login")
 
     for link in res:
         if link["status"] == 12:
-            link["information"] = "%s kB @ %s kB/s" % (link["size"] - link["bleft"], link["speed"])
+            link["information"] = "{} kB @ {} kB/s".format(link["size"] - link["bleft"], link["speed"])
 
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
@@ -300,7 +287,7 @@ def downloads():
                 try:
                     if isfile(save_join(root, item, file)):
                         folder['files'].append(file)
-                except:
+                except Exception:
                     pass
 
             data['folder'].append(folder)
@@ -322,8 +309,8 @@ def get_download(path):
     try:
         return static_file(fs_encode(path), fs_encode(root), download=True)
 
-    except Exception, e:
-        print e
+    except Exception as e:
+        print(e)
         return HTTPError(404, "File not Found.")
 
 
@@ -364,7 +351,7 @@ def config():
         if "time" in data.options:
             try:
                 _time = data.options["time"][0]
-            except:
+            except Exception:
                 _time = ""
         else:
             _time = ""
@@ -372,7 +359,7 @@ def config():
         if "limitDL" in data.options:
             try:
                 limitdl = data.options["limitDL"][0]
-            except:
+            except Exception:
                 limitdl = "0"
         else:
             limitdl = "0"
@@ -426,7 +413,7 @@ def logs(item=-1):
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             fro = datetime.strptime(request.forms['from'], '%d.%m.%Y %H:%M:%S')
-        except:
+        except Exception:
             pass
         try:
             perpage = int(request.forms['perpage'])
@@ -434,14 +421,14 @@ def logs(item=-1):
 
             reversed = bool(request.forms.get('reversed', False))
             s['reversed'] = reversed
-        except:
+        except Exception:
             pass
 
         s.save()
 
     try:
         item = int(item)
-    except:
+    except Exception:
         pass
 
     log = PYLOAD.getLog()
@@ -464,7 +451,7 @@ def logs(item=-1):
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
                 dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
-            except:
+            except Exception:
                 dtime = None
                 date = '?'
                 time = ' '
@@ -508,7 +495,7 @@ def admin():
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         for name in user:
-            if request.POST.get("%s|admin" % name, False):
+            if request.POST.get("{}|admin".format(name), False):
                 user[name]["role"] = 0
                 user[name]["perms"]["admin"] = True
             elif name != s["name"]:
@@ -519,8 +506,8 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            
-            for perm in request.POST.getall("%s|perms" % name):
+
+            for perm in request.POST.getall("{}|perms".format(name)):
                 user[name]["perms"][perm] = True
 
             user[name]["permission"] = set_permission(user[name]["perms"])

@@ -74,7 +74,7 @@ class DatafileCom(SimpleHoster):
                     post=post_data))
             if file_info['success']:
                 self.link = file_info['link']
-                self.log_debug("URL:%s" % file_info['link'])
+                self.log_debug("URL:{}".format(file_info['link']))
 
         else:
             m = re.search(
@@ -95,4 +95,4 @@ class DatafileCom(SimpleHoster):
                     self.temp_offline()
 
                 else:
-                    self.log_debug("Unknown error code %s" % error_code)
+                    self.log_debug("Unknown error code {}".format(error_code))

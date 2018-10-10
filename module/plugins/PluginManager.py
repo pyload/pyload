@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
+#@author: mkaay, RaNaN
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay, RaNaN
-"""
 
 import re
 import sys
@@ -109,20 +94,20 @@ class PluginManager:
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.core.config.addPluginConfig(name, config, desc)
-            except:
-                self.log.error("Invalid config in %s: %s" % (name, config))
+            except Exception:
+                self.log.error("Invalid config in {}: {}".format(name, config))
 
         self.log.debug("created index of plugins")
 
     def parse(self, folder, pattern=False, home={}):
         """
-        returns dict with information 
+        returns dict with information
         home contains parsed plugins from module.
-        
+
         {
         name : {path, version, config, (pattern, re), (plugin, class)}
         }
-        
+
         """
         plugins = {}
         if home:
@@ -190,8 +175,8 @@ class PluginManager:
 
                     try:
                         plugins[name]["re"] = re.compile(pattern)
-                    except:
-                        self.log.error(_("%s has a invalid pattern.") % name)
+                    except Exception:
+                        self.log.error(_("{} has a invalid pattern.").format(name))
 
                 # internals have no config
                 if folder == "internal":
@@ -207,7 +192,7 @@ class PluginManager:
                     if type(config) == list and all(type(c) == tuple for c in config):
                         config = dict((x[0], x[1:]) for x in config)
                     else:
-                        self.log.error("Invalid config in %s: %s" % (name, config))
+                        self.log.error("Invalid config in {}: {}".format(name, config))
                         continue
 
                     if folder == "hooks" and "activated" not in config:
@@ -270,7 +255,7 @@ class PluginManager:
         plugin, type = self.findPlugin(name)
 
         if not plugin:
-            self.log.warning("Plugin %s not found." % name)
+            self.log.warning("Plugin {} not found.".format(name))
             plugin = self.hosterPlugins["BasePlugin"]
 
         if "new_module" in plugin and not original:
@@ -297,17 +282,17 @@ class PluginManager:
         if name in plugins:
             if "module" in plugins[name]: return plugins[name]["module"]
             try:
-                module = __import__(self.ROOT + "%s.%s" % (type, plugins[name]["name"]), globals(), locals(),
+                module = __import__(self.ROOT + "{}.{}".format(type, plugins[name]["name"]), globals(), locals(),
                     plugins[name]["name"])
                 plugins[name]["module"] = module  #cache import, maybe unneeded
                 return module
-            except Exception, e:
-                self.log.error(_("Error importing %(name)s: %(msg)s") % {"name": name, "msg": str(e)})
+            except Exception as e:
+                self.log.error(_("Error importing {name}: {msg}").format(**{"name": name, "msg": str(e)}))
                 if self.core.debug:
                     print_exc()
         else:
-            self.log.debug("Plugin %s not found" % name)
-            self.log.debug("Available plugins : %s" % str(plugins))
+            self.log.debug("Plugin {} not found".format(name))
+            self.log.debug("Available plugins : {}".format(str(plugins)))
 
     def loadClass(self, type, name):
         """Returns the class of a plugin with the same name"""
@@ -348,7 +333,7 @@ class PluginManager:
 
             base, plugin = newname.rsplit(".", 1)
 
-            self.log.debug("Redirected import %s -> %s" % (name, newname))
+            self.log.debug("Redirected import {} -> {}".format(name, newname))
 
             module = __import__(newname, globals(), locals(), [plugin])
             #inject under new an old name
@@ -376,7 +361,7 @@ class PluginManager:
 
         if not type_plugins: return False
 
-        self.log.debug("Request reload of plugins: %s" % type_plugins)
+        self.log.debug("Request reload of plugins: {}".format(type_plugins))
 
         as_dict = {}
         for t,n in type_plugins:
@@ -393,7 +378,7 @@ class PluginManager:
             for plugin in as_dict[type]:
                 if plugin in self.plugins[type]:
                     if "module" in self.plugins[type][plugin]:
-                        self.log.debug("Reloading %s" % plugin)
+                        self.log.debug("Reloading {}".format(plugin))
                         reload(self.plugins[type][plugin]["module"])
 
         #index creation
@@ -422,8 +407,8 @@ class PluginManager:
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.core.config.addPluginConfig(name, config, desc)
-            except:
-                self.log.error("Invalid config in %s: %s" % (name, config))
+            except Exception:
+                self.log.error("Invalid config in {}: {}".format(name, config))
 
         if "accounts" in as_dict: #accounts needs to be reloaded
             self.core.accountManager.initPlugins()
@@ -433,20 +418,3 @@ class PluginManager:
 
 
 
-if __name__ == "__main__":
-    _ = lambda x: x
-    pypath = "/home/christian/Projekte/pyload-0.4/module/plugins"
-
-    from time import time
-
-    p = PluginManager(None)
-
-    a = time()
-
-    test = ["http://www.youtube.com/watch?v=%s" % x for x in range(0, 100)]
-    print p.parseUrls(test)
-
-    b = time()
-
-    print b - a, "s"
-    

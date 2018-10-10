@@ -23,7 +23,7 @@ class DepositfilesCom(SimpleHoster):
 
     __description__ = """Depositfiles.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
@@ -56,7 +56,7 @@ class DepositfilesCom(SimpleHoster):
             self.retry(wait=5)
 
         params = {'fid': m.group(1)}
-        self.log_debug("FID: %s" % params['fid'])
+        self.log_debug("FID: {}".format(params['fid']))
 
         self.data = self.load("https://depositfiles.com/get_file.php", get=params)
 

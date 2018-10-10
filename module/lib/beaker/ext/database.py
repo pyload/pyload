@@ -30,12 +30,12 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
         except ImportError:
             raise InvalidCacheBackendError("Database cache backend requires "
                                             "the 'sqlalchemy' library")
-        
+
     def __init__(self, namespace, url=None, sa_opts=None, optimistic=False,
                  table_name='beaker_cache', data_dir=None, lock_dir=None,
                  **params):
         """Creates a database namespace manager
-        
+
         ``url``
             SQLAlchemy compliant db url
         ``sa_opts``
@@ -49,7 +49,7 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
             The table name to use in the database for the cache.
         """
         OpenResourceNamespaceManager.__init__(self, namespace)
-        
+
         if sa_opts is None:
             sa_opts = params
 
@@ -58,8 +58,8 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
         elif data_dir:
             self.lock_dir = data_dir + "/container_db_lock"
         if self.lock_dir:
-            verify_directory(self.lock_dir)            
-        
+            verify_directory(self.lock_dir)
+
         # Check to see if the table's been created before
         url = url or sa_opts['sa.url']
         table_key = url + table_name
@@ -90,13 +90,13 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
         self._is_new = False
         self.loaded = False
         self.cache = DatabaseNamespaceManager.tables.get(table_key, make_cache)
-    
+
     def get_access_lock(self):
         return null_synchronizer()
 
     def get_creation_lock(self, key):
         return file_synchronizer(
-            identifier ="databasecontainer/funclock/%s" % self.namespace,
+            identifier ="databasecontainer/funclock/{}".format(self.namespace,)
             lock_dir = self.lock_dir)
 
     def do_open(self, flags):
@@ -104,9 +104,9 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
         if self.loaded:
             self.flags = flags
             return
-        
+
         cache = self.cache
-        result = sa.select([cache.c.data], 
+        result = sa.select([cache.c.data],
                            cache.c.namespace==self.namespace
                           ).execute().fetchone()
         if not result:
@@ -123,7 +123,7 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
                 self._is_new = True
         self.flags = flags
         self.loaded = True
-    
+
     def do_close(self):
         if self.flags is not None and (self.flags == 'c' or self.flags == 'w'):
             cache = self.cache
@@ -136,22 +136,22 @@ class DatabaseNamespaceManager(OpenResourceNamespaceManager):
                 cache.update(cache.c.namespace==self.namespace).execute(
                     data=self.hash, accessed=datetime.now())
         self.flags = None
-    
+
     def do_remove(self):
         cache = self.cache
         cache.delete(cache.c.namespace==self.namespace).execute()
         self.hash = {}
-        
+
         # We can retain the fact that we did a load attempt, but since the
         # file is gone this will be a new namespace should it be saved.
         self._is_new = True
 
-    def __getitem__(self, key): 
+    def __getitem__(self, key):
         return self.hash[key]
 
-    def __contains__(self, key): 
+    def __contains__(self, key):
         return key in self.hash
-        
+
     def __setitem__(self, key, value):
         self.hash[key] = value
 

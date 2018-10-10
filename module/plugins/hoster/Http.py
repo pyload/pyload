@@ -42,7 +42,7 @@ class Http(Hoster):
             elif self.req.code in (401, 403):
                 self.log_debug(
                     "Auth required",
-                    "Received HTTP status code: %d" %
+                    "Received HTTP status code: {:d}" %
                     self.req.code)
 
                 #@TODO: Recheck in 0.4.10
@@ -53,7 +53,7 @@ class Http(Hoster):
                     servers = []
 
                 if netloc in servers:
-                    self.log_debug("Logging on to %s" % netloc)
+                    self.log_debug("Logging on to {}".format(netloc))
                     self.req.addAuth(self.account.get_login('password'))
 
                 else:

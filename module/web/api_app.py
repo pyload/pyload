@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 from urllib import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
 
 from bottle import route, request, response, HTTPError
 
-from utils import toDict, set_session
-from webinterface import PYLOAD
+from .utils import toDict, set_session
+from .webinterface import PYLOAD
 
 from module.common.json_layer import json
 from module.lib.SafeEval import const_eval as literal_eval
@@ -60,14 +61,14 @@ def call_api(func, args=""):
 
     try:
         return callApi(func, *args, **kwargs)
-    except Exception, e:
+    except Exception as e:
         print_exc()
         return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
-        print "Invalid API call", func
+        print("Invalid API call", func)
         return HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
@@ -99,7 +100,7 @@ def login():
     try:
         sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
         return json.dumps(sid)
-    except:
+    except Exception:
         return json.dumps(True)
 
 

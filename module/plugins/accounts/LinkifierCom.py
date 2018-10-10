@@ -46,7 +46,7 @@ class LinkifierCom(MultiAccount):
     def grab_info(self, user, password, data):
         json_data = self.api_response("user", user, password)
         trafficleft = json_data['extraTraffic']
-        validuntil = float(json_data['expirydate']) / 1000
+        validuntil = float(json_data['expirydate']) // 1000
 
         return {'validuntil': validuntil ,
                 'trafficleft': -1 if trafficleft.lower() == "unlimited" else int(trafficleft),

@@ -20,7 +20,7 @@ class HoerbuchIn(Crypter):
 
     __description__ = """Hoerbuch.in decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de")]
 
     article = re.compile("http://(?:www\.)?hoerbuch\.us/wp/horbucher/\d+/.+/")
@@ -74,7 +74,7 @@ class HoerbuchIn(Crypter):
 
             uploaded = self.uploaded.search(href)
             if uploaded is not None:
-                href = "http://uploaded.net/file/%s" % uploaded.group(1)
+                href = "http://uploaded.net/file/{}".format(uploaded.group(1))
 
             links.append(href)
 

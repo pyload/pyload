@@ -55,7 +55,7 @@ class IRC(Thread, Notifier):
     def package_finished(self, pypack):
         try:
             if self.config.get('info_pack'):
-                self.response(_("Package finished: %s") % pypack.name)
+                self.response(_("Package finished: {}").format(pypack.name))
 
         except Exception:
             pass
@@ -64,7 +64,7 @@ class IRC(Thread, Notifier):
         try:
             if self.config.get('info_file'):
                 self.response(
-                    _("Download finished: %(name)s @ %(plugin)s ") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
+                    _("Download finished: {name} @ {plugin} ").format(**{'name': pyfile.name, 'plugin': pyfile.pluginname}))
 
         except Exception:
             pass
@@ -78,9 +78,9 @@ class IRC(Thread, Notifier):
                              post={'file': (pycurl.FORM_FILE, task.captchaParams['file'])})
 
             url = re.search(r"src='([^']+)'", html).group(1)
-            self.response(_("New Captcha Request: %s") % url)
+            self.response(_("New Captcha Request: {}").format(url))
             self.response(
-                _("Answer with 'c %s text on the captcha'") %
+                _("Answer with 'c {} text on the captcha'") %
                 task.id)
 
     def run(self):
@@ -94,11 +94,11 @@ class IRC(Thread, Notifier):
                 self.sock, cert_reqs=ssl.CERT_NONE)  # @TODO: support certificate
 
         nick = self.config.get('nick')
-        self.sock.send("NICK %s\r\n" % nick)
-        self.sock.send("USER %s %s bla :%s\r\n" % (nick, host, nick))
+        self.sock.send("NICK {}\r\n".format(nick))
+        self.sock.send("USER {} {} bla :{}\r\n".format(nick, host, nick))
         for t in self.config.get('owner').split():
             if t.strip().startswith("#"):
-                self.sock.send("JOIN %s\r\n" % t.strip())
+                self.sock.send("JOIN {}\r\n".format(t.strip()))
         self.log_info(_("Connected to"), host)
         self.log_info(_("Switching to listening mode!"))
         try:
@@ -130,7 +130,7 @@ class IRC(Thread, Notifier):
                 first = line.split()
 
                 if first[0] == "PING":
-                    self.sock.send("PONG :%s\r\n" % first[1])
+                    self.sock.send("PONG :{}\r\n".format(first[1]))
 
                 if first[0] == "ERROR":
                     raise IRCError(line)
@@ -163,12 +163,12 @@ class IRC(Thread, Notifier):
         if msg['text'] == "\x01VERSION\x01":
             self.log_debug("Sending CTCP VERSION")
             self.sock.send(
-                "NOTICE %s :%s\r\n" %
+                "NOTICE {} :{}\r\n" %
                 (msg['origin'], "pyLoad! IRC Interface"))
             return
         elif msg['text'] == "\x01TIME\x01":
             self.log_debug("Sending CTCP TIME")
-            self.sock.send("NOTICE %s :%d\r\n" % (msg['origin'], time.time()))
+            self.sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
             return
         elif msg['text'] == "\x01LAG\x01":
             self.log_debug("Received CTCP LAG")  #: don't know how to answer
@@ -186,7 +186,7 @@ class IRC(Thread, Notifier):
         except Exception:
             pass
 
-        handler = getattr(self, "event_%s" % trigger, self.event_pass)
+        handler = getattr(self, "event_{}".format(trigger, self.event_pass))
         try:
             res = handler(args)
             for line in res:
@@ -198,9 +198,9 @@ class IRC(Thread, Notifier):
     def response(self, msg, origin=""):
         if origin == "":
             for t in self.config.get('owner').split():
-                self.sock.send("PRIVMSG %s :%s\r\n" % (t.strip(), msg))
+                self.sock.send("PRIVMSG {} :{}\r\n".format(t.strip(), msg))
         else:
-            self.sock.send("PRIVMSG %s :%s\r\n" %
+            self.sock.send("PRIVMSG {} :{}\r\n" %
                            (origin.split("!", 1)[0], msg))
 
     # Events
@@ -219,15 +219,14 @@ class IRC(Thread, Notifier):
             if data.status == 5:
                 temp_progress = data.format_wait
             else:
-                temp_progress = "%d%% (%s)" % (data.percent, data.format_size)
+                temp_progress = "{}% ({})".format(data.percent, data.format_size)
 
-            lines.append("#%d - %s - %s - %s - %s - %s" %
-                         (
+            lines.append("#{:d} - {} - {} - {} - {} - {}".format(
                              data.fid,
                              data.name,
                              data.statusmsg,
-                             "%s/s" % format_size(data.speed),
-                             "%s" % data.format_eta,
+                             "{}/s".format(format_size(data.speed)),
+                             "{}".format(data.format_eta),
                              temp_progress
                          ))
         return lines
@@ -240,7 +239,7 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #%s: "%s" with %d links.' %
+            lines.append('PACKAGE #{}: "{}" with {:d} links.' %
                          (pack.pid, pack.name, len(pack.links)))
 
         return lines
@@ -252,7 +251,7 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #%s: "%s" with %d links.' %
+            lines.append('PACKAGE #{}: "{}" with {:d} links.' %
                          (pack.pid, pack.name, len(pack.links)))
 
         return lines
@@ -268,7 +267,7 @@ class IRC(Thread, Notifier):
         except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
 
-        return ['LINK #%s: %s (%s) [%s][%s]' % (
+        return ['LINK #{}: {} ({}) [{}][{}]'.format(
             info.fid, info.name, info.format_size, info.statusmsg, info.plugin)]
 
     def event_packinfo(self, args):
@@ -287,10 +286,10 @@ class IRC(Thread, Notifier):
 
         self.more = []
 
-        lines.append('PACKAGE #%s: "%s" with %d links' %
+        lines.append('PACKAGE #{}: "{}" with {:d} links' %
                      (id, pack.name, len(pack.links)))
         for pyfile in pack.links:
-            self.more.append('LINK #%s: %s (%s) [%s][%s]' % (pyfile.fid, pyfile.name, pyfile.format_size,
+            self.more.append('LINK #{}: {} ({}) [{}][{}]'.format(pyfile.fid, pyfile.name, pyfile.format_size,
                                                              pyfile.statusmsg, pyfile.plugin))
 
         if len(self.more) < 6:
@@ -299,7 +298,7 @@ class IRC(Thread, Notifier):
         else:
             lines.extend(self.more[:6])
             self.more = self.more[6:]
-            lines.append("%d more links do display." % len(self.more))
+            lines.append("{:d} more links do display.".format(len(self.more)))
 
         return lines
 
@@ -309,7 +308,7 @@ class IRC(Thread, Notifier):
 
         lines = self.more[:6]
         self.more = self.more[6:]
-        lines.append("%d more links do display." % len(self.more))
+        lines.append("{:d} more links do display.".format(len(self.more)))
 
         return lines
 
@@ -337,14 +336,12 @@ class IRC(Thread, Notifier):
 
             #@TODO: add links
 
-            return ["INFO: Added %d links to Package %s [#%d]" %
-                    (len(links), pack['name'], id)]
+            return ["INFO: Added {:d} links to Package {} [#{:d}]".format(len(links), pack['name'], id)]
 
         except Exception:
             #: Create new package
             id = self.pyload.api.addPackage(pack, links, 1)
-            return ["INFO: Created new Package %s [#%d] with %d links." %
-                    (pack, id, len(links))]
+            return ["INFO: Created new Package {} [#%d] with {#{:d}} links.".format(pack, id, len(links))]
 
     def event_del(self, args):
         if len(args) < 2:
@@ -353,11 +350,11 @@ class IRC(Thread, Notifier):
 
         if args[0] == "-p":
             ret = self.pyload.api.deletePackages(map(int, args[1:]))
-            return ["INFO: Deleted %d packages!" % len(args[1:])]
+            return ["INFO: Deleted {:d} packages!".format(len(args[1:]))]
 
         elif args[0] == "-l":
             ret = self.pyload.api.delLinks(map(int, args[1:]))
-            return ["INFO: Deleted %d links!" % len(args[1:])]
+            return ["INFO: Deleted {:d} links!".format(len(args[1:]))]
 
         else:
             return [
@@ -371,10 +368,10 @@ class IRC(Thread, Notifier):
         try:
             self.pyload.api.getPackageInfo(id)
         except PackageDoesNotExists:
-            return ["ERROR: Package #%d does not exist." % id]
+            return ["ERROR: Package #{:d} does not exist.".format(id)]
 
         self.pyload.api.pushToQueue(id)
-        return ["INFO: Pushed package #%d to queue." % id]
+        return ["INFO: Pushed package #{:d} to queue.".format(id)]
 
     def event_pull(self, args):
         if not args:
@@ -382,10 +379,10 @@ class IRC(Thread, Notifier):
 
         id = int(args[0])
         if not self.pyload.api.getPackageData(id):
-            return ["ERROR: Package #%d does not exist." % id]
+            return ["ERROR: Package #{:d} does not exist.".format(id)]
 
         self.pyload.api.pullFromQueue(id)
-        return ["INFO: Pulled package #%d from queue to collector." % id]
+        return ["INFO: Pulled package #{:d} from queue to collector.".format(id)]
 
     def event_c(self, args):
         """
@@ -396,10 +393,10 @@ class IRC(Thread, Notifier):
 
         task = self.pyload.captchaManager.getTaskByID(args[0])
         if not task:
-            return ["ERROR: Captcha Task with ID %s does not exists." % args[0]]
+            return ["ERROR: Captcha Task with ID {} does not exists.".format(args[0])]
 
         task.setResult(" ".join(args[1:]))
-        return ["INFO: Result %s saved." % " ".join(args[1:])]
+        return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
 
     def event_help(self, args):
         lines = ["The following commands are available:",

@@ -98,7 +98,7 @@ class PornhubCom(SimpleHoster):
 
         script = "".join(re.findall(r'^\s*var .+', script, re.M))
         script = re.sub(r"[\n\t]|/\*.+?\*/", "", script)
-        script += "JSON.stringify(%s);" % result_var
+        script += "JSON.stringify({});".format(result_var)
 
         res = self.js.eval(script)
         json_data = json.loads(res)

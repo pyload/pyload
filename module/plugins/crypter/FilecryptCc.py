@@ -118,7 +118,7 @@ class FilecryptCc(Crypter):
 
         mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.site_with_links)
 
-        self.log_info(_("Found %d mirrors") % len(mirror))
+        self.log_info(_("Found {:d} mirrors").format(len(mirror)))
 
         for i in mirror[1:]:
             self.site_with_links = self.site_with_links + self._filecrypt_load_url(i)
@@ -171,7 +171,7 @@ class FilecryptCc(Crypter):
         if m is not None:
             captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
 
-            self.log_debug("Internal Captcha URL: %s" % captcha_url)
+            self.log_debug("Internal Captcha URL: {}".format(captcha_url))
 
             captcha_code = self.captcha.decrypt(captcha_url, input_type="gif")
 
@@ -184,11 +184,11 @@ class FilecryptCc(Crypter):
     def _handle_circle_captcha(self, url):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Circle Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m.group(1)))
+            self.log_debug("Circle Captcha URL: {}".format(urlparse.urljoin(self.pyfile.url, m.group(1))))
 
             captcha_url = urlparse.urljoin(self.pyfile.url, m.group(1))
 
-            self.log_debug("Circle Captcha URL: %s" % captcha_url)
+            self.log_debug("Circle Captcha URL: {}".format(captcha_url))
 
             captcha_code = self.captcha.decrypt(captcha_url, input_type="png", output_type='positional')
 
@@ -202,7 +202,7 @@ class FilecryptCc(Crypter):
     def _handle_solvemedia_captcha(self, url):
         m = re.search(self.SOLVEMEDIA_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Solvemedia Captcha URL: %s" % urlparse.urljoin(self.pyfile.url, m.group(1)))
+            self.log_debug("Solvemedia Captcha URL: {}".format(urlparse.urljoin(self.pyfile.url, m.group(1))))
 
             solvemedia = SolveMedia(self.pyfile)
             captcha_key = solvemedia.detect_key()
@@ -221,7 +221,7 @@ class FilecryptCc(Crypter):
     def _handle_keycaptcha_captcha(self, url):
         m = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Keycaptcha Captcha URL: %s unsupported, retrying" % m.group(1))
+            self.log_debug("Keycaptcha Captcha URL: {} unsupported, retrying".format(m.group(1)))
             return ""
 
         else:
@@ -262,14 +262,14 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/%s.dlc" % _dlc))
+            self.urls.append(urlparse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(_dlc)))
 
     def handle_weblinks(self):
         try:
             links = re.findall(self.WEBLINK_PATTERN, self.site_with_links)
 
             for _link in links:
-                _link = "http://filecrypt.cc/Link/%s.html" % _link
+                _link = "http://filecrypt.cc/Link/{}.html".format(_link)
                 for i in range(5):
                     self.data = self._filecrypt_load_url(_link)
                     res = self.handle_captcha(_link)
@@ -285,7 +285,7 @@ class FilecryptCc(Crypter):
                     self.urls.append(res2['location'])
 
         except Exception as e:
-            self.log_debug("Error decrypting weblinks: %s" % e)
+            self.log_debug("Error decrypting weblinks: {}".format(e))
 
     def handle_CNL(self):
         try:
@@ -294,7 +294,7 @@ class FilecryptCc(Crypter):
                 self.urls.extend(self._get_links(index[2], index[1]))
 
         except Exception as e:
-            self.log_debug("Error decrypting CNL: %s" % e)
+            self.log_debug("Error decrypting CNL: {}".format(e))
 
     def _get_links(self, crypted, jk):
         #: Get key

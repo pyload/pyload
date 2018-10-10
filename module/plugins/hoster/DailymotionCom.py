@@ -12,12 +12,12 @@ from ..internal.misc import json
 def get_info(urls):
     result = []
     _re = re.compile(DailymotionCom.__pattern__)
-    apiurl = "https://api.dailymotion.com/video/%s"
+    apiurl = "https://api.dailymotion.com/video/{}"
     request = {'fields': "access_error,status,title"}
 
     for url in urls:
         id = _re.match(url).group('ID')
-        html = get_url(apiurl % id, get=request)
+        html = get_url(apiurl.format(id), get=request)
         info = json.loads(html)
 
         name = info['title'] + ".mp4" if "title" in info else url
@@ -104,7 +104,7 @@ class DailymotionCom(Hoster):
 
         s = streams[idx]
 
-        self.log_info(_("Download video quality %sx%s") % s[0])
+        self.log_info(_("Download video quality {}x{}").format(s[0]))
 
         return s[1]
 

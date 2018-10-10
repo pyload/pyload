@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -112,7 +112,7 @@ class TProcessPoolServer(TServer):
                 self.stopCondition.wait()
                 break
             except (SystemExit, KeyboardInterrupt):
-		break
+        break
             except Exception as x:
                 logging.exception(x)
 

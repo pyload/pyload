@@ -91,7 +91,7 @@ class ZippyshareCom(SimpleHoster):
             values = filter(None, (elt.get(JSattr, None)
                                    for elt in soup.findAll(id=JSid)))
             if values:
-                inits.append('document.getElementById("%s")["%s"] = "%s"' % (
+                inits.append('document.getElementById("{}")["{}"] = "{}"'.format(
                     JSid, JSattr, values[-1]))
 
         #: Add try/catch in JS to handle deliberate errors

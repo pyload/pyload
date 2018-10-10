@@ -72,7 +72,7 @@ def load_extensions(environment, extensions):
     """
     result = {}
     for extension in extensions:
-        if isinstance(extension, basestring):
+        if isinstance(extension, str):
             extension = import_string(extension)
         result[extension.identifier] = extension(environment)
     return result
@@ -108,11 +108,11 @@ class Environment(object):
             The string marking the end of a block.  Defaults to ``'%}'``.
 
         `variable_start_string`
-            The string marking the begin of a print statement.
+            The string marking the begin of a print(statement.)
             Defaults to ``'{{'``.
 
         `variable_end_string`
-            The string marking the end of a print statement.  Defaults to
+            The string marking the end of a print(statement.  Defaults to)
             ``'}}'``.
 
         `comment_start_string`
@@ -352,10 +352,10 @@ class Environment(object):
         try:
             return obj[argument]
         except (TypeError, LookupError):
-            if isinstance(argument, basestring):
+            if isinstance(argument, str):
                 try:
                     attr = str(argument)
-                except:
+                except Exception:
                     pass
                 else:
                     try:
@@ -474,7 +474,7 @@ class Environment(object):
         """
         source_hint = None
         try:
-            if isinstance(source, basestring):
+            if isinstance(source, str):
                 source_hint = source
                 source = self._parse(source, name, filename)
             if self.optimized:
@@ -586,11 +586,11 @@ class Environment(object):
             from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED, ZIP_STORED
             zip_file = ZipFile(target, 'w', dict(deflated=ZIP_DEFLATED,
                                                  stored=ZIP_STORED)[zip])
-            log_function('Compiling into Zip archive "%s"' % target)
+            log_function('Compiling into Zip archive "{}"'.format(target))
         else:
             if not os.path.isdir(target):
                 os.makedirs(target)
-            log_function('Compiling into folder "%s"' % target)
+            log_function('Compiling into folder "{}"'.format(target))
 
         try:
             for name in self.list_templates(extensions, filter_func):
@@ -600,7 +600,7 @@ class Environment(object):
                 except TemplateSyntaxError as e:
                     if not ignore_errors:
                         raise
-                    log_function('Could not compile "%s": %s' % (name, e))
+                    log_function('Could not compile "{}": {}'.format(name, e))
                     continue
 
                 filename = ModuleLoader.get_module_filename(name)
@@ -609,11 +609,11 @@ class Environment(object):
                     c = self._compile(code, _encode_filename(filename))
                     write_file(filename + 'c', py_header +
                                marshal.dumps(c), 'wb')
-                    log_function('Byte-compiled "%s" as %s' %
+                    log_function('Byte-compiled "{}" as {}' %
                                  (name, filename + 'c'))
                 else:
                     write_file(filename, code, 'w')
-                    log_function('Compiled "%s" as %s' % (name, filename))
+                    log_function('Compiled "{}" as {}'.format(name, filename))
         finally:
             if zip:
                 zip_file.close()
@@ -752,7 +752,7 @@ class Environment(object):
 
         .. versionadded:: 2.3
         """
-        if isinstance(template_name_or_list, basestring):
+        if isinstance(template_name_or_list, str):
             return self.get_template(template_name_or_list, parent, globals)
         elif isinstance(template_name_or_list, Template):
             return template_name_or_list
@@ -887,7 +887,7 @@ class Template(object):
         vars = dict(*args, **kwargs)
         try:
             return concat(self.root_render_func(self.new_context(vars)))
-        except:
+        except Exception:
             exc_info = sys.exc_info()
         return self.environment.handle_exception(exc_info, True)
 
@@ -909,7 +909,7 @@ class Template(object):
         try:
             for event in self.root_render_func(self.new_context(vars)):
                 yield event
-        except:
+        except Exception:
             exc_info = sys.exc_info()
         else:
             return
@@ -976,10 +976,10 @@ class Template(object):
 
     def __repr__(self):
         if self.name is None:
-            name = 'memory:%x' % id(self)
+            name = 'memory:{:x}'.format(id(self))
         else:
             name = repr(self.name)
-        return '<%s %s>' % (self.__class__.__name__, name)
+        return '<{} {}>'.format(self.__class__.__name__, name)
 
 
 class TemplateModule(object):
@@ -1008,10 +1008,10 @@ class TemplateModule(object):
 
     def __repr__(self):
         if self.__name__ is None:
-            name = 'memory:%x' % id(self)
+            name = 'memory:{:x}'.format(id(self))
         else:
             name = repr(self.__name__)
-        return '<%s %s>' % (self.__class__.__name__, name)
+        return '<{} {}>'.format(self.__class__.__name__, name)
 
 
 class TemplateExpression(object):
@@ -1058,7 +1058,7 @@ class TemplateStream(object):
             Template('Hello {{ name }}!').stream(name='foo').dump('hello.html')
         """
         close = False
-        if isinstance(fp, basestring):
+        if isinstance(fp, str):
             fp = file(fp, 'w')
             close = True
         try:

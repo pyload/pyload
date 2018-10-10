@@ -297,13 +297,13 @@ service Pyload {
 
   //events
   list<EventInfo> getEvents(1: string uuid)
-  
+
   //accounts
   list<AccountInfo> getAccounts(1: bool refresh),
   list<string> getAccountTypes()
   void updateAccount(1: PluginName plugin, 2: string account, 3: string password, 4: map<string, string> options),
   void removeAccount(1: PluginName plugin, 2: string account),
-  
+
   //auth
   bool login(1: string username, 2: string password),
   UserData getUserData(1: string username, 2:string password),

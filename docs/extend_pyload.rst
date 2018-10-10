@@ -1,7 +1,7 @@
 .. _extend_pyload:
 
 ********************
-How to extend pyLoad                                                                                                                
+How to extend pyLoad
 ********************
 
 In general there a two different plugin types. These allow everybody to write powerful, modular plugins without knowing

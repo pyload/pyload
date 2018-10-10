@@ -39,4 +39,4 @@ class UpfileVn(SimpleHoster):
             self.link = json_data['Link']
 
         else:
-            self.log_debug("Download failed: %s" % json_data)
+            self.log_debug("Download failed: {}".format(json_data))

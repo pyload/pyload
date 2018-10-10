@@ -78,10 +78,10 @@ class MultipartPostHandler(BaseHandler):
             else:
                 boundary, data = self.multipart_encode(v_vars, v_files)
 
-                contenttype = 'multipart/form-data; boundary=%s' % boundary
+                contenttype = 'multipart/form-data; boundary={}'.format(boundary)
                 if(request.has_header('Content-Type')
                    and request.get_header('Content-Type').find('multipart/form-data') != 0):
-                    print "Replacing %s with %s" % (request.get_header('content-type'), 'multipart/form-data')
+                    print("Replacing {} with {}".format(request.get_header('content-type'), 'multipart/form-data'))
                 request.add_unredirected_header('Content-Type', contenttype)
 
             request.add_data(data)
@@ -94,17 +94,17 @@ class MultipartPostHandler(BaseHandler):
         if buf is None:
             buf = StringIO()
         for(key, value) in vars:
-            buf.write('--%s\r\n' % boundary)
-            buf.write('Content-Disposition: form-data; name="%s"' % key)
+            buf.write('--{}\r\n'.format(boundary))
+            buf.write('Content-Disposition: form-data; name="{}"'.format(key))
             buf.write('\r\n\r\n' + value + '\r\n')
         for(key, fd) in files:
             #file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
             filename = fd.name.split('/')[-1]
             contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-            buf.write('--%s\r\n' % boundary)
-            buf.write('Content-Disposition: form-data; name="%s"; filename="%s"\r\n' % (key, filename))
-            buf.write('Content-Type: %s\r\n' % contenttype)
-            # buffer += 'Content-Length: %s\r\n' % file_size
+            buf.write('--{}\r\n'.format(boundary))
+            buf.write('Content-Disposition: form-data; name="{}"; filename="{}"\r\n'.format(key, filename))
+            buf.write('Content-Type: {}\r\n'.format(contenttype))
+            # buffer += 'Content-Length: {}\r\n'.format(file_size)
             fd.seek(0)
             buf.write('\r\n' + fd.read() + '\r\n')
         buf.write('--' + boundary + '--\r\n\r\n')
@@ -126,7 +126,7 @@ def main():
         params = { "ss" : "0",            # show source
                    "doctype" : "Inline",
                    "uploaded_file" : open(temp[1], "rb") }
-        print opener.open(validatorURL, params).read()
+        print(opener.open(validatorURL, params).read())
         remove(temp[1])
 
     if len(sys.argv[1:]) > 0:

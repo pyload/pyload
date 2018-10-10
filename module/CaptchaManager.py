@@ -1,22 +1,7 @@
 # -*- coding: utf-8 -*-
+#@author: mkaay, RaNaN
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay, RaNaN
-"""
-from __future__ import absolute_import
 
 from time import time
 from traceback import print_exc
@@ -72,10 +57,10 @@ class CaptchaManager():
         for plugin in self.core.hookManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
-            except:
+            except Exception:
                 if self.core.debug:
                     print_exc()
-            
+
         if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)
             return True
@@ -110,13 +95,13 @@ class CaptchaTask():
             try:
                 parts = result.split(',')
                 self.result = (int(parts[0]), int(parts[1]))
-            except:
+            except Exception:
                 self.result = None
 
     def getResult(self):
         try:
             res = self.result.encode("utf8", "replace")
-        except:
+        except Exception:
             res = self.result
 
         return res
@@ -142,11 +127,11 @@ class CaptchaTask():
     def isPositional(self):
         """ returns if user have to click a specific region on the captcha """
         return self.captchaResultType == 'positional'
-    
+
     def isInteractive(self):
         """ returns if user has to solve the captcha in an interactive iframe """
         return self.captchaResultType == 'interactive'
-        
+
     def setWatingForUser(self, exclusive):
         if exclusive:
             self.status = "user"
@@ -164,4 +149,4 @@ class CaptchaTask():
         [x.captchaCorrect(self) for x in self.handler]
 
     def __str__(self):
-        return "<CaptchaTask '%s'>" % self.id
+        return "<CaptchaTask '{}'>".format(self.id)

@@ -49,7 +49,7 @@ class MegaCrypto(object):
     @staticmethod
     def base64_decode(data):
         #: Add padding, we need a string with a length multiple of 4
-        data += '=' * (-len(data) % 4)
+        data += '=' * (-len(data).format(4))
         return base64.b64decode(str(data), "-_")
 
     @staticmethod
@@ -58,14 +58,14 @@ class MegaCrypto(object):
 
     @staticmethod
     def a32_to_str(a):
-        return struct.pack(">%dI" % len(a), *a)  #: big-endian, unsigned int
+        return struct.pack(">{:d}I".format(len(a)), *a)  #: big-endian, unsigned int)
 
     @staticmethod
     def str_to_a32(s):
         # Add padding, we need a string with a length multiple of 4
-        s += '\0' * (-len(s) % 4)
+        s += '\0' * (-len(s).format(4))
         #: big-endian, unsigned int
-        return struct.unpack(">%dI" % (len(s) / 4), s)
+        return struct.unpack(">{:d}I".format(len(s) // 4), s)
 
     @staticmethod
     def a32_to_base64(a):
@@ -177,7 +177,7 @@ class MegaCrypto(object):
             """
             Return the **printable** CBC-MAC of the message that has been authenticated so far.
             """
-            return "".join("%02x" % ord(x)
+            return "".join("%02x".format(ord(x))
                            for x in MegaCrypto.a32_to_str(self.digest()))
 
         @staticmethod
@@ -246,10 +246,10 @@ class MegaClient(object):
             self.plugin.temp_offline()
 
         elif ecode in (1, 4, 6, 10, 15, 21):
-            self.plugin.retry(max_tries=5, wait_time=30, reason=_("Error code: [%s]") % -ecode)
+            self.plugin.retry(max_tries=5, wait_time=30, reason=_("Error code: [{}]").format(-ecode))
 
         else:
-            self.plugin.fail(_("Error code: [%s]") % -ecode)
+            self.plugin.fail(_("Error code: [{}]").format(-ecode))
 
 
 class MegaCoNz(Hoster):
@@ -263,7 +263,7 @@ class MegaCoNz(Hoster):
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.org"),
+    __authors__ = [("RaNaN", "ranan@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
 
@@ -307,7 +307,7 @@ class MegaCoNz(Hoster):
             df.write(chunk)
 
             progress += chunk_size
-            self.pyfile.setProgress(int((100.0 / encrypted_size) * progress))
+            self.pyfile.setProgress((100 // encrypted_size) * progress)
 
             if checksum_activated and check_checksum:
                 cbc_mac.update(chunk)
@@ -323,10 +323,10 @@ class MegaCoNz(Hoster):
         if checksum_activated and check_checksum:
             file_mac = cbc_mac.digest()
             if file_mac == meta_mac:
-                self.log_info(_('File integrity of "%s" verified by CBC-MAC checksum (%s)') %
+                self.log_info(_('File integrity of "{}" verified by CBC-MAC checksum ({})') %
                               (self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], meta_mac))
             else:
-                self.log_warning(_('CBC-MAC checksum for file "%s" does not match (%s != %s)') %
+                self.log_warning(_('CBC-MAC checksum for file "{}" does not match ({} != {})') %
                                  (self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], file_mac, meta_mac))
                 self.checksum_failed(file_decrypted, _("Checksums do not match"))
 
@@ -380,10 +380,10 @@ class MegaCoNz(Hoster):
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug("ID: %s" % id,
-                       _("Key: %s") % key,
-                       _("Type: %s") % ("public" if public else "node"),
-                       _("Owner: %s") % owner)
+        self.log_debug("ID: {}".format(id),
+                       _("Key: {}").format(key),
+                       _("Type: {}").format("public" if public else "node"),
+                       _("Owner: {}").format(owner))
 
         key = MegaCrypto.base64_to_a32(key)
         if len(key) != 8:
@@ -409,7 +409,7 @@ class MegaCoNz(Hoster):
         if not attr:
             self.fail(_("Decryption failed"))
 
-        self.log_debug("Decrypted Attr: %s" % decode(attr))
+        self.log_debug("Decrypted Attr: {}".format(decode(attr)))
 
         name = attr['n']
 

@@ -80,7 +80,7 @@ def test_upper(value):
 
 def test_string(value):
     """Return true if the object is a string."""
-    return isinstance(value, basestring)
+    return isinstance(value, str)
 
 
 def test_number(value):
@@ -95,7 +95,7 @@ def test_sequence(value):
     try:
         len(value)
         value.__getitem__
-    except:
+    except Exception:
         return False
     return True
 

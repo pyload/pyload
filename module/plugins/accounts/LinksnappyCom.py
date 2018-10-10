@@ -51,12 +51,12 @@ class LinksnappyCom(MultiAccount):
             else:
                 validuntil = float(validuntil)
 
-            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], basestring):
+            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], str):
                 trafficleft = -1
 
             else:
                 # @TODO: Remove `/ 1024` in 0.4.10
-                trafficleft = float(json_data['return']['trafficleft']) / 1024
+                trafficleft = float(json_data['return']['trafficleft']) // 1024
 
         return {'premium': premium,
                 'validuntil': validuntil,

@@ -39,29 +39,29 @@ class GoogledriveCom(Hoster):
     def api_response(self, cmd, **kwargs):
         kwargs['key'] = self.API_KEY
         try:
-            json_data = json.loads(self.load("%s%s" % (self.API_URL, cmd),
+            json_data = json.loads(self.load("{}{}".format(self.API_URL, cmd),
                                              get=kwargs))
-            self.log_debug("API response: %s" % json_data)
+            self.log_debug("API response: {}".format(json_data))
             return json_data
 
         except BadHeader as e:
             try:
                 json_data = json.loads(e.content)
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                json_data['error']['message'],
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
 
             except ValueError:
-                self.log_error("API Error: %s" % cmd,
+                self.log_error("API Error: {}".format(cmd),
                                e,
-                               "ID: %s" % self.info['pattern']['ID'],
-                               "Error code: %s" % e.code)
+                               "ID: {}".format(self.info['pattern']['ID']),
+                               "Error code: {}".format(e.code))
             return None
 
     def api_download(self):
         try:
-            self.download("%s%s/%s" % (self.API_URL, "files", self.info['pattern']['ID']),
+            self.download("{}{}/{}".format(self.API_URL, "files", self.info['pattern']['ID']),
                           get={'alt': "media",
                                # 'acknowledgeAbuse': "true",
                                'key': self.API_KEY})

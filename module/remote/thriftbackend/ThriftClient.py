@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
 import sys
-from socket import error
+from .socket import error
 from os.path import dirname, abspath, join
 from traceback import print_exc
 
@@ -12,13 +13,13 @@ except ImportError:
 
 from thrift.transport import TTransport
 #from thrift.transport.TZlibTransport import TZlibTransport
-from Socket import Socket
-from Protocol import Protocol
+from .Socket import Socket
+from .Protocol import Protocol
 
 # modules should import ttypes from here, when want to avoid importing API
 
-from thriftgen.pyload import Pyload
-from thriftgen.pyload.ttypes import *
+from .thriftgen.pyload import Pyload
+from .thriftgen.pyload.ttypes import *
 
 ConnectionClosed = TTransport.TTransportException
 
@@ -37,7 +38,7 @@ class ThriftClient:
         self.createConnection(host, port)
         try:
             self.transport.open()
-        except error, e:
+        except error as e:
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
@@ -46,7 +47,7 @@ class ThriftClient:
 
         try:
             correct = self.client.login(user, password)
-        except error, e:
+        except error as e:
             if e.args and e.args[0] == 104:
                 #connection reset by peer, probably wants ssl
                 try:
@@ -85,25 +86,3 @@ class ThriftClient:
 
     def __getattr__(self, item):
         return getattr(self.client, item)
-
-if __name__ == "__main__":
-
-    client = ThriftClient(user="User", password="pwhere")
-
-    print client.getServerVersion()
-    print client.statusServer()
-    print client.statusDownloads()
-    q = client.getQueue()
-
-#    for p in q:
-#      data = client.getPackageData(p.pid)
-#      print data
-#      print "Package Name: ", data.name
-
-
-    print client.getServices()
-    print client.call(Pyload.ServiceCall("UpdateManager", "recheckForUpdates"))
-
-    print client.getConfigValue("download", "limit_speed", "core")
-
-    client.close()

@@ -60,7 +60,7 @@ class FourSharedCom(SimpleHoster):
         try:
             m = re.search(self.ID_PATTERN, self.data)
             res = self.load(
-                'http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId=%s' %
+                'http://www.4shared.com/web/d2/getFreeDownloadLimitInfo?fileId={}' %
                 m.group(1))
             self.log_debug(res)
 

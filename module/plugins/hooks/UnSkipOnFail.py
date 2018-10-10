@@ -18,13 +18,13 @@ class UnSkipOnFail(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def download_failed(self, pyfile):
-        msg = _("Looking for skipped duplicates of: %s (pid:%s)")
-        self.log_info(msg % (pyfile.name, pyfile.package().id))
+        msg = _("Looking for skipped duplicates of: {} (pid:{})")
+        self.log_info(msg.format(pyfile.name, pyfile.package().id))
 
         link = self.find_duplicate(pyfile)
         if link:
             self.log_info(
-                _("Queue found duplicate: %s (pid:%s)") %
+                _("Queue found duplicate: {} (pid:{})") %
                 (link.name, link.packageID))
 
             #: Change status of "link" to "new_status".

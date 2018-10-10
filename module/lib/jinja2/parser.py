@@ -14,7 +14,7 @@ from jinja2.utils import next
 from jinja2.lexer import describe_token, describe_token_expr
 
 
-#: statements that callinto 
+#: statements that callinto
 _statement_keywords = frozenset(['for', 'if', 'block', 'extends', 'print',
                                  'macro', 'include', 'from', 'import',
                                  'set'])
@@ -56,7 +56,7 @@ class Parser(object):
             expected.extend(map(describe_token_expr, exprs))
         if end_token_stack:
             currently_looking = ' or '.join(
-                "'%s'" % describe_token_expr(expr)
+                "'{}'".format(describe_token_expr(expr))
                 for expr in end_token_stack[-1])
         else:
             currently_looking = None
@@ -64,20 +64,20 @@ class Parser(object):
         if name is None:
             message = ['Unexpected end of template.']
         else:
-            message = ['Encountered unknown tag \'%s\'.' % name]
+            message = ['Encountered unknown tag \'{}\'.'.format(name])
 
         if currently_looking:
             if name is not None and name in expected:
                 message.append('You probably made a nesting mistake. Jinja '
                                'is expecting this tag, but currently looking '
-                               'for %s.' % currently_looking)
+                               'for {}.'.format(currently_looking))
             else:
                 message.append('Jinja was looking for the following tags: '
-                               '%s.' % currently_looking)
+                               '{}.'.format(currently_looking))
 
         if self._tag_stack:
             message.append('The innermost block that needs to be '
-                           'closed is \'%s\'.' % self._tag_stack[-1])
+                           'closed is \'{}\'.'.format(self._tag_stack[-1]))
 
         self.fail(' '.join(message), lineno)
 
@@ -107,7 +107,7 @@ class Parser(object):
         """Return a new free identifier as :class:`~jinja2.nodes.InternalName`."""
         self._last_identifier += 1
         rv = object.__new__(nodes.InternalName)
-        nodes.Node.__init__(rv, 'fi%d' % self._last_identifier, lineno=lineno)
+        nodes.Node.__init__(rv, 'fi{:d}'.format(self._last_identifier, lineno=lineno))
         return rv
 
     def parse_statement(self):
@@ -373,7 +373,7 @@ class Parser(object):
                 target = self.parse_primary()
             target.set_ctx('store')
         if not target.can_assign():
-            self.fail('can\'t assign to %r' % target.__class__.
+            self.fail('can\'t assign to {!r}'.format(target.__class__.)
                       __name__.lower(), target.lineno)
         return target
 
@@ -572,7 +572,7 @@ class Parser(object):
         elif token.type == 'lbrace':
             node = self.parse_dict()
         else:
-            self.fail("unexpected '%s'" % describe_token(token), token.lineno)
+            self.fail("unexpected '{}'".format(describe_token(token), token.lineno))
         return node
 
     def parse_tuple(self, simplified=False, with_condexpr=True,
@@ -625,7 +625,7 @@ class Parser(object):
             # nothing) in the spot of an expression would be an empty
             # tuple.
             if not explicit_parentheses:
-                self.fail('Expected an expression, got \'%s\'' %
+                self.fail('Expected an expression, got \'{}\'' %
                           describe_token(self.stream.current))
 
         return nodes.Tuple(args, 'load', lineno=lineno)

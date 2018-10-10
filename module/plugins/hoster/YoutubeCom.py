@@ -101,7 +101,7 @@ class Ffmpeg(object):
     @property
     def found(self):
         return self.CMD is not None
-    
+
     def add_stream(self, streams):
         if isinstance(streams, list):
             self.streams.extend(streams)
@@ -123,9 +123,9 @@ class Ffmpeg(object):
         meta = []
         for i, stream in enumerate(self.streams):
             args.extend(["-i", stream[1]])
-            maps.extend(["-map", "%s:%s:0" % (i, stream[0])])
+            maps.extend(["-map", "{}:{}:0".format(i, stream[0])])
             if stream[0] == 's':
-                meta.extend(["-metadata:s:s:0:%s" % i, "language=%s" % stream[2]])
+                meta.extend(["-metadata:s:s:0:{}".format(i), "language={}".format(stream[2])])
 
         args.extend(maps)
         args.extend(meta)
@@ -133,7 +133,7 @@ class Ffmpeg(object):
                      "-vcodec", "copy",
                      "-acodec", "copy",
                      "-scodec", "copy",
-                     "-ss", "00:%s:%s.00" % (self.start_time[0], self.start_time[1]),
+                     "-ss", "00:{}:{}.00".format(self.start_time[0], self.start_time[1]),
                      "-sub_charenc", "utf8"])
 
         call = [self.CMD] + args + [self.output_filename]
@@ -194,7 +194,7 @@ class Ffmpeg(object):
                     current_time = sum(int(v) * [60 * 60 * 100, 60 * 100, 100, 1][i]
                                        for i, v in enumerate(m.groups()))
                     if self.plugin:
-                        progress = current_time * 100 / duration
+                        progress = current_time * 100 // duration
                         self.plugin.pyfile.setProgress(progress)
 
             else:
@@ -233,7 +233,7 @@ class YoutubeCom(Hoster):
 
     __description__ = """Youtube.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
@@ -305,7 +305,7 @@ class YoutubeCom(Hoster):
             player_url = 'https:' + player_url
 
         if not player_url.endswith(".js"):
-            self.fail(_("Unsupported player type %s") % player_url)
+            self.fail(_("Unsupported player type {}").format(player_url))
 
         cache_info = self.db.retrieve("cache")
         cache_dirty = False
@@ -375,7 +375,7 @@ class YoutubeCom(Hoster):
 
         is_video = lambda  x: 'v' in self.formats[x]['type']
         if desired_fmt not in self.formats or not is_video(desired_fmt):
-            self.log_warning(_("VIDEO ITAG %d unknown, using default") % desired_fmt)
+            self.log_warning(_("VIDEO ITAG {:d} unknown, using default").format(desired_fmt))
             desired_fmt = 22
 
         #: Build dictionary of supported itags (3D/2D)
@@ -387,7 +387,7 @@ class YoutubeCom(Hoster):
         if not video_streams:
             self.fail(_("No available video stream meets your preferences"))
 
-        self.log_debug("DESIRED VIDEO STREAM: ITAG:%d (%s %dx%d Q:%d 3D:%s) %sfound, %sallowed" %
+        self.log_debug("DESIRED VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{}) {}found, {}allowed" %
                        (desired_fmt, self.formats[desired_fmt]['ext'], self.formats[desired_fmt]['width'],
                         self.formats[desired_fmt]['height'], self.formats[desired_fmt]['qi'],
                         self.formats[desired_fmt]['3d'], "" if desired_fmt in video_streams else "NOT ",
@@ -400,13 +400,13 @@ class YoutubeCom(Hoster):
             quality_index = lambda x: self.formats[x]['qi']  #: Select quality index
             quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
 
-            self.log_debug("Choosing nearest stream: %s" % [(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                                                         for _s in video_streams.keys()])
+            self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
+                                                         for _s in video_streams.keys()]))
 
             chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
                                                   and quality_index(x) > quality_index(y) else y, video_streams.keys())
 
-        self.log_debug("CHOSEN VIDEO STREAM: ITAG:%d (%s %dx%d Q:%d 3D:%s)" %
+        self.log_debug("CHOSEN VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{})" %
                        (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['width'],
                         self.formats[chosen_fmt]['height'], self.formats[chosen_fmt]['qi'],
                         self.formats[chosen_fmt]['3d']))
@@ -438,7 +438,7 @@ class YoutubeCom(Hoster):
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)
-            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+            self.log_info(_("Download skipped: {} due to {}").format(self.pyfile.name, e.message))
 
         return filename, chosen_fmt
 
@@ -447,7 +447,7 @@ class YoutubeCom(Hoster):
 
         is_audio = lambda  x: self.formats[x]['type'] == "a"
         if desired_fmt not in self.formats or not is_audio(desired_fmt):
-            self.log_warning(_("AUDIO ITAG %d unknown, using default") % desired_fmt)
+            self.log_warning(_("AUDIO ITAG {:d} unknown, using default").format(desired_fmt))
             desired_fmt = 141
 
         #: Build dictionary of supported audio itags
@@ -469,13 +469,13 @@ class YoutubeCom(Hoster):
             quality_index = lambda x: self.formats[x]['qi']  #: Select quality index
             quality_distance = lambda x, y: abs(quality_index(x) - quality_index(y))
 
-            self.log_debug("Choosing nearest stream: %s" % [(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
-                                                         for _s in audio_streams.keys()])
+            self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(_s), quality_distance(_s, desired_fmt))
+                                                         for _s in audio_streams.keys()]))
 
             chosen_fmt = reduce(lambda x, y: x if quality_distance(x, desired_fmt) <= quality_distance(y, desired_fmt)
                                                   and quality_index(x) > quality_index(y) else y, audio_streams.keys())
 
-        self.log_debug("CHOSEN AUDIO STREAM: ITAG:%d (%s %s Q:%d)" %
+        self.log_debug("CHOSEN AUDIO STREAM: ITAG:{:d} ({} {} Q:{:d})" %
                        (chosen_fmt, self.formats[chosen_fmt]['ext'], self.formats[chosen_fmt]['acodec'],
                         self.formats[chosen_fmt]['qi']))
 
@@ -503,7 +503,7 @@ class YoutubeCom(Hoster):
             filename = os.path.join(self.pyload.config.get("general", "download_folder"),
                                     self.pyfile.package().folder,
                                     self.pyfile.name)
-            self.log_info(_("Download skipped: %s due to %s") % (self.pyfile.name, e.message))
+            self.log_info(_("Download skipped: {} due to {}").format(self.pyfile.name, e.message))
 
         return filename, chosen_fmt
 
@@ -513,7 +513,7 @@ class YoutubeCom(Hoster):
                 sec, milli = divmod(millisec, 1000)
                 m, s = divmod(int(sec), 60)
                 h, m = divmod(m, 60)
-                return "%02d:%02d:%02d,%s" % (h, m, s, milli)
+                return "%02d:%02d:%02d,{}".format(h, m, s, milli)
 
             i = 1
             srt = ""
@@ -540,7 +540,7 @@ class YoutubeCom(Hoster):
             subtitles_urls = dict([(_subtitle['languageCode'],
                                     urllib.unquote(_subtitle['baseUrl']).decode('unicode-escape') + "&fmt=3")
                                    for _subtitle in subs])
-            self.log_debug("AVAILABLE SUBTITLES: %s" % subtitles_urls.keys() or "None")
+            self.log_debug("AVAILABLE SUBTITLES: {}".format(subtitles_urls.keys() or "None"))
 
         except KeyError:
             self.log_debug("AVAILABLE SUBTITLES: None")
@@ -559,7 +559,7 @@ class YoutubeCom(Hoster):
 
                         if self.pyload.config.get('download', 'skip_existing') and \
                                 exists(srt_filename) and os.stat(srt_filename).st_size != 0:
-                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
+                            self.log_info("Download skipped: {} due to File exists".format(os.path.basename(srt_filename)))
                             srt_files.append((srt_filename, _lang))
                             continue
 
@@ -569,7 +569,7 @@ class YoutubeCom(Hoster):
                         with open(srt_filename, "w") as f:
                             f.write(srt.encode('utf-8'))
                         self.set_permissions(srt_filename)
-                        self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                        self.log_debug("Saved subtitle: {}".format(os.path.basename(srt_filename)))
                         srt_files.append((srt_filename, _lang))
                         if subs_dl == "first_available":
                             break
@@ -583,7 +583,7 @@ class YoutubeCom(Hoster):
 
                     if self.pyload.config.get('download', 'skip_existing') and \
                         exists(srt_filename) and os.stat(srt_filename).st_size != 0:
-                            self.log_info("Download skipped: %s due to File exists" % os.path.basename(srt_filename))
+                            self.log_info("Download skipped: {} due to File exists".format(os.path.basename(srt_filename)))
                             srt_files.append((srt_filename, _subtitle[0]))
                             continue
 
@@ -594,7 +594,7 @@ class YoutubeCom(Hoster):
                         f.write(srt.encode('utf-8'))
                     self.set_permissions(srt_filename)
 
-                    self.log_debug("Saved subtitle: %s" % os.path.basename(srt_filename))
+                    self.log_debug("Saved subtitle: {}".format(os.path.basename(srt_filename)))
                     srt_files.append((srt_filename, _lang))
                     if subs_dl == "first_available":
                             break
@@ -719,7 +719,7 @@ class YoutubeCom(Hoster):
         m = re.search(r't=(?:(\d+)m)?(\d+)s', pyfile.url)
         if self.ffmpeg and m:
             self.start_time = tuple(map(lambda _x: 0 if _x is None else int(_x), m.groups()))
-            self.file_name += " (starting at %sm%ss)" % (self.start_time[0], self.start_time[1])
+            self.file_name += " (starting at {}m{}s)".format(self.start_time[0], self.start_time[1])
 
         #: Cleaning invalid characters from the file name
         self.file_name = self.file_name.encode('ascii', 'replace')
@@ -744,7 +744,7 @@ class YoutubeCom(Hoster):
 
             self.streams += streams
 
-        self.log_debug("AVAILABLE STREAMS: %s" % [_s[0] for _s in self.streams])
+        self.log_debug("AVAILABLE STREAMS: {}".format([_s[0] for _s in self.streams]))
 
         video_filename, video_itag = self._handle_video()
 
@@ -844,10 +844,10 @@ class JSInterpreter(object):
                             expr = json.dumps(sub_result) + remaining_expr
                         break
             else:
-                raise JSInterpreterError('Premature end of parens in %r' % expr)
+                raise JSInterpreterError('Premature end of parens in {!r}'.format(expr))
 
         for op, opfunc in self._ASSIGN_OPERATORS:
-            m = re.match(r'(?x)(?P<out>%s)(?:\[(?P<index>[^\]]+?)\])?\s*%s(?P<expr>.*)$' %
+            m = re.match(r'(?x)(?P<out>{})(?:\[(?P<index>[^\]]+?)\])?\s*{}(?P<expr>.*)$' %
                          (self._VARNAME_PATTERN, re.escape(op)), expr)
             if m is None:
                 continue
@@ -870,7 +870,7 @@ class JSInterpreter(object):
         if expr.isdigit():
             return int(expr)
 
-        var_m = re.match(r'(?!if|return|true|false)(?P<name>%s)$' % self._VARNAME_PATTERN, expr)
+        var_m = re.match(r'(?!if|return|true|false)(?P<name>{})$'.format(self._VARNAME_PATTERN), expr)
         if var_m:
             return local_vars[var_m.group('name')]
 
@@ -879,7 +879,7 @@ class JSInterpreter(object):
         except ValueError:
             pass
 
-        m = re.match(r'(?P<var>%s)\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$' % self._VARNAME_PATTERN, expr)
+        m = re.match(r'(?P<var>{})\.(?P<member>[^(]+)(?:\(+(?P<args>[^()]*)\))?$'.format(self._VARNAME_PATTERN), expr)
         if m is not None:
             variable = m.group('var')
             member = m.group('member')
@@ -932,28 +932,28 @@ class JSInterpreter(object):
 
             return obj[member](argvals)
 
-        m = re.match(r'(?P<in>%s)\[(?P<idx>.+)\]$' % self._VARNAME_PATTERN, expr)
+        m = re.match(r'(?P<in>{})\[(?P<idx>.+)\]$'.format(self._VARNAME_PATTERN), expr)
         if m is not None:
             val = local_vars[m.group('in')]
             idx = self.interpret_expression(m.group('idx'), local_vars, allow_recursion - 1)
             return val[idx]
 
         for op, opfunc in self._OPERATORS:
-            m = re.match(r'(?P<x>.+?)%s(?P<y>.+)' % re.escape(op), expr)
+            m = re.match(r'(?P<x>.+?){}(?P<y>.+)'.format(re.escape(op)), expr)
             if m is None:
                 continue
 
             x, abort = self.interpret_statement(m.group('x'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError('Premature left-side return of %s in %r' % (op, expr))
+                raise JSInterpreterError('Premature left-side return of {} in {!r}'.format(op, expr))
 
             y, abort = self.interpret_statement(m.group('y'), local_vars, allow_recursion - 1)
             if abort:
-                raise JSInterpreterError('Premature right-side return of %s in %r' % (op, expr))
+                raise JSInterpreterError('Premature right-side return of {} in {!r}'.format(op, expr))
 
             return opfunc(x, y)
 
-        m = re.match(r'^(?P<func>%s)\((?P<args>[a-zA-Z0-9_$,]+)\)$' % self._VARNAME_PATTERN, expr)
+        m = re.match(r'^(?P<func>{})\((?P<args>[a-zA-Z0-9_$,]+)\)$'.format(self._VARNAME_PATTERN), expr)
         if m is not None:
             fname = m.group('func')
             argvals = tuple(int(v) if v.isdigit() else local_vars[v]
@@ -962,12 +962,11 @@ class JSInterpreter(object):
                 self._functions[fname] = self.extract_function(fname)
             return self._functions[fname](argvals)
 
-        raise JSInterpreterError('Unsupported JS expression %r' % expr)
+        raise JSInterpreterError('Unsupported JS expression {!r}'.format(expr))
 
     def extract_object(self, objname):
         obj = {}
-        obj_m = re.search(r'(?:var\s+)?%s\s*=\s*\{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*\{.*?\}(?:,\s*)?)*)\}\s*;'
-                          % re.escape(objname), self.code)
+        obj_m = re.search(r'(?:var\s+)?{}\s*=\s*\{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*\{.*?\}(?:,\s*)?)*)\}\s*;'.format(re.escape(objname)), self.code)
         fields = obj_m.group('fields')
         # Currently, it only supports function definitions
         fields_m = re.finditer(r'(?P<key>[a-zA-Z$0-9]+)\s*:\s*function\((?P<args>[a-z,]+)\){(?P<code>[^}]+)}', fields)
@@ -978,10 +977,9 @@ class JSInterpreter(object):
         return obj
 
     def extract_function(self, function_name):
-        func_m = re.search(r'(?x)(?:function\s+%s|[{;,]\s*%s\s*=\s*function|var\s+%s\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'
-                           % (re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
+        func_m = re.search(r'(?x)(?:function\s+{}|[{;,]\s*{}\s*=\s*function|var\s+{}\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}'.format(re.escape(function_name), re.escape(function_name), re.escape(function_name)), self.code)
         if func_m is None:
-            raise JSInterpreterError('Could not find JS function %r' % function_name)
+            raise JSInterpreterError('Could not find JS function {!r}'.format(function_name))
 
         argnames = func_m.group('args').split(',')
 

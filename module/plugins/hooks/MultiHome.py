@@ -21,7 +21,7 @@ class Interface(object):
         self.history[(plugin_name, account)] = time.time()
 
     def __repr__(self):
-        return "<Interface - %s>" % self.address
+        return "<Interface - {}>".format(self.address)
 
 
 class MultiHome(Addon):

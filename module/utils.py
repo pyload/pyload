@@ -13,7 +13,7 @@ from htmlentitydefs import name2codepoint
 def chmod(*args):
     try:
         os.chmod(*args)
-    except:
+    except Exception:
         pass
 
 
@@ -21,7 +21,7 @@ def decode(string):
     """ decode string with utf if possible """
     try:
         return string.decode("utf8", "replace")
-    except:
+    except Exception:
         return string
 
 
@@ -62,13 +62,13 @@ else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
 def get_console_encoding(enc):
-    if os.name == "nt": 
+    if os.name == "nt":
         if enc == "cp65001": # aka UTF-8
-            print "WARNING: Windows codepage 65001 is not supported."
+            print("WARNING: Windows codepage 65001 is not supported.")
             enc = "cp850"
     else:
         enc = "utf8"
-    
+
     return enc
 
 def compare_time(start, end):
@@ -92,7 +92,7 @@ def formatSize(size):
     while size > 1000:
         size /= 1024.0
         steps += 1
-    return "%.2f %s" % (size, sizes[steps])
+    return "{:2f} {}".format(size, sizes[steps])
 
 
 def formatSpeed(speed):
@@ -139,7 +139,7 @@ def parseFileSize(string, unit=None): #returns bytes
         else:
             return 0
     else:
-        if isinstance(string, basestring):
+        if isinstance(string, str):
             traffic = float(string.replace(",", "."))
         else:
             traffic = string
@@ -159,7 +159,7 @@ def parseFileSize(string, unit=None): #returns bytes
 
 def lock(func):
     def new(*args):
-        #print "Handler: %s args: %s" % (func,args[1:])
+        #print("Handler: {} args: {}".format(func,args[1:]))
         args[0].lock.acquire()
         try:
             return func(*args)
@@ -195,7 +195,3 @@ def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
     return re.sub("&#?\w+;", fixup, text)
 
-if __name__ == "__main__":
-    print freeSpace(".")
-
-    print remove_chars("ab'cdgdsf''ds'", "'ghd")

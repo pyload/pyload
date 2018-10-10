@@ -169,7 +169,7 @@ class DownloadInfo(TBase):
    - plugin
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
     'name',
     'speed',
@@ -239,7 +239,7 @@ class ServerStatus(TBase):
    - reconnect
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pause',
     'active',
     'queue',
@@ -279,7 +279,7 @@ class ConfigItem(TBase):
    - type
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'name',
     'description',
     'value',
@@ -310,7 +310,7 @@ class ConfigSection(TBase):
    - outline
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'name',
     'description',
     'items',
@@ -348,7 +348,7 @@ class FileData(TBase):
    - order
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
     'url',
     'name',
@@ -409,7 +409,7 @@ class PackageData(TBase):
    - fids
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
     'name',
     'folder',
@@ -472,7 +472,7 @@ class InteractionTask(TBase):
    - plugin
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'iid',
     'input',
     'structure',
@@ -518,7 +518,7 @@ class CaptchaTask(TBase):
    - resultType
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'tid',
     'data',
     'type',
@@ -549,7 +549,7 @@ class EventInfo(TBase):
    - destination
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'eventname',
     'id',
     'type',
@@ -581,7 +581,7 @@ class UserData(TBase):
    - templateName
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'name',
     'email',
     'role',
@@ -619,7 +619,7 @@ class AccountInfo(TBase):
    - type
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'validuntil',
     'login',
     'options',
@@ -662,7 +662,7 @@ class ServiceCall(TBase):
    - parseArguments
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
     'func',
     'arguments',
@@ -694,7 +694,7 @@ class OnlineStatus(TBase):
    - size
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'name',
     'plugin',
     'packagename',
@@ -726,7 +726,7 @@ class OnlineCheck(TBase):
    - data
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'rid',
     'data',
    ]
@@ -748,7 +748,7 @@ class PackageDoesNotExists(TExceptionBase):
    - pid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'pid',
    ]
 
@@ -770,7 +770,7 @@ class FileDoesNotExists(TExceptionBase):
    - fid
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'fid',
    ]
 
@@ -793,7 +793,7 @@ class ServiceDoesNotExists(TExceptionBase):
    - func
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'plugin',
     'func',
    ]
@@ -818,7 +818,7 @@ class ServiceException(TExceptionBase):
    - msg
   """
 
-  __slots__ = [ 
+  __slots__ = [
     'msg',
    ]
 

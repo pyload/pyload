@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+
 from logging import getLogger
 
 from .HTTPRequest import HTTPRequest
@@ -64,7 +64,7 @@ class Browser(object):
     @property
     def percent(self):
         if not self.size: return 0
-        return (self.arrived * 100) / self.size
+        return (self.arrived * 100) // self.size
 
     def clearCookies(self):
         if self.cj:
@@ -132,16 +132,3 @@ class Browser(object):
             del self.dl
         if hasattr(self, "cj"):
             del self.cj
-
-if __name__ == "__main__":
-    browser = Browser()#proxies={"socks5": "localhost:5000"})
-    ip = "http://www.whatismyip.com/automation/n09230945.asp"
-    #browser.getPage("http://google.com/search?q=bar")
-    #browser.getPage("https://encrypted.google.com/")
-    #print browser.getPage(ip)
-    #print browser.getRedirectLocation("http://google.com/")
-    #browser.getPage("https://encrypted.google.com/")
-    #browser.getPage("http://google.com/search?q=bar")
-
-    browser.httpDownload("http://speedtest.netcologne.de/test_10mb.bin", "test_10mb.bin")
-

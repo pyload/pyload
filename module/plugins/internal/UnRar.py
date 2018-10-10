@@ -19,7 +19,7 @@ class UnRar(Extractor):
 
     __description__ = """RAR extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("Immenz", "immenz@gmx.net"),
                    ("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]
@@ -159,7 +159,7 @@ class UnRar(Extractor):
                 raise ArchiveError(err)
 
         if p.returncode:
-            raise ArchiveError(_("Process return code: %d") % p.returncode)
+            raise ArchiveError(_("Process return code: {:d}").format(p.returncode))
 
         return self.list(password)
 
@@ -226,7 +226,7 @@ class UnRar(Extractor):
             args.append("-or")
 
         for word in self.excludefiles:
-            args.append("-x%s" % word.strip())
+            args.append("-x{}".format(word.strip()))
 
         #: Assume yes on all queries
         args.append("-y")
@@ -235,7 +235,7 @@ class UnRar(Extractor):
         password = kwargs.get('password')
 
         if password:
-            args.append("-p%s" % password)
+            args.append("-p{}".format(password))
         else:
             args.append("-p-")
 

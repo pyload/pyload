@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: mkaay
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
-"""
 import re
 
 from PyQt4.QtCore import *
@@ -28,7 +14,7 @@ class NewPackageDock(QDockWidget):
         self.setWidget(self.widget)
         self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
         self.hide()
-    
+
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
         pw   = str(self.widget.passwordInput.text())
@@ -54,7 +40,7 @@ class NewPackageDock(QDockWidget):
         for url in result:
             if "\n" or "\t" or "\r" or "\"" or "<" or "'" in url:
                 url = url[:-1]
-            self.widget.box.append("%s " % url)
+            self.widget.box.append("{} ".format(url))
 
 class NewPackageWindow(QWidget):
     def __init__(self, dock):
@@ -62,21 +48,21 @@ class NewPackageWindow(QWidget):
         self.dock = dock
         self.setLayout(QGridLayout())
         layout = self.layout()
-        
+
         nameLabel = QLabel(_("Name"))
         nameInput = QLineEdit()
         passwordLabel = QLabel(_("Password"))
         passwordInput = QLineEdit()
-        
+
         linksLabel = QLabel(_("Links in this Package"))
-        
+
         self.box = QTextEdit()
         self.nameInput = nameInput
         self.passwordInput = passwordInput
-        
+
         save = QPushButton(_("Create"))
         parseUri = QPushButton(_("Filter URLs"))
-        
+
         layout.addWidget(nameLabel, 0, 0)
         layout.addWidget(nameInput, 0, 1)
         layout.addWidget(passwordLabel, 1, 0)

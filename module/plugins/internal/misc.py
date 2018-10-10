@@ -2,7 +2,7 @@
 #
 #@TODO: Move to misc directory in 0.4.10
 
-from __future__ import with_statement
+
 
 # import HTMLParser  #@TODO: Use in 0.4.10
 import datetime
@@ -81,7 +81,7 @@ class Config(object):
 
         except KeyError:
             self.plugin.log_debug(
-                "Config option `%s` not found, use default `%s`" %
+                "Config option `{}` not found, use default `{}`" %
                 (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
             return default
 
@@ -263,8 +263,8 @@ def sign_string(message, pem_private, pem_passphrase="" , sign_algo="SHA384"):
 def format_time(value):
     dt = datetime.datetime(1, 1, 1) + \
         datetime.timedelta(seconds=abs(int(value)))
-    days = ("%d days" % (dt.day - 1)) if dt.day > 1 else ""
-    tm = ", ".join("%d %ss" % (getattr(dt, attr), attr)
+    days = ("{:d} days".format(dt.day - 1)) if dt.day > 1 else ""
+    tm = ", ".join("{:d} {}s".format(getattr(dt, attr), attr)
                             for attr in ("hour", "minute", "second")
                             if getattr(dt, attr))
     return days + (" and " if days and tm else "") + tm
@@ -272,11 +272,11 @@ def format_time(value):
 def format_size(value):
     for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
         if abs(value) < 1024.0:
-            return "%3.2f %s" % (value, unit)
+            return "%3.2f {}".format(value, unit)
         else:
             value /= 1024.0
 
-    return "%.2f %s" % (value, 'EiB')
+    return "{:2f} {}".format(value, 'EiB')
 
 
 def compare_time(start, end):
@@ -323,7 +323,7 @@ def fsbsize(path):
     if os.name == "nt":
         import ctypes
 
-        drive = "%s\\" % os.path.splitdrive(path)[0]
+        drive = "{}\\".format(os.path.splitdrive(path)[0])
         cluster_sectors, sector_size = ctypes.c_longlong(0)
 
         ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),
@@ -376,8 +376,7 @@ def get_console_encoding(enc):
     if os.name == "nt":
         if enc == "cp65001":  #: aka UTF-8
             enc = "cp850"
-            # print("WARNING: Windows codepage 65001 (UTF-8) is not supported,
-            # used `%s` instead") % enc
+            # print("WARNING: Windows codepage 65001 (UTF-8) is not supported, used `{}` instead".format(enc))
     else:
         enc = "utf8"
 
@@ -515,12 +514,12 @@ def fixurl(url, unquote=None):
 
 
 def truncate(name, length):
-    max_trunc = len(name) / 2
+    max_trunc = len(name) // 2
     if length > max_trunc:
         raise OSError("File name too long")
 
-    trunc = int((len(name) - length) / 3)
-    return "%s~%s" % (name[:trunc * 2], name[-trunc:])
+    trunc = (len(name) - length) // 3
+    return "{}~{}".format(name[:trunc * 2], name[-trunc:])
 
 
 #@TODO: Recheck in 0.4.10
@@ -609,7 +608,7 @@ def parse_size(value, unit=""):  #: returns bytes
 
     i, d = divmod(size, 1)
     integer = int(i) << magnitude
-    decimal = int(d * (1024 ** (magnitude / 10)))
+    decimal = int(d * (1024 ** (magnitude // 10)))
 
     return integer + decimal
 
@@ -617,7 +616,7 @@ def parse_size(value, unit=""):  #: returns bytes
 def str2int(value):
     try:
         return int(value)
-    except:
+    except Exception:
         pass
 
     ones = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
@@ -634,7 +633,7 @@ def str2int(value):
 
     try:
         return sum(numwords[word] for word in tokens)
-    except:
+    except Exception:
         return 0
 
 
@@ -803,14 +802,14 @@ def parse_html_header(header):
 
 def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(
-        r'%s\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' %
+        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' %
         attr_name, tag, re.I)
     return m.group(2) if m else None
 
 
 def parse_html_form(attr_str, html, input_names={}):
-    for form in re.finditer(r'(?P<TAG><form[^>]*%s.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>' % attr_str,
-                            html, re.I | re.S):
+    for form in re.finditer(r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'.format(attr_str,
+                            html, re.I | re.S)):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 
@@ -838,7 +837,7 @@ def parse_html_form(attr_str, html, input_names={}):
             #: Check input attributes
             for key, value in input_names.items():
                 if key in inputs:
-                    if isinstance(value, basestring) and inputs[key] == value:
+                    if isinstance(value, str) and inputs[key] == value:
                         continue
                     elif isinstance(value, tuple) and inputs[key] in value:
                         continue
@@ -902,7 +901,7 @@ def compute_checksum(filename, hashtype):
             for chunk in iter(lambda: f.read(buf), ''):
                 last = hf(chunk, last)
 
-        return "%x" % last
+        return "{:x}".format(last)
 
     elif hashtype in hashlib.algorithms_available:
         h = hashlib.new(hashtype)

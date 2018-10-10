@@ -24,7 +24,7 @@ class DeleteFinished(Addon):
             deloffline = self.config.get('deloffline')
             mode = "0,1,4" if deloffline else "0,4"
             msg = _(
-                'delete all finished packages in queue list (%s packages with offline links)')
+                'delete all finished packages in queue list ({} packages with offline links)')
             self.log_info(
                 msg %
                 (_('including') if deloffline else _('excluding')))
@@ -44,7 +44,7 @@ class DeleteFinished(Addon):
     @style.queue
     def delete_finished(self, mode):
         self.c.execute(
-            'DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN (%s))' %
+            'DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE package=packages.id AND status NOT IN ({}))' %
             mode)
         self.c.execute(
             'DELETE FROM links WHERE NOT EXISTS(SELECT 1 FROM packages WHERE id=links.package)')

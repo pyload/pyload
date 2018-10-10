@@ -37,7 +37,7 @@ class MegaDebridEu(MultiHoster):
         get['action'] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
-        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/%s" % self.pyload.version))
+        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/{}".format(self.pyload.version)))
 
         json_data = self.load(self.API_URL, get=get, post=post)
 

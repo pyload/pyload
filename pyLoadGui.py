@@ -1,22 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#@author: mkaay
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay
-"""
 
 import sys
 
@@ -52,7 +37,7 @@ from module.utils import formatSize, formatSpeed
 try:
     import pynotify
 except ImportError:
-    print "pynotify not installed, falling back to qt tray notification"
+    print("pynotify not installed, falling back to qt tray notification")
 
 class main(QObject):
     def __init__(self):
@@ -82,7 +67,7 @@ class main(QObject):
         translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(lang), "en"], fallback=True)
         try:
             translation.install(unicode=(True if sys.stdout.encoding.lower().startswith("utf") else False))
-        except:
+        except Exception:
             translation.install(unicode=False)
 
 
@@ -276,11 +261,11 @@ class main(QObject):
         overview.queue = self.queue
         self.connect(self.queue, SIGNAL("updateCount"), overview.queueChanged)
         self.queue.start()
-    
+
     def slotUpdateCount(self, pc, fc):
-        self.mainWindow.packageCount.setText("%i" % pc)
-        self.mainWindow.fileCount.setText("%i" % fc)
-    
+        self.mainWindow.packageCount.setText("%i".format(pc))
+        self.mainWindow.fileCount.setText("%i".format(fc))
+
     def refreshServerStatus(self):
         """
             refresh server status and overall speed in the status bar
@@ -328,12 +313,12 @@ class main(QObject):
             else:
                 data["default"] = False
             subs = self.parser.parseNode(conn, "dict")
-            if not subs.has_key("name"):
+            if "name" not in subs:
                 data["name"] = _("Unnamed")
             else:
                 data["name"] = subs["name"].text()
             if data["type"] == "remote":
-                if not subs.has_key("server"):
+                if "server" not in subs:
                     continue
                 else:
                     data["host"] = subs["server"].text()
@@ -431,16 +416,16 @@ class main(QObject):
                 thread.start_new_thread(self.core.start, (False, False))
                 while not self.core.running:
                     sleep(0.5)
-                    
+
                 self.connector.proxy = self.core.api
                 self.connector.internal = True
 
                 #self.connector.setConnectionData("127.0.0.1", config.get("remote","port"), "anonymous", "anonymous")
-        
+
         self.startMain()
 #        try:
 #            host = data["host"]
-#        except:
+#        except Exception:
 #            host = "127.0.0.1"
 
     def refreshConnections(self):
@@ -588,14 +573,14 @@ class main(QObject):
             text = self.clipboard.text()
             pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
             matches = pattern.finditer(text)
-            
+
             # thanks to: jmansour //#139
             links = [str(match.group(0)) for match in matches]
             if len(links) == 0:
                 return
-                
+
             filenames = [link.rpartition("/")[2] for link in links]
-            
+
             packagename = commonprefix(filenames)
             if len(packagename) == 0:
                 packagename = filenames[0]
@@ -652,14 +637,14 @@ class main(QObject):
                     if event.eventname == "update" and event.type == ElementType.File:
                         info = self.connector.getFileData(event.id)
                         if info.statusmsg == "finished":
-                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '%s'") % info.name)
+                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '{}'").format(info.name))
                         elif info.statusmsg == "failed":
-                            self.emit(SIGNAL("showMessage"), _("Failed downloading '%s'!") % info.name)
+                            self.emit(SIGNAL("showMessage"), _("Failed downloading '{}'!").format(info.name))
                     if event.event == "insert" and event.type == ElementType.File:
                         info = self.connector.getLinkInfo(event[3])
-                        self.emit(SIGNAL("showMessage"), _("Added '%s' to queue") % info.name)
-                except:
-                    print "can't send notification"
+                        self.emit(SIGNAL("showMessage"), _("Added '{}' to queue").format(info.name))
+                except Exception:
+                    print("can't send notification")
             elif event.destination == Destination.Collector:
                 self.packageCollector.addEvent(event)
 
@@ -678,14 +663,14 @@ class main(QObject):
                 if self.core.shuttedDown:
                     break
                 sleep(0.5)
-    
+
     def slotConnectionLost(self):
         if not self.connectionLost:
             self.connectionLost = True
             m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
             m.exec_()
             self.slotQuit()
-    
+
     class Loop():
         def __init__(self, parent):
             self.parent = parent
@@ -744,15 +729,15 @@ class Notification(QObject):
 
         try:
             self.usePynotify = pynotify.init("icon-summary-body")
-        except:
-            print "init error"
+        except Exception:
+            print("init error")
 
     def showMessage(self, body):
         if self.usePynotify:
             n = pynotify.Notification("pyload", body, join(pypath, "icons", "logo.png"))
             try:
                 n.set_hint_string("x-canonical-append", "")
-            except:
+            except Exception:
                 pass
             n.show()
         else:

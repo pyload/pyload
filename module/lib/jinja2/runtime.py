@@ -80,7 +80,7 @@ class TemplateReference(object):
         return BlockReference(name, self.__context, blocks, 0)
 
     def __repr__(self):
-        return '<%s %r>' % (
+        return '<{} {!r}>'.format(
             self.__class__.__name__,
             self.__context.name
         )
@@ -129,7 +129,7 @@ class Context(object):
             blocks[index]
         except LookupError:
             return self.environment.undefined('there is no parent block '
-                                              'called %r.' % name,
+                                              'called {!r}.'.format(name,)
                                               name='super')
         return BlockReference(name, self, blocks, index)
 
@@ -223,7 +223,7 @@ class Context(object):
         return item
 
     def __repr__(self):
-        return '<%s %s of %r>' % (
+        return '<{} {} of {!r}>'.format(
             self.__class__.__name__,
             repr(self.get_all()),
             self.name
@@ -252,7 +252,7 @@ class BlockReference(object):
         """Super the block."""
         if self._depth + 1 >= len(self._stack):
             return self._context.environment. \
-                undefined('there is no parent block called %r.' %
+                undefined('there is no parent block called {!r}.' %
                           self.name, name='super')
         return BlockReference(self.name, self._context, self._stack,
                               self._depth + 1)
@@ -286,7 +286,7 @@ class LoopContext(object):
         """Cycles among the arguments with the current loop index."""
         if not args:
             raise TypeError('no items for cycling given')
-        return args[self.index0 % len(args)]
+        return args[self.index0.format(len(args))]
 
     first = property(lambda x: x.index0 == 0)
     last = property(lambda x: x.index0 + 1 == x.length)
@@ -325,7 +325,7 @@ class LoopContext(object):
         return self._length
 
     def __repr__(self):
-        return '<%s %r/%r>' % (
+        return '<{} {!r}/{!r}>'.format(
             self.__class__.__name__,
             self.index,
             self.length
@@ -381,7 +381,7 @@ class Macro(object):
                         value = self.defaults[idx - self._argument_count + off]
                     except IndexError:
                         value = self._environment.undefined(
-                            'parameter %r was not provided' % name, name=name)
+                            'parameter {!r} was not provided'.format(name, name=name))
                 arguments.append(value)
 
         # it's important that the order of these arguments does not change
@@ -396,17 +396,17 @@ class Macro(object):
         if self.catch_kwargs:
             arguments.append(kwargs)
         elif kwargs:
-            raise TypeError('macro %r takes no keyword argument %r' %
+            raise TypeError('macro {!r} takes no keyword argument {!r}' %
                             (self.name, next(iter(kwargs))))
         if self.catch_varargs:
             arguments.append(args[self._argument_count:])
         elif len(args) > self._argument_count:
-            raise TypeError('macro %r takes not more than %d argument(s)' %
+            raise TypeError('macro {!r} takes not more than {:d} argument(s)' %
                             (self.name, len(self.arguments)))
         return self._func(*arguments)
 
     def __repr__(self):
-        return '<%s %s>' % (
+        return '<{} {}>'.format(
             self.__class__.__name__,
             self.name is None and 'anonymous' or repr(self.name)
         )
@@ -442,14 +442,14 @@ class Undefined(object):
         """
         if self._undefined_hint is None:
             if self._undefined_obj is missing:
-                hint = '%r is undefined' % self._undefined_name
-            elif not isinstance(self._undefined_name, basestring):
-                hint = '%s has no element %r' % (
+                hint = '{!r} is undefined'.format(self._undefined_name)
+            elif not isinstance(self._undefined_name, str):
+                hint = '{} has no element {!r}'.format(
                     object_type_repr(self._undefined_obj),
                     self._undefined_name
                 )
             else:
-                hint = '%r has no attribute %r' % (
+                hint = '{!r} has no attribute {!r}'.format(
                     object_type_repr(self._undefined_obj),
                     self._undefined_name
                 )
@@ -506,16 +506,16 @@ class DebugUndefined(Undefined):
     def __unicode__(self):
         if self._undefined_hint is None:
             if self._undefined_obj is missing:
-                return u'{{ %s }}' % self._undefined_name
-            return '{{ no such element: %s[%r] }}' % (
+                return u'{{ {} }}'.format(self._undefined_name)
+            return '{{ no such element: {}[{!r}] }}'.format(
                 object_type_repr(self._undefined_obj),
                 self._undefined_name
             )
-        return u'{{ undefined value printed: %s }}' % self._undefined_hint
+        return u'{{ undefined value printed: {} }}'.format(self._undefined_hint)
 
 
 class StrictUndefined(Undefined):
-    """An undefined that barks on print and iteration as well as boolean
+    """An undefined that barks on print(and iteration as well as boolean)
     tests and all kinds of comparisons.  In other words: you can do nothing
     with it except checking if it's defined using the `defined` test.
 

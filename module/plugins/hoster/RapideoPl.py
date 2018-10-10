@@ -83,13 +83,13 @@ class RapideoPl(MultiHoster):
             else:
                 #: Error code isn't yet added to plugin
                 self.fail(parsed['errstring'] or
-                          _("Unknown error (code: %s)") % parsed['errno'])
+                          _("Unknown error (code: {})").format(parsed['errno']))
 
         if "sdownload" in parsed:
             if parsed['sdownload'] == "1":
                 self.fail(
-                    _("Download from %s is possible only using Rapideo.pl website \
-                    directly") % parsed['hosting'])
+                    _("Download from {} is possible only using Rapideo.pl website \
+                    directly").format(parsed['hosting']))
 
         pyfile.name = parsed['filename']
         pyfile.size = parsed['filesize']

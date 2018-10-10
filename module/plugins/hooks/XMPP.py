@@ -27,7 +27,7 @@ class XMPP(IRC, JabberClient):
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net")]
 
     pyxmpp.interface.implements(pyxmpp.interfaces.IMessageHandlersProvider)
 
@@ -68,7 +68,7 @@ class XMPP(IRC, JabberClient):
     def package_finished(self, pypack):
         try:
             if self.config.get('info_pack'):
-                self.announce(_("Package finished: %s") % pypack.name)
+                self.announce(_("Package finished: {}").format(pypack.name))
 
         except Exception:
             pass
@@ -77,7 +77,7 @@ class XMPP(IRC, JabberClient):
         try:
             if self.config.get('info_file'):
                 self.announce(
-                    _("Download finished: %(name)s @ %(plugin)s") % {'name': pyfile.name, 'plugin': pyfile.pluginname})
+                    _("Download finished: {name} @ {plugin}").format(**{'name': pyfile.name, 'plugin': pyfile.pluginname}))
 
         except Exception:
             pass
@@ -97,7 +97,7 @@ class XMPP(IRC, JabberClient):
         to a server changes. This will usually be used to let the user
         know what is going on.
         """
-        self.log_debug("*** State changed: %s %r ***" % (state, arg))
+        self.log_debug("*** State changed: {} {!r} ***".format(state, arg))
 
     def disconnected(self):
         self.log_debug("Client was disconnected")
@@ -124,8 +124,8 @@ class XMPP(IRC, JabberClient):
         subject = stanza.get_subject()
         body = stanza.get_body()
         t = stanza.get_type()
-        self.log_debug("Message from %s received." % stanza.get_from())
-        self.log_debug("Body: %s Subject: %s Type: %s" % (body, subject, t))
+        self.log_debug("Message from {} received.".format(stanza.get_from()))
+        self.log_debug("Body: {} Subject: {} Type: {}".format(body, subject, t))
 
         if t == "headline":
             #: 'headline' messages should never be replied to
@@ -156,7 +156,7 @@ class XMPP(IRC, JabberClient):
             except Exception:
                 pass
 
-            handler = getattr(self, "event_%s" % trigger, self.event_pass)
+            handler = getattr(self, "event_{}".format(trigger, self.event_pass))
             try:
                 res = handler(args)
                 for line in res:

@@ -12,7 +12,7 @@ document.addEvent("domready", function() {
     $('delete_reset').addEvent('click', function() {
         hide_confirm_box()
     });
-        
+
     /*$('filemanager_actions_list').getChildren("li").each(function(action) {
       var action_name = action.className;
       if(functions[action.className] != undefined)
@@ -108,7 +108,7 @@ var Item = new Class({
 	this.actions["rename"] = this.rename;
 	this.actions["mkdir"] = this.mkdir;
         this.parseElement();
-        
+
         var pname = this.ele.getElements("span")[0];
         this.buttons = new Fx.Tween(this.ele.getElements(".buttons")[0], {link: "cancel"});
         this.buttons.set("opacity", 0);
@@ -151,7 +151,7 @@ var Item = new Class({
     reorderElements: function() {
       //TODO sort the main ul again (to keep data ordered after renaming something)
     },
-    
+
     del: function(event) {
         $("confirm_form").removeEvents("submit");
         $("confirm_form").addEvent("submit", this.deleteDirectory.bind(this));
@@ -161,7 +161,7 @@ var Item = new Class({
         show_confirm_box();
         event.stop();
     },
-    
+
     deleteDirectory: function(event) {
         hide_confirm_box();
 	new Request.JSON({
@@ -180,7 +180,7 @@ var Item = new Class({
 		    var div = new Element("div", { 'html': '{{ _("Folder is empty") }}' });
 		    div.replaces(ul);
 		  }
-		  
+		
 		  indicateSuccess();
 		} else
 		{
@@ -193,7 +193,7 @@ var Item = new Class({
 	
         event.stop();
     },
-    
+
     rename: function(event) {
         $("rename_form").removeEvents("submit");
         $("rename_form").addEvent("submit", this.renameDirectory.bind(this));
@@ -201,7 +201,7 @@ var Item = new Class({
 	$("path").set("value", this.path);
         $("old_name").set("value", this.name);
         $("new_name").set("value", this.name);
-        
+
         show_rename_box();
         event.stop();
     },
@@ -229,7 +229,7 @@ var Item = new Class({
 	
         event.stop();
     },
-    
+
     mkdir: function(event) {
       new Request.JSON({
 	  method: 'POST',
@@ -249,7 +249,7 @@ var Item = new Class({
 			{
 			  //remove the "Folder Empty" div
 			  this.ele.getChildren('div').dispose();
-			  
+			
 			  //create new ul to contain subfolder
 			  ul = new Element("ul");
 			  ul.inject(this.ele, 'bottom');
@@ -270,10 +270,10 @@ var Item = new Class({
 	  }.bind(this),
 	  onFailure: indicateFail
       }).send();
-      
+
       event.stop();
     },
-    
+
     toggle: function() {
         var child = this.ele.getElement('ul');
 	if(child == null)

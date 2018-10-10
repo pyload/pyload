@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import base64
 import uuid
@@ -25,7 +25,7 @@ class ExpertDecoders(Addon):
 
     __description__ = """Send captchas to expertdecoders.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
     API_URL = "http://www.fasttypers.org/imagepost.ashx"
@@ -38,7 +38,7 @@ class ExpertDecoders(Addon):
                 'action': "balance"})
 
         if res.isdigit():
-            self.log_info(_("%s credits left") % res)
+            self.log_info(_("{} credits left").format(res))
             self.info['credits'] = credits = int(res)
             return credits
         else:
@@ -67,7 +67,7 @@ class ExpertDecoders(Addon):
         finally:
             req.close()
 
-        self.log_debug("Result %s : %s" % (ticket, result))
+        self.log_debug("Result {} : {}".format(ticket, result))
         task.setResult(result)
 
     def captcha_task(self, task):

@@ -68,6 +68,6 @@ class RPNetBiz(MultiAccount):
         res = self.load("https://premium.rpnet.biz/client_api.php",
                         get={'username': user, 'password': password,
                              'action': "showAccountInformation"})
-        self.log_debug("JSON data: %s" % res)
+        self.log_debug("JSON data: {}".format(res))
 
         return json.loads(res)

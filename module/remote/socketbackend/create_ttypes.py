@@ -20,7 +20,7 @@ def main():
     enums = []
     classes = []
 
-    print "generating lightweight ttypes.py"
+    print("generating lightweight ttypes.py")
 
     for name in dir(ttypes):
         klass = getattr(ttypes, name)
@@ -50,27 +50,27 @@ class BaseObject(object):
     ## generate enums
     for enum in enums:
         name = enum.__name__
-        f.write("class %s:\n" % name)
+        f.write("class {}:\n".format(name))
 
         for attr in dir(enum):
             if attr.startswith("_") or attr in ("read", "write"): continue
 
-            f.write("\t%s = %s\n" % (attr, getattr(enum, attr)))
+            f.write("\t{} = {}\n".format(attr, getattr(enum, attr)))
 
         f.write("\n")
 
     for klass in classes:
         name = klass.__name__
         base = "Exception" if issubclass(klass, ttypes.TExceptionBase) else "BaseObject"
-        f.write("class %s(%s):\n" % (name,  base))
-        f.write("\t__slots__ = %s\n\n" % klass.__slots__)
+        f.write("class {}({}):\n".format(name,  base))
+        f.write("\t__slots__ = {}\n\n".format(klass.__slots__))
 
         #create init
-        args = ["self"] + ["%s=None" % x for x in klass.__slots__]
+        args = ["self"] + ["{}=None".format(x for x in klass.__slots__)]
 
-        f.write("\tdef __init__(%s):\n" % ", ".join(args))
+        f.write("\tdef __init__({}):\n".format(", ".join(args)))
         for attr in klass.__slots__:
-            f.write("\t\tself.%s = %s\n" % (attr, attr))
+            f.write("\t\tself.{} = {}\n".format(attr, attr))
 
         f.write("\n")
 
@@ -81,7 +81,7 @@ class BaseObject(object):
 
         func = inspect.getargspec(getattr(Iface, name))
 
-        f.write("\tdef %s(%s):\n\t\tpass\n" % (name, ", ".join(func.args)))
+        f.write("\tdef {}({}):\n\t\tpass\n".format(name, ", ".join(func.args)))
 
     f.write("\n")
 

@@ -65,11 +65,11 @@ class TwojlimitPl(MultiHoster):
             else:
                 #: Error code isn't yet added to plugin
                 self.fail(json_data['errstring'] or
-                          _("Unknown error (code: %s)") % json_data['errno'])
+                          _("Unknown error (code: {})").format(json_data['errno']))
 
         if "sdownload" in json_data:
             if json_data['sdownload'] == "1":
-                self.fail(_("Download from %s is possible only using TwojLimit.pl website directly") %
+                self.fail(_("Download from {} is possible only using TwojLimit.pl website directly") %
                           json_data['hosting'])
 
         pyfile.name = json_data['filename']

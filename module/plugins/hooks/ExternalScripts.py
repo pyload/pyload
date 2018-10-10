@@ -87,7 +87,7 @@ class ExternalScripts(Addon):
 
                     if not os.access(file, os.X_OK):
                         self.log_warning(
-                            _("Script `%s` is not executable") % entry)
+                            _("Script `{}` is not executable").format(entry))
 
                     scripts.append(file)
 
@@ -96,16 +96,14 @@ class ExternalScripts(Addon):
 
             if new_scripts:
                 script_names = map(os.path.basename, new_scripts)
-                self.log_info(_("Activated scripts in folder `%s`: %s")
-                              % (folder, ", ".join(script_names)))
+                self.log_info(_("Activated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
 
             removed_scripts = [
                 _s for _s in self.scripts[folder] if _s not in scripts]
 
             if removed_scripts:
                 script_names = map(os.path.basename, removed_scripts)
-                self.log_info(_("Deactivated scripts in folder `%s`: %s")
-                              % (folder, ", ".join(script_names)))
+                self.log_info(_("Deactivated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
 
             self.scripts[folder] = scripts
 
@@ -124,21 +122,21 @@ class ExternalScripts(Addon):
         scripts = self.scripts.get(folder)
 
         if folder not in self.scripts:
-            self.log_debug("Folder `%s` not found" % folder)
+            self.log_debug("Folder `{}` not found".format(folder))
             return
 
         if not scripts:
-            self.log_debug("No script found under folder `%s`" % folder)
+            self.log_debug("No script found under folder `{}`".format(folder))
             return
 
-        self.log_info(_("Executing scripts in folder `%s`...") % folder)
+        self.log_info(_("Executing scripts in folder `{}`...").format(folder))
 
         for file in scripts:
             try:
                 p = self.call_cmd(file, *args)
 
             except Exception as e:
-                self.log_error(_("Runtime error: %s") % file,
+                self.log_error(_("Runtime error: {}").format(file),
                                e or _("Unknown error"))
 
             else:

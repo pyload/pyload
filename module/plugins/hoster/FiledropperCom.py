@@ -39,7 +39,7 @@ class FiledropperCom(SimpleHoster):
             self.fail(_("Captcha not found"))
 
         captcha_code = self.captcha.decrypt(
-            "http://www.filedropper.com/%s" %
+            "http://www.filedropper.com/{}" %
             m.group(1))
 
         m = re.search(r'method="post" action="(.+?)"', self.data)

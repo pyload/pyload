@@ -34,7 +34,7 @@ class VeehdCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.log_debug("Requesting page: %s" % url)
+        self.log_debug("Requesting page: {}".format(url))
         self.data = self.load(url)
 
     def file_exists(self):

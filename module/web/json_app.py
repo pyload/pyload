@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 from os.path import join
 from traceback import print_exc
 from shutil import copyfileobj
 
 from bottle import route, request, HTTPError
 
-from webinterface import PYLOAD
+from .webinterface import PYLOAD
 
-from utils import login_required, render_to_response, toDict
+from .utils import login_required, render_to_response, toDict
 
 from module.utils import decode, formatSize
 
@@ -19,7 +20,7 @@ def format_time(seconds):
 
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
-    return "%.2i:%.2i:%.2i" % (hours, minutes, seconds)
+    return "{:2d}:{:2d}:{:2d}".format(hours, minutes, seconds)
 
 
 def get_sort_key(item):
@@ -34,7 +35,7 @@ def status():
         status = toDict(PYLOAD.statusServer())
         status['captcha'] = PYLOAD.isCaptchaWaiting()
         return status
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -49,18 +50,18 @@ def links():
             ids.append(link['fid'])
 
             if link['status'] == 12:
-                link['info'] = "%s @ %s/s" % (link['format_eta'], formatSize(link['speed']))
+                link['info'] = "{} @ {}/s".format(link['format_eta'], formatSize(link['speed']))
             elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0
                 link['bleft'] = 0
-                link['info'] = _("waiting %s") % link['format_wait']
+                link['info'] = _("waiting {}").format(link['format_wait'])
             else:
                 link['info'] = ""
 
         data = {'links': links, 'ids': ids}
         return data
-    except Exception, e:
+    except Exception as e:
         print_exc()
         return HTTPError()
 
@@ -68,7 +69,7 @@ def links():
 @route("/json/packages")
 @login_required('LIST')
 def packages():
-    print "/json/packages"
+    print("/json/packages")
     try:
         data = PYLOAD.getQueue()
 
@@ -79,7 +80,7 @@ def packages():
 
         return data
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -113,7 +114,7 @@ def package(id):
         data["links"] = tmp
         return data
 
-    except:
+    except Exception:
         print_exc()
         return HTTPError()
 
@@ -125,7 +126,7 @@ def package_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -135,7 +136,7 @@ def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -146,7 +147,7 @@ def link_order(ids):
         pid, pos = ids.split("|")
         PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -171,7 +172,7 @@ def add_package():
         copyfileobj(f.file, destination)
         destination.close()
         links.insert(0, fpath)
-    except:
+    except Exception:
         pass
 
     name = name.decode("utf8", "ignore")
@@ -192,7 +193,7 @@ def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
         return {"response": "success"}
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -208,7 +209,7 @@ def edit_package():
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
 
-    except:
+    except Exception:
         return HTTPError()
 
 
@@ -219,7 +220,7 @@ def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
             PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
-        except:
+        except Exception:
             pass
 
     task = PYLOAD.getCaptchaTask()
@@ -259,7 +260,7 @@ def save_config(category):
     for key, value in request.POST.iteritems():
         try:
             section, option = key.split("|")
-        except:
+        except Exception:
             continue
 
         if category == "general": category = "core"
@@ -285,7 +286,7 @@ def update_accounts():
     for name, value in request.POST.iteritems():
         value = value.strip()
         if not value: continue
-        
+
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 
@@ -309,5 +310,5 @@ def change_password():
     newpw = request.POST["login_new_password"]
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
-        print "Wrong password"
+        print("Wrong password")
         return HTTPError()

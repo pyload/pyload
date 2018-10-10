@@ -32,7 +32,7 @@ class UnibytesCom(SimpleHoster):
     LINK_FREE_PATTERN = r'<a href="(.+?)">Download</a>'
 
     def handle_free(self, pyfile):
-        domain = "http://www.%s/" % self.PLUGIN_DOMAIN
+        domain = "http://www.{}/".format(self.PLUGIN_DOMAIN)
         action, post_data = self.parse_html_form('id="startForm"')
 
         for _i in range(3):

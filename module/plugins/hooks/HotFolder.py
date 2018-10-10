@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import os
 import shutil
@@ -46,7 +46,7 @@ class HotFolder(Addon):
                     f = open(file, "wb")
                     f.close()
 
-                    name = "%s_%s.txt" % (
+                    name = "{}_{}.txt".format(
                         file, time.strftime("%H-%M-%S_%d%b%Y"))
 
                     with open(fsjoin(folder, "finished", name), "wb") as f:
@@ -68,7 +68,7 @@ class HotFolder(Addon):
                     f if self.config.get('delete') else f)
                 shutil.move(path, newpath)
 
-                self.log_info(_("Added %s from HotFolder") % f)
+                self.log_info(_("Added {} from HotFolder").format(f))
                 self.pyload.api.addPackage(f, [newpath], 1)
 
         except (IOError, OSError) as e:

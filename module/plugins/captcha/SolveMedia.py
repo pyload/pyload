@@ -14,7 +14,7 @@ class SolveMedia(CaptchaService):
 
     __description__ = """SolveMedia captcha service plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     KEY_PATTERN = r'api(?:-secure)?\.solvemedia\.com/papi/challenge\.(?:no)?script\?k=(.+?)["\']'
 
@@ -24,7 +24,7 @@ class SolveMedia(CaptchaService):
         m = re.search(self.KEY_PATTERN, html)
         if m is not None:
             self.key = m.group(1).strip()
-            self.log_debug("Key: %s" % self.key)
+            self.log_debug("Key: {}".format(self.key))
             return self.key
         else:
             self.log_debug("Key pattern not found")
@@ -52,7 +52,7 @@ class SolveMedia(CaptchaService):
                 self.fail(_("SolveMedia challenge pattern not found"))
 
             else:
-                self.log_debug("Challenge: %s" % challenge)
+                self.log_debug("Challenge: {}".format(challenge))
 
             try:
                 result = self.result(
@@ -81,7 +81,7 @@ class SolveMedia(CaptchaService):
             else:
                 if "error" in html:
                     self.log_warning(_("Captcha code was invalid"))
-                    self.log_debug("Retry #%d" % i)
+                    self.log_debug("Retry #{:d}".format(i))
                     html = self.pyfile.plugin.load(redirect)
                 else:
                     break

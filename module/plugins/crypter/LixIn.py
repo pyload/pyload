@@ -19,7 +19,7 @@ class LixIn(Crypter):
 
     __description__ = """Lix.in decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __authors__ = [("spoob", "spoob@pyload.net")]
 
     CAPTCHA_PATTERN = r'<img src="(captcha_img\.php\?.*?)"'
     SUBMIT_PATTERN = r'value=\'continue.*?\''
@@ -33,7 +33,7 @@ class LixIn(Crypter):
             self.error(_("Unable to identify file ID"))
 
         id = m.group('ID')
-        self.log_debug("File id is %s" % id)
+        self.log_debug("File id is {}".format(id))
 
         self.data = self.load(url)
 
@@ -63,4 +63,4 @@ class LixIn(Crypter):
             self.error(_("Unable to find destination url"))
         else:
             self.links = [m.group(1)]
-            self.log_debug("Found link %s, adding to package" % self.links[0])
+            self.log_debug("Found link {}, adding to package".format(self.links[0]))

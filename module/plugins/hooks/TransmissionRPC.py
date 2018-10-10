@@ -32,7 +32,7 @@ class TransmissionRPC(Addon):
         _re_link = re.compile(self.__pattern__)
         urls = [link for link in links if _re_link.match(link)]
         for url in urls:
-            self.log_debug("Sending link: %s" % url)
+            self.log_debug("Sending link: {}".format(url))
             self.send_to_transmission(url)
             links.remove(url)
 
@@ -58,7 +58,7 @@ class TransmissionRPC(Addon):
                 session_id = headers['X-Transmission-Session-Id']
                 req.c.setopt(
                     pycurl.HTTPHEADER, [
-                        "X-Transmission-Session-Id: %s" %
+                        "X-Transmission-Session-Id: {}" %
                         session_id])
                 try:
                     response = self.load(transmission_rpc_url,
@@ -69,7 +69,7 @@ class TransmissionRPC(Addon):
 
                     res = json.loads(response)
                     if "result" in res:
-                        self.log_debug("Result: %s" % res['result'])
+                        self.log_debug("Result: {}".format(res['result']))
 
                 except Exception as e:
                     self.log_error(e)

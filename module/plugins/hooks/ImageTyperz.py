@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import base64
 import re
@@ -21,10 +21,10 @@ class ImageTyperzException(Exception):
         return self.err
 
     def __str__(self):
-        return "<ImageTyperzException %s>" % self.err
+        return "<ImageTyperzException {}>".format(self.err)
 
     def __repr__(self):
-        return "<ImageTyperzException %s>" % self.err
+        return "<ImageTyperzException {}>".format(self.err)
 
 
 class ImageTyperz(Addon):
@@ -40,7 +40,7 @@ class ImageTyperz(Addon):
 
     __description__ = """Send captchas to ImageTyperz.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
@@ -62,7 +62,7 @@ class ImageTyperz(Addon):
         except Exception:
             raise ImageTyperzException("Invalid response")
 
-        self.log_info(_("Account balance: $%s left") % res)
+        self.log_info(_("Account balance: ${} left").format(res))
         return balance
 
     def submit(self, captcha, captchaType="file", match=None):
@@ -97,7 +97,7 @@ class ImageTyperz(Addon):
             if len(data) == 2:
                 ticket, result = data
             else:
-                raise ImageTyperzException("Unknown response: %s" % res)
+                raise ImageTyperzException("Unknown response: {}".format(res))
 
         return ticket, result
 

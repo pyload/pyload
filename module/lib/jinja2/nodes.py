@@ -12,7 +12,7 @@
     :copyright: (c) 2010 by the Jinja Team.
     :license: BSD, see LICENSE for more details.
 """
-from __future__ import absolute_import
+
 import operator
 from itertools import chain, izip
 from collections import deque
@@ -129,9 +129,9 @@ class Node(object):
         if fields:
             if len(fields) != len(self.fields):
                 if not self.fields:
-                    raise TypeError('%r takes 0 arguments' %
+                    raise TypeError('{!r} takes 0 arguments' %
                                     self.__class__.__name__)
-                raise TypeError('%r takes 0 or %d argument%s' % (
+                raise TypeError('{!r} takes 0 or {:d} argument{}'.format(
                     self.__class__.__name__,
                     len(self.fields),
                     len(self.fields) != 1 and 's' or ''
@@ -141,7 +141,7 @@ class Node(object):
         for attr in self.attributes:
             setattr(self, attr, attributes.pop(attr, None))
         if attributes:
-            raise TypeError('unknown attribute %r' %
+            raise TypeError('unknown attribute {!r}' %
                             next(iter(attributes)))
 
     def iter_fields(self, exclude=None, only=None):
@@ -232,9 +232,9 @@ class Node(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return '%s(%s)' % (
+        return '{}({})'.format(
             self.__class__.__name__,
-            ', '.join('%s=%r' % (arg, getattr(self, arg, None)) for
+            ', '.join('{}={!r}'.format(arg, getattr(self, arg, None)) for
                       arg in self.fields)
         )
 
@@ -376,7 +376,7 @@ class BinExpr(Expr):
         f = _binop_to_func[self.operator]
         try:
             return f(self.left.as_const(eval_ctx), self.right.as_const(eval_ctx))
-        except:
+        except Exception:
             raise Impossible()
 
 
@@ -391,7 +391,7 @@ class UnaryExpr(Expr):
         f = _uaop_to_func[self.operator]
         try:
             return f(self.node.as_const(eval_ctx))
-        except:
+        except Exception:
             raise Impossible()
 
 
@@ -556,16 +556,16 @@ class Filter(Expr):
         if self.dyn_args is not None:
             try:
                 args.extend(self.dyn_args.as_const(eval_ctx))
-            except:
+            except Exception:
                 raise Impossible()
         if self.dyn_kwargs is not None:
             try:
                 kwargs.update(self.dyn_kwargs.as_const(eval_ctx))
-            except:
+            except Exception:
                 raise Impossible()
         try:
             return filter_(obj, *args, **kwargs)
-        except:
+        except Exception:
             raise Impossible()
 
 
@@ -605,16 +605,16 @@ class Call(Expr):
         if self.dyn_args is not None:
             try:
                 args.extend(self.dyn_args.as_const(eval_ctx))
-            except:
+            except Exception:
                 raise Impossible()
         if self.dyn_kwargs is not None:
             try:
                 kwargs.update(self.dyn_kwargs.as_const(eval_ctx))
-            except:
+            except Exception:
                 raise Impossible()
         try:
             return obj(*args, **kwargs)
-        except:
+        except Exception:
             raise Impossible()
 
 
@@ -629,7 +629,7 @@ class Getitem(Expr):
         try:
             return self.environment.getitem(self.node.as_const(eval_ctx),
                                             self.arg.as_const(eval_ctx))
-        except:
+        except Exception:
             raise Impossible()
 
     def can_assign(self):
@@ -649,7 +649,7 @@ class Getattr(Expr):
             eval_ctx = get_eval_context(self, eval_ctx)
             return self.environment.getattr(self.node.as_const(eval_ctx),
                                             self.attr)
-        except:
+        except Exception:
             raise Impossible()
 
     def can_assign(self):
@@ -696,7 +696,7 @@ class Compare(Expr):
                 new_value = op.expr.as_const(eval_ctx)
                 result = _cmpop_to_func[op.op](value, new_value)
                 value = new_value
-        except:
+        except Exception:
             raise Impossible()
         return result
 
@@ -707,7 +707,7 @@ class Operand(Helper):
 
 if __debug__:
     Operand.__doc__ += '\nThe following operators are available: ' + \
-        ', '.join(sorted('``%s``' % x for x in set(_binop_to_func) |
+        ', '.join(sorted('``{}``'.format(x for x in set(_binop_to_func) |)
                   set(_uaop_to_func) | set(_cmpop_to_func)))
 
 

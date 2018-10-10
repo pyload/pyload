@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -85,9 +85,9 @@ class TSocket(TSocketBase):
         break
     except socket.error as e:
       if self._unix_socket:
-        message = 'Could not connect to socket %s' % self._unix_socket
+        message = 'Could not connect to socket {}'.format(self._unix_socket)
       else:
-        message = 'Could not connect to %s:%d' % (self.host, self.port)
+        message = 'Could not connect to {}:%d'.format(self.host, self.port)
       raise TTransportException(type=TTransportException.NOT_OPEN, message=message)
 
   def read(self, sz):

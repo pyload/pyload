@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import re
 import xml.dom.minidom
@@ -24,8 +24,8 @@ class DLC(Container):
 
     __description__ = """DLC container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
-                   ("spoob", "spoob@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
+                   ("spoob", "spoob@pyload.net"),
                    ("mkaay", "mkaay@mkaay.de"),
                    ("Schnusch", "Schnusch@users.noreply.github.com"),
                    ("Walter Purcaro", "vuolter@gmail.com"),
@@ -33,18 +33,18 @@ class DLC(Container):
 
     KEY = "cb99b5cbc24db398"
     IV = "9bc24cb995cb8db3"
-    API_URL = "http://service.jdownloader.org/dlcrypt/service.php?srcType=dlc&destType=pylo&data=%s"
+    API_URL = "http://service.jdownloader.org/dlcrypt/service.php?srcType=dlc&destType=pylo&data={}"
 
     def decrypt(self, pyfile):
         fs_filename = encode(pyfile.url)
         with open(fs_filename) as dlc:
             data = dlc.read().strip()
 
-        data += '=' * (-len(data) % 4)
+        data += '=' * (-len(data).format(4))
 
         dlc_key = data[-88:]
         dlc_data = data[:-88].decode('base64')
-        dlc_content = self.load(self.API_URL % dlc_key)
+        dlc_content = self.load(self.API_URL.format(dlc_key))
 
         try:
             rc = re.search(r'<rc>(.+)</rc>', dlc_content, re.S).group(1).decode('base64')[:16]

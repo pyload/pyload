@@ -22,7 +22,7 @@ class TXT(Container):
 
     __description__ = """Read link lists in plain text formats"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org"),
+    __authors__ = [("spoob", "spoob@pyload.net"),
                    ("jeix", "jeix@hasnomail.com")]
 
     def decrypt(self, pyfile):
@@ -34,7 +34,7 @@ class TXT(Container):
 
         fs_filename = encode(pyfile.url)
         txt = codecs.open(fs_filename, 'r', encoding)
-        curPack = "Parsed links from %s" % pyfile.name
+        curPack = "Parsed links from {}".format(pyfile.name)
         packages = {curPack: [], }
 
         for link in txt.readlines():

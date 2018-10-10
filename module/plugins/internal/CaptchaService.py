@@ -21,7 +21,7 @@ class CaptchaService(Captcha):
         if self.detect_key(data):
             return self.key
         else:
-            self.fail(_("%s key not found") % self.__name__)
+            self.fail(_("{} key not found").format(self.__name__))
 
     def retrieve_data(self):
         return self.pyfile.plugin.data or self.pyfile.plugin.last_html or ""

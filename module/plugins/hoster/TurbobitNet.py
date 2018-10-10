@@ -49,7 +49,7 @@ class TurbobitNet(SimpleHoster):
 
     def handle_free(self, pyfile):
         self.data = self.load(
-            "http://turbobit.net/download/free/%s" %
+            "http://turbobit.net/download/free/{}" %
             self.info['pattern']['ID'])
 
         rtUpdate = self.get_rt_update()
@@ -131,10 +131,10 @@ class TurbobitNet(SimpleHoster):
 
         m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.data)
         if m is not None:
-            url = "http://turbobit.net%s%s" % m.groups()
+            url = "http://turbobit.net{}{}".format(m.groups())
         else:
-            url = "http://turbobit.net/files/timeout.js?ver=%s" % "".join(
-                random.choice('0123456789ABCDEF') for _i in range(32))
+            url = "http://turbobit.net/files/timeout.js?ver={}".format("".join(
+                random.choice('0123456789ABCDEF') for _i in range(32)))
 
         fun = self.load(url)
 
@@ -142,14 +142,14 @@ class TurbobitNet(SimpleHoster):
         self.set_reconnect(False)
 
         for b in [1, 3]:
-            self.jscode = "var id = \'%s\';var b = %d;var inn = \'%s\';%sout" % (
+            self.jscode = "var id = \'{}\';var b = {:d};var inn = \'{}\';{}out".format(
                           self.info['pattern']['ID'], b, urllib.quote(fun), rtUpdate)
 
             try:
                 out = self.js.eval(self.jscode)
                 self.log_debug("URL", self.js.engine, out)
                 if out.startswith('/download/'):
-                    return "http://turbobit.net%s" % out.strip()
+                    return "http://turbobit.net{}".format(out.strip())
 
             except Exception as e:
                 self.log_error(e, trace=True)
@@ -170,5 +170,5 @@ class TurbobitNet(SimpleHoster):
     def get_local_time_string(self):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
-        return "%s GMT%+03d%02d" % (time.strftime(
-            "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)
+        return "{} GMT%+03d%02d".format(time.strftime(
+            "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz.format(3600))

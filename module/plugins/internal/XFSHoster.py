@@ -77,8 +77,8 @@ class XFSHoster(SimpleHoster):
             self._set_xfs_cookie()
 
         if not self.LINK_PATTERN:
-            pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?%s|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern % self.PLUGIN_DOMAIN.replace('.', '\.')
+            pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
+            self.LINK_PATTERN = pattern.format(self.PLUGIN_DOMAIN.replace('.'), '\.')
 
         SimpleHoster._prepare(self)
 
@@ -87,7 +87,7 @@ class XFSHoster(SimpleHoster):
 
     def handle_free(self, pyfile):
         for i in range(1, 6):
-            self.log_debug("Getting download link #%d..." % i)
+            self.log_debug("Getting download link #{:d}...".format(i))
 
             self.check_errors()
 
@@ -120,11 +120,11 @@ class XFSHoster(SimpleHoster):
                 _("Only registered or premium users can use url leech feature"))
 
         #: Only tested with easybytez.com
-        self.data = self.load("http://www.%s/" % self.PLUGIN_DOMAIN)
+        self.data = self.load("http://www.{}/".format(self.PLUGIN_DOMAIN))
 
         action, inputs = self.parse_html_form()
 
-        upload_id = "%012d" % int(random.random() * 10 ** 12)
+        upload_id = "%012d".format(int(random.random() * 10 ** 12))
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'
@@ -249,7 +249,7 @@ class XFSHoster(SimpleHoster):
                 a[1] for a in sorted(
                     numerals, key=operator.itemgetter(0)))
 
-            self.log_debug("Captcha code: %s" % inputs['code'], numerals)
+            self.log_debug("Captcha code: {}".format(inputs['code'], numerals))
             return
 
         recaptcha = ReCaptcha(self.pyfile)
@@ -260,7 +260,7 @@ class XFSHoster(SimpleHoster):
             captcha_key = recaptcha.detect_key()
 
         else:
-            self.log_debug("ReCaptcha key: %s" % captcha_key)
+            self.log_debug("ReCaptcha key: {}".format(captcha_key))
 
         if captcha_key:
             self.captcha = recaptcha
@@ -278,7 +278,7 @@ class XFSHoster(SimpleHoster):
             captcha_key = solvemedia.detect_key()
 
         else:
-            self.log_debug("SolveMedia key: %s" % captcha_key)
+            self.log_debug("SolveMedia key: {}".format(captcha_key))
 
         if captcha_key:
             self.captcha = solvemedia

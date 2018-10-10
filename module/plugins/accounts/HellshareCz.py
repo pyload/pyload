@@ -39,8 +39,7 @@ class HellshareCz(Account):
                             vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(
                         time.strptime(
-                            "%s%d 23:59:59" %
-                            (credit, year), "%d.%m.%Y %H:%M:%S"))
+                            "{}{:d} 23:59:59".format(credit, year), "%d.%m.%Y %H:%M:%S"))
                     trafficleft = -1
                 else:
                     #: Traffic-based account
@@ -59,16 +58,16 @@ class HellshareCz(Account):
         html = self.load('http://www.hellshare.com/')
         if self.req.lastEffectiveURL != 'http://www.hellshare.com/':
             #: Switch to English
-            self.log_debug("Switch lang - URL: %s" % self.req.lastEffectiveURL)
+            self.log_debug("Switch lang - URL: {}".format(self.req.lastEffectiveURL))
 
             json = self.load(
-                "%s?do=locRouter-show" %
+                "{}?do=locRouter-show" %
                 self.req.lastEffectiveURL)
             hash = re.search(r'(--[0-9a-f]+\-)', json).group(1)
 
-            self.log_debug("Switch lang - HASH: %s" % hash)
+            self.log_debug("Switch lang - HASH: {}".format(hash))
 
-            html = self.load('http://www.hellshare.com/%s/' % hash)
+            html = self.load('http://www.hellshare.com/{}/'.format(hash))
 
         if re.search(self.CREDIT_LEFT_PATTERN, html):
             self.log_debug("Already logged in")

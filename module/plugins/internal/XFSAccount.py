@@ -57,7 +57,7 @@ class XFSAccount(Account):
             self.fail_login(_("Missing PLUGIN DOMAIN"))
 
         if not self.PLUGIN_URL:
-            self.PLUGIN_URL = "http://www.%s/" % self.PLUGIN_DOMAIN
+            self.PLUGIN_URL = "http://www.{}/".format(self.PLUGIN_DOMAIN)
 
         if not self.LOGIN_URL:
             self.LOGIN_URL = urlparse.urljoin(self.PLUGIN_URL, "login.html")
@@ -96,7 +96,7 @@ class XFSAccount(Account):
                 self.log_error(e)
 
             else:
-                self.log_debug("Valid until: %s" % validuntil)
+                self.log_debug("Valid until: {}".format(validuntil))
 
                 if validuntil > time.mktime(time.gmtime()):
                     premium = True
@@ -122,7 +122,7 @@ class XFSAccount(Account):
                     if 'U' in traffic:
                         unit = traffic['U']
 
-                    elif isinstance(self.TRAFFIC_LEFT_UNIT, basestring):
+                    elif isinstance(self.TRAFFIC_LEFT_UNIT, str):
                         unit = self.TRAFFIC_LEFT_UNIT
 
                     else:
@@ -153,7 +153,7 @@ class XFSAccount(Account):
                     else:
                         if 'U' in traffic:
                             unit = traffic['U']
-                        elif isinstance(self.LEECH_TRAFFIC_UNIT, basestring):
+                        elif isinstance(self.LEECH_TRAFFIC_UNIT, str):
                             unit = self.LEECH_TRAFFIC_UNIT
                         else:
                             unit = ""

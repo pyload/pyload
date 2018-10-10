@@ -56,7 +56,7 @@ class MediafireCom(SimpleHoster):
 
         if captcha_key:
             url, inputs = self.parse_html_form('name="form_captcha"')
-            self.log_debug(("form_captcha url:%s inputs:%s") % (url, inputs))
+            self.log_debug(("form_captcha url:{} inputs:{}").format(url, inputs))
 
             if url:
                 self.captcha = recaptcha
@@ -77,7 +77,7 @@ class MediafireCom(SimpleHoster):
             if not password:
                 self.fail(_("No password found"))
             else:
-                self.log_info(_("Password protected link, trying: %s") % password)
+                self.log_info(_("Password protected link, trying: {}").format(password))
                 self.data = self.load(self.link, post={'downloadp': password})
 
                 if self.PASSWORD_PATTERN in self.data:

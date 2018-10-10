@@ -29,17 +29,17 @@ class TORRENT(Container):
         with open(fs_filename, "rb") as f:
             torrent_content = f.read()
 
-        time_ref = ("%.2f" % time.time())[-6:].replace(".", "")
+        time_ref = ("{:2f}".format(time.time())[-6:].replace(".", ""))
 
-        pack_name = "torrent %s" % time_ref
+        pack_name = "torrent {}".format(time_ref)
         m = re.search(r'name(\d+):', torrent_content)
         if m:
-            m = re.search(r'name%s:(.{%s})' % (m.group(1), m.group(1)), torrent_content)
+            m = re.search(r'name{}:(.{{}})'.format(m.group(1), m.group(1)), torrent_content)
             if m:
                 pack_name = safename(m.group(1))
 
-        torrent_filename = os.path.join("tmp", "tmp_%s.torrent" % pack_name)
+        torrent_filename = os.path.join("tmp", "tmp_{}.torrent".format(pack_name))
         with open(torrent_filename, "wb") as f:
             f.write(torrent_content)
 
-        self.packages.append((pack_name, ["file://%s" % urllib.pathname2url(torrent_filename)], pack_name))
+        self.packages.append((pack_name, ["file://{}".format(urllib.pathname2url(torrent_filename))], pack_name))

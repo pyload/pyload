@@ -72,7 +72,7 @@ class OpenloadIo(SimpleHoster):
         captcha_response = ''
         if 'captcha_url' in ticket_json['result'] and ticket_json[
                 'result']['captcha_url'] != False:
-            self.log_debug('This download requires a captcha solution: %s' %
+            self.log_debug('This download requires a captcha solution: {}' %
                            ticket_json['result']['captcha_url'])
             captcha_response = self.captcha.decrypt(ticket_json['result']['captcha_url'])
 

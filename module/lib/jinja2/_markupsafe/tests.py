@@ -12,9 +12,9 @@ class MarkupTestCase(unittest.TestCase):
         assert unsafe + safe == unicode(escape(unsafe)) + unicode(safe)
 
         # string interpolations are safe to use too
-        assert Markup('<em>%s</em>') % '<bad user>' == \
+        assert Markup('<em>{}</em>') % '<bad user>' == \
                '<em>&lt;bad user&gt;</em>'
-        assert Markup('<em>%(username)s</em>') % {
+        assert Markup('<em>{username}</em>') % {
             'username': '<bad user>'
         } == '<em>&lt;bad user&gt;</em>'
 
@@ -32,7 +32,7 @@ class MarkupTestCase(unittest.TestCase):
             def __unicode__(self):
                 return 'awesome'
         assert Markup(Foo()) == '<em>awesome</em>'
-        assert Markup('<strong>%s</strong>') % Foo() == \
+        assert Markup('<strong>{}</strong>').format(Foo()) == \
                '<strong><em>awesome</em></strong>'
 
         # escaping and unescaping
@@ -55,8 +55,8 @@ class MarkupLeakTestCase(unittest.TestCase):
 
     def test_markup_leaks(self):
         counts = set()
-        for count in xrange(20):
-            for item in xrange(1000):
+        for count in range(20):
+            for item in range(1000):
                 escape("foo")
                 escape("<foo>")
                 escape(u"foo")

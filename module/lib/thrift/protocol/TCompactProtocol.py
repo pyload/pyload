@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -302,13 +302,13 @@ class TCompactProtocol(TProtocolBase):
     proto_id = self.__readUByte()
     if proto_id != self.PROTOCOL_ID:
       raise TProtocolException(TProtocolException.BAD_VERSION,
-          'Bad protocol id in the message: %d' % proto_id)
+          'Bad protocol id in the message: {:d}'.format(proto_id))
     ver_type = self.__readUByte()
     type = (ver_type & self.TYPE_MASK) >> self.TYPE_SHIFT_AMOUNT
     version = ver_type & self.VERSION_MASK
     if version != self.VERSION:
       raise TProtocolException(TProtocolException.BAD_VERSION,
-          'Bad version: %d (expect %d)' % (version, self.VERSION))
+          'Bad version: {:d} (expect {:d})'.format(version, self.VERSION))
     seqid = self.__readVarint()
     name = self.__readString()
     return (name, type, seqid)
@@ -365,7 +365,7 @@ class TCompactProtocol(TProtocolBase):
     elif self.state == CONTAINER_READ:
       return self.__readByte() == CompactType.TRUE
     else:
-      raise AssertionError("Invalid state in compact protocol: %d" % self.state)
+      raise AssertionError("Invalid state in compact protocol: {:d}".format(self.state))
 
   readByte = reader(__readByte)
   __readI16 = __readZigZag

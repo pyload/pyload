@@ -29,14 +29,14 @@ def _get_opcodes(codeobj):
 def test_expr(expr, allowed_codes):
     try:
         c = compile(expr, "", "eval")
-    except:
-        raise ValueError("%s is not a valid expression" % expr)
+    except Exception:
+        raise ValueError("{} is not a valid expression".format(expr))
     codes, names = _get_opcodes(c)
     for code in codes:
         if code not in allowed_codes:
             for n in names:
                 if n not in _load_names:
-                    raise ValueError("opcode %s not allowed" % dis.opname[code])
+                    raise ValueError("opcode {} not allowed".format(dis.opname[code]))
     return c
 
 

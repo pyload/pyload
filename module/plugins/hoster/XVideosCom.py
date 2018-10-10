@@ -23,7 +23,7 @@ class XVideosCom(Hoster):
         site = self.load(pyfile.url)
         title_search = re.search(r'<meta\s+property="og:title"\s+content="(.+?)"', site)
         id_search = re.search(self.__pattern__, pyfile.url)
-        pyfile.name = "%s (%s).mp4" % (
+        pyfile.name = "{} ({}).mp4".format(
             title_search.group(1),
             id_search.group(1),
         )

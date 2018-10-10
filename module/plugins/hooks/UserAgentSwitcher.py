@@ -33,13 +33,13 @@ class UserAgentSwitcher(Addon):
         useragent = self.config.get('useragent')
 
         if connecttimeout:
-            self.log_debug("Setting connection timeout to %s seconds" % connecttimeout)
+            self.log_debug("Setting connection timeout to {} seconds".format(connecttimeout))
             pyfile.plugin.req.http.c.setopt(pycurl.CONNECTTIMEOUT, connecttimeout)
 
         if maxredirs:
-            self.log_debug("Setting maximum redirections to %s" % maxredirs)
+            self.log_debug("Setting maximum redirections to {}".format(maxredirs))
             pyfile.plugin.req.http.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
         if useragent:
-            self.log_debug("Use custom user-agent string `%s`" % useragent)
+            self.log_debug("Use custom user-agent string `{}`".format(useragent))
             pyfile.plugin.req.http.c.setopt(pycurl.USERAGENT, encode(useragent))

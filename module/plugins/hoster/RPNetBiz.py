@@ -35,7 +35,7 @@ class RPNetBiz(MultiHoster):
                              'action': "generate",
                              'links': pyfile.url})
 
-        self.log_debug("JSON data: %s" % res)
+        self.log_debug("JSON data: {}".format(res))
         #: Get the first link... since we only queried one
         link_status = json.loads(res)['links'][0]
 
@@ -48,24 +48,24 @@ class RPNetBiz(MultiHoster):
             attemps = 30
             my_try = 0
             while (my_try <= attemps):
-                self.log_debug("Try: %d ; Max Tries: %d" % (my_try, attemps))
+                self.log_debug("Try: {:d} ; Max Tries: {:d}".format(my_try, attemps))
                 res = self.load("https://premium.rpnet.biz/client_api.php",
                                 get={'username': user,
                                      'password': info['login']['password'],
                                      'action': "downloadInformation",
                                      'id': link_status['id']})
-                self.log_debug("JSON data hdd query: %s" % res)
+                self.log_debug("JSON data hdd query: {}".format(res))
                 download_status = json.loads(res)['download']
 
                 if download_status['status'] == "100":
                     link_status['generated'] = download_status['rpnet_link']
                     self.log_debug(
-                        "Successfully downloaded to rpnet HDD: %s" %
+                        "Successfully downloaded to rpnet HDD: {}" %
                         link_status['generated'])
                     break
                 else:
                     self.log_debug(
-                        "At %s%% for the file download" %
+                        "At {}%% for the file download" %
                         download_status['status'])
 
                 self.wait(30)

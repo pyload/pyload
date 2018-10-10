@@ -121,7 +121,7 @@ class LinkCryptWs(Crypter):
 
         if password:
             self.log_debug(
-                "Submitting password [%s] for protected links" % password)
+                "Submitting password [{}] for protected links".format(password))
             self.data = self.load(
                 self.pyfile.url,
                 post={
@@ -147,7 +147,7 @@ class LinkCryptWs(Crypter):
         folder = self.pyfile.package().folder
 
         self.log_debug(
-            "Defaulting to pyfile name [%s] and folder [%s] for package" %
+            "Defaulting to pyfile name [{}] and folder [{}] for package" %
             (name, folder))
 
         return name, folder
@@ -179,7 +179,7 @@ class LinkCryptWs(Crypter):
             return self.handle_container(source_type)
 
         else:
-            self.fail(_("Unknown source type: %s") %
+            self.fail(_("Unknown source type: {}") %
                       source_type)  # @TODO: Replace with self.error in 0.4.10
 
     def handle_web_links(self):
@@ -189,7 +189,7 @@ class LinkCryptWs(Crypter):
         pattern = r'<form action="http://linkcrypt.ws/out.html"[^>]*?>.*?<input[^>]*?value="(.+?)"[^>]*?name="file"'
         ids = re.findall(pattern, self.data, re.I | re.S)
 
-        self.log_debug("Decrypting %s Web links" % len(ids))
+        self.log_debug("Decrypting {} Web links".format(len(ids)))
 
         for idx, weblink_id in enumerate(ids):
             try:
@@ -208,7 +208,7 @@ class LinkCryptWs(Crypter):
 
             except Exception as detail:
                 self.log_debug(
-                    "Error decrypting Web link %s, %s" % (weblink_id, detail))
+                    "Error decrypting Web link {}, {}".format(weblink_id, detail))
 
         return pack_links
 
@@ -234,12 +234,12 @@ class LinkCryptWs(Crypter):
         container_type = container_type.lower()
 
         self.log_debug(
-            "Search for %s Container links" % container_type.upper())
+            "Search for {} Container links".format(container_type.upper()))
 
         if not container_type.isalnum(
         ):  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
             self.fail(
-                _("Unknown container type: %s") %
+                _("Unknown container type: {}") %
                 container_type)  # @TODO: Replace with self.error in 0.4.10
 
         for line in self.container_html:
@@ -254,7 +254,7 @@ class LinkCryptWs(Crypter):
 
                 pack_name, folder_name = self.get_package_info()
                 self.log_debug(
-                    "Added package with name %s.%s and container link %s" %
+                    "Added package with name {}.{} and container link {}" %
                     (pack_name, container_type, clink.group(1)))
                 self.pyload.api.uploadContainer(
                     '.'.join([pack_name, container_type]), self.load(clink.group(1)))
@@ -292,22 +292,22 @@ class LinkCryptWs(Crypter):
 
     def _get_cipher_params(self, cnl_section):
         #: Get jk
-        jk_re = r'<INPUT.*?NAME="%s".*?VALUE="\D*(\d*)\D*"' % LinkCryptWs.JK_KEY
+        jk_re = r'<INPUT.*?NAME="{}".*?VALUE="\D*(\d*)\D*"'.format(LinkCryptWs.JK_KEY)
         vjk = re.findall(jk_re, cnl_section)
 
         #: Get crypted
-        crypted_re = r'<INPUT.*?NAME="%s".*?VALUE="(.*?)"' % LinkCryptWs.CRYPTED_KEY
+        crypted_re = r'<INPUT.*?NAME="{}".*?VALUE="(.*?)"'.format(LinkCryptWs.CRYPTED_KEY)
         vcrypted = re.findall(crypted_re, cnl_section)
 
         #: Log and return
-        self.log_debug("Detected %s crypted blocks" % len(vcrypted))
+        self.log_debug("Detected {} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
         key = binascii.unhexlify(jk)
 
-        self.log_debug("JsEngine returns value [%s]" % key)
+        self.log_debug("JsEngine returns value [{}]".format(key))
 
         #: Decrypt
         Key = key
@@ -320,6 +320,6 @@ class LinkCryptWs(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug("Package has %s links" % len(links))
+        self.log_debug("Package has {} links".format(len(links)))
 
         return links

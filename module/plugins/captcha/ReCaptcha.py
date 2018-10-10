@@ -51,57 +51,57 @@ class ReCaptcha(CaptchaService):
                                 "cb636da134c24633f2b2b38f56dfbb92"
 
     RECAPTCHA_INTERACTIVE_JS = """
-			while(document.children[0].childElementCount > 0) {
-				document.children[0].removeChild(document.children[0].children[0]);
-			}
-			document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
+            while(document.children[0].childElementCount > 0) {
+                document.children[0].removeChild(document.children[0].children[0]);
+            }
+            document.children[0].innerHTML = '<html><head></head><body style="display:inline-block;"><div id="captchadiv" style="display: inline-block;"></div></body></html>';
 
-			gpyload.data.sitekey = request.params.sitekey;
+            gpyload.data.sitekey = request.params.sitekey;
 
-			gpyload.getFrameSize = function() {
-				var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
-					rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
-					rect;
-				var anchor = document.body.querySelector("iframe[src*='/anchor']");
-				if (anchor !== null && gpyload.isVisible(anchor)) {
-					rect = anchor.getBoundingClientRect();
-					rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-				}
-				var popup = document.body.querySelector("iframe[src*='/bframe']");
-				if (popup !== null && gpyload.isVisible(popup)) {
-					rect = popup.getBoundingClientRect();
-					rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
-				}
-				var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-				var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
-				var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-				var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
-				return {top: top, left: left, bottom: bottom, right: right};
-			};
+            gpyload.getFrameSize = function() {
+                var rectAnchor =  {top: 0, right: 0, bottom: 0, left: 0},
+                    rectPopup =  {top: 0, right: 0, bottom: 0, left: 0},
+                    rect;
+                var anchor = document.body.querySelector("iframe[src*='/anchor']");
+                if (anchor !== null && gpyload.isVisible(anchor)) {
+                    rect = anchor.getBoundingClientRect();
+                    rectAnchor = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+                }
+                var popup = document.body.querySelector("iframe[src*='/bframe']");
+                if (popup !== null && gpyload.isVisible(popup)) {
+                    rect = popup.getBoundingClientRect();
+                    rectPopup = {top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left};
+                }
+                var left = Math.round(Math.min(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                var right = Math.round(Math.max(rectAnchor.left, rectAnchor.right, rectPopup.left, rectPopup.right));
+                var top = Math.round(Math.min(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+                var bottom = Math.round(Math.max(rectAnchor.top, rectAnchor.bottom, rectPopup.top, rectPopup.bottom));
+                return {top: top, left: left, bottom: bottom, right: right};
+            };
 
-			// function that is called when the captcha finished loading and is ready to interact
-			window.pyloadCaptchaOnLoadCallback = function() {
-				grecaptcha.render (
-					"captchadiv",
-					{size: "compact",
-					 'sitekey': gpyload.data.sitekey,
-					 'callback': function() {
-						var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
-						gpyload.submitResponse(recaptchaResponse);
-					 }}
-				);
-				gpyload.activated();
-			};
+            // function that is called when the captcha finished loading and is ready to interact
+            window.pyloadCaptchaOnLoadCallback = function() {
+                grecaptcha.render (
+                    "captchadiv",
+                    {size: "compact",
+                     'sitekey': gpyload.data.sitekey,
+                     'callback': function() {
+                        var recaptchaResponse = grecaptcha.getResponse(); // get captcha response
+                        gpyload.submitResponse(recaptchaResponse);
+                     }}
+                );
+                gpyload.activated();
+            };
 
-			if(typeof grecaptcha !== 'undefined' && grecaptcha) {
-				window.pyloadCaptchaOnLoadCallback();
-			} else {
-				var js_script = document.createElement('script');
-				js_script.type = "text/javascript";
-				js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
-				js_script.async = true;
-				document.getElementsByTagName('head')[0].appendChild(js_script);
-			}"""
+            if(typeof grecaptcha !== 'undefined' && grecaptcha) {
+                window.pyloadCaptchaOnLoadCallback();
+            } else {
+                var js_script = document.createElement('script');
+                js_script.type = "text/javascript";
+                js_script.src = "//www.google.com/recaptcha/api.js?onload=pyloadCaptchaOnLoadCallback&render=explicit";
+                js_script.async = true;
+                document.getElementsByTagName('head')[0].appendChild(js_script);
+            }"""
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
@@ -109,7 +109,7 @@ class ReCaptcha(CaptchaService):
         m = re.search(self.KEY_V2_PATTERN, html) or re.search(self.KEY_V1_PATTERN, html)
         if m is not None:
             self.key = urllib.unquote(m.group(1).strip())
-            self.log_debug("Key: %s" % self.key)
+            self.log_debug("Key: {}".format(self.key))
             return self.key
         else:
             self.log_warning(_("Key pattern not found"))
@@ -121,7 +121,7 @@ class ReCaptcha(CaptchaService):
         m = re.search(self.STOKEN_V2_PATTERN, html)
         if m is not None:
             self.secure_token = m.group(1).strip()
-            self.log_debug("Secure Token: %s" % self.secure_token)
+            self.log_debug("Secure Token: {}".format(self.secure_token))
             return self.secure_token
         else:
             self.log_warning(_("Secure Token pattern not found"))
@@ -150,7 +150,7 @@ class ReCaptcha(CaptchaService):
         secure_token = secure_token or self.detect_secure_token(data) if version in (2,'2js') else None
 
         if version in (1, 2, '2js'):
-            return getattr(self, "_challenge_v%s" % version)(key, secure_token=secure_token)
+            return getattr(self, "_challenge_v{}".format(version)(key, secure_token=secure_token))
         else:
             return self.challenge(key,
                                   data,
@@ -167,7 +167,7 @@ class ReCaptcha(CaptchaService):
         except (AttributeError, IndexError):
             self.fail(_("reCAPTCHA challenge pattern not found"))
 
-        self.log_debug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: {}".format(challenge))
 
         return self.result(server, challenge, key)
 
@@ -185,7 +185,7 @@ class ReCaptcha(CaptchaService):
         except (AttributeError, IndexError):
             self.fail(_("reCAPTCHA second challenge pattern not found"))
 
-        self.log_debug("Second challenge: %s" % challenge)
+        self.log_debug("Second challenge: {}".format(challenge))
         result = self.decrypt(urlparse.urljoin(server, "image"),
                               get={'c': challenge},
                               cookies=True,
@@ -198,17 +198,17 @@ class ReCaptcha(CaptchaService):
         a = re.search(r'po.src = \'(.*?)\';', html).group(1)
         vers = a.split("/")[5]
 
-        self.log_debug("API version: %s" % vers)
+        self.log_debug("API version: {}".format(vers))
 
         language = a.split("__")[1].split(".")[0]
 
-        self.log_debug("API language: %s" % language)
+        self.log_debug("API language: {}".format(language))
 
         html = self.pyfile.plugin.load("https://apis.google.com/js/api.js")
         b = re.search(r'"h":"(.*?)","', html).group(1)
         jsh = b.decode('unicode-escape')
 
-        self.log_debug("API jsh-string: %s" % jsh)
+        self.log_debug("API jsh-string: {}".format(jsh))
 
         return vers, language, jsh
 
@@ -239,7 +239,7 @@ class ReCaptcha(CaptchaService):
         else:
             font = None
 
-        tile_size = {'width': img.size[0] / 3, 'height': img.size[1] / 3}
+        tile_size = {'width': img.size[0] // 3, 'height': img.size[1] // 3}
         tile_index_size = {
             'width': draw.textsize('0')[0],
             'height': draw.textsize('0')[1]}
@@ -248,7 +248,7 @@ class ReCaptcha(CaptchaService):
         for x in range(3):
             for y in range(3):
                 tile_index_pos = {
-                    'x': x * tile_size['width'] + (tile_size['width'] / 2) - (tile_index_size['width'] / 2),
+                    'x': x * tile_size['width'] + (tile_size['width'] // 2) - (tile_index_size['width'] // 2),
                     'y': y * tile_size['height']
                 }
 
@@ -268,8 +268,8 @@ class ReCaptcha(CaptchaService):
 
                 draw.text(
                     (
-                        tile_index_pos['x'] + (tile_index_size['width'] / 2) - (text_width / 2),
-                        tile_index_pos['y'] + (tile_index_size['height'] / 2) - (text_height / 2)
+                        tile_index_pos['x'] + (tile_index_size['width'] // 2) - (text_width // 2),
+                        tile_index_pos['y'] + (tile_index_size['height'] // 2) - (text_height // 2)
                     ),
                     index_number,
                     '#000',
@@ -374,7 +374,7 @@ class ReCaptcha(CaptchaService):
             response = self.decrypt_image(img)
 
             post_str = "c=" + urllib.quote_plus(challenge) +\
-                       "".join("&response=%s" % str(int(k) - 1)
+                       "".join("&response={}".format(str(int(k) - 1))
                                for k in response if k.isdigit())
             html = self.pyfile.plugin.load(fallback_url, post=post_str, ref=fallback_url)
 
@@ -390,7 +390,7 @@ class ReCaptcha(CaptchaService):
             self.fail(_("reCAPTCHA max retries exceeded"))
 
         return result, challenge
-    
+
     # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
     def _challenge_v2js(self, key, secure_token=None):
         self.log_debug("Challenge reCAPTCHA v2 interactive")
@@ -414,4 +414,4 @@ if __name__ == "__main__":
         with open(sys.argv[1], 'r') as f:
             pem_private = f.read()
 
-        print sign_string(ReCaptcha.RECAPTCHA_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384")
+        print(sign_string(ReCaptcha.RECAPTCHA_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384"))

@@ -25,9 +25,9 @@ else:
     has_aes = True
 
 if has_aes and keyLength < 32:
-    warn('Crypto implementation only supports key lengths up to %d bits. '
+    warn('Crypto implementation only supports key lengths up to {:d} bits. '
          'Generated session cookies may be incompatible with other '
-         'environments' % (keyLength * 8))
+         'environments'.format(keyLength * 8))
 
 
 def generateCryptoKeys(master_key, salt, iterations):

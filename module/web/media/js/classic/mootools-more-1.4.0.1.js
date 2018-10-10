@@ -1,5 +1,5 @@
 // MooTools: the javascript framework.
-// Load this file's selection again by visiting: http://mootools.net/more/c1cc18c2fff04bcc58921b4dff80a6f1 
+// Load this file's selection again by visiting: http://mootools.net/more/c1cc18c2fff04bcc58921b4dff80a6f1
 // Or build this file again with packager using: packager build More/Form.Request More/Fx.Reveal More/Sortables More/Request.Periodical More/Color
 /*
 ---

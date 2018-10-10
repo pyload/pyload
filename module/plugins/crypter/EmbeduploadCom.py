@@ -39,7 +39,7 @@ class EmbeduploadCom(Crypter):
             prefered_set = set(self.config.get('preferedHoster').split('|'))
             prefered_set = map(lambda s: s.lower().split('.')[0], prefered_set)
 
-            self.log_debug("PF: %s" % prefered_set)
+            self.log_debug("PF: {}".format(prefered_set))
 
             tmp_links.extend(x[1] for x in m if x[0] in prefered_set)
             self.links = self.get_location(tmp_links)
@@ -49,7 +49,7 @@ class EmbeduploadCom(Crypter):
                 ignored_set = map(
                     lambda s: s.lower().split('.')[0], ignored_set)
 
-                self.log_debug("IG: %s" % ignored_set)
+                self.log_debug("IG: {}".format(ignored_set))
 
                 tmp_links.extend(x[1] for x in m if x[0] not in ignored_set)
                 self.links = self.get_location(tmp_links)

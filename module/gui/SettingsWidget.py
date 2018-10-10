@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: mkaay
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
-"""
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -30,7 +16,7 @@ class SettingsWidget(QWidget):
         self.data = None
         self.pdata = None
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-    
+
     def setConnector(self, connector):
         self.connector = connector
 
@@ -64,7 +50,7 @@ class SettingsWidget(QWidget):
 
         tab = QTabWidget()
         self.tab = tab
-        
+
         gw = QWidget()
         gw.setLayout(QVBoxLayout())
         gw.layout().addWidget(self.general)
@@ -165,18 +151,18 @@ class Section(QGroupBox):
         self.ctype = ctype
         layout = QFormLayout(self)
         self.setLayout(layout)
-        
+
         sw = QWidget()
         sw.setLayout(QVBoxLayout())
         sw.layout().addWidget(self)
-        
+
         sa = QScrollArea()
         sa.setWidgetResizable(True)
         sa.setWidget(sw)
         sa.setFrameShape(sa.NoFrame)
-        
+
         parent.addTab(sa, data.description)
-        
+
         for option in self.data.items:
             if option.type == "int":
                 i = QSpinBox(self)

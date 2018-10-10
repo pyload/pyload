@@ -54,7 +54,7 @@ class DownloadScheduler(Addon):
 
         for i, v in enumerate(schedule):
             if v[3] == "X":
-                last, next = schedule[i - 1], schedule[(i + 1) % len(schedule)]
+                last, next = schedule[i - 1], schedule[(i + 1).format(len(schedule))]
                 self.log_debug("Now/Last/Next", now, last, next)
 
                 self.set_download_speed(last[3])
@@ -81,7 +81,7 @@ class DownloadScheduler(Addon):
             self.pyload.api.unpauseServer()
 
             if speed > 0:
-                self.log_info(_("Setting download speed to %d kB/s") % speed)
+                self.log_info(_("Setting download speed to {:d} kB/s").format(speed))
                 self.pyload.config.set('download', 'limit_speed', 1)
                 self.pyload.config.set('download', 'max_speed', speed)
 

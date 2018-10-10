@@ -60,7 +60,7 @@ class QuickshareCz(SimpleHoster):
 
     def handle_free(self, pyfile):
         #: Get download url
-        download_url = '%s/download.php' % self.jsvars['server']
+        download_url = '{}/download.php'.format(self.jsvars['server'])
         data = dict(
             (x, self.jsvars[x]) for x in self.jsvars if x in (
                 "ID1", "ID2", "ID3", "ID4"))
@@ -81,10 +81,10 @@ class QuickshareCz(SimpleHoster):
             elif m.group(1) == "2":
                 self.retry(60, 60, "No free slots available")
             else:
-                self.fail(_("Error %d") % m.group(1))
+                self.fail(_("Error {:d}").format(m.group(1)))
 
     def handle_premium(self, pyfile):
-        download_url = '%s/download_premium.php' % self.jsvars['server']
+        download_url = '{}/download_premium.php'.format(self.jsvars['server'])
         data = dict(
             (x, self.jsvars[x]) for x in self.jsvars if x in (
                 "ID1", "ID2", "ID4", "ID5"))

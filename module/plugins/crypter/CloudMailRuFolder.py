@@ -33,8 +33,8 @@ class CloudMailRuFolder(Crypter):
 
         json_data = json.loads(m.group(1).replace("\\x3c", "<"))
 
-        pack_links = ["https://cloud.mail.ru/dl?q=%s" %
-                      base64.b64encode(json.dumps({'u': "%s%s?etag=%s&key=%s" %
+        pack_links = ["https://cloud.mail.ru/dl?q={}" %
+                      base64.b64encode(json.dumps({'u': "{}{}?etag={}&key={}" %
                                                         (json_data['dispatcher']['weblink_view'][0]['url'],
                                                          urllib.quote(_link['weblink']),
                                                          _link['hash'],

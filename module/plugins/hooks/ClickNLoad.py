@@ -92,7 +92,7 @@ class ClickNLoad(Addon):
     @threaded
     def proxy(self):
         self.log_info(
-            _("Proxy listening on %s:%s") %
+            _("Proxy listening on {}:{}") %
             (self.cnl_ip or "0.0.0.0", self.cnl_port))
         self._server()
 
@@ -111,7 +111,7 @@ class ClickNLoad(Addon):
                 client_socket, client_addr = dock_socket.accept()
 
                 if not self.do_exit:
-                    self.log_debug("Connection from %s:%s" % client_addr)
+                    self.log_debug("Connection from {}:{}".format(client_addr))
 
                     server_socket = socket.socket(
                         socket.AF_INET, socket.SOCK_STREAM)
@@ -128,7 +128,7 @@ class ClickNLoad(Addon):
                             continue
 
                         except Exception as e:
-                            self.log_error(_("SSL error: %s") % e.message)
+                            self.log_error(_("SSL error: {}").format(e.message))
                             client_socket.close()
                             continue
 

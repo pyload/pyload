@@ -26,4 +26,4 @@ class ZeveraCom(MultiHoster):
     FILE_ERRORS = [("Error", r'action="ErrorDownload.aspx')]
 
     def handle_premium(self, pyfile):
-        self.link = "https://zevera.com/getFiles.ashx?ourl=%s" % pyfile.url
+        self.link = "https://zevera.com/getFiles.ashx?ourl={}".format(pyfile.url)

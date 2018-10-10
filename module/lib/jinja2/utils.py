@@ -21,7 +21,7 @@ from itertools import imap
 
 _word_split_re = re.compile(r'(\s+)')
 _punctuation_re = re.compile(
-    '^(?P<lead>(?:%s)*)(?P<middle>.*?)(?P<trail>(?:%s)*)$' % (
+    '^(?P<lead>(?:{})*)(?P<middle>.*?)(?P<trail>(?:{})*)$'.format(
         '|'.join(imap(re.escape, ('(', '<', '&lt;'))),
         '|'.join(imap(re.escape, ('.', ',', ')', '>', '\n', '&gt;')))
     )
@@ -53,7 +53,7 @@ except TypeError as _error:
         def concat(gen):
             try:
                 return _concat(list(gen))
-            except:
+            except Exception:
                 # this hack is needed so that the current frame
                 # does not show up in the traceback.
                 exc_type, exc_value, tb = sys.exc_info()
@@ -241,11 +241,11 @@ def object_type_repr(obj):
         name = obj.__class__.__name__
     else:
         name = obj.__class__.__module__ + '.' + obj.__class__.__name__
-    return '%s object' % name
+    return '{} object'.format(name)
 
 
 def pformat(obj, verbose=False):
-    """Prettyprint an object.  Either use the `pretty` library or the
+    """Prettyprint(an object.  Either use the `pretty` library or the)
     builtin `pprint`.
     """
     try:
@@ -286,15 +286,15 @@ def urlize(text, trim_url_limit=None, nofollow=False):
                     middle.endswith('.net') or
                     middle.endswith('.com')
                 )):
-                middle = '<a href="http://%s"%s>%s</a>' % (middle,
+                middle = '<a href="http://{}"{}>{}</a>'.format(middle,
                     nofollow_attr, trim_url(middle))
             if middle.startswith('http://') or \
                middle.startswith('https://'):
-                middle = '<a href="%s"%s>%s</a>' % (middle,
+                middle = '<a href="{}"{}>{}</a>'.format(middle,
                     nofollow_attr, trim_url(middle))
             if '@' in middle and not middle.startswith('www.') and \
                not ':' in middle and _simple_email_re.match(middle):
-                middle = '<a href="mailto:%s">%s</a>' % (middle, middle)
+                middle = '<a href="mailto:{}">{}</a>'.format(middle, middle)
             if lead + middle + trail != word:
                 words[i] = lead + middle + trail
     return u''.join(words)
@@ -307,7 +307,7 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
     words = LOREM_IPSUM_WORDS.split()
     result = []
 
-    for _ in xrange(n):
+    for _ in range(n):
         next_capitalized = True
         last_comma = last_fullstop = 0
         word = None
@@ -315,7 +315,7 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
         p = []
 
         # each paragraph contains out of 20 to 100 words.
-        for idx, _ in enumerate(xrange(randrange(min, max))):
+        for idx, _ in enumerate(range(randrange(min, max))):
             while True:
                 word = choice(words)
                 if word != last:
@@ -346,7 +346,7 @@ def generate_lorem_ipsum(n=5, html=True, min=20, max=100):
 
     if not html:
         return u'\n\n'.join(result)
-    return Markup(u'\n'.join(u'<p>%s</p>' % escape(x) for x in result))
+    return Markup(u'\n'.join(u'<p>{}</p>'.format(escape(x) for x in result)))
 
 
 class LRUCache(object):
@@ -434,7 +434,7 @@ class LRUCache(object):
         return len(self._mapping)
 
     def __repr__(self):
-        return '<%s %r>' % (
+        return '<{} {!r}>'.format(
             self.__class__.__name__,
             self._mapping
         )
@@ -559,7 +559,7 @@ class Cycler(object):
     def next(self):
         """Goes one item ahead and returns it."""
         rv = self.current
-        self.pos = (self.pos + 1) % len(self.items)
+        self.pos = (self.pos + 1).format(len(self.items))
         return rv
 
 

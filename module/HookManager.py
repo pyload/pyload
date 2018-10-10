@@ -1,23 +1,7 @@
 # -*- coding: utf-8 -*-
+#@author: RaNaN, mkaay
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN, mkaay
-    @interface-version: 0.1
-"""
-from __future__ import absolute_import
 import __builtin__
 
 import traceback
@@ -76,7 +60,7 @@ class HookManager:
         self.events = {} # contains events
 
         #registering callback for config event
-        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", basestring)
+        self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged", str)
 
         self.addEvent("pluginConfigChanged", self.manageHooks)
 
@@ -88,7 +72,7 @@ class HookManager:
             try:
                 return func(*args)
             except Exception as e:
-                args[0].log.error(_("Error executing hooks: %s") % str(e))
+                args[0].log.error(_("Error executing hooks: {}").format(str(e)))
                 if args[0].core.debug:
                     traceback.print_exc()
 
@@ -127,7 +111,7 @@ class HookManager:
                 if self.core.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
                     if not pluginClass: continue
-                    
+
                     plugin = pluginClass(self.core, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
@@ -137,13 +121,13 @@ class HookManager:
                     deactive.append(pluginname)
 
 
-            except:
-                self.log.warning(_("Failed activating %(name)s") % {"name": pluginname})
+            except Exception:
+                self.log.warning(_("Failed activating {}").format(pluginname))
                 if self.core.debug:
                     traceback.print_exc()
 
-        self.log.info(_("Activated plugins: %s") % ", ".join(sorted(active)))
-        self.log.info(_("Deactivate plugins: %s") % ", ".join(sorted(deactive)))
+        self.log.info(_("Activated plugins: {}").format(", ".join(sorted(active))))
+        self.log.info(_("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
 
         self.plugins = plugins
 
@@ -164,7 +148,7 @@ class HookManager:
 
         if not pluginClass: return
 
-        self.log.debug("Plugin loaded: %s" % plugin)
+        self.log.debug("Plugin loaded: {}".format(plugin))
 
         plugin = pluginClass(self.core, self)
         self.plugins.append(plugin)
@@ -182,12 +166,12 @@ class HookManager:
 
         if not hook: return
 
-        self.log.debug("Plugin unloaded: %s" % plugin)
+        self.log.debug("Plugin unloaded: {}".format(plugin))
 
         hook.unload()
 
         #remove periodic call
-        self.log.debug("Removed callback %s" % self.core.scheduler.removeJob(hook.cb))
+        self.log.debug("Removed callback {}".format(self.core.scheduler.removeJob(hook.cb)))
         self.plugins.remove(hook)
         del self.pluginMap[hook.__name__]
 
@@ -278,14 +262,14 @@ class HookManager:
         for name, plugin in self.pluginMap.iteritems():
             if plugin.info:
                 #copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, basestring) else y) for x, y in plugin.info.iteritems()])
+                info[name] = dict([(x, str(y) if not isinstance(y, str) else y) for x, y in plugin.info.iteritems()])
         return info
 
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
-            info = dict([(x, str(y) if not isinstance(y, basestring) else y)
+            info = dict([(x, str(y) if not isinstance(y, str) else y)
                 for x, y in self.pluginMap[plugin].info.iteritems()])
 
         return info
@@ -311,8 +295,7 @@ class HookManager:
                 try:
                     f(*args)
                 except Exception as e:
-                    self.log.warning("Error calling event handler %s: %s, %s, %s"
-                    % (event, f, args, str(e)))
+                    self.log.warning("Error calling event handler {}: {}, {}, {}".format(event, f, args, str(e)))
                     if self.core.debug:
                         traceback.print_exc()
-    
+

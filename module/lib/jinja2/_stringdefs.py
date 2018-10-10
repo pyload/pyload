@@ -119,12 +119,12 @@ if __name__ == '__main__':
             # Jython can't handle isolated surrogates
             f.write("""\
 try:
-    Cs = eval(r"%r")
+    Cs = eval(r"{!r}")
 except UnicodeDecodeError:
-    Cs = '' # Jython can't handle isolated surrogates\n\n""" % val)
+    Cs = '' # Jython can't handle isolated surrogates\n\n""".format(val))
         else:
-            f.write('%s = %r\n\n' % (cat, val))
-    f.write('cats = %r\n\n' % sorted(categories.keys()))
+            f.write('{} = {!r}\n\n'.format(cat, val))
+    f.write('cats = {!r}\n\n'.format(sorted(categories.keys())))
 
     f.write(footer)
     f.close()

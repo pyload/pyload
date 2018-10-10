@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from os.path import join
 import re
 from urllib import unquote
@@ -7,11 +8,11 @@ from base64 import standard_b64decode
 from binascii import unhexlify
 
 from bottle import route, request, HTTPError
-from webinterface import PYLOAD, DL_ROOT, JS
+from .webinterface import PYLOAD, DL_ROOT, JS
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 
@@ -59,7 +60,7 @@ def addcrypted():
 
     try:
         PYLOAD.addPackage(package, [dlc_path], 0)
-    except:
+    except Exception:
         return HTTPError()
     else:
         return "success\r\n"
@@ -73,13 +74,13 @@ def addcrypted2():
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:
-        jk = "%s f()" % jk
+        jk = "{} f()".format(jk)
         jk = JS.eval(jk)
 
     else:
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-        except:
+        except Exception:
         ## Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
@@ -87,12 +88,12 @@ def addcrypted2():
                 jk.reverse()
                 jk = "".join(jk)
             else:
-                print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+                print("Could not decrypt key, please install py-spidermonkey or ossp-js")
 
     try:
         Key = unhexlify(jk)
-    except:
-        print "Could not decrypt key, please install py-spidermonkey or ossp-js"
+    except Exception:
+        print("Could not decrypt key, please install py-spidermonkey or ossp-js")
         return "failed"
 
     IV = Key
@@ -107,7 +108,7 @@ def addcrypted2():
             PYLOAD.addPackage(package, urls, 0)
         else:
             PYLOAD.generateAndAddPackages(urls, 0)
-    except:
+    except Exception:
         return "failed can't add"
     else:
         return "success\r\n"

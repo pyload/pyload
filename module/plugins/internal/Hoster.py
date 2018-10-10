@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import __builtin__
 import os
@@ -184,7 +184,7 @@ class Hoster(Base):
                 code = header.get('code')
 
                 if code in (301, 302) or resumable:
-                    self.log_debug("Redirect #%d to: %s" % (i, location))
+                    self.log_debug("Redirect #{:d} to: {}".format(i, location))
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -231,7 +231,7 @@ class Hoster(Base):
 
         except IOError as e:
             self.log_error(e.message)
-            self.fail(_("IOError %s") % e.errno)
+            self.fail(_("IOError {}").format(e.errno))
 
         except BadHeader as e:
             self.req.http.code = e.code
@@ -269,7 +269,7 @@ class Hoster(Base):
 
         if self.pyload.debug:
             self.log_debug("DOWNLOAD URL " + url,
-                           *["%s=%s" % (key, value) for key, value in locals().items()
+                           *["{}={}".format(key, value) for key, value in locals().items()
                              if key not in ("self", "url", "_[1]")])
 
         dl_url = self.fixurl(url) if fixurl else url
@@ -315,12 +315,11 @@ class Hoster(Base):
                     os.rename(old_file, new_file)
 
                 except OSError as e:
-                    self.log_warning(_("Error renaming `%s` to `%s`")
-                                     % (newname, safename), e)
+                    self.log_warning(_("Error renaming `{}` to `{}`").format(newname, safename), e)
                     safename = newname
 
                 self.log_info(
-                    _("`%s` saved as `%s`") %
+                    _("`{}` saved as `{}`") %
                     (self.pyfile.name, safename))
 
             self.pyfile.name = safename
@@ -352,9 +351,9 @@ class Hoster(Base):
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
-        # self.log_debug("Content: %s" % content)
+        # self.log_debug("Content: {}".format(content))
         for name, rule in rules.items():
-            if isinstance(rule, basestring):
+            if isinstance(rule, str):
                 if rule in content:
                     return name
 
@@ -400,9 +399,9 @@ class Hoster(Base):
 
         else:
             #@TODO: Rewrite in 0.4.10
-            size = self.pyfile.size / 1024
-            self.log_info(_("Filesize: %s KiB") % size,
-                          _("Traffic left for user `%s`: %d KiB") % (self.account.user, traffic))
+            size = self.pyfile.size // 1024
+            self.log_info(_("Filesize: {} KiB").format(size),
+                          _("Traffic left for user `{}`: {:d} KiB").format(self.account.user, traffic))
             return size > traffic
 
     # def check_size(self, file_size, size_tolerance=1024, delete=False):
@@ -430,14 +429,13 @@ class Hoster(Base):
             # diff = abs(file_size - dl_size)
 
             # if diff > size_tolerance:
-            # self.fail(_("File size mismatch | Expected file size: %s bytes | Downloaded file size: %s bytes")
-            # % (file_size, dl_size))
+            # self.fail(_("File size mismatch | Expected file size: {} bytes | Downloaded file size: {} bytes").format((file_size), dl_size))
 
             # elif diff != 0:
             # self.log_warning(_("File size is not equal to expected download size, but does not exceed the tolerance threshold"))
-            # self.log_debug("Expected file size: %s bytes"   % file_size,
-            # "Downloaded file size: %s bytes" % dl_size,
-            # "Tolerance threshold: %s bytes"  % size_tolerance)
+            # self.log_debug("Expected file size: {} bytes".format(file_size)
+            # "Downloaded file size: {} bytes".format(dl_size)
+            # "Tolerance threshold: {} bytes".format(size_tolerance))
             # else:
             # delete = False
             # self.log_info(_("File size match"))
@@ -449,7 +447,7 @@ class Hoster(Base):
     # def check_hash(self, type, digest, delete=False):
         # hashtype = type.strip('-').upper()
 
-        # self.log_info(_("Checking file hashsum %s...") % hashtype)
+        # self.log_info(_("Checking file hashsum {}...").format(hashtype))
 
         # if not self.last_download:
             # self.log_warning(_("No file to check"))
@@ -466,11 +464,10 @@ class Hoster(Base):
 
             # elif dl_hash == file_hash:
             # delete = False
-            # self.log_info(_("File hashsum %s match") % hashtype)
+            # self.log_info(_("File hashsum {} match").format(hashtype))
 
             # else:
-            # self.fail(_("File hashsum %s mismatch | Expected file hashsum: %s | Downloaded file hashsum: %s")
-            # % (hashtype, dl_hash, file_hash))
+            # self.fail(_("File hashsum {} mismatch | Expected file hashsum: {} | Downloaded file hashsum: {}").format(hashtype, dl_hash, file_hash))
         # finally:
             # if delete:
             # self.remove(dl_file, trash=False)
@@ -510,7 +507,7 @@ class Hoster(Base):
             dl_n = int(m.group(2) or "0")
 
             while True:
-                name = "%s (%s)%s" % (m.group(1), dl_n + 1, m.group(3) or "")
+                name = "{} ({}){}".format(m.group(1), dl_n + 1, m.group(3) or "")
                 dl_file = fsjoin(dl_folder, pack_folder, name)
                 if not exists(dl_file):
                     break

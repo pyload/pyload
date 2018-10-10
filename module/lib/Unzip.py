@@ -4,7 +4,7 @@ import os
 class Unzip:
     def __init__(self):
         pass
-        
+
     def extract(self, file, dir):
         if not dir.endswith(':') and not os.path.exists(dir):
             os.mkdir(dir)
@@ -18,7 +18,7 @@ class Unzip:
         for i, name in enumerate(zf.namelist()):
 
             if not name.endswith('/') and not name.endswith("config"):
-                print "extracting", name.replace("pyload/","")
+                print("extracting", name.replace("pyload/",""))
                 outfile = open(os.path.join(dir, name.replace("pyload/","")), 'wb')
                 outfile.write(zf.read(name))
                 outfile.flush()

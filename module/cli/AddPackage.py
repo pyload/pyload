@@ -18,7 +18,7 @@
 #
 ###
 
-from __future__ import absolute_import
+
 from .Handler import Handler
 from .printer import *
 
@@ -55,9 +55,9 @@ class AddPackage(Handler):
             println(line + 1, "")
             line += 2
         else:
-            println(line, _("Package: %s") % self.name)
+            println(line, _("Package: {}").format(self.name))
             println(line + 1, _("Parse the links you want to add."))
-            println(line + 2, _("Type %s when done.") % mag("END"))
+            println(line + 2, _("Type {} when done.").format(mag("END")))
             println(line + 3, _("Links added: ") + mag(len(self.urls)))
             line += 4
 

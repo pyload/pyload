@@ -56,7 +56,7 @@ class YadiSk(SimpleHoster):
                 except Exception as e:
                     info['status'] = 8
                     info['error'] = _(
-                        "Unexpected server response: %s") % e.message
+                        "Unexpected server response: {}").format(e.message)
 
             else:
                 info['status'] = 8

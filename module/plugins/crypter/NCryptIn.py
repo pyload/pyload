@@ -111,7 +111,7 @@ class NCryptIn(Crypter):
                 if keyword in content:
                     self.protection_type = keyword
                     self.log_debug(
-                        "Links are %s protected" %
+                        "Links are {} protected" %
                         self.protection_type)
                     return True
         return False
@@ -121,13 +121,13 @@ class NCryptIn(Crypter):
         if m is not None:
             name = folder = m.group('N').strip()
             self.log_debug(
-                "Found name [%s] and folder [%s] in package info" %
+                "Found name [{}] and folder [{}] in package info" %
                 (name, folder))
         else:
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [%s] and folder [%s]" %
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]" %
                 (name, folder))
         return name, folder
 
@@ -143,7 +143,7 @@ class NCryptIn(Crypter):
         if "password" in form:
             password = self.get_password()
             self.log_debug(
-                "Submitting password [%s] for protected links" %
+                "Submitting password [{}] for protected links" %
                 password)
             postData['password'] = password
 
@@ -153,14 +153,14 @@ class NCryptIn(Crypter):
             captchaUri = re.search(
                 r'src="(/temp/anicaptcha/.+?)"', form).group(1)
             captcha = self.captcha.decrypt("http://ncrypt.in" + captchaUri)
-            self.log_debug("Captcha resolved [%s]" % captcha)
+            self.log_debug("Captcha resolved [{}]".format(captcha))
             postData['captcha'] = captcha
 
         #: Resolve recaptcha
         if "recaptcha" in form:
             self.log_debug("ReCaptcha protected")
             captcha_key = re.search(r'\?k=(.*?)"', form).group(1)
-            self.log_debug("Resolving ReCaptcha with key [%s]" % captcha_key)
+            self.log_debug("Resolving ReCaptcha with key [{}]".format(captcha_key))
             self.captcha = ReCaptcha(self.pyfile)
             response, challenge = self.captcha.challenge(captcha_key)
             postData['recaptcha_challenge_field'] = challenge
@@ -175,7 +175,7 @@ class NCryptIn(Crypter):
                 input_type="png",
                 output_type='positional',
                 ocr="CircleCaptcha")
-            self.log_debug("Captcha resolved, coords %s" % coords)
+            self.log_debug("Captcha resolved, coords {}".format(coords))
             postData['circle.x'] = coords[0]
             postData['circle.y'] = coords[1]
 
@@ -199,7 +199,7 @@ class NCryptIn(Crypter):
         require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
         if require_js_engine and not self.js:
             self.log_debug(
-                "No JS engine available, skip %s links" %
+                "No JS engine available, skip {} links" %
                 link_source_type)
             return []
 
@@ -213,7 +213,7 @@ class NCryptIn(Crypter):
         elif link_source_type == "web":
             return self.handle_web_links()
         else:
-            self.error(_('Unknown source type "%s"') % link_source_type)
+            self.error(_('Unknown source type "{}"').format(link_source_type))
 
     def handle_single_link(self):
         self.log_debug("Handling Single link")
@@ -247,9 +247,9 @@ class NCryptIn(Crypter):
 
         pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
         containersLinks = re.findall(pattern, self.data)
-        self.log_debug("Decrypting %d Container links" % len(containersLinks))
+        self.log_debug("Decrypting {:d} Container links".format(len(containersLinks)))
         for containerLink in containersLinks:
-            link = "http://ncrypt.in/container/%s/%s.%s" % (
+            link = "http://ncrypt.in/container/{}/{}.{}".format(
                 containerLink[0], containerLink[1], containerLink[0])
             pack_links.append(link)
 
@@ -261,9 +261,9 @@ class NCryptIn(Crypter):
         links = re.findall(pattern, self.data)
 
         pack_links = []
-        self.log_debug("Decrypting %d Web links" % len(links))
+        self.log_debug("Decrypting {:d} Web links".format(len(links)))
         for i, link in enumerate(links):
-            self.log_debug("Decrypting Web link %d, %s" % (i + 1, link))
+            self.log_debug("Decrypting Web link {:d}, {}".format(i + 1, link))
             decrypted_link = self.decrypt(link)
             if decrypted_link:
                 pack_links.append(decrypted_link)
@@ -277,27 +277,27 @@ class NCryptIn(Crypter):
             return link
 
         except Exception as detail:
-            self.log_debug("Error decrypting link %s, %s" % (link, detail))
+            self.log_debug("Error decrypting link {}, {}".format(link, detail))
 
     def _get_cipher_params(self):
-        pattern = r'<input.*?name="%s".*?value="(.*?)"'
+        pattern = r'<input.*?name="{}".*?value="(.*?)"'
 
         #: Get jk
-        jk_re = pattern % NCryptIn.JK_KEY
+        jk_re = pattern.format(NCryptIn.JK_KEY)
         vjk = re.findall(jk_re, self.data)
 
         #: Get crypted
-        crypted_re = pattern % NCryptIn.CRYPTED_KEY
+        crypted_re = pattern.format(NCryptIn.CRYPTED_KEY)
         vcrypted = re.findall(crypted_re, self.data)
 
         #: Log and return
-        self.log_debug("Detected %d crypted blocks" % len(vcrypted))
+        self.log_debug("Detected {:d} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval("%s f()" % jk)
-        self.log_debug("JsEngine returns value [%s]" % jreturn)
+        jreturn = self.js.eval("{} f()".format(jk))
+        self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
@@ -311,5 +311,5 @@ class NCryptIn(Crypter):
         links = filter(bool, text.split('\n'))
 
         #: Log and return
-        self.log_debug("Block has %d links" % len(links))
+        self.log_debug("Block has {:d} links".format(len(links)))
         return links

@@ -9,7 +9,7 @@ def asbool(obj):
             return False
         else:
             raise ValueError(
-                "String is not true/false: %r" % obj)
+                "String is not true/false: {!r}".format(obj))
     return bool(obj)
 
 def aslist(obj, sep=None, strip=True):

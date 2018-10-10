@@ -41,7 +41,7 @@ class NosuploadCom(XFSHoster):
             self.WAIT_PATTERN,
             self.data,
             re.M | re.S).group(1)
-        self.log_debug("Hoster told us to wait %s seconds" % wait_time)
+        self.log_debug("Hoster told us to wait {} seconds".format(wait_time))
         self.wait(wait_time)
         self.data = self.load(self.pyfile.url, post=data)
 

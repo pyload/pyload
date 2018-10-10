@@ -118,7 +118,7 @@ def do_xmlattr(_eval_ctx, d, autospace=True):
     if the filter returned something unless the second parameter is false.
     """
     rv = u' '.join(
-        u'%s="%s"' % (escape(key), escape(value))
+        u'{}="{}"'.format(escape(key), escape(value))
         for key, value in d.iteritems()
         if value is not None and not isinstance(value, Undefined)
     )
@@ -169,7 +169,7 @@ def do_dictsort(value, case_sensitive=False, by='key'):
                                   '"key" or "value"')
     def sort_func(item):
         value = item[pos]
-        if isinstance(value, basestring) and not case_sensitive:
+        if isinstance(value, str) and not case_sensitive:
             value = value.lower()
         return value
 
@@ -192,7 +192,7 @@ def do_sort(value, reverse=False, case_sensitive=False):
     """
     if not case_sensitive:
         def sort_func(item):
-            if isinstance(item, basestring):
+            if isinstance(item, str):
                 item = item.lower()
             return item
     else:
@@ -302,16 +302,16 @@ def do_filesizeformat(value, binary=False):
     base = binary and 1024 or 1000
     middle = binary and 'i' or ''
     if bytes < base:
-        return "%d Byte%s" % (bytes, bytes != 1 and 's' or '')
+        return "%d Byte{}".format(bytes, bytes != 1 and 's' or '')
     elif bytes < base * base:
-        return "%.1f K%sB" % (bytes / base, middle)
+        return "{:1f} K{}B".format(bytes / base, middle)
     elif bytes < base * base * base:
-        return "%.1f M%sB" % (bytes / (base * base), middle)
-    return "%.1f G%sB" % (bytes / (base * base * base), middle)
+        return "{:1f} M{}B".format(bytes / (base * base), middle)
+    return "{:1f} G{}B".format(bytes / (base * base * base), middle)
 
 
 def do_pprint(value, verbose=False):
-    """Pretty print a variable. Useful for debugging.
+    """Pretty print(a variable. Useful for debugging.)
 
     With Jinja 1.2 onwards you can pass it a parameter.  If this parameter
     is truthy the output will be more verbose (this requires `pretty`)
@@ -437,13 +437,13 @@ def do_format(value, *args, **kwargs):
 
     .. sourcecode:: jinja
 
-        {{ "%s - %s"|format("Hello?", "Foo!") }}
+        {{ "{} - {}"|format("Hello?", "Foo!") }}
             -> Hello? - Foo!
     """
     if args and kwargs:
         raise FilterArgumentError('can\'t handle positional and keyword '
                                   'arguments at the same time')
-    return soft_unicode(value) % (kwargs or args)
+    return soft_unicode(value).format(kwargs or args)
 
 
 def do_trim(value):
@@ -484,7 +484,7 @@ def do_slice(value, slices, fill_with=None):
     items_per_slice = length // slices
     slices_with_extra = length % slices
     offset = 0
-    for slice_number in xrange(slices):
+    for slice_number in range(slices):
         start = offset + slice_number * items_per_slice
         if slice_number < slices_with_extra:
             offset += 1
@@ -633,7 +633,7 @@ def do_reverse(value):
     """Reverse the object or return an iterator the iterates over it the other
     way round.
     """
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         return value[::-1]
     try:
         return reversed(value)

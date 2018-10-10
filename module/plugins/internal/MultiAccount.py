@@ -117,10 +117,10 @@ class MultiAccount(Account):
                 self.sync(reverse=True)
 
         except Exception as e:
-            self.log_warning(_("Error loading hoster list for user `%s`") % self.user, e, trace=True)
+            self.log_warning(_("Error loading hoster list for user `{}`").format(self.user), e, trace=True)
 
         finally:
-            self.log_debug("Hoster list for user `%s`: %s" % (self.user, self.info['data']['hosters']))
+            self.log_debug("Hoster list for user `{}`: {}".format(self.user, self.info['data']['hosters']))
             return self.info['data']['hosters']
 
     def grab_hosters(self, user, password, data):
@@ -164,16 +164,16 @@ class MultiAccount(Account):
 
         removed = [plugin for plugin in prev_supported if plugin not in self.supported]
         if removed:
-            self.log_debug("Unload: %s" % ", ".join(removed))
+            self.log_debug("Unload: {}".format(", ".join(removed)))
             for plugin in removed:
                 self.unload_plugin(plugin)
 
         if not self.supported and not new_supported:
-            self.log_error(_("No %s loaded") % self.plugintype)
+            self.log_error(_("No {} loaded").format(self.plugintype))
             return
 
         #: Inject plugin plugin
-        self.log_debug("Overwritten %ss: %s" % (self.plugintype, ", ".join(sorted(self.supported))))
+        self.log_debug("Overwritten {}s: {}".format(self.plugintype, ", ".join(sorted(self.supported))))
 
         for plugin in self.supported:
             hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
@@ -181,23 +181,23 @@ class MultiAccount(Account):
             hdict['new_name'] = self.classname
 
         if excluded:
-            self.log_info(_("%ss not overwritten: %s") % (self.plugintype.capitalize(), ", ".join(sorted(excluded))))
+            self.log_info(_("{}s not overwritten: {}").format(self.plugintype.capitalize(), ", ".join(sorted(excluded))))
 
         if new_supported:
             plugins = sorted(new_supported)
 
-            self.log_debug("New %ss: %s" % (self.plugintype, ", ".join(plugins)))
+            self.log_debug("New {}s: {}".format(self.plugintype, ", ".join(plugins)))
 
             #: Create new regexp
-            pattern = r'.*(?P<DOMAIN>%s).*' % "|".join(x.replace('.', '\.')
-                                                       for x in plugins)
+            pattern = r'.*(?P<DOMAIN>{}).*'.format("|".join(x.replace('.', '\.')
+                                                       for x in plugins))
 
             if hasattr(self.pluginclass, "__pattern__") and \
-                    isinstance(self.pluginclass.__pattern__, basestring) and \
+                    isinstance(self.pluginclass.__pattern__, str) and \
                             "://" in self.pluginclass.__pattern__:
-                pattern = r'%s|%s' % (self.pluginclass.__pattern__, pattern)
+                pattern = r'{}|{}'.format(self.pluginclass.__pattern__, pattern)
 
-            self.log_debug("Pattern: %s" % pattern)
+            self.log_debug("Pattern: {}".format(pattern))
 
             hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
             hdict['pattern'] = pattern
@@ -311,11 +311,11 @@ class MultiAccount(Account):
             if not self.get_plugins(cached=False):
                 self.fail_count += 1
                 if self.fail_count < 3:
-                    self.log_error(_("Failed to load hoster list for user `%s`, retry in 5 minutes") % self.user)
+                    self.log_error(_("Failed to load hoster list for user `{}`, retry in 5 minutes").format(self.user))
                     self.periodical.set_interval(5 * 60)
 
                 else:
-                    self.log_error(_("Failed to load hoster list for user `%s`, deactivating") % self.user)
+                    self.log_error(_("Failed to load hoster list for user `{}`, deactivating").format(self.user))
                     self.deactivate()
 
                 return
@@ -345,7 +345,7 @@ class MultiAccount(Account):
         self.fail_count = 0
 
         if self.supported:
-            self.log_debug("Unload: %s" % ", ".join(self.supported))
+            self.log_debug("Unload: {}".format(", ".join(self.supported)))
             for plugin in self.supported:
                 self.unload_plugin(plugin)
 

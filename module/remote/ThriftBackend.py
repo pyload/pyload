@@ -1,21 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: mkaay, RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: mkaay, RaNaN
-"""
-from __future__ import absolute_import
 from os.path import exists
 
 from module.remote.RemoteManager import BackendBase
@@ -47,11 +33,11 @@ class ThriftBackend(BackendBase):
 #        tfactory = TransportFactoryCompressed()
         tfactory = TransportFactory()
         pfactory = ProtocolFactory()
-        
+
         self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
         #self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
-        
+
         #server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
-    
+
     def serve(self):
         self.server.serve()

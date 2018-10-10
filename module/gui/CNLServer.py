@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
 import re
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
@@ -26,7 +12,7 @@ from binascii import unhexlify
 
 try:
     from Crypto.Cipher import AES
-except:
+except Exception:
     pass
 
 try:
@@ -43,7 +29,7 @@ class CNLServer(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.setDaemon(True)
-        
+
         self.stop = False
         self.stopped = False
 
@@ -51,10 +37,10 @@ class CNLServer(Thread):
         server_address = ('127.0.0.1', 9666)
         try:
             httpd = HTTPServer(server_address, CNLHandler)
-        except:
+        except Exception:
             self.stopped = True
             return
-        
+
         self.stopped = False
         while self.keep_running():
             httpd.handle_request()
@@ -70,9 +56,9 @@ class CNLHandler(BaseHTTPRequestHandler):
     #    pass
 
     def add_package(self, name, urls, queue=0):
-        print "name", name
-        print "urls", urls
-        print "queue", queue
+        print("name", name)
+        print("urls", urls)
+        print("queue", queue)
 
     def get_post(self, name, default=""):
         if name in self.post:
@@ -117,7 +103,7 @@ class CNLHandler(BaseHTTPRequestHandler):
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception,e :
+            except Exception as e :
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")
@@ -157,7 +143,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         jk = self.get_post("jk")
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-        jk = "%s f()" % jk
+        jk = "{} f()".format(jk)
         jk = js.eval(jk)
         Key = unhexlify(jk)
         IV = Key
@@ -205,7 +191,7 @@ if __name__ == "__main__":
     if config.get("ssl", "activated"):
         ssl = "s"
 
-    server_url = "http%s://%s:%s@%s:%s/" % (
+    server_url = "http{}://{}:{}@{}:{}/".format(
                                         ssl,
                                         config.username,
                                         config.password,
@@ -223,4 +209,4 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             s.stop = True
             s.stopped = True
-            print "quiting.."
+            print("quiting..")

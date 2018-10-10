@@ -33,7 +33,7 @@ class PremiumizeMe(MultiHoster):
                       'params[login]': user,
                       'params[pass]': password}
         for key, val in kwargs.items():
-            get_params["params[%s]" % key] = val
+            get_params["params[{}]".format(key)] = val
 
         json_data = self.load(self.API_URL, get=get_params)
 
@@ -53,7 +53,7 @@ class PremiumizeMe(MultiHoster):
             #@NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
             urlp = urlparse.urlparse(res['result']['location'])
             urlq = urlparse.parse_qsl(urlp.query)
-            self.download("%s://%s%s" % (urlp.scheme, urlp.netloc, urlp.path),
+            self.download("{}://{}{}".format(urlp.scheme, urlp.netloc, urlp.path),
                           get=urlq)
 
             # self.link        = res['result']['location']

@@ -39,5 +39,5 @@ class TurbobitNetFolder(SimpleCrypter):
             return
 
     def get_links(self):
-        return ["http://turbobit.net/%s.html" %
+        return ["http://turbobit.net/{}.html" %
                 id for id in self._get_links(self.info['pattern']['ID'])]

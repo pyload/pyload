@@ -17,10 +17,10 @@ class BypassCaptchaException(Exception):
         return self.err
 
     def __str__(self):
-        return "<BypassCaptchaException %s>" % self.err
+        return "<BypassCaptchaException {}>".format(self.err)
 
     def __repr__(self):
-        return "<BypassCaptchaException %s>" % self.err
+        return "<BypassCaptchaException {}>".format(self.err)
 
 
 class BypassCaptcha(Addon):
@@ -35,7 +35,7 @@ class BypassCaptcha(Addon):
 
     __description__ = """Send captchas to BypassCaptcha.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.org"),
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
                    ("Godofdream", "soilfcition@gmail.com"),
                    ("zoidberg", "zoidberg@mujmail.cz")]
 
@@ -75,7 +75,7 @@ class BypassCaptcha(Addon):
 
         result = data['Value']
         ticket = data['TaskId']
-        self.log_debug("Result %s : %s" % (ticket, result))
+        self.log_debug("Result {} : {}".format(ticket, result))
 
         return ticket, result
 

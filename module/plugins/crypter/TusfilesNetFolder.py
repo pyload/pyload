@@ -38,11 +38,10 @@ class TusfilesNetFolder(XFSCrypter):
     def handle_pages(self, pyfile):
         pages = re.search(self.PAGES_PATTERN, self.data)
 
-        if pages:
-            pages = int(math.ceil(int(pages.group('pages')) / 25.0))
-        else:
+        if not pages:
             return
 
+        pages = math.ceil(int(pages.group('pages'))) // 25
         links = self.links
         for p in range(2, pages + 1):
             self.data = self.load_page(p)

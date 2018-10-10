@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import os
 import subprocess
@@ -25,7 +25,7 @@ class OCR(Plugin):
 
     __description__ = """OCR base plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def __init__(self, pyfile):
         self._init(pyfile.m.core)
@@ -72,9 +72,9 @@ class OCR(Plugin):
         popen.stderr.close()
 
         self.log_debug(
-            "Tesseract ReturnCode %d" %
+            "Tesseract ReturnCode {:d}" %
             popen.returncode,
-            "Output: %s" %
+            "Output: {}" %
             output)
 
     def run_tesser(self, subset=False, digits=True,
@@ -84,7 +84,7 @@ class OCR(Plugin):
             tmpTif = open(
                 fsjoin(
                     "tmp",
-                    "tmpTif_%s.tif" %
+                    "tmpTif_{}.tif" %
                     self.classname),
                 "wb")
             tmpTif.close()
@@ -93,7 +93,7 @@ class OCR(Plugin):
             tmpTxt = open(
                 fsjoin(
                     "tmp",
-                    "tmpTxt_%s.txt" %
+                    "tmpTxt_{}.txt" %
                     self.classname),
                 "wb")
             tmpTxt.close()
@@ -123,7 +123,7 @@ class OCR(Plugin):
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fsjoin("tmp", "tmpSub_%s.subset" % self.classname), "wb") as tmpSub:
+            with open(fsjoin("tmp", "tmpSub_{}.subset".format(self.classname)), "wb") as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -272,7 +272,7 @@ class OCR(Plugin):
                     sum += x
                     cnt += 1
 
-            avg = sum / cnt
+            avg = sum // cnt
             counts[angle] = cnt
             highest[angle] = 0
             for x in count.values():

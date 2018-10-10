@@ -53,7 +53,7 @@ class SkipRev(Addon):
                 1, 4, 8, 9, 14) if revtokeep < 0 else (
                 1, 3, 4, 8, 9, 14)
             pyname = re.compile(
-                r'%s\.part\d+\.rev$' %
+                r'{}\.part\d+\.rev$' %
                 name.rsplit(
                     '.',
                     2)[0].replace(
@@ -80,7 +80,7 @@ class SkipRev(Addon):
             return
 
         pyname = re.compile(
-            r'%s\.part\d+\.rev$' %
+            r'{}\.part\d+\.rev$' %
             pyfile.name.rsplit(
                 '.',
                 2)[0].replace(

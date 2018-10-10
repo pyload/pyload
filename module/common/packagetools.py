@@ -137,19 +137,3 @@ def parseNames(files):
 
     return packs
 
-
-if __name__ == "__main__":
-    from os.path import join
-    from pprint import pprint
-
-    f = open(join("..", "..", "testlinks2.txt"), "rb")
-    urls = [(x.strip(), x.strip()) for x in f.readlines() if x.strip()]
-    f.close()
-
-    print "Having %d urls." % len(urls)
-
-    packs = parseNames(urls)
-
-    pprint(packs)
-
-    print "Got %d urls." % sum([len(x) for x in packs.itervalues()])

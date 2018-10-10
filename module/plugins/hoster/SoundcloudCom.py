@@ -44,7 +44,7 @@ class SoundcloudCom(SimpleHoster):
             self.fail("Failed to retrieve client_id")
 
         #: Url to retrieve the actual song url
-        html = self.load("https://api.soundcloud.com/tracks/%s/streams" % song_id,
+        html = self.load("https://api.soundcloud.com/tracks/{}/streams".format(song_id),
                          get={'client_id': client_id})
         streams = json.loads(html)
 
@@ -53,7 +53,7 @@ class SoundcloudCom(SimpleHoster):
                               key=lambda t: _re.sub(t[0], ''),
                               reverse=True)
 
-        self.log_debug("Streams found: %s" % (http_streams or "None"))
+        self.log_debug("Streams found: {}".format(http_streams or "None"))
 
         if http_streams:
             stream_name, self.link = http_streams[

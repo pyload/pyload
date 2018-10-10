@@ -14,7 +14,7 @@ class AdsCaptcha(CaptchaService):
 
     __description__ = """AdsCaptcha captcha service plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.org")]
+    __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     CAPTCHAID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
     PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w\-]+)'
@@ -27,7 +27,7 @@ class AdsCaptcha(CaptchaService):
         if m and n:
             #: Key is the tuple(PublicKey, CaptchaId)
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Key: %s | ID: %s" % self.key)
+            self.log_debug("Key: {} | ID: {}".format(self.key))
             return self.key
         else:
             self.log_debug("Key or id pattern not found")
@@ -46,12 +46,12 @@ class AdsCaptcha(CaptchaService):
         except AttributeError:
             self.fail(_("AdsCaptcha challenge pattern not found"))
 
-        self.log_debug("Challenge: %s" % challenge)
+        self.log_debug("Challenge: {}".format(challenge))
 
         return self.result(server, challenge), challenge
 
     def result(self, server, challenge):
-        result = self.decrypt("%sChallenge.aspx" % server,
+        result = self.decrypt("{}Challenge.aspx".format(server),
                               get={'cid': challenge, 'dummy': random.random()},
                               cookies=True,
                               input_type="jpg")

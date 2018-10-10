@@ -26,7 +26,7 @@ provides: TinyTab
                 this.headers.push("");
             }
 			if(!opt) opt = {};
-			this.css = opt.selectedClass || 'selected'; 
+			this.css = opt.selectedClass || 'selected';
 			this.select(this.tabs[0]);
 			tabs.each(function(el){
 				el.addEvent('click',function(e){

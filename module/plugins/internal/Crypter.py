@@ -78,8 +78,8 @@ class Crypter(Base):
             folder_per_package = folder_per_package == "Yes"
 
         for name, links, folder in self.packages:
-            self.log_info(_("Create package: %s") % name,
-                          _("%d links") % len(links))
+            self.log_info(_("Create package: {}").format(name),
+                          _("{:d} links").format(len(links)))
 
             links = map(self.fixurl, links)
             self.log_debug("LINKS for package " + name, *links)
@@ -100,7 +100,6 @@ class Crypter(Base):
             elif not folder or folder == name:
                 folder = parse_name(name)
 
-            self.log_info(_("Save package `%(name)s` to folder: %(folder)s")
-                          % {'name': name, 'folder': folder})
+            self.log_info(_("Save package `{name}` to folder: {folder}").format(**{'name': name, 'folder': folder}))
 
             set_folder(folder)

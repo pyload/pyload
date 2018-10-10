@@ -42,7 +42,7 @@ class OboomCom(Account):
         result = json.loads(html)
 
         if result[0] != 200:
-            self.log_warning(_("Failed to log in: %s") % result[1])
+            self.log_warning(_("Failed to log in: {}").format(result[1]))
             self.fail_login()
 
         return result[1]
@@ -62,8 +62,8 @@ class OboomCom(Account):
         traffic = userData['traffic']
 
         # @TODO: Remove `/ 1024` in 0.4.10
-        trafficLeft = traffic['current'] / 1024
-        maxTraffic = traffic['max'] / 1024  # @TODO: Remove `/ 1024` in 0.4.10
+        trafficLeft = traffic['current'] // 1024
+        maxTraffic = traffic['max'] // 1024  # @TODO: Remove `/ 1024` in 0.4.10
 
         session = account_data['session']
 

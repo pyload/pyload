@@ -1,22 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-"""
-from __future__ import absolute_import
 from os import remove, stat, fsync
 from os.path import exists
 from time import sleep
@@ -39,9 +25,9 @@ class ChunkInfo():
         self.chunks = []
 
     def __repr__(self):
-        ret = "ChunkInfo: %s, %s\n" % (self.name, self.size)
+        ret = "ChunkInfo: {}, {}\n".format(self.name, self.size)
         for i, c in enumerate(self.chunks):
-            ret += "%s# %s\n" % (i, c[1])
+            ret += "{}# {}\n".format(i, c[1])
 
         return ret
 
@@ -56,29 +42,29 @@ class ChunkInfo():
 
     def createChunks(self, chunks):
         self.clear()
-        chunk_size = self.size / chunks
+        chunk_size = self.size // chunks
 
         current = 0
         for i in range(chunks):
             end = self.size - 1 if (i == chunks - 1) else current + chunk_size
-            self.addChunk("%s.chunk%s" % (self.name, i), (current, end))
+            self.addChunk("{}.chunk{}".format(self.name, i), (current, end))
             current += chunk_size + 1
 
 
     def save(self):
-        fs_name = fs_encode("%s.chunks" % self.name)
+        fs_name = fs_encode("{}.chunks".format(self.name))
         fh = codecs.open(fs_name, "w", "utf_8")
-        fh.write("name:%s\n" % self.name)
-        fh.write("size:%s\n" % self.size)
+        fh.write("name:{}\n".format(self.name))
+        fh.write("size:{}\n".format(self.size))
         for i, c in enumerate(self.chunks):
-            fh.write("#%d:\n" % i)
-            fh.write("\tname:%s\n" % c[0])
-            fh.write("\trange:%i-%i\n" % c[1])
+            fh.write("#{:d}:\n".format(i))
+            fh.write("\tname:{}\n".format(c[0]))
+            fh.write("\trange:%i-%i\n".format(c[1]))
         fh.close()
 
     @staticmethod
     def load(name):
-        fs_name = fs_encode("%s.chunks" % name)
+        fs_name = fs_encode("{}.chunks".format(name))
         if not exists(fs_name):
             raise IOError()
         fh = codecs.open(fs_name, "r", "utf_8")
@@ -109,7 +95,7 @@ class ChunkInfo():
         return ci
 
     def remove(self):
-        fs_name = fs_encode("%s.chunks" % self.name)
+        fs_name = fs_encode("{}.chunks".format(self.name))
         if exists(fs_name): remove(fs_name)
 
     def getCount(self):
@@ -152,7 +138,7 @@ class HTTPChunk(HTTPRequest):
         self.lastSize = 0
 
     def __repr__(self):
-        return "<HTTPChunk id=%d, size=%d, arrived=%d>" % (self.id, self.size, self.arrived)
+        return "<HTTPChunk id={:d}, size={:d}, arrived={:d}>".format(self.id, self.size, self.arrived)
 
     @property
     def cj(self):
@@ -179,24 +165,24 @@ class HTTPChunk(HTTPRequest):
                 if self.arrived + self.range[0] >= self.range[1]: return None
 
                 if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
-                    range = "%i-" % (self.arrived + self.range[0])
+                    range = "%i-".format(self.arrived + self.range[0])
                 else:
-                    range = "%i-%i" % (self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = "%i-%i".format(self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked resume with range %s" % range)
+                self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
             else:
-                self.log.debug("Resume File from %i" % self.arrived)
+                self.log.debug("Resume File from %i".format(self.arrived))
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
                 if self.id == len(self.p.info.chunks) - 1: # see above
-                    range = "%i-" % self.range[0]
+                    range = "%i-".format(self.range[0])
                 else:
-                    range = "%i-%i" % (self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = "%i-%i".format(self.range[0], min(self.range[1] + 1, self.p.size - 1))
 
-                self.log.debug("Chunked with range %s" % range)
+                self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
 
             self.fp = open(fs_name, "wb")
@@ -261,7 +247,7 @@ class HTTPChunk(HTTPRequest):
                 name = orgline.partition("filename=")[2]
                 name = name.replace('"', "").replace("'", "").replace(";", "").strip()
                 self.p.nameDisposition = name
-                self.log.debug("Content-Disposition: %s" % name)
+                self.log.debug("Content-Disposition: {}".format(name))
 
             if not self.resume and line.startswith("content-length"):
                 self.p.size = int(line.split(":")[1])

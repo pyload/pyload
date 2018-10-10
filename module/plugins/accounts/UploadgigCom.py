@@ -79,7 +79,7 @@ class UploadgigCom(Account):
                     self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time() or \
                     self.req and not self.req.cj.parseCookie('fs_secure'):
 
-            self.log_debug("Reached login timeout for user `%s`" % self.user)
+            self.log_debug("Reached login timeout for user `{}`".format(self.user))
             return False
         else:
             return True

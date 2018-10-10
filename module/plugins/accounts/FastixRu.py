@@ -33,7 +33,7 @@ class FastixRu(MultiAccount):
         json_data = json.loads(html)
 
         points = json_data['points']
-        kb = float(points) * 1024 ** 2 / 1000
+        kb = float(points) * 1024 ** 2 // 1000
 
         if points > 0:
             account_info = {'validuntil': -1, 'trafficleft': kb}

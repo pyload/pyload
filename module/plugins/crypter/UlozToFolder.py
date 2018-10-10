@@ -29,7 +29,7 @@ class UlozToFolder(Crypter):
 
         new_links = []
         for i in range(1, 100):
-            self.log_info(_("Fetching links from page %i") % i)
+            self.log_info(_("Fetching links from page %i").format(i))
             m = re.search(self.FOLDER_PATTERN, html, re.S)
             if m is None:
                 self.error(_("FOLDER_PATTERN not found"))
@@ -44,4 +44,4 @@ class UlozToFolder(Crypter):
             self.log_info(_("Limit of 99 pages reached, aborting"))
 
         if new_links:
-            self.links = [map(lambda s: "http://ulozto.net/%s" % s, new_links)]
+            self.links = [map(lambda s: "http://ulozto.net/{}".format(s), new_links)]

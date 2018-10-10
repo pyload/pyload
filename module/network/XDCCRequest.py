@@ -1,21 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: jeix, GammaC0de
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @authors: jeix, GammaC0de
-"""
 
 import errno
 import os
@@ -167,7 +153,7 @@ class XDCCRequest():
                 # calc speed once per second, averaging over 3 seconds
                 self.speeds[2] = self.speeds[1]
                 self.speeds[1] = self.speeds[0]
-                self.speeds[0] = float(cumRecvLen) / timespan
+                self.speeds[0] = float(cumRecvLen) // timespan
 
                 cumRecvLen = 0
                 lastUpdate = now
@@ -204,13 +190,13 @@ class XDCCRequest():
     @property
     def speed(self):
         speeds = [x for x in self.speeds if x]
-        return sum(speeds) / len(speeds)
+        return sum(speeds) // len(speeds)
 
 
     @property
     def percent(self):
         if not self.filesize: return 0
-        return (self.received * 100) / self.filesize
+        return (self.received * 100) // self.filesize
 
 
     def close(self):

@@ -23,10 +23,10 @@ class XFileSharing(Addon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    _regexmap = {'hoster': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
-                            r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:embed-)?\w+'),
-                 'crypter': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:%s))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+',
-                             r'https?://(?:[^/]+\.)?(?P<DOMAIN>%s)/(?:user|folder)s?/\w+')}
+    _regexmap = {'hoster': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:embed-)?\w{12}(?:\W|$)',
+                            r'https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:embed-)?\w+'),
+                 'crypter': (r'(?:https?://(?:www\.)?)(?!(?:www\.)?(?:{}))(?P<DOMAIN>(?:[\d.]+|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,})+)(?:\:\d+)?)/(?:user|folder)s?/\w+',
+                             r'https?://(?:[^/]+\.)?(?P<DOMAIN>{})/(?:user|folder)s?/\w+')}
 
     BUILTIN_HOSTERS = [  # WORKING HOSTERS:
         "ani-stream.com", "backin.net", "cloudshares.net", "cloudsix.me",
@@ -56,8 +56,8 @@ class XFileSharing(Addon):
             self._unload(type, plugin)
 
     def get_pattern(self, type, plugin):
-        if self.config.get('use_%s_list' % type):
-            plugin_list = self.config.get('%s_list' % type)
+        if self.config.get('use_{}_list'.format(type)):
+            plugin_list = self.config.get('{}_list'.format(type))
             plugin_list = plugin_list.replace(' ', '').replace('\\', '')
             plugin_list = plugin_list.replace('|', ',').replace(';', ',')
             plugin_list = plugin_list.lower().split(',')
@@ -65,19 +65,19 @@ class XFileSharing(Addon):
             plugin_set = set(plugin_list)
 
             if self.config.get('use_builtin_list'):
-                builtin_list = getattr(self, "BUILTIN_%sS" % type.upper())
+                builtin_list = getattr(self, "BUILTIN_{}S".format(type.upper()))
                 plugin_set.update(builtin_list)
 
             plugin_set.difference_update(('', u''))
 
             if not plugin_set:
-                self.log_info(_("No %s to handle") % type)
+                self.log_info(_("No {} to handle").format(type))
                 return
 
             match_list = '|'.join(sorted(plugin_set)).replace('.', '\.')
-            pattern = self._regexmap[type][1] % match_list
+            pattern = self._regexmap[type][1].format(match_list)
 
-            self.log_info(_("Handle %d %s%s: %s") %
+            self.log_info(_("Handle {:d} {}{}: {}") %
                           (len(plugin_set),
                            type,
                            "" if len(plugin_set) == 1 else "s",
@@ -102,11 +102,11 @@ class XFileSharing(Addon):
 
             if plugin_list:
                 unmatch_list = '|'.join(sorted(plugin_list)).replace('.', '\.')
-                pattern = self._regexmap[type][0] % unmatch_list
+                pattern = self._regexmap[type][0].format(unmatch_list)
             else:
                 pattern = self._regexmap[type][0]
 
-            self.log_info(_("Auto-discover new %ss") % type)
+            self.log_info(_("Auto-discover new {}s").format(type))
 
         return pattern
 
@@ -120,7 +120,7 @@ class XFileSharing(Addon):
         dict['pattern'] = pattern
         dict['re'] = re.compile(pattern)
 
-        self.log_debug("Pattern for %ss: %s" % (type, pattern))
+        self.log_debug("Pattern for {}s: {}".format(type, pattern))
 
     def _unload(self, type, plugin):
         dict = self.pyload.pluginManager.plugins[type][plugin]

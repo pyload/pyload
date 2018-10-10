@@ -105,7 +105,7 @@ class SafelinkingNet(Crypter):
             # Response: Wrong password
             elif "passwordFail" in json_res:
                 self.log_error(
-                    _('Wrong password: "%s"') %
+                    _('Wrong password: "{}"') %
                     self.package_password)
                 self.fail(_("Wrong password"))
 
@@ -114,7 +114,7 @@ class SafelinkingNet(Crypter):
 
             # Response: Error message
             elif "message" in json_res:
-                self.log_error(_("Site error: %s") % json_res['message'])
+                self.log_error(_("Site error: {}").format(json_res['message']))
                 self.retry(wait=60, msg=json_res['message'])
 
             # Response: Links

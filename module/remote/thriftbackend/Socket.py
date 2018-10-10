@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
+
 import sys
 from . import socket
 import errno
@@ -27,14 +27,14 @@ class SecureSocketConnection:
     def accept(self):
         connection, address = self.__dict__["connection"].accept()
         return SecureSocketConnection(connection), address
-    
+
     def send(self, buff):
         try:
             return self.__dict__["connection"].send(buff)
         except WantReadError:
             sleep(0.1)
             return self.send(buff)
-    
+
     def recv(self, buff):
         try:
             return self.__dict__["connection"].recv(buff)
@@ -87,7 +87,7 @@ class Socket(TSocket):
                 buff = ''
             else:
                 raise
-            
+
         if not len(buff):
             raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket read 0 bytes')
         return buff

@@ -25,7 +25,7 @@ def rewrite_imports(lines):
 
 def main():
     if len(sys.argv) != 2:
-        print 'error: only argument is path to markupsafe'
+        print('error: only argument is path to markupsafe')
         sys.exit(1)
     basedir = os.path.dirname(__file__)
     markupdir = sys.argv[1]

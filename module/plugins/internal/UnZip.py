@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 
 import sys
 import zipfile
@@ -19,7 +19,7 @@ class UnZip(Extractor):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    VERSION = "%s.%s.%s" % (sys.version_info[0],
+    VERSION = "{}.{}.{}".format(sys.version_info[0],
                             sys.version_info[1],
                             sys.version_info[2])
 

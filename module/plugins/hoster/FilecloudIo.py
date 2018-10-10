@@ -63,13 +63,13 @@ class FilecloudIo(SimpleHoster):
             self.link = json_data['downloadUrl']
 
         else:
-            self.log_error("Error: %s" % json_data['message'])
+            self.log_error("Error: {}".format(json_data['message']))
             self.fail(json_data['message'])
 
     def handle_premium(self, pyfile):
         akey = self.account.get_data('akey')
         ukey = self.info['pattern']['ID']
-        self.log_debug("Akey: %s | Ukey: %s" % (akey, ukey))
+        self.log_debug("Akey: {} | Ukey: {}".format(akey, ukey))
         rep = self.load("http://api.filecloud.io/api-fetch_download_url.api",
                         post={'akey': akey, 'ukey': ukey})
         self.log_debug("FetchDownloadUrl: " + rep)

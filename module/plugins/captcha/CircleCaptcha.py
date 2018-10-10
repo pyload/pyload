@@ -445,16 +445,16 @@ class CircleCaptcha(OCR):
 
         #: Assial Simmetric
         if self.pyload.debug:
-            self.log_debug("Center: %s" % c,
-                           "Missing: %s" % missing,
-                           "Howmany: %s" % howmany,
-                           "Ratio: %s" % (missing / howmany),
-                           "Missing consecutives: %s" % missingconsecutive,
-                           "Missing X lenght: %s:%s" % (minX, maxX),
-                           "Missing Y lenght: %s:%s" % (minY, maxY),
-                           "Ratio without consecutives: %s" % (
+            self.log_debug("Center: {}".format(c),
+                           "Missing: {}".format(missing),
+                           "Howmany: {}".format(howmany),
+                           "Ratio: {}".format(missing / howmany),
+                           "Missing consecutives: {}".format(missingconsecutive),
+                           "Missing X lenght: {}:{}".format(minX, maxX),
+                           "Missing Y lenght: {}:{}".format(minY, maxY),
+                           "Ratio without consecutives: {}".format(
                                (missing - missingconsecutive) / howmany),
-                           "List missing: %s" % missinglist)
+                           "List missing: {}".format(missinglist))
 
         #: Lenght of missing cannot be over 75% of diameter
 
@@ -758,13 +758,13 @@ class CircleCaptcha(OCR):
         file = cStringIO.StringIO(urllib.urlopen(url).read())
         img = Image.open(file)
         coords = self.decrypt(img)
-        self.log_info(_("Coords: %s") % coords)
+        self.log_info(_("Coords: {}").format(coords))
 
     #: Return coordinates of opened circle (eg (x, y))
     def decrypt_from_file(self, filename):
         #: Can be many different formats.
         coords = self.decrypt(Image.open(filename))
-        self.log_info(_("Coords: %s") % coords)
+        self.log_info(_("Coords: {}").format(coords))
 
 
 # DEBUG
@@ -774,4 +774,4 @@ class CircleCaptcha(OCR):
 # coords = x.decrypt_from_file("decripter/captx.html2.gif")
 # coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
 # b = datetime.datetime.now()
-# self.log_debug("Elapsed time: %s seconds" % (b-a).seconds)
+# self.log_debug("Elapsed time: {} seconds".format(b-a).seconds)

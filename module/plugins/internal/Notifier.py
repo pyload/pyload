@@ -68,13 +68,13 @@ class Notifier(Addon):
         if not self.config.get('reconnection', False):
             return
 
-        self.notify(_("Waiting reconnection"), _("Current IP: %s") % ip)
+        self.notify(_("Waiting reconnection"), _("Current IP: {}").format(ip))
 
     def after_reconnect(self, ip, oldip):
         if not self.config.get('reconnection', False):
             return
 
-        self.notify(_("Reconnection failed"), _("Current IP: %s") % ip)
+        self.notify(_("Reconnection failed"), _("Current IP: {}").format(ip))
 
     def package_finished(self, pypack):
         if not self.config.get('packagefinished', True):

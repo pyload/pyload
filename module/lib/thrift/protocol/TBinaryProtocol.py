@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -128,7 +128,7 @@ class TBinaryProtocol(TProtocolBase):
     if sz < 0:
       version = sz & TBinaryProtocol.VERSION_MASK
       if version != TBinaryProtocol.VERSION_1:
-        raise TProtocolException(type=TProtocolException.BAD_VERSION, message='Bad version in readMessageBegin: %d' % (sz))
+        raise TProtocolException(type=TProtocolException.BAD_VERSION, message='Bad version in readMessageBegin: {:d}'.format(sz))
       type = sz & TBinaryProtocol.TYPE_MASK
       name = self.readString()
       seqid = self.readI32()

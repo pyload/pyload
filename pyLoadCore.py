@@ -1,26 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: spoob, sebnapi, RaNaN, mkaay
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: spoob
-    @author: sebnapi
-    @author: RaNaN
-    @author: mkaay
-    @version: v0.4.9
-"""
-CURRENT_VERSION = '0.4.9'
+CURRENT_VERSION = '0.5.0'
 
 import __builtin__
 
@@ -96,7 +78,7 @@ class Core(object):
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
-                        print "pyLoad", CURRENT_VERSION
+                        print("pyLoad", CURRENT_VERSION)
                         exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
@@ -136,10 +118,10 @@ class Core(object):
                     elif option == "--status":
                         pid = self.isAlreadyRunning()
                         if self.isAlreadyRunning():
-                            print pid
+                            print(pid)
                             exit(0)
                         else:
-			    print "false"
+                            print("false")
                             exit(1)
                     elif option == "--clean":
                         self.cleanTree()
@@ -148,36 +130,36 @@ class Core(object):
                         self.remote = False
 
             except GetoptError:
-                print 'Unknown Argument(s) "%s"' % " ".join(argv[1:])
+                print('Unknown Argument(s) "{}"'.format(" ".join(argv[1:])))
                 self.print_help()
                 exit()
 
     def print_help(self):
-        print ""
-        print "pyLoad v%s     2008-2011 the pyLoad Team" % CURRENT_VERSION
-        print ""
+        print("")
+        print("pyLoad v{}     2008-2011 the pyLoad Team".format(CURRENT_VERSION))
+        print("")
         if sys.argv[0].endswith(".py"):
-            print "Usage: python pyLoadCore.py [options]"
+            print("Usage: python pyLoadCore.py [options]")
         else:
-            print "Usage: pyLoadCore [options]"
-        print ""
-        print "<Options>"
-        print "  -v, --version", " " * 10, "Print version to terminal"
-        print "  -c, --clear", " " * 12, "Delete all saved packages/links"
-        #print "  -a, --add=<link/list>", " " * 2, "Add the specified links"
-        print "  -u, --user", " " * 13, "Manages users"
-        print "  -d, --debug", " " * 12, "Enable debug mode"
-        print "  -s, --setup", " " * 12, "Run Setup Assistent"
-        print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
-        print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
-        print "  --changedir", " " * 12, "Change config dir permanently"
-        print "  --daemon", " " * 15, "Daemonmize after start"
-        print "  --no-remote", " " * 12, "Disable remote access (saves RAM)"
-        print "  --status", " " * 15, "Display pid if running or False"
-        print "  --clean", " " * 16, "Remove .pyc/.pyo files"
-        print "  -q, --quit", " " * 13, "Quit running pyLoad instance"
-        print "  -h, --help", " " * 13, "Display this help screen"
-        print ""
+            print("Usage: pyLoadCore [options]")
+        print("")
+        print("<Options>")
+        print("  -v, --version", " " * 10, "Print version to terminal")
+        print("  -c, --clear", " " * 12, "Delete all saved packages/links")
+        #print("  -a, --add=<link/list>", " " * 2, "Add the specified links")
+        print("  -u, --user", " " * 13, "Manages users")
+        print("  -d, --debug", " " * 12, "Enable debug mode")
+        print("  -s, --setup", " " * 12, "Run Setup Assistent")
+        print("  --configdir=<dir>", " " * 6, "Run with <dir> as config directory")
+        print("  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>")
+        print("  --changedir", " " * 12, "Change config dir permanently")
+        print("  --daemon", " " * 15, "Daemonmize after start")
+        print("  --no-remote", " " * 12, "Disable remote access (saves RAM)")
+        print("  --status", " " * 15, "Display pid if running or False")
+        print("  --clean", " " * 16, "Remove .pyc/.pyo files")
+        print("  -q, --quit", " " * 13, "Quit running pyLoad instance")
+        print("  -h, --help", " " * 13, "Display this help screen")
+        print("")
 
     def toggle_pause(self):
         if self.threadManager.pause:
@@ -201,7 +183,7 @@ class Core(object):
 
     def deletePidFile(self):
         if self.checkPidFile():
-            self.log.debug("Deleting old pidfile %s" % self.pidfile)
+            self.log.debug("Deleting old pidfile {}".format(self.pidfile))
             os.remove(self.pidfile)
 
     def checkPidFile(self):
@@ -221,39 +203,39 @@ class Core(object):
         if not pid or os.name == "nt": return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
-        except:
+        except Exception:
             return 0
 
         return pid
 
     def quitInstance(self):
         if os.name == "nt":
-            print "Not supported on windows."
+            print("Not supported on windows.")
             return
 
         pid = self.isAlreadyRunning()
         if not pid:
-            print "No pyLoad running."
+            print("No pyLoad running.")
             return
 
         try:
             os.kill(pid, 3) #SIGUIT
 
             t = time()
-            print "waiting for pyLoad to quit"
+            print("waiting for pyLoad to quit")
 
             while exists(self.pidfile) and t + 10 > time():
                 sleep(0.25)
 
             if not exists(self.pidfile):
-                print "pyLoad successfully stopped"
+                print("pyLoad successfully stopped")
             else:
                 os.kill(pid, 9) #SIGKILL
-                print "pyLoad did not respond"
-                print "Kill signal was send to process with id %s" % pid
+                print("pyLoad did not respond")
+                print("Kill signal was send to process with id {}".format(pid))
 
-        except:
-            print "Error quitting pyLoad"
+        except Exception:
+            print("Error quitting pyLoad")
 
 
     def cleanTree(self):
@@ -265,7 +247,7 @@ class Core(object):
                 if "_25" in f or "_26" in f or "_27" in f:
                     continue
 
-                print join(path, f)
+                print(join(path, f))
                 remove(join(path, f))
 
     def start(self, rpc=True, web=True):
@@ -276,7 +258,7 @@ class Core(object):
         if not exists("pyload.conf"):
             from module.setup import Setup
 
-            print "This is your first start, running configuration assistent now."
+            print("This is your first start, running configuration assistent now.")
             self.config = ConfigParser()
             s = Setup(pypath, self.config)
             res = False
@@ -285,18 +267,18 @@ class Core(object):
             except SystemExit:
                 pass
             except KeyboardInterrupt:
-                print "\nSetup interrupted"
-            except:
+                print("\nSetup interrupted")
+            except Exception:
                 res = False
                 print_exc()
-                print "Setup failed"
+                print("Setup failed")
             if not res:
                 remove("pyload.conf")
 
             exit()
 
         try: signal.signal(signal.SIGQUIT, self.quit)
-        except: pass
+        except Exception: pass
 
         self.config = ConfigParser()
 
@@ -310,11 +292,11 @@ class Core(object):
 
         pid = self.isAlreadyRunning()
         if pid:
-            print _("pyLoad already running with pid %s") % pid
+            print(_("pyLoad already running with pid {}").format(pid))
             exit()
 
         if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice %d %d" % (self.config["general"]["renice"], os.getpid()))
+            os.system("renice {:d} {:d}".format(self.config["general"]["renice"], os.getpid()))
 
         if self.config["permission"]["change_group"]:
             if os.name != "nt":
@@ -323,8 +305,8 @@ class Core(object):
 
                     group = getgrnam(self.config["permission"]["group"])
                     os.setgid(group[2])
-                except Exception, e:
-                    print _("Failed changing group: %s") % e
+                except Exception as e:
+                    print(_("Failed changing group: {}").format(e))
 
         if self.config["permission"]["change_user"]:
             if os.name != "nt":
@@ -333,8 +315,8 @@ class Core(object):
 
                     user = getpwnam(self.config["permission"]["user"])
                     os.setuid(user[2])
-                except Exception, e:
-                    print _("Failed changing user: %s") % e
+                except Exception as e:
+                    print(_("Failed changing user: {}").format(e))
 
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
 
@@ -349,15 +331,15 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info(_("Starting") + " pyLoad %s" % CURRENT_VERSION)
-        self.log.info(_("Using home directory: %s") % getcwd())
+        self.log.info(_("Starting") + " pyLoad {}".format(CURRENT_VERSION))
+        self.log.info(_("Using home directory: {}").format(getcwd()))
 
         self.writePidFile()
 
         #@TODO refractor
 
         remote.activated = self.remote
-        self.log.debug("Remote activated: %s" % self.remote)
+        self.log.debug("Remote activated: {}".format(self.remote))
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
         #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
@@ -411,7 +393,7 @@ class Core(object):
 
         self.js = JsEngine()
 
-        self.log.info(_("Downloadtime: %s") % self.api.isTimeDownload())
+        self.log.info(_("Downloadtime: {}").format(self.api.isTimeDownload()))
 
         if rpc:
             self.remoteManager.startBackends()
@@ -421,7 +403,7 @@ class Core(object):
 
         spaceLeft = freeSpace(self.config["general"]["download_folder"])
 
-        self.log.info(_("Free space: %s") % formatSize(spaceLeft))
+        self.log.info(_("Free space: {}").format(formatSize(spaceLeft)))
 
         self.config.save() #save so config files gets filled
 
@@ -469,7 +451,7 @@ class Core(object):
         while True:
             try:
                 sleep(2)
-            except IOError, e:
+            except IOError as e:
                 if e.errno != 4:  # errno.EINTR
                     raise
 
@@ -500,7 +482,7 @@ class Core(object):
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("%(asctime)s %(levelname)-8s  %(message)s", "%d.%m.%Y %H:%M:%S")
+        frm = logging.Formatter("%(asctime) %(levelname)-8s  %(message)", "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
         self.log = logging.getLogger("log") # settable in config
 
@@ -534,9 +516,9 @@ class Core(object):
                 subprocess.Popen(check_name, stdout=pipe, stderr=pipe)
 
             return True
-        except:
+        except Exception:
             if essential:
-                self.log.info(_("Install %s") % legend)
+                self.log.info(_("Install {}").format(legend))
                 exit()
 
             return False
@@ -560,21 +542,21 @@ class Core(object):
                             makedirs(tmp_name)
                         else:
                             open(tmp_name, "w")
-                    except:
+                    except Exception:
                         file_created = False
                 else:
                     file_created = False
 
             if not file_exists and not quiet:
                 if file_created:
-                #self.log.info( _("%s created") % description )
+                #self.log.info( _("{} created").format(description))
                     pass
                 else:
                     if not empty:
                         self.log.warning(
-                            _("could not find %(desc)s: %(name)s") % {"desc": description, "name": tmp_name})
+                            _("could not find {desc}: {name}").format(**{"desc": description, "name": tmp_name}))
                     else:
-                        print _("could not create %(desc)s: %(name)s") % {"desc": description, "name": tmp_name}
+                        print(_("could not create {desc}: {name}").format(**{"desc": description, "name": tmp_name}))
                     if essential:
                         exit()
 
@@ -609,7 +591,7 @@ class Core(object):
 
             self.hookManager.coreExiting()
 
-        except:
+        except Exception:
             if self.debug:
                 print_exc()
             self.log.info(_("error while shutting down"))
@@ -630,11 +612,11 @@ def deamon():
         pid = os.fork()
         if pid > 0:
             sys.exit(0)
-    except OSError, e:
-        print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+    except OSError as e:
+        sys.stderr.write("fork #1 failed: {:d} ({})\n".format(e.errno, e.strerror))
         sys.exit(1)
 
-    # decouple from parent environment 
+    # decouple from parent environment
     os.setsid()
     os.umask(0)
 
@@ -642,18 +624,18 @@ def deamon():
     try:
         pid = os.fork()
         if pid > 0:
-        # exit from second parent, print eventual PID before
-            print "Daemon PID %d" % pid
+        # exit from second parent, print(eventual PID before)
+            print("Daemon PID {:d}".format(pid))
             sys.exit(0)
-    except OSError, e:
-        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+    except OSError as e:
+        sys.stderr.write("fork #2 failed: {:d} ({})\n".format(e.errno, e.strerror))
         sys.exit(1)
 
     # Iterate through and close some file descriptors.
     for fd in range(0, 3):
         try:
             os.close(fd)
-        except OSError:    # ERROR, fd wasn't open to begin with (ignored)
+        except OSError:    # ERROR as fd wasn't open to begin with (ignored)
             pass
 
     os.open(os.devnull, os.O_RDWR)    # standard input (0)
@@ -680,7 +662,7 @@ def main():
             pyload_core.removeLogger()
             _exit(1)
 
-# And so it begins... 
+# And so it begins...
 if __name__ == "__main__":
     main()
 

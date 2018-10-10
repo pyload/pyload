@@ -30,4 +30,4 @@ class ChipDe(Crypter):
 
         else:
             self.links = [f.group(1)]
-            self.log_debug("The file URL is %s" % self.links[0])
+            self.log_debug("The file URL is {}".format(self.links[0]))

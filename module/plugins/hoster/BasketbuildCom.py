@@ -45,11 +45,11 @@ class BasketbuildCom(SimpleHoster):
             self.error(_("Hop #1 not found"))
 
         else:
-            self.log_debug("Next hop: %s" % link1)
+            self.log_debug("Next hop: {}".format(link1))
 
         try:
             wait = re.search(r'var sec = (\d+)', self.data).group(1)
-            self.log_debug("Wait %s seconds" % wait)
+            self.log_debug("Wait {} seconds".format(wait))
             self.wait(wait)
 
         except AttributeError:

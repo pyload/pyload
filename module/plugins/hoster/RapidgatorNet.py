@@ -123,17 +123,17 @@ class RapidgatorNet(SimpleHoster):
         jsvars = dict(re.findall(self.JSVARS_PATTERN, self.data))
         self.log_debug(jsvars)
 
-        url = "https://rapidgator.net%s?fid=%s" % (
+        url = "https://rapidgator.net{}?fid={}".format(
             jsvars.get('startTimerUrl', '/download/AjaxStartTimer'), jsvars['fid'])
         jsvars.update(self.get_json_response(url))
 
         self.wait(jsvars.get('secs', 180), False)
 
-        url = "https://rapidgator.net%s?sid=%s" % (
+        url = "https://rapidgator.net{}?sid={}".format(
             jsvars.get('getDownloadUrl', '/download/AjaxGetDownloadLink'), jsvars['sid'])
         jsvars.update(self.get_json_response(url))
 
-        url = "https://rapidgator.net%s" % jsvars.get('captchaUrl', '/download/captcha')
+        url = "https://rapidgator.net{}".format(jsvars.get('captchaUrl', '/download/captcha'))
         self.data = self.load(url, ref=pyfile.url)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)

@@ -14,4 +14,4 @@ class MegauploadCom(DeadHoster):
 
     __description__ = """Megaupload.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.org")]
+    __authors__ = [("spoob", "spoob@pyload.net")]

@@ -38,13 +38,13 @@ class WindowsPhoneNotify(Notifier):
 
     def format_request(self, msg):
         return ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
-                "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>%s</wp:Text2> "
-                "</wp:Toast> </wp:Notification>" % msg)
+                "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>{}</wp:Text2> "
+                "</wp:Toast> </wp:Notification>".format(msg))
 
     def send(self, event, msg, key):
         id, url = key
         request = self.format_request(
-            "%s: %s" %
+            "{}: {}" %
             (event, msg) if msg else event)
         webservice = httplib.HTTP(url)
 
@@ -53,7 +53,7 @@ class WindowsPhoneNotify(Notifier):
         webservice.putheader("Content-type", "text/xml")
         webservice.putheader("X-NotificationClass", "2")
         webservice.putheader("X-WindowsPhone-Target", "toast")
-        webservice.putheader("Content-length", "%d" % len(request))
+        webservice.putheader("Content-length", "{:d}".format(len(request)))
         webservice.endheaders()
         webservice.send(request)
         webservice.close()

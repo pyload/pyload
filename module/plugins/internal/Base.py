@@ -115,7 +115,7 @@ class Base(Plugin):
         except Exception:
             pass
 
-        log("%(plugintype)s %(pluginname)s[%(id)s]: %(msg)s" %
+        log("{plugintype} {pluginname}[{id}]: {msg}" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,
              'id': self.pyfile.id,
@@ -190,7 +190,7 @@ class Base(Plugin):
         else:
             name = decode(self.pyfile.name)
 
-        self.log_info(_("Link name: %s") % name)
+        self.log_info(_("Link name: {}").format(name))
 
     def _update_size(self):
         size = self.info.get('size')
@@ -203,7 +203,7 @@ class Base(Plugin):
 
         if size:
             self.log_info(
-                _("Link size: %s (%s bytes)") %
+                _("Link size: {} ({} bytes)") %
                 (format_size(size), size))
         else:
             self.log_info(_("Link size: N/D"))
@@ -227,8 +227,8 @@ class Base(Plugin):
 
         self.info.update(new_info)
 
-        self.log_debug("Link info: %s" % self.info)
-        self.log_debug("Previous link info: %s" % old_info)
+        self.log_debug("Link info: {}".format(self.info))
+        self.log_debug("Previous link info: {}".format(old_info))
 
         self.sync_info()
 
@@ -302,8 +302,8 @@ class Base(Plugin):
     def set_reconnect(self, reconnect):
         if self.pyload.config.get('reconnect', 'activated'):
             reconnect = reconnect and self.pyload.api.isTimeReconnect()
-            self.log_debug("RECONNECT%s required" % ("" if reconnect else " not"),
-                           "Previous wantReconnect: %s" % self.wantReconnect)
+            self.log_debug("RECONNECT{} required".format("" if reconnect else " not",
+                           "Previous wantReconnect: {}".format(self.wantReconnect)))
             self.wantReconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):
@@ -321,8 +321,8 @@ class Base(Plugin):
         old_wait_until = self.pyfile.waitUntil
         new_wait_until = time.time() + wait_time + float(not strict)
 
-        self.log_debug("WAIT set to timestamp %f" % new_wait_until,
-                       "Previous waitUntil: %f" % old_wait_until)
+        self.log_debug("WAIT set to timestamp {}".format(new_wait_until),
+                       "Previous waitUntil: {}".format(old_wait_until))
 
         self.pyfile.waitUntil = new_wait_until
         return True
@@ -350,7 +350,7 @@ class Base(Plugin):
         status = self.pyfile.status  # @NOTE: Recheck in 0.4.10
         self.pyfile.setStatus("waiting")
 
-        self.log_info(_("Waiting %s...") % format_time(wait_time))
+        self.log_info(_("Waiting {}...").format(format_time(wait_time)))
 
         if self.wantReconnect:
             self.log_info(_("Requiring reconnection..."))
@@ -402,10 +402,9 @@ class Base(Plugin):
         raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
     def error(self, msg="", type=_("Parse")):
-        type = _("%s error") % type.strip(
-        ).capitalize() if type else _("Unknown")
-        msg = _("%(type)s: %(msg)s | Plugin may be out of date"
-                % {'type': type, 'msg': msg or self.pyfile.error})
+        type = _("{} error").format(type.strip(
+        ).capitalize() if type else _("Unknown"))
+        msg = _("{type}: {msg} | Plugin may be out of date").format(**{'type': type, 'msg': msg or self.pyfile.error})
 
         self.fail(msg)
 
@@ -441,7 +440,7 @@ class Base(Plugin):
             if self.premium:
                 self.restart_free = True
             else:
-                self.fail("%s | %s" % (msg, _("Url was already processed as free")))
+                self.fail("{} | {}".format(msg, _("Url was already processed as free")))
 
         self.req.clearCookies()
 
@@ -484,7 +483,7 @@ class Base(Plugin):
 
         if not urlparse.urlparse(url).scheme:
             url_p = urlparse.urlparse(baseurl)
-            baseurl = "%s://%s" % (url_p.scheme, url_p.netloc)
+            baseurl = "{}://{}".format(url_p.scheme, url_p.netloc)
             url = urlparse.urljoin(baseurl, url)
 
         return fixurl(url, unquote)

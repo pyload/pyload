@@ -47,10 +47,10 @@ class SqlaNamespaceManager(OpenResourceNamespaceManager):
         elif data_dir:
             self.lock_dir = data_dir + "/container_db_lock"
         if self.lock_dir:
-            verify_directory(self.lock_dir)            
+            verify_directory(self.lock_dir)
 
         self.bind = self.__class__.binds.get(str(bind.url), lambda: bind)
-        self.table = self.__class__.tables.get('%s:%s' % (bind.url, table.name),
+        self.table = self.__class__.tables.get('{}:{}'.format(bind.url, table.name),
                                                lambda: table)
         self.hash = {}
         self._is_new = False
@@ -61,7 +61,7 @@ class SqlaNamespaceManager(OpenResourceNamespaceManager):
 
     def get_creation_lock(self, key):
         return file_synchronizer(
-            identifier ="databasecontainer/funclock/%s" % self.namespace,
+            identifier ="databasecontainer/funclock/{}".format(self.namespace,)
             lock_dir=self.lock_dir)
 
     def do_open(self, flags):

@@ -1,21 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: RaNaN
-"""
 
 from os import remove, fsync
 from os.path import dirname
@@ -25,8 +12,8 @@ from logging import getLogger
 
 import pycurl
 
-from HTTPChunk import ChunkInfo, HTTPChunk
-from HTTPRequest import BadHeader
+from .HTTPChunk import ChunkInfo, HTTPChunk
+from .HTTPRequest import BadHeader
 
 from module.plugins.Plugin import Abort
 from module.utils import save_join, fs_encode
@@ -85,7 +72,7 @@ class HTTPDownload():
     @property
     def percent(self):
         if not self.size: return 0
-        return (self.arrived * 100) / self.size
+        return (self.arrived * 100) // self.size
 
     def _copyChunks(self):
         init = fs_encode(self.info.getChunkName(0)) #initial chunk name
@@ -96,7 +83,7 @@ class HTTPDownload():
                 #input file
                 fo.seek(
                     self.info.getChunkRange(i - 1)[1] + 1) #seek to beginning of chunk, to get rid of overlapping chunks
-                fname = fs_encode("%s.chunk%d" % (self.filename, i))
+                fname = fs_encode("{}.chunk{:d}".format(self.filename, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
                 while True: #copy in chunks, consumes less memory
@@ -127,7 +114,7 @@ class HTTPDownload():
 
         try:
             self._download(chunks, resume)
-        except pycurl.error, e:
+        except pycurl.error as e:
             #code 33 - no resume
             code = e.args[0]
             if code == 33:
@@ -150,7 +137,7 @@ class HTTPDownload():
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.addChunk("%s.chunk0" % self.filename, (0, 0)) #create an initial entry
+            self.info.addChunk("{}.chunk0".format(self.filename), (0, 0)) #create an initial entry)
 
         self.chunks = []
 
@@ -212,8 +199,8 @@ class HTTPDownload():
                     chunk = self.findChunk(c)
                     try: # check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except BadHeader, e:
-                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                    except BadHeader as e:
+                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -226,13 +213,13 @@ class HTTPDownload():
                     if errno != 23 or "0 !=" not in msg:
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
-                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(ex)))
+                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, str(ex)))
                         continue
 
                     try: # check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
-                    except BadHeader, e:
-                        self.log.debug("Chunk %d failed: %s" % (chunk.id + 1, str(e)))
+                    except BadHeader as e:
+                        self.log.debug("Chunk {:d} failed: {}".format(chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
                     else:
@@ -242,7 +229,7 @@ class HTTPDownload():
                     # check if init is not finished so we reset download connections
                     # note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunksDone:
-                        self.log.error(_("Download chunks failed, fallback to single connection | %s" % (str(ex))))
+                        self.log.error(_("Download chunks failed, fallback to single connection | {}".format(str(ex))))
 
                         #list of chunks to clean and remove
                         to_clean = filter(lambda x: x is not init, self.chunks)
@@ -254,7 +241,7 @@ class HTTPDownload():
                         #let first chunk load the rest and update the info file
                         init.resetRange()
                         self.info.clear()
-                        self.info.addChunk("%s.chunk0" % self.filename, (0, self.size))
+                        self.info.addChunk("{}.chunk0".format(self.filename, (0, self.size)))
                         self.info.save()
                     elif failed:
                         raise ex
@@ -306,8 +293,8 @@ class HTTPDownload():
     def closeChunk(self, chunk):
         try:
             self.m.remove_handle(chunk.c)
-        except pycurl.error, e:
-            self.log.debug("Error removing chunk: %s" % str(e))
+        except pycurl.error as e:
+            self.log.debug("Error removing chunk: {}".format(str(e)))
         finally:
             chunk.close()
 
@@ -324,17 +311,3 @@ class HTTPDownload():
             del self.cj
         if hasattr(self, "info"):
             del self.info
-
-if __name__ == "__main__":
-    url = "http://speedtest.netcologne.de/test_100mb.bin"
-
-    from Bucket import Bucket
-
-    bucket = Bucket()
-    bucket.setRate(200 * 1024)
-    bucket = None
-
-    print "starting"
-
-    dwnld = HTTPDownload(url, "test_100mb.bin", bucket=bucket)
-    dwnld.download(chunks=3, resume=True)

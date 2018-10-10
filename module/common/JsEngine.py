@@ -1,21 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: RaNaN
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
 
 from imp import find_module
 from os.path import join, exists
@@ -40,7 +26,7 @@ if not ENGINE:
         if out.strip() == "42":
             ENGINE = "js2py"
         JS2PY = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -54,7 +40,7 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "js"
         JS = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -62,7 +48,7 @@ if not ENGINE or DEBUG:
         find_module("PyV8")
         ENGINE = "pyv8"
         PYV8 = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -75,7 +61,7 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "node"
         NODE = True
-    except:
+    except Exception:
         pass
 
 if not ENGINE or DEBUG:
@@ -101,7 +87,7 @@ if not ENGINE or DEBUG:
         if out.strip() == "42":
             ENGINE = "rhino"
         RHINO = True
-    except:
+    except Exception:
         pass
 
 class JsEngine():
@@ -141,23 +127,23 @@ class JsEngine():
             results = []
             if PYV8:
                 res = self.eval_pyv8(script)
-                print "PyV8:", res
+                print("PyV8:", res)
                 results.append(res)
             if JS2PY:
                 res = self.eval_js2py(script)
-                print "js2py:", res
+                print("js2py:", res)
                 results.append(res)
             if JS:
                 res = self.eval_js(script)
-                print "JS:", res
+                print("JS:", res)
                 results.append(res)
             if NODE:
                 res = self.eval_node(script)
-                print "NODE:", res
+                print("NODE:", res)
                 results.append(res)
             if RHINO:
                 res = self.eval_rhino(script)
-                print "Rhino:", res
+                print("Rhino:", res)
                 results.append(res)
 
             warning = False
@@ -166,7 +152,7 @@ class JsEngine():
                     if x != y:
                         warning = True
 
-            if warning: print "### WARNING ###: Different results"
+            if warning: print("### WARNING ###: Different results")
 
             return results[0]
 
@@ -176,26 +162,26 @@ class JsEngine():
         return rt.eval(script)
 
     def eval_js(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_js2py(self, script):
-        script = "(eval(unescape('%s'))).toString()" %  quote(script)
+        script = "(eval(unescape('{}'))).toString()".format( quote(script))
         res = js2py.eval_js(script).strip()
         return res
 
     def eval_node(self, script):
-        script = "console.log(eval(unescape('%s')))" % quote(script)
+        script = "console.log(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["node", "-e", script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
-        script = "print(eval(unescape('%s')))" % quote(script)
+        script = "print(eval(unescape('{}')))".format(quote(script))
         p = subprocess.Popen(["java", "-cp", path, "org.mozilla.javascript.tools.shell.Main", "-e", script],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=-1)
         out, err = p.communicate()
@@ -205,8 +191,3 @@ class JsEngine():
     def error(self):
         return _("No js engine detected, please install either js2py, Spidermonkey, ossp-js, pyv8, nodejs or rhino")
 
-if __name__ == "__main__":
-    js = JsEngine()
-
-    test = u'"ü"+"ä"'
-    js.eval(test)

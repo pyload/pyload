@@ -102,7 +102,7 @@ class YoutubeComFolder(Crypter):
             if channel:
                 playlists = self.get_playlists(channel['id'])
                 self.log_debug(
-                    "%s playlist\s found on channel \"%s\"" %
+                    "{} playlist\s found on channel \"{}\"" %
                     (len(playlists), channel['title']))
 
                 relatedplaylist = dict(
@@ -111,7 +111,7 @@ class YoutubeComFolder(Crypter):
                     p_id in channel['relatedPlaylists'].items())
 
                 self.log_debug(
-                    "Channel's related playlists found = %s" %
+                    "Channel's related playlists found = {}" %
                     relatedplaylist.keys())
 
                 relatedplaylist['uploads']['title'] = "Unplaylisted videos"
@@ -143,7 +143,7 @@ class YoutubeComFolder(Crypter):
                 p['channelTitle'],
                 p_name)
             self.log_debug(
-                "%s video\s found on playlist \"%s\"" %
+                "{} video\s found on playlist \"{}\"" %
                 (len(p_videos), p_name))
 
             if not p_videos:
@@ -152,12 +152,12 @@ class YoutubeComFolder(Crypter):
                 p_urls = [urlize(v_id)
                           for v_id in p_videos if v_id not in addedvideos]
                 self.log_debug(
-                    "%s video\s available on playlist \"%s\" after duplicates cleanup" %
+                    "{} video\s available on playlist \"{}\" after duplicates cleanup" %
                     (len(p_urls), p_name))
             else:
                 p_urls = map(urlize, p_videos)
 
-            #: Folder is NOT recognized by pyload 0.4.9!
+            #: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_urls, p_folder))
 
             addedvideos.extend(p_videos)

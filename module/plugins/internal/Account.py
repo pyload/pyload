@@ -52,7 +52,7 @@ class Account(Plugin):
 
         if self.info['login']['timestamp'] == 0 or \
                                 self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time():
-            self.log_debug("Reached login timeout for user `%s`" % self.user)
+            self.log_debug("Reached login timeout for user `{}`".format(self.user))
             return False
         else:
             return True
@@ -76,7 +76,7 @@ class Account(Plugin):
         except Exception:
             pass
 
-        log("%(plugintype)s %(pluginname)s: %(msg)s" %
+        log("{plugintype} {pluginname}: {msg}" %
             {'plugintype': plugintype.upper(),
              'pluginname': pluginname,
              'msg': msg})
@@ -98,9 +98,9 @@ class Account(Plugin):
 
     def login(self):
         if not self.req:
-            self.log_info(_("Login user `%s`...") % self.user)
+            self.log_info(_("Login user `{}`...").format(self.user))
         else:
-            self.log_info(_("Relogin user `%s`...") % self.user)
+            self.log_info(_("Relogin user `{}`...").format(self.user))
             self.clean()
 
         self.req = self.pyload.requestFactory.getRequest(
@@ -118,7 +118,7 @@ class Account(Plugin):
                 self.info['data'])
 
         except Skip as e:
-            self.log_warning(_("Skipped login user `%s`") % self.user, e)
+            self.log_warning(_("Skipped login user `{}`").format(self.user), e)
             self.info['login']['valid'] = True
 
             new_timeout = timestamp - self.info['login']['timestamp']
@@ -126,7 +126,7 @@ class Account(Plugin):
                 self.timeout = new_timeout
 
         except Exception as e:
-            self.log_error(_("Could not login user `%s`") % self.user, e)
+            self.log_error(_("Could not login user `{}`").format(self.user), e)
             self.info['login']['valid'] = False
 
         else:
@@ -205,14 +205,14 @@ class Account(Plugin):
 
         if refresh and self.info['login']['valid']:
             self.log_info(
-                _("Grabbing account info for user `%s`...") %
+                _("Grabbing account info for user `{}`...") %
                 self.user)
             self.info = self._grab_info()
 
             self.syncback()
 
             self.log_debug(
-                "Account info for user `%s`: %s" %
+                "Account info for user `{}`: {}" %
                 (self.user, self.info))
 
         return self.info
@@ -237,7 +237,7 @@ class Account(Plugin):
 
         except Exception as e:
             self.log_warning(
-                _("Error loading info for user `%s`") %
+                _("Error loading info for user `{}`") %
                 self.user, e)
 
         finally:
@@ -289,11 +289,11 @@ class Account(Plugin):
 
     @lock
     def add(self, user, password=None, options={}):
-        self.log_info(_("Adding user `%s`...") % (user[:3] + "*******"))
+        self.log_info(_("Adding user `{}`...").format(user[:3] + "*******"))
 
         if user in self.accounts:
             self.log_error(
-                _("Error adding user `%s`") %
+                _("Error adding user `{}`") %
                 user, _("User already exists"))
             return False
 
@@ -321,7 +321,7 @@ class Account(Plugin):
         Updates account and return true if anything changed
         """
         if user in self.accounts:
-            self.log_info(_("Updating account info for user `%s`...") % user)
+            self.log_info(_("Updating account info for user `{}`...").format(user))
 
             u = self.accounts[user]
             if password:
@@ -337,7 +337,7 @@ class Account(Plugin):
 
     @lock
     def removeAccount(self, user):
-        self.log_info(_("Removing user `%s`...") % user)
+        self.log_info(_("Removing user `{}`...").format(user))
         self.accounts.pop(user, None)
         if user is self.user:
             self.choose()
@@ -364,18 +364,16 @@ class Account(Plugin):
                         continue
 
                 except Exception:
-                    self.log_warning(_("Invalid time format `%s` for account `%s`, use 1:22-3:44")
-                                     % (user, time_data))
+                    self.log_warning(_("Invalid time format `{}` for account `{}`, use 1:22-3:44").format(user, time_data))
 
             if data['trafficleft'] == 0:
                 self.log_warning(
-                    _("Not using account `%s` because the account has no traffic left") %
-                    user)
+                    _("Not using account `{}` because the account has no traffic left").format(user))
                 continue
 
             if time.time() > data['validuntil'] > 0:
                 self.log_warning(
-                    _("Not using account `%s` because the account has expired") %
+                    _("Not using account `{}` because the account has expired") %
                     user)
                 continue
 
@@ -411,7 +409,7 @@ class Account(Plugin):
 
         elif user not in self.accounts:
             self.log_error(
-                _("Error choosing user `%s`") %
+                _("Error choosing user `{}`") %
                 user, _("User does not exists"))
             return False
 
@@ -436,11 +434,11 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  # @NOTE: Returns kilobytes only in 0.4.9
-        self.log_debug("Size: %s" % size,
-                       "Unit: %s" % (unit or "N/D"))
+    def parse_traffic(self, size, unit=None):  # @NOTE: Returns kilobytes only in 0.5.0
+        self.log_debug("Size: {}".format(size),
+                       "Unit: {}".format(unit or "N/D"))
         # @TODO: Remove `/ 1024` in 0.4.10
-        return parse_size(size, unit or "byte") / 1024
+        return parse_size(size, unit or "byte") // 1024
 
     def fail_login(self, msg=_("Login handshake has failed")):
         return self.fail(msg)

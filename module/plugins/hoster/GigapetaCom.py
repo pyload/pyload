@@ -33,7 +33,7 @@ class GigapetaCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         captcha_key = str(random.randint(1, 100000000))
-        captcha_url = "http://gigapeta.com/img/captcha.gif?x=%s" % captcha_key
+        captcha_url = "http://gigapeta.com/img/captcha.gif?x={}".format(captcha_key)
 
         self.check_errors()
 

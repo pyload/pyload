@@ -14,13 +14,13 @@ Encoding basic Python object hierarchies::
     >>> import simplejson as json
     >>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])
     '["foo", {"bar": ["baz", null, 1.0, 2]}]'
-    >>> print json.dumps("\"foo\bar")
+    >>> print(json.dumps("\"foo\bar"))
     "\"foo\bar"
-    >>> print json.dumps(u'\u1234')
+    >>> print(json.dumps(u'\u1234'))
     "\u1234"
-    >>> print json.dumps('\\')
+    >>> print(json.dumps('\\'))
     "\\"
-    >>> print json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True)
+    >>> print(json.dumps({"c": 0, "b": 0, "a": 0}, sort_keys=True))
     {"a": 0, "b": 0, "c": 0}
     >>> from StringIO import StringIO
     >>> io = StringIO()
@@ -38,7 +38,7 @@ Pretty printing::
 
     >>> import simplejson as json
     >>> s = json.dumps({'4': 5, '6': 7}, sort_keys=True, indent='    ')
-    >>> print '\n'.join([l.rstrip() for l in  s.splitlines()])
+    >>> print('\n'.join([l.rstrip() for l in  s.splitlines()]))
     {
         "4": 5,
         "6": 7
@@ -97,7 +97,7 @@ Using simplejson.tool from the shell to validate and pretty-print::
     $ echo '{ 1.2:3.4}' | python -m simplejson.tool
     Expecting property name: line 1 column 2 (char 2)
 """
-from __future__ import absolute_import
+
 __version__ = '2.2.1'
 __all__ = [
     'dump', 'dumps', 'load', 'loads',
@@ -190,7 +190,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
@@ -269,7 +269,7 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     If *namedtuple_as_object* is true (default: ``True``),
     :class:`tuple` subclasses with ``_asdict()`` methods will be encoded
     as JSON objects.
-    
+
     If *tuple_as_array* is true (default: ``True``),
     :class:`tuple` (and subclasses) will be encoded as JSON arrays.
 
@@ -439,7 +439,7 @@ def _toggle_speedups(enabled):
     if enabled:
         dec.scanstring = dec.c_scanstring or dec.py_scanstring
         enc.c_make_encoder = c_make_encoder
-        enc.encode_basestring_ascii = (enc.c_encode_basestring_ascii or 
+        enc.encode_basestring_ascii = (enc.c_encode_basestring_ascii or
             enc.py_encode_basestring_ascii)
         scan.make_scanner = scan.c_make_scanner or scan.py_make_scanner
     else:

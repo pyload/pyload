@@ -39,7 +39,7 @@ class DailymotionComFolder(Crypter):
         return name, owner
 
     def _get_playlists(self, user_id, page=1):
-        ref = "user/%s/playlists" % user_id
+        ref = "user/{}/playlists".format(user_id)
         data = {'fields': "id", 'page': page, 'limit': 100}
         user = self.api_response(ref, data)
 
@@ -58,7 +58,7 @@ class DailymotionComFolder(Crypter):
                 for id in self._get_playlists(user_id)]
 
     def _get_videos(self, id, page=1):
-        ref = "playlist/%s/videos" % id
+        ref = "playlist/{}/videos".format(id)
         data = {'fields': "url", 'page': page, 'limit': 100}
         playlist = self.api_response(ref, data)
 
@@ -87,7 +87,7 @@ class DailymotionComFolder(Crypter):
             self.log_debug("Url recognized as Channel")
             playlists = self.get_playlists(m_id)
             self.log_debug(
-                "%s playlist\s found on channel \"%s\"" %
+                "{} playlist\s found on channel \"{}\"" %
                 (len(playlists), m_id))
 
         if not playlists:
@@ -102,7 +102,7 @@ class DailymotionComFolder(Crypter):
                 p_owner,
                 p_name)
             self.log_debug(
-                "%s video\s found on playlist \"%s\"" %
+                "{} video\s found on playlist \"{}\"" %
                 (len(p_videos), p_name))
-            # @NOTE: Folder is NOT recognized by pyload 0.4.9!
+            # @NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

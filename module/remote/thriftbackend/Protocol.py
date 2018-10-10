@@ -17,7 +17,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
         str = self.trans.readAll(len)
         try:
             str = str.decode("utf8", "ignore")
-        except:
+        except Exception:
             pass
 
         return str

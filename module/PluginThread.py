@@ -1,23 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#@author: RaNaN
 
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-    @author: RaNaN
-"""
-from __future__ import absolute_import
 
 from Queue import Queue
 from threading import Thread
@@ -54,7 +39,7 @@ class PluginThread(Thread):
         :return:
         """
 
-        dump_name = "debug_%s_%s.zip" % (pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
+        dump_name = "debug_{}_{}.zip".format(pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S"))
         dump = self.getDebugDump(pyfile)
 
         try:
@@ -66,7 +51,7 @@ class PluginThread(Thread):
                 try:
                     # avoid encoding errors
                     zip.write(join("tmp", pyfile.pluginname, f), save_join(pyfile.pluginname, f))
-                except:
+                except Exception:
                     pass
 
             info = zipfile.ZipInfo(save_join(pyfile.pluginname, "debug_Report.txt"), gmtime())
@@ -79,17 +64,17 @@ class PluginThread(Thread):
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
-            self.m.log.debug("Error creating zip file: %s" % e)
+            self.m.log.debug("Error creating zip file: {}".format(e))
 
             dump_name = dump_name.replace(".zip", ".txt")
             f = open(dump_name, "wb")
             f.write(dump)
             f.close()
 
-        self.m.core.log.info("Debug Report written to %s" % dump_name)
+        self.m.core.log.info("Debug Report written to {}".format(dump_name))
 
     def getDebugDump(self, pyfile):
-        dump = "pyLoad %s Debug Report of %s %s \n\nTRACEBACK:\n %s \n\nFRAMESTACK:\n" % (
+        dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
             self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
 
         tb = exc_info()[2]
@@ -99,12 +84,12 @@ class PluginThread(Thread):
             tb = tb.tb_next
 
         for frame in stack[1:]:
-            dump += "\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
+            dump += "\nFrame {} in {} at line {}\n".format(frame.f_code.co_name,
                                                        frame.f_code.co_filename,
                                                        frame.f_lineno)
 
             for key, value in frame.f_locals.items():
-                dump += "\t%20s = " % key
+                dump += "\t%20s = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
@@ -119,7 +104,7 @@ class PluginThread(Thread):
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
             if not name.endswith("__") and type(attr) != MethodType:
-                dump += "\t%20s = " % name
+                dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
@@ -130,7 +115,7 @@ class PluginThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and type(attr) != MethodType:
-                dump += "\t%20s = " % name
+                dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
@@ -181,18 +166,18 @@ class DownloadThread(PluginThread):
                 #this pyfile was deleted while queueing
 
                 pyfile.plugin.checkForSameFiles(starting=True)
-                self.m.log.info(_("Download starts: %s" % pyfile.name))
+                self.m.log.info(_("Download starts: {}".format(pyfile.name)))
 
                 # start download
                 self.m.core.hookManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
-                self.m.log.info(_("Download finished: %s") % pyfile.name)
+                self.m.log.info(_("Download finished: {}").format(pyfile.name))
                 self.m.core.hookManager.downloadFinished(pyfile)
                 self.m.core.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
-                self.m.log.error(_("Plugin %s is missing a function.") % pyfile.pluginname)
+                self.m.log.error(_("Plugin {} is missing a function.").format(pyfile.pluginname))
                 pyfile.setStatus("failed")
                 pyfile.error = "Plugin does not work"
                 self.clean(pyfile)
@@ -200,8 +185,8 @@ class DownloadThread(PluginThread):
 
             except Abort:
                 try:
-                    self.m.log.info(_("Download aborted: %s") % pyfile.name)
-                except:
+                    self.m.log.info(_("Download aborted: {}").format(pyfile.name))
+                except Exception:
                     pass
 
                 pyfile.setStatus("aborted")
@@ -220,7 +205,7 @@ class DownloadThread(PluginThread):
 
             except Retry as e:
                 reason = e.args[0]
-                self.m.log.info(_("Download restarted: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": reason})
+                self.m.log.info(_("Download restarted: {name} | {msg}").format(**{"name": pyfile.name, "msg": reason}))
                 self.queue.put(pyfile)
                 continue
 
@@ -229,13 +214,13 @@ class DownloadThread(PluginThread):
 
                 if msg == "offline":
                     pyfile.setStatus("offline")
-                    self.m.log.warning(_("Download is offline: %s") % pyfile.name)
+                    self.m.log.warning(_("Download is offline: {}").format(pyfile.name))
                 elif msg == "temp. offline":
                     pyfile.setStatus("temp. offline")
-                    self.m.log.warning(_("Download is temporary offline: %s") % pyfile.name)
+                    self.m.log.warning(_("Download is temporary offline: {}").format(pyfile.name))
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": msg})
+                    self.m.log.warning(_("Download failed: {name} | {msg}").format(**{"name": pyfile.name, "msg": msg}))
                     pyfile.error = msg
 
                 self.m.core.hookManager.downloadFailed(pyfile)
@@ -249,7 +234,7 @@ class DownloadThread(PluginThread):
                     code = 0
                     msg = e.args
 
-                self.m.log.debug("pycurl exception %s: %s" % (code, msg))
+                self.m.log.debug("pycurl exception {}: {}".format(code, msg))
 
                 if code in (7, 18, 28, 52, 56):
                     self.m.log.warning(_("Couldn't connect to host or connection reset, waiting 1 minute and retry."))
@@ -263,7 +248,7 @@ class DownloadThread(PluginThread):
                             break
 
                     if pyfile.abort:
-                        self.m.log.info(_("Download aborted: %s") % pyfile.name)
+                        self.m.log.info(_("Download aborted: {}").format(pyfile.name))
                         pyfile.setStatus("aborted")
 
                         self.clean(pyfile)
@@ -274,7 +259,7 @@ class DownloadThread(PluginThread):
 
                 else:
                     pyfile.setStatus("failed")
-                    self.m.log.error("pycurl error %s: %s" % (code, msg))
+                    self.m.log.error("pycurl error {}: {}".format(code, msg))
                     if self.m.core.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)
@@ -288,7 +273,7 @@ class DownloadThread(PluginThread):
                 pyfile.setStatus("skipped")
 
                 self.m.log.info(
-                    _("Download skipped: %(name)s due to %(plugin)s") % {"name": pyfile.name, "plugin": e.message})
+                    _("Download skipped: {name} due to {plugin}").format(**{"name": pyfile.name, "plugin": e.message}))
 
                 self.clean(pyfile)
 
@@ -302,7 +287,7 @@ class DownloadThread(PluginThread):
 
             except Exception as e:
                 pyfile.setStatus("failed")
-                self.m.log.warning(_("Download failed: %(name)s | %(msg)s") % {"name": pyfile.name, "msg": str(e)})
+                self.m.log.warning(_("Download failed: {name} | {msg}").format(**{"name": pyfile.name, "msg": str(e)}))
                 pyfile.error = str(e)
 
                 if self.m.core.debug:
@@ -318,7 +303,7 @@ class DownloadThread(PluginThread):
                 pyfile.checkIfProcessed()
                 exc_clear()
 
-            
+
             #pyfile.plugin.req.clean()
 
             self.active = False
@@ -360,11 +345,11 @@ class DecrypterThread(PluginThread):
         retry = False
 
         try:
-            self.m.log.info(_("Decrypting starts: %s") % self.active.name)
+            self.m.log.info(_("Decrypting starts: {}").format(self.active.name))
             self.active.plugin.preprocessing(self)
 
         except NotImplementedError:
-            self.m.log.error(_("Plugin %s is missing a function.") % self.active.pluginname)
+            self.m.log.error(_("Plugin {} is missing a function.").format(self.active.pluginname))
             return
 
         except Fail as e:
@@ -372,28 +357,28 @@ class DecrypterThread(PluginThread):
 
             if msg == "offline":
                 self.active.setStatus("offline")
-                self.m.log.warning(_("Download is offline: %s") % self.active.name)
+                self.m.log.warning(_("Download is offline: {}").format(self.active.name))
             else:
                 self.active.setStatus("failed")
-                self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": msg})
+                self.m.log.error(_("Decrypting failed: {name} | {msg}").format(**{"name": self.active.name, "msg": msg}))
                 self.active.error = msg
 
             return
 
         except Abort:
-            self.m.log.info(_("Download aborted: %s") % pyfile.name)
+            self.m.log.info(_("Download aborted: {}").format(pyfile.name))
             pyfile.setStatus("aborted")
 
             return
 
         except Retry:
-            self.m.log.info(_("Retrying %s") % self.active.name)
+            self.m.log.info(_("Retrying {}").format(self.active.name))
             retry = True
             return self.run()
 
         except Exception as e:
             self.active.setStatus("failed")
-            self.m.log.error(_("Decrypting failed: %(name)s | %(msg)s") % {"name": self.active.name, "msg": str(e)})
+            self.m.log.error(_("Decrypting failed: {name} | {msg}").format(**{"name": self.active.name, "msg": str(e)}))
             self.active.error = str(e)
 
             if self.m.core.debug:
@@ -462,7 +447,7 @@ class HookThread(PluginThread):
                 #dirty method to filter out exceptions
                 if "unexpected keyword argument 'thread'" not in e.args[0]:
                     raise
-                
+
                 del self.kwargs["thread"]
                 self.f(*self.args, **self.kwargs)
         finally:
@@ -531,7 +516,7 @@ class InfoThread(PluginThread):
 
             packs = parseNames([(name, url) for name, x, y, url in self.cache])
 
-            self.m.log.debug("Fetched and generated %d packages" % len(packs))
+            self.m.log.debug("Fetched and generated {:d} packages".format(len(packs)))
 
             for k, v in packs:
                 self.m.core.api.addPackage(k, v)
@@ -546,7 +531,7 @@ class InfoThread(PluginThread):
                 #attach container content
                 try:
                     data = self.decryptContainer(name, url)
-                except:
+                except Exception:
                     print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
@@ -618,11 +603,11 @@ class InfoThread(PluginThread):
                     process.append(url)
 
             if result:
-                self.m.log.debug("Fetched %d values from cache for %s" % (len(result), pluginname))
+                self.m.log.debug("Fetched {:d} values from cache for {}".format(len(result), pluginname))
                 cb(pluginname, result)
 
             if process:
-                self.m.log.debug("Run Info Fetching for %s" % pluginname)
+                self.m.log.debug("Run Info Fetching for {}".format(pluginname))
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
                     if not type(result) == list: result = [result]
@@ -632,9 +617,9 @@ class InfoThread(PluginThread):
 
                     cb(pluginname, result)
 
-            self.m.log.debug("Finished Info Fetching for %s" % pluginname)
+            self.m.log.debug("Finished Info Fetching for {}".format(pluginname))
         except Exception as e:
-            self.m.log.warning(_("Info Fetching for %(name)s failed | %(err)s") %
+            self.m.log.warning(_("Info Fetching for {name} failed | {err}") %
                                {"name": pluginname, "err": str(e)})
             if self.m.core.debug:
                 print_exc()
@@ -649,7 +634,7 @@ class InfoThread(PluginThread):
         data = []
         # only works on container plugins
 
-        self.m.log.debug("Pre decrypting %s with %s" % (url, plugin))
+        self.m.log.debug("Pre decrypting {} with {}".format(url, plugin))
 
         # dummy pyfile
         pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
@@ -668,10 +653,10 @@ class InfoThread(PluginThread):
 
             data = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
 
-            self.m.log.debug("Got %d links." % len(data))
+            self.m.log.debug("Got {:d} links.".format(len(data)))
 
         except Exception as e:
-            self.m.log.debug("Pre decrypting error: %s" % str(e))
+            self.m.log.debug("Pre decrypting error: {}".format(str(e)))
         finally:
             pyfile.release()
 

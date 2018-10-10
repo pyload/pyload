@@ -28,10 +28,10 @@ class MegaCoNz(Account):
             premium = res.get('utype', 0) > 0
             if premium:
                 validuntil = res.get('suntil', None)
-                trafficleft = (res.get('mxfer', 0) - res.get('caxfer', 0) - res.get('csxfer', 0)) / 1024
+                trafficleft = (res.get('mxfer', 0) - res.get('caxfer', 0) - res.get('csxfer', 0)) // 1024
 
             # if res['rtt']:
-            #     self.log_debug("Tranfare history:%s" % res['tah'])
+            #     self.log_debug("Tranfare history:{}".format(res['tah']))
 
         return {'validuntil': validuntil,
                 'trafficleft': trafficleft,
@@ -80,7 +80,7 @@ class MegaCoNz(Account):
             rsa_private_key = [long(0), long(0), long(0), long(0)]
 
             for i in range(4):
-                l = ((ord(privk[0]) * 256 + ord(privk[1]) + 7) / 8) + 2
+                l = ((ord(privk[0]) * 256 + ord(privk[1]) + 7) // 8) + 2
                 rsa_private_key[i] = self.mpi_to_int(privk[:l])
                 privk = privk[l:]
 
@@ -92,8 +92,8 @@ class MegaCoNz(Account):
                  rsa_private_key[2],
                  rsa_private_key[0],
                  rsa_private_key[1]))
-            sid = "%x" % rsa.key._decrypt(encrypted_sid)
-            sid = '0' * (-len(sid) % 2) + sid
+            sid = "{:x}".format(rsa.key._decrypt(encrypted_sid))
+            sid = '0' * (-len(sid).format(2)) + sid
             sid = "".join(chr(int(sid[i: i + 2], 16))
                           for i in range(0, len(sid), 2))
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
@@ -134,5 +134,5 @@ class MegaCoNz(Account):
 
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
-        return long("".join("%02x" % ord(s[2:][x])
+        return long("".join("%02x".format(ord(s[2:][x]))
                            for x in range(0, len(s[2:]))), 16)

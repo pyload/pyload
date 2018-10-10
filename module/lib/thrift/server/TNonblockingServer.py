@@ -81,11 +81,11 @@ def socket_exception(func):
 
 class Connection:
     """Basic class is represented connection.
-    
+
     It can be in state:
         WAIT_LEN --- connection is reading request len.
         WAIT_MESSAGE --- connection is reading request.
-        WAIT_PROCESS --- connection has just read whole request and 
+        WAIT_PROCESS --- connection has just read whole request and
             waits for call ready routine.
         SEND_ANSWER --- connection is sending answer string (including length
             of answer).
@@ -102,12 +102,12 @@ class Connection:
 
     def _read_len(self):
         """Reads length of request.
-        
-        It's really paranoic routine and it may be replaced by 
+
+        It's really paranoic routine and it may be replaced by
         self.socket.recv(4)."""
         read = self.socket.recv(4 - len(self.message))
         if len(read) == 0:
-            # if we read 0 bytes and self.message is empty, it means client close 
+            # if we read 0 bytes and self.message is empty, it means client close
             # connection
             if len(self.message) != 0:
                 logging.error("can't read frame size from socket")
@@ -139,7 +139,7 @@ class Connection:
         elif self.status == WAIT_MESSAGE:
             read = self.socket.recv(self.len - len(self.message))
             if len(read) == 0:
-                logging.error("can't read frame from socket (get %d of %d bytes)" %
+                logging.error("can't read frame from socket (get {:d} of {:d} bytes)" %
                     (len(self.message), self.len))
                 self.close()
                 return
@@ -162,14 +162,14 @@ class Connection:
     @locked
     def ready(self, all_ok, message):
         """Callback function for switching state and waking up main thread.
-        
+
         This function is the only function witch can be called asynchronous.
-        
+
         The ready can switch Connection to three states:
             WAIT_LEN if request was oneway.
             SEND_ANSWER if request was processed in normal way.
             CLOSED if request throws unexpected exception.
-        
+
         The one wakes up main thread.
         """
         assert self.status == WAIT_PROCESS
@@ -214,7 +214,7 @@ class Connection:
 
 class TNonblockingServer:
     """Non-blocking server."""
-    def __init__(self, processor, lsocket, inputProtocolFactory=None, 
+    def __init__(self, processor, lsocket, inputProtocolFactory=None,
             outputProtocolFactory=None, threads=10):
         self.processor = processor
         self.socket = lsocket
@@ -235,7 +235,7 @@ class TNonblockingServer:
     def prepare(self):
         """Prepares server for serve requests."""
         self.socket.listen()
-        for _ in xrange(self.threads):
+        for _ in range(self.threads):
             thread = Worker(self.tasks)
             thread.setDaemon(True)
             thread.start()
@@ -243,12 +243,12 @@ class TNonblockingServer:
 
     def wake_up(self):
         """Wake up main thread.
-        
+
         The server usualy waits in select call in we should terminate one.
         The simplest way is using socketpair.
-        
+
         Select always wait to read from the first socket of socketpair.
-        
+
         In this case, we can just write anything to the second socket from
         socketpair."""
         self._write.send('1')
@@ -265,10 +265,10 @@ class TNonblockingServer:
             if connection.is_closed():
                 del self.clients[i]
         return select.select(readable, writable, readable)
-        
+
     def handle(self):
         """Handle requests.
-       
+
         WARNING! You must call prepare BEFORE calling handle.
         """
         assert self.prepared, "You have to call prepare before handle"
@@ -276,7 +276,7 @@ class TNonblockingServer:
         for readable in rset:
             if readable == self._read.fileno():
                 # don't care i just need to clean readable flag
-                self._read.recv(1024) 
+                self._read.recv(1024)
             elif readable == self.socket.handle.fileno():
                 client = self.socket.accept().handle
                 self.clients[client.fileno()] = Connection(client, self.wake_up)
@@ -288,7 +288,7 @@ class TNonblockingServer:
                     otransport = TTransport.TMemoryBuffer()
                     iprot = self.in_protocol.getProtocol(itransport)
                     oprot = self.out_protocol.getProtocol(otransport)
-                    self.tasks.put([self.processor, iprot, oprot, 
+                    self.tasks.put([self.processor, iprot, oprot,
                                     otransport, connection.ready])
         for writeable in wset:
             self.clients[writeable].write()
@@ -298,11 +298,11 @@ class TNonblockingServer:
 
     def close(self):
         """Closes the server."""
-        for _ in xrange(self.threads):
+        for _ in range(self.threads):
             self.tasks.put([None, None, None, None, None])
         self.socket.close()
         self.prepared = False
-        
+
     def serve(self):
         """Serve forever."""
         self.prepare()

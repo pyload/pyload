@@ -42,13 +42,13 @@ class Ftp(Hoster):
                 servers = []
 
             if netloc in servers:
-                self.log_debug("Logging on to %s" % netloc)
+                self.log_debug("Logging on to {}".format(netloc))
                 self.req.addAuth(self.account.get_login('password'))
 
             else:
                 pwd = self.get_password()
                 if ':' in pwd:
-                    self.log_debug("Logging on to %s" % netloc)
+                    self.log_debug("Logging on to {}".format(netloc))
                     self.req.addAuth(pwd)
                 else:
                     self.log_debug("Using anonymous logon")
@@ -60,7 +60,7 @@ class Ftp(Hoster):
             if "530" in e.args[1]:
                 self.fail(_("Authorization required"))
             else:
-                self.fail(_("Error %d: %s") % e.args)
+                self.fail(_("Error {:d}: {}").format(e.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)

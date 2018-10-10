@@ -227,10 +227,10 @@ class TProtocolBase:
       (r_handler, w_handler, is_container) = self._TTYPE_HANDLERS[ttype]
     except IndexError:
       raise TProtocolException(type=TProtocolException.INVALID_DATA,
-                               message='Invalid field type %d' % (ttype))
+                               message='Invalid field type {:d}'.format(ttype))
     if r_handler is None:
       raise TProtocolException(type=TProtocolException.INVALID_DATA,
-                               message='Invalid field type %d' % (ttype))
+                               message='Invalid field type {:d}'.format(ttype))
     reader = getattr(self, r_handler)
     if not is_container:
       return reader()
@@ -244,13 +244,13 @@ class TProtocolBase:
     (list_type, list_len) = self.readListBegin()
     if tspec is None:
       # list values are simple types
-      for idx in xrange(list_len):
+      for idx in range(list_len):
         results.append(reader())
     else:
       # this is like an inlined readFieldByTType
       container_reader = self._TTYPE_HANDLERS[list_type][0]
       val_reader = getattr(self, container_reader)
-      for idx in xrange(list_len):
+      for idx in range(list_len):
         val = val_reader(tspec)
         results.append(val)
     self.readListEnd()
@@ -264,13 +264,13 @@ class TProtocolBase:
     (set_type, set_len) = self.readSetBegin()
     if tspec is None:
       # set members are simple types
-      for idx in xrange(set_len):
+      for idx in range(set_len):
         results.add(reader())
     else:
       container_reader = self._TTYPE_HANDLERS[set_type][0]
       val_reader = getattr(self, container_reader)
-      for idx in xrange(set_len):
-        results.add(val_reader(tspec)) 
+      for idx in range(set_len):
+        results.add(val_reader(tspec))
     self.readSetEnd()
     return results
 
@@ -279,7 +279,7 @@ class TProtocolBase:
     obj = obj_class()
     obj.read(self)
     return obj
-  
+
   def readContainerMap(self, spec):
     results = dict()
     key_ttype, key_spec = spec[0], spec[1]
@@ -289,7 +289,7 @@ class TProtocolBase:
     key_reader = getattr(self, self._TTYPE_HANDLERS[key_ttype][0])
     val_reader = getattr(self, self._TTYPE_HANDLERS[val_ttype][0])
     # list values are simple types
-    for idx in xrange(map_len):
+    for idx in range(map_len):
       if key_spec is None:
         k_val = key_reader()
       else:

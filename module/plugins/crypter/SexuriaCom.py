@@ -63,14 +63,14 @@ class SexuriaCom(Crypter):
                 re.I).group('ID')
             if id:
                 linklist.append(
-                    "http://sexuria.com/v1/Pornos_Kostenlos_liebe_%s.html" %
+                    "http://sexuria.com/v1/Pornos_Kostenlos_liebe_{}.html" %
                     id)
 
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url, re.I):
             #: Extract info from main file
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url, re.I).group('ID')
             html = self.load(
-                "http://sexuria.com/v1/Pornos_Kostenlos_info_%s.html" %
+                "http://sexuria.com/v1/Pornos_Kostenlos_info_{}.html" %
                 id)
             #: Webpage title / Package name
             titledata = re.search(self.PATTERN_TITLE, html, re.I)
@@ -81,7 +81,7 @@ class SexuriaCom(Crypter):
                 if title:
                     name = folder = title
                     self.log_debug(
-                        "Package info found, name [%s] and folder [%s]" %
+                        "Package info found, name [{}] and folder [{}]" %
                         (name, folder))
             #: Password
             pwddata = re.search(self.PATTERN_PASSWORD, html, re.I | re.S)
@@ -92,14 +92,14 @@ class SexuriaCom(Crypter):
                 if pwd and not (pwd in self.LIST_PWDIGNORE):
                     password = pwd
                     self.log_debug(
-                        "Package info found, password [%s]" %
+                        "Package info found, password [{}]" %
                         password)
 
             #: Process links (dl_link)
             html = self.load(url)
             links = re.findall(self.PATTERN_REDIRECT_LINKS, html, re.I)
             if not links:
-                self.log_error(_("Broken for link: %s") % link)
+                self.log_error(_("Broken for link: {}").format(link))
             else:
                 for link in links:
                     link = link.replace(
@@ -107,7 +107,7 @@ class SexuriaCom(Crypter):
                         "http://www.sexuria.com/")
                     finallink = self.load(link, just_header=True)['url']
                     if not finallink or ("sexuria.com/" in finallink):
-                        self.log_error(_("Broken for link: %s") % link)
+                        self.log_error(_("Broken for link: {}").format(link))
                     else:
                         linklist.append(finallink)
 
@@ -117,7 +117,7 @@ class SexuriaCom(Crypter):
         else:
             for i, link in enumerate(linklist):
                 self.log_debug(
-                    "Supported link %d/%d: %s" %
+                    "Supported link {:d}/{:d}: {}" %
                     (i + 1, len(linklist), link))
 
         #: All done, return to caller

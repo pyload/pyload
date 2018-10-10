@@ -35,7 +35,7 @@ class LuckyShareNet(SimpleHoster):
             if m is not None:
                 seconds = int(m.group(1))
                 self.log_debug(
-                    "You have to wait %d seconds between free downloads" %
+                    "You have to wait {:d} seconds between free downloads" %
                     seconds)
                 self.retry(wait=seconds)
             else:
@@ -60,7 +60,7 @@ class LuckyShareNet(SimpleHoster):
         self.captcha = ReCaptcha(pyfile)
 
         response, challenge = self.captcha.challenge()
-        rep = self.load(r'http://luckyshare.net/download/verify/challenge/%s/response/%s/hash/%s' %
+        rep = self.load(r'http://luckyshare.net/download/verify/challenge/{}/response/{}/hash/{}' %
                         (challenge, response, json_data['hash']))
 
         self.log_debug("JSON: " + rep)

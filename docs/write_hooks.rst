@@ -26,7 +26,7 @@ All Hooks should start with something like this: ::
                 __threaded__ = ["downloadFinished"]
                 __author_name__ = ("Me")
                 __author_mail__ = ("me@has-no-mail.com")
-                
+
 All meta-data is defined in the header, you need at least one option at ``__config__`` so the user can toggle your
 hook on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
 
@@ -60,10 +60,10 @@ A basic excerpt would look like: ::
         """
 
         def coreReady(self):
-            print "Yay, the core is ready let's do some work."
+            print("Yay, the core is ready let's do some work.")
 
         def downloadFinished(self, pyfile):
-            print "A Download just finished."
+            print("A Download just finished.")
 
 Another important feature to mention can be seen at the ``__threaded__`` parameter. Function names listed will be executed
 in a thread, in order to not block the main thread. This should be used for all kind of longer processing tasks.
@@ -86,13 +86,13 @@ It requires a `dict` that maps event names to function names or a `list` of func
                      "coreReady": "initialize"}
 
         def initialize(self):
-            print "Initialized."
+            print("Initialized.")
 
         def doSomeWork(self, pyfile):
-            print "This is equivalent to the above example."
+            print("This is equivalent to the above example.")
 
         def someMethod(self):
-            print "The underlying event (allDownloadsFinished) for this method is not available through the base class"
+            print("The underlying event (allDownloadsFinished) for this method is not available through the base class")
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
@@ -117,18 +117,18 @@ Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
         """
         Your Hook code here.
         """
-        
+
         @Expose
         def invoke(self, arg):
-            print "Invoked with", arg
+            print("Invoked with", arg)
 
 Thats all, it's available via the :class:`Api <module.Api.Api>` now. If you want to use it read :ref:`access_api`.
 Here is a basic example: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print client.getServices()
-    print client.call(ServiceCall("YourHook", "invoke", "an argument"))
+    print(client.getServices())
+    print(client.call(ServiceCall("YourHook", "invoke", "an argument")))
 
 Providing status information
 ----------------------------
@@ -153,10 +153,10 @@ Usable with: ::
 
     #Assuming client is a ThriftClient or Api object
 
-    print client.getAllInfo()
+    print(client.getAllInfo())
 
 Example
 -------
     Sorry but you won't find an example here ;-)
-    
+
     Look at :file:`module/plugins/hooks` and you will find plenty examples there.

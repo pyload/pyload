@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
+#@author: mkaay
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
-    @author: mkaay
-"""
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -43,7 +29,7 @@ class ConnectionManager(QWidget):
         self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
 
         connList = QListWidget()
-        
+
         new = QPushButton(_("New"))
         edit = QPushButton(_("Edit"))
         remove = QPushButton(_("Remove"))
@@ -76,13 +62,13 @@ class ConnectionManager(QWidget):
 
         mainLayout.addLayout(boxLayout)
         mainLayout.addLayout(buttonLayout)
-        
+
         buttonLayout.addWidget(new)
         buttonLayout.addWidget(edit)
         buttonLayout.addWidget(remove)
         buttonLayout.addStretch()
         buttonLayout.addWidget(connect)
-        
+
         self.setLayout(mainLayout)
 
         self.internal = checkbox
@@ -93,9 +79,9 @@ class ConnectionManager(QWidget):
         self.connList = connList
         self.edit = self.EditWindow()
         self.connectSignals()
-        
+
         self.defaultStates = {}
-    
+
     def connectSignals(self):
         self.connect(self, SIGNAL("setConnections"), self.setConnections)
         self.connect(self.new, SIGNAL("clicked()"), self.slotNew)
@@ -105,7 +91,7 @@ class ConnectionManager(QWidget):
         self.connect(self.edit, SIGNAL("save"), self.slotSave)
         self.connect(self.connList, SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
         self.connect(self.internal, SIGNAL("clicked()"), self.slotInternal)
-    
+
     def setConnections(self, connections):
         self.connList.clear()
         for conn in connections:
@@ -114,27 +100,27 @@ class ConnectionManager(QWidget):
             item.setData(Qt.UserRole, QVariant(conn))
             self.connList.addItem(item)
             if conn["default"]:
-                item.setData(Qt.DisplayRole, QVariant(_("%s (Default)") % conn["name"]))
+                item.setData(Qt.DisplayRole, QVariant(_("{} (Default)").format(conn["name"])))
                 self.connList.setCurrentItem(item)
-    
+
     def slotNew(self):
         data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":"7228", "user":"admin", "password":""}
         self.edit.setData(data)
         self.edit.show()
-    
+
     def slotEdit(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
         data = self.cleanDict(data)
         self.edit.setData(data)
         self.edit.show()
-    
+
     def slotRemove(self):
         item = self.connList.currentItem()
         data = item.data(Qt.UserRole).toPyObject()
         data = self.cleanDict(data)
         self.emit(SIGNAL("removeConnection"), data)
-    
+
     def slotConnect(self):
         if self.internal.checkState() == 2:
             data = {"type": "internal"}
@@ -144,16 +130,16 @@ class ConnectionManager(QWidget):
             data = item.data(Qt.UserRole).toPyObject()
             data = self.cleanDict(data)
             self.emit(SIGNAL("connect"), data)
-    
+
     def cleanDict(self, data):
         tmp = {}
         for k, d in data.items():
             tmp[str(k)] = d
         return tmp
-    
+
     def slotSave(self, data):
         self.emit(SIGNAL("saveConnection"), data)
-        
+
     def slotItemDoubleClicked(self, defaultItem):
         data = defaultItem.data(Qt.UserRole).toPyObject()
         self.setDefault(data, True)
@@ -170,30 +156,30 @@ class ConnectionManager(QWidget):
     def slotInternal(self):
         if self.internal.checkState() == 2:
             self.connList.clearSelection()
-    
+
     def setDefault(self, data, state):
         data = self.cleanDict(data)
         self.edit.setData(data)
         data = self.edit.getData()
         data["default"] = state
         self.edit.emit(SIGNAL("save"), data)
-    
+
     class EditWindow(QWidget):
         def __init__(self):
             QWidget.__init__(self)
 
             self.setWindowTitle(_("pyLoad ConnectionManager"))
             self.setWindowIcon(QIcon(join(pypath, "icons", "logo.png")))
-            
+
             grid = QGridLayout()
-            
+
             nameLabel = QLabel(_("Name:"))
             hostLabel = QLabel(_("Host:"))
             localLabel = QLabel(_("Local:"))
             userLabel = QLabel(_("User:"))
             pwLabel = QLabel(_("Password:"))
             portLabel = QLabel(_("Port:"))
-            
+
             name = QLineEdit()
             host = QLineEdit()
             local = QCheckBox()
@@ -202,10 +188,10 @@ class ConnectionManager(QWidget):
             password.setEchoMode(QLineEdit.Password)
             port = QSpinBox()
             port.setRange(1, 10000)
-            
+
             save = QPushButton(_("Save"))
             cancel = QPushButton(_("Cancel"))
-            
+
             grid.addWidget(nameLabel,  0, 0)
             grid.addWidget(name,       0, 1)
             grid.addWidget(localLabel, 1, 0)
@@ -220,7 +206,7 @@ class ConnectionManager(QWidget):
             grid.addWidget(password,   5, 1)
             grid.addWidget(cancel,     6, 0)
             grid.addWidget(save,       6, 1)
-            
+
             self.setLayout(grid)
             self.controls = {"name": name,
                              "host": host,
@@ -234,13 +220,13 @@ class ConnectionManager(QWidget):
             self.connect(cancel, SIGNAL("clicked()"), self.hide)
             self.connect(save, SIGNAL("clicked()"), self.slotDone)
             self.connect(local, SIGNAL("stateChanged(int)"), self.slotLocalChanged)
-            
+
             self.id = None
             self.default = None
-        
+
         def setData(self, data):
             if not data: return
-            
+
             self.id = data["id"]
             self.default = data["default"]
             self.controls["name"].setText(data["name"])
@@ -266,7 +252,7 @@ class ConnectionManager(QWidget):
                 self.controls["password"].setDisabled(True)
                 self.controls["port"].setDisabled(True)
                 self.controls["host"].setDisabled(True)
-        
+
         def slotLocalChanged(self, val):
             if val == 2:
                 self.controls["user"].setDisabled(True)
@@ -278,7 +264,7 @@ class ConnectionManager(QWidget):
                 self.controls["password"].setDisabled(False)
                 self.controls["port"].setDisabled(False)
                 self.controls["host"].setDisabled(False)
-        
+
         def getData(self):
             d = {}
             d["id"] = self.id
@@ -294,7 +280,7 @@ class ConnectionManager(QWidget):
             else:
                 d["type"] = "remote"
             return d
-        
+
         def slotDone(self):
             data = self.getData()
             self.hide()

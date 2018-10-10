@@ -23,15 +23,15 @@ if sys.version_info <= (2, 5):
 
 setup(
     name="pyload",
-    version="0.4.9",
+    version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
     keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
-    url="http://pyload.org",
-    download_url='http://pyload.org/download',
+    url="http://pyload.net",
+    download_url='http://pyload.net/download',
     license='GPL v3',
     author="pyLoad Team",
-    author_email="support@pyload.org",
+    author_email="support@pyload.net",
     platforms = ('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
@@ -86,13 +86,13 @@ options(
         virtual="virtualenv2",
     ),
     cog=Bunch(
-    	pattern="*.py",
+        pattern="*.py",
     )
 )
 
 # xgettext args
 xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
-         "--package-version=%s" % options.version, "--msgid-bugs-address='bugs@pyload.org'"]
+         "--package-version={}".format(options.version), "--msgid-bugs-address='bugs@pyload.net'"]
 
 @task
 @needs('cog')
@@ -111,7 +111,7 @@ def html():
 ])
 def get_source(options):
     """ Downloads pyload source from bitbucket tip or given rev"""
-    if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/%s.zip" % options.rev
+    if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/{}.zip".format(options.rev)
 
     pyload = path("pyload")
 
@@ -128,12 +128,12 @@ def get_source(options):
     folder = [x for x in path(".").dirs() if x.name.startswith("spoob-pyload-")][0]
     folder.move(pyload)
 
-    change_mode(pyload, 0644)
-    change_mode(pyload, 0755, folder=True)
+    change_mode(pyload, 0o644)
+    change_mode(pyload, 0o755, folder=True)
 
     for file in pyload.files():
         if file.name.endswith(".py"):
-            file.chmod(0755)
+            file.chmod(0o755)
 
     (pyload / ".hgtags").remove()
     (pyload / ".gitignore").remove()
@@ -160,7 +160,7 @@ def sdist():
 def thrift(options):
     """ Generate Thrift stubs """
 
-    print "add import for TApplicationException manually as long it is not fixed"
+    print("add import for TApplicationException manually as long it is not fixed")
 
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
@@ -171,7 +171,7 @@ def thrift(options):
         cmd.insert(len(cmd) - 1, "--gen")
         cmd.insert(len(cmd) - 1, options.gen)
 
-    print "running", cmd
+    print("running", cmd)
 
     p = Popen(cmd)
     p.communicate()
@@ -189,7 +189,7 @@ def compile_js():
 
     root = path("module") / "web" / "media" / "js"
     for f in root.glob("*.coffee"):
-        print "generate", f
+        print("generate", f)
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
         yui = Popen(["yuicompressor", "--type", "js"], stdin=coffee.stdout, stdout=PIPE)
         coffee.stdout.close()
@@ -229,15 +229,15 @@ def generate_locale():
 
     with open(trans, "wb") as js:
         for s in strings:
-            js.write('_("%s")\n' % s)
+            js.write('_("{}")\n'.format(s))
 
-    makepot("django", path("module/web"), EXCLUDE, "./%s\n" % trans.relpath(), [".py", ".html"], ["--language=Python"])
+    makepot("django", path("module/web"), EXCLUDE, "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
 
     trans.remove()
 
     path("includes.txt").remove()
 
-    print "Locale generated"
+    print("Locale generated")
 
 
 @task
@@ -251,7 +251,7 @@ def virtualenv(options):
         return
 
     call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
-    print "$ source %s/bin/activate" % options.dir
+    print("$ source {}/bin/activate".format(options.dir))
 
 
 @task
@@ -288,14 +288,14 @@ def walk_trans(path, EXCLUDE, endings=[".py"]):
 
         for e in endings:
             if f.name.endswith(e):
-                result += "./%s\n" % f.relpath()
+                result += "./{}\n".format(f.relpath())
                 break
 
     return result
 
 
 def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
-    print "Generate %s.pot" % domain
+    print("Generate {}.pot".format(domain))
 
     f = open("includes.txt", "wb")
     if includes:
@@ -306,16 +306,16 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain=%s" % domain] + xargs + xxargs)
+    call(["xgettext", "--files-from=includes.txt", "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
-    with open("%s.po" % domain, "rb") as f:
+    with open("{}.po".format(domain, "rb")) as f:
         content = f.read()
 
-    path("%s.po" % domain).remove()
+    path("{}.po".format(domain).remove())
     content = content.replace("charset=CHARSET", "charset=UTF-8")
 
-    with open("locale/%s.pot" % domain, "wb") as f:
+    with open("locale/{}.pot".format(domain, "wb")) as f:
         f.write(content)
 
 

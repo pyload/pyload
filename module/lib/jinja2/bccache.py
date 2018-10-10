@@ -176,22 +176,22 @@ class FileSystemBytecodeCache(BytecodeCache):
     If no directory is specified the system temporary items folder is used.
 
     The pattern can be used to have multiple separate caches operate on the
-    same directory.  The default pattern is ``'__jinja2_%s.cache'``.  ``%s``
+    same directory.  The default pattern is ``'__jinja2_{}.cache'``.  ``{}``
     is replaced with the cache key.
 
-    >>> bcc = FileSystemBytecodeCache('/tmp/jinja_cache', '%s.cache')
+    >>> bcc = FileSystemBytecodeCache('/tmp/jinja_cache', '{}.cache')
 
     This bytecode cache supports clearing of the cache using the clear method.
     """
 
-    def __init__(self, directory=None, pattern='__jinja2_%s.cache'):
+    def __init__(self, directory=None, pattern='__jinja2_{}.cache'):
         if directory is None:
             directory = tempfile.gettempdir()
         self.directory = directory
         self.pattern = pattern
 
     def _get_cache_filename(self, bucket):
-        return path.join(self.directory, self.pattern % bucket.key)
+        return path.join(self.directory, self.pattern.format(bucket.key))
 
     def load_bytecode(self, bucket):
         f = open_if_exists(self._get_cache_filename(bucket), 'rb')
@@ -213,7 +213,7 @@ class FileSystemBytecodeCache(BytecodeCache):
         # write access on the file system and the function does not exist
         # normally.
         from os import remove
-        files = fnmatch.filter(listdir(self.directory), self.pattern % '*')
+        files = fnmatch.filter(listdir(self.directory), self.pattern.format('*'))
         for filename in files:
             try:
                 remove(path.join(self.directory, filename))
