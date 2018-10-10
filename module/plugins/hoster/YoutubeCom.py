@@ -709,7 +709,7 @@ class YoutubeCom(Hoster):
 
         self.player_config = json.loads(m.group(1))
 
-        self.ffmpeg = Ffmpeg(self.config.get('priority') ,self)
+        self.ffmpeg = Ffmpeg(self.config.get('priority'), self)
 
         #: Set file name
         self.file_name = self.player_config['args']['title']

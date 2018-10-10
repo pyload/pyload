@@ -89,8 +89,8 @@ class CNLHandler(BaseHTTPRequestHandler):
         form = FieldStorage(
                 fp=self.rfile,
                 headers=self.headers,
-                environ={'REQUEST_METHOD':'POST',
-                         'CONTENT_TYPE':self.headers['Content-Type'],
+                environ={'REQUEST_METHOD': 'POST',
+                         'CONTENT_TYPE': self.headers['Content-Type'],
                          })
 
         self.post = {}
@@ -126,7 +126,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         IV = Key
 
         obj = AES.new(Key, AES.MODE_CBC, IV)
-        result = obj.decrypt(crypted).replace("\x00", "").replace("\r","").split("\n")
+        result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = filter(lambda x: x != "", result)
 

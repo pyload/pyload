@@ -164,16 +164,16 @@ class HTTPRequest():
         if post:
             self.c.setopt(pycurl.POST, 1)
             if not multipart:
-                if type(post) == unicode:
+                if isinstance(post, unicode):
                     post = str(post) #unicode not allowed
-                elif type(post) == str:
+                elif isinstance(post, str):
                     pass
                 else:
                     post = myurlencode(post)
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if type(y) == unicode else y ) for x, y in post.iteritems()]
+                post = [(x, y.encode('utf8') if isinstance(y, unicode) else y ) for x, y in post.iteritems()]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)

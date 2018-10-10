@@ -196,7 +196,7 @@ class Plugin(object):
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-        elif type(redirect) is int:
+        elif isinstance(redirect, int):
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
@@ -219,7 +219,7 @@ class Plugin(object):
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-        elif type(redirect) is int:
+        elif isinstance(redirect, int):
             maxredirs = int(
                 self.pyload.api.getConfigValue(
                     "UserAgentSwitcher",
@@ -291,7 +291,7 @@ class Plugin(object):
                 # @NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
-            elif type(redirect) is int:
+            elif isinstance(redirect, int):
                 # @NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
@@ -340,7 +340,7 @@ class Plugin(object):
             if not redirect:
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
-            elif type(redirect) is int:
+            elif isinstance(redirect, int):
                 maxredirs = int(
                     self.pyload.api.getConfigValue(
                         "UserAgentSwitcher",

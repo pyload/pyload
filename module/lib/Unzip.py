@@ -18,8 +18,8 @@ class Unzip:
         for i, name in enumerate(zf.namelist()):
 
             if not name.endswith('/') and not name.endswith("config"):
-                print("extracting", name.replace("pyload/",""))
-                outfile = open(os.path.join(dir, name.replace("pyload/","")), 'wb')
+                print("extracting", name.replace("pyload/", ""))
+                outfile = open(os.path.join(dir, name.replace("pyload/", "")), 'wb')
                 outfile.write(zf.read(name))
                 outfile.flush()
                 outfile.close()
@@ -44,7 +44,7 @@ class Unzip:
 
         for name in zf.namelist():
             if name.endswith('/'):
-                dirs.append(name.replace("pyload/",""))
+                dirs.append(name.replace("pyload/", ""))
 
         dirs.sort()
         return dirs

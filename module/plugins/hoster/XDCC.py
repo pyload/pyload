@@ -16,7 +16,7 @@ from module.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
 
 
 class IRC(object):
-    def __init__(self, plugin, nick, ident ,realname):
+    def __init__(self, plugin, nick, ident, realname):
         self.plugin = plugin
         self.lock   = threading.RLock()
 
@@ -355,7 +355,7 @@ class IRC(object):
 
             self.plugin.log_info(_("Requesting XDCC resume of '{}' at position {}").format(file_name, resume_position))
 
-            self.irc_sock.send("PRIVMSG {} :\x01DCC RESUME \"{}\" {} {}\x01\r\n".format(bot, encode(file_name,'utf-8'), dcc_port, resume_position))
+            self.irc_sock.send("PRIVMSG {} :\x01DCC RESUME \"{}\" {} {}\x01\r\n".format(bot, encode(file_name, 'utf-8'), dcc_port, resume_position))
 
             start_time = time.time()
             while time.time() - start_time < 30:
@@ -563,7 +563,7 @@ class XDCC(Hoster):
                             self.proccess_irc_command(origin, command, args)
 
                             if self.exc_info:
-                                raise (self.exc_info[1], None, self.exc_info[2])
+                                raise self.exc_info[1], None, self.exc_info[2]
 
                     finally:
                         self.irc_client.disconnect_server()

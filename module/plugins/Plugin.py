@@ -395,7 +395,7 @@ class Plugin(Base):
         """
         if self.pyfile.abort: raise Abort
         #utf8 vs decode -> please use decode attribute in all future plugins
-        if type(url) == unicode: url = str(url)
+        if isinstance(url, unicode): url = str(url)
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
@@ -431,7 +431,7 @@ class Plugin(Base):
                 value = value.strip()
 
                 if key in header:
-                    if type(header[key]) == list:
+                    if isinstance(header[key], list):
                         header[key].append(value)
                     else:
                         header[key] = [header[key], value]

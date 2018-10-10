@@ -103,7 +103,7 @@ class PluginThread(Thread):
 
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
-            if not name.endswith("__") and type(attr) != MethodType:
+            if not name.endswith("__") and not isinstance(attr, MethodType):
                 dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
@@ -114,7 +114,7 @@ class PluginThread(Thread):
 
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
-            if not name.endswith("__") and type(attr) != MethodType:
+            if not name.endswith("__") and not isinstance(attr, MethodType):
                 dump += "\t%20s = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
@@ -610,7 +610,7 @@ class InfoThread(PluginThread):
                 self.m.log.debug("Run Info Fetching for {}".format(pluginname))
                 for result in plugin.getInfo(process):
                     #result = [ .. (name, size, status, url) .. ]
-                    if not type(result) == list: result = [result]
+                    if not isinstance(result, list): result = [result]
 
                     for res in result:
                         self.m.infoCache[res[3]] = res

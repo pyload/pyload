@@ -106,7 +106,7 @@ class JsEngine():
 
             self.init = True
 
-        if type(script) == unicode:
+        if isinstance(script, unicode):
             script = script.encode("utf8")
 
         if not ENGINE:

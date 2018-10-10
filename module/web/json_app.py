@@ -244,7 +244,7 @@ def load_config(category, section):
         conf = PYLOAD.getPluginConfigDict()
 
     for key, option in conf[section].iteritems():
-        if key in ("desc","outline"): continue
+        if key in ("desc", "outline"): continue
 
         if ";" in option["type"]:
             option["list"] = option["type"].split(";")
@@ -299,7 +299,7 @@ def update_accounts():
         elif action == "limitdl" and value.isdigit():
             PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
         elif action == "delete":
-            deleted.append((plugin,user))
+            deleted.append((plugin, user))
             PYLOAD.removeAccount(plugin, user)
 
 @route("/json/change_password", method="POST")

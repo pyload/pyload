@@ -403,7 +403,7 @@ def logs(item=-1):
     reversed = s.get('reversed', False)
 
     warning = ""
-    conf = PYLOAD.getConfigValue("log","file_log")
+    conf = PYLOAD.getConfigValue("log", "file_log")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
@@ -435,10 +435,10 @@ def logs(item=-1):
     if not perpage:
         item = 0
 
-    if item < 1 or type(item) is not int:
+    if item < 1 or not isinstance(item, int):
         item = 1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
 
-    if type(fro) is datetime: # we will search for datetime
+    if isinstance(fro, datetime): # we will search for datetime
         item = -1
 
     data = []

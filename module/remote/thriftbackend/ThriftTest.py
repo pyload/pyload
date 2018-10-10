@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from os.path import join,abspath,dirname
+from os.path import join, abspath, dirname
 
-path = join((abspath(dirname(__file__))), "..","..", "lib")
+path = join((abspath(dirname(__file__))), "..", "..", "lib")
 sys.path.append(path)
 
 from .thriftgen.pyload import Pyload
@@ -22,7 +22,7 @@ import xmlrpclib
 
 def bench(f, *args, **kwargs):
     s = time()
-    ret = [f(*args, **kwargs) for i in range(0,100)]
+    ret = [f(*args, **kwargs) for i in range(0, 100)]
     e = time()
     try:
         print("{}: {:f} s".format(f._Method__name, e-s))

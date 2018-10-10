@@ -74,7 +74,7 @@ class Core(object):
                 options, args = getopt(argv[1:], 'vchdusqp:',
                     ["version", "clear", "clean", "help", "debug", "user",
                      "setup", "configdir=", "changedir", "daemon",
-                     "quit", "status", "no-remote","pidfile="])
+                     "quit", "status", "no-remote", "pidfile="])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -284,7 +284,7 @@ class Core(object):
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'],"en"],fallback=True)
+                                          languages=[self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
@@ -526,7 +526,7 @@ class Core(object):
     def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
         """check wether needed files exists"""
         tmp_names = []
-        if not type(check_names) == list:
+        if not isinstance(check_names, list):
             tmp_names.append(check_names)
         else:
             tmp_names.extend(check_names)
@@ -567,7 +567,7 @@ class Core(object):
         self.shutdown()
         chdir(owd)
         # close some open fds
-        for i in range(3,50):
+        for i in range(3, 50):
             try:
                 close(i)
             except :

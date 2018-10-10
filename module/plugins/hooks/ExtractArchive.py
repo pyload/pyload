@@ -221,7 +221,7 @@ class ExtractArchive(Addon):
         extracted = []
         failed = []
 
-        toList = lambda string: string.replace(' ', '').replace(',','|').replace(';', '|').split('|')
+        toList = lambda string: string.replace(' ', '').replace(',', '|').replace(';', '|').split('|')
 
         destination = self.config.get('destination')
         subfolder = self.config.get('subfolder')

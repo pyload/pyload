@@ -61,7 +61,7 @@ class PluginManager:
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
 
-        self.crypterPlugins , config = self.parse("crypter", pattern=True)
+        self.crypterPlugins, config = self.parse("crypter", pattern=True)
         self.plugins["crypter"] = self.crypterPlugins
         default_config = config
 
@@ -189,7 +189,7 @@ class PluginManager:
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
 
-                    if type(config) == list and all(type(c) == tuple for c in config):
+                    if isinstance(config, list) and all(isinstance(c, tuple) for c in config):
                         config = dict((x[0], x[1:]) for x in config)
                     else:
                         self.log.error("Invalid config in {}: {}".format(name, config))
@@ -364,7 +364,7 @@ class PluginManager:
         self.log.debug("Request reload of plugins: {}".format(type_plugins))
 
         as_dict = {}
-        for t,n in type_plugins:
+        for t, n in type_plugins:
             if t in as_dict:
                 as_dict[t].append(n)
             else:
@@ -382,7 +382,7 @@ class PluginManager:
                         reload(self.plugins[type][plugin]["module"])
 
         #index creation
-        self.crypterPlugins , config = self.parse("crypter", pattern=True)
+        self.crypterPlugins, config = self.parse("crypter", pattern=True)
         self.plugins["crypter"] = self.crypterPlugins
         default_config = config
 

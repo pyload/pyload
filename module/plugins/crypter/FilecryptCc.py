@@ -289,7 +289,7 @@ class FilecryptCc(Crypter):
 
     def handle_CNL(self):
         try:
-            CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',self.site_with_links)
+            CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);', self.site_with_links)
             for index in CNLdata:
                 self.urls.extend(self._get_links(index[2], index[1]))
 

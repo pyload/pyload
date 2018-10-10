@@ -392,13 +392,13 @@ class main(QObject):
             set up connector, show main window
         """
         self.connWindow.hide()
-        if data["type"] not in ("remote","internal"):
+        if data["type"] not in ("remote", "internal"):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
                 self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous", False)
             else:
-                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote","port"), "anonymous", "anonymous")
+                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote", "port"), "anonymous", "anonymous")
 
         elif data["type"] == "remote":
             self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"])

@@ -27,9 +27,9 @@ def decode(string):
 
 def remove_chars(string, repl):
     """ removes all chars in repl from string"""
-    if type(string) == str:
+    if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
-    elif type(string) == unicode:
+    elif isinstance(string, unicode):
         return string.translate(dict([(ord(s), None) for s in repl]))
 
 
@@ -43,7 +43,7 @@ def save_path(name):
 
 def save_join(*args):
     """ joins a path, encoding aware """
-    return fs_encode(join(*[x if type(x) == unicode else decode(x) for x in args]))
+    return fs_encode(join(*[x if isinstance(x, unicode) else decode(x) for x in args]))
 
 
 # File System Encoding functions:

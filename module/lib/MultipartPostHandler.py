@@ -60,12 +60,12 @@ class MultipartPostHandler(BaseHandler):
 
     def http_request(self, request):
         data = request.get_data()
-        if data is not None and type(data) != str:
+        if data is not None and not isinstance(data, str):
             v_files = []
             v_vars = []
             try:
                  for(key, value) in data.items():
-                     if type(value) == file:
+                     if isinstance(value, file):
                          v_files.append((key, value))
                      else:
                          v_vars.append((key, value))

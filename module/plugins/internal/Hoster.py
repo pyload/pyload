@@ -164,7 +164,7 @@ class Hoster(Base):
         if resumable is None:
             resumable = self.resume_download
 
-        if type(redirect) == int:
+        if isinstance(redirect, int):
             maxredirs = max(redirect, 1)
 
         elif redirect:

@@ -2,9 +2,9 @@
 import dis
 
 _const_codes = map(dis.opmap.__getitem__, [
-    'POP_TOP','ROT_TWO','ROT_THREE','ROT_FOUR','DUP_TOP',
-    'BUILD_LIST','BUILD_MAP','BUILD_TUPLE',
-    'LOAD_CONST','RETURN_VALUE','STORE_SUBSCR'
+    'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP',
+    'BUILD_LIST', 'BUILD_MAP', 'BUILD_TUPLE',
+    'LOAD_CONST', 'RETURN_VALUE', 'STORE_SUBSCR'
     ])
 
 

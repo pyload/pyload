@@ -42,7 +42,7 @@ def initReport():
             reports.append(f)
 
     for i, f in enumerate(reports):
-        print("{}. {}".format(i,f))
+        print("{}. {}".format(i, f))
 
     choice = raw_input("Choose Report: ")
 

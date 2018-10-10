@@ -295,7 +295,7 @@ class InternationalizationExtension(Extension):
         """Parse until the next block tag with a given name."""
         referenced = []
         buf = []
-        while 1:
+        while True:
             if parser.stream.current.type == 'data':
                 buf.append(parser.stream.current.value.replace('%', '%%'))
                 next(parser.stream)

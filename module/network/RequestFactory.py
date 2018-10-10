@@ -90,9 +90,9 @@ class RequestFactory():
                 pw = self.core.config["proxy"]["password"]
 
             return {
-                "type"    : type,
-                "address" : self.core.config["proxy"]["address"],
-                "port"    : self.core.config["proxy"]["port"],
+                "type": type,
+                "address": self.core.config["proxy"]["address"],
+                "port": self.core.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
             }

@@ -147,7 +147,7 @@ class ReCaptcha(CaptchaService):
 
     def challenge(self, key=None, data=None, version=None, secure_token=None):
         key = key or self.retrieve_key(data)
-        secure_token = secure_token or self.detect_secure_token(data) if version in (2,'2js') else None
+        secure_token = secure_token or self.detect_secure_token(data) if version in (2, '2js') else None
 
         if version in (1, 2, '2js'):
             return getattr(self, "_challenge_v{}".format(version)(key, secure_token=secure_token))
