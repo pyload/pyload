@@ -34,7 +34,7 @@ from pyload.gui.Collector import *
 from pyload.gui.XMLParser import *
 from pyload.gui.CoreConfigParser import ConfigParser
 
-from pyload.lib.rename_process import renameProcess
+# from pyload.lib.rename_process import renameProcess
 from pyload.utils import formatSize, formatSpeed
 
 try:
@@ -828,6 +828,6 @@ class Notification(QObject):
 
 
 if __name__ == "__main__":
-    renameProcess('pyLoadGui')
+    # renameProcess("pyLoadGui")
     app = main()
     app.loop()

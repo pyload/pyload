@@ -1,8 +1,12 @@
-# -*- coding: utf-8 -*-
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 
-from builtins import chr
-from builtins import object
-class Getch(object):
+
+class Getch:
     """
     Gets a single character from standard input.  Does not echo to
     the screen.
@@ -20,7 +24,7 @@ class Getch(object):
     def __call__(self): return self.impl()
 
 
-class _GetchUnix(object):
+class _GetchUnix:
     def __init__(self):
         import tty
         import sys
@@ -40,7 +44,7 @@ class _GetchUnix(object):
         return ch
 
 
-class _GetchWindows(object):
+class _GetchWindows:
     def __init__(self):
         import msvcrt
 
@@ -49,7 +53,7 @@ class _GetchWindows(object):
 
         return msvcrt.getch()
 
-class _GetchMacCarbon(object):
+class _GetchMacCarbon:
     """
     A function which returns the current ASCII key that is down;
     if no ASCII key is down, the null string is returned.  The
