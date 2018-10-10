@@ -33,10 +33,12 @@ class LinkifierCom(MultiHoster):
                 'md5Pass': hashlib.md5(password).hexdigest(),
                 'apiKey': self.API_KEY}
         post.update(kwargs)
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Content-Type: application/json; charset=utf-8"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER,
+                               ["Content-Type: application/json; charset=utf-8"])
         res = json.loads(self.load(self.API_URL + method,
                                    post=json.dumps(post)))
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Content-Type: text/html; charset=utf-8"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER,
+                               ["Content-Type: text/html; charset=utf-8"])
         return res
 
     def setup(self):
@@ -59,4 +61,3 @@ class LinkifierCom(MultiHoster):
         self.resume_download = json_data['con_resume']
         self.chunk_limit = json_data.get('con_max', 1) or 1
         self.download(json_data['url'], fixurl=False)
-

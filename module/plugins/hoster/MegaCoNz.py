@@ -80,12 +80,18 @@ class MegaCrypto(object):
 
     @staticmethod
     def cbc_decrypt(data, key):
-        cbc = Crypto.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_CBC, "\0" * 16)
+        cbc = Crypto.Cipher.AES.new(
+            MegaCrypto.a32_to_str(key),
+            Crypto.Cipher.AES.MODE_CBC,
+            "\0" * 16)
         return cbc.decrypt(data)
 
     @staticmethod
     def cbc_encrypt(data, key):
-        cbc = Crypto.Cipher.AES.new(MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_CBC, "\0" * 16)
+        cbc = Crypto.Cipher.AES.new(
+            MegaCrypto.a32_to_str(key),
+            Crypto.Cipher.AES.MODE_CBC,
+            "\0" * 16)
         return cbc.encrypt(data)
 
     @staticmethod
@@ -112,7 +118,8 @@ class MegaCrypto(object):
         attr = MegaCrypto.cbc_decrypt(data, k)
 
         #: Data is padded, 0-bytes must be stripped
-        return json.loads(re.search(r'{.+}', attr).group(0)) if attr[:6] == 'MEGA{"' else False
+        return json.loads(re.search(r'{.+}', attr).group(0)
+                          ) if attr[:6] == 'MEGA{"' else False
 
     @staticmethod
     def decrypt_key(data, key):
@@ -159,10 +166,12 @@ class MegaCrypto(object):
             self.hash = '\0' * 16
             self.key = MegaCrypto.a32_to_str(k)
             self.iv = MegaCrypto.a32_to_str(iv[0:2] * 2)
-            self.AES = Crypto.Cipher.AES.new(self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash)
+            self.AES = Crypto.Cipher.AES.new(
+                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash)
 
         def update(self, chunk):
-            cbc = Crypto.Cipher.AES.new(self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv)
+            cbc = Crypto.Cipher.AES.new(
+                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv)
             for j in range(0, len(chunk), 16):
                 block = chunk[j:j + 16].ljust(16, '\0')
                 hash = cbc.encrypt(block)
@@ -199,7 +208,9 @@ class MegaClient(object):
         """
         Dispatch a call to the api, see https://mega.co.nz/#developers
         """
-        uid = random.randint(10 << 9, 10 ** 10)  #: Generate a session id, no idea where to obtain elsewhere
+        uid = random.randint(
+            10 << 9,
+            10 ** 10)  # : Generate a session id, no idea where to obtain elsewhere
         get_params = {'id': uid}
 
         if self.node_id:
@@ -249,7 +260,8 @@ class MegaClient(object):
             self.plugin.temp_offline()
 
         elif ecode in (1, 4, 6, 10, 15, 21):
-            self.plugin.retry(max_tries=5, wait_time=30, reason=_("Error code: [{}]").format(-ecode))
+            self.plugin.retry(max_tries=5, wait_time=30, reason=_(
+                "Error code: [{}]").format(-ecode))
 
         else:
             self.plugin.fail(_("Error code: [{}]").format(-ecode))
@@ -278,7 +290,10 @@ class MegaCoNz(Hoster):
         """
         k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
         ctr = Crypto.Util.Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64)
-        cipher = Crypto.Cipher.AES.new(MegaCrypto.a32_to_str(k), Crypto.Cipher.AES.MODE_CTR, counter=ctr)
+        cipher = Crypto.Cipher.AES.new(
+            MegaCrypto.a32_to_str(k),
+            Crypto.Cipher.AES.MODE_CTR,
+            counter=ctr)
 
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
@@ -295,10 +310,13 @@ class MegaCoNz(Hoster):
 
         encrypted_size = os.path.getsize(file_crypted)
 
-        checksum_activated = self.config.get("activated", default=False, plugin="Checksum")
-        check_checksum = self.config.get("check_checksum", default=True, plugin="Checksum")
+        checksum_activated = self.config.get(
+            "activated", default=False, plugin="Checksum")
+        check_checksum = self.config.get(
+            "check_checksum", default=True, plugin="Checksum")
 
-        cbc_mac = MegaCrypto.Checksum(key) if checksum_activated and check_checksum else None
+        cbc_mac = MegaCrypto.Checksum(
+            key) if checksum_activated and check_checksum else None
 
         progress = 0
         for chunk_start, chunk_size in MegaCrypto.get_chunks(encrypted_size):
@@ -326,21 +344,27 @@ class MegaCoNz(Hoster):
         if checksum_activated and check_checksum:
             file_mac = cbc_mac.digest()
             if file_mac == meta_mac:
-                self.log_info(_('File integrity of "{}" verified by CBC-MAC checksum ({})') %
-                              (self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], meta_mac))
+                self.log_info(
+                    _('File integrity of "{}" verified by CBC-MAC checksum ({})') %
+                    (self.pyfile.name.rsplit(
+                        self.FILE_SUFFIX)[0], meta_mac))
             else:
-                self.log_warning(_('CBC-MAC checksum for file "{}" does not match ({} != {})') %
-                                 (self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], file_mac, meta_mac))
+                self.log_warning(
+                    _('CBC-MAC checksum for file "{}" does not match ({} != {})') %
+                    (self.pyfile.name.rsplit(
+                        self.FILE_SUFFIX)[0], file_mac, meta_mac))
                 self.checksum_failed(file_decrypted, _("Checksums do not match"))
 
         self.last_download = decode(file_decrypted)
 
     def checksum_failed(self, local_file, msg):
-        check_action = self.config.get("check_action", default="retry", plugin="Checksum")
+        check_action = self.config.get(
+            "check_action", default="retry", plugin="Checksum")
 
         if check_action == "retry":
             max_tries = self.config.get("max_tries", default=2, plugin="Checksum")
-            retry_action = self.config.get("retry_action", default="fail", plugin="Checksum")
+            retry_action = self.config.get(
+                "retry_action", default="fail", plugin="Checksum")
 
             if all(_r < max_tries for _id, _r in list(self.retries.items())):
                 os.remove(local_file)
@@ -366,9 +390,12 @@ class MegaCoNz(Hoster):
         """
         if self.pyload.config.get("download", "skip_existing"):
             download_folder = self.pyload.config.get('general', 'download_folder')
-            dest_file = fsjoin(download_folder,
-                               self.pyfile.package().folder if self.pyload.config.get("general", "folder_per_package") else "",
-                               name)
+            dest_file = fsjoin(
+                download_folder,
+                self.pyfile.package().folder if self.pyload.config.get(
+                    "general",
+                    "folder_per_package") else "",
+                name)
             if exists(dest_file):
                 self.pyfile.name = name
                 self.skip(_("File exists."))

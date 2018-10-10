@@ -59,8 +59,12 @@ class SimplyPremiumCom(MultiAccount):
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "simply-premium.com", "lang", "EN")
 
-        html = self.load("https://www.simply-premium.com/login.php",
-                         post={'key': user} if not password else {'login_name': user, 'login_pass': password})
+        html = self.load(
+            "https://www.simply-premium.com/login.php",
+            post={
+                'key': user} if not password else {
+                'login_name': user,
+                'login_pass': password})
 
         if 'logout' not in html:
             self.fail_login()

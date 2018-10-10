@@ -47,7 +47,10 @@ class NitrobitNet(SimpleHoster):
         m = re.search(r'id="unlockedTick".+?alt="(\d+)"', self.data)
         if m is not None:
             validuntil = time.time() + float(m.group(1))
-            self.log_info(_("Account valid until {}").format(time.strftime("%d/%m/%Y"), time.gmtime(validuntil)))
+            self.log_info(
+                _("Account valid until {}").format(
+                    time.strftime("%d/%m/%Y"),
+                    time.gmtime(validuntil)))
 
         m = re.search(r'id="dailyVolume" value="(\d+)?/(\d+)"', self.data)
         if m is not None:

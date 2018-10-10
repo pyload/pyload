@@ -40,7 +40,8 @@ class FileboomMe(SimpleHoster):
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        post_url = urllib.parse.urljoin(pyfile.url, "/file/" + self.info['pattern']['ID'])
+        post_url = urllib.parse.urljoin(
+            pyfile.url, "/file/" + self.info['pattern']['ID'])
 
         m = re.search(r'data-slow-id="(\w+)"', self.data)
         if m is not None:
@@ -52,7 +53,9 @@ class FileboomMe(SimpleHoster):
                 self.link = urllib.parse.urljoin(pyfile.url, m.group(0))
 
             else:
-                m = re.search(r'<input type="hidden" name="uniqueId" value="(\w+)">', self.data)
+                m = re.search(
+                    r'<input type="hidden" name="uniqueId" value="(\w+)">',
+                    self.data)
                 if m is None:
                     m = re.search(r'>\s*Please wait ([\d:]+)', self.data)
                     if m is not None:
@@ -67,7 +70,8 @@ class FileboomMe(SimpleHoster):
 
                     m = re.search(self.CAPTCHA_PATTERN, self.data)
                     if m is not None:
-                        captcha = self.captcha.decrypt(urllib.parse.urljoin(pyfile.url, m.group(1)))
+                        captcha = self.captcha.decrypt(
+                            urllib.parse.urljoin(pyfile.url, m.group(1)))
                         self.data = self.load(post_url,
                                               post={'CaptchaForm[verifyCode]': captcha,
                                                     'free': 1,

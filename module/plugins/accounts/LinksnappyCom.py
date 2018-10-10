@@ -51,7 +51,8 @@ class LinksnappyCom(MultiAccount):
             else:
                 validuntil = float(validuntil)
 
-            if 'trafficleft' not in json_data['return'] or isinstance(json_data['return']['trafficleft'], str):
+            if 'trafficleft' not in json_data['return'] or isinstance(
+                    json_data['return']['trafficleft'], str):
                 trafficleft = -1
 
             else:

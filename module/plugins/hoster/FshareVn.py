@@ -53,7 +53,8 @@ class FshareVn(SimpleHoster):
             if r'Sai mật khẩu' in self.data:
                 self.fail(_("Wrong password"))
 
-        action, inputs = self.parse_html_form('id="form-download"', input_names={'withFcode5': "0"})
+        action, inputs = self.parse_html_form(
+            'id="form-download"', input_names={'withFcode5': "0"})
         url = urllib.parse.urljoin(pyfile.url, action)
 
         if not inputs:

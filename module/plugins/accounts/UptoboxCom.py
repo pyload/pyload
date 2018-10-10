@@ -23,7 +23,6 @@ class UptoboxCom(XFSAccount):
     PREMIUM_PATTERN = r'Premium member'
     VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
 
-
     def signin(self, user, password, data):
         html = self.load(self.LOGIN_URL, cookies=self.COOKIES)
 
@@ -32,7 +31,7 @@ class UptoboxCom(XFSAccount):
 
         html = self.load(self.PLUGIN_URL,
                          get={'op': "login",
-                               'referer': "homepage"},
+                              'referer': "homepage"},
                          post={'login': user,
                                'password': password},
                          cookies=self.COOKIES)

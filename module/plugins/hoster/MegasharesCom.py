@@ -61,8 +61,11 @@ class MegasharesCom(SimpleHoster):
                 self.REACTIVATE_NUM_PATTERN,
                 self.data).group(1)
 
-            verifyinput = self.captcha.decrypt("http://d01.megashares.com/index.php",
-                                               get={'secgfx': "gfx", 'random_num': random_num})
+            verifyinput = self.captcha.decrypt(
+                "http://d01.megashares.com/index.php",
+                get={
+                    'secgfx': "gfx",
+                    'random_num': random_num})
 
             self.log_info(
                 _("Reactivating passport {}: {} {}") %
@@ -97,7 +100,8 @@ class MegasharesCom(SimpleHoster):
         self.log_info(_("Download passport: {}").format(m.group(1)))
         data_left = float(m.group(2)) * \
             1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
-        self.log_info(_("Data left: {} {} ({:d} MB needed)").format(m.group(2), m.group(3), self.pyfile.size // 1048576))
+        self.log_info(_("Data left: {} {} ({:d} MB needed)").format(
+            m.group(2), m.group(3), self.pyfile.size // 1048576))
 
         if not data_left:
             self.retry(wait=600, msg=_("Passport renewal"))

@@ -71,7 +71,6 @@ class UserscloudCom(SimpleHoster):
             options=self.pyload.requestFactory.getOptions(),
             limit=300000)
 
-
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('name="F1"')
         if not inputs:
@@ -82,4 +81,3 @@ class UserscloudCom(SimpleHoster):
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-

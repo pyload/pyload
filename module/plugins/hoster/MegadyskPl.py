@@ -4,7 +4,9 @@
 from builtins import chr
 import base64
 import re
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from module.network.RequestFactory import getURL as get_url
 

@@ -44,9 +44,9 @@ class DebridlinkFr(MultiHoster):
             sha1.update(ts + method + session['key'])
             sign = sha1.hexdigest()
 
-            self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-DL-TOKEN: " + session['token'],
-                                                       "X-DL-SIGN: " + sign,
-                                                       "X-DL-TS: " + ts])
+            self.req.http.c.setopt(
+                pycurl.HTTPHEADER, [
+                    "X-DL-TOKEN: " + session['token'], "X-DL-SIGN: " + sign, "X-DL-TS: " + ts])
 
         json_data = self.load(self.API_URL + method, get=get, post=post)
 
@@ -67,15 +67,15 @@ class DebridlinkFr(MultiHoster):
                 self.offline()
 
             else:
-                err_message = {'notLink': "Check the 'link' parameter (Empty or bad)",
-                               'notDebrid': "Maybe the filehoster is down or the link is not online",
-                               'badFileUrl': "The link format is not valid",
-                               'hostNotValid': "The filehoster is not supported",
-                               'notFreeHost': "This filehoster is not available for the free member",
-                               'disabledHost': "The filehoster are disabled",
-                               'noGetFilename': "Unable to retrieve the file name",
-                               'maxLink': "Limitation of number links per day reached",
-                               'maxLinkHost': "Limitation of number links per day for this host reached"}.get(err_code)
+                err_message = {
+                    'notLink': "Check the 'link' parameter (Empty or bad)",
+                    'notDebrid': "Maybe the filehoster is down or the link is not online",
+                    'badFileUrl': "The link format is not valid",
+                    'hostNotValid': "The filehoster is not supported",
+                    'notFreeHost': "This filehoster is not available for the free member",
+                    'disabledHost': "The filehoster are disabled",
+                    'noGetFilename': "Unable to retrieve the file name",
+                    'maxLink': "Limitation of number links per day reached",
+                    'maxLinkHost': "Limitation of number links per day for this host reached"}.get(err_code)
 
                 self.fail(err_message or "Unknown error: `{}`".format(err_code))
-

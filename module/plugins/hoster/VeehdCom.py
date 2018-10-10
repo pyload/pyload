@@ -71,8 +71,9 @@ class VeehdCom(Hoster):
         if not self.data:
             self.download_html()
 
-        m = re.search(r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
-                      self.data)
+        m = re.search(
+            r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
+            self.data)
         if m is None:
             self.error(_("Embedded video url not found"))
 

@@ -32,10 +32,11 @@ class UlozTo(Account):
             html = json.loads(self.load("https://ulozto.net/statistiky",
                                         get={'do': "overviewPaymentsView-ajaxLoad",
                                              '_': current_millis}
-                              ))['snippets']['snippet-overviewPaymentsView-']
+                                        ))['snippets']['snippet-overviewPaymentsView-']
 
         except (ValueError, KeyError):
-            self.log_error(_("Unable to retrieve account information, unexpected response"))
+            self.log_error(
+                _("Unable to retrieve account information, unexpected response"))
             return {'validuntil': None,
                     'trafficleft': None,
                     'premium': False}
@@ -48,12 +49,16 @@ class UlozTo(Account):
         else:
             m = re.search(self.INFO_PATTERN, html)
             if m is not None:
-                validuntil = time.mktime(time.strptime(m.group(3) + " 23:59:59", '%d.%m.%Y %H:%M:%S'))
+                validuntil = time.mktime(
+                    time.strptime(
+                        m.group(3) + " 23:59:59",
+                        '%d.%m.%Y %H:%M:%S'))
                 trafficleft = self.parse_traffic(m.group(1), m.group(2))
                 premium = True if trafficleft else False
 
             else:
-                self.log_error(_("Unable to retrieve account information, pattern not found"))
+                self.log_error(
+                    _("Unable to retrieve account information, pattern not found"))
                 validuntil = None
                 trafficleft = None
                 premium = False

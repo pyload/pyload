@@ -59,8 +59,11 @@ class OneFichierCom(Account):
                                    'purge': "off",
                                    'valider': "Send"})
 
-            if any(_x in html for _x in
-                   ('>Invalid username or Password', '>Invalid email address', '>Invalid password')):
+            if any(
+                _x in html for _x in (
+                    '>Invalid username or Password',
+                    '>Invalid email address',
+                    '>Invalid password')):
                 self.fail_login()
 
         except BadHeader as e:

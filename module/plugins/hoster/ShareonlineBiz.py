@@ -30,7 +30,7 @@ class ShareonlineBiz(SimpleHoster):
                    ("zoidberg", "zoidberg@mujmail.cz"),
                    ("Walter Purcaro", "vuolter@gmail.com")]
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "http://www.share-online.biz/dl/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"http://www.share-online.biz/dl/\g<ID>")]
 
     CHECK_TRAFFIC = True
 
@@ -39,9 +39,13 @@ class ShareonlineBiz(SimpleHoster):
     @classmethod
     def api_info(cls, url):
         info = {}
-        field = get_url("http://api.share-online.biz/linkcheck.php",
-                        get={'md5': "1",
-                             'links': re.match(cls.__pattern__, url).group("ID")}).split(";")
+        field = get_url(
+            "http://api.share-online.biz/linkcheck.php",
+            get={
+                'md5': "1",
+                'links': re.match(
+                    cls.__pattern__,
+                    url).group("ID")}).split(";")
         try:
             if field[1] == "OK":
                 info['fileid'] = field[0]
@@ -70,7 +74,8 @@ class ShareonlineBiz(SimpleHoster):
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
-        res = self.load("{}/free/captcha/{:d}".format(self.pyfile.url, int(time.time() * 1000)),
+        res = self.load("{}/free/captcha/{:d}".format(self.pyfile.url,
+                                                      int(time.time() * 1000)),
                         post={'dl_free': "1",
                               'recaptcha_challenge_field': challenge,
                               'recaptcha_response_field': response})

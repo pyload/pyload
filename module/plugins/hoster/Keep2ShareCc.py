@@ -31,7 +31,7 @@ class Keep2ShareCc(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Recheck in v0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", "https://k2s.cc/file/\g<ID>")]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 
     API_URL = "https://keep2share.cc/api/v2/"
     #: See https://github.com/keep2share/api
@@ -48,8 +48,8 @@ class Keep2ShareCc(SimpleHoster):
         file_info = cls.api_response("GetFilesInfo", ids=[file_id], extended_info=False)
 
         if file_info['code'] != 200 or \
-                        len(file_info['files']) == 0 or \
-                        file_info['files'][0].get("is_available", False) is False:
+                len(file_info['files']) == 0 or \
+                file_info['files'][0].get("is_available", False) is False:
             return {'status': 1}
 
         else:
@@ -87,11 +87,12 @@ class Keep2ShareCc(SimpleHoster):
 
                     captcha_response = self.captcha.decrypt(json_data['captcha_url'])
                     try:
-                        json_data = self.api_response("GetUrl",
-                                                      file_id=file_id,
-                                                      free_download_key=None,
-                                                      captcha_challenge=json_data['challenge'],
-                                                      captcha_response=captcha_response)
+                        json_data = self.api_response(
+                            "GetUrl",
+                            file_id=file_id,
+                            free_download_key=None,
+                            captcha_challenge=json_data['challenge'],
+                            captcha_response=captcha_response)
 
                     except BadHeader as e:
                         if e.code == 406:

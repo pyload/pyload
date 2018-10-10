@@ -71,7 +71,7 @@ class ExtabitCom(SimpleHoster):
         else:
             self.error(_("Captcha"))
 
-        if not "href" in res:
+        if "href" not in res:
             self.error(_("Bad JSON response"))
 
         self.data = self.load(

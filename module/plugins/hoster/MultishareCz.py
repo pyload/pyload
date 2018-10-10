@@ -54,8 +54,14 @@ class MultishareCz(SimpleHoster):
         if self.out_of_traffic():
             self.fail(_("Not enough credit left to download file"))
 
-        self.download("http://dl{:d}.mms.multishare.cz/html/mms_process.php".format(round(random.random() * 10000 * random.random())),
-                      get={'u_ID': infodata['u_ID'],
-                           'u_hash': infodata['u_hash'],
-                           'link': pyfile.url},
-                      disposition=True)
+        self.download(
+            "http://dl{:d}.mms.multishare.cz/html/mms_process.php".format(
+                round(
+                    random.random() *
+                    10000 *
+                    random.random())),
+            get={
+                'u_ID': infodata['u_ID'],
+                'u_hash': infodata['u_hash'],
+                'link': pyfile.url},
+            disposition=True)

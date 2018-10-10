@@ -62,9 +62,8 @@ class FiregetCom(SimpleHoster):
             inputs['recaptcha_response_field'] = response
 
         else:
-            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
-                                   sorted(re.findall(r'<span style=[\'"]position:absolute;padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data),
-                                          key=lambda _i: int(_i[0])))
+            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in sorted(re.findall(
+                r'<span style=[\'"]position:absolute;padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data), key=lambda _i: int(_i[0])))
 
             if captcha_code:
                 inputs['code'] = captcha_code

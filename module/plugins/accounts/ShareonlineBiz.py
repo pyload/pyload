@@ -25,7 +25,7 @@ class ShareonlineBiz(Account):
 
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
-        if not 'a' in api:
+        if 'a' not in api:
             self.fail_login(res.strip('*'))
 
         return api

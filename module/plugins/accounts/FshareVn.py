@@ -28,7 +28,13 @@ class FshareVn(Account):
 
         m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
         if m is not None:
-            trafficleft = (self.parse_traffic(m.group(3), m.group(4)) - self.parse_traffic(m.group(1), m.group(2))) if m else None
+            trafficleft = (
+                self.parse_traffic(
+                    m.group(3),
+                    m.group(4)) -
+                self.parse_traffic(
+                    m.group(1),
+                    m.group(2))) if m else None
 
         else:
             self.log_error(_("TRAFFIC_LEFT_PATTERN not found"))
@@ -42,7 +48,10 @@ class FshareVn(Account):
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is not None:
             premium = True
-            validuntil = time.mktime(time.strptime(m.group(1) + " 23:59:59", '%d/%m/%Y %H:%M:%S'))
+            validuntil = time.mktime(
+                time.strptime(
+                    m.group(1) + " 23:59:59",
+                    '%d/%m/%Y %H:%M:%S'))
 
         else:
             premium = False
@@ -67,5 +76,5 @@ class FshareVn(Account):
                        'LoginForm[rememberMe]': 1})
 
         html = self.load("https://www.fshare.vn/site/login", post=inputs)
-        if not 'href="/site/logout"' in html:
+        if 'href="/site/logout"' not in html:
             self.fail_login()

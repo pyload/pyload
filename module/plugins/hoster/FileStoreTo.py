@@ -55,4 +55,3 @@ class FileStoreTo(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-

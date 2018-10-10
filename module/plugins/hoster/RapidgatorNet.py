@@ -115,7 +115,8 @@ class RapidgatorNet(SimpleHoster):
 
         m = re.search(self.IP_BLOCKED_ERROR_PATTERN, self.data)
         if m is not None:
-            msg = _("You can't download more than one file within a certain time period in free mode")
+            msg = _(
+                "You can't download more than one file within a certain time period in free mode")
             self.log_warning(msg)
             self.retry(wait=24 * 60 * 60, msg=msg)
 
@@ -129,11 +130,12 @@ class RapidgatorNet(SimpleHoster):
 
         self.wait(jsvars.get('secs', 180), False)
 
-        url = "https://rapidgator.net{}?sid={}".format(
-            jsvars.get('getDownloadUrl', '/download/AjaxGetDownloadLink'), jsvars['sid'])
+        url = "https://rapidgator.net{}?sid={}".format(jsvars.get(
+            'getDownloadUrl', '/download/AjaxGetDownloadLink'), jsvars['sid'])
         jsvars.update(self.get_json_response(url))
 
-        url = "https://rapidgator.net{}".format(jsvars.get('captchaUrl', '/download/captcha'))
+        url = "https://rapidgator.net{}".format(
+            jsvars.get('captchaUrl', '/download/captcha'))
         self.data = self.load(url, ref=pyfile.url)
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)

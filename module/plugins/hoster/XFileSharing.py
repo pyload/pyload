@@ -47,7 +47,7 @@ class XFileSharing(XFSHoster):
         self.multiDL = True
         self.resume_download = self.premium
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def setup_base(self):
         XFSHoster.setup_base(self)
 
@@ -60,7 +60,7 @@ class XFileSharing(XFSHoster):
             self.req = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)

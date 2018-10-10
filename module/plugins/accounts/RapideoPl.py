@@ -45,7 +45,7 @@ class RapideoPl(MultiAccount):
             result = json.loads(self.run_auth_query())
 
         except Exception:
-            #@TODO: return or let it be thrown?
+            # @TODO: return or let it be thrown?
             return
 
         premium = False

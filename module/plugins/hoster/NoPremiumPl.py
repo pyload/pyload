@@ -79,7 +79,9 @@ class NoPremiumPl(MultiHoster):
 
         if "sdownload" in parsed:
             if parsed['sdownload'] == "1":
-                self.fail(_("Download from {} is possible only using NoPremium.pl website  directly").format(parsed['hosting']))
+                self.fail(
+                    _("Download from {} is possible only using NoPremium.pl website  directly").format(
+                        parsed['hosting']))
 
         pyfile.name = parsed['filename']
         pyfile.size = parsed['filesize']

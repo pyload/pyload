@@ -49,7 +49,8 @@ class IfolderRu(SimpleHoster):
         self.get_fileInfo()
 
         session_id = re.search(self.SESSION_ID_PATTERN, self.data).groups()
-        captcha_url = "http://ints.rusfolder.com/random/images/?session={}".format(session_id)
+        captcha_url = "http://ints.rusfolder.com/random/images/?session={}".format(
+            session_id)
 
         action, inputs = self.parse_html_form('id="download-step-one-form"')
         inputs['confirmed_number'] = self.captcha.decrypt(

@@ -35,7 +35,10 @@ class FilerNet(Account):
         traffic = re.search(self.TRAFFIC_LEFT_PATTERN, html)
 
         if until and traffic:
-            validuntil = time.mktime(time.strptime(until.group(1), "%d.%m.%Y, %H:%M:%S"))
+            validuntil = time.mktime(
+                time.strptime(
+                    until.group(1),
+                    "%d.%m.%Y, %H:%M:%S"))
             trafficleft = self.parse_traffic(traffic.group(1), traffic.group(2))
             return {'premium': True,
                     'validuntil': validuntil,

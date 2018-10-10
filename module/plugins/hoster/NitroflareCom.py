@@ -79,7 +79,8 @@ class NitroflareCom(SimpleHoster):
 
         self.set_wait(wait_time)
 
-        response = self.captcha.decrypt("http://nitroflare.com/plugins/cool-captcha/captcha.php")
+        response = self.captcha.decrypt(
+            "http://nitroflare.com/plugins/cool-captcha/captcha.php")
 
         self.wait()
 
@@ -93,10 +94,13 @@ class NitroflareCom(SimpleHoster):
         return SimpleHoster.handle_free(self, pyfile)
 
     def handle_premium(self, pyfile):
-        data = json.loads(self.load("https://nitroflare.com/api/v2/getDownloadLink",
-                                    get={'file': self.info['pattern']['ID'],
-                                         'user': self.account.user,
-                                         'premiumKey': self.account.get_login('password')}))
+        data = json.loads(
+            self.load(
+                "https://nitroflare.com/api/v2/getDownloadLink",
+                get={
+                    'file': self.info['pattern']['ID'],
+                    'user': self.account.user,
+                    'premiumKey': self.account.get_login('password')}))
 
         if data['type'] == 'success':
             pyfile.name = data['result']['name']

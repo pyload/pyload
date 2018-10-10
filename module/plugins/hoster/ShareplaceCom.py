@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import re
 
 from ..internal.SimpleHoster import SimpleHoster
@@ -41,5 +43,13 @@ class ShareplaceCom(SimpleHoster):
 
         m = re.search(r"var beer = '(.+?)'", self.data)
         if m is not None:
-            self.link  = urllib.parse.unquote(urllib.parse.unquote(m.group(1).replace("vvvvvvvvv", "")
-                                                       .replace("lllllllll", "")).replace("teletubbies", ""))[13:]
+            self.link = urllib.parse.unquote(
+                urllib.parse.unquote(
+                    m.group(1).replace(
+                        "vvvvvvvvv",
+                        "") .replace(
+                        "lllllllll",
+                        "")).replace(
+                    "teletubbies",
+                    ""))[
+                        13:]

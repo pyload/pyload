@@ -33,7 +33,8 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
     def grab_hosters(self, user, password, data):
         api_data = self.api_response("support", token=data['token'])
         valid_status = ("online", "vip") if self.info['data']['premium'] else ("online")
-        return [_h['hostname'] for _h in list(api_data['data'].values()) if _h['status'] in valid_status]
+        return [_h['hostname']
+                for _h in list(api_data['data'].values()) if _h['status'] in valid_status]
 
     def grab_info(self, user, password, data):
         api_data = self.api_response("userinfo", token=data['token'])
@@ -54,9 +55,10 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
             validuntil = time.mktime(time.strptime(status, "%b d %Y %I:%M %p"))
 
         # @TODO: Remove `/ 1024` in 0.4.10
-        trafficleft = (536870912000 - int(api_data['data'].get('total_used', 0))) // 1024
+        trafficleft = (
+            536870912000 - int(api_data['data'].get('total_used', 0))) // 1024
         return {'premium': premium,
-                'validuntil': validuntil ,
+                'validuntil': validuntil,
                 'trafficleft': trafficleft}
 
     def signin(self, user, password, data):
@@ -66,5 +68,3 @@ class LeechThreeHundreedSixtyCom(MultiAccount):
             self.fail_login()
 
         data['token'] = api_data['token']
-
-

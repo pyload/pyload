@@ -75,7 +75,6 @@ class TwojlimitPl(MultiAccount):
             if 'errno' in response:
                 self.fail_login()
 
-
     def run_auth_query(self):
         query = self.API_QUERY
         query['username'] = self.user

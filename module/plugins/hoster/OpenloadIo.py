@@ -71,14 +71,16 @@ class OpenloadIo(SimpleHoster):
         # check if a captcha is required for this download
         captcha_response = ''
         if 'captcha_url' in ticket_json['result'] and ticket_json[
-                'result']['captcha_url'] != False:
+                'result']['captcha_url']:
             self.log_debug('This download requires a captcha solution: {}' %
                            ticket_json['result']['captcha_url'])
-            captcha_response = self.captcha.decrypt(ticket_json['result']['captcha_url'])
+            captcha_response = self.captcha.decrypt(
+                ticket_json['result']['captcha_url'])
 
         ticket = ticket_json['result']['ticket']
 
-        download_json = self.api_response(file_id, "dl", ticket=ticket, captcha_response=captcha_response)
+        download_json = self.api_response(
+            file_id, "dl", ticket=ticket, captcha_response=captcha_response)
 
         # check download link request result status
         if download_json['status'] == 403:

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from ..internal.Account import Account
 
 
@@ -23,4 +22,3 @@ class NitrobitNet(Account):
     def signin(self, user, password, data):
         #: no way to sign in until we actually download something
         self.skip_login()
-

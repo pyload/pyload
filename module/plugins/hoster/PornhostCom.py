@@ -50,8 +50,9 @@ class PornhostCom(Hoster):
                     r'width: 894px; height: 675px">.*?<img src="(.*?)"',
                     self.data)
                 if url is None:
-                    url = re.search(r'"http://file\d+\.pornhost\.com/\d+/.*?"',
-                                    self.data)  # @TODO: fix this one since it doesn't match
+                    url = re.search(
+                        r'"http://file\d+\.pornhost\.com/\d+/.*?"',
+                        self.data)  # @TODO: fix this one since it doesn't match
 
         return url.group(1)
 

@@ -26,7 +26,8 @@ class IronfilesNet(Account):
         json_data = self.api_response("accountStatus")
 
         expires = json_data['expires'].split('T', 1)
-        validuntil = time.mktime(time.strptime(expires[0] + expires[1][:8], '%Y-%m-%d%H:%M:%S'))
+        validuntil = time.mktime(time.strptime(
+            expires[0] + expires[1][:8], '%Y-%m-%d%H:%M:%S'))
 
         return {'validuntil': validuntil,
                 'trafficleft': -1,

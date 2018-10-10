@@ -30,7 +30,8 @@ class MegaCoNz(Account):
             premium = res.get('utype', 0) > 0
             if premium:
                 validuntil = res.get('suntil', None)
-                trafficleft = (res.get('mxfer', 0) - res.get('caxfer', 0) - res.get('csxfer', 0)) // 1024
+                trafficleft = (res.get('mxfer', 0) - res.get('caxfer',
+                                                             0) - res.get('csxfer', 0)) // 1024
 
             # if res['rtt']:
             #     self.log_debug("Tranfare history:{}".format(res['tah']))
@@ -78,7 +79,9 @@ class MegaCoNz(Account):
                 self.fail_login()
 
         elif 'csid' in res:
-            privk = MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(res['privk'], master_key))
+            privk = MegaCrypto.a32_to_str(
+                MegaCrypto.decrypt_key(
+                    res['privk'], master_key))
             rsa_private_key = [int(0), int(0), int(0), int(0)]
 
             for i in range(4):
@@ -108,7 +111,8 @@ class MegaCoNz(Account):
         self.db.store("mega_session_cache", mega_session_cache)
 
     def get_password_key(self, password):
-        password_key = MegaCrypto.a32_to_str([0x93C467E3, 0x7DB0C7A4, 0xD1BE3F81, 0x0152CB56])
+        password_key = MegaCrypto.a32_to_str(
+            [0x93C467E3, 0x7DB0C7A4, 0xD1BE3F81, 0x0152CB56])
         password_a32 = MegaCrypto.str_to_a32(password)
         for c in range(0x10000):
             for j in range(0, len(password_a32), 4):

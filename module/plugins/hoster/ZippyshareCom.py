@@ -2,7 +2,9 @@
 
 
 import re
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 import BeautifulSoup
 
@@ -90,7 +92,7 @@ class ZippyshareCom(SimpleHoster):
         for m in re.findall(eltRE, ' '.join(scripts)):
             JSid, JSattr = m[0], m[3]
             values = [_f for _f in (elt.get(JSattr, None)
-                                   for elt in soup.findAll(id=JSid)) if _f]
+                                    for elt in soup.findAll(id=JSid)) if _f]
             if values:
                 inits.append('document.getElementById("{}")["{}"] = "{}"'.format(
                     JSid, JSattr, values[-1]))

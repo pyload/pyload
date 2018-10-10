@@ -3,6 +3,7 @@
 from ..internal.MultiHoster import MultiHoster
 from ..internal.misc import json, parse_size
 
+
 class LeechThreeHundreedSixtyCom(MultiHoster):
     __name__ = "LeechThreeHundreedSixtyCom"
     __type__ = "hoster"
@@ -33,6 +34,3 @@ class LeechThreeHundreedSixtyCom(MultiHoster):
         pyfile.name = api_data.get('filename', "") or pyfile.name
         pyfile.size = parse_size(api_data.get('message', "0"))
         self.link = api_data['download_url']
-
-
-

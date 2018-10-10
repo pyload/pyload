@@ -43,7 +43,9 @@ class UptoboxCom(SimpleHoster):
         self.resume_download = True
 
     def handle_free(self, pyfile):
-        m = re.search(r"""<input name=["']waitingToken["'] value=["'](.+?)["']""", self.data)
+        m = re.search(
+            r"""<input name=["']waitingToken["'] value=["'](.+?)["']""",
+            self.data)
         if m is not None:
             self.data = self.load(pyfile.url,
                                   post={'waitingToken': m.group(1),
@@ -52,4 +54,3 @@ class UptoboxCom(SimpleHoster):
         m = re.search(self.LINK_PATTERN, self.data)
         if m is not None:
             self.link = m.group(1)
-

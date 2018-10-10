@@ -37,7 +37,9 @@ class WebshareCz(SimpleHoster):
     @classmethod
     def api_info(cls, url):
         info = {}
-        api_data = cls.api_response("file_info", ident=re.match(cls.__pattern__, url).group('ID'), wst="")
+        api_data = cls.api_response(
+            "file_info", ident=re.match(
+                cls.__pattern__, url).group('ID'), wst="")
 
         if re.search(r'<status>OK', api_data):
             info['status'] = 2
@@ -61,7 +63,8 @@ class WebshareCz(SimpleHoster):
     def handle_free(self, pyfile):
         wst = self.account.get_data('wst') if self.account else None
 
-        api_data = self.api_response("file_link", ident=self.info['pattern']['ID'], wst=wst)
+        api_data = self.api_response(
+            "file_link", ident=self.info['pattern']['ID'], wst=wst)
 
         m = re.search('<link>(.+?)</link>', api_data)
         if m is not None:

@@ -45,5 +45,9 @@ class FiledropperCom(SimpleHoster):
 
         m = re.search(r'method="post" action="(.+?)"', self.data)
         if m is not None:
-            self.download(urllib.parse.urljoin("http://www.filedropper.com/", m.group(1)),
-                          post={'code': captcha_code})
+            self.download(
+                urllib.parse.urljoin(
+                    "http://www.filedropper.com/",
+                    m.group(1)),
+                post={
+                    'code': captcha_code})

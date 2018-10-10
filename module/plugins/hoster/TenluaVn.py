@@ -13,6 +13,7 @@ from ..internal.misc import json
 def gen_r():
     return "0." + "".join([random.choice("0123456789") for x in range(16)])
 
+
 class TenluaVn(SimpleHoster):
     __name__ = "TenluaVn"
     __type__ = "hoster"
@@ -43,7 +44,10 @@ class TenluaVn(SimpleHoster):
     @classmethod
     def api_info(cls, url):
         file_id = re.match(cls.__pattern__, url).group('ID')
-        file_info = cls.api_response("filemanager_builddownload_getinfo", n=file_id, r=gen_r())[0]
+        file_info = cls.api_response(
+            "filemanager_builddownload_getinfo",
+            n=file_id,
+            r=gen_r())[0]
 
         if file_info['type'] == "none":
             return {'status': 1}
@@ -71,7 +75,8 @@ class TenluaVn(SimpleHoster):
                 if sid is not None:
                     args['sid'] = sid
 
-                password_status = self.api_response("filemanager_builddownload_checkpassword", **args)
+                password_status = self.api_response(
+                    "filemanager_builddownload_checkpassword", **args)
                 if password_status['status'] == "0":
                     self.fail(_("Wrong password"))
 

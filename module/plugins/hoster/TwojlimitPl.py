@@ -69,8 +69,9 @@ class TwojlimitPl(MultiHoster):
 
         if "sdownload" in json_data:
             if json_data['sdownload'] == "1":
-                self.fail(_("Download from {} is possible only using TwojLimit.pl website directly") %
-                          json_data['hosting'])
+                self.fail(
+                    _("Download from {} is possible only using TwojLimit.pl website directly") %
+                    json_data['hosting'])
 
         pyfile.name = json_data['filename']
         pyfile.size = json_data['filesize']

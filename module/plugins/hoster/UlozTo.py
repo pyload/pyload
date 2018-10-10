@@ -40,8 +40,11 @@ class UlozTo(SimpleHoster):
     SIZE_PATTERN = r'<span id="fileSize">.*?(?P<S>[\d.,]+\s[kMG]?B)</span>'
     OFFLINE_PATTERN = r'<title>404 - Page not found</title>|<h1 class="h1">File (has been deleted|was banned)</h1>'
 
-    URL_REPLACEMENTS = [("http://", "https://"),
-                        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)', "ulozto.net")]
+    URL_REPLACEMENTS = [
+        ("http://",
+         "https://"),
+        (r'(uloz\.to|ulozto\.(cz|sk|net)|bagruj\.cz|zachowajto\.pl|pornfile\.cz)',
+         "ulozto.net")]
 
     SIZE_REPLACEMENTS = [(r'([\d.]+)\s([kMG])B', convert_decimal_prefix)]
 
@@ -147,9 +150,13 @@ class UlozTo(SimpleHoster):
             # New version 1.4.2016
             self.log_debug('Using "new" > 1.4.2016')
 
-            inputs.update({'do': inputs['do'], '_token_': inputs['_token_'],
-                           'ts': inputs['ts'], 'cid': inputs['cid'],
-                           'adi': inputs['adi'], 'sign_a': inputs['sign_a'], 'sign': inputs['sign']})
+            inputs.update({'do': inputs['do'],
+                           '_token_': inputs['_token_'],
+                           'ts': inputs['ts'],
+                           'cid': inputs['cid'],
+                           'adi': inputs['adi'],
+                           'sign_a': inputs['sign_a'],
+                           'sign': inputs['sign']})
 
         else:
             self.error(_("CAPTCHA form changed"))

@@ -38,8 +38,11 @@ class RPNetBiz(MultiAccount):
         try:
             if res['accountInfo']['isPremium']:
                 #: Parse account info. Change the trafficleft later to support per host info.
-                account_info = {'validuntil': float(res['accountInfo']['premiumExpiry']),
-                                'trafficleft': -1, 'premium': True}
+                account_info = {
+                    'validuntil': float(
+                        res['accountInfo']['premiumExpiry']),
+                    'trafficleft': -1,
+                    'premium': True}
             else:
                 account_info = {
                     'validuntil': None,

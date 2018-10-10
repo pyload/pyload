@@ -45,9 +45,10 @@ class SendspaceCom(SimpleHoster):
                 captcha_url1 = "http://www.sendspace.com/" + m.group(1)
                 m = re.search(self.USER_CAPTCHA_PATTERN, self.data)
                 captcha_url2 = "http://www.sendspace.com/" + m.group(1)
-                params = {'captcha_hash': m.group(2),
-                          'captcha_submit': 'Verify',
-                          'captcha_answer': self.captcha.decrypt(captcha_url1) + " " + self.captcha.decrypt(captcha_url2)}
+                params = {
+                    'captcha_hash': m.group(2),
+                    'captcha_submit': 'Verify',
+                    'captcha_answer': self.captcha.decrypt(captcha_url1) + " " + self.captcha.decrypt(captcha_url2)}
 
             self.log_debug(params)
 

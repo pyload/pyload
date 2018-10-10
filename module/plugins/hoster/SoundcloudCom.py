@@ -36,9 +36,13 @@ class SoundcloudCom(SimpleHoster):
             self.error(_("Could not find song id"))
 
         try:
-            script = re.search(r'<script(?:\s+[^>]+|\s+)src=(["\'])([^>]*/app-[^>]*\.js)\1', self.data).group(2)
+            script = re.search(
+                r'<script(?:\s+[^>]+|\s+)src=(["\'])([^>]*/app-[^>]*\.js)\1',
+                self.data).group(2)
             self.data = self.load(script)
-            client_id = re.search(r'\Wclient_id\s*:\s*(["\'])(\w+?)\1', self.data).group(2)
+            client_id = re.search(
+                r'\Wclient_id\s*:\s*(["\'])(\w+?)\1',
+                self.data).group(2)
 
         except (AttributeError, IndexError):
             self.fail("Failed to retrieve client_id")
@@ -49,9 +53,8 @@ class SoundcloudCom(SimpleHoster):
         streams = json.loads(html)
 
         _re = re.compile(r'[^\d]')
-        http_streams = sorted([(key, value) for key, value in list(streams.items()) if key.startswith('http_')],
-                              key=lambda t: _re.sub(t[0], ''),
-                              reverse=True)
+        http_streams = sorted([(key, value) for key, value in list(streams.items(
+        )) if key.startswith('http_')], key=lambda t: _re.sub(t[0], ''), reverse=True)
 
         self.log_debug("Streams found: {}".format(http_streams or "None"))
 

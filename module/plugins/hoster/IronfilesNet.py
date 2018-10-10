@@ -3,6 +3,7 @@
 from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
 
+
 class IronfilesNet(SimpleHoster):
     __name__ = "IronfilesNet"
     __type__ = "hoster"
@@ -40,7 +41,8 @@ class IronfilesNet(SimpleHoster):
         if file_info['result']:
             pyfile.name = file_info['filename']
             pyfile.size = file_info['size']
-            self.link = "https://ironfiles.net/download/file/id/" + _id + ("/key/" + _key) if _key else ""
+            self.link = "https://ironfiles.net/download/file/id/" + \
+                _id + ("/key/" + _key) if _key else ""
 
         else:
             message = file_info['message']
@@ -49,4 +51,3 @@ class IronfilesNet(SimpleHoster):
 
             else:
                 self.fail(message)
-

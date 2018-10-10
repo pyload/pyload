@@ -3,7 +3,9 @@
 
 from builtins import chr
 import re
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from module.network.HTTPRequest import BadHeader
 
@@ -66,13 +68,14 @@ class RockfileEu(SimpleHoster):
             inputs['recaptcha_response_field'] = response
 
         else:
-            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in
-                                   sorted(re.findall(r'<span style=[\'"]color:#5d5d5d; text-shadow: 1px 1px #f2f2f2;.+?padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data),
-                                          key=lambda _i: int(_i[0])))
+            captcha_code = "".join(chr(int(_x[2:4])) if _x[0:2] == '&#' else _x for _p, _x in sorted(re.findall(
+                r'<span style=[\'"]color:#5d5d5d; text-shadow: 1px 1px #f2f2f2;.+?padding-left:(\d+)px;.+?[\'"]>(.+?)</span>', self.data), key=lambda _i: int(_i[0])))
 
             if captcha_code:
-                captcha_code = captcha_code[1:] if captcha_code[0] == '0' else captcha_code  #: Remove leading zero
-                captcha_code = captcha_code[1:] if captcha_code[0] == '0' else captcha_code  #: Remove leading zero
+                #: Remove leading zero
+                captcha_code = captcha_code[1:] if captcha_code[0] == '0' else captcha_code
+                #: Remove leading zero
+                captcha_code = captcha_code[1:] if captcha_code[0] == '0' else captcha_code
 
                 inputs['code'] = captcha_code
 
@@ -81,7 +84,7 @@ class RockfileEu(SimpleHoster):
 
         self.data = self.load(pyfile.url, post=inputs)
 
-        if not r'> Preparing download link ...<' in self.data:
+        if r'> Preparing download link ...<' not in self.data:
             self.retry_captcha()
 
         else:
@@ -93,7 +96,6 @@ class RockfileEu(SimpleHoster):
 
         if self.link and pyfile.name == self.info['pattern']['ID'] + ".html":
             pyfile.name = urllib.parse.unquote(self.link.split('/')[-1])
-
 
         try:
             self.download(self.link)

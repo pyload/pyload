@@ -105,7 +105,7 @@ class FilepostCom(SimpleHoster):
 
         self.log_debug(res)
 
-        if not 'js' in res:
+        if 'js' not in res:
             self.error(_("JSON {} 1").format(field))
 
         #: I changed js_answer to res['js'] since js_answer is nowhere set.
@@ -131,7 +131,7 @@ class FilepostCom(SimpleHoster):
             else:
                 self.fail(res['js']['error'])
 
-        if not 'answer' in res['js'] or not field in res['js']['answer']:
+        if 'answer' not in res['js'] or field not in res['js']['answer']:
             self.error(_("JSON {} 2").format(field))
 
         return res['js']['answer'][field]

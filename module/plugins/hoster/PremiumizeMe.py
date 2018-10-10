@@ -51,7 +51,7 @@ class PremiumizeMe(MultiHoster):
             self.pyfile.name = res['result']['filename']
             self.pyfile.size = res['result']['filesize']
 
-            #@NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
+            # @NOTE: Hack to avoid `fixurl()` "fixing" the URL query arguments :(
             urlp = urllib.parse.urlparse(res['result']['location'])
             urlq = urllib.parse.parse_qsl(urlp.query)
             self.download("{}://{}{}".format(urlp.scheme, urlp.netloc, urlp.path),

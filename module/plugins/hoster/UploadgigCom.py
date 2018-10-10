@@ -48,5 +48,3 @@ class UploadgigCom(SimpleHoster):
         inputs['g-recaptcha-response'] = response
         self.data = self.load(self.fixurl(url),
                               post=inputs)
-
-

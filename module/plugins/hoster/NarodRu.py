@@ -31,8 +31,11 @@ class NarodRu(SimpleHoster):
     OFFLINE_PATTERN = r'<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\.'
 
     SIZE_REPLACEMENTS = [('КБ', 'KB'), ('МБ', 'MB'), ('ГБ', 'GB')]
-    URL_REPLACEMENTS = [("narod.yandex.ru/", "narod.ru/"),
-                        (r'/start/\d+\.\w+\-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)', r'/disk/\1/\2')]
+    URL_REPLACEMENTS = [
+        ("narod.yandex.ru/",
+         "narod.ru/"),
+        (r'/start/\d+\.\w+\-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)',
+         r'/disk/\1/\2')]
 
     CAPTCHA_PATTERN = r'<number url="(.*?)">(\w+)</number>'
     LINK_FREE_PATTERN = r'<a class="h-link" rel="yandex_bar" href="(.+?)">'

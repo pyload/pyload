@@ -37,7 +37,8 @@ class MegaDebridEu(MultiHoster):
         get['action'] = action
 
         # Better use pyLoad User-Agent so we don't get blocked
-        self.req.http.c.setopt(pycurl.USERAGENT, encode("pyLoad/{}".format(self.pyload.version)))
+        self.req.http.c.setopt(pycurl.USERAGENT, encode(
+            "pyLoad/{}".format(self.pyload.version)))
 
         json_data = self.load(self.API_URL, get=get, post=post)
 
@@ -45,9 +46,8 @@ class MegaDebridEu(MultiHoster):
 
     def handle_premium(self, pyfile):
         try:
-            res = self.api_response("getLink",
-                                    get=args(token=self.account.info['data']['cache_info'][self.account.user]['token']),
-                                    post=args(link=pyfile.url))
+            res = self.api_response("getLink", get=args(
+                token=self.account.info['data']['cache_info'][self.account.user]['token']), post=args(link=pyfile.url))
 
         except BadHeader as e:
             if e.code == 405:
@@ -69,4 +69,3 @@ class MegaDebridEu(MultiHoster):
         else:
             self.log_error(res['response_text'])
             self.fail(res['response_text'])
-

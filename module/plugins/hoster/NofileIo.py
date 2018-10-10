@@ -20,9 +20,7 @@ class NofileIo(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-
     NAME_PATTERN = r'<span id="filename">(?P<N>.+?)</span>'
     SIZE_PATTERN = r'<strong>File size</strong><br/>\s*(?P<S>[\d\.,]+) (?P<U>[\w^_]+)\s*<'
 
     LINK_PATTERN = r'data-url="(https://\w+\.nofilecdn\.io/g/.+?)"'
-

@@ -5,7 +5,9 @@ from builtins import range
 import os
 import pycurl
 import time
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 from module.network.HTTPRequest import BadHeader
 
@@ -65,7 +67,9 @@ class RealdebridComTorrent(Hoster):
         if self.pyfile.url.endswith(".torrent"):
             if self.pyfile.url.startswith("http"):
                 torrent_content = self.load(self.pyfile.url, decode=False)
-                torrent_filename = os.path.join("tmp", "tmp_{}.torrent".format(self.pyfile.package().name))
+                torrent_filename = os.path.join(
+                    "tmp", "tmp_{}.torrent".format(
+                        self.pyfile.package().name))
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)
             else:
@@ -73,11 +77,16 @@ class RealdebridComTorrent(Hoster):
                 if not exists(torrent_filename):
                     self.fail(_("File does not exists"))
 
-            if os.path.abspath(torrent_filename).startswith(os.path.abspath(os.getcwd()) + os.sep):
+            if os.path.abspath(torrent_filename).startswith(
+                    os.path.abspath(os.getcwd()) + os.sep):
                 try:
-                    api_data = json.loads(self.upload(torrent_filename,
-                                                      self.API_URL + "/torrents/addTorrent",
-                                                      get={'auth_token': self.api_token}))
+                    api_data = json.loads(
+                        self.upload(
+                            torrent_filename,
+                            self.API_URL +
+                            "/torrents/addTorrent",
+                            get={
+                                'auth_token': self.api_token}))
                 except BadHeader as e:
                     error_msg = json.loads(e.content)['error']
                     if e.code == 400:
@@ -90,13 +99,14 @@ class RealdebridComTorrent(Hoster):
                         self.fail(_("Service unavailable - {}").format(error_msg))
 
             else:
-                self.fail(_("Illegal URL")) #: We don't allow files outside pyLoad's config directory
+                # : We don't allow files outside pyLoad's config directory
+                self.fail(_("Illegal URL"))
 
         else:
             #: magnet URL
             api_data = self.api_response("/torrents/addMagnet",
-                                          get={'auth_token': self.api_token},
-                                          post={'magnet': self.pyfile.url})
+                                         get={'auth_token': self.api_token},
+                                         post={'magnet': self.pyfile.url})
 
         torrent_id = api_data['id']
         self.api_response("/torrents/selectFiles/" + torrent_id,
@@ -130,7 +140,7 @@ class RealdebridComTorrent(Hoster):
 
     def download_torrent(self, torrent_url):
         api_data = self.api_response("/unrestrict/link",
-                                     get= {'auth_token': self.api_token},
+                                     get={'auth_token': self.api_token},
                                      post={'link': torrent_url})
         if "error" in api_data:
             self.fail("{} (code: {})".format(api_data["error"], api_data["error_code"]))
@@ -143,15 +153,22 @@ class RealdebridComTorrent(Hoster):
 
     def delete_torrent_from_server(self, torrent_id):
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, "{}/torrents/delete/{}?auth_token={}".format(self.API_URL, torrent_id, self.api_token))
+        c.setopt(pycurl.URL,
+                 "{}/torrents/delete/{}?auth_token={}".format(self.API_URL,
+                                                              torrent_id,
+                                                              self.api_token))
         c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        c.setopt(pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher"))
+        c.setopt(
+            pycurl.USERAGENT,
+            self.config.get(
+                "useragent",
+                plugin="UserAgentSwitcher"))
         c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                          "Accept-Language: en-US,en",
-                                          "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                                          "Connection: keep-alive",
-                                          "Keep-Alive: 300",
-                                          "Expect:"])
+                                     "Accept-Language: en-US,en",
+                                     "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                                     "Connection: keep-alive",
+                                     "Keep-Alive: 300",
+                                     "Expect:"])
         c.setopt(pycurl.CUSTOMREQUEST, "DELETE")
         c.perform()
         code = c.getinfo(pycurl.RESPONSE_CODE)
@@ -167,11 +184,11 @@ class RealdebridComTorrent(Hoster):
         if len(account_plugin.accounts) == 0:
             self.fail(_("This plugin requires an active Realdebrid.com account"))
 
-        self.api_token = account_plugin.accounts[list(account_plugin.accounts.keys())[0]]["password"]
+        self.api_token = account_plugin.accounts[list(
+            account_plugin.accounts.keys())[0]]["password"]
 
         torrent_id = self.send_request_to_server()
         torrent_url = self.wait_for_server_dl(torrent_id)
         self.download_torrent(torrent_url)
         if self.config.get("del_finished"):
             self.delete_torrent_from_server(torrent_id)
-

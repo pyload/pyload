@@ -58,8 +58,12 @@ class ZeveraCom(MultiAccount):
                 validuntil = time.time()
 
             else:
-                validuntil = time.mktime(time.strptime(res['endsubscriptiondate'], "%Y/%m/%d %H:%M:%S"))
-                trafficleft = float(res['availabletodaytraffic']) * 1024 if res['orondaytrafficlimit'] != '0' else -1
+                validuntil = time.mktime(
+                    time.strptime(
+                        res['endsubscriptiondate'],
+                        "%Y/%m/%d %H:%M:%S"))
+                trafficleft = float(res['availabletodaytraffic']) * \
+                    1024 if res['orondaytrafficlimit'] != '0' else -1
                 premium = True
 
         return {'validuntil': validuntil,
@@ -69,4 +73,3 @@ class ZeveraCom(MultiAccount):
     def signin(self, user, password, data):
         if self.api_response("accountinfo", user, password) == "No trafic":
             self.fail_login()
-

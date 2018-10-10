@@ -20,8 +20,10 @@ class OverLoadMe(MultiAccount):
     __authors__ = [("marley", "marley@over-load.me")]
 
     def grab_hosters(self, user, password, data):
-        html = self.load("https://api.over-load.me/hoster.php",
-                         get={'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"})
+        html = self.load(
+            "https://api.over-load.me/hoster.php",
+            get={
+                'auth': "0001-cb1f24dadb3aa487bda5afd3b76298935329be7700cd7-5329be77-00cf-1ca0135f"})
         return [x for x in map(
             str.strip, html.replace("\"", "").split(",")) if x]
 

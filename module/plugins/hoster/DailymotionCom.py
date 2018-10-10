@@ -49,8 +49,15 @@ class DailymotionCom(Hoster):
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("quality", "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest", "Quality", "Highest")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("quality",
+         "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest",
+         "Quality",
+         "Highest")]
 
     __description__ = """Dailymotion.com hoster plugin"""
     __license__ = "GPLv3"

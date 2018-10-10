@@ -66,7 +66,9 @@ class WebshareCz(Account):
 
             salt = re.search('<salt>(.+?)</salt>', salt).group(1)
 
-            password = hashlib.sha1(passlib.hash.md5_crypt.encrypt(password, salt=salt)).hexdigest()
+            password = hashlib.sha1(
+                passlib.hash.md5_crypt.encrypt(
+                    password, salt=salt)).hexdigest()
             digest = hashlib.md5(user + ":Webshare:" + password).hexdigest()
 
             login = self.api_response("login",

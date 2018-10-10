@@ -8,6 +8,7 @@ from module.network.RequestFactory import getURL as get_url
 from ..internal.Account import Account
 from ..internal.misc import json
 
+
 class TenluaVn(Account):
     __name__ = "TenluaVn"
     __type__ = "account"
@@ -40,7 +41,8 @@ class TenluaVn(Account):
 
     def signin(self, user, password, data):
         try:
-            login_info = self.api_response("user_login", user=user, password=password, permanent=False)
+            login_info = self.api_response(
+                "user_login", user=user, password=password, permanent=False)
 
         except BadHeader as e:
             if e.code == 401:
@@ -50,4 +52,3 @@ class TenluaVn(Account):
                 self.fail_login(_("BadHeader {}").format(e.code))
 
         data['sid'] = login_info[0]
-

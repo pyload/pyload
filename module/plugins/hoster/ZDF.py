@@ -31,8 +31,8 @@ class ZDF(Hoster):
 
     @staticmethod
     def video_valid(video):
-        return video.findtext("url").startswith("http") and video.findtext("url").endswith(".mp4") and \
-            video.findtext("facets/facet").startswith("progressive")
+        return video.findtext("url").startswith("http") and video.findtext("url").endswith(
+            ".mp4") and video.findtext("facets/facet").startswith("progressive")
 
     @staticmethod
     def get_id(url):

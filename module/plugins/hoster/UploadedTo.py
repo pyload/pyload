@@ -83,8 +83,10 @@ class UploadedTo(SimpleHoster):
         self.captcha = ReCaptcha(pyfile)
         response, challenge = self.captcha.challenge()
 
-        self.data = self.load("http://uploaded.net/io/ticket/captcha/{}".format(self.info['pattern']['ID']),
-                              post={'g-recaptcha-response': response})
+        self.data = self.load(
+            "http://uploaded.net/io/ticket/captcha/{}".format(
+                self.info['pattern']['ID']), post={
+                'g-recaptcha-response': response})
         self.check_errors()
 
         SimpleHoster.handle_free(self, pyfile)

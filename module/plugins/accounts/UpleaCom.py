@@ -53,5 +53,5 @@ class UpleaCom(Account):
                                'remember': 0,
                                'login-form': ""})
 
-        if not self.LOGIN_SKIP_PATTERN in html:
+        if self.LOGIN_SKIP_PATTERN not in html:
             self.fail_login()

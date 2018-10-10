@@ -37,7 +37,9 @@ class OneFichierCom(SimpleHoster):
 
     DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
 
-    URL_REPLACEMENTS = [(__pattern__ + '.*', lambda m:"https://1fichier.com/?" + (m.group('ID1') if m.group('ID1') else m.group('ID2')))]
+    URL_REPLACEMENTS = [(__pattern__ +
+                         '.*', lambda m:"https://1fichier.com/?" +
+                         (m.group('ID1') if m.group('ID1') else m.group('ID2')))]
 
     COOKIES = [("1fichier.com", "LG", "en")]
 
@@ -68,9 +70,8 @@ class OneFichierCom(SimpleHoster):
                 else:
                     if headers.get('content-type') == "application/octet-stream":
                         if "filename=" in headers.get('content-disposition'):
-                            _name = dict(
-                                _i.split("=") for _i in
-                                list(map(str.strip, headers['content-disposition'].split(";")))[1:])
+                            _name = dict(_i.split("=") for _i in list(
+                                map(str.strip, headers['content-disposition'].split(";")))[1:])
                             name = _name['filename'].strip("\"'")
                         else:
                             name = url
@@ -98,7 +99,7 @@ class OneFichierCom(SimpleHoster):
         return info
 
     def handle_free(self, pyfile):
-        url, inputs = self.parse_html_form('action="https://1fichier.com/\?[\w^_]+')
+        url, inputs = self.parse_html_form(r'action="https://1fichier.com/\?[\w^_]+')
 
         if not url:
             self.log_error(_("Free download form not found"))

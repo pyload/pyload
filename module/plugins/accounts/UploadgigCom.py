@@ -33,7 +33,7 @@ class UploadgigCom(Account):
 
         else:
             trafficleft = self.parse_traffic(m.group("S2"), m.group("U2")) - \
-                          self.parse_traffic(m.group("S1"), m.group("U1") or m.group("U2"))
+                self.parse_traffic(m.group("S1"), m.group("U1") or m.group("U2"))
 
         m = re.search(self.VALID_UNTIL_PATTERN, html)
         if m is None:
@@ -62,7 +62,7 @@ class UploadgigCom(Account):
                                'csrf_tester': m.group(1),
                                'rememberme': 1})
 
-        if not '"state":"1"' in html:
+        if '"state":"1"' not in html:
             self.fail_login()
 
     @property
@@ -76,11 +76,10 @@ class UploadgigCom(Account):
         self.sync()
 
         if self.info['login']['timestamp'] == 0 or \
-                    self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time() or \
-                    self.req and not self.req.cj.parseCookie('fs_secure'):
+                self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time() or \
+                self.req and not self.req.cj.parseCookie('fs_secure'):
 
             self.log_debug("Reached login timeout for user `{}`".format(self.user))
             return False
         else:
             return True
-

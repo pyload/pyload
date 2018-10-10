@@ -41,7 +41,7 @@ class MegacrypterCom(MegaCoNz):
         #: Get crypted file URL
         dl = self.api_response(link=node, m="dl")
 
-        #@TODO: map error codes, implement password protection
+        # @TODO: map error codes, implement password protection
         # if info['pass'] is True:
         # crypted_file_key, md5_file_key = info['key'].split("#")
 

@@ -48,8 +48,10 @@ class DataportCz(SimpleHoster):
 
         self.download("http://www.dataport.cz{}".format(action, post=inputs))
 
-        check = self.scan_download({'captcha': 'alert("\\u0160patn\\u011b opsan\\u00fd k\\u00f3d z obr\\u00e1zu");',
-                                    'slot': 'alert("Je n\\u00e1m l\\u00edto, ale moment\\u00e1ln\\u011b nejsou'})
+        check = self.scan_download(
+            {
+                'captcha': 'alert("\\u0160patn\\u011b opsan\\u00fd k\\u00f3d z obr\\u00e1zu");',
+                'slot': 'alert("Je n\\u00e1m l\\u00edto, ale moment\\u00e1ln\\u011b nejsou'})
         if check == "captcha":
             self.retry_captcha()
 
