@@ -4,15 +4,12 @@
 #   http://filecrypt.cc/Container/64E039F859.html
 
 
-from builtins import str
-from builtins import filter
-from builtins import range
 import binascii
 import re
 import urllib.parse
+from builtins import filter, range, str
 
 import Crypto.Cipher.AES
-
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import BadHeader, HTTPRequest
 

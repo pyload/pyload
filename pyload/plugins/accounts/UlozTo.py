@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import pycurl
 import re
 import time
 import urllib.parse
+
+import pycurl
 
 from ..internal.Account import Account
 from ..internal.misc import json

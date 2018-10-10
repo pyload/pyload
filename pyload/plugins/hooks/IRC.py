@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from builtins import map
 import re
 import select
 import socket
+import ssl
 import time
 import traceback
+from builtins import map
 from threading import Thread
 
 import pycurl
-import ssl
 from pyload.Api import FileDoesNotExists, PackageDoesNotExists
 
 from ..internal.misc import format_size

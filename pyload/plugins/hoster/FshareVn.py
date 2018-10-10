@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import urllib.parse
 
-from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def double_decode(m):

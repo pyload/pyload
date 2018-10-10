@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
-from builtins import object
 import os
 import re
 import select
 import socket
 import struct
 import sys
-import time
 import threading
+import time
+from builtins import object, range, str
 
-
-from pyload.plugins.Plugin import Abort
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.internal.misc import encode, exists, fsjoin, lock, threaded
+from pyload.plugins.Plugin import Abort
 
 
 class IRC(object):

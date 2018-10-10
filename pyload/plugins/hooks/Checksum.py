@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from threading import Event
-
 import hashlib
 import os
 import re
 import time
 import zlib
+from threading import Event
 
 from ..internal.Addon import Addon
 from ..internal.misc import encode, format_time, fsjoin, threaded

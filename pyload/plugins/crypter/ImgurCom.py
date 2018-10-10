@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import str
 import re
+from builtins import map, str
 
 from ..internal.misc import json, uniqify
 from ..internal.SimpleCrypter import SimpleCrypter

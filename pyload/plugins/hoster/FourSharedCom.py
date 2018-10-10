@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import chr
 import re
+from builtins import chr
 
 from ..internal.SimpleHoster import SimpleHoster
 

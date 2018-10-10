@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import object
 import os
 import subprocess
 import sys
 import time
+from builtins import object
 
 from ..internal.Addon import Addon
 from ..internal.misc import Expose, encode, fsjoin

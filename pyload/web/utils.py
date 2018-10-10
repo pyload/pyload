@@ -2,11 +2,10 @@
 # @author: RaNaN
 
 
-from bottle import request, HTTPError, redirect, ServerAdapter
+from bottle import HTTPError, ServerAdapter, redirect, request
+from pyload.Api import PERMS, ROLE, has_permission
 
-from .webinterface import env, TEMPLATE, PREFIX
-
-from pyload.Api import has_permission, PERMS, ROLE
+from .webinterface import PREFIX, TEMPLATE, env
 
 
 def render_to_response(name, args={}, proc=[]):

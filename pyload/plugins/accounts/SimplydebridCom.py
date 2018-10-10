@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import str
 import time
+from builtins import str
 
 from ..internal.MultiAccount import MultiAccount
 

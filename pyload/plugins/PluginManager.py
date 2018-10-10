@@ -2,19 +2,17 @@
 # @author: mkaay, RaNaN
 
 
-from builtins import str
-from builtins import object
 import re
 import sys
-
-from os import listdir, makedirs
-from os.path import isfile, join, exists, abspath
-from sys import version_info
+from builtins import object, str
 from itertools import chain
+from os import listdir, makedirs
+from os.path import abspath, exists, isfile, join
+from sys import version_info
 from traceback import print_exc
 
-from pyload.lib.SafeEval import const_eval as literal_eval
 from pyload.ConfigParser import IGNORE
+from pyload.lib.SafeEval import const_eval as literal_eval
 
 
 class PluginManager(object):

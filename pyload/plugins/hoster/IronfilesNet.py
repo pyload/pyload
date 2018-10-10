@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class IronfilesNet(SimpleHoster):

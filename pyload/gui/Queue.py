@@ -2,14 +2,14 @@
 # @author: mkaay
 
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
 from time import time
 
+from pyload.gui.Collector import (CollectorModel, CollectorView, Link, Package,
+                                  statusMapReverse)
 from pyload.remote.thriftbackend.ThriftClient import Destination
-from pyload.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
 from pyload.utils import formatSize, formatSpeed
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 
 class QueueModel(CollectorModel):

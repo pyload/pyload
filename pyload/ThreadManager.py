@@ -4,23 +4,21 @@
 
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-from os.path import exists, join
 import re
+from builtins import object, range, str
+from os.path import exists, join
+from random import choice
 from subprocess import Popen
 from threading import Event, Lock
 from time import sleep, time
 from traceback import print_exc
-from random import choice
 
 import pycurl
+from pyload.network.RequestFactory import getURL
+from pyload.PyFile import PyFile
+from pyload.utils import freeSpace, lock
 
 from . import PluginThread
-from pyload.PyFile import PyFile
-from pyload.network.RequestFactory import getURL
-from pyload.utils import freeSpace, lock
 
 
 class ThreadManager(object):

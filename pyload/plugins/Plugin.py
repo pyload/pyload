@@ -2,24 +2,22 @@
 # @author: RaNaN, spoob, mkaay
 
 
-from builtins import str
-
-from builtins import object
-from time import time, sleep
-from random import randint
-
 import os
-from os import remove, makedirs, chmod, stat
+from builtins import object, str
+from itertools import islice
+from os import chmod, makedirs, remove, stat
 from os.path import exists, join
+from random import randint
+from time import sleep, time
+
+from pyload.utils import fs_decode, fs_encode, save_join, save_path
 
 if os.name != "nt":
     from os import chown
     from pwd import getpwnam
     from grp import getgrnam
 
-from itertools import islice
 
-from pyload.utils import save_join, save_path, fs_encode, fs_decode
 
 
 def chunks(iterable, size):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import map
 import os
 import subprocess
+from builtins import map
 
 from ..internal.Addon import Addon
 from ..internal.misc import Expose, encode

@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 from os.path import join
-from traceback import print_exc
 from shutil import copyfileobj
+from traceback import print_exc
 
-from bottle import route, request, HTTPError
-
-from .webinterface import PYLOAD
+from bottle import HTTPError, request, route
+from pyload.utils import decode, formatSize
 
 from .utils import login_required, render_to_response, toDict
-
-from pyload.utils import decode, formatSize
+from .webinterface import PYLOAD
 
 
 def format_time(seconds):

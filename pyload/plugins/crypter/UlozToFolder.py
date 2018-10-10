@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import re
+from builtins import range
 
 from ..internal.Crypter import Crypter
 

@@ -3,10 +3,11 @@
 
 
 from builtins import object
-from time import time
 from heapq import heappop, heappush
-from _thread import start_new_thread
 from threading import Lock
+from time import time
+
+from _thread import start_new_thread
 
 
 class AlreadyCalled(Exception):

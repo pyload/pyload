@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import binascii
 import random
 import re
 import time
-import urllib.request, urllib.parse, urllib.error
+import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import range
 
 import Crypto.Cipher.ARC4
 import pycurl

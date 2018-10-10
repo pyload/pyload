@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import input
-from builtins import str
-from builtins import object
-from getpass import getpass
-import pyload.common.pylgettext as gettext
 import os
-from subprocess import PIPE
-from subprocess import call
 import sys
+from builtins import input, object, str
+from getpass import getpass
+from subprocess import PIPE, call
 from sys import exit
+
+import pyload.common.pylgettext as gettext
 from pyload.utils import get_console_encoding
 
 

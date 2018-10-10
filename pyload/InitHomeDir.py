@@ -3,13 +3,11 @@
 
 
 import builtins
-
-from os import makedirs, path, chdir
-from os.path import join
 import sys
+from os import chdir, makedirs, path
+from os.path import join
 from sys import argv, platform
 
-import builtins
 builtins.owd = path.abspath("")  # original working directory
 builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
 

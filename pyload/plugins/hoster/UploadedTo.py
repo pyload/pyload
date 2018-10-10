@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import os
 import re
 import time
+from builtins import range
 
 from pyload.network.RequestFactory import getURL as get_url
 

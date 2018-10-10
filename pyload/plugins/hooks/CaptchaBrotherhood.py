@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import io
 import time
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import range
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request

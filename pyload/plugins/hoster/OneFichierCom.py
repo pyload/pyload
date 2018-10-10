@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import range
 import re
+from builtins import map, range
 
 from pyload.network.RequestFactory import getURL as get_url
 

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from builtins import object
-from os.path import exists
-from os.path import join
-
+from os.path import exists, join
 
 CONF_VERSION = 1
 

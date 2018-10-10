@@ -3,34 +3,38 @@
 # @author: RaNaN
 
 
-from builtins import str
-from pyload.common.json_layer import json
-
-import sys
-import pyload.common.pylgettext as gettext
-
 import os
-from os.path import join, abspath, dirname, exists
+import sys
+from builtins import str
 from os import makedirs
+from os.path import abspath, dirname, exists, join
+
+import bottle
+import pyload.common.pylgettext as gettext
+from beaker.middleware import SessionMiddleware
+from bottle import app, run
+from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, PrefixLoader
+from pyload import InitHomeDir
+from pyload.common.JsEngine import JsEngine
+from pyload.common.json_layer import json
+from pyload.utils import decode, formatSize
+from pyload.web import ServerThread
+
+from . import api_app, cnl_app, json_app, pyload_app
+from .filters import date, path_make_absolute, path_make_relative, quotepath, truncate
+from .middlewares import GZipMiddleWare, PrefixMiddleware, StripPathMiddleware
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
-from pyload import InitHomeDir
-from pyload.utils import decode, formatSize
 
-import bottle
-from bottle import run, app
 
-from jinja2 import Environment, FileSystemLoader, PrefixLoader, FileSystemBytecodeCache
-from .middlewares import StripPathMiddleware, GZipMiddleWare, PrefixMiddleware
 
 SETUP = None
 PYLOAD = None
 
-from pyload.web import ServerThread
 
 if not ServerThread.core:
     if ServerThread.setup:
@@ -42,7 +46,6 @@ else:
     PYLOAD = ServerThread.core.api
     config = ServerThread.core.config
 
-from pyload.common.JsEngine import JsEngine
 
 JS = JsEngine()
 
@@ -81,7 +84,6 @@ env = Environment(
     auto_reload=False,
     bytecode_cache=bcc)
 
-from .filters import quotepath, path_make_relative, path_make_absolute, truncate, date
 
 env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
@@ -110,7 +112,6 @@ translation = gettext.translation(
 translation.install(True)
 env.install_gettext_translations(translation)
 
-from beaker.middleware import SessionMiddleware
 
 session_opts = {
     'session.type': 'file',
@@ -125,10 +126,6 @@ web = GZipMiddleWare(web)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-from . import pyload_app
-from . import json_app
-from . import cnl_app
-from . import api_app
 
 
 def run_simple(host="0.0.0.0", port="8000"):

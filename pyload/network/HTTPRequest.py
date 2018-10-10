@@ -2,17 +2,14 @@
 # @author: RaNaN
 
 
-from builtins import str
-from builtins import range
-from builtins import object
 import io
-import pycurl
-
-from codecs import getincrementaldecoder, lookup, BOM_UTF8
-from urllib.parse import quote, urlencode
+from builtins import object, range, str
+from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from http.client import responses
 from logging import getLogger
+from urllib.parse import quote, urlencode
 
+import pycurl
 from pyload.plugins.Plugin import Abort
 
 

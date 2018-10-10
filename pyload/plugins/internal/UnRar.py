@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import filter
 import os
 import re
 import string
 import subprocess
+from builtins import filter, map
 
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
 from .misc import decode, encode, fsjoin, renice

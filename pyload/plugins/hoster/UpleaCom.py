@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import chr
-from builtins import range
 import re
 import urllib.parse
+from builtins import chr, range
 
 from ..internal.SimpleHoster import SimpleHoster
 

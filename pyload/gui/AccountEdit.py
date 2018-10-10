@@ -3,10 +3,10 @@
 
 
 from builtins import str
+from os.path import join
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-from os.path import join
 
 
 class AccountEdit(QWidget):

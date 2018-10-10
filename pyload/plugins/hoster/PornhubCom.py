@@ -5,8 +5,8 @@ from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
 from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
 from ..internal.Plugin import Abort
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class BIGHTTPRequest(HTTPRequest):

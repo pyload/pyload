@@ -2,8 +2,7 @@
 # @author: mkaay
 
 
-from builtins import str
-from builtins import object
+from builtins import object, str
 from threading import Thread
 from traceback import print_exc
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import chr
-from builtins import range
+from builtins import chr, range
+
 import Crypto.PublicKey.RSA
 
 from ..hoster.MegaCoNz import MegaClient, MegaCrypto

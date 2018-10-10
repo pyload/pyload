@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
 import math
 import re
 import urllib.parse
+from builtins import range, str
 
 from ..internal.XFSCrypter import XFSCrypter
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import re
 import time
+from builtins import range
 
 from .Account import Account
 from .misc import decode, remove_chars, uniqify

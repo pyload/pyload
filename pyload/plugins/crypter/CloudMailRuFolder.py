@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import base64
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import json

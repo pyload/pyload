@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import zip
 import operator
 import os
 import re
 import sys
 import time
+from builtins import zip
 
 from ..internal.Addon import Addon
 from ..internal.misc import Expose, encode, exists, fsjoin, threaded

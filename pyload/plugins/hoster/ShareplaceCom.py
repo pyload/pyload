@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import urllib.request
-import urllib.parse
-import urllib.error
 import re
+import urllib.error
+import urllib.parse
+import urllib.request
 
 from ..internal.SimpleHoster import SimpleHoster
 

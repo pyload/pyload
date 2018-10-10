@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from builtins import map
+
 from .Base import Base
 from .misc import parse_name, safename
 

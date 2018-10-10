@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from functools import reduce
+
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.misc import encode, json, reduce
 from ..internal.MultiAccount import MultiAccount
-from functools import reduce
 
 
 def args(**kwargs):

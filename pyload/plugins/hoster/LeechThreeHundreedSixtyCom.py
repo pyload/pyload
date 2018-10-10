@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.MultiHoster import MultiHoster
 from ..internal.misc import json, parse_size
+from ..internal.MultiHoster import MultiHoster
 
 
 class LeechThreeHundreedSixtyCom(MultiHoster):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pycurl
-from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.Browser import Browser
+from pyload.network.HTTPRequest import HTTPRequest
 
 from ..internal.Addon import Addon
 from ..internal.misc import encode

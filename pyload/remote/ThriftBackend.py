@@ -5,14 +5,15 @@
 from os.path import exists
 
 from pyload.remote.RemoteManager import BackendBase
+from thrift.server import TServer
 
 from .thriftbackend.Processor import Processor
 from .thriftbackend.Protocol import ProtocolFactory
 from .thriftbackend.Socket import ServerSocket
 from .thriftbackend.Transport import TransportFactory
+
 #from thriftbackend.Transport import TransportFactoryCompressed
 
-from thrift.server import TServer
 
 
 class ThriftBackend(BackendBase):

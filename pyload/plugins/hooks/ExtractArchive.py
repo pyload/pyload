@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import object
 import os
 import sys
+from builtins import object
 
 from ..internal.Addon import Addon
 from ..internal.Extractor import ArchiveError, CRCError, PasswordError

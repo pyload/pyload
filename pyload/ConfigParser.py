@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import object
 import re
-
-from time import sleep
+from builtins import object, str
 from os.path import exists, join
 from shutil import copy
-
+from time import sleep
 from traceback import print_exc
+
 from .utils import chmod
 
 # ignore these plugin configs, mainly because plugins were wiped out

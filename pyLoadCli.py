@@ -3,25 +3,29 @@
 # @author: RaNaN
 
 
-from builtins import input
-from builtins import str
-from builtins import range
-from builtins import object
-from getopt import GetoptError, getopt
-
-import pyload.common.pylgettext as gettext
+import configparser
 import os
+import sys
+from builtins import input, object, range, str
+from codecs import getwriter
+from getopt import GetoptError, getopt
 from os import _exit
 from os.path import basename, exists, join
-import sys
 from sys import exit
-from threading import Thread, Lock
+from threading import Lock, Thread
 from time import sleep
 from traceback import print_exc
 
-import configparser
-
-from codecs import getwriter
+import pyload.common.pylgettext as gettext
+from pyload import InitHomeDir
+from pyload.Api import Destination
+from pyload.cli import AddPackage, ManageFiles
+from pyload.cli.printer import *
+from pyload.lib.Getch import Getch
+from pyload.lib.rename_process import renameProcess
+from pyload.remote.thriftbackend.ThriftClient import (ConnectionClosed, NoConnection,
+                                                      NoSSL, ThriftClient, WrongLogin)
+from pyload.utils import decode, formatSize
 
 if os.name == "nt":
     enc = "cp850"
@@ -30,15 +34,7 @@ else:
 
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
-from pyload import InitHomeDir
-from pyload.cli.printer import *
-from pyload.cli import AddPackage, ManageFiles
 
-from pyload.Api import Destination
-from pyload.utils import formatSize, decode
-from pyload.remote.thriftbackend.ThriftClient import ThriftClient, NoConnection, NoSSL, WrongLogin, ConnectionClosed
-from pyload.lib.Getch import Getch
-from pyload.lib.rename_process import renameProcess
 
 
 class Cli(object):

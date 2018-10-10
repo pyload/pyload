@@ -5,8 +5,8 @@ import time
 import urllib.parse
 
 from .Captcha import Captcha
-from .misc import (decode, encode, fixurl, format_size, format_time,
-                   parse_html_form, parse_name, replace_patterns)
+from .misc import (decode, encode, fixurl, format_size, format_time, parse_html_form,
+                   parse_name, replace_patterns)
 from .Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 

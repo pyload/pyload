@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-from builtins import object
 import inspect
 import os
+from builtins import object
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
-
-from pyload.plugins.Plugin import SkipDownload as Skip
 # @TODO: Remove in 0.4.10
 from pyload.plugins.Plugin import Fail
-from .misc import (DB, Config, decode, encode, exists, fixurl, format_exc,
-                   fsjoin, html_unescape, parse_html_header, remove,
-                   set_cookies)
+from pyload.plugins.Plugin import SkipDownload as Skip
+
+from .misc import (DB, Config, decode, encode, exists, fixurl, format_exc, fsjoin,
+                   html_unescape, parse_html_header, remove, set_cookies)
 
 if os.name != "nt":
     import grp

@@ -2,20 +2,21 @@
 # @author: RaNaN
 
 
-from builtins import str
 import re
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from cgi import FieldStorage
-from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
+from builtins import str
+from cgi import FieldStorage
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import unquote
+
+from .RemoteManager import BackendBase
 
 try:
     from Crypto.Cipher import AES
 except Exception:
     pass
 
-from .RemoteManager import BackendBase
 
 core = None
 js = None

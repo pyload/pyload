@@ -2,10 +2,9 @@
 # @author: mkaay
 
 
+from pyload.utils import formatSize, formatSpeed
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-from pyload.utils import formatSpeed, formatSize
 
 
 class OverviewModel(QAbstractListModel):

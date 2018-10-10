@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import str
 import os
 import re
 import urllib.parse
+from builtins import str
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json

@@ -2,17 +2,14 @@
 # @author: RaNaN, mkaay
 
 
-from builtins import zip
-from builtins import str
-from builtins import range
-from builtins import object
+from builtins import object, range, str, zip
 from threading import RLock
 
-from pyload.utils import formatSize, lock
+from pyload.database import DatabaseBackend, style
 from pyload.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
-from pyload.PyPackage import PyPackage
 from pyload.PyFile import PyFile
-from pyload.database import style, DatabaseBackend
+from pyload.PyPackage import PyPackage
+from pyload.utils import formatSize, lock
 
 try:
     from pysqlite2 import dbapi2 as sqlite3

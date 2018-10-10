@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import object
+from builtins import object, str
+from json import loads
+from logging import log
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import urlopen
-from urllib.error import HTTPError
-from json import loads
-
-from logging import log
 
 url = "http://localhost:8001/api/{}"
 

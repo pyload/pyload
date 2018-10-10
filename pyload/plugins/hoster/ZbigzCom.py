@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
 import random
 import re
 import time
 import urllib.parse
+from builtins import range, str
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import json

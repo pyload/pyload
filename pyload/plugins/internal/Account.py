@@ -3,8 +3,7 @@ import random
 import threading
 import time
 
-from .misc import (Periodical, compare_time, decode, isiterable, lock,
-                   parse_size)
+from .misc import Periodical, compare_time, decode, isiterable, lock, parse_size
 from .Plugin import Plugin, Skip
 
 

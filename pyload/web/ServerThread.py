@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from os.path import exists
-
+import logging
 import os
 import threading
-import logging
+from os.path import exists
 
 core = None
 setup = None

@@ -3,46 +3,43 @@
 # @author: spoob, sebnapi, RaNaN, mkaay
 
 import builtins
-
-from builtins import str
-from builtins import range
-from builtins import object
-CURRENT_VERSION = '0.5.0'
-
-import builtins
-
-from getopt import getopt, GetoptError
-import pyload.common.pylgettext as gettext
-from imp import find_module
 import logging
 import logging.handlers
 import os
-from os import _exit, execl, getcwd, makedirs, remove, sep, walk, chdir, close
-from os.path import exists, join
 import signal
 import subprocess
 import sys
+from builtins import object, range, str
+from codecs import getwriter
+from getopt import GetoptError, getopt
+from imp import find_module
+from os import _exit, chdir, close, execl, getcwd, makedirs, remove, sep, walk
+from os.path import exists, join
 from sys import argv, executable, exit
-from time import time, sleep
+from time import sleep, time
 from traceback import print_exc
 
-from pyload import InitHomeDir
-from pyload.plugins.AccountManager import AccountManager
+import pyload.common.pylgettext as gettext
+from pyload import InitHomeDir, remote
 from pyload.CaptchaManager import CaptchaManager
+from pyload.common.JsEngine import JsEngine
 from pyload.ConfigParser import ConfigParser
+from pyload.database import DatabaseBackend, FileHandler
+from pyload.network.RequestFactory import RequestFactory
+from pyload.plugins.AccountManager import AccountManager
 from pyload.plugins.PluginManager import PluginManager
 from pyload.PullEvents import PullManager
-from pyload.network.RequestFactory import RequestFactory
-from pyload.web.ServerThread import WebServer
-from pyload.Scheduler import Scheduler
-from pyload.common.JsEngine import JsEngine
-from pyload import remote
 from pyload.remote.RemoteManager import RemoteManager
-from pyload.database import DatabaseBackend, FileHandler
+from pyload.Scheduler import Scheduler
+from pyload.utils import formatSize, freeSpace, get_console_encoding
+from pyload.web.ServerThread import WebServer
 
-from pyload.utils import freeSpace, formatSize, get_console_encoding
+CURRENT_VERSION = '0.5.0'
 
-from codecs import getwriter
+
+
+
+
 
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")

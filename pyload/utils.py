@@ -2,15 +2,14 @@
 """ Store all usefull functions here """
 
 
-from builtins import map
-from builtins import chr
 import os
+import re
 import sys
 import time
-import re
+from builtins import chr, map
+from html.entities import name2codepoint
 from os.path import join
 from string import maketrans
-from html.entities import name2codepoint
 
 
 def chmod(*args):

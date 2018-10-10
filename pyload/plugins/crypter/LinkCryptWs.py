@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import zip
-from builtins import filter
 import binascii
 import re
+from builtins import filter, zip
 
 import Crypto.Cipher.AES
 import pycurl

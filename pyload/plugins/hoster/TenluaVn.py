@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import random
 import re
+from builtins import range
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.SimpleHoster import SimpleHoster
 from ..internal.misc import json
+from ..internal.SimpleHoster import SimpleHoster
 
 
 def gen_r():

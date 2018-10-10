@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
-from builtins import zip
-from builtins import str
-from builtins import map
-from builtins import range
-from builtins import object
 import operator
 import os
 import re
 import subprocess
 import time
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import map, object, range, str, zip
+from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
 from ..internal.Hoster import Hoster
-from ..internal.misc import exists, isexecutable, json, reduce, renice, replace_patterns, which
+from ..internal.misc import (exists, isexecutable, json, reduce, renice,
+                             replace_patterns, which)
 from ..internal.Plugin import Abort, Skip
-from functools import reduce
 
 
 class BIGHTTPRequest(HTTPRequest):

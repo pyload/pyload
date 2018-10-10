@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
+from urllib.parse import unquote
 
-from bottle import route, request, response, HTTPError
-
-from .utils import toDict, set_session
-from .webinterface import PYLOAD
-
+from bottle import HTTPError, request, response, route
+from pyload.Api import BaseObject
 from pyload.common.json_layer import json
 from pyload.lib.SafeEval import const_eval as literal_eval
-from pyload.Api import BaseObject
+
+from .utils import set_session, toDict
+from .webinterface import PYLOAD
 
 # json encoder that accepts TBase objects
 

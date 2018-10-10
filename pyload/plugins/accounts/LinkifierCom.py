@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import hashlib
+
 import pycurl
 
-from ..internal.MultiAccount import MultiAccount
 from ..internal.misc import json
+from ..internal.MultiAccount import MultiAccount
 
 
 class LinkifierCom(MultiAccount):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import chr
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import chr
 
 from pyload.network.HTTPRequest import BadHeader
 

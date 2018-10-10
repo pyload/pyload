@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 import builtins
-
-from builtins import range
-import builtins
+import mimetypes
 import os
 import re
+from builtins import range
 
-import mimetypes
+from future.utils import with_metaclass
+
 from pyload.network.HTTPRequest import BadHeader
 
 from .Base import Base
 from .misc import encode, exists, fsjoin, parse_name, safejoin
 from .Plugin import Fail
-from future.utils import with_metaclass
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
 if not hasattr(builtins.property, "setter"):

@@ -2,12 +2,11 @@
 # @author: RaNaN, mkaay
 
 from builtins import object
-from pyload.PullEvents import UpdateEvent
-from pyload.utils import formatSize, lock
-
+from threading import RLock
 from time import sleep, time
 
-from threading import RLock
+from pyload.PullEvents import UpdateEvent
+from pyload.utils import formatSize, lock
 
 statusMap = {
     "finished": 0,

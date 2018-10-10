@@ -2,15 +2,12 @@
 # @author: mkaay
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-from hashlib import sha1
 import random
-
-from .DatabaseBackend import DatabaseBackend
-from .DatabaseBackend import style
+from builtins import object, range, str
 from functools import reduce
+from hashlib import sha1
+
+from .DatabaseBackend import DatabaseBackend, style
 
 
 class UserMethods(object):

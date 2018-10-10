@@ -3,21 +3,19 @@
 
 
 from builtins import str
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
 from os.path import join
 
-from pyload.gui.PackageDock import *
-from pyload.gui.LinkDock import *
-from pyload.gui.CaptchaDock import CaptchaDock
-from pyload.gui.SettingsWidget import SettingsWidget
-
-from pyload.gui.Collector import CollectorView, Package, Link
-from pyload.gui.Queue import QueueView
-from pyload.gui.Overview import OverviewView
-from pyload.gui.Accounts import AccountView
 from pyload.gui.AccountEdit import AccountEdit
+from pyload.gui.Accounts import AccountView
+from pyload.gui.CaptchaDock import CaptchaDock
+from pyload.gui.Collector import CollectorView, Link, Package
+from pyload.gui.LinkDock import *
+from pyload.gui.Overview import OverviewView
+from pyload.gui.PackageDock import *
+from pyload.gui.Queue import QueueView
+from pyload.gui.SettingsWidget import SettingsWidget
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 
 class MainWindow(QMainWindow):

@@ -3,14 +3,12 @@
 # @author: RaNaN
 
 
-from builtins import object
-from sys import argv
-from sys import exit
-
 import socket
-import _thread
-
+from builtins import object
+from sys import argv, exit
 from traceback import print_exc
+
+import _thread
 
 
 class Forwarder(object):

@@ -2,8 +2,8 @@
 from builtins import object
 from logging import getLogger
 
-from .HTTPRequest import HTTPRequest
 from .HTTPDownload import HTTPDownload
+from .HTTPRequest import HTTPRequest
 
 
 class Browser(object):

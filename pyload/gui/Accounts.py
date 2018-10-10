@@ -2,10 +2,10 @@
 # @author: mkaay
 
 
+from time import gmtime, strftime
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-from time import strftime, gmtime
 
 
 class AccountModel(QAbstractItemModel):

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import pycurl
 import re
 import time
 
-from ..internal.SimpleHoster import SimpleHoster
+import pycurl
+
 from ..internal.misc import format_size
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class NitrobitNet(SimpleHoster):

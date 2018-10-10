@@ -5,9 +5,6 @@
 
 # import HTMLParser  #@TODO: Use in 0.4.10
 
-from builtins import str
-from builtins import map
-from builtins import object
 import datetime
 import hashlib
 import itertools
@@ -20,12 +17,12 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib.request
-import urllib.parse
 import urllib.error
 import urllib.parse
+import urllib.request
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
+from builtins import map, object, str
 
 try:
     import simplejson as json

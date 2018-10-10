@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
-from builtins import input
-from builtins import range
 import sys
-from os.path import join, abspath, dirname
-
-path = join((abspath(dirname(__file__))), "..", "..", "lib")
-sys.path.append(path)
-
-from .thriftgen.pyload import Pyload
-from .thriftgen.pyload.ttypes import *
-from .Socket import Socket
+import xmlrpc.client
+from builtins import input, range
+from getpass import getpass
+from os.path import abspath, dirname, join
+from time import time
 
 from thrift import Thrift
 from thrift.transport import TTransport
 
 from .Protocol import Protocol
+from .Socket import Socket
+from .thriftgen.pyload import Pyload
+from .thriftgen.pyload.ttypes import *
 
-from time import time
+path = join((abspath(dirname(__file__))), "..", "..", "lib")
+sys.path.append(path)
 
-import xmlrpc.client
+
+
+
+
 
 
 def bench(f, *args, **kwargs):
@@ -32,7 +34,6 @@ def bench(f, *args, **kwargs):
     return ret
 
 
-from getpass import getpass
 user = input("user ")
 passwd = getpass("password ")
 

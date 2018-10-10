@@ -2,12 +2,11 @@
 # coding:utf-8
 
 
-from builtins import input
-from builtins import filter
-from builtins import object
 import re
-from . import InitHomeDir
+from builtins import filter, input, object
 from os import listdir
+
+from . import InitHomeDir
 
 
 class Wrapper(object):

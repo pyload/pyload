@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import str
-from builtins import range
 import os
 import subprocess
+from builtins import map, range, str
 
 from .misc import encode, fsjoin
 from .Plugin import Plugin

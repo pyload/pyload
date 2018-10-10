@@ -2,11 +2,10 @@
 # @author: mkaay, RaNaN
 
 
-from builtins import str
-from builtins import object
+from builtins import object, str
+from threading import Lock
 from time import time
 from traceback import print_exc
-from threading import Lock
 
 
 class CaptchaManager(object):

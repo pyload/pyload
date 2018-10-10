@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from os.path import join
 import re
-from urllib.parse import unquote
 from base64 import standard_b64decode
 from binascii import unhexlify
+from builtins import str
+from os.path import join
+from urllib.parse import unquote
 
-from bottle import route, request, HTTPError
-from .webinterface import PYLOAD, DL_ROOT, JS
+from bottle import HTTPError, request, route
+
+from .webinterface import DL_ROOT, JS, PYLOAD
 
 try:
     from Crypto.Cipher import AES

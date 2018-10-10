@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import hashlib
+
 import pycurl
 
-from ..internal.MultiHoster import MultiHoster
 from ..internal.misc import json, seconds_to_midnight
+from ..internal.MultiHoster import MultiHoster
 
 
 class LinkifierCom(MultiHoster):

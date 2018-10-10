@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import range
 import base64
 import re
 import time
 import urllib.parse
+from builtins import map, range
 
 from pyload.network.HTTPRequest import BadHeader
 

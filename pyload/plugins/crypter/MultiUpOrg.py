@@ -3,8 +3,9 @@ import re
 import urllib.parse
 
 from pyload.network.HTTPRequest import BadHeader
-from ..internal.SimpleCrypter import SimpleCrypter
+
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.SimpleCrypter import SimpleCrypter
 
 
 class MultiUpOrg(SimpleCrypter):

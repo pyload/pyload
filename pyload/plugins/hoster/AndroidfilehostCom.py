@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*
 
-import pycurl
 import re
+
+import pycurl
 
 from ..internal.SimpleHoster import SimpleHoster
 

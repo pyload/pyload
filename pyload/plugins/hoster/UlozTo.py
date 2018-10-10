@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-import pycurl
-import re
 import os
+import re
+from builtins import str
+
+import pycurl
 
 from ..internal.misc import json, parse_name, timestamp
 from ..internal.SimpleHoster import SimpleHoster

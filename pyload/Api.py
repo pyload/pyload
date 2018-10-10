@@ -2,18 +2,17 @@
 # @author: RaNaN
 
 
-from builtins import str
-from builtins import object
+import re
+from builtins import object, str
 from os.path import join
 from time import time
-import re
 
-from .PyFile import PyFile
-from .utils import freeSpace, compare_time
-from .common.packagetools import parseNames
 from .common.json_layer import json
+from .common.packagetools import parseNames
 from .network.RequestFactory import getURL
+from .PyFile import PyFile
 from .remote import activated
+from .utils import compare_time, freeSpace
 
 if activated:
     try:

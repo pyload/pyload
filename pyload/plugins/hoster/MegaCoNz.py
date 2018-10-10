@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
-from builtins import object
 import base64
 import os
 import random
 import re
 import struct
+from builtins import object, range, str
 
 import Crypto.Cipher.AES
 import Crypto.Util.Counter
@@ -14,7 +12,6 @@ from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Hoster import Hoster
 from ..internal.misc import decode, encode, exists, fsjoin, json
-
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

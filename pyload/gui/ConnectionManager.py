@@ -2,14 +2,12 @@
 # @author: mkaay
 
 
-from builtins import str
-from builtins import range
+from builtins import range, str
+from os.path import join
+from uuid import uuid4 as uuid
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-from os.path import join
-
-from uuid import uuid4 as uuid
 
 
 class ConnectionManager(QWidget):

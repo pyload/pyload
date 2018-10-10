@@ -3,19 +3,15 @@
 
 
 import builtins
-
-from builtins import str
-from builtins import object
-import builtins
-
 import traceback
-from _thread import start_new_thread
+from builtins import object, str
 from threading import RLock
-
 from types import MethodType
 
-from pyload.PluginThread import HookThread
+from _thread import start_new_thread
 from pyload.plugins.PluginManager import literal_eval
+from pyload.PluginThread import HookThread
+
 from .utils import lock
 
 

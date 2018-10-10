@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import pycurl
 import re
+
+import pycurl
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import json, replace_patterns

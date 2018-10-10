@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import os
-import pycurl
 import time
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import range
 
+import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Hoster import Hoster

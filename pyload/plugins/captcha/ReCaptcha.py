@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
 import os
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
 import urllib.parse
+import urllib.request
+from builtins import range, str
 from io import StringIO
 
 from ..internal.CaptchaService import CaptchaService

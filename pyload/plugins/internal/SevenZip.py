@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from builtins import map
-from builtins import filter
 import os
 import re
 import string
 import subprocess
+from builtins import filter, map
 
-from .misc import encode, fsjoin, renice
 from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from .misc import encode, fsjoin, renice
 
 
 class SevenZip(Extractor):

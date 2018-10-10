@@ -2,16 +2,12 @@
 # @author: RaNaN, mkaay
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-from threading import Thread
-from threading import Event
+from builtins import object, range, str
 from os import remove
 from os.path import exists
-from shutil import move
-
 from queue import Queue
+from shutil import move
+from threading import Event, Thread
 from traceback import print_exc
 
 from pyload.utils import chmod

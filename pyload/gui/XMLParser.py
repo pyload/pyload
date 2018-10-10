@@ -2,13 +2,12 @@
 # @author: mkaay
 
 
-from builtins import str
-from builtins import object
+import os
+from builtins import object, str
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
-
-import os
 
 
 class XMLParser(object):

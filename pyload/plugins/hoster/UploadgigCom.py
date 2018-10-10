@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.SimpleHoster import SimpleHoster
 from ..captcha.ReCaptcha import ReCaptcha
+from ..internal.SimpleHoster import SimpleHoster
 
 
 class UploadgigCom(SimpleHoster):

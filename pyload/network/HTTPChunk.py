@@ -2,16 +2,15 @@
 # @author: RaNaN
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-from os import remove, stat, fsync
-from os.path import exists
-from time import sleep
-from re import search
-from pyload.utils import fs_encode
 import codecs
+from builtins import object, range, str
+from os import fsync, remove, stat
+from os.path import exists
+from re import search
+from time import sleep
+
 import pycurl
+from pyload.utils import fs_encode
 
 from .HTTPRequest import HTTPRequest
 

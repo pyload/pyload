@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import object
 import sys
+from builtins import object
 
 
 class ImportDebugger(object):

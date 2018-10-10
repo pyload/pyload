@@ -2,13 +2,13 @@
 # @author: jeix, GammaC0de
 
 
-from builtins import object
 import errno
 import os
 import select
 import socket
 import struct
 import time
+from builtins import object
 
 from pyload.plugins.Plugin import Abort
 

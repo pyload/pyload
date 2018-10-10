@@ -2,18 +2,21 @@
 # @author: mkaay
 
 
+import socket
 from builtins import object
-SERVER_VERSION = "0.5.0"
-
 from uuid import uuid4 as uuid
 
+from pyload.remote.thriftbackend.ThriftClient import (NoConnection, NoSSL, ThriftClient,
+                                                      WrongLogin)
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
-import socket
-
-from pyload.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
+
+SERVER_VERSION = "0.5.0"
+
+
+
+
 
 
 class Connector(QObject):

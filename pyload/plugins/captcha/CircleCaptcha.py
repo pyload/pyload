@@ -3,17 +3,14 @@
 # @TODO: Recheck all
 
 
-from builtins import input
-from builtins import str
-from builtins import range
-from builtins import object
 import io
 import math
 import operator
 import sys
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import input, object, range, str
 
 import Image
 import ImageDraw

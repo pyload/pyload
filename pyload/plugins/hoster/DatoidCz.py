@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import str
 import time
 import urllib.parse
+from builtins import str
 
 from ..internal.misc import json
 from ..internal.SimpleHoster import SimpleHoster

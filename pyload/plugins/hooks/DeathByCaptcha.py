@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import str
-from builtins import range
 import base64
 import re
 import time
+from builtins import range, str
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader

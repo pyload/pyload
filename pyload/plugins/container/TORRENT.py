@@ -2,9 +2,9 @@
 import os
 import re
 import time
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
 
 from ..internal.Container import Container
 from ..internal.misc import encode, safename

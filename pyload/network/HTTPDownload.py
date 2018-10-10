@@ -2,23 +2,19 @@
 # @author: RaNaN
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-
+from builtins import object, range, str
+from logging import getLogger
 from os import remove
 from os.path import dirname
-from time import time
 from shutil import move
-from logging import getLogger
+from time import time
 
 import pycurl
+from pyload.plugins.Plugin import Abort
+from pyload.utils import fs_encode, save_join
 
 from .HTTPChunk import ChunkInfo, HTTPChunk
 from .HTTPRequest import BadHeader
-
-from pyload.plugins.Plugin import Abort
-from pyload.utils import save_join, fs_encode
 
 
 class HTTPDownload(object):

@@ -7,9 +7,8 @@ from threading import Lock
 
 from .Browser import Browser
 from .Bucket import Bucket
-from .HTTPRequest import HTTPRequest
 from .CookieJar import CookieJar
-
+from .HTTPRequest import HTTPRequest
 from .XDCCRequest import XDCCRequest
 
 

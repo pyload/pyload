@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import chr
 import base64
 import re
-import urllib.request
-import urllib.parse
 import urllib.error
+import urllib.parse
+import urllib.request
+from builtins import chr
 
 from pyload.network.RequestFactory import getURL as get_url
 

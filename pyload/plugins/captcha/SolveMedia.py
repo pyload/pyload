@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import re
+from builtins import range
 
 from ..internal.CaptchaService import CaptchaService
 from ..internal.Plugin import Fail

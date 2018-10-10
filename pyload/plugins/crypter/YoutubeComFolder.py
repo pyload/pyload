@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import map
 import re
 import urllib.parse
+from builtins import map
 
 from ..internal.Crypter import Crypter
 from ..internal.misc import fsjoin, json

@@ -3,9 +3,8 @@
 
 
 from builtins import object
-
-from time import time
 from threading import Lock
+from time import time
 
 
 class Bucket(object):

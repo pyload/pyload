@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from builtins import object
-import sys
-from . import socket
 import errno
-
+import sys
+from builtins import object
 from time import sleep
 
-from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
+from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException
+
+from . import socket
 
 WantReadError = Exception  # overwritten when ssl is used
 

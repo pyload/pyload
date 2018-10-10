@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import next
-from builtins import hex
-from builtins import str
-from builtins import object
 import inspect
 import re
 import urllib.parse
+from builtins import hex, next, object, str
 
 from pyload.network.HTTPRequest import BadHeader
 

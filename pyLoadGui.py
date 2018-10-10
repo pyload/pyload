@@ -3,39 +3,29 @@
 # @author: mkaay
 
 
-from builtins import str
-from builtins import range
-from builtins import object
-import sys
-
-from uuid import uuid4 as uuid  # should be above PyQt imports
-from time import sleep, time
-
-from base64 import b64decode
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-import re
-import pyload.common.pylgettext as gettext
 import os
-from os.path import abspath
-from os.path import join
-from os.path import basename
-from os.path import commonprefix
+import re
+import sys
+from base64 import b64decode
+from builtins import object, range, str
+from os.path import abspath, basename, commonprefix, join
+from time import sleep, time
+from uuid import uuid4 as uuid  # should be above PyQt imports
 
+import pyload.common.pylgettext as gettext
 from pyload import InitHomeDir
+from pyload.gui.Collector import *
 from pyload.gui.ConnectionManager import *
 from pyload.gui.Connector import Connector
-from pyload.gui.MainWindow import *
-from pyload.gui.Queue import *
-from pyload.gui.Overview import *
-from pyload.gui.Collector import *
-from pyload.gui.XMLParser import *
 from pyload.gui.CoreConfigParser import ConfigParser
-
+from pyload.gui.MainWindow import *
+from pyload.gui.Overview import *
+from pyload.gui.Queue import *
+from pyload.gui.XMLParser import *
 # from pyload.lib.rename_process import renameProcess
 from pyload.utils import formatSize, formatSpeed
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 try:
     import pynotify

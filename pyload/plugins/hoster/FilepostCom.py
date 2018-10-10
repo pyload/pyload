@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import str
 import re
 import time
+from builtins import str
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.misc import json

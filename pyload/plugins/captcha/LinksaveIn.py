@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
+import glob
+import os
 from builtins import range
+
+from ..internal.OCR import OCR
+
 try:
     from PIL import Image
 
 except ImportError:
     import Image
 
-import glob
-import os
 
-from ..internal.OCR import OCR
 
 
 class LinksaveIn(OCR):

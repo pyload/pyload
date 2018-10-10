@@ -12,7 +12,7 @@
 # serve to show the default.
 
 import sys
-from os.path import dirname, join, abspath
+from os.path import abspath, dirname, join
 
 dir_name = join(dirname(abspath("")))
 sys.path.append(dir_name)

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
+import re
+import sys
+from subprocess import PIPE, Popen, call
+from urllib.request import urlretrieve
+from zipfile import ZipFile
+
 from paver.easy import *
 from paver.setuputils import setup
-
-import sys
-import re
-from urllib.request import urlretrieve
-from subprocess import call, Popen, PIPE
-from zipfile import ZipFile
 
 PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)

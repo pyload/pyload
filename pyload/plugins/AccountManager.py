@@ -2,11 +2,9 @@
 # @author: RaNaN
 
 
-from builtins import str
-from builtins import object
+from builtins import object, str
 from os.path import exists
 from shutil import copy
-
 from threading import Lock
 
 from pyload.PullEvents import AccountUpdateEvent

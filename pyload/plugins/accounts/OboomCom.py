@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from builtins import object
+
+from ..internal.Account import Account
+from ..internal.misc import json
+
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 
@@ -18,8 +22,6 @@ except ImportError:
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
-from ..internal.Account import Account
-from ..internal.misc import json
 
 
 class OboomCom(Account):

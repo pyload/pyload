@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from builtins import range
-import string
-from threading import Thread
-from random import choice, randint, sample
-from time import time
-from math import floor
 import gc
+import string
+from builtins import range
+from math import floor
+from random import choice, randint, sample
+from threading import Thread
+from time import time
+from traceback import format_exc, print_exc
 
-from traceback import print_exc, format_exc
-
-from pyload.remote.thriftbackend.ThriftClient import ThriftClient, Destination
+from pyload.remote.thriftbackend.ThriftClient import Destination, ThriftClient
 
 
 def createURLs():

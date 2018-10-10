@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import random
 import re
+from builtins import range
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader

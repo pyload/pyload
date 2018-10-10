@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from builtins import range
 import re
 import urllib.parse
+from builtins import range
+
+from pyload.network.HTTPRequest import BadHeader
 
 from ..internal.Hoster import Hoster
-from pyload.network.HTTPRequest import BadHeader
 
 
 class Http(Hoster):

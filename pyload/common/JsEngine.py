@@ -4,9 +4,8 @@
 
 from builtins import object
 from imp import find_module
-from os.path import join, exists
+from os.path import exists, join
 from urllib.parse import quote
-
 
 ENGINE = ""
 

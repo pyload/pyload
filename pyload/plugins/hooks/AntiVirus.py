@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import map
 import os
 import shutil
 import subprocess
+from builtins import map
 
 from ..internal.Addon import Addon
 from ..internal.misc import Expose, encode, exists, fsjoin, threaded

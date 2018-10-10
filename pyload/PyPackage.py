@@ -2,6 +2,7 @@
 # @author: RaNaN, mkaay
 
 from builtins import object
+
 from pyload.PullEvents import UpdateEvent
 from pyload.utils import save_path
 
