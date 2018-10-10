@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 
 def renameProcess(new_name):

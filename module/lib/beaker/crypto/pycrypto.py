@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Encryption module that uses pycryptopp or pycrypto"""
 try:
     # Pycryptopp is preferred over Crypto because Crypto has had

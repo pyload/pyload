@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Implementation of JSONDecoder
 """
 from builtins import chr

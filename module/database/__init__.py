@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 
 from .DatabaseBackend import DatabaseBackend
 from .DatabaseBackend import style

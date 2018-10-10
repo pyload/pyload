@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """A high-speed, production ready, thread pooled, generic WSGI server.
 
 Simplest example on how to use this module directly

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from beaker.container import NamespaceManager, Container
 from beaker.exceptions import InvalidCacheBackendError, MissingCacheParameter
 from beaker.synchronization import file_synchronizer, null_synchronizer

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Encryption module that uses the Java Cryptography Extensions (JCE).
 

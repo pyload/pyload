@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Bottle is a fast and simple micro-framework for small web applications. It

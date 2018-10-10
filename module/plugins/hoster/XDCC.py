@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from builtins import str
@@ -567,7 +566,7 @@ class XDCC(Hoster):
                             self.proccess_irc_command(origin, command, args)
 
                             if self.exc_info:
-                                raise self.exc_info[1], None, self.exc_info[2]
+                                raise self.exc_info
 
                     finally:
                         self.irc_client.disconnect_server()

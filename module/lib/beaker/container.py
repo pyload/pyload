@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Container and Namespace classes"""
 import anydbm
 import cPickle

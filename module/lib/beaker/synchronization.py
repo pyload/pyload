@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Synchronization functions.
 
 File- and mutex-based mutual exclusion synchronizers are provided,

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 
 from ..internal.Addon import Addon
 

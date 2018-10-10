@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Cache object
 
 The Cache object is used to manage a set of cache files and their

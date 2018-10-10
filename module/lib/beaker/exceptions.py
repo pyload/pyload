@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Beaker exception classes"""
 
 class BeakerException(Exception):

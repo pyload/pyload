@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from builtins import chr
 from builtins import object
 class Getch(object):
