@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from functools import reduce
 
 from pyload.plugins.internal.misc import json

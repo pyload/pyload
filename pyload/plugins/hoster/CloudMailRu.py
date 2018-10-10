@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import base64
 
 from pyload.plugins.internal.Hoster import Hoster

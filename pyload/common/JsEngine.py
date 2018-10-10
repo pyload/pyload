@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 from builtins import object
 from imp import find_module
 from os.path import exists, join

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-
 from builtins import object
 
 from pyload.database import DatabaseBackend, style

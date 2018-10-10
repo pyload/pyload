@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-
 from os.path import exists
 
 from pyload.remote.RemoteManager import BackendBase

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 import io
 from builtins import object, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import threading
 
 from pyload.plugins.internal.misc import Periodical, isiterable

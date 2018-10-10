@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-
 import random
 from builtins import object, range, str
 from functools import reduce

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from pyload.plugins.internal.misc import json, set_cookie
 from pyload.plugins.internal.MultiAccount import MultiAccount
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # coding:utf-8
 
-
 import re
 from builtins import filter, input, object
 from os import listdir

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-
 import re
 import sys
 from builtins import object, str

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from pyload.network.RequestFactory import getURL as get_url
 
 from pyload.plugins.internal.misc import json

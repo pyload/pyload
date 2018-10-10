@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, spoob, mkaay
 
-
 import os
 from builtins import object, str
 from itertools import islice

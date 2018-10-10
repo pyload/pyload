@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
-
 import re
 from urllib.parse import urlparse
 

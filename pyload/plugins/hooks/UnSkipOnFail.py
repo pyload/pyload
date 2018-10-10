@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from pyload.PyFile import PyFile
 
 from pyload.plugins.internal.Addon import Addon

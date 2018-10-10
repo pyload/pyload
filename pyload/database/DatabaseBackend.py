@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-
 from builtins import object, range, str
 from os import remove
 from os.path import exists

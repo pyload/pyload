@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from builtins import str
 
 from pyload.plugins.internal.Account import Account

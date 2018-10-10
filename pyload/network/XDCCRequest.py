@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: jeix, GammaC0de
 
-
 import errno
 import os
 import select

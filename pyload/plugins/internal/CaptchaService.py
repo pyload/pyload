@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from pyload.plugins.internal.Captcha import Captcha
 
 

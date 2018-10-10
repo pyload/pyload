@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from pyload.plugins.internal.Crypter import Crypter
 from pyload.plugins.internal.misc import json
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 from bottle import HTTPError, ServerAdapter, redirect, request
 from pyload.Api import PERMS, ROLE, has_permission
 

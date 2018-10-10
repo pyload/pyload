@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
-
-
+# @author: RaNaN
 
 import re
 from builtins import object, range, str

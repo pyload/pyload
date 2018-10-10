@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 from builtins import object, range, str
 from logging import getLogger
 from os import remove

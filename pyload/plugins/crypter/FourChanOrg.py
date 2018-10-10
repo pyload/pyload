@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 #
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)
 

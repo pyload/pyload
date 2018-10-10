@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import pycurl
 
 from pyload.plugins.internal.Crypter import Crypter

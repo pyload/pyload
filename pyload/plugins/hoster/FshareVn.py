@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import urllib.parse
 
 from pyload.plugins.internal.misc import json

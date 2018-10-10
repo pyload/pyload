@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-
 import builtins
 import traceback
 from builtins import object, str

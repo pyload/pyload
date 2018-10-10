@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from builtins import map
 
 from pyload.plugins.internal.Base import Base

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import random
 from builtins import range, str
 

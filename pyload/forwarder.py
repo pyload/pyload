@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 import socket
 from builtins import object
 from sys import argv, exit

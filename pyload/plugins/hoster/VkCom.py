@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 #
 # Test links:
 #   http://vk.com/video_ext.php?oid=166335015&id=162608895&hash=b55affa83774504b&hd=1

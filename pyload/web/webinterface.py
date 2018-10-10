@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-
 import os
 import sys
 from builtins import str
