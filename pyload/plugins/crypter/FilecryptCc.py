@@ -13,10 +13,10 @@ import Crypto.Cipher.AES
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import BadHeader, HTTPRequest
 
-from ..captcha.CoinHive import CoinHive
-from ..captcha.ReCaptcha import ReCaptcha
-from ..captcha.SolveMedia import SolveMedia
-from ..internal.Crypter import Crypter
+from pyload.plugins.captcha.CoinHive import CoinHive
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class BIGHTTPRequest(HTTPRequest):

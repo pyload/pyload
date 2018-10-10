@@ -6,8 +6,8 @@ import time
 import zlib
 from threading import Event
 
-from ..internal.Addon import Addon
-from ..internal.misc import encode, format_time, fsjoin, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import encode, format_time, fsjoin, threaded
 
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):

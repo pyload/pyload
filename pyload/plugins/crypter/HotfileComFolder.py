@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.DeadCrypter import DeadCrypter
+from pyload.plugins.internal.DeadCrypter import DeadCrypter
 
 
 class HotfileComFolder(DeadCrypter):

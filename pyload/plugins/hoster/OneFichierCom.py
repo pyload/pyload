@@ -4,8 +4,8 @@ from builtins import map, range
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.misc import format_exc
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import format_exc
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class OneFichierCom(SimpleHoster):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class ZeveraCom(MultiAccount):

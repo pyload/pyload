@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.XFSHoster import XFSHoster
 
 
 class UploadrocketNet(XFSHoster):

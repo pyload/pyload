@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from .misc import set_cookie
-from .SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.misc import set_cookie
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class XFSCrypter(SimpleCrypter):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.MultiCrypter import MultiCrypter
+from pyload.plugins.internal.MultiCrypter import MultiCrypter
 
 
 class LinkdecrypterCom(MultiCrypter):

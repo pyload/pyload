@@ -7,23 +7,24 @@ from builtins import object, str
 from os.path import join
 from time import time
 
-from .common.json_layer import json
-from .common.packagetools import parseNames
-from .network.RequestFactory import getURL
-from .PyFile import PyFile
-from .remote import activated
-from .utils import compare_time, freeSpace
+from pyload.common.json_layer import json
+from pyload.common.packagetools import parseNames
+from pyload.network.RequestFactory import getURL
+from pyload.PyFile import PyFile
+from pyload.remote import activated
+from pyload.utils import compare_time, freeSpace
 
 if activated:
     try:
-        from .remote.thriftbackend.thriftgen.pyload.ttypes import *
-        from .remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+        from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+        from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+
         BaseObject = TBase
     except ImportError:
         print("Thrift not imported")
-        from .remote.socketbackend.ttypes import *
+        from pyload.remote.socketbackend.ttypes import *
 else:
-    from .remote.socketbackend.ttypes import *
+    from pyload.remote.socketbackend.ttypes import *
 
 # contains function names mapped to their permissions
 # unlisted functions are for admins only

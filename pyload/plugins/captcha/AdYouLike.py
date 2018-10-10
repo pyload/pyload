@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.CaptchaService import CaptchaService
-from ..internal.misc import json
+from pyload.plugins.internal.CaptchaService import CaptchaService
+from pyload.plugins.internal.misc import json
 
 
 class AdYouLike(CaptchaService):

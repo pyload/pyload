@@ -6,8 +6,8 @@ import sys
 import time
 from builtins import zip
 
-from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode, exists, fsjoin, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import Expose, encode, exists, fsjoin, threaded
 
 
 class UpdateManager(Addon):

@@ -3,8 +3,8 @@ import os
 import shutil
 import time
 
-from ..internal.Addon import Addon
-from ..internal.misc import encode, fsjoin
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import encode, fsjoin
 
 
 class HotFolder(Addon):

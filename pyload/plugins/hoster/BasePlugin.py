@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Http import Http
+from pyload.plugins.hoster.Http import Http
 
 
 class BasePlugin(Http):

@@ -3,8 +3,8 @@ import re
 import urllib.parse
 from builtins import map
 
-from ..internal.Crypter import Crypter
-from ..internal.misc import fsjoin, json
+from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.misc import fsjoin, json
 
 
 class YoutubeComFolder(Crypter):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from builtins import str
 
-from ..internal.Account import Account
-from ..internal.misc import json
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import json
 
 
 class RapidgatorNet(Account):

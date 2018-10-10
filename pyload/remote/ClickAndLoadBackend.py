@@ -10,7 +10,7 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-from .RemoteManager import BackendBase
+from pyload.remote.RemoteManager import BackendBase
 
 try:
     from Crypto.Cipher import AES

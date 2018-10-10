@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from .Plugin import Fail
-from .SimpleHoster import SimpleHoster
+from pyload.plugins.internal.Plugin import Fail
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MultiHoster(SimpleHoster):

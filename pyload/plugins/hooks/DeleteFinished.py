@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from pyload.database import style
 
-from ..internal.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 class DeleteFinished(Addon):

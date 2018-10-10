@@ -2,7 +2,7 @@
 import re
 from builtins import str
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class PromptfileCom(SimpleHoster):

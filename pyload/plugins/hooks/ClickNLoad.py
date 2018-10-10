@@ -3,8 +3,8 @@ import socket
 import threading
 import time
 
-from ..internal.Addon import Addon
-from ..internal.misc import forward, lock, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import forward, lock, threaded
 
 try:
     import ssl

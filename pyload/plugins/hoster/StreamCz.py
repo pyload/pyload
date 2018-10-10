@@ -5,8 +5,8 @@ import time
 import urllib.parse
 from builtins import range, str
 
-from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_api_password(episode):

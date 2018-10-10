@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.misc import replace_patterns
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.misc import replace_patterns
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class SimplydebridCom(MultiHoster):

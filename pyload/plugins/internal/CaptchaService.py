@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Captcha import Captcha
+from pyload.plugins.internal.Captcha import Captcha
 
 
 class CaptchaService(Captcha):

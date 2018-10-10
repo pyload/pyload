@@ -5,8 +5,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from ..internal.Crypter import Crypter
-from ..internal.misc import json
+from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.misc import json
 
 
 class CloudMailRuFolder(Crypter):

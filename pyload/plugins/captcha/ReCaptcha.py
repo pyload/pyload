@@ -8,7 +8,7 @@ import urllib.request
 from builtins import range, str
 from io import StringIO
 
-from ..internal.CaptchaService import CaptchaService
+from pyload.plugins.internal.CaptchaService import CaptchaService
 
 try:
     no_pil = False
@@ -427,7 +427,7 @@ if __name__ == "__main__":
     # Sign with the command `python -m pyload.plugins.captcha.ReCaptcha
     # pyload.private.pem pem_passphrase`
     import sys
-    from ..internal.misc import sign_string
+    from pyload.plugins.internal.misc import sign_string
 
     if len(sys.argv) > 2:
         with open(sys.argv[1], 'r') as f:

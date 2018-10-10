@@ -2,7 +2,7 @@
 import re
 from builtins import str
 
-from ..internal.XFSCrypter import XFSCrypter
+from pyload.plugins.internal.XFSCrypter import XFSCrypter
 
 
 class XFileSharingFolder(XFSCrypter):

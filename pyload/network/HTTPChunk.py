@@ -12,7 +12,7 @@ from time import sleep
 import pycurl
 from pyload.utils import fs_encode
 
-from .HTTPRequest import HTTPRequest
+from pyload.network.HTTPRequest import HTTPRequest
 
 
 class WrongFormat(Exception):

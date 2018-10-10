@@ -12,7 +12,7 @@ from _thread import start_new_thread
 from pyload.plugins.PluginManager import literal_eval
 from pyload.PluginThread import HookThread
 
-from .utils import lock
+from pyload.utils import lock
 
 
 class HookManager(object):

@@ -2,7 +2,7 @@
 import re
 from builtins import range
 
-from ..internal.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class UlozToFolder(Crypter):

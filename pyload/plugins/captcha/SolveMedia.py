@@ -2,8 +2,8 @@
 import re
 from builtins import range
 
-from ..internal.CaptchaService import CaptchaService
-from ..internal.Plugin import Fail
+from pyload.plugins.internal.CaptchaService import CaptchaService
+from pyload.plugins.internal.Plugin import Fail
 
 
 class SolveMedia(CaptchaService):

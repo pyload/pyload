@@ -3,8 +3,8 @@ import os
 import subprocess
 from builtins import map, range, str
 
-from .misc import encode, fsjoin
-from .Plugin import Plugin
+from pyload.plugins.internal.misc import encode, fsjoin
+from pyload.plugins.internal.Plugin import Plugin
 
 try:
     from PIL import Image

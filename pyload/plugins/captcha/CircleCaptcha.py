@@ -15,7 +15,7 @@ from builtins import input, object, range, str
 import Image
 import ImageDraw
 
-from ..internal.OCR import OCR
+from pyload.plugins.internal.OCR import OCR
 
 
 class ImageSequence(object):

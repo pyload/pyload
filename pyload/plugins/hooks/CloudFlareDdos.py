@@ -6,9 +6,9 @@ from builtins import hex, next, object, str
 
 from pyload.network.HTTPRequest import BadHeader
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.Addon import Addon
-from ..internal.misc import parse_html_header
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import parse_html_header
 
 
 def plugin_id(plugin):

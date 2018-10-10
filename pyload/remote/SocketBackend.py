@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import socketserver
 
-from .RemoteManager import BackendBase
+from pyload.remote.RemoteManager import BackendBase
 
 
 class RequestHandler(socketserver.BaseRequestHandler):

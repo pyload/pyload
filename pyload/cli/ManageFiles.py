@@ -7,8 +7,8 @@ from time import time
 
 from pyload.Api import Destination, PackageData
 
-from .Handler import Handler
-from .printer import *
+from pyload.cli.Handler import Handler
+from pyload.cli.printer import *
 
 
 class ManageFiles(Handler):

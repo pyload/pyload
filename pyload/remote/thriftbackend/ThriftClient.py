@@ -6,12 +6,12 @@ from traceback import print_exc
 
 from thrift.transport import TTransport
 
-from .Protocol import Protocol
-from .socket import error
+from pyload.remote.thriftbackend.Protocol import Protocol
+from pyload.remote.thriftbackend.socket import error
 #from thrift.transport.TZlibTransport import TZlibTransport
-from .Socket import Socket
-from .thriftgen.pyload import Pyload
-from .thriftgen.pyload.ttypes import *
+from pyload.remote.thriftbackend.Socket import Socket
+from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
+from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 try:
     import thrift

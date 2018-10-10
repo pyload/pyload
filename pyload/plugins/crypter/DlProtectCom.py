@@ -2,7 +2,7 @@
 import re
 import urllib.parse
 
-from ..internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class DlProtectCom(SimpleCrypter):

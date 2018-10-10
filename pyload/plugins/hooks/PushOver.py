@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.Notifier import Notifier
+from pyload.plugins.internal.Notifier import Notifier
 
 
 class PushOver(Notifier):

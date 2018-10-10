@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.Plugin import Retry
-from ..internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.Plugin import Retry
+from pyload.plugins.internal.XFSHoster import XFSHoster
 
 
 class TusfilesNet(XFSHoster):

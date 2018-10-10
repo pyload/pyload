@@ -4,10 +4,10 @@ import re
 import time
 import urllib.parse
 
-from .Captcha import Captcha
-from .misc import (decode, encode, fixurl, format_size, format_time, parse_html_form,
+from pyload.plugins.internal.Captcha import Captcha
+from pyload.plugins.internal.misc import (decode, encode, fixurl, format_size, format_time, parse_html_form,
                    parse_name, replace_patterns)
-from .Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
+from pyload.plugins.internal.Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
 # @TODO: Recheck in 0.4.10

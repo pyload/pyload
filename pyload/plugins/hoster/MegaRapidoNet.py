@@ -2,7 +2,7 @@
 import random
 from builtins import range, str
 
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 def random_with_n_digits(n):

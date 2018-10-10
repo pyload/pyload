@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .ZeveraCom import ZeveraCom
+from pyload.plugins.hoster.ZeveraCom import ZeveraCom
 
 
 class PutdriveCom(ZeveraCom):

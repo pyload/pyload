@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 class JustPremium(Addon):

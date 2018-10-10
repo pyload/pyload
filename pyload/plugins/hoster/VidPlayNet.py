@@ -3,7 +3,7 @@
 # Test links:
 # BigBuckBunny_320x180.mp4 - 61.7 Mb - http://vidplay.net/38lkev0h3jv0
 
-from ..internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.XFSHoster import XFSHoster
 
 
 class VidPlayNet(XFSHoster):

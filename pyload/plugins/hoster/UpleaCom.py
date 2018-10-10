@@ -3,7 +3,7 @@ import re
 import urllib.parse
 from builtins import chr, range
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def decode_cloudflare_email(value):

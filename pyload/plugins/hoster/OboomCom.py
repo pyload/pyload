@@ -5,9 +5,9 @@
 
 import re
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.Hoster import Hoster
-from ..internal.misc import json
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import json
 
 
 class OboomCom(Hoster):

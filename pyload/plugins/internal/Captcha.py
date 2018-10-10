@@ -3,7 +3,7 @@ import base64
 import os
 import time
 
-from .Plugin import Plugin
+from pyload.plugins.internal.Plugin import Plugin
 
 
 class Captcha(Plugin):

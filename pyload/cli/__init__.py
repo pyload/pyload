@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-from .AddPackage import AddPackage
-from .ManageFiles import ManageFiles
+from pyload.cli.AddPackage import AddPackage
+from pyload.cli.ManageFiles import ManageFiles

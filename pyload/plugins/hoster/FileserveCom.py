@@ -3,9 +3,9 @@ import re
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.Hoster import Hoster
-from ..internal.misc import json, parse_size, seconds_to_midnight
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import json, parse_size, seconds_to_midnight
 
 
 class FileserveCom(Hoster):

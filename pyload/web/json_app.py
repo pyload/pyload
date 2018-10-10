@@ -6,8 +6,8 @@ from traceback import print_exc
 from bottle import HTTPError, request, route
 from pyload.utils import decode, formatSize
 
-from .utils import login_required, render_to_response, toDict
-from .webinterface import PYLOAD
+from pyload.web.utils import login_required, render_to_response, toDict
+from pyload.web.webinterface import PYLOAD
 
 
 def format_time(seconds):

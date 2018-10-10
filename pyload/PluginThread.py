@@ -16,11 +16,11 @@ from types import MethodType
 
 from pycurl import error
 
-from .Api import OnlineStatus
-from .common.packagetools import parseNames
-from .plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from .PyFile import PyFile
-from .utils import save_join
+from pyload.Api import OnlineStatus
+from pyload.common.packagetools import parseNames
+from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
+from pyload.PyFile import PyFile
+from pyload.utils import save_join
 
 
 class PluginThread(Thread):

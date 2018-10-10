@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import map
 
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class PremiumTo(MultiAccount):

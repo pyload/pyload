@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.misc import json, set_cookie
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import json, set_cookie
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class SimplyPremiumCom(MultiAccount):

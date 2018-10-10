@@ -10,7 +10,7 @@
 
 import re
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RemixshareCom(SimpleHoster):

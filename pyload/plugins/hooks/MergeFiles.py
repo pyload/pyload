@@ -2,8 +2,8 @@
 import os
 import re
 
-from ..internal.Addon import Addon
-from ..internal.misc import fsjoin, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import fsjoin, threaded
 
 
 class MergeFiles(Addon):

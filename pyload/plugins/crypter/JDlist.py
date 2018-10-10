@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class JDlist(Crypter):

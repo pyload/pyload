@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-from .Addon import Addon
-from .misc import Expose, encode, isiterable
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import Expose, encode, isiterable
 
 
 class Notifier(Addon):

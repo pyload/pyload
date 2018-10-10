@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.misc import json
-from .MegaCoNz import MegaCoNz, MegaCrypto
+from pyload.plugins.internal.misc import json
+from pyload.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
 
 
 class MegacrypterCom(MegaCoNz):

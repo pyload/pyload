@@ -20,9 +20,9 @@ from pyload.common.json_layer import json
 from pyload.utils import decode, formatSize
 from pyload.web import ServerThread
 
-from . import api_app, cnl_app, json_app, pyload_app
-from .filters import date, path_make_absolute, path_make_relative, quotepath, truncate
-from .middlewares import GZipMiddleWare, PrefixMiddleware, StripPathMiddleware
+from pyload.web import api_app, cnl_app, json_app, pyload_app
+from pyload.web.filters import date, path_make_absolute, path_make_relative, quotepath, truncate
+from pyload.web.middlewares import GZipMiddleWare, PrefixMiddleware, StripPathMiddleware
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -145,7 +145,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     CherryPyWSGIServer.numthreads = theads
 
-    from .utils import CherryPyWSGI
+    from pyload.web.utils import CherryPyWSGI
 
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 

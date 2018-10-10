@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from .Handler import Handler
-from .printer import *
+from pyload.cli.Handler import Handler
+from pyload.cli.printer import *
 
 
 class AddPackage(Handler):

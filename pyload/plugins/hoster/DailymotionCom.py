@@ -4,8 +4,8 @@ import re
 from pyload.network.RequestFactory import getURL as get_url
 from pyload.PyFile import statusMap
 
-from ..internal.Hoster import Hoster
-from ..internal.misc import json
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import json
 
 
 def get_info(urls):

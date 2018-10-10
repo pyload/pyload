@@ -6,8 +6,8 @@ import urllib.request
 
 import MultipartPostHandler
 
-from ..internal.Container import Container
-from ..internal.misc import encode, fsjoin
+from pyload.plugins.internal.Container import Container
+from pyload.plugins.internal.misc import encode, fsjoin
 
 
 class CCF(Container):

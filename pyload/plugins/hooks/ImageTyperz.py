@@ -5,8 +5,8 @@ import re
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
 
-from ..internal.Addon import Addon
-from ..internal.misc import threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import threaded
 
 
 class ImageTyperzException(Exception):

@@ -11,8 +11,8 @@ from threading import Thread
 import pycurl
 from pyload.Api import FileDoesNotExists, PackageDoesNotExists
 
-from ..internal.misc import format_size
-from ..internal.Notifier import Notifier
+from pyload.plugins.internal.misc import format_size
+from pyload.plugins.internal.Notifier import Notifier
 
 
 class IRC(Thread, Notifier):

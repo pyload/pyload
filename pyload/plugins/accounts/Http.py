@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class Http(Account):

@@ -4,10 +4,10 @@ import random
 import re
 from builtins import range
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..captcha.SolveMedia import SolveMedia
-from .misc import html_unescape, parse_time, seconds_to_midnight, set_cookie
-from .SimpleHoster import SimpleHoster
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.misc import html_unescape, parse_time, seconds_to_midnight, set_cookie
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class XFSHoster(SimpleHoster):

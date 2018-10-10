@@ -4,7 +4,7 @@ from builtins import str
 
 import BeautifulSoup
 
-from ..internal.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class DuckCryptInfo(Crypter):

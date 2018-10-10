@@ -4,7 +4,7 @@
 #   http://d-h.st/mM8
 
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DevhostSt(SimpleHoster):

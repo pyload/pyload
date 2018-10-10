@@ -2,7 +2,7 @@
 import re
 from builtins import str
 
-from ..internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.XFSHoster import XFSHoster
 
 
 class XFileSharing(XFSHoster):

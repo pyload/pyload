@@ -3,8 +3,8 @@ import hashlib
 import time
 from builtins import object
 
-from ..internal.misc import json
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 try:
     from beaker.crypto.pbkdf2 import PBKDF2

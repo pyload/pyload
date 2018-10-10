@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..hoster.MegaCoNz import MegaClient, MegaCrypto
-from ..internal.Crypter import Crypter
+from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class MegaCoNzFolder(Crypter):

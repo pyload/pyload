@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.misc import json
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class MyfastfileCom(MultiHoster):

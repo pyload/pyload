@@ -2,8 +2,8 @@
 import sys
 import zipfile
 
-from .Extractor import ArchiveError, CRCError, Extractor, PasswordError
-from .misc import encode
+from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from pyload.plugins.internal.misc import encode
 
 
 class UnZip(Extractor):

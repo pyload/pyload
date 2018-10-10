@@ -3,8 +3,8 @@ import time
 
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.misc import json
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):

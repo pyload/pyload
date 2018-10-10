@@ -5,7 +5,7 @@ import time
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.Account import Account
+from pyload.plugins.internal.Account import Account
 
 try:
     import passlib.hash

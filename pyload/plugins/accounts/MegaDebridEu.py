@@ -4,8 +4,8 @@ from functools import reduce
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.misc import encode, json, reduce
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import encode, json, reduce
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 def args(**kwargs):

@@ -3,8 +3,8 @@ import hashlib
 
 import pycurl
 
-from ..internal.misc import json
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class LinkifierCom(MultiAccount):

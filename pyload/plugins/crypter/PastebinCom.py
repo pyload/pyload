@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class PastebinCom(SimpleCrypter):

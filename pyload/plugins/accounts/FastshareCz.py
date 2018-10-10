@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.Account import Account
-from ..internal.misc import set_cookie
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import set_cookie
 
 
 class FastshareCz(Account):

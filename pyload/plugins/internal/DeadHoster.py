@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 class DeadHoster(Hoster):

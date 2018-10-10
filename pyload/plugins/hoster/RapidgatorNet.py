@@ -4,11 +4,11 @@ import re
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
-from ..captcha.AdsCaptcha import AdsCaptcha
-from ..captcha.ReCaptcha import ReCaptcha
-from ..captcha.SolveMedia import SolveMedia
-from ..internal.misc import json, seconds_to_midnight
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.captcha.AdsCaptcha import AdsCaptcha
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.misc import json, seconds_to_midnight
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RapidgatorNet(SimpleHoster):

@@ -4,8 +4,8 @@ import time
 
 import pycurl
 
-from ..internal.misc import format_size
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import format_size
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class NitrobitNet(SimpleHoster):

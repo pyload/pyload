@@ -4,8 +4,8 @@ import re
 import urllib.parse
 from builtins import str
 
-from ..internal.Hoster import Hoster
-from ..internal.misc import json
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import json
 
 
 class RedtubeCom(Hoster):

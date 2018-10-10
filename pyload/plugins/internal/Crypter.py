@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from builtins import map
 
-from .Base import Base
-from .misc import parse_name, safename
+from pyload.plugins.internal.Base import Base
+from pyload.plugins.internal.misc import parse_name, safename
 
 
 class Crypter(Base):

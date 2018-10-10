@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from ..internal.Addon import Addon
-from ..internal.misc import seconds_to_nexthour
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import seconds_to_nexthour
 
 
 class LogMarker(Addon):

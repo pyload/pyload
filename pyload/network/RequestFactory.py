@@ -5,11 +5,11 @@
 from builtins import object
 from threading import Lock
 
-from .Browser import Browser
-from .Bucket import Bucket
-from .CookieJar import CookieJar
-from .HTTPRequest import HTTPRequest
-from .XDCCRequest import XDCCRequest
+from pyload.network.Browser import Browser
+from pyload.network.Bucket import Bucket
+from pyload.network.CookieJar import CookieJar
+from pyload.network.HTTPRequest import HTTPRequest
+from pyload.network.XDCCRequest import XDCCRequest
 
 
 class RequestFactory(object):

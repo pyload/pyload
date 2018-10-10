@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 class LinkFilter(Addon):

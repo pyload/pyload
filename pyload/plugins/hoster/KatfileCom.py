@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..captcha.SolveMedia import SolveMedia
-from ..internal.misc import parse_time
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.misc import parse_time
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class KatfileCom(SimpleHoster):

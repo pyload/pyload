@@ -3,8 +3,8 @@ import re
 import time
 import urllib.parse
 
-from .Account import Account
-from .misc import parse_html_form, parse_time, set_cookie
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import parse_html_form, parse_time, set_cookie
 
 
 class XFSAccount(Account):

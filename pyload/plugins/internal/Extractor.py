@@ -2,8 +2,8 @@
 import os
 import re
 
-from .misc import encode
-from .Plugin import Plugin
+from pyload.plugins.internal.misc import encode
+from pyload.plugins.internal.Plugin import Plugin
 
 
 class ArchiveError(Exception):

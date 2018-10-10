@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from .DatabaseBackend import DatabaseBackend
-from .DatabaseBackend import style
+from pyload.database.DatabaseBackend import DatabaseBackend
+from pyload.database.DatabaseBackend import style
 
-from .FileDatabase import FileHandler
-from .UserDatabase import UserMethods
-from .StorageDatabase import StorageMethods
+from pyload.database.FileDatabase import FileHandler
+from pyload.database.UserDatabase import UserMethods
+from pyload.database.StorageDatabase import StorageMethods

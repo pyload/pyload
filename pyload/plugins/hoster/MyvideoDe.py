@@ -2,8 +2,8 @@
 import re
 from builtins import str
 
-from ..internal.Hoster import Hoster
-from ..internal.misc import html_unescape
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import html_unescape
 
 
 class MyvideoDe(Hoster):

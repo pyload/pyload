@@ -8,8 +8,8 @@ from pyload.Api import BaseObject
 from pyload.common.json_layer import json
 from pyload.lib.SafeEval import const_eval as literal_eval
 
-from .utils import set_session, toDict
-from .webinterface import PYLOAD
+from pyload.web.utils import set_session, toDict
+from pyload.web.webinterface import PYLOAD
 
 # json encoder that accepts TBase objects
 

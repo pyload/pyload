@@ -5,8 +5,8 @@ import sys
 import time
 from builtins import object
 
-from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode, fsjoin
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import Expose, encode, fsjoin
 
 try:
     import caffeine

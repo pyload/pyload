@@ -3,8 +3,8 @@ import pycurl
 from pyload.network.Browser import Browser
 from pyload.network.HTTPRequest import HTTPRequest
 
-from ..internal.Addon import Addon
-from ..internal.misc import encode
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import encode
 
 
 class UserAgentSwitcher(Addon):

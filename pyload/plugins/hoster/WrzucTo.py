@@ -3,7 +3,7 @@ import re
 
 import pycurl
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class WrzucTo(SimpleHoster):

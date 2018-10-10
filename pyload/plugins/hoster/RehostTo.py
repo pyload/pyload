@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class RehostTo(MultiHoster):

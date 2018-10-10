@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class DebridItaliaCom(MultiAccount):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import threading
 
-from .misc import Periodical, isiterable
-from .Plugin import Plugin
+from pyload.plugins.internal.misc import Periodical, isiterable
+from pyload.plugins.internal.Plugin import Plugin
 
 
 class Addon(Plugin):

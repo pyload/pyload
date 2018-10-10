@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import urllib.parse
 
-from ..internal.Crypter import Crypter
-from ..internal.misc import fsjoin, json
+from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.misc import fsjoin, json
 
 
 class DailymotionComFolder(Crypter):

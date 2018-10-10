@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.XFSAccount import XFSAccount
+from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):

@@ -6,7 +6,7 @@ import re
 from builtins import filter, input, object
 from os import listdir
 
-from . import InitHomeDir
+from pyload import InitHomeDir
 
 
 class Wrapper(object):

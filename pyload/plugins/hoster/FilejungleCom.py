@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .FileserveCom import FileserveCom
+from pyload.plugins.hoster.FileserveCom import FileserveCom
 
 
 class FilejungleCom(FileserveCom):

@@ -4,7 +4,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from ..internal.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 class XVideosCom(Hoster):

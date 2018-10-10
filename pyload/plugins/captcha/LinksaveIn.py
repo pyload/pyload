@@ -3,8 +3,6 @@ import glob
 import os
 from builtins import range
 
-from ..internal.OCR import OCR
-
 try:
     from PIL import Image
 
@@ -12,6 +10,7 @@ except ImportError:
     import Image
 
 
+from pyload.plugins.internal.OCR import OCR
 
 
 class LinksaveIn(OCR):

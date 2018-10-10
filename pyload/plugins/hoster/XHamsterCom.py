@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.Hoster import Hoster
-from ..internal.misc import json
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import json
 
 
 def quality_fallback(desired, available):

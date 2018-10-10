@@ -3,8 +3,8 @@ import os
 import subprocess
 from builtins import map
 
-from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import Expose, encode
 
 
 class ExternalScripts(Addon):

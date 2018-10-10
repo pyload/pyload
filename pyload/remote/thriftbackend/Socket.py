@@ -6,7 +6,7 @@ from time import sleep
 
 from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException
 
-from . import socket
+from pyload.remote.thriftbackend import socket
 
 WantReadError = Exception  # overwritten when ssl is used
 

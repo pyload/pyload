@@ -9,10 +9,10 @@ from time import time
 from thrift import Thrift
 from thrift.transport import TTransport
 
-from .Protocol import Protocol
-from .Socket import Socket
-from .thriftgen.pyload import Pyload
-from .thriftgen.pyload.ttypes import *
+from pyload.remote.thriftbackend.Protocol import Protocol
+from pyload.remote.thriftbackend.Socket import Socket
+from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
+from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 path = join((abspath(dirname(__file__))), "..", "..", "lib")
 sys.path.append(path)

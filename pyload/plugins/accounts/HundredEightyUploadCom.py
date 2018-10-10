@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.XFSAccount import XFSAccount
+from pyload.plugins.internal.XFSAccount import XFSAccount
 
 
 class HundredEightyUploadCom(XFSAccount):

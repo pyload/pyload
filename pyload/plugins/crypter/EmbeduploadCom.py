@@ -3,7 +3,7 @@ import re
 
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class EmbeduploadCom(Crypter):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import http.client
 
-from ..internal.Notifier import Notifier
+from pyload.plugins.internal.Notifier import Notifier
 
 
 class WindowsPhoneNotify(Notifier):

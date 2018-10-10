@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.misc import parse_size
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import parse_size
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class CzshareCom(SimpleHoster):

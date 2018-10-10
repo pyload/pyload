@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .Crypter import Crypter
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class DeadCrypter(Crypter):

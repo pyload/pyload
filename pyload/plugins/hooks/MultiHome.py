@@ -2,7 +2,7 @@
 import time
 from builtins import object, str
 
-from ..internal.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 class Interface(object):

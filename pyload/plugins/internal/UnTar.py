@@ -2,8 +2,8 @@
 import sys
 import tarfile
 
-from .Extractor import ArchiveError, CRCError, Extractor
-from .misc import encode
+from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor
+from pyload.plugins.internal.misc import encode
 
 
 class UnTar(Extractor):

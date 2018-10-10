@@ -2,8 +2,8 @@
 import os
 import re
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilerNet(SimpleHoster):

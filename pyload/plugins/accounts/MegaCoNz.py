@@ -3,8 +3,8 @@ from builtins import chr, range
 
 import Crypto.PublicKey.RSA
 
-from ..hoster.MegaCoNz import MegaClient, MegaCrypto
-from ..internal.Account import Account
+from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
+from pyload.plugins.internal.Account import Account
 
 
 class MegaCoNz(Account):

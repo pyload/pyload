@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 class DebridItaliaCom(MultiHoster):

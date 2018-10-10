@@ -5,8 +5,8 @@ from builtins import str
 import Crypto.Hash.SHA
 import pycurl
 
-from ..internal.misc import json
-from ..internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiHoster import MultiHoster
 
 
 def args(**kwargs):

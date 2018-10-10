@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os.path
 
-from ..internal.OCR import OCR
+from pyload.plugins.internal.OCR import OCR
 
 try:
     import adecaptcha.clslib as clslib

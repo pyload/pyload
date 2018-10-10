@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ..internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.XFSHoster import XFSHoster
 
 
 class ExashareCom(XFSHoster):

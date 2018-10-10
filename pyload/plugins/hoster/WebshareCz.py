@@ -3,7 +3,7 @@ import re
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class WebshareCz(SimpleHoster):

@@ -3,8 +3,8 @@ import datetime
 import hashlib
 import time
 
-from ..internal.misc import json
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class RapideoPl(MultiAccount):

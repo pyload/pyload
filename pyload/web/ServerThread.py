@@ -26,7 +26,8 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        from . import webinterface
+        from pyload.web import webinterface
+
         global webinterface
 
         if self.https:

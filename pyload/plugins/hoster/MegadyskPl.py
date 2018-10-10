@@ -8,8 +8,8 @@ from builtins import chr
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def xor_decrypt(data, key):

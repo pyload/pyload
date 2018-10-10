@@ -2,7 +2,7 @@
 import inspect
 import re
 
-from ..internal.Addon import Addon
+from pyload.plugins.internal.Addon import Addon
 
 
 class XFileSharing(Addon):

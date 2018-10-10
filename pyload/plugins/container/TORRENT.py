@@ -6,8 +6,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from ..internal.Container import Container
-from ..internal.misc import encode, safename
+from pyload.plugins.internal.Container import Container
+from pyload.plugins.internal.misc import encode, safename
 
 
 class TORRENT(Container):

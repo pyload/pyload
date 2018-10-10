@@ -3,8 +3,8 @@ import time
 import urllib.parse
 from builtins import str
 
-from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class DatoidCz(SimpleHoster):

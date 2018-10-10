@@ -2,7 +2,7 @@
 import re
 import urllib.parse
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FiledropperCom(SimpleHoster):

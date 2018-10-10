@@ -2,8 +2,8 @@
 import re
 import time
 
-from ..internal.Account import Account
-from ..internal.misc import parse_html_form, set_cookie
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import parse_html_form, set_cookie
 
 
 class TurbobitNet(Account):

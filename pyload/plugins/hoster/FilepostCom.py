@@ -3,9 +3,9 @@ import re
 import time
 from builtins import str
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.misc import json
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class FilepostCom(SimpleHoster):

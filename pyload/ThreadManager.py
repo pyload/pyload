@@ -18,7 +18,7 @@ from pyload.network.RequestFactory import getURL
 from pyload.PyFile import PyFile
 from pyload.utils import freeSpace, lock
 
-from . import PluginThread
+from pyload import PluginThread
 
 
 class ThreadManager(object):

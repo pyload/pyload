@@ -5,10 +5,10 @@ from builtins import filter, zip
 
 import Crypto.Cipher.AES
 
-from ..captcha.SolveMedia import SolveMedia
-from ..internal.Captcha import Captcha
-from ..internal.Crypter import Crypter
-from ..internal.misc import fsjoin, replace_patterns
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.Captcha import Captcha
+from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.misc import fsjoin, replace_patterns
 
 
 class RelinkUs(Crypter):

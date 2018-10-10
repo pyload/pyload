@@ -5,7 +5,7 @@ from builtins import range
 
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.Hoster import Hoster
+from pyload.plugins.internal.Hoster import Hoster
 
 
 class Http(Hoster):

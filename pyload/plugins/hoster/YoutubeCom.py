@@ -14,10 +14,10 @@ from xml.dom.minidom import parseString as parse_xml
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
-from ..internal.Hoster import Hoster
-from ..internal.misc import (exists, isexecutable, json, reduce, renice,
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.misc import (exists, isexecutable, json, reduce, renice,
                              replace_patterns, which)
-from ..internal.Plugin import Abort, Skip
+from pyload.plugins.internal.Plugin import Abort, Skip
 
 
 class BIGHTTPRequest(HTTPRequest):

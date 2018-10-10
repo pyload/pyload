@@ -2,7 +2,7 @@
 import re
 import time
 
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class MegaRapidoNet(MultiAccount):

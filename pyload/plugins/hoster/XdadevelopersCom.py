@@ -4,7 +4,7 @@
 #   http://forum.xda-developers.com/devdb/project/dl/?id=10885
 
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class XdadevelopersCom(SimpleHoster):

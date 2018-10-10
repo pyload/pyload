@@ -5,8 +5,8 @@ from builtins import filter, zip
 
 import Crypto.Cipher.AES
 
-from ..captcha.ReCaptcha import ReCaptcha
-from ..internal.Crypter import Crypter
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.Crypter import Crypter
 
 
 class NCryptIn(Crypter):

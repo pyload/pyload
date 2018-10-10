@@ -4,7 +4,7 @@ from builtins import str
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
 
-from ..internal.Notifier import Notifier
+from pyload.plugins.internal.Notifier import Notifier
 
 
 class PushBullet(Notifier):

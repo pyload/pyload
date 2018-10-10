@@ -3,8 +3,8 @@ import re
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from ..internal.Base import parse_fileInfo
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.Base import parse_fileInfo
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 def get_info(urls):

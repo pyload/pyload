@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from ..internal.Account import Account
-from ..internal.misc import set_cookie
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import set_cookie
 
 
 class FourSharedCom(Account):

@@ -2,7 +2,7 @@
 import time
 from builtins import str
 
-from ..internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.MultiAccount import MultiAccount
 
 
 class SimplydebridCom(MultiAccount):

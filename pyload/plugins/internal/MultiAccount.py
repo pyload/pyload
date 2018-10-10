@@ -3,8 +3,8 @@ import re
 import time
 from builtins import range
 
-from .Account import Account
-from .misc import decode, remove_chars, uniqify
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.misc import decode, remove_chars, uniqify
 
 
 class MultiAccount(Account):

@@ -4,7 +4,7 @@ import re
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
-from ..internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class BIGHTTPRequest(HTTPRequest):

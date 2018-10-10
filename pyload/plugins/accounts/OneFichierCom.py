@@ -4,7 +4,7 @@ import time
 
 from pyload.network.HTTPRequest import BadHeader
 
-from ..internal.Account import Account
+from pyload.plugins.internal.Account import Account
 
 
 class OneFichierCom(Account):

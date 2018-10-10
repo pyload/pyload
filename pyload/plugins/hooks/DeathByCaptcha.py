@@ -8,8 +8,8 @@ import pycurl
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getRequest as get_request
 
-from ..internal.Addon import Addon
-from ..internal.misc import json, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import json, threaded
 
 
 class DeathByCaptchaException(Exception):

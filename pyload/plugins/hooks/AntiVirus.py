@@ -4,8 +4,8 @@ import shutil
 import subprocess
 from builtins import map
 
-from ..internal.Addon import Addon
-from ..internal.misc import Expose, encode, exists, fsjoin, threaded
+from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.misc import Expose, encode, exists, fsjoin, threaded
 
 try:
     import send2trash

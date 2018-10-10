@@ -6,7 +6,7 @@ import pyxmpp.all
 import pyxmpp.interfaces
 from pyxmpp.jabber.client import JabberClient
 
-from .IRC import IRC
+from pyload.plugins.hooks.IRC import IRC
 
 
 class XMPP(IRC, JabberClient):

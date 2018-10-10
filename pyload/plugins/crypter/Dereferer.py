@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from ..internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 
 class Dereferer(SimpleCrypter):

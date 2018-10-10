@@ -3,8 +3,8 @@ import random
 import threading
 import time
 
-from .misc import Periodical, compare_time, decode, isiterable, lock, parse_size
-from .Plugin import Plugin, Skip
+from pyload.plugins.internal.misc import Periodical, compare_time, decode, isiterable, lock, parse_size
+from pyload.plugins.internal.Plugin import Plugin, Skip
 
 
 class Account(Plugin):
