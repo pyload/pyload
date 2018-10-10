@@ -14,10 +14,23 @@ class DlProtectCom(SimpleCrypter):
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?dl-protect1\.com/\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default"),
+        ("max_wait",
+         "int",
+         "Reconnect if waiting time is greater than minutes",
+         10)]
 
     __description__ = """Dl-protect.com decrypter plugin"""
     __license__ = "GPLv3"
@@ -30,7 +43,8 @@ class DlProtectCom(SimpleCrypter):
                                   post={'submit': "Continuer"})
 
         if 'img src="captcha.php' in self.data:
-            captcha_code = self.captcha.decrypt(urllib.parse.urljoin(self.pyfile.url, "/captcha.php"), input_type="jpeg")
+            captcha_code = self.captcha.decrypt(urllib.parse.urljoin(
+                self.pyfile.url, "/captcha.php"), input_type="jpeg")
             self.data = self.load(self.pyfile.url,
                                   post={'captchaCode': captcha_code,
                                         'submit': ""})

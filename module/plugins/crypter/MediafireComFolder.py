@@ -12,9 +12,19 @@ class MediafireComFolder(Crypter):
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?mediafire\.com/(?:folder/|\?sharekey=|\?)(?P<ID>\w+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Mediafire.com folder decrypter plugin"""
     __license__ = "GPLv3"
@@ -35,10 +45,16 @@ class MediafireComFolder(Crypter):
         return res
 
     def decrypt(self, pyfile):
-        api_data = self.api_response("folder/get_info", folder_key=self.info['pattern']['ID'])
-        pack_name = api_data['response']['folder_info'].get('name') or self.pyfile.package().name
+        api_data = self.api_response(
+            "folder/get_info",
+            folder_key=self.info['pattern']['ID'])
+        pack_name = api_data['response']['folder_info'].get(
+            'name') or self.pyfile.package().name
 
-        api_data = self.api_response("folder/get_content", folder_key=self.info['pattern']['ID'], content_type="files")
+        api_data = self.api_response(
+            "folder/get_content",
+            folder_key=self.info['pattern']['ID'],
+            content_type="files")
         pack_links = ["http://www.mediafire.com/file/{}".format(_f['quickkey'])
                       for _f in api_data['response']['folder_content']['files']]
 

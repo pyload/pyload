@@ -66,7 +66,7 @@ class XFSAccount(Account):
         if self.COOKIES:
             self._set_xfs_cookie()
 
-    #@TODO: Implement default grab_hosters routine
+    # @TODO: Implement default grab_hosters routine
     # def grab_hosters(self, user, password, data):
         # pass
 

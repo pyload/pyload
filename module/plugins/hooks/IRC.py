@@ -64,8 +64,8 @@ class IRC(Thread, Notifier):
     def download_finished(self, pyfile):
         try:
             if self.config.get('info_file'):
-                self.response(
-                    _("Download finished: {name} @ {plugin} ").format(**{'name': pyfile.name, 'plugin': pyfile.pluginname}))
+                self.response(_("Download finished: {name} @ {plugin} ").format(
+                    **{'name': pyfile.name, 'plugin': pyfile.pluginname}))
 
         except Exception:
             pass
@@ -75,8 +75,12 @@ class IRC(Thread, Notifier):
             task.handler.append(self)
             task.setWaiting(60)
 
-            html = self.load("http://www.freeimagehosting.net/upl.php",
-                             post={'file': (pycurl.FORM_FILE, task.captchaParams['file'])})
+            html = self.load(
+                "http://www.freeimagehosting.net/upl.php",
+                post={
+                    'file': (
+                        pycurl.FORM_FILE,
+                        task.captchaParams['file'])})
 
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(_("New Captcha Request: {}").format(url))
@@ -223,13 +227,13 @@ class IRC(Thread, Notifier):
                 temp_progress = "{}% ({})".format(data.percent, data.format_size)
 
             lines.append("#{:d} - {} - {} - {} - {} - {}".format(
-                             data.fid,
-                             data.name,
-                             data.statusmsg,
-                             "{}/s".format(format_size(data.speed)),
-                             "{}".format(data.format_eta),
-                             temp_progress
-                         ))
+                data.fid,
+                data.name,
+                data.statusmsg,
+                "{}/s".format(format_size(data.speed)),
+                "{}".format(data.format_eta),
+                temp_progress
+            ))
         return lines
 
     def event_queue(self, args):
@@ -290,8 +294,13 @@ class IRC(Thread, Notifier):
         lines.append('PACKAGE #{}: "{}" with {:d} links' %
                      (id, pack.name, len(pack.links)))
         for pyfile in pack.links:
-            self.more.append('LINK #{}: {} ({}) [{}][{}]'.format(pyfile.fid, pyfile.name, pyfile.format_size,
-                                                             pyfile.statusmsg, pyfile.plugin))
+            self.more.append(
+                'LINK #{}: {} ({}) [{}][{}]'.format(
+                    pyfile.fid,
+                    pyfile.name,
+                    pyfile.format_size,
+                    pyfile.statusmsg,
+                    pyfile.plugin))
 
         if len(self.more) < 6:
             lines.extend(self.more)
@@ -323,8 +332,9 @@ class IRC(Thread, Notifier):
 
     def event_add(self, args):
         if len(args) < 2:
-            return ['ERROR: Add links like this: "add <packagename|id> links". ',
-                    "This will add the link <link> to to the package <package> / the package with id <id>!"]
+            return [
+                'ERROR: Add links like this: "add <packagename|id> links". ',
+                "This will add the link <link> to to the package <package> / the package with id <id>!"]
 
         pack = args[0].strip()
         links = [x.strip() for x in args[1:]]
@@ -335,14 +345,18 @@ class IRC(Thread, Notifier):
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
-            #@TODO: add links
+            # @TODO: add links
 
-            return ["INFO: Added {:d} links to Package {} [#{:d}]".format(len(links), pack['name'], id)]
+            return [
+                "INFO: Added {:d} links to Package {} [#{:d}]".format(
+                    len(links), pack['name'], id)]
 
         except Exception:
             #: Create new package
             id = self.pyload.api.addPackage(pack, links, 1)
-            return ["INFO: Created new Package {} [#%d] with {#{:d}} links.".format(pack, id, len(links))]
+            return [
+                "INFO: Created new Package {} [#%d] with {#{:d}} links.".format(
+                    pack, id, len(links))]
 
     def event_del(self, args):
         if len(args) < 2:
@@ -400,20 +414,21 @@ class IRC(Thread, Notifier):
         return ["INFO: Result {} saved.".format(" ".join(args[1:]))]
 
     def event_help(self, args):
-        lines = ["The following commands are available:",
-                 "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
-                 "queue                       Shows all packages in the queue",
-                 "collector                   Shows all packages in collector",
-                 "del -p|-l <id> [...]        Deletes all packages|links with the ids specified",
-                 "info <id>                   Shows info of the link with id <id>",
-                 "packinfo <id>               Shows info of the package with id <id>",
-                 "more                        Shows more info when the result was truncated",
-                 "start                       Starts all downloads",
-                 "stop                        Stops the download (but not abort active downloads)",
-                 "push <id>                   Push package to queue",
-                 "pull <id>                   Pull package from queue",
-                 "status                      Show general download status",
-                 "help                        Shows this help message"]
+        lines = [
+            "The following commands are available:",
+            "add <package|packid> <links> [...] Adds link to package. (creates new package if it does not exist)",
+            "queue                       Shows all packages in the queue",
+            "collector                   Shows all packages in collector",
+            "del -p|-l <id> [...]        Deletes all packages|links with the ids specified",
+            "info <id>                   Shows info of the link with id <id>",
+            "packinfo <id>               Shows info of the package with id <id>",
+            "more                        Shows more info when the result was truncated",
+            "start                       Starts all downloads",
+            "stop                        Stops the download (but not abort active downloads)",
+            "push <id>                   Push package to queue",
+            "pull <id>                   Pull package from queue",
+            "status                      Show general download status",
+            "help                        Shows this help message"]
         return lines
 
 

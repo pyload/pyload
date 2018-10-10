@@ -13,6 +13,7 @@ from os.path import join
 from string import maketrans
 from html.entities import name2codepoint
 
+
 def chmod(*args):
     try:
         os.chmod(*args)
@@ -37,7 +38,7 @@ def remove_chars(string, repl):
 
 
 def save_path(name):
-    #remove some chars
+    # remove some chars
     if os.name == 'nt':
         return remove_chars(name, '/\\?%*:|"<>')
     else:
@@ -59,14 +60,15 @@ if sys.getfilesystemencoding().startswith('ANSI'):
         finally:
             return string
 
-    fs_decode = decode #decode utf8
+    fs_decode = decode  # decode utf8
 
 else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
+
 def get_console_encoding(enc):
     if os.name == "nt":
-        if enc == "cp65001": # aka UTF-8
+        if enc == "cp65001":  # aka UTF-8
             print("WARNING: Windows codepage 65001 is not supported.")
             enc = "cp850"
     else:
@@ -74,17 +76,23 @@ def get_console_encoding(enc):
 
     return enc
 
+
 def compare_time(start, end):
     start = list(map(int, start))
     end = list(map(int, end))
 
-    if start == end: return True
+    if start == end:
+        return True
 
     now = list(time.localtime()[3:5])
-    if start < now < end: return True
-    elif start > end and (now > start or now < end): return True
-    elif start < now > end < start: return True
-    else: return False
+    if start < now < end:
+        return True
+    elif start > end and (now > start or now < end):
+        return True
+    elif start < now > end < start:
+        return True
+    else:
+        return False
 
 
 def formatSize(size):
@@ -107,7 +115,8 @@ def freeSpace(folder):
         import ctypes
 
         free_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+        ctypes.windll.kernel32.GetDiskFreeSpaceExW(
+            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
         return free_bytes.value
     else:
         from os import statvfs
@@ -117,7 +126,7 @@ def freeSpace(folder):
 
 
 def uniqify(seq, idfun=None):
-# order preserving
+    # order preserving
     if idfun is None:
         def idfun(x): return x
     seen = {}
@@ -127,13 +136,14 @@ def uniqify(seq, idfun=None):
         # in old Python versions:
         # if seen.has_key(marker)
         # but in new ones:
-        if marker in seen: continue
+        if marker in seen:
+            continue
         seen[marker] = 1
         result.append(item)
     return result
 
 
-def parseFileSize(string, unit=None): #returns bytes
+def parseFileSize(string, unit=None):  # returns bytes
     if not unit:
         m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
         if m:
@@ -147,7 +157,7 @@ def parseFileSize(string, unit=None): #returns bytes
         else:
             traffic = string
 
-    #ignore case
+    # ignore case
     unit = unit.lower().strip()
 
     if unit in ("gb", "gig", "gbyte", "gigabyte", "gib", "g"):
@@ -191,10 +201,9 @@ def fixup(m):
         except KeyError:
             pass
 
-    return text # leave as is
+    return text  # leave as is
 
 
 def html_unescape(text):
     """Removes HTML or XML character references and entities from a text string"""
-    return re.sub("&#?\w+;", fixup, text)
-
+    return re.sub(r"&#?\w+;", fixup, text)

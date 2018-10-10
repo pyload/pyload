@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from builtins import filter
 from builtins import zip
 import binascii
@@ -22,9 +21,19 @@ class RelinkUs(Crypter):
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?relink\.(?:us|to)/(f/|((view|go)\.php\?id=))(?P<ID>.+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Relink.us decrypter plugin"""
     __license__ = "GPLv3"
@@ -194,7 +203,7 @@ class RelinkUs(Crypter):
         m = re.search(self.FILE_TITLE_PATTERN, self.data)
         if m is not None:
             title = m.group(1).strip()
-            if not self.FILE_NOTITLE in title:
+            if self.FILE_NOTITLE not in title:
                 name = folder = title
                 self.log_debug(
                     "Found name [{}] and folder [{}] in package info" %

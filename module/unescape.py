@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 
 from module.utils import html_unescape
-#deprecated
+# deprecated
 unescape = html_unescape

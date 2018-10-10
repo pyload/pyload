@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from builtins import map
 from builtins import str
 from builtins import range

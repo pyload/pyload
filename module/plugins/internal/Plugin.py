@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from builtins import object
 import inspect
 import os
@@ -43,7 +42,7 @@ class Plugin(object):
 
     def __repr__(self):
         return "<{type} {name}>".format(**{'type': self.__type__.capitalize(),
-                                        'name': self.classname})
+                                           'name': self.classname})
 
     @property
     def classname(self):
@@ -158,8 +157,18 @@ class Plugin(object):
         """
         raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
-    def load(self, url, get={}, post={}, ref=True, cookies=True, just_header=False, decode=True,
-             multipart=False, redirect=True, req=None):
+    def load(
+            self,
+            url,
+            get={},
+            post={},
+            ref=True,
+            cookies=True,
+            just_header=False,
+            decode=True,
+            multipart=False,
+            redirect=True,
+            req=None):
         """
         Load content at url and returns it
 
@@ -173,9 +182,12 @@ class Plugin(object):
         :return: Loaded content
         """
         if self.pyload.debug:
-            self.log_debug("LOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in list(locals().items())
-                             if key not in ("self", "url", "_[1]")])
+            self.log_debug(
+                "LOAD URL " + url, *[
+                    "{}={}".format(
+                        key, value) for key, value in list(
+                        locals().items()) if key not in (
+                        "self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
 
@@ -186,13 +198,13 @@ class Plugin(object):
         elif not req:
             req = self.req
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
         http_req = self.req.http if hasattr(self.req, "http") else self.req
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
@@ -201,7 +213,7 @@ class Plugin(object):
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if isinstance(ref, str):
             req.lastURL = ref
 
@@ -215,7 +227,7 @@ class Plugin(object):
             multipart,
             decode is True)  # @TODO: Fix network multipart in 0.4.10
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if not redirect:
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -229,11 +241,11 @@ class Plugin(object):
             # @NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if decode:
             html = html_unescape(html)
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         if isinstance(decode, str):
             html = _decode(html, decode)
 
@@ -242,7 +254,7 @@ class Plugin(object):
         if self.pyload.debug:
             self.dump_html()
 
-        #@TODO: Move to network in 0.4.10
+        # @TODO: Move to network in 0.4.10
         header = {'code': req.code, 'url': req.lastEffectiveURL}
         # @NOTE: req can be a HTTPRequest or a Browser object
         header.update(parse_html_header(http_req.header))
@@ -254,9 +266,18 @@ class Plugin(object):
         else:
             return html
 
-    def upload(self, path, url, get={}, ref=True, cookies=True, just_header=False, decode=True, redirect=True, req=None):
+    def upload(
+            self,
+            path,
+            url,
+            get={},
+            ref=True,
+            cookies=True,
+            just_header=False,
+            decode=True,
+            redirect=True,
+            req=None):
         # @TODO: This should really go to HTTPRequest.py
-
         """
         Uploads a file at url and returns response content
 
@@ -269,9 +290,12 @@ class Plugin(object):
         :return: Response content
         """
         if self.pyload.debug:
-            self.log_debug("UPLOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in list(locals().items())
-                             if key not in ("self", "url", "_[1]")])
+            self.log_debug(
+                "UPLOAD URL " + url, *[
+                    "{}={}".format(
+                        key, value) for key, value in list(
+                        locals().items()) if key not in (
+                        "self", "url", "_[1]")])
 
         with open(path, 'rb') as f:
             url = fixurl(url, unquote=True)  #: Recheck in 0.4.10
@@ -353,7 +377,7 @@ class Plugin(object):
             if decode:
                 html = html_unescape(html)
 
-            #@TODO: Move to network in 0.4.10
+            # @TODO: Move to network in 0.4.10
             if isinstance(decode, str):
                 html = _decode(html, decode)
 
@@ -362,7 +386,7 @@ class Plugin(object):
             if self.pyload.debug:
                 self.dump_html()
 
-            #@TODO: Move to network in 0.4.10
+            # @TODO: Move to network in 0.4.10
             header = {'code': req.code, 'url': req.lastEffectiveURL}
             # @NOTE: req can be a HTTPRequest or a Browser object
             header.update(parse_html_header(http_req.header))
@@ -378,7 +402,12 @@ class Plugin(object):
         frame = inspect.currentframe()
 
         try:
-            framefile = fsjoin("tmp", self.classname, "{}_line{}.dump.html".format(frame.f_back.f_code.co_name, frame.f_back.f_lineno))
+            framefile = fsjoin(
+                "tmp",
+                self.classname,
+                "{}_line{}.dump.html".format(
+                    frame.f_back.f_code.co_name,
+                    frame.f_back.f_lineno))
 
             if not exists(os.path.join("tmp", self.classname)):
                 os.makedirs(os.path.join("tmp", self.classname))

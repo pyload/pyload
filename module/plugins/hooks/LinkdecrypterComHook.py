@@ -22,8 +22,8 @@ class LinkdecrypterComHook(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def get_hosters(self):
-        list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w\-., ]+)',
-                         self.load("http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
+        list = re.search(r'>Supported\(\d+\)</b>: <i>(.[\w\-., ]+)', self.load(
+            "http://linkdecrypter.com/").replace("(g)", "")).group(1).split(', ')
         try:
             list.remove("download.serienjunkies.org")
         except ValueError:

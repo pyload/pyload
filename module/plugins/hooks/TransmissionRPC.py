@@ -19,8 +19,15 @@ class TransmissionRPC(Addon):
     __status__ = "testing"
 
     __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("rpc_url", "str", "Transmission RPC URL", "http://127.0.0.1:9091/transmission/rpc")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         False),
+        ("rpc_url",
+         "str",
+         "Transmission RPC URL",
+         "http://127.0.0.1:9091/transmission/rpc")]
 
     __description__ = """Send torrent and magnet URLs to Transmission Bittorent daemon via RPC"""
     __license__ = "GPLv3"

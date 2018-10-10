@@ -33,26 +33,29 @@ class MultiUpOrg(SimpleCrypter):
     OFFLINE_PATTERN = r'File not found'
     TEMP_OFFLINE_PATTERN = r'^unmatchable$'
 
-    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/', "http://www.multiup.eu/"),
-                        (r'/fr/', "/en/")]
+    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/',
+                         "http://www.multiup.eu/"), (r'/fr/', "/en/")]
 
     COOKIES = [("multiup.eu", "_locale", "en")]
 
     def get_links(self):
         m_type = self.info['pattern']['TYPE']
-        hosts_priority = [_h for _h in self.config.get('hosts_priority').split('|') if _h]
+        hosts_priority = [_h for _h in self.config.get(
+            'hosts_priority').split('|') if _h]
         ignored_hosts = [_h for _h in self.config.get('ignored_hosts').split('|') if _h]
         grab_all = self.config.get('grab_all')
 
         if m_type == "project":
-            return re.findall(r'\n(http://www\.multiup\.eu/(?:en|fr)/download/.*)', self.data)
+            return re.findall(
+                r'\n(http://www\.multiup\.eu/(?:en|fr)/download/.*)',
+                self.data)
 
         elif m_type in ("download", None):
             recaptcha = ReCaptcha(self.pyfile)
             captcha_key = recaptcha.detect_key()
             if captcha_key is not None:
                 self.captcha = recaptcha
-                url, inputs =  self.parse_html_form()
+                url, inputs = self.parse_html_form()
                 mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", url)
                 try:
                     response, challenge = recaptcha.challenge(captcha_key)
@@ -69,14 +72,19 @@ class MultiUpOrg(SimpleCrypter):
                     self.data = self.load(mirror_page, post=inputs)
 
             else:
-                dl_url = re.search(r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>', self.data).group(1)
+                dl_url = re.search(
+                    r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>',
+                    self.data).group(1)
                 mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", dl_url)
                 self.data = self.load(mirror_page)
 
         self.check_errors()
 
         hosts_data = {}
-        for _a in re.findall(r'<a\s*class="btn btn-small disabled link host"(.+?)/a>', self.data, re.S):
+        for _a in re.findall(
+            r'<a\s*class="btn btn-small disabled link host"(.+?)/a>',
+            self.data,
+                re.S):
             validity = re.search(r'validity=(\w+)', _a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', _a).group(1)

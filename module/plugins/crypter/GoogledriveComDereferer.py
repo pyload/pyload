@@ -13,10 +13,23 @@ class GoogledriveComDereferer(Crypter):
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?(?:drive|docs)\.google\.com/open\?(?:.+;)?id=(?P<ID>[-\w]+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default"),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default"),
+        ("max_wait",
+         "int",
+         "Reconnect if waiting time is greater than minutes",
+         10)]
 
     __description__ = """Drive.google.com dereferer plugin"""
     __license__ = "GPLv3"
@@ -64,7 +77,8 @@ class GoogledriveComDereferer(Crypter):
             else:
                 self.fail(json_data['error']['message'])
 
-        link = "https://drive.google.com/{}/{}".format(("file/d" if json_data['mimeType'] != "application/vnd.google-apps.folder" else "drive/folders"),
-                self.info['pattern']['ID'])
+        link = "https://drive.google.com/{}/{}".format(
+            ("file/d" if json_data['mimeType'] != "application/vnd.google-apps.folder" else "drive/folders"),
+            self.info['pattern']['ID'])
 
         self.packages = [(pyfile.package().folder, [link], pyfile.package().name)]

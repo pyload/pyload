@@ -47,7 +47,7 @@ class DevhostStFolder(SimpleCrypter):
             html = self.load(urllib.parse.urljoin("http://d-h.st/", m.group(1)),
                              cookies=False)
 
-            p = '\?fld_id={}.*?">(.+?)<'.format(self.info['pattern']['ID'])
+            p = r'\?fld_id={}.*?">(.+?)<'.format(self.info['pattern']['ID'])
             m = re.search(p, html)
             self.pyfile.name = m.group(1)
 

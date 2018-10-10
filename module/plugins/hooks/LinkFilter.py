@@ -3,16 +3,30 @@
 
 from ..internal.Addon import Addon
 
+
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
     __type__ = "hook"
     __version__ = "0.16"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("filter", "str", "Filter links containing (comma separated)", ""),
-                  ("list_type", "listed;unlisted", "Allow only links that are", "unlisted"),
-                  ("filter_all", "bool", "Filter all link plugin types (also crypters, containers...)", False)]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         False),
+        ("filter",
+         "str",
+         "Filter links containing (comma separated)",
+         ""),
+        ("list_type",
+         "listed;unlisted",
+         "Allow only links that are",
+         "unlisted"),
+        ("filter_all",
+         "bool",
+         "Filter all link plugin types (also crypters, containers...)",
+         False)]
 
     __description__ = "Filters all added hoster links"
     __license__ = "GPLv3"
@@ -65,7 +79,7 @@ class LinkFilter(Addon):
                     (linkcount, linkstring, _filter))
 
     def is_hoster_link(self, link):
-        #declare all links as hoster links so the filter will work on all links
+        # declare all links as hoster links so the filter will work on all links
         if self.config.get('filter_all'):
             return True
         for item in list(self.pyload.pluginManager.hosterPlugins.items()):

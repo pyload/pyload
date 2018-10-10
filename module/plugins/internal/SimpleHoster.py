@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import re
 
 from module.network.HTTPRequest import BadHeader
@@ -125,10 +124,13 @@ class SimpleHoster(Hoster):
     SIZE_LIMIT_PATTERN = None
     ERROR_PATTERN = None
 
-    FILE_ERRORS = [('Html error', r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
-                   ('Request error',
-                    r'([Aa]n error occured while processing your request)'),
-                   ('Html file', r'\A\s*<!DOCTYPE html')]
+    FILE_ERRORS = [
+        ('Html error',
+         r'\A(?:\s*<.+>)?((?:[\w\s]*(?:[Ee]rror|ERROR)\s*\:?)?\s*\d{3})(?:\Z|\s+)'),
+        ('Request error',
+         r'([Aa]n error occured while processing your request)'),
+        ('Html file',
+         r'\A\s*<!DOCTYPE html')]
 
     @classmethod
     def api_info(cls, url):
@@ -187,8 +189,10 @@ class SimpleHoster(Hoster):
             info['name'] = parse_name(name)
 
         if 'S' in info['pattern']:
-            size = replace_patterns(info['pattern']['S'] + info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
-                                    cls.SIZE_REPLACEMENTS)
+            size = replace_patterns(
+                info['pattern']['S'] +
+                info['pattern']['U'] if 'U' in info['pattern'] else info['pattern']['S'],
+                cls.SIZE_REPLACEMENTS)
             info['size'] = parse_size(size)
 
         elif isinstance(info['size'], str):
@@ -259,7 +263,7 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         self._prepare()
 
-        #@TODO: Remove `handle_multi`, use MultiHoster instead
+        # @TODO: Remove `handle_multi`, use MultiHoster instead
         if self.leech_dl:
             self.log_info(_("Processing as debrid download..."))
             self.handle_multi(pyfile)

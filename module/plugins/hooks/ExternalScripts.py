@@ -97,14 +97,18 @@ class ExternalScripts(Addon):
 
             if new_scripts:
                 script_names = list(map(os.path.basename, new_scripts))
-                self.log_info(_("Activated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
+                self.log_info(
+                    _("Activated scripts in folder `{}`: {}").format(
+                        folder, ", ".join(script_names)))
 
             removed_scripts = [
                 _s for _s in self.scripts[folder] if _s not in scripts]
 
             if removed_scripts:
                 script_names = list(map(os.path.basename, removed_scripts))
-                self.log_info(_("Deactivated scripts in folder `{}`: {}").format(folder, ", ".join(script_names)))
+                self.log_info(
+                    _("Deactivated scripts in folder `{}`: {}").format(
+                        folder, ", ".join(script_names)))
 
             self.scripts[folder] = scripts
 
@@ -112,7 +116,11 @@ class ExternalScripts(Addon):
         call = list(map(encode, [command] + list(args)))
 
         self.log_debug(
-            "EXECUTE " + " ".join('"' + _arg + '"' if ' ' in _arg else _arg for _arg in call))
+            "EXECUTE " +
+            " ".join(
+                '"' +
+                _arg +
+                '"' if ' ' in _arg else _arg for _arg in call))
 
         p = subprocess.Popen(call, bufsize=-1)  # @NOTE: output goes to pyload
 

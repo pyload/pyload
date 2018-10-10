@@ -16,9 +16,19 @@ class ShareLinksBiz(Crypter):
     __status__ = "testing"
 
     __pattern__ = r'http://(?:www\.)?(share-links|s2l)\.biz/(?P<ID>_?\w+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Share-Links.biz decrypter plugin"""
     __license__ = "GPLv3"
@@ -75,7 +85,7 @@ class ShareLinksBiz(Crypter):
         if 's2l.biz' in url:
             header = self.load(url, just_header=True)
 
-            if not 'location' in header:
+            if 'location' not in header:
                 self.fail(_("Unable to initialize download"))
             else:
                 url = header.get('location')
@@ -213,7 +223,7 @@ class ShareLinksBiz(Crypter):
         pack_links = []
         self.log_debug("Handling Web links")
 
-        #@TODO: Gather paginated web links
+        # @TODO: Gather paginated web links
         pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
         ids = re.findall(pattern, self.data)
         self.log_debug("Decrypting {:d} Web links".format(len(ids)))
@@ -264,7 +274,7 @@ class ShareLinksBiz(Crypter):
 
         for container_link in containers_links:
             link = "{}/get/{}/{}".format(self.base_url,
-                                     container_link[1], container_link[0])
+                                         container_link[1], container_link[0])
             pack_links.append(link)
 
         self.log_debug("{} links".format(len(pack_links)))

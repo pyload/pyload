@@ -31,7 +31,8 @@ class MultiHoster(SimpleHoster):
     LEECH_HOSTER = False
 
     def init(self):
-        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)['name']
+        self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)[
+            'name']
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
@@ -43,7 +44,7 @@ class MultiHoster(SimpleHoster):
         self.multiDL = bool(self.account)
         self.resume_download = self.premium
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def setup_base(self):
         klass = self.pyload.pluginManager.loadClass("hoster", self.classname)
         self.get_info = klass.get_info
@@ -54,7 +55,8 @@ class MultiHoster(SimpleHoster):
         SimpleHoster._prepare(self)
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(self.__pattern__, self.pyfile.url)
+            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(
+                self.__pattern__, self.pyfile.url)
 
         else:
             self.direct_dl = self.DIRECT_LINK
@@ -64,7 +66,8 @@ class MultiHoster(SimpleHoster):
             SimpleHoster._process(self, thread)
 
         except Fail as e:
-            hdict = self.pyload.pluginManager.hosterPlugins.get(self.pyfile.pluginname, {})
+            hdict = self.pyload.pluginManager.hosterPlugins.get(
+                self.pyfile.pluginname, {})
             if self.config.get('revert_failed', True) and hdict.get('new_module'):
                 tmp_module = hdict.pop('new_module', None)
                 tmp_name = hdict.pop('new_name', None)

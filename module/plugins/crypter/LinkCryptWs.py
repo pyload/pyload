@@ -228,8 +228,10 @@ class LinkCryptWs(Crypter):
             self.container_html = container_html_text.splitlines()
 
     def handle_javascript(self, line):
-        return self.js.eval(line.replace(
-            '{}))', "{}).replace('document.open();document.write','').replace(';document.close();',''))"))
+        return self.js.eval(
+            line.replace(
+                '{}))',
+                "{}).replace('document.open();document.write','').replace(';document.close();',''))"))
 
     def handle_container(self, container_type):
         pack_links = []
@@ -298,7 +300,8 @@ class LinkCryptWs(Crypter):
         vjk = re.findall(jk_re, cnl_section)
 
         #: Get crypted
-        crypted_re = r'<INPUT.*?NAME="{}".*?VALUE="(.*?)"'.format(LinkCryptWs.CRYPTED_KEY)
+        crypted_re = r'<INPUT.*?NAME="{}".*?VALUE="(.*?)"'.format(
+            LinkCryptWs.CRYPTED_KEY)
         vcrypted = re.findall(crypted_re, cnl_section)
 
         #: Log and return

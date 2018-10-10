@@ -15,9 +15,19 @@ class SafelinkingNet(Crypter):
     __status__ = "testing"
 
     __pattern__ = r'https?://(?:www\.)?safelinking\.net/(?P<TYPE>[pd]/)?(?P<ID>\w{7})'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Safelinking.net decrypter plugin"""
     __license__ = "GPLv3"
@@ -29,8 +39,9 @@ class SafelinkingNet(Crypter):
     SOLVEMEDIA_KEY = "OZ987i6xTzNs9lw5.MA-2Vxbc-UxFrLu"
 
     def api_response(self, url, post_data):
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*",
-                                                   "Content-Type: application/json"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER,
+                               ["Accept: application/json, text/plain, */*",
+                                "Content-Type: application/json"])
 
         try:
             res = json.loads(self.load(url, post=json.dumps(post_data)))
@@ -40,12 +51,13 @@ class SafelinkingNet(Crypter):
             self.fail(e.message)
 
         # Headers back to normal
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: */*",
-                                                   "Accept-Language: en-US,en",
-                                                   "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                                                   "Connection: keep-alive",
-                                                   "Keep-Alive: 300",
-                                                   "Expect:"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER,
+                               ["Accept: */*",
+                                "Accept-Language: en-US,en",
+                                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                                "Connection: keep-alive",
+                                "Keep-Alive: 300",
+                                "Expect:"])
 
         return res
 

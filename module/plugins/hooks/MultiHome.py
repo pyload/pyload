@@ -72,7 +72,8 @@ class MultiHome(Addon):
 
         for interface in self.interfaces:
             if not best or interface.last_plugin_access(
-                    plugin_name, account) < best.last_plugin_access(plugin_name, account):
+                    plugin_name, account) < best.last_plugin_access(
+                    plugin_name, account):
                 best = interface
 
         return best

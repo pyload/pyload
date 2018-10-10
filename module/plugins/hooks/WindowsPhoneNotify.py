@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import http.client
 
 from ..internal.Notifier import Notifier
@@ -38,9 +37,10 @@ class WindowsPhoneNotify(Notifier):
         return self.config.get('pushid'), self.config.get('pushurl')
 
     def format_request(self, msg):
-        return ("<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
-                "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>{}</wp:Text2> "
-                "</wp:Toast> </wp:Notification>".format(msg))
+        return (
+            "<?xml version='1.0' encoding='utf-8'?> <wp:Notification xmlns:wp='WPNotification'> "
+            "<wp:Toast> <wp:Text1>pyLoad</wp:Text1> <wp:Text2>{}</wp:Text2> "
+            "</wp:Toast> </wp:Notification>".format(msg))
 
     def send(self, event, msg, key):
         id, url = key

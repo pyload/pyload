@@ -38,7 +38,7 @@ class XFileSharingFolder(XFSCrypter):
             part.capitalize() for part in re.split(
                 r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def setup_base(self):
         XFSCrypter.setup_base(self)
 
@@ -51,7 +51,7 @@ class XFileSharingFolder(XFSCrypter):
             self.req = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = str(self.PLUGIN_NAME)

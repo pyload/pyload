@@ -52,9 +52,15 @@ class XMPP(IRC, JabberClient):
 
         #: Setup client with provided connection information
         #: And identity data
-        JabberClient.__init__(self, self.jid, password,
-                              disco_name="pyLoad XMPP Client", disco_type="bot",
-                              tls_settings=tls_settings, auth_methods=auth, keepalive=self.config.get('keepalive'))
+        JabberClient.__init__(
+            self,
+            self.jid,
+            password,
+            disco_name="pyLoad XMPP Client",
+            disco_type="bot",
+            tls_settings=tls_settings,
+            auth_methods=auth,
+            keepalive=self.config.get('keepalive'))
 
         self.interface_providers = [
             VersionHandler(self),
@@ -77,8 +83,8 @@ class XMPP(IRC, JabberClient):
     def download_finished(self, pyfile):
         try:
             if self.config.get('info_file'):
-                self.announce(
-                    _("Download finished: {name} @ {plugin}").format(**{'name': pyfile.name, 'plugin': pyfile.pluginname}))
+                self.announce(_("Download finished: {name} @ {plugin}").format(
+                    **{'name': pyfile.name, 'plugin': pyfile.pluginname}))
 
         except Exception:
             pass

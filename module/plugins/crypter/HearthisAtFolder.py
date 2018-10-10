@@ -31,7 +31,10 @@ class HearthisAtFolder(Crypter):
         m = re.search(r'intTrackId = (\d+);', self.data)
         if m is not None:
             #: Single track
-            self.packages = [(pyfile.package().name, pyfile.url + "#pyload", pyfile.package().folder)]
+            self.packages = [
+                (pyfile.package().name,
+                 pyfile.url + "#pyload",
+                 pyfile.package().folder)]
 
         else:
             #: Playlist
@@ -44,6 +47,12 @@ class HearthisAtFolder(Crypter):
                                         'min': 0,
                                         'max': 200})
 
-            links = [urllib.parse.urljoin(pyfile.url, x) + "#pyload" for x in re.findall(r'<a class="player-link".+?href="(.+?)".+?</a>', self.data, re.S)]
+            links = [
+                urllib.parse.urljoin(
+                    pyfile.url,
+                    x) +
+                "#pyload" for x in re.findall(
+                    r'<a class="player-link".+?href="(.+?)".+?</a>',
+                    self.data,
+                    re.S)]
             self.packages = [(pyfile.package().name, links, pyfile.package().folder)]
-

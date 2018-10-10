@@ -79,7 +79,7 @@ class XFSHoster(SimpleHoster):
 
         if not self.LINK_PATTERN:
             pattern = r'(?:file: "(.+?)"|(https?://(?:www\.)?([^/]*?{}|\d+\.\d+\.\d+\.\d+)(\:\d+)?(/d/|(/files)?/\d+/\w+/).+?)["\'<])'
-            self.LINK_PATTERN = pattern.format(self.PLUGIN_DOMAIN.replace('.'), '\.')
+            self.LINK_PATTERN = pattern.format(self.PLUGIN_DOMAIN.replace('.'), r'\.')
 
         SimpleHoster._prepare(self)
 
@@ -101,7 +101,7 @@ class XFSHoster(SimpleHoster):
                                   post=self._post_parameters(),
                                   redirect=False)
 
-            if not "op=" in self.last_header.get('location', "op="):
+            if "op=" not in self.last_header.get('location', "op="):
                 self.link = self.last_header.get('location')
                 break
 

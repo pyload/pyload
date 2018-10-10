@@ -108,7 +108,7 @@ class ImgurCom(SimpleCrypter):
 
         # Translate new IDs to Direct-URLs
         return ["http://i.imgur.com/{}{}" %
-                   (id, ids_json[id]) for id in ids_indirect]
+                (id, ids_json[id]) for id in ids_indirect]
 
     def setup(self):
         self.gallery_name = None
@@ -117,7 +117,7 @@ class ImgurCom(SimpleCrypter):
     def get_links(self):
         """ Extract embedded links from HTML // then check if there are further images which will be lazy-loaded """
 
-        f = lambda url: "http://" + re.sub(r'(\w{7})s\.', r'\1.', url)
+        def f(url): return "http://" + re.sub(r'(\w{7})s\.', r'\1.', url)
         direct_links = uniqify(
             list(map(f, re.findall(self.LINK_PATTERN, self.data))))
 

@@ -20,7 +20,7 @@ class HflixIn(SimpleCrypter):
     def decrypt(self, pyfile):
         headers = self.load(pyfile.url, just_header=True)
         if 'refresh' in headers and headers['refresh']:
-            m = re.search("\d+;url=(.+)", headers['refresh'])
+            m = re.search(r"\d+;url=(.+)", headers['refresh'])
             if m and "http://hflix.in/admin" not in m.group(1):
                 self.packages.append(
                     (pyfile.package().name, [

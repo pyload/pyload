@@ -80,10 +80,12 @@ class GoogledriveComFolder(Crypter):
 
         next_page = json_data.get('nextPageToken', None)
         while next_page:
-            json_data = self.api_response("files", q="'{}' in parents".format(folder_id),
-                                          pageToken=next_page,
-                                          pageSize=100,
-                                          fields="files/id,files/mimeType,nextPageToken")
+            json_data = self.api_response(
+                "files",
+                q="'{}' in parents".format(folder_id),
+                pageToken=next_page,
+                pageSize=100,
+                fields="files/id,files/mimeType,nextPageToken")
 
             if json_data is None:
                 self.fail("API error")

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import sys
 import zipfile
 
@@ -20,8 +19,8 @@ class UnZip(Extractor):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     VERSION = "{}.{}.{}".format(sys.version_info[0],
-                            sys.version_info[1],
-                            sys.version_info[2])
+                                sys.version_info[1],
+                                sys.version_info[2])
 
     @classmethod
     def archivetype(cls, filename):

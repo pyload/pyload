@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import os
 import re
 
@@ -28,7 +27,7 @@ class MergeFiles(Addon):
         files = {}
         fid_dict = {}
         for fid, data in list(pack.getChildren().items()):
-            if re.search("\.\d{3}$", data['name']):
+            if re.search(r"\.\d{3}$", data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
                 files[data['name'][:-4]].append(data['name'])

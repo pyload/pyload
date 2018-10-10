@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import base64
 import uuid
 
@@ -93,8 +92,12 @@ class ExpertDecoders(Addon):
         if "ticket" in task.data:
 
             try:
-                res = self.load(self.API_URL,
-                                post={'action': "refund", 'key': self.config.get('passkey'), 'gen_task_id': task.data['ticket']})
+                res = self.load(
+                    self.API_URL,
+                    post={
+                        'action': "refund",
+                        'key': self.config.get('passkey'),
+                        'gen_task_id': task.data['ticket']})
                 self.log_info(_("Request refund"), res)
 
             except BadHeader as e:

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import base64
 import re
 
@@ -71,8 +70,8 @@ class ImageTyperz(Addon):
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
-            #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-            if re.match("^\w*$", self.config.get('password')):
+            # @NOTE: Workaround multipart-post bug in HTTPRequest.py
+            if re.match(r"^\w*$", self.config.get('password')):
                 multipart = True
                 data = (pycurl.FORM_FILE, captcha)
             else:
@@ -81,12 +80,15 @@ class ImageTyperz(Addon):
                     data = f.read()
                 data = base64.b64encode(data)
 
-            res = self.load(self.SUBMIT_URL,
-                            post={'action': "UPLOADCAPTCHA",
-                                  'username': self.config.get('username'),
-                                  'password': self.config.get('password'), 'file': data},
-                            multipart=multipart,
-                            req=req)
+            res = self.load(
+                self.SUBMIT_URL,
+                post={
+                    'action': "UPLOADCAPTCHA",
+                    'username': self.config.get('username'),
+                    'password': self.config.get('password'),
+                    'file': data},
+                multipart=multipart,
+                req=req)
         finally:
             req.close()
 

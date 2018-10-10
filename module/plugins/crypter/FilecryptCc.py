@@ -113,7 +113,8 @@ class FilecryptCc(Crypter):
                        self.handle_dlc_container):
             handle()
             if self.urls:
-                self.packages = [(pyfile.package().name, self.urls, pyfile.package().name)]
+                self.packages = [
+                    (pyfile.package().name, self.urls, pyfile.package().name)]
                 return
 
     def handle_mirror_pages(self):
@@ -128,7 +129,9 @@ class FilecryptCc(Crypter):
             self.site_with_links = self.site_with_links + self._filecrypt_load_url(i)
 
     def handle_password_protection(self):
-        if re.search(r'div class="input">\s*<input type="password" name="password" id="p4assw0rt"', self.data) is None:
+        if re.search(
+            r'div class="input">\s*<input type="password" name="password" id="p4assw0rt"',
+                self.data) is None:
             return
 
         self.log_info(_("Folder is password protected"))
@@ -138,7 +141,8 @@ class FilecryptCc(Crypter):
         if not password:
             self.fail(_("Please enter the password in package section and try again"))
 
-        self.data = self._filecrypt_load_url(self.pyfile.url, post={'password': password})
+        self.data = self._filecrypt_load_url(
+            self.pyfile.url, post={'password': password})
 
     def handle_captcha(self, submit_url):
         if re.search(self.CAPTCHA_PATTERN, self.data):
@@ -179,8 +183,8 @@ class FilecryptCc(Crypter):
 
             captcha_code = self.captcha.decrypt(captcha_url, input_type="gif")
 
-            return self._filecrypt_load_url(url,
-                                            post={'recaptcha_response_field': captcha_code})
+            return self._filecrypt_load_url(
+                url, post={'recaptcha_response_field': captcha_code})
 
         else:
             return None
@@ -188,13 +192,18 @@ class FilecryptCc(Crypter):
     def _handle_circle_captcha(self, url):
         m = re.search(self.CIRCLE_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Circle Captcha URL: {}".format(urllib.parse.urljoin(self.pyfile.url, m.group(1))))
+            self.log_debug(
+                "Circle Captcha URL: {}".format(
+                    urllib.parse.urljoin(
+                        self.pyfile.url,
+                        m.group(1))))
 
             captcha_url = urllib.parse.urljoin(self.pyfile.url, m.group(1))
 
             self.log_debug("Circle Captcha URL: {}".format(captcha_url))
 
-            captcha_code = self.captcha.decrypt(captcha_url, input_type="png", output_type='positional')
+            captcha_code = self.captcha.decrypt(
+                captcha_url, input_type="png", output_type='positional')
 
             return self._filecrypt_load_url(url,
                                             post={'button.x': captcha_code[0],
@@ -206,7 +215,11 @@ class FilecryptCc(Crypter):
     def _handle_solvemedia_captcha(self, url):
         m = re.search(self.SOLVEMEDIA_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Solvemedia Captcha URL: {}".format(urllib.parse.urljoin(self.pyfile.url, m.group(1))))
+            self.log_debug(
+                "Solvemedia Captcha URL: {}".format(
+                    urllib.parse.urljoin(
+                        self.pyfile.url,
+                        m.group(1))))
 
             solvemedia = SolveMedia(self.pyfile)
             captcha_key = solvemedia.detect_key()
@@ -225,7 +238,9 @@ class FilecryptCc(Crypter):
     def _handle_keycaptcha_captcha(self, url):
         m = re.search(self.KEY_CAPTCHA_PATTERN, self.data)
         if m is not None:
-            self.log_debug("Keycaptcha Captcha URL: {} unsupported, retrying".format(m.group(1)))
+            self.log_debug(
+                "Keycaptcha Captcha URL: {} unsupported, retrying".format(
+                    m.group(1)))
             return ""
 
         else:
@@ -266,7 +281,10 @@ class FilecryptCc(Crypter):
             return
 
         for _dlc in dlcs:
-            self.urls.append(urllib.parse.urljoin(self.pyfile.url, "/DLC/{}.dlc".format(_dlc)))
+            self.urls.append(
+                urllib.parse.urljoin(
+                    self.pyfile.url,
+                    "/DLC/{}.dlc".format(_dlc)))
 
     def handle_weblinks(self):
         try:
@@ -293,7 +311,9 @@ class FilecryptCc(Crypter):
 
     def handle_CNL(self):
         try:
-            CNLdata = re.findall('onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);', self.site_with_links)
+            CNLdata = re.findall(
+                r'onsubmit="CNLPOP\(\'(.*)\', \'(.*)\', \'(.*)\', \'(.*)\'\);',
+                self.site_with_links)
             for index in CNLdata:
                 self.urls.extend(self._get_links(index[2], index[1]))
 

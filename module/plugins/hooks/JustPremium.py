@@ -28,14 +28,34 @@ class JustPremium(Addon):
         hosterdict = self.pyload.pluginManager.hosterPlugins
         linkdict = self.pyload.api.checkURLs(links)
 
-        premiumplugins = set(account.type for account in self.pyload.api.getAccounts(False)
-                             if account.valid and account.premium)
+        premiumplugins = set(account.type for account in self.pyload.api.getAccounts(
+            False) if account.valid and account.premium)
         multihosters = set(hoster for hoster in self.pyload.pluginManager.hosterPlugins
                            if 'new_name' in hosterdict[hoster]
                            and hosterdict[hoster]['new_name'] in premiumplugins)
 
-        excluded = ["".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.') for domain in self.config.get('excluded').replace(' ', '').replace(',', '|').replace(';', '|').split('|')]
-        included = ["".join(part.capitalize() for part in re.split(r'(\.|\d+)', domain) if part != '.') for domain in self.config.get('included').replace(' ', '').replace(',', '|').replace(';', '|').split('|')]
+        excluded = [
+            "".join(
+                part.capitalize() for part in re.split(
+                    r'(\.|\d+)',
+                    domain) if part != '.') for domain in self.config.get('excluded').replace(
+                ' ',
+                '').replace(
+                    ',',
+                    '|').replace(
+                        ';',
+                '|').split('|')]
+        included = [
+            "".join(
+                part.capitalize() for part in re.split(
+                    r'(\.|\d+)',
+                    domain) if part != '.') for domain in self.config.get('included').replace(
+                ' ',
+                '').replace(
+                    ',',
+                    '|').replace(
+                        ';',
+                '|').split('|')]
 
         hosterlist = (premiumplugins | multihosters).union(
             excluded).difference(included)

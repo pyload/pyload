@@ -34,13 +34,19 @@ class FshareVnFolder(Crypter):
     def enum_folder(self, folder_id):
         links = []
 
-        self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+        self.req.http.c.setopt(pycurl.HTTPHEADER,
+                               ["Accept: application/json, text/plain, */*"])
         self.data = self.load("https://www.fshare.vn/api/v3/files/folder",
                               get={'linkcode': folder_id})
         json_data = json.loads(self.data)
 
         current_page = 1
-        last_page = int(re.search(r'&page=(\d+)', json_data['_links'].get('last', "&page=1")).group(1))
+        last_page = int(
+            re.search(
+                r'&page=(\d+)',
+                json_data['_links'].get(
+                    'last',
+                    "&page=1")).group(1))
 
         while True:
             folder_items = json_data['items']
@@ -50,25 +56,25 @@ class FshareVnFolder(Crypter):
 
                 else:
                     if self.config.get('dl_subfolders'):
-                            if self.config.get('package_subfolder'):
-                                links.append("https://www.fshare.vn/folder/" + item['linkcode'])
+                        if self.config.get('package_subfolder'):
+                            links.append(
+                                "https://www.fshare.vn/folder/" + item['linkcode'])
 
-                            else:
-                                links.extend(self.enum_folder(item['linkcode']))
+                        else:
+                            links.extend(self.enum_folder(item['linkcode']))
 
             current_page += 1
             if current_page > last_page:
                 break
 
-            self.req.http.c.setopt(pycurl.HTTPHEADER, ["Accept: application/json, text/plain, */*"])
+            self.req.http.c.setopt(pycurl.HTTPHEADER,
+                                   ["Accept: application/json, text/plain, */*"])
             self.data = self.load("https://www.fshare.vn/api/v3/files/folder",
                                   get={'linkcode': folder_id,
                                        'page': current_page})
             json_data = json.loads(self.data)
 
-
         return links
-
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
@@ -84,5 +90,3 @@ class FshareVnFolder(Crypter):
 
         if links:
             self.packages = [(pack_name, links, pack_name)]
-
-
