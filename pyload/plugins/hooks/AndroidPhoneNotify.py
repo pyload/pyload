@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ..internal.Notifier import Notifier
 
 

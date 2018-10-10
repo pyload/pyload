@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from threading import Event
 
 import hashlib

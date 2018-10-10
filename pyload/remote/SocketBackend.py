@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import socketserver
 
 from .RemoteManager import BackendBase

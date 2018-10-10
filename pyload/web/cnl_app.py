@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import str
 from os.path import join
 import re

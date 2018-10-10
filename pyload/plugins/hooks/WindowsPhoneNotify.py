@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import http.client
 
 from ..internal.Notifier import Notifier

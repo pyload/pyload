@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from builtins import object
 from thrift.transport.TTransport import TBufferedTransport
 from thrift.transport.TZlibTransport import TZlibTransport

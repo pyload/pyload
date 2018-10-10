@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ..internal.XFSCrypter import XFSCrypter
 
 

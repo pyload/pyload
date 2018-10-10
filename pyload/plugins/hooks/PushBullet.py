@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from builtins import str
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request

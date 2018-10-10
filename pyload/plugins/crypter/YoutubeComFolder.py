@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import map
 import re
 import urllib.parse

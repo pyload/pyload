@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import pycurl
 import re
 import time

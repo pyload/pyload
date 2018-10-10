@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from os.path import join
 from traceback import print_exc
 from shutil import copyfileobj

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ..internal.MultiAccount import MultiAccount
 from ..internal.misc import json
 from functools import reduce

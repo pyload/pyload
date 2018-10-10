@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import filter
 from builtins import zip
 import binascii

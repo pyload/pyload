@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ..captcha.ReCaptcha import ReCaptcha
 from ..captcha.SolveMedia import SolveMedia
 from ..internal.SimpleHoster import SimpleHoster

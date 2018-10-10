@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from ..internal.SimpleCrypter import SimpleCrypter
 
 

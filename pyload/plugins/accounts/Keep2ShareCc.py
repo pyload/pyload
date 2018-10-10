@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL as get_url
 

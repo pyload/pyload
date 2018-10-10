@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import next
 from builtins import hex
 from builtins import str

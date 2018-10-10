@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ..internal.misc import json, set_cookie
 from ..internal.MultiAccount import MultiAccount
 

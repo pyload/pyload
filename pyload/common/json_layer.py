@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # abstraction layer for json operations
 
 try:  # since python 2.6

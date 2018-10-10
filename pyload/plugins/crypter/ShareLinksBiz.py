@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from builtins import filter
 import binascii
 import re

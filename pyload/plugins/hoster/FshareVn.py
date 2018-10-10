@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster

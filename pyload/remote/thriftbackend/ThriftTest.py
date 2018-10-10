@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import input
 from builtins import range
 import sys

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from gettext import *
 
 _searchdirs = None

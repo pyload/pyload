@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from builtins import map
 from ..internal.misc import json
 from ..internal.MultiAccount import MultiAccount

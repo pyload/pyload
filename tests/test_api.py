@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from builtins import range
 from builtins import object
 from pyload.common import APIExerciser

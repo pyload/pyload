@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import zip
 from builtins import str
 from builtins import map

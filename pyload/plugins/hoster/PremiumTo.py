@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from ..internal.misc import encode
 from ..internal.MultiHoster import MultiHoster
 

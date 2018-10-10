@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from .misc import set_cookie
 from .SimpleCrypter import SimpleCrypter
 

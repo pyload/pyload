@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import threading
 
 from .misc import Periodical, isiterable

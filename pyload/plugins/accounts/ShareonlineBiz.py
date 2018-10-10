@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from ..internal.Account import Account
 from ..internal.misc import set_cookie
 

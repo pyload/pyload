@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from .thriftgen.pyload import Pyload
 
 

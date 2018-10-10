@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pycurl
 from pyload.network.HTTPRequest import HTTPRequest
 from pyload.network.Browser import Browser

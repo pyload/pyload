@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import pycurl
 
 from ..internal.Crypter import Crypter

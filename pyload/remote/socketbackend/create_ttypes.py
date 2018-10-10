@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import inspect
 import sys
 from os.path import abspath, dirname, join

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc

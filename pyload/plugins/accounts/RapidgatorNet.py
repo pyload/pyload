@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import str
 
 from ..internal.Account import Account

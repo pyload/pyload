@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from builtins import range
 import string
 from threading import Thread

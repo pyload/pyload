@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import re
 
 from pyload.PyFile import PyFile
