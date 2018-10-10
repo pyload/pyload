@@ -10,7 +10,7 @@ from time import time
 
 import pycurl
 from pyload.plugins.Plugin import Abort
-from pyload.utils import fs_encode, save_join
+from pyload.utils.utils import fs_encode, save_join
 
 from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
 from pyload.network.HTTPRequest import BadHeader

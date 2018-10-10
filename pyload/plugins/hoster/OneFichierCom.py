@@ -5,7 +5,7 @@ from builtins import map, range
 
 from pyload.network.RequestFactory import getURL as get_url
 
-from pyload.plugins.internal.misc import format_exc
+from pyload.plugins.internal.utils import format_exc
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

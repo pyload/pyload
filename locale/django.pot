@@ -18,670 +18,670 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pyload/web/translations.js:1 pyload/web/templates/default/base.html:123
-#: pyload/web/templates/default/base.html:124
-#: pyload/web/templates/default/settings_item.html:14
+#: pyload/webui/translations.js:1 pyload/webui/templates/default/base.html:123
+#: pyload/webui/templates/default/base.html:124
+#: pyload/webui/templates/default/settings_item.html:14
 msgid "on"
 msgstr ""
 
-#: pyload/web/translations.js:2 pyload/web/templates/default/captcha.html:7
+#: pyload/webui/translations.js:2 pyload/webui/templates/default/captcha.html:7
 msgid "Please read the text on the captcha."
 msgstr ""
 
-#: pyload/web/translations.js:3
+#: pyload/webui/translations.js:3
 msgid "Settings saved."
 msgstr ""
 
-#: pyload/web/translations.js:4 pyload/web/templates/default/base.html:123
-#: pyload/web/templates/default/base.html:124
-#: pyload/web/templates/default/settings_item.html:16
+#: pyload/webui/translations.js:4 pyload/webui/templates/default/base.html:123
+#: pyload/webui/templates/default/base.html:124
+#: pyload/webui/templates/default/settings_item.html:16
 msgid "off"
 msgstr ""
 
-#: pyload/web/translations.js:5
+#: pyload/webui/translations.js:5
 msgid "Success"
 msgstr ""
 
-#: pyload/web/translations.js:6
+#: pyload/webui/translations.js:6
 msgid "Passwords did not match."
 msgstr ""
 
-#: pyload/web/translations.js:7
+#: pyload/webui/translations.js:7
 msgid "Delete Link"
 msgstr ""
 
-#: pyload/web/translations.js:8
+#: pyload/webui/translations.js:8
 msgid "pyLoad restarted"
 msgstr ""
 
-#: pyload/web/translations.js:9
+#: pyload/webui/translations.js:9
 msgid "You are really sure you want to quit pyLoad?"
 msgstr ""
 
-#: pyload/web/translations.js:10
+#: pyload/webui/translations.js:10
 msgid "Please Enter a packagename."
 msgstr ""
 
-#: pyload/web/translations.js:11
+#: pyload/webui/translations.js:11
 msgid "Please click on the right captcha position."
 msgstr ""
 
-#: pyload/web/translations.js:12
+#: pyload/webui/translations.js:12
 msgid "Error occured."
 msgstr ""
 
-#: pyload/web/translations.js:13
+#: pyload/webui/translations.js:13
 msgid "New Captcha Request"
 msgstr ""
 
-#: pyload/web/translations.js:14
+#: pyload/webui/translations.js:14
 msgid "Failed"
 msgstr ""
 
-#: pyload/web/translations.js:15
+#: pyload/webui/translations.js:15
 msgid "No Captchas to read."
 msgstr ""
 
-#: pyload/web/translations.js:16
-#: pyload/web/templates/default/filemanager.html:65
-#: pyload/web/templates/default/folder.html:14
+#: pyload/webui/translations.js:16
+#: pyload/webui/templates/default/filemanager.html:65
+#: pyload/webui/templates/default/folder.html:14
 msgid "Folder is empty"
 msgstr ""
 
-#: pyload/web/translations.js:17
+#: pyload/webui/translations.js:17
 msgid "Restart Link"
 msgstr ""
 
-#: pyload/web/translations.js:18
+#: pyload/webui/translations.js:18
 msgid "New folder"
 msgstr ""
 
-#: pyload/web/translations.js:19
+#: pyload/webui/translations.js:19
 msgid "Are you sure you want to restart pyLoad?"
 msgstr ""
 
-#: pyload/web/pyload_app.py:125
+#: pyload/webui/pyload_app.py:125
 msgid "You dont have permission to access this page."
 msgstr ""
 
-#: pyload/web/pyload_app.py:193
+#: pyload/webui/pyload_app.py:193
 msgid "Download directory not found."
 msgstr ""
 
-#: pyload/web/pyload_app.py:260 pyload/web/pyload_app.py:267
+#: pyload/webui/pyload_app.py:260 pyload/webui/pyload_app.py:267
 msgid "unlimited"
 msgstr ""
 
-#: pyload/web/pyload_app.py:262 pyload/web/pyload_app.py:269
+#: pyload/webui/pyload_app.py:262 pyload/webui/pyload_app.py:269
 msgid "not available"
 msgstr ""
 
-#: pyload/web/pyload_app.py:509
+#: pyload/webui/pyload_app.py:509
 msgid "Run pyLoadCore.py -s to access the setup."
 msgstr ""
 
-#: pyload/web/json_app.py:60
+#: pyload/webui/json_app.py:60
 #, python-format
 msgid "waiting %s"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:14
-#: pyload/web/templates/default/info.html:15
-#: pyload/web/templates/default/home.html:239
+#: pyload/webui/templates/default/info.html:14
+#: pyload/webui/templates/default/info.html:15
+#: pyload/webui/templates/default/home.html:239
 msgid "Information"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:18
+#: pyload/webui/templates/default/info.html:18
 msgid "News"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:21
+#: pyload/webui/templates/default/info.html:21
 msgid "Support"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:37
+#: pyload/webui/templates/default/info.html:37
 msgid "System"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:40
+#: pyload/webui/templates/default/info.html:40
 msgid "Python:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:44
+#: pyload/webui/templates/default/info.html:44
 msgid "OS:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:48
+#: pyload/webui/templates/default/info.html:48
 msgid "pyLoad version:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:52
+#: pyload/webui/templates/default/info.html:52
 msgid "Installation Folder:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:56
+#: pyload/webui/templates/default/info.html:56
 msgid "Config Folder:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:60
+#: pyload/webui/templates/default/info.html:60
 msgid "Download Folder:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:64
+#: pyload/webui/templates/default/info.html:64
 msgid "Free Space:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:68
+#: pyload/webui/templates/default/info.html:68
 msgid "Language:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:72
+#: pyload/webui/templates/default/info.html:72
 msgid "Webinterface Port:"
 msgstr ""
 
-#: pyload/web/templates/default/info.html:76
+#: pyload/webui/templates/default/info.html:76
 msgid "Remote Interface Port:"
 msgstr ""
 
-#: pyload/web/templates/default/downloads.html:6
-#: pyload/web/templates/default/base.html:93
-#: pyload/web/templates/default/home.html:220
+#: pyload/webui/templates/default/downloads.html:6
+#: pyload/webui/templates/default/base.html:93
+#: pyload/webui/templates/default/home.html:220
 msgid "Downloads"
 msgstr ""
 
-#: pyload/web/templates/default/filemanager.html:19
+#: pyload/webui/templates/default/filemanager.html:19
 msgid "FileManager"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:8
-#: pyload/web/templates/default/admin.html:9
-#: pyload/web/templates/default/base.html:59
+#: pyload/webui/templates/default/admin.html:8
+#: pyload/webui/templates/default/admin.html:9
+#: pyload/webui/templates/default/base.html:59
 msgid "Administrate"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:13
+#: pyload/webui/templates/default/admin.html:13
 msgid "Quit pyLoad"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:14
+#: pyload/webui/templates/default/admin.html:14
 msgid "Restart pyLoad"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:18
+#: pyload/webui/templates/default/admin.html:18
 msgid "To add user or change passwords use:"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:19
+#: pyload/webui/templates/default/admin.html:19
 msgid "Important: Admin user have always all permissions!"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:25
-#: pyload/web/templates/default/settings.html:91
-#: pyload/web/templates/default/queue.html:82
-#: pyload/web/templates/default/window.html:7
-#: pyload/web/templates/default/home.html:237
+#: pyload/webui/templates/default/admin.html:25
+#: pyload/webui/templates/default/settings.html:91
+#: pyload/webui/templates/default/queue.html:82
+#: pyload/webui/templates/default/window.html:7
+#: pyload/webui/templates/default/home.html:237
 msgid "Name"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:28
-#: pyload/web/templates/default/admin.html:67
+#: pyload/webui/templates/default/admin.html:28
+#: pyload/webui/templates/default/admin.html:67
 msgid "Change Password"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:31
+#: pyload/webui/templates/default/admin.html:31
 msgid "Admin"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:34
+#: pyload/webui/templates/default/admin.html:34
 msgid "Permissions"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:41
+#: pyload/webui/templates/default/admin.html:41
 msgid "change"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:61
-#: pyload/web/templates/default/admin.html:91
-#: pyload/web/templates/default/settings.html:167
-#: pyload/web/templates/default/queue.html:97
-#: pyload/web/templates/default/captcha.html:33
+#: pyload/webui/templates/default/admin.html:61
+#: pyload/webui/templates/default/admin.html:91
+#: pyload/webui/templates/default/settings.html:167
+#: pyload/webui/templates/default/queue.html:97
+#: pyload/webui/templates/default/captcha.html:33
 msgid "Submit"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:69
+#: pyload/webui/templates/default/admin.html:69
 msgid "Enter your current and desired Password."
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:70
+#: pyload/webui/templates/default/admin.html:70
 msgid "User"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:71
-#: pyload/web/templates/default/settings.html:179
+#: pyload/webui/templates/default/admin.html:71
+#: pyload/webui/templates/default/settings.html:179
 msgid "Your username."
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:75
+#: pyload/webui/templates/default/admin.html:75
 msgid "Current password"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:76
-#: pyload/web/templates/default/settings.html:184
+#: pyload/webui/templates/default/admin.html:76
+#: pyload/webui/templates/default/settings.html:184
 msgid "The password for this account."
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:80
+#: pyload/webui/templates/default/admin.html:80
 msgid "New password"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:81
+#: pyload/webui/templates/default/admin.html:81
 msgid "The new password."
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:85
+#: pyload/webui/templates/default/admin.html:85
 msgid "New password (repeat)"
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:86
+#: pyload/webui/templates/default/admin.html:86
 msgid "Please repeat the new password."
 msgstr ""
 
-#: pyload/web/templates/default/admin.html:92
-#: pyload/web/templates/default/settings.html:198
-#: pyload/web/templates/default/queue.html:98
-#: pyload/web/templates/default/window.html:41
+#: pyload/webui/templates/default/admin.html:92
+#: pyload/webui/templates/default/settings.html:198
+#: pyload/webui/templates/default/queue.html:98
+#: pyload/webui/templates/default/window.html:41
 msgid "Reset"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:3
-#: pyload/web/templates/default/settings.html:4
-#: pyload/web/templates/default/base.html:102
-#: pyload/web/templates/default/home.html:229
+#: pyload/webui/templates/default/settings.html:3
+#: pyload/webui/templates/default/settings.html:4
+#: pyload/webui/templates/default/base.html:102
+#: pyload/webui/templates/default/home.html:229
 msgid "Config"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:16
+#: pyload/webui/templates/default/settings.html:16
 msgid "General"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:17
+#: pyload/webui/templates/default/settings.html:17
 msgid "Plugins"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:18
+#: pyload/webui/templates/default/settings.html:18
 msgid "Accounts"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:45
-#: pyload/web/templates/default/settings.html:74
+#: pyload/webui/templates/default/settings.html:45
+#: pyload/webui/templates/default/settings.html:74
 msgid "Choose a section from the menu"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:90
+#: pyload/webui/templates/default/settings.html:90
 msgid "Plugin"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:92
-#: pyload/web/templates/default/settings.html:183
-#: pyload/web/templates/default/login.html:19
-#: pyload/web/templates/default/queue.html:92
-#: pyload/web/templates/default/window.html:21
+#: pyload/webui/templates/default/settings.html:92
+#: pyload/webui/templates/default/settings.html:183
+#: pyload/webui/templates/default/login.html:19
+#: pyload/webui/templates/default/queue.html:92
+#: pyload/webui/templates/default/window.html:21
 msgid "Password"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:93
-#: pyload/web/templates/default/home.html:238
+#: pyload/webui/templates/default/settings.html:93
+#: pyload/webui/templates/default/home.html:238
 msgid "Status"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:94
+#: pyload/webui/templates/default/settings.html:94
 msgid "Premium"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:95
+#: pyload/webui/templates/default/settings.html:95
 msgid "Valid until"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:96
+#: pyload/webui/templates/default/settings.html:96
 msgid "Traffic left"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:97
+#: pyload/webui/templates/default/settings.html:97
 msgid "Time"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:98
+#: pyload/webui/templates/default/settings.html:98
 msgid "Max Parallel"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:99
+#: pyload/webui/templates/default/settings.html:99
 msgid "Delete?"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:121
+#: pyload/webui/templates/default/settings.html:121
 msgid "valid"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:124
+#: pyload/webui/templates/default/settings.html:124
 msgid "not valid"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:131
+#: pyload/webui/templates/default/settings.html:131
 msgid "yes"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:134
+#: pyload/webui/templates/default/settings.html:134
 msgid "no"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:168
-#: pyload/web/templates/default/settings.html:197
-#: pyload/web/templates/default/base.html:117
+#: pyload/webui/templates/default/settings.html:168
+#: pyload/webui/templates/default/settings.html:197
+#: pyload/webui/templates/default/base.html:117
 msgid "Add"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:176
+#: pyload/webui/templates/default/settings.html:176
 msgid "Add Account"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:177
+#: pyload/webui/templates/default/settings.html:177
 msgid "Enter your account data to use premium features."
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:178
-#: pyload/web/templates/default/login.html:3
+#: pyload/webui/templates/default/settings.html:178
+#: pyload/webui/templates/default/login.html:3
 msgid "Login"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:188
+#: pyload/webui/templates/default/settings.html:188
 msgid "Type"
 msgstr ""
 
-#: pyload/web/templates/default/settings.html:189
+#: pyload/webui/templates/default/settings.html:189
 msgid "Choose the hoster for your account."
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:39
-#: pyload/web/templates/default/pathchooser.html:41
+#: pyload/webui/templates/default/pathchooser.html:39
+#: pyload/webui/templates/default/pathchooser.html:41
 msgid "Path"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:39
-#: pyload/web/templates/default/pathchooser.html:41
+#: pyload/webui/templates/default/pathchooser.html:39
+#: pyload/webui/templates/default/pathchooser.html:41
 msgid "absolute"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:39
-#: pyload/web/templates/default/pathchooser.html:41
+#: pyload/webui/templates/default/pathchooser.html:39
+#: pyload/webui/templates/default/pathchooser.html:41
 msgid "relative"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:46
+#: pyload/webui/templates/default/pathchooser.html:46
 msgid "name"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:47
+#: pyload/webui/templates/default/pathchooser.html:47
 msgid "size"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:48
+#: pyload/webui/templates/default/pathchooser.html:48
 msgid "type"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:49
+#: pyload/webui/templates/default/pathchooser.html:49
 msgid "last modified"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:54
+#: pyload/webui/templates/default/pathchooser.html:54
 msgid "parent directory"
 msgstr ""
 
-#: pyload/web/templates/default/pathchooser.html:70
+#: pyload/webui/templates/default/pathchooser.html:70
 msgid "no content"
 msgstr ""
 
-#: pyload/web/templates/default/setup.html:3
-#: pyload/web/templates/default/setup.html:4
+#: pyload/webui/templates/default/setup.html:3
+#: pyload/webui/templates/default/setup.html:4
 msgid "Setup"
 msgstr ""
 
-#: pyload/web/templates/default/login.html:14
+#: pyload/webui/templates/default/login.html:14
 msgid "Username"
 msgstr ""
 
-#: pyload/web/templates/default/login.html:29
+#: pyload/webui/templates/default/login.html:29
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
 
-#: pyload/web/templates/default/login.html:30
+#: pyload/webui/templates/default/login.html:30
 msgid "To reset your login data or add an user run:"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:20
-#: pyload/web/templates/default/base.html:139
+#: pyload/webui/templates/default/base.html:20
+#: pyload/webui/templates/default/base.html:139
 msgid "Webinterface"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:39
+#: pyload/webui/templates/default/base.html:39
 msgid "pyLoad Update available!"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:46
+#: pyload/webui/templates/default/base.html:46
 msgid "Plugins updated, please restart!"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:52
+#: pyload/webui/templates/default/base.html:52
 msgid "Captcha waiting"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:57
+#: pyload/webui/templates/default/base.html:57
 msgid "Logout"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:61
+#: pyload/webui/templates/default/base.html:61
 msgid "Info"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:65
+#: pyload/webui/templates/default/base.html:65
 msgid "Please Login!"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:84
-#: pyload/web/templates/default/home.html:211
+#: pyload/webui/templates/default/base.html:84
+#: pyload/webui/templates/default/home.html:211
 msgid "Home"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:87
-#: pyload/web/templates/default/queue.html:15
-#: pyload/web/templates/default/window.html:34
-#: pyload/web/templates/default/home.html:214
+#: pyload/webui/templates/default/base.html:87
+#: pyload/webui/templates/default/queue.html:15
+#: pyload/webui/templates/default/window.html:34
+#: pyload/webui/templates/default/home.html:214
 msgid "Queue"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:90
-#: pyload/web/templates/default/queue.html:17
-#: pyload/web/templates/default/window.html:36
-#: pyload/web/templates/default/home.html:217
+#: pyload/webui/templates/default/base.html:90
+#: pyload/webui/templates/default/queue.html:17
+#: pyload/webui/templates/default/window.html:36
+#: pyload/webui/templates/default/home.html:217
 msgid "Collector"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:99
-#: pyload/web/templates/default/logs.html:3
-#: pyload/web/templates/default/logs.html:4
-#: pyload/web/templates/default/home.html:226
+#: pyload/webui/templates/default/base.html:99
+#: pyload/webui/templates/default/logs.html:3
+#: pyload/webui/templates/default/logs.html:4
+#: pyload/webui/templates/default/home.html:226
 msgid "Logs"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:114
-#: pyload/web/templates/default/logs.html:12
+#: pyload/webui/templates/default/base.html:114
+#: pyload/webui/templates/default/logs.html:12
 msgid "Start"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:115
+#: pyload/webui/templates/default/base.html:115
 msgid "Stop"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:116
+#: pyload/webui/templates/default/base.html:116
 msgid "Cancel"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:123
+#: pyload/webui/templates/default/base.html:123
 msgid "Download:"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:124
+#: pyload/webui/templates/default/base.html:124
 msgid "Reconnect:"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:125
+#: pyload/webui/templates/default/base.html:125
 msgid "Speed:"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:126
+#: pyload/webui/templates/default/base.html:126
 msgid "Active:"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:127
+#: pyload/webui/templates/default/base.html:127
 msgid "Reload page"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:157
+#: pyload/webui/templates/default/base.html:157
 msgid "loading"
 msgstr ""
 
-#: pyload/web/templates/default/base.html:166
+#: pyload/webui/templates/default/base.html:166
 msgid "Back to top"
 msgstr ""
 
-#: pyload/web/templates/default/logs.html:12
+#: pyload/webui/templates/default/logs.html:12
 msgid "prev"
 msgstr ""
 
-#: pyload/web/templates/default/logs.html:12
+#: pyload/webui/templates/default/logs.html:12
 msgid "next"
 msgstr ""
 
-#: pyload/web/templates/default/logs.html:12
+#: pyload/webui/templates/default/logs.html:12
 msgid "End"
 msgstr ""
 
-#: pyload/web/templates/default/logout.html:8
+#: pyload/webui/templates/default/logout.html:8
 msgid "You were successfully logged out."
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:25
+#: pyload/webui/templates/default/queue.html:25
 msgid "Delete Finished"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:26
+#: pyload/webui/templates/default/queue.html:26
 msgid "Restart Failed"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:65
+#: pyload/webui/templates/default/queue.html:65
 msgid "Folder:"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:65
+#: pyload/webui/templates/default/queue.html:65
 msgid "Password:"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:79
+#: pyload/webui/templates/default/queue.html:79
 msgid "Edit Package"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:80
+#: pyload/webui/templates/default/queue.html:80
 msgid "Edit the package detais below."
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:83
+#: pyload/webui/templates/default/queue.html:83
 msgid "The name of the package."
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:87
+#: pyload/webui/templates/default/queue.html:87
 msgid "Folder"
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:88
+#: pyload/webui/templates/default/queue.html:88
 msgid "Name of subfolder for these downloads."
 msgstr ""
 
-#: pyload/web/templates/default/queue.html:93
+#: pyload/webui/templates/default/queue.html:93
 msgid "List of passwords used for unrar."
 msgstr ""
 
-#: pyload/web/templates/default/window.html:5
-#: pyload/web/templates/default/window.html:40
+#: pyload/webui/templates/default/window.html:5
+#: pyload/webui/templates/default/window.html:40
 msgid "Add Package"
 msgstr ""
 
-#: pyload/web/templates/default/window.html:6
+#: pyload/webui/templates/default/window.html:6
 msgid "Paste your links or upload a container."
 msgstr ""
 
-#: pyload/web/templates/default/window.html:8
+#: pyload/webui/templates/default/window.html:8
 msgid "The name of the new package."
 msgstr ""
 
-#: pyload/web/templates/default/window.html:12
+#: pyload/webui/templates/default/window.html:12
 msgid "Links"
 msgstr ""
 
-#: pyload/web/templates/default/window.html:13
+#: pyload/webui/templates/default/window.html:13
 msgid "Paste your links here or any text and press the filter button."
 msgstr ""
 
-#: pyload/web/templates/default/window.html:14
+#: pyload/webui/templates/default/window.html:14
 msgid "Filter urls"
 msgstr ""
 
-#: pyload/web/templates/default/window.html:22
+#: pyload/webui/templates/default/window.html:22
 msgid "Password for RAR-Archive"
 msgstr ""
 
-#: pyload/web/templates/default/window.html:26
+#: pyload/webui/templates/default/window.html:26
 msgid "File"
 msgstr ""
 
-#: pyload/web/templates/default/window.html:27
+#: pyload/webui/templates/default/window.html:27
 msgid "Upload a container."
 msgstr ""
 
-#: pyload/web/templates/default/window.html:31
+#: pyload/webui/templates/default/window.html:31
 msgid "Destination"
 msgstr ""
 
-#: pyload/web/templates/default/home.html:206
+#: pyload/webui/templates/default/home.html:206
 msgid "Active Downloads"
 msgstr ""
 
-#: pyload/web/templates/default/home.html:240
+#: pyload/webui/templates/default/home.html:240
 msgid "Size"
 msgstr ""
 
-#: pyload/web/templates/default/home.html:241
+#: pyload/webui/templates/default/home.html:241
 msgid "Progress"
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:6
+#: pyload/webui/templates/default/captcha.html:6
 msgid "Captcha reading"
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:13
+#: pyload/webui/templates/default/captcha.html:13
 msgid "Captcha"
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:14
+#: pyload/webui/templates/default/captcha.html:14
 msgid "The captcha."
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:20
+#: pyload/webui/templates/default/captcha.html:20
 msgid "Text"
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:21
+#: pyload/webui/templates/default/captcha.html:21
 msgid "Input the text on the captcha."
 msgstr ""
 
-#: pyload/web/templates/default/captcha.html:34
+#: pyload/webui/templates/default/captcha.html:34
 msgid "Close"
 msgstr ""

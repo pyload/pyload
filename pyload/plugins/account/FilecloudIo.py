@@ -3,7 +3,7 @@
 from builtins import range
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.misc import json, set_cookie
+from pyload.plugins.internal.utils import json, set_cookie
 
 
 class FilecloudIo(Account):

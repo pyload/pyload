@@ -4,7 +4,7 @@
 from builtins import object
 from time import time
 
-from pyload.utils import uniqify
+from pyload.utils.utils import uniqify
 
 
 class PullManager(object):

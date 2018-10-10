@@ -4,7 +4,7 @@ import re
 import time
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.misc import parse_html_form
+from pyload.plugins.internal.utils import parse_html_form
 
 
 class FshareVn(Account):

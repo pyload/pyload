@@ -30,7 +30,7 @@ How basic hoster plugin header could look like: ::
 You have to define these meta-data, ``__pattern__`` has to be a regexp that sucessfully compiles with
 ``re.compile(__pattern__)``.
 
-Just like :ref:`write_hooks` you can add and use config values exatly the same way.
+Just like :ref:`write_addons` you can add and use config values exatly the same way.
 If you want a Crypter or Container plugin, just replace the word Hoster with your desired plugin type.
 
 
@@ -58,7 +58,7 @@ An example ``process`` function could look like this ::
                 # download the file, destination is determined by pyLoad
                 self.download(parsed_url)
 
-You need to know about the :class:`PyFile <pyload.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
+You need to know about the :class:`PyFile <pyload.datatype.PyFile.PyFile>` class, since an instance of it is given as parameter to every pyfile.
 Some tasks your plugin should handle:  proof if file is online, get filename, wait if needed, download the file, etc..
 
 Wait times

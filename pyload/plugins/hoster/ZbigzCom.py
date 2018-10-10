@@ -7,7 +7,7 @@ import urllib.parse
 from builtins import range, str
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 class ZbigzCom(Hoster):

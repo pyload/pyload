@@ -10,7 +10,7 @@ from os.path import abspath, exists, isfile, join
 from sys import version_info
 from traceback import print_exc
 
-from pyload.ConfigParser import IGNORE
+from pyload.config.ConfigParser import IGNORE
 from pyload.lib.SafeEval import const_eval as literal_eval
 
 
@@ -23,7 +23,7 @@ class PluginManager(object):
         "hoster",
         "captcha",
         "accounts",
-        "hooks",
+        "addons",
         "internal")
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
@@ -78,8 +78,8 @@ class PluginManager(object):
         self.plugins["hoster"] = self.hosterPlugins
         merge(default_config, config)
 
-        self.hookPlugins, config = self.parse("hooks")
-        self.plugins["hooks"] = self.hookPlugins
+        self.hookPlugins, config = self.parse("addons")
+        self.plugins["addons"] = self.hookPlugins
         merge(default_config, config)
 
         self.captchaPlugins, config = self.parse("captcha")
@@ -205,13 +205,13 @@ class PluginManager(object):
                         self.log.error("Invalid config in {}: {}".format(name, config))
                         continue
 
-                    if folder == "hooks" and "activated" not in config:
+                    if folder == "addons" and "activated" not in config:
                         config['activated'] = ["bool", "Activated", False]
 
                     config['desc'] = desc
                     configs[name] = config
 
-                elif folder == "hooks":  # force config creation
+                elif folder == "addons":  # force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
                     config['activated'] = ["bool", "Activated", False]
@@ -396,8 +396,8 @@ class PluginManager(object):
             else:
                 as_dict[t] = [n]
 
-        # we do not reload hooks or internals, would cause to much side effects
-        if "hooks" in as_dict or "internal" in as_dict:
+        # we do not reload addons or internals, would cause to much side effects
+        if "addons" in as_dict or "internal" in as_dict:
             return False
 
         for type in as_dict.keys():

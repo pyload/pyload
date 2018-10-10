@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 class IronfilesNet(SimpleHoster):

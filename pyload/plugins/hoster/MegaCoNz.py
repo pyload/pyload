@@ -12,7 +12,7 @@ import Crypto.Util.Counter
 from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import decode, encode, exists, fsjoin, json
+from pyload.plugins.internal.utils import decode, encode, exists, fsjoin, json
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

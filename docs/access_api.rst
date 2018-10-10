@@ -15,7 +15,7 @@ retrieving download status, manage queue, manage accounts, modify config and so 
 This document is not intended to explain every function in detail, for a complete listing
 see :class:`Api <pyload.Api.Api>`.
 
-Of course its possible to access the ``core.api`` attribute in plugins and hooks, but much more
+Of course its possible to access the ``core.api`` attribute in plugins and addons, but much more
 interesting is the possibillity to call function from different programs written in many different languages.
 
 pyLoad uses thrift as backend and provides its :class:`Api <pyload.Api.Api>` as service.

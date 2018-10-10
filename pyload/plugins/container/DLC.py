@@ -6,7 +6,7 @@ import xml.dom.minidom
 import Crypto.Cipher.AES
 
 from pyload.plugins.internal.Container import Container
-from pyload.plugins.internal.misc import decode, encode
+from pyload.plugins.internal.utils import decode, encode
 
 
 class DLC(Container):

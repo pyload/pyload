@@ -202,7 +202,7 @@ def thrift(options):
 def compile_js():
     """ Compile .coffee files to javascript"""
 
-    root = path("pyload") / "web" / "media" / "js"
+    root = path("pyload") / "webui" / "media" / "js"
     for f in root.glob("*.coffee"):
         print("generate", f)
         coffee = Popen(["coffee", "-cbs"], stdin=open(f, "rb"), stdout=PIPE)
@@ -223,10 +223,10 @@ def generate_locale():
         "BeautifulSoup.py",
         # "pyload/gui",
         "pyload/cli",
-        "web/locale",
-        "web/ajax",
-        "web/cnl",
-        "web/pyload",
+        "webui/locale",
+        "webui/ajax",
+        "webui/cnl",
+        "webui/pyload",
         "setup.py"]
     makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
@@ -234,12 +234,12 @@ def generate_locale():
     makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./pyload/setup.py\n")
 
-    EXCLUDE = ["ServerThread.py", "web/media/default"]
+    EXCLUDE = ["ServerThread.py", "webui/media/default"]
 
     # strings from js files
     strings = set()
 
-    for fi in path("pyload/web").walkfiles():
+    for fi in path("pyload/webui").walkfiles():
         if not fi.name.endswith(".js") and not fi.endswith(".coffee"):
             continue
         with open(fi, "rb") as c:
@@ -248,13 +248,13 @@ def generate_locale():
             strings.update(re.findall(r"_\s*\(\s*\"([^\"]+)", content))
             strings.update(re.findall(r"_\s*\(\s*\'([^\']+)", content))
 
-    trans = path("pyload") / "web" / "translations.js"
+    trans = path("pyload") / "webui" / "translations.js"
 
     with open(trans, "wb") as js:
         for s in strings:
             js.write('_("{}")\n'.format(s))
 
-    makepot("django", path("pyload/web"), EXCLUDE,
+    makepot("django", path("pyload/webui"), EXCLUDE,
             "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
 
     trans.remove()

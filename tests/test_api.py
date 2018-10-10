@@ -3,7 +3,7 @@
 from builtins import object, range
 
 from nose.tools import nottest
-from pyload.common import APIExerciser
+from pyload.utils.utils import APIExerciser
 
 
 class TestApi(object):

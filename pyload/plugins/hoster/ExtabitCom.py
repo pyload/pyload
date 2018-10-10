@@ -3,7 +3,7 @@
 import re
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.misc import json, seconds_to_midnight
+from pyload.plugins.internal.utils import json, seconds_to_midnight
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

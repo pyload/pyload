@@ -3,7 +3,7 @@
 import re
 from builtins import map, str
 
-from pyload.plugins.internal.misc import json, uniqify
+from pyload.plugins.internal.utils import json, uniqify
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 
 

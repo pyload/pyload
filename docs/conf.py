@@ -135,7 +135,7 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "pyload", "web", "media", "default",
+html_logo = join(dir_name, "pyload", "webui", "media", "default",
                  "img", "pyload-logo-edited3.5-new-font-small.png")
 
 # The name of an image file (within the static path) to use as favicon of the

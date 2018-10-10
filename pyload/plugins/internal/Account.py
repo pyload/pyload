@@ -4,7 +4,7 @@ import random
 import threading
 import time
 
-from pyload.plugins.internal.misc import Periodical, compare_time, decode, isiterable, lock, parse_size
+from pyload.plugins.internal.utils import Periodical, compare_time, decode, isiterable, lock, parse_size
 from pyload.plugins.internal.Plugin import Plugin, Skip
 
 

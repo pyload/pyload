@@ -2,7 +2,7 @@
 
 from builtins import map
 
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 from pyload.plugins.internal.MultiAccount import MultiAccount
 
 

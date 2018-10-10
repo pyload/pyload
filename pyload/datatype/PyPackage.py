@@ -4,7 +4,7 @@
 from builtins import object
 
 from pyload.PullEvents import UpdateEvent
-from pyload.utils import save_path
+from pyload.utils.utils import save_path
 
 
 class PyPackage(object):

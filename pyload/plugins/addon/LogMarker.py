@@ -3,7 +3,7 @@
 import datetime
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.misc import seconds_to_nexthour
+from pyload.plugins.internal.utils import seconds_to_nexthour
 
 
 class LogMarker(Addon):

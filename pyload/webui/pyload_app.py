@@ -11,12 +11,12 @@ from os.path import abspath, isdir, isfile, join
 from urllib.parse import unquote
 
 from bottle import HTTPError, error, redirect, request, response, route, static_file
-from pyload.utils import formatSize, fs_decode, fs_encode, save_join
+from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 
-from pyload.web.filters import relpath, unquotepath
-from pyload.web.utils import (get_permission, login_required, parse_permissions, parse_userdata,
+from pyload.webui.filters import relpath, unquotepath
+from pyload.webui.utils import (get_permission, login_required, parse_permissions, parse_userdata,
                     permlist, render_to_response, set_permission, set_session, toDict)
-from pyload.web.webinterface import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
+from pyload.webui.webinterface import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
 
 # Helper
 

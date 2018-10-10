@@ -11,7 +11,7 @@ import pycurl
 from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import exists, json
+from pyload.plugins.internal.utils import exists, json
 
 
 class RealdebridComTorrent(Hoster):

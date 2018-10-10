@@ -15,7 +15,7 @@ from threading import Lock, Thread
 from time import sleep
 from traceback import print_exc
 
-import pyload.common.pylgettext as gettext
+import pyload.utils.utils.pylgettext as gettext
 from pyload import InitHomeDir
 from pyload.Api import Destination
 from pyload.cli import AddPackage, ManageFiles
@@ -24,7 +24,7 @@ from pyload.lib.Getch import Getch
 from pyload.lib.rename_process import renameProcess
 from pyload.remote.thriftbackend.ThriftClient import (ConnectionClosed, NoConnection,
                                                       NoSSL, ThriftClient, WrongLogin)
-from pyload.utils import decode, formatSize
+from pyload.utils.utils import decode, formatSize
 
 if os.name == "nt":
     enc = "cp850"

@@ -11,7 +11,7 @@ from future.utils import with_metaclass
 from pyload.network.HTTPRequest import BadHeader
 
 from pyload.plugins.internal.Base import Base
-from pyload.plugins.internal.misc import encode, exists, fsjoin, parse_name, safejoin
+from pyload.plugins.internal.utils import encode, exists, fsjoin, parse_name, safejoin
 from pyload.plugins.internal.Plugin import Fail
 
 # Python 2.5 compatibility hack for property.setter, property.deleter

@@ -7,7 +7,7 @@ import urllib.parse
 import pycurl
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 class UlozTo(Account):

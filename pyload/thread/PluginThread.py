@@ -16,10 +16,10 @@ from types import MethodType
 from pycurl import error
 
 from pyload.Api import OnlineStatus
-from pyload.common.packagetools import parseNames
+from pyload.utils.utils.packagetools import parseNames
 from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from pyload.PyFile import PyFile
-from pyload.utils import save_join
+from pyload.datatype.PyFile import PyFile
+from pyload.utils.utils import save_join
 
 
 class PluginThread(Thread):
@@ -421,7 +421,7 @@ class DecrypterThread(PluginThread):
 
 
 class HookThread(PluginThread):
-    """thread for hooks"""
+    """thread for addons"""
 
     # ----------------------------------------------------------------------
     def __init__(self, m, function, args, kwargs):

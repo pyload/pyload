@@ -9,13 +9,13 @@ from types import MethodType
 
 from _thread import start_new_thread
 from pyload.plugins.PluginManager import literal_eval
-from pyload.PluginThread import HookThread
+from pyload.thread.PluginThread import HookThread
 
-from pyload.utils import lock
+from pyload.utils.utils import lock
 
 
 class HookManager(object):
-    """Manages hooks, delegates and handles Events.
+    """Manages addons, delegates and handles Events.
 
         Every plugin can define events, \
         but some very usefull events are called by the Core.
@@ -50,7 +50,7 @@ class HookManager(object):
         self.core = core
         self.config = self.core.config
 
-        builtins.hookManager = self  # needed to let hooks register themself
+        builtins.hookManager = self  # needed to let addons register themself
 
         self.log = self.core.log
         self.plugins = []
@@ -73,7 +73,7 @@ class HookManager(object):
             try:
                 return func(*args)
             except Exception as e:
-                args[0].log.error(_("Error executing hooks: {}").format(str(e)))
+                args[0].log.error(_("Error executing addons: {}").format(str(e)))
                 if args[0].core.debug:
                     traceback.print_exc()
 
@@ -109,7 +109,7 @@ class HookManager(object):
                 #hookClass = getattr(plugin, plugin.__name__)
 
                 if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("hooks", pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("addons", pluginname)
                     if not pluginClass:
                         continue
 
@@ -144,7 +144,7 @@ class HookManager(object):
             if inst.__name__ == plugin:
                 return
 
-        pluginClass = self.core.pluginManager.loadClass("hooks", plugin)
+        pluginClass = self.core.pluginManager.loadClass("addons", plugin)
 
         if not pluginClass:
             return

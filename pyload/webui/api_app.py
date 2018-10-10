@@ -6,11 +6,11 @@ from urllib.parse import unquote
 
 from bottle import HTTPError, request, response, route
 from pyload.Api import BaseObject
-from pyload.common.json_layer import json
+from pyload.utils.utils.json_layer import json
 from pyload.lib.SafeEval import const_eval as literal_eval
 
-from pyload.web.utils import set_session, toDict
-from pyload.web.webinterface import PYLOAD
+from pyload.webui.utils import set_session, toDict
+from pyload.webui.webinterface import PYLOAD
 
 # json encoder that accepts TBase objects
 

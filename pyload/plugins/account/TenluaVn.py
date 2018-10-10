@@ -6,7 +6,7 @@ from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL as get_url
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 class TenluaVn(Account):

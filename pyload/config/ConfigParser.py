@@ -7,11 +7,11 @@ from shutil import copy
 from time import sleep
 from traceback import print_exc
 
-from pyload.utils import chmod
+from pyload.utils.utils import chmod
 
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
-    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('hooks', 'UnRar'),
+    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('addons', 'UnRar'),
     'EasyShareCom', 'FlyshareCz'
 )
 

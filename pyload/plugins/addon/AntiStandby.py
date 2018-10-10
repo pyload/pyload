@@ -7,7 +7,7 @@ import time
 from builtins import object
 
 from pyload.plugins.internal.Addon import Addon
-from pyload.plugins.internal.misc import Expose, encode, fsjoin
+from pyload.plugins.internal.utils import Expose, encode, fsjoin
 
 try:
     import caffeine

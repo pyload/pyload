@@ -10,7 +10,7 @@ from pyload.network.RequestFactory import getRequest as get_request
 from pyload.plugins.Plugin import Fail
 from pyload.plugins.Plugin import SkipDownload as Skip
 
-from pyload.plugins.internal.misc import (DB, Config, decode, encode, exists, fixurl, format_exc, fsjoin,
+from pyload.plugins.internal.utils import (DB, Config, decode, encode, exists, fixurl, format_exc, fsjoin,
                    html_unescape, parse_html_header, remove, set_cookies)
 
 if os.name != "nt":

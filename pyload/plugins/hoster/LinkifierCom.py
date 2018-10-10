@@ -4,7 +4,7 @@ import hashlib
 
 import pycurl
 
-from pyload.plugins.internal.misc import json, seconds_to_midnight
+from pyload.plugins.internal.utils import json, seconds_to_midnight
 from pyload.plugins.internal.MultiHoster import MultiHoster
 
 

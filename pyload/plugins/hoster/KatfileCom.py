@@ -3,7 +3,7 @@
 import re
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.misc import parse_time
+from pyload.plugins.internal.utils import parse_time
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

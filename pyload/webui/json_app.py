@@ -5,10 +5,10 @@ from shutil import copyfileobj
 from traceback import print_exc
 
 from bottle import HTTPError, request, route
-from pyload.utils import decode, formatSize
+from pyload.utils.utils import decode, formatSize
 
-from pyload.web.utils import login_required, render_to_response, toDict
-from pyload.web.webinterface import PYLOAD
+from pyload.webui.utils import login_required, render_to_response, toDict
+from pyload.webui.webinterface import PYLOAD
 
 
 def format_time(seconds):

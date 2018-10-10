@@ -6,7 +6,7 @@ import time
 import urllib.parse
 from builtins import range, str
 
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

@@ -1,13 +1,13 @@
-.. _write_hooks:
+.. _write_addons:
 
 Hooks
 =====
 
-A Hook is a python file which is located at :file:`pyload/plugins/hooks`.
-The :class:`HookManager <pyload.HookManager.HookManager>` will load it automatically on startup. Only one instance exists
-over the complete lifetime of pyload. Your hook can interact on various events called by the :class:`HookManager <pyload.HookManager.HookManager>`,
+A Hook is a python file which is located at :file:`pyload/plugins/addons`.
+The :class:`HookManager <pyload.manager.HookManager.HookManager>` will load it automatically on startup. Only one instance exists
+over the complete lifetime of pyload. Your hook can interact on various events called by the :class:`HookManager <pyload.manager.HookManager.HookManager>`,
 do something complete autonomic and has full access to the :class:`Api <pyload.Api.Api>` and every detail of pyLoad.
-The UpdateManager, CaptchaTrader, UnRar and many more are realised as hooks.
+The UpdateManager, CaptchaTrader, UnRar and many more are realised as addons.
 
 Hook header
 -----------
@@ -47,8 +47,8 @@ The easiest way is to overwrite specific methods defined by the :class:`Hook <py
 The name is indicating when the function gets called.
 See :class:`Hook <pyload.plugins.Hook.Hook>` page for a complete listing.
 
-You should be aware of the arguments the Hooks are called with, whether its a :class:`PyFile <pyload.PyFile.PyFile>`
-or :class:`PyPackage <pyload.PyPackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
+You should be aware of the arguments the Hooks are called with, whether its a :class:`PyFile <pyload.datatype.PyFile.PyFile>`
+or :class:`PyPackage <pyload.datatype.PyPackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
 
 A basic excerpt would look like: ::
 
@@ -70,7 +70,7 @@ in a thread, in order to not block the main thread. This should be used for all 
 
 Another and more flexible and powerful way is to use event listener.
 All hook methods exists as event and very useful additional events are dispatched by the core. For a little overview look
-at :class:`HookManager <pyload.HookManager.HookManager>`. Keep in mind that you can define own events and other people may listen on them.
+at :class:`HookManager <pyload.manager.HookManager.HookManager>`. Keep in mind that you can define own events and other people may listen on them.
 
 For your convenience it's possible to register listeners automatical via the ``event_map`` attribute.
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
@@ -96,10 +96,10 @@ It requires a `dict` that maps event names to function names or a `list` of func
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
-:class:`HookManager <pyload.HookManager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
+:class:`HookManager <pyload.manager.HookManager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 
-We introduced events because it scales better if there a a huge amount of events and hooks. So all future interaction will be exclusive
+We introduced events because it scales better if there a a huge amount of events and addons. So all future interaction will be exclusive
 available as event and not accessible through overwriting hook methods. However you can safely do this, it will not be removed and is easier to implement.
 
 
@@ -159,4 +159,4 @@ Example
 -------
     Sorry but you won't find an example here ;-)
 
-    Look at :file:`pyload/plugins/hooks` and you will find plenty examples there.
+    Look at :file:`pyload/plugins/addons` and you will find plenty examples there.

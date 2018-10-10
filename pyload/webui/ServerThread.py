@@ -27,7 +27,7 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        from pyload.web import webinterface
+        from pyload.webui import webinterface
 
         global webinterface
 
@@ -46,7 +46,7 @@ class WebServer(threading.Thread):
                 _("of course you can still use your existing {} with pyLoads fastcgi server").format(
                     self.server))
             log.warning(
-                _("sample configs are located in the pyload/web/servers directory"))
+                _("sample configs are located in the pyload/webui/servers directory"))
             self.server = "builtin"
 
         if self.server == "fastcgi":

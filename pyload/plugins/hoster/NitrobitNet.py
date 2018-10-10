@@ -5,7 +5,7 @@ import time
 
 import pycurl
 
-from pyload.plugins.internal.misc import format_size
+from pyload.plugins.internal.utils import format_size
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.plugins.internal.Account import Account
-from pyload.plugins.internal.misc import set_cookie
+from pyload.plugins.internal.utils import set_cookie
 
 
 class ShareonlineBiz(Account):

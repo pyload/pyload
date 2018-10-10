@@ -9,5 +9,5 @@ every detail of the pyLoad core. However you should have some basic knowledge of
 
 .. toctree::
 
-    write_hooks.rst
+    write_addons.rst
     write_plugins.rst

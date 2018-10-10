@@ -94,7 +94,7 @@ if __name__ == "__main__":
     # Sign with the command `python -m pyload.plugins.captcha.CoinHive
     # pyload.private.pem pem_passphrase`
     import sys
-    from pyload.plugins.internal.misc import sign_string
+    from pyload.plugins.internal.utils import sign_string
 
     if len(sys.argv) > 2:
         with open(sys.argv[1], 'r') as f:

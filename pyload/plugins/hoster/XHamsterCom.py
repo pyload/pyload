@@ -3,7 +3,7 @@
 import re
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 def quality_fallback(desired, available):

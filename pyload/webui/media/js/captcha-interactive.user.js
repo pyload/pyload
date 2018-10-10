@@ -5,9 +5,9 @@
 // @author       Michi-F, GammaC0de
 // @description  pyLoad Script for Interactive Captcha
 // @homepage     https://github.com/pyload/pyload
-// @icon         https://raw.githubusercontent.com/pyload/pyload/stable/pyload/web/media/img/favicon.ico
-// @updateURL    https://raw.githubusercontent.com/pyload/pyload/stable/pyload/web/media/js/captcha-interactive.user.js
-// @downloadURL  https://raw.githubusercontent.com/pyload/pyload/stable/pyload/web/media/js/captcha-interactive.user.js
+// @icon         https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/img/favicon.ico
+// @updateURL    https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/js/captcha-interactive.user.js
+// @downloadURL  https://raw.githubusercontent.com/pyload/pyload/stable/pyload/webui/media/js/captcha-interactive.user.js
 // @supportURL   https://github.com/pyload/pyload/issues
 // @grant        none
 // @run-at       document-start

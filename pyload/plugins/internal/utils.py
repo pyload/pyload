@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# @TODO: Move to misc directory in 0.4.10
+# @TODO: Move to utils directory in 0.4.10
 
 
 # import HTMLParser  #@TODO: Use in 0.4.10
@@ -43,8 +43,8 @@ except ImportError:
 # @TODO: Remove in 0.4.10
 
 
-class misc(object):
-    __name__ = "misc"
+class utils(object):
+    __name__ = "utils"
     __type__ = "plugin"
     __version__ = "0.51"
     __status__ = "stable"

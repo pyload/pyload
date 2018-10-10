@@ -6,7 +6,7 @@ from threading import RLock
 from time import sleep, time
 
 from pyload.PullEvents import UpdateEvent
-from pyload.utils import formatSize, lock
+from pyload.utils.utils import formatSize, lock
 
 statusMap = {
     "finished": 0,

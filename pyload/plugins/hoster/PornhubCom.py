@@ -5,7 +5,7 @@ import re
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 from pyload.plugins.internal.Plugin import Abort
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

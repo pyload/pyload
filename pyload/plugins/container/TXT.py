@@ -3,7 +3,7 @@
 import codecs
 
 from pyload.plugins.internal.Container import Container
-from pyload.plugins.internal.misc import encode
+from pyload.plugins.internal.utils import encode
 
 
 class TXT(Container):

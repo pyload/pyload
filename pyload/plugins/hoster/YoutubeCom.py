@@ -16,7 +16,7 @@ from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import (exists, isexecutable, json, reduce, renice,
+from pyload.plugins.internal.utils import (exists, isexecutable, json, reduce, renice,
                              replace_patterns, which)
 from pyload.plugins.internal.Plugin import Abort, Skip
 

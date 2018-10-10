@@ -3,10 +3,10 @@
 import re
 
 from pyload.network.RequestFactory import getURL as get_url
-from pyload.PyFile import statusMap
+from pyload.datatype.PyFile import statusMap
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import json
+from pyload.plugins.internal.utils import json
 
 
 def get_info(urls):

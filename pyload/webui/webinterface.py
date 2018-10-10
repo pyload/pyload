@@ -9,19 +9,19 @@ from os import makedirs
 from os.path import abspath, dirname, exists, join
 
 import bottle
-import pyload.common.pylgettext as gettext
+import pyload.utils.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 from bottle import app, run
 from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, PrefixLoader
 from pyload import InitHomeDir
-from pyload.common.JsEngine import JsEngine
-from pyload.common.json_layer import json
-from pyload.utils import decode, formatSize
-from pyload.web import ServerThread
+from pyload.utils.utils.JsEngine import JsEngine
+from pyload.utils.utils.json_layer import json
+from pyload.utils.utils import decode, formatSize
+from pyload.webui import ServerThread
 
-from pyload.web import api_app, cnl_app, json_app, pyload_app
-from pyload.web.filters import date, path_make_absolute, path_make_relative, quotepath, truncate
-from pyload.web.middlewares import GZipMiddleWare, PrefixMiddleware, StripPathMiddleware
+from pyload.webui import api_app, cnl_app, json_app, pyload_app
+from pyload.webui.filters import date, path_make_absolute, path_make_relative, quotepath, truncate
+from pyload.webui.middlewares import GZipMiddleWare, PrefixMiddleware, StripPathMiddleware
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -144,7 +144,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     CherryPyWSGIServer.numthreads = theads
 
-    from pyload.web.utils import CherryPyWSGI
+    from pyload.webui.utils import CherryPyWSGI
 
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 

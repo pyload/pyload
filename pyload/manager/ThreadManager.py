@@ -12,10 +12,10 @@ from traceback import print_exc
 
 import pycurl
 from pyload.network.RequestFactory import getURL
-from pyload.PyFile import PyFile
-from pyload.utils import freeSpace, lock
+from pyload.datatype.PyFile import PyFile
+from pyload.utils.utils import freeSpace, lock
 
-from pyload import PluginThread
+from pyload.thread import PluginThread
 
 
 class ThreadManager(object):

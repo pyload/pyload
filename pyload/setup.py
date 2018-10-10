@@ -8,8 +8,8 @@ from getpass import getpass
 from subprocess import PIPE, call
 from sys import exit
 
-import pyload.common.pylgettext as gettext
-from pyload.utils import get_console_encoding
+import pyload.utils.utils.pylgettext as gettext
+from pyload.utils.utils import get_console_encoding
 
 
 class Setup(object):
@@ -44,9 +44,9 @@ class Setup(object):
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
         #        if viaweb:
         #            try:
-        #                from pyload.web import ServerThread
+        #                from pyload.webui import ServerThread
         #                ServerThread.setup = self
-        #                from pyload.web import webinterface
+        #                from pyload.webui import webinterface
         #                webinterface.run_simple()
         #                return False
         #            except Exception as e:
@@ -258,7 +258,7 @@ class Setup(object):
 
         web = sqlite and beaker
 
-        from pyload.common import JsEngine
+        from pyload.utils.utils import JsEngine
 
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)

@@ -4,7 +4,7 @@ import os
 import re
 
 from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.misc import replace_patterns
+from pyload.plugins.internal.utils import replace_patterns
 
 
 class MirrorcreatorCom(Crypter):

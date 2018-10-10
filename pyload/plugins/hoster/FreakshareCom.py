@@ -4,7 +4,7 @@ import re
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.misc import seconds_to_midnight
+from pyload.plugins.internal.utils import seconds_to_midnight
 
 
 class FreakshareCom(Hoster):

@@ -8,7 +8,7 @@ from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.captcha.AdsCaptcha import AdsCaptcha
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.misc import json, seconds_to_midnight
+from pyload.plugins.internal.utils import json, seconds_to_midnight
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

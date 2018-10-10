@@ -9,7 +9,7 @@ from os.path import exists, join
 from random import randint
 from time import sleep, time
 
-from pyload.utils import fs_decode, fs_encode, save_join, save_path
+from pyload.utils.utils import fs_decode, fs_encode, save_join, save_path
 
 if os.name != "nt":
     from os import chown

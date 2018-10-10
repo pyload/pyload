@@ -7,7 +7,7 @@ from shutil import copy
 from threading import Lock
 
 from pyload.PullEvents import AccountUpdateEvent
-from pyload.utils import chmod, lock
+from pyload.utils.utils import chmod, lock
 
 ACC_VERSION = 1
 
