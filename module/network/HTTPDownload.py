@@ -10,9 +10,9 @@ from builtins import str
 from builtins import range
 from builtins import object
 
-from os import remove, fsync
+from os import remove
 from os.path import dirname
-from time import sleep, time
+from time import time
 from shutil import move
 from logging import getLogger
 

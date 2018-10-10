@@ -20,7 +20,6 @@ from module.gui.Overview import OverviewView
 from module.gui.Accounts import AccountView
 from module.gui.AccountEdit import AccountEdit
 
-from module.remote.thriftbackend.ThriftClient import AccountInfo
 
 class MainWindow(QMainWindow):
     def __init__(self, connector):

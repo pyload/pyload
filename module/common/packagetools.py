@@ -2,7 +2,6 @@
 
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
-import builtins
 
 import re
 from urllib.parse import urlparse

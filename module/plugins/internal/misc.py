@@ -6,7 +6,6 @@
 
 
 # import HTMLParser  #@TODO: Use in 0.4.10
-import builtins
 
 from builtins import str
 from builtins import map

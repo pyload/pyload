@@ -10,7 +10,6 @@ from time import time
 from traceback import print_exc
 from threading import Lock
 
-from .common.json_layer import json
 
 class CaptchaManager(object):
     def __init__(self, core):

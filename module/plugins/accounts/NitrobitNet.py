@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import builtins
 
-import pycurl
-import urllib.parse
 
 from ..internal.Account import Account
 

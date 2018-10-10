@@ -3,7 +3,6 @@
 
 
 
-import builtins
 
 import os
 import urllib.parse

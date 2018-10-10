@@ -4,7 +4,6 @@
 from builtins import chr
 import re
 
-from module.network.HTTPRequest import BadHeader
 
 from ..captcha.ReCaptcha import ReCaptcha
 from ..internal.SimpleHoster import SimpleHoster

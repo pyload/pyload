@@ -4,7 +4,6 @@
 # Test links:
 # http://uploadhero.co/dl/wQBRAVSM
 
-import builtins
 
 import re
 import urllib.parse

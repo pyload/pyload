@@ -3,7 +3,6 @@
 
 """ Store all usefull functions here """
 
-import builtins
 
 from builtins import map
 from builtins import chr

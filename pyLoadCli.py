@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN
 
-import builtins
 
 from builtins import input
 from builtins import str
@@ -14,7 +13,7 @@ from getopt import GetoptError, getopt
 import module.common.pylgettext as gettext
 import os
 from os import _exit
-from os.path import join, exists, abspath, basename
+from os.path import basename, exists, join
 import sys
 from sys import exit
 from threading import Thread, Lock

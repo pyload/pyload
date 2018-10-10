@@ -5,7 +5,6 @@
 
 
 
-import builtins
 
 from builtins import input
 from builtins import str

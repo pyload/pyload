@@ -4,7 +4,6 @@
 # Test links:
 #   http://filecrypt.cc/Container/64E039F859.html
 
-import builtins
 
 from builtins import str
 from builtins import filter

@@ -9,7 +9,6 @@ from builtins import str
 from builtins import range
 from builtins import object
 from threading import RLock
-from time import time
 
 from module.utils import formatSize, lock
 from module.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent

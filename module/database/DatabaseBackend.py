@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 #@author: RaNaN, mkaay
 
-import builtins
 
 from builtins import str
 from builtins import range

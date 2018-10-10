@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import builtins
 
 import http.client
 

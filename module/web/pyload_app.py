@@ -5,7 +5,6 @@
 
 
 
-import builtins
 
 
 from datetime import datetime
@@ -16,7 +15,6 @@ import os
 import sys
 from os import listdir
 from os.path import isdir, isfile, join, abspath
-from sys import getfilesystemencoding
 from urllib.parse import unquote
 
 from bottle import route, static_file, request, response, redirect, HTTPError, error

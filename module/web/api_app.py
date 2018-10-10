@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 
 
-import builtins
 
 from urllib.parse import unquote
 from itertools import chain

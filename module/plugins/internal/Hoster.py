@@ -14,7 +14,7 @@ import mimetypes
 from module.network.HTTPRequest import BadHeader
 
 from .Base import Base
-from .misc import compute_checksum, encode, exists, fixurl, fsjoin, parse_name, safejoin
+from .misc import encode, exists, fsjoin, parse_name, safejoin
 from .Plugin import Fail
 from future.utils import with_metaclass
 

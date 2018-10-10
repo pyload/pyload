@@ -4,7 +4,6 @@
 import re
 import time
 
-import pycurl
 from module.network.HTTPRequest import BadHeader
 
 from ..internal.Account import Account

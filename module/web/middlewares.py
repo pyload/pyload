@@ -2,7 +2,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import builtins
 
 from builtins import str
 from builtins import object

@@ -4,7 +4,6 @@
 # Test links:
 # http://d-h.st/users/shine/?fld_id=37263#files
 
-import builtins
 
 import re
 import urllib.parse

@@ -3,12 +3,10 @@
 
 
 
-import builtins
 
 
 from paver.easy import *
 from paver.setuputils import setup
-from paver.doctools import cog
 
 import sys
 import re

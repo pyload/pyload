@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import builtins
 
 from builtins import str
-import urllib.parse
 
 from ..internal.Account import Account
 from ..internal.misc import json

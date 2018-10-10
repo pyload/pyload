@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import builtins
 
-import re
-import time
 import urllib.parse
 
 from ..internal.SimpleHoster import SimpleHoster

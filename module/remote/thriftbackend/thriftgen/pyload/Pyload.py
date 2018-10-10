@@ -8,10 +8,10 @@
 #
 
 from builtins import object
-from thrift.Thrift import TType, TMessageType, TException
+from thrift.Thrift import TMessageType, TType
 from .ttypes import *
 from thrift.Thrift import TProcessor
-from thrift.protocol.TBase import TBase, TExceptionBase
+from thrift.protocol.TBase import TBase
 
 
 class Iface(object):

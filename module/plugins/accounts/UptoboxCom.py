@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import builtins
 
 import re
-import urllib.parse
 
-from ..internal.misc import json
 from ..internal.XFSAccount import XFSAccount
 
 
