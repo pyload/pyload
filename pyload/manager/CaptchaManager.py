@@ -74,7 +74,7 @@ class CaptchaTask(object):
         self.captchaParams = params
         self.captchaFormat = format
         self.captchaResultType = result_type
-        self.handler = []  # the hook plugins that will take care of the solution
+        self.handler = []  # the addon plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
         self.error = None  # error message

@@ -19,12 +19,12 @@ class HookManager(object):
 
         Every plugin can define events, \
         but some very usefull events are called by the Core.
-        Contrary to overwriting hook methods you can use event listener,
+        Contrary to overwriting addon methods you can use event listener,
         which provides additional entry point in the control flow.
         Only do very short tasks or use threads.
 
         **Known Events:**
-        Most hook methods exists as events. These are the additional known events.
+        Most addon methods exists as events. These are the additional known events.
 
         ===================== ============== ==================================
         Name                     Arguments      Description
@@ -109,7 +109,7 @@ class HookManager(object):
                 #hookClass = getattr(plugin, plugin.__name__)
 
                 if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("addons", pluginname)
+                    pluginClass = self.core.pluginManager.loadClass("hook", pluginname)
                     if not pluginClass:
                         continue
 
@@ -144,7 +144,7 @@ class HookManager(object):
             if inst.__name__ == plugin:
                 return
 
-        pluginClass = self.core.pluginManager.loadClass("addons", plugin)
+        pluginClass = self.core.pluginManager.loadClass("hook", plugin)
 
         if not pluginClass:
             return
@@ -261,7 +261,7 @@ class HookManager(object):
         return [x for x in self.plugins if x.isActivated()]
 
     def getAllInfo(self):
-        """returns info stored by hook plugins"""
+        """returns info stored by addon plugins"""
         info = {}
         for name, plugin in self.pluginMap.items():
             if plugin.info:

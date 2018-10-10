@@ -186,7 +186,7 @@ msgstr ""
 msgid "Not enough space left on device"
 msgstr ""
 
-#: pyload/manager/HookManager.py:90 pyload/plugins/Hook.py:102
+#: pyload/manager/HookManager.py:90 pyload/plugins/internal/Addon.py:102
 #, python-format
 msgid "Error executing addons: %s"
 msgstr ""

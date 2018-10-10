@@ -19,7 +19,7 @@ class XFileSharingFolder(XFSCrypter):
                    "Create folder for each package", "Default"),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """XFileSharing dummy folder decrypter plugin for hook"""
+    __description__ = """XFileSharing dummy folder decrypter plugin for addon"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 

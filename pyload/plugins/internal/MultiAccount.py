@@ -299,7 +299,7 @@ class MultiAccount(Account):
 
                 return
 
-        #: Make sure we have one active hook
+        #: Make sure we have one active addon
         try:
             self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
 

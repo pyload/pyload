@@ -71,7 +71,7 @@ Captcha decrypting
 __________________
 
 To handle captcha input just use ``self.decryptCaptcha(url, ...)``, it will be send to clients
-or handled by :class:`Hook <pyload.plugins.Hook.Hook>` plugins
+or handled by :class:`Addon <pyload.plugins.internal.Addon.Addon>` plugins
 
 Crypter
 -------

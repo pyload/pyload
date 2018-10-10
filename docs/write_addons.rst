@@ -1,25 +1,25 @@
 .. _write_addons:
 
-Hooks
-=====
+Addons
+======
 
-A Hook is a python file which is located at :file:`pyload/plugins/addons`.
+A Addon is a python file which is located at :file:`pyload/plugins/addon`.
 The :class:`HookManager <pyload.manager.HookManager.HookManager>` will load it automatically on startup. Only one instance exists
-over the complete lifetime of pyload. Your hook can interact on various events called by the :class:`HookManager <pyload.manager.HookManager.HookManager>`,
+over the complete lifetime of pyload. Your addon can interact on various events called by the :class:`HookManager <pyload.manager.HookManager.HookManager>`,
 do something complete autonomic and has full access to the :class:`Api <pyload.Api.Api>` and every detail of pyLoad.
 The UpdateManager, CaptchaTrader, UnRar and many more are realised as addons.
 
-Hook header
+addon header
 -----------
 
-Your hook needs to subclass :class:`Hook <pyload.plugins.Hook.Hook>` and will inherit all of its method, make sure to check its documentation!
+Your addon needs to subclass :class:`addon <pyload.plugins.addon.addon>` and will inherit all of its method, make sure to check its documentation!
 
-All Hooks should start with something like this: ::
+All Addons should start with something like this: ::
 
-        from pyload.plugins.Hook import Hook
+        from pyload.plugins.addon import addon
 
-        class YourHook(Hook):
-                __name__ = "YourHook"
+        class YourAddon(addon):
+                __name__ = "YourAddon"
                 __version__ = "0.1"
                 __description__ = "Does really cool stuff"
                 __config__ = [ ("activated" , "bool" , "Activated"  , "True" ) ]
@@ -28,7 +28,7 @@ All Hooks should start with something like this: ::
                 __author_mail__ = ("me@has-no-mail.com")
 
 All meta-data is defined in the header, you need at least one option at ``__config__`` so the user can toggle your
-hook on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
+addon on and off. Dont't overwrite the ``init`` method if not neccesary, use ``setup`` instead.
 
 Using the Config
 ----------------
@@ -41,22 +41,22 @@ When everything went right you can access the config values with ``self.getConfi
 Interacting on Events
 ---------------------
 
-The next step is to think about where your Hook action takes places.
+The next step is to think about where your addon action takes places.
 
-The easiest way is to overwrite specific methods defined by the :class:`Hook <pyload.plugins.Hook.Hook>` base class.
+The easiest way is to overwrite specific methods defined by the :class:`addon <pyload.plugins.addon.addon>` base class.
 The name is indicating when the function gets called.
-See :class:`Hook <pyload.plugins.Hook.Hook>` page for a complete listing.
+See :class:`addon <pyload.plugins.addon.addon>` page for a complete listing.
 
-You should be aware of the arguments the Hooks are called with, whether its a :class:`PyFile <pyload.datatype.PyFile.PyFile>`
+You should be aware of the arguments the Addon are called with, whether its a :class:`PyFile <pyload.datatype.PyFile.PyFile>`
 or :class:`PyPackage <pyload.datatype.PyPackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
 
 A basic excerpt would look like: ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.addon import addon
 
-    class YourHook(Hook):
+    class YourHook(addon):
         """
-        Your Hook code here.
+        Your addon code here.
         """
 
         def coreReady(self):
@@ -69,17 +69,17 @@ Another important feature to mention can be seen at the ``__threaded__`` paramet
 in a thread, in order to not block the main thread. This should be used for all kind of longer processing tasks.
 
 Another and more flexible and powerful way is to use event listener.
-All hook methods exists as event and very useful additional events are dispatched by the core. For a little overview look
+All addon methods exists as event and very useful additional events are dispatched by the core. For a little overview look
 at :class:`HookManager <pyload.manager.HookManager.HookManager>`. Keep in mind that you can define own events and other people may listen on them.
 
 For your convenience it's possible to register listeners automatical via the ``event_map`` attribute.
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.addon import addon
 
-    class YourHook(Hook):
+    class YourAddon(addon):
         """
-        Your Hook code here.
+        Your addon code here.
         """
         event_map = {"downloadFinished" : "doSomeWork",
                      "allDownloadsFnished": "someMethod",
@@ -100,22 +100,22 @@ Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name",
 and **not** a `string`.
 
 We introduced events because it scales better if there a a huge amount of events and addons. So all future interaction will be exclusive
-available as event and not accessible through overwriting hook methods. However you can safely do this, it will not be removed and is easier to implement.
+available as event and not accessible through overwriting addon methods. However you can safely do this, it will not be removed and is easier to implement.
 
 
 Providing RPC services
 ----------------------
 
 You may noticed that pyLoad has an :class:`Api <pyload.Api.Api>`, which can be used internal or called by clients via RPC.
-So probably clients want to be able to interact with your hook to request it's state or invoke some action.
+So probably clients want to be able to interact with your addon to request it's state or invoke some action.
 
 Sounds complicated but is very easy to do. Just use the ``Expose`` decorator: ::
 
-    from pyload.plugins.Hook import Hook, Expose
+    from pyload.plugins.addon import addon, Expose
 
-    class YourHook(Hook):
+    class YourAddon(addon):
         """
-        Your Hook code here.
+        Your addon code here.
         """
 
         @Expose
@@ -128,19 +128,19 @@ Here is a basic example: ::
     #Assuming client is a ThriftClient or Api object
 
     print(client.getServices())
-    print(client.call(ServiceCall("YourHook", "invoke", "an argument")))
+    print(client.call(ServiceCall("YourAddon", "invoke", "an argument")))
 
 Providing status information
 ----------------------------
-Your hook can store information in a ``dict`` that can easily be retrievied via the :class:`Api <pyload.Api.Api>`.
+Your addon can store information in a ``dict`` that can easily be retrievied via the :class:`Api <pyload.Api.Api>`.
 
 Just store everything in ``self.info``. ::
 
-    from pyload.plugins.Hook import Hook
+    from pyload.plugins.addon import addon
 
-    class YourHook(Hook):
+    class YourAddon(addon):
         """
-        Your Hook code here.
+        Your addon code here.
         """
 
         def setup(self):
@@ -159,4 +159,4 @@ Example
 -------
     Sorry but you won't find an example here ;-)
 
-    Look at :file:`pyload/plugins/addons` and you will find plenty examples there.
+    Look at :file:`pyload/plugins/addon` and you will find plenty examples there.

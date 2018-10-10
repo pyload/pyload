@@ -28,7 +28,7 @@ class ThreadManager(object):
         self.log = core.log
 
         self.threads = []  # thread list
-        self.localThreads = []  #hook+decrypter threads
+        self.localThreads = []  #addon+decrypter threads
 
         self.pause = True
 

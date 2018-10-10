@@ -1024,7 +1024,7 @@ class Api(Iface):
 
     @permission(PERMS.STATUS)
     def getServices(self):
-        """ A dict of available services, these can be defined by hook plugins.
+        """ A dict of available services, these can be defined by addon plugins.
 
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
@@ -1047,7 +1047,7 @@ class Api(Iface):
 
     @permission(PERMS.STATUS)
     def call(self, info):
-        """Calls a service (a method in hook plugin).
+        """Calls a service (a method in addon plugin).
 
         :param info: `ServiceCall`
         :return: result
@@ -1070,7 +1070,7 @@ class Api(Iface):
 
     @permission(PERMS.STATUS)
     def getAllInfo(self):
-        """Returns all information stored by hook plugins. Values are always strings
+        """Returns all information stored by addon plugins. Values are always strings
 
         :return: {"plugin": {"name": value } }
         """

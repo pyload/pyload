@@ -17,7 +17,7 @@ class LinkdecrypterComHook(Addon):
                   ("reload", "bool", "Reload plugin list", True),
                   ("reloadinterval", "int", "Reload interval in hours", 12)]
 
-    __description__ = """Linkdecrypter.com hook plugin"""
+    __description__ = """Linkdecrypter.com addon plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 

@@ -22,8 +22,8 @@ class PluginManager(object):
         "container",
         "hoster",
         "captcha",
-        "accounts",
-        "addons",
+        "account",
+        "addon",
         "internal")
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
@@ -40,7 +40,7 @@ class PluginManager(object):
         self.plugins = {}
         self.createIndex()
 
-        # register for import hook
+        # register for import addon
         sys.meta_path.append(self)
 
     def createIndex(self):
@@ -78,16 +78,16 @@ class PluginManager(object):
         self.plugins["hoster"] = self.hosterPlugins
         merge(default_config, config)
 
-        self.hookPlugins, config = self.parse("addons")
-        self.plugins["addons"] = self.hookPlugins
+        self.hookPlugins, config = self.parse("addon")
+        self.plugins["hook"] = self.hookPlugins
         merge(default_config, config)
 
         self.captchaPlugins, config = self.parse("captcha")
         self.plugins["captcha"] = self.captchaPlugins
         merge(default_config, config)
 
-        self.accountPlugins, config = self.parse("accounts")
-        self.plugins["accounts"] = self.accountPlugins
+        self.accountPlugins, config = self.parse("account")
+        self.plugins["account"] = self.accountPlugins
         merge(default_config, config)
 
         self.internalPlugins, config = self.parse("internal")
@@ -436,7 +436,7 @@ class PluginManager(object):
             except Exception:
                 self.log.error("Invalid config in {}: {}".format(name, config))
 
-        if "accounts" in as_dict:  # accounts needs to be reloaded
+        if "account" in as_dict:  # accounts needs to be reloaded
             self.core.accountManager.initPlugins()
             self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
 
