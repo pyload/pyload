@@ -55,7 +55,7 @@ class Hoster(Base):
 
     def init_base(self):
         #: Enable simultaneous processing of multiple downloads
-        self.limitDL = 0  # @TODO: Change to `limit_dl` in 0.4.10
+        self.limitDL = 0  # @TODO: Change to `limit_dl` in 0.6.x
 
         #:
         self.chunk_limit = None
@@ -70,7 +70,7 @@ class Hoster(Base):
         self.last_check = None
 
         #: Restart flag
-        self.restart_free = False  # @TODO: Recheck in 0.4.10
+        self.restart_free = False  # @TODO: Recheck in 0.6.x
 
         #: Download is possible with premium account only, don't fallback to free download
         self.no_fallback = False
@@ -91,7 +91,7 @@ class Hoster(Base):
     def load_account(self):
         if self.restart_free:
             self.account = False
-            self.user = None  # @TODO: Remove in 0.4.10
+            self.user = None  # @TODO: Remove in 0.6.x
         else:
             Base.load_account(self)
             # self.restart_free = False
@@ -103,7 +103,7 @@ class Hoster(Base):
             self._initialize()
             self._setup()
 
-            # @TODO: Enable in 0.4.10
+            # @TODO: Enable in 0.6.x
             # self.pyload.hookManager.downloadPreparing(self.pyfile)
             # self.check_status()
             self.check_duplicates()
@@ -117,7 +117,7 @@ class Hoster(Base):
 
                 self._check_download()
 
-            except Fail as e:  # @TODO: Move to PluginThread in 0.4.10
+            except Fail as e:  # @TODO: Move to PluginThread in 0.6.x
                 self.log_warning(_("Premium download failed") if self.premium else
                                  _("Free download failed"),
                                  e)
@@ -131,7 +131,7 @@ class Hoster(Base):
         finally:
             self._finalize()
 
-    # @TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.6.x
     def _finalize(self):
         pypack = self.pyfile.package()
 
@@ -173,7 +173,7 @@ class Hoster(Base):
             maxredirs = int(
                 self.config.get(
                     "maxredirs",
-                    plugin="UserAgentSwitcher")) or maxredirs  # @TODO: Remove `int` in 0.4.10
+                    plugin="UserAgentSwitcher")) or maxredirs  # @TODO: Remove `int` in 0.6.x
 
         header = self.load(url, just_header=True)
 
@@ -217,7 +217,7 @@ class Hoster(Base):
 
     def _download(self, url, filename, get, post, ref,
                   cookies, disposition, resume, chunks):
-        # @TODO: Safe-filename check in HTTPDownload in 0.4.10
+        # @TODO: Safe-filename check in HTTPDownload in 0.6.x
         file = encode(filename)
         resume = self.resume_download if resume is None else bool(resume)
 
@@ -312,7 +312,7 @@ class Hoster(Base):
         newname = self._download(dl_url, dl_filename, get, post, ref, cookies,
                                  disposition, resume, chunks)
 
-        # @TODO: Recheck in 0.4.10
+        # @TODO: Recheck in 0.6.x
         if disposition and newname:
             safename = parse_name(newname.split(' filename*=')[0])
 
@@ -351,7 +351,7 @@ class Hoster(Base):
         :param delete: delete if matched
         :return: dictionary key of the first rule that matched
         """
-        dl_file = encode(self.last_download)  # @TODO: Recheck in 0.4.10
+        dl_file = encode(self.last_download)  # @TODO: Recheck in 0.6.x
 
         if not self.last_download:
             self.log_warning(_("No file to scan"))
@@ -408,7 +408,7 @@ class Hoster(Base):
             return False
 
         else:
-            # @TODO: Rewrite in 0.4.10
+            # @TODO: Rewrite in 0.6.x
             size = self.pyfile.size // 1024
             self.log_info(
                 _("Filesize: {} KiB").format(size),
@@ -532,6 +532,6 @@ class Hoster(Base):
 
             self.pyfile.name = name
 
-    #: Deprecated method (Recheck in 0.4.10)
+    #: Deprecated method (Recheck in 0.6.x)
     def checkForSameFiles(self, *args, **kwargs):
         pass

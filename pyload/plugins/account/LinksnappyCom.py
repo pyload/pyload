@@ -56,7 +56,7 @@ class LinksnappyCom(MultiAccount):
                 trafficleft = -1
 
             else:
-                # @TODO: Remove `/ 1024` in 0.4.10
+                # @TODO: Remove `/ 1024` in 0.6.x
                 trafficleft = float(json_data['return']['trafficleft']) // 1024
 
         return {'premium': premium,

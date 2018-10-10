@@ -29,7 +29,7 @@ class Keep2ShareCc(SimpleHoster):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DISPOSITION = False  # @TODO: Recheck in v0.4.10
+    DISPOSITION = False  # @TODO: Recheck in v0.6.x
 
     URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://k2s.cc/file/\g<ID>")]
 

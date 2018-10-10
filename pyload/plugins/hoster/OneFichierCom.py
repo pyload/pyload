@@ -34,7 +34,7 @@ class OneFichierCom(SimpleHoster):
                    ("Ludovic Lehmann", "ludo.lehmann@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    DISPOSITION = False  # @TODO: Remove disposition in 0.4.10
+    DISPOSITION = False  # @TODO: Remove disposition in 0.6.x
 
     URL_REPLACEMENTS = [(__pattern__ +
                          '.*', lambda m:"https://1fichier.com/?" +
@@ -129,4 +129,4 @@ class OneFichierCom(SimpleHoster):
             pyfile.url,
             post={'did': 0,
                   'dl_no_ssl': "on"},
-            disposition=False)  # @TODO: Remove disposition in 0.4.10
+            disposition=False)  # @TODO: Remove disposition in 0.6.x

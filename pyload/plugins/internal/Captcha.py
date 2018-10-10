@@ -76,7 +76,7 @@ class Captcha(Plugin):
 
             if isinstance(ocr, str):
                 _OCR = self.pyload.pluginManager.loadClass(
-                    "captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                    "captcha", ocr)  #: Rename `captcha` to `ocr` in 0.6.x
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:
                 result = self.recognize(img_f.name)

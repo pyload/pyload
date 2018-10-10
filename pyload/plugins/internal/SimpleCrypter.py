@@ -130,7 +130,7 @@ class SimpleCrypter(Crypter):
 
         return info
 
-    #@TODO: Remove in 0.4.10
+    #@TODO: Remove in 0.6.x
     def setup_base(self):
         account_name = self.classname.rsplit("Folder", 1)[0]
 
@@ -145,7 +145,7 @@ class SimpleCrypter(Crypter):
 
         Crypter.setup_base(self)
 
-    #@TODO: Remove in 0.4.10
+    #@TODO: Remove in 0.6.x
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]

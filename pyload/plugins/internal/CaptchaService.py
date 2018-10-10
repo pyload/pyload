@@ -16,7 +16,7 @@ class CaptchaService(Captcha):
     def init(self):
         self.key = None  #: Last key detected
 
-    # @TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.6.x
     def retrieve_key(self, data):
         if self.detect_key(data):
             return self.key

@@ -75,7 +75,7 @@ class XFSAccount(Account):
         leechtraffic = None
         premium = None
 
-        if not self.PLUGIN_URL:  # @TODO: Remove in 0.4.10
+        if not self.PLUGIN_URL:  # @TODO: Remove in 0.6.x
             return
 
         self.data = self.load(self.PLUGIN_URL,

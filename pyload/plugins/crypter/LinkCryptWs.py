@@ -181,7 +181,7 @@ class LinkCryptWs(Crypter):
 
         else:
             self.fail(_("Unknown source type: {}") %
-                      source_type)  # @TODO: Replace with self.error in 0.4.10
+                      source_type)  # @TODO: Replace with self.error in 0.6.x
 
     def handle_web_links(self):
         self.log_debug("Search for Web links ")
@@ -243,7 +243,7 @@ class LinkCryptWs(Crypter):
         ):  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
             self.fail(
                 _("Unknown container type: {}") %
-                container_type)  # @TODO: Replace with self.error in 0.4.10
+                container_type)  # @TODO: Replace with self.error in 0.6.x
 
         for line in self.container_html:
             if container_type in line:

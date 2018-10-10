@@ -44,7 +44,7 @@ class MultiHoster(SimpleHoster):
         self.multiDL = bool(self.account)
         self.resume_download = self.premium
 
-    # @TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.6.x
     def setup_base(self):
         klass = self.pyload.pluginManager.loadClass("hoster", self.classname)
         self.get_info = klass.get_info

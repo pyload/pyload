@@ -326,7 +326,7 @@ class SimpleHoster(Hoster):
                 self.log_info(_("Checking file (with custom rules)..."))
 
                 with open(encode(self.last_download), "rb") as f:
-                    self.data = f.read(1048576)  # @TODO: Recheck in 0.4.10
+                    self.data = f.read(1048576)  # @TODO: Recheck in 0.6.x
 
                 self.check_errors()
 
@@ -456,7 +456,7 @@ class SimpleHoster(Hoster):
         self.log_info(_("No errors found"))
         self.info.pop('error', None)
 
-    #: Deprecated method (Remove in 0.4.10)
+    #: Deprecated method (Remove in 0.6.x)
     def get_fileInfo(self):
         self.info.clear()
         self.grab_info()

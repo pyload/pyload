@@ -36,5 +36,5 @@ class XdadevelopersCom(SimpleHoster):
         self.chunk_limit = 1
 
     def handle_free(self, pyfile):
-        # @TODO: Revert to `get={'task': "get"}` in 0.4.10
+        # @TODO: Revert to `get={'task': "get"}` in 0.6.x
         self.link = pyfile.url + "&task=get"

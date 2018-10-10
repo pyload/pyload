@@ -54,7 +54,7 @@ class CatShareNet(Account):
         if re.search(r'/logout".*>Wyloguj</a>', html) is not None:
             self.skip_login()
 
-        html = self.load("http://catshare.net/login",  # @TODO: Revert to `https` in 0.4.10
+        html = self.load("http://catshare.net/login",  # @TODO: Revert to `https` in 0.6.x
                          post={'user_email': user,
                                'user_password': password},
                          redirect=20)

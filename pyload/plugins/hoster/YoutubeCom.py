@@ -27,7 +27,7 @@ class BIGHTTPRequest(HTTPRequest):
     loading very big web pages by overrding HTTPRequest's write() function
     """
 
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.4.10
+    # @TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
     def __init__(self, cookies=None, options=None, limit=2000000):
         self.limit = limit
         HTTPRequest.__init__(self, cookies=cookies, options=options)

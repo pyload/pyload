@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 #
-# @TODO: Move to utils directory in 0.4.10
+# @TODO: Move to utils directory in 0.6.x
 
 
-# import HTMLParser  #@TODO: Use in 0.4.10
+# import HTMLParser  #@TODO: Use in 0.6.x
 
 import datetime
 import hashlib
@@ -21,7 +21,7 @@ import traceback
 import urllib.error
 import urllib.parse
 import urllib.request
-import xml.sax.saxutils  # @TODO: Remove in 0.4.10
+import xml.sax.saxutils  # @TODO: Remove in 0.6.x
 import zlib
 from builtins import map, object, str
 
@@ -40,7 +40,7 @@ try:
 except ImportError:
     pass
 
-# @TODO: Remove in 0.4.10
+# @TODO: Remove in 0.6.x
 
 
 class utils(object):
@@ -87,7 +87,7 @@ class Config(object):
         except KeyError:
             self.plugin.log_debug(
                 "Config option `{}` not found, use default `{}`" %
-                (option, default))  # @TODO: Restore to `log_warning` in 0.4.10
+                (option, default))  # @TODO: Restore to `log_warning` in 0.6.x
             return default
 
 
@@ -367,7 +367,7 @@ def html_unescape(text):
     Removes HTML or XML character references and entities from a text string
     """
     return xml.sax.saxutils.unescape(text)
-    # @TODO: Replace in 0.4.10 with:
+    # @TODO: Replace in 0.6.x with:
     # h = HTMLParser.HTMLParser()
     # return h.unescape(text)
 
@@ -529,7 +529,7 @@ def truncate(name, length):
     return "{}~{}".format(name[:trunc * 2], name[-trunc:])
 
 
-# @TODO: Recheck in 0.4.10
+# @TODO: Recheck in 0.6.x
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed
@@ -771,7 +771,7 @@ def replace_patterns(value, rules):
     return value
 
 
-# @TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
+# @TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/',
                exp=time.time() + 180 * 24 * 3600):
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]

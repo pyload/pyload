@@ -11,13 +11,13 @@ from pyload.plugins.internal.utils import (decode, encode, fixurl, format_size, 
 from pyload.plugins.internal.Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
-# @TODO: Recheck in 0.4.10
+# @TODO: Recheck in 0.6.x
 def getInfo(urls):
     #: result = [ .. (name, size, status, url) .. ]
     pass
 
 
-# @TODO: Remove in 0.4.10
+# @TODO: Remove in 0.6.x
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
     return encode(info['name']), info['size'], info['status'], info['url']
@@ -61,17 +61,17 @@ class Base(Plugin):
         self._init(pyfile.m.core)
 
         #: Engage wan reconnection
-        self.wantReconnect = False  # @TODO: Change to `want_reconnect` in 0.4.10
+        self.wantReconnect = False  # @TODO: Change to `want_reconnect` in 0.6.x
 
         #: Enable simultaneous processing of multiple downloads
-        self.multiDL = True  # @TODO: Change to `multi_dl` in 0.4.10
+        self.multiDL = True  # @TODO: Change to `multi_dl` in 0.6.x
 
         #: time.time() + wait in seconds
         self.waiting = False
 
         #: Account handler instance, see :py:class:`Account`
         self.account = None
-        self.user = None  # @TODO: Remove in 0.4.10
+        self.user = None  # @TODO: Remove in 0.6.x
         self.premium = None
 
         #: Associated pyfile instance, see `PyFile`
@@ -84,7 +84,7 @@ class Base(Plugin):
         self.js = self.pyload.js
 
         #: Captcha stuff
-        # @TODO: Replace in 0.4.10:
+        # @TODO: Replace in 0.6.x:
         #_Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
         # self.captcha = _Captcha(pyfile)
         self.captcha = Captcha(pyfile)
@@ -134,17 +134,17 @@ class Base(Plugin):
         pass
 
     def _setup(self):
-        # @TODO: Remove in 0.4.10
+        # @TODO: Remove in 0.6.x
         self.pyfile.error = ""
         self.data = ""
         self.last_html = ""
         self.last_header = {}
 
         if self.config.get('use_premium', True):
-            self.load_account()  # @TODO: Move to PluginThread in 0.4.10
+            self.load_account()  # @TODO: Move to PluginThread in 0.6.x
         else:
             self.account = False
-            self.user = None  # @TODO: Remove in 0.4.10
+            self.user = None  # @TODO: Remove in 0.6.x
 
         try:
             self.req.close()
@@ -160,7 +160,7 @@ class Base(Plugin):
             self.req = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
 
-        self.req.setOption("timeout", 60)  # @TODO: Remove in 0.4.10
+        self.req.setOption("timeout", 60)  # @TODO: Remove in 0.6.x
 
         self.setup_base()
         self.grab_info()
@@ -174,11 +174,11 @@ class Base(Plugin):
 
         if not self.account:
             self.account = False
-            self.user = None  # @TODO: Remove in 0.4.10
+            self.user = None  # @TODO: Remove in 0.6.x
 
         else:
             self.account.choose()
-            self.user = self.account.user  # @TODO: Remove in 0.4.10
+            self.user = self.account.user  # @TODO: Remove in 0.6.x
             if self.account.user is None:
                 self.account = False
 
@@ -196,7 +196,7 @@ class Base(Plugin):
         size = self.info.get('size')
 
         if size > 0:
-            # @TODO: Fix int conversion in 0.4.10
+            # @TODO: Fix int conversion in 0.6.x
             self.pyfile.size = int(self.info.get('size'))
         else:
             size = self.pyfile.size
@@ -269,11 +269,11 @@ class Base(Plugin):
         self._initialize()
         self._setup()
 
-        # @TODO: Enable in 0.4.10
+        # @TODO: Enable in 0.6.x
         # self.pyload.hookManager.downloadPreparing(self.pyfile)
         # self.check_status()
 
-        # @TODO: Remove in 0.4.10
+        # @TODO: Remove in 0.6.x
         if self.__type__ == "crypter":
             self.pyload.hookManager.downloadPreparing(self.pyfile)
             self.check_status()
@@ -284,13 +284,13 @@ class Base(Plugin):
         self.process(self.pyfile)
         self.check_status()
 
-    #: Deprecated method, use `_process` instead (Remove in 0.4.10)
+    #: Deprecated method, use `_process` instead (Remove in 0.6.x)
     def preprocessing(self, *args, **kwargs):
         # @NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
-        # @NOTE: Move to ThreadManager in 0.4.10
+        # @NOTE: Move to ThreadManager in 0.6.x
         self.pyfile.setStatus("starting")
 
-        # @NOTE: Recheck info thread synchronization in 0.4.10
+        # @NOTE: Recheck info thread synchronization in 0.6.x
         return self._process(*args, **kwargs)
 
     def process(self, pyfile):
@@ -350,7 +350,7 @@ class Base(Plugin):
 
         self.waiting = True
 
-        status = self.pyfile.status  # @NOTE: Recheck in 0.4.10
+        status = self.pyfile.status  # @NOTE: Recheck in 0.6.x
         self.pyfile.setStatus("waiting")
 
         self.log_info(_("Waiting {}...").format(format_time(wait_time)))
@@ -380,16 +380,16 @@ class Base(Plugin):
                 time.sleep(2)
 
         self.waiting = False
-        self.pyfile.status = status  # @NOTE: Recheck in 0.4.10
+        self.pyfile.status = status  # @NOTE: Recheck in 0.6.x
 
     def skip(self, msg=""):
         """
         Skip and give msg
         """
         raise Skip(encode(msg or self.pyfile.error or self.pyfile.pluginname)
-                   )  # @TODO: Remove `encode` in 0.4.10
+                   )  # @TODO: Remove `encode` in 0.6.x
 
-    # @TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.6.x
     def fail(self, msg=""):
         """
         Fail and give msg
@@ -402,7 +402,7 @@ class Base(Plugin):
             msg = self.pyfile.error or self.info.get(
                 'error') or self.pyfile.getStatusName()
 
-        raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+        raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.6.x
 
     def error(self, msg="", type=_("Parse")):
         type = _("{} error").format(type.strip(
@@ -416,19 +416,19 @@ class Base(Plugin):
         """
         Abort and give msg
         """
-        if msg:  # @TODO: Remove in 0.4.10
+        if msg:  # @TODO: Remove in 0.6.x
             self.pyfile.error = encode(msg)
 
         raise Abort
 
-    # @TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.6.x
     def offline(self, msg=""):
         """
         Fail and indicate file is offline
         """
         self.fail("offline")
 
-    # @TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.6.x
     def temp_offline(self, msg=""):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
@@ -448,7 +448,7 @@ class Base(Plugin):
 
         self.req.clearCookies()
 
-        raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.6.x
 
     def retry(self, attemps=5, wait=1, msg="", msgfail=_("Max retries reached")):
         """
@@ -475,7 +475,7 @@ class Base(Plugin):
 
         self.wait(wait)
 
-        raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
+        raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.6.x
 
     def retry_captcha(self, attemps=10, wait=1, msg="",
                       msgfail=_("Max captcha retries reached")):

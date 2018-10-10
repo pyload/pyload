@@ -292,7 +292,7 @@ class UpdateManager(Addon):
             plugin_version = plugin['version']
 
             plugins = getattr(self.pyload.pluginManager, "{}Plugins".format(
-                plugin_type.rstrip('s')))  # @TODO: Remove rstrip in 0.4.10)
+                plugin_type.rstrip('s')))  # @TODO: Remove rstrip in 0.6.x)
 
             oldver = float(plugins[plugin_name]['v']
                            ) if plugin_name in plugins else None
@@ -313,7 +313,7 @@ class UpdateManager(Addon):
             else:
                 continue
 
-            self.log_info(msg.format(**{'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.4.10
+            self.log_info(msg.format(**{'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.6.x
                                         'name': plugin_name,
                                         'oldver': oldver,
                                         'newver': newver}))
@@ -335,7 +335,7 @@ class UpdateManager(Addon):
             except Exception as e:
                 self.log_error(_("Error updating plugin: {} {}") %
                                (plugin_type.rstrip('s').upper(), plugin_name),
-                               e)  # @TODO: Remove rstrip in 0.4.10
+                               e)  # @TODO: Remove rstrip in 0.6.x
 
         return updated
 

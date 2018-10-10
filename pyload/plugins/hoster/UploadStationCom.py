@@ -10,7 +10,7 @@ class UploadStationCom(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?uploadstation\.com/file/(?P<ID>\w+)'
-    __config__ = []  # @TODO: Remove in 0.4.10
+    __config__ = []  # @TODO: Remove in 0.6.x
 
     __description__ = """UploadStation.com hoster plugin"""
     __license__ = "GPLv3"
