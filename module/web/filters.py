@@ -8,6 +8,7 @@ try:
     from os.path import relpath
 except Exception:
     from posixpath import curdir, sep, pardir
+
     def relpath(path, start=curdir):
         """Return a relative version of a path"""
         if not path:
@@ -16,10 +17,11 @@ except Exception:
         path_list = abspath(path).split(sep)
         # Work out how much of the filepath is shared by start and path.
         i = len(commonprefix([start_list, path_list]))
-        rel_list = [pardir] * (len(start_list)-i) + path_list[i:]
+        rel_list = [pardir] * (len(start_list) - i) + path_list[i:]
         if not rel_list:
             return curdir
         return join(*rel_list)
+
 
 def quotepath(path):
     try:
@@ -29,6 +31,7 @@ def quotepath(path):
     except Exception:
         return ""
 
+
 def unquotepath(path):
     try:
         return path.replace(quotechar, ".." + os.path.sep)
@@ -36,6 +39,7 @@ def unquotepath(path):
         return path
     except Exception:
         return ""
+
 
 def path_make_absolute(path):
     p = os.path.abspath(path)
@@ -46,6 +50,7 @@ def path_make_absolute(path):
     else:
         return p + os.path.sep
 
+
 def path_make_relative(path):
     p = relpath(path)
     if os.path.isfile(p):
@@ -55,10 +60,12 @@ def path_make_relative(path):
     else:
         return p + os.path.sep
 
+
 def truncate(value, n):
     if (n - len(value)) < 3:
-        return value[:n]+"..."
+        return value[:n] + "..."
     return value
+
 
 def date(date, format):
     return date

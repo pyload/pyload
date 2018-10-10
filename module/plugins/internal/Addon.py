@@ -45,12 +45,12 @@ class Addon(Plugin):
         """
         return self.config.get('activated')
 
-    #@TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.4.10
     def _log(self, level, plugintype, pluginname, messages):
         plugintype = "addon" if plugintype == "hook" else plugintype
         return Plugin._log(self, level, plugintype, pluginname, messages)
 
-    #@TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.4.10
     def _init_events(self):
         event_map = {'allDownloadsFinished': "all_downloads_finished",
                      'allDownloadsProcessed': "all_downloads_processed",

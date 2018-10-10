@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: mkaay
-
+# @author: mkaay
 
 
 from builtins import str
@@ -9,7 +8,7 @@ from builtins import range
 from builtins import object
 import sys
 
-from uuid import uuid4 as uuid # should be above PyQt imports
+from uuid import uuid4 as uuid  # should be above PyQt imports
 from time import sleep, time
 
 from base64 import b64decode
@@ -43,6 +42,7 @@ try:
 except ImportError:
     print("pynotify not installed, falling back to qt tray notification")
 
+
 class main(QObject):
     def __init__(self):
         """
@@ -61,19 +61,26 @@ class main(QObject):
         """
             set main things up
         """
-        self.parser = XMLParser(join(self.configdir, "gui.xml"), join(self.path, "module", "config", "gui_default.xml"))
+        self.parser = XMLParser(
+            join(
+                self.configdir, "gui.xml"), join(
+                self.path, "module", "config", "gui_default.xml"))
         lang = self.parser.xml.elementsByTagName("language").item(0).toElement().text()
         if not lang:
             parser = XMLParser(join(self.path, "module", "config", "gui_default.xml"))
             lang = parser.xml.elementsByTagName("language").item(0).toElement().text()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("pyLoadGui", join(pypath, "locale"), languages=[str(lang), "en"], fallback=True)
+        translation = gettext.translation(
+            "pyLoadGui", join(
+                pypath, "locale"), languages=[
+                str(lang), "en"], fallback=True)
         try:
-            translation.install(str=(True if sys.stdout.encoding.lower().startswith("utf") else False))
+            translation.install(
+                str=(
+                    True if sys.stdout.encoding.lower().startswith("utf") else False))
         except Exception:
             translation.install(str=False)
-
 
         self.connector = Connector()
         self.mainWindow = MainWindow(self.connector)
@@ -85,18 +92,21 @@ class main(QObject):
         default = self.refreshConnections()
         self.connData = None
         self.captchaProcessing = False
-        self.serverStatus = {"freespace":0}
+        self.serverStatus = {"freespace": 0}
 
-        self.core = None # pyLoadCore if started
+        self.core = None  # pyLoadCore if started
         self.connectionLost = False
 
-        if True: # when used if first, minimizing not working correctly..
+        if True:  # when used if first, minimizing not working correctly..
             self.tray = TrayIcon()
             self.tray.show()
             self.notification = Notification(self.tray)
             self.connect(self, SIGNAL("showMessage"), self.notification.showMessage)
             self.connect(self.tray.exitAction, SIGNAL("triggered()"), self.slotQuit)
-            self.connect(self.tray.showAction, SIGNAL("toggled(bool)"), self.mainWindow.setVisible)
+            self.connect(
+                self.tray.showAction,
+                SIGNAL("toggled(bool)"),
+                self.mainWindow.setVisible)
             self.connect(self.mainWindow, SIGNAL("hidden"), self.tray.mainWindowHidden)
 
         if not first:
@@ -132,8 +142,14 @@ class main(QObject):
             stop all refresh threads and hide main window
         """
         self.tray.showAction.setDisabled(True)
-        self.disconnect(self.clipboard, SIGNAL('dataChanged()'), self.slotClipboardChange)
-        self.disconnect(self.connector, SIGNAL("connectionLost"), self.slotConnectionLost)
+        self.disconnect(
+            self.clipboard,
+            SIGNAL('dataChanged()'),
+            self.slotClipboardChange)
+        self.disconnect(
+            self.connector,
+            SIGNAL("connectionLost"),
+            self.slotConnectionLost)
         self.mainloop.stop()
         self.mainWindow.saveWindow()
         self.mainWindow.hide()
@@ -145,26 +161,50 @@ class main(QObject):
         """
         self.connect(self.connector, SIGNAL("errorBox"), self.slotErrorBox)
         self.connect(self.connWindow, SIGNAL("saveConnection"), self.slotSaveConnection)
-        self.connect(self.connWindow, SIGNAL("removeConnection"), self.slotRemoveConnection)
+        self.connect(
+            self.connWindow,
+            SIGNAL("removeConnection"),
+            self.slotRemoveConnection)
         self.connect(self.connWindow, SIGNAL("connect"), self.slotConnect)
         self.connect(self.mainWindow, SIGNAL("connector"), self.slotShowConnector)
         self.connect(self.mainWindow, SIGNAL("addPackage"), self.slotAddPackage)
-        self.connect(self.mainWindow, SIGNAL("setDownloadStatus"), self.slotSetDownloadStatus)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("setDownloadStatus"),
+            self.slotSetDownloadStatus)
         self.connect(self.mainWindow, SIGNAL("saveMainWindow"), self.slotSaveMainWindow)
-        self.connect(self.mainWindow, SIGNAL("pushPackageToQueue"), self.slotPushPackageToQueue)
-        self.connect(self.mainWindow, SIGNAL("restartDownload"), self.slotRestartDownload)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("pushPackageToQueue"),
+            self.slotPushPackageToQueue)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("restartDownload"),
+            self.slotRestartDownload)
         self.connect(self.mainWindow, SIGNAL("removeDownload"), self.slotRemoveDownload)
         self.connect(self.mainWindow, SIGNAL("abortDownload"), self.slotAbortDownload)
         self.connect(self.mainWindow, SIGNAL("addContainer"), self.slotAddContainer)
-        self.connect(self.mainWindow, SIGNAL("stopAllDownloads"), self.slotStopAllDownloads)
-        self.connect(self.mainWindow, SIGNAL("setClipboardStatus"), self.slotSetClipboardStatus)
-        self.connect(self.mainWindow, SIGNAL("changePackageName"), self.slotChangePackageName)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("stopAllDownloads"),
+            self.slotStopAllDownloads)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("setClipboardStatus"),
+            self.slotSetClipboardStatus)
+        self.connect(
+            self.mainWindow,
+            SIGNAL("changePackageName"),
+            self.slotChangePackageName)
         self.connect(self.mainWindow, SIGNAL("pullOutPackage"), self.slotPullOutPackage)
         self.connect(self.mainWindow, SIGNAL("refreshStatus"), self.slotRefreshStatus)
         self.connect(self.mainWindow, SIGNAL("reloadAccounts"), self.slotReloadAccounts)
         self.connect(self.mainWindow, SIGNAL("Quit"), self.slotQuit)
 
-        self.connect(self.mainWindow.mactions["exit"], SIGNAL("triggered()"), self.slotQuit)
+        self.connect(
+            self.mainWindow.mactions["exit"],
+            SIGNAL("triggered()"),
+            self.slotQuit)
         self.connect(self.mainWindow.captchaDock, SIGNAL("done"), self.slotCaptchaDone)
 
     def slotShowConnector(self):
@@ -177,7 +217,7 @@ class main(QObject):
         self.stopMain()
         self.init()
 
-    #def quit(self): #not used anymore?
+    # def quit(self): #not used anymore?
     #    """
     #        quit gui
     #    """
@@ -207,6 +247,7 @@ class main(QObject):
         view = self.mainWindow.tabs["collector"]["package_view"]
         view.setSelectionBehavior(QAbstractItemView.SelectRows)
         view.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
         def dropEvent(klass, event):
             event.setDropAction(Qt.CopyAction)
             event.accept()
@@ -219,26 +260,30 @@ class main(QObject):
                     target = view.itemAt(event.pos())
                     if not hasattr(target, "getPackData"):
                         target = target.parent()
-                    klass.emit(SIGNAL("droppedToPack"), target.getPackData()["id"], item.getFileData()["id"])
+                    klass.emit(
+                        SIGNAL("droppedToPack"),
+                        target.getPackData()["id"],
+                        item.getFileData()["id"])
                 event.ignore()
                 return
             items = view.selectedItems()
             for item in items:
                 row = view.indexOfTopLevelItem(item)
                 view.takeTopLevelItem(row)
+
         def dragEvent(klass, event):
             #view = event.source()
             #dragOkay = False
             #items = view.selectedItems()
-            #for item in items:
+            # for item in items:
             #    if hasattr(item, "_data"):
             #        if item._data["id"] == "fixed" or item.parent()._data["id"] == "fixed":
             #            dragOkay = True
             #    else:
             #        dragOkay = True
-            #if dragOkay:
+            # if dragOkay:
             event.accept()
-            #else:
+            # else:
             #    event.ignore()
         view.dropEvent = dropEvent
         view.dragEnterEvent = dragEvent
@@ -293,7 +338,8 @@ class main(QObject):
             return
         self.mainWindow.tabs["log"]["text"].logOffset += len(lines)
         for line in lines:
-            self.mainWindow.tabs["log"]["text"].emit(SIGNAL("append(QString)"), line.strip("\n"))
+            self.mainWindow.tabs["log"]["text"].emit(
+                SIGNAL("append(QString)"), line.strip("\n"))
         cursor = self.mainWindow.tabs["log"]["text"].textCursor()
         cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         self.mainWindow.tabs["log"]["text"].setTextCursor(cursor)
@@ -400,12 +446,16 @@ class main(QObject):
 
             coreparser = ConfigParser(self.configdir)
             if not coreparser.config:
-                self.connector.setConnectionData("127.0.0.1", 7227, "anonymous", "anonymous", False)
+                self.connector.setConnectionData(
+                    "127.0.0.1", 7227, "anonymous", "anonymous", False)
             else:
-                self.connector.setConnectionData("127.0.0.1", coreparser.get("remote", "port"), "anonymous", "anonymous")
+                self.connector.setConnectionData(
+                    "127.0.0.1", coreparser.get(
+                        "remote", "port"), "anonymous", "anonymous")
 
         elif data["type"] == "remote":
-            self.connector.setConnectionData(data["host"], data["port"], data["user"], data["password"])
+            self.connector.setConnectionData(
+                data["host"], data["port"], data["user"], data["password"])
 
         elif data["type"] == "internal":
             from pyLoadCore import Core
@@ -414,7 +464,7 @@ class main(QObject):
 
             if not self.core:
 
-                config = CoreConfig() #create so at least default config exists
+                config = CoreConfig()  # create so at least default config exists
                 self.core = Core()
                 self.core.startedInGui = True
                 _thread.start_new_thread(self.core.start, (False, False))
@@ -463,7 +513,7 @@ class main(QObject):
             data = {"password": password}
             self.connector.setPackageData(pack, data)
 
-    def slotAddFileToPackage(self, pid, fid): #TODO deprecated? gets called
+    def slotAddFileToPackage(self, pid, fid):  # TODO deprecated? gets called
         """
             emitted from collector view after a drop action
         """
@@ -557,7 +607,7 @@ class main(QObject):
             remove download
         """
         if isPack:
-            data = self.connector.getFileOrder(id) #less data to transmit
+            data = self.connector.getFileOrder(id)  # less data to transmit
             self.connector.stopDownloads(list(data.values()))
         else:
             self.connector.stopDownloads([id])
@@ -575,7 +625,8 @@ class main(QObject):
         """
         if self.checkClipboard:
             text = self.clipboard.text()
-            pattern = re.compile(r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
+            pattern = re.compile(
+                r"(http|https|ftp)://[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?/.*)?")
             matches = pattern.finditer(text)
 
             # thanks to: jmansour //#139
@@ -615,9 +666,12 @@ class main(QObject):
             self.mainWindow.show()
             self.mainWindow.raise_()
             self.mainWindow.activateWindow()
-            self.mainWindow.captchaDock.emit(SIGNAL("setTask"), t.tid, b64decode(t.data), t.type)
+            self.mainWindow.captchaDock.emit(
+                SIGNAL("setTask"), t.tid, b64decode(
+                    t.data), t.type)
         elif not self.mainWindow.captchaDock.isFree():
-            status = self.connector.getCaptchaTaskStatus(self.mainWindow.captchaDock.currentID)
+            status = self.connector.getCaptchaTaskStatus(
+                self.mainWindow.captchaDock.currentID)
             if not (status == "user" or status == "shared-user"):
                 self.mainWindow.captchaDock.hide()
                 self.mainWindow.captchaDock.processing = False
@@ -641,12 +695,21 @@ class main(QObject):
                     if event.eventname == "update" and event.type == ElementType.File:
                         info = self.connector.getFileData(event.id)
                         if info.statusmsg == "finished":
-                            self.emit(SIGNAL("showMessage"), _("Finished downloading of '{}'").format(info.name))
+                            self.emit(
+                                SIGNAL("showMessage"),
+                                _("Finished downloading of '{}'").format(
+                                    info.name))
                         elif info.statusmsg == "failed":
-                            self.emit(SIGNAL("showMessage"), _("Failed downloading '{}'!").format(info.name))
+                            self.emit(
+                                SIGNAL("showMessage"),
+                                _("Failed downloading '{}'!").format(
+                                    info.name))
                     if event.event == "insert" and event.type == ElementType.File:
                         info = self.connector.getLinkInfo(event[3])
-                        self.emit(SIGNAL("showMessage"), _("Added '{}' to queue").format(info.name))
+                        self.emit(
+                            SIGNAL("showMessage"),
+                            _("Added '{}' to queue").format(
+                                info.name))
                 except Exception:
                     print("can't send notification")
             elif event.destination == Destination.Collector:
@@ -671,7 +734,11 @@ class main(QObject):
     def slotConnectionLost(self):
         if not self.connectionLost:
             self.connectionLost = True
-            m = QMessageBox(QMessageBox.Critical, _("Connection lost"), _("Lost connection to the core!"), QMessageBox.Ok)
+            m = QMessageBox(
+                QMessageBox.Critical,
+                _("Connection lost"),
+                _("Lost connection to the core!"),
+                QMessageBox.Ok)
             m.exec_()
             self.slotQuit()
 
@@ -693,7 +760,8 @@ class main(QObject):
             self.parent.refreshServerStatus()
             if self.lastSpaceCheck + 5 < time():
                 self.lastSpaceCheck = time()
-                self.parent.serverStatus["freespace"] = self.parent.connector.freeSpace()
+                self.parent.serverStatus["freespace"] = self.parent.connector.freeSpace(
+                )
             self.parent.refreshLog()
             self.parent.checkCaptcha()
             self.parent.pullEvents()
@@ -711,11 +779,21 @@ class TrayIcon(QSystemTrayIcon):
         self.showAction.setChecked(True)
         self.showAction.setDisabled(True)
         self.contextMenu.addAction(self.showAction)
-        self.exitAction = QAction(QIcon(join(pypath, "icons", "close.png")), _("Exit"), self.contextMenu)
+        self.exitAction = QAction(
+            QIcon(
+                join(
+                    pypath,
+                    "icons",
+                    "close.png")),
+            _("Exit"),
+            self.contextMenu)
         self.contextMenu.addAction(self.exitAction)
         self.setContextMenu(self.contextMenu)
 
-        self.connect(self, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"), self.clicked)
+        self.connect(
+            self,
+            SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),
+            self.clicked)
 
     def mainWindowHidden(self):
         self.showAction.setChecked(False)
@@ -724,6 +802,7 @@ class TrayIcon(QSystemTrayIcon):
         if self.showAction.isEnabled():
             if reason == QSystemTrayIcon.Trigger:
                 self.showAction.toggle()
+
 
 class Notification(QObject):
     def __init__(self, tray):
@@ -747,8 +826,8 @@ class Notification(QObject):
         else:
             self.tray.showMessage("pyload", body)
 
+
 if __name__ == "__main__":
     renameProcess('pyLoadGui')
     app = main()
     app.loop()
-

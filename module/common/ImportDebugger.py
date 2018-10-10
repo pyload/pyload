@@ -3,6 +3,7 @@
 from builtins import object
 import sys
 
+
 class ImportDebugger(object):
 
     def __init__(self):
@@ -16,5 +17,6 @@ class ImportDebugger(object):
         self.imported[name] += 1
 
         print(name, path)
+
 
 sys.meta_path.append(ImportDebugger())

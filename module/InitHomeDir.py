@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
-
+# @author: RaNaN
 
 
 import builtins
@@ -12,7 +10,7 @@ import sys
 from sys import argv, platform
 
 import builtins
-builtins.owd = path.abspath("") #original working directory
+builtins.owd = path.abspath("")  # original working directory
 builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "module", "lib"))

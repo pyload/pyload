@@ -34,8 +34,10 @@ class SolveMedia(CaptchaService):
     def challenge(self, key=None, data=None):
         key = key or self.retrieve_key(data)
 
-        html = self.pyfile.plugin.load("http://api.solvemedia.com/papi/challenge.noscript",
-                                       get={'k': key})
+        html = self.pyfile.plugin.load(
+            "http://api.solvemedia.com/papi/challenge.noscript",
+            get={
+                'k': key})
 
         for i in range(1, 11):
             try:
@@ -46,8 +48,9 @@ class SolveMedia(CaptchaService):
                 magic = None
 
             try:
-                challenge = re.search(r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
-                                      html).group(1)
+                challenge = re.search(
+                    r'<input type=hidden name="adcopy_challenge" id="adcopy_challenge" value="(.+?)">',
+                    html).group(1)
 
             except AttributeError:
                 self.fail(_("SolveMedia challenge pattern not found"))
@@ -64,15 +67,17 @@ class SolveMedia(CaptchaService):
                 self.pyfile.plugin.captcha.invalid()
                 result = None
 
-            html = self.pyfile.plugin.load("http://api.solvemedia.com/papi/verify.noscript",
-                                           post={'adcopy_response': result,
-                                                 'k': key,
-                                                 'l': "en",
-                                                 't': "img",
-                                                 's': "standard",
-                                                 'magic': magic,
-                                                 'adcopy_challenge': challenge,
-                                                 'ref': self.pyfile.url})
+            html = self.pyfile.plugin.load(
+                "http://api.solvemedia.com/papi/verify.noscript",
+                post={
+                    'adcopy_response': result,
+                    'k': key,
+                    'l': "en",
+                    't': "img",
+                    's': "standard",
+                    'magic': magic,
+                    'adcopy_challenge': challenge,
+                    'ref': self.pyfile.url})
             try:
                 redirect = re.search(r'URL=(.+?)">', html).group(1)
 

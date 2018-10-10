@@ -8,13 +8,14 @@ import sys
 
 #from module import InitHomeDir
 
-#very ugly prints, but at least it works with python 3
+# very ugly prints, but at least it works with python 3
+
 
 def main():
     print("#####   System Information   #####\n")
     print("Platform:", sys.platform)
     print("Operating System:", os.name)
-    print("Python:", sys.version.replace("\n", "")+ "\n")
+    print("Python:", sys.version.replace("\n", "") + "\n")
 
     try:
         import pycurl
@@ -54,7 +55,6 @@ def main():
     js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
     print("JS engine:", js)
 
-
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoadCore  ##")
 
@@ -83,7 +83,8 @@ def main():
         try:
             import Image
         except Exception:
-            core_err.append("Please install py-imaging/pil/pillow to use Hoster, which uses captchas.")
+            core_err.append(
+                "Please install py-imaging/pil/pillow to use Hoster, which uses captchas.")
 
     pipe = subprocess.PIPE
     try:
@@ -94,7 +95,8 @@ def main():
     try:
         import OpenSSL
     except Exception:
-        core_info.append("Install OpenSSL if you want to create a secure connection to the core.")
+        core_info.append(
+            "Install OpenSSL if you want to create a secure connection to the core.")
 
     if not js:
         print("no JavaScript engine found")
@@ -149,6 +151,7 @@ def main():
         print("\nPossible improvements for webinterface:\n")
         for line in web_info:
             print(line)
+
 
 if __name__ == "__main__":
     main()

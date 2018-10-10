@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 from builtins import map
 from builtins import str
@@ -12,13 +12,14 @@ from .printer import *
 
 from module.Api import Destination, PackageData
 
+
 class ManageFiles(Handler):
     """ possibility to manage queue/collector """
 
     def init(self):
         self.target = Destination.Queue
-        self.pos = 0    #position in queue
-        self.package = -1  #choosen package
+        self.pos = 0  # position in queue
+        self.package = -1  # choosen package
         self.mode = ""   # move/delete/restart
 
         self.cache = None
@@ -46,7 +47,7 @@ class ManageFiles(Handler):
         if input == "0":
             self.cli.reset()
         elif self.package < 0 and self.mode:
-            #mode select
+            # mode select
             packs = self.parseInput(input)
             if self.mode == "m":
                 [self.client.movePackage((self.target + 1).format(2), x) for x in packs]
@@ -56,7 +57,7 @@ class ManageFiles(Handler):
                 [self.client.restartPackage(x) for x in packs]
 
         elif self.mode:
-            #edit links
+            # edit links
             links = self.parseInput(input, False)
 
             if self.mode == "d":
@@ -65,7 +66,7 @@ class ManageFiles(Handler):
                 list(map(self.client.restartFile, links))
 
         else:
-            #look into package
+            # look into package
             try:
                 self.package = int(input)
             except Exception:
@@ -76,7 +77,6 @@ class ManageFiles(Handler):
         self.pos = 0
         self.mode = ""
         self.setInput()
-
 
     def renderBody(self, line):
         if self.package < 0:
@@ -93,15 +93,18 @@ class ManageFiles(Handler):
             elif self.mode == "r":
                 println(line, _("What do you want to restart?"))
 
-            println(line + 1, "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.")
+            println(
+                line + 1,
+                "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.")
             line += 2
         else:
             println(line, _("Choose what you want to do or enter package number."))
-            println(line + 1, "{} - {}, {} - {}, {} - {}".format(mag("d"), _("delete"), mag("m"), _("move"), mag("r"), _("restart")))
+            println(line + 1, "{} - {}, {} - {}, {} - {}".format(mag("d"),
+                                                                 _("delete"), mag("m"), _("move"), mag("r"), _("restart")))
             line += 2
 
         if self.package < 0:
-            #print(package info)
+            # print(package info)
             pack = self.getPackages()
             i = 0
             for value in islice(pack, self.pos, self.pos + 5):
@@ -115,13 +118,13 @@ class ManageFiles(Handler):
                 println(line, "")
                 line += 1
         else:
-            #print(links info)
+            # print(links info)
             pack = self.getLinks()
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):
                 try:
                     println(line, mag(value.fid) + ": {} | {} | {}".format(
-                    value.name, value.statusmsg, value.plugin))
+                        value.name, value.statusmsg, value.plugin))
                     line += 1
                     i += 1
                 except Exception as e:
@@ -135,7 +138,6 @@ class ManageFiles(Handler):
 
         return line + 2
 
-
     def getPackages(self):
         if self.cache and self.time + 2 < time():
             return self.cache
@@ -144,7 +146,6 @@ class ManageFiles(Handler):
             data = self.client.getQueue()
         else:
             data = self.client.getCollector()
-
 
         self.cache = data
         self.time = time()

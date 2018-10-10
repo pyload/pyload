@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 from builtins import range
 import io
 import time
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 import pycurl
 from module.network.RequestFactory import getRequest as get_request
@@ -55,8 +55,11 @@ class CaptchaBrotherhood(Addon):
     API_URL = "http://www.captchabrotherhood.com/"
 
     def get_credits(self):
-        res = self.load(self.API_URL + "askCredits.aspx",
-                        get={'username': self.config.get('username'), 'password': self.config.get('password')})
+        res = self.load(
+            self.API_URL + "askCredits.aspx",
+            get={
+                'username': self.config.get('username'),
+                'password': self.config.get('password')})
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res)
         else:
@@ -86,10 +89,10 @@ class CaptchaBrotherhood(Addon):
         req = get_request()
 
         url = "{}sendNewCaptcha.aspx?{}".format(self.API_URL,
-                                            urllib.parse.urlencode({'username': self.config.get('username'),
-                                                              'password': self.config.get('password'),
-                                                              'captchaSource': "pyLoad",
-                                                              'timeout': "80"}))
+                                                urllib.parse.urlencode({'username': self.config.get('username'),
+                                                                        'password': self.config.get('password'),
+                                                                        'captchaSource': "pyLoad",
+                                                                        'timeout': "80"}))
 
         req.c.setopt(pycurl.URL, url)
         req.c.setopt(pycurl.POST, 1)

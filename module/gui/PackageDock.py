@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 from builtins import str
 import re
@@ -7,18 +7,19 @@ import re
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+
 class NewPackageDock(QDockWidget):
     def __init__(self):
         QDockWidget.__init__(self, _("New Package"))
         self.setObjectName("New Package Dock")
         self.widget = NewPackageWindow(self)
         self.setWidget(self.widget)
-        self.setAllowedAreas(Qt.RightDockWidgetArea|Qt.LeftDockWidgetArea)
+        self.setAllowedAreas(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea)
         self.hide()
 
     def slotDone(self):
         text = str(self.widget.box.toPlainText())
-        pw   = str(self.widget.passwordInput.text())
+        pw = str(self.widget.passwordInput.text())
         if not pw:
             pw = None
         lines = []
@@ -35,13 +36,15 @@ class NewPackageDock(QDockWidget):
 
     def parseUri(self):
 
-        text=str(self.widget.box.toPlainText())
+        text = str(self.widget.box.toPlainText())
         self.widget.box.setText("")
-        result = re.findall(r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
+        result = re.findall(
+            r"(?:ht|f)tps?:\/\/[a-zA-Z0-9\-\.\/\?=_&%#]+[<| |\"|\'|\r|\n|\t]{1}", text)
         for url in result:
             if "\n" or "\t" or "\r" or "\"" or "<" or "'" in url:
                 url = url[:-1]
             self.widget.box.append("{} ".format(url))
+
 
 class NewPackageWindow(QWidget):
     def __init__(self, dock):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
@@ -14,7 +14,8 @@ from module.remote.thriftbackend.ThriftClient import Destination, FileDoesNotExi
 
 statusMapReverse = dict((v, k) for k, v in iter(statusMap.items()))
 
-translatedStatusMap = {} # -> CollectorModel.__init__
+translatedStatusMap = {}  # -> CollectorModel.__init__
+
 
 class CollectorModel(QAbstractItemModel):
     """
@@ -30,22 +31,22 @@ class CollectorModel(QAbstractItemModel):
         self.interval = 1
         self.mutex = QMutex()
 
-        global translatedStatusMap # workaround because i18n is not running at import time
+        global translatedStatusMap  # workaround because i18n is not running at import time
         translatedStatusMap = {
-            "finished":    _("finished"),
-            "offline":     _("offline"),
-            "online":      _("online"),
-            "queued":      _("queued"),
-            "skipped":    _("skipped"),
-            "waiting":     _("waiting"),
+            "finished": _("finished"),
+            "offline": _("offline"),
+            "online": _("online"),
+            "queued": _("queued"),
+            "skipped": _("skipped"),
+            "waiting": _("waiting"),
             "temp. offline": _("temp. offline"),
-            "starting":    _("starting"),
-            "failed":      _("failed"),
-            "aborted":     _("aborted"),
-            "decrypting":  _("decrypting"),
-            "custom":      _("custom"),
+            "starting": _("starting"),
+            "failed": _("failed"),
+            "aborted": _("aborted"),
+            "decrypting": _("decrypting"),
+            "custom": _("custom"),
             "downloading": _("downloading"),
-            "processing":  _("processing")
+            "processing": _("processing")
         }
 
     def translateStatus(self, string):
@@ -144,7 +145,12 @@ class CollectorModel(QAbstractItemModel):
                             child.update(info)
                             if not info.status == 12:
                                 child.data["downloading"] = None
-                            self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                            self.emit(
+                                SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(
+                                    k, 0, self.index(
+                                        p, 0)), self.index(
+                                    k, self.cols, self.index(
+                                        p, self.cols)))
                     break
         else:
             data = self.connector.getPackageData(event.id)
@@ -153,7 +159,10 @@ class CollectorModel(QAbstractItemModel):
             for p, package in enumerate(self._data):
                 if package.id == event.id:
                     package.update(data)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(p, 0), self.index(p, self.cols))
+                    self.emit(
+                        SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(
+                            p, 0), self.index(
+                            p, self.cols))
                     break
 
     def data(self, index, role=Qt.DisplayRole):
@@ -236,20 +245,20 @@ class CollectorModel(QAbstractItemModel):
             returns row count for the element
         """
         if parent == QModelIndex():
-            #return package count
+            # return package count
             return len(self._data)
         else:
             if parent.isValid():
                 #index is valid
                 pack = parent.internalPointer()
                 if isinstance(pack, Package):
-                    #index points to a package
-                    #return len of children
+                    # index points to a package
+                    # return len of children
                     return len(pack.children)
             else:
                 #index is invalid
                 return False
-        #files have no children
+        # files have no children
         return 0
 
     def columnCount(self, parent=QModelIndex()):
@@ -291,8 +300,11 @@ class CollectorModel(QAbstractItemModel):
             called if package name editing is finished, sets new name
         """
         if index.column() == 0 and self.parent(index) == QModelIndex() and role == Qt.EditRole:
-            self.connector.setPackageName(index.internalPointer().id, str(value.toString()))
+            self.connector.setPackageName(
+                index.internalPointer().id, str(
+                    value.toString()))
         return True
+
 
 class Package(object):
     """
@@ -353,6 +365,7 @@ class Package(object):
             if child.id == int(fid):
                 del self.children[k]
 
+
 class Link(object):
     def __init__(self, f, pack):
         self.data = {"downloading": None}
@@ -378,6 +391,7 @@ class Link(object):
         }
         self.data.update(data)
 
+
 class CollectorView(QTreeView):
     """
         view component for collector
@@ -391,5 +405,5 @@ class CollectorView(QTreeView):
         self.setColumnWidth(2, 200)
         self.setColumnWidth(3, 100)
 
-        self.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
-
+        self.setEditTriggers(QAbstractItemView.DoubleClicked |
+                             QAbstractItemView.EditKeyPressed)

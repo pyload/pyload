@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: spoob, sebnapi, RaNaN, mkaay
+# @author: spoob, sebnapi, RaNaN, mkaay
 
 import builtins
 
@@ -58,7 +58,12 @@ def exceptHook(exc_type, exc_value, exc_traceback):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
 
-    logger.error("<<< UNCAUGHT EXCEPTION >>>", exc_info=(exc_type, exc_value, exc_traceback))
+    logger.error(
+        "<<< UNCAUGHT EXCEPTION >>>",
+        exc_info=(
+            exc_type,
+            exc_value,
+            exc_traceback))
 
 
 class Core(object):
@@ -72,14 +77,14 @@ class Core(object):
         self.remote = True
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        self.deleteLinks = False # will delete links on startup
+        self.deleteLinks = False  # will delete links on startup
 
         if len(argv) > 1:
             try:
                 options, args = getopt(argv[1:], 'vchdusqp:',
-                    ["version", "clear", "clean", "help", "debug", "user",
-                     "setup", "configdir=", "changedir", "daemon",
-                     "quit", "status", "no-remote", "pidfile="])
+                                       ["version", "clear", "clean", "help", "debug", "user",
+                                        "setup", "configdir=", "changedir", "daemon",
+                                        "quit", "status", "no-remote", "pidfile="])
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -205,7 +210,8 @@ class Core(object):
 
     def isAlreadyRunning(self):
         pid = self.checkPidFile()
-        if not pid or os.name == "nt": return False
+        if not pid or os.name == "nt":
+            return False
         try:
             os.kill(pid, 0)  # 0 - default signal (does nothing)
         except Exception:
@@ -224,7 +230,7 @@ class Core(object):
             return
 
         try:
-            os.kill(pid, 3) #SIGUIT
+            os.kill(pid, 3)  # SIGUIT
 
             t = time()
             print("waiting for pyLoad to quit")
@@ -235,13 +241,12 @@ class Core(object):
             if not exists(self.pidfile):
                 print("pyLoad successfully stopped")
             else:
-                os.kill(pid, 9) #SIGKILL
+                os.kill(pid, 9)  # SIGKILL
                 print("pyLoad did not respond")
                 print("Kill signal was send to process with id {}".format(pid))
 
         except Exception:
             print("Error quitting pyLoad")
-
 
     def cleanTree(self):
         for path, dirs, files in walk(self.path("")):
@@ -282,14 +287,17 @@ class Core(object):
 
             exit()
 
-        try: signal.signal(signal.SIGQUIT, self.quit)
-        except Exception: pass
+        try:
+            signal.signal(signal.SIGQUIT, self.quit)
+        except Exception:
+            pass
 
         self.config = ConfigParser()
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("pyLoad", self.path("locale"),
-                                          languages=[self.config['general']['language'], "en"], fallback=True)
+        translation = gettext.translation(
+            "pyLoad", self.path("locale"), languages=[
+                self.config['general']['language'], "en"], fallback=True)
         translation.install(True)
 
         self.debug = self.doDebug or self.config['general']['debug_mode']
@@ -301,7 +309,10 @@ class Core(object):
             exit()
 
         if os.name != "nt" and self.config["general"]["renice"]:
-            os.system("renice {:d} {:d}".format(self.config["general"]["renice"], os.getpid()))
+            os.system(
+                "renice {:d} {:d}".format(
+                    self.config["general"]["renice"],
+                    os.getpid()))
 
         if self.config["permission"]["change_group"]:
             if os.name != "nt":
@@ -326,9 +337,9 @@ class Core(object):
         self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
 
         if self.debug:
-            self.init_logger(logging.DEBUG) # logging level
+            self.init_logger(logging.DEBUG)  # logging level
         else:
-            self.init_logger(logging.INFO) # logging level
+            self.init_logger(logging.INFO)  # logging level
 
         sys.excepthook = exceptHook
 
@@ -341,7 +352,7 @@ class Core(object):
 
         self.writePidFile()
 
-        #@TODO refractor
+        # @TODO refractor
 
         remote.activated = self.remote
         self.log.debug("Remote activated: {}".format(self.remote))
@@ -352,9 +363,12 @@ class Core(object):
         self.check_file("tmp", _("folder for temporary files"), True)
         #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True # checks seems to fail, althoug tesseract is available
+        self.captcha = True  # checks seems to fail, althoug tesseract is available
 
-        self.check_file(self.config['general']['download_folder'], _("folder for downloads"), True)
+        self.check_file(
+            self.config['general']['download_folder'],
+            _("folder for downloads"),
+            True)
 
         if self.config['ssl']['activated']:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
@@ -362,7 +376,9 @@ class Core(object):
         self.setupDB()
         if self.config.oldRemoteData:
             self.log.info(_("Moving old user config to DB"))
-            self.db.addUser(self.config.oldRemoteData["username"], self.config.oldRemoteData["password"])
+            self.db.addUser(
+                self.config.oldRemoteData["username"],
+                self.config.oldRemoteData["password"])
 
             self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
 
@@ -375,7 +391,8 @@ class Core(object):
 
         self.lastClientConnected = 0
 
-        # later imported because they would trigger api import, and remote value not set correctly
+        # later imported because they would trigger api import, and remote value
+        # not set correctly
         from module import Api
         from module.HookManager import HookManager
         from module.ThreadManager import ThreadManager
@@ -387,7 +404,7 @@ class Core(object):
 
         self.scheduler = Scheduler(self)
 
-        #hell yeah, so many important managers :D
+        # hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
         self.pullManager = PullManager(self)
         self.accountManager = AccountManager(self)
@@ -410,7 +427,7 @@ class Core(object):
 
         self.log.info(_("Free space: {}").format(formatSize(spaceLeft)))
 
-        self.config.save() #save so config files gets filled
+        self.config.save()  # save so config files gets filled
 
         link_file = join(pypath, "links.txt")
 
@@ -439,11 +456,11 @@ class Core(object):
 
         self.log.info(_("pyLoad is up and running"))
 
-        #test api
+        # test api
 #        from module.common.APIExerciser import startApiExerciser
 #        startApiExerciser(self, 3)
 
-        #some memory stats
+        # some memory stats
 #        from guppy import hpy
 #        hp=hpy()
 #        import objgraph
@@ -468,17 +485,17 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0) #@TODO thrift blocks shutdown
+                _exit(0)  # @TODO thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()
 
     def setupDB(self):
-        self.db = DatabaseBackend(self) # the backend
+        self.db = DatabaseBackend(self)  # the backend
         self.db.setup()
 
         self.files = FileHandler(self)
-        self.db.manager = self.files #ugly?
+        self.db.manager = self.files  # ugly?
 
     def init_webserver(self):
         if self.config['webinterface']['activated']:
@@ -487,23 +504,33 @@ class Core(object):
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter("%(asctime) %(levelname)-8s  %(message)", "%d.%m.%Y %H:%M:%S")
+        frm = logging.Formatter(
+            "%(asctime) %(levelname)-8s  %(message)",
+            "%d.%m.%Y %H:%M:%S")
         console.setFormatter(frm)
-        self.log = logging.getLogger("log") # settable in config
+        self.log = logging.getLogger("log")  # settable in config
 
         if self.config['log']['file_log']:
             if self.config['log']['log_rotate']:
-                file_handler = logging.handlers.RotatingFileHandler(join(self.config['log']['log_folder'], 'log.txt'),
-                                                                    maxBytes=self.config['log']['log_size'] * 1024,
-                                                                    backupCount=int(self.config['log']['log_count']),
-                                                                    encoding="utf8")
+                file_handler = logging.handlers.RotatingFileHandler(
+                    join(
+                        self.config['log']['log_folder'],
+                        'log.txt'),
+                    maxBytes=self.config['log']['log_size'] * 1024,
+                    backupCount=int(
+                        self.config['log']['log_count']),
+                    encoding="utf8")
             else:
-                file_handler = logging.FileHandler(join(self.config['log']['log_folder'], 'log.txt'), encoding="utf8")
+                file_handler = logging.FileHandler(
+                    join(
+                        self.config['log']['log_folder'],
+                        'log.txt'),
+                    encoding="utf8")
 
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
 
-        self.log.addHandler(console) #if console logging
+        self.log.addHandler(console)  # if console logging
         self.log.setLevel(level)
 
     def removeLogger(self):
@@ -528,7 +555,14 @@ class Core(object):
 
             return False
 
-    def check_file(self, check_names, description="", folder=False, empty=True, essential=False, quiet=False):
+    def check_file(
+            self,
+            check_names,
+            description="",
+            folder=False,
+            empty=True,
+            essential=False,
+            quiet=False):
         """check wether needed files exists"""
         tmp_names = []
         if not isinstance(check_names, list):
@@ -554,14 +588,15 @@ class Core(object):
 
             if not file_exists and not quiet:
                 if file_created:
-                #self.log.info( _("{} created").format(description))
+                    #self.log.info( _("{} created").format(description))
                     pass
                 else:
                     if not empty:
-                        self.log.warning(
-                            _("could not find {desc}: {name}").format(**{"desc": description, "name": tmp_name}))
+                        self.log.warning(_("could not find {desc}: {name}").format(
+                            **{"desc": description, "name": tmp_name}))
                     else:
-                        print(_("could not create {desc}: {name}").format(**{"desc": description, "name": tmp_name}))
+                        print(_("could not create {desc}: {name}").format(
+                            **{"desc": description, "name": tmp_name}))
                     if essential:
                         exit()
 
@@ -575,7 +610,7 @@ class Core(object):
         for i in range(3, 50):
             try:
                 close(i)
-            except :
+            except BaseException:
                 pass
 
         execl(executable, executable, *sys.argv)
@@ -607,7 +642,6 @@ class Core(object):
 
         self.deletePidFile()
 
-
     def path(self, *args):
         return join(pypath, *args)
 
@@ -629,7 +663,7 @@ def deamon():
     try:
         pid = os.fork()
         if pid > 0:
-        # exit from second parent, print(eventual PID before)
+            # exit from second parent, print(eventual PID before)
             print("Daemon PID {:d}".format(pid))
             sys.exit(0)
     except OSError as e:
@@ -652,11 +686,11 @@ def deamon():
 
 
 def main():
-    #change name to 'pyLoadCore'
+    # change name to 'pyLoadCore'
     #from module.lib.rename_process import renameProcess
-    #renameProcess('pyLoadCore')
+    # renameProcess('pyLoadCore')
     if "--daemon" in sys.argv:
-            deamon()
+        deamon()
     else:
         pyload_core = Core()
         try:
@@ -667,7 +701,7 @@ def main():
             pyload_core.removeLogger()
             _exit(1)
 
+
 # And so it begins...
 if __name__ == "__main__":
     main()
-

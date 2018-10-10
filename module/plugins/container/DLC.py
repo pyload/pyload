@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import re
 import xml.dom.minidom
 
@@ -18,9 +17,19 @@ class DLC(Container):
     __status__ = "testing"
 
     __pattern__ = r'(.+\.dlc|[\w\+^_]+==[\w\+^_/]+==)$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """DLC container decrypter plugin"""
     __license__ = "GPLv3"
@@ -47,14 +56,22 @@ class DLC(Container):
         dlc_content = self.load(self.API_URL.format(dlc_key))
 
         try:
-            rc = re.search(r'<rc>(.+)</rc>', dlc_content, re.S).group(1).decode('base64')[:16]
+            rc = re.search(
+                r'<rc>(.+)</rc>',
+                dlc_content,
+                re.S).group(1).decode('base64')[
+                :16]
 
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        key = iv = Crypto.Cipher.AES.new(self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
+        key = iv = Crypto.Cipher.AES.new(
+            self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV).decrypt(rc)
 
-        self.data = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv).decrypt(dlc_data).decode('base64')
+        self.data = Crypto.Cipher.AES.new(
+            key,
+            Crypto.Cipher.AES.MODE_CBC,
+            iv).decrypt(dlc_data).decode('base64')
 
         self.packages = [(name or pyfile.name, links, name or pyfile.name)
                          for name, links in self.get_packages()]

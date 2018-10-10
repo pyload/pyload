@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
 from builtins import object
 from threading import Thread
 from traceback import print_exc
+
 
 class BackendBase(Thread):
     def __init__(self, manager):
@@ -39,7 +40,7 @@ class BackendBase(Thread):
         pass
 
     def stop(self):
-        self.enabled = False# set flag and call shutdowm message, so thread can react
+        self.enabled = False  # set flag and call shutdowm message, so thread can react
         self.shutdown()
 
 
@@ -55,21 +56,25 @@ class RemoteManager(object):
 #        else:
 #            self.available.append("SocketBackend")
 
-
     def startBackends(self):
         host = self.core.config["remote"]["listenaddr"]
         port = self.core.config["remote"]["port"]
 
         for b in self.available:
-            klass = getattr(__import__("module.remote.{}".format(b, globals(), locals(), [b], -1), b))
+            klass = getattr(
+                __import__(
+                    "module.remote.{}".format(
+                        b, globals(), locals(), [b], -1), b))
             backend = klass(self)
             if not backend.checkDeps():
                 continue
             try:
                 backend.setup(host, port)
-                self.core.log.info(_("Starting {name}: {addr}:{port}").format(**{"name": b, "addr": host, "port": port}))
+                self.core.log.info(_("Starting {name}: {addr}:{port}").format(
+                    **{"name": b, "addr": host, "port": port}))
             except Exception as e:
-                self.core.log.error(_("Failed loading backend {name} | {error}").format(**{"name": b, "error": str(e)}))
+                self.core.log.error(_("Failed loading backend {name} | {error}").format(
+                    **{"name": b, "error": str(e)}))
                 if self.core.debug:
                     print_exc()
             else:

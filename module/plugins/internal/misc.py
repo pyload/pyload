@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#@TODO: Move to misc directory in 0.4.10
-
+# @TODO: Move to misc directory in 0.4.10
 
 
 # import HTMLParser  #@TODO: Use in 0.4.10
@@ -21,7 +20,9 @@ import subprocess
 import sys
 import time
 import traceback
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import urllib.parse
 import xml.sax.saxutils  # @TODO: Remove in 0.4.10
 import zlib
@@ -41,7 +42,9 @@ try:
 except ImportError:
     pass
 
-#@TODO: Remove in 0.4.10
+# @TODO: Remove in 0.4.10
+
+
 class misc(object):
     __name__ = "misc"
     __type__ = "plugin"
@@ -179,7 +182,7 @@ class Periodical(object):
         finally:
             self.cb = None
 
-    stopped = property(lambda self: self.cb == None)
+    stopped = property(lambda self: self.cb is None)
 
     def _task(self, threaded):
         try:
@@ -246,7 +249,8 @@ def threaded(fn):
 
     return run
 
-def sign_string(message, pem_private, pem_passphrase="" , sign_algo="SHA384"):
+
+def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     """
     Generate a signature for string using the `sign_algo` and `RSA` algorithms
     """
@@ -257,21 +261,22 @@ def sign_string(message, pem_private, pem_passphrase="" , sign_algo="SHA384"):
     if sign_algo not in ("MD5", "SHA1", "SHA256", "SHA384", "SHA512"):
         raise ValueError("Unsupported Signing algorithm")
 
-
     priv_key = RSA.importKey(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
     digest = getattr(__import__('Crypto.Hash', fromlist=[sign_algo]), sign_algo).new()
     digest.update(message)
     return b2a_hex(signer.sign(digest))
 
+
 def format_time(value):
     dt = datetime.datetime(1, 1, 1) + \
         datetime.timedelta(seconds=abs(int(value)))
     days = ("{:d} days".format(dt.day - 1)) if dt.day > 1 else ""
     tm = ", ".join("{:d} {}s".format(getattr(dt, attr), attr)
-                            for attr in ("hour", "minute", "second")
-                            if getattr(dt, attr))
+                   for attr in ("hour", "minute", "second")
+                   if getattr(dt, attr))
     return days + (" and " if days and tm else "") + tm
+
 
 def format_size(value):
     for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
@@ -364,7 +369,7 @@ def html_unescape(text):
     Removes HTML or XML character references and entities from a text string
     """
     return xml.sax.saxutils.unescape(text)
-    #@TODO: Replace in 0.4.10 with:
+    # @TODO: Replace in 0.4.10 with:
     # h = HTMLParser.HTMLParser()
     # return h.unescape(text)
 
@@ -393,7 +398,7 @@ def normalize(value):
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
 
-#@NOTE: Revert to `decode` in Python 3
+# @NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
@@ -526,7 +531,7 @@ def truncate(name, length):
     return "{}~{}".format(name[:trunc * 2], name[-trunc:])
 
 
-#@TODO: Recheck in 0.4.10
+# @TODO: Recheck in 0.4.10
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed
@@ -768,7 +773,7 @@ def replace_patterns(value, rules):
     return value
 
 
-#@TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
+# @TODO: Remove in 0.4.10 and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/',
                exp=time.time() + 180 * 24 * 3600):
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]
@@ -812,8 +817,11 @@ def parse_html_tag_attr_value(attr_name, tag):
 
 
 def parse_html_form(attr_str, html, input_names={}):
-    for form in re.finditer(r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'.format(attr_str,
-                            html, re.I | re.S)):
+    for form in re.finditer(
+        r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'.format(
+            attr_str,
+            html,
+            re.I | re.S)):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 

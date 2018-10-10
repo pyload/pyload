@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 
 from builtins import str
@@ -14,6 +14,7 @@ import codecs
 import pycurl
 
 from .HTTPRequest import HTTPRequest
+
 
 class WrongFormat(Exception):
     pass
@@ -52,7 +53,6 @@ class ChunkInfo(object):
             self.addChunk("{}.chunk{}".format(self.name, i), (current, end))
             current += chunk_size + 1
 
-
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
         fh = codecs.open(fs_name, "w", "utf_8")
@@ -82,7 +82,7 @@ class ChunkInfo(object):
         ci.loaded = True
         ci.setSize(size)
         while True:
-            if not fh.readline(): #skip line
+            if not fh.readline():  # skip line
                 break
             name = fh.readline()[1:-1]
             range = fh.readline()[1:-1]
@@ -98,7 +98,8 @@ class ChunkInfo(object):
 
     def remove(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        if exists(fs_name): remove(fs_name)
+        if exists(fs_name):
+            remove(fs_name)
 
     def getCount(self):
         return len(self.chunks)
@@ -113,8 +114,8 @@ class ChunkInfo(object):
 class HTTPChunk(HTTPRequest):
     def __init__(self, id, parent, range=None, resume=False):
         self.id = id
-        self.p = parent # HTTPDownload instance
-        self.range = range # tuple (start, end)
+        self.p = parent  # HTTPDownload instance
+        self.range = range  # tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -125,14 +126,14 @@ class HTTPChunk(HTTPRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.headerParsed = False #indicates if the header has been processed
+        self.headerParsed = False  # indicates if the header has been processed
 
-        self.fp = None #file handle
+        self.fp = None  # file handle
 
         self.initHandle()
         self.setInterface(self.p.options)
 
-        self.BOMChecked = False # check and remove byte order mark
+        self.BOMChecked = False  # check and remove byte order mark
 
         self.rep = None
 
@@ -140,7 +141,8 @@ class HTTPChunk(HTTPRequest):
         self.lastSize = 0
 
     def __repr__(self):
-        return "<HTTPChunk id={:d}, size={:d}, arrived={:d}>".format(self.id, self.size, self.arrived)
+        return "<HTTPChunk id={:d}, size={:d}, arrived={:d}>".format(
+            self.id, self.size, self.arrived)
 
     @property
     def cj(self):
@@ -149,11 +151,17 @@ class HTTPChunk(HTTPRequest):
     def getHandle(self):
         """ returns a Curl handle ready to use for perform/multiperform """
 
-        self.setRequestContext(self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cj)
+        self.setRequestContext(
+            self.p.url,
+            self.p.get,
+            self.p.post,
+            self.p.referer,
+            self.p.cj)
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        # request all bytes, since some servers in russia seems to have a defect arihmetic unit
+        # request all bytes, since some servers in russia seems to have a defect
+        # arihmetic unit
 
         fs_name = fs_encode(self.p.info.getChunkName(self.id))
         if self.resume:
@@ -163,13 +171,18 @@ class HTTPChunk(HTTPRequest):
                 self.arrived = stat(fs_name).st_size
 
             if self.range:
-                #do nothing if chunk already finished
-                if self.arrived + self.range[0] >= self.range[1]: return None
+                # do nothing if chunk already finished
+                if self.arrived + self.range[0] >= self.range[1]:
+                    return None
 
-                if self.id == len(self.p.info.chunks) - 1: #as last chunk dont set end range, so we get everything
+                if self.id == len(
+                        self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
                     range = "%i-".format(self.arrived + self.range[0])
                 else:
-                    range = "%i-%i".format(self.arrived + self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = "%i-%i".format(self.arrived +
+                                           self.range[0], min(self.range[1] +
+                                                              1, self.p.size -
+                                                              1))
 
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -179,10 +192,11 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1: # see above
+                if self.id == len(self.p.info.chunks) - 1:  # see above
                     range = "%i-".format(self.range[0])
                 else:
-                    range = "%i-%i".format(self.range[0], min(self.range[1] + 1, self.p.size - 1))
+                    range = "%i-%i".format(self.range[0],
+                                           min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -193,11 +207,12 @@ class HTTPChunk(HTTPRequest):
 
     def writeHeader(self, buf):
         self.header += buf
-        #@TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
+        # @TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()
-        elif not self.range and buf.startswith("150") and "data connection" in buf: #ftp file size parsing
+        # ftp file size parsing
+        elif not self.range and buf.startswith("150") and "data connection" in buf:
             size = search(r"(\d+) bytes", buf)
             if size:
                 self.p.size = int(size.group(1))
@@ -206,7 +221,7 @@ class HTTPChunk(HTTPRequest):
         self.headerParsed = True
 
     def writeBody(self, buf):
-        #ignore BOM, it confuses unrar
+        # ignore BOM, it confuses unrar
         if not self.BOMChecked:
             if [ord(b) for b in buf[:3]] == [239, 187, 191]:
                 buf = buf[3:]
@@ -235,8 +250,7 @@ class HTTPChunk(HTTPRequest):
             sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0 #close if we have enough data
-
+            return 0  # close if we have enough data
 
     def parseHeader(self):
         """parse data from recieved header"""
@@ -272,11 +286,13 @@ class HTTPChunk(HTTPRequest):
     def flushFile(self):
         """  flush and close file """
         self.fp.flush()
-        fsync(self.fp.fileno()) #make sure everything was written to disk
-        self.fp.close() #needs to be closed, or merging chunks will fail
+        fsync(self.fp.fileno())  # make sure everything was written to disk
+        self.fp.close()  # needs to be closed, or merging chunks will fail
 
     def close(self):
         """ closes everything, unusable after this """
-        if self.fp: self.fp.close()
+        if self.fp:
+            self.fp.close()
         self.c.close()
-        if hasattr(self, "p"): del self.p
+        if hasattr(self, "p"):
+            del self.p

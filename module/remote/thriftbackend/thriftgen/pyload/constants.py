@@ -11,4 +11,3 @@
 
 from thrift.Thrift import TType, TMessageType, TException
 from .ttypes import *
-

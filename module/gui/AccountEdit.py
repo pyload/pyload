@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
@@ -7,6 +7,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from os.path import join
+
 
 class AccountEdit(QWidget):
     """
@@ -39,7 +40,11 @@ class AccountEdit(QWidget):
 
         save = QPushButton(_("Save"))
 
-        self.connect(changePw, SIGNAL("toggled(bool)"), password, SLOT("setEnabled(bool)"))
+        self.connect(
+            changePw,
+            SIGNAL("toggled(bool)"),
+            password,
+            SLOT("setEnabled(bool)"))
 
         l.addWidget(save, 3, 0, 1, 3)
         l.addWidget(acctype, 0, 1, 1, 2)
@@ -56,7 +61,10 @@ class AccountEdit(QWidget):
         """
             save entered data
         """
-        data = {"login": str(self.login.text()), "acctype": str(self.acctype.currentText()), "password": False}
+        data = {
+            "login": str(
+                self.login.text()), "acctype": str(
+                self.acctype.currentText()), "password": False}
         if self.changePw.isChecked():
             data["password"] = str(self.password.text())
         self.emit(SIGNAL("done"), data)

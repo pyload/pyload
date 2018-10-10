@@ -3,6 +3,7 @@
 
 from .thriftgen.pyload import Pyload
 
+
 class Processor(Pyload.Processor):
     def __init__(self, *args, **kwargs):
         Pyload.Processor.__init__(self, *args, **kwargs)
@@ -27,7 +28,9 @@ class Processor(Pyload.Processor):
         if name not in self._processMap:
             iprot.skip(Pyload.TType.STRUCT)
             iprot.readMessageEnd()
-            x = Pyload.TApplicationException(Pyload.TApplicationException.UNKNOWN_METHOD, 'Unknown function {}'.format(name))
+            x = Pyload.TApplicationException(
+                Pyload.TApplicationException.UNKNOWN_METHOD,
+                'Unknown function {}'.format(name))
             oprot.writeMessageBegin(name, Pyload.TMessageType.EXCEPTION, seqid)
             x.write(oprot)
             oprot.writeMessageEnd()
@@ -52,7 +55,8 @@ class Processor(Pyload.Processor):
             iprot.readMessageEnd()
             result = Pyload.login_result()
             # api login
-            self.authenticated[trans] = self._handler.checkAuth(args.username, args.password, trans.remoteaddr[0])
+            self.authenticated[trans] = self._handler.checkAuth(
+                args.username, args.password, trans.remoteaddr[0])
 
             result.success = True if self.authenticated[trans] else False
             oprot.writeMessageBegin("login", Pyload.TMessageType.REPLY, seqid)
@@ -64,7 +68,7 @@ class Processor(Pyload.Processor):
             self._processMap[name](self, seqid, iprot, oprot)
 
         else:
-            #no permission
+            # no permission
             iprot.skip(Pyload.TType.STRUCT)
             iprot.readMessageEnd()
             # 21 - Not authorized

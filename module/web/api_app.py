@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from urllib.parse import unquote
 from itertools import chain
 from traceback import format_exc, print_exc
@@ -16,6 +15,8 @@ from module.lib.SafeEval import const_eval as literal_eval
 from module.Api import BaseObject
 
 # json encoder that accepts TBase objects
+
+
 class TBaseEncoder(json.JSONEncoder):
 
     def default(self, o):
@@ -26,8 +27,8 @@ class TBaseEncoder(json.JSONEncoder):
 
 # accepting positional arguments, as well as kwargs via post and get
 
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
-@route("/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
+@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
+@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -35,7 +36,8 @@ def call_api(func, args=""):
     if 'u' in request.POST and 'p' in request.POST:
         info = PYLOAD.checkAuth(request.POST['u'], request.POST['p'])
         if info:
-            if not PYLOAD.isAuthorized(func, {"role": info["role"], "permission": info["permission"]}):
+            if not PYLOAD.isAuthorized(
+                    func, {"role": info["role"], "permission": info["permission"]}):
                 return HTTPError(401, json.dumps("Unauthorized"))
 
         else:
@@ -56,14 +58,16 @@ def call_api(func, args=""):
     kwargs = {}
 
     for x, y in chain(iter(request.GET.items()), iter(request.POST.items())):
-        if x in ("u", "p", "session"): continue
+        if x in ("u", "p", "session"):
+            continue
         kwargs[x] = unquote(y)
 
     try:
         return callApi(func, *args, **kwargs)
     except Exception as e:
         print_exc()
-        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
+        return HTTPError(500, json.dumps(
+            {"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
@@ -75,12 +79,13 @@ def callApi(func, *args, **kwargs):
                                    **dict([(x, literal_eval(y)) for x, y in kwargs.items()]))
 
     # null is invalid json  response
-    if result is None: result = True
+    if result is None:
+        result = True
 
     return json.dumps(result, cls=TBaseEncoder)
 
 
-#post -> username, password
+# post -> username, password
 @route("/api/login", method="POST")
 def login():
     response.headers.replace("Content-type", "application/json")

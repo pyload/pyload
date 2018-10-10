@@ -40,9 +40,9 @@ class DebridlinkFr(MultiAccount):
             sha1.update(ts + method + session['key'])
             sign = sha1.hexdigest()
 
-            self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-DL-TOKEN: " + session['token'],
-                                                       "X-DL-SIGN: " + sign,
-                                                       "X-DL-TS: " + ts])
+            self.req.http.c.setopt(
+                pycurl.HTTPHEADER, [
+                    "X-DL-TOKEN: " + session['token'], "X-DL-SIGN: " + sign, "X-DL-TS: " + ts])
 
         json_data = self.load(self.API_URL + method, get=get, post=post)
 

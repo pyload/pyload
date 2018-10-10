@@ -5,6 +5,7 @@ import re
 
 from ..internal.CaptchaService import CaptchaService
 
+
 class CoinHive(CaptchaService):
     __name__ = 'CoinHive'
     __type__ = 'captcha'
@@ -88,8 +89,10 @@ class CoinHive(CaptchaService):
 
         return result
 
+
 if __name__ == "__main__":
-    # Sign with the command `python -m module.plugins.captcha.CoinHive pyload.private.pem pem_passphrase`
+    # Sign with the command `python -m module.plugins.captcha.CoinHive
+    # pyload.private.pem pem_passphrase`
     import sys
     from ..internal.misc import sign_string
 
@@ -97,4 +100,9 @@ if __name__ == "__main__":
         with open(sys.argv[1], 'r') as f:
             pem_private = f.read()
 
-        print(sign_string(CoinHive.COINHIVE_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384"))
+        print(
+            sign_string(
+                CoinHive.COINHIVE_INTERACTIVE_JS,
+                pem_private,
+                pem_passphrase=sys.argv[2],
+                sign_algo="SHA384"))

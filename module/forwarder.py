@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
+# @author: RaNaN
 
 
 from builtins import object
@@ -13,9 +12,10 @@ import _thread
 
 from traceback import print_exc
 
+
 class Forwarder(object):
 
-    def __init__(self, extip,extport=9666):
+    def __init__(self, extip, extport=9666):
         print("Start portforwarding to {}:{}".format(extip, extport))
         proxy(extip, extport, 9666)
 
@@ -23,6 +23,7 @@ class Forwarder(object):
 def proxy(*settings):
     while True:
         server(*settings)
+
 
 def server(*settings):
     try:
@@ -46,8 +47,9 @@ def forward(source, destination):
         if string:
             destination.sendall(string)
         else:
-            #source.shutdown(socket.SHUT_RD)
+            # source.shutdown(socket.SHUT_RD)
             destination.shutdown(socket.SHUT_WR)
+
 
 if __name__ == "__main__":
     args = argv[1:]

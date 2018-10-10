@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
 
 class CaptchaDock(QDockWidget):
     """
@@ -34,6 +35,7 @@ class CaptchaDock(QDockWidget):
         self.widget.input.setText("")
         self.show()
 
+
 class CaptchaDockWidget(QWidget):
     """
         widget for the input widgets
@@ -62,7 +64,8 @@ class CaptchaDockWidget(QWidget):
         self.connect(okayButton, SIGNAL("clicked()"), self.slotSubmit)
         self.connect(captchaInput, SIGNAL("returnPressed()"), self.slotSubmit)
         self.connect(self, SIGNAL("setImage"), self.setImg)
-        self.connect(self, SIGNAL("setPixmap(const QPixmap &)"), imgLabel, SLOT("setPixmap(const QPixmap &)"))
+        self.connect(self, SIGNAL("setPixmap(const QPixmap &)"),
+                     imgLabel, SLOT("setPixmap(const QPixmap &)"))
 
     def setImg(self, data):
         pixmap = QPixmap()
@@ -77,4 +80,3 @@ class CaptchaDockWidget(QWidget):
         self.dock.emit(SIGNAL("done"), tid, str(text))
         self.dock.hide()
         self.dock.processing = False
-

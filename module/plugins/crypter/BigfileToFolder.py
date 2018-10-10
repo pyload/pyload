@@ -22,7 +22,7 @@ class BigfileToFolder(SimpleCrypter):
                    ("Walter Purcaro", "vuolter@gmail.com"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    URL_REPLACEMENTS = [("https?://uploadable\.ch", "https://bigfile.to")]
+    URL_REPLACEMENTS = [(r"https?://uploadable\.ch", "https://bigfile.to")]
 
     LINK_PATTERN = r'"(.+?)" class="icon_zipfile">'
     NAME_PATTERN = r'<div class="folder"><span>&nbsp;</span>(?P<N>.+?)</div>'

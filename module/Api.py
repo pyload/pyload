@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
+# @author: RaNaN
 
 
 from builtins import str
@@ -32,6 +31,8 @@ else:
 permMap = {}
 
 # decorator only called on init, never initialized, so has no effect on runtime
+
+
 def permission(bits):
     class _Dec(object):
         def __new__(cls, func, *args, **kwargs):
@@ -41,23 +42,28 @@ def permission(bits):
     return _Dec
 
 
-urlmatcher = re.compile(r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)", re.IGNORECASE)
+urlmatcher = re.compile(
+    r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)",
+    re.IGNORECASE)
+
 
 class PERMS(object):
     ALL = 0  # requires no permission, but login
     ADD = 1  # can add packages
-    DELETE = 2 # can delete packages
+    DELETE = 2  # can delete packages
     STATUS = 4   # see and change server status
-    LIST = 16 # see queue and collector
-    MODIFY = 32 # moddify some attribute of downloads
+    LIST = 16  # see queue and collector
+    MODIFY = 32  # moddify some attribute of downloads
     DOWNLOAD = 64  # can download from webinterface
-    SETTINGS = 128 # can access settings
-    ACCOUNTS = 256 # can access accounts
-    LOGS = 512 # can see server logs
+    SETTINGS = 128  # can access settings
+    ACCOUNTS = 256  # can access accounts
+    LOGS = 512  # can see server logs
+
 
 class ROLE(object):
-    ADMIN = 0  #admin has all permissions implicit
+    ADMIN = 0  # admin has all permissions implicit
     USER = 1
+
 
 def has_permission(userperms, perms):
     # bytewise or perms before if needed
@@ -100,7 +106,10 @@ class Api(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(data["value"]) if not isinstance(data["value"], str) else data["value"]
+                item.value = str(
+                    data["value"]) if not isinstance(
+                    data["value"],
+                    str) else data["value"]
                 item.type = data["type"]
                 items.append(item)
             section.items = items
@@ -134,12 +143,15 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.core.hookManager.dispatchEvent("configChanged", category, option, value, section)
+        self.core.hookManager.dispatchEvent(
+            "configChanged", category, option, value, section)
 
         if section == "core":
             self.core.config[category][option] = value
 
-            if option in ("limit_speed", "max_speed"): #not so nice to update the limit
+            if option in (
+                "limit_speed",
+                    "max_speed"):  # not so nice to update the limit
                 self.core.requestFactory.updateBucket()
 
         elif section == "plugin":
@@ -175,7 +187,6 @@ class Api(Iface):
         """
         return self.core.config.plugin
 
-
     @permission(PERMS.STATUS)
     def pauseServer(self):
         """Pause server: Tt wont start any new downloads, but nothing gets aborted."""
@@ -210,13 +221,19 @@ class Api(Iface):
 
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus(self.core.threadManager.pause, len(self.core.threadManager.processingIds()),
-                                    self.core.files.getQueueCount(), self.core.files.getFileCount(), 0,
+        serverStatus = ServerStatus(self.core.threadManager.pause,
+                                    len(self.core.threadManager.processingIds()),
+                                    self.core.files.getQueueCount(),
+                                    self.core.files.getFileCount(),
+                                    0,
                                     not self.core.threadManager.pause and self.isTimeDownload(),
                                     self.core.config['reconnect']['activated'] and self.isTimeReconnect())
 
-        for pyfile in [x.active for x in self.core.threadManager.threads if x.active and isinstance(x.active, PyFile)]:
-            serverStatus.speed += pyfile.getSpeed() #bytes/s
+        for pyfile in [
+            x.active for x in self.core.threadManager.threads if x.active and isinstance(
+                x.active,
+                PyFile)]:
+            serverStatus.speed += pyfile.getSpeed()  # bytes/s
 
         return serverStatus
 
@@ -287,11 +304,24 @@ class Api(Iface):
             if not isinstance(pyfile, PyFile):
                 continue
 
-            data.append(DownloadInfo(
-                pyfile.id, pyfile.name, pyfile.getSpeed(), pyfile.getETA(), pyfile.formatETA(),
-                pyfile.getBytesLeft(), pyfile.getSize(), pyfile.formatSize(), pyfile.getPercent(),
-                pyfile.status, pyfile.getStatusName(), pyfile.formatWait(),
-                pyfile.waitUntil, pyfile.packageid, pyfile.package().name, pyfile.pluginname))
+            data.append(
+                DownloadInfo(
+                    pyfile.id,
+                    pyfile.name,
+                    pyfile.getSpeed(),
+                    pyfile.getETA(),
+                    pyfile.formatETA(),
+                    pyfile.getBytesLeft(),
+                    pyfile.getSize(),
+                    pyfile.formatSize(),
+                    pyfile.getPercent(),
+                    pyfile.status,
+                    pyfile.getStatusName(),
+                    pyfile.formatWait(),
+                    pyfile.waitUntil,
+                    pyfile.packageid,
+                    pyfile.package().name,
+                    pyfile.pluginname))
 
         return data
 
@@ -309,13 +339,22 @@ class Api(Iface):
         else:
             folder = ""
 
-        folder = folder.replace("http://", "").replace(":", "").replace("/", "_").replace("\\", "_")
+        folder = folder.replace(
+            "http://",
+            "").replace(
+            ":",
+            "").replace(
+            "/",
+            "_").replace(
+                "\\",
+            "_")
 
         pid = self.core.files.addPackage(name, folder, dest)
 
         self.core.files.addLinks(links, pid)
 
-        self.core.log.info(_("Added package {name} containing {count:d} links").format(**{"name": name, "count": len(links)}))
+        self.core.log.info(_("Added package {name} containing {count:d} links").format(
+            **{"name": name, "count": len(links)}))
 
         self.core.files.save()
 
@@ -339,7 +378,6 @@ class Api(Iface):
 
         # remove duplicates
         return self.checkURLs(set(urls))
-
 
     @permission(PERMS.ADD)
     def checkURLs(self, urls):
@@ -370,7 +408,8 @@ class Api(Iface):
 
         rid = self.core.threadManager.createResultThread(data, False)
 
-        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0))) for url, pluginname in data]
+        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0)))
+               for url, pluginname in data]
         data = parseNames(tmp)
         result = {}
 
@@ -390,7 +429,12 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + container), "wb")
+        th = open(
+            join(
+                self.core.config["general"]["download_folder"],
+                "tmp_" +
+                container),
+            "wb")
         th.write(str(data))
         th.close()
 
@@ -410,7 +454,6 @@ class Api(Iface):
             return OnlineCheck(-1, result)
         else:
             return OnlineCheck(rid, result)
-
 
     @permission(PERMS.ADD)
     def generatePackages(self, links):
@@ -445,7 +488,6 @@ class Api(Iface):
         data = self.core.pluginManager.parseUrls(links)
         self.core.threadManager.createResultThread(data, True)
 
-
     @permission(PERMS.LIST)
     def getPackageData(self, pid):
         """Returns complete information about package, and included files.
@@ -458,9 +500,16 @@ class Api(Iface):
         if not data:
             raise PackageDoesNotExists(pid)
 
-        pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            links=[self._convertPyFile(x) for x in data["links"].values()])
+        pdata = PackageData(
+            data["id"],
+            data["name"],
+            data["folder"],
+            data["site"],
+            data["password"],
+            data["queue"],
+            data["order"],
+            links=[
+                self._convertPyFile(x) for x in data["links"].values()])
 
         return pdata
 
@@ -476,9 +525,16 @@ class Api(Iface):
         if not data:
             raise PackageDoesNotExists(pid)
 
-        pdata = PackageData(data["id"], data["name"], data["folder"], data["site"], data["password"],
-                            data["queue"], data["order"],
-                            fids=[int(x) for x in data["links"]])
+        pdata = PackageData(
+            data["id"],
+            data["name"],
+            data["folder"],
+            data["site"],
+            data["password"],
+            data["queue"],
+            data["order"],
+            fids=[
+                int(x) for x in data["links"]])
 
         return pdata
 
@@ -568,7 +624,6 @@ class Api(Iface):
                             links=[self._convertPyFile(x) for x in pack["links"].values()])
                 for pack in self.core.files.getCompleteData(Destination.Collector).values()]
 
-
     @permission(PERMS.ADD)
     def addFiles(self, pid, links):
         """Adds files to specific package.
@@ -578,7 +633,8 @@ class Api(Iface):
         """
         self.core.files.addLinks(links, int(pid))
 
-        self.core.log.info(_("Added {count:d} links to package #{package:d} ").format(**{"count": len(links), "package": pid}))
+        self.core.log.info(_("Added {count:d} links to package #{package:d} ").format(
+            **{"count": len(links), "package": pid}))
         self.core.files.save()
 
     @permission(PERMS.MODIFY)
@@ -661,7 +717,8 @@ class Api(Iface):
         :param destination: `Destination`
         :param pid: package id
         """
-        if destination not in (0, 1): return
+        if destination not in (0, 1):
+            return
         self.core.files.setPackageLocation(pid, destination)
 
     @permission(PERMS.MODIFY)
@@ -675,7 +732,6 @@ class Api(Iface):
         #TODO: implement
         pass
 
-
     @permission(PERMS.ADD)
     def uploadContainer(self, filename, data):
         """Uploads and adds a container file to pyLoad.
@@ -683,7 +739,12 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(join(self.core.config["general"]["download_folder"], "tmp_" + filename), "wb")
+        th = open(
+            join(
+                self.core.config["general"]["download_folder"],
+                "tmp_" +
+                filename),
+            "wb")
         th.write(str(data))
         th.close()
 
@@ -715,10 +776,12 @@ class Api(Iface):
         :param data: dict that maps attribute to desired value
         """
         p = self.core.files.getPackage(pid)
-        if not p: raise PackageDoesNotExists(pid)
+        if not p:
+            raise PackageDoesNotExists(pid)
 
         for key, value in data.items():
-            if key == "id": continue
+            if key == "id":
+                continue
             setattr(p, key, value)
 
         p.sync()
@@ -750,7 +813,7 @@ class Api(Iface):
 
         for pid in packs:
             pack = self.core.files.getPackageData(int(pid))
-            while pack["order"] in list(order.keys()): #just in case
+            while pack["order"] in list(order.keys()):  # just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
@@ -765,11 +828,10 @@ class Api(Iface):
         rawData = self.core.files.getPackageData(int(pid))
         order = {}
         for id, pyfile in rawData["links"].items():
-            while pyfile["order"] in list(order.keys()): #just in case
+            while pyfile["order"] in list(order.keys()):  # just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order
-
 
     @permission(PERMS.STATUS)
     def isCaptchaWaiting(self):
@@ -779,7 +841,7 @@ class Api(Iface):
         """
         self.core.lastClientConnected = time()
         task = self.core.captchaManager.getTask()
-        return not task is None
+        return task is not None
 
     @permission(PERMS.STATUS)
     def getCaptchaTask(self, exclusive=False):
@@ -822,7 +884,6 @@ class Api(Iface):
             task.setResult(result)
             self.core.captchaManager.removeTask(task)
 
-
     @permission(PERMS.STATUS)
     def getEvents(self, uuid):
         """Lists occured events, may be affected to changes in future.
@@ -863,9 +924,14 @@ class Api(Iface):
         accs = self.core.accountManager.getAccountInfos(False, refresh)
         accounts = []
         for group in list(accs.values()):
-            accounts.extend([AccountInfo(acc["validuntil"], acc["login"], acc["options"], acc["valid"],
-                                         acc["trafficleft"], acc["maxtraffic"], acc["premium"], acc["type"])
-                             for acc in group])
+            accounts.extend([AccountInfo(acc["validuntil"],
+                                         acc["login"],
+                                         acc["options"],
+                                         acc["valid"],
+                                         acc["trafficleft"],
+                                         acc["maxtraffic"],
+                                         acc["premium"],
+                                         acc["type"]) for acc in group])
         return accounts
 
     @permission(PERMS.ALL)
@@ -930,22 +996,30 @@ class Api(Iface):
         else:
             return False
 
-
     @permission(PERMS.ALL)
     def getUserData(self, username, password):
         """similar to `checkAuth` but returns UserData thrift type """
-        user =  self.checkAuth(username, password)
+        user = self.checkAuth(username, password)
         if user:
-            return UserData(user["name"], user["email"], user["role"], user["permission"], user["template"])
+            return UserData(
+                user["name"],
+                user["email"],
+                user["role"],
+                user["permission"],
+                user["template"])
         else:
             return UserData()
-
 
     def getAllUserData(self):
         """returns all known user and info"""
         res = {}
         for user, data in self.core.db.getAllUserData().items():
-            res[user] = UserData(user, data["email"], data["role"], data["permission"], data["template"])
+            res[user] = UserData(
+                user,
+                data["email"],
+                data["role"],
+                data["permission"],
+                data["template"])
 
         return res
 

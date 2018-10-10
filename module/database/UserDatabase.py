@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
-
+# @author: mkaay
 
 
 from builtins import str
@@ -13,11 +12,15 @@ from .DatabaseBackend import DatabaseBackend
 from .DatabaseBackend import style
 from functools import reduce
 
+
 class UserMethods(object):
     @style.queue
     def checkAuth(db, user, password):
         c = db.c
-        c.execute('SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?', (user, ))
+        c.execute(
+            'SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?',
+            (user,
+             ))
         r = c.fetchone()
         if not r:
             return {}
@@ -33,7 +36,8 @@ class UserMethods(object):
 
     @style.queue
     def addUser(db, user, password):
-        salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+        salt = reduce(lambda x, y: x +
+                      y, [str(random.randint(0, 9)) for i in range(0, 5)])
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
@@ -42,8 +46,8 @@ class UserMethods(object):
         if c.fetchone() is not None:
             c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
         else:
-            c.execute('INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
-
+            c.execute(
+                'INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
 
     @style.queue
     def changePassword(db, user, oldpw, newpw):
@@ -56,7 +60,8 @@ class UserMethods(object):
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = reduce(lambda x, y: x +
+                          y, [str(random.randint(0, 9)) for i in range(0, 5)])
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 
@@ -65,7 +70,6 @@ class UserMethods(object):
 
         return False
 
-
     @style.async_
     def setPermission(db, user, perms):
         db.c.execute("UPDATE users SET permission=? WHERE name=?", (perms, user))
@@ -73,7 +77,6 @@ class UserMethods(object):
     @style.async_
     def setRole(db, user, role):
         db.c.execute("UPDATE users SET role=? WHERE name=?", (role, user))
-
 
     @style.queue
     def listUsers(db):
@@ -88,12 +91,14 @@ class UserMethods(object):
         db.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
         for r in db.c:
-            user[r[0]] = {"permission": r[1], "role": r[2], "template": r[3], "email": r[4]}
+            user[r[0]] = {"permission": r[1], "role": r[2],
+                          "template": r[3], "email": r[4]}
 
         return user
 
     @style.queue
     def removeUser(db, user):
         db.c.execute('DELETE FROM users WHERE name=?', (user, ))
+
 
 DatabaseBackend.registerSub(UserMethods)

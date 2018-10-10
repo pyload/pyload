@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN, mkaay
+# @author: RaNaN, mkaay
 
 
 from builtins import str
@@ -22,6 +22,7 @@ except Exception:
     import sqlite3
 
 DB_VERSION = 4
+
 
 class style(object):
     db = None
@@ -54,6 +55,7 @@ class style(object):
                 return cls.db.async_(f, *args, **kwargs)
         return x
 
+
 class DatabaseJob(object):
     def __init__(self, f, *args, **kwargs):
         self.done = Event()
@@ -73,12 +75,14 @@ class DatabaseJob(object):
         frame = self.frame.f_back
         output = ""
         for i in range(5):
-            output += "\t{}:{}, {}\n".format(basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name)
+            output += "\t{}:{}, {}\n".format(basename(frame.f_code.co_filename),
+                                             frame.f_lineno, frame.f_code.co_name)
             frame = frame.f_back
         del frame
         del self.frame
 
-        return "DataBase Job {}:{}\n{}Result: {}".format(self.f.__name__, self.args[1:], output, self.result)
+        return "DataBase Job {}:{}\n{}Result: {}".format(
+            self.f.__name__, self.args[1:], output, self.result)
 
     def processJob(self):
         try:
@@ -86,7 +90,8 @@ class DatabaseJob(object):
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.f.__name__, self.args[1:], self.kwargs, e)
+                print("Database Error @", self.f.__name__,
+                      self.args[1:], self.kwargs, e)
             except Exception:
                 pass
 
@@ -97,8 +102,10 @@ class DatabaseJob(object):
     def wait(self):
         self.done.wait()
 
+
 class DatabaseBackend(Thread):
     subs = []
+
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
@@ -116,12 +123,12 @@ class DatabaseBackend(Thread):
 
     def run(self):
         """main loop, which executes commands"""
-        convert = self._checkVersion() #returns None or current version
+        convert = self._checkVersion()  # returns None or current version
 
         self.conn = sqlite3.connect("files.db")
         chmod("files.db", 0o600)
 
-        self.c = self.conn.cursor() #compatibility
+        self.c = self.conn.cursor()  # compatibility
 
         if convert is not None:
             self._convertDB(convert)
@@ -160,7 +167,8 @@ class DatabaseBackend(Thread):
         if v < DB_VERSION:
             if v < 2:
                 try:
-                    self.manager.core.log.warning(_("Filedatabase was deleted due to incompatible version."))
+                    self.manager.core.log.warning(
+                        _("Filedatabase was deleted due to incompatible version."))
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
                 remove("files.version")
@@ -179,10 +187,11 @@ class DatabaseBackend(Thread):
             except Exception:
                 print("Filedatabase could NOT be converted.")
 
-    #--convert scripts start
+    # --convert scripts start
 
     def _convertV2(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
             self.manager.core.log.info(_("Database was converted from v2 to v3."))
         except Exception:
@@ -196,7 +205,7 @@ class DatabaseBackend(Thread):
         except Exception:
             print("Database was converted from v3 to v4.")
 
-    #--convert scripts end
+    # --convert scripts end
 
     def _createTables(self):
         """create tables for database"""
@@ -204,7 +213,8 @@ class DatabaseBackend(Thread):
         self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
         self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
 
         self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
@@ -214,7 +224,7 @@ class DatabaseBackend(Thread):
         FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
         GROUP BY p.id')
 
-        #try to lower ids
+        # try to lower ids
         self.c.execute('SELECT max(id) FROM LINKS')
         fid = self.c.fetchone()[0]
         if fid:
@@ -223,17 +233,16 @@ class DatabaseBackend(Thread):
             fid = 0
         self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "links"))
 
-
         self.c.execute('SELECT max(id) FROM packages')
         pid = self.c.fetchone()[0]
         if pid:
             pid = int(pid)
         else:
             pid = 0
-        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+        self.c.execute(
+            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
 
         self.c.execute('VACUUM')
-
 
     def _migrateUser(self):
         if exists("pyload.db"):
@@ -251,7 +260,8 @@ class DatabaseBackend(Thread):
             c.close()
             conn.close()
 
-            self.c.executemany("INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
+            self.c.executemany(
+                "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
             move("pyload.db", "pyload.old.db")
 
     def createCursor(self):

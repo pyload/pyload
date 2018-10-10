@@ -51,7 +51,7 @@ class Extractor(Plugin):
                     return ext
 
             elif isinstance(ext, tuple):
-                if re.search("\." + ext[1] + "$", name):
+                if re.search(r"\." + ext[1] + "$", name):
                     return ext[0]
         return None
 
@@ -64,7 +64,7 @@ class Extractor(Plugin):
                     return True
 
             elif isinstance(ext, tuple):
-                if re.search("\." + ext[1] + "$", name):
+                if re.search(r"\." + ext[1] + "$", name):
                     return True
 
         return False

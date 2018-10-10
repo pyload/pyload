@@ -6,7 +6,9 @@ from builtins import str
 from builtins import range
 import os
 import re
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 import urllib.parse
 from io import StringIO
 
@@ -146,15 +148,19 @@ class ReCaptcha(CaptchaService):
             return 2
 
         else:
-            self.log_warning(_("Could not properly detect reCAPTCHA version, defaulting to v2"))
+            self.log_warning(
+                _("Could not properly detect reCAPTCHA version, defaulting to v2"))
             return 2
 
     def challenge(self, key=None, data=None, version=None, secure_token=None):
         key = key or self.retrieve_key(data)
-        secure_token = secure_token or self.detect_secure_token(data) if version in (2, '2js') else None
+        secure_token = secure_token or self.detect_secure_token(
+            data) if version in (2, '2js') else None
 
         if version in (1, 2, '2js'):
-            return getattr(self, "_challenge_v{}".format(version)(key, secure_token=secure_token))
+            return getattr(
+                self, "_challenge_v{}".format(version)(
+                    key, secure_token=secure_token))
         else:
             return self.challenge(key,
                                   data,
@@ -184,7 +190,7 @@ class ReCaptcha(CaptchaService):
                                             'type': "image"})
 
         try:
-            challenge = re.search('\(\'(.+?)\',', html).group(1)
+            challenge = re.search(r'\(\'(.+?)\',', html).group(1)
 
         except (AttributeError, IndexError):
             self.fail(_("reCAPTCHA second challenge pattern not found"))
@@ -270,15 +276,15 @@ class ReCaptcha(CaptchaService):
                 index_number = str(y * 3 + x + 1)
                 text_width, text_height = draw.textsize(index_number, font=font)
 
-                draw.text(
-                    (
-                        tile_index_pos['x'] + (tile_index_size['width'] // 2) - (text_width // 2),
-                        tile_index_pos['y'] + (tile_index_size['height'] // 2) - (text_height // 2)
-                    ),
-                    index_number,
-                    '#000',
-                    font=font
-                )
+                draw.text((tile_index_pos['x'] +
+                           (tile_index_size['width'] //
+                            2) -
+                           (text_width //
+                            2), tile_index_pos['y'] +
+                           (tile_index_size['height'] //
+                            2) -
+                           (text_height //
+                            2)), index_number, '#000', font=font)
 
         if os.name == 'nt':
             font = ImageFont.truetype(font_name, 16)
@@ -343,8 +349,11 @@ class ReCaptcha(CaptchaService):
 
         html = self.pyfile.plugin.load(fallback_url, ref=self.pyfile.url)
 
-        if re.search(r'href="https://support.google.com/recaptcha.*"', html) is not None:
-            self.log_warning(_("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive"))
+        if re.search(
+            r'href="https://support.google.com/recaptcha.*"',
+                html) is not None:
+            self.log_warning(
+                _("reCAPTCHA noscript is blocked, trying reCAPTCHA interactive"))
             return self._challenge_v2js(key, secure_token=secure_token)
 
         for i in range(10):
@@ -355,21 +364,25 @@ class ReCaptcha(CaptchaService):
                 self.fail(_("reCAPTCHA challenge pattern not found"))
 
             try:
-                challenge_msg = re.search(r'<label .*?class="fbc-imageselect-message-text">(.*?)</label>',
-                                          html).group(1)
+                challenge_msg = re.search(
+                    r'<label .*?class="fbc-imageselect-message-text">(.*?)</label>',
+                    html).group(1)
 
             except (AttributeError, IndexError):
                 try:
-                    challenge_msg = re.search(r'<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>',
-                                              html).group(1)
+                    challenge_msg = re.search(
+                        r'<div .*?class=\"fbc-imageselect-message-error\">(.*?)</div>', html).group(1)
 
                 except (AttributeError, IndexError):
                     self.fail(_("reCAPTCHA challenge message not found"))
 
             challenge_msg = re.sub(r'<.*?>', "", challenge_msg)
 
-            image_url = urllib.parse.urljoin('http://www.google.com',
-                                         re.search(r'"(/recaptcha/api2/payload[^"]+)', html).group(1))
+            image_url = urllib.parse.urljoin(
+                'http://www.google.com',
+                re.search(
+                    r'"(/recaptcha/api2/payload[^"]+)',
+                    html).group(1))
 
             img = self.pyfile.plugin.load(image_url, ref=fallback_url, decode=False)
 
@@ -380,10 +393,13 @@ class ReCaptcha(CaptchaService):
             post_str = "c=" + urllib.parse.quote_plus(challenge) +\
                        "".join("&response={}".format(str(int(k) - 1))
                                for k in response if k.isdigit())
-            html = self.pyfile.plugin.load(fallback_url, post=post_str, ref=fallback_url)
+            html = self.pyfile.plugin.load(
+                fallback_url, post=post_str, ref=fallback_url)
 
             try:
-                result = re.search(r'<div class="fbc-verification-token"><textarea .*readonly>(.*?)</textarea>', html).group(1)
+                result = re.search(
+                    r'<div class="fbc-verification-token"><textarea .*readonly>(.*?)</textarea>',
+                    html).group(1)
                 self.correct()
                 break
 
@@ -395,7 +411,8 @@ class ReCaptcha(CaptchaService):
 
         return result, challenge
 
-    # solve interactive captcha (javascript required), use when non-JS captcha fallback for v2 is not allowed
+    # solve interactive captcha (javascript required), use when non-JS captcha
+    # fallback for v2 is not allowed
     def _challenge_v2js(self, key, secure_token=None):
         self.log_debug("Challenge reCAPTCHA v2 interactive")
 
@@ -409,8 +426,10 @@ class ReCaptcha(CaptchaService):
 
         return result, result
 
+
 if __name__ == "__main__":
-    # Sign with the command `python -m module.plugins.captcha.ReCaptcha pyload.private.pem pem_passphrase`
+    # Sign with the command `python -m module.plugins.captcha.ReCaptcha
+    # pyload.private.pem pem_passphrase`
     import sys
     from ..internal.misc import sign_string
 
@@ -418,4 +437,9 @@ if __name__ == "__main__":
         with open(sys.argv[1], 'r') as f:
             pem_private = f.read()
 
-        print(sign_string(ReCaptcha.RECAPTCHA_INTERACTIVE_JS, pem_private, pem_passphrase=sys.argv[2], sign_algo="SHA384"))
+        print(
+            sign_string(
+                ReCaptcha.RECAPTCHA_INTERACTIVE_JS,
+                pem_private,
+                pem_passphrase=sys.argv[2],
+                sign_algo="SHA384"))

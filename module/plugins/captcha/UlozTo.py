@@ -34,5 +34,5 @@ class UlozTo(OCR):
             return text
 
         except NameError:
-            self.log_error(_("Unable to decode audio captcha"),
-                           _("Please install adecaptcha library from https://github.com/izderadicka/adecaptcha"))
+            self.log_error(_("Unable to decode audio captcha"), _(
+                "Please install adecaptcha library from https://github.com/izderadicka/adecaptcha"))

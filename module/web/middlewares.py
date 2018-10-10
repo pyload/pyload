@@ -10,6 +10,7 @@ try:
 except ImportError:
     from io import StringIO
 
+
 class StripPathMiddleware(object):
     def __init__(self, app):
         self.app = app
@@ -39,6 +40,7 @@ class PrefixMiddleware(object):
 # WSGI middleware
 # Gzip-encodes the response.
 
+
 class GZipMiddleWare(object):
 
     def __init__(self, application, compress_level=6):
@@ -58,20 +60,24 @@ class GZipMiddleWare(object):
 
         return response.write()
 
+
 def header_value(headers, key):
     for header, value in headers:
         if key.lower() == header.lower():
             return value
 
+
 def update_header(headers, key, value):
     remove_header(headers, key)
     headers.append((key, value))
+
 
 def remove_header(headers, key):
     for header, value in headers:
         if key.lower() == header.lower():
             headers.remove((header, value))
             break
+
 
 class GzipResponse(object):
 
@@ -94,7 +100,7 @@ class GzipResponse(object):
             cl = 201
         self.compressible = False
         if ct and (ct.startswith('text/') or ct.startswith('application/')) \
-            and 'zip' not in ct and cl > 200:
+                and 'zip' not in ct and cl > 200:
             self.compressible = True
         if ce:
             self.compressible = False
@@ -115,7 +121,7 @@ class GzipResponse(object):
     def finish_response(self, app_iter):
         if self.compressible:
             output = gzip.GzipFile(mode='wb', compresslevel=self.compress_level,
-                fileobj=self.buffer)
+                                   fileobj=self.buffer)
         else:
             output = self.buffer
         try:
@@ -127,7 +133,7 @@ class GzipResponse(object):
             if hasattr(app_iter, 'close'):
                 try:
                     app_iter.close()
-                except :
+                except BaseException:
                     pass
 
         content_length = self.buffer.tell()

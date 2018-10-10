@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN, mkaay
+# @author: RaNaN, mkaay
 
 from builtins import object
 from module.PullEvents import UpdateEvent
 from module.utils import save_path
 
+
 class PyPackage(object):
     """
     Represents a package object at runtime
     """
+
     def __init__(self, manager, id, name, folder, site, password, queue, order):
         self.m = manager
         self.m.packageCache[int(id)] = self

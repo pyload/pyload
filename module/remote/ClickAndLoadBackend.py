@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
+# @author: RaNaN
 
 
 from builtins import str
@@ -21,6 +20,7 @@ from .RemoteManager import BackendBase
 core = None
 js = None
 
+
 class ClickAndLoadBackend(BackendBase):
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
@@ -31,6 +31,7 @@ class ClickAndLoadBackend(BackendBase):
     def serve(self):
         while self.enabled:
             self.httpd.handle_request()
+
 
 class CNLHandler(BaseHTTPRequestHandler):
 
@@ -58,42 +59,43 @@ class CNLHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.strip("/").lower()
-        #self.wfile.write(path+"\n")
+        # self.wfile.write(path+"\n")
 
-        self.map = [ (r"add$", self.add),
-                (r"addcrypted$", self.addcrypted),
-                (r"addcrypted2$", self.addcrypted2),
-                (r"flashgot", self.flashgot),
-                (r"crossdomain\.xml", self.crossdomain),
-                (r"checkSupportForUrl", self.checksupport),
-                (r"jdcheck.js", self.jdcheck),
-                (r"", self.flash) ]
+        self.map = [(r"add$", self.add),
+                    (r"addcrypted$", self.addcrypted),
+                    (r"addcrypted2$", self.addcrypted2),
+                    (r"flashgot", self.flashgot),
+                    (r"crossdomain\.xml", self.crossdomain),
+                    (r"checkSupportForUrl", self.checksupport),
+                    (r"jdcheck.js", self.jdcheck),
+                    (r"", self.flash)]
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?"+r, path):
+            if re.match(r"(flash(got)?/?)?" + r, path):
                 func = f
                 break
 
         if func:
             try:
                 resp = func()
-                if not resp: resp = "success"
+                if not resp:
+                    resp = "success"
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception as e :
+            except Exception as e:
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")
 
     def do_POST(self):
         form = FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={'REQUEST_METHOD': 'POST',
-                         'CONTENT_TYPE': self.headers['Content-Type'],
-                         })
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
+                     })
 
         self.post = {}
         for name in list(form.keys()):
@@ -133,7 +135,6 @@ class CNLHandler(BaseHTTPRequestHandler):
         result = [x for x in result if x != ""]
 
         self.add_package(package, result, 0)
-
 
     def flashgot(self):
         autostart = int(self.get_post('autostart', 0))

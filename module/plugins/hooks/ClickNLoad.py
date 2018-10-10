@@ -13,7 +13,7 @@ except ImportError:
     pass
 
 
-#@TODO: IPv6 support
+# @TODO: IPv6 support
 class ClickNLoad(Addon):
     __name__ = "ClickNLoad"
     __type__ = "hook"
@@ -34,8 +34,14 @@ class ClickNLoad(Addon):
     def init(self):
         self.cnl_ip = "" if self.config.get('extern') else "127.0.0.1"
         self.cnl_port = self.config.get('port')
-        self.web_ip    = "127.0.0.1" if any(_ip == self.pyload.config.get('webinterface', 'host') for _ip in ("0.0.0.0", "")) \
-            else self.pyload.config.get('webinterface', 'host')
+        self.web_ip = "127.0.0.1" if any(
+            _ip == self.pyload.config.get(
+                'webinterface',
+                'host') for _ip in (
+                "0.0.0.0",
+                "")) else self.pyload.config.get(
+            'webinterface',
+            'host')
         self.web_port = self.pyload.config.get('webinterface', 'port')
 
         self.server_running = False

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import object
 from time import time
 from module.utils import uniqify
+
 
 class PullManager(object):
     def __init__(self, core):
@@ -31,12 +32,15 @@ class PullManager(object):
                 break
         if not validUuid:
             self.newClient(uuid)
-            events = [ReloadAllEvent("queue").toList(), ReloadAllEvent("collector").toList()]
+            events = [
+                ReloadAllEvent("queue").toList(),
+                ReloadAllEvent("collector").toList()]
         return uniqify(events, repr)
 
     def addEvent(self, event):
         for client in self.clients:
             client.addEvent(event)
+
 
 class Client(object):
     def __init__(self, uuid):
@@ -55,6 +59,7 @@ class Client(object):
     def addEvent(self, event):
         self.events.append(event)
 
+
 class UpdateEvent(object):
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
@@ -66,6 +71,7 @@ class UpdateEvent(object):
     def toList(self):
         return ["update", self.destination, self.type, self.id]
 
+
 class RemoveEvent(object):
     def __init__(self, itype, iid, destination):
         assert itype == "pack" or itype == "file"
@@ -76,6 +82,7 @@ class RemoveEvent(object):
 
     def toList(self):
         return ["remove", self.destination, self.type, self.id]
+
 
 class InsertEvent(object):
     def __init__(self, itype, iid, after, destination):
@@ -89,6 +96,7 @@ class InsertEvent(object):
     def toList(self):
         return ["insert", self.destination, self.type, self.id, self.after]
 
+
 class ReloadAllEvent(object):
     def __init__(self, destination):
         assert destination == "queue" or destination == "collector"
@@ -97,9 +105,11 @@ class ReloadAllEvent(object):
     def toList(self):
         return ["reload", self.destination]
 
+
 class AccountUpdateEvent(object):
     def toList(self):
         return ["account"]
+
 
 class ConfigUpdateEvent(object):
     def toList(self):

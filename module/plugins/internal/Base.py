@@ -12,13 +12,13 @@ from .misc import (decode, encode, fixurl, format_size, format_time,
 from .Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
 
 
-#@TODO: Recheck in 0.4.10
+# @TODO: Recheck in 0.4.10
 def getInfo(urls):
     #: result = [ .. (name, size, status, url) .. ]
     pass
 
 
-#@TODO: Remove in 0.4.10
+# @TODO: Remove in 0.4.10
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
     return encode(info['name']), info['size'], info['status'], info['url']
@@ -85,7 +85,7 @@ class Base(Plugin):
         self.js = self.pyload.js
 
         #: Captcha stuff
-        #@TODO: Replace in 0.4.10:
+        # @TODO: Replace in 0.4.10:
         #_Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
         # self.captcha = _Captcha(pyfile)
         self.captcha = Captcha(pyfile)
@@ -135,7 +135,7 @@ class Base(Plugin):
         pass
 
     def _setup(self):
-        #@TODO: Remove in 0.4.10
+        # @TODO: Remove in 0.4.10
         self.pyfile.error = ""
         self.data = ""
         self.last_html = ""
@@ -270,11 +270,11 @@ class Base(Plugin):
         self._initialize()
         self._setup()
 
-        #@TODO: Enable in 0.4.10
+        # @TODO: Enable in 0.4.10
         # self.pyload.hookManager.downloadPreparing(self.pyfile)
         # self.check_status()
 
-        #@TODO: Remove in 0.4.10
+        # @TODO: Remove in 0.4.10
         if self.__type__ == "crypter":
             self.pyload.hookManager.downloadPreparing(self.pyfile)
             self.check_status()
@@ -287,11 +287,11 @@ class Base(Plugin):
 
     #: Deprecated method, use `_process` instead (Remove in 0.4.10)
     def preprocessing(self, *args, **kwargs):
-        #@NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
-        #@NOTE: Move to ThreadManager in 0.4.10
+        # @NOTE: Set pyfile status from `queued` to `starting` as soon as possible to avoid race condition in ThreadManager's assignJob function
+        # @NOTE: Move to ThreadManager in 0.4.10
         self.pyfile.setStatus("starting")
 
-        #@NOTE: Recheck info thread synchronization in 0.4.10
+        # @NOTE: Recheck info thread synchronization in 0.4.10
         return self._process(*args, **kwargs)
 
     def process(self, pyfile):
@@ -303,8 +303,11 @@ class Base(Plugin):
     def set_reconnect(self, reconnect):
         if self.pyload.config.get('reconnect', 'activated'):
             reconnect = reconnect and self.pyload.api.isTimeReconnect()
-            self.log_debug("RECONNECT{} required".format("" if reconnect else " not",
-                           "Previous wantReconnect: {}".format(self.wantReconnect)))
+            self.log_debug(
+                "RECONNECT{} required".format(
+                    "" if reconnect else " not",
+                    "Previous wantReconnect: {}".format(
+                        self.wantReconnect)))
             self.wantReconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):
@@ -387,7 +390,7 @@ class Base(Plugin):
         raise Skip(encode(msg or self.pyfile.error or self.pyfile.pluginname)
                    )  # @TODO: Remove `encode` in 0.4.10
 
-    #@TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.4.10
     def fail(self, msg=""):
         """
         Fail and give msg
@@ -405,7 +408,8 @@ class Base(Plugin):
     def error(self, msg="", type=_("Parse")):
         type = _("{} error").format(type.strip(
         ).capitalize() if type else _("Unknown"))
-        msg = _("{type}: {msg} | Plugin may be out of date").format(**{'type': type, 'msg': msg or self.pyfile.error})
+        msg = _("{type}: {msg} | Plugin may be out of date").format(
+            **{'type': type, 'msg': msg or self.pyfile.error})
 
         self.fail(msg)
 
@@ -418,14 +422,14 @@ class Base(Plugin):
 
         raise Abort
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def offline(self, msg=""):
         """
         Fail and indicate file is offline
         """
         self.fail("offline")
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def temp_offline(self, msg=""):
         """
         Fail and indicates file ist temporary offline, the core may take consequences
@@ -474,7 +478,8 @@ class Base(Plugin):
 
         raise Retry(encode(msg))  # @TODO: Remove `encode` in 0.4.10
 
-    def retry_captcha(self, attemps=10, wait=1, msg="", msgfail=_("Max captcha retries reached")):
+    def retry_captcha(self, attemps=10, wait=1, msg="",
+                      msgfail=_("Max captcha retries reached")):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=_("Retry Captcha"), msgfail=msgfail)
 

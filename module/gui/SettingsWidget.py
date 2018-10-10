@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
@@ -34,7 +34,7 @@ class SettingsWidget(QWidget):
         if self.layout():
             delete(self.layout())
 
-        for s in list(self.sections.values())+list(self.psections.values()):
+        for s in list(self.sections.values()) + list(self.psections.values()):
             delete(s)
 
         self.sections = {}
@@ -111,14 +111,12 @@ class SettingsWidget(QWidget):
                         else:
                             i.setText(item.value)
 
-
     def saveConfig(self):
         self.data = self.connector.getConfig()
         self.pdata = self.connector.getPluginConfig()
 
         self.saveSection(self.sections, self.data)
         self.saveSection(self.psections, self.pdata, "plugin")
-
 
     def saveSection(self, sections, pdata, sec="core"):
         for k, section in enumerate(pdata):
@@ -128,20 +126,25 @@ class SettingsWidget(QWidget):
                     if item.name in widget.inputs:
                         i = widget.inputs[item.name]
 
-                        #TODO : unresolved reference: option
+                        # TODO : unresolved reference: option
 
                         if item.type == "int":
                             if i.value() != int(item.value):
                                 self.connector.setConfigValue(k, option, i.value(), sec)
                         elif not item.type.find(";") == -1:
                             if i.currentText() != item.value:
-                                self.connector.setConfigValue(k, option, i.currentText(), sec)
+                                self.connector.setConfigValue(
+                                    k, option, i.currentText(), sec)
                         elif item.type == "bool":
-                            if (True if item.value.lower() in ("1", "true", "on", "an", "yes") else False) ^ (not i.currentIndex()):
-                                self.connector.setConfigValue(k, option, not i.currentIndex(), sec)
+                            if (True if item.value.lower() in ("1", "true", "on",
+                                                               "an", "yes") else False) ^ (not i.currentIndex()):
+                                self.connector.setConfigValue(
+                                    k, option, not i.currentIndex(), sec)
                         else:
                             if i.text() != item.value:
-                                self.connector.setConfigValue(k, option, str(i.text()), sec)
+                                self.connector.setConfigValue(
+                                    k, option, str(i.text()), sec)
+
 
 class Section(QGroupBox):
     def __init__(self, data, parent, ctype="core"):

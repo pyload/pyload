@@ -22,34 +22,36 @@ from time import time
 
 import xmlrpc.client
 
+
 def bench(f, *args, **kwargs):
     s = time()
     ret = [f(*args, **kwargs) for i in range(0, 100)]
     e = time()
     try:
-        print("{}: {:f} s".format(f._Method__name, e-s))
-    except :
-        print("{}: {:f} s".format(f.__name__, e-s))
+        print("{}: {:f} s".format(f._Method__name, e - s))
+    except BaseException:
+        print("{}: {:f} s".format(f.__name__, e - s))
     return ret
+
 
 from getpass import getpass
 user = input("user ")
 passwd = getpass("password ")
 
 server_url = "http{}://{}:{}@{}:{}/".format(
-  "",
-  user,
-  passwd,
-  "127.0.0.1",
-  7227
+    "",
+    user,
+    passwd,
+    "127.0.0.1",
+    7227
 )
 proxy = xmlrpc.client.ServerProxy(server_url, allow_none=True)
 
 bench(proxy.get_server_version)
 bench(proxy.status_server)
 bench(proxy.status_downloads)
-#bench(proxy.get_queue)
-#bench(proxy.get_collector)
+# bench(proxy.get_queue)
+# bench(proxy.get_collector)
 print()
 try:
 
@@ -73,8 +75,8 @@ try:
     bench(client.getServerVersion)
     bench(client.statusServer)
     bench(client.statusDownloads)
-    #bench(client.getQueue)
-    #bench(client.getCollector)
+    # bench(client.getQueue)
+    # bench(client.getCollector)
 
     print()
     print(client.getServerVersion())
@@ -83,9 +85,9 @@ try:
     q = client.getQueue()
 
     for p in q:
-      data = client.getPackageData(p.pid)
-      print(data)
-      print("Package Name: ", data.name)
+        data = client.getPackageData(p.pid)
+        print(data)
+        print("Package Name: ", data.name)
 
     # Close!
     transport.close()

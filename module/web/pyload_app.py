@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
-
-
+# @author: RaNaN
 
 
 from datetime import datetime
@@ -28,6 +25,7 @@ from module.utils import formatSize, save_join, fs_encode, fs_decode
 
 # Helper
 
+
 def pre_processor():
     s = request.environ.get('beaker.session')
     user = parse_userdata(s)
@@ -43,9 +41,10 @@ def pre_processor():
 
         # check if update check is available
         if info:
-            if info["pyload"] == "True": update = True
-            if info["plugins"] == "True": plugins = True
-
+            if info["pyload"] == "True":
+                update = True
+            if info["plugins"] == "True":
+                plugins = True
 
     return {"user": user,
             'status': status,
@@ -58,6 +57,7 @@ def pre_processor():
 
 def base(messages):
     return render_to_response('base.html', {'messages': messages}, [pre_processor])
+
 
 def choose_path(browse_for, path=""):
     path = os.path.normpath(unquotepath(path))
@@ -96,7 +96,6 @@ def choose_path(browse_for, path=""):
     if os.path.abspath(cwd) == os.path.abspath("/"):
         parentdir = ""
 
-
     # try:
     #     cwd = cwd.encode("utf8")
     # except Exception:
@@ -114,7 +113,8 @@ def choose_path(browse_for, path=""):
             # f = f.decode(getfilesystemencoding())
             data = {'name': f, 'fullpath': join(cwd, f)}
             data['sort'] = data['fullpath'].lower()
-            data['modified'] = datetime.fromtimestamp(int(os.path.getmtime(join(cwd, f))))
+            data['modified'] = datetime.fromtimestamp(
+                int(os.path.getmtime(join(cwd, f))))
             data['ext'] = os.path.splitext(f)[1]
         except Exception:
             continue
@@ -141,11 +141,16 @@ def choose_path(browse_for, path=""):
     files = sorted(files, key=itemgetter('type', 'sort'))
 
     return render_to_response('pathchooser.html',
-            {'cwd'     : cwd, 'files': files, 'parentdir': parentdir, 'type': browse_for, 'oldfile': oldfile,
-             'absolute': abs}, [])
+                              {'cwd': cwd,
+                               'files': files,
+                               'parentdir': parentdir,
+                               'type': browse_for,
+                               'oldfile': oldfile,
+                               'absolute': abs},
+                              [])
 
 
-## Views
+# Views
 @error(500)
 def error500(error):
     print("An error occured while processing the request.")
@@ -156,10 +161,13 @@ def error500(error):
                  error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
 
 # render js
-@route("/media/js/<path:re:.+\.js>")
+
+
+@route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
-    response.headers['Expires'] = time.strftime("%a, {:d} %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 2))
+    response.headers['Expires'] = time.strftime(
+        "%a, {:d} %b %Y %H:%M:%S GMT", time.gmtime(
+            time.time() + 60 * 60 * 24 * 2))
     response.headers['Cache-control'] = "public"
     response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
@@ -173,12 +181,15 @@ def js_dynamic(path):
     except Exception:
         return HTTPError(404, "Not Found")
 
+
 @route('/media/<path:path>')
 def server_static(path):
-    response.headers['Expires'] = time.strftime("%a, {:d} %b %Y %H:%M:%S GMT",
-                                                time.gmtime(time.time() + 60 * 60 * 24 * 7))
+    response.headers['Expires'] = time.strftime(
+        "%a, {:d} %b %Y %H:%M:%S GMT", time.gmtime(
+            time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
+
 
 @route('/favicon.ico')
 def favicon():
@@ -237,7 +248,8 @@ def home():
 
     for link in res:
         if link["status"] == 12:
-            link["information"] = "{} kB @ {} kB/s".format(link["size"] - link["bleft"], link["speed"])
+            link["information"] = "{} kB @ {} kB/s".format(
+                link["size"] - link["bleft"], link["speed"])
 
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
@@ -249,7 +261,9 @@ def queue():
 
     queue.sort(key=attrgetter("order"))
 
-    return render_to_response('queue.html', {'content': queue, 'target': 1}, [pre_processor])
+    return render_to_response(
+        'queue.html', {
+            'content': queue, 'target': 1}, [pre_processor])
 
 
 @route("/collector")
@@ -259,7 +273,9 @@ def collector():
 
     queue.sort(key=attrgetter("order"))
 
-    return render_to_response('queue.html', {'content': queue, 'target': 0}, [pre_processor])
+    return render_to_response(
+        'queue.html', {
+            'content': queue, 'target': 0}, [pre_processor])
 
 
 @route("/downloads")
@@ -302,7 +318,7 @@ def downloads():
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
-    #@TODO some files can not be downloaded
+    # @TODO some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")
 
@@ -313,7 +329,6 @@ def get_download(path):
     except Exception as e:
         print(e)
         return HTTPError(404, "File not Found.")
-
 
 
 @route("/settings")
@@ -342,12 +357,12 @@ def config():
             trafficleft = formatSize(data.trafficleft * 1024)
 
         if data.validuntil == -1:
-            validuntil  = _("unlimited")
-        elif not data.validuntil :
-            validuntil  = _("not available")
+            validuntil = _("unlimited")
+        elif not data.validuntil:
+            validuntil = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            validuntil  = time.strftime("%d.%m.%Y", t)
+            validuntil = time.strftime("%d.%m.%Y", t)
 
         if "time" in data.options:
             try:
@@ -375,8 +390,11 @@ def config():
                      'time': _time})
 
     return render_to_response('settings.html',
-            {'conf': {'plugin': plugin_menu, 'general': conf_menu, 'accs': accs}, 'types': PYLOAD.getAccountTypes()},
-        [pre_processor])
+                              {'conf': {'plugin': plugin_menu,
+                                        'general': conf_menu,
+                                        'accs': accs},
+                               'types': PYLOAD.getAccountTypes()},
+                              [pre_processor])
 
 
 @route("/filechooser")
@@ -384,6 +402,7 @@ def config():
 @login_required('STATUS')
 def file(file=""):
     return choose_path("file", file)
+
 
 @route("/pathchooser")
 @route("/pathchooser/:path#.+#")
@@ -437,9 +456,10 @@ def logs(item=-1):
         item = 0
 
     if item < 1 or not isinstance(item, int):
-        item = 1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
+        item = 1 if len(log) - perpage + \
+            1 < 1 or perpage == 0 else len(log) - perpage + 1
 
-    if isinstance(fro, datetime): # we will search for datetime
+    if isinstance(fro, datetime):  # we will search for datetime
         item = -1
 
     data = []
@@ -459,24 +479,30 @@ def logs(item=-1):
                 level = '?'
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter #found our datetime
+                item = counter  # found our datetime
             if item >= 0:
-                data.append({'line': counter, 'date': date + " " + time, 'level': level, 'message': message})
+                data.append({'line': counter, 'date': date + " " +
+                             time, 'level': level, 'message': message})
                 perpagecheck += 1
-                if fro is None and dtime is not None: #if fro not set set it to first showed line
+                if fro is None and dtime is not None:  # if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None: #still not set, empty log?
+    if fro is None:  # still not set, empty log?
         fro = datetime.now()
     if reversed:
         data.reverse()
-    return render_to_response('logs.html', {'warning': warning, 'log': data, 'from': fro.strftime('%d.%m.%Y %H:%M:%S'),
-                                            'reversed': reversed, 'perpage': perpage, 'perpage_p': sorted(perpage_p),
-                                            'iprev': 1 if item - perpage < 1 else item - perpage,
-                                            'inext': (item + perpage) if item + perpage < len(log) else item},
-        [pre_processor])
+    return render_to_response('logs.html',
+                              {'warning': warning,
+                               'log': data,
+                               'from': fro.strftime('%d.%m.%Y %H:%M:%S'),
+                                  'reversed': reversed,
+                                  'perpage': perpage,
+                                  'perpage_p': sorted(perpage_p),
+                                  'iprev': 1 if item - perpage < 1 else item - perpage,
+                                  'inext': (item + perpage) if item + perpage < len(log) else item},
+                              [pre_processor])
 
 
 @route("/admin")
@@ -492,7 +518,6 @@ def admin():
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
 
-
     s = request.environ.get('beaker.session')
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         for name in user:
@@ -507,7 +532,6 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-
             for perm in request.POST.getall("{}|perms".format(name)):
                 user[name]["perms"][perm] = True
 
@@ -515,7 +539,9 @@ def admin():
 
             PYLOAD.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
-    return render_to_response("admin.html", {"users": user, "permlist": perms}, [pre_processor])
+    return render_to_response(
+        "admin.html", {
+            "users": user, "permlist": perms}, [pre_processor])
 
 
 @route("/setup")

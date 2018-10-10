@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import base64
 import os
 import time
@@ -29,7 +28,8 @@ class Captcha(Plugin):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
-        return self.pyfile.plugin._log(level, plugintype, self.pyfile.plugin.__name__, messages)
+        return self.pyfile.plugin._log(
+            level, plugintype, self.pyfile.plugin.__name__, messages)
 
     def recognize(self, image):
         """
@@ -76,7 +76,8 @@ class Captcha(Plugin):
             self.log_info(_("Using OCR to decrypt captcha..."))
 
             if isinstance(ocr, str):
-                _OCR = self.pyload.pluginManager.loadClass("captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
+                _OCR = self.pyload.pluginManager.loadClass(
+                    "captcha", ocr)  #: Rename `captcha` to `ocr` in 0.4.10
                 result = _OCR(self.pyfile).recognize(img_f.name)
             else:
                 result = self.recognize(img_f.name)
@@ -89,10 +90,13 @@ class Captcha(Plugin):
             timeout = max(timeout, 50)
 
             try:
-                params = {'src': "data:image/{};base64,{}".format(input_type, base64.standard_b64encode(img)),
-                          'file': img_f.name,
-                          'captcha_plugin': self.__name__,
-                          'plugin': self.pyfile.plugin.__name__}
+                params = {
+                    'src': "data:image/{};base64,{}".format(
+                        input_type,
+                        base64.standard_b64encode(img)),
+                    'file': img_f.name,
+                    'captcha_plugin': self.__name__,
+                    'plugin': self.pyfile.plugin.__name__}
                 self.task = captchaManager.newTask(input_type, params, output_type)
 
                 captchaManager.handleCaptcha(self.task, timeout)
@@ -117,7 +121,8 @@ class Captcha(Plugin):
                 self.log_info(_("Captcha result: `{}`").format(result))
 
             else:
-                self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing ({}s)").format(timeout))
+                self.pyfile.plugin.retry_captcha(
+                    msg=_("No captcha result obtained in appropriate timing ({}s)").format(timeout))
 
         if not self.pyload.debug:
             self.remove(img_f.name, trash=False)
@@ -155,7 +160,8 @@ class Captcha(Plugin):
             self.log_info(_("Captcha result: `{}`").format(result))
 
         else:
-            self.pyfile.plugin.retry_captcha(msg=_("No captcha result obtained in appropriate timing ({}s)").format(timeout))
+            self.pyfile.plugin.retry_captcha(
+                msg=_("No captcha result obtained in appropriate timing ({}s)").format(timeout))
 
         return result
 

@@ -49,7 +49,8 @@ def links():
             ids.append(link['fid'])
 
             if link['status'] == 12:
-                link['info'] = "{} @ {}/s".format(link['format_eta'], formatSize(link['speed']))
+                link['info'] = "{} @ {}/s".format(link['format_eta'],
+                                                  formatSize(link['speed']))
             elif link['status'] == 5:
                 link['percent'] = 0
                 link['size'] = 0
@@ -166,7 +167,11 @@ def add_package():
         if not name or name == "New Package":
             name = f.name
 
-        fpath = join(PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename)
+        fpath = join(
+            PYLOAD.getConfigValue(
+                "general",
+                "download_folder"),
+            "tmp_" + f.filename)
         destination = open(fpath, 'wb')
         copyfileobj(f.file, destination)
         destination.close()
@@ -203,7 +208,7 @@ def edit_package():
         id = int(request.forms.get("pack_id"))
         data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
                 "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-                 "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
+                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
 
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
@@ -218,7 +223,9 @@ def edit_package():
 def set_captcha():
     if request.environ.get('REQUEST_METHOD', "GET") == "POST":
         try:
-            PYLOAD.setCaptchaResult(request.forms["cap_id"], request.forms["cap_result"])
+            PYLOAD.setCaptchaResult(
+                request.forms["cap_id"],
+                request.forms["cap_result"])
         except Exception:
             pass
 
@@ -228,7 +235,7 @@ def set_captcha():
         return {'captcha': True,
                 'id': task.tid,
                 'params': task.data,
-                'result_type' : task.resultType}
+                'result_type': task.resultType}
     else:
         return {'captcha': False}
 
@@ -243,14 +250,17 @@ def load_config(category, section):
         conf = PYLOAD.getPluginConfigDict()
 
     for key, option in conf[section].items():
-        if key in ("desc", "outline"): continue
+        if key in ("desc", "outline"):
+            continue
 
         if ";" in option["type"]:
             option["list"] = option["type"].split(";")
 
         option["value"] = decode(option["value"])
 
-    return render_to_response("settings_item.html", {"skey": section, "section": conf[section]})
+    return render_to_response(
+        "settings_item.html", {
+            "skey": section, "section": conf[section]})
 
 
 @route("/json/save_config/:category", method="POST")
@@ -262,7 +272,8 @@ def save_config(category):
         except Exception:
             continue
 
-        if category == "general": category = "core"
+        if category == "general":
+            category = "core"
 
         PYLOAD.setConfigValue(section, option, decode(value), category)
 
@@ -280,16 +291,18 @@ def add_account():
 @route("/json/update_accounts", method="POST")
 @login_required("ACCOUNTS")
 def update_accounts():
-    deleted = [] #dont update deleted accs or they will be created again
+    deleted = []  # dont update deleted accs or they will be created again
 
     for name, value in request.POST.items():
         value = value.strip()
-        if not value: continue
+        if not value:
+            continue
 
         tmp, user = name.split(";")
         plugin, action = tmp.split("|")
 
-        if (plugin, user) in deleted: continue
+        if (plugin, user) in deleted:
+            continue
 
         if action == "password":
             PYLOAD.updateAccount(plugin, user, value)
@@ -300,6 +313,7 @@ def update_accounts():
         elif action == "delete":
             deleted.append((plugin, user))
             PYLOAD.removeAccount(plugin, user)
+
 
 @route("/json/change_password", method="POST")
 def change_password():

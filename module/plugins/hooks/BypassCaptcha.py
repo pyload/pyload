@@ -81,8 +81,12 @@ class BypassCaptcha(Addon):
 
     def respond(self, ticket, success):
         try:
-            res = self.load(self.RESPOND_URL, post={'task_id': ticket, 'key': self.config.get('passkey'),
-                                                    'cv': 1 if success else 0})
+            res = self.load(
+                self.RESPOND_URL,
+                post={
+                    'task_id': ticket,
+                    'key': self.config.get('passkey'),
+                    'cv': 1 if success else 0})
         except BadHeader as e:
             self.log_error(_("Could not send response"), e)
 

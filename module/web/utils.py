@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 
 from bottle import request, HTTPError, redirect, ServerAdapter
@@ -7,6 +7,7 @@ from bottle import request, HTTPError, redirect, ServerAdapter
 from .webinterface import env, TEMPLATE, PREFIX
 
 from module.Api import has_permission, PERMS, ROLE
+
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -56,7 +57,8 @@ def set_permission(perms):
     """
     permission = 0
     for name in dir(PERMS):
-        if name.startswith("_"): continue
+        if name.startswith("_"):
+            continue
 
         if name in perms and perms[name]:
             permission |= getattr(PERMS, name)

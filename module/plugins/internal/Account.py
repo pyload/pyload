@@ -50,8 +50,8 @@ class Account(Plugin):
 
         self.sync()
 
-        if self.info['login']['timestamp'] == 0 or \
-                                self.timeout != -1 and self.info['login']['timestamp'] + self.timeout < time.time():
+        if self.info['login']['timestamp'] == 0 or self.timeout != - \
+                1 and self.info['login']['timestamp'] + self.timeout < time.time():
             self.log_debug("Reached login timeout for user `{}`".format(self.user))
             return False
         else:
@@ -140,14 +140,14 @@ class Account(Plugin):
 
             return bool(self.info['login']['valid'])
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def syncback(self):
         """
         Wrapper to directly sync self.info -> self.accounts[self.user]
         """
         return self.sync(reverse=True)
 
-    #@TODO: Recheck in 0.4.10
+    # @TODO: Recheck in 0.4.10
     def sync(self, reverse=False):
         """
         Sync self.accounts[self.user] -> self.info
@@ -179,7 +179,7 @@ class Account(Plugin):
     def reset(self):
         self.sync()
 
-        clear = lambda x: {} if isinstance(
+        def clear(x): return {} if isinstance(
             x, dict) else [] if isiterable(x) else None
         self.info['data'] = dict((k, clear(v))
                                  for k, v in list(self.info['data'].items()))
@@ -282,7 +282,7 @@ class Account(Plugin):
         # @NOTE: So force=False always here
         return [self.getAccountData(user, False) for user in self.accounts]
 
-    #@TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.4.10
     @lock
     def scheduleRefresh(self, user, force=False):
         pass
@@ -364,7 +364,8 @@ class Account(Plugin):
                         continue
 
                 except Exception:
-                    self.log_warning(_("Invalid time format `{}` for account `{}`, use 1:22-3:44").format(user, time_data))
+                    self.log_warning(
+                        _("Invalid time format `{}` for account `{}`, use 1:22-3:44").format(user, time_data))
 
             if data['trafficleft'] == 0:
                 self.log_warning(

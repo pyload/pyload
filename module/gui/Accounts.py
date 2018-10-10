@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from time import strftime, gmtime
+
 
 class AccountModel(QAbstractItemModel):
     """
@@ -30,12 +31,12 @@ class AccountModel(QAbstractItemModel):
             return
 
         if len(self._data) > 0:
-            self.beginRemoveRows(QModelIndex(), 0, len(self._data)-1)
+            self.beginRemoveRows(QModelIndex(), 0, len(self._data) - 1)
             self._data = []
             self.endRemoveRows()
 
         if len(accounts) > 0:
-            self.beginInsertRows(QModelIndex(), 0, len(accounts)-1)
+            self.beginInsertRows(QModelIndex(), 0, len(accounts) - 1)
             self._data = accounts
             self.endInsertRows()
 
@@ -67,7 +68,7 @@ class AccountModel(QAbstractItemModel):
                     return QVariant(fmtime)
                 else:
                     return QVariant(_("unlimited"))
-        #elif role == Qt.EditRole:
+        # elif role == Qt.EditRole:
         #    if index.column() == 0:
         #        return QVariant(index.internalPointer().data["name"])
         return QVariant()
@@ -136,6 +137,7 @@ class AccountModel(QAbstractItemModel):
         """
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
 
+
 class AccountView(QTreeView):
     """
         view component for accounts
@@ -154,6 +156,7 @@ class AccountView(QTreeView):
 
         self.delegate = AccountDelegate(self, self.model())
         self.setItemDelegateForColumn(3, self.delegate)
+
 
 class AccountDelegate(QItemDelegate):
     """
@@ -183,8 +186,8 @@ class AccountDelegate(QItemDelegate):
                 opts.maximum = data.maxtraffic
 
             opts.rect = option.rect
-            opts.rect.setRight(option.rect.right()-1)
-            opts.rect.setHeight(option.rect.height()-1)
+            opts.rect.setRight(option.rect.right() - 1)
+            opts.rect.setHeight(option.rect.height() - 1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
             if data.trafficleft and data.trafficleft == -1:
@@ -192,8 +195,11 @@ class AccountDelegate(QItemDelegate):
             elif data.trafficleft is None:
                 opts.text = QString(_("n/a"))
             else:
-                opts.text = QString.number(round(float(opts.progress)//1024//1024, 2)) + " GB"
+                opts.text = QString.number(
+                    round(
+                        float(
+                            opts.progress) // 1024 // 1024,
+                        2)) + " GB"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
-

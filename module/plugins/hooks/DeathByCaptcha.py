@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 from builtins import str
 from builtins import range
 import base64
@@ -17,14 +16,15 @@ from ..internal.misc import json, threaded
 
 
 class DeathByCaptchaException(Exception):
-    DBC_ERRORS = {'not-logged-in': 'Access denied, check your credentials',
-                  'invalid-credentials': 'Access denied, check your credentials',
-                  'banned': 'Access denied, account is suspended',
-                  'insufficient-funds': 'Insufficient account balance to decrypt CAPTCHA',
-                  'invalid-captcha': 'CAPTCHA is not a valid image',
-                  'service-overload': 'CAPTCHA was rejected due to service overload, try again later',
-                  'invalid-request': 'Invalid request',
-                  'timed-out': 'No CAPTCHA solution received in time'}
+    DBC_ERRORS = {
+        'not-logged-in': 'Access denied, check your credentials',
+        'invalid-credentials': 'Access denied, check your credentials',
+        'banned': 'Access denied, account is suspended',
+        'insufficient-funds': 'Insufficient account balance to decrypt CAPTCHA',
+        'invalid-captcha': 'CAPTCHA is not a valid image',
+        'service-overload': 'CAPTCHA was rejected due to service overload, try again later',
+        'invalid-request': 'Invalid request',
+        'timed-out': 'No CAPTCHA solution received in time'}
 
     def __init__(self, err):
         self.err = err
@@ -129,8 +129,8 @@ class DeathByCaptcha(Addon):
             raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        #@NOTE: Workaround multipart-post bug in HTTPRequest.py
-        if re.match("^\w*$", self.config.get('password')):
+        # @NOTE: Workaround multipart-post bug in HTTPRequest.py
+        if re.match(r"^\w*$", self.config.get('password')):
             multipart = True
             data = (pycurl.FORM_FILE, captcha)
         else:
@@ -179,9 +179,12 @@ class DeathByCaptcha(Addon):
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
-        self.log_info(_("Account balance"),
-                      _("US${:3f} ({:d} captchas left at {:2f} cents each)").format(balance // 100,
-                                                                            balance // rate, rate))
+        self.log_info(
+            _("Account balance"),
+            _("US${:3f} ({:d} captchas left at {:2f} cents each)").format(
+                balance // 100,
+                balance // rate,
+                rate))
 
         if balance > rate:
             task.handler.append(self)

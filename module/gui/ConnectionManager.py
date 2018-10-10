@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import str
@@ -11,8 +11,8 @@ from os.path import join
 
 from uuid import uuid4 as uuid
 
-class ConnectionManager(QWidget):
 
+class ConnectionManager(QWidget):
 
     warningShown = False
 
@@ -20,8 +20,11 @@ class ConnectionManager(QWidget):
         QWidget.__init__(self)
 
         if not self.warningShown:
-            QMessageBox.warning(self, 'Warning',
-            "We are sorry but the GUI is not stable yet. Please use the webinterface for much better experience. \n", QMessageBox.Ok)
+            QMessageBox.warning(
+                self,
+                'Warning',
+                "We are sorry but the GUI is not stable yet. Please use the webinterface for much better experience. \n",
+                QMessageBox.Ok)
             ConnectionManager.warningShown = True
 
         mainLayout = QHBoxLayout()
@@ -39,13 +42,13 @@ class ConnectionManager(QWidget):
 
         #box = QFrame()
         boxLayout = QVBoxLayout()
-        #box.setLayout(boxLayout)
+        # box.setLayout(boxLayout)
 
         boxLayout.addWidget(QLabel(_("Connect:")))
         boxLayout.addWidget(connList)
 
         line = QFrame()
-        #line.setFixedWidth(100)
+        # line.setFixedWidth(100)
         line.setFrameShape(line.HLine)
         line.setFrameShadow(line.Sunken)
         line.setFixedHeight(10)
@@ -91,7 +94,10 @@ class ConnectionManager(QWidget):
         self.connect(self.remove, SIGNAL("clicked()"), self.slotRemove)
         self.connect(self.connectb, SIGNAL("clicked()"), self.slotConnect)
         self.connect(self.edit, SIGNAL("save"), self.slotSave)
-        self.connect(self.connList, SIGNAL("itemDoubleClicked(QListWidgetItem *)"), self.slotItemDoubleClicked)
+        self.connect(
+            self.connList,
+            SIGNAL("itemDoubleClicked(QListWidgetItem *)"),
+            self.slotItemDoubleClicked)
         self.connect(self.internal, SIGNAL("clicked()"), self.slotInternal)
 
     def setConnections(self, connections):
@@ -102,11 +108,22 @@ class ConnectionManager(QWidget):
             item.setData(Qt.UserRole, QVariant(conn))
             self.connList.addItem(item)
             if conn["default"]:
-                item.setData(Qt.DisplayRole, QVariant(_("{} (Default)").format(conn["name"])))
+                item.setData(
+                    Qt.DisplayRole, QVariant(
+                        _("{} (Default)").format(
+                            conn["name"])))
                 self.connList.setCurrentItem(item)
 
     def slotNew(self):
-        data = {"id":uuid().hex, "type":"remote", "default":False, "name":"", "host":"", "port":"7228", "user":"admin", "password":""}
+        data = {
+            "id": uuid().hex,
+            "type": "remote",
+            "default": False,
+            "name": "",
+            "host": "",
+            "port": "7228",
+            "user": "admin",
+            "password": ""}
         self.edit.setData(data)
         self.edit.show()
 
@@ -194,20 +211,20 @@ class ConnectionManager(QWidget):
             save = QPushButton(_("Save"))
             cancel = QPushButton(_("Cancel"))
 
-            grid.addWidget(nameLabel,  0, 0)
-            grid.addWidget(name,       0, 1)
+            grid.addWidget(nameLabel, 0, 0)
+            grid.addWidget(name, 0, 1)
             grid.addWidget(localLabel, 1, 0)
-            grid.addWidget(local,      1, 1)
-            grid.addWidget(hostLabel,  2, 0)
-            grid.addWidget(host,       2, 1)
-            grid.addWidget(portLabel,  3, 0)
-            grid.addWidget(port,       3, 1)
-            grid.addWidget(userLabel,  4, 0)
-            grid.addWidget(user,       4, 1)
-            grid.addWidget(pwLabel,    5, 0)
-            grid.addWidget(password,   5, 1)
-            grid.addWidget(cancel,     6, 0)
-            grid.addWidget(save,       6, 1)
+            grid.addWidget(local, 1, 1)
+            grid.addWidget(hostLabel, 2, 0)
+            grid.addWidget(host, 2, 1)
+            grid.addWidget(portLabel, 3, 0)
+            grid.addWidget(port, 3, 1)
+            grid.addWidget(userLabel, 4, 0)
+            grid.addWidget(user, 4, 1)
+            grid.addWidget(pwLabel, 5, 0)
+            grid.addWidget(password, 5, 1)
+            grid.addWidget(cancel, 6, 0)
+            grid.addWidget(save, 6, 1)
 
             self.setLayout(grid)
             self.controls = {"name": name,
@@ -227,7 +244,8 @@ class ConnectionManager(QWidget):
             self.default = None
 
         def setData(self, data):
-            if not data: return
+            if not data:
+                return
 
             self.id = data["id"]
             self.default = data["default"]
@@ -287,4 +305,3 @@ class ConnectionManager(QWidget):
             data = self.getData()
             self.hide()
             self.emit(SIGNAL("save"), data)
-

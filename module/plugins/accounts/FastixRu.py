@@ -19,9 +19,11 @@ class FastixRu(MultiAccount):
     __authors__ = [("Massimo Rosamilia", "max@spiritix.eu")]
 
     def grab_hosters(self, user, password, data):
-        html = self.load("http://fastix.ru/api_v2",
-                         get={'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
-                              'sub': "allowed_sources"})
+        html = self.load(
+            "http://fastix.ru/api_v2",
+            get={
+                'apikey': "5182964c3f8f9a7f0b00000a_kelmFB4n1IrnCDYuIFn2y",
+                'sub': "allowed_sources"})
         host_list = json.loads(html)
         host_list = host_list['allow']
         return host_list

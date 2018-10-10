@@ -18,9 +18,9 @@ from ..internal.misc import parse_html_header
 
 def plugin_id(plugin):
     return "<{plugintype} {pluginname}{id}>".format(
-            **{'plugintype': plugin.__type__.upper(),
-             'pluginname': plugin.__name__,
-             'id': "[{}]".format(plugin.pyfile.id if plugin.pyfile else "")})
+        **{'plugintype': plugin.__type__.upper(),
+           'pluginname': plugin.__name__,
+           'id': "[{}]".format(plugin.pyfile.id if plugin.pyfile else "")})
 
 
 def is_simple_plugin(obj):
@@ -99,8 +99,9 @@ class CloudFlare(object):
                     r'name="pass" value="(.+?)"', data).group(1)
 
                 # Extract the arithmetic operation
-                js = re.search(r'setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n',
-                               data).group(1)
+                js = re.search(
+                    r'setTimeout\(function\(\){\s+(var s,t,o,p,b,r,e,a,k,i,n,g,f.+?\r?\n[\s\S]+?a\.value =.+?)\r?\n',
+                    data).group(1)
                 js = re.sub(r'a\.value = (parseInt\(.+?\)).+', r'\1', js)
                 js = re.sub(r'\s{3,}[a-z](?: = |\.).+', "", js)
                 js = re.sub(r"[\n\\']", "", js)
@@ -284,8 +285,8 @@ class CloudFlareDdos(Addon):
             return self.old_get_url(*args, **kwargs)
 
         else:
-            #@NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
-            #@NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
+            # @NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
+            # @NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
             res = CloudFlare.handle_function(
                 self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
             if kwargs.get('just_header', False):

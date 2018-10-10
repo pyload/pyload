@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 from .Handler import Handler
 from .printer import *
+
 
 class AddPackage(Handler):
     """ let the user add packages """
@@ -19,7 +20,7 @@ class AddPackage(Handler):
             self.name = inp
             self.setInput()
         elif inp == "END":
-            #add package
+            # add package
             self.client.addPackage(self.name, self.urls, 1)
             self.cli.reset()
         else:

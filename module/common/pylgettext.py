@@ -6,6 +6,7 @@ _searchdirs = None
 
 origfind = find
 
+
 def setpaths(pathlist):
     global _searchdirs
     if isinstance(pathlist, list):
@@ -56,6 +57,7 @@ def find(domain, localedir=None, languages=None, all=False):
     else:
         return results
 
-#Is there a smarter/cleaner pythonic way for this?
+
+# Is there a smarter/cleaner pythonic way for this?
 translation.__globals__['find'] = find
 origfind.__globals__['find'] = origfind

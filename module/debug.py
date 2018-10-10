@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#coding:utf-8
+# coding:utf-8
 
 
 from builtins import input
@@ -9,8 +9,10 @@ import re
 from . import InitHomeDir
 from os import listdir
 
+
 class Wrapper(object):
     pass
+
 
 def filter_info(line):
     if "object at 0x" in line:
@@ -29,14 +31,16 @@ def filter_info(line):
     else:
         return True
 
+
 def appendName(lines, name):
     test = re.compile("^[a-zA-z0-9]+ = ")
 
     for i, line in enumerate(lines):
         if test.match(line):
-            lines[i] = name+"."+line
+            lines[i] = name + "." + line
 
     return lines
+
 
 def initReport():
     reports = []
@@ -66,7 +70,7 @@ def initReport():
 
     dest = None
 
-    for line in  content:
+    for line in content:
         if line == "FRAMESTACK:":
             dest = frame_c
             continue
@@ -82,7 +86,6 @@ def initReport():
         if dest is not None:
             dest.append(line)
 
-
     frame_c = list(filter(filter_info, frame_c))
     plugin_c = list(filter(filter_info, plugin_c))
     pyfile_c = list(filter(filter_info, pyfile_c))
@@ -91,6 +94,6 @@ def initReport():
     plugin_c = appendName(plugin_c, "plugin")
     pyfile_c = appendName(pyfile_c, "pyfile")
 
-    exec("\n".join(frame_c+plugin_c+pyfile_c) )
+    exec("\n".join(frame_c + plugin_c + pyfile_c))
 
     return frame, plugin, pyfile

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 import re
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 import MultipartPostHandler
 
@@ -19,9 +19,19 @@ class CCF(Container):
     __status__ = "testing"
 
     __pattern__ = r'.+\.ccf$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """CCF container decrypter plugin"""
     __license__ = "GPLv3"

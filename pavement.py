@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
-
-
 from paver.easy import *
 from paver.setuputils import setup
 
@@ -28,28 +25,30 @@ setup(
     version="0.5.0",
     description='Fast, lightweight and full featured download manager.',
     long_description=open(PROJECT_DIR / "README").read(),
-    keywords = ('pyload', 'download-manager', 'one-click-hoster', 'download'),
+    keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
     url="http://pyload.net",
     download_url='http://pyload.net/download',
     license='GPL v3',
     author="pyLoad Team",
     author_email="support@pyload.net",
-    platforms = ('Any',),
+    platforms=('Any',),
     #package_dir={'pyload': 'src'},
     packages=['pyload'],
-    #package_data=find_package_data(),
-    #data_files=[],
+    # package_data=find_package_data(),
+    # data_files=[],
     include_package_data=True,
-    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']}, #exluced from build but not from sdist
+    # exluced from build but not from sdist
+    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']},
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl', 'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
+    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl',
+                      'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
     extras_require={
         'SSL': ["pyOpenSSL"],
         'DLC': ['pycrypto'],
         'lightweight webserver': ['bjoern'],
         'RSS plugins': ['feedparser'],
     },
-    #setup_requires=["setuptools_hg"],
+    # setup_requires=["setuptools_hg"],
     entry_points={
         'console_scripts': [
             'pyLoadCore = pyLoadCore:main',
@@ -93,8 +92,12 @@ options(
 )
 
 # xgettext args
-xargs = ["--from-code=utf-8", "--copyright-holder=pyLoad Team", "--package-name=pyLoad",
-         "--package-version={}".format(options.version), "--msgid-bugs-address='bugs@pyload.net'"]
+xargs = ["--from-code=utf-8",
+         "--copyright-holder=pyLoad Team",
+         "--package-name=pyLoad",
+         "--package-version={}".format(options.version),
+         "--msgid-bugs-address='bugs@pyload.net'"]
+
 
 @task
 @needs('cog')
@@ -113,7 +116,9 @@ def html():
 ])
 def get_source(options):
     """ Downloads pyload source from bitbucket tip or given rev"""
-    if options.rev: options.url = "https://bitbucket.org/spoob/pyload/get/{}.zip".format(options.rev)
+    if options.rev:
+        options.url = "https://bitbucket.org/spoob/pyload/get/{}.zip".format(
+            options.rev)
 
     pyload = path("pyload")
 
@@ -167,7 +172,15 @@ def thrift(options):
     outdir = path("module") / "remote" / "thriftbackend"
     (outdir / "gen-py").rmtree()
 
-    cmd = [options.thrift.path, "-strict", "-o", outdir, "--gen", "py:slots,dynamic", outdir / "pyload.thrift"]
+    cmd = [
+        options.thrift.path,
+        "-strict",
+        "-o",
+        outdir,
+        "--gen",
+        "py:slots,dynamic",
+        outdir /
+        "pyload.thrift"]
 
     if options.gen:
         cmd.insert(len(cmd) - 1, "--gen")
@@ -181,9 +194,10 @@ def thrift(options):
     (outdir / "thriftgen").rmtree()
     (outdir / "gen-py").move(outdir / "thriftgen")
 
-    #create light ttypes
+    # create light ttypes
     from module.remote.socketbackend.create_ttypes import main
     main()
+
 
 @task
 def compile_js():
@@ -206,8 +220,15 @@ def compile_js():
 def generate_locale():
     """ Generates localisation files """
 
-    EXCLUDE = ["BeautifulSoup.py", "module/gui", "module/cli", "web/locale", "web/ajax", "web/cnl", "web/pyload",
-               "setup.py"]
+    EXCLUDE = [
+        "BeautifulSoup.py",
+        "module/gui",
+        "module/cli",
+        "web/locale",
+        "web/ajax",
+        "web/cnl",
+        "web/pyload",
+        "setup.py"]
     makepot("core", path("module"), EXCLUDE, "./pyLoadCore.py\n")
 
     makepot("gui", path("module") / "gui", [], includes="./pyLoadGui.py\n")
@@ -220,7 +241,8 @@ def generate_locale():
     strings = set()
 
     for fi in path("module/web").walkfiles():
-        if not fi.name.endswith(".js") and not fi.endswith(".coffee"): continue
+        if not fi.name.endswith(".js") and not fi.endswith(".coffee"):
+            continue
         with open(fi, "rb") as c:
             content = c.read()
 
@@ -233,7 +255,8 @@ def generate_locale():
         for s in strings:
             js.write('_("{}")\n'.format(s))
 
-    makepot("django", path("module/web"), EXCLUDE, "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
+    makepot("django", path("module/web"), EXCLUDE,
+            "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
 
     trans.remove()
 
@@ -245,6 +268,7 @@ def generate_locale():
 @task
 def tests():
     call(["nosetests2"])
+
 
 @task
 def virtualenv(options):
@@ -279,14 +303,16 @@ def clean():
     path("dist").rmtree()
 
 
-#helper functions
+# helper functions
 
 def walk_trans(path, EXCLUDE, endings=[".py"]):
     result = ""
 
     for f in path.walkfiles():
-        if [True for x in EXCLUDE if x in f.dirname().relpath()]: continue
-        if f.name in EXCLUDE: continue
+        if [True for x in EXCLUDE if x in f.dirname().relpath()]:
+            continue
+        if f.name in EXCLUDE:
+            continue
 
         for e in endings:
             if f.name.endswith(e):
@@ -308,7 +334,8 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt", "--default-domain={}".format(domain)] + xargs + xxargs)
+    call(["xgettext", "--files-from=includes.txt",
+          "--default-domain={}".format(domain)] + xargs + xxargs)
 
     # replace charset und move file
     with open("{}.po".format(domain, "rb")) as f:

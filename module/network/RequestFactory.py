@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay, RaNaN
-
+# @author: mkaay, RaNaN
 
 
 from builtins import object
@@ -83,11 +82,13 @@ class RequestFactory(object):
                 type = "socks5"
 
             username = None
-            if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower() != "none":
+            if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower(
+            ) != "none":
                 username = self.core.config["proxy"]["username"]
 
             pw = None
-            if self.core.config["proxy"]["password"] and self.core.config["proxy"]["password"].lower() != "none":
+            if self.core.config["proxy"]["password"] and self.core.config["proxy"]["password"].lower(
+            ) != "none":
                 pw = self.core.config["proxy"]["password"]
 
             return {
@@ -98,12 +99,11 @@ class RequestFactory(object):
                 "password": pw,
             }
 
-
     def getOptions(self):
         """returns options needed for pycurl"""
         return {"interface": self.iface(),
-                "proxies"  : self.getProxies(),
-                "ipv6"     : self.core.config["download"]["ipv6"]}
+                "proxies": self.getProxies(),
+                "ipv6": self.core.config["download"]["ipv6"]}
 
     def updateBucket(self):
         """ set values in the bucket according to settings"""

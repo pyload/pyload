@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
+# @author: mkaay
 
 
 from builtins import object
@@ -14,6 +14,7 @@ import socket
 
 from module.remote.thriftbackend.ThriftClient import ThriftClient, WrongLogin, NoSSL, NoConnection
 from thrift.Thrift import TException
+
 
 class Connector(QObject):
     """
@@ -53,7 +54,8 @@ class Connector(QObject):
             connect error signals,
             check server version
         """
-        if self.internal: return True
+        if self.internal:
+            return True
 
         err = None
         try:
@@ -71,13 +73,18 @@ class Connector(QObject):
             return False
 
         self.proxy = DispatchRPC(self.mutex, client)
-        self.connect(self.proxy, SIGNAL("connectionLost"), self, SIGNAL("connectionLost"))
+        self.connect(
+            self.proxy,
+            SIGNAL("connectionLost"),
+            self,
+            SIGNAL("connectionLost"))
 
         server_version = self.proxy.getServerVersion()
         self.connectionID = uuid().hex
 
         if not server_version == SERVER_VERSION:
-            self.emit(SIGNAL("errorBox"), _("server is version {new} client accepts version {current}").format(**{"new": server_version, "current": SERVER_VERSION}))
+            self.emit(SIGNAL("errorBox"), _("server is version {new} client accepts version {current}").format(
+                **{"new": server_version, "current": SERVER_VERSION}))
             return False
 
         return True
@@ -92,6 +99,7 @@ class Connector(QObject):
         """
             dummy rpc proxy, to prevent errors
         """
+
         def __bool__(self):
             return False
 
@@ -99,6 +107,7 @@ class Connector(QObject):
             def dummy(*args, **kwargs):
                 return None
             return dummy
+
 
 class DispatchRPC(QObject):
     """
@@ -139,7 +148,7 @@ class DispatchRPC(QObject):
             lost = False
             try:
                 return self.f(*args, **kwargs)
-            except socket.error: #necessary?
+            except socket.error:  # necessary?
                 lost = True
             except TException:
                 lost = True

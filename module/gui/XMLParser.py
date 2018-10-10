@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
-
+# @author: mkaay
 
 
 from builtins import str
@@ -10,6 +9,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 
 import os
+
 
 class XMLParser(object):
     def __init__(self, data, dfile=""):

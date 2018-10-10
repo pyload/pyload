@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
-
-
+# @author: mkaay
 
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from module.utils import formatSpeed, formatSize
+
 
 class OverviewModel(QAbstractListModel):
     PackageName = 10
@@ -25,7 +24,7 @@ class OverviewModel(QAbstractListModel):
 
         self.packages = []
 
-    def queueChanged(self): #dirty..
+    def queueChanged(self):  # dirty..
         self.beginResetModel()
 
         self.packages = []
@@ -55,7 +54,7 @@ class OverviewModel(QAbstractListModel):
         def getProgress(p):
             for c in p.children:
                 if c.data["status"] == 13:
-                    pass # TODO return _("Unpacking"), int(c.data["progress"])
+                    pass  # TODO return _("Unpacking"), int(c.data["progress"])
             return _("Downloading"), self.queue.getProgress(p)
 
         d = self.queue._data
@@ -92,9 +91,19 @@ class OverviewModel(QAbstractListModel):
         return len(self.packages)
 
     def data(self, index, role=Qt.DisplayRole):
-        if role in [OverviewModel.PackageName, OverviewModel.Progress, OverviewModel.PartsFinished, OverviewModel.Parts, OverviewModel.ETA, OverviewModel.Speed, OverviewModel.CurrentSize, OverviewModel.MaxSize, OverviewModel.Status]:
+        if role in [
+                OverviewModel.PackageName,
+                OverviewModel.Progress,
+                OverviewModel.PartsFinished,
+                OverviewModel.Parts,
+                OverviewModel.ETA,
+                OverviewModel.Speed,
+                OverviewModel.CurrentSize,
+                OverviewModel.MaxSize,
+                OverviewModel.Status]:
             return QVariant(self.packages[index.row()][role])
         return QVariant()
+
 
 class OverviewView(QListView):
     def __init__(self, connector):
@@ -105,6 +114,7 @@ class OverviewView(QListView):
         self.delegate = OverviewDelegate(self)
         self.setItemDelegate(self.delegate)
 
+
 class OverviewDelegate(QItemDelegate):
     def __init__(self, parent):
         QItemDelegate.__init__(self, parent)
@@ -112,10 +122,10 @@ class OverviewDelegate(QItemDelegate):
         self.model = parent.model()
 
     def paint(self, painter, option, index):
-        option.rect.setHeight(59+16)
-        option.rect.setWidth(self.parent.width()-20)
+        option.rect.setHeight(59 + 16)
+        option.rect.setWidth(self.parent.width() - 20)
 
-        #if option.state & QStyle.State_Selected:
+        # if option.state & QStyle.State_Selected:
         #    painter.fillRect(option.rect, option.palette.color(QPalette.Highlight))
 
         packagename = index.data(OverviewModel.PackageName).toString()
@@ -128,8 +138,9 @@ class OverviewDelegate(QItemDelegate):
         maxSize = int(index.data(OverviewModel.MaxSize).toString())
         status = index.data(OverviewModel.Status).toString()
 
-        def formatEta(seconds): #TODO add to utils
-            if seconds <= 0: return ""
+        def formatEta(seconds):  # TODO add to utils
+            if seconds <= 0:
+                return ""
             hours, seconds = divmod(seconds, 3600)
             minutes, seconds = divmod(seconds, 60)
             return _("ETA: ") + "{:2d}:{:2d}:{:2d}".format(hours, minutes, seconds)
@@ -140,12 +151,17 @@ class OverviewDelegate(QItemDelegate):
         elif not status == _("Downloading"):
             speedline = QString(status)
         else:
-            speedline = QString(formatEta(eta) + "     " + _("Speed: {}").format(formatSpeed(speed)))
+            speedline = QString(
+                formatEta(eta) +
+                "     " +
+                _("Speed: {}").format(
+                    formatSpeed(speed)))
 
         if progress in (0, 100):
             sizeline = QString(_("Size:") + "{}".format(formatSize(maxSize)))
         else:
-            sizeline = QString(_("Size:") + "{} / {}".format(formatSize(currentSize), formatSize(maxSize)))
+            sizeline = QString(
+                _("Size:") + "{} / {}".format(formatSize(currentSize), formatSize(maxSize)))
 
         f = painter.font()
         f.setPointSize(12)
@@ -153,20 +169,56 @@ class OverviewDelegate(QItemDelegate):
         painter.setFont(f)
 
         r = option.rect.adjusted(4, 4, -4, -4)
-        painter.drawText(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
-        newr = painter.boundingRect(r.left(), r.top(), r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, packagename)
+        painter.drawText(
+            r.left(),
+            r.top(),
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignLeft,
+            packagename)
+        newr = painter.boundingRect(
+            r.left(),
+            r.top(),
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignLeft,
+            packagename)
 
         f.setPointSize(10)
         f.setBold(False)
         painter.setFont(f)
 
-        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
-        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignHCenter, sizeline)
-        painter.drawText(r.left(), newr.bottom()+5, r.width(), r.height(), Qt.AlignTop | Qt.AlignRight, speedline)
-        newr = painter.boundingRect(r.left(), newr.bottom()+2, r.width(), r.height(), Qt.AlignTop | Qt.AlignLeft, statusline)
-        newr.setTop(newr.bottom()+8)
-        newr.setBottom(newr.top()+20)
-        newr.setRight(self.parent.width()-25)
+        painter.drawText(
+            r.left(),
+            newr.bottom() + 5,
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignLeft,
+            statusline)
+        painter.drawText(
+            r.left(),
+            newr.bottom() + 5,
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignHCenter,
+            sizeline)
+        painter.drawText(
+            r.left(),
+            newr.bottom() + 5,
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignRight,
+            speedline)
+        newr = painter.boundingRect(
+            r.left(),
+            newr.bottom() + 2,
+            r.width(),
+            r.height(),
+            Qt.AlignTop | Qt.AlignLeft,
+            statusline)
+        newr.setTop(newr.bottom() + 8)
+        newr.setBottom(newr.top() + 20)
+        newr.setRight(self.parent.width() - 25)
 
         f.setPointSize(10)
         painter.setFont(f)
@@ -182,4 +234,4 @@ class OverviewDelegate(QItemDelegate):
         QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
 
     def sizeHint(self, option, index):
-        return QSize(self.parent.width()-22, 59+16)
+        return QSize(self.parent.width() - 22, 59 + 16)

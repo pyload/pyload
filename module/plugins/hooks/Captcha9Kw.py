@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 from builtins import map
 from builtins import range
 import base64
@@ -62,7 +60,7 @@ class Captcha9Kw(Addon):
     def _process_captcha(self, task):
         if task.isInteractive():
             url_p = urllib.parse.urlparse(task.captchaParams['url'])
-            if  url_p.scheme not in ("http", "https"):
+            if url_p.scheme not in ("http", "https"):
                 self.log_error(_("Invalid url"))
                 return
 
@@ -150,7 +148,10 @@ class Captcha9Kw(Addon):
             self.log_error(_("Bad request: {}").format(res))
             return
 
-        self.log_debug("NewCaptchaID ticket: {}".format(res, task.captchaParams.get('file', "")))
+        self.log_debug(
+            "NewCaptchaID ticket: {}".format(
+                res, task.captchaParams.get(
+                    'file', "")))
 
         task.data['ticket'] = res
 
@@ -178,7 +179,8 @@ class Captcha9Kw(Addon):
 
     def captcha_task(self, task):
         if task.isInteractive():
-            if task.captchaParams['captcha_plugin'] != "ReCaptcha" or self.config.get('solve_interactive') is False:
+            if task.captchaParams['captcha_plugin'] != "ReCaptcha" or self.config.get(
+                    'solve_interactive') is False:
                 return
         else:
             if not task.isTextual() and not task.isPositional():
@@ -237,7 +239,9 @@ class Captcha9Kw(Addon):
         request_type = "correct" if correct else "refund"
 
         if 'ticket' not in task.data:
-            self.log_debug("No CaptchaID for {} request (task: {})".format(request_type, task))
+            self.log_debug(
+                "No CaptchaID for {} request (task: {})".format(
+                    request_type, task))
             return
 
         passkey = self.config.get('passkey')

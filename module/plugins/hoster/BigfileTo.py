@@ -60,10 +60,13 @@ class BigfileTo(SimpleHoster):
             response, challenge = self.captcha.challenge(self.RECAPTCHA_KEY)
 
             #: Submit the captcha solution
-            json_data = json.loads(self.load("https://www.bigfile.to/checkReCaptcha.php",
-                                             post={'recaptcha_challenge_field': challenge,
-                                                   'recaptcha_response_field': response,
-                                                   'recaptcha_shortencode_field': self.info['pattern']['ID']}))
+            json_data = json.loads(
+                self.load(
+                    "https://www.bigfile.to/checkReCaptcha.php",
+                    post={
+                        'recaptcha_challenge_field': challenge,
+                        'recaptcha_response_field': response,
+                        'recaptcha_shortencode_field': self.info['pattern']['ID']}))
             self.log_debug("json_data", json_data)
             if json_data['success'] != 1:
                 self.retry_captcha()

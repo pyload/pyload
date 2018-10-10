@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 from builtins import object
+
+
 class Handler(object):
     def __init__(self, cli):
         self.cli = cli

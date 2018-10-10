@@ -31,7 +31,14 @@ sys.path.append(join(dir_name, "module", "lib"))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.pngmath', 'sphinx.ext.ifconfig', 'sphinx.ext.viewcode']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.pngmath',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode']
 
 autosummary_generate = True
 autodoc_default_flags = ['members']
@@ -128,7 +135,8 @@ html_theme = 'default'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = join(dir_name, "module", "web", "media", "default", "img", "pyload-logo-edited3.5-new-font-small.png")
+html_logo = join(dir_name, "module", "web", "media", "default",
+                 "img", "pyload-logo-edited3.5-new-font-small.png")
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -196,8 +204,8 @@ htmlhelp_basename = 'pyLoaddoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'pyLoad.tex', 'pyLoad Documentation',
-   'pyLoad Team', 'manual'),
+    ('index', 'pyLoad.tex', 'pyLoad Documentation',
+     'pyLoad Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

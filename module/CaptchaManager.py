@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay, RaNaN
-
+# @author: mkaay, RaNaN
 
 
 from builtins import str
@@ -77,13 +76,13 @@ class CaptchaTask(object):
         self.captchaParams = params
         self.captchaFormat = format
         self.captchaResultType = result_type
-        self.handler = [] #the hook plugins that will take care of the solution
+        self.handler = []  # the hook plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
-        self.error = None #error message
+        self.error = None  # error message
 
         self.status = "init"
-        self.data = {} #handler can store data here
+        self.data = {}  # handler can store data here
 
     def getCaptcha(self):
         return self.captchaParams, self.captchaFormat, self.captchaResultType

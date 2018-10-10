@@ -42,8 +42,11 @@ class CloudzillaTo(SimpleHoster):
             return SimpleHoster.check_errors(self)
 
     def handle_free(self, pyfile):
-        self.data = self.load("http://www.cloudzilla.to/generateticket/",
-                              post={'file_id': self.info['pattern']['ID'], 'key': self.get_password()})
+        self.data = self.load(
+            "http://www.cloudzilla.to/generateticket/",
+            post={
+                'file_id': self.info['pattern']['ID'],
+                'key': self.get_password()})
 
         ticket = dict(re.findall(r'<(.+?)>([^<>]+?)</', self.data))
 
@@ -58,9 +61,8 @@ class CloudzillaTo(SimpleHoster):
         if 'wait' in ticket:
             self.wait(ticket['wait'], int(ticket['wait']) > 5)
 
-        self.link = "http://{server}/download/{file_id}/{ticket_id}".format(**{'server': ticket['server'],
-                                                                              'file_id': self.info['pattern']['ID'],
-                                                                              'ticket_id': ticket['ticket_id']})
+        self.link = "http://{server}/download/{file_id}/{ticket_id}".format(
+            **{'server': ticket['server'], 'file_id': self.info['pattern']['ID'], 'ticket_id': ticket['ticket_id']})
 
     def handle_premium(self, pyfile):
         return self.handle_free(pyfile)

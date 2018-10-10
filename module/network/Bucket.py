@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-#@author: RaNaN
-
+# @author: RaNaN
 
 
 from builtins import object
 
 from time import time
 from threading import Lock
+
 
 class Bucket(object):
     def __init__(self):
@@ -25,7 +25,8 @@ class Bucket(object):
 
     def consumed(self, amount):
         """ return time the process have to sleep, after consumed specified amount """
-        if self.rate < 10240: return 0 #min. 10kb, may become unresponsive otherwise
+        if self.rate < 10240:
+            return 0  # min. 10kb, may become unresponsive otherwise
         self.lock.acquire()
 
         self.calc_tokens()
@@ -36,7 +37,6 @@ class Bucket(object):
         else:
             time = 0
 
-
         self.lock.release()
         return time
 
@@ -46,4 +46,3 @@ class Bucket(object):
             delta = self.rate * (now - self.timestamp)
             self.tokens = min(self.rate, self.tokens + delta)
             self.timestamp = now
-

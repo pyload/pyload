@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay, RaNaN
+# @author: mkaay, RaNaN
 
 
 from builtins import object
 from time import time
+
 
 class CookieJar(object):
     def __init__(self, pluginname, account=None):
@@ -28,8 +29,9 @@ class CookieJar(object):
     def getCookie(self, name):
         return self.parseCookie(name)
 
-    def setCookie(self, domain, name, value, path="/", exp=time()+3600*24*180):
-        s = ".{}    TRUE    {}    FALSE    {}    {}    {}".format(domain, path, exp, name, value)
+    def setCookie(self, domain, name, value, path="/", exp=time() + 3600 * 24 * 180):
+        s = ".{}    TRUE    {}    FALSE    {}    {}    {}".format(
+            domain, path, exp, name, value)
         self.cookies[name] = s
 
     def clear(self):

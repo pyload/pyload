@@ -9,9 +9,11 @@ from os.path import join
 CONF_VERSION = 1
 
 ########################################################################
+
+
 class ConfigParser(object):
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, configdir):
         """Constructor"""
         self.configdir = configdir
@@ -20,7 +22,7 @@ class ConfigParser(object):
         if self.checkVersion():
             self.readConfig()
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def checkVersion(self):
 
         if not exists(join(self.configdir, "pyload.conf")):
@@ -28,21 +30,21 @@ class ConfigParser(object):
         f = open(join(self.configdir, "pyload.conf"), "rb")
         v = f.readline()
         f.close()
-        v = v[v.find(":")+1:].strip()
+        v = v[v.find(":") + 1:].strip()
 
         if int(v) < CONF_VERSION:
             return False
 
         return True
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def readConfig(self):
         """reads the config file"""
 
         self.config = self.parseConfig(join(self.configdir, "pyload.conf"))
 
+    # ----------------------------------------------------------------------
 
-    #----------------------------------------------------------------------
     def parseConfig(self, config):
         """parses a given configfile"""
 
@@ -60,7 +62,7 @@ class ConfigParser(object):
 
         for line in config:
 
-            line = line.rpartition("#") # removes comments
+            line = line.rpartition("#")  # removes comments
 
             if line[1]:
                 line = line[0]
@@ -77,7 +79,7 @@ class ConfigParser(object):
                     section, none, desc = line[:-1].partition('-')
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
-                    conf[section] = { "desc" : desc }
+                    conf[section] = {"desc": desc}
                 else:
                     if listmode:
 
@@ -85,13 +87,13 @@ class ConfigParser(object):
                             listmode = False
                             line = line.replace("]", "")
 
-                        value += [self.cast(typ, x.strip()) for x in line.split(",") if x]
+                        value += [self.cast(typ, x.strip())
+                                  for x in line.split(",") if x]
 
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value}
-
+                            conf[section][option] = {"desc": desc,
+                                                     "type": typ,
+                                                     "value": value}
 
                     else:
                         content, none, value = line.partition("=")
@@ -111,23 +113,23 @@ class ConfigParser(object):
                             else:
                                 listmode = True
 
-                            value = [self.cast(typ, x.strip()) for x in value[1:].split(",") if x]
+                            value = [self.cast(typ, x.strip())
+                                     for x in value[1:].split(",") if x]
                         else:
                             value = self.cast(typ, value)
 
                         if not listmode:
-                            conf[section][option] = { "desc" : desc,
-                                                      "type" : typ,
-                                                      "value" : value}
+                            conf[section][option] = {"desc": desc,
+                                                     "type": typ,
+                                                     "value": value}
 
             except Exception:
                 pass
 
-
         f.close()
         return conf
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def cast(self, typ, value):
         """cast value to given format"""
         if type(value) not in (str, str):
@@ -140,27 +142,29 @@ class ConfigParser(object):
         else:
             return value
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def get(self, section, option):
         """get value"""
         return self.config[section][option]["value"]
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __getitem__(self, section):
         """provides dictonary like access: c['section']['option']"""
         return Section(self, section)
 
 ########################################################################
+
+
 class Section(object):
     """provides dictionary like access for configparser"""
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __init__(self, parser, section):
         """Constructor"""
         self.parser = parser
         self.section = section
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def __getitem__(self, item):
         """getitem"""
         return self.parser.get(self.section, item)

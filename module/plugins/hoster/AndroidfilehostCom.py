@@ -39,7 +39,7 @@ class AndroidfilehostCom(SimpleHoster):
 
     def handle_free(self, pyfile):
         wait = re.search(self.WAIT_PATTERN, self.data)
-        if wait is not None :
+        if wait is not None:
             self.log_debug("Waiting time: {} seconds".format(wait.group(1)))
 
         fid = re.search(r'id="fid" value="(\d+)" />', self.data).group(1)
@@ -52,7 +52,6 @@ class AndroidfilehostCom(SimpleHoster):
                                'action': 'getdownloadmirrors',
                                'fid': fid})
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-MOD-SBB-CTYPE:"])
-
 
         self.link = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
         mirror_host = self.link.split("/")[2]

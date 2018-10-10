@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
 import builtins
 
 from builtins import range
@@ -106,7 +105,7 @@ class Hoster(Base):
             self._initialize()
             self._setup()
 
-            #@TODO: Enable in 0.4.10
+            # @TODO: Enable in 0.4.10
             # self.pyload.hookManager.downloadPreparing(self.pyfile)
             # self.check_status()
             self.check_duplicates()
@@ -124,7 +123,8 @@ class Hoster(Base):
                 self.log_warning(_("Premium download failed") if self.premium else
                                  _("Free download failed"),
                                  e)
-                if self.no_fallback is False and self.config.get('fallback', True) and self.premium:
+                if self.no_fallback is False and self.config.get(
+                        'fallback', True) and self.premium:
                     self.restart(premium=False)
 
                 else:
@@ -133,7 +133,7 @@ class Hoster(Base):
         finally:
             self._finalize()
 
-    #@TODO: Remove in 0.4.10
+    # @TODO: Remove in 0.4.10
     def _finalize(self):
         pypack = self.pyfile.package()
 
@@ -141,8 +141,10 @@ class Hoster(Base):
             "download_processed", self.pyfile)
 
         try:
-            unfinished = any(fdata.get('status') in (3, 7) for fid, fdata in list(pypack.getChildren().items())
-                             if fid != self.pyfile.id)
+            unfinished = any(
+                fdata.get('status') in (
+                    3, 7) for fid, fdata in list(
+                    pypack.getChildren().items()) if fid != self.pyfile.id)
             if unfinished:
                 return
 
@@ -170,7 +172,10 @@ class Hoster(Base):
             maxredirs = max(redirect, 1)
 
         elif redirect:
-            maxredirs = int(self.config.get("maxredirs", plugin="UserAgentSwitcher")) or maxredirs  # @TODO: Remove `int` in 0.4.10
+            maxredirs = int(
+                self.config.get(
+                    "maxredirs",
+                    plugin="UserAgentSwitcher")) or maxredirs  # @TODO: Remove `int` in 0.4.10
 
         header = self.load(url, just_header=True)
 
@@ -270,9 +275,12 @@ class Hoster(Base):
         self.check_status()
 
         if self.pyload.debug:
-            self.log_debug("DOWNLOAD URL " + url,
-                           *["{}={}".format(key, value) for key, value in list(locals().items())
-                             if key not in ("self", "url", "_[1]")])
+            self.log_debug(
+                "DOWNLOAD URL " + url, *[
+                    "{}={}".format(
+                        key, value) for key, value in list(
+                        locals().items()) if key not in (
+                        "self", "url", "_[1]")])
 
         dl_url = self.fixurl(url) if fixurl else url
         dl_basename = parse_name(self.pyfile.name)
@@ -306,7 +314,7 @@ class Hoster(Base):
         newname = self._download(dl_url, dl_filename, get, post, ref, cookies,
                                  disposition, resume, chunks)
 
-        #@TODO: Recheck in 0.4.10
+        # @TODO: Recheck in 0.4.10
         if disposition and newname:
             safename = parse_name(newname.split(' filename*=')[0])
 
@@ -317,7 +325,9 @@ class Hoster(Base):
                     os.rename(old_file, new_file)
 
                 except OSError as e:
-                    self.log_warning(_("Error renaming `{}` to `{}`").format(newname, safename), e)
+                    self.log_warning(
+                        _("Error renaming `{}` to `{}`").format(
+                            newname, safename), e)
                     safename = newname
 
                 self.log_info(
@@ -400,10 +410,13 @@ class Hoster(Base):
             return False
 
         else:
-            #@TODO: Rewrite in 0.4.10
+            # @TODO: Rewrite in 0.4.10
             size = self.pyfile.size // 1024
-            self.log_info(_("Filesize: {} KiB").format(size),
-                          _("Traffic left for user `{}`: {:d} KiB").format(self.account.user, traffic))
+            self.log_info(
+                _("Filesize: {} KiB").format(size),
+                _("Traffic left for user `{}`: {:d} KiB").format(
+                    self.account.user,
+                    traffic))
             return size > traffic
 
     # def check_size(self, file_size, size_tolerance=1024, delete=False):
@@ -484,7 +497,8 @@ class Hoster(Base):
 
         for pyfile in list(self.pyload.files.cache.values()):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack_folder:
-                if pyfile.status in (0, 12, 5, 7):  # finished / downloading / waiting / starting
+                if pyfile.status in (
+                        0, 12, 5, 7):  # finished / downloading / waiting / starting
                     self.skip(pyfile.pluginname)
 
         dl_folder = self.pyload.config.get('general', 'download_folder')
@@ -499,12 +513,14 @@ class Hoster(Base):
             return
 
         if self.pyload.config.get('download', 'skip_existing'):
-            plugin = self.pyload.db.findDuplicates(self.pyfile.id, pack_folder, self.pyfile.name)
+            plugin = self.pyload.db.findDuplicates(
+                self.pyfile.id, pack_folder, self.pyfile.name)
             msg = plugin[0] if plugin else _("File exists")
             self.skip(msg)
 
         else:
-            # Same file exists but it does not belongs to our pack, add a trailing counter
+            # Same file exists but it does not belongs to our pack, add a trailing
+            # counter
             m = re.match(r'(.+?)(?: \((\d+)\))?(\..+)?$', self.pyfile.name)
             dl_n = int(m.group(2) or "0")
 

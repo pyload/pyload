@@ -20,7 +20,7 @@ except Exception:
 def local_check(function):
     def _view(*args, **kwargs):
         if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
-        or request.environ.get('HTTP_HOST', '0') == '127.0.0.1:9666':
+                or request.environ.get('HTTP_HOST', '0') == '127.0.0.1:9666':
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -35,10 +35,14 @@ def local_check(function):
 def flash(id="0"):
     return "JDownloader\r\n"
 
+
 @route("/flash/add", method="POST")
 @local_check
 def add():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get(
+        "package", request.forms.get(
+            "source", request.POST.get(
+                'referer', None)))
     urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
 
     if package:
@@ -48,13 +52,25 @@ def add():
 
     return ""
 
+
 @route("/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get(
+        "package", request.forms.get(
+            "source", request.POST.get(
+                'referer', None)))
     dlc = request.forms['crypted'].replace(" ", "+")
 
-    dlc_path = join(DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc")
+    dlc_path = join(
+        DL_ROOT,
+        package.replace(
+            "/",
+            "").replace(
+            "\\",
+            "").replace(
+                ":",
+            "") + ".dlc")
     dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()
@@ -66,10 +82,14 @@ def addcrypted():
     else:
         return "success\r\n"
 
+
 @route("/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
-    package = request.forms.get("package", request.forms.get("source", request.POST.get('referer', None)))
+    package = request.forms.get(
+        "package", request.forms.get(
+            "source", request.POST.get(
+                'referer', None)))
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
 
@@ -82,7 +102,7 @@ def addcrypted2():
         try:
             jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
         except Exception:
-        ## Test for some known js functions to decode
+            # Test for some known js functions to decode
             if jk.find("dec") > -1 and jk.find("org") > -1:
                 org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
                 jk = list(org)
@@ -114,6 +134,7 @@ def addcrypted2():
     else:
         return "success\r\n"
 
+
 @route("/flashgot_pyload")
 @route("/flashgot_pyload", method="POST")
 @route("/flashgot")
@@ -135,6 +156,7 @@ def flashgot():
 
     return ""
 
+
 @route("/crossdomain.xml")
 @local_check
 def crossdomain():
@@ -154,6 +176,7 @@ def checksupport():
     supported = (not res[0][1] is None)
 
     return str(supported).lower()
+
 
 @route("/jdcheck.js")
 @local_check

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 import os
 import urllib.parse
 
@@ -17,9 +15,19 @@ class Container(Crypter):
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Base container decrypter plugin"""
     __license__ = "GPLv3"

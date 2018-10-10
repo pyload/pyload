@@ -44,11 +44,14 @@ class EuroshareEu(Account):
         if r'href="http://euroshare.eu/logout.html"' in html:
             self.skip_login()
 
-        json_data = json.loads(self.load("http://euroshare.eu/ajax/_account_login.ajax.php",
-                                         post={'username': user,
-                                               'password': password,
-                                               'remember': "false",
-                                               'backlink': ""}))
+        json_data = json.loads(
+            self.load(
+                "http://euroshare.eu/ajax/_account_login.ajax.php",
+                post={
+                    'username': user,
+                    'password': password,
+                    'remember': "false",
+                    'backlink': ""}))
 
         if json_data.get("login_status") != "success":
             self.fail_login()

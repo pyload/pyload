@@ -10,7 +10,8 @@ from time import sleep
 
 from thrift.transport.TSocket import TSocket, TServerSocket, TTransportException
 
-WantReadError = Exception #overwritten when ssl is used
+WantReadError = Exception  # overwritten when ssl is used
+
 
 class SecureSocketConnection(object):
     def __init__(self, connection):
@@ -43,6 +44,7 @@ class SecureSocketConnection(object):
             sleep(0.1)
             return self.recv(buff)
 
+
 class Socket(TSocket):
     def __init__(self, host='localhost', port=7228, ssl=False):
         TSocket.__init__(self, host, port)
@@ -59,7 +61,7 @@ class Socket(TSocket):
         else:
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        #errno 104 connection reset
+        # errno 104 connection reset
 
         self.handle.settimeout(self._timeout)
         self.handle.connect((self.host, self.port))
@@ -69,7 +71,7 @@ class Socket(TSocket):
             buff = self.handle.recv(sz)
         except socket.error as e:
             if (e.args[0] == errno.ECONNRESET and
-                (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
+                    (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
                 # freebsd and Mach don't follow POSIX semantic of recv
                 # and fail with ECONNRESET if peer performed shutdown.
                 # See corresponding comment and code in TSocket::read()
@@ -84,13 +86,15 @@ class Socket(TSocket):
             if e.args == (-1, 'Unexpected EOF'):
                 buff = ''
             elif e.args == ([('SSL routines', 'SSL23_GET_CLIENT_HELLO', 'unknown protocol')],):
-                #a socket not using ssl tried to connect
+                # a socket not using ssl tried to connect
                 buff = ''
             else:
                 raise
 
         if not len(buff):
-            raise TTransportException(type=TTransportException.END_OF_FILE, message='TSocket read 0 bytes')
+            raise TTransportException(
+                type=TTransportException.END_OF_FILE,
+                message='TSocket read 0 bytes')
         return buff
 
 
@@ -110,13 +114,14 @@ class ServerSocket(TServerSocket, Socket):
             ctx.use_privatekey_file(self.key)
             ctx.use_certificate_file(self.cert)
 
-            tmpConnection = SSL.Connection(ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM))
+            tmpConnection = SSL.Connection(
+                ctx, socket.socket(
+                    socket.AF_INET, socket.SOCK_STREAM))
             tmpConnection.set_accept_state()
             self.handle = SecureSocketConnection(tmpConnection)
 
         else:
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 
         self.handle.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         if hasattr(self.handle, 'set_timeout'):

@@ -36,7 +36,10 @@ class AlldebridCom(MultiHoster):
         self.chunk_limit = 16
 
     def handle_premium(self, pyfile):
-        json_data = self.api_response("link/unlock", link=pyfile.url, token=self.account.info['data']['token'])
+        json_data = self.api_response(
+            "link/unlock",
+            link=pyfile.url,
+            token=self.account.info['data']['token'])
 
         if json_data.get("error", False):
             if json_data.get("errorCode", 0) in (12, 31):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#@author: RaNaN
+# @author: RaNaN
 
 
 from builtins import str
@@ -27,6 +27,7 @@ except ImportError:
 
 js = JsEngine.JsEngine()
 core = None
+
 
 class CNLServer(Thread):
     def __init__(self):
@@ -55,7 +56,7 @@ class CNLServer(Thread):
 
 class CNLHandler(BaseHTTPRequestHandler):
 
-    #def log_message(self, *args):
+    # def log_message(self, *args):
     #    pass
 
     def add_package(self, name, urls, queue=0):
@@ -82,42 +83,43 @@ class CNLHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.strip("/").lower()
-        #self.wfile.write(path+"\n")
+        # self.wfile.write(path+"\n")
 
-        self.map = [ (r"add$", self.add),
-                (r"addcrypted$", self.addcrypted),
-                (r"addcrypted2$", self.addcrypted2),
-                (r"flashgot", self.flashgot),
-                (r"crossdomain\.xml", self.crossdomain),
-                (r"checkSupportForUrl", self.checksupport),
-                (r"jdcheck.js", self.jdcheck),
-                (r"", self.flash) ]
+        self.map = [(r"add$", self.add),
+                    (r"addcrypted$", self.addcrypted),
+                    (r"addcrypted2$", self.addcrypted2),
+                    (r"flashgot", self.flashgot),
+                    (r"crossdomain\.xml", self.crossdomain),
+                    (r"checkSupportForUrl", self.checksupport),
+                    (r"jdcheck.js", self.jdcheck),
+                    (r"", self.flash)]
 
         func = None
         for r, f in self.map:
-            if re.match(r"(flash(got)?/?)?"+r, path):
+            if re.match(r"(flash(got)?/?)?" + r, path):
                 func = f
                 break
 
         if func:
             try:
                 resp = func()
-                if not resp: resp = "success"
+                if not resp:
+                    resp = "success"
                 resp += "\r\n"
                 self.start_response(resp)
                 self.wfile.write(resp)
-            except Exception as e :
+            except Exception as e:
                 self.send_error(500, str(e))
         else:
             self.send_error(404, "Not Found")
 
     def do_POST(self):
         form = FieldStorage(
-                fp=self.rfile,
-                headers=self.headers,
-                environ={'REQUEST_METHOD': 'POST',
-                         'CONTENT_TYPE': self.headers['Content-Type'],
-                         })
+            fp=self.rfile,
+            headers=self.headers,
+            environ={'REQUEST_METHOD': 'POST',
+                     'CONTENT_TYPE': self.headers['Content-Type'],
+                     })
 
         self.post = {}
         for name in list(form.keys()):
@@ -158,7 +160,6 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         self.add_package(package, result, 0)
 
-
     def flashgot(self):
         autostart = int(self.get_post('autostart', 0))
         package = self.get_post('package', "FlashGot")
@@ -195,12 +196,12 @@ if __name__ == "__main__":
         ssl = "s"
 
     server_url = "http{}://{}:{}@{}:{}/".format(
-                                        ssl,
-                                        config.username,
-                                        config.password,
-                                        config.get("remote", "listenaddr"),
-                                        config.get("remote", "port")
-                                        )
+        ssl,
+        config.username,
+        config.password,
+        config.get("remote", "listenaddr"),
+        config.get("remote", "port")
+    )
 
     core = xmlrpc.client.ServerProxy(server_url, allow_none=True)
 

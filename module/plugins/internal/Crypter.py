@@ -12,9 +12,19 @@ class Crypter(Base):
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __config__ = [
+        ("activated",
+         "bool",
+         "Activated",
+         True),
+        ("use_premium",
+         "bool",
+         "Use premium account if available",
+         True),
+        ("folder_per_package",
+         "Default;Yes;No",
+         "Create folder for each package",
+         "Default")]
 
     __description__ = """Base decrypter plugin"""
     __license__ = "GPLv3"
@@ -92,7 +102,7 @@ class Crypter(Base):
                     pid, {'password': pack_password})
 
             #: Workaround to do not break API addPackage method
-            set_folder = lambda x: self.pyload.api.setPackageData(
+            def set_folder(x): return self.pyload.api.setPackageData(
                 pid, {'folder': safename(x or "")})
 
             if not folder_per_package:
@@ -101,6 +111,7 @@ class Crypter(Base):
             elif not folder or folder == name:
                 folder = parse_name(name)
 
-            self.log_info(_("Save package `{name}` to folder: {folder}").format(**{'name': name, 'folder': folder}))
+            self.log_info(_("Save package `{name}` to folder: {folder}").format(
+                **{'name': name, 'folder': folder}))
 
             set_folder(folder)

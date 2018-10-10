@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-#@author: mkaay
-
-
+# @author: mkaay
 
 
 from PyQt4.QtCore import *
@@ -12,6 +10,7 @@ from time import time
 from module.remote.thriftbackend.ThriftClient import Destination
 from module.gui.Collector import CollectorModel, Package, Link, CollectorView, statusMapReverse
 from module.utils import formatSize, formatSpeed
+
 
 class QueueModel(CollectorModel):
     """
@@ -37,7 +36,11 @@ class QueueModel(CollectorModel):
 
             self.interval = interval
             self.timer = QTimer()
-            self.timer.connect(self.timer, SIGNAL("timeout()"), self, SIGNAL("update()"))
+            self.timer.connect(
+                self.timer,
+                SIGNAL("timeout()"),
+                self,
+                SIGNAL("update()"))
 
         def start(self):
             self.timer.start(1000)
@@ -128,7 +131,12 @@ class QueueModel(CollectorModel):
                     }
                     child.data["downloading"] = dd
                     k = pack.getChildKey(d.fid)
-                    self.emit(SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(k, 0, self.index(p, 0)), self.index(k, self.cols, self.index(p, self.cols)))
+                    self.emit(
+                        SIGNAL("dataChanged(const QModelIndex &, const QModelIndex &)"), self.index(
+                            k, 0, self.index(
+                                p, 0)), self.index(
+                            k, self.cols, self.index(
+                                p, self.cols)))
         self.updateCount()
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
@@ -166,12 +174,12 @@ class QueueModel(CollectorModel):
                     since = time()
                     self.wait_dict[item.id] = since, until
                 since = float(since)
-                max_wait = float(until-since)
-                rest = int(until-time())
+                max_wait = float(until - since)
+                rest = int(until - time())
                 if rest < 0:
                     return 0, None
-                res = 100//max_wait
-                perc = rest*res
+                res = 100 // max_wait
+                perc = rest * res
                 return perc, rest
         return None
 
@@ -195,7 +203,7 @@ class QueueModel(CollectorModel):
             perc_sum = 0
             for child in item.children:
                 try:
-                    if child.data["status"] == 0: #completed
+                    if child.data["status"] == 0:  # completed
                         perc_sum += 100
                     perc_sum += int(child.data["downloading"]["percent"])
                 except Exception:
@@ -263,23 +271,41 @@ class QueueModel(CollectorModel):
                 if speed is None or status == 7 or status == 10 or status == 5:
                     return QVariant(self.translateStatus(statusMapReverse[status]))
                 else:
-                    return QVariant("{} ({})".format(self.translateStatus(statusMapReverse[status]), formatSpeed(speed)))
+                    return QVariant(
+                        "{} ({})".format(
+                            self.translateStatus(
+                                statusMapReverse[status]),
+                            formatSpeed(speed)))
             elif index.column() == 3:
                 item = index.internalPointer()
                 if isinstance(item, Link):
-                    if item.data["status"] == 0: #TODO needs change??
-                    #self.getProgress(item, False) == 100:
+                    if item.data["status"] == 0:  # TODO needs change??
+                        # self.getProgress(item, False) == 100:
                         return QVariant(formatSize(item.data["size"]))
                     elif self.getProgress(item, False) == 0:
                         try:
-                            return QVariant("{} / {}".format(formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
+                            return QVariant(
+                                "{} / {}".format(
+                                    formatSize(
+                                        item.data["size"] -
+                                        item.data["downloading"]["bleft"]),
+                                    formatSize(
+                                        item.data["size"])))
                         except Exception:
-                            return QVariant("0 B / {}".format(formatSize(item.data["size"])))
+                            return QVariant(
+                                "0 B / {}".format(formatSize(item.data["size"])))
                     else:
                         try:
-                            return QVariant("{} / {}".format(formatSize(item.data["size"]-item.data["downloading"]["bleft"]), formatSize(item.data["size"])))
+                            return QVariant(
+                                "{} / {}".format(
+                                    formatSize(
+                                        item.data["size"] -
+                                        item.data["downloading"]["bleft"]),
+                                    formatSize(
+                                        item.data["size"])))
                         except Exception:
-                            return QVariant("? / {}".format(formatSize(item.data["size"])))
+                            return QVariant(
+                                "? / {}".format(formatSize(item.data["size"])))
                 else:
                     ms = 0
                     cs = 0
@@ -296,7 +322,8 @@ class QueueModel(CollectorModel):
                     if cs == 0 or cs == ms:
                         return QVariant(formatSize(ms))
                     else:
-                        return QVariant("{} / {}".format(formatSize(cs), formatSize(ms)))
+                        return QVariant(
+                            "{} / {}".format(formatSize(cs), formatSize(ms)))
             elif index.column() == 4:
                 item = index.internalPointer()
                 if isinstance(item, Link):
@@ -314,6 +341,7 @@ class QueueModel(CollectorModel):
         if index.column() == 0 and self.parent(index) == QModelIndex():
             return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
+
 
 class QueueView(CollectorView):
     """
@@ -334,6 +362,7 @@ class QueueView(CollectorView):
 
         self.delegate = QueueProgressBarDelegate(self, self.model())
         self.setItemDelegateForColumn(5, self.delegate)
+
 
 class QueueProgressBarDelegate(QItemDelegate):
     """
@@ -364,15 +393,14 @@ class QueueProgressBarDelegate(QItemDelegate):
             opts.minimum = 0
             opts.progress = progress
             opts.rect = option.rect
-            opts.rect.setRight(option.rect.right()-1)
-            opts.rect.setHeight(option.rect.height()-1)
+            opts.rect.setRight(option.rect.right() - 1)
+            opts.rect.setHeight(option.rect.height() - 1)
             opts.textVisible = True
             opts.textAlignment = Qt.AlignCenter
-            if not wait is None:
+            if wait is not None:
                 opts.text = QString(_("waiting {:d} seconds").format(wait))
             else:
                 opts.text = QString.number(opts.progress) + "%"
             QApplication.style().drawControl(QStyle.CE_ProgressBar, opts, painter)
             return
         QItemDelegate.paint(self, painter, option, index)
-

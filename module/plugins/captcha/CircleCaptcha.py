@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#@TODO: Recheck all
-
-
+# @TODO: Recheck all
 
 
 from builtins import input
@@ -13,7 +11,9 @@ import io
 import math
 import operator
 import sys
-import urllib.request, urllib.parse, urllib.error
+import urllib.request
+import urllib.parse
+import urllib.error
 
 import Image
 import ImageDraw

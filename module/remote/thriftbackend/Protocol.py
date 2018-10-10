@@ -2,6 +2,7 @@
 
 from thrift.protocol import TBinaryProtocol
 
+
 class Protocol(TBinaryProtocol.TBinaryProtocol):
     def writeString(self, str):
         try:

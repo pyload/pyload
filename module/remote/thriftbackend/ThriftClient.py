@@ -24,14 +24,18 @@ from .thriftgen.pyload.ttypes import *
 
 ConnectionClosed = TTransport.TTransportException
 
+
 class WrongLogin(Exception):
     pass
+
 
 class NoConnection(Exception):
     pass
 
+
 class NoSSL(Exception):
     pass
+
 
 class ThriftClient(object):
     def __init__(self, host="localhost", port=7227, user="", password=""):
@@ -50,18 +54,19 @@ class ThriftClient(object):
             correct = self.client.login(user, password)
         except error as e:
             if e.args and e.args[0] == 104:
-                #connection reset by peer, probably wants ssl
+                # connection reset by peer, probably wants ssl
                 try:
                     self.createConnection(host, port, True)
-                    #set timeout or a ssl socket will block when querying none ssl server
+                    # set timeout or a ssl socket will block when querying none ssl
+                    # server
                     self.socket.setTimeout(10)
 
                 except ImportError:
-                    #@TODO untested
+                    # @TODO untested
                     raise NoSSL
                 try:
-                   self.transport.open()
-                   correct = self.client.login(user, password)
+                    self.transport.open()
+                    correct = self.client.login(user, password)
                 finally:
                     self.socket.setTimeout(None)
             elif e.args and e.args[0] == 32:
