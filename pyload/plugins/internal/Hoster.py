@@ -15,14 +15,14 @@ from pyload.plugins.utils import encode, exists, fsjoin, parse_name, safejoin
 
 # Python 2.5 compatibility hack for property.setter, property.deleter
 if not hasattr(builtins.property, "setter"):
-    class property(with_metaclass(type, __builtin__.property)):
+    class property(with_metaclass(type, builtins.property)):
         def setter(self, method):
             return property(self.fget, method, self.fdel)
 
         def deleter(self, method):
             return property(self.fget, self.fset, method)
 
-        @__builtin__.property
+        @builtins.property
         def __doc__(self):
             """Doc seems not to be set correctly when subclassing"""
             return self.fget.__doc__

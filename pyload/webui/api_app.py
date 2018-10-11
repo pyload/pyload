@@ -64,7 +64,7 @@ def call_api(func, args=""):
     except Exception as e:
         print_exc()
         return HTTPError(500, json.dumps(
-            {"error": e, "traceback": format_exc()}))
+            {"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):

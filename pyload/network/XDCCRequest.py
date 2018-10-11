@@ -122,7 +122,7 @@ class XDCCRequest(object):
             if self.abort:
                 self.dccsock.close()
                 self.fh.close()
-                raise Abort()
+                raise Abort
 
             fdset = select.select(recv_list, [], [], 0.1)
             if self.dccsock in fdset[0]:

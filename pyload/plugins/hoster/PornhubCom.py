@@ -26,7 +26,7 @@ class BIGHTTPRequest(HTTPRequest):
         if self.limit and self.rep.tell() > self.limit or self.abort:
             rep = self.getResponse()
             if self.abort:
-                raise Abort()
+                raise Abort
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()

@@ -65,7 +65,7 @@ class ChunkInfo(object):
     def load(name):
         fs_name = fs_encode("{}.chunks".format(name))
         if not exists(fs_name):
-            raise IOError()
+            raise IOError
         fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
         size = fh.readline()[:-1]
@@ -74,7 +74,7 @@ class ChunkInfo(object):
             size = size[5:]
         else:
             fh.close()
-            raise WrongFormat()
+            raise WrongFormat
         ci = ChunkInfo(name)
         ci.loaded = True
         ci.setSize(size)
@@ -87,7 +87,7 @@ class ChunkInfo(object):
                 name = name[5:]
                 range = range[6:].split("-")
             else:
-                raise WrongFormat()
+                raise WrongFormat
 
             ci.addChunk(name, (int(range[0]), int(range[1])))
         fh.close()

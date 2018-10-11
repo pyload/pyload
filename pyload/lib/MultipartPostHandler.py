@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import mimetools
 import mimetypes
 from os import remove, write
+import io
 
 from six.moves import cStringIO
 from six.moves.urllib.parse import urlencode
@@ -62,7 +63,7 @@ class MultipartPostHandler(BaseHandler):
             v_vars = []
             try:
                 for(key, value) in data.items():
-                    if isinstance(value, file):
+                    if isinstance(value, io.IOBase):  # check io.IOBase (as py2 file)
                         v_files.append((key, value))
                     else:
                         v_vars.append((key, value))

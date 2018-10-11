@@ -92,4 +92,4 @@ try:
     transport.close()
 
 except Thrift.TException as tx:
-    print('ThriftExpection: {}'.format(tx))
+    print('ThriftExpection: {}'.format(tx.message))

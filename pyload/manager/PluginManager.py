@@ -3,6 +3,7 @@
 
 import re
 import sys
+import importlib
 from builtins import _, object, pypath, str
 from itertools import chain
 from os import listdir, makedirs
@@ -233,7 +234,7 @@ class PluginManager(object):
         res = []  # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, str, buffer):
+            if type(url) not in (str, str, memoryview):  # check memoryview (as py2 byffer)
                 continue
             found = False
 
@@ -405,7 +406,7 @@ class PluginManager(object):
                 if plugin in self.plugins[type]:
                     if "pyload" in self.plugins[type][plugin]:
                         self.log.debug("Reloading {}".format(plugin))
-                        reload(self.plugins[type][plugin]["pyload"])
+                        importlib.reload(self.plugins[type][plugin]["pyload"])
 
         # index creation
         self.crypterPlugins, config = self.parse("crypter", pattern=True)

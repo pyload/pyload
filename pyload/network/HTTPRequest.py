@@ -309,7 +309,7 @@ class HTTPRequest(object):
         if self.rep.tell() > 1000000 or self.abort:
             rep = self.getResponse()
             if self.abort:
-                raise Abort()
+                raise Abort
             f = open("response.dump", "wb")
             f.write(rep)
             f.close()
