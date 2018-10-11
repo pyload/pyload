@@ -18,7 +18,7 @@ class Captcha(Plugin):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def __init__(self, pyfile):
-        self._init(pyfile.m.core)
+        self._init(pyfile.m.pyload)
 
         self.pyfile = pyfile
         self.task = None  #: captchaManager task

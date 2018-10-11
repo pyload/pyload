@@ -17,18 +17,18 @@ from thrift.server import TServer
 
 class ThriftBackend(BackendBase):
     def setup(self, host, port):
-        processor = Processor(self.core.api)
+        processor = Processor(self.pyload.api)
 
         key = None
         cert = None
 
-        if self.core.config['ssl']['activated']:
+        if self.pyload.config['ssl']['activated']:
             if exists(
-                    self.core.config['ssl']['cert']) and exists(
-                    self.core.config['ssl']['key']):
-                self.core.log.info(_("Using SSL ThriftBackend"))
-                key = self.core.config['ssl']['key']
-                cert = self.core.config['ssl']['cert']
+                    self.pyload.config['ssl']['cert']) and exists(
+                    self.pyload.config['ssl']['key']):
+                self.pyload.log.info(_("Using SSL ThriftBackend"))
+                key = self.pyload.config['ssl']['key']
+                cert = self.pyload.config['ssl']['cert']
 
         transport = ServerSocket(port, host, key, cert)
 

@@ -76,11 +76,11 @@ class PluginThread(Thread):
             f.write(dump)
             f.close()
 
-        self.m.core.log.info("Debug Report written to {}".format(dump_name))
+        self.m.pyload.log.info("Debug Report written to {}".format(dump_name))
 
     def getDebugDump(self, pyfile):
         dump = "pyLoad {} Debug Report of {} {} \n\nTRACEBACK:\n {} \n\nFRAMESTACK:\n".format(
-            self.m.core.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
+            self.m.pyload.api.getServerVersion(), pyfile.pluginname, pyfile.plugin.__version__, format_exc())
 
         tb = exc_info()[2]
         stack = []
@@ -126,9 +126,9 @@ class PluginThread(Thread):
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
-        if pyfile.pluginname in self.m.core.config.plugin:
+        if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += pformat(self.m.core.config.plugin[pyfile.pluginname]) + "\n"
+            dump += pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump
 
@@ -175,12 +175,12 @@ class DownloadThread(PluginThread):
                 self.m.log.info(_("Download starts: {}".format(pyfile.name)))
 
                 # start download
-                self.m.core.hookManager.downloadPreparing(pyfile)
+                self.m.pyload.hookManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.m.log.info(_("Download finished: {}").format(pyfile.name))
-                self.m.core.hookManager.downloadFinished(pyfile)
-                self.m.core.files.checkPackageFinished(pyfile)
+                self.m.pyload.hookManager.downloadFinished(pyfile)
+                self.m.pyload.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
                 self.m.log.error(
@@ -235,7 +235,7 @@ class DownloadThread(PluginThread):
                         **{"name": pyfile.name, "msg": msg}))
                     pyfile.error = msg
 
-                self.m.core.hookManager.downloadFailed(pyfile)
+                self.m.pyload.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -273,11 +273,11 @@ class DownloadThread(PluginThread):
                 else:
                     pyfile.setStatus("failed")
                     self.m.log.error("pycurl error {}: {}".format(code, msg))
-                    if self.m.core.debug:
+                    if self.m.pyload.debug:
                         print_exc()
                         self.writeDebugReport(pyfile)
 
-                    self.m.core.hookManager.downloadFailed(pyfile)
+                    self.m.pyload.hookManager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -290,10 +290,10 @@ class DownloadThread(PluginThread):
 
                 self.clean(pyfile)
 
-                self.m.core.files.checkPackageFinished(pyfile)
+                self.m.pyload.files.checkPackageFinished(pyfile)
 
                 self.active = False
-                self.m.core.files.save()
+                self.m.pyload.files.save()
 
                 continue
 
@@ -303,16 +303,16 @@ class DownloadThread(PluginThread):
                     **{"name": pyfile.name, "msg": str(e)}))
                 pyfile.error = str(e)
 
-                if self.m.core.debug:
+                if self.m.pyload.debug:
                     print_exc()
                     self.writeDebugReport(pyfile)
 
-                self.m.core.hookManager.downloadFailed(pyfile)
+                self.m.pyload.hookManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
             finally:
-                self.m.core.files.save()
+                self.m.pyload.files.save()
                 pyfile.checkIfProcessed()
                 exc_clear()
 
@@ -320,7 +320,7 @@ class DownloadThread(PluginThread):
 
             self.active = False
             pyfile.finishIfDone()
-            self.m.core.files.save()
+            self.m.pyload.files.save()
 
     def put(self, job):
         """assing job to thread"""
@@ -397,7 +397,7 @@ class DecrypterThread(PluginThread):
                 **{"name": self.active.name, "msg": str(e)}))
             self.active.error = str(e)
 
-            if self.m.core.debug:
+            if self.m.pyload.debug:
                 print_exc()
                 self.writeDebugReport(pyfile)
 
@@ -407,11 +407,11 @@ class DecrypterThread(PluginThread):
             if not retry:
                 self.active.release()
                 self.active = False
-                self.m.core.files.save()
+                self.m.pyload.files.save()
                 self.m.localThreads.remove(self)
                 exc_clear()
 
-        # self.m.core.hookManager.downloadFinished(pyfile)
+        # self.m.pyload.hookManager.downloadFinished(pyfile)
 
         # self.m.localThreads.remove(self)
         # self.active.finishIfDone()
@@ -500,7 +500,7 @@ class InfoThread(PluginThread):
                 plugins[plugin] = [url]
 
         # filter out container plugins
-        for name in self.m.core.pluginManager.containerPlugins:
+        for name in self.m.pyload.pluginManager.containerPlugins:
             if name in plugins:
                 container.extend([(name, url) for url in plugins[name]])
 
@@ -509,14 +509,14 @@ class InfoThread(PluginThread):
         # directly write to database
         if self.pid > -1:
             for pluginname, urls in plugins.items():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(pluginname, plugin, urls, self.updateDB)
-                    self.m.core.files.save()
+                    self.m.pyload.files.save()
 
         elif self.add:
             for pluginname, urls in plugins.items():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(
                         pluginname, plugin, urls, self.updateCache, True)
@@ -532,7 +532,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Fetched and generated {:d} packages".format(len(packs)))
 
             for k, v in packs:
-                self.m.core.api.addPackage(k, v)
+                self.m.pyload.api.addPackage(k, v)
 
             # empty cache
             del self.cache[:]
@@ -557,7 +557,7 @@ class InfoThread(PluginThread):
             self.m.infoResults[self.rid] = {}
 
             for pluginname, urls in plugins.items():
-                plugin = self.m.core.pluginManager.getPlugin(pluginname, True)
+                plugin = self.m.pyload.pluginManager.getPlugin(pluginname, True)
                 if hasattr(plugin, "getInfo"):
                     self.fetchForPlugin(
                         pluginname, plugin, urls, self.updateResult, True)
@@ -577,7 +577,7 @@ class InfoThread(PluginThread):
         self.m.timestamp = time() + 5 * 60
 
     def updateDB(self, plugin, result):
-        self.m.core.files.updateFileInfo(result, self.pid)
+        self.m.pyload.files.updateFileInfo(result, self.pid)
 
     def updateResult(self, plugin, result, force=False):
         # parse package name and generate result
@@ -635,7 +635,7 @@ class InfoThread(PluginThread):
             self.m.log.debug("Finished Info Fetching for {}".format(pluginname))
         except Exception as e:
             self.m.log.warning(_("Info Fetching for {name} failed | {err}").format(**{"name": pluginname, "err": str(e)}))
-            if self.m.core.debug:
+            if self.m.pyload.debug:
                 print_exc()
 
             # generate default results
@@ -650,7 +650,7 @@ class InfoThread(PluginThread):
         self.m.log.debug("Pre decrypting {} with {}".format(url, plugin))
 
         # dummy pyfile
-        pyfile = PyFile(self.m.core.files, -1, url, url, 0, 0, "", plugin, -1, -1)
+        pyfile = PyFile(self.m.pyload.files, -1, url, url, 0, 0, "", plugin, -1, -1)
 
         pyfile.initPlugin()
 
@@ -664,7 +664,7 @@ class InfoThread(PluginThread):
             for pack in pyfile.plugin.packages:
                 pyfile.plugin.urls.extend(pack[1])
 
-            data = self.m.core.pluginManager.parseUrls(pyfile.plugin.urls)
+            data = self.m.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
 
             self.m.log.debug("Got {:d} links.".format(len(data)))
 

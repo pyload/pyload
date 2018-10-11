@@ -10,7 +10,7 @@ from traceback import print_exc
 class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
-        self.core = core
+        self.pyload = core
         self.tasks = []  # Task store, for outgoing tasks only
 
         self.ids = 0  # Only for internal purpose
@@ -45,18 +45,18 @@ class CaptchaManager(object):
         return None
 
     def handleCaptcha(self, task, timeout):
-        cli = self.core.isClientConnected()
+        cli = self.pyload.isClientConnected()
 
         task.setWaiting(timeout)
 
         # if cli:  # Client connected -> should solve the captcha
         #     task.setWaiting(50)  # Wait minimum 50 sec for response
 
-        for plugin in self.core.hookManager.activePlugins():
+        for plugin in self.pyload.hookManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
             except Exception:
-                if self.core.debug:
+                if self.pyload.debug:
                     print_exc()
 
         if task.handler or cli:  # The captcha was handled

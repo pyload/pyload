@@ -228,7 +228,7 @@ def generate_locale():
         "webui/cnl",
         "webui/pyload",
         "setup.py"]
-    makepot("core", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
+    makepot("pyload", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
     # makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")

@@ -113,10 +113,10 @@ class PyFile(object):
     def initPlugin(self):
         """ inits plugin instance """
         if not self.plugin:
-            self.pluginmodule = self.m.core.pluginManager.getPlugin(self.pluginname)
+            self.pluginmodule = self.m.pyload.pluginManager.getPlugin(self.pluginname)
             self.pluginclass = getattr(
                 self.pluginmodule,
-                self.m.core.pluginManager.getPluginName(
+                self.m.pyload.pluginManager.getPluginName(
                     self.pluginname))
             self.plugin = self.pluginclass(self)
 
@@ -202,7 +202,7 @@ class PyFile(object):
 
     def abortDownload(self):
         """abort pyfile if possible"""
-        while self.id in self.m.core.threadManager.processingIds():
+        while self.id in self.m.pyload.threadManager.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
                 self.plugin.req.abortDownloads()
@@ -217,7 +217,7 @@ class PyFile(object):
     def finishIfDone(self):
         """set status to finish and release file if every thread is finished with it"""
 
-        if self.id in self.m.core.threadManager.processingIds():
+        if self.id in self.m.pyload.threadManager.processingIds():
             return False
 
         self.setStatus("finished")
@@ -300,7 +300,7 @@ class PyFile(object):
             "file",
             self.id,
             "collector" if not self.package().queue else "queue")
-        self.m.core.pullManager.addEvent(e)
+        self.m.pyload.pullManager.addEvent(e)
 
     def setProgress(self, value):
         if not value == self.progress:

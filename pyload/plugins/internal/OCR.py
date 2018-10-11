@@ -27,7 +27,7 @@ class OCR(Plugin):
     __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def __init__(self, pyfile):
-        self._init(pyfile.m.core)
+        self._init(pyfile.m.pyload)
         self.pyfile = pyfile
         self.init()
 

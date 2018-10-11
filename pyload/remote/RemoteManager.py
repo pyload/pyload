@@ -10,7 +10,7 @@ class BackendBase(Thread):
     def __init__(self, manager):
         Thread.__init__(self)
         self.m = manager
-        self.core = manager.core
+        self.pyload = manager.pyload
         self.enabled = True
         self.running = False
 
@@ -19,8 +19,8 @@ class BackendBase(Thread):
         try:
             self.serve()
         except Exception as e:
-            self.core.log.error(_("Remote backend error: {}").format(e))
-            if self.core.debug:
+            self.pyload.log.error(_("Remote backend error: {}").format(e))
+            if self.pyload.debug:
                 print_exc()
         finally:
             self.running = False
@@ -46,17 +46,17 @@ class RemoteManager(object):
     available = []
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
         self.backends = []
 
-        if self.core.remote:
+        if self.pyload.remote:
             self.available.append("ThriftBackend")
 #        else:
 #            self.available.append("SocketBackend")
 
     def startBackends(self):
-        host = self.core.config["remote"]["listenaddr"]
-        port = self.core.config["remote"]["port"]
+        host = self.pyload.config["remote"]["listenaddr"]
+        port = self.pyload.config["remote"]["port"]
 
         for b in self.available:
             klass = getattr(
@@ -68,12 +68,12 @@ class RemoteManager(object):
                 continue
             try:
                 backend.setup(host, port)
-                self.core.log.info(_("Starting {name}: {addr}:{port}").format(
+                self.pyload.log.info(_("Starting {name}: {addr}:{port}").format(
                     **{"name": b, "addr": host, "port": port}))
             except Exception as e:
-                self.core.log.error(_("Failed loading backend {name} | {error}").format(
+                self.pyload.log.error(_("Failed loading backend {name} | {error}").format(
                     **{"name": b, "error": str(e)}))
-                if self.core.debug:
+                if self.pyload.debug:
                     print_exc()
             else:
                 backend.start()

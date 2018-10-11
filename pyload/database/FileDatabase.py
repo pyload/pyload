@@ -23,7 +23,7 @@ class FileHandler(object):
 
     def __init__(self, core):
         """Constructor"""
-        self.core = core
+        self.pyload = core
 
         # translations
         self.statusMsg = [
@@ -56,7 +56,7 @@ class FileHandler(object):
         self.queuecount = -1  # number of package to be loaded
         self.unchanged = False  # determines if any changes was made since last call
 
-        self.db = self.core.db
+        self.db = self.pyload.db
 
     def change(self, func):
         def new(*args):
@@ -122,15 +122,15 @@ class FileHandler(object):
     def addLinks(self, urls, package):
         """adds links"""
 
-        self.core.hookManager.dispatchEvent("linksAdded", urls, package)
+        self.pyload.hookManager.dispatchEvent("linksAdded", urls, package)
 
-        data = self.core.pluginManager.parseUrls(urls)
+        data = self.pyload.pluginManager.parseUrls(urls)
 
         self.db.addLinks(data, package)
-        self.core.threadManager.createInfoThread(data, package)
+        self.pyload.threadManager.createInfoThread(data, package)
 
         # TODO: change from reloadAll event to package update event
-        self.core.pullManager.addEvent(ReloadAllEvent("collector"))
+        self.pyload.pullManager.addEvent(ReloadAllEvent("collector"))
 
     # ----------------------------------------------------------------------
     @lock
@@ -140,7 +140,7 @@ class FileHandler(object):
         lastID = self.db.addPackage(name, folder, queue)
         p = self.db.getPackage(lastID)
         e = InsertEvent("pack", lastID, p.order, "collector" if not queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
         return lastID
 
     # ----------------------------------------------------------------------
@@ -168,8 +168,8 @@ class FileHandler(object):
                 pyfile.release()
 
         self.db.deletePackage(p)
-        self.core.pullManager.addEvent(e)
-        self.core.hookManager.dispatchEvent("packageDeleted", id)
+        self.pyload.pullManager.addEvent(e)
+        self.pyload.hookManager.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -195,7 +195,7 @@ class FileHandler(object):
 
         oldorder = f.order
 
-        if id in self.core.threadManager.processingIds():
+        if id in self.pyload.threadManager.processingIds():
             self.cache[id].abortDownload()
 
         if id in self.cache:
@@ -203,7 +203,7 @@ class FileHandler(object):
 
         self.db.deleteLink(f)
 
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
         p = self.getPackage(pid)
         if not len(p.getChildren()):
@@ -236,7 +236,7 @@ class FileHandler(object):
             "file",
             pyfile.id,
             "collector" if not pyfile.package().queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     # ----------------------------------------------------------------------
     def updatePackage(self, pypack):
@@ -244,7 +244,7 @@ class FileHandler(object):
         self.db.updatePackage(pypack)
 
         e = UpdateEvent("pack", pypack.id, "collector" if not pypack.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     # ----------------------------------------------------------------------
     def getPackage(self, id):
@@ -344,8 +344,8 @@ class FileHandler(object):
         if "decrypt" in self.jobCache:
             return None
 
-        plugins = list(self.core.pluginManager.crypterPlugins.keys()) + \
-            list(self.core.pluginManager.containerPlugins.keys())
+        plugins = list(self.pyload.pluginManager.crypterPlugins.keys()) + \
+            list(self.pyload.pluginManager.containerPlugins.keys())
         plugins = str(tuple(plugins))
 
         jobs = self.db.getPluginJob(plugins)
@@ -374,8 +374,8 @@ class FileHandler(object):
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            self.core.hookManager.dispatchEvent("allDownloadsFinished")
-            self.core.log.debug("All downloads finished")
+            self.pyload.hookManager.dispatchEvent("allDownloadsFinished")
+            self.pyload.log.debug("All downloads finished")
             return True
 
         return False
@@ -387,8 +387,8 @@ class FileHandler(object):
         self.resetCount()
 
         if not self.db.processcount(1, fid):
-            self.core.hookManager.dispatchEvent("allDownloadsProcessed")
-            self.core.log.debug("All downloads processed")
+            self.pyload.hookManager.dispatchEvent("allDownloadsProcessed")
+            self.pyload.log.debug("All downloads processed")
             return True
 
         return False
@@ -414,7 +414,7 @@ class FileHandler(object):
             "pack",
             id,
             "collector" if not self.getPackage(id).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     @lock
     @change
@@ -430,7 +430,7 @@ class FileHandler(object):
 
         e = UpdateEvent("file", id, "collector" if not self.getFile(
             id).package().queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     @lock
     @change
@@ -441,7 +441,7 @@ class FileHandler(object):
         oldorder = p.order
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
         self.db.clearPackageOrder(p)
 
@@ -463,7 +463,7 @@ class FileHandler(object):
         p = self.getPackage(id)
 
         e = InsertEvent("pack", id, p.order, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     @lock
     @change
@@ -471,7 +471,7 @@ class FileHandler(object):
         p = self.getPackage(id)
 
         e = RemoveEvent("pack", id, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
         self.db.reorderPackage(p, position)
 
         packs = list(self.packageCache.values())
@@ -491,7 +491,7 @@ class FileHandler(object):
         self.db.commit()
 
         e = InsertEvent("pack", id, position, "collector" if not p.queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     @lock
     @change
@@ -502,7 +502,7 @@ class FileHandler(object):
         e = RemoveEvent(
             "file", id, "collector" if not self.getPackage(
                 f["package"]).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
         self.db.reorderLink(f, position)
 
@@ -530,7 +530,7 @@ class FileHandler(object):
             position,
             "collector" if not self.getPackage(
                 f["package"]).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     @change
     def updateFileInfo(self, data, pid):
@@ -540,7 +540,7 @@ class FileHandler(object):
             "pack",
             pid,
             "collector" if not self.getPackage(pid).queue else "queue")
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
 
     def checkPackageFinished(self, pyfile):
         """ checks if package is finished and calls hookmanager """
@@ -548,10 +548,10 @@ class FileHandler(object):
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
-                self.core.log.info(
+                self.pyload.log.info(
                     _("Package finished: {}").format(
                         pyfile.package()).name)
-                self.core.hookManager.packageFinished(pyfile.package())
+                self.pyload.hookManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
     def reCheckPackage(self, pid):
@@ -564,7 +564,7 @@ class FileHandler(object):
             if pyfile["status"] not in (0, 12, 13):
                 urls.append((pyfile["url"], pyfile["plugin"]))
 
-        self.core.threadManager.createInfoThread(urls, pid)
+        self.pyload.threadManager.createInfoThread(urls, pid)
 
     @lock
     @change

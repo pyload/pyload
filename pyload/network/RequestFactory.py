@@ -14,13 +14,13 @@ from pyload.network.XDCCRequest import XDCCRequest
 class RequestFactory(object):
     def __init__(self, core):
         self.lock = Lock()
-        self.core = core
+        self.pyload = core
         self.bucket = Bucket()
         self.updateBucket()
         self.cookiejars = {}
 
     def iface(self):
-        return self.core.config["download"]["interface"]
+        return self.pyload.config["download"]["interface"]
 
     def getRequest(self, pluginName, account=None, type="HTTP", **kwargs):
         self.lock.acquire()
@@ -69,30 +69,30 @@ class RequestFactory(object):
 
     def getProxies(self):
         """ returns a proxy list for the request classes """
-        if not self.core.config["proxy"]["proxy"]:
+        if not self.pyload.config["proxy"]["proxy"]:
             return {}
         else:
             type = "http"
-            setting = self.core.config["proxy"]["type"].lower()
+            setting = self.pyload.config["proxy"]["type"].lower()
             if setting == "socks4":
                 type = "socks4"
             elif setting == "socks5":
                 type = "socks5"
 
             username = None
-            if self.core.config["proxy"]["username"] and self.core.config["proxy"]["username"].lower(
+            if self.pyload.config["proxy"]["username"] and self.pyload.config["proxy"]["username"].lower(
             ) != "none":
-                username = self.core.config["proxy"]["username"]
+                username = self.pyload.config["proxy"]["username"]
 
             pw = None
-            if self.core.config["proxy"]["password"] and self.core.config["proxy"]["password"].lower(
+            if self.pyload.config["proxy"]["password"] and self.pyload.config["proxy"]["password"].lower(
             ) != "none":
-                pw = self.core.config["proxy"]["password"]
+                pw = self.pyload.config["proxy"]["password"]
 
             return {
                 "type": type,
-                "address": self.core.config["proxy"]["address"],
-                "port": self.core.config["proxy"]["port"],
+                "address": self.pyload.config["proxy"]["address"],
+                "port": self.pyload.config["proxy"]["port"],
                 "username": username,
                 "password": pw,
             }
@@ -101,14 +101,14 @@ class RequestFactory(object):
         """returns options needed for pycurl"""
         return {"interface": self.iface(),
                 "proxies": self.getProxies(),
-                "ipv6": self.core.config["download"]["ipv6"]}
+                "ipv6": self.pyload.config["download"]["ipv6"]}
 
     def updateBucket(self):
         """ set values in the bucket according to settings"""
-        if not self.core.config["download"]["limit_speed"]:
+        if not self.pyload.config["download"]["limit_speed"]:
             self.bucket.setRate(-1)
         else:
-            self.bucket.setRate(self.core.config["download"]["max_speed"] * 1024)
+            self.bucket.setRate(self.pyload.config["download"]["max_speed"] * 1024)
 
 
 # needs pyreq in global namespace

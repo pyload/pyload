@@ -23,7 +23,7 @@ class ThreadManager(object):
 
     def __init__(self, core):
         """Constructor"""
-        self.core = core
+        self.pyload = core
         self.log = core.log
 
         self.threads = []  # thread list
@@ -51,7 +51,7 @@ class ThreadManager(object):
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
-        for i in range(0, self.core.config.get("download", "max_downloads")):
+        for i in range(0, self.pyload.config.get("download", "max_downloads")):
             self.createThread()
 
 
@@ -119,7 +119,7 @@ class ThreadManager(object):
         except Exception as e:
             self.log.error(_("Reconnect Failed: {}").format(str(e)) )
             self.reconnecting.clear()
-            if self.core.debug:
+            if self.pyload.debug:
                 print_exc()
         self.checkThreadCount()
 
@@ -127,7 +127,7 @@ class ThreadManager(object):
             self.assignJob()
         except Exception as e:
             self.log.warning("Assign job error", e)
-            if self.core.debug:
+            if self.pyload.debug:
                 print_exc()
 
             sleep(0.5)
@@ -143,7 +143,7 @@ class ThreadManager(object):
     def tryReconnect(self):
         """checks if reconnect needed"""
 
-        if not (self.core.config["reconnect"]["activated"] and self.core.api.isTimeReconnect()):
+        if not (self.pyload.config["reconnect"]["activated"] and self.pyload.api.isTimeReconnect()):
             return False
 
         active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
@@ -151,11 +151,11 @@ class ThreadManager(object):
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.core.config['reconnect']['method']):
-            if exists(join(pypath, self.core.config['reconnect']['method'])):
-                self.core.config['reconnect']['method'] = join(pypath, self.core.config['reconnect']['method'])
+        if not exists(self.pyload.config['reconnect']['method']):
+            if exists(join(pypath, self.pyload.config['reconnect']['method'])):
+                self.pyload.config['reconnect']['method'] = join(pypath, self.pyload.config['reconnect']['method'])
             else:
-                self.core.config["reconnect"]["activated"] = False
+                self.pyload.config["reconnect"]["activated"] = False
                 self.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -169,24 +169,24 @@ class ThreadManager(object):
 
         ip = self.getIP()
 
-        self.core.hookManager.beforeReconnecting(ip)
+        self.pyload.hookManager.beforeReconnecting(ip)
 
         self.log.debug("Old IP: {}".format(ip))
 
         try:
-            reconn = Popen(self.core.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+            reconn = Popen(self.pyload.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
         except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
-            self.core.config["reconnect"]["activated"] = False
+            self.pyload.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
-            if self.core.debug:
+            if self.pyload.debug:
                 print_exc()
             return
 
         reconn.wait()
         sleep(1)
         ip = self.getIP()
-        self.core.hookManager.afterReconnecting(ip)
+        self.pyload.hookManager.afterReconnecting(ip)
 
         self.log.info(_("Reconnected, new IP: {}").format(ip))
 
@@ -214,9 +214,9 @@ class ThreadManager(object):
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
-        if len(self.threads) == self.core.config.get("download", "max_downloads"):
+        if len(self.threads) == self.pyload.config.get("download", "max_downloads"):
             return True
-        elif len(self.threads) < self.core.config.get("download", "max_downloads"):
+        elif len(self.threads) < self.pyload.config.get("download", "max_downloads"):
             self.createThread()
         else:
             free = [x for x in self.threads if not x.active]
@@ -238,7 +238,7 @@ class ThreadManager(object):
     def assignJob(self):
         """assing a job to a thread if possible"""
 
-        if self.pause or not self.core.api.isTimeDownload(): return
+        if self.pause or not self.pyload.api.isTimeDownload(): return
 
         #if self.downloaded > 20:
         #    if not self.cleanPyCurl(): return
@@ -252,7 +252,7 @@ class ThreadManager(object):
         occ = sorted([x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit)
 
         occ = tuple(set(occ))
-        job = self.core.files.getJob(occ)
+        job = self.pyload.files.getJob(occ)
         if job:
             try:
                 job.initPlugin()
@@ -265,8 +265,8 @@ class ThreadManager(object):
                 return
 
             if job.plugin.__type__ == "hoster":
-                spaceLeft = freeSpace(self.core.config["general"]["download_folder"]) // 1024 // 1024
-                if spaceLeft < self.core.config["general"]["min_free_space"]:
+                spaceLeft = freeSpace(self.pyload.config["general"]["download_folder"]) // 1024 // 1024
+                if spaceLeft < self.pyload.config["general"]["min_free_space"]:
                     self.log.warning(_("Not enough space left on device"))
                     self.pause = True
 
@@ -277,12 +277,12 @@ class ThreadManager(object):
                     thread.put(job)
                 else:
                     #put job back
-                    if occ not in self.core.files.jobCache:
-                        self.core.files.jobCache[occ] = []
-                    self.core.files.jobCache[occ].append(job.id)
+                    if occ not in self.pyload.files.jobCache:
+                        self.pyload.files.jobCache[occ] = []
+                    self.pyload.files.jobCache[occ].append(job.id)
 
                     #check for decrypt jobs
-                    job = self.core.files.getDecryptJob()
+                    job = self.pyload.files.getDecryptJob()
                     if job:
                         job.initPlugin()
                         thread = PluginThread.DecrypterThread(self, job)

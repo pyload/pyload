@@ -65,4 +65,4 @@ class PyPackage(object):
 
     def notifyChange(self):
         e = UpdateEvent("pack", self.id, "collector" if not self.queue else "queue")
-        self.m.core.pullManager.addEvent(e)
+        self.m.pyload.pullManager.addEvent(e)

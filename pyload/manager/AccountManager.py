@@ -19,7 +19,7 @@ class AccountManager(object):
     def __init__(self, core):
         """Constructor"""
 
-        self.core = core
+        self.pyload = core
         self.lock = Lock()
 
         self.initPlugins()
@@ -36,7 +36,7 @@ class AccountManager(object):
         """get account instance for plugin or None if anonymous"""
         if plugin in self.accounts:
             if plugin not in self.plugins:
-                self.plugins[plugin] = self.core.pluginManager.loadClass(
+                self.plugins[plugin] = self.pyload.pluginManager.loadClass(
                     "accounts", plugin)(self, self.accounts[plugin])
 
             return self.plugins[plugin]
@@ -71,7 +71,7 @@ class AccountManager(object):
             f = open("accounts.conf", "wb")
             f.write("version: " + str(ACC_VERSION))
             f.close()
-            self.core.log.warning(
+            self.pyload.log.warning(
                 _("Account settings deleted, due to new config format."))
             return
 
@@ -129,7 +129,7 @@ class AccountManager(object):
 
     def initAccountPlugins(self):
         """init names"""
-        for name in self.core.pluginManager.getAccountPlugins():
+        for name in self.pyload.pluginManager.getAccountPlugins():
             self.accounts[name] = {}
 
     @lock
@@ -160,7 +160,7 @@ class AccountManager(object):
         data = {}
 
         if refresh:
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
+            self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
             force = False
 
         for p in list(self.accounts.keys()):
@@ -170,9 +170,9 @@ class AccountManager(object):
             else:
                 data[p] = []
         e = AccountUpdateEvent()
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)
         return data
 
     def sendChange(self):
         e = AccountUpdateEvent()
-        self.core.pullManager.addEvent(e)
+        self.pyload.pullManager.addEvent(e)

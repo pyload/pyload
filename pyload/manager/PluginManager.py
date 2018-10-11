@@ -33,9 +33,9 @@ class PluginManager(object):
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
     def __init__(self, core):
-        self.core = core
+        self.pyload = core
 
-        #self.config = self.core.config
+        #self.config = self.pyload.config
         self.log = core.log
 
         self.plugins = {}
@@ -99,7 +99,7 @@ class PluginManager(object):
             desc = config.pop('desc', "")
             config = [[k] + list(v) for k, v in list(config.items())]
             try:
-                self.core.config.addPluginConfig(name, config, desc)
+                self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
                 self.log.error("Invalid config in {}: {}".format(name, config))
 
@@ -187,7 +187,7 @@ class PluginManager(object):
 
                 # internals have no config
                 if folder == "internal":
-                    self.core.config.deleteConfig(name)
+                    self.pyload.config.deleteConfig(name)
                     continue
 
                 config = self.CONFIG.findall(content)
@@ -310,7 +310,7 @@ class PluginManager(object):
             except Exception as e:
                 self.log.error(_("Error importing {name}: {msg}").format(
                     **{"name": name, "msg": str(e)}))
-                if self.core.debug:
+                if self.pyload.debug:
                     print_exc()
         else:
             self.log.debug("Plugin {} not found".format(name))
@@ -433,12 +433,12 @@ class PluginManager(object):
             desc = config.pop('desc', "")
             config = [[k] + list(v) for k, v in list(config.items())]
             try:
-                self.core.config.addPluginConfig(name, config, desc)
+                self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
                 self.log.error("Invalid config in {}: {}".format(name, config))
 
         if "account" in as_dict:  # accounts needs to be reloaded
-            self.core.accountManager.initPlugins()
-            self.core.scheduler.addJob(0, self.core.accountManager.getAccountInfos)
+            self.pyload.accountManager.initPlugins()
+            self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
 
         return True

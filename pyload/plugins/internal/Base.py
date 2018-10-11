@@ -58,7 +58,7 @@ class Base(Plugin):
         return info
 
     def __init__(self, pyfile):
-        self._init(pyfile.m.core)
+        self._init(pyfile.m.pyload)
 
         #: Engage wan reconnection
         self.wantReconnect = False  # TODO: Change to `want_reconnect` in 0.6.x

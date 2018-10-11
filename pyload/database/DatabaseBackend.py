@@ -104,7 +104,7 @@ class DatabaseBackend(Thread):
     def __init__(self, core):
         Thread.__init__(self)
         self.setDaemon(True)
-        self.core = core
+        self.pyload = core
 
         self.jobs = Queue()
 
@@ -162,7 +162,7 @@ class DatabaseBackend(Thread):
         if v < DB_VERSION:
             if v < 2:
                 try:
-                    self.manager.core.log.warning(
+                    self.manager.pyload.log.warning(
                         _("Filedatabase was deleted due to incompatible version."))
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
@@ -178,7 +178,7 @@ class DatabaseBackend(Thread):
             getattr(self, "_convertV{:i}".format(v)())
         except Exception:
             try:
-                self.core.log.error(_("Filedatabase could NOT be converted."))
+                self.pyload.log.error(_("Filedatabase could NOT be converted."))
             except Exception:
                 print("Filedatabase could NOT be converted.")
 
@@ -188,7 +188,7 @@ class DatabaseBackend(Thread):
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
         try:
-            self.manager.core.log.info(_("Database was converted from v2 to v3."))
+            self.manager.pyload.log.info(_("Database was converted from v2 to v3."))
         except Exception:
             print("Database was converted from v2 to v3.")
         self._convertV3()
@@ -196,7 +196,7 @@ class DatabaseBackend(Thread):
     def _convertV3(self):
         self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
         try:
-            self.manager.core.log.info(_("Database was converted from v3 to v4."))
+            self.manager.pyload.log.info(_("Database was converted from v3 to v4."))
         except Exception:
             print("Database was converted from v3 to v4.")
 
@@ -242,7 +242,7 @@ class DatabaseBackend(Thread):
     def _migrateUser(self):
         if exists("pyload.db"):
             try:
-                self.core.log.info(_("Converting old Django DB"))
+                self.pyload.log.info(_("Converting old Django DB"))
             except Exception:
                 print("Converting old Django DB")
             conn = sqlite3.connect('pyload.db')

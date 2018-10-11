@@ -116,7 +116,7 @@ class Extractor(Plugin):
         """
         Initialize extractor for specific file
         """
-        self._init(pyfile.m.core)
+        self._init(pyfile.m.pyload)
 
         self.pyfile = pyfile
         self.filename = filename

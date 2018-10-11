@@ -25,7 +25,7 @@ class ClickAndLoadBackend(BackendBase):
     def setup(self, host, port):
         self.httpd = HTTPServer((host, port), CNLHandler)
         global core, js
-        core = self.m.core
+        core = self.m.pyload
         js = core.js
 
     def serve(self):

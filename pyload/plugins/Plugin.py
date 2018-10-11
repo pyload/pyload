@@ -54,7 +54,7 @@ class Base(object):
 
     def __init__(self, core):
         #: Core instance
-        self.core = core
+        self.pyload = core
         #: logging instance
         self.log = core.log
         #: core config
@@ -79,7 +79,7 @@ class Base(object):
 
     def setConf(self, option, value):
         """ see `setConfig` """
-        self.core.config.setPlugin(self.__name__, option, value)
+        self.pyload.config.setPlugin(self.__name__, option, value)
 
     def setConfig(self, option, value):
         """ Set config value for current plugin
@@ -92,7 +92,7 @@ class Base(object):
 
     def getConf(self, option):
         """ see `getConfig` """
-        return self.core.config.getPlugin(self.__name__, option)
+        return self.pyload.config.getPlugin(self.__name__, option)
 
     def getConfig(self, option):
         """ Returns config value for current plugin
@@ -104,17 +104,17 @@ class Base(object):
 
     def setStorage(self, key, value):
         """ Saves a value persistently to the database """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.pyload.db.setStorage(self.__name__, key, value)
 
     def store(self, key, value):
         """ same as `setStorage` """
-        self.core.db.setStorage(self.__name__, key, value)
+        self.pyload.db.setStorage(self.__name__, key, value)
 
     def getStorage(self, key=None, default=None):
         """ Retrieves saved value or dict of all saved entries if key is None """
         if key is not None:
-            return self.core.db.getStorage(self.__name__, key) or default
-        return self.core.db.getStorage(self.__name__, key)
+            return self.pyload.db.getStorage(self.__name__, key) or default
+        return self.pyload.db.getStorage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
         """ same as `getStorage` """
@@ -122,7 +122,7 @@ class Base(object):
 
     def delStorage(self, key):
         """ Delete entry in db """
-        self.core.db.delStorage(self.__name__, key)
+        self.pyload.db.delStorage(self.__name__, key)
 
 
 class Plugin(Base):
@@ -140,7 +140,7 @@ class Plugin(Base):
     __author_mail__ = ("RaNaN@pyload.net", "spoob@pyload.net", "mkaay@mkaay.de")
 
     def __init__(self, pyfile):
-        Base.__init__(self, pyfile.m.core)
+        Base.__init__(self, pyfile.m.pyload)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads
@@ -156,7 +156,7 @@ class Plugin(Base):
 
         self.ocr = None  # captcha reader instance
         #: account handler instance, see :py:class:`Account`
-        self.account = pyfile.m.core.accountManager.getAccountPlugin(self.__name__)
+        self.account = pyfile.m.pyload.accountManager.getAccountPlugin(self.__name__)
 
         #: premium status
         self.premium = False
@@ -176,7 +176,7 @@ class Plugin(Base):
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
-            self.req = pyfile.m.core.requestFactory.getRequest(self.__name__)
+            self.req = pyfile.m.pyload.requestFactory.getRequest(self.__name__)
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
@@ -187,7 +187,7 @@ class Plugin(Base):
         #: re match of the last call to `checkDownload`
         self.lastCheck = None
         #: js engine, see `JsEngine`
-        self.js = self.core.js
+        self.js = self.pyload.js
         self.cTask = None  # captcha task
 
         self.retries = 0  # amount of retries already made
@@ -233,7 +233,7 @@ class Plugin(Base):
     def resetAccount(self):
         """ dont use account and retry download """
         self.account = None
-        self.req = self.core.requestFactory.getRequest(self.__name__)
+        self.req = self.pyload.requestFactory.getRequest(self.__name__)
         self.retry()
 
     def checksum(self, local_file=None):
@@ -354,10 +354,10 @@ class Plugin(Base):
         temp_file.write(img)
         temp_file.close()
 
-        has_plugin = self.__name__ in self.core.pluginManager.captchaPlugins
+        has_plugin = self.__name__ in self.pyload.pluginManager.captchaPlugins
 
-        if self.core.captcha:
-            Ocr = self.core.pluginManager.loadClass("captcha", self.__name__)
+        if self.pyload.captcha:
+            Ocr = self.pyload.pluginManager.loadClass("captcha", self.__name__)
         else:
             Ocr = None
 
@@ -369,7 +369,7 @@ class Plugin(Base):
             ocr = Ocr()
             result = ocr.get_captcha(temp_file.name)
         else:
-            captchaManager = self.core.captchaManager
+            captchaManager = self.pyload.captchaManager
             task = captchaManager.newTask(img, imgtype, temp_file.name, result_type)
             self.cTask = task
             captchaManager.handleCaptcha(task)
@@ -394,7 +394,7 @@ class Plugin(Base):
             result = task.result
             self.log.debug("Received captcha result: {}".format(str(result)))
 
-        if not self.core.debug:
+        if not self.pyload.debug:
             try:
                 remove(temp_file.name)
             except Exception:
@@ -430,7 +430,7 @@ class Plugin(Base):
 
         res = self.req.load(url, get, post, ref, cookies, just_header, decode=decode)
 
-        if self.core.debug:
+        if self.pyload.debug:
             from inspect import currentframe
 
             frame = currentframe()
@@ -500,9 +500,9 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.core.config["permission"]["folder"], 8))
+            makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
 
-            if self.core.config["permission"]["change_dl"] and os.name != "nt":
+            if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
                 try:
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
@@ -519,7 +519,7 @@ class Plugin(Base):
 
         filename = join(location, name)
 
-        self.core.hookManager.dispatchEvent(
+        self.pyload.hookManager.dispatchEvent(
             "downloadStarts", self.pyfile, url, filename)
 
         try:
@@ -545,10 +545,10 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.core.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.core.config["permission"]["file"], 8))
+        if self.pyload.config["permission"]["change_file"]:
+            chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
 
-        if self.core.config["permission"]["change_dl"] and os.name != "nt":
+        if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
@@ -623,7 +623,7 @@ class Plugin(Base):
 
         pack = self.pyfile.package()
 
-        for pyfile in list(self.core.files.cache.values()):
+        for pyfile in list(self.pyload.files.cache.values()):
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12):  # finished or downloading
                     raise SkipDownload(pyfile.pluginname)
@@ -634,13 +634,13 @@ class Plugin(Base):
         download_folder = self.config['general']['download_folder']
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.core.config['download']['skip_existing'] and exists(
+        if starting and self.pyload.config['download']['skip_existing'] and exists(
                 location):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists.")
 
-        pyfile = self.core.db.findDuplicates(
+        pyfile = self.pyload.db.findDuplicates(
             self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
         if pyfile:
             if exists(location):

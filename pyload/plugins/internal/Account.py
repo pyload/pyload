@@ -24,7 +24,7 @@ class Account(Plugin):
     TUNE_TIMEOUT = True     #: Automatically tune relogin interval
 
     def __init__(self, manager, accounts):
-        self._init(manager.core)
+        self._init(manager.pyload)
 
         self.manager = manager
         self.lock = threading.RLock()

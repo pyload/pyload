@@ -46,12 +46,12 @@ class HookManager(object):
     """
 
     def __init__(self, core):
-        self.core = core
-        self.config = self.core.config
+        self.pyload = core
+        self.config = self.pyload.config
 
         builtins.hookManager = self  # needed to let addons register themself
 
-        self.log = self.core.log
+        self.log = self.pyload.log
         self.plugins = []
         self.pluginMap = {}
         self.methods = {}  # dict of names and list of methods usable by rpc
@@ -73,7 +73,7 @@ class HookManager(object):
                 return func(*args)
             except Exception as e:
                 args[0].log.error(_("Error executing addons: {}").format(str(e)))
-                if args[0].core.debug:
+                if args[0].pyload.debug:
                     traceback.print_exc()
 
         return new
@@ -103,16 +103,16 @@ class HookManager(object):
         active = []
         deactive = []
 
-        for pluginname in self.core.pluginManager.hookPlugins:
+        for pluginname in self.pyload.pluginManager.hookPlugins:
             try:
                 #hookClass = getattr(plugin, plugin.__name__)
 
-                if self.core.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.core.pluginManager.loadClass("hook", pluginname)
+                if self.pyload.config.getPlugin(pluginname, "activated"):
+                    pluginClass = self.pyload.pluginManager.loadClass("hook", pluginname)
                     if not pluginClass:
                         continue
 
-                    plugin = pluginClass(self.core, self)
+                    plugin = pluginClass(self.pyload, self)
                     plugins.append(plugin)
                     self.pluginMap[pluginClass.__name__] = plugin
                     if plugin.isActivated():
@@ -122,7 +122,7 @@ class HookManager(object):
 
             except Exception:
                 self.log.warning(_("Failed activating {}").format(pluginname))
-                if self.core.debug:
+                if self.pyload.debug:
                     traceback.print_exc()
 
         self.log.info(_("Activated plugins: {}").format(", ".join(sorted(active))))
@@ -143,14 +143,14 @@ class HookManager(object):
             if inst.__name__ == plugin:
                 return
 
-        pluginClass = self.core.pluginManager.loadClass("hook", plugin)
+        pluginClass = self.pyload.pluginManager.loadClass("hook", plugin)
 
         if not pluginClass:
             return
 
         self.log.debug("Plugin loaded: {}".format(plugin))
 
-        plugin = pluginClass(self.core, self)
+        plugin = pluginClass(self.pyload, self)
         self.plugins.append(plugin)
         self.pluginMap[pluginClass.__name__] = plugin
 
@@ -174,7 +174,7 @@ class HookManager(object):
         # remove periodic call
         self.log.debug(
             "Removed callback {}".format(
-                self.core.scheduler.removeJob(
+                self.pyload.scheduler.removeJob(
                     hook.cb)))
         self.plugins.remove(hook)
         del self.pluginMap[hook.__name__]
@@ -253,7 +253,7 @@ class HookManager(object):
         self.dispatchEvent("afterReconnecting", ip)
 
     def startThread(self, function, *args, **kwargs):
-        return HookThread(self.core.threadManager, function, args, kwargs)
+        return HookThread(self.pyload.threadManager, function, args, kwargs)
 
     def activePlugins(self):
         """ returns all active plugins """
@@ -301,5 +301,5 @@ class HookManager(object):
                     self.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
                             event, f, args, str(e)))
-                    if self.core.debug:
+                    if self.pyload.debug:
                         traceback.print_exc()

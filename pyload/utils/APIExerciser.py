@@ -43,7 +43,7 @@ class APIExerciser(Thread):
 
         Thread.__init__(self)
         self.setDaemon(True)
-        self.core = core
+        self.pyload = core
         self.count = 0  # number of methods
         self.time = time()
 
@@ -60,7 +60,7 @@ class APIExerciser(Thread):
 
     def run(self):
 
-        self.core.log.info("API Excerciser started {:d}".format(self.id))
+        self.pyload.log.info("API Excerciser started {:d}".format(self.id))
 
         out = open("error.log", "ab")
         # core errors are not logged of course
@@ -71,7 +71,7 @@ class APIExerciser(Thread):
             try:
                 self.testAPI()
             except Exception:
-                self.core.log.error(
+                self.pyload.log.error(
                     "Excerciser {:d} throw an execption".format(
                         self.id))
                 print_exc()
@@ -79,18 +79,18 @@ class APIExerciser(Thread):
                 out.flush()
 
             if not self.count % 100:
-                self.core.log.info(
+                self.pyload.log.info(
                     "Exerciser {:d} tested {:d} api calls".format(
                         self.id, self.count))
             if not self.count % 1000:
                 out.flush()
 
             if not sumCalled % 1000:  # not thread safe
-                self.core.log.info("Exercisers tested {:d} api calls".format(sumCalled))
+                self.pyload.log.info("Exercisers tested {:d} api calls".format(sumCalled))
                 persec = sumCalled // (time() - self.time)
-                self.core.log.info("Approx. {:2f} calls per second.".format(persec))
-                self.core.log.info("Approx. {:2f} ms per call.".format(1000 // persec))
-                self.core.log.info("Collected garbage: {:d}".format(gc.collect()))
+                self.pyload.log.info("Approx. {:2f} calls per second.".format(persec))
+                self.pyload.log.info("Approx. {:2f} ms per call.".format(1000 // persec))
+                self.pyload.log.info("Collected garbage: {:d}".format(gc.collect()))
 
                 #sleep(random() / 500)
 
