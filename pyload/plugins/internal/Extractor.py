@@ -79,7 +79,7 @@ class Extractor(Plugin):
         Check if system statisfy dependencies
         """
         pass
-        
+
     @classmethod
     def get_targets(cls, files_ids):
         """
@@ -145,7 +145,7 @@ class Extractor(Plugin):
         Raise error if password is needed, integrity is questionable or else
         """
         pass
-        
+
     def repair(self):
         pass
 
