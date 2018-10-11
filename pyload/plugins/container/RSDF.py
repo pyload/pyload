@@ -52,7 +52,7 @@ class RSDF(Container):
                 data = rsdf.read()
 
         except IOError as e:
-            self.fail(e.message)
+            self.fail(e)
 
         if re.search(r'<title>404 - Not Found</title>', data):
             pyfile.setStatus("offline")

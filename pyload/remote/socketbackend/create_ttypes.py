@@ -5,8 +5,8 @@ import inspect
 import sys
 from os.path import abspath, dirname, join
 
-from thriftbackend.thriftgen.pyload import ttypes
-from thriftbackend.thriftgen.pyload.Pyload import Iface
+from pyload.remote.thriftbackend.thriftgen.pyload import ttypes
+from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
 
 path = dirname(abspath(__file__))
 module = join(path, "..", "..")

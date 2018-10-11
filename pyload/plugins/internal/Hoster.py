@@ -234,7 +234,7 @@ class Hoster(Base):
                                             self.pyfile.setProgress, disposition)
 
         except IOError as e:
-            self.log_error(e.message)
+            self.log_error(e)
             self.fail(_("IOError {}").format(e.errno))
 
         except BadHeader as e:
@@ -300,7 +300,7 @@ class Hoster(Base):
                 os.makedirs(dl_dir)
 
             except Exception as e:
-                self.fail(e.message)
+                self.fail(e)
 
         self.set_permissions(dl_dir)
 

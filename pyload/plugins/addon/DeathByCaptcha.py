@@ -172,7 +172,7 @@ class DeathByCaptcha(Addon):
             self.get_status()
             self.get_credits()
         except DeathByCaptchaException as e:
-            self.log_error(e.message)
+            self.log_error(e)
             return False
 
         balance, rate = self.info['balance'], self.info['rate']
@@ -196,7 +196,7 @@ class DeathByCaptcha(Addon):
                     "captcha/{:d}/report".format(task.data['ticket']), True)
 
             except DeathByCaptchaException as e:
-                self.log_error(e.message)
+                self.log_error(e)
 
             except Exception as e:
                 self.log_error(e, trace=True)
@@ -208,7 +208,7 @@ class DeathByCaptcha(Addon):
             ticket, result = self.submit(c)
         except DeathByCaptchaException as e:
             task.error = e.get_code()
-            self.log_error(e.message)
+            self.log_error(e)
             return
 
         task.data['ticket'] = ticket

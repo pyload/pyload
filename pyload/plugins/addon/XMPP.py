@@ -5,7 +5,7 @@ from builtins import _, object
 import pyxmpp
 import pyxmpp.all
 import pyxmpp.interfaces
-from pyload.plugins.addons.IRC import IRC
+from pyload.plugins.addon.IRC import IRC
 from pyxmpp.jabber.client import JabberClient
 
 

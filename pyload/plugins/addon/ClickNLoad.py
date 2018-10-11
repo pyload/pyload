@@ -134,7 +134,7 @@ class ClickNLoad(Addon):
                             continue
 
                         except Exception as e:
-                            self.log_error(_("SSL error: {}").format(e.message))
+                            self.log_error(_("SSL error: {}").format(e))
                             client_socket.close()
                             continue
 

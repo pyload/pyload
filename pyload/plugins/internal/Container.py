@@ -78,7 +78,7 @@ class Container(Crypter):
                     f.write(encode(content))
 
             except IOError as e:
-                self.fail(e.message)
+                self.fail(e)
 
         elif not exists(self.pyfile.url):
             self.fail(_("File not found"))

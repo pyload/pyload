@@ -719,7 +719,7 @@ class XDCC(Hoster):
                     os.makedirs(dl_folder)
 
                 except Exception as e:
-                    self.fail(e.message)
+                    self.fail(e)
 
             self.set_permissions(dl_folder)
 

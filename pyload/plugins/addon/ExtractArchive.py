@@ -541,7 +541,7 @@ class ExtractArchive(Addon):
                         except Exception as e:
                             self.log_warning(
                                 _("Unable to move {} to trash").format(
-                                    os.path.basename(f)), e.message)
+                                    os.path.basename(f)), e)
 
                         else:
                             self.log_info(

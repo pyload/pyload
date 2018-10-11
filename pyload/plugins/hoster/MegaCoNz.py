@@ -302,7 +302,7 @@ class MegaCoNz(Hoster):
             df = open(file_decrypted, "wb")
 
         except IOError as e:
-            self.fail(e.message)
+            self.fail(e)
 
         encrypted_size = os.path.getsize(file_crypted)
 

@@ -11,7 +11,7 @@ from pyload.remote.thriftbackend.Socket import ServerSocket
 from pyload.remote.thriftbackend.Transport import TransportFactory
 from thrift.server import TServer
 
-#from thriftbackend.Transport import TransportFactoryCompressed
+#from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
 
 
 

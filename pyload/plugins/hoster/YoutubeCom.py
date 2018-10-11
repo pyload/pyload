@@ -360,7 +360,7 @@ class YoutubeCom(Hoster):
 
             except (JSInterpreterError, AssertionError) as e:
                 self.log_error(_("Signature decode failed"), e)
-                self.fail(e.message)
+                self.fail(e)
 
         #: Remove old records from cache
         for _k in list(cache_info['cache'].keys()):
@@ -490,7 +490,7 @@ class YoutubeCom(Hoster):
                 self.pyfile.name)
             self.log_info(
                 _("Download skipped: {} due to {}").format(
-                    self.pyfile.name, e.message))
+                    self.pyfile.name, e))
 
         return filename, chosen_fmt
 
@@ -569,7 +569,7 @@ class YoutubeCom(Hoster):
                 self.pyfile.name)
             self.log_info(
                 _("Download skipped: {} due to {}").format(
-                    self.pyfile.name, e.message))
+                    self.pyfile.name, e))
 
         return filename, chosen_fmt
 

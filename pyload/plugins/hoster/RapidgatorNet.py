@@ -68,7 +68,7 @@ class RapidgatorNet(SimpleHoster):
 
         except BadHeader as e:
             status = e.code
-            message = e.message
+            message = e
 
         if status == 200:
             return json_data['response']

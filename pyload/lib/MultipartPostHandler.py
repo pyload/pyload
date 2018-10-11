@@ -88,7 +88,7 @@ class MultipartPostHandler(BaseHandler):
 
         return request
 
-    def multipart_encode(vars, files, boundary=None, buf=None):
+    def multipart_encode(self, vars, files, boundary=None, buf=None):
         if boundary is None:
             boundary = mimetools.choose_boundary()
         if buf is None:

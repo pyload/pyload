@@ -1066,7 +1066,7 @@ class Api(Iface):
             ret = self.core.hookManager.callRPC(plugin, func, args, parse)
             return str(ret)
         except Exception as e:
-            raise ServiceException(e.message)
+            raise ServiceException(e)
 
     @permission(PERMS.STATUS)
     def getAllInfo(self):

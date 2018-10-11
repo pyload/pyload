@@ -67,7 +67,7 @@ class HookManager(object):
         self.lock = RLock()
         self.createIndex()
 
-    def try_catch(func):
+    def try_catch(self, func):
         def new(*args):
             try:
                 return func(*args)

@@ -5,6 +5,7 @@ import threading
 from builtins import _
 from os.path import exists
 
+webinterface = None
 core = None
 setup = None
 log = logging.getLogger("log")

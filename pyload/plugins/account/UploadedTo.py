@@ -77,5 +77,5 @@ class UploadedTo(Account):
                 self.fail_login(m.group(1))
 
         except Exception as e:
-            self.log_error(e.message, trace=True)
-            self.fail_login(e.message)
+            self.log_error(e, trace=True)
+            self.fail_login(e)

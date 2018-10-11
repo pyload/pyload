@@ -17,6 +17,7 @@ from pyload.plugins.captcha.CoinHive import CoinHive
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.Plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

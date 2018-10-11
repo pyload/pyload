@@ -8,6 +8,7 @@
 import re
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from builtins import _
 
 
 class BasketbuildCom(SimpleHoster):
