@@ -9,7 +9,7 @@ from logging import getLogger
 from urllib.parse import quote, urlencode
 
 import pycurl
-from pyload.plugins.Plugin import Abort
+from pyload.plugins.plugin import Abort
 
 
 def myquote(url):

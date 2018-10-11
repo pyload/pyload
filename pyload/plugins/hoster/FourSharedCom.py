@@ -3,7 +3,7 @@
 import re
 from builtins import chr
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class FourSharedCom(SimpleHoster):

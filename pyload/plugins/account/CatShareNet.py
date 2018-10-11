@@ -3,7 +3,7 @@
 import re
 import time
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.account import Account
 
 
 class CatShareNet(Account):

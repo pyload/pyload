@@ -12,10 +12,10 @@ from builtins import _, map, object, pypath, range, str, zip
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
-from pyload.network.CookieJar import CookieJar
-from pyload.network.HTTPRequest import HTTPRequest
-from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.internal.Plugin import Abort, Skip
+from pyload.network.cookie_jar import CookieJar
+from pyload.network.http_request import HTTPRequest
+from pyload.plugins.internal.hoster import Hoster
+from pyload.plugins.internal.plugin import Abort, Skip
 from pyload.plugins.utils import (exists, isexecutable, json, reduce, renice,
                                   replace_patterns, which)
 

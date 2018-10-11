@@ -2,7 +2,7 @@
 
 import http.client
 
-from pyload.plugins.internal.Notifier import Notifier
+from pyload.plugins.internal.notifier import Notifier
 
 
 class WindowsPhoneNotify(Notifier):

@@ -11,7 +11,7 @@ from os.path import abspath, exists, isfile, join
 from sys import version_info
 from traceback import print_exc
 
-from pyload.config.ConfigParser import IGNORE
+from pyload.config.config_parser import IGNORE
 from pyload.lib.SafeEval import const_eval as literal_eval
 
 

@@ -2,7 +2,7 @@
 from builtins import _
 
 from pyload.database import style
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 
 
 class DeleteFinished(Addon):

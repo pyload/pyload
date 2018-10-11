@@ -5,7 +5,7 @@ import time
 from builtins import _, str
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 from pyload.plugins.utils import json
 
 

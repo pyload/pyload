@@ -9,7 +9,7 @@ from re import search
 from time import sleep
 
 import pycurl
-from pyload.network.HTTPRequest import HTTPRequest
+from pyload.network.http_request import HTTPRequest
 from pyload.utils.utils import fs_encode
 
 

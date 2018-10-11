@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadCrypter import DeadCrypter
+from pyload.plugins.internal.deadcrypter import DeadCrypter
 
 
 class Movie2KTo(DeadCrypter):

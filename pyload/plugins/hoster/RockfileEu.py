@@ -6,9 +6,9 @@ import urllib.parse
 import urllib.request
 from builtins import chr
 
-from pyload.network.HTTPRequest import BadHeader
+from pyload.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class RockfileEu(SimpleHoster):

@@ -5,7 +5,7 @@ import re
 import urllib.parse
 from builtins import range, str
 
-from pyload.plugins.internal.XFSCrypter import XFSCrypter
+from pyload.plugins.internal.xfscrypter import XFSCrypter
 
 
 class TusfilesNetFolder(XFSCrypter):

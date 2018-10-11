@@ -7,7 +7,7 @@ import urllib.request
 from builtins import _, chr
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class DepositfilesCom(SimpleHoster):

@@ -8,9 +8,9 @@ from builtins import _, range
 
 from future.utils import with_metaclass
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.Base import Base
-from pyload.plugins.internal.Plugin import Fail
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.base import Base
+from pyload.plugins.internal.plugin import Fail
 from pyload.plugins.utils import encode, exists, fsjoin, parse_name, safejoin
 
 

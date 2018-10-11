@@ -5,7 +5,7 @@ import re
 from builtins import _, filter
 
 import Crypto.Cipher.AES
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.crypter import Crypter
 
 
 class ShareLinksBiz(Crypter):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import json, parse_size
 
 

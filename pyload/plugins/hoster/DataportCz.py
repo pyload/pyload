@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class DataportCz(SimpleHoster):

@@ -3,7 +3,7 @@
 import sys
 import tarfile
 
-from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor
+from pyload.plugins.internal.extractor import ArchiveError, CRCError, Extractor
 from pyload.plugins.utils import encode
 
 

@@ -3,7 +3,7 @@
 import re
 import urllib.parse
 
-from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.simplecrypter import SimpleCrypter
 from pyload.plugins.utils import json
 
 

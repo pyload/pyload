@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pyload.network.RequestFactory import getRequest as get_request
-from pyload.plugins.internal.Notifier import Notifier
+from pyload.network.request_factory import getRequest as get_request
+from pyload.plugins.internal.notifier import Notifier
 
 
 class DiscordNotifier(Notifier):

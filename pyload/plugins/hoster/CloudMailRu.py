@@ -2,7 +2,7 @@
 
 import base64
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import json
 
 

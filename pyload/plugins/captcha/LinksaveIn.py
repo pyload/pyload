@@ -4,7 +4,7 @@ import glob
 import os
 from builtins import range
 
-from pyload.plugins.internal.OCR import OCR
+from pyload.plugins.internal.ocr import OCR
 
 try:
     from PIL import Image

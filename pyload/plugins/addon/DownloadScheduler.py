@@ -3,7 +3,7 @@ import re
 import time
 from builtins import _
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 
 
 class DownloadScheduler(Addon):

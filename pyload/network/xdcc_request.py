@@ -9,7 +9,7 @@ import struct
 import time
 from builtins import object
 
-from pyload.plugins.Plugin import Abort
+from pyload.plugins.plugin import Abort
 
 
 class XDCCRequest(object):

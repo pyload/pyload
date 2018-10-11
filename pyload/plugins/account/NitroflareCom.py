@@ -2,7 +2,7 @@
 import time
 from builtins import _
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.account import Account
 from pyload.plugins.utils import json
 
 

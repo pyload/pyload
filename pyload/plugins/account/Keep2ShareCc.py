@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.network.RequestFactory import getURL as get_url
-from pyload.plugins.internal.Account import Account
+from pyload.network.http_request import BadHeader
+from pyload.network.request_factory import getURL as get_url
+from pyload.plugins.internal.account import Account
 from pyload.plugins.utils import json
 
 

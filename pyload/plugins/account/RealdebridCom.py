@@ -2,8 +2,8 @@
 import time
 from builtins import _
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.MultiAccount import MultiAccount
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import json
 
 

@@ -2,7 +2,7 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.MultiCrypter import MultiCrypter
+from pyload.plugins.internal.multicrypter import MultiCrypter
 
 
 class LinkdecrypterCom(MultiCrypter):

@@ -9,9 +9,9 @@ from shutil import move
 from time import time
 
 import pycurl
-from pyload.network.HTTPChunk import ChunkInfo, HTTPChunk
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.Plugin import Abort
+from pyload.network.http_chunk import ChunkInfo, HTTPChunk
+from pyload.network.http_request import BadHeader
+from pyload.plugins.plugin import Abort
 from pyload.utils.utils import fs_encode, save_join
 
 

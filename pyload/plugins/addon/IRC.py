@@ -11,7 +11,7 @@ from threading import Thread
 
 import pycurl
 from pyload.Api import FileDoesNotExists, PackageDoesNotExists
-from pyload.plugins.internal.Notifier import Notifier
+from pyload.plugins.internal.notifier import Notifier
 from pyload.plugins.utils import format_size
 
 

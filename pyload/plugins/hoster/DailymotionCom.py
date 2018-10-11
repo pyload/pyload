@@ -2,9 +2,9 @@
 import re
 from builtins import _
 
-from pyload.datatype.PyFile import statusMap
-from pyload.network.RequestFactory import getURL as get_url
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.datatype.pyfile import statusMap
+from pyload.network.request_factory import getURL as get_url
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import json
 
 

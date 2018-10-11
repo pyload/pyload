@@ -5,7 +5,7 @@
 # http://data.hu/get/6381232/random.bin
 
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class DataHu(SimpleHoster):

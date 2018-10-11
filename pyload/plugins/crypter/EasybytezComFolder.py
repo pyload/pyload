@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFSCrypter import XFSCrypter
+from pyload.plugins.internal.xfscrypter import XFSCrypter
 
 
 class EasybytezComFolder(XFSCrypter):

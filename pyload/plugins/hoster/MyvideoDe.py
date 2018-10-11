@@ -3,7 +3,7 @@
 import re
 from builtins import str
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import html_unescape
 
 

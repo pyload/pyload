@@ -7,7 +7,7 @@ import zlib
 from builtins import _
 from threading import Event
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import encode, format_time, fsjoin, threaded
 
 

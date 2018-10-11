@@ -9,8 +9,8 @@ from builtins import _, object, range, str
 
 import Crypto.Cipher.AES
 import Crypto.Util.Counter
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import decode, encode, exists, fsjoin, json
 
 ############################ General errors ###################################

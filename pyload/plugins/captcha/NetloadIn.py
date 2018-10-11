@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.OCR import OCR
+from pyload.plugins.internal.ocr import OCR
 
 
 class NetloadIn(OCR):

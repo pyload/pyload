@@ -4,7 +4,7 @@ import re
 import time
 import urllib.parse
 
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.account import Account
 
 
 class FilejungleCom(Account):

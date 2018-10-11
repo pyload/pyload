@@ -4,9 +4,9 @@ import uuid
 from builtins import _
 
 import pycurl
-from pyload.network.HTTPRequest import BadHeader
-from pyload.network.RequestFactory import getRequest as get_request
-from pyload.plugins.internal.Addon import Addon
+from pyload.network.http_request import BadHeader
+from pyload.network.request_factory import getRequest as get_request
+from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import threaded
 
 

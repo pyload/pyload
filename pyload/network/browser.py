@@ -3,8 +3,8 @@
 from builtins import object
 from logging import getLogger
 
-from pyload.network.HTTPDownload import HTTPDownload
-from pyload.network.HTTPRequest import HTTPRequest
+from pyload.network.http_download import HTTPDownload
+from pyload.network.http_request import HTTPRequest
 
 
 class Browser(object):

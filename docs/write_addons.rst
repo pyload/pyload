@@ -47,8 +47,8 @@ The easiest way is to overwrite specific methods defined by the :class:`addon <p
 The name is indicating when the function gets called.
 See :class:`addon <pyload.plugins.addon.addon>` page for a complete listing.
 
-You should be aware of the arguments the Addon are called with, whether its a :class:`PyFile <pyload.datatype.PyFile.PyFile>`
-or :class:`PyPackage <pyload.datatype.PyPackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
+You should be aware of the arguments the Addon are called with, whether its a :class:`PyFile <pyload.datatype.pyfile.PyFile>`
+or :class:`PyPackage <pyload.datatype.pypackage.PyPackage>` you should read its related documentation to know how to access her great power and manipulate them.
 
 A basic excerpt would look like: ::
 

@@ -6,8 +6,8 @@ from builtins import _, object, str
 from os.path import join
 from time import time
 
-from pyload.datatype.PyFile import PyFile
-from pyload.network.RequestFactory import getURL
+from pyload.datatype.pyfile import PyFile
+from pyload.network.request_factory import getURL
 from pyload.remote import activated
 from pyload.utils.packagetools import parseNames
 from pyload.utils.utils import compare_time, freeSpace, json

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 
 
 class EventMapper(Addon):

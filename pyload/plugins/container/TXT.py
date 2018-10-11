@@ -2,7 +2,7 @@
 import codecs
 from builtins import _
 
-from pyload.plugins.internal.Container import Container
+from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import encode
 
 

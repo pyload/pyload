@@ -3,8 +3,8 @@
 from builtins import str
 
 import pycurl
-from pyload.network.RequestFactory import getRequest as get_request
-from pyload.plugins.internal.Notifier import Notifier
+from pyload.network.request_factory import getRequest as get_request
+from pyload.plugins.internal.notifier import Notifier
 
 
 class PushBullet(Notifier):

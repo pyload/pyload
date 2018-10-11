@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.XFSAccount import XFSAccount
+from pyload.plugins.internal.xfsaccount import XFSAccount
 
 
 class UptoboxCom(XFSAccount):

@@ -3,9 +3,9 @@ import re
 import time
 from builtins import _
 
-from pyload.network.RequestFactory import getURL as get_url
+from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class ShareonlineBiz(SimpleHoster):

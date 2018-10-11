@@ -2,7 +2,7 @@
 from builtins import _
 from os.path import exists
 
-from pyload.remote.RemoteManager import BackendBase
+from pyload.remote.remote_manager import BackendBase
 from pyload.remote.thriftbackend.Processor import Processor
 from pyload.remote.thriftbackend.Protocol import ProtocolFactory
 from pyload.remote.thriftbackend.Socket import ServerSocket

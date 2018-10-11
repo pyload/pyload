@@ -5,8 +5,8 @@
 #   https://drive.google.com/file/d/0B6RNTe4ygItBQm15RnJiTmMyckU/view?pli=1
 
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import json
 
 

@@ -11,13 +11,13 @@ import urllib.parse
 from builtins import _, filter, range, str
 
 import Crypto.Cipher.AES
-from pyload.network.CookieJar import CookieJar
-from pyload.network.HTTPRequest import BadHeader, HTTPRequest
+from pyload.network.cookie_jar import CookieJar
+from pyload.network.http_request import BadHeader, HTTPRequest
 from pyload.plugins.captcha.CoinHive import CoinHive
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.Crypter import Crypter
-from pyload.plugins.internal.Plugin import Abort
+from pyload.plugins.internal.crypter import Crypter
+from pyload.plugins.internal.plugin import Abort
 
 
 class BIGHTTPRequest(HTTPRequest):

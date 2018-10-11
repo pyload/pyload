@@ -5,7 +5,7 @@ from builtins import _, str
 
 import Crypto.Hash.SHA
 import pycurl
-from pyload.plugins.internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import json
 
 

@@ -8,8 +8,8 @@ from threading import RLock
 from types import MethodType
 
 from _thread import start_new_thread
-from pyload.manager.PluginManager import literal_eval
-from pyload.thread.PluginThread import AddonThread
+from pyload.manager.plugin_manager import literal_eval
+from pyload.thread.plugin_thread import AddonThread
 from pyload.utils.utils import lock
 
 

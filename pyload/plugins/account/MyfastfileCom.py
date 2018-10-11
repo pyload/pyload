@@ -2,7 +2,7 @@
 import time
 from builtins import _
 
-from pyload.plugins.internal.MultiAccount import MultiAccount
+from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import json
 
 

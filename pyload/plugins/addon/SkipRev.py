@@ -2,8 +2,8 @@
 import re
 from builtins import _
 
-from pyload.datatype.PyFile import PyFile
-from pyload.plugins.internal.Addon import Addon
+from pyload.datatype.pyfile import PyFile
+from pyload.plugins.internal.addon import Addon
 
 
 class SkipRev(Addon):

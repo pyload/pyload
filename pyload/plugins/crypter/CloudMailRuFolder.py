@@ -6,7 +6,7 @@ import urllib.parse
 import urllib.request
 from builtins import _
 
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.crypter import Crypter
 from pyload.plugins.utils import json
 
 

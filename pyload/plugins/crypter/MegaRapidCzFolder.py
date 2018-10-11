@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.simplecrypter import SimpleCrypter
 
 
 class MegaRapidCzFolder(SimpleCrypter):

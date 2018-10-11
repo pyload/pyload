@@ -4,7 +4,7 @@ from builtins import chr, range
 
 import Crypto.PublicKey.RSA
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
-from pyload.plugins.internal.Account import Account
+from pyload.plugins.internal.account import Account
 
 
 class MegaCoNz(Account):

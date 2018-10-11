@@ -1,6 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.DeadHoster import DeadHoster
+from pyload.plugins.internal.deadhoster import DeadHoster
 
 
 class FreeWayMe(DeadHoster):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.internal.Captcha import Captcha
+from pyload.plugins.internal.captcha import Captcha
 
 
 class CaptchaService(Captcha):

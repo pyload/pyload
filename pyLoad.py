@@ -21,18 +21,18 @@ from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
 from pyload import inithomedir, remote
-from pyload.config.ConfigParser import ConfigParser
+from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
-from pyload.manager.AccountManager import AccountManager
-from pyload.manager.CaptchaManager import CaptchaManager
-from pyload.manager.PluginManager import PluginManager
+from pyload.manager.account_manager import AccountManager
+from pyload.manager.captcha_manager import CaptchaManager
+from pyload.manager.plugin_manager import PluginManager
 from pyload.manager.event_manager import EventManager
-from pyload.network.RequestFactory import RequestFactory
-from pyload.remote.RemoteManager import RemoteManager
+from pyload.network.request_factory import RequestFactory
+from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
-from pyload.utils.JsEngine import JsEngine
+from pyload.utils.js_engine import JsEngine
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
-from pyload.webui.ServerThread import WebServer
+from pyload.webui.server_thread import WebServer
 
 CURRENT_VERSION = "0.5.0"
 
@@ -410,8 +410,8 @@ class Core(object):
         # later imported because they would trigger api import, and remote value
         # not set correctly
         from pyload import Api
-        from pyload.manager.AddonManager import AddonManager
-        from pyload.manager.ThreadManager import ThreadManager
+        from pyload.manager.addon_manager import AddonManager
+        from pyload.manager.thread_manager import ThreadManager
 
         if Api.activated != self.remote:
             self.log.warning("Import error: API remote status not correct.")
@@ -473,7 +473,7 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         # test api
-        #        from pyload.utils.APIExerciser import startApiExerciser
+        #        from pyload.utils.api_exerciser import startApiExerciser
         #        startApiExerciser(self, 3)
 
         # some memory stats

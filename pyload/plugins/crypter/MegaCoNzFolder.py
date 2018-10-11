@@ -2,7 +2,7 @@
 from builtins import _
 
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.crypter import Crypter
 
 
 class MegaCoNzFolder(Crypter):

@@ -3,7 +3,7 @@
 import random
 from builtins import str
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class GigapetaCom(SimpleHoster):

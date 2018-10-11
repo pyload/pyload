@@ -11,8 +11,8 @@ from time import sleep, time
 from traceback import print_exc
 
 import pycurl
-from pyload.datatype.PyFile import PyFile
-from pyload.network.RequestFactory import getURL
+from pyload.datatype.pyfile import PyFile
+from pyload.network.request_factory import getURL
 from pyload.thread import PluginThread
 from pyload.utils.utils import freeSpace, lock
 

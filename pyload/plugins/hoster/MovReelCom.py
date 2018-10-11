@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.XFSHoster import XFSHoster
+from pyload.plugins.internal.xfshoster import XFSHoster
 
 
 class MovReelCom(XFSHoster):

@@ -12,7 +12,7 @@ from builtins import _, range
 import Crypto.Cipher.ARC4
 import pycurl
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 from pyload.plugins.utils import timestamp
 
 

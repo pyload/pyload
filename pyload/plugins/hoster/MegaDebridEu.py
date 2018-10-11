@@ -2,8 +2,8 @@
 from builtins import _
 
 import pycurl
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import encode, json
 
 

@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 
 
 class LinkdecrypterComHook(Addon):

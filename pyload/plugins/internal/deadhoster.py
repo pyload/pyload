@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.hoster import Hoster
 
 
 class DeadHoster(Hoster):

@@ -3,7 +3,7 @@
 import re
 from builtins import _, range
 
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import seconds_to_midnight
 
 

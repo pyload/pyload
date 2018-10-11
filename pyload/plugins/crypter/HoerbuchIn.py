@@ -3,7 +3,7 @@ import re
 from builtins import _
 
 import BeautifulSoup
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.crypter import Crypter
 
 
 class HoerbuchIn(Crypter):

@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request
 from builtins import _
 
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.hoster import Hoster
 
 
 class YourfilesTo(Hoster):

@@ -6,7 +6,7 @@ import urllib.request
 from builtins import _
 
 import MultipartPostHandler
-from pyload.plugins.internal.Container import Container
+from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import encode, fsjoin
 
 

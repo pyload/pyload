@@ -2,7 +2,7 @@
 from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 class UploadgigCom(SimpleHoster):

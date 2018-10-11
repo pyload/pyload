@@ -4,7 +4,7 @@ import os
 import subprocess
 from builtins import _, map
 
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode
 
 

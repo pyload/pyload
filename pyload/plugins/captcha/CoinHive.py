@@ -3,7 +3,7 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.CaptchaService import CaptchaService
+from pyload.plugins.internal.captchaservice import CaptchaService
 
 
 class CoinHive(CaptchaService):

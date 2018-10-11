@@ -5,7 +5,7 @@ from builtins import str
 
 import Crypto.Hash.SHA
 import pycurl
-from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import json
 
 

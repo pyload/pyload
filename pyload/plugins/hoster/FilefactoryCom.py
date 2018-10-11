@@ -2,9 +2,9 @@
 import re
 from builtins import _
 
-from pyload.network.RequestFactory import getURL as get_url
-from pyload.plugins.internal.Base import parse_fileInfo
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.network.request_factory import getURL as get_url
+from pyload.plugins.internal.base import parse_fileInfo
+from pyload.plugins.internal.simplehoster import SimpleHoster
 
 
 def get_info(urls):

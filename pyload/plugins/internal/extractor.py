@@ -3,7 +3,7 @@
 import os
 import re
 
-from pyload.plugins.internal.Plugin import Plugin
+from pyload.plugins.internal.plugin import Plugin
 from pyload.plugins.utils import encode
 
 

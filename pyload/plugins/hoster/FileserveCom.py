@@ -2,9 +2,9 @@
 import re
 from builtins import _
 
-from pyload.network.RequestFactory import getURL as get_url
+from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import json, parse_size, seconds_to_midnight
 
 

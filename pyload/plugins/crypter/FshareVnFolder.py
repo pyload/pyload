@@ -3,7 +3,7 @@
 import re
 
 import pycurl
-from pyload.plugins.internal.Crypter import Crypter
+from pyload.plugins.internal.crypter import Crypter
 from pyload.plugins.utils import json, replace_patterns
 
 

@@ -3,8 +3,8 @@
 import re
 import time
 
-from pyload.network.HTTPRequest import BadHeader
-from pyload.plugins.internal.Account import Account
+from pyload.network.http_request import BadHeader
+from pyload.plugins.internal.account import Account
 
 
 class OneFichierCom(Account):

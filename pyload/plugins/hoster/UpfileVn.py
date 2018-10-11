@@ -2,7 +2,7 @@
 
 import hashlib
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.internal.simplehoster import SimpleHoster
 from pyload.plugins.utils import json
 
 

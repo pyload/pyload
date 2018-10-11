@@ -5,9 +5,9 @@ import re
 import urllib.parse
 from builtins import _, hex, next, object, str
 
-from pyload.network.HTTPRequest import BadHeader
+from pyload.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.Addon import Addon
+from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import parse_html_header
 
 

@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.internal.simplecrypter import SimpleCrypter
 
 
 class FreakhareComFolder(SimpleCrypter):
