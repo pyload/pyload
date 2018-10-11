@@ -368,7 +368,7 @@ class Cli(object):
                     check = "Unknown"
 
                 print("{:-45} {:-12}\t {:-15}\t {}".format(status.name,
-                                                        formatSize(status.size), status.plugin, check))
+                                                           formatSize(status.size), status.plugin, check))
 
             if result.rid == -1:
                 break

@@ -177,9 +177,9 @@ class HTTPChunk(HTTPRequest):
                     range = "{}-".format(self.arrived + self.range[0])
                 else:
                     range = "{}-{}".format(self.arrived +
-                                               self.range[0], min(self.range[1] +
-                                                                  1, self.p.size -
-                                                                  1))
+                                           self.range[0], min(self.range[1] +
+                                                              1, self.p.size -
+                                                              1))
 
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -193,7 +193,7 @@ class HTTPChunk(HTTPRequest):
                     range = "{}-".format(self.range[0])
                 else:
                     range = "{}-{}".format(self.range[0],
-                                               min(self.range[1] + 1, self.p.size - 1))
+                                           min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)

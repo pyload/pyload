@@ -126,7 +126,9 @@ class Hoster(Base):
         try:
             unfinished = any(
                 fdata.get('status') in (
-                    3, 7) for fid, fdata in pypack.getChildren().items() if fid != self.pyfile.id)
+                    3,
+                    7) for fid,
+                fdata in pypack.getChildren().items() if fid != self.pyfile.id)
             if unfinished:
                 return
 
