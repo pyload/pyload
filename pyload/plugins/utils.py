@@ -23,7 +23,7 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import _, hookManager, map, object, str
+from builtins import _, addonManager, map, object, str
 
 try:
     import simplejson as json
@@ -135,7 +135,7 @@ class Expose(object):
     Used for decoration to declare rpc services
     """
     def __new__(cls, fn, *args, **kwargs):
-        hookManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
+        addonManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
         return fn
 
 
@@ -243,7 +243,7 @@ def lock(fn):
 
 def threaded(fn):
     def run(*args, **kwargs):
-        hookManager.startThread(fn, *args, **kwargs)
+        addonManager.startThread(fn, *args, **kwargs)
 
     return run
 

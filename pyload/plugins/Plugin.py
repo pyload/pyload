@@ -517,7 +517,7 @@ class Plugin(Base):
 
         filename = join(location, name)
 
-        self.pyload.hookManager.dispatchEvent(
+        self.pyload.addonManager.dispatchEvent(
             "downloadStarts", self.pyfile, url, filename)
 
         try:

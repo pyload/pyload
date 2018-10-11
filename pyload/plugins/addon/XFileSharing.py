@@ -9,7 +9,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class XFileSharing(Addon):
     __name__ = "XFileSharing"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.56"
     __status__ = "testing"
 

@@ -7,7 +7,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class UnSkipOnFail(Addon):
     __name__ = "UnSkipOnFail"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.14"
     __status__ = "testing"
 

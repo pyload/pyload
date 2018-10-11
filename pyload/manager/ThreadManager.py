@@ -169,7 +169,7 @@ class ThreadManager(object):
 
         ip = self.getIP()
 
-        self.pyload.hookManager.beforeReconnecting(ip)
+        self.pyload.addonManager.beforeReconnecting(ip)
 
         self.log.debug("Old IP: {}".format(ip))
 
@@ -186,7 +186,7 @@ class ThreadManager(object):
         reconn.wait()
         sleep(1)
         ip = self.getIP()
-        self.pyload.hookManager.afterReconnecting(ip)
+        self.pyload.addonManager.afterReconnecting(ip)
 
         self.log.info(_("Reconnected, new IP: {}").format(ip))
 

@@ -268,12 +268,12 @@ class Base(Plugin):
         self._setup()
 
         # TODO: Enable in 0.6.x
-        # self.pyload.hookManager.downloadPreparing(self.pyfile)
+        # self.pyload.addonManager.downloadPreparing(self.pyfile)
         # self.check_status()
 
         # TODO: Remove in 0.6.x
         if self.__type__ == "crypter":
-            self.pyload.hookManager.downloadPreparing(self.pyfile)
+            self.pyload.addonManager.downloadPreparing(self.pyfile)
             self.check_status()
 
         self.pyfile.setStatus("starting")

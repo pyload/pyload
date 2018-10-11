@@ -10,7 +10,7 @@ from pyload.plugins.utils import Expose, encode
 
 class ExternalScripts(Addon):
     __name__ = "ExternalScripts"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.73"
     __status__ = "testing"
 

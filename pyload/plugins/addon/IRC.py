@@ -17,7 +17,7 @@ from pyload.plugins.utils import format_size
 
 class IRC(Thread, Notifier):
     __name__ = "IRC"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.26"
     __status__ = "testing"
 

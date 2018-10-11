@@ -10,7 +10,7 @@ from pyload.plugins.utils import fsjoin, threaded
 
 class MergeFiles(Addon):
     __name__ = "MergeFiles"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.22"
     __status__ = "testing"
 

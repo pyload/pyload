@@ -13,7 +13,7 @@ from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
 
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.20"
     __status__ = "testing"
 
@@ -368,9 +368,9 @@ class UpdateManager(Addon):
                 py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 
-                if plugin_type == "hook":
+                if plugin_type == "addon":
                     try:
-                        self.manager.deactivateHook(plugin_name)
+                        self.manager.deactivateAddon(plugin_name)
 
                     except Exception as e:
                         self.log_debug(e, trace=True)

@@ -4,8 +4,8 @@ Addons
 ======
 
 A Addon is a python file which is located at :file:`pyload/plugins/addon`.
-The :class:`HookManager <pyload.manager.HookManager.HookManager>` will load it automatically on startup. Only one instance exists
-over the complete lifetime of pyload. Your addon can interact on various events called by the :class:`HookManager <pyload.manager.HookManager.HookManager>`,
+The :class:`AddonManager <pyload.manager.AddonManager.AddonManager>` will load it automatically on startup. Only one instance exists
+over the complete lifetime of pyload. Your addon can interact on various events called by the :class:`AddonManager <pyload.manager.AddonManager.AddonManager>`,
 do something complete autonomic and has full access to the :class:`Api <pyload.Api.Api>` and every detail of pyLoad.
 The UpdateManager, CaptchaTrader, UnRar and many more are realised as addons.
 
@@ -54,7 +54,7 @@ A basic excerpt would look like: ::
 
     from pyload.plugins.addon import addon
 
-    class YourHook(addon):
+    class YourAddon(addon):
         """
         Your addon code here.
         """
@@ -70,7 +70,7 @@ in a thread, in order to not block the main thread. This should be used for all 
 
 Another and more flexible and powerful way is to use event listener.
 All addon methods exists as event and very useful additional events are dispatched by the core. For a little overview look
-at :class:`HookManager <pyload.manager.HookManager.HookManager>`. Keep in mind that you can define own events and other people may listen on them.
+at :class:`AddonManager <pyload.manager.AddonManager.AddonManager>`. Keep in mind that you can define own events and other people may listen on them.
 
 For your convenience it's possible to register listeners automatical via the ``event_map`` attribute.
 It requires a `dict` that maps event names to function names or a `list` of function names. It's important that all names are strings ::
@@ -96,7 +96,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
 Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
-:class:`HookManager <pyload.manager.HookManager.HookManager>`. Contrary to ``event_map``, ``function`` has to be a reference
+:class:`AddonManager <pyload.manager.AddonManager.AddonManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 
 We introduced events because it scales better if there a a huge amount of events and addons. So all future interaction will be exclusive

@@ -53,7 +53,7 @@ class ArchiveQueue(object):
 
 class ExtractArchive(Addon):
     __name__ = "ExtractArchive"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.67"
     __status__ = "testing"
 

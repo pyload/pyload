@@ -72,7 +72,7 @@ class MultiAccount(Account):
             self.pluginmodule = self.pyload.pluginManager.loadModule(self.plugintype, self.classname)
             self.pluginclass = self.pyload.pluginManager.loadClass(self.plugintype, self.classname)
 
-            self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
 
             interval = self.config.get('mh_interval', 12) * 60 * 60
             self.periodical.start(interval, threaded=True, delay=2)
@@ -81,7 +81,7 @@ class MultiAccount(Account):
             self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
 
     def plugins_updated(self, type_plugins):
-        if not any([t in ("internal", "hook") for t, n in type_plugins]):  #: do nothing if restart required
+        if not any([t in ("internal", "addon") for t, n in type_plugins]):  #: do nothing if restart required
             self.reactivate()
 
     def periodical_task(self):
@@ -301,12 +301,12 @@ class MultiAccount(Account):
 
         #: Make sure we have one active addon
         try:
-            self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addonManager.removeEvent("plugin_updated", self.plugins_updated)
 
         except ValueError:
             pass
 
-        self.pyload.hookManager.addEvent("plugin_updated", self.plugins_updated)
+        self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
 
         if refresh or not reloading:
             if not self.get_plugins(cached=False):
@@ -336,7 +336,7 @@ class MultiAccount(Account):
         self.log_info(_("Reverting back to default hosters"))
 
         try:
-            self.pyload.hookManager.removeEvent("plugin_updated", self.plugins_updated)
+            self.pyload.addonManager.removeEvent("plugin_updated", self.plugins_updated)
 
         except ValueError:
             pass

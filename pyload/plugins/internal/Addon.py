@@ -8,7 +8,7 @@ from pyload.plugins.utils import Periodical, isiterable
 
 class Addon(Plugin):
     __name__ = "Addon"
-    __type__ = "hook"  # TODO: Change to `addon` in 0.6.x
+    __type__ = "addon"  # TODO: Change to `addon` in 0.6.x
     __version__ = "0.55"
     __status__ = "stable"
 
@@ -21,7 +21,7 @@ class Addon(Plugin):
     def __init__(self, core, manager):
         self._init(core)
 
-        #: `HookManager`
+        #: `AddonManager`
         self.manager = manager
         self.lock = threading.Lock()
 
@@ -30,7 +30,7 @@ class Addon(Plugin):
 
         self.info['ip'] = None  # TODO: Remove in 0.6.x
 
-        #: Callback of periodical job task, used by HookManager
+        #: Callback of periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
         self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
 
@@ -47,7 +47,7 @@ class Addon(Plugin):
 
     # TODO: Remove in 0.6.x
     def _log(self, level, plugintype, pluginname, messages):
-        plugintype = "addon" if plugintype == "hook" else plugintype
+        plugintype = "addon" if plugintype == "addon" else plugintype
         return Plugin._log(self, level, plugintype, pluginname, messages)
 
     # TODO: Remove in 0.6.x

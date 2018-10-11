@@ -52,7 +52,7 @@ class CaptchaManager(object):
         # if cli:  # Client connected -> should solve the captcha
         #     task.setWaiting(50)  # Wait minimum 50 sec for response
 
-        for plugin in self.pyload.hookManager.activePlugins():
+        for plugin in self.pyload.addonManager.activePlugins():
             try:
                 plugin.newCaptchaTask(task)
             except Exception:

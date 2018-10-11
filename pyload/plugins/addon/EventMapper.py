@@ -5,7 +5,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class EventMapper(Addon):
     __name__ = "EventMapper"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.02"
     __status__ = "testing"
 

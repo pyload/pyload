@@ -27,7 +27,7 @@ class ImageTyperzException(Exception):
 
 class ImageTyperz(Addon):
     __name__ = "ImageTyperz"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.15"
     __status__ = "testing"
 

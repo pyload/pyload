@@ -122,7 +122,7 @@ class FileHandler(object):
     def addLinks(self, urls, package):
         """adds links"""
 
-        self.pyload.hookManager.dispatchEvent("linksAdded", urls, package)
+        self.pyload.addonManager.dispatchEvent("linksAdded", urls, package)
 
         data = self.pyload.pluginManager.parseUrls(urls)
 
@@ -169,7 +169,7 @@ class FileHandler(object):
 
         self.db.deletePackage(p)
         self.pyload.pullManager.addEvent(e)
-        self.pyload.hookManager.dispatchEvent("packageDeleted", id)
+        self.pyload.addonManager.dispatchEvent("packageDeleted", id)
 
         if id in self.packageCache:
             del self.packageCache[id]
@@ -374,7 +374,7 @@ class FileHandler(object):
         """checks if all files are finished and dispatch event"""
 
         if not self.getQueueCount(True):
-            self.pyload.hookManager.dispatchEvent("allDownloadsFinished")
+            self.pyload.addonManager.dispatchEvent("allDownloadsFinished")
             self.pyload.log.debug("All downloads finished")
             return True
 
@@ -387,7 +387,7 @@ class FileHandler(object):
         self.resetCount()
 
         if not self.db.processcount(1, fid):
-            self.pyload.hookManager.dispatchEvent("allDownloadsProcessed")
+            self.pyload.addonManager.dispatchEvent("allDownloadsProcessed")
             self.pyload.log.debug("All downloads processed")
             return True
 
@@ -543,7 +543,7 @@ class FileHandler(object):
         self.pyload.pullManager.addEvent(e)
 
     def checkPackageFinished(self, pyfile):
-        """ checks if package is finished and calls hookmanager """
+        """ checks if package is finished and calls addonManager """
 
         ids = self.db.getUnfinished(pyfile.packageid)
         if not ids or (pyfile.id in ids and len(ids) == 1):
@@ -551,7 +551,7 @@ class FileHandler(object):
                 self.pyload.log.info(
                     _("Package finished: {}").format(
                         pyfile.package()).name)
-                self.pyload.hookManager.packageFinished(pyfile.package())
+                self.pyload.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
     def reCheckPackage(self, pid):

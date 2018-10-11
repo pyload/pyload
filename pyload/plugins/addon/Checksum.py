@@ -71,7 +71,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
 
 class Checksum(Addon):
     __name__ = "Checksum"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.34"
     __status__ = "testing"
 

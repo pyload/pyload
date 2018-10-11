@@ -7,7 +7,7 @@ from pyload.plugins.internal.Notifier import Notifier
 
 class WindowsPhoneNotify(Notifier):
     __name__ = "WindowsPhoneNotify"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.18"
     __status__ = "testing"
 

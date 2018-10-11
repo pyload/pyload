@@ -142,7 +142,7 @@ class Api(Iface):
         :param value: new config value
         :param section: 'plugin' or 'core
         """
-        self.pyload.hookManager.dispatchEvent(
+        self.pyload.addonManager.dispatchEvent(
             "configChanged", category, option, value, section)
 
         if section == "core":
@@ -1038,7 +1038,7 @@ class Api(Iface):
         :return: dict with this style: {"plugin": {"method": "description"}}
         """
         data = {}
-        for plugin, funcs in self.pyload.hookManager.methods.items():
+        for plugin, funcs in self.pyload.addonManager.methods.items():
             data[plugin] = funcs
 
         return data
@@ -1051,7 +1051,7 @@ class Api(Iface):
         :param func:
         :return: bool
         """
-        cont = self.pyload.hookManager.methods
+        cont = self.pyload.addonManager.methods
         return plugin in cont and func in cont[plugin]
 
     @permission(PERMS.STATUS)
@@ -1072,7 +1072,7 @@ class Api(Iface):
             raise ServiceDoesNotExists(plugin, func)
 
         try:
-            ret = self.pyload.hookManager.callRPC(plugin, func, args, parse)
+            ret = self.pyload.addonManager.callRPC(plugin, func, args, parse)
             return str(ret)
         except Exception as e:
             raise ServiceException(e)
@@ -1083,7 +1083,7 @@ class Api(Iface):
 
         :return: {"plugin": {"name": value } }
         """
-        return self.pyload.hookManager.getAllInfo()
+        return self.pyload.addonManager.getAllInfo()
 
     @permission(PERMS.STATUS)
     def getInfoByPlugin(self, plugin):
@@ -1092,7 +1092,7 @@ class Api(Iface):
         :param plugin: pluginname
         :return: dict of attr names mapped to value {"name": value}
         """
-        return self.pyload.hookManager.getInfo(plugin)
+        return self.pyload.addonManager.getInfo(plugin)
 
     def changePassword(self, user, oldpw, newpw):
         """ changes password for specific user """

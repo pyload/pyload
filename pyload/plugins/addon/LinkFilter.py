@@ -6,7 +6,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class LinkFilter(Addon):
     __name__ = "LinkFilter"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.16"
     __status__ = "testing"
 

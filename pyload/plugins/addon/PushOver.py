@@ -5,7 +5,7 @@ from pyload.plugins.internal.Notifier import Notifier
 
 class PushOver(Notifier):
     __name__ = "PushOver"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.07"
     __status__ = "testing"
 

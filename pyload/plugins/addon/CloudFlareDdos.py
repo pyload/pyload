@@ -175,7 +175,7 @@ class PreloadStub(object):
 
 class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.13"
     __status__ = "testing"
 

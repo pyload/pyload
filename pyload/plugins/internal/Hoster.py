@@ -89,7 +89,7 @@ class Hoster(Base):
             self._setup()
 
             # TODO: Enable in 0.6.x
-            # self.pyload.hookManager.downloadPreparing(self.pyfile)
+            # self.pyload.addonManager.downloadPreparing(self.pyfile)
             # self.check_status()
             self.check_duplicates()
 
@@ -120,7 +120,7 @@ class Hoster(Base):
     def _finalize(self):
         pypack = self.pyfile.package()
 
-        self.pyload.hookManager.dispatchEvent(
+        self.pyload.addonManager.dispatchEvent(
             "download_processed", self.pyfile)
 
         try:
@@ -130,7 +130,7 @@ class Hoster(Base):
             if unfinished:
                 return
 
-            self.pyload.hookManager.dispatchEvent("package_processed", pypack)
+            self.pyload.addonManager.dispatchEvent("package_processed", pypack)
 
             failed = any(fdata.get('status') in (1, 6, 8, 9, 14)
                          for fid, fdata in pypack.getChildren().items())
@@ -138,7 +138,7 @@ class Hoster(Base):
             if not failed:
                 return
 
-            self.pyload.hookManager.dispatchEvent("package_failed", pypack)
+            self.pyload.addonManager.dispatchEvent("package_failed", pypack)
 
         finally:
             self.check_status()
@@ -288,7 +288,7 @@ class Hoster(Base):
 
         self.set_permissions(dl_dir)
 
-        self.pyload.hookManager.dispatchEvent(
+        self.pyload.addonManager.dispatchEvent(
             "download_start", self.pyfile, dl_url, dl_filename)
         self.check_status()
 
@@ -371,7 +371,7 @@ class Hoster(Base):
             self.error(_("Empty file"))
 
         else:
-            self.pyload.hookManager.dispatchEvent(
+            self.pyload.addonManager.dispatchEvent(
                 "download_check", self.pyfile)
             self.check_status()
 

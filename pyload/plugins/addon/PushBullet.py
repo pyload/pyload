@@ -9,7 +9,7 @@ from pyload.plugins.internal.Notifier import Notifier
 
 class PushBullet(Notifier):
     __name__ = "PushBullet"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.05"
     __status__ = "testing"
 

@@ -7,7 +7,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class DeleteFinished(Addon):
     __name__ = "DeleteFinished"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.19"
     __status__ = "testing"
 

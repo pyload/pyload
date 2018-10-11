@@ -186,22 +186,22 @@ msgstr ""
 msgid "Not enough space left on device"
 msgstr ""
 
-#: pyload/manager/HookManager.py:90 pyload/plugins/internal/Addon.py:102
+#: pyload/manager/AddonManager.py:90 pyload/plugins/internal/Addon.py:102
 #, python-format
 msgid "Error executing addons: %s"
 msgstr ""
 
-#: pyload/manager/HookManager.py:140
+#: pyload/manager/AddonManager.py:140
 #, python-format
 msgid "Failed activating %(name)s"
 msgstr ""
 
-#: pyload/manager/HookManager.py:144
+#: pyload/manager/AddonManager.py:144
 #, python-format
 msgid "Activated plugins: %s"
 msgstr ""
 
-#: pyload/manager/HookManager.py:145
+#: pyload/manager/AddonManager.py:145
 #, python-format
 msgid "Deactivate plugins: %s"
 msgstr ""

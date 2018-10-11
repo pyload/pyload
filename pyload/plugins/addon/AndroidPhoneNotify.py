@@ -5,7 +5,7 @@ from pyload.plugins.internal.Notifier import Notifier
 
 class AndroidPhoneNotify(Notifier):
     __name__ = "AndroidPhoneNotify"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.16"
     __status__ = "testing"
 

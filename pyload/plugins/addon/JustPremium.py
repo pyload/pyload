@@ -8,7 +8,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class JustPremium(Addon):
     __name__ = "JustPremium"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.27"
     __status__ = "testing"
 

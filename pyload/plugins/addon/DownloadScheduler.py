@@ -9,7 +9,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.30"
     __status__ = "testing"
 

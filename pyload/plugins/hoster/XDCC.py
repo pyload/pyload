@@ -731,7 +731,7 @@ class XDCC(Hoster):
                 _("DOWNLOAD XDCC '{}' from {}:{:d}").format(
                     file_name, ip, port))
 
-            self.pyload.hookManager.dispatchEvent(
+            self.pyload.addonManager.dispatchEvent(
                 "download_start", self.pyfile, "{}:{}".format(
                     ip, port), dl_file)
 

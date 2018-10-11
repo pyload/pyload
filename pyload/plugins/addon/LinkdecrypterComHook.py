@@ -7,7 +7,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class LinkdecrypterComHook(Addon):
     __name__ = "LinkdecrypterComHook"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.11"
     __status__ = "broken"
 

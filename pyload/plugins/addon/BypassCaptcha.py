@@ -25,7 +25,7 @@ class BypassCaptchaException(Exception):
 
 class BypassCaptcha(Addon):
     __name__ = "BypassCaptcha"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.14"
     __status__ = "testing"
 

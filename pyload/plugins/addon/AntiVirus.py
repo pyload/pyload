@@ -16,7 +16,7 @@ except ImportError:
 
 class AntiVirus(Addon):
     __name__ = "AntiVirus"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.21"
     __status__ = "broken"
 

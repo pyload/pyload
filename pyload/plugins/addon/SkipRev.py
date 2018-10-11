@@ -9,7 +9,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class SkipRev(Addon):
     __name__ = "SkipRev"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.38"
     __status__ = "testing"
 

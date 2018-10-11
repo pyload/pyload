@@ -79,8 +79,8 @@ class PluginManager(object):
         self.plugins["hoster"] = self.hosterPlugins
         merge(default_config, config)
 
-        self.hookPlugins, config = self.parse("addon")
-        self.plugins["hook"] = self.hookPlugins
+        self.addonPlugins, config = self.parse("addon")
+        self.plugins["addon"] = self.addonPlugins
         merge(default_config, config)
 
         self.captchaPlugins, config = self.parse("captcha")

@@ -11,7 +11,7 @@ from pyload.plugins.utils import encode, fsjoin
 
 class HotFolder(Addon):
     __name__ = "HotFolder"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.24"
     __status__ = "testing"
 

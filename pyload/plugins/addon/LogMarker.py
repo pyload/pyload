@@ -9,7 +9,7 @@ from pyload.plugins.utils import seconds_to_nexthour
 
 class LogMarker(Addon):
     __name__ = "LogMarker"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.08"
     __status__ = "testing"
 

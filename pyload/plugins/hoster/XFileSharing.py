@@ -20,7 +20,7 @@ class XFileSharing(XFSHoster):
                   ("chk_filesize", "bool", "Check file size", True),
                   ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
 
-    __description__ = """XFileSharing dummy hoster plugin for hook"""
+    __description__ = """XFileSharing dummy hoster plugin for addon"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 

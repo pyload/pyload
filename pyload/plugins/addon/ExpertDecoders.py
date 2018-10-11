@@ -13,7 +13,7 @@ from pyload.plugins.utils import threaded
 
 class ExpertDecoders(Addon):
     __name__ = "ExpertDecoders"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.12"
     __status__ = "testing"
 

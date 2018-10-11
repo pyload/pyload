@@ -175,11 +175,11 @@ class DownloadThread(PluginThread):
                 self.m.log.info(_("Download starts: {}".format(pyfile.name)))
 
                 # start download
-                self.m.pyload.hookManager.downloadPreparing(pyfile)
+                self.m.pyload.addonManager.downloadPreparing(pyfile)
                 pyfile.plugin.preprocessing(self)
 
                 self.m.log.info(_("Download finished: {}").format(pyfile.name))
-                self.m.pyload.hookManager.downloadFinished(pyfile)
+                self.m.pyload.addonManager.downloadFinished(pyfile)
                 self.m.pyload.files.checkPackageFinished(pyfile)
 
             except NotImplementedError:
@@ -235,7 +235,7 @@ class DownloadThread(PluginThread):
                         **{"name": pyfile.name, "msg": msg}))
                     pyfile.error = msg
 
-                self.m.pyload.hookManager.downloadFailed(pyfile)
+                self.m.pyload.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -277,7 +277,7 @@ class DownloadThread(PluginThread):
                         print_exc()
                         self.writeDebugReport(pyfile)
 
-                    self.m.pyload.hookManager.downloadFailed(pyfile)
+                    self.m.pyload.addonManager.downloadFailed(pyfile)
 
                 self.clean(pyfile)
                 continue
@@ -307,7 +307,7 @@ class DownloadThread(PluginThread):
                     print_exc()
                     self.writeDebugReport(pyfile)
 
-                self.m.pyload.hookManager.downloadFailed(pyfile)
+                self.m.pyload.addonManager.downloadFailed(pyfile)
                 self.clean(pyfile)
                 continue
 
@@ -411,7 +411,7 @@ class DecrypterThread(PluginThread):
                 self.m.localThreads.remove(self)
                 exc_clear()
 
-        # self.m.pyload.hookManager.downloadFinished(pyfile)
+        # self.m.pyload.addonManager.downloadFinished(pyfile)
 
         # self.m.localThreads.remove(self)
         # self.active.finishIfDone()
@@ -419,7 +419,7 @@ class DecrypterThread(PluginThread):
             pyfile.delete()
 
 
-class HookThread(PluginThread):
+class AddonThread(PluginThread):
     """thread for addons"""
 
     # ----------------------------------------------------------------------

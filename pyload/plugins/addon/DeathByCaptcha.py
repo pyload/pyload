@@ -44,7 +44,7 @@ class DeathByCaptchaException(Exception):
 
 class DeathByCaptcha(Addon):
     __name__ = "DeathByCaptcha"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.16"
     __status__ = "testing"
 

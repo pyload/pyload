@@ -9,7 +9,7 @@ from pyload.plugins.utils import encode
 
 class UserAgentSwitcher(Addon):
     __name__ = "UserAgentSwitcher"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.16"
     __status__ = "testing"
 

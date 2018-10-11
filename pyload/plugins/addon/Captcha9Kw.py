@@ -13,7 +13,7 @@ from pyload.plugins.utils import threaded
 
 class Captcha9Kw(Addon):
     __name__ = "Captcha9Kw"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.38"
     __status__ = "testing"
 

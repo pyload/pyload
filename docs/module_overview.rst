@@ -12,6 +12,6 @@ You can find an overview of some important classes here:
    pyload.plugins.Crypter.Crypter
    pyload.plugins.Account.Account
    pyload.plugins.internal.Addon.Addon
-   pyload.manager.HookManager.HookManager
+   pyload.manager.AddonManager.AddonManager
    pyload.datatype.PyFile.PyFile
    pyload.datatype.PyPackage.PyPackage

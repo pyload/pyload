@@ -13,7 +13,7 @@ from pyload.plugins.utils import json
 
 class TransmissionRPC(Addon):
     __name__ = "TransmissionRPC"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.19"
     __status__ = "testing"
 

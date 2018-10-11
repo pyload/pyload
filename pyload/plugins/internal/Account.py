@@ -34,7 +34,7 @@ class Account(Plugin):
 
         self.timeout = self.LOGIN_TIMEOUT
 
-        #: Callback of periodical job task, used by HookManager
+        #: Callback of periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
         self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
 

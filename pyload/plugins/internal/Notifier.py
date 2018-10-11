@@ -9,7 +9,7 @@ from pyload.plugins.utils import Expose, encode, isiterable
 
 class Notifier(Addon):
     __name__ = "Notifier"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.11"
     __status__ = "testing"
 

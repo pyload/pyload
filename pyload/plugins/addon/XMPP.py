@@ -11,7 +11,7 @@ from pyxmpp.jabber.client import JabberClient
 
 class XMPP(IRC, JabberClient):
     __name__ = "XMPP"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.18"
     __status__ = "testing"
 

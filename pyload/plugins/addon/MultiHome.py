@@ -27,7 +27,7 @@ class Interface(object):
 
 class MultiHome(Addon):
     __name__ = "MultiHome"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "0.21"
     __status__ = "testing"
 

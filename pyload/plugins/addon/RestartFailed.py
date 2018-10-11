@@ -6,7 +6,7 @@ from pyload.plugins.internal.Addon import Addon
 
 class RestartFailed(Addon):
     __name__ = "RestartFailed"
-    __type__ = "hook"
+    __type__ = "addon"
     __version__ = "1.65"
     __status__ = "testing"
 
