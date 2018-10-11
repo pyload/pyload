@@ -51,7 +51,7 @@ def main():
     except Exception:
         print("pyqt:", "missing")
 
-    from pyload.utils.utils import JsEngine
+    from pyload.utils import JsEngine
     js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
     print("JS engine:", js)
 
@@ -61,11 +61,8 @@ def main():
     core_err = []
     core_info = []
 
-    if sys.version_info > (2, 8):
-        core_err.append("Your python version is to new, Please use Python 2.6/2.7")
-
-    if sys.version_info < (2, 5):
-        core_err.append("Your python version is to old, Please use at least Python 2.5")
+    if sys.version_info < (3, 6):
+        core_err.append("Your python version is to old, Please use at least Python 3.6")
 
     try:
         import pycurl

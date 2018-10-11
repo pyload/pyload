@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+# {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
+
 import dis
 
 from module.util.encoding import smart_text
-
-# {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
 
 
 _const_codes = {

@@ -8,6 +8,10 @@ from os.path import join
 from sys import argv, platform
 
 builtins._ = lambda x: x  # TODO: remove
+
+builtins.pyreq = None  # TODO: remove
+builtins.hookManager = None  # TODO: remove
+
 builtins.owd = path.abspath("")  # original working directory
 builtins.pypath = pypath = path.abspath(path.join(__file__, "..", ".."))
 
@@ -27,7 +31,7 @@ if platform == 'nt':
                                      ctypes.wintypes.HANDLE,
                                      ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
 
-        path_buf = ctypes.wintypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        path_buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
         result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
         homedir = path_buf.value
 else:

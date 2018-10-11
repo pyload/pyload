@@ -71,7 +71,7 @@ class Setup(object):
         print("")
 
         if not basic:
-            print(_("You need pycurl, sqlite and python 2.5, 2.6 or 2.7 to run pyLoad."))
+            print(_("You need pycurl, sqlite and python 3.6 to run pyLoad."))
             print(_("Please correct this and re-run pyLoad."))
             print(_("Setup will now close."))
             input()
@@ -185,11 +185,8 @@ class Setup(object):
         """ make a systemcheck and return the results"""
         print(_("## System Check ##"))
 
-        if sys.version_info[:2] > (2, 7):
-            print(_("Your python version is too new, Please use Python 2.6/2.7"))
-            python = False
-        elif sys.version_info[:2] < (2, 5):
-            print(_("Your python version is too old, Please use at least Python 2.5"))
+        if sys.version_info[:2] < (3, 6):
+            print(_("Your python version is too old, Please use at least Python 3.6"))
             python = False
         else:
             print(_("Python Version: OK"))
@@ -258,7 +255,7 @@ class Setup(object):
 
         web = sqlite and beaker
 
-        from pyload.utils.utils import JsEngine
+        from pyload.utils import JsEngine
 
         js = True if JsEngine.ENGINE else False
         self.print_dep(_("JS engine"), js)
@@ -512,34 +509,35 @@ class Setup(object):
                     print(_("Passwords did not match."))
 
         while True:
+            input_val = None
             try:
-                input = input(qst + " {}: ".format(info))
+                input_val = input(qst + " {}: ".format(info))
             except KeyboardInterrupt:
                 print("\nSetup interrupted")
                 exit()
 
-            input = input.decode(self.stdin_encoding)
+            input_val = input.decode(self.stdin_encoding)
 
-            if input.strip() == "":
-                input = default
+            if input_val.strip() == "":
+                input_val = default
 
             if bool:
                 # yes, true,t are inputs for booleans with value true
-                if input.lower().strip() in [
+                if input_val.lower().strip() in [
                         self.yes, _("yes"), _("true"), _("t"), "yes"]:
                     return True
                 # no, false,f are inputs for booleans with value false
-                elif input.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
+                elif input_val.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
                     return False
                 else:
                     print(_("Invalid Input"))
                     continue
 
             if not answers:
-                return input
+                return input_val
 
             else:
-                if input in answers:
-                    return input
+                if input_val in answers:
+                    return input_val
                 else:
                     print(_("Invalid Input"))

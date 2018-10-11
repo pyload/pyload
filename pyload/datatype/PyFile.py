@@ -76,7 +76,10 @@ class PyFile(object):
         self.id = int(id)
         self.url = url
         self.name = name
+        
+        self._size = None
         self.size = size
+        
         self.status = status
         self.pluginname = pluginname
         self.packageid = package  # should not be used, use package() instead
