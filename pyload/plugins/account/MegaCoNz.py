@@ -140,5 +140,5 @@ class MegaCoNz(Account):
 
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
-        return int("".join("%02x".format(ord(s[2:][x]))
+        return int("".join("{:2x}".format(ord(s[2:][x]))
                            for x in list(range(0, len(s[2:])))), 16)

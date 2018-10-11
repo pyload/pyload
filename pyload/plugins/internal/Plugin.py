@@ -7,7 +7,7 @@ from builtins import object
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
 # @TODO: Remove in 0.6.x
-from pyload.plugins.Plugin import Fail
+from pyload.plugins.Plugin import Abort, Fail
 from pyload.plugins.Plugin import SkipDownload as Skip
 
 from pyload.plugins.utils import (DB, Config, decode, encode, exists, fixurl, format_exc, fsjoin,
@@ -72,10 +72,9 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = " | ".join(decode(a).strip() for a in messages if a)
-        log("{plugintype} {pluginname}: {msg}" %
-            {'plugintype': plugintype.upper(),
+        log("{plugintype} {pluginname}: {msg}".format(**{'plugintype': plugintype.upper(),
              'pluginname': pluginname,
-             'msg': msg})
+             'msg': msg}))
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)

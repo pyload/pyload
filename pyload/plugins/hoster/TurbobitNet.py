@@ -134,7 +134,7 @@ class TurbobitNet(SimpleHoster):
 
         m = re.search("(/\w+/timeout\.js\?\w+=)([^\"\'<>]+)", self.data)
         if m is not None:
-            url = "http://turbobit.net{}{}".format(m.groups())
+            url = "http://turbobit.net{}{}".format(*m.groups())
         else:
             url = "http://turbobit.net/files/timeout.js?ver={}".format("".join(
                 random.choice('0123456789ABCDEF') for _i in list(range(32))))
@@ -173,5 +173,5 @@ class TurbobitNet(SimpleHoster):
     def get_local_time_string(self):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
-        return "{} GMT%+03d%02d".format(time.strftime(
+        return "{} GMT{:3d}{:2d}".format(time.strftime(
             "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz.format(3600))

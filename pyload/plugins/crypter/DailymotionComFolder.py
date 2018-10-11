@@ -87,8 +87,7 @@ class DailymotionComFolder(Crypter):
             self.log_debug("Url recognized as Channel")
             playlists = self.get_playlists(m_id)
             self.log_debug(
-                "{} playlist\s found on channel \"{}\"" %
-                (len(playlists), m_id))
+                "{} playlist\s found on channel \"{}\"".format(len(playlists), m_id))
 
         if not playlists:
             self.fail(_("No playlist available"))
@@ -102,7 +101,6 @@ class DailymotionComFolder(Crypter):
                 p_owner,
                 p_name)
             self.log_debug(
-                "{} video\s found on playlist \"{}\"" %
-                (len(p_videos), p_name))
+                "{} video\s found on playlist \"{}\"".format(len(p_videos), p_name))
             # @NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

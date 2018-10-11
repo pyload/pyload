@@ -48,7 +48,7 @@ class ManageFiles(Handler):
             # mode select
             packs = self.parseInput(input)
             if self.mode == "m":
-                [self.client.movePackage((self.target + 1).format(2), x) for x in packs]
+                [self.client.movePackage((self.target + 1) % 2, x) for x in packs]
             elif self.mode == "d":
                 self.client.deletePackages(packs)
             elif self.mode == "r":

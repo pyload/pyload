@@ -103,8 +103,7 @@ class YoutubeComFolder(Crypter):
             if channel:
                 playlists = self.get_playlists(channel['id'])
                 self.log_debug(
-                    "{} playlist\s found on channel \"{}\"" %
-                    (len(playlists), channel['title']))
+                    "{} playlist\s found on channel \"{}\"".format(len(playlists), channel['title']))
 
                 relatedplaylist = dict(
                     (p_name,
@@ -144,8 +143,7 @@ class YoutubeComFolder(Crypter):
                 p['channelTitle'],
                 p_name)
             self.log_debug(
-                "{} video\s found on playlist \"{}\"" %
-                (len(p_videos), p_name))
+                "{} video\s found on playlist \"{}\"".format(len(p_videos), p_name))
 
             if not p_videos:
                 continue
@@ -153,8 +151,7 @@ class YoutubeComFolder(Crypter):
                 p_urls = [urlize(v_id)
                           for v_id in p_videos if v_id not in addedvideos]
                 self.log_debug(
-                    "{} video\s available on playlist \"{}\" after duplicates cleanup" %
-                    (len(p_urls), p_name))
+                    "{} video\s available on playlist \"{}\" after duplicates cleanup".format(len(p_urls), p_name))
             else:
                 p_urls = list(map(urlize, p_videos))
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import object
+from builtins import pypath, object
 from imp import find_module
 from os.path import exists, join
 from urllib.parse import quote

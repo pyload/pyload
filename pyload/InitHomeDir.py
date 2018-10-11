@@ -8,7 +8,7 @@ from os.path import join
 from sys import argv, platform
 
 builtins.owd = path.abspath("")  # original working directory
-builtins.pypath = path.abspath(path.join(__file__, "..", ".."))
+builtins.pypath = pypath = path.abspath(path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "pyload", "lib"))
 

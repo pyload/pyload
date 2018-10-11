@@ -26,7 +26,7 @@ class AdYouLike(CaptchaService):
         n = re.search(self.CALLBACK_PATTERN, html)
         if m and n:
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Ayl: {} | Callback: {}".format(self.key))
+            self.log_debug("Ayl: {} | Callback: {}".format(*self.key))
             return self.key   #: Key is the tuple(ayl, callback)
         else:
             self.log_debug("Ayl or callback pattern not found")

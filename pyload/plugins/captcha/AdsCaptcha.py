@@ -27,7 +27,7 @@ class AdsCaptcha(CaptchaService):
         if m and n:
             #: Key is the tuple(PublicKey, CaptchaId)
             self.key = (m.group(1).strip(), n.group(1).strip())
-            self.log_debug("Key: {} | ID: {}".format(self.key))
+            self.log_debug("Key: {} | ID: {}".format(*self.key))
             return self.key
         else:
             self.log_debug("Key or id pattern not found")

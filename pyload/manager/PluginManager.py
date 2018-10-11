@@ -3,7 +3,7 @@
 
 import re
 import sys
-from builtins import object, str
+from builtins import pypath, object, str
 from itertools import chain
 from os import listdir, makedirs
 from os.path import abspath, exists, isfile, join

@@ -3,7 +3,7 @@
 
 import os
 import sys
-from builtins import input, object, str
+from builtins import pypath, input, object, str
 from getpass import getpass
 from subprocess import PIPE, call
 from sys import exit
