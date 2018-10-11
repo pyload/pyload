@@ -178,7 +178,7 @@ class ShareLinksBiz(Crypter):
 
     def _resolve_coords(self, coords, captcha_map):
         x, y = coords
-        for rect, href in list(captcha_map.items()):
+        for rect, href in captcha_map.items():
             x1, y1, x2, y2 = rect
             if (x >= x1 and x <= x2) and (y >= y1 and y <= y2):
                 return href

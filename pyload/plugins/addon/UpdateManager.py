@@ -96,7 +96,7 @@ class UpdateManager(Addon):
         Reload and reindex all modified plugins
         """
         reloads = []
-        modules = [m for m in list(sys.modules.values()) if m and (m.__name__.startswith(
+        modules = [m for m in sys.modules.values() if m and (m.__name__.startswith(
             "pyload.plugins.") or m.__name__.startswith("userplugins.")) and m.__name__.count(".") >= 2]
         for m in modules:
             root, plugin_type, plugin_name = m.__name__.rsplit(".", 2)

@@ -295,8 +295,7 @@ class ExtractArchive(Addon):
                         (fsjoin(
                             pack_dl_folder,
                             fdata['name'])),
-                        extract_folder)) for fdata in list(
-                        pypack.getChildren().values())).values())  # : Remove duplicates
+                        extract_folder)) for fdata in pypack.getChildren().values()).values())  # : Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:

@@ -821,7 +821,7 @@ class Api(Iface):
 
         for pid in packs:
             pack = self.pyload.files.getPackageData(int(pid))
-            while pack["order"] in list(order.keys()):  # just in case
+            while pack["order"] in order.keys():  # just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
@@ -836,7 +836,7 @@ class Api(Iface):
         rawData = self.pyload.files.getPackageData(int(pid))
         order = {}
         for id, pyfile in rawData["links"].items():
-            while pyfile["order"] in list(order.keys()):  # just in case
+            while pyfile["order"] in order.keys():  # just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order
@@ -931,7 +931,7 @@ class Api(Iface):
         """
         accs = self.pyload.accountManager.getAccountInfos(False, refresh)
         accounts = []
-        for group in list(accs.values()):
+        for group in accs.values():
             accounts.extend([AccountInfo(acc["validuntil"],
                                          acc["login"],
                                          acc["options"],

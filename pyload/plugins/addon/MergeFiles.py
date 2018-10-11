@@ -26,7 +26,7 @@ class MergeFiles(Addon):
     def package_finished(self, pack):
         files = {}
         fid_dict = {}
-        for fid, data in list(pack.getChildren().items()):
+        for fid, data in pack.getChildren().items():
             if re.search(r"\.\d{3}$", data['name']):
                 if data['name'][:-4] not in files:
                     files[data['name'][:-4]] = []
@@ -39,7 +39,7 @@ class MergeFiles(Addon):
         if self.pyload.config.get("general", "folder_per_package"):
             dl_folder = fsjoin(dl_folder, pack.folder)
 
-        for name, file_list in list(files.items()):
+        for name, file_list in files.items():
             self.log_info(_("Starting merging of"), name)
 
             with open(fsjoin(dl_folder, name), "wb") as final_file:

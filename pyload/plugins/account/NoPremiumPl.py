@@ -72,7 +72,7 @@ class NoPremiumPl(MultiAccount):
         except Exception as e:
             self.fail_login(e)
 
-        if "errno" in list(response.keys()):
+        if "errno" in response.keys():
             self.fail_login()
 
     def create_auth_query(self):

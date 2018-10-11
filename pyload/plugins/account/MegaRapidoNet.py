@@ -78,7 +78,7 @@ class MegaRapidoNet(MultiAccount):
 
         hoster_list = []
 
-        for item in list(hosters.values()):
+        for item in hosters.values():
             hoster_list.extend(item)
 
         return hoster_list

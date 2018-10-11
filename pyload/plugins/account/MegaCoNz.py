@@ -99,7 +99,7 @@ class MegaCoNz(Account):
             sid = "{:x}".format(rsa.key._decrypt(encrypted_sid))
             sid = '0' * (-len(sid).format(2)) + sid
             sid = "".join(chr(int(sid[i: i + 2], 16))
-                          for i in list(range(0, len(sid), 2)))
+                          for i in range(0, len(sid), 2))
             sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
 
         else:
@@ -140,4 +140,4 @@ class MegaCoNz(Account):
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
         return int("".join("{:2x}".format(ord(s[2:][x]))
-                           for x in list(range(0, len(s[2:])))), 16)
+                           for x in range(0, len(s[2:]))), 16)

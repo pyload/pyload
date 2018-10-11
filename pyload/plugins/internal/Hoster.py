@@ -140,15 +140,14 @@ class Hoster(Base):
         try:
             unfinished = any(
                 fdata.get('status') in (
-                    3, 7) for fid, fdata in list(
-                    pypack.getChildren().items()) if fid != self.pyfile.id)
+                    3, 7) for fid, fdata in pypack.getChildren().items() if fid != self.pyfile.id)
             if unfinished:
                 return
 
             self.pyload.hookManager.dispatchEvent("package_processed", pypack)
 
             failed = any(fdata.get('status') in (1, 6, 8, 9, 14)
-                         for fid, fdata in list(pypack.getChildren().items()))
+                         for fid, fdata in pypack.getChildren().items())
 
             if not failed:
                 return
@@ -275,8 +274,7 @@ class Hoster(Base):
             self.log_debug(
                 "DOWNLOAD URL " + url, *[
                     "{}={}".format(
-                        key, value) for key, value in list(
-                        locals().items()) if key not in (
+                        key, value) for key, value in locals().items() if key not in (
                         "self", "url", "_[1]")])
 
         dl_url = self.fixurl(url) if fixurl else url
@@ -360,7 +358,7 @@ class Hoster(Base):
 
         #: Produces encoding errors, better log to other file in the future?
         # self.log_debug("Content: {}".format(content))
-        for name, rule in list(rules.items()):
+        for name, rule in rules.items():
             if isinstance(rule, str):
                 if rule in content:
                     return name
@@ -491,7 +489,7 @@ class Hoster(Base):
         """
         pack_folder = self.pyfile.package().folder
 
-        for pyfile in list(self.pyload.files.cache.values()):
+        for pyfile in self.pyload.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack_folder:
                 if pyfile.status in (
                         0, 12, 5, 7):  # finished / downloading / waiting / starting

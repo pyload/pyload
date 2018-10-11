@@ -127,7 +127,7 @@ class SevenZip(Extractor):
         dir, name = os.path.split(self.filename)
 
         #: eventually Multipart Files
-        files.extend(fsjoin(dir, os.path.basename(file)) for file in list(filter(self.ismultipart, os.listdir(dir)))
+        files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
                      if self._RE_PART.sub("", name) == self._RE_PART.sub("", file))
 
         #: Actually extracted file

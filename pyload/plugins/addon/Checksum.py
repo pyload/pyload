@@ -230,7 +230,7 @@ class Checksum(Addon):
         if check_action == "retry":
             max_tries = self.config.get('max_tries')
             retry_action = self.config.get('retry_action')
-            if all(_r < max_tries for _id, _r in list(pyfile.plugin.retries.items())):
+            if all(_r < max_tries for _id, _r in pyfile.plugin.retries.items()):
                 if local_file:
                     os.remove(local_file)
 

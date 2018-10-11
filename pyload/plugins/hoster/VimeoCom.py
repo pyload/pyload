@@ -95,7 +95,7 @@ class VimeoCom(SimpleHoster):
             qlevel = quality
 
         for q in qlevel:
-            if q in list(videos.keys()):
+            if q in videos.keys():
                 self.download(videos[q], fixurl=False)
                 return
 

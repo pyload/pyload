@@ -95,9 +95,9 @@ class PluginManager(object):
         self.plugins["internal"] = self.internalPlugins
         merge(default_config, config)
 
-        for name, config in list(default_config.items()):
+        for name, config in default_config.items():
             desc = config.pop('desc', "")
-            config = [[k] + list(v) for k, v in list(config.items())]
+            config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:
@@ -430,9 +430,9 @@ class PluginManager(object):
         self.plugins["accounts"] = self.accountPlugins
         merge(default_config, config)
 
-        for name, config in list(default_config.items()):
+        for name, config in default_config.items():
             desc = config.pop('desc', "")
-            config = [[k] + list(v) for k, v in list(config.items())]
+            config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
             except Exception:

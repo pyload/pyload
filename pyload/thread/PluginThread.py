@@ -93,7 +93,7 @@ class PluginThread(Thread):
                                                            frame.f_code.co_filename,
                                                            frame.f_lineno)
 
-            for key, value in list(frame.f_locals.items()):
+            for key, value in frame.f_locals.items():
                 dump += "\t{:20} = ".format(key)
                 try:
                     dump += pformat(value) + "\n"

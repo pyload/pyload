@@ -527,7 +527,7 @@ class Core(object):
         self.log.setLevel(level)
 
     def removeLogger(self):
-        for h in list(self.log.handlers):
+        for h in self.log.handlers:
             self.log.removeHandler(h)
             h.close()
 

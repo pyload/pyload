@@ -266,7 +266,7 @@ class OCR(Plugin):
             sum = 0
             cnt = 0
 
-            for x in list(count.values()):
+            for x in count.values():
                 if x != 0:
                     sum += x
                     cnt += 1
@@ -274,7 +274,7 @@ class OCR(Plugin):
             avg = sum // cnt
             counts[angle] = cnt
             highest[angle] = 0
-            for x in list(count.values()):
+            for x in count.values():
                 if x > highest[angle]:
                     highest[angle] = x
 
@@ -283,7 +283,7 @@ class OCR(Plugin):
         hkey = 0
         hvalue = 0
 
-        for key, value in list(highest.items()):
+        for key, value in highest.items():
             if value > hvalue:
                 hkey = key
                 hvalue = value
@@ -346,7 +346,7 @@ class OCR(Plugin):
         else:
             result = self.result_captcha
 
-        for key, item in list(values.items()):
+        for key, item in values.items():
 
             if key.__class__ is str:
                 result = result.replace(key, item)

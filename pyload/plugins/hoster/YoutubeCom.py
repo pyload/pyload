@@ -363,7 +363,7 @@ class YoutubeCom(Hoster):
                 self.fail(e)
 
         #: Remove old records from cache
-        for _k in list(cache_info['cache'].keys()):
+        for _k in cache_info['cache'].keys():
             if time.time() >= cache_info['cache'][_k]['time'] + 24 * 60 * 60:
                 cache_info['cache'].pop(_k, None)
                 cache_dirty = True
@@ -443,7 +443,7 @@ class YoutubeCom(Hoster):
             def quality_distance(x, y): return abs(quality_index(x) - quality_index(y))
 
             self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(
-                _s), quality_distance(_s, desired_fmt)) for _s in list(video_streams.keys())]))
+                _s), quality_distance(_s, desired_fmt)) for _s in video_streams.keys()]))
 
             chosen_fmt = reduce(
                 lambda x, y: x if quality_distance(
@@ -527,7 +527,7 @@ class YoutubeCom(Hoster):
             def quality_distance(x, y): return abs(quality_index(x) - quality_index(y))
 
             self.log_debug("Choosing nearest stream: {}".format([(_s, allowed_suffix(
-                _s), quality_distance(_s, desired_fmt)) for _s in list(audio_streams.keys())]))
+                _s), quality_distance(_s, desired_fmt)) for _s in audio_streams.keys()]))
 
             chosen_fmt = reduce(
                 lambda x, y: x if quality_distance(
@@ -655,7 +655,7 @@ class YoutubeCom(Hoster):
 
             else:
                 # Download any available subtitle
-                for _subtitle in list(subtitles_urls.items()):
+                for _subtitle in subtitles_urls.items():
                     srt_filename = os.path.join(
                         self.pyload.config.get(
                             "general", "download_folder"), self.pyfile.package().folder, os.path.splitext(

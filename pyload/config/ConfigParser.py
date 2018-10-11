@@ -354,7 +354,7 @@ class ConfigParser(object):
 
         values = [x[0] for x in config] + ["desc", "outline"]
         # delete old values
-        for item in list(conf.keys()):
+        for item in conf.keys():
             if item not in values:
                 del conf[item]
 

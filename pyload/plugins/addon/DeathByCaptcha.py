@@ -30,7 +30,7 @@ class DeathByCaptchaException(Exception):
         return self.err
 
     def get_desc(self):
-        if self.err in list(self.DBC_ERRORS.keys()):
+        if self.err in self.DBC_ERRORS.keys():
             return self.DBC_ERRORS[self.err]
         else:
             return self.err

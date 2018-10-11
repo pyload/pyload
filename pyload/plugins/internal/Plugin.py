@@ -180,8 +180,7 @@ class Plugin(object):
             self.log_debug(
                 "LOAD URL " + url, *[
                     "{}={}".format(
-                        key, value) for key, value in list(
-                        locals().items()) if key not in (
+                        key, value) for key, value in locals().items() if key not in (
                         "self", "url", "_[1]")])
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
@@ -288,8 +287,7 @@ class Plugin(object):
             self.log_debug(
                 "UPLOAD URL " + url, *[
                     "{}={}".format(
-                        key, value) for key, value in list(
-                        locals().items()) if key not in (
+                        key, value) for key, value in locals().items() if key not in (
                         "self", "url", "_[1]")])
 
         with open(path, 'rb') as f:

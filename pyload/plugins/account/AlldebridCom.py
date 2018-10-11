@@ -38,7 +38,7 @@ class AlldebridCom(MultiAccount):
         else:
             return reduce(lambda x, y: x + y,
                           [[_h['domain']] + _h.get('altDomains', [])
-                           for _h in list(json_data['hosts'].values())
+                           for _h in json_data['hosts'].values()
                            if _h['status'] is True])
 
     def grab_info(self, user, password, data):

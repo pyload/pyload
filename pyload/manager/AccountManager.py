@@ -47,7 +47,7 @@ class AccountManager(object):
         """ get all account instances"""
 
         plugins = []
-        for plugin in list(self.accounts.keys()):
+        for plugin in self.accounts.keys():
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
@@ -163,7 +163,7 @@ class AccountManager(object):
             self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
             force = False
 
-        for p in list(self.accounts.keys()):
+        for p in self.accounts.keys():
             if self.accounts[p]:
                 p = self.getAccountPlugin(p)
                 data[p.__name__] = p.getAllAccounts(force)

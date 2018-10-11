@@ -173,10 +173,9 @@ class UnRar(Extractor):
         files.extend(
             fsjoin(
                 dir,
-                os.path.basename(file)) for file in list(
-                filter(
+                os.path.basename(file)) for file in filter(
                     self.ismultipart,
-                    os.listdir(dir))) if self._RE_PART.sub(
+                    os.listdir(dir)) if self._RE_PART.sub(
                     "",
                     name) == self._RE_PART.sub(
                         "",

@@ -119,7 +119,7 @@ class DB(object):
                 value = default
             else:
                 value = dict((k, json.loads(v.decode('base64')))
-                             for k, v in list(value.items()))
+                             for k, v in value.items())
 
         return value
 
@@ -451,7 +451,7 @@ def exists(path):
     if os.path.exists(path):
         if os.name == "nt":
             dir, name = os.path.split(path.rstrip(os.sep))
-            return name.upper() in list(map(str.upper, os.listdir(dir)))
+            return name.upper() in map(str.upper, os.listdir(dir))
         else:
             return True
     else:
@@ -487,7 +487,7 @@ def remove_chars(value, repl):
     Remove all chars in repl from string
     """
     if isinstance(repl, str):
-        for badc in list(repl):
+        for badc in repl:
             value = value.replace(badc, "")
         return value
 
@@ -846,7 +846,7 @@ def parse_html_form(attr_str, html, input_names={}):
             return action, inputs
         else:
             #: Check input attributes
-            for key, value in list(input_names.items()):
+            for key, value in input_names.items():
                 if key in inputs:
                     if isinstance(value, str) and inputs[key] == value:
                         continue

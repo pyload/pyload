@@ -97,7 +97,7 @@ class ImgurCom(SimpleCrypter):
 
         # Get filename extensions for new IDs
         ids_json = self.get_ids_from_json()
-        ids_indirect = [id for id in list(ids_json.keys()) if id not in ids_direct]
+        ids_indirect = [id for id in ids_json.keys() if id not in ids_direct]
 
         # No additional images found
         if len(ids_indirect) == 0:

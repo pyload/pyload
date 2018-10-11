@@ -621,7 +621,7 @@ class Plugin(Base):
 
         pack = self.pyfile.package()
 
-        for pyfile in list(self.pyload.files.cache.values()):
+        for pyfile in self.pyload.files.cache.values():
             if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
                 if pyfile.status in (0, 12):  # finished or downloading
                     raise SkipDownload(pyfile.pluginname)

@@ -108,7 +108,7 @@ class YoutubeComFolder(Crypter):
                 relatedplaylist = dict(
                     (p_name,
                      self.get_playlist(p_id)) for p_name,
-                    p_id in list(channel['relatedPlaylists'].items()))
+                    p_id in channel['relatedPlaylists'].items())
 
                 self.log_debug(
                     "Channel's related playlists found = {}".format(list(relatedplaylist.keys())))
@@ -117,7 +117,7 @@ class YoutubeComFolder(Crypter):
                 relatedplaylist['uploads'][
                     'checkDups'] = True  #: checkDups flag
 
-                for p_name, p_data in list(relatedplaylist.items()):
+                for p_name, p_data in relatedplaylist.items():
                     if self.config.get(p_name):
                         p_data['title'] += " of " + user
                         playlists.append(p_data)

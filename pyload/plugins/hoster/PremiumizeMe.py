@@ -33,7 +33,7 @@ class PremiumizeMe(MultiHoster):
         get_params = {'method': method,
                       'params[login]': user,
                       'params[pass]': password}
-        for key, val in list(kwargs.items()):
+        for key, val in kwargs.items():
             get_params["params[{}]".format(key)] = val
 
         json_data = self.load(self.API_URL, get=get_params)
