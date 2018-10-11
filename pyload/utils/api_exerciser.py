@@ -9,7 +9,7 @@ from threading import Thread
 from time import time
 from traceback import format_exc, print_exc
 
-from pyload.remote.thriftbackend.ThriftClient import Destination, ThriftClient
+from pyload.remote.thriftbackend.thriftClient import Destination, ThriftClient
 
 
 def createURLs():

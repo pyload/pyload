@@ -5,10 +5,10 @@ from builtins import object
 from os.path import abspath, dirname, join
 from traceback import print_exc
 
-from pyload.remote.thriftbackend.Protocol import Protocol
+from pyload.remote.thriftbackend.protocol import Protocol
 from pyload.remote.thriftbackend.socket import error
 # from thrift.transport.TZlibTransport import TZlibTransport
-from pyload.remote.thriftbackend.Socket import Socket
+from pyload.remote.thriftbackend.socket import Socket
 from pyload.remote.thriftbackend.thriftgen import Pyload
 from thrift.transport import TTransport
 
