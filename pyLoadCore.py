@@ -30,8 +30,8 @@ from pyload.manager.PullEvents import PullManager
 from pyload.network.RequestFactory import RequestFactory
 from pyload.remote.RemoteManager import RemoteManager
 from pyload.Scheduler import Scheduler
-from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.utils.JsEngine import JsEngine
+from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.ServerThread import WebServer
 
 CURRENT_VERSION = '0.5.0'

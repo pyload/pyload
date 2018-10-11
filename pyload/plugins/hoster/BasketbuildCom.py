@@ -6,9 +6,9 @@
 #   https://s.basketbuild.com/filedl/gapps?dl=gapps-gb-20110828-signed.zip
 
 import re
+from builtins import _
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
-from builtins import _
 
 
 class BasketbuildCom(SimpleHoster):

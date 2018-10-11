@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import io
 import mimetools
 import mimetypes
 from os import remove, write
-import io
 
 from six.moves import cStringIO
 from six.moves.urllib.parse import urlencode
