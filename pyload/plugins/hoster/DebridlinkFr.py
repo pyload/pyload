@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import time
-from builtins import _, str
+from builtins import str
 
 import Crypto.Hash.SHA
 import pycurl

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import gc
 import string
-from builtins import _, range
+from builtins import range
 from math import floor
 from random import choice, randint, sample
 from threading import Thread

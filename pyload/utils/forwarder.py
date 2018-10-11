@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
 import socket
-from builtins import _, object
+from builtins import object
 from sys import argv, exit
 from traceback import print_exc
 

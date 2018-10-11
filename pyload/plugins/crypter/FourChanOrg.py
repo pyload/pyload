@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 #
 # Based on 4chandl by Roland Beermann (https://gist.github.com/enkore/3492599)

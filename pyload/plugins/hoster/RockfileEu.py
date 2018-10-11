@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, chr
+from builtins import chr
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha

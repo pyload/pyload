@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
 from bottle import HTTPError, ServerAdapter, redirect, request

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import re
-from builtins import _, str
+from builtins import str
 
 from pyload.plugins.internal.XFSHoster import XFSHoster
 

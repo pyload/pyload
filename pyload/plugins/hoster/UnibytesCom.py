@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import re
 import urllib.parse
-from builtins import _, range
+from builtins import range
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

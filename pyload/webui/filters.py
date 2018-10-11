@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import os
 from os.path import abspath, commonprefix, join

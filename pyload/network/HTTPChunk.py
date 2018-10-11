@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
 import codecs
-from builtins import _, object, range, str
+from builtins import object, range, str
 from os import fsync, remove, stat
 from os.path import exists
 from re import search

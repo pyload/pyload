@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: mkaay
 
 import random
-from builtins import _, object, range, str
+from builtins import object, range, str
 from functools import reduce
 from hashlib import sha1
 

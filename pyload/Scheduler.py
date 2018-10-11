@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: mkaay
 
-from builtins import _, object
+from builtins import object
 from heapq import heappop, heappush
 from threading import Lock
 from time import time

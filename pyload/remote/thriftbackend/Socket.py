@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import errno
 import sys
-from builtins import _, object
+from builtins import object
 from time import sleep
 
 from pyload.remote.thriftbackend import socket

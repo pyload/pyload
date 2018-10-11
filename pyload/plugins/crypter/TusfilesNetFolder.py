@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import math
 import re
 import urllib.parse
-from builtins import _, range, str
+from builtins import range, str
 
 from pyload.plugins.internal.XFSCrypter import XFSCrypter
 

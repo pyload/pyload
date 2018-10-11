@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 from itertools import chain
 from traceback import format_exc, print_exc

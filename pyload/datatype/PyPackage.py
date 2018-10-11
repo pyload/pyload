@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN, mkaay
 
-from builtins import _, object
+from builtins import object
 
 from pyload.manager.PullEvents import UpdateEvent
 from pyload.utils.utils import save_path

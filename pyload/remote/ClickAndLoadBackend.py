@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
-from builtins import _, str
+from builtins import str
 from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote

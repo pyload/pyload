@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: jeix, GammaC0de
 
 import errno
@@ -8,7 +7,7 @@ import select
 import socket
 import struct
 import time
-from builtins import _, object
+from builtins import object
 
 from pyload.plugins.Plugin import Abort
 

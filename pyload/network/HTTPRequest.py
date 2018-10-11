@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
 import io
-from builtins import _, object, range, str
+from builtins import object, range, str
 from codecs import BOM_UTF8, getincrementaldecoder, lookup
 from http.client import responses
 from logging import getLogger

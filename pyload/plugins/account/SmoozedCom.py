@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import hashlib
 import time
-from builtins import _, object
+from builtins import object
 
 from pyload.plugins.internal.MultiAccount import MultiAccount
 from pyload.plugins.utils import json

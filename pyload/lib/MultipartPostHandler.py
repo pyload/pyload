@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import mimetools
 import mimetypes
-from builtins import _
 from os import remove, write
 
 from six.moves import cStringIO

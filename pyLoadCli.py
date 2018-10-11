@@ -17,7 +17,6 @@ from time import sleep
 from traceback import print_exc
 
 import pyload.utils.utils.pylgettext as gettext
-from pyload import InitHomeDir
 from pyload.Api import Destination
 from pyload.cli import AddPackage, ManageFiles
 from pyload.cli.printer import *

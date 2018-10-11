@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import time
 import urllib.parse
-from builtins import _, str
+from builtins import str
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 from pyload.plugins.utils import json

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 from pyload.network.RequestFactory import getRequest as get_request
 from pyload.plugins.internal.Notifier import Notifier

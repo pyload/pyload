@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 """ Store all usefull functions here """
 
@@ -8,7 +7,7 @@ import os
 import re
 import sys
 import time
-from builtins import _, chr, map
+from builtins import chr, map
 from html.entities import name2codepoint
 from os.path import join
 from string import maketrans

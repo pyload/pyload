@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import re
-from builtins import _, object, pypath, str
+from builtins import object, pypath, str
 from os.path import exists, join
 from shutil import copy
 from time import sleep

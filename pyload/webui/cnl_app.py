@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
-from builtins import _, str
+from builtins import str
 from os.path import join
 from urllib.parse import unquote
 

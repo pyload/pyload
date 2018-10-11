@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: RaNaN
 
-from builtins import _, object
+from builtins import object
 from threading import Lock
 from time import time
 

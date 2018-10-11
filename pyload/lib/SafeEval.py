@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import dis
-from builtins import _
 
 from module.util.encoding import smart_text
 
