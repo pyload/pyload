@@ -38,7 +38,8 @@ def permlist():
 
 
 def get_permission(perms, p):
-    """Returns a dict with permission key
+    """
+    Returns a dict with permission key.
 
     :param perms: dictionary
     :param p:  bits
@@ -48,7 +49,8 @@ def get_permission(perms, p):
 
 
 def set_permission(perms):
-    """generates permission bits from dictionary
+    """
+    generates permission bits from dictionary.
 
     :param perms: dict
     """

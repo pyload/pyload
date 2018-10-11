@@ -11,7 +11,9 @@ from pyload.cli.printer import *
 
 
 class ManageFiles(Handler):
-    """ possibility to manage queue/collector """
+    """
+    possibility to manage queue/collector.
+    """
 
     def init(self):
         self.target = Destination.Queue

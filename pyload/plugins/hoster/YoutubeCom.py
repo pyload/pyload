@@ -22,8 +22,8 @@ from pyload.plugins.utils import (exists, isexecutable, json, reduce, renice,
 
 class BIGHTTPRequest(HTTPRequest):
     """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
+    Overcome HTTPRequest's load() size limit to allow loading very big web
+    pages by overrding HTTPRequest's write() function.
     """
 
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
@@ -32,7 +32,9 @@ class BIGHTTPRequest(HTTPRequest):
         HTTPRequest.__init__(self, cookies=cookies, options=options)
 
     def write(self, buf):
-        """ writes response """
+        """
+        writes response.
+        """
         if self.limit and self.rep.tell() > self.limit or self.abort:
             rep = self.getResponse()
             if self.abort:
@@ -71,7 +73,7 @@ class Ffmpeg(object):
     @classmethod
     def find(cls):
         """
-        Check for ffmpeg
+        Check for ffmpeg.
         """
         if cls.CMD is not None:
             return True
@@ -543,7 +545,9 @@ class YoutubeCom(Hoster):
     }
 
     def _decrypt_signature(self, encrypted_sig):
-        """Turn the encrypted 's' field into a working signature"""
+        """
+        Turn the encrypted 's' field into a working signature.
+        """
         # try:
         #     player_url = json.loads(re.search(r'"assets":.+?"js":\s*("[^"]+")',self.data).group(1))
         # except (AttributeError, IndexError):

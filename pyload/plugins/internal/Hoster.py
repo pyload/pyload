@@ -276,7 +276,7 @@ class Hoster(Base):
         fixurl=True,
     ):
         """
-        Downloads the content at url to download folder
+        Downloads the content at url to download folder.
 
         :param url:
         :param get:
@@ -366,7 +366,8 @@ class Hoster(Base):
 
     def scan_download(self, rules, read_size=1_048_576):
         """
-        Checks the content of the last downloaded file, re match is saved to `last_check`
+        Checks the content of the last downloaded file, re match is saved to
+        `last_check`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param delete: delete if matched
@@ -508,7 +509,7 @@ class Hoster(Base):
 
     def check_duplicates(self):
         """
-        Checks if same file was downloaded within same package
+        Checks if same file was downloaded within same package.
 
         :raises Skip:
         """

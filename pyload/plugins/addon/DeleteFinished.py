@@ -59,7 +59,7 @@ class DeleteFinished(Addon):
     ## event managing ##
     def add_event(self, event, func):
         """
-        Adds an event listener for event name
+        Adds an event listener for event name.
         """
         if event in self.manager.events:
             if func in self.manager.events[event]:

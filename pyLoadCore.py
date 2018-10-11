@@ -57,7 +57,11 @@ def exceptHook(exc_type, exc_value, exc_traceback):
 
 
 class Core(object):
-    """pyLoad Core, one tool to rule them all... (the filehosters) :D"""
+    """
+    pyLoad Core, one tool to rule them all...
+
+    (the filehosters) :D
+    """
 
     def __init__(self):
         self.doDebug = False
@@ -203,7 +207,9 @@ class Core(object):
             os.remove(self.pidfile)
 
     def checkPidFile(self):
-        """ return pid as int or 0"""
+        """
+        return pid as int or 0.
+        """
         if os.path.isfile(self.pidfile):
             f = open(self.pidfile, "rb")
             pid = f.read().strip()
@@ -267,7 +273,9 @@ class Core(object):
                 remove(join(path, f))
 
     def start(self, rpc=True, web=True):
-        """ starts the fun :D """
+        """
+        starts the fun :D.
+        """
 
         self.version = CURRENT_VERSION
 
@@ -543,7 +551,9 @@ class Core(object):
             h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
-        """check wether needed tools are installed"""
+        """
+        check wether needed tools are installed.
+        """
         try:
             if python:
                 find_module(check_name)
@@ -568,7 +578,9 @@ class Core(object):
         essential=False,
         quiet=False,
     ):
-        """check wether needed files exists"""
+        """
+        check wether needed files exists.
+        """
         tmp_names = []
         if not isinstance(check_names, list):
             tmp_names.append(check_names)

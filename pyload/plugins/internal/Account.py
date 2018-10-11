@@ -43,7 +43,7 @@ class Account(Plugin):
     @property
     def logged(self):
         """
-        Checks if user is still logged in
+        Checks if user is still logged in.
         """
         if not self.user:
             return False
@@ -91,7 +91,8 @@ class Account(Plugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before logging (possibly more than one time)
+        Setup for enviroment and other things, called before logging (possibly
+        more than one time)
         """
         pass
 
@@ -100,7 +101,8 @@ class Account(Plugin):
 
     def signin(self, user, password, data):
         """
-        Login into account, the cookies will be saved so user can be recognized
+        Login into account, the cookies will be saved so user can be
+        recognized.
         """
         pass
 
@@ -154,8 +156,8 @@ class Account(Plugin):
     # TODO: Recheck in 0.6.x
     def sync(self, reverse=False):
         """
-        Sync self.accounts[self.user] -> self.info
-        or self.info -> self.accounts[self.user] (if reverse is True)
+        Sync self.accounts[self.user] -> self.info or self.info ->
+        self.accounts[self.user] (if reverse is True)
         """
         if not self.user:
             return
@@ -244,8 +246,8 @@ class Account(Plugin):
 
     def grab_info(self, user, password, data):
         """
-        This should be overwritten in account plugin
-        and retrieving account information for user
+        This should be overwritten in account plugin and retrieving account
+        information for user.
 
         :param user:
         :param req: `Request` instance
@@ -319,7 +321,7 @@ class Account(Plugin):
     @lock
     def updateAccounts(self, user, password=None, options={}):
         """
-        Updates account and return true if anything changed
+        Updates account and return true if anything changed.
         """
         if user in self.accounts:
             self.log_info(_("Updating account info for user `{}`...").format(user))
@@ -413,7 +415,7 @@ class Account(Plugin):
     @lock
     def choose(self, user=None):
         """
-        Choose a valid account
+        Choose a valid account.
         """
         if not user:
             user = self.select()[0]

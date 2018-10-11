@@ -3,8 +3,9 @@
 
 class Getch:
     """
-    Gets a single character from standard input.  Does not echo to
-    the screen.
+    Gets a single character from standard input.
+
+    Does not echo to the screen.
     """
 
     def __init__(self):
@@ -52,10 +53,11 @@ class _GetchWindows:
 
 class _GetchMacCarbon:
     """
-    A function which returns the current ASCII key that is down;
-    if no ASCII key is down, the null string is returned.  The
-    page http://www.mactech.com/macintosh-c/chap02-1.html was
-    very helpful in figuring out how to do this.
+    A function which returns the current ASCII key that is down; if no ASCII
+    key is down, the null string is returned.
+
+    The page http://www.mactech.com/macintosh-c/chap02-1.html was very
+    helpful in figuring out how to do this.
     """
 
     def __init__(self):

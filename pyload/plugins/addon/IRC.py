@@ -423,7 +423,7 @@ class IRC(Thread, Notifier):
 
     def event_c(self, args):
         """
-        Captcha answer
+        Captcha answer.
         """
         if not args:
             return ["ERROR: Captcha ID missing."]

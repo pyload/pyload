@@ -44,7 +44,7 @@ class OCR(Plugin):
 
     def deactivate(self):
         """
-        Delete all tmp images
+        Delete all tmp images.
         """
         pass
 
@@ -53,7 +53,7 @@ class OCR(Plugin):
 
     def call_cmd(self, command, *args, **kwargs):
         """
-        Run a command
+        Run a command.
         """
         call = (command,) + args
         self.log_debug("EXECUTE " + " ".join(call))
@@ -221,7 +221,7 @@ class OCR(Plugin):
 
     def derotate_by_average(self):
         """
-        Rotate by checking each angle and guess most suitable
+        Rotate by checking each angle and guess most suitable.
         """
         w, h = self.img.size
         pixels = self.pixels

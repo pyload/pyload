@@ -11,7 +11,9 @@ except Exception:
     from posixpath import curdir, sep, pardir
 
     def relpath(path, start=curdir):
-        """Return a relative version of a path"""
+        """
+        Return a relative version of a path.
+        """
         if not path:
             raise ValueError("no path specified")
         start_list = abspath(start).split(sep)

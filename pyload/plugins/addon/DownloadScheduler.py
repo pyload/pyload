@@ -40,7 +40,9 @@ class DownloadScheduler(Addon):
         self.update_schedule()
 
     def config_changed(self, category, option, value, section):
-        """Listen for config changes, to trigger a schedule update."""
+        """
+        Listen for config changes, to trigger a schedule update.
+        """
         if (
             category == self.__name__
             and option == "timetable"

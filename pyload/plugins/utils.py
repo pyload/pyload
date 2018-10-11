@@ -63,7 +63,7 @@ class Config(object):
 
     def set(self, option, value, plugin=None):
         """
-        Set config value for current plugin
+        Set config value for current plugin.
 
         :param option:
         :param value:
@@ -75,7 +75,7 @@ class Config(object):
 
     def get(self, option, default=None, plugin=None):
         """
-        Returns config value for current plugin
+        Returns config value for current plugin.
 
         :param option:
         :return:
@@ -98,14 +98,14 @@ class DB(object):
 
     def store(self, key, value):
         """
-        Saves a value persistently to the database
+        Saves a value persistently to the database.
         """
         entry = json.dumps(value, ensure_ascii=False).encode("base64")
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
 
     def retrieve(self, key=None, default=None):
         """
-        Retrieves saved value or dict of all saved entries if key is None
+        Retrieves saved value or dict of all saved entries if key is None.
         """
         entry = self.plugin.pyload.db.getStorage(self.plugin.classname, key)
 
@@ -126,14 +126,14 @@ class DB(object):
 
     def delete(self, key):
         """
-        Delete entry in db
+        Delete entry in db.
         """
         self.plugin.pyload.db.delStorage(self.plugin.classname, key)
 
 
 class Expose(object):
     """
-    Used for decoration to declare rpc services
+    Used for decoration to declare rpc services.
     """
 
     def __new__(cls, fn, *args, **kwargs):
@@ -251,7 +251,7 @@ def threaded(fn):
 
 def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
     """
-    Generate a signature for string using the `sign_algo` and `RSA` algorithms
+    Generate a signature for string using the `sign_algo` and `RSA` algorithms.
     """
     from Crypto.PublicKey import RSA
     from Crypto.Signature import PKCS1_v1_5
@@ -324,7 +324,7 @@ def free_space(folder):
 
 def fsbsize(path):
     """
-    Get optimal file system buffer size (in bytes) for I/O calls
+    Get optimal file system buffer size (in bytes) for I/O calls.
     """
     path = encode(path)
 
@@ -349,8 +349,7 @@ def fsbsize(path):
 
 def uniqify(seq):
     """
-    Remove duplicates from list preserving order
-    Originally by Dave Kirby
+    Remove duplicates from list preserving order Originally by Dave Kirby.
     """
     seen = set()
     seen_add = seen.add
@@ -359,14 +358,14 @@ def uniqify(seq):
 
 def has_method(obj, name):
     """
-    Check if function 'name' was defined in obj
+    Check if function 'name' was defined in obj.
     """
     return callable(getattr(obj, name, None))
 
 
 def html_unescape(text):
     """
-    Removes HTML or XML character references and entities from a text string
+    Removes HTML or XML character references and entities from a text string.
     """
     return xml.sax.saxutils.unescape(text)
     # TODO: Replace in 0.6.x with:
@@ -402,7 +401,7 @@ def normalize(value):
 # NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors="strict"):
     """
-    Encoded string (default to own system encoding) -> unicode string
+    Encoded string (default to own system encoding) -> unicode string.
     """
     if isinstance(value, str):
         res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
@@ -477,15 +476,14 @@ def remove(path, trash=True):
 
 def fsjoin(*args):
     """
-    Like os.path.join, but encoding aware
-    (for safe-joining see `safejoin`)
+    Like os.path.join, but encoding aware (for safe-joining see `safejoin`)
     """
     return encode(os.path.join(*args))
 
 
 def remove_chars(value, repl):
     """
-    Remove all chars in repl from string
+    Remove all chars in repl from string.
     """
     if isinstance(repl, str):
         for badc in repl:
@@ -533,7 +531,7 @@ def truncate(name, length):
 # TODO: Recheck in 0.6.x
 def safepath(value):
     """
-    Remove invalid characters and truncate the path if needed
+    Remove invalid characters and truncate the path if needed.
     """
     if os.name == "nt":
         unt, value = os.path.splitunc(value)
@@ -564,14 +562,14 @@ def safepath(value):
 
 def safejoin(*args):
     """
-    os.path.join + safepath
+    os.path.join + safepath.
     """
     return safepath(os.path.join(*args))
 
 
 def safename(value):
     """
-    Remove invalid characters
+    Remove invalid characters.
     """
     repl = '<>:"/\\|?*' if os.name == "nt" else '\0/\\"'
     name = remove_chars(value, repl)
@@ -726,8 +724,8 @@ def isexecutable(filename):
 
 def which(filename):
     """
-    Works exactly like the unix command which
-    Courtesy of http://stackoverflow.com/a/377028/675646
+    Works exactly like the unix command which Courtesy of
+    http://stackoverflow.com/a/377028/675646.
     """
     dirname, basename = os.path.split(filename)
 

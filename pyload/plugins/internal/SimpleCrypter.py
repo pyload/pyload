@@ -247,8 +247,8 @@ class SimpleCrypter(Crypter):
 
     def get_links(self):
         """
-        Returns the links extracted from self.data
-        You should override this only if it's impossible to extract links using only the LINK_PATTERN.
+        Returns the links extracted from self.data You should override this
+        only if it's impossible to extract links using only the LINK_PATTERN.
         """
         if self.premium:
             self.log_info(_("Decrypting as premium link..."))

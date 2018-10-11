@@ -8,7 +8,9 @@ from pyload.cli.printer import *
 
 
 class AddPackage(Handler):
-    """ let the user add packages """
+    """
+    let the user add packages.
+    """
 
     def init(self):
         self.name = ""

@@ -77,7 +77,7 @@ class UploadgigCom(Account):
     @property
     def logged(self):
         """
-        Checks if user is still logged in
+        Checks if user is still logged in.
         """
         if not self.user:
             return False

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" Store all usefull functions here """
+"""
+Store all usefull functions here.
+"""
 
 
 import os
@@ -21,7 +23,9 @@ def chmod(*args):
 
 
 def decode(string):
-    """ decode string with utf if possible """
+    """
+    decode string with utf if possible.
+    """
     try:
         return string.decode("utf8", "replace")
     except Exception:
@@ -29,7 +33,9 @@ def decode(string):
 
 
 def remove_chars(string, repl):
-    """ removes all chars in repl from string"""
+    """
+    removes all chars in repl from string.
+    """
     if isinstance(string, str):
         return string.translate(maketrans("", ""), repl)
     elif isinstance(string, str):
@@ -45,7 +51,9 @@ def save_path(name):
 
 
 def save_join(*args):
-    """ joins a path, encoding aware """
+    """
+    joins a path, encoding aware.
+    """
     return fs_encode(join(*[x if isinstance(x, str) else decode(x) for x in args]))
 
 
@@ -96,7 +104,9 @@ def compare_time(start, end):
 
 
 def formatSize(size):
-    """formats size of bytes"""
+    """
+    formats size of bytes.
+    """
     size = int(size)
     steps = 0
     sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
@@ -204,5 +214,7 @@ def fixup(m):
 
 
 def html_unescape(text):
-    """Removes HTML or XML character references and entities from a text string"""
+    """
+    Removes HTML or XML character references and entities from a text string.
+    """
     return re.sub(r"&#?\w+;", fixup, text)

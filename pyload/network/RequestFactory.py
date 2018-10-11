@@ -44,13 +44,17 @@ class RequestFactory(object):
         return req
 
     def getHTTPRequest(self, **kwargs):
-        """ returns a http request, dont forget to close it ! """
+        """
+        returns a http request, dont forget to close it !
+        """
         options = self.getOptions()
         options.update(kwargs)  # submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
 
     def getURL(self, *args, **kwargs):
-        """ see HTTPRequest for argument list """
+        """
+        see HTTPRequest for argument list.
+        """
         h = HTTPRequest(None, self.getOptions())
         try:
             rep = h.load(*args, **kwargs)
@@ -68,7 +72,9 @@ class RequestFactory(object):
         return cj
 
     def getProxies(self):
-        """ returns a proxy list for the request classes """
+        """
+        returns a proxy list for the request classes.
+        """
         if not self.pyload.config["proxy"]["proxy"]:
             return {}
         else:
@@ -102,7 +108,9 @@ class RequestFactory(object):
             }
 
     def getOptions(self):
-        """returns options needed for pycurl"""
+        """
+        returns options needed for pycurl.
+        """
         return {
             "interface": self.iface(),
             "proxies": self.getProxies(),
@@ -110,7 +118,9 @@ class RequestFactory(object):
         }
 
     def updateBucket(self):
-        """ set values in the bucket according to settings"""
+        """
+        set values in the bucket according to settings.
+        """
         if not self.pyload.config["download"]["limit_speed"]:
             self.bucket.setRate(-1)
         else:

@@ -136,7 +136,8 @@ class Base(Plugin):
 
     def setup(self):
         """
-        Setup for enviroment and other things, called before downloading (possibly more than one time)
+        Setup for enviroment and other things, called before downloading
+        (possibly more than one time)
         """
         pass
 
@@ -267,7 +268,7 @@ class Base(Plugin):
 
     def _process(self, thread):
         """
-        Handles important things to do before starting
+        Handles important things to do before starting.
         """
         self.thread = thread
 
@@ -300,7 +301,7 @@ class Base(Plugin):
 
     def process(self, pyfile):
         """
-        The "main" method of every hoster plugin, you **have to** overwrite it
+        The "main" method of every hoster plugin, you **have to** overwrite it.
         """
         raise NotImplementedError
 
@@ -338,7 +339,7 @@ class Base(Plugin):
 
     def wait(self, seconds=None, reconnect=None):
         """
-        Waits the time previously set
+        Waits the time previously set.
         """
         if seconds is not None:
             self.set_wait(seconds)
@@ -390,7 +391,7 @@ class Base(Plugin):
 
     def skip(self, msg=""):
         """
-        Skip and give msg
+        Skip and give msg.
         """
         raise Skip(
             encode(msg or self.pyfile.error or self.pyfile.pluginname)
@@ -399,7 +400,7 @@ class Base(Plugin):
     # TODO: Remove in 0.6.x
     def fail(self, msg=""):
         """
-        Fail and give msg
+        Fail and give msg.
         """
         msg = msg.strip()
 
@@ -424,7 +425,7 @@ class Base(Plugin):
 
     def abort(self, msg=""):
         """
-        Abort and give msg
+        Abort and give msg.
         """
         if msg:  # TODO: Remove in 0.6.x
             self.pyfile.error = encode(msg)
@@ -434,14 +435,15 @@ class Base(Plugin):
     # TODO: Recheck in 0.6.x
     def offline(self, msg=""):
         """
-        Fail and indicate file is offline
+        Fail and indicate file is offline.
         """
         self.fail("offline")
 
     # TODO: Recheck in 0.6.x
     def temp_offline(self, msg=""):
         """
-        Fail and indicates file ist temporary offline, the core may take consequences
+        Fail and indicates file ist temporary offline, the core may take
+        consequences.
         """
         self.fail("temp. offline")
 
@@ -461,7 +463,7 @@ class Base(Plugin):
 
     def retry(self, attemps=5, wait=1, msg="", msgfail=_("Max retries reached")):
         """
-        Retries and begin again from the beginning
+        Retries and begin again from the beginning.
 
         :param attemps: number of maximum retries
         :param wait: time to wait in seconds before retry
@@ -512,13 +514,13 @@ class Base(Plugin):
 
     def get_password(self):
         """
-        Get the password the user provided in the package
+        Get the password the user provided in the package.
         """
         return self.pyfile.package().password or ""
 
     def clean(self):
         """
-        Clean everything and remove references
+        Clean everything and remove references.
         """
         Plugin.clean(self)
         for attr in ("account", "html", "pyfile", "thread"):

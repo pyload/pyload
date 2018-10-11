@@ -96,7 +96,9 @@ xargs = [
 @task
 @needs("cog")
 def html():
-    """Build html documentation"""
+    """
+    Build html documentation.
+    """
     module = path("docs") / "pyload"
     module.rmtree()
     call_task("paver.doctools.html")
@@ -111,7 +113,9 @@ def html():
     ]
 )
 def get_source(options):
-    """ Downloads pyload source from bitbucket tip or given rev"""
+    """
+    Downloads pyload source from bitbucket tip or given rev.
+    """
     if options.rev:
         options.url = "https://bitbucket.org/spoob/pyload/get/{}.zip".format(
             options.rev
@@ -153,13 +157,17 @@ def get_source(options):
 @task
 @needs("clean", "generate_setup", "minilib", "get_source", "setuptools.command.sdist")
 def sdist():
-    """ Build source code package with distutils """
+    """
+    Build source code package with distutils.
+    """
 
 
 @task
 @cmdopts([("path=", "p", "Thrift path"), ("gen=", "g", "Extra --gen option")])
 def thrift(options):
-    """ Generate Thrift stubs """
+    """
+    Generate Thrift stubs.
+    """
 
     print("add import for TApplicationException manually as long it is not fixed")
 
@@ -196,7 +204,9 @@ def thrift(options):
 
 @task
 def compile_js():
-    """ Compile .coffee files to javascript"""
+    """
+    Compile .coffee files to javascript.
+    """
 
     root = path("pyload") / "webui" / "media" / "js"
     for f in root.glob("*.coffee"):
@@ -213,7 +223,9 @@ def compile_js():
 
 @task
 def generate_locale():
-    """ Generates localisation files """
+    """
+    Generates localisation files.
+    """
 
     EXCLUDE = [
         "BeautifulSoup.py",
@@ -272,7 +284,9 @@ def tests():
 
 @task
 def virtualenv(options):
-    """Setup virtual environment"""
+    """
+    Setup virtual environment.
+    """
     if path(options.dir).exists():
         return
 
@@ -284,7 +298,9 @@ def virtualenv(options):
 
 @task
 def clean_env():
-    """Deletes the virtual environment"""
+    """
+    Deletes the virtual environment.
+    """
     env = path(options.virtualenv.dir)
     if env.exists():
         env.rmtree()
@@ -293,14 +309,18 @@ def clean_env():
 @task
 @needs("generate_setup", "minilib", "get_source", "virtualenv")
 def env_install():
-    """Install pyLoad into the virtualenv"""
+    """
+    Install pyLoad into the virtualenv.
+    """
     venv = options.virtualenv
     call([path(venv.dir) / "bin" / "easy_install", "."])
 
 
 @task
 def clean():
-    """Cleans build directories"""
+    """
+    Cleans build directories.
+    """
     path("build").rmtree()
     path("dist").rmtree()
 

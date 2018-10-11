@@ -40,7 +40,9 @@ class ImgurCom(SimpleCrypter):
     GALLERY_JSON = "http://imgur.com/ajaxalbums/getimages/{}/hit.json?all=true"
 
     def sanitize(self, name):
-        """ Turn Imgur Gallery title into a safe Package and Folder name """
+        """
+        Turn Imgur Gallery title into a safe Package and Folder name.
+        """
         keepcharacters = (" ", "\t", ".", "_")
         replacecharacters = (" ", "\t")
         return "".join(
@@ -50,7 +52,10 @@ class ImgurCom(SimpleCrypter):
         ).strip("_")
 
     def get_ids_from_json(self):
-        """ Check the embedded JSON and if needed the external JSON for more images """
+        """
+        Check the embedded JSON and if needed the external JSON for more
+        images.
+        """
 
         # Greedy re should match the closing bracket of json assuming JSON data
         # is placed on a single line
@@ -106,7 +111,9 @@ class ImgurCom(SimpleCrypter):
         return {}
 
     def get_indirect_links(self, links_direct):
-        """ Try to find a list of all images and add those we didn't find already """
+        """
+        Try to find a list of all images and add those we didn't find already.
+        """
 
         # Extract IDs of known direct links
         ids_direct = set(
@@ -131,7 +138,10 @@ class ImgurCom(SimpleCrypter):
         self.total_num_images = 0
 
     def get_links(self):
-        """ Extract embedded links from HTML // then check if there are further images which will be lazy-loaded """
+        """
+        Extract embedded links from HTML // then check if there are further
+        images which will be lazy-loaded.
+        """
 
         def f(url):
             return "http://" + re.sub(r"(\w{7})s\.", r"\1.", url)

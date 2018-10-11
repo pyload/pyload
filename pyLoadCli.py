@@ -67,12 +67,18 @@ class Cli(object):
             self.processCommand()
 
     def reset(self):
-        """ reset to initial main menu """
+        """
+        reset to initial main menu.
+        """
         self.input = ""
         self.headerHandler = self.bodyHandler = self.inputHandler = self
 
     def start(self):
-        """ main loop. handle input """
+        """
+        main loop.
+
+        handle input
+        """
         while True:
             # inp = raw_input()
             inp = self.getch.impl()
@@ -111,7 +117,9 @@ class Cli(object):
             self.renderFooter(self.inputline)
 
     def refresh(self):
-        """refresh screen"""
+        """
+        refresh screen.
+        """
 
         println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
         println(2, "")
@@ -134,7 +142,9 @@ class Cli(object):
         self.input = ""
 
     def renderHeader(self, line):
-        """ prints download status """
+        """
+        prints download status.
+        """
         # print(updated information)
         #        print("\033[J" #clear screen)
         #        self.println(1, blue("py") + yellow("Load") + white(_(" Command Line Interface")))
@@ -200,7 +210,9 @@ class Cli(object):
         return line + 1
 
     def renderBody(self, line):
-        """ prints initial menu """
+        """
+        prints initial menu.
+        """
         println(line, white(_("Menu:")))
         println(line + 1, "")
         println(line + 2, mag("1.") + _(" Add Links"))
@@ -213,7 +225,9 @@ class Cli(object):
         return line + 8
 
     def renderFooter(self, line):
-        """ prints out the input line with input """
+        """
+        prints out the input line with input.
+        """
         println(line, "")
         line += 1
 
@@ -230,7 +244,9 @@ class Cli(object):
         print("\033[" + str(self.inputline) + ";0H")
 
     def onChar(self, char):
-        """ default no special handling for single chars """
+        """
+        default no special handling for single chars.
+        """
         if char == "1":
             self.setHandler(AddPackage)
         elif char == "2":

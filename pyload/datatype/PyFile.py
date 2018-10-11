@@ -33,7 +33,7 @@ def setSize(self, value):
 
 class PyFile(object):
     """
-    Represents a file object at runtime
+    Represents a file object at runtime.
     """
 
     __slots__ = (
@@ -107,7 +107,9 @@ class PyFile(object):
 
     @lock
     def initPlugin(self):
-        """ inits plugin instance """
+        """
+        inits plugin instance.
+        """
         if not self.plugin:
             self.pluginmodule = self.m.pyload.pluginManager.getPlugin(self.pluginname)
             self.pluginclass = getattr(
@@ -118,14 +120,18 @@ class PyFile(object):
 
     @lock
     def hasPlugin(self):
-        """Thread safe way to determine this file has initialized plugin attribute
+        """
+        Thread safe way to determine this file has initialized plugin
+        attribute.
 
         :return:
         """
         return hasattr(self, "plugin") and self.plugin
 
     def package(self):
-        """ return package instance"""
+        """
+        return package instance.
+        """
         return self.m.getPackage(self.packageid)
 
     def setStatus(self, status):
@@ -146,12 +152,16 @@ class PyFile(object):
         return statusMap[status] == self.status
 
     def sync(self):
-        """sync PyFile instance with database"""
+        """
+        sync PyFile instance with database.
+        """
         self.m.updateLink(self)
 
     @lock
     def release(self):
-        """sync and remove from cache"""
+        """
+        sync and remove from cache.
+        """
         # file has valid package
         if self.packageid > 0:
             self.sync()
@@ -163,22 +173,26 @@ class PyFile(object):
         self.m.releaseLink(self.id)
 
     def delete(self):
-        """delete pyfile from database"""
+        """
+        delete pyfile from database.
+        """
         self.m.deleteLink(self.id)
 
     def toDict(self):
-        """return dict with all information for interface"""
+        """
+        return dict with all information for interface.
+        """
         return self.toDbDict()
 
     def toDbDict(self):
-        """return data as dict for databse
+        """
+        return data as dict for databse.
 
         format:
 
         {
             id: {'url': url, 'name': name ... }
         }
-
         """
         return {
             self.id: {
@@ -197,7 +211,9 @@ class PyFile(object):
         }
 
     def abortDownload(self):
-        """abort pyfile if possible"""
+        """
+        abort pyfile if possible.
+        """
         while self.id in self.m.pyload.threadManager.processingIds():
             self.abort = True
             if self.plugin and self.plugin.req:
@@ -211,7 +227,10 @@ class PyFile(object):
         self.release()
 
     def finishIfDone(self):
-        """set status to finish and release file if every thread is finished with it"""
+        """
+        set status to finish and release file if every thread is finished with
+        it.
+        """
 
         if self.id in self.m.pyload.threadManager.processingIds():
             return False
@@ -225,7 +244,9 @@ class PyFile(object):
         self.m.checkAllLinksProcessed(self.id)
 
     def formatWait(self):
-        """ formats and return wait time in humanreadable format """
+        """
+        formats and return wait time in humanreadable format.
+        """
         seconds = self.waitUntil - time()
 
         if seconds < 0:
@@ -236,11 +257,15 @@ class PyFile(object):
         return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
     def formatSize(self):
-        """ formats size to readable format """
+        """
+        formats size to readable format.
+        """
         return formatSize(self.getSize())
 
     def formatETA(self):
-        """ formats eta to readable format """
+        """
+        formats eta to readable format.
+        """
         seconds = self.getETA()
 
         if seconds < 0:
@@ -251,28 +276,36 @@ class PyFile(object):
         return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
     def getSpeed(self):
-        """ calculates speed """
+        """
+        calculates speed.
+        """
         try:
             return self.plugin.req.speed
         except Exception:
             return 0
 
     def getETA(self):
-        """ gets established time of arrival"""
+        """
+        gets established time of arrival.
+        """
         try:
             return self.getBytesLeft() // self.getSpeed()
         except Exception:
             return 0
 
     def getBytesLeft(self):
-        """ gets bytes left """
+        """
+        gets bytes left.
+        """
         try:
             return self.plugin.req.size - self.plugin.req.arrived
         except Exception:
             return 0
 
     def getPercent(self):
-        """ get % of download """
+        """
+        get % of download.
+        """
         if self.status == 12:
             try:
                 return self.plugin.req.percent
@@ -282,7 +315,9 @@ class PyFile(object):
             return self.progress
 
     def getSize(self):
-        """ get size of download """
+        """
+        get size of download.
+        """
         try:
             if self.plugin.req.size:
                 return self.plugin.req.size

@@ -13,7 +13,9 @@ from pyload.remote.thriftbackend.ThriftClient import Destination, ThriftClient
 
 
 def createURLs():
-    """ create some urls, some may fail """
+    """
+    create some urls, some may fail.
+    """
     urls = []
     for x in range(0, randint(20, 100)):
         name = "DEBUG_API"

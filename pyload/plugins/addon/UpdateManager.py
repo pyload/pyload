@@ -99,7 +99,7 @@ class UpdateManager(Addon):
     @Expose
     def autoreload_plugins(self):
         """
-        Reload and reindex all modified plugins
+        Reload and reindex all modified plugins.
         """
         reloads = []
         modules = [
@@ -155,7 +155,7 @@ class UpdateManager(Addon):
     @threaded
     def update(self):
         """
-        Check for updates
+        Check for updates.
         """
         if self._update() != 2 or not self.config.get("autorestart"):
             return
@@ -264,7 +264,7 @@ class UpdateManager(Addon):
 
     def _update_plugins(self, server_data):
         """
-        Check for plugin updates
+        Check for plugin updates.
         """
         updated = []
 
@@ -402,7 +402,7 @@ class UpdateManager(Addon):
     @Expose
     def remove_plugins(self, plugin_ids):
         """
-        Delete plugins from disk
+        Delete plugins from disk.
         """
         if not plugin_ids:
             return

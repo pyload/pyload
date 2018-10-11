@@ -67,7 +67,7 @@ class VeehdCom(Hoster):
 
     def get_file_url(self):
         """
-        Returns the absolute downloadable filepath
+        Returns the absolute downloadable filepath.
         """
         if not self.data:
             self.download_html()

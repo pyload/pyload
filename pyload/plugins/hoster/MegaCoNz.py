@@ -90,7 +90,7 @@ class MegaCrypto(object):
     @staticmethod
     def get_cipher_key(key):
         """
-        Construct the cipher key from the given data
+        Construct the cipher key from the given data.
         """
         k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
         iv = key[4:6] + (0, 0)
@@ -131,7 +131,7 @@ class MegaCrypto(object):
     @staticmethod
     def encrypt_key(data, key):
         """
-        Encrypt a decrypted key
+        Encrypt a decrypted key.
         """
         data = MegaCrypto.base64_decode(data)
         return sum(
@@ -145,7 +145,7 @@ class MegaCrypto(object):
     @staticmethod
     def get_chunks(size):
         """
-        Calculate chunks for a given encrypted file size
+        Calculate chunks for a given encrypted file size.
         """
         chunk_start = 0
         chunk_size = 0x20000
@@ -161,7 +161,7 @@ class MegaCrypto(object):
 
     class Checksum(object):
         """
-        interface for checking CBC-MAC checksum
+        interface for checking CBC-MAC checksum.
         """
 
         def __init__(self, key):
@@ -185,14 +185,16 @@ class MegaCrypto(object):
 
         def digest(self):
             """
-            Return the **binary** (non-printable) CBC-MAC of the message that has been authenticated so far.
+            Return the **binary** (non-printable) CBC-MAC of the message that
+            has been authenticated so far.
             """
             d = MegaCrypto.str_to_a32(self.hash)
             return (d[0] ^ d[1], d[2] ^ d[3])
 
         def hexdigest(self):
             """
-            Return the **printable** CBC-MAC of the message that has been authenticated so far.
+            Return the **printable** CBC-MAC of the message that has been
+            authenticated so far.
             """
             return "".join(
                 "{:2x}".format(ord(x)) for x in MegaCrypto.a32_to_str(self.digest())
@@ -212,7 +214,7 @@ class MegaClient(object):
 
     def api_response(self, **kwargs):
         """
-        Dispatch a call to the api, see https://mega.co.nz/#developers
+        Dispatch a call to the api, see https://mega.co.nz/#developers.
         """
         uid = random.randint(
             10 << 9, 10 ** 10
@@ -295,7 +297,7 @@ class MegaCoNz(Hoster):
 
     def decrypt_file(self, key):
         """
-        Decrypts and verifies checksum to the file at 'last_download'
+        Decrypts and verifies checksum to the file at 'last_download'.
         """
         k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
         ctr = Crypto.Util.Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64)
@@ -399,11 +401,12 @@ class MegaCoNz(Hoster):
 
     def check_exists(self, name):
         """
-        Because of Mega downloads a temporary encrypted file with the extension of '.crypted',
-        pyLoad cannot correctly detect if the file exists before downloading.
-        This function corrects this.
+        Because of Mega downloads a temporary encrypted file with the extension
+        of '.crypted', pyLoad cannot correctly detect if the file exists before
+        downloading. This function corrects this.
 
-        Raises Skip() if file exists and 'skip_existing' configuration option is set to True.
+        Raises Skip() if file exists and 'skip_existing' configuration
+        option is set to True.
         """
         if self.pyload.config.get("download", "skip_existing"):
             download_folder = self.pyload.config.get("general", "download_folder")

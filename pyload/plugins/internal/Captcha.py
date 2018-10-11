@@ -33,7 +33,7 @@ class Captcha(Plugin):
 
     def recognize(self, image):
         """
-        Extend to build your custom anti-captcha ocr
+        Extend to build your custom anti-captcha ocr.
         """
         pass
 
@@ -65,7 +65,7 @@ class Captcha(Plugin):
         self, img, input_type="jpg", output_type="textual", ocr=False, timeout=120
     ):
         """
-        Loads a captcha and decrypts it with ocr, plugin, user input
+        Loads a captcha and decrypts it with ocr, plugin, user input.
 
         :param img: image raw data
         :param get: get part for request

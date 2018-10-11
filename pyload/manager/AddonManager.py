@@ -14,35 +14,34 @@ from pyload.utils.utils import lock
 
 
 class AddonManager(object):
-    """Manages addons, delegates and handles Events.
+    """
+    Manages addons, delegates and handles Events.
 
-        Every plugin can define events, \
-        but some very usefull events are called by the Core.
-        Contrary to overwriting addon methods you can use event listener,
-        which provides additional entry point in the control flow.
-        Only do very short tasks or use threads.
+    Every plugin can define events, \
+    but some very usefull events are called by the Core.
+    Contrary to overwriting addon methods you can use event listener,
+    which provides additional entry point in the control flow.
+    Only do very short tasks or use threads.
 
-        **Known Events:**
-        Most addon methods exists as events. These are the additional known events.
+    **Known Events:**
+    Most addon methods exists as events. These are the additional known events.
 
-        ===================== ============== ==================================
-        Name                     Arguments      Description
-        ===================== ============== ==================================
-        downloadPreparing     fid            A download was just queued and will be prepared now.
-        downloadStarts        fid            A plugin will immediately starts the download afterwards.
-        linksAdded            links, pid     Someone just added links, you are able to modify the links.
-        allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
-        allDownloadsFinished                 Every download in queue is finished.
-        unrarFinished         folder, fname  An Unrar job finished
-        configChanged                        The config was changed via the api.
-        pluginConfigChanged                  The plugin config changed, due to api or internal process.
-        ===================== ============== ==================================
+    ===================== ============== ==================================
+    Name                     Arguments      Description
+    ===================== ============== ==================================
+    downloadPreparing     fid            A download was just queued and will be prepared now.
+    downloadStarts        fid            A plugin will immediately starts the download afterwards.
+    linksAdded            links, pid     Someone just added links, you are able to modify the links.
+    allDownloadsProcessed                Every link was handled, pyload would idle afterwards.
+    allDownloadsFinished                 Every download in queue is finished.
+    unrarFinished         folder, fname  An Unrar job finished
+    configChanged                        The config was changed via the api.
+    pluginConfigChanged                  The plugin config changed, due to api or internal process.
+    ===================== ============== ==================================
 
-        | Notes:
-        |    allDownloadsProcessed is *always* called before allDownloadsFinished.
-        |    configChanged is *always* called before pluginConfigChanged.
-
-
+    | Notes:
+    |    allDownloadsProcessed is *always* called before allDownloadsFinished.
+    |    configChanged is *always* called before pluginConfigChanged.
     """
 
     def __init__(self, core):
@@ -258,11 +257,15 @@ class AddonManager(object):
         return AddonThread(self.pyload.threadManager, function, args, kwargs)
 
     def activePlugins(self):
-        """ returns all active plugins """
+        """
+        returns all active plugins.
+        """
         return [x for x in self.plugins if x.isActivated()]
 
     def getAllInfo(self):
-        """returns info stored by addon plugins"""
+        """
+        returns info stored by addon plugins.
+        """
         info = {}
         for name, plugin in self.pluginMap.items():
             if plugin.info:
@@ -288,7 +291,9 @@ class AddonManager(object):
         return info
 
     def addEvent(self, event, func):
-        """Adds an event listener for event name"""
+        """
+        Adds an event listener for event name.
+        """
         if event in self.events:
             if func not in self.events[event]:
                 self.events[event].append(func)
@@ -296,13 +301,17 @@ class AddonManager(object):
             self.events[event] = [func]
 
     def removeEvent(self, event, func):
-        """removes previously added event listener"""
+        """
+        removes previously added event listener.
+        """
         if event in self.events:
             if func in self.events[event]:
                 self.events[event].remove(func)
 
     def dispatchEvent(self, event, *args):
-        """dispatches event with args"""
+        """
+        dispatches event with args.
+        """
         if event in self.events:
             for f in self.events[event]:
                 try:

@@ -147,7 +147,9 @@ class MegaCoNz(Account):
         return MegaCrypto.a32_to_base64((user_hash[0], user_hash[2]))
 
     def mpi_to_int(self, s):
-        """ Convert GCRYMPI_FMT_PGP bignum format to integer """
+        """
+        Convert GCRYMPI_FMT_PGP bignum format to integer.
+        """
         return int(
             "".join("{:2x}".format(ord(s[2:][x])) for x in range(0, len(s[2:]))), 16
         )

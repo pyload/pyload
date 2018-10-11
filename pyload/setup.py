@@ -14,7 +14,7 @@ from pyload.utils.utils import get_console_encoding
 
 class Setup(object):
     """
-    pyLoads initial setup configuration assistent
+    pyLoads initial setup configuration assistent.
     """
 
     def __init__(self, path, config):
@@ -215,7 +215,9 @@ class Setup(object):
         return True
 
     def system_check(self):
-        """ make a systemcheck and return the results"""
+        """
+        make a systemcheck and return the results.
+        """
         print(_("## System Check ##"))
 
         if sys.version_info[:2] < (3, 6):
@@ -544,7 +546,9 @@ class Setup(object):
             print(_("Setting config path failed: {}").format(str(e)))
 
     def print_dep(self, name, value):
-        """Print Status of dependency"""
+        """
+        Print Status of dependency.
+        """
         if value:
             print(_("{}: OK").format(name))
         else:
@@ -566,7 +570,9 @@ class Setup(object):
             return False
 
     def ask(self, qst, default, answers=[], bool=False, password=False):
-        """produce one line to asking for input"""
+        """
+        produce one line to asking for input.
+        """
         if answers:
             info = "("
 

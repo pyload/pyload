@@ -22,17 +22,23 @@ from pyload.utils.utils import save_join
 
 
 class PluginThread(Thread):
-    """abstract base class for thread types"""
+    """
+    abstract base class for thread types.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self, manager):
-        """Constructor"""
+        """
+        Constructor.
+        """
         Thread.__init__(self)
         self.setDaemon(True)
         self.m = manager  # thread manager
 
     def writeDebugReport(self, pyfile):
-        """ writes a
+        """
+        writes a.
+
         :return:
         """
 
@@ -136,17 +142,23 @@ class PluginThread(Thread):
         return dump
 
     def clean(self, pyfile):
-        """ set thread unactive and release pyfile """
+        """
+        set thread unactive and release pyfile.
+        """
         self.active = False
         pyfile.release()
 
 
 class DownloadThread(PluginThread):
-    """thread for downloading files from 'real' hoster plugins"""
+    """
+    thread for downloading files from 'real' hoster plugins.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self, manager):
-        """Constructor"""
+        """
+        Constructor.
+        """
         PluginThread.__init__(self, manager)
 
         self.queue = Queue()  # job queue
@@ -156,7 +168,9 @@ class DownloadThread(PluginThread):
 
     # ----------------------------------------------------------------------
     def run(self):
-        """run method"""
+        """
+        run method.
+        """
         pyfile = None
 
         while True:
@@ -341,19 +355,27 @@ class DownloadThread(PluginThread):
             self.m.pyload.files.save()
 
     def put(self, job):
-        """assing job to thread"""
+        """
+        assing job to thread.
+        """
         self.queue.put(job)
 
     def stop(self):
-        """stops the thread"""
+        """
+        stops the thread.
+        """
         self.put("quit")
 
 
 class DecrypterThread(PluginThread):
-    """thread for decrypting"""
+    """
+    thread for decrypting.
+    """
 
     def __init__(self, manager, pyfile):
-        """constructor"""
+        """
+        constructor.
+        """
         PluginThread.__init__(self, manager)
 
         self.active = pyfile
@@ -367,7 +389,9 @@ class DecrypterThread(PluginThread):
         return [self.active]
 
     def run(self):
-        """run method"""
+        """
+        run method.
+        """
 
         pyfile = self.active
         retry = False
@@ -444,11 +468,15 @@ class DecrypterThread(PluginThread):
 
 
 class AddonThread(PluginThread):
-    """thread for addons"""
+    """
+    thread for addons.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self, m, function, args, kwargs):
-        """Constructor"""
+        """
+        Constructor.
+        """
         PluginThread.__init__(self, m)
 
         self.f = function
@@ -465,7 +493,9 @@ class AddonThread(PluginThread):
         return self.active
 
     def addActive(self, pyfile):
-        """ Adds a pyfile to active list and thus will be displayed on overview"""
+        """
+        Adds a pyfile to active list and thus will be displayed on overview.
+        """
         if pyfile not in self.active:
             self.active.append(pyfile)
 
@@ -497,7 +527,9 @@ class AddonThread(PluginThread):
 
 class InfoThread(PluginThread):
     def __init__(self, manager, data, pid=-1, rid=-1, add=False):
-        """Constructor"""
+        """
+        Constructor.
+        """
         PluginThread.__init__(self, manager)
 
         self.data = data
@@ -512,7 +544,9 @@ class InfoThread(PluginThread):
         self.start()
 
     def run(self):
-        """run method"""
+        """
+        run method.
+        """
 
         plugins = {}
         container = []

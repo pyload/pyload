@@ -46,10 +46,14 @@ class PluginManager(object):
         sys.meta_path.append(self)
 
     def createIndex(self):
-        """create information for all plugins available"""
+        """
+        create information for all plugins available.
+        """
 
         def merge(dst, src, overwrite=False):
-            """merge dict of dicts"""
+            """
+            merge dict of dicts.
+            """
             for name in src:
                 if name in dst:
                     if overwrite is True:
@@ -234,7 +238,9 @@ class PluginManager(object):
         return plugins, configs
 
     def parseUrls(self, urls):
-        """parse plugins for given list of urls"""
+        """
+        parse plugins for given list of urls.
+        """
 
         last = None
         res = []  # tupels of (url, plugin)
@@ -275,7 +281,9 @@ class PluginManager(object):
         return None, None
 
     def getPlugin(self, name, original=False):
-        """return plugin module from hoster|decrypter|container"""
+        """
+        return plugin module from hoster|decrypter|container.
+        """
         plugin, type = self.findPlugin(name)
 
         if not plugin:
@@ -288,7 +296,9 @@ class PluginManager(object):
         return self.loadModule(type, name)
 
     def getPluginName(self, name):
-        """ used to obtain new name if other plugin was injected"""
+        """
+        used to obtain new name if other plugin was injected.
+        """
         plugin, type = self.findPlugin(name)
 
         if "new_name" in plugin:
@@ -297,7 +307,8 @@ class PluginManager(object):
         return name
 
     def loadModule(self, type, name):
-        """ Returns loaded module for plugin
+        """
+        Returns loaded module for plugin.
 
         :param type: plugin type, subfolder of module.plugins
         :param name:
@@ -328,13 +339,17 @@ class PluginManager(object):
             self.log.debug("Available plugins : {}".format(str(plugins)))
 
     def loadClass(self, type, name):
-        """Returns the class of a plugin with the same name"""
+        """
+        Returns the class of a plugin with the same name.
+        """
         module = self.loadModule(type, name)
         if module:
             return getattr(module, name)
 
     def getAccountPlugins(self):
-        """return list of account plugin names"""
+        """
+        return list of account plugin names.
+        """
         return list(self.accountPlugins.keys())
 
     def find_module(self, fullname, path=None):
@@ -382,10 +397,14 @@ class PluginManager(object):
         return sys.modules[name]
 
     def reloadPlugins(self, type_plugins):
-        """ reloads and reindexes plugins """
+        """
+        reloads and reindexes plugins.
+        """
 
         def merge(dst, src, overwrite=False):
-            """merge dict of dicts"""
+            """
+            merge dict of dicts.
+            """
             for name in src:
                 if name in dst:
                     if overwrite is True:

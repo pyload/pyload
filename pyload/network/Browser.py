@@ -93,7 +93,9 @@ class Browser(object):
         progressNotify=None,
         disposition=False,
     ):
-        """ this can also download ftp """
+        """
+        this can also download ftp.
+        """
         self._size = 0
         self.dl = HTTPDownload(
             url,
@@ -115,15 +117,20 @@ class Browser(object):
         return name
 
     def load(self, *args, **kwargs):
-        """ retrieves page """
+        """
+        retrieves page.
+        """
         return self.http.load(*args, **kwargs)
 
     def putHeader(self, name, value):
-        """ add a header to the request """
+        """
+        add a header to the request.
+        """
         self.http.putHeader(name, value)
 
     def addAuth(self, pwd):
-        """Adds user and pw for http auth
+        """
+        Adds user and pw for http auth.
 
         :param pwd: string, user:password
         """
@@ -136,7 +143,9 @@ class Browser(object):
         self.renewHTTPRequest()
 
     def setOption(self, name, value):
-        """Adds an option to the request, see HTTPRequest for existing ones"""
+        """
+        Adds an option to the request, see HTTPRequest for existing ones.
+        """
         self.options[name] = value
 
     def deleteOption(self, name):
@@ -147,7 +156,9 @@ class Browser(object):
         self.http.clearHeaders()
 
     def close(self):
-        """ cleanup """
+        """
+        cleanup.
+        """
         if hasattr(self, "http"):
             self.http.close()
             del self.http

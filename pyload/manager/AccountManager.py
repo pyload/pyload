@@ -13,11 +13,15 @@ ACC_VERSION = 1
 
 
 class AccountManager(object):
-    """manages all accounts"""
+    """
+    manages all accounts.
+    """
 
     # ----------------------------------------------------------------------
     def __init__(self, core):
-        """Constructor"""
+        """
+        Constructor.
+        """
 
         self.pyload = core
         self.lock = Lock()
@@ -33,7 +37,9 @@ class AccountManager(object):
         self.loadAccounts()
 
     def getAccountPlugin(self, plugin):
-        """get account instance for plugin or None if anonymous"""
+        """
+        get account instance for plugin or None if anonymous.
+        """
         if plugin in self.accounts:
             if plugin not in self.plugins:
                 self.plugins[plugin] = self.pyload.pluginManager.loadClass(
@@ -45,7 +51,9 @@ class AccountManager(object):
             return None
 
     def getAccountPlugins(self):
-        """ get all account instances"""
+        """
+        get all account instances.
+        """
 
         plugins = []
         for plugin in self.accounts.keys():
@@ -56,7 +64,9 @@ class AccountManager(object):
     # ----------------------------------------------------------------------
 
     def loadAccounts(self):
-        """loads all accounts available"""
+        """
+        loads all accounts available.
+        """
 
         if not exists("accounts.conf"):
             f = open("accounts.conf", "wb")
@@ -117,7 +127,9 @@ class AccountManager(object):
     # ----------------------------------------------------------------------
 
     def saveAccounts(self):
-        """save all account information"""
+        """
+        save all account information.
+        """
 
         f = open("accounts.conf", "wb")
         f.write("version: " + str(ACC_VERSION) + "\n")
@@ -138,13 +150,17 @@ class AccountManager(object):
     # ----------------------------------------------------------------------
 
     def initAccountPlugins(self):
-        """init names"""
+        """
+        init names.
+        """
         for name in self.pyload.pluginManager.getAccountPlugins():
             self.accounts[name] = {}
 
     @lock
     def updateAccount(self, plugin, user, password=None, options={}):
-        """add or update account"""
+        """
+        add or update account.
+        """
         if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)
             updated = p.updateAccounts(user, password, options)
@@ -157,7 +173,9 @@ class AccountManager(object):
 
     @lock
     def removeAccount(self, plugin, user):
-        """remove account"""
+        """
+        remove account.
+        """
 
         if plugin in self.accounts:
             p = self.getAccountPlugin(plugin)

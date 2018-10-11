@@ -134,22 +134,23 @@ class Output(TBase):
 class DownloadInfo(TBase):
     """
     Attributes:
-     - fid
-     - name
-     - speed
-     - eta
-     - format_eta
-     - bleft
-     - size
-     - format_size
-     - percent
-     - status
-     - statusmsg
-     - format_wait
-     - wait_until
-     - packageID
-     - packageName
-     - plugin
+
+    - fid
+    - name
+    - speed
+    - eta
+    - format_eta
+    - bleft
+    - size
+    - format_size
+    - percent
+    - status
+    - statusmsg
+    - format_wait
+    - wait_until
+    - packageID
+    - packageName
+    - plugin
     """
 
     __slots__ = [
@@ -231,13 +232,14 @@ class DownloadInfo(TBase):
 class ServerStatus(TBase):
     """
     Attributes:
-     - pause
-     - active
-     - queue
-     - total
-     - speed
-     - download
-     - reconnect
+
+    - pause
+    - active
+    - queue
+    - total
+    - speed
+    - download
+    - reconnect
     """
 
     __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect"]
@@ -275,10 +277,11 @@ class ServerStatus(TBase):
 class ConfigItem(TBase):
     """
     Attributes:
-     - name
-     - description
-     - value
-     - type
+
+    - name
+    - description
+    - value
+    - type
     """
 
     __slots__ = ["name", "description", "value", "type"]
@@ -301,10 +304,11 @@ class ConfigItem(TBase):
 class ConfigSection(TBase):
     """
     Attributes:
-     - name
-     - description
-     - items
-     - outline
+
+    - name
+    - description
+    - items
+    - outline
     """
 
     __slots__ = ["name", "description", "items", "outline"]
@@ -333,17 +337,18 @@ class ConfigSection(TBase):
 class FileData(TBase):
     """
     Attributes:
-     - fid
-     - url
-     - name
-     - plugin
-     - size
-     - format_size
-     - status
-     - statusmsg
-     - packageID
-     - error
-     - order
+
+    - fid
+    - url
+    - name
+    - plugin
+    - size
+    - format_size
+    - status
+    - statusmsg
+    - packageID
+    - error
+    - order
     """
 
     __slots__ = [
@@ -405,19 +410,20 @@ class FileData(TBase):
 class PackageData(TBase):
     """
     Attributes:
-     - pid
-     - name
-     - folder
-     - site
-     - password
-     - dest
-     - order
-     - linksdone
-     - sizedone
-     - sizetotal
-     - linkstotal
-     - links
-     - fids
+
+    - pid
+    - name
+    - folder
+    - site
+    - password
+    - dest
+    - order
+    - linksdone
+    - sizedone
+    - sizetotal
+    - linkstotal
+    - links
+    - fids
     """
 
     __slots__ = [
@@ -493,15 +499,16 @@ class PackageData(TBase):
 class InteractionTask(TBase):
     """
     Attributes:
-     - iid
-     - input
-     - structure
-     - preset
-     - output
-     - data
-     - title
-     - description
-     - plugin
+
+    - iid
+    - input
+    - structure
+    - preset
+    - output
+    - data
+    - title
+    - description
+    - plugin
     """
 
     __slots__ = [
@@ -555,10 +562,11 @@ class InteractionTask(TBase):
 class CaptchaTask(TBase):
     """
     Attributes:
-     - tid
-     - data
-     - type
-     - resultType
+
+    - tid
+    - data
+    - type
+    - resultType
     """
 
     __slots__ = ["tid", "data", "type", "resultType"]
@@ -581,10 +589,11 @@ class CaptchaTask(TBase):
 class EventInfo(TBase):
     """
     Attributes:
-     - eventname
-     - id
-     - type
-     - destination
+
+    - eventname
+    - id
+    - type
+    - destination
     """
 
     __slots__ = ["eventname", "id", "type", "destination"]
@@ -607,11 +616,12 @@ class EventInfo(TBase):
 class UserData(TBase):
     """
     Attributes:
-     - name
-     - email
-     - role
-     - permission
-     - templateName
+
+    - name
+    - email
+    - role
+    - permission
+    - templateName
     """
 
     __slots__ = ["name", "email", "role", "permission", "templateName"]
@@ -638,14 +648,15 @@ class UserData(TBase):
 class AccountInfo(TBase):
     """
     Attributes:
-     - validuntil
-     - login
-     - options
-     - valid
-     - trafficleft
-     - maxtraffic
-     - premium
-     - type
+
+    - validuntil
+    - login
+    - options
+    - valid
+    - trafficleft
+    - maxtraffic
+    - premium
+    - type
     """
 
     __slots__ = [
@@ -701,10 +712,11 @@ class AccountInfo(TBase):
 class ServiceCall(TBase):
     """
     Attributes:
-     - plugin
-     - func
-     - arguments
-     - parseArguments
+
+    - plugin
+    - func
+    - arguments
+    - parseArguments
     """
 
     __slots__ = ["plugin", "func", "arguments", "parseArguments"]
@@ -727,11 +739,12 @@ class ServiceCall(TBase):
 class OnlineStatus(TBase):
     """
     Attributes:
-     - name
-     - plugin
-     - packagename
-     - status
-     - size
+
+    - name
+    - plugin
+    - packagename
+    - status
+    - size
     """
 
     __slots__ = ["name", "plugin", "packagename", "status", "size"]
@@ -758,8 +771,9 @@ class OnlineStatus(TBase):
 class OnlineCheck(TBase):
     """
     Attributes:
-     - rid
-     - data
+
+    - rid
+    - data
     """
 
     __slots__ = ["rid", "data"]
@@ -789,7 +803,8 @@ class OnlineCheck(TBase):
 class PackageDoesNotExists(TExceptionBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -806,7 +821,8 @@ class PackageDoesNotExists(TExceptionBase):
 class FileDoesNotExists(TExceptionBase):
     """
     Attributes:
-     - fid
+
+    - fid
     """
 
     __slots__ = ["fid"]
@@ -823,8 +839,9 @@ class FileDoesNotExists(TExceptionBase):
 class ServiceDoesNotExists(TExceptionBase):
     """
     Attributes:
-     - plugin
-     - func
+
+    - plugin
+    - func
     """
 
     __slots__ = ["plugin", "func"]
@@ -846,7 +863,8 @@ class ServiceDoesNotExists(TExceptionBase):
 class ServiceException(TExceptionBase):
     """
     Attributes:
-     - msg
+
+    - msg
     """
 
     __slots__ = ["msg"]

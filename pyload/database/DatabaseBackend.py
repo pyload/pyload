@@ -124,7 +124,9 @@ class DatabaseBackend(Thread):
         self.setuplock.wait()
 
     def run(self):
-        """main loop, which executes commands"""
+        """
+        main loop, which executes commands.
+        """
         convert = self._checkVersion()  # returns None or current version
 
         self.conn = sqlite3.connect("files.db")
@@ -156,7 +158,9 @@ class DatabaseBackend(Thread):
         self.jobs.put("quit")
 
     def _checkVersion(self):
-        """ check db version and delete it if needed"""
+        """
+        check db version and delete it if needed.
+        """
         if not exists("files.version"):
             f = open("files.version", "wb")
             f.write(str(DB_VERSION))
@@ -214,7 +218,9 @@ class DatabaseBackend(Thread):
     # --convert scripts end
 
     def _createTables(self):
-        """create tables for database"""
+        """
+        create tables for database.
+        """
 
         self.c.execute(
             'CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)'

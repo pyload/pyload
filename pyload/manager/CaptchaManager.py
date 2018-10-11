@@ -108,7 +108,9 @@ class CaptchaTask(object):
         return self.status
 
     def setWaiting(self, sec):
-        """ let the captcha wait secs for the solution """
+        """
+        let the captcha wait secs for the solution.
+        """
         self.waitUntil = max(time() + sec, self.waitUntil)
         self.status = "waiting"
 
@@ -119,15 +121,21 @@ class CaptchaTask(object):
         return True
 
     def isTextual(self):
-        """ returns if text is written on the captcha """
+        """
+        returns if text is written on the captcha.
+        """
         return self.captchaResultType == "textual"
 
     def isPositional(self):
-        """ returns if user have to click a specific region on the captcha """
+        """
+        returns if user have to click a specific region on the captcha.
+        """
         return self.captchaResultType == "positional"
 
     def isInteractive(self):
-        """ returns if user has to solve the captcha in an interactive iframe """
+        """
+        returns if user has to solve the captcha in an interactive iframe.
+        """
         return self.captchaResultType == "interactive"
 
     def setWatingForUser(self, exclusive):
@@ -140,7 +148,9 @@ class CaptchaTask(object):
         return time() > self.waitUntil
 
     def invalid(self):
-        """ indicates the captcha was not correct """
+        """
+        indicates the captcha was not correct.
+        """
         [x.captchaInvalid(self) for x in self.handler]
 
     def correct(self):

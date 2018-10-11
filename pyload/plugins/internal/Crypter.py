@@ -50,13 +50,14 @@ class Crypter(Base):
 
     def decrypt(self, pyfile):
         """
-        The "main" method of every crypter plugin, you **have to** overwrite it
+        The "main" method of every crypter plugin, you **have to** overwrite
+        it.
         """
         raise NotImplementedError
 
     def _generate_packages(self):
         """
-        Generate new packages from self.links
+        Generate new packages from self.links.
         """
         name = self.info["pattern"].get("N")
         if name is None:
@@ -73,7 +74,7 @@ class Crypter(Base):
 
     def _create_packages(self):
         """
-        Create new packages from self.packages
+        Create new packages from self.packages.
         """
         pack_folder = self.pyfile.package().folder
         pack_password = self.pyfile.package().password

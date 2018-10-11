@@ -147,13 +147,13 @@ class Plugin(object):
 
     def skip(self, msg):
         """
-        Skip and give msg
+        Skip and give msg.
         """
         raise Skip(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def fail(self, msg):
         """
-        Fail and give msg
+        Fail and give msg.
         """
         raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
@@ -171,7 +171,7 @@ class Plugin(object):
         req=None,
     ):
         """
-        Load content at url and returns it
+        Load content at url and returns it.
 
         :param url:
         :param get:
@@ -287,7 +287,7 @@ class Plugin(object):
     ):
         # TODO: This should really go to HTTPRequest.py
         """
-        Uploads a file at url and returns response content
+        Uploads a file at url and returns response content.
 
         :param url:
         :param get:
@@ -442,7 +442,7 @@ class Plugin(object):
 
     def clean(self):
         """
-        Remove references
+        Remove references.
         """
         try:
             self.req.clearCookies()

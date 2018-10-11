@@ -157,7 +157,8 @@ class MultiAccount(Account):
 
     def grab_hosters(self, user, password, data):
         """
-        Load list of supported hoster
+        Load list of supported hoster.
+
         :return: List of domain names
         """
         raise NotImplementedError

@@ -25,7 +25,7 @@ CONF_VERSION = 1
 
 class ConfigParser(object):
     """
-    holds and manage the configuration
+    holds and manage the configuration.
 
     current dict layout:
 
@@ -40,8 +40,6 @@ class ConfigParser(object):
       desc:
 
     }
-
-
     """
 
     CONFLINE = re.compile(
@@ -49,7 +47,9 @@ class ConfigParser(object):
     )
 
     def __init__(self):
-        """Constructor"""
+        """
+        Constructor.
+        """
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
         self.oldRemoteData = {}
@@ -63,7 +63,9 @@ class ConfigParser(object):
         self.deleteOldPlugins()
 
     def checkVersion(self, n=0):
-        """determines if config need to be copied"""
+        """
+        determines if config need to be copied.
+        """
         try:
             if not exists("pyload.conf"):
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
@@ -102,7 +104,9 @@ class ConfigParser(object):
                 raise
 
     def readConfig(self):
-        """reads the config file"""
+        """
+        reads the config file.
+        """
 
         self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
@@ -124,7 +128,9 @@ class ConfigParser(object):
             print_exc()
 
     def parseConfig(self, config):
-        """parses a given configfile"""
+        """
+        parses a given configfile.
+        """
 
         f = open(config)
 
@@ -217,7 +223,10 @@ class ConfigParser(object):
         return conf
 
     def updateValues(self, config, dest):
-        """sets the config values from a parsed config file to values in destination"""
+        """
+        sets the config values from a parsed config file to values in
+        destination.
+        """
 
         for section in config.keys():
             if section in dest:
@@ -237,7 +246,9 @@ class ConfigParser(object):
                         #    dest[section] = config[section]
 
     def saveConfig(self, config, filename):
-        """saves config to filename"""
+        """
+        saves config to filename.
+        """
         with open(filename, "wb") as f:
             chmod(filename, 0o600)
             f.write("version: {} \n".format(CONF_VERSION))
@@ -274,7 +285,9 @@ class ConfigParser(object):
                         )
 
     def cast(self, typ, value):
-        """cast value to given format"""
+        """
+        cast value to given format.
+        """
         if type(value) not in (str, bytes):
             return value
 
@@ -297,17 +310,23 @@ class ConfigParser(object):
             return value
 
     def save(self):
-        """saves the configs to disk"""
+        """
+        saves the configs to disk.
+        """
 
         self.saveConfig(self.config, "pyload.conf")
         self.saveConfig(self.plugin, "plugin.conf")
 
     def __getitem__(self, section):
-        """provides dictonary like access: c['section']['option']"""
+        """
+        provides dictonary like access: c['section']['option']
+        """
         return Section(self, section)
 
     def get(self, section, option):
-        """get value"""
+        """
+        get value.
+        """
         val = self.config[section][option]["value"]
         try:
             if type(val) in (str, bytes):
@@ -318,7 +337,9 @@ class ConfigParser(object):
             return val
 
     def set(self, section, option, value):
-        """set value"""
+        """
+        set value.
+        """
 
         value = self.cast(self.config[section][option]["type"], value)
 
@@ -326,7 +347,9 @@ class ConfigParser(object):
         self.save()
 
     def getPlugin(self, plugin, option):
-        """gets a value for a plugin"""
+        """
+        gets a value for a plugin.
+        """
         val = self.plugin[plugin][option]["value"]
         try:
             if type(val) in (str, bytes):
@@ -337,7 +360,9 @@ class ConfigParser(object):
             return val
 
     def setPlugin(self, plugin, option, value):
-        """sets a value for a plugin"""
+        """
+        sets a value for a plugin.
+        """
 
         value = self.cast(self.plugin[plugin][option]["type"], value)
 
@@ -348,11 +373,15 @@ class ConfigParser(object):
         self.save()
 
     def getMetaData(self, section, option):
-        """ get all config data for an option """
+        """
+        get all config data for an option.
+        """
         return self.config[section][option]
 
     def addPluginConfig(self, name, config, outline=""):
-        """adds config options with tuples (name, type, desc, default)"""
+        """
+        adds config options with tuples (name, type, desc, default)
+        """
         if name not in self.plugin:
             conf = {"desc": name, "outline": outline}
             self.plugin[name] = conf
@@ -377,29 +406,41 @@ class ConfigParser(object):
                 del conf[item]
 
     def deleteConfig(self, name):
-        """Removes a plugin config"""
+        """
+        Removes a plugin config.
+        """
         if name in self.plugin:
             del self.plugin[name]
 
     def deleteOldPlugins(self):
-        """ remove old plugins from config """
+        """
+        remove old plugins from config.
+        """
         for name in IGNORE:
             if name in self.plugin:
                 del self.plugin[name]
 
 
 class Section(object):
-    """provides dictionary like access for configparser"""
+    """
+    provides dictionary like access for configparser.
+    """
 
     def __init__(self, parser, section):
-        """Constructor"""
+        """
+        Constructor.
+        """
         self.parser = parser
         self.section = section
 
     def __getitem__(self, item):
-        """getitem"""
+        """
+        getitem.
+        """
         return self.parser.get(self.section, item)
 
     def __setitem__(self, item, value):
-        """setitem"""
+        """
+        setitem.
+        """
         self.parser.set(self.section, item, value)

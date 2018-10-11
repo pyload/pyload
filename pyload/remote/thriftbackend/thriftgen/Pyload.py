@@ -18,19 +18,21 @@ class Iface(object):
     def getConfigValue(self, category, option, section):
         """
         Parameters:
-         - category
-         - option
-         - section
+
+        - category
+        - option
+        - section
         """
         pass
 
     def setConfigValue(self, category, option, value, section):
         """
         Parameters:
-         - category
-         - option
-         - value
-         - section
+
+        - category
+        - option
+        - value
+        - section
         """
         pass
 
@@ -67,7 +69,8 @@ class Iface(object):
     def getLog(self, offset):
         """
         Parameters:
-         - offset
+
+        - offset
         """
         pass
 
@@ -83,45 +86,51 @@ class Iface(object):
     def generatePackages(self, links):
         """
         Parameters:
-         - links
+
+        - links
         """
         pass
 
     def checkURLs(self, urls):
         """
         Parameters:
-         - urls
+
+        - urls
         """
         pass
 
     def parseURLs(self, html, url):
         """
         Parameters:
-         - html
-         - url
+
+        - html
+        - url
         """
         pass
 
     def checkOnlineStatus(self, urls):
         """
         Parameters:
-         - urls
+
+        - urls
         """
         pass
 
     def checkOnlineStatusContainer(self, urls, filename, data):
         """
         Parameters:
-         - urls
-         - filename
-         - data
+
+        - urls
+        - filename
+        - data
         """
         pass
 
     def pollResults(self, rid):
         """
         Parameters:
-         - rid
+
+        - rid
         """
         pass
 
@@ -131,21 +140,24 @@ class Iface(object):
     def getPackageData(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def getPackageInfo(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def getFileData(self, fid):
         """
         Parameters:
-         - fid
+
+        - fid
         """
         pass
 
@@ -164,96 +176,109 @@ class Iface(object):
     def getPackageOrder(self, destination):
         """
         Parameters:
-         - destination
+
+        - destination
         """
         pass
 
     def getFileOrder(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def generateAndAddPackages(self, links, dest):
         """
         Parameters:
-         - links
-         - dest
+
+        - links
+        - dest
         """
         pass
 
     def addPackage(self, name, links, dest):
         """
         Parameters:
-         - name
-         - links
-         - dest
+
+        - name
+        - links
+        - dest
         """
         pass
 
     def addFiles(self, pid, links):
         """
         Parameters:
-         - pid
-         - links
+
+        - pid
+        - links
         """
         pass
 
     def uploadContainer(self, filename, data):
         """
         Parameters:
-         - filename
-         - data
+
+        - filename
+        - data
         """
         pass
 
     def deleteFiles(self, fids):
         """
         Parameters:
-         - fids
+
+        - fids
         """
         pass
 
     def deletePackages(self, pids):
         """
         Parameters:
-         - pids
+
+        - pids
         """
         pass
 
     def pushToQueue(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def pullFromQueue(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def restartPackage(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
     def restartFile(self, fid):
         """
         Parameters:
-         - fid
+
+        - fid
         """
         pass
 
     def recheckPackage(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         pass
 
@@ -263,55 +288,62 @@ class Iface(object):
     def stopDownloads(self, fids):
         """
         Parameters:
-         - fids
+
+        - fids
         """
         pass
 
     def setPackageName(self, pid, name):
         """
         Parameters:
-         - pid
-         - name
+
+        - pid
+        - name
         """
         pass
 
     def movePackage(self, destination, pid):
         """
         Parameters:
-         - destination
-         - pid
+
+        - destination
+        - pid
         """
         pass
 
     def moveFiles(self, fids, pid):
         """
         Parameters:
-         - fids
-         - pid
+
+        - fids
+        - pid
         """
         pass
 
     def orderPackage(self, pid, position):
         """
         Parameters:
-         - pid
-         - position
+
+        - pid
+        - position
         """
         pass
 
     def orderFile(self, fid, position):
         """
         Parameters:
-         - fid
-         - position
+
+        - fid
+        - position
         """
         pass
 
     def setPackageData(self, pid, data):
         """
         Parameters:
-         - pid
-         - data
+
+        - pid
+        - data
         """
         pass
 
@@ -324,14 +356,16 @@ class Iface(object):
     def getEvents(self, uuid):
         """
         Parameters:
-         - uuid
+
+        - uuid
         """
         pass
 
     def getAccounts(self, refresh):
         """
         Parameters:
-         - refresh
+
+        - refresh
         """
         pass
 
@@ -341,34 +375,38 @@ class Iface(object):
     def updateAccount(self, plugin, account, password, options):
         """
         Parameters:
-         - plugin
-         - account
-         - password
-         - options
+
+        - plugin
+        - account
+        - password
+        - options
         """
         pass
 
     def removeAccount(self, plugin, account):
         """
         Parameters:
-         - plugin
-         - account
+
+        - plugin
+        - account
         """
         pass
 
     def login(self, username, password):
         """
         Parameters:
-         - username
-         - password
+
+        - username
+        - password
         """
         pass
 
     def getUserData(self, username, password):
         """
         Parameters:
-         - username
-         - password
+
+        - username
+        - password
         """
         pass
 
@@ -381,15 +419,17 @@ class Iface(object):
     def hasService(self, plugin, func):
         """
         Parameters:
-         - plugin
-         - func
+
+        - plugin
+        - func
         """
         pass
 
     def call(self, info):
         """
         Parameters:
-         - info
+
+        - info
         """
         pass
 
@@ -399,7 +439,8 @@ class Iface(object):
     def getInfoByPlugin(self, plugin):
         """
         Parameters:
-         - plugin
+
+        - plugin
         """
         pass
 
@@ -409,22 +450,25 @@ class Iface(object):
     def getCaptchaTask(self, exclusive):
         """
         Parameters:
-         - exclusive
+
+        - exclusive
         """
         pass
 
     def getCaptchaTaskStatus(self, tid):
         """
         Parameters:
-         - tid
+
+        - tid
         """
         pass
 
     def setCaptchaResult(self, tid, result):
         """
         Parameters:
-         - tid
-         - result
+
+        - tid
+        - result
         """
         pass
 
@@ -439,9 +483,10 @@ class Client(Iface):
     def getConfigValue(self, category, option, section):
         """
         Parameters:
-         - category
-         - option
-         - section
+
+        - category
+        - option
+        - section
         """
         self.send_getConfigValue(category, option, section)
         return self.recv_getConfigValue()
@@ -476,10 +521,11 @@ class Client(Iface):
     def setConfigValue(self, category, option, value, section):
         """
         Parameters:
-         - category
-         - option
-         - value
-         - section
+
+        - category
+        - option
+        - value
+        - section
         """
         self.send_setConfigValue(category, option, value, section)
         self.recv_setConfigValue()
@@ -768,7 +814,8 @@ class Client(Iface):
     def getLog(self, offset):
         """
         Parameters:
-         - offset
+
+        - offset
         """
         self.send_getLog(offset)
         return self.recv_getLog()
@@ -884,7 +931,8 @@ class Client(Iface):
     def generatePackages(self, links):
         """
         Parameters:
-         - links
+
+        - links
         """
         self.send_generatePackages(links)
         return self.recv_generatePackages()
@@ -919,7 +967,8 @@ class Client(Iface):
     def checkURLs(self, urls):
         """
         Parameters:
-         - urls
+
+        - urls
         """
         self.send_checkURLs(urls)
         return self.recv_checkURLs()
@@ -951,8 +1000,9 @@ class Client(Iface):
     def parseURLs(self, html, url):
         """
         Parameters:
-         - html
-         - url
+
+        - html
+        - url
         """
         self.send_parseURLs(html, url)
         return self.recv_parseURLs()
@@ -985,7 +1035,8 @@ class Client(Iface):
     def checkOnlineStatus(self, urls):
         """
         Parameters:
-         - urls
+
+        - urls
         """
         self.send_checkOnlineStatus(urls)
         return self.recv_checkOnlineStatus()
@@ -1020,9 +1071,10 @@ class Client(Iface):
     def checkOnlineStatusContainer(self, urls, filename, data):
         """
         Parameters:
-         - urls
-         - filename
-         - data
+
+        - urls
+        - filename
+        - data
         """
         self.send_checkOnlineStatusContainer(urls, filename, data)
         return self.recv_checkOnlineStatusContainer()
@@ -1059,7 +1111,8 @@ class Client(Iface):
     def pollResults(self, rid):
         """
         Parameters:
-         - rid
+
+        - rid
         """
         self.send_pollResults(rid)
         return self.recv_pollResults()
@@ -1119,7 +1172,8 @@ class Client(Iface):
     def getPackageData(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_getPackageData(pid)
         return self.recv_getPackageData()
@@ -1154,7 +1208,8 @@ class Client(Iface):
     def getPackageInfo(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_getPackageInfo(pid)
         return self.recv_getPackageInfo()
@@ -1189,7 +1244,8 @@ class Client(Iface):
     def getFileData(self, fid):
         """
         Parameters:
-         - fid
+
+        - fid
         """
         self.send_getFileData(fid)
         return self.recv_getFileData()
@@ -1334,7 +1390,8 @@ class Client(Iface):
     def getPackageOrder(self, destination):
         """
         Parameters:
-         - destination
+
+        - destination
         """
         self.send_getPackageOrder(destination)
         return self.recv_getPackageOrder()
@@ -1367,7 +1424,8 @@ class Client(Iface):
     def getFileOrder(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_getFileOrder(pid)
         return self.recv_getFileOrder()
@@ -1399,8 +1457,9 @@ class Client(Iface):
     def generateAndAddPackages(self, links, dest):
         """
         Parameters:
-         - links
-         - dest
+
+        - links
+        - dest
         """
         self.send_generateAndAddPackages(links, dest)
         return self.recv_generateAndAddPackages()
@@ -1436,9 +1495,10 @@ class Client(Iface):
     def addPackage(self, name, links, dest):
         """
         Parameters:
-         - name
-         - links
-         - dest
+
+        - name
+        - links
+        - dest
         """
         self.send_addPackage(name, links, dest)
         return self.recv_addPackage()
@@ -1472,8 +1532,9 @@ class Client(Iface):
     def addFiles(self, pid, links):
         """
         Parameters:
-         - pid
-         - links
+
+        - pid
+        - links
         """
         self.send_addFiles(pid, links)
         self.recv_addFiles()
@@ -1502,8 +1563,9 @@ class Client(Iface):
     def uploadContainer(self, filename, data):
         """
         Parameters:
-         - filename
-         - data
+
+        - filename
+        - data
         """
         self.send_uploadContainer(filename, data)
         self.recv_uploadContainer()
@@ -1532,7 +1594,8 @@ class Client(Iface):
     def deleteFiles(self, fids):
         """
         Parameters:
-         - fids
+
+        - fids
         """
         self.send_deleteFiles(fids)
         self.recv_deleteFiles()
@@ -1560,7 +1623,8 @@ class Client(Iface):
     def deletePackages(self, pids):
         """
         Parameters:
-         - pids
+
+        - pids
         """
         self.send_deletePackages(pids)
         self.recv_deletePackages()
@@ -1588,7 +1652,8 @@ class Client(Iface):
     def pushToQueue(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_pushToQueue(pid)
         self.recv_pushToQueue()
@@ -1616,7 +1681,8 @@ class Client(Iface):
     def pullFromQueue(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_pullFromQueue(pid)
         self.recv_pullFromQueue()
@@ -1644,7 +1710,8 @@ class Client(Iface):
     def restartPackage(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_restartPackage(pid)
         self.recv_restartPackage()
@@ -1672,7 +1739,8 @@ class Client(Iface):
     def restartFile(self, fid):
         """
         Parameters:
-         - fid
+
+        - fid
         """
         self.send_restartFile(fid)
         self.recv_restartFile()
@@ -1700,7 +1768,8 @@ class Client(Iface):
     def recheckPackage(self, pid):
         """
         Parameters:
-         - pid
+
+        - pid
         """
         self.send_recheckPackage(pid)
         self.recv_recheckPackage()
@@ -1753,7 +1822,8 @@ class Client(Iface):
     def stopDownloads(self, fids):
         """
         Parameters:
-         - fids
+
+        - fids
         """
         self.send_stopDownloads(fids)
         self.recv_stopDownloads()
@@ -1781,8 +1851,9 @@ class Client(Iface):
     def setPackageName(self, pid, name):
         """
         Parameters:
-         - pid
-         - name
+
+        - pid
+        - name
         """
         self.send_setPackageName(pid, name)
         self.recv_setPackageName()
@@ -1811,8 +1882,9 @@ class Client(Iface):
     def movePackage(self, destination, pid):
         """
         Parameters:
-         - destination
-         - pid
+
+        - destination
+        - pid
         """
         self.send_movePackage(destination, pid)
         self.recv_movePackage()
@@ -1841,8 +1913,9 @@ class Client(Iface):
     def moveFiles(self, fids, pid):
         """
         Parameters:
-         - fids
-         - pid
+
+        - fids
+        - pid
         """
         self.send_moveFiles(fids, pid)
         self.recv_moveFiles()
@@ -1871,8 +1944,9 @@ class Client(Iface):
     def orderPackage(self, pid, position):
         """
         Parameters:
-         - pid
-         - position
+
+        - pid
+        - position
         """
         self.send_orderPackage(pid, position)
         self.recv_orderPackage()
@@ -1901,8 +1975,9 @@ class Client(Iface):
     def orderFile(self, fid, position):
         """
         Parameters:
-         - fid
-         - position
+
+        - fid
+        - position
         """
         self.send_orderFile(fid, position)
         self.recv_orderFile()
@@ -1931,8 +2006,9 @@ class Client(Iface):
     def setPackageData(self, pid, data):
         """
         Parameters:
-         - pid
-         - data
+
+        - pid
+        - data
         """
         self.send_setPackageData(pid, data)
         self.recv_setPackageData()
@@ -2014,7 +2090,8 @@ class Client(Iface):
     def getEvents(self, uuid):
         """
         Parameters:
-         - uuid
+
+        - uuid
         """
         self.send_getEvents(uuid)
         return self.recv_getEvents()
@@ -2046,7 +2123,8 @@ class Client(Iface):
     def getAccounts(self, refresh):
         """
         Parameters:
-         - refresh
+
+        - refresh
         """
         self.send_getAccounts(refresh)
         return self.recv_getAccounts()
@@ -2106,10 +2184,11 @@ class Client(Iface):
     def updateAccount(self, plugin, account, password, options):
         """
         Parameters:
-         - plugin
-         - account
-         - password
-         - options
+
+        - plugin
+        - account
+        - password
+        - options
         """
         self.send_updateAccount(plugin, account, password, options)
         self.recv_updateAccount()
@@ -2140,8 +2219,9 @@ class Client(Iface):
     def removeAccount(self, plugin, account):
         """
         Parameters:
-         - plugin
-         - account
+
+        - plugin
+        - account
         """
         self.send_removeAccount(plugin, account)
         self.recv_removeAccount()
@@ -2170,8 +2250,9 @@ class Client(Iface):
     def login(self, username, password):
         """
         Parameters:
-         - username
-         - password
+
+        - username
+        - password
         """
         self.send_login(username, password)
         return self.recv_login()
@@ -2204,8 +2285,9 @@ class Client(Iface):
     def getUserData(self, username, password):
         """
         Parameters:
-         - username
-         - password
+
+        - username
+        - password
         """
         self.send_getUserData(username, password)
         return self.recv_getUserData()
@@ -2293,8 +2375,9 @@ class Client(Iface):
     def hasService(self, plugin, func):
         """
         Parameters:
-         - plugin
-         - func
+
+        - plugin
+        - func
         """
         self.send_hasService(plugin, func)
         return self.recv_hasService()
@@ -2327,7 +2410,8 @@ class Client(Iface):
     def call(self, info):
         """
         Parameters:
-         - info
+
+        - info
         """
         self.send_call(info)
         return self.recv_call()
@@ -2390,7 +2474,8 @@ class Client(Iface):
     def getInfoByPlugin(self, plugin):
         """
         Parameters:
-         - plugin
+
+        - plugin
         """
         self.send_getInfoByPlugin(plugin)
         return self.recv_getInfoByPlugin()
@@ -2453,7 +2538,8 @@ class Client(Iface):
     def getCaptchaTask(self, exclusive):
         """
         Parameters:
-         - exclusive
+
+        - exclusive
         """
         self.send_getCaptchaTask(exclusive)
         return self.recv_getCaptchaTask()
@@ -2486,7 +2572,8 @@ class Client(Iface):
     def getCaptchaTaskStatus(self, tid):
         """
         Parameters:
-         - tid
+
+        - tid
         """
         self.send_getCaptchaTaskStatus(tid)
         return self.recv_getCaptchaTaskStatus()
@@ -2521,8 +2608,9 @@ class Client(Iface):
     def setCaptchaResult(self, tid, result):
         """
         Parameters:
-         - tid
-         - result
+
+        - tid
+        - result
         """
         self.send_setCaptchaResult(tid, result)
         self.recv_setCaptchaResult()
@@ -3451,9 +3539,10 @@ class Processor(Iface, TProcessor):
 class getConfigValue_args(TBase):
     """
     Attributes:
-     - category
-     - option
-     - section
+
+    - category
+    - option
+    - section
     """
 
     __slots__ = ["category", "option", "section"]
@@ -3474,7 +3563,8 @@ class getConfigValue_args(TBase):
 class getConfigValue_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3488,10 +3578,11 @@ class getConfigValue_result(TBase):
 class setConfigValue_args(TBase):
     """
     Attributes:
-     - category
-     - option
-     - value
-     - section
+
+    - category
+    - option
+    - value
+    - section
     """
 
     __slots__ = ["category", "option", "value", "section"]
@@ -3528,7 +3619,8 @@ class getConfig_args(TBase):
 class getConfig_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3562,7 +3654,8 @@ class getPluginConfig_args(TBase):
 class getPluginConfig_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3624,7 +3717,8 @@ class togglePause_args(TBase):
 class togglePause_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3645,7 +3739,8 @@ class statusServer_args(TBase):
 class statusServer_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3674,7 +3769,8 @@ class freeSpace_args(TBase):
 class freeSpace_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3695,7 +3791,8 @@ class getServerVersion_args(TBase):
 class getServerVersion_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3737,7 +3834,8 @@ class restart_result(TBase):
 class getLog_args(TBase):
     """
     Attributes:
-     - offset
+
+    - offset
     """
 
     __slots__ = ["offset"]
@@ -3751,7 +3849,8 @@ class getLog_args(TBase):
 class getLog_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3772,7 +3871,8 @@ class isTimeDownload_args(TBase):
 class isTimeDownload_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3793,7 +3893,8 @@ class isTimeReconnect_args(TBase):
 class isTimeReconnect_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3814,7 +3915,8 @@ class toggleReconnect_args(TBase):
 class toggleReconnect_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3828,7 +3930,8 @@ class toggleReconnect_result(TBase):
 class generatePackages_args(TBase):
     """
     Attributes:
-     - links
+
+    - links
     """
 
     __slots__ = ["links"]
@@ -3842,7 +3945,8 @@ class generatePackages_args(TBase):
 class generatePackages_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3864,7 +3968,8 @@ class generatePackages_result(TBase):
 class checkURLs_args(TBase):
     """
     Attributes:
-     - urls
+
+    - urls
     """
 
     __slots__ = ["urls"]
@@ -3878,7 +3983,8 @@ class checkURLs_args(TBase):
 class checkURLs_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3900,8 +4006,9 @@ class checkURLs_result(TBase):
 class parseURLs_args(TBase):
     """
     Attributes:
-     - html
-     - url
+
+    - html
+    - url
     """
 
     __slots__ = ["html", "url"]
@@ -3920,7 +4027,8 @@ class parseURLs_args(TBase):
 class parseURLs_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3942,7 +4050,8 @@ class parseURLs_result(TBase):
 class checkOnlineStatus_args(TBase):
     """
     Attributes:
-     - urls
+
+    - urls
     """
 
     __slots__ = ["urls"]
@@ -3956,7 +4065,8 @@ class checkOnlineStatus_args(TBase):
 class checkOnlineStatus_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -3972,9 +4082,10 @@ class checkOnlineStatus_result(TBase):
 class checkOnlineStatusContainer_args(TBase):
     """
     Attributes:
-     - urls
-     - filename
-     - data
+
+    - urls
+    - filename
+    - data
     """
 
     __slots__ = ["urls", "filename", "data"]
@@ -3995,7 +4106,8 @@ class checkOnlineStatusContainer_args(TBase):
 class checkOnlineStatusContainer_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4011,7 +4123,8 @@ class checkOnlineStatusContainer_result(TBase):
 class pollResults_args(TBase):
     """
     Attributes:
-     - rid
+
+    - rid
     """
 
     __slots__ = ["rid"]
@@ -4025,7 +4138,8 @@ class pollResults_args(TBase):
 class pollResults_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4048,7 +4162,8 @@ class statusDownloads_args(TBase):
 class statusDownloads_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4070,7 +4185,8 @@ class statusDownloads_result(TBase):
 class getPackageData_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4084,8 +4200,9 @@ class getPackageData_args(TBase):
 class getPackageData_result(TBase):
     """
     Attributes:
-     - success
-     - e
+
+    - success
+    - e
     """
 
     __slots__ = ["success", "e"]
@@ -4109,7 +4226,8 @@ class getPackageData_result(TBase):
 class getPackageInfo_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4123,8 +4241,9 @@ class getPackageInfo_args(TBase):
 class getPackageInfo_result(TBase):
     """
     Attributes:
-     - success
-     - e
+
+    - success
+    - e
     """
 
     __slots__ = ["success", "e"]
@@ -4148,7 +4267,8 @@ class getPackageInfo_result(TBase):
 class getFileData_args(TBase):
     """
     Attributes:
-     - fid
+
+    - fid
     """
 
     __slots__ = ["fid"]
@@ -4162,8 +4282,9 @@ class getFileData_args(TBase):
 class getFileData_result(TBase):
     """
     Attributes:
-     - success
-     - e
+
+    - success
+    - e
     """
 
     __slots__ = ["success", "e"]
@@ -4194,7 +4315,8 @@ class getQueue_args(TBase):
 class getQueue_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4223,7 +4345,8 @@ class getCollector_args(TBase):
 class getCollector_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4252,7 +4375,8 @@ class getQueueData_args(TBase):
 class getQueueData_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4281,7 +4405,8 @@ class getCollectorData_args(TBase):
 class getCollectorData_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4303,7 +4428,8 @@ class getCollectorData_result(TBase):
 class getPackageOrder_args(TBase):
     """
     Attributes:
-     - destination
+
+    - destination
     """
 
     __slots__ = ["destination"]
@@ -4317,7 +4443,8 @@ class getPackageOrder_args(TBase):
 class getPackageOrder_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4333,7 +4460,8 @@ class getPackageOrder_result(TBase):
 class getFileOrder_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4347,7 +4475,8 @@ class getFileOrder_args(TBase):
 class getFileOrder_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4363,8 +4492,9 @@ class getFileOrder_result(TBase):
 class generateAndAddPackages_args(TBase):
     """
     Attributes:
-     - links
-     - dest
+
+    - links
+    - dest
     """
 
     __slots__ = ["links", "dest"]
@@ -4383,7 +4513,8 @@ class generateAndAddPackages_args(TBase):
 class generateAndAddPackages_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4397,9 +4528,10 @@ class generateAndAddPackages_result(TBase):
 class addPackage_args(TBase):
     """
     Attributes:
-     - name
-     - links
-     - dest
+
+    - name
+    - links
+    - dest
     """
 
     __slots__ = ["name", "links", "dest"]
@@ -4420,7 +4552,8 @@ class addPackage_args(TBase):
 class addPackage_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4434,8 +4567,9 @@ class addPackage_result(TBase):
 class addFiles_args(TBase):
     """
     Attributes:
-     - pid
-     - links
+
+    - pid
+    - links
     """
 
     __slots__ = ["pid", "links"]
@@ -4461,8 +4595,9 @@ class addFiles_result(TBase):
 class uploadContainer_args(TBase):
     """
     Attributes:
-     - filename
-     - data
+
+    - filename
+    - data
     """
 
     __slots__ = ["filename", "data"]
@@ -4488,7 +4623,8 @@ class uploadContainer_result(TBase):
 class deleteFiles_args(TBase):
     """
     Attributes:
-     - fids
+
+    - fids
     """
 
     __slots__ = ["fids"]
@@ -4509,7 +4645,8 @@ class deleteFiles_result(TBase):
 class deletePackages_args(TBase):
     """
     Attributes:
-     - pids
+
+    - pids
     """
 
     __slots__ = ["pids"]
@@ -4530,7 +4667,8 @@ class deletePackages_result(TBase):
 class pushToQueue_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4551,7 +4689,8 @@ class pushToQueue_result(TBase):
 class pullFromQueue_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4572,7 +4711,8 @@ class pullFromQueue_result(TBase):
 class restartPackage_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4593,7 +4733,8 @@ class restartPackage_result(TBase):
 class restartFile_args(TBase):
     """
     Attributes:
-     - fid
+
+    - fid
     """
 
     __slots__ = ["fid"]
@@ -4614,7 +4755,8 @@ class restartFile_result(TBase):
 class recheckPackage_args(TBase):
     """
     Attributes:
-     - pid
+
+    - pid
     """
 
     __slots__ = ["pid"]
@@ -4649,7 +4791,8 @@ class stopAllDownloads_result(TBase):
 class stopDownloads_args(TBase):
     """
     Attributes:
-     - fids
+
+    - fids
     """
 
     __slots__ = ["fids"]
@@ -4670,8 +4813,9 @@ class stopDownloads_result(TBase):
 class setPackageName_args(TBase):
     """
     Attributes:
-     - pid
-     - name
+
+    - pid
+    - name
     """
 
     __slots__ = ["pid", "name"]
@@ -4697,8 +4841,9 @@ class setPackageName_result(TBase):
 class movePackage_args(TBase):
     """
     Attributes:
-     - destination
-     - pid
+
+    - destination
+    - pid
     """
 
     __slots__ = ["destination", "pid"]
@@ -4724,8 +4869,9 @@ class movePackage_result(TBase):
 class moveFiles_args(TBase):
     """
     Attributes:
-     - fids
-     - pid
+
+    - fids
+    - pid
     """
 
     __slots__ = ["fids", "pid"]
@@ -4751,8 +4897,9 @@ class moveFiles_result(TBase):
 class orderPackage_args(TBase):
     """
     Attributes:
-     - pid
-     - position
+
+    - pid
+    - position
     """
 
     __slots__ = ["pid", "position"]
@@ -4778,8 +4925,9 @@ class orderPackage_result(TBase):
 class orderFile_args(TBase):
     """
     Attributes:
-     - fid
-     - position
+
+    - fid
+    - position
     """
 
     __slots__ = ["fid", "position"]
@@ -4805,8 +4953,9 @@ class orderFile_result(TBase):
 class setPackageData_args(TBase):
     """
     Attributes:
-     - pid
-     - data
+
+    - pid
+    - data
     """
 
     __slots__ = ["pid", "data"]
@@ -4825,7 +4974,8 @@ class setPackageData_args(TBase):
 class setPackageData_result(TBase):
     """
     Attributes:
-     - e
+
+    - e
     """
 
     __slots__ = ["e"]
@@ -4855,7 +5005,8 @@ class deleteFinished_args(TBase):
 class deleteFinished_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4883,7 +5034,8 @@ class restartFailed_result(TBase):
 class getEvents_args(TBase):
     """
     Attributes:
-     - uuid
+
+    - uuid
     """
 
     __slots__ = ["uuid"]
@@ -4897,7 +5049,8 @@ class getEvents_args(TBase):
 class getEvents_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4919,7 +5072,8 @@ class getEvents_result(TBase):
 class getAccounts_args(TBase):
     """
     Attributes:
-     - refresh
+
+    - refresh
     """
 
     __slots__ = ["refresh"]
@@ -4933,7 +5087,8 @@ class getAccounts_args(TBase):
 class getAccounts_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4962,7 +5117,8 @@ class getAccountTypes_args(TBase):
 class getAccountTypes_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -4976,10 +5132,11 @@ class getAccountTypes_result(TBase):
 class updateAccount_args(TBase):
     """
     Attributes:
-     - plugin
-     - account
-     - password
-     - options
+
+    - plugin
+    - account
+    - password
+    - options
     """
 
     __slots__ = ["plugin", "account", "password", "options"]
@@ -5009,8 +5166,9 @@ class updateAccount_result(TBase):
 class removeAccount_args(TBase):
     """
     Attributes:
-     - plugin
-     - account
+
+    - plugin
+    - account
     """
 
     __slots__ = ["plugin", "account"]
@@ -5036,8 +5194,9 @@ class removeAccount_result(TBase):
 class login_args(TBase):
     """
     Attributes:
-     - username
-     - password
+
+    - username
+    - password
     """
 
     __slots__ = ["username", "password"]
@@ -5056,7 +5215,8 @@ class login_args(TBase):
 class login_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5070,8 +5230,9 @@ class login_result(TBase):
 class getUserData_args(TBase):
     """
     Attributes:
-     - username
-     - password
+
+    - username
+    - password
     """
 
     __slots__ = ["username", "password"]
@@ -5090,7 +5251,8 @@ class getUserData_args(TBase):
 class getUserData_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5113,7 +5275,8 @@ class getAllUserData_args(TBase):
 class getAllUserData_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5142,7 +5305,8 @@ class getServices_args(TBase):
 class getServices_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5164,8 +5328,9 @@ class getServices_result(TBase):
 class hasService_args(TBase):
     """
     Attributes:
-     - plugin
-     - func
+
+    - plugin
+    - func
     """
 
     __slots__ = ["plugin", "func"]
@@ -5184,7 +5349,8 @@ class hasService_args(TBase):
 class hasService_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5198,7 +5364,8 @@ class hasService_result(TBase):
 class call_args(TBase):
     """
     Attributes:
-     - info
+
+    - info
     """
 
     __slots__ = ["info"]
@@ -5215,9 +5382,10 @@ class call_args(TBase):
 class call_result(TBase):
     """
     Attributes:
-     - success
-     - ex
-     - e
+
+    - success
+    - ex
+    - e
     """
 
     __slots__ = ["success", "ex", "e"]
@@ -5256,7 +5424,8 @@ class getAllInfo_args(TBase):
 class getAllInfo_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5278,7 +5447,8 @@ class getAllInfo_result(TBase):
 class getInfoByPlugin_args(TBase):
     """
     Attributes:
-     - plugin
+
+    - plugin
     """
 
     __slots__ = ["plugin"]
@@ -5292,7 +5462,8 @@ class getInfoByPlugin_args(TBase):
 class getInfoByPlugin_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5315,7 +5486,8 @@ class isCaptchaWaiting_args(TBase):
 class isCaptchaWaiting_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5329,7 +5501,8 @@ class isCaptchaWaiting_result(TBase):
 class getCaptchaTask_args(TBase):
     """
     Attributes:
-     - exclusive
+
+    - exclusive
     """
 
     __slots__ = ["exclusive"]
@@ -5343,7 +5516,8 @@ class getCaptchaTask_args(TBase):
 class getCaptchaTask_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5359,7 +5533,8 @@ class getCaptchaTask_result(TBase):
 class getCaptchaTaskStatus_args(TBase):
     """
     Attributes:
-     - tid
+
+    - tid
     """
 
     __slots__ = ["tid"]
@@ -5373,7 +5548,8 @@ class getCaptchaTaskStatus_args(TBase):
 class getCaptchaTaskStatus_result(TBase):
     """
     Attributes:
-     - success
+
+    - success
     """
 
     __slots__ = ["success"]
@@ -5387,8 +5563,9 @@ class getCaptchaTaskStatus_result(TBase):
 class setCaptchaResult_args(TBase):
     """
     Attributes:
-     - tid
-     - result
+
+    - tid
+    - result
     """
 
     __slots__ = ["tid", "result"]

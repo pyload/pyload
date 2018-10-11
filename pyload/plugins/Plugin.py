@@ -26,28 +26,38 @@ def chunks(iterable, size):
 
 
 class Abort(Exception):
-    """ raised when aborted """
+    """
+    raised when aborted.
+    """
 
 
 class Fail(Exception):
-    """ raised when failed """
+    """
+    raised when failed.
+    """
 
 
 class Reconnect(Exception):
-    """ raised when reconnected """
+    """
+    raised when reconnected.
+    """
 
 
 class Retry(Exception):
-    """ raised when start again from beginning """
+    """
+    raised when start again from beginning.
+    """
 
 
 class SkipDownload(Exception):
-    """ raised when download should be skipped """
+    """
+    raised when download should be skipped.
+    """
 
 
 class Base(object):
     """
-    A Base class with log/config/db methods *all* plugin types can use
+    A Base class with log/config/db methods *all* plugin types can use.
     """
 
     __name__ = "Base"
@@ -94,11 +104,14 @@ class Base(object):
         )
 
     def setConf(self, option, value):
-        """ see `setConfig` """
+        """
+        see `setConfig`
+        """
         self.pyload.config.setPlugin(self.__name__, option, value)
 
     def setConfig(self, option, value):
-        """ Set config value for current plugin
+        """
+        Set config value for current plugin.
 
         :param option:
         :param value:
@@ -107,11 +120,14 @@ class Base(object):
         self.setConf(option, value)
 
     def getConf(self, option):
-        """ see `getConfig` """
+        """
+        see `getConfig`
+        """
         return self.pyload.config.getPlugin(self.__name__, option)
 
     def getConfig(self, option):
-        """ Returns config value for current plugin
+        """
+        Returns config value for current plugin.
 
         :param option:
         :return:
@@ -119,31 +135,42 @@ class Base(object):
         return self.getConf(option)
 
     def setStorage(self, key, value):
-        """ Saves a value persistently to the database """
+        """
+        Saves a value persistently to the database.
+        """
         self.pyload.db.setStorage(self.__name__, key, value)
 
     def store(self, key, value):
-        """ same as `setStorage` """
+        """
+        same as `setStorage`
+        """
         self.pyload.db.setStorage(self.__name__, key, value)
 
     def getStorage(self, key=None, default=None):
-        """ Retrieves saved value or dict of all saved entries if key is None """
+        """
+        Retrieves saved value or dict of all saved entries if key is None.
+        """
         if key is not None:
             return self.pyload.db.getStorage(self.__name__, key) or default
         return self.pyload.db.getStorage(self.__name__, key)
 
     def retrieve(self, *args, **kwargs):
-        """ same as `getStorage` """
+        """
+        same as `getStorage`
+        """
         return self.getStorage(*args, **kwargs)
 
     def delStorage(self, key):
-        """ Delete entry in db """
+        """
+        Delete entry in db.
+        """
         self.pyload.db.delStorage(self.__name__, key)
 
 
 class Plugin(Base):
     """
     Base plugin for hoster/crypter.
+
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
 
@@ -223,15 +250,22 @@ class Plugin(Base):
         return self.__name__
 
     def init(self):
-        """initialize the plugin (in addition to `__init__`)"""
+        """
+        initialize the plugin (in addition to `__init__`)
+        """
         pass
 
     def setup(self):
-        """ setup for enviroment and other things, called before downloading (possibly more than one time)"""
+        """
+        setup for enviroment and other things, called before downloading
+        (possibly more than one time)
+        """
         pass
 
     def preprocessing(self, thread):
-        """ handles important things to do before starting """
+        """
+        handles important things to do before starting.
+        """
         self.thread = thread
 
         if self.account:
@@ -246,11 +280,15 @@ class Plugin(Base):
         return self.process(self.pyfile)
 
     def process(self, pyfile):
-        """the 'main' method of every plugin, you **have to** overwrite it"""
+        """
+        the 'main' method of every plugin, you **have to** overwrite it.
+        """
         raise NotImplementedError
 
     def resetAccount(self):
-        """ dont use account and retry download """
+        """
+        dont use account and retry download.
+        """
         self.account = None
         self.req = self.pyload.requestFactory.getRequest(self.__name__)
         self.retry()
@@ -258,6 +296,7 @@ class Plugin(Base):
     def checksum(self, local_file=None):
         """
         return codes:
+
         0  - checksum ok
         1  - checksum wrong
         5  - can't get checksum
@@ -269,7 +308,8 @@ class Plugin(Base):
         return True, 10
 
     def setWait(self, seconds, reconnect=False):
-        """Set a specific wait time later used with `wait`
+        """
+        Set a specific wait time later used with `wait`
 
         :param seconds: wait time in seconds
         :param reconnect: True if a reconnect would avoid wait time
@@ -279,7 +319,9 @@ class Plugin(Base):
         self.pyfile.waitUntil = time() + int(seconds)
 
     def wait(self):
-        """ waits the time previously set """
+        """
+        waits the time previously set.
+        """
         self.waiting = True
         self.pyfile.setStatus("waiting")
 
@@ -297,19 +339,27 @@ class Plugin(Base):
         self.pyfile.setStatus("starting")
 
     def fail(self, reason):
-        """ fail and give reason """
+        """
+        fail and give reason.
+        """
         raise Fail(reason)
 
     def offline(self):
-        """ fail and indicate file is offline """
+        """
+        fail and indicate file is offline.
+        """
         raise Fail("offline")
 
     def tempOffline(self):
-        """ fail and indicates file ist temporary offline, the core may take consequences """
+        """
+        fail and indicates file ist temporary offline, the core may take
+        consequences.
+        """
         raise Fail("temp. offline")
 
     def retry(self, max_tries=3, wait_time=1, reason=""):
-        """Retries and begin again from the beginning
+        """
+        Retries and begin again from the beginning.
 
         :param max_tries: number of maximum retries
         :param wait_time: time to wait in seconds
@@ -345,7 +395,8 @@ class Plugin(Base):
         imgtype="jpg",
         result_type="textual",
     ):
-        """ Loads a captcha and decrypts it with ocr, plugin, user input
+        """
+        Loads a captcha and decrypts it with ocr, plugin, user input.
 
         :param url: url of captcha image
         :param get: get part for request
@@ -435,7 +486,8 @@ class Plugin(Base):
         just_header=False,
         decode=False,
     ):
-        """Load content at url and returns it
+        """
+        Load content at url and returns it.
 
         :param url:
         :param get:
@@ -505,7 +557,8 @@ class Plugin(Base):
         return res
 
     def download(self, url, get={}, post={}, ref=True, cookies=True, disposition=False):
-        """Downloads the content at url to download folder
+        """
+        Downloads the content at url to download folder.
 
         :param url:
         :param get:
@@ -592,7 +645,9 @@ class Plugin(Base):
     def checkDownload(
         self, rules, api_size=0, max_size=50000, delete=True, read_size=0
     ):
-        """ checks the content of the last downloaded file, re match is saved to `lastCheck`
+        """
+        checks the content of the last downloaded file, re match is saved to
+        `lastCheck`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
         :param api_size: expected file size
@@ -633,14 +688,17 @@ class Plugin(Base):
                     return name
 
     def getPassword(self):
-        """ get the password the user provided in the package"""
+        """
+        get the password the user provided in the package.
+        """
         password = self.pyfile.package().password
         if not password:
             return ""
         return password
 
     def checkForSameFiles(self, starting=False):
-        """ checks if same file was/is downloaded within same package
+        """
+        checks if same file was/is downloaded within same package.
 
         :param starting: indicates that the current download is going to start
         :raises SkipDownload:
@@ -687,7 +745,9 @@ class Plugin(Base):
             )
 
     def clean(self):
-        """ clean everything and remove references """
+        """
+        clean everything and remove references.
+        """
         if hasattr(self, "pyfile"):
             del self.pyfile
         if hasattr(self, "req"):

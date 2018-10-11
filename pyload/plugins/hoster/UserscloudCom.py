@@ -10,8 +10,8 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 class BIGHTTPRequest(HTTPRequest):
     """
-    Overcome HTTPRequest's load() size limit to allow
-    loading very big web pages by overrding HTTPRequest's write() function
+    Overcome HTTPRequest's load() size limit to allow loading very big web
+    pages by overrding HTTPRequest's write() function.
     """
 
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
@@ -20,7 +20,9 @@ class BIGHTTPRequest(HTTPRequest):
         HTTPRequest.__init__(self, cookies=cookies, options=options)
 
     def write(self, buf):
-        """ writes response """
+        """
+        writes response.
+        """
         if self.limit and self.rep.tell() > self.limit or self.abort:
             rep = self.getResponse()
             if self.abort:

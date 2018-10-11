@@ -61,7 +61,8 @@ class IRC(object):
 
     def _parse_irc_msg(self, line):
         """
-        Breaks a message from an IRC server into its origin, command, and arguments.
+        Breaks a message from an IRC server into its origin, command, and
+        arguments.
         """
         origin = ""
         if not line:
@@ -85,7 +86,7 @@ class IRC(object):
     @lock
     def connect_server(self, host, port):
         """
-        Connect to the IRC server and wait for RPL_WELCOME message
+        Connect to the IRC server and wait for RPL_WELCOME message.
         """
         if self.connected:
             self.plugin.log_warning(_("Already connected to server, not connecting"))

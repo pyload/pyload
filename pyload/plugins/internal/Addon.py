@@ -41,7 +41,7 @@ class Addon(Plugin):
     @property
     def activated(self):
         """
-        Checks if addon is activated
+        Checks if addon is activated.
         """
         return self.config.get("activated")
 
@@ -87,7 +87,7 @@ class Addon(Plugin):
 
     def deactivate(self):
         """
-        Called when addon was deactivated
+        Called when addon was deactivated.
         """
         pass
 
@@ -98,7 +98,7 @@ class Addon(Plugin):
 
     def activate(self):
         """
-        Called when addon was activated
+        Called when addon was activated.
         """
         pass
 
@@ -109,7 +109,7 @@ class Addon(Plugin):
 
     def exit(self):
         """
-        Called by core.shutdown just before pyLoad exit
+        Called by core.shutdown just before pyLoad exit.
         """
         pass
 
@@ -194,7 +194,8 @@ class Addon(Plugin):
 
     def captcha_task(self, task):
         """
-        New captcha task for the plugin, it MUST set the handler and timeout or will be ignored
+        New captcha task for the plugin, it MUST set the handler and timeout or
+        will be ignored.
         """
         pass
 

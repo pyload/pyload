@@ -56,7 +56,7 @@ class YourfilesTo(Hoster):
 
     def get_file_url(self):
         """
-        Returns the absolute downloadable filepath
+        Returns the absolute downloadable filepath.
         """
         url = re.search(r"var bla = '(.*?)';", self.data)
         if url:
@@ -76,7 +76,7 @@ class YourfilesTo(Hoster):
 
     def file_exists(self):
         """
-        Returns True or False
+        Returns True or False.
         """
         if not self.data:
             self.download_html()

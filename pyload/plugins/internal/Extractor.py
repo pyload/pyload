@@ -42,7 +42,8 @@ class Extractor(Plugin):
     @classmethod
     def archivetype(cls, filename):
         """
-        Get archive default extension from filename
+        Get archive default extension from filename.
+
         :param filename: file name to test
         :return: Extension or None
         """
@@ -78,14 +79,15 @@ class Extractor(Plugin):
     @classmethod
     def find(cls):
         """
-        Check if system statisfy dependencies
+        Check if system statisfy dependencies.
         """
         pass
 
     @classmethod
     def get_targets(cls, files_ids):
         """
-        Filter suited targets from list of filename id tuple list
+        Filter suited targets from list of filename id tuple list.
+
         :param files_ids: List of filepathes
         :return: List of targets, id tuple list
         """
@@ -121,7 +123,7 @@ class Extractor(Plugin):
         keepbroken=False,
     ):
         """
-        Initialize extractor for specific file
+        Initialize extractor for specific file.
         """
         self._init(pyfile.m.pyload)
 
@@ -148,8 +150,8 @@ class Extractor(Plugin):
 
     def verify(self, password=None):
         """
-        Testing with Extractors built-in method
-        Raise error if password is needed, integrity is questionable or else
+        Testing with Extractors built-in method Raise error if password is
+        needed, integrity is questionable or else.
         """
         pass
 
@@ -158,25 +160,24 @@ class Extractor(Plugin):
 
     def extract(self, password=None):
         """
-        Extract the archive
-        Raise specific errors in case of failure
+        Extract the archive Raise specific errors in case of failure.
         """
         raise NotImplementedError
 
     def chunks(self):
         """
-        Return list of archive parts
+        Return list of archive parts.
         """
         return [self.filename]
 
     def list(self, password=None):
         """
-        Return list of archive files
+        Return list of archive files.
         """
         raise NotImplementedError
 
     def progress(self, x):
         """
-        Set extraction progress
+        Set extraction progress.
         """
         return self.pyfile.setProgress(int(x))

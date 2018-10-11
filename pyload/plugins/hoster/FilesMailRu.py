@@ -46,14 +46,19 @@ class FilesMailRu(Hoster):
 
     def prepare(self):
         """
-        You have to wait some seconds. Otherwise you will get a 40Byte HTML Page instead of the file you expected
+        You have to wait some seconds.
+
+        Otherwise you will get a 40Byte HTML Page instead of the file
+        you expected
         """
         self.wait(10)
         return True
 
     def get_file_url(self):
         """
-        Gives you the URL to the file. Extracted from the Files.mail.ru HTML-page stored in self.data
+        Gives you the URL to the file.
+
+        Extracted from the Files.mail.ru HTML-page stored in self.data
         """
         return (
             re.search(self.url_pattern, self.data)
@@ -64,7 +69,9 @@ class FilesMailRu(Hoster):
 
     def get_file_name(self):
         """
-        Gives you the Name for each file. Also extracted from the HTML-Page
+        Gives you the Name for each file.
+
+        Also extracted from the HTML-Page
         """
         return (
             re.search(self.url_pattern, self.data)
