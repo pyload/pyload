@@ -11,8 +11,13 @@ from pyload.utils.utils import chmod
 
 # ignore these plugin configs, mainly because plugins were wiped out
 IGNORE = (
-    "FreakshareNet", "SpeedManager", "ArchiveTo", "ShareCx", ('addons', 'UnRar'),
-    'EasyShareCom', 'FlyshareCz'
+    "FreakshareNet",
+    "SpeedManager",
+    "ArchiveTo",
+    "ShareCx",
+    ("addons", "UnRar"),
+    "EasyShareCom",
+    "FlyshareCz",
 )
 
 CONF_VERSION = 1
@@ -40,7 +45,8 @@ class ConfigParser(object):
     """
 
     CONFLINE = re.compile(
-        r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)')
+        r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
+    )
 
     def __init__(self):
         """Constructor"""
@@ -72,7 +78,7 @@ class ConfigParser(object):
             f = open("pyload.conf", "rb")
             v = f.readline()
             f.close()
-            v = v[v.find(":") + 1:].strip()
+            v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < CONF_VERSION:
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
@@ -81,7 +87,7 @@ class ConfigParser(object):
             f = open("plugin.conf", "rb")
             v = f.readline()
             f.close()
-            v = v[v.find(":") + 1:].strip()
+            v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < CONF_VERSION:
                 f = open("plugin.conf", "wb")
@@ -107,7 +113,8 @@ class ConfigParser(object):
                 if "password" in homeconf["remote"]:
                     self.oldRemoteData = {
                         "username": homeconf["remote"]["username"]["value"],
-                        "password": homeconf["remote"]["username"]["value"]}
+                        "password": homeconf["remote"]["username"]["value"],
+                    }
                     del homeconf["remote"]["password"]
                 del homeconf["remote"]["username"]
             self.updateValues(homeconf, self.config)
@@ -133,8 +140,11 @@ class ConfigParser(object):
 
         for line in config:
             comment = line.rfind("#")
-            if line.find(":", comment) < 0 > line.find(
-                    "=", comment) and comment > 0 and line[comment - 1].isspace():
+            if (
+                line.find(":", comment) < 0 > line.find("=", comment)
+                and comment > 0
+                and line[comment - 1].isspace()
+            ):
                 line = line.rpartition("#")  # removes comments
                 if line[1]:
                     line = line[0]
@@ -147,7 +157,7 @@ class ConfigParser(object):
                 if line == "":
                     continue
                 elif line.endswith(":"):
-                    section, none, desc = line[:-1].partition('-')
+                    section, none, desc = line[:-1].partition("-")
                     section = section.strip()
                     desc = desc.replace('"', "").strip()
                     conf[section] = {"desc": desc}
@@ -157,21 +167,24 @@ class ConfigParser(object):
                             listmode = False
                             line = line.replace("]", "")
 
-                        value += [self.cast(typ, x.strip())
-                                  for x in line.split(",") if x]
+                        value += [
+                            self.cast(typ, x.strip()) for x in line.split(",") if x
+                        ]
 
                         if not listmode:
-                            conf[section][option] = {"desc": desc,
-                                                     "type": typ,
-                                                     "value": value}
+                            conf[section][option] = {
+                                "desc": desc,
+                                "type": typ,
+                                "value": value,
+                            }
 
                     else:
                         m = self.CONFLINE.search(line)
 
-                        typ = m.group('T')
-                        option = m.group('N')
-                        desc = m.group('D').strip()
-                        value = m.group('V').strip()
+                        typ = m.group("T")
+                        option = m.group("N")
+                        desc = m.group("D").strip()
+                        value = m.group("V").strip()
 
                         if value.startswith("["):
                             if value.endswith("]"):
@@ -180,15 +193,20 @@ class ConfigParser(object):
                             else:
                                 listmode = True
 
-                            value = [self.cast(typ, x.strip())
-                                     for x in value[1:].split(",") if x]
+                            value = [
+                                self.cast(typ, x.strip())
+                                for x in value[1:].split(",")
+                                if x
+                            ]
                         else:
                             value = self.cast(typ, value)
 
                         if not listmode:
-                            conf[section][option] = {"desc": desc,
-                                                     "type": typ,
-                                                     "value": value}
+                            conf[section][option] = {
+                                "desc": desc,
+                                "type": typ,
+                                "value": value,
+                            }
 
             except Exception as e:
                 print("Config Warning:")
@@ -208,7 +226,9 @@ class ConfigParser(object):
                         continue
 
                     if option in dest[section]:
-                        dest[section][option]["value"] = config[section][option]["value"]
+                        dest[section][option]["value"] = config[section][option][
+                            "value"
+                        ]
 
                         # else:
                         #    dest[section][option] = config[section][option]
@@ -225,7 +245,8 @@ class ConfigParser(object):
                 f.write('\n{} - "{}":\n'.format(section, config[section]["desc"]))
 
                 for option, data in sorted(
-                        list(config[section].items()), key=lambda _x: _x[0]):
+                    list(config[section].items()), key=lambda _x: _x[0]
+                ):
                     if option in ("desc", "outline"):
                         continue
 
@@ -242,17 +263,15 @@ class ConfigParser(object):
                     try:
                         f.write(
                             '\t{} {} : "{}" = {}'.format(
-                                data["type"],
-                                option,
-                                data["desc"],
-                                value))
+                                data["type"], option, data["desc"], value
+                            )
+                        )
                     except UnicodeEncodeError:
                         f.write(
                             '\t{} {} : "{}" = {}'.format(
-                                data["type"],
-                                option,
-                                data["desc"],
-                                value.encode("utf8")))
+                                data["type"], option, data["desc"], value.encode("utf8")
+                            )
+                        )
 
     def cast(self, typ, value):
         """cast value to given format"""
@@ -335,8 +354,7 @@ class ConfigParser(object):
     def addPluginConfig(self, name, config, outline=""):
         """adds config options with tuples (name, type, desc, default)"""
         if name not in self.plugin:
-            conf = {"desc": name,
-                    "outline": outline}
+            conf = {"desc": name, "outline": outline}
             self.plugin[name] = conf
         else:
             conf = self.plugin[name]
@@ -349,7 +367,7 @@ class ConfigParser(object):
                 conf[item[0]] = {
                     "desc": item[2],
                     "type": item[1],
-                    "value": self.cast(item[1], item[3])
+                    "value": self.cast(item[1], item[3]),
                 }
 
         values = [x[0] for x in config] + ["desc", "outline"]

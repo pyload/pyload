@@ -13,46 +13,53 @@ PROJECT_DIR = path(__file__).dirname()
 sys.path.append(PROJECT_DIR)
 
 options = environment.options
-path('pyload').mkdir()
+path("pyload").mkdir()
 
 extradeps = []
 if sys.version_info <= (2, 5):
-    extradeps += 'simplejson'
+    extradeps += "simplejson"
 
 setup(
     name="pyload",
     version="0.5.0",
-    description='Fast, lightweight and full featured download manager.',
+    description="Fast, lightweight and full featured download manager.",
     long_description=open(PROJECT_DIR / "README").read(),
-    keywords=('pyload', 'download-manager', 'one-click-hoster', 'download'),
+    keywords=("pyload", "download-manager", "one-click-hoster", "download"),
     url="http://pyload.net",
-    download_url='http://pyload.net/download',
-    license='GPL v3',
+    download_url="http://pyload.net/download",
+    license="GPL v3",
     author="pyLoad Team",
     author_email="support@pyload.net",
-    platforms=('Any',),
-    #package_dir={'pyload': 'src'},
-    packages=['pyload'],
+    platforms=("Any",),
+    # package_dir={'pyload': 'src'},
+    packages=["pyload"],
     # package_data=find_package_data(),
     # data_files=[],
     include_package_data=True,
     # exluced from build but not from sdist
-    exclude_package_data={'pyload': ['docs*', 'scripts*', 'tests*']},
+    exclude_package_data={"pyload": ["docs*", "scripts*", "tests*"]},
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
-    install_requires=['thrift >= 0.8.0', 'jinja2', 'pycurl',
-                      'Beaker', 'BeautifulSoup>=3.2, <3.3'] + extradeps,
+    install_requires=[
+        "thrift >= 0.8.0",
+        "jinja2",
+        "pycurl",
+        "Beaker",
+        "BeautifulSoup>=3.2, <3.3",
+    ]
+    + extradeps,
     extras_require={
-        'SSL': ["pyOpenSSL"],
-        'DLC': ['pycrypto'],
-        'lightweight webserver': ['bjoern'],
-        'RSS plugins': ['feedparser'],
+        "SSL": ["pyOpenSSL"],
+        "DLC": ["pycrypto"],
+        "lightweight webserver": ["bjoern"],
+        "RSS plugins": ["feedparser"],
     },
     # setup_requires=["setuptools_hg"],
     entry_points={
-        'console_scripts': [
-            'pyLoadCore = pyLoadCore:main',
-            'pyLoadCli = pyLoadCli:main'
-        ]},
+        "console_scripts": [
+            "pyLoadCore = pyLoadCore:main",
+            "pyLoadCli = pyLoadCli:main",
+        ]
+    },
     zip_safe=False,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -62,62 +69,53 @@ setup(
         "Intended Audience :: End Users/Desktop",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2"
-    ]
+        "Programming Language :: Python :: 2",
+    ],
 )
 
 options(
-    sphinx=Bunch(
-        builddir="_build",
-        sourcedir=""
-    ),
+    sphinx=Bunch(builddir="_build", sourcedir=""),
     get_source=Bunch(
-        src="https://bitbucket.org/spoob/pyload/get/tip.zip",
-        rev=None,
-        clean=False
+        src="https://bitbucket.org/spoob/pyload/get/tip.zip", rev=None, clean=False
     ),
-    thrift=Bunch(
-        path="../thrift/trunk/compiler/cpp/thrift",
-        gen=""
-    ),
-    virtualenv=Bunch(
-        dir="env",
-        python="python2",
-        virtual="virtualenv2",
-    ),
-    cog=Bunch(
-        pattern="*.py",
-    )
+    thrift=Bunch(path="../thrift/trunk/compiler/cpp/thrift", gen=""),
+    virtualenv=Bunch(dir="env", python="python2", virtual="virtualenv2"),
+    cog=Bunch(pattern="*.py"),
 )
 
 # xgettext args
-xargs = ["--from-code=utf-8",
-         "--copyright-holder=pyLoad Team",
-         "--package-name=pyLoad",
-         "--package-version={}".format(options.version),
-         "--msgid-bugs-address='bugs@pyload.net'"]
+xargs = [
+    "--from-code=utf-8",
+    "--copyright-holder=pyLoad Team",
+    "--package-name=pyLoad",
+    "--package-version={}".format(options.version),
+    "--msgid-bugs-address='bugs@pyload.net'",
+]
 
 
 @task
-@needs('cog')
+@needs("cog")
 def html():
     """Build html documentation"""
     module = path("docs") / "pyload"
     module.rmtree()
-    call_task('paver.doctools.html')
+    call_task("paver.doctools.html")
 
 
 @task
-@cmdopts([
-    ('src=', 's', 'Url to source'),
-    ('rev=', 'r', "HG revision"),
-    ("clean", 'c', 'Delete old source folder')
-])
+@cmdopts(
+    [
+        ("src=", "s", "Url to source"),
+        ("rev=", "r", "HG revision"),
+        ("clean", "c", "Delete old source folder"),
+    ]
+)
 def get_source(options):
     """ Downloads pyload source from bitbucket tip or given rev"""
     if options.rev:
         options.url = "https://bitbucket.org/spoob/pyload/get/{}.zip".format(
-            options.rev)
+            options.rev
+        )
 
     pyload = path("pyload")
 
@@ -143,26 +141,23 @@ def get_source(options):
 
     (pyload / ".hgtags").remove()
     (pyload / ".gitignore").remove()
-    #(pyload / "docs").rmtree()
+    # (pyload / "docs").rmtree()
 
     f = open(pyload / "__init__.py", "wb")
     f.close()
 
-    #options.setup.packages = find_packages()
-    #options.setup.package_data = find_package_data()
+    # options.setup.packages = find_packages()
+    # options.setup.package_data = find_package_data()
 
 
 @task
-@needs('clean', 'generate_setup', 'minilib', 'get_source', 'setuptools.command.sdist')
+@needs("clean", "generate_setup", "minilib", "get_source", "setuptools.command.sdist")
 def sdist():
     """ Build source code package with distutils """
 
 
 @task
-@cmdopts([
-    ('path=', 'p', 'Thrift path'),
-    ('gen=', 'g', "Extra --gen option")
-])
+@cmdopts([("path=", "p", "Thrift path"), ("gen=", "g", "Extra --gen option")])
 def thrift(options):
     """ Generate Thrift stubs """
 
@@ -178,8 +173,8 @@ def thrift(options):
         outdir,
         "--gen",
         "py:slots,dynamic",
-        outdir /
-        "pyload.thrift"]
+        outdir / "pyload.thrift",
+    ]
 
     if options.gen:
         cmd.insert(len(cmd) - 1, "--gen")
@@ -195,6 +190,7 @@ def thrift(options):
 
     # create light ttypes
     from pyload.remote.socketbackend.create_ttypes import main
+
     main()
 
 
@@ -227,7 +223,8 @@ def generate_locale():
         "webui/ajax",
         "webui/cnl",
         "webui/pyload",
-        "setup.py"]
+        "setup.py",
+    ]
     makepot("pyload", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
 
     # makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
@@ -254,8 +251,12 @@ def generate_locale():
         for s in strings:
             js.write('_("{}")\n'.format(s))
 
-    makepot("django", path("pyload/webui"), EXCLUDE,
-            "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]))
+    makepot(
+        "django",
+        path("pyload/webui"),
+        EXCLUDE,
+        "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]),
+    )
 
     trans.remove()
 
@@ -275,7 +276,9 @@ def virtualenv(options):
     if path(options.dir).exists():
         return
 
-    call([options.virtual, "--no-site-packages", "--python", options.python, options.dir])
+    call(
+        [options.virtual, "--no-site-packages", "--python", options.python, options.dir]
+    )
     print("$ source {}/bin/activate".format(options.dir))
 
 
@@ -288,7 +291,7 @@ def clean_env():
 
 
 @task
-@needs('generate_setup', 'minilib', 'get_source', 'virtualenv')
+@needs("generate_setup", "minilib", "get_source", "virtualenv")
 def env_install():
     """Install pyLoad into the virtualenv"""
     venv = options.virtualenv
@@ -303,6 +306,7 @@ def clean():
 
 
 # helper functions
+
 
 def walk_trans(path, EXCLUDE, endings=[".py"]):
     result = ""
@@ -333,8 +337,11 @@ def makepot(domain, p, excludes=[], includes="", endings=[".py"], xxargs=[]):
 
     f.close()
 
-    call(["xgettext", "--files-from=includes.txt",
-          "--default-domain={}".format(domain)] + xargs + xxargs)
+    call(
+        ["xgettext", "--files-from=includes.txt", "--default-domain={}".format(domain)]
+        + xargs
+        + xxargs
+    )
 
     # replace charset und move file
     with open("{}.po".format(domain, "rb")) as f:

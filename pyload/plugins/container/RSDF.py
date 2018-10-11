@@ -14,26 +14,25 @@ class RSDF(Container):
     __version__ = "0.37"
     __status__ = "testing"
 
-    __pattern__ = r'.+\.rsdf$'
+    __pattern__ = r".+\.rsdf$"
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         True),
-        ("use_premium",
-         "bool",
-         "Use premium account if available",
-         True),
-        ("folder_per_package",
-         "Default;Yes;No",
-         "Create folder for each package",
-         "Default")]
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+    ]
 
     __description__ = """RSDF container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
-                   ("spoob", "spoob@pyload.net"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.net"),
+        ("spoob", "spoob@pyload.net"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+    ]
 
     KEY = "8C35192D964DC3182C6F84F3252239EB4A320D2500000000"
     IV = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
@@ -47,19 +46,18 @@ class RSDF(Container):
 
         try:
             fs_filename = encode(pyfile.url)
-            with open(fs_filename, 'r') as rsdf:
+            with open(fs_filename, "r") as rsdf:
                 data = rsdf.read()
 
         except IOError as e:
             self.fail(e)
 
-        if re.search(r'<title>404 - Not Found</title>', data):
+        if re.search(r"<title>404 - Not Found</title>", data):
             pyfile.setStatus("offline")
 
         else:
             try:
-                raw_links = binascii.unhexlify(
-                    ''.join(data.split())).splitlines()
+                raw_links = binascii.unhexlify("".join(data.split())).splitlines()
 
             except TypeError:
                 self.fail(_("Container is corrupted"))
@@ -67,7 +65,5 @@ class RSDF(Container):
             for link in raw_links:
                 if not link:
                     continue
-                link = cipher.decrypt(
-                    link.decode('base64')).replace(
-                    'CCF: ', '')
+                link = cipher.decrypt(link.decode("base64")).replace("CCF: ", "")
                 self.links.append(link)

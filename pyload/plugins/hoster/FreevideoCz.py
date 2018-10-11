@@ -9,7 +9,7 @@ class FreevideoCz(DeadHoster):
     __version__ = "0.35"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?freevideo\.cz/vase-videa/.+'
+    __pattern__ = r"http://(?:www\.)?freevideo\.cz/vase-videa/.+"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Freevideo.cz hoster plugin"""

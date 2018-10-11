@@ -11,10 +11,12 @@ class VeehdCom(Hoster):
     __version__ = "0.29"
     __status__ = "testing"
 
-    __pattern__ = r'http://veehd\.com/video/\d+_\S+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("filename_spaces", "bool", "Allow spaces in filename", False),
-                  ("replacement_char", "str", "Filename replacement character", "_")]
+    __pattern__ = r"http://veehd\.com/video/\d+_\S+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("filename_spaces", "bool", "Allow spaces in filename", False),
+        ("replacement_char", "str", "Filename replacement character", "_"),
+    ]
 
     __description__ = """Veehd.com hoster plugin"""
     __license__ = "GPLv3"
@@ -41,7 +43,7 @@ class VeehdCom(Hoster):
         if not self.data:
             self.download_html()
 
-        if '<title>Veehd</title>' in self.data:
+        if "<title>Veehd</title>" in self.data:
             return False
         return True
 
@@ -49,20 +51,19 @@ class VeehdCom(Hoster):
         if not self.data:
             self.download_html()
 
-        m = re.search(r'<title.*?>(.+?) on Veehd</title>', self.data)
+        m = re.search(r"<title.*?>(.+?) on Veehd</title>", self.data)
         if m is None:
             self.error(_("Video title not found"))
 
         name = m.group(1)
 
         #: Replace unwanted characters in filename
-        if self.config.get('filename_spaces'):
-            pattern = r'[^\w ]+'
+        if self.config.get("filename_spaces"):
+            pattern = r"[^\w ]+"
         else:
-            pattern = r'[^\w.]+'
+            pattern = r"[^\w.]+"
 
-        return re.sub(pattern, self.config.get(
-            'replacement_char'), name) + '.avi'
+        return re.sub(pattern, self.config.get("replacement_char"), name) + ".avi"
 
     def get_file_url(self):
         """
@@ -73,7 +74,8 @@ class VeehdCom(Hoster):
 
         m = re.search(
             r'<embed type="video/divx" src="(http://([^/]*\.)?veehd\.com/dl/.+?)"',
-            self.data)
+            self.data,
+        )
         if m is None:
             self.error(_("Embedded video url not found"))
 

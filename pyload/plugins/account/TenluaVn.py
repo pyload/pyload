@@ -22,26 +22,29 @@ class TenluaVn(Account):
 
     @classmethod
     def api_response(cls, method, **kwargs):
-        kwargs['a'] = method
-        sid = kwargs.pop('sid', None)
-        return json.loads(get_url(cls.API_URL,
-                                  get={'sid': sid} if sid is not None else {},
-                                  post=json.dumps([kwargs])))
+        kwargs["a"] = method
+        sid = kwargs.pop("sid", None)
+        return json.loads(
+            get_url(
+                cls.API_URL,
+                get={"sid": sid} if sid is not None else {},
+                post=json.dumps([kwargs]),
+            )
+        )
 
     def grab_info(self, user, password, data):
-        user_info = self.api_response("user_info", sid=data['sid'])[0]
+        user_info = self.api_response("user_info", sid=data["sid"])[0]
 
-        validuntil = time.mktime(time.strptime(user_info['endGold'], "%d-%m-%Y"))
-        premium = user_info['free_used'] != "null"
+        validuntil = time.mktime(time.strptime(user_info["endGold"], "%d-%m-%Y"))
+        premium = user_info["free_used"] != "null"
 
-        return {'premium': premium,
-                'trafficleft': -1,
-                'validuntil': validuntil}
+        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
     def signin(self, user, password, data):
         try:
             login_info = self.api_response(
-                "user_login", user=user, password=password, permanent=False)
+                "user_login", user=user, password=password, permanent=False
+            )
 
         except BadHeader as e:
             if e.code == 401:
@@ -50,4 +53,4 @@ class TenluaVn(Account):
             else:
                 self.fail_login(_("BadHeader {}").format(e.code))
 
-        data['sid'] = login_info[0]
+        data["sid"] = login_info[0]

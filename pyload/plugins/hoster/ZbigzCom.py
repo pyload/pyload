@@ -16,7 +16,7 @@ class ZbigzCom(Hoster):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
+    __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
     __config__ = [("activated", "bool", "Activated", False)]
 
     __description__ = """Zbigz.com hoster plugin"""
@@ -31,16 +31,13 @@ class ZbigzCom(Hoster):
         get_params = kwargs.copy()
         get_params.update(urllib.parse.parse_qs(urlp.query))
 
-        get_params['hash'] = file_id
-        get_params['jsoncallback'] = json_callback
-        get_params['_'] = current_millis
+        get_params["hash"] = file_id
+        get_params["jsoncallback"] = json_callback
+        get_params["_"] = current_millis
 
         jquery_data = self.load(
-            urlp.scheme +
-            "://" +
-            urlp.netloc +
-            urlp.path,
-            get=get_params)
+            urlp.scheme + "://" + urlp.netloc + urlp.path, get=get_params
+        )
 
         m = re.search(r"{}\((.+?)\);".format(json_callback), jquery_data)
 
@@ -53,8 +50,7 @@ class ZbigzCom(Hoster):
             time.sleep(1)
 
     def process(self, pyfile):
-        self.data = self.load("http://m.zbigz.com/myfiles",
-                              post={'url': pyfile.url})
+        self.data = self.load("http://m.zbigz.com/myfiles", post={"url": pyfile.url})
 
         if "Error. Only premium members are able to download" in self.data:
             self.fail(_("File can be downloaded by premium users only"))
@@ -70,45 +66,51 @@ class ZbigzCom(Hoster):
         self.pyfile.setProgress(0)
 
         json_data = self.jquery_call(
-            "http://m.zbigz.com/core/info.php", file_id, call_id)
+            "http://m.zbigz.com/core/info.php", file_id, call_id
+        )
         if json_data is None:
             self.fail("Unexpected jQuery response")
 
-        if 'faultString' in json_data:
-            self.fail(json_data['faultString'])
+        if "faultString" in json_data:
+            self.fail(json_data["faultString"])
 
-        pyfile.name = json_data['info']['name'] + \
-            (".zip" if len(json_data['files']) > 1 else "")
-        pyfile.size = json_data['info']['size']
+        pyfile.name = json_data["info"]["name"] + (
+            ".zip" if len(json_data["files"]) > 1 else ""
+        )
+        pyfile.size = json_data["info"]["size"]
 
         while True:
             json_data = self.jquery_call(
-                "http://m.zbigz.com/core/info.php", file_id, call_id)
+                "http://m.zbigz.com/core/info.php", file_id, call_id
+            )
             if json_data is None:
                 self.fail("Unexpected jQuery response")
 
-            if 'faultString' in json_data:
-                self.fail(json_data['faultString'])
+            if "faultString" in json_data:
+                self.fail(json_data["faultString"])
 
-            progress = int(json_data['info']['progress'])
+            progress = int(json_data["info"]["progress"])
             pyfile.setProgress(progress)
 
-            if json_data['info']['state'] != "downloading" or progress == 100:
+            if json_data["info"]["state"] != "downloading" or progress == 100:
                 break
 
             self.sleep(5)
 
         pyfile.setProgress(100)
 
-        if len(json_data['files']) == 1:
+        if len(json_data["files"]) == 1:
             download_url = "http://m.zbigz.com/file/{}/0".format(file_id)
 
         else:
             self.data = self.load("http://m.zbigz.com/file/{}/-1".format(file_id))
 
             m = re.search(
-                r'\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\''.format(file_id),
-                self.data)
+                r"\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\'".format(
+                    file_id
+                ),
+                self.data,
+            )
             if m is None:
                 self.fail("Zip state URL not found")
 
@@ -116,7 +118,8 @@ class ZbigzCom(Hoster):
             download_id = m.group(2)
 
             m = re.search(
-                r'\'(http://\w+.zbigz.com/z/{}/.+?)\''.format(download_id), self.data)
+                r"\'(http://\w+.zbigz.com/z/{}/.+?)\'".format(download_id), self.data
+            )
             if m is None:
                 self.fail("Zip download URL not found")
 
@@ -130,10 +133,10 @@ class ZbigzCom(Hoster):
                 if json_data is None:
                     self.fail("Unexpected jQuery response")
 
-                if 'faultString' in json_data:
-                    self.fail(json_data['faultString'])
+                if "faultString" in json_data:
+                    self.fail(json_data["faultString"])
 
-                progress = int(json_data['proc'])
+                progress = int(json_data["proc"])
 
                 self.pyfile.setProgress(progress)
 

@@ -16,8 +16,8 @@ class AdsCaptcha(CaptchaService):
     __license__ = "GPLv3"
     __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
-    CAPTCHAID_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)'
-    PUBLICKEY_PATTERN = r'api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w\-]+)'
+    CAPTCHAID_PATTERN = r"api\.adscaptcha\.com/Get\.aspx\?.*?CaptchaId=(\d+)"
+    PUBLICKEY_PATTERN = r"api\.adscaptcha\.com/Get\.aspx\?.*?PublicKey=([\w\-]+)"
 
     def detect_key(self, data=None):
         html = data or self.retrieve_data()
@@ -36,9 +36,10 @@ class AdsCaptcha(CaptchaService):
     def challenge(self, key=None, data=None):
         PublicKey, CaptchaId = key or self.retrieve_key(data)
 
-        html = self.pyfile.plugin.load("http://api.adscaptcha.com/Get.aspx",
-                                       get={'CaptchaId': CaptchaId,
-                                            'PublicKey': PublicKey})
+        html = self.pyfile.plugin.load(
+            "http://api.adscaptcha.com/Get.aspx",
+            get={"CaptchaId": CaptchaId, "PublicKey": PublicKey},
+        )
         try:
             challenge = re.search("challenge: '(.+?)',", html).group(1)
             server = re.search("server: '(.+?)',", html).group(1)
@@ -51,8 +52,10 @@ class AdsCaptcha(CaptchaService):
         return self.result(server, challenge), challenge
 
     def result(self, server, challenge):
-        result = self.decrypt("{}Challenge.aspx".format(server),
-                              get={'cid': challenge, 'dummy': random.random()},
-                              cookies=True,
-                              input_type="jpg")
+        result = self.decrypt(
+            "{}Challenge.aspx".format(server),
+            get={"cid": challenge, "dummy": random.random()},
+            cookies=True,
+            input_type="jpg",
+        )
         return result

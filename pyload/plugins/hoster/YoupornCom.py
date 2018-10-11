@@ -11,7 +11,7 @@ class YoupornCom(Hoster):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?youporn\.com/watch/.+'
+    __pattern__ = r"http://(?:www\.)?youporn\.com/watch/.+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youporn.com hoster plugin"""
@@ -29,11 +29,7 @@ class YoupornCom(Hoster):
 
     def download_html(self):
         url = self.pyfile.url
-        self.data = self.load(
-            url,
-            post={
-                'user_choice': "Enter"},
-            cookies=False)
+        self.data = self.load(url, post={"user_choice": "Enter"}, cookies=False)
 
     def get_file_url(self):
         """
@@ -43,16 +39,21 @@ class YoupornCom(Hoster):
             self.download_html()
 
         return re.search(
-            r'(http://download\.youporn\.com/download/\d+\?save=1)">',
-            self.data).group(1)
+            r'(http://download\.youporn\.com/download/\d+\?save=1)">', self.data
+        ).group(1)
 
     def get_file_name(self):
         if not self.data:
             self.download_html()
 
-        file_name_pattern = r'<title>(.+) - '
-        return re.search(file_name_pattern, self.data).group(
-            1).replace("&amp;", "&").replace("/", "") + '.flv'
+        file_name_pattern = r"<title>(.+) - "
+        return (
+            re.search(file_name_pattern, self.data)
+            .group(1)
+            .replace("&amp;", "&")
+            .replace("/", "")
+            + ".flv"
+        )
 
     def file_exists(self):
         """
@@ -60,7 +61,7 @@ class YoupornCom(Hoster):
         """
         if not self.data:
             self.download_html()
-        if re.search(r'(.*invalid video_id.*)', self.data):
+        if re.search(r"(.*invalid video_id.*)", self.data):
             return False
         else:
             return True

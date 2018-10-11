@@ -11,14 +11,14 @@ class PornovkaCz(Hoster):
     __version__ = "0.02"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?pornovka\.cz/(.+)'
+    __pattern__ = r"https?://(?:www\.)?pornovka\.cz/(.+)"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pornovka.cz hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("ondrej", "git@ondrej.it")]
 
-    NAME_PATTERN = r'<h1>([^<]+)'
+    NAME_PATTERN = r"<h1>([^<]+)"
 
     def setup(self):
         self.resume_download = True

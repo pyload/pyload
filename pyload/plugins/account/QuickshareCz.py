@@ -15,7 +15,7 @@ class QuickshareCz(Account):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    TRAFFIC_LEFT_PATTERN = r'Stav kreditu: <strong>(.+?)</strong>'
+    TRAFFIC_LEFT_PATTERN = r"Stav kreditu: <strong>(.+?)</strong>"
 
     def grab_info(self, user, password, data):
         html = self.load("http://www.quickshare.cz/premium")
@@ -28,13 +28,13 @@ class QuickshareCz(Account):
             trafficleft = None
             premium = False
 
-        return {'validuntil': -1, 'trafficleft': trafficleft, 'premium': premium}
+        return {"validuntil": -1, "trafficleft": trafficleft, "premium": premium}
 
     def signin(self, user, password, data):
-        html = self.load('http://www.quickshare.cz/html/prihlaseni_process.php',
-                         post={'akce': 'Přihlásit',
-                               'heslo': password,
-                               'jmeno': user})
+        html = self.load(
+            "http://www.quickshare.cz/html/prihlaseni_process.php",
+            post={"akce": "Přihlásit", "heslo": password, "jmeno": user},
+        )
 
-        if '>Takový uživatel neexistuje.<' in html or '>Špatné heslo.<' in html:
+        if ">Takový uživatel neexistuje.<" in html or ">Špatné heslo.<" in html:
             self.fail_login()

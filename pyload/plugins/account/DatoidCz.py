@@ -21,9 +21,7 @@ class DatoidCz(Account):
         m = re.search(r'"menu-bar-storage"></i> ([\d.,]+) ([\w^_]+)', html)
         trafficleft = self.parse_traffic(m.group(1), m.group(2)) if m else 0
 
-        info = {'validuntil': -1,
-                'trafficleft': trafficleft,
-                'premium': True}
+        info = {"validuntil": -1, "trafficleft": trafficleft, "premium": True}
 
         return info
 
@@ -32,9 +30,10 @@ class DatoidCz(Account):
         if 'href="/muj-ucet">' in html:
             self.skip_login()
 
-        html = self.load("https://datoid.cz/prihlaseni?do=signInForm-submit",
-                         post={'username': user,
-                               'password': password})
+        html = self.load(
+            "https://datoid.cz/prihlaseni?do=signInForm-submit",
+            post={"username": user, "password": password},
+        )
 
         if 'href="/muj-ucet">' not in html:
             self.fail_login()

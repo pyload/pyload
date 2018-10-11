@@ -51,8 +51,9 @@ class RemoteManager(object):
 
         if self.pyload.remote:
             self.available.append("ThriftBackend")
-#        else:
-#            self.available.append("SocketBackend")
+
+    #        else:
+    #            self.available.append("SocketBackend")
 
     def startBackends(self):
         host = self.pyload.config["remote"]["listenaddr"]
@@ -60,19 +61,25 @@ class RemoteManager(object):
 
         for b in self.available:
             klass = getattr(
-                __import__(
-                    "pyload.remote.{}".format(
-                        b), globals(), locals(), [b], -1), b)
+                __import__("pyload.remote.{}".format(b), globals(), locals(), [b], -1),
+                b,
+            )
             backend = klass(self)
             if not backend.checkDeps():
                 continue
             try:
                 backend.setup(host, port)
-                self.pyload.log.info(_("Starting {name}: {addr}:{port}").format(
-                    **{"name": b, "addr": host, "port": port}))
+                self.pyload.log.info(
+                    _("Starting {name}: {addr}:{port}").format(
+                        **{"name": b, "addr": host, "port": port}
+                    )
+                )
             except Exception as e:
-                self.pyload.log.error(_("Failed loading backend {name} | {error}").format(
-                    **{"name": b, "error": str(e)}))
+                self.pyload.log.error(
+                    _("Failed loading backend {name} | {error}").format(
+                        **{"name": b, "error": str(e)}
+                    )
+                )
                 if self.pyload.debug:
                     print_exc()
             else:

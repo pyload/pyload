@@ -37,7 +37,6 @@ def startApiExerciser(core, n):
 
 
 class APIExerciser(Thread):
-
     def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
@@ -72,30 +71,29 @@ class APIExerciser(Thread):
                 self.testAPI()
             except Exception:
                 self.pyload.log.error(
-                    "Excerciser {} throw an execption".format(
-                        self.id))
+                    "Excerciser {} throw an execption".format(self.id)
+                )
                 print_exc()
                 out.write(format_exc() + 2 * "\n")
                 out.flush()
 
             if not self.count % 100:
                 self.pyload.log.info(
-                    "Exerciser {} tested {} api calls".format(
-                        self.id, self.count))
+                    "Exerciser {} tested {} api calls".format(self.id, self.count)
+                )
             if not self.count % 1000:
                 out.flush()
 
             if not sumCalled % 1000:  # not thread safe
-                self.pyload.log.info(
-                    "Exercisers tested {} api calls".format(sumCalled))
+                self.pyload.log.info("Exercisers tested {} api calls".format(sumCalled))
                 persec = sumCalled // (time() - self.time)
                 self.pyload.log.info("Approx. {:.2f} calls per second.".format(persec))
                 self.pyload.log.info(
-                    "Approx. {:.2f} ms per call.".format(
-                        1000 // persec))
+                    "Approx. {:.2f} ms per call.".format(1000 // persec)
+                )
                 self.pyload.log.info("Collected garbage: {}".format(gc.collect()))
 
-                #sleep(random() / 500)
+                # sleep(random() / 500)
 
     def testAPI(self):
         global sumCalled
@@ -118,10 +116,11 @@ class APIExerciser(Thread):
             "getAllInfo",
             "getServices",
             "getAccounts",
-            "getAllUserData"]
+            "getAllUserData",
+        ]
 
         method = choice(m)
-        #print("Testing:", method)
+        # print("Testing:", method)
 
         if hasattr(self, method):
             res = getattr(self, method)()
@@ -137,8 +136,9 @@ class APIExerciser(Thread):
         name = "".join(sample(string.ascii_letters, 10))
         urls = createURLs()
 
-        self.api.addPackage(name, urls, choice(
-            [Destination.Queue, Destination.Collector]))
+        self.api.addPackage(
+            name, urls, choice([Destination.Queue, Destination.Collector])
+        )
 
     def deleteFiles(self):
         info = self.api.getQueueData()

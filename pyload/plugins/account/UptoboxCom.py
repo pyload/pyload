@@ -13,13 +13,15 @@ class UptoboxCom(XFSAccount):
 
     __description__ = """Uptobox.com account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("benbox69", "dev@tollet.me"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("benbox69", "dev@tollet.me"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     PLUGIN_DOMAIN = "uptobox.com"
     PLUGIN_URL = "https://uptobox.com/"
 
-    PREMIUM_PATTERN = r'Premium member'
+    PREMIUM_PATTERN = r"Premium member"
     VALID_UNTIL_PATTERN = r"class='expiration-date .+?'>(\d{1,2} [\w^_]+ \d{4})"
 
     def signin(self, user, password, data):
@@ -28,12 +30,12 @@ class UptoboxCom(XFSAccount):
         if re.search(self.LOGIN_SKIP_PATTERN, html):
             self.skip_login()
 
-        html = self.load(self.PLUGIN_URL,
-                         get={'op': "login",
-                              'referer': "homepage"},
-                         post={'login': user,
-                               'password': password},
-                         cookies=self.COOKIES)
+        html = self.load(
+            self.PLUGIN_URL,
+            get={"op": "login", "referer": "homepage"},
+            post={"login": user, "password": password},
+            cookies=self.COOKIES,
+        )
 
         if re.search(self.LOGIN_SKIP_PATTERN, html) is None:
             self.fail_login()

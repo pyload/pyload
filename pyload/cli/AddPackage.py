@@ -7,7 +7,6 @@ from pyload.cli.printer import *
 # @author: RaNaN
 
 
-
 class AddPackage(Handler):
     """ let the user add packages """
 

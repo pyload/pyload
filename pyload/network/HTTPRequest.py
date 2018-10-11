@@ -14,47 +14,55 @@ from pyload.plugins.Plugin import Abort
 
 def myquote(url):
     return quote(
-        url.encode('utf_8') if isinstance(
-            url,
-            str) else url,
-        safe="%/:=&?~#+!$,;'@()*[]")
+        url.encode("utf_8") if isinstance(url, str) else url,
+        safe="%/:=&?~#+!$,;'@()*[]",
+    )
 
 
 def myurlencode(data):
     data = dict(data)
     return urlencode(
         dict(
-            (x.encode('utf_8') if isinstance(
-                x, str) else x, y.encode('utf_8') if isinstance(
-                y, str) else y) for x, y in iter(
-                    data.items())))
+            (
+                x.encode("utf_8") if isinstance(x, str) else x,
+                y.encode("utf_8") if isinstance(y, str) else y,
+            )
+            for x, y in iter(data.items())
+        )
+    )
 
 
 bad_headers = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
 
 unofficial_responses = {
     440: "Login Timeout - The client's session has expired and must log in again.",
-    449: 'Retry With - The server cannot honour the request because the user has not provided the required information',
-    451: 'Redirect - Unsupported Redirect Header',
-    509: 'Bandwidth Limit Exceeded',
-    520: 'Unknown Error',
-    521: 'Web Server Is Down - The origin server has refused the connection from CloudFlare',
-    522: 'Connection Timed Out - CloudFlare could not negotiate a TCP handshake with the origin server',
-    523: 'Origin Is Unreachable - CloudFlare could not reach the origin server',
-    524: 'A Timeout Occurred - CloudFlare did not receive a timely HTTP response',
-    525: 'SSL Handshake Failed - CloudFlare could not negotiate a SSL/TLS handshake with the origin server',
-    526: 'Invalid SSL Certificate - CloudFlare could not validate the SSL/TLS certificate that the origin server presented',
-    527: 'Railgun Error - CloudFlare requests timeout or failed after the WAN connection has been established',
-    530: 'Site Is Frozen - Used by the Pantheon web platform to indicate a site that has been frozen due to inactivity'}
+    449: "Retry With - The server cannot honour the request because the user has not provided the required information",
+    451: "Redirect - Unsupported Redirect Header",
+    509: "Bandwidth Limit Exceeded",
+    520: "Unknown Error",
+    521: "Web Server Is Down - The origin server has refused the connection from CloudFlare",
+    522: "Connection Timed Out - CloudFlare could not negotiate a TCP handshake with the origin server",
+    523: "Origin Is Unreachable - CloudFlare could not reach the origin server",
+    524: "A Timeout Occurred - CloudFlare did not receive a timely HTTP response",
+    525: "SSL Handshake Failed - CloudFlare could not negotiate a SSL/TLS handshake with the origin server",
+    526: "Invalid SSL Certificate - CloudFlare could not validate the SSL/TLS certificate that the origin server presented",
+    527: "Railgun Error - CloudFlare requests timeout or failed after the WAN connection has been established",
+    530: "Site Is Frozen - Used by the Pantheon web platform to indicate a site that has been frozen due to inactivity",
+}
 
 
 class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
         Exception.__init__(
-            self, "Bad server response: {} {}".format(code, responses.get(
-                int_code, unofficial_responses.get(
-                    int_code, "unknown error code"))))
+            self,
+            "Bad server response: {} {}".format(
+                code,
+                responses.get(
+                    int_code, unofficial_responses.get(int_code, "unknown error code")
+                ),
+            ),
+        )
         self.code = int_code
         self.header = header
         self.content = content
@@ -97,24 +105,33 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.LOW_SPEED_TIME, 30)
         self.c.setopt(pycurl.LOW_SPEED_LIMIT, 5)
 
-        #self.c.setopt(pycurl.VERBOSE, 1)
+        # self.c.setopt(pycurl.VERBOSE, 1)
 
         self.c.setopt(
             pycurl.USERAGENT,
-            "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0")
+            "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:55.0) Gecko/20100101 Firefox/55.0",
+        )
         if pycurl.version_info()[7]:
             self.c.setopt(pycurl.ENCODING, "gzip, deflate")
-        self.c.setopt(pycurl.HTTPHEADER,
-                      ["Accept: */*",
-                       "Accept-Language: en-US,en",
-                       "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                       "Connection: keep-alive",
-                       "Keep-Alive: 300",
-                       "Expect:"])
+        self.c.setopt(
+            pycurl.HTTPHEADER,
+            [
+                "Accept: */*",
+                "Accept-Language: en-US,en",
+                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                "Connection: keep-alive",
+                "Keep-Alive: 300",
+                "Expect:",
+            ],
+        )
 
     def setInterface(self, options):
 
-        interface, proxy, ipv6 = options["interface"], options["proxies"], options["ipv6"]
+        interface, proxy, ipv6 = (
+            options["interface"],
+            options["proxies"],
+            options["ipv6"],
+        )
 
         if interface and interface.lower() != "none":
             self.c.setopt(pycurl.INTERFACE, str(interface))
@@ -132,9 +149,9 @@ class HTTPRequest(object):
 
             if proxy["username"]:
                 self.c.setopt(
-                    pycurl.PROXYUSERPWD, str(
-                        "{}:{}".format(
-                            proxy["username"], proxy["password"])))
+                    pycurl.PROXYUSERPWD,
+                    str("{}:{}".format(proxy["username"], proxy["password"])),
+                )
 
         if ipv6:
             self.c.setopt(pycurl.IPRESOLVE, pycurl.IPRESOLVE_WHATEVER)
@@ -188,8 +205,10 @@ class HTTPRequest(object):
 
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
-                post = [(x, y.encode('utf8') if isinstance(y, str) else y)
-                        for x, y in post.items()]
+                post = [
+                    (x, y.encode("utf8") if isinstance(y, str) else y)
+                    for x, y in post.items()
+                ]
                 self.c.setopt(pycurl.HTTPPOST, post)
         else:
             self.c.setopt(pycurl.POST, 0)
@@ -203,15 +222,16 @@ class HTTPRequest(object):
             self.getCookies()
 
     def load(
-            self,
-            url,
-            get={},
-            post={},
-            referer=True,
-            cookies=True,
-            just_header=False,
-            multipart=False,
-            decode=False):
+        self,
+        url,
+        get={},
+        post={},
+        referer=True,
+        cookies=True,
+        just_header=False,
+        multipart=False,
+        decode=False,
+    ):
         """ load and returns a given page """
 
         self.setRequestContext(url, get, post, referer, cookies, multipart)
@@ -277,8 +297,9 @@ class HTTPRequest(object):
 
         for line in header:
             line = line.lower().replace(" ", "")
-            if not line.startswith("content-type:") or\
-               ("text" not in line and "application" not in line):
+            if not line.startswith("content-type:") or (
+                "text" not in line and "application" not in line
+            ):
                 continue
 
             none, delemiter, charset = line.rpartition("charset=")
@@ -288,9 +309,9 @@ class HTTPRequest(object):
                     encoding = charset[0]
 
         try:
-            #self.log.debug("Decoded {}".format(encoding ))
-            if lookup(encoding).name == 'utf-8' and rep.startswith(BOM_UTF8):
-                encoding = 'utf-8-sig'
+            # self.log.debug("Decoded {}".format(encoding ))
+            if lookup(encoding).name == "utf-8" and rep.startswith(BOM_UTF8):
+                encoding = "utf-8-sig"
 
             decoder = getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
@@ -306,7 +327,7 @@ class HTTPRequest(object):
 
     def write(self, buf):
         """ writes response """
-        if self.rep.tell() > 1000000 or self.abort:
+        if self.rep.tell() > 1_000_000 or self.abort:
             rep = self.getResponse()
             if self.abort:
                 raise Abort

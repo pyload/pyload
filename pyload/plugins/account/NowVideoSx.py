@@ -16,7 +16,7 @@ class NowVideoSx(Account):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    VALID_UNTIL_PATTERN = r'>Your premium membership expires on: (.+?)<'
+    VALID_UNTIL_PATTERN = r">Your premium membership expires on: (.+?)<"
 
     def grab_info(self, user, password, data):
         validuntil = None
@@ -43,13 +43,16 @@ class NowVideoSx(Account):
                     premium = False
                     validuntil = -1
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
-        html = self.load("http://www.nowvideo.sx/login.php",
-                         post={'user': user,
-                               'pass': password})
+        html = self.load(
+            "http://www.nowvideo.sx/login.php", post={"user": user, "pass": password}
+        )
 
-        if re.search(r'>Log In<', html):
+        if re.search(r">Log In<", html):
             self.fail_login()

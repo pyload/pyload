@@ -15,12 +15,11 @@ class RapiduNet(Account):
 
     __description__ = """Rapidu.net account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("prOq", None),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("prOq", None), ("Walter Purcaro", "vuolter@gmail.com")]
 
-    PREMIUM_PATTERN = r'>Account: <b>Premium'
+    PREMIUM_PATTERN = r">Account: <b>Premium"
 
-    VALID_UNTIL_PATTERN = r'>Account: <b>\w+ \((\d+)'
+    VALID_UNTIL_PATTERN = r">Account: <b>\w+ \((\d+)"
 
     TRAFFIC_LEFT_PATTERN = r'class="tipsyS"><b>([\d.,]+)\s*([\w^_]*)<'
 
@@ -42,24 +41,27 @@ class RapiduNet(Account):
         if m is not None:
             trafficleft = self.parse_traffic(m.group(1), m.group(2))
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft, 'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
-        self.load("https://rapidu.net/ajax.php",
-                  get={'a': "getChangeLang"},
-                  post={'_go': "",
-                        'lang': "en"})
+        self.load(
+            "https://rapidu.net/ajax.php",
+            get={"a": "getChangeLang"},
+            post={"_go": "", "lang": "en"},
+        )
 
-        html = self.load("https://rapidu.net/ajax.php",
-                         get={'a': "getUserLogin"},
-                         post={'_go': "",
-                               'login': user,
-                               'pass': password,
-                               'remember': "1"})
+        html = self.load(
+            "https://rapidu.net/ajax.php",
+            get={"a": "getUserLogin"},
+            post={"_go": "", "login": user, "pass": password, "remember": "1"},
+        )
         json_data = json.loads(html)
 
         self.log_debug(json_data)
 
-        if json_data['message'] != "success":
+        if json_data["message"] != "success":
             self.fail_login()

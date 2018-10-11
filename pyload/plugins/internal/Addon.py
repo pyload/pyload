@@ -28,7 +28,7 @@ class Addon(Plugin):
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
-        self.info['ip'] = None  # TODO: Remove in 0.6.x
+        self.info["ip"] = None  # TODO: Remove in 0.6.x
 
         #: Callback of periodical job task, used by AddonManager
         self.periodical = Periodical(self, self.periodical_task)
@@ -43,7 +43,7 @@ class Addon(Plugin):
         """
         Checks if addon is activated
         """
-        return self.config.get('activated')
+        return self.config.get("activated")
 
     # TODO: Remove in 0.6.x
     def _log(self, level, plugintype, pluginname, messages):
@@ -52,15 +52,17 @@ class Addon(Plugin):
 
     # TODO: Remove in 0.6.x
     def _init_events(self):
-        event_map = {'allDownloadsFinished': "all_downloads_finished",
-                     'allDownloadsProcessed': "all_downloads_processed",
-                     'configChanged': "config_changed",
-                     'download_processed': "download_processed",
-                     'download_start': "download_start",
-                     'linksAdded': "links_added",
-                     'packageDeleted': "package_deleted",
-                     'package_failed': "package_failed",
-                     'package_processed': "package_processed"}
+        event_map = {
+            "allDownloadsFinished": "all_downloads_finished",
+            "allDownloadsProcessed": "all_downloads_processed",
+            "configChanged": "config_changed",
+            "download_processed": "download_processed",
+            "download_start": "download_start",
+            "linksAdded": "links_added",
+            "packageDeleted": "package_deleted",
+            "package_failed": "package_failed",
+            "package_processed": "package_processed",
+        }
         for event, funcs in event_map.items():
             self.manager.addEvent(event, getattr(self, funcs))
 
@@ -155,7 +157,8 @@ class Addon(Plugin):
     #: Deprecated method, use `download_failed` instead (Remove in 0.6.x)
     def downloadFailed(self, pyfile):
         if pyfile.hasStatus(
-                "failed"):  # NOTE: Check if "still" set as failed (Fix in 0.6.x)
+            "failed"
+        ):  # NOTE: Check if "still" set as failed (Fix in 0.6.x)
             return self.download_failed(pyfile)
 
     def package_processed(self, pypack):
@@ -186,8 +189,8 @@ class Addon(Plugin):
 
     #: Deprecated method, use `after_reconnect` instead (Remove in 0.6.x)
     def afterReconnecting(self, ip):
-        self.after_reconnect(ip, self.info['ip'])
-        self.info['ip'] = ip
+        self.after_reconnect(ip, self.info["ip"])
+        self.info["ip"] = ip
 
     def captcha_task(self, task):
         """

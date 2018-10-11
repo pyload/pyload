@@ -49,7 +49,7 @@ class utils(object):
     __version__ = "0.51"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r"^unmatchable$"
     __config__ = []
 
     __description__ = """Dummy utils class"""
@@ -58,7 +58,6 @@ class utils(object):
 
 
 class Config(object):
-
     def __init__(self, plugin):
         self.plugin = plugin
 
@@ -71,7 +70,8 @@ class Config(object):
         :return:
         """
         self.plugin.pyload.api.setConfigValue(
-            plugin or self.plugin.classname, option, value, section="plugin")
+            plugin or self.plugin.classname, option, value, section="plugin"
+        )
 
     def get(self, option, default=None, plugin=None):
         """
@@ -82,17 +82,17 @@ class Config(object):
         """
         try:
             return self.plugin.pyload.config.getPlugin(
-                plugin or self.plugin.classname, option)
+                plugin or self.plugin.classname, option
+            )
 
         except KeyError:
             self.plugin.log_debug(
-                "Config option `{}` not found, use default `{}`".format(
-                    option, default))  # TODO: Restore to `log_warning` in 0.6.x
+                "Config option `{}` not found, use default `{}`".format(option, default)
+            )  # TODO: Restore to `log_warning` in 0.6.x
             return default
 
 
 class DB(object):
-
     def __init__(self, plugin):
         self.plugin = plugin
 
@@ -100,7 +100,7 @@ class DB(object):
         """
         Saves a value persistently to the database
         """
-        entry = json.dumps(value, ensure_ascii=False).encode('base64')
+        entry = json.dumps(value, ensure_ascii=False).encode("base64")
         self.plugin.pyload.db.setStorage(self.plugin.classname, key, entry)
 
     def retrieve(self, key=None, default=None):
@@ -113,13 +113,14 @@ class DB(object):
             if entry is None:
                 value = default
             else:
-                value = json.loads(entry.decode('base64'))
+                value = json.loads(entry.decode("base64"))
         else:
             if not entry:
                 value = default
             else:
-                value = dict((k, json.loads(v.decode('base64')))
-                             for k, v in value.items())
+                value = dict(
+                    (k, json.loads(v.decode("base64"))) for k, v in value.items()
+                )
 
         return value
 
@@ -134,13 +135,13 @@ class Expose(object):
     """
     Used for decoration to declare rpc services
     """
+
     def __new__(cls, fn, *args, **kwargs):
         addonManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
         return fn
 
 
 class Periodical(object):
-
     def __init__(self, plugin, task=lambda x: x, interval=None):
         self.plugin = plugin
         self.task = task
@@ -163,7 +164,8 @@ class Periodical(object):
             return False
         else:
             self.cb = self.plugin.pyload.scheduler.addJob(
-                max(1, delay), self._task, [threaded], threaded=threaded)
+                max(1, delay), self._task, [threaded], threaded=threaded
+            )
             return True
 
     def restart(self, *args, **kwargs):
@@ -194,7 +196,6 @@ class Periodical(object):
 
 
 class SimpleQueue(object):
-
     def __init__(self, plugin, storage="queue"):
         self.plugin = plugin
         self.storage = storage
@@ -261,29 +262,30 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
 
     priv_key = RSA.importKey(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
-    digest = getattr(__import__('Crypto.Hash', fromlist=[sign_algo]), sign_algo).new()
+    digest = getattr(__import__("Crypto.Hash", fromlist=[sign_algo]), sign_algo).new()
     digest.update(message)
     return b2a_hex(signer.sign(digest))
 
 
 def format_time(value):
-    dt = datetime.datetime(1, 1, 1) + \
-        datetime.timedelta(seconds=abs(int(value)))
+    dt = datetime.datetime(1, 1, 1) + datetime.timedelta(seconds=abs(int(value)))
     days = ("{} days".format(dt.day - 1)) if dt.day > 1 else ""
-    tm = ", ".join("{} {}s".format(getattr(dt, attr), attr)
-                   for attr in ("hour", "minute", "second")
-                   if getattr(dt, attr))
+    tm = ", ".join(
+        "{} {}s".format(getattr(dt, attr), attr)
+        for attr in ("hour", "minute", "second")
+        if getattr(dt, attr)
+    )
     return days + (" and " if days and tm else "") + tm
 
 
 def format_size(value):
-    for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
+    for unit in ("B", "KiB", "MiB", "GiB", "TiB", "PiB"):
         if abs(value) < 1024.0:
             return "{:3.2f} {}".format(value, unit)
         else:
             value /= 1024.0
 
-    return "{:.2f} {}".format(value, 'EiB')
+    return "{:.2f} {}".format(value, "EiB")
 
 
 def compare_time(start, end):
@@ -310,10 +312,9 @@ def free_space(folder):
         import ctypes
 
         free_bytes = ctypes.c_ulonglong(0)
-        ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(folder),
-                                                   None,
-                                                   None,
-                                                   ctypes.pointer(free_bytes))
+        ctypes.windll.kernel32.GetDiskFreeSpaceExW(
+            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes)
+        )
         return free_bytes.value
 
     else:
@@ -333,12 +334,13 @@ def fsbsize(path):
         drive = "{}\\".format(os.path.splitdrive(path)[0])
         cluster_sectors, sector_size = ctypes.c_longlong(0)
 
-        ctypes.windll.kernel32.GetDiskFreeSpaceW(ctypes.c_wchar_p(drive),
-                                                 ctypes.pointer(
-                                                     cluster_sectors),
-                                                 ctypes.pointer(sector_size),
-                                                 None,
-                                                 None)
+        ctypes.windll.kernel32.GetDiskFreeSpaceW(
+            ctypes.c_wchar_p(drive),
+            ctypes.pointer(cluster_sectors),
+            ctypes.pointer(sector_size),
+            None,
+            None,
+        )
         return cluster_sectors * sector_size
 
     else:
@@ -393,18 +395,17 @@ def get_console_encoding(enc):
 # Hotfix UnicodeDecodeError: 'ascii' codec can't decode..
 def normalize(value):
     import unicodedata
-    return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
+
+    return unicodedata.normalize("NFKD", value).encode("ascii", "ignore")
 
 
 # NOTE: Revert to `decode` in Python 3
-def decode(value, encoding=None, errors='strict'):
+def decode(value, encoding=None, errors="strict"):
     """
     Encoded string (default to own system encoding) -> unicode string
     """
     if isinstance(value, str):
-        res = str(
-            value, encoding or get_console_encoding(
-                sys.stdout.encoding), errors)
+        res = str(value, encoding or get_console_encoding(sys.stdout.encoding), errors)
 
     elif isinstance(value, str):
         res = value
@@ -425,7 +426,7 @@ def transcode(value, decoding, encoding):
     return value.decode(decoding).encode(encoding)
 
 
-def encode(value, encoding='utf-8', errors='backslashreplace'):
+def encode(value, encoding="utf-8", errors="backslashreplace"):
     """
     Unicode string -> encoded string (default to UTF-8)
     """
@@ -507,12 +508,12 @@ def fixurl(url, unquote=None):
 
     url = decode(url)
     try:
-        url = url.decode('unicode-escape')
+        url = url.decode("unicode-escape")
     except UnicodeDecodeError:
         pass
 
     url = html_unescape(url)
-    url = re.sub(r'(?<!:)/{2,}', '/', url).strip().lstrip('.')
+    url = re.sub(r"(?<!:)/{2,}", "/", url).strip().lstrip(".")
 
     if not unquote:
         url = urllib.parse.quote(url)
@@ -526,7 +527,7 @@ def truncate(name, length):
         raise OSError("File name too long")
 
     trunc = (len(name) - length) // 3
-    return "{}~{}".format(name[:trunc * 2], name[-trunc:])
+    return "{}~{}".format(name[: trunc * 2], name[-trunc:])
 
 
 # TODO: Recheck in 0.6.x
@@ -539,8 +540,10 @@ def safepath(value):
     else:
         unt = ""
     drive, filename = os.path.splitdrive(value)
-    filename = os.path.join(os.sep if os.path.isabs(
-        filename) else "", *list(map(safename, filename.split(os.sep))))
+    filename = os.path.join(
+        os.sep if os.path.isabs(filename) else "",
+        *list(map(safename, filename.split(os.sep))),
+    )
     path = unt + drive + filename
 
     try:
@@ -577,28 +580,30 @@ def safename(value):
 
 def parse_name(value, safechar=True):
     path = fixurl(decode(value), unquote=False)
-    url_p = urllib.parse.urlparse(path.rstrip('/'))
-    name = (url_p.path.split('/')[-1] or
-            url_p.query.split('=', 1)[::-1][0].split('&', 1)[0] or
-            url_p.netloc.split('.', 1)[0])
+    url_p = urllib.parse.urlparse(path.rstrip("/"))
+    name = (
+        url_p.path.split("/")[-1]
+        or url_p.query.split("=", 1)[::-1][0].split("&", 1)[0]
+        or url_p.netloc.split(".", 1)[0]
+    )
 
     name = urllib.parse.unquote(name)
     return safename(name) if safechar else name
 
 
 def parse_size(value, unit=""):  #: returns bytes
-    m = re.match(r'((?:[\d.,]*)\d)\s*([\w^_]*)', str(value).lower())
+    m = re.match(r"((?:[\d.,]*)\d)\s*([\w^_]*)", str(value).lower())
 
     if m is None:
         return 0
 
-    if re.match(r'\d{1,3}(?:,\d{3})+(?:\.\d+)?$', m.group(1)):
-        size = float(m.group(1).replace(',', ''))
+    if re.match(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?$", m.group(1)):
+        size = float(m.group(1).replace(",", ""))
 
-    elif re.match(r'\d+,\d{2}$', m.group(1)):
-        size = float(m.group(1).replace(',', '.'))
+    elif re.match(r"\d+,\d{2}$", m.group(1)):
+        size = float(m.group(1).replace(",", "."))
 
-    elif re.match(r'\d+(?:\.\d+)?$', m.group(1)):
+    elif re.match(r"\d+(?:\.\d+)?$", m.group(1)):
         size = float(m.group(1))
 
     else:
@@ -609,7 +614,7 @@ def parse_size(value, unit=""):  #: returns bytes
     if unit == "b":
         return int(size)
 
-    sizeunits = ['b', 'k', 'm', 'g', 't', 'p', 'e']
+    sizeunits = ["b", "k", "m", "g", "t", "p", "e"]
     sizemap = dict((u, i * 10) for i, u in enumerate(sizeunits))
     magnitude = sizemap[unit]
 
@@ -626,17 +631,46 @@ def str2int(value):
     except Exception:
         pass
 
-    ones = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
-            "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-            "sixteen", "seventeen", "eighteen", "nineteen")
-    tens = ("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy",
-            "eighty", "ninety")
+    ones = (
+        "zero",
+        "one",
+        "two",
+        "three",
+        "four",
+        "five",
+        "six",
+        "seven",
+        "eight",
+        "nine",
+        "ten",
+        "eleven",
+        "twelve",
+        "thirteen",
+        "fourteen",
+        "fifteen",
+        "sixteen",
+        "seventeen",
+        "eighteen",
+        "nineteen",
+    )
+    tens = (
+        "",
+        "",
+        "twenty",
+        "thirty",
+        "forty",
+        "fifty",
+        "sixty",
+        "seventy",
+        "eighty",
+        "ninety",
+    )
 
     o_tuple = [(w, i) for i, w in enumerate(ones)]
     t_tuple = [(w, i * 10) for i, w in enumerate(tens)]
 
     numwords = dict(o_tuple + t_tuple)
-    tokens = re.split(r'[\s\-]+', value.lower())
+    tokens = re.split(r"[\s\-]+", value.lower())
 
     try:
         return sum(numwords[word] for word in tokens)
@@ -649,11 +683,12 @@ def parse_time(value):
         seconds = seconds_to_midnight()
 
     else:
-        _re = re.compile(r'(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)', re.I)
-        seconds = sum((int(v) if v.strip() not in ("this", "a", "an") else 1) *
-                      {'hr': 3600, 'hour': 3600, 'min': 60,
-                          'sec': 1, '': 1}[u.lower()]
-                      for v, u in _re.findall(value))
+        _re = re.compile(r"(\d+| (?:this|an?) )\s*(hr|hour|min|sec|)", re.I)
+        seconds = sum(
+            (int(v) if v.strip() not in ("this", "a", "an") else 1)
+            * {"hr": 3600, "hour": 3600, "min": 60, "sec": 1, "": 1}[u.lower()]
+            for v, u in _re.findall(value)
+        )
     return seconds
 
 
@@ -700,7 +735,7 @@ def which(filename):
         return filename if isexecutable(filename) else None
 
     else:
-        for path in os.environ['PATH'].split(os.pathsep):
+        for path in os.environ["PATH"].split(os.pathsep):
             filename = os.path.join(path.strip('"'), filename)
             if isexecutable(filename):
                 return filename
@@ -724,10 +759,8 @@ def format_exc(frame=None):
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
             exc_desc = decode(
-                "".join(
-                    traceback.format_exception_only(
-                        exc_info[0],
-                        exc_info[1])))
+                "".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
+            )
 
     msg = "Traceback (most recent call last):\n"
     msg += decode("".join(traceback.format_list(callstack)))
@@ -738,8 +771,9 @@ def format_exc(frame=None):
 
 def seconds_to_nexthour(strict=False):
     now = datetime.datetime.today()
-    nexthour = now.replace(minute=0 if strict else 1,
-                           second=0, microsecond=0) + datetime.timedelta(hours=1)
+    nexthour = now.replace(
+        minute=0 if strict else 1, second=0, microsecond=0
+    ) + datetime.timedelta(hours=1)
     return (nexthour - now).seconds
 
 
@@ -749,10 +783,9 @@ def seconds_to_midnight(utc=None, strict=False):
     else:
         now = datetime.datetime.today()
 
-    midnight = now.replace(hour=0,
-                           minute=0 if strict else 1,
-                           second=0,
-                           microsecond=0) + datetime.timedelta(days=1)
+    midnight = now.replace(
+        hour=0, minute=0 if strict else 1, second=0, microsecond=0
+    ) + datetime.timedelta(days=1)
 
     return (midnight - now).seconds
 
@@ -772,8 +805,7 @@ def replace_patterns(value, rules):
 
 
 # TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
-def set_cookie(cj, domain, name, value, path='/',
-               exp=time.time() + 180 * 24 * 3600):
+def set_cookie(cj, domain, name, value, path="/", exp=time.time() + 180 * 24 * 3600):
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]
     return cj.setCookie(*args)
 
@@ -791,7 +823,7 @@ def set_cookies(cj, cookies):
 
 def parse_html_header(header):
     hdict = {}
-    _re = r'[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n'
+    _re = r"[ ]*(?P<key>.+?)[ ]*:[ ]*(?P<value>.+?)[ ]*\r?\n"
 
     for key, value in re.findall(_re, header):
         key = key.lower()
@@ -809,29 +841,31 @@ def parse_html_header(header):
 
 def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(
-        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'.format(attr_name),
+        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'.format(
+            attr_name
+        ),
         tag,
-        re.I)
+        re.I,
+    )
     return m.group(2) if m else None
 
 
 def parse_html_form(attr_str, html, input_names={}):
     for form in re.finditer(
-        r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'.format(
-            attr_str),
-            html,
-            re.I | re.S):
+        r"(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>".format(
+            attr_str
+        ),
+        html,
+        re.I | re.S,
+    ):
         inputs = {}
-        action = parse_html_tag_attr_value("action", form.group('TAG'))
+        action = parse_html_tag_attr_value("action", form.group("TAG"))
 
-        for inputtag in re.finditer(r'(<(input|textarea).*?>)([^<]*(?=</\2)|)',
-                                    re.sub(
-                                        re.compile(
-                                            r'<!--.+?-->',
-                                            re.I | re.S),
-                                        "",
-                                        form.group('CONTENT')),
-                                    re.I | re.S):
+        for inputtag in re.finditer(
+            r"(<(input|textarea).*?>)([^<]*(?=</\2)|)",
+            re.sub(re.compile(r"<!--.+?-->", re.I | re.S), "", form.group("CONTENT")),
+            re.I | re.S,
+        ):
 
             name = parse_html_tag_attr_value("name", inputtag.group(1))
             if name:
@@ -877,10 +911,12 @@ def renice(pid, value):
         return
 
     try:
-        subprocess.Popen(["renice", str(value), str(pid)],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         bufsize=-1)
+        subprocess.Popen(
+            ["renice", str(value), str(pid)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=-1,
+        )
     except Exception:
         pass
 
@@ -909,7 +945,7 @@ def compute_checksum(filename, hashtype):
         last = 0
 
         with open(file, "rb") as f:
-            for chunk in iter(lambda: f.read(buf), ''):
+            for chunk in iter(lambda: f.read(buf), ""):
                 last = hf(chunk, last)
 
         return "{:x}".format(last)
@@ -918,7 +954,7 @@ def compute_checksum(filename, hashtype):
         h = hashlib.new(hashtype)
 
         with open(file, "rb") as f:
-            for chunk in iter(lambda: f.read(buf * h.block_size), ''):
+            for chunk in iter(lambda: f.read(buf * h.block_size), ""):
                 h.update(chunk)
 
         return h.hexdigest()
@@ -944,8 +980,7 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
                 shutil.copystat(src_dir, dst_dir)
 
         elif pmode:
-            if overwrite or overwrite is None and mtime(
-                    src_dir) > mtime(dst_dir):
+            if overwrite or overwrite is None and mtime(src_dir) > mtime(dst_dir):
                 shutil.copystat(src_dir, dst_dir)
 
         for filename in files:
@@ -953,8 +988,7 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(
-                        src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue
@@ -984,8 +1018,7 @@ def move_tree(src, dst, overwrite=False):
             dst_file = fsjoin(dst_dir, filename)
 
             if exists(dst_file):
-                if overwrite or overwrite is None and mtime(
-                        src_file) > mtime(dst_file):
+                if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
                     os.remove(dst_file)
                 else:
                     continue

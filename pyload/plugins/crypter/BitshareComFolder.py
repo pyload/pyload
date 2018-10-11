@@ -9,7 +9,7 @@ class BitshareComFolder(DeadCrypter):
     __version__ = "0.11"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?bitshare\.com/\?d=\w+'
+    __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Bitshare.com folder decrypter plugin"""

@@ -27,15 +27,17 @@ class Extractor(Plugin):
 
     __description__ = """Base extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Immenz", "immenz@gmx.net"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("Immenz", "immenz@gmx.net"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     EXTENSIONS = []
     REPAIR = False
     VERSION = None
 
-    _RE_PART = re.compile(r'')
+    _RE_PART = re.compile(r"")
 
     @classmethod
     def archivetype(cls, filename):
@@ -47,7 +49,7 @@ class Extractor(Plugin):
         name = os.path.basename(filename).lower()
         for ext in cls.EXTENSIONS:
             if isinstance(ext, str):
-                if name.endswith('.' + ext):
+                if name.endswith("." + ext):
                     return ext
 
             elif isinstance(ext, tuple):
@@ -60,7 +62,7 @@ class Extractor(Plugin):
         name = os.path.basename(filename).lower()
         for ext in cls.EXTENSIONS:
             if isinstance(ext, str):
-                if name.endswith('.' + ext):
+                if name.endswith("." + ext):
                     return True
 
             elif isinstance(ext, tuple):
@@ -107,12 +109,17 @@ class Extractor(Plugin):
 
         return targets
 
-    def __init__(self, pyfile, filename, out,
-                 fullpath=True,
-                 overwrite=False,
-                 excludefiles=[],
-                 priority=0,
-                 keepbroken=False):
+    def __init__(
+        self,
+        pyfile,
+        filename,
+        out,
+        fullpath=True,
+        overwrite=False,
+        excludefiles=[],
+        priority=0,
+        keepbroken=False,
+    ):
         """
         Initialize extractor for specific file
         """

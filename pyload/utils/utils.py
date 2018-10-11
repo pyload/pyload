@@ -38,7 +38,7 @@ def remove_chars(string, repl):
 
 def save_path(name):
     # remove some chars
-    if os.name == 'nt':
+    if os.name == "nt":
         return remove_chars(name, '/\\?%*:|"<>')
     else:
         return remove_chars(name, '/\\"')
@@ -52,10 +52,11 @@ def save_join(*args):
 # File System Encoding functions:
 # Use fs_encode before accesing files on disk, it will encode the string properly
 
-if sys.getfilesystemencoding().startswith('ANSI'):
+if sys.getfilesystemencoding().startswith("ANSI"):
+
     def fs_encode(string):
         try:
-            string = string.encode('utf-8')
+            string = string.encode("utf-8")
         finally:
             return string
 
@@ -115,7 +116,8 @@ def freeSpace(folder):
 
         free_bytes = ctypes.c_ulonglong(0)
         ctypes.windll.kernel32.GetDiskFreeSpaceExW(
-            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes))
+            ctypes.c_wchar_p(folder), None, None, ctypes.pointer(free_bytes)
+        )
         return free_bytes.value
     else:
         from os import statvfs
@@ -169,7 +171,7 @@ def parseFileSize(string, unit=None):  # returns bytes
 
 def lock(func):
     def new(*args):
-        #print("Handler: {} args: {}".format(func,args[1:]))
+        # print("Handler: {} args: {}".format(func,args[1:]))
         args[0].lock.acquire()
         try:
             return func(*args)

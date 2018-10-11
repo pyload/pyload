@@ -17,23 +17,25 @@ class TransmissionRPC(Addon):
     __version__ = "0.19"
     __status__ = "testing"
 
-    __pattern__ = r'https?://.+\.torrent|magnet:\?.+'
+    __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         False),
-        ("rpc_url",
-         "str",
-         "Transmission RPC URL",
-         "http://127.0.0.1:9091/transmission/rpc")]
+        ("activated", "bool", "Activated", False),
+        (
+            "rpc_url",
+            "str",
+            "Transmission RPC URL",
+            "http://127.0.0.1:9091/transmission/rpc",
+        ),
+    ]
 
-    __description__ = """Send torrent and magnet URLs to Transmission Bittorent daemon via RPC"""
+    __description__ = (
+        """Send torrent and magnet URLs to Transmission Bittorent daemon via RPC"""
+    )
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", None)]
 
     def init(self):
-        self.event_map = {'linksAdded': "links_added"}
+        self.event_map = {"linksAdded": "links_added"}
 
     def links_added(self, links, pid):
         _re_link = re.compile(self.__pattern__)
@@ -44,39 +46,50 @@ class TransmissionRPC(Addon):
             links.remove(url)
 
     def send_to_transmission(self, url):
-        transmission_rpc_url = self.config.get('rpc_url')
-        client_request_id = self.classname + \
-            "".join(random.choice('0123456789ABCDEF') for _i in range(4))
+        transmission_rpc_url = self.config.get("rpc_url")
+        client_request_id = self.classname + "".join(
+            random.choice("0123456789ABCDEF") for _i in range(4)
+        )
         req = get_request()
 
         try:
-            response = self.load(transmission_rpc_url,
-                                 post=json.dumps({'arguments': {'filename': url},
-                                                  'method': 'torrent-add',
-                                                  'tag': client_request_id}),
-                                 req=req)
+            response = self.load(
+                transmission_rpc_url,
+                post=json.dumps(
+                    {
+                        "arguments": {"filename": url},
+                        "method": "torrent-add",
+                        "tag": client_request_id,
+                    }
+                ),
+                req=req,
+            )
 
         except Exception as e:
             if isinstance(e, BadHeader) and e.code == 409:
                 headers = dict(
-                    re.findall(
-                        r'(?P<name>.+?): (?P<value>.+?)\r?\n',
-                        req.header))
-                session_id = headers['X-Transmission-Session-Id']
+                    re.findall(r"(?P<name>.+?): (?P<value>.+?)\r?\n", req.header)
+                )
+                session_id = headers["X-Transmission-Session-Id"]
                 req.c.setopt(
-                    pycurl.HTTPHEADER, [
-                        "X-Transmission-Session-Id: {}" %
-                        session_id])
+                    pycurl.HTTPHEADER, ["X-Transmission-Session-Id: {}" % session_id]
+                )
                 try:
-                    response = self.load(transmission_rpc_url,
-                                         post=json.dumps({'arguments': {'filename': url},
-                                                          'method': 'torrent-add',
-                                                          'tag': client_request_id}),
-                                         req=req)
+                    response = self.load(
+                        transmission_rpc_url,
+                        post=json.dumps(
+                            {
+                                "arguments": {"filename": url},
+                                "method": "torrent-add",
+                                "tag": client_request_id,
+                            }
+                        ),
+                        req=req,
+                    )
 
                     res = json.loads(response)
                     if "result" in res:
-                        self.log_debug("Result: {}".format(res['result']))
+                        self.log_debug("Result: {}".format(res["result"]))
 
                 except Exception as e:
                     self.log_error(e)

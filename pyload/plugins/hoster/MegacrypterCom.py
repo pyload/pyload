@@ -12,7 +12,7 @@ class MegacrypterCom(MegaCoNz):
     __version__ = "0.28"
     __status__ = "testing"
 
-    __pattern__ = r'https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+'
+    __pattern__ = r"https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Megacrypter.com decrypter plugin"""
@@ -45,13 +45,13 @@ class MegacrypterCom(MegaCoNz):
         # if info['pass'] is True:
         # crypted_file_key, md5_file_key = info['key'].split("#")
 
-        key = MegaCrypto.base64_decode(info['key'])
+        key = MegaCrypto.base64_decode(info["key"])
 
-        pyfile.name = info['name'] + self.FILE_SUFFIX
+        pyfile.name = info["name"] + self.FILE_SUFFIX
 
-        self.download(dl['url'])
+        self.download(dl["url"])
 
         self.decrypt_file(key)
 
         #: Everything is finished and final name can be set
-        pyfile.name = info['name']
+        pyfile.name = info["name"]

@@ -21,20 +21,24 @@ class IRC(Thread, Notifier):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("host", "str", "IRC-Server Address", "Enter your server here!"),
-                  ("port", "int", "IRC-Server Port", 6667),
-                  ("ident", "str", "Clients ident", "pyload-irc"),
-                  ("realname", "str", "Realname", "pyload-irc"),
-                  ("ssl", "bool", "Use SSL", False),
-                  ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
-                  ("owner",
-                   "str",
-                   "Nickname the Client will accept commands from",
-                   "Enter your nick here!"),
-                  ("info_file", "bool", "Inform about every file finished", False),
-                  ("info_pack", "bool", "Inform about every package finished", True),
-                  ("captcha", "bool", "Send captcha requests", True)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("host", "str", "IRC-Server Address", "Enter your server here!"),
+        ("port", "int", "IRC-Server Port", 6667),
+        ("ident", "str", "Clients ident", "pyload-irc"),
+        ("realname", "str", "Realname", "pyload-irc"),
+        ("ssl", "bool", "Use SSL", False),
+        ("nick", "str", "Nickname the Client will take", "pyLoad-IRC"),
+        (
+            "owner",
+            "str",
+            "Nickname the Client will accept commands from",
+            "Enter your nick here!",
+        ),
+        ("info_file", "bool", "Inform about every file finished", False),
+        ("info_pack", "bool", "Inform about every package finished", True),
+        ("captcha", "bool", "Send captcha requests", True),
+    ]
 
     __description__ = """Connect to irc and let owner perform different tasks"""
     __license__ = "GPLv3"
@@ -54,7 +58,7 @@ class IRC(Thread, Notifier):
 
     def package_finished(self, pypack):
         try:
-            if self.config.get('info_pack'):
+            if self.config.get("info_pack"):
                 self.response(_("Package finished: {}").format(pypack.name))
 
         except Exception:
@@ -62,44 +66,45 @@ class IRC(Thread, Notifier):
 
     def download_finished(self, pyfile):
         try:
-            if self.config.get('info_file'):
-                self.response(_("Download finished: {name} @ {plugin} ").format(
-                    **{'name': pyfile.name, 'plugin': pyfile.pluginname}))
+            if self.config.get("info_file"):
+                self.response(
+                    _("Download finished: {name} @ {plugin} ").format(
+                        **{"name": pyfile.name, "plugin": pyfile.pluginname}
+                    )
+                )
 
         except Exception:
             pass
 
     def captcha_task(self, task):
-        if self.config.get('captcha') and task.isTextual():
+        if self.config.get("captcha") and task.isTextual():
             task.handler.append(self)
             task.setWaiting(60)
 
             html = self.load(
                 "http://www.freeimagehosting.net/upl.php",
-                post={
-                    'file': (
-                        pycurl.FORM_FILE,
-                        task.captchaParams['file'])})
+                post={"file": (pycurl.FORM_FILE, task.captchaParams["file"])},
+            )
 
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(_("New Captcha Request: {}").format(url))
-            self.response(
-                _("Answer with 'c {} text on the captcha'").format(task.id))
+            self.response(_("Answer with 'c {} text on the captcha'").format(task.id))
 
     def run(self):
         #: Connect to IRC etc.
         self.sock = socket.socket()
-        host = self.config.get('host')
-        self.sock.connect((host, self.config.get('port')))
+        host = self.config.get("host")
+        self.sock.connect((host, self.config.get("port")))
 
-        if self.config.get('ssl'):
+        if self.config.get("ssl"):
             self.sock = ssl.wrap_socket(
-                self.sock, cert_reqs=ssl.CERT_NONE)  # TODO: support certificate
+                self.sock, cert_reqs=ssl.CERT_NONE
+            )  # TODO: support certificate
 
-        nick = self.config.get('nick')
+        nick = self.config.get("nick")
         self.sock.send("NICK {}\r\n".format(nick))
         self.sock.send("USER {} {} bla :{}\r\n".format(nick, host, nick))
-        for t in self.config.get('owner').split():
+        for t in self.config.get("owner").split():
             if t.strip().startswith("#"):
                 self.sock.send("JOIN {}\r\n".format(t.strip()))
         self.log_info(_("Connected to"), host)
@@ -143,36 +148,36 @@ class IRC(Thread, Notifier):
                     continue
 
                 msg = {
-                    'origin': msg[0][1:],
-                    'action': msg[1],
-                    'target': msg[2],
-                    'text': msg[3][1:]
+                    "origin": msg[0][1:],
+                    "action": msg[1],
+                    "target": msg[2],
+                    "text": msg[3][1:],
                 }
 
                 self.handle_events(msg)
 
     def handle_events(self, msg):
-        if not msg['origin'].split("!", 1)[
-                0] in self.config.get('owner').split():
+        if not msg["origin"].split("!", 1)[0] in self.config.get("owner").split():
             return
 
-        if msg['target'].split("!", 1)[0] != self.config.get('nick'):
+        if msg["target"].split("!", 1)[0] != self.config.get("nick"):
             return
 
-        if msg['action'] != "PRIVMSG":
+        if msg["action"] != "PRIVMSG":
             return
 
         #: HANDLE CTCP ANTI FLOOD/BOT PROTECTION
-        if msg['text'] == "\x01VERSION\x01":
+        if msg["text"] == "\x01VERSION\x01":
             self.log_debug("Sending CTCP VERSION")
             self.sock.send(
-                "NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad! IRC Interface"))
+                "NOTICE {} :{}\r\n".format(msg["origin"], "pyLoad! IRC Interface")
+            )
             return
-        elif msg['text'] == "\x01TIME\x01":
+        elif msg["text"] == "\x01TIME\x01":
             self.log_debug("Sending CTCP TIME")
-            self.sock.send("NOTICE {} :{}\r\n".format(msg['origin'], time.time()))
+            self.sock.send("NOTICE {} :{}\r\n".format(msg["origin"], time.time()))
             return
-        elif msg['text'] == "\x01LAG\x01":
+        elif msg["text"] == "\x01LAG\x01":
             self.log_debug("Received CTCP LAG")  #: don't know how to answer
             return
 
@@ -180,7 +185,7 @@ class IRC(Thread, Notifier):
         args = None
 
         try:
-            temp = msg['text'].split()
+            temp = msg["text"].split()
             trigger = temp[0]
             if len(temp) > 1:
                 args = temp[1:]
@@ -192,14 +197,14 @@ class IRC(Thread, Notifier):
         try:
             res = handler(args)
             for line in res:
-                self.response(line, msg['origin'])
+                self.response(line, msg["origin"])
 
         except Exception as e:
             self.log_error(e, trace=True)
 
     def response(self, msg, origin=""):
         if origin == "":
-            for t in self.config.get('owner').split():
+            for t in self.config.get("owner").split():
                 self.sock.send("PRIVMSG {} :{}\r\n".format(t.strip(), msg))
         else:
             self.sock.send("PRIVMSG {} :{}\r\n".format(origin.split("!", 1)[0], msg))
@@ -222,14 +227,16 @@ class IRC(Thread, Notifier):
             else:
                 temp_progress = "{}% ({})".format(data.percent, data.format_size)
 
-            lines.append("#{} - {} - {} - {} - {} - {}".format(
-                data.fid,
-                data.name,
-                data.statusmsg,
-                "{}/s".format(format_size(data.speed)),
-                "{}".format(data.format_eta),
-                temp_progress
-            ))
+            lines.append(
+                "#{} - {} - {} - {} - {} - {}".format(
+                    data.fid,
+                    data.name,
+                    data.statusmsg,
+                    "{}/s".format(format_size(data.speed)),
+                    "{}".format(data.format_eta),
+                    temp_progress,
+                )
+            )
         return lines
 
     def event_queue(self, args):
@@ -242,8 +249,9 @@ class IRC(Thread, Notifier):
         for pack in pdata:
             lines.append(
                 'PACKAGE #{}: "{}" with {} links.'.format(
-                    pack.pid, pack.name, len(
-                        pack.links)))
+                    pack.pid, pack.name, len(pack.links)
+                )
+            )
 
         return lines
 
@@ -256,8 +264,9 @@ class IRC(Thread, Notifier):
         for pack in pdata:
             lines.append(
                 'PACKAGE #{}: "{}" with {} links.'.format(
-                    pack.pid, pack.name, len(
-                        pack.links)))
+                    pack.pid, pack.name, len(pack.links)
+                )
+            )
 
         return lines
 
@@ -272,8 +281,11 @@ class IRC(Thread, Notifier):
         except FileDoesNotExists:
             return ["ERROR: Link doesn't exists."]
 
-        return ['LINK #{}: {} ({}) [{}][{}]'.format(
-            info.fid, info.name, info.format_size, info.statusmsg, info.plugin)]
+        return [
+            "LINK #{}: {} ({}) [{}][{}]".format(
+                info.fid, info.name, info.format_size, info.statusmsg, info.plugin
+            )
+        ]
 
     def event_packinfo(self, args):
         if not args:
@@ -292,17 +304,18 @@ class IRC(Thread, Notifier):
         self.more = []
 
         lines.append(
-            'PACKAGE #{}: "{}" with {} links'.format(
-                id, pack.name, len(
-                    pack.links)))
+            'PACKAGE #{}: "{}" with {} links'.format(id, pack.name, len(pack.links))
+        )
         for pyfile in pack.links:
             self.more.append(
-                'LINK #{}: {} ({}) [{}][{}]'.format(
+                "LINK #{}: {} ({}) [{}][{}]".format(
                     pyfile.fid,
                     pyfile.name,
                     pyfile.format_size,
                     pyfile.statusmsg,
-                    pyfile.plugin))
+                    pyfile.plugin,
+                )
+            )
 
         if len(self.more) < 6:
             lines.extend(self.more)
@@ -336,7 +349,8 @@ class IRC(Thread, Notifier):
         if len(args) < 2:
             return [
                 'ERROR: Add links like this: "add <packagename|id> links". ',
-                "This will add the link <link> to to the package <package> / the package with id <id>!"]
+                "This will add the link <link> to to the package <package> / the package with id <id>!",
+            ]
 
         pack = args[0].strip()
         links = [x.strip() for x in args[1:]]
@@ -351,19 +365,24 @@ class IRC(Thread, Notifier):
 
             return [
                 "INFO: Added {} links to Package {} [#{}]".format(
-                    len(links), pack['name'], id)]
+                    len(links), pack["name"], id
+                )
+            ]
 
         except Exception:
             #: Create new package
             id = self.pyload.api.addPackage(pack, links, 1)
             return [
                 "INFO: Created new Package {} [#{}] with {#{}} links.".format(
-                    pack, id, len(links))]
+                    pack, id, len(links)
+                )
+            ]
 
     def event_del(self, args):
         if len(args) < 2:
             return [
-                "ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
+                "ERROR: Use del command like this: del -p|-l <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"
+            ]
 
         if args[0] == "-p":
             ret = self.pyload.api.deletePackages(list(map(int, args[1:])))
@@ -375,7 +394,8 @@ class IRC(Thread, Notifier):
 
         else:
             return [
-                "ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"]
+                "ERROR: Use del command like this: del <-p|-l> <id> [...] (-p indicates that the ids are from packages, -l indicates that the ids are from links)"
+            ]
 
     def event_push(self, args):
         if not args:
@@ -430,12 +450,12 @@ class IRC(Thread, Notifier):
             "push <id>                   Push package to queue",
             "pull <id>                   Pull package from queue",
             "status                      Show general download status",
-            "help                        Shows this help message"]
+            "help                        Shows this help message",
+        ]
         return lines
 
 
 class IRCError(Exception):
-
     def __init__(self, value):
         self.value = value
 

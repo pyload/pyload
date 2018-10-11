@@ -10,7 +10,6 @@ from pyload.plugins.utils import threaded
 
 
 class ImageTyperzException(Exception):
-
     def __init__(self, err):
         self.err = err
 
@@ -30,27 +29,32 @@ class ImageTyperz(Addon):
     __version__ = "0.15"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("username", "str", "Username", ""),
-                  ("password", "password", "Password", ""),
-                  ("check_client", "bool", "Don't use if client is connected", True)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("username", "str", "Username", ""),
+        ("password", "password", "Password", ""),
+        ("check_client", "bool", "Don't use if client is connected", True),
+    ]
 
     __description__ = """Send captchas to ImageTyperz.com"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"), ("zoidberg", "zoidberg@mujmail.cz")]
 
     SUBMIT_URL = "http://captchatypers.com/Forms/UploadFileAndGetTextNEW.ashx"
     RESPOND_URL = "http://captchatypers.com/Forms/SetBadImage.ashx"
     GETCREDITS_URL = "http://captchatypers.com/Forms/RequestBalance.ashx"
 
     def get_credits(self):
-        res = self.load(self.GETCREDITS_URL,
-                        post={'action': "REQUESTBALANCE",
-                              'username': self.config.get('username'),
-                              'password': self.config.get('password')})
+        res = self.load(
+            self.GETCREDITS_URL,
+            post={
+                "action": "REQUESTBALANCE",
+                "username": self.config.get("username"),
+                "password": self.config.get("password"),
+            },
+        )
 
-        if res.startswith('ERROR'):
+        if res.startswith("ERROR"):
             raise ImageTyperzException(res)
 
         try:
@@ -69,31 +73,33 @@ class ImageTyperz(Addon):
 
         try:
             # NOTE: Workaround multipart-post bug in HTTPRequest.py
-            if re.match(r"^\w*$", self.config.get('password')):
+            if re.match(r"^\w*$", self.config.get("password")):
                 multipart = True
                 data = (pycurl.FORM_FILE, captcha)
             else:
                 multipart = False
-                with open(captcha, 'rb') as f:
+                with open(captcha, "rb") as f:
                     data = f.read()
                 data = base64.b64encode(data)
 
             res = self.load(
                 self.SUBMIT_URL,
                 post={
-                    'action': "UPLOADCAPTCHA",
-                    'username': self.config.get('username'),
-                    'password': self.config.get('password'),
-                    'file': data},
+                    "action": "UPLOADCAPTCHA",
+                    "username": self.config.get("username"),
+                    "password": self.config.get("password"),
+                    "file": data,
+                },
                 multipart=multipart,
-                req=req)
+                req=req,
+            )
         finally:
             req.close()
 
         if res.startswith("ERROR"):
             raise ImageTyperzException(res)
         else:
-            data = res.split('|')
+            data = res.split("|")
             if len(data) == 2:
                 ticket, result = data
             else:
@@ -108,15 +114,15 @@ class ImageTyperz(Addon):
         if not task.isTextual():
             return False
 
-        if not self.config.get('username') or not self.config.get('password'):
+        if not self.config.get("username") or not self.config.get("password"):
             return False
 
-        if self.pyload.isClientConnected() and self.config.get('check_client'):
+        if self.pyload.isClientConnected() and self.config.get("check_client"):
             return False
 
         if self.get_credits() > 0:
             task.handler.append(self)
-            task.data['service'] = self.classname
+            task.data["service"] = self.classname
             task.setWaiting(100)
             self._process_captcha(task)
 
@@ -124,28 +130,32 @@ class ImageTyperz(Addon):
             self.log_info(_("Your account has not enough credits"))
 
     def captcha_invalid(self, task):
-        if task.data['service'] == self.classname and "ticket" in task.data:
-            res = self.load(self.RESPOND_URL,
-                            post={'action': "SETBADIMAGE",
-                                  'username': self.config.get('username'),
-                                  'password': self.config.get('password'),
-                                  'imageid': task.data['ticket']})
+        if task.data["service"] == self.classname and "ticket" in task.data:
+            res = self.load(
+                self.RESPOND_URL,
+                post={
+                    "action": "SETBADIMAGE",
+                    "username": self.config.get("username"),
+                    "password": self.config.get("password"),
+                    "imageid": task.data["ticket"],
+                },
+            )
 
             if res == "SUCCESS":
-                self.log_info(
-                    _("Bad captcha solution received, requested refund"))
+                self.log_info(_("Bad captcha solution received, requested refund"))
             else:
                 self.log_error(
-                    _("Bad captcha solution received, refund request failed"), res)
+                    _("Bad captcha solution received, refund request failed"), res
+                )
 
     @threaded
     def _process_captcha(self, task):
-        c = task.captchaParams['file']
+        c = task.captchaParams["file"]
         try:
             ticket, result = self.submit(c)
         except ImageTyperzException as e:
             task.error = e.get_code()
             return
 
-        task.data['ticket'] = ticket
+        task.data["ticket"] = ticket
         task.setResult(result)

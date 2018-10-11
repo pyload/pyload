@@ -25,8 +25,7 @@ def get_all_link(data, container):
     videos = []
 
     for i in range(0, len(data["video_qualities"])):
-        if container == "webm" and len(
-                data["video_qualities"][i]["formats"]) != 1:
+        if container == "webm" and len(data["video_qualities"][i]["formats"]) != 1:
             videos.append(data["video_qualities"][i]["formats"][1]["source"])
 
         else:
@@ -57,10 +56,12 @@ class StreamCz(SimpleHoster):
     __version__ = "0.41"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("quality", "144p;240p;360p;480p;720p;1080p", "Quality", "720p"),
-                  ("container", "mp4;webm", "Container", "mp4"), ]
+    __pattern__ = r"https?://(?:www\.)?stream\.cz/[^/]+/(?P<EP>\d+).+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("quality", "144p;240p;360p;480p;720p;1080p", "Quality", "720p"),
+        ("container", "mp4;webm", "Container", "mp4"),
+    ]
 
     __description__ = """Stream.cz hoster plugin"""
     __authors__ = [("ondrej", "git@ondrej.it")]
@@ -70,11 +71,10 @@ class StreamCz(SimpleHoster):
         self.multiDL = True
 
     def process(self, pyfile):
-        episode = self.info['pattern']['EP']
+        episode = self.info["pattern"]["EP"]
         api_password = get_api_password(episode)
 
-        api_url = urllib.parse.urljoin(
-            "https://www.stream.cz/API/episode/", episode)
+        api_url = urllib.parse.urljoin("https://www.stream.cz/API/episode/", episode)
         self.req.putHeader("Api-Password", api_password)
         resp = self.load(api_url)
 

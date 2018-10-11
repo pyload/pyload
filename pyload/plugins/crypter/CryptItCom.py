@@ -9,7 +9,7 @@ class CryptItCom(DeadCrypter):
     __version__ = "0.16"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+'
+    __pattern__ = r"http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Crypt-it.com decrypter plugin"""

@@ -12,20 +12,20 @@ def get_info(urls):
     result = []
     _re = re.compile(DailymotionCom.__pattern__)
     apiurl = "https://api.dailymotion.com/video/{}"
-    request = {'fields': "access_error,status,title"}
+    request = {"fields": "access_error,status,title"}
 
     for url in urls:
-        id = _re.match(url).group('ID')
+        id = _re.match(url).group("ID")
         html = get_url(apiurl.format(id), get=request)
         info = json.loads(html)
 
-        name = info['title'] + ".mp4" if "title" in info else url
+        name = info["title"] + ".mp4" if "title" in info else url
 
-        if "error" in info or info['access_error']:
+        if "error" in info or info["access_error"]:
             status = "offline"
 
         else:
-            status = info['status']
+            status = info["status"]
 
             if status in ("ready", "published"):
                 status = "online"
@@ -47,23 +47,27 @@ class DailymotionCom(Hoster):
     __version__ = "0.30"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)'
+    __pattern__ = (
+        r"https?://(?:www\.)?(dailymotion\.com/.*video|dai\.ly)/(?P<ID>[\w^_]+)"
+    )
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         True),
-        ("quality",
-         "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest",
-         "Quality",
-         "Highest")]
+        ("activated", "bool", "Activated", True),
+        (
+            "quality",
+            "Lowest;LD 144p;LD 240p;SD 384p;HQ 480p;HD 720p;HD 1080p;Highest",
+            "Quality",
+            "Highest",
+        ),
+    ]
 
     __description__ = """Dailymotion.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Synology PAT", "pat@synology.com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("Synology PAT", "pat@synology.com"),
+    ]
 
-    STREAM_PATTERN = r'\"(?P<URL>https?:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\"'
+    STREAM_PATTERN = r"\"(?P<URL>https?:\\/\\/www.dailymotion.com\\/cdn\\/H264-(?P<QF_WIDTH>\d+)x(?P<QF_HEIGHT>\d+).*?)\""
 
     def setup(self):
         self.resume_download = True
@@ -73,9 +77,9 @@ class DailymotionCom(Hoster):
         streams = []
 
         for result in re.finditer(self.STREAM_PATTERN, self.data):
-            url = result.group('URL')
-            qf_width = result.group('QF_WIDTH')
-            qf_height = result.group('QF_HEIGHT')
+            url = result.group("URL")
+            qf_width = result.group("QF_WIDTH")
+            qf_height = result.group("QF_HEIGHT")
 
             link = url.replace("\\", "")
             quality = (int(qf_width), int(qf_height))
@@ -85,7 +89,7 @@ class DailymotionCom(Hoster):
         return sorted(streams, key=lambda x: x[0][::-1])
 
     def get_quality(self):
-        q = self.config.get('quality')
+        q = self.config.get("quality")
 
         if q == "Lowest":
             quality = 0
@@ -115,8 +119,7 @@ class DailymotionCom(Hoster):
         return s[1]
 
     def check_info(self, pyfile):
-        pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[
-            0]
+        pyfile.name, pyfile.size, pyfile.status, pyfile.url = get_info([pyfile.url])[0]
 
         if pyfile.status == 1:
             self.offline()
@@ -127,7 +130,7 @@ class DailymotionCom(Hoster):
     def process(self, pyfile):
         self.check_info(pyfile)
 
-        id = re.match(self.__pattern__, pyfile.url).group('ID')
+        id = re.match(self.__pattern__, pyfile.url).group("ID")
         self.data = self.load("http://www.dailymotion.com/embed/video/" + id)
 
         streams = self.get_streams()

@@ -5,7 +5,6 @@ from builtins import object
 
 
 class ImportDebugger(object):
-
     def __init__(self):
         self.imported = {}
 

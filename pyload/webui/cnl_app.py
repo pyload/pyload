@@ -18,8 +18,10 @@ except Exception:
 
 def local_check(function):
     def _view(*args, **kwargs):
-        if request.environ.get('REMOTE_ADDR', "0") in ('127.0.0.1', 'localhost') \
-                or request.environ.get('HTTP_HOST', '0') == '127.0.0.1:9666':
+        if (
+            request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost")
+            or request.environ.get("HTTP_HOST", "0") == "127.0.0.1:9666"
+        ):
             return function(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
@@ -39,10 +41,9 @@ def flash(id="0"):
 @local_check
 def add():
     package = request.forms.get(
-        "package", request.forms.get(
-            "source", request.POST.get(
-                'referer', None)))
-    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
+        "package", request.forms.get("source", request.POST.get("referer", None))
+    )
+    urls = [x.strip() for x in request.POST["urls"].split("\n") if x.strip()]
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -56,20 +57,13 @@ def add():
 @local_check
 def addcrypted():
     package = request.forms.get(
-        "package", request.forms.get(
-            "source", request.POST.get(
-                'referer', None)))
-    dlc = request.forms['crypted'].replace(" ", "+")
+        "package", request.forms.get("source", request.POST.get("referer", None))
+    )
+    dlc = request.forms["crypted"].replace(" ", "+")
 
     dlc_path = join(
-        DL_ROOT,
-        package.replace(
-            "/",
-            "").replace(
-            "\\",
-            "").replace(
-                ":",
-            "") + ".dlc")
+        DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    )
     dlc_file = open(dlc_path, "wb")
     dlc_file.write(dlc)
     dlc_file.close()
@@ -86,9 +80,8 @@ def addcrypted():
 @local_check
 def addcrypted2():
     package = request.forms.get(
-        "package", request.forms.get(
-            "source", request.POST.get(
-                'referer', None)))
+        "package", request.forms.get("source", request.POST.get("referer", None))
+    )
     crypted = request.forms["crypted"]
     jk = request.forms["jk"]
 
@@ -108,7 +101,9 @@ def addcrypted2():
                 jk.reverse()
                 jk = "".join(jk)
             else:
-                print("Could not decrypt key, please install py-spidermonkey or ossp-js")
+                print(
+                    "Could not decrypt key, please install py-spidermonkey or ossp-js"
+                )
 
     try:
         Key = unhexlify(jk)
@@ -140,12 +135,15 @@ def addcrypted2():
 @route("/flashgot", method="POST")
 @local_check
 def flashgot():
-    if request.environ['HTTP_REFERER'] != "http://localhost:9666/flashgot" and request.environ['HTTP_REFERER'] != "http://127.0.0.1:9666/flashgot":
+    if (
+        request.environ["HTTP_REFERER"] != "http://localhost:9666/flashgot"
+        and request.environ["HTTP_REFERER"] != "http://127.0.0.1:9666/flashgot"
+    ):
         return HTTPError()
 
-    autostart = int(request.forms.get('autostart', 0))
-    package = request.forms.get('package', None)
-    urls = [x.strip() for x in request.POST['urls'].split("\n") if x.strip()]
+    autostart = int(request.forms.get("autostart", 0))
+    package = request.forms.get("package", None)
+    urls = [x.strip() for x in request.POST["urls"].split("\n") if x.strip()]
     # folder = request.forms.get('dir', None)
 
     if package:
@@ -159,10 +157,10 @@ def flashgot():
 @route("/crossdomain.xml")
 @local_check
 def crossdomain():
-    rep = "<?xml version=\"1.0\"?>\n"
-    rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\n"
+    rep = '<?xml version="1.0"?>\n'
+    rep += '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">\n'
     rep += "<cross-domain-policy>\n"
-    rep += "<allow-access-from domain=\"*\" />\n"
+    rep += '<allow-access-from domain="*" />\n'
     rep += "</cross-domain-policy>"
     return rep
 
@@ -172,7 +170,7 @@ def crossdomain():
 def checksupport():
     url = request.GET.get("url")
     res = PYLOAD.checkURLs([url])
-    supported = (not res[0][1] is None)
+    supported = not res[0][1] is None
 
     return str(supported).lower()
 

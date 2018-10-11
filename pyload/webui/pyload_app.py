@@ -12,21 +12,34 @@ from urllib.parse import unquote
 from bottle import HTTPError, error, redirect, request, response, route, static_file
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui.filters import relpath, unquotepath
-from pyload.webui.utils import (get_permission, login_required, parse_permissions,
-                                parse_userdata, permlist, render_to_response,
-                                set_permission, set_session, toDict)
-from pyload.webui.webinterface import (PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP,
-                                       env)
+from pyload.webui.utils import (
+    get_permission,
+    login_required,
+    parse_permissions,
+    parse_userdata,
+    permlist,
+    render_to_response,
+    set_permission,
+    set_session,
+    toDict,
+)
+from pyload.webui.webinterface import (
+    PREFIX,
+    PROJECT_DIR,
+    PYLOAD,
+    PYLOAD_DIR,
+    SETUP,
+    env,
+)
 
 # @author: RaNaN
-
 
 
 # Helper
 
 
 def pre_processor():
-    s = request.environ.get('beaker.session')
+    s = request.environ.get("beaker.session")
     user = parse_userdata(s)
     perms = parse_permissions(s)
     status = {}
@@ -45,17 +58,19 @@ def pre_processor():
             if info["plugins"] == "True":
                 plugins = True
 
-    return {"user": user,
-            'status': status,
-            'captcha': captcha,
-            'perms': perms,
-            'url': request.url,
-            'update': update,
-            'plugins': plugins}
+    return {
+        "user": user,
+        "status": status,
+        "captcha": captcha,
+        "perms": perms,
+        "url": request.url,
+        "update": update,
+        "plugins": plugins,
+    }
 
 
 def base(messages):
-    return render_to_response('base.html', {'messages': messages}, [pre_processor])
+    return render_to_response("base.html", {"messages": messages}, [pre_processor])
 
 
 def choose_path(browse_for, path=""):
@@ -70,7 +85,7 @@ def choose_path(browse_for, path=""):
         oldfile = path
         path = os.path.dirname(path)
     else:
-        oldfile = ''
+        oldfile = ""
 
     abs = False
 
@@ -110,43 +125,48 @@ def choose_path(browse_for, path=""):
     for f in folders:
         try:
             # f = f.decode(getfilesystemencoding())
-            data = {'name': f, 'fullpath': join(cwd, f)}
-            data['sort'] = data['fullpath'].lower()
-            data['modified'] = datetime.fromtimestamp(
-                int(os.path.getmtime(join(cwd, f))))
-            data['ext'] = os.path.splitext(f)[1]
+            data = {"name": f, "fullpath": join(cwd, f)}
+            data["sort"] = data["fullpath"].lower()
+            data["modified"] = datetime.fromtimestamp(
+                int(os.path.getmtime(join(cwd, f)))
+            )
+            data["ext"] = os.path.splitext(f)[1]
         except Exception:
             continue
 
         if os.path.isdir(join(cwd, f)):
-            data['type'] = 'dir'
+            data["type"] = "dir"
         else:
-            data['type'] = 'file'
+            data["type"] = "file"
 
         if os.path.isfile(join(cwd, f)):
-            data['size'] = os.path.getsize(join(cwd, f))
+            data["size"] = os.path.getsize(join(cwd, f))
 
             power = 0
-            while (data['size'] / 1024.0) > 0.3:
+            while (data["size"] / 1024.0) > 0.3:
                 power += 1
-                data['size'] /= 1024.0
-            units = ('', 'K', 'M', 'G', 'T')
-            data['unit'] = units[power] + 'Byte'
+                data["size"] /= 1024.0
+            units = ("", "K", "M", "G", "T")
+            data["unit"] = units[power] + "Byte"
         else:
-            data['size'] = ''
+            data["size"] = ""
 
         files.append(data)
 
-    files = sorted(files, key=itemgetter('type', 'sort'))
+    files = sorted(files, key=itemgetter("type", "sort"))
 
-    return render_to_response('pathchooser.html',
-                              {'cwd': cwd,
-                               'files': files,
-                               'parentdir': parentdir,
-                               'type': browse_for,
-                               'oldfile': oldfile,
-                               'absolute': abs},
-                              [])
+    return render_to_response(
+        "pathchooser.html",
+        {
+            "cwd": cwd,
+            "files": files,
+            "parentdir": parentdir,
+            "type": browse_for,
+            "oldfile": oldfile,
+            "absolute": abs,
+        },
+        [],
+    )
 
 
 # Views
@@ -156,19 +176,27 @@ def error500(error):
     if error.traceback:
         print(error.traceback)
 
-    return base(["An Error occured, please enable debug mode to get more details.", error,
-                 error.traceback.replace("\n", "<br>") if error.traceback else "No Traceback"])
+    return base(
+        [
+            "An Error occured, please enable debug mode to get more details.",
+            error,
+            error.traceback.replace("\n", "<br>")
+            if error.traceback
+            else "No Traceback",
+        ]
+    )
+
 
 # render js
 
 
 @route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
-    response.headers['Expires'] = time.strftime(
-        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(
-            time.time() + 60 * 60 * 24 * 2))
-    response.headers['Cache-control'] = "public"
-    response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+    response.headers["Expires"] = time.strftime(
+        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 2)
+    )
+    response.headers["Cache-control"] = "public"
+    response.headers["Content-Type"] = "text/javascript; charset=UTF-8"
 
     try:
         # static files are not rendered
@@ -181,26 +209,26 @@ def js_dynamic(path):
         return HTTPError(404, "Not Found")
 
 
-@route('/media/<path:path>')
+@route("/media/<path:path>")
 def server_static(path):
-    response.headers['Expires'] = time.strftime(
-        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(
-            time.time() + 60 * 60 * 24 * 7))
-    response.headers['Cache-control'] = "public"
+    response.headers["Expires"] = time.strftime(
+        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
+    )
+    response.headers["Cache-control"] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
 
-@route('/favicon.ico')
+@route("/favicon.ico")
 def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
 
 
-@route('/robots.txt')
+@route("/robots.txt")
 def robots():
     return static_file("robots.txt", root=join(PROJECT_DIR, "media", "txt"))
 
 
-@route('/login', method="GET")
+@route("/login", method="GET")
 def login():
     if not PYLOAD and SETUP:
         redirect(PREFIX + "/setup")
@@ -208,7 +236,7 @@ def login():
         return render_to_response("login.html", proc=[pre_processor])
 
 
-@route('/nopermission')
+@route("/nopermission")
 def nopermission():
     return base([_("You dont have permission to access this page.")])
 
@@ -229,7 +257,7 @@ def login_post():
 
 @route("/logout")
 def logout():
-    s = request.environ.get('beaker.session')
+    s = request.environ.get("beaker.session")
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
@@ -241,14 +269,15 @@ def home():
     try:
         res = [toDict(x) for x in PYLOAD.statusDownloads()]
     except Exception:
-        s = request.environ.get('beaker.session')
+        s = request.environ.get("beaker.session")
         s.delete()
         return redirect(PREFIX + "/login")
 
     for link in res:
         if link["status"] == 12:
             link["information"] = "{} kB @ {} kB/s".format(
-                link["size"] - link["bleft"], link["speed"])
+                link["size"] - link["bleft"], link["speed"]
+            )
 
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
@@ -261,56 +290,49 @@ def queue():
     queue.sort(key=attrgetter("order"))
 
     return render_to_response(
-        'queue.html', {
-            'content': queue, 'target': 1}, [pre_processor])
+        "queue.html", {"content": queue, "target": 1}, [pre_processor]
+    )
 
 
 @route("/collector")
-@login_required('LIST')
+@login_required("LIST")
 def collector():
     queue = PYLOAD.getCollector()
 
     queue.sort(key=attrgetter("order"))
 
     return render_to_response(
-        'queue.html', {
-            'content': queue, 'target': 0}, [pre_processor])
+        "queue.html", {"content": queue, "target": 0}, [pre_processor]
+    )
 
 
 @route("/downloads")
-@login_required('DOWNLOAD')
+@login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
 
     if not isdir(root):
-        return base([_('Download directory not found.')])
-    data = {
-        'folder': [],
-        'files': []
-    }
+        return base([_("Download directory not found.")])
+    data = {"folder": [], "files": []}
 
     items = listdir(fs_encode(root))
 
     for item in sorted([fs_decode(x) for x in items]):
         if isdir(save_join(root, item)):
-            folder = {
-                'name': item,
-                'path': item,
-                'files': []
-            }
+            folder = {"name": item, "path": item, "files": []}
             files = listdir(save_join(root, item))
             for file in sorted([fs_decode(x) for x in files]):
                 try:
                     if isfile(save_join(root, item, file)):
-                        folder['files'].append(file)
+                        folder["files"].append(file)
                 except Exception:
                     pass
 
-            data['folder'].append(folder)
+            data["folder"].append(folder)
         elif isfile(join(root, item)):
-            data['files'].append(item)
+            data["files"].append(item)
 
-    return render_to_response('downloads.html', {'files': data}, [pre_processor])
+    return render_to_response("downloads.html", {"files": data}, [pre_processor])
 
 
 @route("/downloads/get/<path:re:.+>")
@@ -331,7 +353,7 @@ def get_download(path):
 
 
 @route("/settings")
-@login_required('SETTINGS')
+@login_required("SETTINGS")
 def config():
     conf = PYLOAD.getConfig()
     plugin = PYLOAD.getPluginConfig()
@@ -379,33 +401,39 @@ def config():
         else:
             limitdl = "0"
 
-        accs.append({'type': data.type,
-                     'login': data.login,
-                     'valid': data.valid,
-                     'premium': data.premium,
-                     'trafficleft': trafficleft,
-                     'validuntil': validuntil,
-                     'limitdl': limitdl,
-                     'time': _time})
+        accs.append(
+            {
+                "type": data.type,
+                "login": data.login,
+                "valid": data.valid,
+                "premium": data.premium,
+                "trafficleft": trafficleft,
+                "validuntil": validuntil,
+                "limitdl": limitdl,
+                "time": _time,
+            }
+        )
 
-    return render_to_response('settings.html',
-                              {'conf': {'plugin': plugin_menu,
-                                        'general': conf_menu,
-                                        'accs': accs},
-                               'types': PYLOAD.getAccountTypes()},
-                              [pre_processor])
+    return render_to_response(
+        "settings.html",
+        {
+            "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
+            "types": PYLOAD.getAccountTypes(),
+        },
+        [pre_processor],
+    )
 
 
 @route("/filechooser")
 @route("/filechooser/:file#.+#")
-@login_required('STATUS')
+@login_required("STATUS")
 def file(file=""):
     return choose_path("file", file)
 
 
 @route("/pathchooser")
 @route("/pathchooser/:path#.+#")
-@login_required('STATUS')
+@login_required("STATUS")
 def path(path=""):
     return choose_path("folder", path)
 
@@ -414,32 +442,32 @@ def path(path=""):
 @route("/logs", method="POST")
 @route("/logs/:item")
 @route("/logs/:item", method="POST")
-@login_required('LOGS')
+@login_required("LOGS")
 def logs(item=-1):
-    s = request.environ.get('beaker.session')
+    s = request.environ.get("beaker.session")
 
-    perpage = s.get('perpage', 34)
-    reversed = s.get('reversed', False)
+    perpage = s.get("perpage", 34)
+    reversed = s.get("reversed", False)
 
     warning = ""
     conf = PYLOAD.getConfigValue("log", "file_log")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
-    perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, 'all'))
+    perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, "all"))
     fro = None
 
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+    if request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            fro = datetime.strptime(request.forms['from'], '%d.%m.%Y %H:%M:%S')
+            fro = datetime.strptime(request.forms["from"], "%d.%m.%Y %H:%M:%S")
         except Exception:
             pass
         try:
-            perpage = int(request.forms['perpage'])
-            s['perpage'] = perpage
+            perpage = int(request.forms["perpage"])
+            s["perpage"] = perpage
 
-            reversed = bool(request.forms.get('reversed', False))
-            s['reversed'] = reversed
+            reversed = bool(request.forms.get("reversed", False))
+            s["reversed"] = reversed
         except Exception:
             pass
 
@@ -455,8 +483,9 @@ def logs(item=-1):
         item = 0
 
     if item < 1 or not isinstance(item, int):
-        item = 1 if len(log) - perpage + \
-            1 < 1 or perpage == 0 else len(log) - perpage + 1
+        item = (
+            1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
+        )
 
     if isinstance(fro, datetime):  # we will search for datetime
         item = -1
@@ -470,20 +499,28 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(date + ' ' + time, '%d.%m.%Y %H:%M:%S')
+                dtime = datetime.strptime(date + " " + time, "%d.%m.%Y %H:%M:%S")
             except Exception:
                 dtime = None
-                date = '?'
-                time = ' '
-                level = '?'
+                date = "?"
+                time = " "
+                level = "?"
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
                 item = counter  # found our datetime
             if item >= 0:
-                data.append({'line': counter, 'date': date + " " +
-                             time, 'level': level, 'message': message})
+                data.append(
+                    {
+                        "line": counter,
+                        "date": date + " " + time,
+                        "level": level,
+                        "message": message,
+                    }
+                )
                 perpagecheck += 1
-                if fro is None and dtime is not None:  # if fro not set set it to first showed line
+                if (
+                    fro is None and dtime is not None
+                ):  # if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
@@ -492,16 +529,20 @@ def logs(item=-1):
         fro = datetime.now()
     if reversed:
         data.reverse()
-    return render_to_response('logs.html',
-                              {'warning': warning,
-                               'log': data,
-                               'from': fro.strftime('%d.%m.%Y %H:%M:%S'),
-                                  'reversed': reversed,
-                                  'perpage': perpage,
-                                  'perpage_p': sorted(perpage_p),
-                                  'iprev': 1 if item - perpage < 1 else item - perpage,
-                                  'inext': (item + perpage) if item + perpage < len(log) else item},
-                              [pre_processor])
+    return render_to_response(
+        "logs.html",
+        {
+            "warning": warning,
+            "log": data,
+            "from": fro.strftime("%d.%m.%Y %H:%M:%S"),
+            "reversed": reversed,
+            "perpage": perpage,
+            "perpage_p": sorted(perpage_p),
+            "iprev": 1 if item - perpage < 1 else item - perpage,
+            "inext": (item + perpage) if item + perpage < len(log) else item,
+        },
+        [pre_processor],
+    )
 
 
 @route("/admin")
@@ -517,8 +558,8 @@ def admin():
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = True if data["role"] is 0 else False
 
-    s = request.environ.get('beaker.session')
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+    s = request.environ.get("beaker.session")
+    if request.environ.get("REQUEST_METHOD", "GET") == "POST":
         for name in user:
             if request.POST.get("{}|admin".format(name), False):
                 user[name]["role"] = 0
@@ -539,8 +580,8 @@ def admin():
             PYLOAD.setUserPermission(name, user[name]["permission"], user[name]["role"])
 
     return render_to_response(
-        "admin.html", {
-            "users": user, "permlist": perms}, [pre_processor])
+        "admin.html", {"users": user, "permlist": perms}, [pre_processor]
+    )
 
 
 @route("/setup")
@@ -548,11 +589,11 @@ def setup():
     if PYLOAD or not SETUP:
         return base([_("Run pyLoadCore.py -s to access the setup.")])
 
-    return render_to_response('setup.html', {"user": False, "perms": False})
+    return render_to_response("setup.html", {"user": False, "perms": False})
 
 
 @route("/info")
-@login_required('STATUS')
+@login_required("STATUS")
 def info():
     conf = PYLOAD.getConfigDict()
 
@@ -561,14 +602,17 @@ def info():
     else:
         extra = tuple()
 
-    data = {"python": sys.version,
-            "os": " ".join((os.name, sys.platform) + extra),
-            "version": PYLOAD.getServerVersion(),
-            "folder": abspath(PYLOAD_DIR), "config": abspath(""),
-            "download": abspath(conf["general"]["download_folder"]["value"]),
-            "freespace": formatSize(PYLOAD.freeSpace()),
-            "remote": conf["remote"]["port"]["value"],
-            "webif": conf["webinterface"]["port"]["value"],
-            "language": conf["general"]["language"]["value"]}
+    data = {
+        "python": sys.version,
+        "os": " ".join((os.name, sys.platform) + extra),
+        "version": PYLOAD.getServerVersion(),
+        "folder": abspath(PYLOAD_DIR),
+        "config": abspath(""),
+        "download": abspath(conf["general"]["download_folder"]["value"]),
+        "freespace": formatSize(PYLOAD.freeSpace()),
+        "remote": conf["remote"]["port"]["value"],
+        "webif": conf["webinterface"]["port"]["value"],
+        "language": conf["general"]["language"]["value"],
+    }
 
     return render_to_response("info.html", data, [pre_processor])

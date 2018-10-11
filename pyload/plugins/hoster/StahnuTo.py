@@ -9,7 +9,7 @@ class StahnuTo(DeadHoster):
     __version__ = "0.16"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?stahnu\.to/(files/get/|.*\?file=)([^/]+).*'
+    __pattern__ = r"http://(?:www\.)?stahnu\.to/(files/get/|.*\?file=)([^/]+).*"
     __config__ = []
 
     __description__ = """Stahnu.to hoster plugin"""

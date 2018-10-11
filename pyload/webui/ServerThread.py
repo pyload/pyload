@@ -18,12 +18,12 @@ class WebServer(threading.Thread):
         self.pyload = pycore
         core = pycore
         self.running = True
-        self.server = pycore.config['webinterface']['server']
-        self.https = pycore.config['webinterface']['https']
+        self.server = pycore.config["webinterface"]["server"]
+        self.https = pycore.config["webinterface"]["https"]
         self.cert = pycore.config["ssl"]["cert"]
         self.key = pycore.config["ssl"]["key"]
-        self.host = pycore.config['webinterface']['host']
-        self.port = pycore.config['webinterface']['port']
+        self.host = pycore.config["webinterface"]["host"]
+        self.port = pycore.config["webinterface"]["port"]
 
         self.setDaemon(True)
 
@@ -39,15 +39,23 @@ class WebServer(threading.Thread):
 
         if self.server in ("lighttpd", "nginx"):
             log.warning(
-                _("Sorry, we dropped support for starting {} directly within pyLoad").format(
-                    self.server))
+                _(
+                    "Sorry, we dropped support for starting {} directly within pyLoad"
+                ).format(self.server)
+            )
             log.warning(
-                _("You can use the threaded server which offers good performance and ssl,"))
+                _(
+                    "You can use the threaded server which offers good performance and ssl,"
+                )
+            )
             log.warning(
-                _("of course you can still use your existing {} with pyLoads fastcgi server").format(
-                    self.server))
+                _(
+                    "of course you can still use your existing {} with pyLoads fastcgi server"
+                ).format(self.server)
+            )
             log.warning(
-                _("sample configs are located in the pyload/webui/servers directory"))
+                _("sample configs are located in the pyload/webui/servers directory")
+            )
             self.server = "builtin"
 
         if self.server == "fastcgi":
@@ -55,7 +63,8 @@ class WebServer(threading.Thread):
                 import flup
             except Exception:
                 log.warning(
-                    _("Can't use {}, python-flup is not installed!").format(self.server))
+                    _("Can't use {}, python-flup is not installed!").format(self.server)
+                )
                 self.server = "builtin"
         elif self.server == "lightweight":
             try:
@@ -63,17 +72,27 @@ class WebServer(threading.Thread):
             except Exception as e:
                 log.error(_("Error importing lightweight server: {}").format(e))
                 log.warning(
-                    _("You need to download and compile bjoern, https://github.com/jonashaag/bjoern"))
+                    _(
+                        "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
+                    )
+                )
                 log.warning(
-                    _("Copy the boern.so to pyload/lib folder or use setup.py install"))
+                    _("Copy the boern.so to pyload/lib folder or use setup.py install")
+                )
                 log.warning(
-                    _("Of course you need to be familiar with linux and know how to compile software"))
+                    _(
+                        "Of course you need to be familiar with linux and know how to compile software"
+                    )
+                )
                 self.server = "builtin"
 
         if os.name == "nt":
             self.pyload.log.info(
-                _("Server set to threaded, due to known performance problems on windows."))
-            self.pyload.config['webinterface']['server'] = "threaded"
+                _(
+                    "Server set to threaded, due to known performance problems on windows."
+                )
+            )
+            self.pyload.config["webinterface"]["server"] = "threaded"
             self.server = "threaded"
 
         if self.server == "fastcgi":
@@ -89,41 +108,56 @@ class WebServer(threading.Thread):
 
         if self.https:
             log.warning(
-                _("This server offers no SSL, please consider using threaded instead"))
+                _("This server offers no SSL, please consider using threaded instead")
+            )
 
-        self.pyload.log.info(_("Starting builtin webserver: {host}:{port:d}").format(
-            **{"host": self.host, "port": self.port}))
+        self.pyload.log.info(
+            _("Starting builtin webserver: {host}:{port:d}").format(
+                **{"host": self.host, "port": self.port}
+            )
+        )
         webinterface.run_simple(host=self.host, port=self.port)
 
     def start_threaded(self):
         if self.https:
-            self.pyload.log.info(_("Starting threaded SSL webserver: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}))
+            self.pyload.log.info(
+                _("Starting threaded SSL webserver: {host}:{port:d}").format(
+                    **{"host": self.host, "port": self.port}
+                )
+            )
         else:
             self.cert = ""
             self.key = ""
-            self.pyload.log.info(_("Starting threaded webserver: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}))
+            self.pyload.log.info(
+                _("Starting threaded webserver: {host}:{port:d}").format(
+                    **{"host": self.host, "port": self.port}
+                )
+            )
 
         webinterface.run_threaded(
-            host=self.host,
-            port=self.port,
-            cert=self.cert,
-            key=self.key)
+            host=self.host, port=self.port, cert=self.cert, key=self.key
+        )
 
     def start_fcgi(self):
 
-        self.pyload.log.info(_("Starting fastcgi server: {host}:{port:d}").format(
-            **{"host": self.host, "port": self.port}))
+        self.pyload.log.info(
+            _("Starting fastcgi server: {host}:{port:d}").format(
+                **{"host": self.host, "port": self.port}
+            )
+        )
         webinterface.run_fcgi(host=self.host, port=self.port)
 
     def start_lightweight(self):
         if self.https:
             log.warning(
-                _("This server offers no SSL, please consider using threaded instead"))
+                _("This server offers no SSL, please consider using threaded instead")
+            )
 
-        self.pyload.log.info(_("Starting lightweight webserver (bjoern): {host}:{port:d}").format(
-            **{"host": self.host, "port": self.port}))
+        self.pyload.log.info(
+            _("Starting lightweight webserver (bjoern): {host}:{port:d}").format(
+                **{"host": self.host, "port": self.port}
+            )
+        )
         webinterface.run_lightweight(host=self.host, port=self.port)
 
     def quit(self):

@@ -9,10 +9,9 @@ class LetitbitNetFolder(DeadCrypter):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?letitbit\.net/folder/\w+'
+    __pattern__ = r"http://(?:www\.)?letitbit\.net/folder/\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Letitbit.net folder decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("DHMH", "webmaster@pcProfil.de"),
-                   ("z00nx", "z00nx0@gmail.com")]
+    __authors__ = [("DHMH", "webmaster@pcProfil.de"), ("z00nx", "z00nx0@gmail.com")]

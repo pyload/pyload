@@ -7,7 +7,8 @@ from traceback import print_exc
 
 from pyload.remote.thriftbackend.Protocol import Protocol
 from pyload.remote.thriftbackend.socket import error
-#from thrift.transport.TZlibTransport import TZlibTransport
+
+# from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.Socket import Socket
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from thrift.transport import TTransport
@@ -81,7 +82,7 @@ class ThriftClient(object):
     def createConnection(self, host, port, ssl=False):
         self.socket = Socket(host, port, ssl)
         self.transport = TTransport.TBufferedTransport(self.socket)
-#        self.transport = TZlibTransport(TTransport.TBufferedTransport(self.socket))
+        #        self.transport = TZlibTransport(TTransport.TBufferedTransport(self.socket))
 
         protocol = Protocol(self.transport)
         self.client = Pyload.Client(protocol)

@@ -14,42 +14,48 @@ class MultiAccount(Account):
     __version__ = "0.22"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),
-                  ("mh_list", "str", "Hoster list (comma separated)", ""),
-                  ("mh_interval", "int", "Reload interval in hours", 12)]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("mh_mode", "all;listed;unlisted", "Hosters to use", "all"),
+        ("mh_list", "str", "Hoster list (comma separated)", ""),
+        ("mh_interval", "int", "Reload interval in hours", 12),
+    ]
 
     __description__ = """Multi-hoster account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
-    DOMAIN_REPLACEMENTS = [(r'180upload\.com', "hundredeightyupload.com"),
-                           (r'bayfiles\.net', "bayfiles.com"),
-                           (r'cloudnator\.com', "shragle.com"),
-                           (r'dfiles\.eu', "depositfiles.com"),
-                           (r'easy-share\.com', "crocko.com"),
-                           (r'freakshare\.net', "freakshare.com"),
-                           (r'hellshare\.com', "hellshare.cz"),
-                           (r'ifile\.it', "filecloud.io"),
-                           (r'nowdownload\.\w+', "nowdownload.sx"),
-                           (r'nowvideo\.\w+', "nowvideo.sx"),
-                           (r'putlocker\.com', "firedrive.com"),
-                           (r'share-?rapid\.cz', "multishare.cz"),
-                           (r'ul\.to', "uploaded.to"),
-                           (r'uploaded\.net', "uploaded.to"),
-                           (r'uploadhero\.co', "uploadhero.com"),
-                           (r'zshares\.net', "zshare.net"),
-                           (r'^1', "one"),
-                           (r'^2', "two"),
-                           (r'^3', "three"),
-                           (r'^4', "four"),
-                           (r'^5', "five"),
-                           (r'^6', "six"),
-                           (r'^7', "seven"),
-                           (r'^8', "eight"),
-                           (r'^9', "nine"),
-                           (r'^0', "zero")]
+    DOMAIN_REPLACEMENTS = [
+        (r"180upload\.com", "hundredeightyupload.com"),
+        (r"bayfiles\.net", "bayfiles.com"),
+        (r"cloudnator\.com", "shragle.com"),
+        (r"dfiles\.eu", "depositfiles.com"),
+        (r"easy-share\.com", "crocko.com"),
+        (r"freakshare\.net", "freakshare.com"),
+        (r"hellshare\.com", "hellshare.cz"),
+        (r"ifile\.it", "filecloud.io"),
+        (r"nowdownload\.\w+", "nowdownload.sx"),
+        (r"nowvideo\.\w+", "nowvideo.sx"),
+        (r"putlocker\.com", "firedrive.com"),
+        (r"share-?rapid\.cz", "multishare.cz"),
+        (r"ul\.to", "uploaded.to"),
+        (r"uploaded\.net", "uploaded.to"),
+        (r"uploadhero\.co", "uploadhero.com"),
+        (r"zshares\.net", "zshare.net"),
+        (r"^1", "one"),
+        (r"^2", "two"),
+        (r"^3", "three"),
+        (r"^4", "four"),
+        (r"^5", "five"),
+        (r"^6", "six"),
+        (r"^7", "seven"),
+        (r"^8", "eight"),
+        (r"^9", "nine"),
+        (r"^0", "zero"),
+    ]
 
     def init(self):
         self.need_reactivate = False
@@ -69,19 +75,29 @@ class MultiAccount(Account):
         plugin, self.plugintype = self.pyload.pluginManager.findPlugin(self.classname)
 
         if plugin:
-            self.pluginmodule = self.pyload.pluginManager.loadModule(self.plugintype, self.classname)
-            self.pluginclass = self.pyload.pluginManager.loadClass(self.plugintype, self.classname)
+            self.pluginmodule = self.pyload.pluginManager.loadModule(
+                self.plugintype, self.classname
+            )
+            self.pluginclass = self.pyload.pluginManager.loadClass(
+                self.plugintype, self.classname
+            )
 
             self.pyload.addonManager.addEvent("plugin_updated", self.plugins_updated)
 
-            interval = self.config.get('mh_interval', 12) * 60 * 60
+            interval = self.config.get("mh_interval", 12) * 60 * 60
             self.periodical.start(interval, threaded=True, delay=2)
 
         else:
-            self.log_warning(_("Multi-hoster feature will be deactivated due missing plugin reference"))
+            self.log_warning(
+                _(
+                    "Multi-hoster feature will be deactivated due missing plugin reference"
+                )
+            )
 
     def plugins_updated(self, type_plugins):
-        if not any([t in ("internal", "addon") for t, n in type_plugins]):  #: do nothing if restart required
+        if not any(
+            [t in ("internal", "addon") for t, n in type_plugins]
+        ):  #: do nothing if restart required
             self.reactivate()
 
     def periodical_task(self):
@@ -91,38 +107,53 @@ class MultiAccount(Account):
         for r in self.DOMAIN_REPLACEMENTS:
             pattern, repl = r
             _re = re.compile(pattern, re.I | re.U)
-            list = [_re.sub(repl, domain) if _re.match(domain) else domain
-                    for domain in list]
+            list = [
+                _re.sub(repl, domain) if _re.match(domain) else domain
+                for domain in list
+            ]
 
         return list
 
     def parse_domains(self, list):
-        _re = re.compile(r'^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)',
-                         re.I | re.U)
+        _re = re.compile(
+            r"^(?:https?://)?(?:www\.)?(?:\w+\.)*((?:(?:\d{1,3}\.){3}\d{1,3}|[\w\-^_]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)",
+            re.I | re.U,
+        )
 
-        domains = [decode(domain).strip().lower()
-                   for url in list for domain in _re.findall(url)]
+        domains = [
+            decode(domain).strip().lower()
+            for url in list
+            for domain in _re.findall(url)
+        ]
 
         return self.replace_domains(uniqify(domains))
 
     def _grab_hosters(self):
-        self.info['data']['hosters'] = []
+        self.info["data"]["hosters"] = []
         try:
-            hosterlist = self.grab_hosters(self.user,
-                                           self.info['login']['password'],
-                                           self.info['data'])
+            hosterlist = self.grab_hosters(
+                self.user, self.info["login"]["password"], self.info["data"]
+            )
 
             if hosterlist and isinstance(hosterlist, list):
                 domains = self.parse_domains(hosterlist)
-                self.info['data']['hosters'] = sorted(domains)
+                self.info["data"]["hosters"] = sorted(domains)
                 self.sync(reverse=True)
 
         except Exception as e:
-            self.log_warning(_("Error loading hoster list for user `{}`").format(self.user), e, trace=True)
+            self.log_warning(
+                _("Error loading hoster list for user `{}`").format(self.user),
+                e,
+                trace=True,
+            )
 
         finally:
-            self.log_debug("Hoster list for user `{}`: {}".format(self.user, self.info['data']['hosters']))
-            return self.info['data']['hosters']
+            self.log_debug(
+                "Hoster list for user `{}`: {}".format(
+                    self.user, self.info["data"]["hosters"]
+                )
+            )
+            return self.info["data"]["hosters"]
 
     def grab_hosters(self, user, password, data):
         """
@@ -138,17 +169,23 @@ class MultiAccount(Account):
         self.supported = []
 
         if self.plugintype == "hoster":
-            plugin_map = dict((name.lower(), name)
-                              for name in self.pyload.pluginManager.hosterPlugins.keys())
+            plugin_map = dict(
+                (name.lower(), name)
+                for name in self.pyload.pluginManager.hosterPlugins.keys()
+            )
 
-            account_list = [account.type.lower()
-                            for account in self.pyload.api.getAccounts(False)
-                            if account.valid and account.premium]
+            account_list = [
+                account.type.lower()
+                for account in self.pyload.api.getAccounts(False)
+                if account.valid and account.premium
+            ]
 
         else:
             plugin_map = {}
-            account_list = [name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
-                            for name in self.pyload.pluginManager.crypterPlugins.keys()]
+            account_list = [
+                name[::-1].replace("Folder"[::-1], "", 1).lower()[::-1]
+                for name in self.pyload.pluginManager.crypterPlugins.keys()
+            ]
 
         for plugin in self.get_plugins():
             name = remove_chars(plugin, "-.")
@@ -174,15 +211,23 @@ class MultiAccount(Account):
             return
 
         #: Inject plugin plugin
-        self.log_debug("Overwritten {}s: {}".format(self.plugintype, ", ".join(sorted(self.supported))))
+        self.log_debug(
+            "Overwritten {}s: {}".format(
+                self.plugintype, ", ".join(sorted(self.supported))
+            )
+        )
 
         for plugin in self.supported:
             hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
-            hdict['new_module'] = self.pluginmodule
-            hdict['new_name'] = self.classname
+            hdict["new_module"] = self.pluginmodule
+            hdict["new_name"] = self.classname
 
         if excluded:
-            self.log_info(_("{}s not overwritten: {}").format(self.plugintype.capitalize(), ", ".join(sorted(excluded))))
+            self.log_info(
+                _("{}s not overwritten: {}").format(
+                    self.plugintype.capitalize(), ", ".join(sorted(excluded))
+                )
+            )
 
         if new_supported:
             plugins = sorted(new_supported)
@@ -190,19 +235,22 @@ class MultiAccount(Account):
             self.log_debug("New {}s: {}".format(self.plugintype, ", ".join(plugins)))
 
             #: Create new regexp
-            pattern = r'.*(?P<DOMAIN>{}).*'.format("|".join(x.replace('.', '\.')
-                                                       for x in plugins))
+            pattern = r".*(?P<DOMAIN>{}).*".format(
+                "|".join(x.replace(".", "\.") for x in plugins)
+            )
 
-            if hasattr(self.pluginclass, "__pattern__") and \
-                    isinstance(self.pluginclass.__pattern__, str) and \
-                            "://" in self.pluginclass.__pattern__:
-                pattern = r'{}|{}'.format(self.pluginclass.__pattern__, pattern)
+            if (
+                hasattr(self.pluginclass, "__pattern__")
+                and isinstance(self.pluginclass.__pattern__, str)
+                and "://" in self.pluginclass.__pattern__
+            ):
+                pattern = r"{}|{}".format(self.pluginclass.__pattern__, pattern)
 
             self.log_debug("Pattern: {}".format(pattern))
 
             hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
-            hdict['pattern'] = pattern
-            hdict['re'] = re.compile(pattern)
+            hdict["pattern"] = pattern
+            hdict["re"] = re.compile(pattern)
 
     def get_plugins(self, cached=True):
         if cached and self.plugins:
@@ -222,9 +270,14 @@ class MultiAccount(Account):
             return []
 
         try:
-            mh_mode = self.config.get('mh_mode', 'all')
+            mh_mode = self.config.get("mh_mode", "all")
             if mh_mode in ("listed", "unlisted"):
-                mh_list = self.config.get('mh_list', '').replace('|', ',').replace(';', ',').split(',')
+                mh_list = (
+                    self.config.get("mh_list", "")
+                    .replace("|", ",")
+                    .replace(";", ",")
+                    .split(",")
+                )
                 config_set = set(mh_list)
 
                 if mh_mode == "listed":
@@ -244,33 +297,46 @@ class MultiAccount(Account):
         #: Reset module
         hdict = self.pyload.pluginManager.plugins[self.plugintype][plugin]
         if "pyload" in hdict:
-            hdict.pop('pyload', None)
+            hdict.pop("pyload", None)
 
         if "new_module" in hdict:
-            hdict.pop('new_module', None)
-            hdict.pop('new_name', None)
-
+            hdict.pop("new_module", None)
+            hdict.pop("new_name", None)
 
     def reactivate(self, refresh=False):
-        reloading = self.info['data'].get('hosters') is not None
+        reloading = self.info["data"].get("hosters") is not None
 
-        if not self.info['login']['valid']:
+        if not self.info["login"]["valid"]:
             self.fail_count += 1
             if self.fail_count < 3:
                 if reloading:
-                    self.log_error(_("Could not reload hoster list - invalid account, retry in 5 minutes"))
+                    self.log_error(
+                        _(
+                            "Could not reload hoster list - invalid account, retry in 5 minutes"
+                        )
+                    )
 
                 else:
-                    self.log_error(_("Could not load hoster list - invalid account, retry in 5 minutes"))
+                    self.log_error(
+                        _(
+                            "Could not load hoster list - invalid account, retry in 5 minutes"
+                        )
+                    )
 
                 self.periodical.set_interval(5 * 60)
 
             else:
                 if reloading:
-                    self.log_error(_("Could not reload hoster list - invalid account, deactivating"))
+                    self.log_error(
+                        _(
+                            "Could not reload hoster list - invalid account, deactivating"
+                        )
+                    )
 
                 else:
-                    self.log_error(_("Could not load hoster list - invalid account, deactivating"))
+                    self.log_error(
+                        _("Could not load hoster list - invalid account, deactivating")
+                    )
 
                 self.deactivate()
 
@@ -281,19 +347,33 @@ class MultiAccount(Account):
                 self.fail_count += 1
                 if self.fail_count < 3:
                     if reloading:
-                        self.log_error(_("Could not reload hoster list - login failed, retry in 5 minutes"))
+                        self.log_error(
+                            _(
+                                "Could not reload hoster list - login failed, retry in 5 minutes"
+                            )
+                        )
 
                     else:
-                        self.log_error(_("Could not load hoster list - login failed, retry in 5 minutes"))
+                        self.log_error(
+                            _(
+                                "Could not load hoster list - login failed, retry in 5 minutes"
+                            )
+                        )
 
                     self.periodical.set_interval(5 * 60)
 
                 else:
                     if reloading:
-                        self.log_error(_("Could not reload hoster list - login failed, deactivating"))
+                        self.log_error(
+                            _(
+                                "Could not reload hoster list - login failed, deactivating"
+                            )
+                        )
 
                     else:
-                        self.log_error(_("Could not load hoster list - login failed, deactivating"))
+                        self.log_error(
+                            _("Could not load hoster list - login failed, deactivating")
+                        )
 
                     self.deactivate()
 
@@ -312,11 +392,19 @@ class MultiAccount(Account):
             if not self.get_plugins(cached=False):
                 self.fail_count += 1
                 if self.fail_count < 3:
-                    self.log_error(_("Failed to load hoster list for user `{}`, retry in 5 minutes").format(self.user))
+                    self.log_error(
+                        _(
+                            "Failed to load hoster list for user `{}`, retry in 5 minutes"
+                        ).format(self.user)
+                    )
                     self.periodical.set_interval(5 * 60)
 
                 else:
-                    self.log_error(_("Failed to load hoster list for user `{}`, deactivating").format(self.user))
+                    self.log_error(
+                        _(
+                            "Failed to load hoster list for user `{}`, deactivating"
+                        ).format(self.user)
+                    )
                     self.deactivate()
 
                 return
@@ -324,7 +412,7 @@ class MultiAccount(Account):
         if self.fail_count:
             self.fail_count = 0
 
-            interval = self.config.get('mh_interval', 12) * 60 * 60
+            interval = self.config.get("mh_interval", 12) * 60 * 60
             self.periodical.set_interval(interval)
 
         self._override()
@@ -353,13 +441,13 @@ class MultiAccount(Account):
         #: Reset pattern
         hdict = self.pyload.pluginManager.plugins[self.plugintype][self.classname]
 
-        hdict['pattern'] = getattr(self.pluginclass, "__pattern__", r'^unmatchable$')
-        hdict['re'] = re.compile(hdict['pattern'])
+        hdict["pattern"] = getattr(self.pluginclass, "__pattern__", r"^unmatchable$")
+        hdict["re"] = re.compile(hdict["pattern"])
 
     def updateAccounts(self, user, password=None, options={}):
         Account.updateAccounts(self, user, password, options)
         if self.need_reactivate:
-            interval = self.config.get('mh_interval', 12) * 60 * 60
+            interval = self.config.get("mh_interval", 12) * 60 * 60
             self.periodical.restart(interval, threaded=True, delay=2)
 
         self.need_reactivate = True

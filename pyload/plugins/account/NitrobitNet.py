@@ -14,9 +14,7 @@ class NitrobitNet(Account):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def grab_info(self, user, password, data):
-        return {'premium': True,
-                'validuntil': None,
-                'trafficleft': None}
+        return {"premium": True, "validuntil": None, "trafficleft": None}
 
     def signin(self, user, password, data):
         #: no way to sign in until we actually download something

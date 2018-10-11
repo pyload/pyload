@@ -9,7 +9,7 @@ class StorageTo(DeadHoster):
     __version__ = "0.06"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?storage\.to/get/.+'
+    __pattern__ = r"http://(?:www\.)?storage\.to/get/.+"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Storage.to hoster plugin"""

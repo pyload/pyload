@@ -60,7 +60,8 @@ class AddonManager(object):
 
         # registering callback for config event
         self.config.pluginCB = MethodType(
-            self.dispatchEvent, "pluginConfigChanged", str)
+            self.dispatchEvent, "pluginConfigChanged", str
+        )
 
         self.addEvent("pluginConfigChanged", self.manageAddons)
 
@@ -105,11 +106,12 @@ class AddonManager(object):
 
         for pluginname in self.pyload.pluginManager.addonPlugins:
             try:
-                #addonClass = getattr(plugin, plugin.__name__)
+                # addonClass = getattr(plugin, plugin.__name__)
 
                 if self.pyload.config.getPlugin(pluginname, "activated"):
                     pluginClass = self.pyload.pluginManager.loadClass(
-                        "addon", pluginname)
+                        "addon", pluginname
+                    )
                     if not pluginClass:
                         continue
 
@@ -174,9 +176,8 @@ class AddonManager(object):
 
         # remove periodic call
         self.log.debug(
-            "Removed callback {}".format(
-                self.pyload.scheduler.removeJob(
-                    addon.cb)))
+            "Removed callback {}".format(self.pyload.scheduler.removeJob(addon.cb))
+        )
         self.plugins.remove(addon)
         del self.pluginMap[addon.__name__]
 
@@ -266,15 +267,23 @@ class AddonManager(object):
         for name, plugin in self.pluginMap.items():
             if plugin.info:
                 # copy and convert so str
-                info[name] = dict([(x, str(y) if not isinstance(y, str) else y)
-                                   for x, y in plugin.info.items()])
+                info[name] = dict(
+                    [
+                        (x, str(y) if not isinstance(y, str) else y)
+                        for x, y in plugin.info.items()
+                    ]
+                )
         return info
 
     def getInfo(self, plugin):
         info = {}
         if plugin in self.pluginMap and self.pluginMap[plugin].info:
-            info = dict([(x, str(y) if not isinstance(y, str) else y)
-                         for x, y in self.pluginMap[plugin].info.items()])
+            info = dict(
+                [
+                    (x, str(y) if not isinstance(y, str) else y)
+                    for x, y in self.pluginMap[plugin].info.items()
+                ]
+            )
 
         return info
 
@@ -301,6 +310,8 @@ class AddonManager(object):
                 except Exception as e:
                     self.log.warning(
                         "Error calling event handler {}: {}, {}, {}".format(
-                            event, f, args, str(e)))
+                            event, f, args, str(e)
+                        )
+                    )
                     if self.pyload.debug:
                         traceback.print_exc()

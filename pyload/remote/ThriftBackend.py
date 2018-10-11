@@ -12,8 +12,7 @@ from thrift.server import TServer
 # @author: mkaay, RaNaN
 
 
-
-#from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
+# from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
 
 
 class ThriftBackend(BackendBase):
@@ -23,25 +22,24 @@ class ThriftBackend(BackendBase):
         key = None
         cert = None
 
-        if self.pyload.config['ssl']['activated']:
-            if exists(
-                    self.pyload.config['ssl']['cert']) and exists(
-                    self.pyload.config['ssl']['key']):
+        if self.pyload.config["ssl"]["activated"]:
+            if exists(self.pyload.config["ssl"]["cert"]) and exists(
+                self.pyload.config["ssl"]["key"]
+            ):
                 self.pyload.log.info(_("Using SSL ThriftBackend"))
-                key = self.pyload.config['ssl']['key']
-                cert = self.pyload.config['ssl']['cert']
+                key = self.pyload.config["ssl"]["key"]
+                cert = self.pyload.config["ssl"]["cert"]
 
         transport = ServerSocket(port, host, key, cert)
 
-
-#        tfactory = TransportFactoryCompressed()
+        #        tfactory = TransportFactoryCompressed()
         tfactory = TransportFactory()
         pfactory = ProtocolFactory()
 
         self.server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
-        #self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
+        # self.server = TNonblockingServer.TNonblockingServer(processor, transport, tfactory, pfactory)
 
-        #server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
+        # server = TServer.TThreadPoolServer(processor, transport, tfactory, pfactory)
 
     def serve(self):
         self.server.serve()

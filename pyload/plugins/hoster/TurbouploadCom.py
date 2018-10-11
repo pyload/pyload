@@ -9,7 +9,7 @@ class TurbouploadCom(DeadHoster):
     __version__ = "0.08"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?turboupload\.com/(\w+)'
+    __pattern__ = r"http://(?:www\.)?turboupload\.com/(\w+)"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Turboupload.com hoster plugin"""

@@ -9,7 +9,7 @@ class MegauploadCom(DeadHoster):
     __version__ = "0.36"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+'
+    __pattern__ = r"http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Megaupload.com hoster plugin"""

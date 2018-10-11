@@ -18,10 +18,18 @@ from pyload.utils.JsEngine import JsEngine
 from pyload.utils.json_layer import json
 from pyload.utils.utils import decode, formatSize
 from pyload.webui import ServerThread, api_app, cnl_app, json_app, pyload_app
-from pyload.webui.filters import (date, path_make_absolute, path_make_relative,
-                                  quotepath, truncate)
-from pyload.webui.middlewares import (GZipMiddleWare, PrefixMiddleware,
-                                      StripPathMiddleware)
+from pyload.webui.filters import (
+    date,
+    path_make_absolute,
+    path_make_relative,
+    quotepath,
+    truncate,
+)
+from pyload.webui.middlewares import (
+    GZipMiddleWare,
+    PrefixMiddleware,
+    StripPathMiddleware,
+)
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
@@ -46,10 +54,10 @@ else:
 
 JS = JsEngine()
 
-TEMPLATE = config.get('webinterface', 'template')
-DL_ROOT = config.get('general', 'download_folder')
-LOG_ROOT = config.get('log', 'log_folder')
-PREFIX = config.get('webinterface', 'prefix')
+TEMPLATE = config.get("webinterface", "template")
+DL_ROOT = config.get("general", "download_folder")
+LOG_ROOT = config.get("log", "log_folder")
+PREFIX = config.get("webinterface", "prefix")
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")
@@ -63,9 +71,9 @@ cache = join("tmp", "jinja_cache")
 if not exists(cache):
     makedirs(cache)
 
-bcc = FileSystemBytecodeCache(cache, '{}.cache')
+bcc = FileSystemBytecodeCache(cache, "{}.cache")
 
-mapping = {'js': FileSystemLoader(join(PROJECT_DIR, 'media', 'js'))}
+mapping = {"js": FileSystemLoader(join(PROJECT_DIR, "media", "js"))}
 for template in os.listdir(join(PROJECT_DIR, "templates")):
     if os.path.isdir(join(PROJECT_DIR, "templates", template)):
         mapping[template] = FileSystemLoader(join(PROJECT_DIR, "templates", template))
@@ -74,12 +82,11 @@ loader = PrefixLoader(mapping)
 
 env = Environment(
     loader=loader,
-    extensions=[
-        'jinja2.ext.i18n',
-        'jinja2.ext.autoescape'],
+    extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
     trim_blocks=True,
     auto_reload=False,
-    bytecode_cache=bcc)
+    bytecode_cache=bcc,
+)
 
 
 env.filters["tojson"] = json.dumps
@@ -97,24 +104,19 @@ env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation(
     "django",
-    join(
-        PYLOAD_DIR,
-        "locale"),
-    languages=[
-        config.get(
-            "general",
-            "language"),
-        "en"],
-    fallback=True)
+    join(PYLOAD_DIR, "locale"),
+    languages=[config.get("general", "language"), "en"],
+    fallback=True,
+)
 translation.install(True)
 env.install_gettext_translations(translation)
 
 
 session_opts = {
-    'session.type': 'file',
-    'session.cookie_expires': False,
-    'session.data_dir': './tmp',
-    'session.auto': False
+    "session.type": "file",
+    "session.cookie_expires": False,
+    "session.data_dir": "./tmp",
+    "session.auto": False,
 }
 
 web = StripPathMiddleware(SessionMiddleware(app(), session_opts))

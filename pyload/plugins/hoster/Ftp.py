@@ -14,14 +14,16 @@ class Ftp(Hoster):
     __version__ = "0.61"
     __status__ = "testing"
 
-    __pattern__ = r'(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+'
+    __pattern__ = r"(?:ftps?|sftp)://([\w\-.]+(:[\w\-.]+)?@)?[\w\-.]+(:\d+)?/.+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Download from ftp directory"""
     __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com"),
-                   ("mkaay", "mkaay@mkaay.de"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [
+        ("jeix", "jeix@hasnomail.com"),
+        ("mkaay", "mkaay@mkaay.de"),
+        ("zoidberg", "zoidberg@mujmail.cz"),
+    ]
 
     def setup(self):
         self.chunk_limit = -1
@@ -31,22 +33,22 @@ class Ftp(Hoster):
         p_url = urllib.parse.urlparse(pyfile.url)
         netloc = p_url.netloc
 
-        pyfile.name = parse_name(p_url.path.rpartition('/')[2])
+        pyfile.name = parse_name(p_url.path.rpartition("/")[2])
 
         if "@" not in netloc:
             # TODO: Recheck in 0.6.x
             if self.account:
-                servers = [x['login'] for x in self.account.getAllAccounts()]
+                servers = [x["login"] for x in self.account.getAllAccounts()]
             else:
                 servers = []
 
             if netloc in servers:
                 self.log_debug("Logging on to {}".format(netloc))
-                self.req.addAuth(self.account.get_login('password'))
+                self.req.addAuth(self.account.get_login("password"))
 
             else:
                 pwd = self.get_password()
-                if ':' in pwd:
+                if ":" in pwd:
                     self.log_debug("Logging on to {}".format(netloc))
                     self.req.addAuth(pwd)
                 else:
@@ -71,11 +73,15 @@ class Ftp(Hoster):
         else:
             #: Naive ftp directory listing
             if re.search(r'^25\d.*?"', self.req.http.header, re.M):
-                pyfile.url = pyfile.url.rstrip('/')
-                pkgname = "/".join([pyfile.package().name,
-                                    urllib.parse.urlparse(pyfile.url).path.rpartition('/')[2]])
+                pyfile.url = pyfile.url.rstrip("/")
+                pkgname = "/".join(
+                    [
+                        pyfile.package().name,
+                        urllib.parse.urlparse(pyfile.url).path.rpartition("/")[2],
+                    ]
+                )
 
-                pyfile.url += '/'
+                pyfile.url += "/"
 
                 self.req.http.c.setopt(48, 1)  #: CURLOPT_DIRLISTONLY
                 res = self.load(pyfile.url, decode=False)

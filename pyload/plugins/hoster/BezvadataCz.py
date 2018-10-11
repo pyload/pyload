@@ -12,21 +12,22 @@ class BezvadataCz(SimpleHoster):
     __version__ = "0.35"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?bezvadata\.cz/stahnout/.+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"http://(?:www\.)?bezvadata\.cz/stahnout/.+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """BezvaData.cz hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    NAME_PATTERN = r'<p><b>Soubor: (?P<N>.+?)</b></p>'
-    SIZE_PATTERN = r'<li><strong>Velikost:</strong> (?P<S>.+?)</li>'
-    OFFLINE_PATTERN = r'<title>BezvaData \| Soubor nenalezen</title>'
+    NAME_PATTERN = r"<p><b>Soubor: (?P<N>.+?)</b></p>"
+    SIZE_PATTERN = r"<li><strong>Velikost:</strong> (?P<S>.+?)</li>"
+    OFFLINE_PATTERN = r"<title>BezvaData \| Soubor nenalezen</title>"
 
     def setup(self):
         self.resume_download = True
@@ -43,7 +44,7 @@ class BezvadataCz(SimpleHoster):
         self.data = self.load(url)
         self.check_errors()
 
-        action, inputs = self.parse_html_form('frm-stahnoutFreeForm')
+        action, inputs = self.parse_html_form("frm-stahnoutFreeForm")
         if not inputs:
             self.error(_("FreeForm"))
 
@@ -51,8 +52,9 @@ class BezvadataCz(SimpleHoster):
         if m is None:
             self.retry_captcha()
 
-        inputs['captcha'] = self.captcha.decrypt_image(
-            m.group(1).decode('base64'), input_type='png')
+        inputs["captcha"] = self.captcha.decrypt_image(
+            m.group(1).decode("base64"), input_type="png"
+        )
 
         #: Download url
         self.data = self.load("http://bezvadata.cz{}".format(action, post=inputs))
@@ -71,7 +73,7 @@ class BezvadataCz(SimpleHoster):
         self.link = url
 
     def check_errors(self):
-        if 'images/button-download-disable.png' in self.data:
+        if "images/button-download-disable.png" in self.data:
             #: Parallel dl limit
             self.retry(5 * 60, 24, _("Download limit reached"))
         elif '<div class="infobox' in self.data:

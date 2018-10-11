@@ -18,6 +18,7 @@ JS2PY = False
 if not ENGINE:
     try:
         import js2py
+
         out = js2py.eval_js("(23+19).toString()")
 
         # integrity check
@@ -31,10 +32,12 @@ if not ENGINE or DEBUG:
     try:
         import subprocess
 
-        subprocess.Popen(["js", "-v"], bufsize=-
-                         1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-        p = subprocess.Popen(["js", "-e", "print(23+19)"],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(
+            ["js", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ).communicate()
+        p = subprocess.Popen(
+            ["js", "-e", "print(23+19)"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         out, err = p.communicate()
         # integrity check
         if out.strip() == "42":
@@ -54,10 +57,15 @@ if not ENGINE or DEBUG:
 if not ENGINE or DEBUG:
     try:
         import subprocess
-        subprocess.Popen(["node", "-v"], bufsize=-
-                         1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-        p = subprocess.Popen(["node", "-e", "console.log(23+19)"],
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        subprocess.Popen(
+            ["node", "-v"], bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ).communicate()
+        p = subprocess.Popen(
+            ["node", "-e", "console.log(23+19)"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         out, err = p.communicate()
         # integrity check
         if out.strip() == "42":
@@ -74,7 +82,9 @@ if not ENGINE or DEBUG:
             path = "/usr/share/java/js.jar"
         elif exists("js.jar"):
             path = "js.jar"
-        elif exists(join(pypath, "js.jar")):  # may raises an exception, but js.jar wasnt found anyway
+        elif exists(
+            join(pypath, "js.jar")
+        ):  # may raises an exception, but js.jar wasnt found anyway
             path = join(pypath, "js.jar")
 
         if not path:
@@ -82,14 +92,18 @@ if not ENGINE or DEBUG:
 
         import subprocess
 
-        p = subprocess.Popen(["java",
-                              "-cp",
-                              path,
-                              "org.mozilla.javascript.tools.shell.Main",
-                              "-e",
-                              "print(23+19)"],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+        p = subprocess.Popen(
+            [
+                "java",
+                "-cp",
+                path,
+                "org.mozilla.javascript.tools.shell.Main",
+                "-e",
+                "print(23+19)",
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         out, err = p.communicate()
         # integrity check
         if out.strip() == "42":
@@ -111,6 +125,7 @@ class JsEngine(object):
         if not self.init:
             if ENGINE == "pyv8" or (DEBUG and PYV8):
                 import PyV8
+
                 global PyV8
 
             self.init = True
@@ -173,8 +188,12 @@ class JsEngine(object):
 
     def eval_js(self, script):
         script = "print(eval(unescape('{}')))".format(quote(script))
-        p = subprocess.Popen(["js", "-e", script], stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, bufsize=-1)
+        p = subprocess.Popen(
+            ["js", "-e", script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=-1,
+        )
         out, err = p.communicate()
         res = out.strip()
         return res
@@ -186,31 +205,36 @@ class JsEngine(object):
 
     def eval_node(self, script):
         script = "console.log(eval(unescape('{}')))".format(quote(script))
-        p = subprocess.Popen(["node",
-                              "-e",
-                              script],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             bufsize=-1)
+        p = subprocess.Popen(
+            ["node", "-e", script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=-1,
+        )
         out, err = p.communicate()
         res = out.strip()
         return res
 
     def eval_rhino(self, script):
         script = "print(eval(unescape('{}')))".format(quote(script))
-        p = subprocess.Popen(["java",
-                              "-cp",
-                              path,
-                              "org.mozilla.javascript.tools.shell.Main",
-                              "-e",
-                              script],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
-                             bufsize=-1)
+        p = subprocess.Popen(
+            [
+                "java",
+                "-cp",
+                path,
+                "org.mozilla.javascript.tools.shell.Main",
+                "-e",
+                script,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=-1,
+        )
         out, err = p.communicate()
         res = out.strip()
         return res.decode("utf8").encode("ISO-8859-1")
 
     def error(self):
         return _(
-            "No js engine detected, please install either js2py, Spidermonkey, ossp-js, pyv8, nodejs or rhino")
+            "No js engine detected, please install either js2py, Spidermonkey, ossp-js, pyv8, nodejs or rhino"
+        )

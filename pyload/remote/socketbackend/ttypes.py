@@ -58,25 +58,27 @@ class Output(object):
 
 class AccountInfo(BaseObject):
     __slots__ = [
-        'validuntil',
-        'login',
-        'options',
-        'valid',
-        'trafficleft',
-        'maxtraffic',
-        'premium',
-        'type']
+        "validuntil",
+        "login",
+        "options",
+        "valid",
+        "trafficleft",
+        "maxtraffic",
+        "premium",
+        "type",
+    ]
 
     def __init__(
-            self,
-            validuntil=None,
-            login=None,
-            options=None,
-            valid=None,
-            trafficleft=None,
-            maxtraffic=None,
-            premium=None,
-            type=None):
+        self,
+        validuntil=None,
+        login=None,
+        options=None,
+        valid=None,
+        trafficleft=None,
+        maxtraffic=None,
+        premium=None,
+        type=None,
+    ):
         self.validuntil = validuntil
         self.login = login
         self.options = options
@@ -88,7 +90,7 @@ class AccountInfo(BaseObject):
 
 
 class CaptchaTask(BaseObject):
-    __slots__ = ['tid', 'data', 'type', 'resultType']
+    __slots__ = ["tid", "data", "type", "resultType"]
 
     def __init__(self, tid=None, data=None, type=None, resultType=None):
         self.tid = tid
@@ -98,7 +100,7 @@ class CaptchaTask(BaseObject):
 
 
 class ConfigItem(BaseObject):
-    __slots__ = ['name', 'description', 'value', 'type']
+    __slots__ = ["name", "description", "value", "type"]
 
     def __init__(self, name=None, description=None, value=None, type=None):
         self.name = name
@@ -108,7 +110,7 @@ class ConfigItem(BaseObject):
 
 
 class ConfigSection(BaseObject):
-    __slots__ = ['name', 'description', 'items', 'outline']
+    __slots__ = ["name", "description", "items", "outline"]
 
     def __init__(self, name=None, description=None, items=None, outline=None):
         self.name = name
@@ -119,41 +121,43 @@ class ConfigSection(BaseObject):
 
 class DownloadInfo(BaseObject):
     __slots__ = [
-        'fid',
-        'name',
-        'speed',
-        'eta',
-        'format_eta',
-        'bleft',
-        'size',
-        'format_size',
-        'percent',
-        'status',
-        'statusmsg',
-        'format_wait',
-        'wait_until',
-        'packageID',
-        'packageName',
-        'plugin']
+        "fid",
+        "name",
+        "speed",
+        "eta",
+        "format_eta",
+        "bleft",
+        "size",
+        "format_size",
+        "percent",
+        "status",
+        "statusmsg",
+        "format_wait",
+        "wait_until",
+        "packageID",
+        "packageName",
+        "plugin",
+    ]
 
     def __init__(
-            self,
-            fid=None,
-            name=None,
-            speed=None,
-            eta=None,
-            format_eta=None,
-            bleft=None,
-            size=None,
-            format_size=None,
-            percent=None,
-            status=None,
-            statusmsg=None,
-            format_wait=None,
-            wait_until=None,
-            packageID=None,
-            packageName=None,
-            plugin=None):
+        self,
+        fid=None,
+        name=None,
+        speed=None,
+        eta=None,
+        format_eta=None,
+        bleft=None,
+        size=None,
+        format_size=None,
+        percent=None,
+        status=None,
+        statusmsg=None,
+        format_wait=None,
+        wait_until=None,
+        packageID=None,
+        packageName=None,
+        plugin=None,
+    ):
         self.fid = fid
         self.name = name
         self.speed = speed
@@ -173,7 +177,7 @@ class DownloadInfo(BaseObject):
 
 
 class EventInfo(BaseObject):
-    __slots__ = ['eventname', 'id', 'type', 'destination']
+    __slots__ = ["eventname", "id", "type", "destination"]
 
     def __init__(self, eventname=None, id=None, type=None, destination=None):
         self.eventname = eventname
@@ -184,31 +188,33 @@ class EventInfo(BaseObject):
 
 class FileData(BaseObject):
     __slots__ = [
-        'fid',
-        'url',
-        'name',
-        'plugin',
-        'size',
-        'format_size',
-        'status',
-        'statusmsg',
-        'packageID',
-        'error',
-        'order']
+        "fid",
+        "url",
+        "name",
+        "plugin",
+        "size",
+        "format_size",
+        "status",
+        "statusmsg",
+        "packageID",
+        "error",
+        "order",
+    ]
 
     def __init__(
-            self,
-            fid=None,
-            url=None,
-            name=None,
-            plugin=None,
-            size=None,
-            format_size=None,
-            status=None,
-            statusmsg=None,
-            packageID=None,
-            error=None,
-            order=None):
+        self,
+        fid=None,
+        url=None,
+        name=None,
+        plugin=None,
+        size=None,
+        format_size=None,
+        status=None,
+        statusmsg=None,
+        packageID=None,
+        error=None,
+        order=None,
+    ):
         self.fid = fid
         self.url = url
         self.name = name
@@ -223,7 +229,7 @@ class FileData(BaseObject):
 
 
 class FileDoesNotExists(Exception):
-    __slots__ = ['fid']
+    __slots__ = ["fid"]
 
     def __init__(self, fid=None):
         self.fid = fid
@@ -231,27 +237,29 @@ class FileDoesNotExists(Exception):
 
 class InteractionTask(BaseObject):
     __slots__ = [
-        'iid',
-        'input',
-        'structure',
-        'preset',
-        'output',
-        'data',
-        'title',
-        'description',
-        'plugin']
+        "iid",
+        "input",
+        "structure",
+        "preset",
+        "output",
+        "data",
+        "title",
+        "description",
+        "plugin",
+    ]
 
     def __init__(
-            self,
-            iid=None,
-            input=None,
-            structure=None,
-            preset=None,
-            output=None,
-            data=None,
-            title=None,
-            description=None,
-            plugin=None):
+        self,
+        iid=None,
+        input=None,
+        structure=None,
+        preset=None,
+        output=None,
+        data=None,
+        title=None,
+        description=None,
+        plugin=None,
+    ):
         self.iid = iid
         self.input = input
         self.structure = structure
@@ -264,7 +272,7 @@ class InteractionTask(BaseObject):
 
 
 class OnlineCheck(BaseObject):
-    __slots__ = ['rid', 'data']
+    __slots__ = ["rid", "data"]
 
     def __init__(self, rid=None, data=None):
         self.rid = rid
@@ -272,15 +280,11 @@ class OnlineCheck(BaseObject):
 
 
 class OnlineStatus(BaseObject):
-    __slots__ = ['name', 'plugin', 'packagename', 'status', 'size']
+    __slots__ = ["name", "plugin", "packagename", "status", "size"]
 
     def __init__(
-            self,
-            name=None,
-            plugin=None,
-            packagename=None,
-            status=None,
-            size=None):
+        self, name=None, plugin=None, packagename=None, status=None, size=None
+    ):
         self.name = name
         self.plugin = plugin
         self.packagename = packagename
@@ -290,35 +294,37 @@ class OnlineStatus(BaseObject):
 
 class PackageData(BaseObject):
     __slots__ = [
-        'pid',
-        'name',
-        'folder',
-        'site',
-        'password',
-        'dest',
-        'order',
-        'linksdone',
-        'sizedone',
-        'sizetotal',
-        'linkstotal',
-        'links',
-        'fids']
+        "pid",
+        "name",
+        "folder",
+        "site",
+        "password",
+        "dest",
+        "order",
+        "linksdone",
+        "sizedone",
+        "sizetotal",
+        "linkstotal",
+        "links",
+        "fids",
+    ]
 
     def __init__(
-            self,
-            pid=None,
-            name=None,
-            folder=None,
-            site=None,
-            password=None,
-            dest=None,
-            order=None,
-            linksdone=None,
-            sizedone=None,
-            sizetotal=None,
-            linkstotal=None,
-            links=None,
-            fids=None):
+        self,
+        pid=None,
+        name=None,
+        folder=None,
+        site=None,
+        password=None,
+        dest=None,
+        order=None,
+        linksdone=None,
+        sizedone=None,
+        sizetotal=None,
+        linkstotal=None,
+        links=None,
+        fids=None,
+    ):
         self.pid = pid
         self.name = name
         self.folder = folder
@@ -335,24 +341,25 @@ class PackageData(BaseObject):
 
 
 class PackageDoesNotExists(Exception):
-    __slots__ = ['pid']
+    __slots__ = ["pid"]
 
     def __init__(self, pid=None):
         self.pid = pid
 
 
 class ServerStatus(BaseObject):
-    __slots__ = ['pause', 'active', 'queue', 'total', 'speed', 'download', 'reconnect']
+    __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect"]
 
     def __init__(
-            self,
-            pause=None,
-            active=None,
-            queue=None,
-            total=None,
-            speed=None,
-            download=None,
-            reconnect=None):
+        self,
+        pause=None,
+        active=None,
+        queue=None,
+        total=None,
+        speed=None,
+        download=None,
+        reconnect=None,
+    ):
         self.pause = pause
         self.active = active
         self.queue = queue
@@ -363,7 +370,7 @@ class ServerStatus(BaseObject):
 
 
 class ServiceCall(BaseObject):
-    __slots__ = ['plugin', 'func', 'arguments', 'parseArguments']
+    __slots__ = ["plugin", "func", "arguments", "parseArguments"]
 
     def __init__(self, plugin=None, func=None, arguments=None, parseArguments=None):
         self.plugin = plugin
@@ -373,7 +380,7 @@ class ServiceCall(BaseObject):
 
 
 class ServiceDoesNotExists(Exception):
-    __slots__ = ['plugin', 'func']
+    __slots__ = ["plugin", "func"]
 
     def __init__(self, plugin=None, func=None):
         self.plugin = plugin
@@ -381,22 +388,18 @@ class ServiceDoesNotExists(Exception):
 
 
 class ServiceException(Exception):
-    __slots__ = ['msg']
+    __slots__ = ["msg"]
 
     def __init__(self, msg=None):
         self.msg = msg
 
 
 class UserData(BaseObject):
-    __slots__ = ['name', 'email', 'role', 'permission', 'templateName']
+    __slots__ = ["name", "email", "role", "permission", "templateName"]
 
     def __init__(
-            self,
-            name=None,
-            email=None,
-            role=None,
-            permission=None,
-            templateName=None):
+        self, name=None, email=None, role=None, permission=None, templateName=None
+    ):
         self.name = name
         self.email = email
         self.role = role

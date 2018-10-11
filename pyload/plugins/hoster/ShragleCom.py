@@ -9,10 +9,9 @@ class ShragleCom(DeadHoster):
     __version__ = "0.27"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?(cloudnator|shragle)\.com/files/(?P<ID>.+?)/'
+    __pattern__ = r"http://(?:www\.)?(cloudnator|shragle)\.com/files/(?P<ID>.+?)/"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Cloudnator.com (Shragle.com) hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
-                   ("zoidberg", "zoidberg@mujmail.cz")]
+    __authors__ = [("RaNaN", "RaNaN@pyload.net"), ("zoidberg", "zoidberg@mujmail.cz")]

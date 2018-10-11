@@ -36,14 +36,14 @@ class PyPackage(object):
         """
         return {
             self.id: {
-                'id': self.id,
-                'name': self.name,
-                'folder': self.folder,
-                'site': self.site,
-                'password': self.password,
-                'queue': self.queue,
-                'order': self.order,
-                'links': {}
+                "id": self.id,
+                "name": self.name,
+                "folder": self.folder,
+                "site": self.site,
+                "password": self.password,
+                "queue": self.queue,
+                "order": self.order,
+                "links": {},
             }
         }
 

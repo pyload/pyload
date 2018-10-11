@@ -6,7 +6,7 @@ import subprocess
 import sys
 from builtins import input
 
-#from pyload import InitHomeDir
+# from pyload import InitHomeDir
 
 # very ugly prints, but at least it works with python 3
 
@@ -19,39 +19,46 @@ def main():
 
     try:
         import pycurl
+
         print("pycurl:", pycurl.version)
     except Exception:
         print("pycurl:", "missing")
 
     try:
         import Crypto
+
         print("py-crypto:", Crypto.__version__)
     except Exception:
         print("py-crypto:", "missing")
 
     try:
         import OpenSSL
+
         print("OpenSSL:", OpenSSL.version.__version__)
     except Exception:
         print("OpenSSL:", "missing")
 
     try:
         from PIL import Image
+
         print("image library:", Image.VERSION)
     except Exception:
         try:
             import Image
+
             print("image library:", Image.VERSION)
         except Exception:
             print("image library:", "missing")
 
     try:
         import PyQt4.QtCore
+
         print("pyqt:", PyQt4.QtCore.PYQT_VERSION_STR)
     except Exception:
         print("pyqt:", "missing")
 
     from pyload.utils import JsEngine
+
     js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
     print("JS engine:", js)
 
@@ -81,7 +88,8 @@ def main():
             import Image
         except Exception:
             core_err.append(
-                "Please install py-imaging/pil/pillow to use Hoster, which uses captchas.")
+                "Please install py-imaging/pil/pillow to use Hoster, which uses captchas."
+            )
 
     pipe = subprocess.PIPE
     try:
@@ -93,11 +101,14 @@ def main():
         import OpenSSL
     except Exception:
         core_info.append(
-            "Install OpenSSL if you want to create a secure connection to the core.")
+            "Install OpenSSL if you want to create a secure connection to the core."
+        )
 
     if not js:
         print("no JavaScript engine found")
-        print("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino")
+        print(
+            "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
+        )
 
     if core_err:
         print("The system check has detected some errors:\n")

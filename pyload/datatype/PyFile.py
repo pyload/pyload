@@ -35,6 +35,7 @@ class PyFile(object):
     """
     Represents a file object at runtime
     """
+
     __slots__ = (
         "m",
         "id",
@@ -57,20 +58,12 @@ class PyFile(object):
         "progress",
         "maxprogress",
         "pluginmodule",
-        "pluginclass")
+        "pluginclass",
+    )
 
     def __init__(
-            self,
-            manager,
-            id,
-            url,
-            name,
-            size,
-            status,
-            error,
-            pluginname,
-            package,
-            order):
+        self, manager, id, url, name, size, status, error, pluginname, package, order
+    ):
         self.m = manager
 
         self.id = int(id)
@@ -90,7 +83,7 @@ class PyFile(object):
         self.lock = RLock()
 
         self.plugin = None
-        #self.download = None
+        # self.download = None
 
         self.waitUntil = 0  # time() + time to wait
 
@@ -119,8 +112,8 @@ class PyFile(object):
             self.pluginmodule = self.m.pyload.pluginManager.getPlugin(self.pluginname)
             self.pluginclass = getattr(
                 self.pluginmodule,
-                self.m.pyload.pluginManager.getPluginName(
-                    self.pluginname))
+                self.m.pyload.pluginManager.getPluginName(self.pluginname),
+            )
             self.plugin = self.pluginclass(self)
 
     @lock
@@ -189,17 +182,17 @@ class PyFile(object):
         """
         return {
             self.id: {
-                'id': self.id,
-                'url': self.url,
-                'name': self.name,
-                'plugin': self.pluginname,
-                'size': self.getSize(),
-                'format_size': self.formatSize(),
-                'status': self.status,
-                'statusmsg': self.getStatusName(),
-                'package': self.packageid,
-                'error': self.error,
-                'order': self.order
+                "id": self.id,
+                "url": self.url,
+                "name": self.name,
+                "plugin": self.pluginname,
+                "size": self.getSize(),
+                "format_size": self.formatSize(),
+                "status": self.status,
+                "statusmsg": self.getStatusName(),
+                "package": self.packageid,
+                "error": self.error,
+                "order": self.order,
             }
         }
 
@@ -300,9 +293,8 @@ class PyFile(object):
 
     def notifyChange(self):
         e = UpdateEvent(
-            "file",
-            self.id,
-            "collector" if not self.package().queue else "queue")
+            "file", self.id, "collector" if not self.package().queue else "queue"
+        )
         self.m.pyload.pullManager.addEvent(e)
 
     def setProgress(self, value):

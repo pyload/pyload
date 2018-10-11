@@ -6,8 +6,12 @@ import string
 import subprocess
 from builtins import _, filter, map, pypath
 
-from pyload.plugins.internal.Extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
+from pyload.plugins.internal.Extractor import (
+    ArchiveError,
+    CRCError,
+    Extractor,
+    PasswordError,
+)
 from pyload.plugins.utils import encode, fsjoin, renice
 
 
@@ -19,21 +23,65 @@ class SevenZip(Extractor):
 
     __description__ = """7-Zip extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Michael Nowak", None)]
+    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"), ("Michael Nowak", None)]
 
     CMD = "7z"
-    EXTENSIONS = [('7z', "7z(?:\.\d{3})?"), "xz", "gz", "gzip", "tgz", "bz2", "bzip2", "tbz2",
-                  "tbz", "tar", "wim", "swm", "lzma", "rar", "cab", "arj", "z",
-                  "taz", "cpio", "rpm", "deb", "lzh", "lha", "chm", "chw", "hxs",
-                  "iso", "msi", "doc", "xls", "ppt", "dmg", "xar", "hfs", "exe",
-                  "ntfs", "fat", "vhd", "mbr", "squashfs", "cramfs", "scap"]
+    EXTENSIONS = [
+        ("7z", "7z(?:\.\d{3})?"),
+        "xz",
+        "gz",
+        "gzip",
+        "tgz",
+        "bz2",
+        "bzip2",
+        "tbz2",
+        "tbz",
+        "tar",
+        "wim",
+        "swm",
+        "lzma",
+        "rar",
+        "cab",
+        "arj",
+        "z",
+        "taz",
+        "cpio",
+        "rpm",
+        "deb",
+        "lzh",
+        "lha",
+        "chm",
+        "chw",
+        "hxs",
+        "iso",
+        "msi",
+        "doc",
+        "xls",
+        "ppt",
+        "dmg",
+        "xar",
+        "hfs",
+        "exe",
+        "ntfs",
+        "fat",
+        "vhd",
+        "mbr",
+        "squashfs",
+        "cramfs",
+        "scap",
+    ]
 
-    _RE_PART = re.compile(r'\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
-    _RE_FILES = re.compile(r'([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)')
-    _RE_BADPWD = re.compile(r'(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)', re.I)
-    _RE_BADCRC = re.compile(r'CRC Failed|Can not open file', re.I)
-    _RE_VERSION = re.compile(r'7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)', re.I)
+    _RE_PART = re.compile(r"\.7z\.\d{3}|\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_FILES = re.compile(
+        r"([\d\-]+)\s+([\d\:]+)\s+([RHSA\.]+)\s+(\d+)\s+(\d+)\s+(.+)"
+    )
+    _RE_BADPWD = re.compile(
+        r"(Can not open encrypted archive|Wrong password|Encrypted\s+\=\s+\+)", re.I
+    )
+    _RE_BADCRC = re.compile(r"CRC Failed|Can not open file", re.I)
+    _RE_VERSION = re.compile(
+        r"7-Zip\s(?:\(\w+\)\s)?(?:\[(?:32|64)\]\s)?(\d+\.\d+)", re.I
+    )
 
     @classmethod
     def find(cls):
@@ -41,9 +89,9 @@ class SevenZip(Extractor):
             if os.name == "nt":
                 cls.CMD = os.path.join(pypath, "7z.exe")
 
-            p = subprocess.Popen([cls.CMD],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
         except OSError:
@@ -95,15 +143,10 @@ class SevenZip(Extractor):
             else:
                 s += c
 
-
     def extract(self, password=None):
         command = "x" if self.fullpath else "e"
 
-        p = self.call_cmd(
-            command,
-            '-o' + self.dest,
-            self.filename,
-            password=password)
+        p = self.call_cmd(command, "-o" + self.dest, self.filename, password=password)
 
         #: Communicate and retrieve stderr
         self.progress(p)
@@ -127,8 +170,11 @@ class SevenZip(Extractor):
         dir, name = os.path.split(self.filename)
 
         #: eventually Multipart Files
-        files.extend(fsjoin(dir, os.path.basename(file)) for file in filter(self.ismultipart, os.listdir(dir))
-                     if self._RE_PART.sub("", name) == self._RE_PART.sub("", file))
+        files.extend(
+            fsjoin(dir, os.path.basename(file))
+            for file in filter(self.ismultipart, os.listdir(dir))
+            if self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
+        )
 
         #: Actually extracted file
         if self.filename not in files:
@@ -162,7 +208,7 @@ class SevenZip(Extractor):
 
         #: Progress output
         if self.VERSION and float(self.VERSION) >= 15.08:
-                args.append("-bsp1")
+            args.append("-bsp1")
 
         #: Overwrite flag
         if self.overwrite:
@@ -181,7 +227,7 @@ class SevenZip(Extractor):
             args.append("-xr!{}".format(word.strip()))
 
         #: Set a password
-        password = kwargs.get('password')
+        password = kwargs.get("password")
 
         if password:
             args.append("-p{}".format(password))
@@ -193,10 +239,7 @@ class SevenZip(Extractor):
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = list(map(encode, call))
-        p = subprocess.Popen(
-            call,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
 

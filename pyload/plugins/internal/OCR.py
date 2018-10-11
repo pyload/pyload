@@ -34,7 +34,8 @@ class OCR(Plugin):
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.__name__,) + messages
         return self.pyfile.plugin._log(
-            level, plugintype, self.pyfile.plugin.__name__, messages)
+            level, plugintype, self.pyfile.plugin.__name__, messages
+        )
 
     def load_image(self, image):
         self.img = Image.open(image)
@@ -59,10 +60,8 @@ class OCR(Plugin):
 
         call = list(map(encode, call))
         popen = subprocess.Popen(
-            call,
-            bufsize=-1,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            call, bufsize=-1, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         popen.wait()
 
         output = popen.stdout.read() + " | " + popen.stderr.read()
@@ -71,30 +70,24 @@ class OCR(Plugin):
         popen.stderr.close()
 
         self.log_debug(
-            "Tesseract ReturnCode {}" %
-            popen.returncode,
-            "Output: {}" %
-            output)
+            "Tesseract ReturnCode {}" % popen.returncode, "Output: {}" % output
+        )
 
-    def run_tesser(self, subset=False, digits=True,
-                   lowercase=True, uppercase=True, pagesegmode=None):
+    def run_tesser(
+        self,
+        subset=False,
+        digits=True,
+        lowercase=True,
+        uppercase=True,
+        pagesegmode=None,
+    ):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(
-                fsjoin(
-                    "tmp",
-                    "tmpTif_{}.tif" %
-                    self.classname),
-                "wb")
+            tmpTif = open(fsjoin("tmp", "tmpTif_{}.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(
-                fsjoin(
-                    "tmp",
-                    "tmpTxt_{}.txt" %
-                    self.classname),
-                "wb")
+            tmpTxt = open(fsjoin("tmp", "tmpTxt_{}.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError as e:
@@ -102,7 +95,7 @@ class OCR(Plugin):
             return
 
         self.log_debug("Saving tiff...")
-        self.img.save(tmpTif.name, 'TIFF')
+        self.img.save(tmpTif.name, "TIFF")
 
         if os.name == "nt":
             command = os.path.join(pypath, "tesseract", "tesseract.exe")
@@ -110,19 +103,18 @@ class OCR(Plugin):
             command = "tesseract"
 
         args = [
-            os.path.abspath(
-                tmpTif.name),
-            os.path.abspath(
-                tmpTxt.name).replace(
-                ".txt",
-                "")]
+            os.path.abspath(tmpTif.name),
+            os.path.abspath(tmpTxt.name).replace(".txt", ""),
+        ]
 
         if pagesegmode:
             args.extend(["-psm", str(pagesegmode)])
 
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
-            with open(fsjoin("tmp", "tmpSub_{}.subset".format(self.classname)), "wb") as tmpSub:
+            with open(
+                fsjoin("tmp", "tmpSub_{}.subset".format(self.classname)), "wb"
+            ) as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 
                 if digits:
@@ -141,7 +133,7 @@ class OCR(Plugin):
         self.log_debug("Reading txt...")
 
         try:
-            with open(tmpTxt.name, 'r') as f:
+            with open(tmpTxt.name, "r") as f:
                 self.result_captcha = f.read().replace("\n", "")
 
         except Exception:
@@ -159,8 +151,8 @@ class OCR(Plugin):
         raise NotImplementedError
 
     def to_greyscale(self):
-        if self.img.mode != 'L':
-            self.img = self.img.convert('L')
+        if self.img.mode != "L":
+            self.img = self.img.convert("L")
 
         self.pixels = self.img.load()
 

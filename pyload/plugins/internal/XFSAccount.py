@@ -14,16 +14,20 @@ class XFSAccount(Account):
     __version__ = "0.59"
     __status__ = "stable"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("multi", "bool", "Multi-hoster", True),
-                  ("multi_mode", "all;listed;unlisted", "Hosters to use", "all"),
-                  ("multi_list", "str", "Hoster list (comma separated)", ""),
-                  ("multi_interval", "int", "Reload interval in hours", 12)]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("multi", "bool", "Multi-hoster", True),
+        ("multi_mode", "all;listed;unlisted", "Hosters to use", "all"),
+        ("multi_list", "str", "Hoster list (comma separated)", ""),
+        ("multi_interval", "int", "Reload interval in hours", 12),
+    ]
 
     __description__ = """XFileSharing account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+    ]
 
     PLUGIN_DOMAIN = None
     PLUGIN_URL = None
@@ -31,19 +35,19 @@ class XFSAccount(Account):
 
     COOKIES = True
 
-    PREMIUM_PATTERN = r'\(Premium only\)'
+    PREMIUM_PATTERN = r"\(Premium only\)"
 
-    VALID_UNTIL_PATTERN = r'Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})'
+    VALID_UNTIL_PATTERN = r"Premium.[Aa]ccount expire:.*?(\d{1,2} [\w^_]+ \d{4})"
 
-    TRAFFIC_LEFT_PATTERN = r'Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    TRAFFIC_LEFT_PATTERN = r"Traffic available today:.*?<b>\s*(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>"
     TRAFFIC_LEFT_UNIT = "MB"  #: Used only if no group <U> was found
 
-    LEECH_TRAFFIC_PATTERN = r'Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>'
+    LEECH_TRAFFIC_PATTERN = r"Leech Traffic left:<b>.*?(?P<S>[\d.,]+|[Uu]nlimited)\s*(?:(?P<U>[\w^_]+)\s*)?</b>"
     LEECH_TRAFFIC_UNIT = "MB"  #: Used only if no group <U> was found
 
-    LOGIN_FAIL_PATTERN = r'Incorrect Login or Password|account was banned|Error<'
-    LOGIN_BAN_PATTERN = r'>(Your IP.+?)<a'
-    LOGIN_SKIP_PATTERN = r'op=logout'
+    LOGIN_FAIL_PATTERN = r"Incorrect Login or Password|account was banned|Error<"
+    LOGIN_BAN_PATTERN = r">(Your IP.+?)<a"
+    LOGIN_SKIP_PATTERN = r"op=logout"
 
     def _set_xfs_cookie(self):
         cookie = (self.PLUGIN_DOMAIN, "lang", "english")
@@ -67,7 +71,7 @@ class XFSAccount(Account):
 
     # TODO: Implement default grab_hosters routine
     # def grab_hosters(self, user, password, data):
-        # pass
+    # pass
 
     def grab_info(self, user, password, data):
         validuntil = None
@@ -78,9 +82,9 @@ class XFSAccount(Account):
         if not self.PLUGIN_URL:  # TODO: Remove in 0.6.x
             return
 
-        self.data = self.load(self.PLUGIN_URL,
-                              get={'op': "my_account"},
-                              cookies=self.COOKIES)
+        self.data = self.load(
+            self.PLUGIN_URL, get={"op": "my_account"}, cookies=self.COOKIES
+        )
 
         premium = True if re.search(self.PREMIUM_PATTERN, self.data) else False
 
@@ -111,7 +115,7 @@ class XFSAccount(Account):
         if m is not None:
             try:
                 traffic = m.groupdict()
-                size = traffic['S']
+                size = traffic["S"]
 
                 if "nlimited" in size:
                     trafficleft = -1
@@ -119,8 +123,8 @@ class XFSAccount(Account):
                         validuntil = -1
 
                 else:
-                    if 'U' in traffic:
-                        unit = traffic['U']
+                    if "U" in traffic:
+                        unit = traffic["U"]
 
                     elif isinstance(self.TRAFFIC_LEFT_UNIT, str):
                         unit = self.TRAFFIC_LEFT_UNIT
@@ -136,14 +140,13 @@ class XFSAccount(Account):
             self.log_debug("TRAFFIC LEFT PATTERN not found")
 
         leech = [
-            m.groupdict() for m in re.finditer(
-                self.LEECH_TRAFFIC_PATTERN,
-                self.data)]
+            m.groupdict() for m in re.finditer(self.LEECH_TRAFFIC_PATTERN, self.data)
+        ]
         if leech:
             leechtraffic = 0
             try:
                 for traffic in leech:
-                    size = traffic['S']
+                    size = traffic["S"]
 
                     if "nlimited" in size:
                         leechtraffic = -1
@@ -151,8 +154,8 @@ class XFSAccount(Account):
                             validuntil = -1
                         break
                     else:
-                        if 'U' in traffic:
-                            unit = traffic['U']
+                        if "U" in traffic:
+                            unit = traffic["U"]
                         elif isinstance(self.LEECH_TRAFFIC_UNIT, str):
                             unit = self.LEECH_TRAFFIC_UNIT
                         else:
@@ -165,10 +168,12 @@ class XFSAccount(Account):
         else:
             self.log_debug("LEECH TRAFFIC PATTERN not found")
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft,
-                'leechtraffic': leechtraffic,
-                'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "leechtraffic": leechtraffic,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
         self.data = self.load(self.LOGIN_URL, cookies=self.COOKIES)
@@ -178,11 +183,9 @@ class XFSAccount(Account):
 
         action, inputs = parse_html_form('name="FL"', self.data)
         if not inputs:
-            inputs = {'op': "login",
-                      'redirect': self.PLUGIN_URL}
+            inputs = {"op": "login", "redirect": self.PLUGIN_URL}
 
-        inputs.update({'login': user,
-                       'password': password})
+        inputs.update({"login": user, "password": password})
 
         if action:
             url = urllib.parse.urljoin("http://", action)
@@ -209,7 +212,7 @@ class XFSAccount(Account):
                 errmsg = m.group(0)
 
             finally:
-                errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
+                errmsg = re.sub(r"<.*?>", " ", errmsg.strip())
 
             new_timeout = parse_time(errmsg)
             if new_timeout > self.timeout:
@@ -226,7 +229,7 @@ class XFSAccount(Account):
                 errmsg = m.group(0)
 
             finally:
-                errmsg = re.sub(r'<.*?>', " ", errmsg.strip())
+                errmsg = re.sub(r"<.*?>", " ", errmsg.strip())
 
             self.timeout = self.LOGIN_TIMEOUT
             self.fail_login(errmsg)

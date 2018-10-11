@@ -11,18 +11,18 @@ class PastedCo(Crypter):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pattern__ = r'http://pasted\.co/\w+'
+    __pattern__ = r"http://pasted\.co/\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Pasted.co decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Frederik Möllers", "fred-public@posteo.de")]
 
-    NAME_PATTERN = r'<title>(?P<N>.+?) - .+</title>'
+    NAME_PATTERN = r"<title>(?P<N>.+?) - .+</title>"
     NAME_PATTERN = r"'save_paste' href=\"(http://pasted.co/[0-9a-f]+)/info"
 
-    FS_URL_PREFIX = '<pre id=\'thepaste\' class="prettyprint">'
-    FS_URL_SUFFIX = '</pre>'
+    FS_URL_PREFIX = "<pre id='thepaste' class=\"prettyprint\">"
+    FS_URL_SUFFIX = "</pre>"
 
     def decrypt(self, pyfile):
         package = pyfile.package()
@@ -30,9 +30,7 @@ class PastedCo(Crypter):
         pack_folder = package.folder
         html = self.load(pyfile.url, decode=True).splitlines()
         fs_url = None
-        FS_URL_RE = re.compile(
-            '{}/fullscreen\.php\?hash=[0-9a-f]*' %
-            pyfile.url)
+        FS_URL_RE = re.compile("{}/fullscreen\.php\?hash=[0-9a-f]*" % pyfile.url)
         for line in html:
             match = FS_URL_RE.search(line)
             if match:
@@ -41,7 +39,6 @@ class PastedCo(Crypter):
         if not fs_url:
             raise Exception("Could not find pasted.co fullscreen URL!")
         urls = self.load(fs_url, decode=True)
-        urls = urls[urls.find(PastedCo.FS_URL_PREFIX) +
-                    len(PastedCo.FS_URL_PREFIX):]
-        urls = urls[:urls.find(PastedCo.FS_URL_SUFFIX)].splitlines()
+        urls = urls[urls.find(PastedCo.FS_URL_PREFIX) + len(PastedCo.FS_URL_PREFIX) :]
+        urls = urls[: urls.find(PastedCo.FS_URL_SUFFIX)].splitlines()
         self.packages.append((pack_name, urls, pack_folder))

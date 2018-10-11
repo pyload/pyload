@@ -12,7 +12,7 @@ class HearthisAt(Hoster):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?hearthis\.at/.*#pyload$'
+    __pattern__ = r"https?://(?:www\.)?hearthis\.at/.*#pyload$"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hearthis.at hoster plugin"""
@@ -25,16 +25,17 @@ class HearthisAt(Hoster):
     def process(self, pyfile):
         self.data = self.load(pyfile.url)
 
-        m = re.search(r'intTrackId = (\d+);', self.data)
+        m = re.search(r"intTrackId = (\d+);", self.data)
         if m is None:
             self.fail(_("Track ID not found"))
 
         track_id = m.group(1)
 
-        data = self.load("https://hearthis.at/playlist.php",
-                         post={'tracks[]': track_id})
+        data = self.load(
+            "https://hearthis.at/playlist.php", post={"tracks[]": track_id}
+        )
         json_data = json.loads(data)
 
-        pyfile.name = json_data[0]['title'] + ".mp3"
+        pyfile.name = json_data[0]["title"] + ".mp3"
 
-        self.download(json_data[0]['track_url'])
+        self.download(json_data[0]["track_url"])

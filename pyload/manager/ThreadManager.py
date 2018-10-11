@@ -20,20 +20,19 @@ from pyload.utils.utils import freeSpace, lock
 class ThreadManager(object):
     """manages the download threads, assign jobs, reconnect etc"""
 
-
     def __init__(self, core):
         """Constructor"""
         self.pyload = core
         self.log = core.log
 
         self.threads = []  # thread list
-        self.localThreads = []  #addon+decrypter threads
+        self.localThreads = []  # addon+decrypter threads
 
         self.pause = True
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0 #number of files downloaded since last cleanup
+        self.downloaded = 0  # number of files downloaded since last cleanup
 
         self.lock = Lock()
 
@@ -46,14 +45,13 @@ class ThreadManager(object):
 
         # threads which are fetching hoster results
         self.infoResults = {}
-        #timeout for cache purge
+        # timeout for cache purge
         self.timestamp = 0
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
         for i in range(0, self.pyload.config.get("download", "max_downloads")):
             self.createThread()
-
 
     def createThread(self):
         """create a download thread"""
@@ -82,7 +80,6 @@ class ThreadManager(object):
 
         return rid
 
-
     @lock
     def getInfoResult(self, rid):
         """returns result and clears it"""
@@ -100,7 +97,9 @@ class ThreadManager(object):
         self.infoResults[rid].update(result)
 
     def getActiveFiles(self):
-        active = [x.active for x in self.threads if x.active and isinstance(x.active, PyFile)]
+        active = [
+            x.active for x in self.threads if x.active and isinstance(x.active, PyFile)
+        ]
 
         for t in self.localThreads:
             active.extend(t.getActiveFiles())
@@ -111,13 +110,12 @@ class ThreadManager(object):
         """get a id list of all pyfiles processed"""
         return [x.id for x in self.getActiveFiles()]
 
-
     def work(self):
         """run all task which have to be done (this is for repetivive call by core)"""
         try:
             self.tryReconnect()
         except Exception as e:
-            self.log.error(_("Reconnect Failed: {}").format(str(e)) )
+            self.log.error(_("Reconnect Failed: {}").format(str(e)))
             self.reconnecting.clear()
             if self.pyload.debug:
                 print_exc()
@@ -132,28 +130,37 @@ class ThreadManager(object):
 
             sleep(0.5)
             self.assignJob()
-            #it may be failed non critical so we try it again
+            # it may be failed non critical so we try it again
 
         if (self.infoCache or self.infoResults) and self.timestamp < time():
             self.infoCache.clear()
             self.infoResults.clear()
             self.log.debug("Cleared Result cache")
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def tryReconnect(self):
         """checks if reconnect needed"""
 
-        if not (self.pyload.config["reconnect"]["activated"] and self.pyload.api.isTimeReconnect()):
+        if not (
+            self.pyload.config["reconnect"]["activated"]
+            and self.pyload.api.isTimeReconnect()
+        ):
             return False
 
-        active = [x.active.plugin.wantReconnect and x.active.plugin.waiting for x in self.threads if x.active]
+        active = [
+            x.active.plugin.wantReconnect and x.active.plugin.waiting
+            for x in self.threads
+            if x.active
+        ]
 
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.pyload.config['reconnect']['method']):
-            if exists(join(pypath, self.pyload.config['reconnect']['method'])):
-                self.pyload.config['reconnect']['method'] = join(pypath, self.pyload.config['reconnect']['method'])
+        if not exists(self.pyload.config["reconnect"]["method"]):
+            if exists(join(pypath, self.pyload.config["reconnect"]["method"])):
+                self.pyload.config["reconnect"]["method"] = join(
+                    pypath, self.pyload.config["reconnect"]["method"]
+                )
             else:
                 self.pyload.config["reconnect"]["activated"] = False
                 self.log.warning(_("Reconnect script not found!"))
@@ -161,10 +168,12 @@ class ThreadManager(object):
 
         self.reconnecting.set()
 
-        #Do reconnect
+        # Do reconnect
         self.log.info(_("Starting reconnect"))
 
-        while [x.active.plugin.waiting for x in self.threads if x.active].count(True) != 0:
+        while [x.active.plugin.waiting for x in self.threads if x.active].count(
+            True
+        ) != 0:
             sleep(0.25)
 
         ip = self.getIP()
@@ -174,7 +183,9 @@ class ThreadManager(object):
         self.log.debug("Old IP: {}".format(ip))
 
         try:
-            reconn = Popen(self.pyload.config['reconnect']['method'], bufsize=-1, shell=True)#, stdout=subprocess.PIPE)
+            reconn = Popen(
+                self.pyload.config["reconnect"]["method"], bufsize=-1, shell=True
+            )  # , stdout=subprocess.PIPE)
         except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config["reconnect"]["activated"] = False
@@ -194,8 +205,10 @@ class ThreadManager(object):
 
     def getIP(self):
         """retrieve current ip"""
-        services = [("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
-                    ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*")]
+        services = [
+            ("http://automation.whatismyip.com/n09230945.asp", "(\S+)"),
+            ("http://checkip.dyndns.org/", ".*Current IP Address: (\S+)</body>.*"),
+        ]
 
         ip = ""
         for i in range(10):
@@ -210,7 +223,7 @@ class ThreadManager(object):
 
         return ip
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def checkThreadCount(self):
         """checks if there are need for increasing or reducing thread count"""
 
@@ -223,7 +236,6 @@ class ThreadManager(object):
             if free:
                 free[0].put("quit")
 
-
     def cleanPycurl(self):
         """ make a global curl cleanup (currently ununused) """
         if self.processingIds():
@@ -234,22 +246,49 @@ class ThreadManager(object):
         self.log.debug("Cleaned up pycurl")
         return True
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     def assignJob(self):
         """assing a job to a thread if possible"""
 
-        if self.pause or not self.pyload.api.isTimeDownload(): return
+        if self.pause or not self.pyload.api.isTimeDownload():
+            return
 
-        #if self.downloaded > 20:
+        # if self.downloaded > 20:
         #    if not self.cleanPyCurl(): return
 
         free = [x for x in self.threads if not x.active]
 
-        inuse = set([(x.active.pluginname, self.getLimit(x)) for x in self.threads if x.active and x.active.hasPlugin() and x.active.plugin.account])
-        inuse = [(x[0], x[1], len([y for y in self.threads if y.active and y.active.pluginname == x[0]])) for x in inuse]
+        inuse = set(
+            [
+                (x.active.pluginname, self.getLimit(x))
+                for x in self.threads
+                if x.active and x.active.hasPlugin() and x.active.plugin.account
+            ]
+        )
+        inuse = [
+            (
+                x[0],
+                x[1],
+                len(
+                    [
+                        y
+                        for y in self.threads
+                        if y.active and y.active.pluginname == x[0]
+                    ]
+                ),
+            )
+            for x in inuse
+        ]
         onlimit = [x[0] for x in inuse if x[1] > 0 and x[2] >= x[1]]
 
-        occ = sorted([x.active.pluginname for x in self.threads if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL] + onlimit)
+        occ = sorted(
+            [
+                x.active.pluginname
+                for x in self.threads
+                if x.active and x.active.hasPlugin() and not x.active.plugin.multiDL
+            ]
+            + onlimit
+        )
 
         occ = tuple(set(occ))
         job = self.pyload.files.getJob(occ)
@@ -265,34 +304,39 @@ class ThreadManager(object):
                 return
 
             if job.plugin.__type__ == "hoster":
-                spaceLeft = freeSpace(self.pyload.config["general"]["download_folder"]) // 1024 // 1024
+                spaceLeft = (
+                    freeSpace(self.pyload.config["general"]["download_folder"])
+                    // 1024
+                    // 1024
+                )
                 if spaceLeft < self.pyload.config["general"]["min_free_space"]:
                     self.log.warning(_("Not enough space left on device"))
                     self.pause = True
 
                 if free and not self.pause:
                     thread = free[0]
-                    #self.downloaded += 1
+                    # self.downloaded += 1
 
                     thread.put(job)
                 else:
-                    #put job back
+                    # put job back
                     if occ not in self.pyload.files.jobCache:
                         self.pyload.files.jobCache[occ] = []
                     self.pyload.files.jobCache[occ].append(job.id)
 
-                    #check for decrypt jobs
+                    # check for decrypt jobs
                     job = self.pyload.files.getDecryptJob()
                     if job:
                         job.initPlugin()
                         thread = PluginThread.DecrypterThread(self, job)
 
-
             else:
                 thread = PluginThread.DecrypterThread(self, job)
 
     def getLimit(self, thread):
-        limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)["options"].get("limitDL", ["0"])[0]
+        limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)[
+            "options"
+        ].get("limitDL", ["0"])[0]
         return int(limit)
 
     def cleanup(self):

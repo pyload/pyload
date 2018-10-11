@@ -37,7 +37,8 @@ class AccountManager(object):
         if plugin in self.accounts:
             if plugin not in self.plugins:
                 self.plugins[plugin] = self.pyload.pluginManager.loadClass(
-                    "accounts", plugin)(self, self.accounts[plugin])
+                    "accounts", plugin
+                )(self, self.accounts[plugin])
 
             return self.plugins[plugin]
         else:
@@ -51,6 +52,7 @@ class AccountManager(object):
             plugins.append(self.getAccountPlugin(plugin))
 
         return plugins
+
     # ----------------------------------------------------------------------
 
     def loadAccounts(self):
@@ -72,7 +74,8 @@ class AccountManager(object):
             f.write("version: " + str(ACC_VERSION))
             f.close()
             self.pyload.log.warning(
-                _("Account settings deleted, due to new config format."))
+                _("Account settings deleted, due to new config format.")
+            )
             return
 
         plugin = ""
@@ -95,15 +98,22 @@ class AccountManager(object):
             elif line.startswith("@"):
                 try:
                     option = line[1:].split()
-                    self.accounts[plugin][name]["options"][option[0]] = [] if len(
-                        option) < 2 else ([option[1]] if len(option) < 3 else option[1:])
+                    self.accounts[plugin][name]["options"][option[0]] = (
+                        []
+                        if len(option) < 2
+                        else ([option[1]] if len(option) < 3 else option[1:])
+                    )
                 except Exception:
                     pass
 
             elif ":" in line:
                 name, sep, pw = line.partition(":")
                 self.accounts[plugin][name] = {
-                    "password": pw, "options": {}, "valid": True}
+                    "password": pw,
+                    "options": {},
+                    "valid": True,
+                }
+
     # ----------------------------------------------------------------------
 
     def saveAccounts(self):
@@ -117,9 +127,9 @@ class AccountManager(object):
             f.write(plugin + ":\n")
 
             for name, data in accounts.items():
-                f.write("\n\t{}:{}\n".format(name, data['password']))
-                if data['options']:
-                    for option, values in data['options'].items():
+                f.write("\n\t{}:{}\n".format(name, data["password"]))
+                if data["options"]:
+                    for option, values in data["options"].items():
                         f.write("\t@{} {}\n".format(option, " ".join(values)))
 
         f.close()

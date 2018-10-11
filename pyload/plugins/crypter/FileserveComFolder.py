@@ -11,20 +11,17 @@ class FileserveComFolder(Crypter):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?fileserve\.com/list/\w+'
+    __pattern__ = r"http://(?:www\.)?fileserve\.com/list/\w+"
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         True),
-        ("use_premium",
-         "bool",
-         "Use premium account if available",
-         True),
-        ("folder_per_package",
-         "Default;Yes;No",
-         "Create folder for each package",
-         "Default")]
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+    ]
 
     __description__ = """FileServe.com folder decrypter plugin"""
     __license__ = "GPLv3"
@@ -45,5 +42,4 @@ class FileserveComFolder(Crypter):
         new_links.extend(re.findall(self.LINK_PATTERN, folder.group(1)))
 
         if new_links:
-            self.links = [
-                ["http://fileserve.com{}".format(s) for s in new_links]]
+            self.links = [["http://fileserve.com{}".format(s) for s in new_links]]

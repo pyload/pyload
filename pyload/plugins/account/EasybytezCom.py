@@ -11,7 +11,9 @@ class EasybytezCom(XFSAccount):
 
     __description__ = """EasyBytez.com account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("guidobelix", "guidobelix@hotmail.it")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("guidobelix", "guidobelix@hotmail.it"),
+    ]
 
     PLUGIN_DOMAIN = "easybytez.com"

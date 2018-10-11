@@ -11,13 +11,14 @@ class UploadgigCom(SimpleHoster):
     __version__ = "0.04"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?uploadgig.com/file/download/\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?uploadgig.com/file/download/\w+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Uploadgig.com hoster plugin"""
     __license__ = "GPLv3"
@@ -28,9 +29,11 @@ class UploadgigCom(SimpleHoster):
     NAME_PATTERN = r'<span class="filename">(?P<N>.+?)<'
     SIZE_PATTERN = r'<span class="filesize">\[(?P<S>[\d.,]+) (?P<U>[\w^_]+)\]<'
 
-    OFFLINE_PATTERN = r'File not found'
+    OFFLINE_PATTERN = r"File not found"
 
-    LOGIN_PREMIUM = True  #: Free download is not possible because they blocked noscript ReCaptcha
+    LOGIN_PREMIUM = (
+        True
+    )  #: Free download is not possible because they blocked noscript ReCaptcha
 
     def handle_free(self, pyfile):
         url, inputs = self.parse_html_form('id="dl_captcha_form"')
@@ -46,6 +49,5 @@ class UploadgigCom(SimpleHoster):
         self.captcha = recaptcha
         response, challenge = recaptcha.challenge(captcha_key)
 
-        inputs['g-recaptcha-response'] = response
-        self.data = self.load(self.fixurl(url),
-                              post=inputs)
+        inputs["g-recaptcha-response"] = response
+        self.data = self.load(self.fixurl(url), post=inputs)

@@ -9,7 +9,7 @@ class HotfileComFolder(DeadCrypter):
     __version__ = "0.36"
     __status__ = "stable"
 
-    __pattern__ = r'https?://(?:www\.)?hotfile\.com/list/\w+/\w+'
+    __pattern__ = r"https?://(?:www\.)?hotfile\.com/list/\w+/\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Hotfile.com folder decrypter plugin"""

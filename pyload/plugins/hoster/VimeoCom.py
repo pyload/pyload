@@ -13,24 +13,28 @@ class VimeoCom(SimpleHoster):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-                  ("quality", "Lowest;360p;540p;720p;1080p;Highest", "Quality", "Highest")]
+    __pattern__ = r"https?://(?:www\.)?(player\.)?vimeo\.com/(video/)?(?P<ID>\d+)"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("quality", "Lowest;360p;540p;720p;1080p;Highest", "Quality", "Highest"),
+    ]
 
     __description__ = """Vimeo.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
-    NAME_PATTERN = r'<title>(?P<N>.+?) on Vimeo<'
+    NAME_PATTERN = r"<title>(?P<N>.+?) on Vimeo<"
     OFFLINE_PATTERN = r'class="exception_header"'
-    TEMP_OFFLINE_PATTERN = r'Please try again in a few minutes.<'
+    TEMP_OFFLINE_PATTERN = r"Please try again in a few minutes.<"
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://vimeo.com/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://vimeo.com/\g<ID>")]
 
     COOKIES = [("vimeo.com", "language", "en")]
 
@@ -39,8 +43,8 @@ class VimeoCom(SimpleHoster):
         info = super(VimeoCom, cls).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
-        if 'name' in info:
-            info['name'] += ".mp4"
+        if "name" in info:
+            info["name"] += ".mp4"
 
         return info
 
@@ -58,32 +62,33 @@ class VimeoCom(SimpleHoster):
                 self.fail(_("Video is password protected"))
 
             token = re.search(r'"vimeo":{"xsrft":"(.+?)"}', self.data).group(1)
-            inputs['token'] = token
-            inputs['password'] = password
+            inputs["token"] = token
+            inputs["password"] = password
 
-            self.data = self.load(urllib.parse.urljoin(pyfile.url, url),
-                                  post=inputs)
+            self.data = self.load(urllib.parse.urljoin(pyfile.url, url), post=inputs)
 
             if "Sorry, that password was incorrect. Please try again." in self.data:
                 self.fail(_("Wrong password"))
 
-        m = re.search(r'clip_page_config = ({.+?});', self.data)
+        m = re.search(r"clip_page_config = ({.+?});", self.data)
         if m is None:
             self.fail("Clip config pattern not found")
 
-        player_config_url = json.loads(m.group(1))['player']['config_url']
+        player_config_url = json.loads(m.group(1))["player"]["config_url"]
 
         json_data = self.load(player_config_url)
 
-        if not json_data.startswith('{'):
+        if not json_data.startswith("{"):
             self.fail(_("Unexpected response, expected JSON data"))
 
         json_data = json.loads(json_data)
 
-        videos = dict((v['quality'], v['url'])
-                      for v in json_data['request']['files']['progressive'])
+        videos = dict(
+            (v["quality"], v["url"])
+            for v in json_data["request"]["files"]["progressive"]
+        )
 
-        quality = self.config.get('quality')
+        quality = self.config.get("quality")
         if quality == "Highest":
             qlevel = ("1080p", "720p", "540p", "360p")
 

@@ -12,55 +12,59 @@ class SkipRev(Addon):
     __version__ = "0.38"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("mode", "Auto;Manual", "Choose recovery archives to skip", "Auto"),
-                  ("revtokeep", "int", "Number of recovery archives to keep for package", 0)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("mode", "Auto;Manual", "Choose recovery archives to skip", "Auto"),
+        ("revtokeep", "int", "Number of recovery archives to keep for package", 0),
+    ]
 
     __description__ = """Skip recovery archives (.rev)"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def _name(self, pyfile):
-        return pyfile.pluginclass.get_info(pyfile.url)['name']
+        return pyfile.pluginclass.get_info(pyfile.url)["name"]
 
     def _create_pyFile(self, data):
         pylink = self.pyload.api._convertPyFile(data)
-        return PyFile(self.pyload.files,
-                      pylink.fid,
-                      pylink.url,
-                      pylink.name,
-                      pylink.size,
-                      pylink.status,
-                      pylink.error,
-                      pylink.plugin,
-                      pylink.packageID,
-                      pylink.order)
+        return PyFile(
+            self.pyload.files,
+            pylink.fid,
+            pylink.url,
+            pylink.name,
+            pylink.size,
+            pylink.status,
+            pylink.error,
+            pylink.plugin,
+            pylink.packageID,
+            pylink.order,
+        )
 
     def download_preparing(self, pyfile):
         name = self._name(pyfile)
 
-        if pyfile.statusname == "unskipped" or not name.endswith(
-                ".rev") or not ".part" in name:
+        if (
+            pyfile.statusname == "unskipped"
+            or not name.endswith(".rev")
+            or not ".part" in name
+        ):
             return
 
-        revtokeep = - \
-            1 if self.config.get(
-                'mode') == "Auto" else self.config.get('revtokeep')
+        revtokeep = (
+            -1 if self.config.get("mode") == "Auto" else self.config.get("revtokeep")
+        )
 
         if revtokeep:
-            status_list = (
-                1, 4, 8, 9, 14) if revtokeep < 0 else (
-                1, 3, 4, 8, 9, 14)
+            status_list = (1, 4, 8, 9, 14) if revtokeep < 0 else (1, 3, 4, 8, 9, 14)
             pyname = re.compile(
-                r'{}\.part\d+\.rev$' %
-                name.rsplit(
-                    '.',
-                    2)[0].replace(
-                    '.',
-                    '\.'))
+                r"{}\.part\d+\.rev$" % name.rsplit(".", 2)[0].replace(".", "\.")
+            )
 
-            queued = [True for fid, fdata in pyfile.package().getChildren().items()
-                      if fdata['status'] not in status_list and pyname.match(fdata['name'])].count(True)
+            queued = [
+                True
+                for fid, fdata in pyfile.package().getChildren().items()
+                if fdata["status"] not in status_list and pyname.match(fdata["name"])
+            ].count(True)
 
             if not queued or queued < revtokeep:  #: Keep one rev at least in auto mode
                 return
@@ -68,26 +72,22 @@ class SkipRev(Addon):
         pyfile.setCustomStatus("SkipRev", "skipped")
 
     def download_failed(self, pyfile):
-        if pyfile.name.rsplit('.', 1)[-1].strip() not in ("rar", "rev"):
+        if pyfile.name.rsplit(".", 1)[-1].strip() not in ("rar", "rev"):
             return
 
-        revtokeep = - \
-            1 if self.config.get(
-                'mode') == "Auto" else self.config.get('revtokeep')
+        revtokeep = (
+            -1 if self.config.get("mode") == "Auto" else self.config.get("revtokeep")
+        )
 
         if not revtokeep:
             return
 
         pyname = re.compile(
-            r'{}\.part\d+\.rev$' %
-            pyfile.name.rsplit(
-                '.',
-                2)[0].replace(
-                '.',
-                '\.'))
+            r"{}\.part\d+\.rev$" % pyfile.name.rsplit(".", 2)[0].replace(".", "\.")
+        )
 
         for fid, fdata in pyfile.package().getChildren().items():
-            if fdata['status'] == 4 and pyname.match(fdata['name']):
+            if fdata["status"] == 4 and pyname.match(fdata["name"]):
                 pyfile_new = self._create_pyFile(fdata)
 
                 if revtokeep > -1 or pyfile.name.endswith(".rev"):

@@ -9,7 +9,7 @@ class ZahikiNet(DeadHoster):
     __version__ = "0.07"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?zahiki\.net/\w+/.+'
+    __pattern__ = r"https?://(?:www\.)?zahiki\.net/\w+/.+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Zahiki.net hoster plugin"""

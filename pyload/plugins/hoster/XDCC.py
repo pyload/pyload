@@ -21,8 +21,9 @@ class IRC(object):
         self.lock = threading.RLock()
 
         #: last 4 digits
-        self.nick = "pyload-{:04}".format(time.time() %
-                                          10000) if nick == "pyload" else nick
+        self.nick = (
+            "pyload-{:04}".format(time.time() % 10000) if nick == "pyload" else nick
+        )
         self.ident = ident
         self.realname = realname
 
@@ -62,15 +63,15 @@ class IRC(object):
         """
         Breaks a message from an IRC server into its origin, command, and arguments.
         """
-        origin = ''
+        origin = ""
         if not line:
             return None, None, None
 
-        if line[0] == ':':
-            origin, line = line[1:].split(' ', 1)
+        if line[0] == ":":
+            origin, line = line[1:].split(" ", 1)
 
-        if line.find(' :') != -1:
-            line, trailing = line.split(' :', 1)
+        if line.find(" :") != -1:
+            line, trailing = line.split(" :", 1)
             args = line.split()
             args.append(trailing)
 
@@ -98,8 +99,8 @@ class IRC(object):
 
         self.irc_sock.send("NICK {}\r\n".format(self.nick))
         self.irc_sock.send(
-            "USER {} {} bla :{}\r\n".format(
-                self.ident, host, self.realname))
+            "USER {} {} bla :{}\r\n".format(self.ident, host, self.realname)
+        )
 
         start_time = time.time()
         while time.time() - start_time < 30:
@@ -110,12 +111,14 @@ class IRC(object):
                 self.port = port
 
                 start_time = time.time()
-                while self._get_response_line() and time.time() - start_time < 30:  #: Skip MOTD
+                while (
+                    self._get_response_line() and time.time() - start_time < 30
+                ):  #: Skip MOTD
                     pass
 
                 self.plugin.log_debug(
-                    _("Successfully connected to {}:{}").format(
-                        host, port))
+                    _("Successfully connected to {}:{}").format(host, port)
+                )
 
                 return True
 
@@ -127,8 +130,8 @@ class IRC(object):
     def disconnect_server(self):
         if self.connected:
             self.plugin.log_info(
-                _("Diconnecting from {}:{}").format(
-                    self.host, self.port))
+                _("Diconnecting from {}:{}").format(self.host, self.port)
+            )
             self.irc_sock.send("QUIT :byebye\r\n")
             self.plugin.log_debug(_("Disconnected"))
             self.connected = False
@@ -150,36 +153,45 @@ class IRC(object):
                 self.irc_sock.send("PONG :{}\r\n".format(args[0]))
 
             elif origin and command == "PRIVMSG":
-                sender_nick = origin.split('@')[0].split('!')[0]
+                sender_nick = origin.split("@")[0].split("!")[0]
                 recipient = args[0]
                 text = args[1]
 
-                if text[0] == '\x01' and text[-1] == '\x01':  #: CTCP
-                    ctcp_data = text[1:-1].split(' ', 1)
+                if text[0] == "\x01" and text[-1] == "\x01":  #: CTCP
+                    ctcp_data = text[1:-1].split(" ", 1)
                     ctcp_command = ctcp_data[0]
                     ctcp_args = ctcp_data[1] if len(ctcp_data) > 1 else ""
 
-                    if recipient[0:len(self.nick)] == self.nick:
+                    if recipient[0 : len(self.nick)] == self.nick:
                         if ctcp_command == "VERSION":
                             self.plugin.log_debug(
-                                _("[{}] CTCP VERSION").format(sender_nick))
+                                _("[{}] CTCP VERSION").format(sender_nick)
+                            )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01VERSION {}\x01\r\n".format(
-                                    sender_nick, "pyLoad! IRC Interface"))
+                                    sender_nick, "pyLoad! IRC Interface"
+                                )
+                            )
 
                         elif ctcp_command == "TIME":
                             self.plugin.log_debug(
-                                _("[{}] CTCP TIME").format(sender_nick))
+                                _("[{}] CTCP TIME").format(sender_nick)
+                            )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01{}\x01\r\n".format(
-                                    sender_nick, time.strftime("%a %b %d %H:%M:%S %Y")))
+                                    sender_nick, time.strftime("%a %b %d %H:%M:%S %Y")
+                                )
+                            )
 
                         elif ctcp_command == "PING":
                             self.plugin.log_debug(
-                                _("[{}] Ping? Pong!").format(sender_nick))
+                                _("[{}] Ping? Pong!").format(sender_nick)
+                            )
                             self.irc_sock.send(
                                 "NOTICE {} :\x01PING {}\x01\r\n".format(
-                                    sender_nick, ctcp_args))  # NOTE: PING is not a typo
+                                    sender_nick, ctcp_args
+                                )
+                            )  # NOTE: PING is not a typo
 
                         else:
                             break
@@ -194,7 +206,7 @@ class IRC(object):
 
     @lock
     def join_channel(self, chan):
-        chan = "#" + chan if chan[0] != '#' else chan
+        chan = "#" + chan if chan[0] != "#" else chan
 
         self.plugin.log_info(_("Joining channel {}").format(chan))
         self.irc_sock.send("JOIN {}\r\n".format(chan))
@@ -204,15 +216,15 @@ class IRC(object):
             origin, command, args = self.get_irc_command()
 
             #: ERR_KEYSET, ERR_CHANNELISFULL, ERR_INVITEONLYCHAN, ERR_BANNEDFROMCHAN, ERR_BADCHANNELKEY
-            if command in (
-                "467",
-                "471",
-                "473",
-                "474",
-                    "475") and args[1].lower() == chan.lower():
+            if (
+                command in ("467", "471", "473", "474", "475")
+                and args[1].lower() == chan.lower()
+            ):
                 self.plugin.log_error(
                     _("Cannot join channel {} (error {}: '{}')").format(
-                        chan, command, args[2]))
+                        chan, command, args[2]
+                    )
+                )
                 return False
 
             elif command == "353" and args[2].lower() == chan.lower():  #: RPL_NAMREPLY
@@ -230,7 +242,8 @@ class IRC(object):
 
         if not bot_host:
             self.plugin.log_warning(
-                _("Server does not seems to support nickserv commands"))
+                _("Server does not seems to support nickserv commands")
+            )
             return
 
         self.irc_sock.send("PRIVMSG {} :identify {}\r\n".format(bot, password))
@@ -239,67 +252,68 @@ class IRC(object):
         while time.time() - start_time < 30:
             origin, command, args = self.get_irc_command()
 
-            if origin is None \
-                    or command is None \
-                    or args is None:
+            if origin is None or command is None or args is None:
                 return
 
             # Private message from bot to us?
-            if '@' not in origin \
-                    or (origin[0:len(bot)] != bot and origin.split('@')[1] != bot_host) \
-                    or args[0][0:len(self.nick)] != self.nick \
-                    or command not in ("PRIVMSG", "NOTICE"):
+            if (
+                "@" not in origin
+                or (origin[0 : len(bot)] != bot and origin.split("@")[1] != bot_host)
+                or args[0][0 : len(self.nick)] != self.nick
+                or command not in ("PRIVMSG", "NOTICE")
+            ):
                 continue
 
             try:
-                text = str(args[1], 'utf-8')
+                text = str(args[1], "utf-8")
             except UnicodeDecodeError:
-                text = str(args[1], 'latin1', 'replace')
+                text = str(args[1], "latin1", "replace")
 
-            sender_nick = origin.split('@')[0].split('!')[0]
+            sender_nick = origin.split("@")[0].split("!")[0]
             self.plugin.log_info(_("PrivMsg: <{}> {}").format(sender_nick, text))
             break
 
         else:
             self.plugin.log_warning(
-                _("'{}' did not respond to the request").format(bot))
+                _("'{}' did not respond to the request").format(bot)
+            )
 
     @lock
     def send_invite_request(self, bot, chan, password):
         bot_host = self.get_bot_host(bot)
         if bot_host:
             self.plugin.log_info(
-                _("Sending invite request for #{} to '{}'").format(
-                    chan, bot))
+                _("Sending invite request for #{} to '{}'").format(chan, bot)
+            )
         else:
             self.plugin.log_warning(_("Cannot send invite request"))
             return
 
         self.irc_sock.send(
-            "PRIVMSG {} :enter #{} {} {}\r\n".format(
-                bot, chan, self.nick, password))
+            "PRIVMSG {} :enter #{} {} {}\r\n".format(bot, chan, self.nick, password)
+        )
         start_time = time.time()
         while time.time() - start_time < 30:
             origin, command, args = self.get_irc_command()
 
-            if origin is None \
-                    or command is None \
-                    or args is None:
+            if origin is None or command is None or args is None:
                 return
 
             # Private message from bot to us?
-            if '@' not in origin \
-                    or (origin[0:len(bot)] != bot and origin.split('@')[1] != bot_host) \
-                    or args[0][0:len(self.nick)] != self.nick \
-                    or command not in ("PRIVMSG", "NOTICE", "INVITE"):
+            if (
+                "@" not in origin
+                or (origin[0 : len(bot)] != bot and origin.split("@")[1] != bot_host)
+                or args[0][0 : len(self.nick)] != self.nick
+                or command not in ("PRIVMSG", "NOTICE", "INVITE")
+            ):
                 continue
 
             try:
-                text = str(args[1], 'utf-8')
+                text = str(args[1], "utf-8")
             except UnicodeDecodeError:
-                text = str(args[1], 'latin1', 'replace')
+                text = str(args[1], "latin1", "replace")
 
-            sender_nick = origin.split('@')[0].split('!')[0]
+            sender_nick = origin.split("@")[0].split("!")[0]
             if command == "INVITE":
                 self.plugin.log_info(_("Got invite to #{}").format(chan))
 
@@ -310,7 +324,8 @@ class IRC(object):
 
         else:
             self.plugin.log_warning(
-                _("'{}' did not respond to the request").format(bot))
+                _("'{}' did not respond to the request").format(bot)
+            )
 
     @lock
     def is_bot_online(self, bot):
@@ -320,13 +335,20 @@ class IRC(object):
         start_time = time.time()
         while time.time() - start_time < 30:
             origin, command, args = self.get_irc_command()
-            if command == '401' and args[0] == self.nick and args[1].lower(
-            ) == bot.lower():  #: ERR_NOSUCHNICK
+            if (
+                command == "401"
+                and args[0] == self.nick
+                and args[1].lower() == bot.lower()
+            ):  #: ERR_NOSUCHNICK
                 self.plugin.log_debug(_("Bot '{}' is offline").format(bot))
                 return False
 
             #: RPL_WHOISUSER
-            elif command == "311" and args[0] == self.nick and args[1].lower() == bot.lower():
+            elif (
+                command == "311"
+                and args[0] == self.nick
+                and args[1].lower() == bot.lower()
+            ):
                 self.plugin.log_debug(_("Bot '{}' is online").format(bot))
                 self.bot_host[bot] = args[3]  # bot host
                 return True
@@ -374,45 +396,65 @@ class IRC(object):
 
             self.plugin.log_info(
                 _("Requesting XDCC resume of '{}' at position {}").format(
-                    file_name, resume_position))
+                    file_name, resume_position
+                )
+            )
 
-            self.irc_sock.send("PRIVMSG {} :\x01DCC RESUME \"{}\" {} {}\x01\r\n".format(
-                bot, encode(file_name, 'utf-8'), dcc_port, resume_position))
+            self.irc_sock.send(
+                'PRIVMSG {} :\x01DCC RESUME "{}" {} {}\x01\r\n'.format(
+                    bot, encode(file_name, "utf-8"), dcc_port, resume_position
+                )
+            )
 
             start_time = time.time()
             while time.time() - start_time < 30:
                 origin, command, args = self.get_irc_command()
 
                 # Private message from bot to us?
-                if origin and command and args \
-                        and '@' in origin \
-                        and (origin[0:len(bot)] == bot or bot_host and origin.split('@')[1] == bot_host) \
-                        and args[0][0:len(self.nick)] == self.nick \
-                        and command in ("PRIVMSG", "NOTICE"):
+                if (
+                    origin
+                    and command
+                    and args
+                    and "@" in origin
+                    and (
+                        origin[0 : len(bot)] == bot
+                        or bot_host
+                        and origin.split("@")[1] == bot_host
+                    )
+                    and args[0][0 : len(self.nick)] == self.nick
+                    and command in ("PRIVMSG", "NOTICE")
+                ):
 
                     try:
-                        text = str(args[1], 'utf-8')
+                        text = str(args[1], "utf-8")
                     except UnicodeDecodeError:
-                        text = str(args[1], 'latin1', 'replace')
+                        text = str(args[1], "latin1", "replace")
 
-                    sender_nick = origin.split('@')[0].split('!')[0]
+                    sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
-                        _("PrivMsg: <{}> {}").format(
-                            sender_nick, text))
+                        _("PrivMsg: <{}> {}").format(sender_nick, text)
+                    )
 
                     m = re.match(
-                        r'\x01DCC ACCEPT .*? {} (?P<RESUME_POS>\d+)\x01'.format(dcc_port), text)
+                        r"\x01DCC ACCEPT .*? {} (?P<RESUME_POS>\d+)\x01".format(
+                            dcc_port
+                        ),
+                        text,
+                    )
                     if m:
                         self.plugin.log_debug(
                             _("Bot '{}' acknowledged resume at position {}").format(
-                                sender_nick, m.group('RESUME_POS')))
-                        return int(m.group('RESUME_POS'))
+                                sender_nick, m.group("RESUME_POS")
+                            )
+                        )
+                        return int(m.group("RESUME_POS"))
 
                 else:
                     time.sleep(0.1)
 
             self.plugin.log_warning(
-                _("Timeout while waiting for resume acknowledge, not resuming"))
+                _("Timeout while waiting for resume acknowledge, not resuming")
+            )
 
         else:
             self.plugin.log_error(_("No XDCC request pending, cannot resume"))
@@ -432,30 +474,38 @@ class IRC(object):
             origin, command, args = self.get_irc_command()
 
             # Private message from bot to us?
-            if origin and command and args \
-                    and (origin[0:len(bot)] == bot or bot_host and origin.split('@')[1] == bot_host) \
-                    and args[0][0:len(self.nick)] == self.nick \
-                    and command in ("PRIVMSG", "NOTICE"):
+            if (
+                origin
+                and command
+                and args
+                and (
+                    origin[0 : len(bot)] == bot
+                    or bot_host
+                    and origin.split("@")[1] == bot_host
+                )
+                and args[0][0 : len(self.nick)] == self.nick
+                and command in ("PRIVMSG", "NOTICE")
+            ):
 
                 try:
-                    text = str(args[1], 'utf-8')
+                    text = str(args[1], "utf-8")
                 except UnicodeDecodeError:
-                    text = str(args[1], 'latin1', 'replace')
+                    text = str(args[1], "latin1", "replace")
 
                 pack_info = text.split()
                 if pack_info[0].lower() == "filename":
                     self.plugin.log_debug(_("Filename: '{}'").format(pack_info[1]))
-                    info.update({'status': "online", 'name': pack_info[1]})
+                    info.update({"status": "online", "name": pack_info[1]})
 
                 elif pack_info[0].lower() == "filesize":
                     self.plugin.log_debug(_("Filesize: '{}'").format(pack_info[1]))
-                    info.update({'status': "online", 'size': pack_info[1]})
+                    info.update({"status": "online", "size": pack_info[1]})
 
                 else:
-                    sender_nick = origin.split('@')[0].split('!')[0]
+                    sender_nick = origin.split("@")[0].split("!")[0]
                     self.plugin.log_debug(
-                        _("PrivMsg: <{}> {}").format(
-                            sender_nick, text))
+                        _("PrivMsg: <{}> {}").format(sender_nick, text)
+                    )
 
             else:
                 if len(info) > 2:  #: got both name and size
@@ -466,7 +516,7 @@ class IRC(object):
         else:
             if len(info) == 0:
                 self.plugin.log_error(_("XDCC Bot '{}' did not answer").format(bot))
-                return {'status': "offline", 'msg': "XDCC Bot did not answer"}
+                return {"status": "offline", "msg": "XDCC Bot did not answer"}
 
         return info
 
@@ -477,37 +527,29 @@ class XDCC(Hoster):
     __version__ = "0.48"
     __status__ = "testing"
 
-    __pattern__ = r'xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?'
+    __pattern__ = (
+        r"xdcc://(?P<SERVER>.*?)/#?(?P<CHAN>.*?)/(?P<BOT>.*?)/#?(?P<PACK>\d+)/?"
+    )
     __config__ = [
-        ("nick",
-         "str",
-         "Nickname",
-         "pyload"),
-        ("ident",
-         "str",
-         "Ident",
-         "pyloadident"),
-        ("realname",
-         "str",
-         "Realname",
-         "pyloadreal"),
-        ("try_resume",
-         "bool",
-         "Request XDCC resume?",
-         True),
-        ("nick_pw",
-         "str",
-         "Registered nickname password (optional)",
-         ""),
-        ("invite_opts",
-         "str",
-         "Invite bots options (format ircserver/channel/invitebot/password, ...)",
-         "")]
+        ("nick", "str", "Nickname", "pyload"),
+        ("ident", "str", "Ident", "pyloadident"),
+        ("realname", "str", "Realname", "pyloadreal"),
+        ("try_resume", "bool", "Request XDCC resume?", True),
+        ("nick_pw", "str", "Registered nickname password (optional)", ""),
+        (
+            "invite_opts",
+            "str",
+            "Invite bots options (format ircserver/channel/invitebot/password, ...)",
+            "",
+        ),
+    ]
 
     __description__ = """Download from IRC XDCC bot"""
     __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("jeix", "jeix@hasnomail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     def setup(self):
         self.dl_started = False
@@ -525,20 +567,21 @@ class XDCC(Hoster):
         self.multiDL = False
 
     def xdcc_send_resume(self, resume_position):
-        if not self.config.get('try_resume') or not self.dcc_sender_bot:
+        if not self.config.get("try_resume") or not self.dcc_sender_bot:
             return 0
 
         else:
             return self.irc_client.xdcc_request_resume(
-                self.dcc_sender_bot, self.dcc_port, self.dcc_file_name, resume_position)
+                self.dcc_sender_bot, self.dcc_port, self.dcc_file_name, resume_position
+            )
 
     def process(self, pyfile):
-        server = self.info['pattern']['SERVER']
-        chan = self.info['pattern']['CHAN']
-        bot = self.info['pattern']['BOT']
-        pack = self.info['pattern']['PACK']
+        server = self.info["pattern"]["SERVER"]
+        chan = self.info["pattern"]["CHAN"]
+        bot = self.info["pattern"]["BOT"]
+        pack = self.info["pattern"]["PACK"]
 
-        temp = server.split(':')
+        temp = server.split(":")
         ln = len(temp)
         if ln == 2:
             host, port = temp[0], int(temp[1])
@@ -549,17 +592,19 @@ class XDCC(Hoster):
         else:
             self.fail(_("Invalid hostname for IRC Server: {}").format(server))
 
-        nick = self.config.get('nick')
-        nick_pw = self.config.get('nick_pw')
-        ident = self.config.get('ident')
-        realname = self.config.get('realname')
-        invite_opts = [_x.split('/')
-                       for _x in self.config.get('invite_opts').strip().split(',')
-                       if len(_x.split('/')) == 4]
+        nick = self.config.get("nick")
+        nick_pw = self.config.get("nick_pw")
+        ident = self.config.get("ident")
+        realname = self.config.get("realname")
+        invite_opts = [
+            _x.split("/")
+            for _x in self.config.get("invite_opts").strip().split(",")
+            if len(_x.split("/")) == 4
+        ]
 
         #: Remove leading '#' from channel name
         for opt in invite_opts:
-            if opt[1].startswith('#'):
+            if opt[1].startswith("#"):
                 opt[1] = opt[1][1:]
 
         #: Change request type
@@ -577,10 +622,13 @@ class XDCC(Hoster):
                             self.irc_client.nickserv_identify(nick_pw)
 
                         for opt in invite_opts:
-                            if opt[0].lower() == host.lower(
-                            ) and opt[1].lower() == chan.lower():
+                            if (
+                                opt[0].lower() == host.lower()
+                                and opt[1].lower() == chan.lower()
+                            ):
                                 self.irc_client.send_invite_request(
-                                    opt[2], opt[1], opt[3])
+                                    opt[2], opt[1], opt[3]
+                                )
                                 break
 
                         if not self.irc_client.join_channel(chan):
@@ -595,15 +643,24 @@ class XDCC(Hoster):
 
                         # Main IRC loop
                         while (
-                                not self.pyfile.abort or self.dl_started) and not self.dl_finished:
+                            not self.pyfile.abort or self.dl_started
+                        ) and not self.dl_finished:
                             if not self.dl_started:
                                 if self.request_again:
-                                    if time.time() - self.irc_client.xdcc_request_time > 300:
+                                    if (
+                                        time.time() - self.irc_client.xdcc_request_time
+                                        > 300
+                                    ):
                                         self.irc_client.xdcc_request_pack(bot, pack)
                                         self.request_again = False
 
                                 else:
-                                    if self.irc_client.xdcc_request_time and time.time() - self.irc_client.xdcc_request_time > 90:
+                                    if (
+                                        self.irc_client.xdcc_request_time
+                                        and time.time()
+                                        - self.irc_client.xdcc_request_time
+                                        > 90
+                                    ):
                                         self.irc_client.disconnect_server()
                                         self.log_error(_("XDCC Bot did not answer"))
                                         self.retry(3, 60, _("XDCC Bot did not answer"))
@@ -630,48 +687,56 @@ class XDCC(Hoster):
 
                     else:
                         self.log_error(
-                            _("Failed due to socket errors. Code: {}").format(err_no))
+                            _("Failed due to socket errors. Code: {}").format(err_no)
+                        )
                         self.fail(
-                            _("Failed due to socket errors. Code: {}").format(err_no))
+                            _("Failed due to socket errors. Code: {}").format(err_no)
+                        )
 
                 else:
                     err_msg = e.args[0]
                     self.log_error(
-                        _("Failed due to socket errors: '{}'").format(err_msg))
+                        _("Failed due to socket errors: '{}'").format(err_msg)
+                    )
                     self.fail(_("Failed due to socket errors: '{}'").format(err_msg))
 
         self.log_error(_("Server blocked our ip, retry again later manually"))
         self.fail(_("Server blocked our ip, retry again later manually"))
 
     def proccess_irc_command(self, origin, command, args):
-        bot = self.info['pattern']['BOT']
-        nick = self.config.get('nick')
+        bot = self.info["pattern"]["BOT"]
+        nick = self.config.get("nick")
 
-        if origin is None\
-                or command is None\
-                or args is None:
+        if origin is None or command is None or args is None:
             return
 
         # Private message from bot to us?
         bot_host = self.irc_client.get_bot_host(bot)
-        if '@' not in origin \
-                or (origin[0:len(bot)] != bot and bot_host and origin.split('@')[1] != bot_host) \
-                or args[0][0:len(nick)] != nick \
-                or command not in ("PRIVMSG", "NOTICE"):
+        if (
+            "@" not in origin
+            or (
+                origin[0 : len(bot)] != bot
+                and bot_host
+                and origin.split("@")[1] != bot_host
+            )
+            or args[0][0 : len(nick)] != nick
+            or command not in ("PRIVMSG", "NOTICE")
+        ):
             return
 
         try:
-            text = str(args[1], 'utf-8')
+            text = str(args[1], "utf-8")
         except UnicodeDecodeError:
-            text = str(args[1], 'latin1', 'replace')
+            text = str(args[1], "latin1", "replace")
 
-        sender_nick = origin.split('@')[0].split('!')[0]
+        sender_nick = origin.split("@")[0].split("!")[0]
         self.log_debug(_("PrivMsg: <{}> {}").format(sender_nick, text))
 
         if text in (
             "You already requested that pack",
             "All Slots Full",
-                "You have a DCC pending"):
+            "You have a DCC pending",
+        ):
             self.request_again = True
 
         elif "you must be on a known channel to request a pack" in text:
@@ -684,13 +749,14 @@ class XDCC(Hoster):
 
         m = re.match(
             r'\x01DCC SEND "?(?P<NAME>.*?)"? (?P<IP>\d+) (?P<PORT>\d+)(?: (?P<SIZE>\d+))?\x01',
-            text)  #: XDCC?
+            text,
+        )  #: XDCC?
         if m:
-            ip = socket.inet_ntoa(struct.pack('!I', int(m.group('IP'))))
-            self.dcc_port = int(m.group('PORT'))
-            self.dcc_file_name = m.group('NAME')
-            self.dcc_sender_bot = origin.split('@')[0].split('!')[0]
-            file_size = int(m.group('SIZE')) if m.group('SIZE') else 0
+            ip = socket.inet_ntoa(struct.pack("!I", int(m.group("IP"))))
+            self.dcc_port = int(m.group("PORT"))
+            self.dcc_file_name = m.group("NAME")
+            self.dcc_sender_bot = origin.split("@")[0].split("!")[0]
+            file_size = int(m.group("SIZE")) if m.group("SIZE") else 0
 
             self.do_download(ip, self.dcc_port, self.dcc_file_name, file_size)
 
@@ -708,12 +774,11 @@ class XDCC(Hoster):
             self.pyfile.setStatus("downloading")
 
             dl_folder = fsjoin(
-                self.pyload.config.get(
-                    'general',
-                    'download_folder'),
-                self.pyfile.package().folder if self.pyload.config.get(
-                    "general",
-                    "folder_per_package") else "")
+                self.pyload.config.get("general", "download_folder"),
+                self.pyfile.package().folder
+                if self.pyload.config.get("general", "folder_per_package")
+                else "",
+            )
             if not exists(dl_folder):
                 try:
                     os.makedirs(dl_folder)
@@ -728,22 +793,26 @@ class XDCC(Hoster):
             dl_file = fsjoin(dl_folder, self.pyfile.name)
 
             self.log_debug(
-                _("DOWNLOAD XDCC '{}' from {}:{}").format(
-                    file_name, ip, port))
+                _("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)
+            )
 
             self.pyload.addonManager.dispatchEvent(
-                "download_start", self.pyfile, "{}:{}".format(
-                    ip, port), dl_file)
+                "download_start", self.pyfile, "{}:{}".format(ip, port), dl_file
+            )
 
             newname = self.req.download(
                 ip,
                 port,
                 dl_file,
                 progressNotify=self.pyfile.setProgress,
-                resume=self.xdcc_send_resume)
+                resume=self.xdcc_send_resume,
+            )
             if newname and newname != dl_file:
-                self.log_info(_("{name} saved as {newname}").format(
-                    **{'name': self.pyfile.name, 'newname': newname}))
+                self.log_info(
+                    _("{name} saved as {newname}").format(
+                        **{"name": self.pyfile.name, "newname": newname}
+                    )
+                )
                 dl_file = newname
 
             self.last_download = dl_file
@@ -752,7 +821,7 @@ class XDCC(Hoster):
             pass
 
         except Exception as e:
-            bot = self.info['pattern']['BOT']
+            bot = self.info["pattern"]["BOT"]
             self.irc_client.xdcc_cancel_pack(bot)
 
             if not self.exc_info:

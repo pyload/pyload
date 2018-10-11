@@ -13,13 +13,14 @@ class UnibytesCom(SimpleHoster):
     __version__ = "0.21"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """UniBytes.com hoster plugin"""
     __license__ = "GPLv3"
@@ -38,20 +39,23 @@ class UnibytesCom(SimpleHoster):
 
         for _i in range(3):
             self.log_debug(action, post_data)
-            self.data = self.load(urllib.parse.urljoin(domain, action),
-                                  post=post_data,
-                                  redirect=False)
+            self.data = self.load(
+                urllib.parse.urljoin(domain, action), post=post_data, redirect=False
+            )
 
-            location = self.last_header.get('location')
+            location = self.last_header.get("location")
             if location:
                 self.link = location
                 return
 
-            if '>Somebody else is already downloading using your IP-address<' in self.data:
+            if (
+                ">Somebody else is already downloading using your IP-address<"
+                in self.data
+            ):
                 self.wait(10 * 60, True)
                 self.restart()
 
-            if post_data['step'] == "last":
+            if post_data["step"] == "last":
                 m = re.search(self.LINK_FREE_PATTERN, self.data)
                 if m is not None:
                     self.captcha.correct()
@@ -60,7 +64,7 @@ class UnibytesCom(SimpleHoster):
                 else:
                     self.retry_captcha()
 
-            last_step = post_data['step']
+            last_step = post_data["step"]
             action, post_data = self.parse_html_form('id="stepForm"')
 
             if last_step == "timer":
@@ -68,5 +72,6 @@ class UnibytesCom(SimpleHoster):
                 self.wait(m.group(1) if m else 60, False)
 
             elif last_step in ("captcha", "last"):
-                post_data['captcha'] = self.captcha.decrypt(
-                    urllib.parse.urljoin(domain, "captcha.jpg"))
+                post_data["captcha"] = self.captcha.decrypt(
+                    urllib.parse.urljoin(domain, "captcha.jpg")
+                )

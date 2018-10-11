@@ -7,7 +7,6 @@ from pyload.utils import APIExerciser
 
 
 class TestApi(object):
-
     def __init__(self):
         self.api = APIExerciser.APIExerciser(None, True, "TestUser", "pwhere")
 

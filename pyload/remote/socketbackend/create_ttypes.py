@@ -25,14 +25,14 @@ def main():
     for name in dir(ttypes):
         klass = getattr(ttypes, name)
 
-        if name in (
-                "TBase",
-                "TExceptionBase") or name.startswith("_") or not (
-                issubclass(
-                klass,
-                ttypes.TBase) or issubclass(
-                    klass,
-                ttypes.TExceptionBase)):
+        if (
+            name in ("TBase", "TExceptionBase")
+            or name.startswith("_")
+            or not (
+                issubclass(klass, ttypes.TBase)
+                or issubclass(klass, ttypes.TExceptionBase)
+            )
+        ):
             continue
 
         if hasattr(klass, "thrift_spec"):
@@ -51,7 +51,8 @@ from builtins import _
 class BaseObject(object):
 \t__slots__ = []
 
-""")
+"""
+    )
 
     # generate enums
     for enum in enums:

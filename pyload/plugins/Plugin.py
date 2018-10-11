@@ -62,20 +62,36 @@ class Base(object):
 
     # log functions
     def logInfo(self, *args):
-        self.log.info("{}: {}".format(self.__name__, " | ".join(
-            [a if isinstance(a, str) else str(a) for a in args])))
+        self.log.info(
+            "{}: {}".format(
+                self.__name__,
+                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+            )
+        )
 
     def logWarning(self, *args):
-        self.log.warning("{}: {}".format(self.__name__, " | ".join(
-            [a if isinstance(a, str) else str(a) for a in args])))
+        self.log.warning(
+            "{}: {}".format(
+                self.__name__,
+                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+            )
+        )
 
     def logError(self, *args):
-        self.log.error("{}: {}".format(self.__name__, " | ".join(
-            [a if isinstance(a, str) else str(a) for a in args])))
+        self.log.error(
+            "{}: {}".format(
+                self.__name__,
+                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+            )
+        )
 
     def logDebug(self, *args):
-        self.log.debug("{}: {}".format(self.__name__, " | ".join(
-            [a if isinstance(a, str) else str(a) for a in args])))
+        self.log.debug(
+            "{}: {}".format(
+                self.__name__,
+                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+            )
+        )
 
     def setConf(self, option, value):
         """ see `setConfig` """
@@ -130,6 +146,7 @@ class Plugin(Base):
     Base plugin for hoster/crypter.
     Overwrite `process` / `decrypt` in your subclassed plugin.
     """
+
     __name__ = "Plugin"
     __version__ = "0.4"
     __pattern__ = None
@@ -172,7 +189,9 @@ class Plugin(Base):
             self.chunkLimit = -1  # chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
-            self.multiDL = True  # every hoster with account should provide multiple downloads
+            self.multiDL = (
+                True
+            )  # every hoster with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
@@ -317,14 +336,15 @@ class Plugin(Base):
             self.cTask.correct()
 
     def decryptCaptcha(
-            self,
-            url,
-            get={},
-            post={},
-            cookies=False,
-            forceUser=False,
-            imgtype='jpg',
-            result_type='textual'):
+        self,
+        url,
+        get={},
+        post={},
+        cookies=False,
+        forceUser=False,
+        imgtype="jpg",
+        result_type="textual",
+    ):
         """ Loads a captcha and decrypts it with ocr, plugin, user input
 
         :param url: url of captcha image
@@ -342,15 +362,10 @@ class Plugin(Base):
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("{:.2f}".format(time())[-6:].replace(".", ""))
+        id = "{:.2f}".format(time())[-6:].replace(".", "")
         temp_file = open(
-            join(
-                "tmp",
-                "tmpCaptcha_{}_{}.{}".format(
-                    self.__name__,
-                    id,
-                    imgtype)),
-            "wb")
+            join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb"
+        )
         temp_file.write(img)
         temp_file.close()
 
@@ -382,14 +397,22 @@ class Plugin(Base):
 
             captchaManager.removeTask(task)
 
-            if task.error and has_plugin:  # ignore default error message since the user could use OCR
+            if (
+                task.error and has_plugin
+            ):  # ignore default error message since the user could use OCR
                 self.fail(
-                    _("Pil and tesseract not installed and no Client connected for captcha decrypting"))
+                    _(
+                        "Pil and tesseract not installed and no Client connected for captcha decrypting"
+                    )
+                )
             elif task.error:
                 self.fail(task.error)
             elif not task.result:
                 self.fail(
-                    _("No captcha result obtained in appropiate time by any of the plugins."))
+                    _(
+                        "No captcha result obtained in appropiate time by any of the plugins."
+                    )
+                )
 
             result = task.result
             self.log.debug("Received captcha result: {}".format(str(result)))
@@ -403,14 +426,15 @@ class Plugin(Base):
         return result
 
     def load(
-            self,
-            url,
-            get={},
-            post={},
-            ref=True,
-            cookies=True,
-            just_header=False,
-            decode=False):
+        self,
+        url,
+        get={},
+        post={},
+        ref=True,
+        cookies=True,
+        just_header=False,
+        decode=False,
+    ):
         """Load content at url and returns it
 
         :param url:
@@ -442,9 +466,11 @@ class Plugin(Base):
                     "tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(
-                        frame.f_back.f_code.co_name,
-                        frame.f_back.f_lineno)),
-                "wb")
+                        frame.f_back.f_code.co_name, frame.f_back.f_lineno
+                    ),
+                ),
+                "wb",
+            )
             del frame  # delete the frame or it wont be cleaned
 
             try:
@@ -495,7 +521,7 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config["general"]["download_folder"]
 
         location = save_join(download_folder, self.pyfile.package().folder)
 
@@ -510,8 +536,8 @@ class Plugin(Base):
                     chown(location, uid, gid)
                 except Exception as e:
                     self.log.warning(
-                        _("Setting User and Group failed: {}").format(
-                            str(e)))
+                        _("Setting User and Group failed: {}").format(str(e))
+                    )
 
         # convert back to unicode
         location = fs_decode(location)
@@ -520,7 +546,8 @@ class Plugin(Base):
         filename = join(location, name)
 
         self.pyload.addonManager.dispatchEvent(
-            "downloadStarts", self.pyfile, url, filename)
+            "downloadStarts", self.pyfile, url, filename
+        )
 
         try:
             newname = self.req.httpDownload(
@@ -533,13 +560,15 @@ class Plugin(Base):
                 chunks=self.getChunkCount(),
                 resume=self.resumeDownload,
                 progressNotify=self.pyfile.setProgress,
-                disposition=disposition)
+                disposition=disposition,
+            )
         finally:
             self.pyfile.size = self.req.size
 
         if disposition and newname and newname != name:  # triple check, just to be sure
-            self.log.info("{name} saved as {newname}".format(
-                **{"name": name, "newname": newname}))
+            self.log.info(
+                "{name} saved as {newname}".format(**{"name": name, "newname": newname})
+            )
             self.pyfile.name = newname
             filename = join(location, newname)
 
@@ -561,12 +590,8 @@ class Plugin(Base):
         return self.lastDownload
 
     def checkDownload(
-            self,
-            rules,
-            api_size=0,
-            max_size=50000,
-            delete=True,
-            read_size=0):
+        self, rules, api_size=0, max_size=50000, delete=True, read_size=0
+    ):
         """ checks the content of the last downloaded file, re match is saved to `lastCheck`
 
         :param rules: dict with names and rules to match (compiled regexp or strings)
@@ -592,7 +617,7 @@ class Plugin(Base):
         content = f.read(read_size if read_size else -1)
         f.close()
         # produces encoding errors, better log to other file in the future?
-        #self.log.debug("Content: {}".format(content))
+        # self.log.debug("Content: {}".format(content))
         for name, rule in rules.items():
             if type(rule) in (str, bytes):
                 if rule in content:
@@ -624,31 +649,42 @@ class Plugin(Base):
         pack = self.pyfile.package()
 
         for pyfile in self.pyload.files.cache.values():
-            if pyfile != self.pyfile and pyfile.name == self.pyfile.name and pyfile.package().folder == pack.folder:
+            if (
+                pyfile != self.pyfile
+                and pyfile.name == self.pyfile.name
+                and pyfile.package().folder == pack.folder
+            ):
                 if pyfile.status in (0, 12):  # finished or downloading
                     raise SkipDownload(pyfile.pluginname)
-                elif pyfile.status in (
-                        5, 7) and starting:  # a download is waiting/starting and was appenrently started before
+                elif (
+                    pyfile.status in (5, 7) and starting
+                ):  # a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.config['general']['download_folder']
+        download_folder = self.config["general"]["download_folder"]
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
-        if starting and self.pyload.config['download']['skip_existing'] and exists(
-                location):
+        if (
+            starting
+            and self.pyload.config["download"]["skip_existing"]
+            and exists(location)
+        ):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
                 raise SkipDownload("File exists.")
 
         pyfile = self.pyload.db.findDuplicates(
-            self.pyfile.id, self.pyfile.package().folder, self.pyfile.name)
+            self.pyfile.id, self.pyfile.package().folder, self.pyfile.name
+        )
         if pyfile:
             if exists(location):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug(
                 "File {} not skipped, because it does not exists.".format(
-                    self.pyfile.name))
+                    self.pyfile.name
+                )
+            )
 
     def clean(self):
         """ clean everything and remove references """

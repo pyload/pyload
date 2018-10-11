@@ -26,11 +26,14 @@ class Setup(object):
         langs = self.config.getMetaData("general", "language")["type"].split(";")
         lang = self.ask("Choose your Language / Wähle deine Sprache", "en", langs)
         gettext.setpaths(
-            [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+            [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None]
+        )
         translation = gettext.translation(
-            "setup", os.path.join(
-                self.path, "locale"), languages=[
-                lang, "en"], fallback=True)
+            "setup",
+            os.path.join(self.path, "locale"),
+            languages=[lang, "en"],
+            fallback=True,
+        )
         translation.install(True)
 
         # Input shorthand for yes
@@ -55,14 +58,27 @@ class Setup(object):
 
         print("")
         print(_("Welcome to the pyLoad Configuration Assistent."))
-        print(_("It will check your system and make a basic setup in order to run pyLoad."))
+        print(
+            _(
+                "It will check your system and make a basic setup in order to run pyLoad."
+            )
+        )
         print("")
         print(_("The value in brackets [] always is the default value,"))
-        print(_("in case you don't want to change it or you are unsure what to choose, just hit enter."))
-        print(_(
-            "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."))
+        print(
+            _(
+                "in case you don't want to change it or you are unsure what to choose, just hit enter."
+            )
+        )
+        print(
+            _(
+                "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
+            )
+        )
         print(_("If you have any problems with this assistent hit STRG-C,"))
-        print(_("to abort and don't let him start with pyLoadCore automatically anymore."))
+        print(
+            _("to abort and don't let him start with pyLoadCore automatically anymore.")
+        )
         print("")
         print(_("When you are ready for system check, hit enter."))
         input()
@@ -90,7 +106,7 @@ class Setup(object):
         if captcha:
             avail.append(_("automatic captcha decryption"))
         # if gui:
-            # avail.append(_("GUI"))
+        # avail.append(_("GUI"))
         if web:
             avail.append(_("Webinterface"))
         if js:
@@ -116,8 +132,15 @@ class Setup(object):
             if not ssl:
                 print(_("** no SSL available **"))
                 print(
-                    _("This is needed if you want to establish a secure connection to core or webinterface."))
-                print(_("If you only want to access locally to pyLoad ssl is not usefull."))
+                    _(
+                        "This is needed if you want to establish a secure connection to core or webinterface."
+                    )
+                )
+                print(
+                    _(
+                        "If you only want to access locally to pyLoad ssl is not usefull."
+                    )
+                )
                 print("")
 
             if not captcha:
@@ -126,16 +149,21 @@ class Setup(object):
                 print("")
 
             # if not gui:
-                # print(_("** Gui not available **"))
-                # print(_("The Graphical User Interface."))
-                # print("")
+            # print(_("** Gui not available **"))
+            # print(_("The Graphical User Interface."))
+            # print("")
 
             if not js:
                 print(_("** no JavaScript engine found **"))
                 print(
-                    _("You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"))
+                    _(
+                        "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
+                    )
+                )
 
-            print(_("You can abort the setup now and fix some dependicies if you want."))
+            print(
+                _("You can abort the setup now and fix some dependicies if you want.")
+            )
 
         con = self.ask(_("Continue with setup?"), self.yes, bool=True)
 
@@ -145,9 +173,14 @@ class Setup(object):
         print("")
         print(
             _("Do you want to change the config path? Current is {}").format(
-                os.path.abspath("")))
-        print(_(
-            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."))
+                os.path.abspath("")
+            )
+        )
+        print(
+            _(
+                "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it."
+            )
+        )
         path = self.ask(_("Change config path?"), self.no, bool=True)
         if path:
             self.conf_path()
@@ -215,7 +248,8 @@ class Setup(object):
 
         if os.name == "nt":
             tesser = self.check_prog(
-                [os.path.join(pypath, "tesseract", "tesseract.exe"), "-v"])
+                [os.path.join(pypath, "tesseract", "tesseract.exe"), "-v"]
+            )
         else:
             tesser = self.check_prog(["tesseract", "-v"])
 
@@ -239,11 +273,19 @@ class Setup(object):
                 if not v.startswith("2.5") and not v.startswith("2.6"):
                     print(
                         _("Your installed jinja2 version {} seems too old.").format(
-                            jinja2.__version__))
+                            jinja2.__version__
+                        )
+                    )
                     print(
-                        _("You can safely continue but if the webinterface is not working,"))
+                        _(
+                            "You can safely continue but if the webinterface is not working,"
+                        )
+                    )
                     print(
-                        _("please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary."))
+                        _(
+                            "please upgrade or deinstall it, pyLoad includes a sufficient jinja2 libary."
+                        )
+                    )
                     print("")
                     jinja = False
         except Exception:
@@ -279,28 +321,41 @@ class Setup(object):
         db.shutdown()
 
         print("")
-        print(_("External clients (GUI, CLI or other) need remote access to work over the network."))
-        print(_("However, if you only want to use the webinterface you may disable it to save ram."))
+        print(
+            _(
+                "External clients (GUI, CLI or other) need remote access to work over the network."
+            )
+        )
+        print(
+            _(
+                "However, if you only want to use the webinterface you may disable it to save ram."
+            )
+        )
         self.config["remote"]["activated"] = self.ask(
-            _("Enable remote access"), self.yes, bool=True)
+            _("Enable remote access"), self.yes, bool=True
+        )
 
         print("")
         langs = self.config.getMetaData("general", "language")
         self.config["general"]["language"] = self.ask(
-            _("Language"), "en", langs["type"].split(";"))
+            _("Language"), "en", langs["type"].split(";")
+        )
 
         self.config["general"]["download_folder"] = self.ask(
-            _("Downloadfolder"), "Downloads")
+            _("Downloadfolder"), "Downloads"
+        )
         self.config["download"]["max_downloads"] = self.ask(
-            _("Max parallel downloads"), "3")
-        #print(_("You should disable checksum proofing, if you have low hardware requirements."))
-        #self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
+            _("Max parallel downloads"), "3"
+        )
+        # print(_("You should disable checksum proofing, if you have low hardware requirements."))
+        # self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
         self.config["reconnect"]["activated"] = reconnect
         if reconnect:
             self.config["reconnect"]["method"] = self.ask(
-                _("Reconnect script location"), "./reconnect.sh")
+                _("Reconnect script location"), "./reconnect.sh"
+            )
 
     def conf_web(self):
         print("")
@@ -308,59 +363,86 @@ class Setup(object):
 
         print("")
         self.config["webinterface"]["activated"] = self.ask(
-            _("Activate webinterface?"), self.yes, bool=True)
+            _("Activate webinterface?"), self.yes, bool=True
+        )
         print("")
-        print(_("Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."))
+        print(
+            _(
+                "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
+            )
+        )
         self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
         self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
         print("")
-        print(_("pyLoad offers several server backends, now following a short explanation."))
+        print(
+            _(
+                "pyLoad offers several server backends, now following a short explanation."
+            )
+        )
         print(
             "builtin:",
-            _("Default server, best choice if you dont know which one to choose."))
-        print("threaded:", _("This server offers SSL and is a good alternative to builtin."))
+            _("Default server, best choice if you dont know which one to choose."),
+        )
+        print(
+            "threaded:",
+            _("This server offers SSL and is a good alternative to builtin."),
+        )
         print(
             "fastcgi:",
-            _("Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."))
+            _(
+                "Can be used by apache, lighttpd, requires you to configure them, which is not too easy job."
+            ),
+        )
         print(
             "lightweight:",
-            _("Very fast alternative written in C, requires libev and linux knowlegde."))
-        print("\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it"))
+            _(
+                "Very fast alternative written in C, requires libev and linux knowlegde."
+            ),
+        )
+        print(
+            "\t", _("Get it from here: https://github.com/jonashaag/bjoern, compile it")
+        )
         print("\t", _("and copy bjoern.so to pyload/lib"))
 
         print("")
-        print(_(
-            "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"))
-        print(_("come back here and change the builtin server to the threaded one here."))
+        print(
+            _(
+                "Attention: In some rare cases the builtin server is not working, if you notice problems with the webinterface"
+            )
+        )
+        print(
+            _("come back here and change the builtin server to the threaded one here.")
+        )
 
         self.config["webinterface"]["server"] = self.ask(
-            _("Server"), "builtin", [
-                "builtin", "threaded", "fastcgi", "lightweight"])
+            _("Server"), "builtin", ["builtin", "threaded", "fastcgi", "lightweight"]
+        )
 
         print("")
-        print(_("pyLoad offers several web user interface templates, please choose a webinterface template you like."))
+        print(
+            _(
+                "pyLoad offers several web user interface templates, please choose a webinterface template you like."
+            )
+        )
 
         templates = [
-            t for t in os.listdir(
-                os.path.join(
-                    pypath,
-                    "pyload",
-                    "web",
-                    "templates")) if os.path.isdir(
-                os.path.join(
-                    pypath,
-                    "pyload",
-                    "web",
-                    "templates",
-                    t))]
+            t
+            for t in os.listdir(os.path.join(pypath, "pyload", "web", "templates"))
+            if os.path.isdir(os.path.join(pypath, "pyload", "web", "templates", t))
+        ]
         self.config["webinterface"]["template"] = self.ask(
-            _("Template"), "classic", templates)
+            _("Template"), "classic", templates
+        )
 
     def conf_ssl(self):
         print("")
         print(_("## SSL Setup ##"))
         print("")
-        print(_("Execute these commands from pyLoad config folder to make ssl certificates:"))
+        print(
+            _(
+                "Execute these commands from pyLoad config folder to make ssl certificates:"
+            )
+        )
         print("")
         print("openssl genrsa -out ssl.key 1024")
         print("openssl req -new -key ssl.key -out ssl.csr")
@@ -374,9 +456,14 @@ class Setup(object):
 
     def set_user(self):
         gettext.setpaths(
-            [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
-        translation = gettext.translation("setup", os.path.join(self.path, "locale"), languages=[
-                                          self.config["general"]["language"], "en"], fallback=True)
+            [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None]
+        )
+        translation = gettext.translation(
+            "setup",
+            os.path.join(self.path, "locale"),
+            languages=[self.config["general"]["language"], "en"],
+            fallback=True,
+        )
         translation.install(True)
 
         from pyload.database import DatabaseBackend
@@ -426,12 +513,19 @@ class Setup(object):
     def conf_path(self, trans=False):
         if trans:
             gettext.setpaths(
-                [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
-            translation = gettext.translation("setup", os.path.join(self.path, "locale"), languages=[
-                                              self.config["general"]["language"], "en"], fallback=True)
+                [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None]
+            )
+            translation = gettext.translation(
+                "setup",
+                os.path.join(self.path, "locale"),
+                languages=[self.config["general"]["language"], "en"],
+                fallback=True,
+            )
             translation.install(True)
 
-        print(_("Setting new configpath, current configuration will not be transfered!"))
+        print(
+            _("Setting new configpath, current configuration will not be transfered!")
+        )
         path = self.ask(_("Configpath"), os.path.abspath(""))
         try:
             path = os.path.join(pypath, path)
@@ -440,7 +534,9 @@ class Setup(object):
             f = open(os.path.join(pypath, "pyload", "config", "configdir"), "wb")
             f.write(path)
             f.close()
-            print(_("Configpath changed, setup will now close, please restart to go on."))
+            print(
+                _("Configpath changed, setup will now close, please restart to go on.")
+            )
             print(_("Press Enter to exit."))
             input()
             exit()
@@ -475,8 +571,9 @@ class Setup(object):
             info = "("
 
             for i, answer in enumerate(answers):
-                info += (", " if i != 0 else "") + \
-                    str((answer == default and "[{}]".format(answer) or answer))
+                info += (", " if i != 0 else "") + str(
+                    (answer == default and "[{}]".format(answer) or answer)
+                )
 
             info += ")"
         elif bool:
@@ -524,10 +621,21 @@ class Setup(object):
             if bool:
                 # yes, true,t are inputs for booleans with value true
                 if input_val.lower().strip() in [
-                        self.yes, _("yes"), _("true"), _("t"), "yes"]:
+                    self.yes,
+                    _("yes"),
+                    _("true"),
+                    _("t"),
+                    "yes",
+                ]:
                     return True
                 # no, false,f are inputs for booleans with value false
-                elif input_val.lower().strip() in [self.no, _("no"), _("false"), _("f"), "no"]:
+                elif input_val.lower().strip() in [
+                    self.no,
+                    _("no"),
+                    _("false"),
+                    _("f"),
+                    "no",
+                ]:
                     return False
                 else:
                     print(_("Invalid Input"))

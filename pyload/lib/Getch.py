@@ -13,10 +13,11 @@ class Getch:
         except ImportError:
             try:
                 self.impl = _GetchMacCarbon()
-            except(AttributeError, ImportError):
+            except (AttributeError, ImportError):
                 self.impl = _GetchUnix()
 
-    def __call__(self): return self.impl()
+    def __call__(self):
+        return self.impl()
 
 
 class _GetchUnix:
@@ -59,13 +60,14 @@ class _GetchMacCarbon:
 
     def __init__(self):
         import Carbon
+
         Carbon.Evt  # see if it has this (in Unix, it doesn't)
 
     def __call__(self):
         import Carbon
 
         if Carbon.Evt.EventAvail(0x0008)[0] == 0:  # 0x0008 is the keyDownMask
-            return ''
+            return ""
         else:
             #
             # The event contains the following info:

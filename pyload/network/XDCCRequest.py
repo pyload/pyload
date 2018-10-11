@@ -14,7 +14,7 @@ from pyload.plugins.Plugin import Abort
 
 class XDCCRequest(object):
     def __init__(self, bucket=None, options={}):
-        self.proxies = options.get('proxies', {})
+        self.proxies = options.get("proxies", {})
         self.bucket = bucket
 
         self.fh = None
@@ -82,9 +82,8 @@ class XDCCRequest(object):
         # acknowledge data by sending number of recceived bytes
         try:
             self.dccsock.send(
-                struct.pack(
-                    '!Q' if self.send_64bits_ack else '!I',
-                    self.received))
+                struct.pack("!Q" if self.send_64bits_ack else "!I", self.received)
+            )
 
         except socket.error:
             pass
@@ -137,7 +136,11 @@ class XDCCRequest(object):
                         raise
 
                 data_len = len(data)
-                if data_len == 0 or self.filesize and self.received + data_len > self.filesize:
+                if (
+                    data_len == 0
+                    or self.filesize
+                    and self.received + data_len > self.filesize
+                ):
                     break
 
                 cumRecvLen += data_len

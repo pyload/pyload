@@ -13,13 +13,14 @@ class VidPlayNet(XFSHoster):
     __version__ = "0.11"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?vidplay\.net/\w{12}'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?vidplay\.net/\w{12}"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """VidPlay.net hoster plugin"""
     __license__ = "GPLv3"
@@ -27,4 +28,4 @@ class VidPlayNet(XFSHoster):
 
     PLUGIN_DOMAIN = "vidplay.net"
 
-    NAME_PATTERN = r'<b>Password:</b></div>\s*<h[1-6]>(?P<N>.+?)</h[1-6]>'
+    NAME_PATTERN = r"<b>Password:</b></div>\s*<h[1-6]>(?P<N>.+?)</h[1-6]>"

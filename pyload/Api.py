@@ -43,14 +43,15 @@ def permission(bits):
 
 urlmatcher = re.compile(
     r"((https?|ftps?|xdcc|sftp):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+\-=\\\.&]*)",
-    re.IGNORECASE)
+    re.IGNORECASE,
+)
 
 
 class PERMS(object):
     ALL = 0  # requires no permission, but login
     ADD = 1  # can add packages
     DELETE = 2  # can delete packages
-    STATUS = 4   # see and change server status
+    STATUS = 4  # see and change server status
     LIST = 16  # see queue and collector
     MODIFY = 32  # moddify some attribute of downloads
     DOWNLOAD = 64  # can download from webinterface
@@ -89,9 +90,19 @@ class Api(Iface):
         self.pyload = core
 
     def _convertPyFile(self, p):
-        f = FileData(p["id"], p["url"], p["name"], p["plugin"], p["size"],
-                     p["format_size"], p["status"], p["statusmsg"],
-                     p["package"], p["error"], p["order"])
+        f = FileData(
+            p["id"],
+            p["url"],
+            p["name"],
+            p["plugin"],
+            p["size"],
+            p["format_size"],
+            p["status"],
+            p["statusmsg"],
+            p["package"],
+            p["error"],
+            p["order"],
+        )
         return f
 
     def _convertConfigFormat(self, c):
@@ -105,10 +116,11 @@ class Api(Iface):
                 item = ConfigItem()
                 item.name = key
                 item.description = data["desc"]
-                item.value = str(
-                    data["value"]) if not isinstance(
-                    data["value"],
-                    str) else data["value"]
+                item.value = (
+                    str(data["value"])
+                    if not isinstance(data["value"], str)
+                    else data["value"]
+                )
                 item.type = data["type"]
                 items.append(item)
             section.items = items
@@ -143,14 +155,16 @@ class Api(Iface):
         :param section: 'plugin' or 'core
         """
         self.pyload.addonManager.dispatchEvent(
-            "configChanged", category, option, value, section)
+            "configChanged", category, option, value, section
+        )
 
         if section == "core":
             self.pyload.config[category][option] = value
 
             if option in (
                 "limit_speed",
-                    "max_speed"):  # not so nice to update the limit
+                "max_speed",
+            ):  # not so nice to update the limit
                 self.pyload.requestFactory.updateBucket()
 
         elif section == "plugin":
@@ -220,18 +234,21 @@ class Api(Iface):
 
         :return: `ServerStatus`
         """
-        serverStatus = ServerStatus(self.pyload.threadManager.pause,
-                                    len(self.pyload.threadManager.processingIds()),
-                                    self.pyload.files.getQueueCount(),
-                                    self.pyload.files.getFileCount(),
-                                    0,
-                                    not self.pyload.threadManager.pause and self.isTimeDownload(),
-                                    self.pyload.config['reconnect']['activated'] and self.isTimeReconnect())
+        serverStatus = ServerStatus(
+            self.pyload.threadManager.pause,
+            len(self.pyload.threadManager.processingIds()),
+            self.pyload.files.getQueueCount(),
+            self.pyload.files.getFileCount(),
+            0,
+            not self.pyload.threadManager.pause and self.isTimeDownload(),
+            self.pyload.config["reconnect"]["activated"] and self.isTimeReconnect(),
+        )
 
         for pyfile in [
-            x.active for x in self.pyload.threadManager.threads if x.active and isinstance(
-                x.active,
-                PyFile)]:
+            x.active
+            for x in self.pyload.threadManager.threads
+            if x.active and isinstance(x.active, PyFile)
+        ]:
             serverStatus.speed += pyfile.getSpeed()  # bytes/s
 
         return serverStatus
@@ -261,7 +278,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config['log']['log_folder'], 'log.txt')
+        filename = join(self.pyload.config["log"]["log_folder"], "log.txt")
         try:
             fh = open(filename, "r")
             lines = fh.readlines()
@@ -270,7 +287,7 @@ class Api(Iface):
                 return []
             return lines[offset:]
         except Exception:
-            return ['No log available']
+            return ["No log available"]
 
     @permission(PERMS.STATUS)
     def isTimeDownload(self):
@@ -278,8 +295,8 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config['downloadTime']['start'].split(":")
-        end = self.pyload.config['downloadTime']['end'].split(":")
+        start = self.pyload.config["downloadTime"]["start"].split(":")
+        end = self.pyload.config["downloadTime"]["end"].split(":")
         return compare_time(start, end)
 
     @permission(PERMS.STATUS)
@@ -288,8 +305,8 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config['reconnect']['startTime'].split(":")
-        end = self.pyload.config['reconnect']['endTime'].split(":")
+        start = self.pyload.config["reconnect"]["startTime"].split(":")
+        end = self.pyload.config["reconnect"]["endTime"].split(":")
         return compare_time(start, end) and self.pyload.config["reconnect"]["activated"]
 
     @permission(PERMS.LIST)
@@ -320,7 +337,9 @@ class Api(Iface):
                     pyfile.waitUntil,
                     pyfile.packageid,
                     pyfile.package().name,
-                    pyfile.pluginname))
+                    pyfile.pluginname,
+                )
+            )
 
         return data
 
@@ -333,27 +352,27 @@ class Api(Iface):
         :param dest: `Destination`
         :return: package id of the new package
         """
-        if self.pyload.config['general']['folder_per_package']:
+        if self.pyload.config["general"]["folder_per_package"]:
             folder = name
         else:
             folder = ""
 
-        folder = folder.replace(
-            "http://",
-            "").replace(
-            ":",
-            "").replace(
-            "/",
-            "_").replace(
-                "\\",
-            "_")
+        folder = (
+            folder.replace("http://", "")
+            .replace(":", "")
+            .replace("/", "_")
+            .replace("\\", "_")
+        )
 
         pid = self.pyload.files.addPackage(name, folder, dest)
 
         self.pyload.files.addLinks(links, pid)
 
-        self.pyload.log.info(_("Added package {name} containing {count:d} links").format(
-            **{"name": name, "count": len(links)}))
+        self.pyload.log.info(
+            _("Added package {name} containing {count:d} links").format(
+                **{"name": name, "count": len(links)}
+            )
+        )
 
         self.pyload.files.save()
 
@@ -407,8 +426,10 @@ class Api(Iface):
 
         rid = self.pyload.threadManager.createResultThread(data, False)
 
-        tmp = [(url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0)))
-               for url, pluginname in data]
+        tmp = [
+            (url, (url, OnlineStatus(url, pluginname, "unknown", 3, 0)))
+            for url, pluginname in data
+        ]
         data = parseNames(tmp)
         result = {}
 
@@ -429,11 +450,9 @@ class Api(Iface):
         :return: online check
         """
         th = open(
-            join(
-                self.pyload.config["general"]["download_folder"],
-                "tmp_" +
-                container),
-            "wb")
+            join(self.pyload.config["general"]["download_folder"], "tmp_" + container),
+            "wb",
+        )
         th.write(str(data))
         th.close()
 
@@ -472,8 +491,10 @@ class Api(Iface):
         :param dest: `Destination`
         :return: list of package ids
         """
-        return [self.addPackage(name, urls, dest) for name, urls
-                in self.generatePackages(links).items()]
+        return [
+            self.addPackage(name, urls, dest)
+            for name, urls in self.generatePackages(links).items()
+        ]
 
     @permission(PERMS.ADD)
     def checkAndAddPackages(self, links, dest=Destination.Queue):
@@ -507,8 +528,8 @@ class Api(Iface):
             data["password"],
             data["queue"],
             data["order"],
-            links=[
-                self._convertPyFile(x) for x in data["links"].values()])
+            links=[self._convertPyFile(x) for x in data["links"].values()],
+        )
 
         return pdata
 
@@ -532,8 +553,8 @@ class Api(Iface):
             data["password"],
             data["queue"],
             data["order"],
-            fids=[
-                int(x) for x in data["links"]])
+            fids=[int(x) for x in data["links"]],
+        )
 
         return pdata
 
@@ -580,11 +601,22 @@ class Api(Iface):
 
         :return: list of `PackageInfo`
         """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
-                for pack in self.pyload.files.getInfoData(Destination.Queue).values()]
+        return [
+            PackageData(
+                pack["id"],
+                pack["name"],
+                pack["folder"],
+                pack["site"],
+                pack["password"],
+                pack["queue"],
+                pack["order"],
+                pack["linksdone"],
+                pack["sizedone"],
+                pack["sizetotal"],
+                pack["linkstotal"],
+            )
+            for pack in self.pyload.files.getInfoData(Destination.Queue).values()
+        ]
 
     @permission(PERMS.LIST)
     def getQueueData(self):
@@ -593,11 +625,22 @@ class Api(Iface):
 
         :return: list of `PackageData`
         """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].values()])
-                for pack in self.pyload.files.getCompleteData(Destination.Queue).values()]
+        return [
+            PackageData(
+                pack["id"],
+                pack["name"],
+                pack["folder"],
+                pack["site"],
+                pack["password"],
+                pack["queue"],
+                pack["order"],
+                pack["linksdone"],
+                pack["sizedone"],
+                pack["sizetotal"],
+                links=[self._convertPyFile(x) for x in pack["links"].values()],
+            )
+            for pack in self.pyload.files.getCompleteData(Destination.Queue).values()
+        ]
 
     @permission(PERMS.LIST)
     def getCollector(self):
@@ -617,8 +660,10 @@ class Api(Iface):
                 pack["linksdone"],
                 pack["sizedone"],
                 pack["sizetotal"],
-                pack["linkstotal"]) for pack in self.pyload.files.getInfoData(
-                Destination.Collector).values()]
+                pack["linkstotal"],
+            )
+            for pack in self.pyload.files.getInfoData(Destination.Collector).values()
+        ]
 
     @permission(PERMS.LIST)
     def getCollectorData(self):
@@ -626,11 +671,24 @@ class Api(Iface):
 
         :return: list of `PackageInfo`
         """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            links=[self._convertPyFile(x) for x in pack["links"].values()])
-                for pack in self.pyload.files.getCompleteData(Destination.Collector).values()]
+        return [
+            PackageData(
+                pack["id"],
+                pack["name"],
+                pack["folder"],
+                pack["site"],
+                pack["password"],
+                pack["queue"],
+                pack["order"],
+                pack["linksdone"],
+                pack["sizedone"],
+                pack["sizetotal"],
+                links=[self._convertPyFile(x) for x in pack["links"].values()],
+            )
+            for pack in self.pyload.files.getCompleteData(
+                Destination.Collector
+            ).values()
+        ]
 
     @permission(PERMS.ADD)
     def addFiles(self, pid, links):
@@ -641,8 +699,11 @@ class Api(Iface):
         """
         self.pyload.files.addLinks(links, int(pid))
 
-        self.pyload.log.info(_("Added {count:d} links to package #{package:d} ").format(
-            **{"count": len(links), "package": pid}))
+        self.pyload.log.info(
+            _("Added {count:d} links to package #{package:d} ").format(
+                **{"count": len(links), "package": pid}
+            )
+        )
         self.pyload.files.save()
 
     @permission(PERMS.MODIFY)
@@ -737,7 +798,7 @@ class Api(Iface):
         :param pid: destination package
         :return:
         """
-        #TODO: implement
+        # TODO: implement
         pass
 
     @permission(PERMS.ADD)
@@ -748,11 +809,9 @@ class Api(Iface):
         :param data: file content
         """
         th = open(
-            join(
-                self.pyload.config["general"]["download_folder"],
-                "tmp_" +
-                filename),
-            "wb")
+            join(self.pyload.config["general"]["download_folder"], "tmp_" + filename),
+            "wb",
+        )
         th.write(str(data))
         th.close()
 
@@ -915,7 +974,9 @@ class Api(Iface):
             elif e[0] == "order":
                 if e[1]:
                     event.id = e[1]
-                    event.type = ElementType.Package if e[2] == "pack" else ElementType.File
+                    event.type = (
+                        ElementType.Package if e[2] == "pack" else ElementType.File
+                    )
                     event.destination = convDest(e[3])
             elif e[0] == "reload":
                 event.destination = convDest(e[1])
@@ -932,14 +993,21 @@ class Api(Iface):
         accs = self.pyload.accountManager.getAccountInfos(False, refresh)
         accounts = []
         for group in accs.values():
-            accounts.extend([AccountInfo(acc["validuntil"],
-                                         acc["login"],
-                                         acc["options"],
-                                         acc["valid"],
-                                         acc["trafficleft"],
-                                         acc["maxtraffic"],
-                                         acc["premium"],
-                                         acc["type"]) for acc in group])
+            accounts.extend(
+                [
+                    AccountInfo(
+                        acc["validuntil"],
+                        acc["login"],
+                        acc["options"],
+                        acc["valid"],
+                        acc["trafficleft"],
+                        acc["maxtraffic"],
+                        acc["premium"],
+                        acc["type"],
+                    )
+                    for acc in group
+                ]
+            )
         return accounts
 
     @permission(PERMS.ALL)
@@ -1014,7 +1082,8 @@ class Api(Iface):
                 user["email"],
                 user["role"],
                 user["permission"],
-                user["template"])
+                user["template"],
+            )
         else:
             return UserData()
 
@@ -1023,11 +1092,8 @@ class Api(Iface):
         res = {}
         for user, data in self.pyload.db.getAllUserData().items():
             res[user] = UserData(
-                user,
-                data["email"],
-                data["role"],
-                data["permission"],
-                data["template"])
+                user, data["email"], data["role"], data["permission"], data["template"]
+            )
 
         return res
 

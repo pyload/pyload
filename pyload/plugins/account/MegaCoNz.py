@@ -26,28 +26,31 @@ class MegaCoNz(Account):
 
         res = mega.api_response(a="uq", xfer=1, pro=1)  #: user quota details
         if isinstance(res, dict):
-            premium = res.get('utype', 0) > 0
+            premium = res.get("utype", 0) > 0
             if premium:
-                validuntil = res.get('suntil', None)
-                trafficleft = (res.get('mxfer', 0) - res.get('caxfer',
-                                                             0) - res.get('csxfer', 0)) // 1024
+                validuntil = res.get("suntil", None)
+                trafficleft = (
+                    res.get("mxfer", 0) - res.get("caxfer", 0) - res.get("csxfer", 0)
+                ) // 1024
 
             # if res['rtt']:
             #     self.log_debug("Tranfare history:{}".format(res['tah']))
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft,
-                'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
         mega = MegaClient(self, None)
 
         mega_session_cache = self.db.retrieve("mega_session_cache") or {}
         if user in mega_session_cache:
-            data['mega_session_id'] = mega_session_cache[user]
+            data["mega_session_id"] = mega_session_cache[user]
 
             res = mega.api_response(a="ug", xfer=1, pro=1)  #: ug is for user details
-            if isinstance(res, dict) and res.get('email', None) == user:
+            if isinstance(res, dict) and res.get("email", None) == user:
                 self.skip_login()
 
             else:
@@ -55,7 +58,7 @@ class MegaCoNz(Account):
                 self.db.store("mega_session_cache", mega_session_cache)
 
         sid = None
-        data['mega_session_id'] = sid
+        data["mega_session_id"] = sid
 
         password_key = self.get_password_key(password)
         user_hash = self.get_user_hash(user, password_key)
@@ -63,24 +66,28 @@ class MegaCoNz(Account):
         res = mega.api_response(a="us", user=user, uh=user_hash)
         if isinstance(res, int):
             self.fail_login()
-        elif isinstance(res, dict) and 'e' in res:
+        elif isinstance(res, dict) and "e" in res:
             self.fail_login()
 
-        master_key = MegaCrypto.decrypt_key(res['k'], password_key)
+        master_key = MegaCrypto.decrypt_key(res["k"], password_key)
 
-        if 'tsid' in res:
-            tsid = MegaCrypto.base64_decode(res['tsid'])
-            if MegaCrypto.a32_to_str(MegaCrypto.encrypt_key(
-                    MegaCrypto.str_to_a32(tsid[:16]), master_key)) == tsid[-16:]:
-                sid = res['tsid']
+        if "tsid" in res:
+            tsid = MegaCrypto.base64_decode(res["tsid"])
+            if (
+                MegaCrypto.a32_to_str(
+                    MegaCrypto.encrypt_key(MegaCrypto.str_to_a32(tsid[:16]), master_key)
+                )
+                == tsid[-16:]
+            ):
+                sid = res["tsid"]
 
             else:
                 self.fail_login()
 
-        elif 'csid' in res:
+        elif "csid" in res:
             privk = MegaCrypto.a32_to_str(
-                MegaCrypto.decrypt_key(
-                    res['privk'], master_key))
+                MegaCrypto.decrypt_key(res["privk"], master_key)
+            )
             rsa_private_key = [int(0), int(0), int(0), int(0)]
 
             for i in range(4):
@@ -88,30 +95,32 @@ class MegaCoNz(Account):
                 rsa_private_key[i] = self.mpi_to_int(privk[:l])
                 privk = privk[l:]
 
-            encrypted_sid = self.mpi_to_int(MegaCrypto.base64_decode(res['csid']))
+            encrypted_sid = self.mpi_to_int(MegaCrypto.base64_decode(res["csid"]))
             rsa = Crypto.PublicKey.RSA.construct(
-                (rsa_private_key[0] *
-                 rsa_private_key[1],
-                 int(0),
-                 rsa_private_key[2],
-                 rsa_private_key[0],
-                 rsa_private_key[1]))
+                (
+                    rsa_private_key[0] * rsa_private_key[1],
+                    int(0),
+                    rsa_private_key[2],
+                    rsa_private_key[0],
+                    rsa_private_key[1],
+                )
+            )
             sid = "{:x}".format(rsa.key._decrypt(encrypted_sid))
-            sid = '0' * (-len(sid) % 2) + sid
-            sid = "".join(chr(int(sid[i: i + 2], 16))
-                          for i in range(0, len(sid), 2))
-            sid = MegaCrypto.base64_encode(sid[:43]).replace('=', '')
+            sid = "0" * (-len(sid) % 2) + sid
+            sid = "".join(chr(int(sid[i : i + 2], 16)) for i in range(0, len(sid), 2))
+            sid = MegaCrypto.base64_encode(sid[:43]).replace("=", "")
 
         else:
             self.fail_login()
 
-        data['mega_session_id'] = sid
+        data["mega_session_id"] = sid
         mega_session_cache[user] = sid
         self.db.store("mega_session_cache", mega_session_cache)
 
     def get_password_key(self, password):
         password_key = MegaCrypto.a32_to_str(
-            [0x93C467E3, 0x7DB0C7A4, 0xD1BE3F81, 0x0152CB56])
+            [0x93C467E3, 0x7DB0C7A4, 0xD1BE3F81, 0x0152CB56]
+        )
         password_a32 = MegaCrypto.str_to_a32(password)
         for c in range(0x10000):
             for j in range(0, len(password_a32), 4):
@@ -139,5 +148,6 @@ class MegaCoNz(Account):
 
     def mpi_to_int(self, s):
         """ Convert GCRYMPI_FMT_PGP bignum format to integer """
-        return int("".join("{:2x}".format(ord(s[2:][x]))
-                           for x in range(0, len(s[2:]))), 16)
+        return int(
+            "".join("{:2x}".format(ord(s[2:][x])) for x in range(0, len(s[2:]))), 16
+        )

@@ -9,7 +9,7 @@ class RSLayerCom(DeadCrypter):
     __version__ = "0.26"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?rs-layer\.com/directory-'
+    __pattern__ = r"http://(?:www\.)?rs-layer\.com/directory-"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """RS-Layer.com decrypter plugin"""

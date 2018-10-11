@@ -7,8 +7,12 @@ from threading import RLock
 from pyload.database import DatabaseBackend, style
 from pyload.datatype.PyFile import PyFile
 from pyload.datatype.PyPackage import PyPackage
-from pyload.manager.PullEvents import (InsertEvent, ReloadAllEvent, RemoveEvent,
-                                       UpdateEvent)
+from pyload.manager.PullEvents import (
+    InsertEvent,
+    ReloadAllEvent,
+    RemoveEvent,
+    UpdateEvent,
+)
 from pyload.utils.utils import formatSize, lock
 
 try:
@@ -41,7 +45,8 @@ class FileHandler(object):
             _("custom"),
             _("downloading"),
             _("processing"),
-            _("unknown")]
+            _("unknown"),
+        ]
 
         self.cache = {}  # holds instances for files
         self.packageCache = {}  # same for packages
@@ -50,7 +55,7 @@ class FileHandler(object):
         self.jobCache = {}
 
         self.lock = RLock()  # TODO: should be a Lock w/o R
-        #self.lock._Verbose__verbose = True
+        # self.lock._Verbose__verbose = True
 
         self.filecount = -1  # if an invalid value is set get current value from db
         self.queuecount = -1  # number of package to be loaded
@@ -65,6 +70,7 @@ class FileHandler(object):
             args[0].queuecount = -1
             args[0].jobCache = {}
             return func(*args)
+
         return new
 
     # ----------------------------------------------------------------------
@@ -233,9 +239,8 @@ class FileHandler(object):
         self.db.updateLink(pyfile)
 
         e = UpdateEvent(
-            "file",
-            pyfile.id,
-            "collector" if not pyfile.package().queue else "queue")
+            "file", pyfile.id, "collector" if not pyfile.package().queue else "queue"
+        )
         self.pyload.pullManager.addEvent(e)
 
     # ----------------------------------------------------------------------
@@ -335,7 +340,7 @@ class FileHandler(object):
 
             # TODO: maybe the new job has to be approved...
 
-        #pyfile = self.getFile(self.jobCache[occ].pop())
+        # pyfile = self.getFile(self.jobCache[occ].pop())
         return pyfile
 
     @lock
@@ -344,8 +349,9 @@ class FileHandler(object):
         if "decrypt" in self.jobCache:
             return None
 
-        plugins = list(self.pyload.pluginManager.crypterPlugins.keys()) + \
-            list(self.pyload.pluginManager.containerPlugins.keys())
+        plugins = list(self.pyload.pluginManager.crypterPlugins.keys()) + list(
+            self.pyload.pluginManager.containerPlugins.keys()
+        )
         plugins = str(tuple(plugins))
 
         jobs = self.db.getPluginJob(plugins)
@@ -411,9 +417,8 @@ class FileHandler(object):
             self.packageCache[id].setFinished = False
 
         e = UpdateEvent(
-            "pack",
-            id,
-            "collector" if not self.getPackage(id).queue else "queue")
+            "pack", id, "collector" if not self.getPackage(id).queue else "queue"
+        )
         self.pyload.pullManager.addEvent(e)
 
     @lock
@@ -428,8 +433,9 @@ class FileHandler(object):
 
         self.db.restartFile(id)
 
-        e = UpdateEvent("file", id, "collector" if not self.getFile(
-            id).package().queue else "queue")
+        e = UpdateEvent(
+            "file", id, "collector" if not self.getFile(id).package().queue else "queue"
+        )
         self.pyload.pullManager.addEvent(e)
 
     @lock
@@ -500,8 +506,10 @@ class FileHandler(object):
         f = f[id]
 
         e = RemoveEvent(
-            "file", id, "collector" if not self.getPackage(
-                f["package"]).queue else "queue")
+            "file",
+            id,
+            "collector" if not self.getPackage(f["package"]).queue else "queue",
+        )
         self.pyload.pullManager.addEvent(e)
 
         self.db.reorderLink(f, position)
@@ -528,8 +536,8 @@ class FileHandler(object):
             "file",
             id,
             position,
-            "collector" if not self.getPackage(
-                f["package"]).queue else "queue")
+            "collector" if not self.getPackage(f["package"]).queue else "queue",
+        )
         self.pyload.pullManager.addEvent(e)
 
     @change
@@ -537,9 +545,8 @@ class FileHandler(object):
         """ updates file info (name, size, status, url)"""
         self.db.updateLinkInfo(data)
         e = UpdateEvent(
-            "pack",
-            pid,
-            "collector" if not self.getPackage(pid).queue else "queue")
+            "pack", pid, "collector" if not self.getPackage(pid).queue else "queue"
+        )
         self.pyload.pullManager.addEvent(e)
 
     def checkPackageFinished(self, pyfile):
@@ -549,8 +556,8 @@ class FileHandler(object):
         if not ids or (pyfile.id in ids and len(ids) == 1):
             if not pyfile.package().setFinished:
                 self.pyload.log.info(
-                    _("Package finished: {}").format(
-                        pyfile.package().name))
+                    _("Package finished: {}").format(pyfile.package().name)
+                )
                 self.pyload.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 
@@ -601,8 +608,8 @@ class FileMethods(object):
         """returns number of files in queue"""
         self.c.execute(
             "SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=?",
-            (queue,
-             ))
+            (queue,),
+        )
         return self.c.fetchone()[0]
 
     @style.queue
@@ -610,8 +617,8 @@ class FileMethods(object):
         """ number of files in queue not finished yet"""
         self.c.execute(
             "SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status NOT IN (0,4)",
-            (queue,
-             ))
+            (queue,),
+        )
         return self.c.fetchone()[0]
 
     @style.queue
@@ -619,13 +626,13 @@ class FileMethods(object):
         """ number of files which have to be proccessed """
         self.c.execute(
             "SELECT COUNT(*) FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? AND l.status IN (2,3,5,7,12) AND l.id != ?",
-            (queue,
-             str(fid)))
+            (queue, str(fid)),
+        )
         return self.c.fetchone()[0]
 
     @style.inner
     def _nextPackageOrder(self, queue=0):
-        self.c.execute('SELECT MAX(packageorder) FROM packages WHERE queue=?', (queue,))
+        self.c.execute("SELECT MAX(packageorder) FROM packages WHERE queue=?", (queue,))
         max = self.c.fetchone()[0]
         if max is not None:
             return max + 1
@@ -634,7 +641,7 @@ class FileMethods(object):
 
     @style.inner
     def _nextFileOrder(self, package):
-        self.c.execute('SELECT MAX(linkorder) FROM links WHERE package=?', (package,))
+        self.c.execute("SELECT MAX(linkorder) FROM links WHERE package=?", (package,))
         max = self.c.fetchone()[0]
         if max is not None:
             return max + 1
@@ -645,12 +652,9 @@ class FileMethods(object):
     def addLink(self, url, name, plugin, package):
         order = self._nextFileOrder(package)
         self.c.execute(
-            'INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)',
-            (url,
-             name,
-             plugin,
-             package,
-             order))
+            "INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)",
+            (url, name, plugin, package, order),
+        )
         return self.c.lastrowid
 
     @style.queue
@@ -660,36 +664,37 @@ class FileMethods(object):
         orders = [order + x for x in range(len(links))]
         links = [(x[0], x[0], x[1], package, o) for x, o in zip(links, orders)]
         self.c.executemany(
-            'INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)',
-            links)
+            "INSERT INTO links(url, name, plugin, package, linkorder) VALUES(?,?,?,?,?)",
+            links,
+        )
 
     @style.queue
     def addPackage(self, name, folder, queue):
         order = self._nextPackageOrder(queue)
         self.c.execute(
-            'INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)',
-            (name,
-             folder,
-             queue,
-             order))
+            "INSERT INTO packages(name, folder, queue, packageorder) VALUES(?,?,?,?)",
+            (name, folder, queue, order),
+        )
         return self.c.lastrowid
 
     @style.queue
     def deletePackage(self, p):
 
-        self.c.execute('DELETE FROM links WHERE package=?', (str(p.id),))
-        self.c.execute('DELETE FROM packages WHERE id=?', (str(p.id),))
+        self.c.execute("DELETE FROM links WHERE package=?", (str(p.id),))
+        self.c.execute("DELETE FROM packages WHERE id=?", (str(p.id),))
         self.c.execute(
-            'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?',
-            (p.order,
-             p.queue))
+            "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=?",
+            (p.order, p.queue),
+        )
 
     @style.queue
     def deleteLink(self, f):
 
-        self.c.execute('DELETE FROM links WHERE id=?', (str(f.id),))
+        self.c.execute("DELETE FROM links WHERE id=?", (str(f.id),))
         self.c.execute(
-            'UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?', (f.order, str(f.packageid)))
+            "UPDATE links SET linkorder=linkorder-1 WHERE linkorder > ? AND package=?",
+            (f.order, str(f.packageid)),
+        )
 
     @style.queue
     def getAllLinks(self, q):
@@ -706,23 +711,23 @@ class FileMethods(object):
 
         """
         self.c.execute(
-            'SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder',
-            (q,
-             ))
+            "SELECT l.id,l.url,l.name,l.size,l.status,l.error,l.plugin,l.package,l.linkorder FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE p.queue=? ORDER BY l.linkorder",
+            (q,),
+        )
         data = {}
         for r in self.c:
             data[r[0]] = {
-                'id': r[0],
-                'url': r[1],
-                'name': r[2],
-                'size': r[3],
-                'format_size': formatSize(r[3]),
-                'status': r[4],
-                'statusmsg': self.manager.statusMsg[r[4]],
-                'error': r[5],
-                'plugin': r[6],
-                'package': r[7],
-                'order': r[8],
+                "id": r[0],
+                "url": r[1],
+                "name": r[2],
+                "size": r[3],
+                "format_size": formatSize(r[3]),
+                "status": r[4],
+                "statusmsg": self.manager.statusMsg[r[4]],
+                "error": r[5],
+                "plugin": r[6],
+                "package": r[7],
+                "order": r[8],
             }
 
         return data
@@ -742,25 +747,27 @@ class FileMethods(object):
         }
         """
         self.c.execute(
-            'SELECT p.id, p.name, p.folder, p.site, p.password, p.queue, p.packageorder, s.sizetotal, s.sizedone, s.linksdone, s.linkstotal \
+            "SELECT p.id, p.name, p.folder, p.site, p.password, p.queue, p.packageorder, s.sizetotal, s.sizedone, s.linksdone, s.linkstotal \
             FROM packages p JOIN pstats s ON p.id = s.id \
-            WHERE p.queue=? ORDER BY p.packageorder', str(q))
+            WHERE p.queue=? ORDER BY p.packageorder",
+            str(q),
+        )
 
         data = {}
         for r in self.c:
             data[r[0]] = {
-                'id': r[0],
-                'name': r[1],
-                'folder': r[2],
-                'site': r[3],
-                'password': r[4],
-                'queue': r[5],
-                'order': r[6],
-                'sizetotal': int(r[7]),
-                'sizedone': r[8] if r[8] else 0,  # these can be None
-                'linksdone': r[9] if r[9] else 0,
-                'linkstotal': r[10],
-                'links': {}
+                "id": r[0],
+                "name": r[1],
+                "folder": r[2],
+                "site": r[3],
+                "password": r[4],
+                "queue": r[5],
+                "order": r[6],
+                "sizetotal": int(r[7]),
+                "sizedone": r[8] if r[8] else 0,  # these can be None
+                "linksdone": r[9] if r[9] else 0,
+                "linkstotal": r[10],
+                "links": {},
             }
 
         return data
@@ -769,25 +776,25 @@ class FileMethods(object):
     def getLinkData(self, id):
         """get link information as dict"""
         self.c.execute(
-            'SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?',
-            (str(id),
-             ))
+            "SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE id=?",
+            (str(id),),
+        )
         data = {}
         r = self.c.fetchone()
         if not r:
             return None
         data[r[0]] = {
-            'id': r[0],
-            'url': r[1],
-            'name': r[2],
-            'size': r[3],
-            'format_size': formatSize(r[3]),
-            'status': r[4],
-            'statusmsg': self.manager.statusMsg[r[4]],
-            'error': r[5],
-            'plugin': r[6],
-            'package': r[7],
-            'order': r[8],
+            "id": r[0],
+            "url": r[1],
+            "name": r[2],
+            "size": r[3],
+            "format_size": formatSize(r[3]),
+            "status": r[4],
+            "statusmsg": self.manager.statusMsg[r[4]],
+            "error": r[5],
+            "plugin": r[6],
+            "package": r[7],
+            "order": r[8],
         }
 
         return data
@@ -796,46 +803,55 @@ class FileMethods(object):
     def getPackageData(self, id):
         """get data about links for a package"""
         self.c.execute(
-            'SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder',
-            (str(id),
-             ))
+            "SELECT id,url,name,size,status,error,plugin,package,linkorder FROM links WHERE package=? ORDER BY linkorder",
+            (str(id),),
+        )
 
         data = {}
         for r in self.c:
             data[r[0]] = {
-                'id': r[0],
-                'url': r[1],
-                'name': r[2],
-                'size': r[3],
-                'format_size': formatSize(r[3]),
-                'status': r[4],
-                'statusmsg': self.manager.statusMsg[r[4]],
-                'error': r[5],
-                'plugin': r[6],
-                'package': r[7],
-                'order': r[8],
+                "id": r[0],
+                "url": r[1],
+                "name": r[2],
+                "size": r[3],
+                "format_size": formatSize(r[3]),
+                "status": r[4],
+                "statusmsg": self.manager.statusMsg[r[4]],
+                "error": r[5],
+                "plugin": r[6],
+                "package": r[7],
+                "order": r[8],
             }
 
         return data
 
     @style.async_
     def updateLink(self, f):
-        self.c.execute('UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?',
-                       (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)))
+        self.c.execute(
+            "UPDATE links SET url=?,name=?,size=?,status=?,error=?,package=? WHERE id=?",
+            (f.url, f.name, f.size, f.status, f.error, str(f.packageid), str(f.id)),
+        )
 
     @style.queue
     def updatePackage(self, p):
-        self.c.execute('UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?',
-                       (p.name, p.folder, p.site, p.password, p.queue, str(p.id)))
+        self.c.execute(
+            "UPDATE packages SET name=?,folder=?,site=?,password=?,queue=? WHERE id=?",
+            (p.name, p.folder, p.site, p.password, p.queue, str(p.id)),
+        )
 
     @style.queue
     def updateLinkInfo(self, data):
         """ data is list of tupels (name, size, status, url) """
         self.c.executemany(
-            'UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)', data)
+            "UPDATE links SET name=?, size=?, status=? WHERE url=? AND status IN (1,2,3,14)",
+            data,
+        )
         ids = []
-        self.c.execute('SELECT id FROM links WHERE url IN (\'{}\')'.format(
-            "','".join([x[3] for x in data])))
+        self.c.execute(
+            "SELECT id FROM links WHERE url IN ('{}')".format(
+                "','".join([x[3] for x in data])
+            )
+        )
         for r in self.c:
             ids.append(int(r[0]))
         return ids
@@ -847,47 +863,42 @@ class FileMethods(object):
         if not noMove:
             if p.order > position:
                 self.c.execute(
-                    'UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0',
-                    (position,
-                     p.order,
-                     p.queue))
+                    "UPDATE packages SET packageorder=packageorder+1 WHERE packageorder >= ? AND packageorder < ? AND queue=? AND packageorder >= 0",
+                    (position, p.order, p.queue),
+                )
             elif p.order < position:
                 self.c.execute(
-                    'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND queue=? AND packageorder >= 0',
-                    (position,
-                     p.order,
-                     p.queue))
+                    "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder <= ? AND packageorder > ? AND queue=? AND packageorder >= 0",
+                    (position, p.order, p.queue),
+                )
 
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?',
-                       (position, str(p.id)))
+        self.c.execute(
+            "UPDATE packages SET packageorder=? WHERE id=?", (position, str(p.id))
+        )
 
     @style.queue
     def reorderLink(self, f, position):
         """ reorder link with f as dict for pyfile  """
         if f["order"] > position:
             self.c.execute(
-                'UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?',
-                (position,
-                 f["order"],
-                    f["package"]))
+                "UPDATE links SET linkorder=linkorder+1 WHERE linkorder >= ? AND linkorder < ? AND package=?",
+                (position, f["order"], f["package"]),
+            )
         elif f["order"] < position:
             self.c.execute(
-                'UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?',
-                (position,
-                 f["order"],
-                    f["package"]))
+                "UPDATE links SET linkorder=linkorder-1 WHERE linkorder <= ? AND linkorder > ? AND package=?",
+                (position, f["order"], f["package"]),
+            )
 
-        self.c.execute('UPDATE links SET linkorder=? WHERE id=?', (position, f["id"]))
+        self.c.execute("UPDATE links SET linkorder=? WHERE id=?", (position, f["id"]))
 
     @style.queue
     def clearPackageOrder(self, p):
-        self.c.execute('UPDATE packages SET packageorder=? WHERE id=?', (-1, str(p.id)))
+        self.c.execute("UPDATE packages SET packageorder=? WHERE id=?", (-1, str(p.id)))
         self.c.execute(
-            'UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?',
-            (p.order,
-             p.queue,
-             str(
-                 p.id)))
+            "UPDATE packages SET packageorder=packageorder-1 WHERE packageorder > ? AND queue=? AND id != ?",
+            (p.order, p.queue, str(p.id)),
+        )
 
     @style.async_
     def restartFile(self, id):
@@ -895,19 +906,19 @@ class FileMethods(object):
 
     @style.async_
     def restartPackage(self, id):
-        self.c.execute('UPDATE links SET status=3 WHERE package=?', (str(id),))
+        self.c.execute("UPDATE links SET status=3 WHERE package=?", (str(id),))
 
     @style.queue
     def getPackage(self, id):
         """return package instance from id"""
         self.c.execute(
             "SELECT name,folder,site,password,queue,packageorder FROM packages WHERE id=?",
-            (str(id),
-             ))
+            (str(id),),
+        )
         r = self.c.fetchone()
         if not r:
             return None
-        return PyPackage(self.manager, id, * r)
+        return PyPackage(self.manager, id, *r)
 
     # ----------------------------------------------------------------------
     @style.queue
@@ -915,12 +926,12 @@ class FileMethods(object):
         """return link instance from id"""
         self.c.execute(
             "SELECT url, name, size, status, error, plugin, package, linkorder FROM links WHERE id=?",
-            (str(id),
-             ))
+            (str(id),),
+        )
         r = self.c.fetchone()
         if not r:
             return None
-        return PyFile(self.manager, id, * r)
+        return PyFile(self.manager, id, *r)
 
     @style.queue
     def getJob(self, occ):
@@ -939,7 +950,8 @@ class FileMethods(object):
         cmd += ")"
 
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE ((p.queue=1 AND l.plugin NOT IN {}) OR l.plugin IN {}) AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5".format(
-            cmd, pre)
+            cmd, pre
+        )
 
         self.c.execute(cmd)  # very bad!
 
@@ -949,7 +961,8 @@ class FileMethods(object):
     def getPluginJob(self, plugins):
         """returns pyfile ids with suited plugins"""
         cmd = "SELECT l.id FROM links as l INNER JOIN packages as p ON l.package=p.id WHERE l.plugin IN {} AND l.status IN (2,3,14) ORDER BY p.packageorder ASC, l.linkorder ASC LIMIT 5".format(
-            plugins)
+            plugins
+        )
 
         self.c.execute(cmd)  # very bad!
 
@@ -960,14 +973,17 @@ class FileMethods(object):
         """return list of max length 3 ids with pyfiles in package not finished or processed"""
 
         self.c.execute(
-            "SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3", (str(pid),))
+            "SELECT id FROM links WHERE package=? AND status NOT IN (0, 4, 13) LIMIT 3",
+            (str(pid),),
+        )
         return [r[0] for r in self.c]
 
     @style.queue
     def deleteFinished(self):
         self.c.execute("DELETE FROM links WHERE status IN (0,4)")
         self.c.execute(
-            "DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)")
+            "DELETE FROM packages WHERE NOT EXISTS(SELECT 1 FROM links WHERE packages.id=links.package)"
+        )
 
     @style.queue
     def restartFailed(self):
@@ -978,9 +994,8 @@ class FileMethods(object):
         """ checks if filename exists with different id and same package """
         self.c.execute(
             "SELECT l.plugin FROM links as l INNER JOIN packages as p ON l.package=p.id AND p.folder=? WHERE l.id!=? AND l.status=0 AND l.name=?",
-            (folder,
-             id,
-             filename))
+            (folder, id, filename),
+        )
         return self.c.fetchone()
 
     @style.queue

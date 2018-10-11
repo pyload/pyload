@@ -12,21 +12,22 @@ class FiledropperCom(SimpleHoster):
     __version__ = "0.06"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?filedropper\.com/\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?filedropper\.com/\w+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Filedropper.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
-    NAME_PATTERN = r'Filename: (?P<N>.+?) <'
+    NAME_PATTERN = r"Filename: (?P<N>.+?) <"
     # NOTE: Website says always 0 KB
-    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+),'
+    SIZE_PATTERN = r"Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+),"
     OFFLINE_PATTERN = r'value="a\.swf"'
 
     def setup(self):
@@ -39,14 +40,12 @@ class FiledropperCom(SimpleHoster):
             self.fail(_("Captcha not found"))
 
         captcha_code = self.captcha.decrypt(
-            "http://www.filedropper.com/{}" %
-            m.group(1))
+            "http://www.filedropper.com/{}" % m.group(1)
+        )
 
         m = re.search(r'method="post" action="(.+?)"', self.data)
         if m is not None:
             self.download(
-                urllib.parse.urljoin(
-                    "http://www.filedropper.com/",
-                    m.group(1)),
-                post={
-                    'code': captcha_code})
+                urllib.parse.urljoin("http://www.filedropper.com/", m.group(1)),
+                post={"code": captcha_code},
+            )

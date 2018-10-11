@@ -24,11 +24,11 @@ def get_sort_key(item):
 
 @route("/json/status")
 @route("/json/status", method="POST")
-@login_required('LIST')
+@login_required("LIST")
 def status():
     try:
         status = toDict(PYLOAD.statusServer())
-        status['captcha'] = PYLOAD.isCaptchaWaiting()
+        status["captcha"] = PYLOAD.isCaptchaWaiting()
         return status
     except Exception:
         return HTTPError()
@@ -36,26 +36,27 @@ def status():
 
 @route("/json/links")
 @route("/json/links", method="POST")
-@login_required('LIST')
+@login_required("LIST")
 def links():
     try:
         links = [toDict(x) for x in PYLOAD.statusDownloads()]
         ids = []
         for link in links:
-            ids.append(link['fid'])
+            ids.append(link["fid"])
 
-            if link['status'] == 12:
-                link['info'] = "{} @ {}/s".format(link['format_eta'],
-                                                  formatSize(link['speed']))
-            elif link['status'] == 5:
-                link['percent'] = 0
-                link['size'] = 0
-                link['bleft'] = 0
-                link['info'] = _("waiting {}").format(link['format_wait'])
+            if link["status"] == 12:
+                link["info"] = "{} @ {}/s".format(
+                    link["format_eta"], formatSize(link["speed"])
+                )
+            elif link["status"] == 5:
+                link["percent"] = 0
+                link["size"] = 0
+                link["bleft"] = 0
+                link["info"] = _("waiting {}").format(link["format_wait"])
             else:
-                link['info'] = ""
+                link["info"] = ""
 
-        data = {'links': links, 'ids': ids}
+        data = {"links": links, "ids": ids}
         return data
     except Exception as e:
         print_exc()
@@ -63,16 +64,16 @@ def links():
 
 
 @route("/json/packages")
-@login_required('LIST')
+@login_required("LIST")
 def packages():
     print("/json/packages")
     try:
         data = PYLOAD.getQueue()
 
         for package in data:
-            package['links'] = []
-            for file in PYLOAD.get_package_files(package['id']):
-                package['links'].append(PYLOAD.get_file_info(file))
+            package["links"] = []
+            for file in PYLOAD.get_package_files(package["id"]):
+                package["links"].append(PYLOAD.get_file_info(file))
 
         return data
 
@@ -81,7 +82,7 @@ def packages():
 
 
 @route("/json/package/<id:int>")
-@login_required('LIST')
+@login_required("LIST")
 def package(id):
     try:
         data = toDict(PYLOAD.getPackageData(id))
@@ -116,7 +117,7 @@ def package(id):
 
 
 @route("/json/package_order/:ids")
-@login_required('ADD')
+@login_required("ADD")
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -127,7 +128,7 @@ def package_order(ids):
 
 
 @route("/json/abort_link/<id:int>")
-@login_required('DELETE')
+@login_required("DELETE")
 def abort_link(id):
     try:
         PYLOAD.stopDownloads([id])
@@ -137,7 +138,7 @@ def abort_link(id):
 
 
 @route("/json/link_order/:ids")
-@login_required('ADD')
+@login_required("ADD")
 def link_order(ids):
     try:
         pid, pos = ids.split("|")
@@ -149,26 +150,24 @@ def link_order(ids):
 
 @route("/json/add_package")
 @route("/json/add_package", method="POST")
-@login_required('ADD')
+@login_required("ADD")
 def add_package():
     name = request.forms.get("add_name", "New Package").strip()
-    queue = int(request.forms['add_dest'])
-    links = decode(request.forms['add_links'])
+    queue = int(request.forms["add_dest"])
+    links = decode(request.forms["add_links"])
     links = links.split("\n")
     pw = request.forms.get("add_password", "").strip("\n\r")
 
     try:
-        f = request.files['add_file']
+        f = request.files["add_file"]
 
         if not name or name == "New Package":
             name = f.name
 
         fpath = join(
-            PYLOAD.getConfigValue(
-                "general",
-                "download_folder"),
-            "tmp_" + f.filename)
-        destination = open(fpath, 'wb')
+            PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename
+        )
+        destination = open(fpath, "wb")
         copyfileobj(f.file, destination)
         destination.close()
         links.insert(0, fpath)
@@ -188,7 +187,7 @@ def add_package():
 
 
 @route("/json/move_package/<dest:int>/<id:int>")
-@login_required('MODIFY')
+@login_required("MODIFY")
 def move_package(dest, id):
     try:
         PYLOAD.movePackage(dest, id)
@@ -198,13 +197,15 @@ def move_package(dest, id):
 
 
 @route("/json/edit_package", method="POST")
-@login_required('MODIFY')
+@login_required("MODIFY")
 def edit_package():
     try:
         id = int(request.forms.get("pack_id"))
-        data = {"name": request.forms.get("pack_name").decode("utf8", "ignore"),
-                "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-                "password": request.forms.get("pack_pws").decode("utf8", "ignore")}
+        data = {
+            "name": request.forms.get("pack_name").decode("utf8", "ignore"),
+            "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
+            "password": request.forms.get("pack_pws").decode("utf8", "ignore"),
+        }
 
         PYLOAD.setPackageData(id, data)
         return {"response": "success"}
@@ -215,25 +216,27 @@ def edit_package():
 
 @route("/json/set_captcha")
 @route("/json/set_captcha", method="POST")
-@login_required('ADD')
+@login_required("ADD")
 def set_captcha():
-    if request.environ.get('REQUEST_METHOD', "GET") == "POST":
+    if request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
             PYLOAD.setCaptchaResult(
-                request.forms["cap_id"],
-                request.forms["cap_result"])
+                request.forms["cap_id"], request.forms["cap_result"]
+            )
         except Exception:
             pass
 
     task = PYLOAD.getCaptchaTask()
 
     if task.tid >= 0:
-        return {'captcha': True,
-                'id': task.tid,
-                'params': task.data,
-                'result_type': task.resultType}
+        return {
+            "captcha": True,
+            "id": task.tid,
+            "params": task.data,
+            "result_type": task.resultType,
+        }
     else:
-        return {'captcha': False}
+        return {"captcha": False}
 
 
 @route("/json/load_config/:category/:section")
@@ -255,8 +258,8 @@ def load_config(category, section):
         option["value"] = decode(option["value"])
 
     return render_to_response(
-        "settings_item.html", {
-            "skey": section, "section": conf[section]})
+        "settings_item.html", {"skey": section, "section": conf[section]}
+    )
 
 
 @route("/json/save_config/:category", method="POST")

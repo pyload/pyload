@@ -9,7 +9,7 @@ class X7To(DeadHoster):
     __version__ = "0.46"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?x7\.to/'
+    __pattern__ = r"http://(?:www\.)?x7\.to/"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """X7.to hoster plugin"""

@@ -9,7 +9,9 @@ class FileApeCom(DeadHoster):
     __version__ = "0.17"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+'
+    __pattern__ = (
+        r"http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+"
+    )
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """FileApe.com hoster plugin"""

@@ -17,21 +17,22 @@ class BasketbuildCom(SimpleHoster):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Basketbuild.com hoster plugin"""
     __license__ = "GPLv3"
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
-    NAME_PATTERN = r'File Name:</strong> (?P<N>.+?)<br/>'
-    SIZE_PATTERN = r'File Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'404 - Page Not Found'
+    NAME_PATTERN = r"File Name:</strong> (?P<N>.+?)<br/>"
+    SIZE_PATTERN = r"File Size:</strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)"
+    OFFLINE_PATTERN = r"404 - Page Not Found"
 
     def setup(self):
         self.multiDL = True
@@ -50,7 +51,7 @@ class BasketbuildCom(SimpleHoster):
             self.log_debug("Next hop: {}".format(link1))
 
         try:
-            wait = re.search(r'var sec = (\d+)', self.data).group(1)
+            wait = re.search(r"var sec = (\d+)", self.data).group(1)
             self.log_debug("Wait {} seconds".format(wait))
             self.wait(wait)
 
@@ -58,9 +59,7 @@ class BasketbuildCom(SimpleHoster):
             self.log_debug("No wait time found")
 
         try:
-            self.link = re.search(
-                r'id="dlLink">\s*<a href="(.+?)"',
-                self.data).group(1)
+            self.link = re.search(r'id="dlLink">\s*<a href="(.+?)"', self.data).group(1)
 
         except AttributeError:
             self.error(_("DL-Link not found"))

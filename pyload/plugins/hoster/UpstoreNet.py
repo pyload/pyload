@@ -13,29 +13,32 @@ class UpstoreNet(SimpleHoster):
     __version__ = "0.13"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Upstore.Net File Download Hoster"""
     __license__ = "GPLv3"
-    __authors__ = [("igel", "igelkun@myopera.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("igel", "igelkun@myopera.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     INFO_PATTERN = r'<div class="comment">.*?</div>\s*\n<h2 style="margin:0">(?P<N>.*?)</h2>\s*\n<div class="comment">\s*\n\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<span class="error">File (?:not found|was deleted).*</span>'
 
-    PREMIUM_ONLY_PATTERN = r'available only for Premium'
+    PREMIUM_ONLY_PATTERN = r"available only for Premium"
     LINK_FREE_PATTERN = r'<a href="(https?://.*?)" target="_blank"><b>'
 
-    URL_REPLACEMENTS = [(__pattern__ + ".*", r'https://upstore.net/\g<ID>')]
+    URL_REPLACEMENTS = [(__pattern__ + ".*", r"https://upstore.net/\g<ID>")]
 
-    DL_LIMIT_PATTERN = r'Please wait (.+?) before downloading next'
-    WAIT_PATTERN = r'var sec = (\d+)'
+    DL_LIMIT_PATTERN = r"Please wait (.+?) before downloading next"
+    WAIT_PATTERN = r"var sec = (\d+)"
     CHASH_PATTERN = r'<input type="hidden" name="hash" value="(.+?)">'
 
     COOKIES = [("upstore.net", "lang", "en")]
@@ -50,7 +53,7 @@ class UpstoreNet(SimpleHoster):
         self.log_debug("Read hash " + chash)
 
         #: Continue to stage2
-        post_data = {'hash': chash, 'free': 'Slow download'}
+        post_data = {"hash": chash, "free": "Slow download"}
         self.data = self.load(pyfile.url, post=post_data)
 
         #: STAGE 2: solve captcha and wait
@@ -69,8 +72,12 @@ class UpstoreNet(SimpleHoster):
 
             #: then, handle the captcha
             response, challenge = self.captcha.challenge()
-            post_data.update({'recaptcha_challenge_field': challenge,
-                              'recaptcha_response_field': response})
+            post_data.update(
+                {
+                    "recaptcha_challenge_field": challenge,
+                    "recaptcha_response_field": response,
+                }
+            )
 
             self.data = self.load(pyfile.url, post=post_data)
 

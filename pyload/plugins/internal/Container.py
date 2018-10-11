@@ -13,25 +13,21 @@ class Container(Crypter):
     __version__ = "0.14"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         True),
-        ("use_premium",
-         "bool",
-         "Use premium account if available",
-         True),
-        ("folder_per_package",
-         "Default;Yes;No",
-         "Create folder for each package",
-         "Default")]
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+    ]
 
     __description__ = """Base container decrypter plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("mkaay", "mkaay@mkaay.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [("mkaay", "mkaay@mkaay.de"), ("Walter Purcaro", "vuolter@gmail.com")]
 
     def process(self, pyfile):
         """
@@ -67,10 +63,8 @@ class Container(Crypter):
 
             self.pyfile.name = "tmp_" + self.pyfile.name
             self.pyfile.url = os.path.join(
-                self.pyload.config.get(
-                    'general',
-                    'download_folder'),
-                self.pyfile.name)
+                self.pyload.config.get("general", "download_folder"), self.pyfile.name
+            )
 
             try:
                 with open(self.pyfile.url, "wb") as f:

@@ -5,8 +5,14 @@ import time
 from builtins import _
 
 from pyload.plugins.internal.Plugin import Plugin, Skip
-from pyload.plugins.utils import (Periodical, compare_time, decode, isiterable, lock,
-                                  parse_size)
+from pyload.plugins.utils import (
+    Periodical,
+    compare_time,
+    decode,
+    isiterable,
+    lock,
+    parse_size,
+)
 
 
 class Account(Plugin):
@@ -21,7 +27,7 @@ class Account(Plugin):
 
     #: Relogin account every 30 minutes, use -1 for never expire, you have to explicitly call relogin() when needed
     LOGIN_TIMEOUT = 30 * 60
-    TUNE_TIMEOUT = True     #: Automatically tune relogin interval
+    TUNE_TIMEOUT = True  #: Automatically tune relogin interval
 
     def __init__(self, manager, accounts):
         self._init(manager.pyload)
@@ -50,8 +56,11 @@ class Account(Plugin):
 
         self.sync()
 
-        if self.info['login']['timestamp'] == 0 or self.timeout != - \
-                1 and self.info['login']['timestamp'] + self.timeout < time.time():
+        if (
+            self.info["login"]["timestamp"] == 0
+            or self.timeout != -1
+            and self.info["login"]["timestamp"] + self.timeout < time.time()
+        ):
             self.log_debug("Reached login timeout for user `{}`".format(self.user))
             return False
         else:
@@ -59,7 +68,7 @@ class Account(Plugin):
 
     @property
     def premium(self):
-        return bool(self.get_data('premium'))
+        return bool(self.get_data("premium"))
 
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
@@ -72,12 +81,19 @@ class Account(Plugin):
             pass
 
         try:
-            msg = msg.replace(self.info['login']['password'], "**********")
+            msg = msg.replace(self.info["login"]["password"], "**********")
         except Exception:
             pass
 
-        log("{plugintype} {pluginname}: {msg}".format(
-            **{'plugintype': plugintype.upper(), 'pluginname': pluginname, 'msg': msg}))
+        log(
+            "{plugintype} {pluginname}: {msg}".format(
+                **{
+                    "plugintype": plugintype.upper(),
+                    "pluginname": pluginname,
+                    "msg": msg,
+                }
+            )
+        )
 
     def setup(self):
         """
@@ -101,8 +117,7 @@ class Account(Plugin):
             self.log_info(_("Relogin user `{}`...").format(self.user))
             self.clean()
 
-        self.req = self.pyload.requestFactory.getRequest(
-            self.classname, self.user)
+        self.req = self.pyload.requestFactory.getRequest(self.classname, self.user)
 
         self.sync()
         self.setup()
@@ -110,33 +125,30 @@ class Account(Plugin):
         timestamp = time.time()
 
         try:
-            self.signin(
-                self.user,
-                self.info['login']['password'],
-                self.info['data'])
+            self.signin(self.user, self.info["login"]["password"], self.info["data"])
 
         except Skip as e:
             self.log_warning(_("Skipped login user `{}`").format(self.user), e)
-            self.info['login']['valid'] = True
+            self.info["login"]["valid"] = True
 
-            new_timeout = timestamp - self.info['login']['timestamp']
+            new_timeout = timestamp - self.info["login"]["timestamp"]
             if self.TUNE_TIMEOUT and new_timeout > self.timeout:
                 self.timeout = new_timeout
 
         except Exception as e:
             self.log_error(_("Could not login user `{}`").format(self.user), e)
-            self.info['login']['valid'] = False
+            self.info["login"]["valid"] = False
 
         else:
-            self.info['login']['valid'] = True
+            self.info["login"]["valid"] = True
 
         finally:
             #: Set timestamp for login
-            self.info['login']['timestamp'] = timestamp
+            self.info["login"]["timestamp"] = timestamp
 
             self.syncback()
 
-            return bool(self.info['login']['valid'])
+            return bool(self.info["login"]["valid"])
 
     # TODO: Recheck in 0.6.x
     def syncback(self):
@@ -157,17 +169,17 @@ class Account(Plugin):
         u = self.accounts[self.user]
 
         if reverse:
-            u.update(self.info['data'])
-            u.update(self.info['login'])
+            u.update(self.info["data"])
+            u.update(self.info["login"])
 
         else:
-            d = {'login': {}, 'data': {}}
+            d = {"login": {}, "data": {}}
 
             for k, v in u.items():
-                if k in ('password', 'timestamp', 'valid'):
-                    d['login'][k] = v
+                if k in ("password", "timestamp", "valid"):
+                    d["login"][k] = v
                 else:
-                    d['data'][k] = v
+                    d["data"][k] = v
 
             self.info.update(d)
 
@@ -177,11 +189,11 @@ class Account(Plugin):
     def reset(self):
         self.sync()
 
-        def clear(x): return {} if isinstance(
-            x, dict) else [] if isiterable(x) else None
-        self.info['data'] = dict((k, clear(v))
-                                 for k, v in self.info['data'].items())
-        self.info['data']['options'] = {'limitDL': ['0']}
+        def clear(x):
+            return {} if isinstance(x, dict) else [] if isiterable(x) else None
+
+        self.info["data"] = dict((k, clear(v)) for k, v in self.info["data"].items())
+        self.info["data"]["options"] = {"limitDL": ["0"]}
 
         self.syncback()
 
@@ -201,39 +213,37 @@ class Account(Plugin):
                 refresh = False
                 self.reset()
 
-        if refresh and self.info['login']['valid']:
-            self.log_info(
-                _("Grabbing account info for user `{}`...").format(self.user))
+        if refresh and self.info["login"]["valid"]:
+            self.log_info(_("Grabbing account info for user `{}`...").format(self.user))
             self.info = self._grab_info()
 
             self.syncback()
 
             self.log_debug(
-                "Account info for user `{}`: {}".format(self.user, self.info))
+                "Account info for user `{}`: {}".format(self.user, self.info)
+            )
 
         return self.info
 
     def get_login(self, key=None, default=None):
-        d = self.get_info()['login']
+        d = self.get_info()["login"]
         return d.get(key, default) if key else d
 
     def get_data(self, key=None, default=None):
-        d = self.get_info()['data']
+        d = self.get_info()["data"]
         return d.get(key, default) if key else d
 
     def _grab_info(self):
         try:
             data = self.grab_info(
-                self.user,
-                self.info['login']['password'],
-                self.info['data'])
+                self.user, self.info["login"]["password"], self.info["data"]
+            )
 
             if data and isinstance(data, dict):
-                self.info['data'].update(data)
+                self.info["data"].update(data)
 
         except Exception as e:
-            self.log_warning(
-                _("Error loading info for user `{}`").format(self.user), e)
+            self.log_warning(_("Error loading info for user `{}`").format(self.user), e)
 
         finally:
             return self.info
@@ -259,12 +269,12 @@ class Account(Plugin):
         self.accounts.clear()
 
         for user, info in accounts.items():
-            self.add(user, info['password'], info['options'])
+            self.add(user, info["password"], info["options"])
 
     @lock
     def getAccountData(self, user, force=False):
         if force:
-            self.accounts[user]['plugin'].get_info()
+            self.accounts[user]["plugin"].get_info()
 
         return self.accounts[user]
 
@@ -288,24 +298,27 @@ class Account(Plugin):
 
         if user in self.accounts:
             self.log_error(
-                _("Error adding user `{}`").format(user), _("User already exists"))
+                _("Error adding user `{}`").format(user), _("User already exists")
+            )
             return False
 
-        d = {'login': user,
-             'maxtraffic': None,
-             'options': options or {'limitDL': ['0']},
-             'password': password or "",
-             'plugin': self.pyload.accountManager.getAccountPlugin(self.classname),
-             'premium': None,
-             'timestamp': 0,
-             'trafficleft': None,
-             'type': self.__name__,
-             'valid': None,
-             'validuntil': None}
+        d = {
+            "login": user,
+            "maxtraffic": None,
+            "options": options or {"limitDL": ["0"]},
+            "password": password or "",
+            "plugin": self.pyload.accountManager.getAccountPlugin(self.classname),
+            "premium": None,
+            "timestamp": 0,
+            "trafficleft": None,
+            "type": self.__name__,
+            "valid": None,
+            "validuntil": None,
+        }
 
         u = self.accounts[user] = d
-        result = u['plugin'].choose(user)
-        u['plugin'].get_info()
+        result = u["plugin"].choose(user)
+        u["plugin"].get_info()
 
         return result
 
@@ -319,12 +332,12 @@ class Account(Plugin):
 
             u = self.accounts[user]
             if password:
-                u['password'] = password
+                u["password"] = password
 
             if options:
-                u['options'].update(options)
+                u["options"].update(options)
 
-            u['plugin'].relogin()
+            u["plugin"].relogin()
 
         else:
             self.add(user, password, options)
@@ -342,16 +355,16 @@ class Account(Plugin):
         premium_accounts = {}
 
         for user in self.accounts:
-            info = self.accounts[user]['plugin'].get_info()
-            data = info['data']
+            info = self.accounts[user]["plugin"].get_info()
+            data = info["data"]
 
-            if not info['login']['valid']:
+            if not info["login"]["valid"]:
                 continue
 
-            if data['options'].get('time'):
+            if data["options"].get("time"):
                 time_data = ""
                 try:
-                    time_data = data['options']['time'][0]
+                    time_data = data["options"]["time"][0]
                     start, end = time_data.split("-")
 
                     if not compare_time(start.split(":"), end.split(":")):
@@ -359,19 +372,28 @@ class Account(Plugin):
 
                 except Exception:
                     self.log_warning(
-                        _("Invalid time format `{}` for account `{}`, use 1:22-3:44").format(user, time_data))
+                        _(
+                            "Invalid time format `{}` for account `{}`, use 1:22-3:44"
+                        ).format(user, time_data)
+                    )
 
-            if data['trafficleft'] == 0:
+            if data["trafficleft"] == 0:
                 self.log_warning(
-                    _("Not using account `{}` because the account has no traffic left").format(user))
+                    _(
+                        "Not using account `{}` because the account has no traffic left"
+                    ).format(user)
+                )
                 continue
 
-            if time.time() > data['validuntil'] > 0:
+            if time.time() > data["validuntil"] > 0:
                 self.log_warning(
-                    _("Not using account `{}` because the account has expired").format(user))
+                    _("Not using account `{}` because the account has expired").format(
+                        user
+                    )
+                )
                 continue
 
-            if data['premium']:
+            if data["premium"]:
                 premium_accounts[user] = info
 
             else:
@@ -382,16 +404,17 @@ class Account(Plugin):
         if not account_list:
             return None, None
 
-        validuntil_list = [(user, info) for user, info in account_list
-                           if info['data']['validuntil']]
+        validuntil_list = [
+            (user, info) for user, info in account_list if info["data"]["validuntil"]
+        ]
 
         if not validuntil_list:
             # TODO: Random account?! Rewrite in 0.6.x
             return random.choice(account_list)
 
-        return sorted(validuntil_list,
-                      key=lambda a: a[1]['data']['validuntil'],
-                      reverse=True)[0]
+        return sorted(
+            validuntil_list, key=lambda a: a[1]["data"]["validuntil"], reverse=True
+        )[0]
 
     @lock
     def choose(self, user=None):
@@ -403,7 +426,8 @@ class Account(Plugin):
 
         elif user not in self.accounts:
             self.log_error(
-                _("Error choosing user `{}`").format(user), _("User does not exists"))
+                _("Error choosing user `{}`").format(user), _("User does not exists")
+            )
             return False
 
         if self.req and user == self.user:
@@ -421,15 +445,15 @@ class Account(Plugin):
                 self.relogin()
             else:
                 self.req = self.pyload.requestFactory.getRequest(
-                    self.classname, self.user)
+                    self.classname, self.user
+                )
 
             return True
 
     ###########################################################################
 
     def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
-        self.log_debug("Size: {}".format(size),
-                       "Unit: {}".format(unit or "N/D"))
+        self.log_debug("Size: {}".format(size), "Unit: {}".format(unit or "N/D"))
         # TODO: Remove `/ 1024` in 0.6.x
         return parse_size(size, unit or "byte") // 1024
 

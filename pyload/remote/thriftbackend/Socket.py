@@ -44,7 +44,7 @@ class SecureSocketConnection(object):
 
 
 class Socket(TSocket):
-    def __init__(self, host='localhost', port=7228, ssl=False):
+    def __init__(self, host="localhost", port=7228, ssl=False):
         TSocket.__init__(self, host, port)
         self.ssl = ssl
 
@@ -68,31 +68,34 @@ class Socket(TSocket):
         try:
             buff = self.handle.recv(sz)
         except socket.error as e:
-            if (e.args[0] == errno.ECONNRESET and
-                    (sys.platform == 'darwin' or sys.platform.startswith('freebsd'))):
+            if e.args[0] == errno.ECONNRESET and (
+                sys.platform == "darwin" or sys.platform.startswith("freebsd")
+            ):
                 # freebsd and Mach don't follow POSIX semantic of recv
                 # and fail with ECONNRESET if peer performed shutdown.
                 # See corresponding comment and code in TSocket::read()
                 # in lib/cpp/src/transport/TSocket.cpp.
                 self.close()
                 # Trigger the check to raise the END_OF_FILE exception below.
-                buff = ''
+                buff = ""
             else:
                 raise
         except Exception as e:
             # SSL connection was closed
-            if e.args == (-1, 'Unexpected EOF'):
-                buff = ''
-            elif e.args == ([('SSL routines', 'SSL23_GET_CLIENT_HELLO', 'unknown protocol')],):
+            if e.args == (-1, "Unexpected EOF"):
+                buff = ""
+            elif e.args == (
+                [("SSL routines", "SSL23_GET_CLIENT_HELLO", "unknown protocol")],
+            ):
                 # a socket not using ssl tried to connect
-                buff = ''
+                buff = ""
             else:
                 raise
 
         if not len(buff):
             raise TTransportException(
-                type=TTransportException.END_OF_FILE,
-                message='TSocket read 0 bytes')
+                type=TTransportException.END_OF_FILE, message="TSocket read 0 bytes"
+            )
         return buff
 
 
@@ -113,8 +116,8 @@ class ServerSocket(TServerSocket, Socket):
             ctx.use_certificate_file(self.cert)
 
             tmpConnection = SSL.Connection(
-                ctx, socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM))
+                ctx, socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            )
             tmpConnection.set_accept_state()
             self.handle = SecureSocketConnection(tmpConnection)
 
@@ -122,7 +125,7 @@ class ServerSocket(TServerSocket, Socket):
             self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.handle.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        if hasattr(self.handle, 'set_timeout'):
+        if hasattr(self.handle, "set_timeout"):
             self.handle.set_timeout(None)
         self.handle.bind((self.host, self.port))
         self.handle.listen(128)

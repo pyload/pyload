@@ -16,12 +16,14 @@ class MegasharesCom(Account):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    VALID_UNTIL_PATTERN = r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
+    VALID_UNTIL_PATTERN = (
+        r'<p class="premium_info_box">Period Ends: (\w{3} \d{1,2}, \d{4})</p>'
+    )
 
     def grab_info(self, user, password, data):
         html = self.load("http://d01.megashares.com/myms.php")
 
-        premium = False if '>Premium Upgrade<' in html else True
+        premium = False if ">Premium Upgrade<" in html else True
 
         validuntil = trafficleft = -1
         try:
@@ -32,15 +34,18 @@ class MegasharesCom(Account):
         except Exception as e:
             self.log_error(e, trace=True)
 
-        return {'validuntil': validuntil,
-                'trafficleft': -1, 'premium': premium}
+        return {"validuntil": validuntil, "trafficleft": -1, "premium": premium}
 
     def signin(self, user, password, data):
-        html = self.load('http://d01.megashares.com/myms_login.php',
-                         post={'httpref': "",
-                               'myms_login': "Login",
-                               'mymslogin_name': user,
-                               'mymspassword': password})
+        html = self.load(
+            "http://d01.megashares.com/myms_login.php",
+            post={
+                "httpref": "",
+                "myms_login": "Login",
+                "mymslogin_name": user,
+                "mymspassword": password,
+            },
+        )
 
         if not '<span class="b ml">{}</span>'.format(user) in html:
             self.fail_login()

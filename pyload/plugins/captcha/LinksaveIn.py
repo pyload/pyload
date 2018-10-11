@@ -24,8 +24,9 @@ class LinksaveIn(OCR):
     __authors__ = [("pyLoad Team", "admin@pyload.net")]
 
     def init(self):
-        self.data_dir = os.path.dirname(os.path.abspath(
-            __file__)) + os.sep + "LinksaveIn" + os.sep
+        self.data_dir = (
+            os.path.dirname(os.path.abspath(__file__)) + os.sep + "LinksaveIn" + os.sep
+        )
 
     def load_image(self, image):
         im = Image.open(image)

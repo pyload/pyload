@@ -16,7 +16,7 @@ class BIGHTTPRequest(HTTPRequest):
     """
 
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
-    def __init__(self, cookies=None, options=None, limit=1000000):
+    def __init__(self, cookies=None, options=None, limit=1_000_000):
         self.limit = limit
         HTTPRequest.__init__(self, cookies=cookies, options=options)
 
@@ -40,31 +40,34 @@ class PornhubCom(SimpleHoster):
     __version__ = "0.60"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?pornhub\.com/view_video\.php\?viewkey=\w+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Pornhub.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("jeix", "jeix@hasnomail.de"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     NAME_PATTERN = r'"video_title":"(?P<N>.+?)"'
 
-    TEMP_OFFLINE_PATTERN = r'^unmatchable$'  # Who knows?
-    OFFLINE_PATTERN = r'^unmatchable$'  # Who knows?
-
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"  # Who knows?
+    OFFLINE_PATTERN = r"^unmatchable$"  # Who knows?
 
     @classmethod
     def get_info(cls, url="", html=""):
         info = super(PornhubCom, cls).get_info(url, html)
         # Unfortunately, NAME_PATTERN does not include file extension so we blindly add '.mp4' as an extension.
         # (hopefully all links are '.mp4' files)
-        if 'name' in info:
-            info['name'] += ".mp4"
+        if "name" in info:
+            info["name"] += ".mp4"
 
         return info
 
@@ -80,30 +83,40 @@ class PornhubCom(SimpleHoster):
         self.req.http = BIGHTTPRequest(
             cookies=CookieJar(None),
             options=self.pyload.requestFactory.getOptions(),
-            limit=2000000)
+            limit=2_000_000,
+        )
 
     def handle_free(self, pyfile):
-        m = re.search(r'<div class="video-wrapper">.+?<script type="text/javascript">(.+?)</script>', self.data, re.S)
+        m = re.search(
+            r'<div class="video-wrapper">.+?<script type="text/javascript">(.+?)</script>',
+            self.data,
+            re.S,
+        )
         if m is None:
             self.error(_("Player Javascript data not found"))
 
         script = m.group(1)
 
-        m = re.search(r'qualityItems_\d+', script)
+        m = re.search(r"qualityItems_\d+", script)
         if m is None:
             self.error(_("`qualityItems` variable no found"))
 
-        result_var = re.search(r'qualityItems_\d+', script).group(0)
+        result_var = re.search(r"qualityItems_\d+", script).group(0)
 
-        script = "".join(re.findall(r'^\s*var .+', script, re.M))
+        script = "".join(re.findall(r"^\s*var .+", script, re.M))
         script = re.sub(r"[\n\t]|/\*.+?\*/", "", script)
         script += "JSON.stringify({});".format(result_var)
 
         res = self.js.eval(script)
         json_data = json.loads(res)
 
-        urls = dict([(int(re.search("^(\d+)", _x['text']).group(0)), _x['url'])
-                     for _x in json_data if _x['url']])
+        urls = dict(
+            [
+                (int(re.search("^(\d+)", _x["text"]).group(0)), _x["url"])
+                for _x in json_data
+                if _x["url"]
+            ]
+        )
 
         quality = max(urls.keys())
 

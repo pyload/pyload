@@ -34,7 +34,6 @@ class ClickAndLoadBackend(BackendBase):
 
 
 class CNLHandler(BaseHTTPRequestHandler):
-
     def add_package(self, name, urls, queue=0):
         print("name", name)
         print("urls", urls)
@@ -61,14 +60,16 @@ class CNLHandler(BaseHTTPRequestHandler):
         path = self.path.strip("/").lower()
         # self.wfile.write(path+"\n")
 
-        self.map = [(r"add$", self.add),
-                    (r"addcrypted$", self.addcrypted),
-                    (r"addcrypted2$", self.addcrypted2),
-                    (r"flashgot", self.flashgot),
-                    (r"crossdomain\.xml", self.crossdomain),
-                    (r"checkSupportForUrl", self.checksupport),
-                    (r"jdcheck.js", self.jdcheck),
-                    (r"", self.flash)]
+        self.map = [
+            (r"add$", self.add),
+            (r"addcrypted$", self.addcrypted),
+            (r"addcrypted2$", self.addcrypted2),
+            (r"flashgot", self.flashgot),
+            (r"crossdomain\.xml", self.crossdomain),
+            (r"checkSupportForUrl", self.checksupport),
+            (r"jdcheck.js", self.jdcheck),
+            (r"", self.flash),
+        ]
 
         func = None
         for r, f in self.map:
@@ -93,9 +94,11 @@ class CNLHandler(BaseHTTPRequestHandler):
         form = FieldStorage(
             fp=self.rfile,
             headers=self.headers,
-            environ={'REQUEST_METHOD': 'POST',
-                     'CONTENT_TYPE': self.headers['Content-Type'],
-                     })
+            environ={
+                "REQUEST_METHOD": "POST",
+                "CONTENT_TYPE": self.headers["Content-Type"],
+            },
+        )
 
         self.post = {}
         for name in form.keys():
@@ -107,14 +110,14 @@ class CNLHandler(BaseHTTPRequestHandler):
         return "JDownloader"
 
     def add(self):
-        package = self.get_post('referer', 'ClickAndLoad Package')
-        urls = [x for x in self.get_post('urls').split("\n") if x != ""]
+        package = self.get_post("referer", "ClickAndLoad Package")
+        urls = [x for x in self.get_post("urls").split("\n") if x != ""]
 
         self.add_package(package, urls, 0)
 
     def addcrypted(self):
-        package = self.get_post('referer', 'ClickAndLoad Package')
-        dlc = self.get_post('crypted').replace(" ", "+")
+        package = self.get_post("referer", "ClickAndLoad Package")
+        dlc = self.get_post("crypted").replace(" ", "+")
 
         core.upload_container(package, dlc)
 
@@ -137,17 +140,17 @@ class CNLHandler(BaseHTTPRequestHandler):
         self.add_package(package, result, 0)
 
     def flashgot(self):
-        autostart = int(self.get_post('autostart', 0))
-        package = self.get_post('package', "FlashGot")
-        urls = [x for x in self.get_post('urls').split("\n") if x != ""]
+        autostart = int(self.get_post("autostart", 0))
+        package = self.get_post("package", "FlashGot")
+        urls = [x for x in self.get_post("urls").split("\n") if x != ""]
 
         self.add_package(package, urls, autostart)
 
     def crossdomain(self):
-        rep = "<?xml version=\"1.0\"?>\n"
-        rep += "<!DOCTYPE cross-domain-policy SYSTEM \"http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd\">\n"
+        rep = '<?xml version="1.0"?>\n'
+        rep += '<!DOCTYPE cross-domain-policy SYSTEM "http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd">\n'
         rep += "<cross-domain-policy>\n"
-        rep += "<allow-access-from domain=\"*\" />\n"
+        rep += '<allow-access-from domain="*" />\n'
         rep += "</cross-domain-policy>"
         return rep
 

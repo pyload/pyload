@@ -32,13 +32,7 @@ def bench(f, *args, **kwargs):
 user = input("user ")
 passwd = getpass("password ")
 
-server_url = "http{}://{}:{}@{}:{}/".format(
-    "",
-    user,
-    passwd,
-    "127.0.0.1",
-    7227
-)
+server_url = "http{}://{}:{}@{}:{}/".format("", user, passwd, "127.0.0.1", 7227)
 proxy = xmlrpc.client.ServerProxy(server_url, allow_none=True)
 
 bench(proxy.get_server_version)
@@ -50,7 +44,7 @@ print()
 try:
 
     # Make socket
-    transport = Socket('localhost', 7228, False)
+    transport = Socket("localhost", 7228, False)
 
     # Buffering is critical. Raw sockets are very slow
     transport = TTransport.TBufferedTransport(transport)
@@ -87,4 +81,4 @@ try:
     transport.close()
 
 except Thrift.TException as tx:
-    print('ThriftExpection: {}'.format(tx.message))
+    print("ThriftExpection: {}".format(tx.message))

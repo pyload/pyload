@@ -21,16 +21,12 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
         if algorithm in getattr(
             hashlib,
             "algorithms",
-            ("md5",
-             "sha1",
-             "sha224",
-             "sha256",
-             "sha384",
-             "sha512")):
+            ("md5", "sha1", "sha224", "sha256", "sha384", "sha512"),
+        ):
             h = getattr(hashlib, algorithm)()
 
-            with open(local_file, 'rb') as f:
-                for chunk in iter(lambda: f.read(128 * h.block_size), ''):
+            with open(local_file, "rb") as f:
+                for chunk in iter(lambda: f.read(128 * h.block_size), ""):
                     if abort and abort():
                         return False
 
@@ -46,8 +42,8 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             hf = getattr(zlib, algorithm)
             last = 0
 
-            with open(local_file, 'rb') as f:
-                for chunk in iter(lambda: f.read(8192), ''):
+            with open(local_file, "rb") as f:
+                for chunk in iter(lambda: f.read(8192), ""):
                     if abort and abort():
                         return False
 
@@ -58,7 +54,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
                         progress_notify(processed * 100 // file_size)
 
             #: zlib sometimes return negative value
-            return "{:x}".format((2**32 + last) & 0xFFFFFFFF)
+            return "{:x}".format((2 ** 32 + last) & 0xFFFFFFFF)
 
         else:
             return None
@@ -74,32 +70,40 @@ class Checksum(Addon):
     __version__ = "0.34"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("check_checksum", "bool", "Check checksum? (If False only size will be verified)", True),
-                  ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
-                  ("max_tries", "int", "Number of retries", 2),
-                  ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
-                  ("wait_time", "int", "Time to wait before each retry (seconds)", 1)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        (
+            "check_checksum",
+            "bool",
+            "Check checksum? (If False only size will be verified)",
+            True,
+        ),
+        ("check_action", "fail;retry;nothing", "What to do if check fails?", "retry"),
+        ("max_tries", "int", "Number of retries", 2),
+        ("retry_action", "fail;nothing", "What to do if all retries fail?", "fail"),
+        ("wait_time", "int", "Time to wait before each retry (seconds)", 1),
+    ]
 
     __description__ = """Verify downloaded file size and checksum"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("stickell", "l.stickell@yahoo.it"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
-    _methodmap = {'sfv': 'crc32',
-                  'crc': 'crc32',
-                  'hash': 'md5'}
+    _methodmap = {"sfv": "crc32", "crc": "crc32", "hash": "md5"}
 
     _regexmap = {
-        'sfv': r'^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$',
-        'md5': r'^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$',
-        'crc': r'filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$',
-        'default': r'^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$'}
+        "sfv": r"^(?P<NAME>[^;].+)\s+(?P<HASH>[0-9A-Fa-f]{8})$",
+        "md5": r"^(?P<NAME>[0-9A-Fa-f]{32})  (?P<FILE>.+)$",
+        "crc": r"filename=(?P<NAME>.+)\nsize=(?P<SIZE>\d+)\ncrc32=(?P<HASH>[0-9A-Fa-f]{8})$",
+        "default": r"^(?P<HASH>[0-9A-Fa-f]+)\s+\*?(?P<NAME>.+)$",
+    }
 
     def activate(self):
-        if not self.config.get('check_checksum'):
+        if not self.config.get("check_checksum"):
             self.log_info(_("Checksum validation is disabled in plugin configuration"))
 
     def init(self):
@@ -107,13 +111,10 @@ class Checksum(Addon):
             getattr(
                 hashlib,
                 "algorithms",
-                ("md5",
-                 "sha1",
-                 "sha224",
-                 "sha256",
-                 "sha384",
-                 "sha512")),
-            reverse=True)
+                ("md5", "sha1", "sha224", "sha256", "sha384", "sha512"),
+            ),
+            reverse=True,
+        )
 
         self.algorithms.extend(["crc32", "adler32"])
 
@@ -128,20 +129,20 @@ class Checksum(Addon):
         a) if known, the exact filesize in bytes (e.g. 'size': 123456789)
         b) hexadecimal hash string with algorithm name as key (e.g. 'md5': "d76505d0869f9f928a17d42d66326307")
         """
-        if hasattr(
-                pyfile.plugin,
-                "check_data") and isinstance(
-                pyfile.plugin.check_data,
-                dict):
+        if hasattr(pyfile.plugin, "check_data") and isinstance(
+            pyfile.plugin.check_data, dict
+        ):
             data = pyfile.plugin.check_data.copy()
 
-        elif hasattr(pyfile.plugin, "api_data") and isinstance(pyfile.plugin.api_data, dict):
+        elif hasattr(pyfile.plugin, "api_data") and isinstance(
+            pyfile.plugin.api_data, dict
+        ):
             data = pyfile.plugin.api_data.copy()
 
         elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
             data = pyfile.plugin.info.copy()
             # NOTE: Don't check file size until a similary matcher will be implemented
-            data.pop('size', None)
+            data.pop("size", None)
 
         else:
             return
@@ -160,39 +161,40 @@ class Checksum(Addon):
 
         #: Validate file size
         if "size" in data:
-            api_size = int(data['size'])
+            api_size = int(data["size"])
             file_size = os.path.getsize(local_file)
 
             if api_size != file_size:
                 self.log_warning(
                     _("File {} has incorrect size: {} B ({} expected)").format(
-                        pyfile.name, file_size, api_size))
+                        pyfile.name, file_size, api_size
+                    )
+                )
                 self.check_failed(pyfile, local_file, "Incorrect file size")
 
-            data.pop('size', None)
+            data.pop("size", None)
 
         self.log_debug(data)
         #: Validate checksum
-        if data and self.config.get('check_checksum'):
-            data['hash'] = data.get('hash', {})
+        if data and self.config.get("check_checksum"):
+            data["hash"] = data.get("hash", {})
 
             for key in self.algorithms:
-                if key in data and key not in data['hash']:
-                    data['hash'][key] = data[key]
+                if key in data and key not in data["hash"]:
+                    data["hash"][key] = data[key]
                     break
 
-            if len(data['hash']) > 0:
+            if len(data["hash"]) > 0:
                 for key in self.algorithms:
-                    if key in data['hash']:
+                    if key in data["hash"]:
                         pyfile.setCustomStatus(_("checksum verifying"))
                         try:
                             checksum = compute_checksum(
                                 local_file,
-                                key.replace(
-                                    "-",
-                                    "").lower(),
+                                key.replace("-", "").lower(),
                                 progress_notify=pyfile.setProgress,
-                                abort=lambda: pyfile.abort)
+                                abort=lambda: pyfile.abort,
+                            )
                         finally:
                             pyfile.setStatus("processing")
 
@@ -200,40 +202,53 @@ class Checksum(Addon):
                             continue
 
                         elif checksum is not None:
-                            if checksum.lower() == data['hash'][key].lower():
+                            if checksum.lower() == data["hash"][key].lower():
                                 self.log_info(
-                                    _('File integrity of "{}" verified by {} checksum ({})').format(
-                                        pyfile.name, key.upper(), checksum.lower()))
+                                    _(
+                                        'File integrity of "{}" verified by {} checksum ({})'
+                                    ).format(pyfile.name, key.upper(), checksum.lower())
+                                )
                                 pyfile.error = _("checksum verified")
                                 break
 
                             else:
                                 self.log_warning(
-                                    _("{} checksum for file {} does not match ({} != {})").format(
-                                        key.upper(), pyfile.name, checksum, data['hash'][key].lower()))
+                                    _(
+                                        "{} checksum for file {} does not match ({} != {})"
+                                    ).format(
+                                        key.upper(),
+                                        pyfile.name,
+                                        checksum,
+                                        data["hash"][key].lower(),
+                                    )
+                                )
 
                                 self.check_failed(
-                                    pyfile, local_file, "Checksums do not match")
+                                    pyfile, local_file, "Checksums do not match"
+                                )
 
                         else:
                             self.log_warning(
-                                _("Unsupported hashing algorithm"), key.upper())
+                                _("Unsupported hashing algorithm"), key.upper()
+                            )
 
                 else:
                     self.log_warning(
                         _('Unable to validate checksum for file: "{}"').format(
-                            pyfile.name))
+                            pyfile.name
+                        )
+                    )
 
     def check_failed(self, pyfile, local_file, msg):
-        check_action = self.config.get('check_action')
+        check_action = self.config.get("check_action")
         if check_action == "retry":
-            max_tries = self.config.get('max_tries')
-            retry_action = self.config.get('retry_action')
+            max_tries = self.config.get("max_tries")
+            retry_action = self.config.get("retry_action")
             if all(_r < max_tries for _id, _r in pyfile.plugin.retries.items()):
                 if local_file:
                     os.remove(local_file)
 
-                pyfile.plugin.retry(max_tries, self.config.get('wait_time'), msg)
+                pyfile.plugin.retry(max_tries, self.config.get("wait_time"), msg)
 
             elif retry_action == "nothing":
                 return
@@ -253,24 +268,21 @@ class Checksum(Addon):
     def verify_package(self, pypack, event_finished, thread=None):
         try:
             dl_folder = fsjoin(
-                self.pyload.config.get(
-                    "general",
-                    "download_folder"),
-                pypack.folder,
-                "")
+                self.pyload.config.get("general", "download_folder"), pypack.folder, ""
+            )
 
             pdata = list(pypack.getChildren().items())
-            files_ids = dict([(fdata['name'], fdata['id']) for fid, fdata in pdata])
+            files_ids = dict([(fdata["name"], fdata["id"]) for fid, fdata in pdata])
             failed_queue = []
             for fid, fdata in pdata:
-                file_type = os.path.splitext(fdata['name'])[1][1:].lower()
+                file_type = os.path.splitext(fdata["name"])[1][1:].lower()
 
                 if file_type not in self.formats:
                     continue
 
-                hash_file = encode(fsjoin(dl_folder, fdata['name']))
+                hash_file = encode(fsjoin(dl_folder, fdata["name"]))
                 if not os.path.isfile(hash_file):
-                    self.log_warning(_("File not found"), fdata['name'])
+                    self.log_warning(_("File not found"), fdata["name"])
                     continue
 
                 with open(hash_file) as f:
@@ -278,19 +290,16 @@ class Checksum(Addon):
 
                 failed = []
                 for m in re.finditer(
-                        self._regexmap.get(
-                            file_type,
-                            self._regexmap['default']),
-                        text,
-                        re.M):
+                    self._regexmap.get(file_type, self._regexmap["default"]), text, re.M
+                ):
                     data = m.groupdict()
-                    self.log_debug(fdata['name'], data)
+                    self.log_debug(fdata["name"], data)
 
-                    local_file = encode(fsjoin(dl_folder, data['NAME']))
+                    local_file = encode(fsjoin(dl_folder, data["NAME"]))
                     algorithm = self._methodmap.get(file_type, file_type)
 
                     pyfile = None
-                    fid = files_ids.get(data['NAME'], None)
+                    fid = files_ids.get(data["NAME"], None)
                     if fid is not None:
                         pyfile = self.pyload.files.getFile(fid)
                         pyfile.setCustomStatus(_("checksum verifying"))
@@ -300,7 +309,8 @@ class Checksum(Addon):
                                 local_file,
                                 algorithm,
                                 progress_notify=pyfile.setProgress,
-                                abort=lambda: pyfile.abort)
+                                abort=lambda: pyfile.abort,
+                            )
                         finally:
                             thread.finishFile(pyfile)
 
@@ -311,11 +321,13 @@ class Checksum(Addon):
                         continue
 
                     elif checksum is not None:
-                        if checksum.lower() == data['HASH'].lower():
+                        if checksum.lower() == data["HASH"].lower():
                             self.retries.pop(fid, 0)
                             self.log_info(
-                                _('File integrity of "{}" verified by {} checksum ({})').format(
-                                    data['NAME'], algorithm, checksum))
+                                _(
+                                    'File integrity of "{}" verified by {} checksum ({})'
+                                ).format(data["NAME"], algorithm, checksum)
+                            )
 
                             if pyfile is not None:
                                 pyfile.error = _("checksum verified")
@@ -323,14 +335,23 @@ class Checksum(Addon):
                                 pyfile.release()
 
                         else:
-                            self.log_warning(_("{} checksum for file {} does not match ({} != {})").format(
-                                algorithm.upper(), data['NAME'], checksum.lower(), data['HASH'].lower()))
+                            self.log_warning(
+                                _(
+                                    "{} checksum for file {} does not match ({} != {})"
+                                ).format(
+                                    algorithm.upper(),
+                                    data["NAME"],
+                                    checksum.lower(),
+                                    data["HASH"].lower(),
+                                )
+                            )
 
                             if fid is not None:
                                 failed.append((fid, local_file))
                     else:
                         self.log_warning(
-                            _("Unsupported hashing algorithm"), algorithm.upper())
+                            _("Unsupported hashing algorithm"), algorithm.upper()
+                        )
 
                 if failed:
                     failed_queue.extend(failed)
@@ -338,11 +359,14 @@ class Checksum(Addon):
                 else:
                     self.log_info(
                         _('All files specified by "{}" verified successfully').format(
-                            fdata['name']))
+                            fdata["name"]
+                        )
+                    )
 
             if failed_queue:
                 self.package_check_failed(
-                    failed_queue, thread, "Checksums do not match")
+                    failed_queue, thread, "Checksums do not match"
+                )
 
         finally:
             event_finished.set()
@@ -352,26 +376,28 @@ class Checksum(Addon):
         parent_thread.join()  #: wait for calling thread to finish
         time.sleep(1)
 
-        check_action = self.config.get('check_action')
-        retry_action = self.config.get('retry_action')
+        check_action = self.config.get("check_action")
+        retry_action = self.config.get("retry_action")
 
         for fid, local_file in failed_queue:
             pyfile = self.pyload.files.getFile(fid)
             try:
                 if check_action == "retry":
                     retry_count = self.retries.get(fid, 0)
-                    max_tries = self.config.get('max_tries')
+                    max_tries = self.config.get("max_tries")
                     if retry_count < max_tries:
                         if local_file:
                             os.remove(local_file)
 
                         self.retries[fid] = retry_count + 1
 
-                        wait_time = self.config.get('wait_time')
+                        wait_time = self.config.get("wait_time")
                         self.log_info(_("Waiting {}...").format(format_time(wait_time)))
                         time.sleep(wait_time)
 
-                        pyfile.package().setFinished = False  #: Force `package_finished` event again
+                        pyfile.package().setFinished = (
+                            False
+                        )  #: Force `package_finished` event again
                         self.pyload.files.restartFile(fid)
                         continue
 

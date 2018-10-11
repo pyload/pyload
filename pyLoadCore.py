@@ -34,7 +34,7 @@ from pyload.utils.JsEngine import JsEngine
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.ServerThread import WebServer
 
-CURRENT_VERSION = '0.5.0'
+CURRENT_VERSION = "0.5.0"
 
 
 enc = get_console_encoding(sys.stdout.encoding)
@@ -52,11 +52,8 @@ def exceptHook(exc_type, exc_value, exc_traceback):
         return
 
     logger.error(
-        "<<< UNCAUGHT EXCEPTION >>>",
-        exc_info=(
-            exc_type,
-            exc_value,
-            exc_traceback))
+        "<<< UNCAUGHT EXCEPTION >>>", exc_info=(exc_type, exc_value, exc_traceback)
+    )
 
 
 class Core(object):
@@ -74,10 +71,26 @@ class Core(object):
 
         if len(argv) > 1:
             try:
-                options, args = getopt(argv[1:], 'vchdusqp:',
-                                       ["version", "clear", "clean", "help", "debug", "user",
-                                        "setup", "configdir=", "changedir", "daemon",
-                                        "quit", "status", "no-remote", "pidfile="])
+                options, args = getopt(
+                    argv[1:],
+                    "vchdusqp:",
+                    [
+                        "version",
+                        "clear",
+                        "clean",
+                        "help",
+                        "debug",
+                        "user",
+                        "setup",
+                        "configdir=",
+                        "changedir",
+                        "daemon",
+                        "quit",
+                        "status",
+                        "no-remote",
+                        "pidfile=",
+                    ],
+                )
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
@@ -149,7 +162,7 @@ class Core(object):
         print("<Options>")
         print("  -v, --version", " " * 10, "Print version to terminal")
         print("  -c, --clear", " " * 12, "Delete all saved packages/links")
-        #print("  -a, --add=<link/list>", " " * 2, "Add the specified links")
+        # print("  -a, --add=<link/list>", " " * 2, "Add the specified links")
         print("  -u, --user", " " * 13, "Manages users")
         print("  -d, --debug", " " * 12, "Enable debug mode")
         print("  -s, --setup", " " * 12, "Run Setup Assistent")
@@ -289,12 +302,15 @@ class Core(object):
 
         gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation(
-            "pyLoad", self.path("locale"), languages=[
-                self.config['general']['language'], "en"], fallback=True)
+            "pyLoad",
+            self.path("locale"),
+            languages=[self.config["general"]["language"], "en"],
+            fallback=True,
+        )
         translation.install(True)
 
-        self.debug = self.doDebug or self.config['general']['debug_mode']
-        self.remote &= self.config['remote']['activated']
+        self.debug = self.doDebug or self.config["general"]["debug_mode"]
+        self.remote &= self.config["remote"]["activated"]
 
         pid = self.isAlreadyRunning()
         if pid:
@@ -303,9 +319,8 @@ class Core(object):
 
         if os.name != "nt" and self.config["general"]["renice"]:
             os.system(
-                "renice {} {}".format(
-                    self.config["general"]["renice"],
-                    os.getpid()))
+                "renice {} {}".format(self.config["general"]["renice"], os.getpid())
+            )
 
         if self.config["permission"]["change_group"]:
             if os.name != "nt":
@@ -327,7 +342,7 @@ class Core(object):
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e))
 
-        self.check_file(self.config['log']['log_folder'], _("folder for logs"), True)
+        self.check_file(self.config["log"]["log_folder"], _("folder for logs"), True)
 
         if self.debug:
             self.init_logger(logging.DEBUG)  # logging level
@@ -351,19 +366,18 @@ class Core(object):
         self.log.debug("Remote activated: {}".format(self.remote))
 
         self.check_install("Crypto", _("pycrypto to decode container files"))
-        #img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
-        #self.check_install("pycurl", _("pycurl to download any files"), True, True)
+        # img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
+        # self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_file("tmp", _("folder for temporary files"), True)
-        #tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
+        # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True  # checks seems to fail, althoug tesseract is available
 
         self.check_file(
-            self.config['general']['download_folder'],
-            _("folder for downloads"),
-            True)
+            self.config["general"]["download_folder"], _("folder for downloads"), True
+        )
 
-        if self.config['ssl']['activated']:
+        if self.config["ssl"]["activated"]:
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
@@ -371,7 +385,8 @@ class Core(object):
             self.log.info(_("Moving old user config to DB"))
             self.db.addUser(
                 self.config.oldRemoteData["username"],
-                self.config.oldRemoteData["password"])
+                self.config.oldRemoteData["password"],
+            )
 
             self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
 
@@ -437,7 +452,7 @@ class Core(object):
                 self.api.addPackage("links.txt", [link_file], 1)
             f.close()
 
-        #self.scheduler.addJob(0, self.accountManager.getAccountInfos)
+        # self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
         self.accountManager.getAccountInfos()
 
@@ -450,16 +465,16 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         # test api
-#        from pyload.utils.APIExerciser import startApiExerciser
-#        startApiExerciser(self, 3)
+        #        from pyload.utils.APIExerciser import startApiExerciser
+        #        startApiExerciser(self, 3)
 
         # some memory stats
-#        from guppy import hpy
-#        hp=hpy()
-#        import objgraph
-#        objgraph.show_most_common_types(limit=20)
-#        import memdebug
-#        memdebug.start(8002)
+        #        from guppy import hpy
+        #        hp=hpy()
+        #        import objgraph
+        #        objgraph.show_most_common_types(limit=20)
+        #        import memdebug
+        #        memdebug.start(8002)
 
         locals().clear()
 
@@ -491,34 +506,30 @@ class Core(object):
         self.db.manager = self.files  # ugly?
 
     def init_webserver(self):
-        if self.config['webinterface']['activated']:
+        if self.config["webinterface"]["activated"]:
             self.webserver = WebServer(self)
             self.webserver.start()
 
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter(
-            "%(asctime) %(levelname)-8s  %(message)",
-            "%d.%m.%Y %H:%M:%S")
+            "%(asctime) %(levelname)-8s  %(message)", "%d.%m.%Y %H:%M:%S"
+        )
         console.setFormatter(frm)
         self.log = logging.getLogger("log")  # settable in config
 
-        if self.config['log']['file_log']:
-            if self.config['log']['log_rotate']:
+        if self.config["log"]["file_log"]:
+            if self.config["log"]["log_rotate"]:
                 file_handler = logging.handlers.RotatingFileHandler(
-                    join(
-                        self.config['log']['log_folder'],
-                        'log.txt'),
-                    maxBytes=self.config['log']['log_size'] * 1024,
-                    backupCount=int(
-                        self.config['log']['log_count']),
-                    encoding="utf8")
+                    join(self.config["log"]["log_folder"], "log.txt"),
+                    maxBytes=self.config["log"]["log_size"] * 1024,
+                    backupCount=int(self.config["log"]["log_count"]),
+                    encoding="utf8",
+                )
             else:
                 file_handler = logging.FileHandler(
-                    join(
-                        self.config['log']['log_folder'],
-                        'log.txt'),
-                    encoding="utf8")
+                    join(self.config["log"]["log_folder"], "log.txt"), encoding="utf8"
+                )
 
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
@@ -549,13 +560,14 @@ class Core(object):
             return False
 
     def check_file(
-            self,
-            check_names,
-            description="",
-            folder=False,
-            empty=True,
-            essential=False,
-            quiet=False):
+        self,
+        check_names,
+        description="",
+        folder=False,
+        empty=True,
+        essential=False,
+        quiet=False,
+    ):
         """check wether needed files exists"""
         tmp_names = []
         if not isinstance(check_names, list):
@@ -581,15 +593,21 @@ class Core(object):
 
             if not file_exists and not quiet:
                 if file_created:
-                    #self.log.info( _("{} created").format(description))
+                    # self.log.info( _("{} created").format(description))
                     pass
                 else:
                     if not empty:
-                        self.log.warning(_("could not find {desc}: {name}").format(
-                            **{"desc": description, "name": tmp_name}))
+                        self.log.warning(
+                            _("could not find {desc}: {name}").format(
+                                **{"desc": description, "name": tmp_name}
+                            )
+                        )
                     else:
-                        print(_("could not create {desc}: {name}").format(
-                            **{"desc": description, "name": tmp_name}))
+                        print(
+                            _("could not create {desc}: {name}").format(
+                                **{"desc": description, "name": tmp_name}
+                            )
+                        )
                     if essential:
                         exit()
 
@@ -612,7 +630,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config['webinterface']['activated'] and hasattr(self, "webserver"):
+            if self.config["webinterface"]["activated"] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in self.threadManager.threads:
@@ -667,11 +685,11 @@ def deamon():
     for fd in range(0, 3):
         try:
             os.close(fd)
-        except OSError:    # ERROR as fd wasn't open to begin with (ignored)
+        except OSError:  # ERROR as fd wasn't open to begin with (ignored)
             pass
 
-    os.open(os.devnull, os.O_RDWR)    # standard input (0)
-    os.dup2(0, 1)            # standard output (1)
+    os.open(os.devnull, os.O_RDWR)  # standard input (0)
+    os.dup2(0, 1)  # standard output (1)
     os.dup2(0, 2)
 
     pyload_core = Core()
@@ -680,7 +698,7 @@ def deamon():
 
 def main():
     # change name to 'pyLoadCore'
-    #from pyload.lib.rename_process import renameProcess
+    # from pyload.lib.rename_process import renameProcess
     # renameProcess('pyLoadCore')
     if "--daemon" in sys.argv:
         deamon()

@@ -9,7 +9,7 @@ class FreeWayMe(DeadHoster):
     __version__ = "0.25"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?free-way\.(bz|me)/.+'
+    __pattern__ = r"https?://(?:www\.)?free-way\.(bz|me)/.+"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """FreeWayMe multi-hoster plugin"""

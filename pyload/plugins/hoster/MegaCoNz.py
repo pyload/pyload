@@ -44,11 +44,10 @@ from pyload.plugins.utils import decode, encode, exists, fsjoin, json
 
 
 class MegaCrypto(object):
-
     @staticmethod
     def base64_decode(data):
         #: Add padding, we need a string with a length multiple of 4
-        data += '=' * (-len(data) % 4)
+        data += "=" * (-len(data) % 4)
         return base64.b64decode(str(data), "-_")
 
     @staticmethod
@@ -62,7 +61,7 @@ class MegaCrypto(object):
     @staticmethod
     def str_to_a32(s):
         # Add padding, we need a string with a length multiple of 4
-        s += '\0' * (-len(s) % 4)
+        s += "\0" * (-len(s) % 4)
         #: big-endian, unsigned int
         return struct.unpack(">{}I".format(len(s) // 4), s)
 
@@ -77,17 +76,15 @@ class MegaCrypto(object):
     @staticmethod
     def cbc_decrypt(data, key):
         cbc = Crypto.Cipher.AES.new(
-            MegaCrypto.a32_to_str(key),
-            Crypto.Cipher.AES.MODE_CBC,
-            "\0" * 16)
+            MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_CBC, "\0" * 16
+        )
         return cbc.decrypt(data)
 
     @staticmethod
     def cbc_encrypt(data, key):
         cbc = Crypto.Cipher.AES.new(
-            MegaCrypto.a32_to_str(key),
-            Crypto.Cipher.AES.MODE_CBC,
-            "\0" * 16)
+            MegaCrypto.a32_to_str(key), Crypto.Cipher.AES.MODE_CBC, "\0" * 16
+        )
         return cbc.encrypt(data)
 
     @staticmethod
@@ -95,10 +92,7 @@ class MegaCrypto(object):
         """
         Construct the cipher key from the given data
         """
-        k = (key[0] ^ key[4],
-             key[1] ^ key[5],
-             key[2] ^ key[6],
-             key[3] ^ key[7])
+        k = (key[0] ^ key[4], key[1] ^ key[5], key[2] ^ key[6], key[3] ^ key[7])
         iv = key[4:6] + (0, 0)
         meta_mac = key[6:8]
 
@@ -114,8 +108,11 @@ class MegaCrypto(object):
         attr = MegaCrypto.cbc_decrypt(data, k)
 
         #: Data is padded, 0-bytes must be stripped
-        return json.loads(re.search(r'{.+}', attr).group(0)
-                          ) if attr[:6] == 'MEGA{"' else False
+        return (
+            json.loads(re.search(r"{.+}", attr).group(0))
+            if attr[:6] == 'MEGA{"'
+            else False
+        )
 
     @staticmethod
     def decrypt_key(data, key):
@@ -123,8 +120,13 @@ class MegaCrypto(object):
         Decrypt an encrypted key ('k' member of a node)
         """
         data = MegaCrypto.base64_decode(data)
-        return sum((MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[_i:_i + 16], key))
-                    for _i in range(0, len(data), 16)), ())
+        return sum(
+            (
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_decrypt(data[_i : _i + 16], key))
+                for _i in range(0, len(data), 16)
+            ),
+            (),
+        )
 
     @staticmethod
     def encrypt_key(data, key):
@@ -132,8 +134,13 @@ class MegaCrypto(object):
         Encrypt a decrypted key
         """
         data = MegaCrypto.base64_decode(data)
-        return sum((MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[_i:_i + 16], key))
-                    for _i in range(0, len(data), 16)), ())
+        return sum(
+            (
+                MegaCrypto.str_to_a32(MegaCrypto.cbc_encrypt(data[_i : _i + 16], key))
+                for _i in range(0, len(data), 16)
+            ),
+            (),
+        )
 
     @staticmethod
     def get_chunks(size):
@@ -159,17 +166,19 @@ class MegaCrypto(object):
 
         def __init__(self, key):
             k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
-            self.hash = '\0' * 16
+            self.hash = "\0" * 16
             self.key = MegaCrypto.a32_to_str(k)
             self.iv = MegaCrypto.a32_to_str(iv[0:2] * 2)
             self.AES = Crypto.Cipher.AES.new(
-                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash)
+                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.hash
+            )
 
         def update(self, chunk):
             cbc = Crypto.Cipher.AES.new(
-                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv)
+                self.key, mode=Crypto.Cipher.AES.MODE_CBC, IV=self.iv
+            )
             for j in range(0, len(chunk), 16):
-                block = chunk[j:j + 16].ljust(16, '\0')
+                block = chunk[j : j + 16].ljust(16, "\0")
                 hash = cbc.encrypt(block)
 
             self.hash = self.AES.encrypt(hash)
@@ -185,8 +194,9 @@ class MegaCrypto(object):
             """
             Return the **printable** CBC-MAC of the message that has been authenticated so far.
             """
-            return "".join("{:2x}".format(ord(x))
-                           for x in MegaCrypto.a32_to_str(self.digest()))
+            return "".join(
+                "{:2x}".format(ord(x)) for x in MegaCrypto.a32_to_str(self.digest())
+            )
 
         @staticmethod
         def new(key):
@@ -205,32 +215,32 @@ class MegaClient(object):
         Dispatch a call to the api, see https://mega.co.nz/#developers
         """
         uid = random.randint(
-            10 << 9,
-            10 ** 10)  # : Generate a session id, no idea where to obtain elsewhere
-        get_params = {'id': uid}
+            10 << 9, 10 ** 10
+        )  # : Generate a session id, no idea where to obtain elsewhere
+        get_params = {"id": uid}
 
         if self.node_id:
-            get_params['n'] = self.node_id
+            get_params["n"] = self.node_id
 
-        if hasattr(self.plugin, 'account'):
+        if hasattr(self.plugin, "account"):
             if self.plugin.account:
-                mega_session_id = self.plugin.account.info[
-                    'data'].get('mega_session_id', None)
+                mega_session_id = self.plugin.account.info["data"].get(
+                    "mega_session_id", None
+                )
 
             else:
                 mega_session_id = None
 
         else:
-            mega_session_id = self.plugin.info[
-                'data'].get('mega_session_id', None)
+            mega_session_id = self.plugin.info["data"].get("mega_session_id", None)
 
         if mega_session_id:
-            get_params['sid'] = mega_session_id
+            get_params["sid"] = mega_session_id
 
         try:
-            res = self.plugin.load(self.API_URL,
-                                   get=get_params,
-                                   post=json.dumps([kwargs]))
+            res = self.plugin.load(
+                self.API_URL, get=get_params, post=json.dumps([kwargs])
+            )
 
         except BadHeader as e:
             if e.code == 500:
@@ -256,8 +266,9 @@ class MegaClient(object):
             self.plugin.temp_offline()
 
         elif ecode in (1, 4, 6, 10, 15, 21):
-            self.plugin.retry(max_tries=5, wait_time=30, reason=_(
-                "Error code: [{}]").format(-ecode))
+            self.plugin.retry(
+                max_tries=5, wait_time=30, reason=_("Error code: [{}]").format(-ecode)
+            )
 
         else:
             self.plugin.fail(_("Error code: [{}]").format(-ecode))
@@ -269,14 +280,16 @@ class MegaCoNz(Hoster):
     __version__ = "0.52"
     __status__ = "testing"
 
-    __pattern__ = r'(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?'
+    __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Mega.co.nz hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "ranan@pyload.net"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
+    __authors__ = [
+        ("RaNaN", "ranan@pyload.net"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com"),
+    ]
 
     FILE_SUFFIX = ".crypted"
 
@@ -287,9 +300,8 @@ class MegaCoNz(Hoster):
         k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
         ctr = Crypto.Util.Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64)
         cipher = Crypto.Cipher.AES.new(
-            MegaCrypto.a32_to_str(k),
-            Crypto.Cipher.AES.MODE_CTR,
-            counter=ctr)
+            MegaCrypto.a32_to_str(k), Crypto.Cipher.AES.MODE_CTR, counter=ctr
+        )
 
         self.pyfile.setStatus("decrypting")
         self.pyfile.setProgress(0)
@@ -307,12 +319,15 @@ class MegaCoNz(Hoster):
         encrypted_size = os.path.getsize(file_crypted)
 
         checksum_activated = self.config.get(
-            "activated", default=False, plugin="Checksum")
+            "activated", default=False, plugin="Checksum"
+        )
         check_checksum = self.config.get(
-            "check_checksum", default=True, plugin="Checksum")
+            "check_checksum", default=True, plugin="Checksum"
+        )
 
-        cbc_mac = MegaCrypto.Checksum(
-            key) if checksum_activated and check_checksum else None
+        cbc_mac = (
+            MegaCrypto.Checksum(key) if checksum_activated and check_checksum else None
+        )
 
         progress = 0
         for chunk_start, chunk_size in MegaCrypto.get_chunks(encrypted_size):
@@ -341,26 +356,32 @@ class MegaCoNz(Hoster):
             file_mac = cbc_mac.digest()
             if file_mac == meta_mac:
                 self.log_info(
-                    _('File integrity of "{}" verified by CBC-MAC checksum ({})').format(
-                        self.pyfile.name.rsplit(
-                            self.FILE_SUFFIX)[0], meta_mac))
+                    _(
+                        'File integrity of "{}" verified by CBC-MAC checksum ({})'
+                    ).format(self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], meta_mac)
+                )
             else:
                 self.log_warning(
-                    _('CBC-MAC checksum for file "{}" does not match ({} != {})').format(
-                        self.pyfile.name.rsplit(
-                            self.FILE_SUFFIX)[0], file_mac, meta_mac))
+                    _(
+                        'CBC-MAC checksum for file "{}" does not match ({} != {})'
+                    ).format(
+                        self.pyfile.name.rsplit(self.FILE_SUFFIX)[0], file_mac, meta_mac
+                    )
+                )
                 self.checksum_failed(file_decrypted, _("Checksums do not match"))
 
         self.last_download = decode(file_decrypted)
 
     def checksum_failed(self, local_file, msg):
         check_action = self.config.get(
-            "check_action", default="retry", plugin="Checksum")
+            "check_action", default="retry", plugin="Checksum"
+        )
 
         if check_action == "retry":
             max_tries = self.config.get("max_tries", default=2, plugin="Checksum")
             retry_action = self.config.get(
-                "retry_action", default="fail", plugin="Checksum")
+                "retry_action", default="fail", plugin="Checksum"
+            )
 
             if all(_r < max_tries for _id, _r in self.retries.items()):
                 os.remove(local_file)
@@ -385,39 +406,43 @@ class MegaCoNz(Hoster):
         Raises Skip() if file exists and 'skip_existing' configuration option is set to True.
         """
         if self.pyload.config.get("download", "skip_existing"):
-            download_folder = self.pyload.config.get('general', 'download_folder')
+            download_folder = self.pyload.config.get("general", "download_folder")
             dest_file = fsjoin(
                 download_folder,
-                self.pyfile.package().folder if self.pyload.config.get(
-                    "general",
-                    "folder_per_package") else "",
-                name)
+                self.pyfile.package().folder
+                if self.pyload.config.get("general", "folder_per_package")
+                else "",
+                name,
+            )
             if exists(dest_file):
                 self.pyfile.name = name
                 self.skip(_("File exists."))
 
     def process(self, pyfile):
-        id = self.info['pattern']['ID']
-        key = self.info['pattern']['KEY']
-        public = self.info['pattern']['TYPE'] == ""
-        owner = self.info['pattern']['OWNER']
+        id = self.info["pattern"]["ID"]
+        key = self.info["pattern"]["KEY"]
+        public = self.info["pattern"]["TYPE"] == ""
+        owner = self.info["pattern"]["OWNER"]
 
         if not public and not owner:
             self.log_error(_("Missing owner in URL"))
             self.fail(_("Missing owner in URL"))
 
-        self.log_debug("ID: {}".format(id),
-                       _("Key: {}").format(key),
-                       _("Type: {}").format("public" if public else "node"),
-                       _("Owner: {}").format(owner))
+        self.log_debug(
+            "ID: {}".format(id),
+            _("Key: {}").format(key),
+            _("Type: {}").format("public" if public else "node"),
+            _("Owner: {}").format(owner),
+        )
 
         key = MegaCrypto.base64_to_a32(key)
         if len(key) != 8:
             self.log_error(_("Invalid key length"))
             self.fail(_("Invalid key length"))
 
-        mega = MegaClient(self, self.info['pattern'][
-                          'OWNER'] or self.info['pattern']['ID'])
+        mega = MegaClient(
+            self, self.info["pattern"]["OWNER"] or self.info["pattern"]["ID"]
+        )
 
         #: G is for requesting a download url
         #: This is similar to the calls in the mega js app, documentation is very bad
@@ -428,23 +453,23 @@ class MegaCoNz(Hoster):
 
         if isinstance(res, int):
             mega.check_error(res)
-        elif isinstance(res, dict) and 'e' in res:
-            mega.check_error(res['e'])
+        elif isinstance(res, dict) and "e" in res:
+            mega.check_error(res["e"])
 
-        attr = MegaCrypto.decrypt_attr(res['at'], key)
+        attr = MegaCrypto.decrypt_attr(res["at"], key)
         if not attr:
             self.fail(_("Decryption failed"))
 
         self.log_debug("Decrypted Attr: {}".format(decode(attr)))
 
-        name = attr['n']
+        name = attr["n"]
 
         self.check_exists(name)
 
         pyfile.name = name + self.FILE_SUFFIX
-        pyfile.size = res['s']
+        pyfile.size = res["s"]
 
-        time_left = res.get('tl', 0)
+        time_left = res.get("tl", 0)
         if time_left:
             self.log_warning(_("Free download limit reached"))
             self.retry(wait=time_left, msg=_("Free download limit reached"))
@@ -452,7 +477,7 @@ class MegaCoNz(Hoster):
         # self.req.http.c.setopt(pycurl.SSL_CIPHER_LIST, "RC4-MD5:DEFAULT")
 
         try:
-            self.download(res['g'])
+            self.download(res["g"])
 
         except BadHeader as e:
             if e.code == 509:

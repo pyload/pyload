@@ -7,8 +7,16 @@ from builtins import _
 
 from pyload.plugins.internal.Captcha import Captcha
 from pyload.plugins.internal.Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
-from pyload.plugins.utils import (decode, encode, fixurl, format_size, format_time,
-                                  parse_html_form, parse_name, replace_patterns)
+from pyload.plugins.utils import (
+    decode,
+    encode,
+    fixurl,
+    format_size,
+    format_time,
+    parse_html_form,
+    parse_name,
+    replace_patterns,
+)
 
 
 # TODO: Recheck in 0.6.x
@@ -20,7 +28,7 @@ def getInfo(urls):
 # TODO: Remove in 0.6.x
 def parse_fileInfo(klass, url="", html=""):
     info = klass.get_info(url, html)
-    return encode(info['name']), info['size'], info['status'], info['url']
+    return encode(info["name"]), info["size"], info["status"], info["url"]
 
 
 class Base(Plugin):
@@ -29,9 +37,11 @@ class Base(Plugin):
     __version__ = "0.34"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True)]
+    __pattern__ = r"^unmatchable$"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+    ]
 
     __description__ = """Base plugin for Hoster and Crypter"""
     __license__ = "GPLv3"
@@ -42,15 +52,17 @@ class Base(Plugin):
     @classmethod
     def get_info(cls, url="", html=""):
         url = fixurl(url, unquote=True)
-        info = {'name': parse_name(url),
-                'hash': {},
-                'pattern': {},
-                'size': 0,
-                'status': 7 if url else 8,
-                'url': replace_patterns(url, cls.URL_REPLACEMENTS)}
+        info = {
+            "name": parse_name(url),
+            "hash": {},
+            "pattern": {},
+            "size": 0,
+            "status": 7 if url else 8,
+            "url": replace_patterns(url, cls.URL_REPLACEMENTS),
+        }
 
         try:
-            info['pattern'] = re.match(cls.__pattern__, url).groupdict()
+            info["pattern"] = re.match(cls.__pattern__, url).groupdict()
 
         except Exception:
             pass
@@ -85,7 +97,7 @@ class Base(Plugin):
 
         #: Captcha stuff
         # TODO: Replace in 0.6.x:
-        #_Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
+        # _Captcha = self.pyload.pluginManager.loadClass("captcha", self.classname) or Captcha
         # self.captcha = _Captcha(pyfile)
         self.captcha = Captcha(pyfile)
 
@@ -104,21 +116,25 @@ class Base(Plugin):
 
         #: Hide any user/password
         try:
-            msg = msg.replace(
-                self.account.user, self.account.user[:3] + "*******")
+            msg = msg.replace(self.account.user, self.account.user[:3] + "*******")
         except Exception:
             pass
 
         try:
-            msg = msg.replace(
-                self.account.info['login']['password'], "**********")
+            msg = msg.replace(self.account.info["login"]["password"], "**********")
         except Exception:
             pass
 
-        log("{plugintype} {pluginname}[{id}]: {msg}".format(**{'plugintype': plugintype.upper(),
-                                                               'pluginname': pluginname,
-                                                               'id': self.pyfile.id,
-                                                               'msg': msg}))
+        log(
+            "{plugintype} {pluginname}[{id}]: {msg}".format(
+                **{
+                    "plugintype": plugintype.upper(),
+                    "pluginname": pluginname,
+                    "id": self.pyfile.id,
+                    "msg": msg,
+                }
+            )
+        )
 
     def init_base(self):
         pass
@@ -139,7 +155,7 @@ class Base(Plugin):
         self.last_html = ""
         self.last_header = {}
 
-        if self.config.get('use_premium', True):
+        if self.config.get("use_premium", True):
             self.load_account()  # TODO: Move to PluginThread in 0.6.x
         else:
             self.account = False
@@ -152,9 +168,10 @@ class Base(Plugin):
 
         if self.account:
             self.req = self.pyload.requestFactory.getRequest(
-                self.classname, self.account.user)
+                self.classname, self.account.user
+            )
             # NOTE: Avoid one unnecessary get_info call by `self.account.premium` here
-            self.premium = self.account.info['data']['premium']
+            self.premium = self.account.info["data"]["premium"]
         else:
             self.req = self.pyload.requestFactory.getRequest(self.classname)
             self.premium = False
@@ -168,8 +185,7 @@ class Base(Plugin):
 
     def load_account(self):
         if not self.account:
-            self.account = self.pyload.accountManager.getAccountPlugin(
-                self.classname)
+            self.account = self.pyload.accountManager.getAccountPlugin(self.classname)
 
         if not self.account:
             self.account = False
@@ -182,9 +198,9 @@ class Base(Plugin):
                 self.account = False
 
     def _update_name(self):
-        name = decode(self.info.get('name'))
+        name = decode(self.info.get("name"))
 
-        if name and name != decode(self.info.get('url')):
+        if name and name != decode(self.info.get("url")):
             self.pyfile.name = name
         else:
             name = decode(self.pyfile.name)
@@ -192,22 +208,21 @@ class Base(Plugin):
         self.log_info(_("Link name: {}").format(name))
 
     def _update_size(self):
-        size = self.info.get('size')
+        size = self.info.get("size")
 
         if size > 0:
             # TODO: Fix int conversion in 0.6.x
-            self.pyfile.size = int(self.info.get('size'))
+            self.pyfile.size = int(self.info.get("size"))
         else:
             size = self.pyfile.size
 
         if size:
-            self.log_info(
-                _("Link size: {} ({} bytes)").format(format_size(size), size))
+            self.log_info(_("Link size: {} ({} bytes)").format(format_size(size), size))
         else:
             self.log_info(_("Link size: N/D"))
 
     def _update_status(self):
-        self.pyfile.status = self.info.get('status', 14)
+        self.pyfile.status = self.info.get("status", 14)
         self.pyfile.sync()
 
         self.log_info(_("Link status: ") + self.pyfile.getStatusName())
@@ -298,13 +313,12 @@ class Base(Plugin):
         raise NotImplementedError
 
     def set_reconnect(self, reconnect):
-        if self.pyload.config.get('reconnect', 'activated'):
+        if self.pyload.config.get("reconnect", "activated"):
             reconnect = reconnect and self.pyload.api.isTimeReconnect()
             self.log_debug(
-                "RECONNECT{} required".format(
-                    "" if reconnect else " not"),
-                "Previous wantReconnect: {}".format(
-                    self.wantReconnect))
+                "RECONNECT{} required".format("" if reconnect else " not"),
+                "Previous wantReconnect: {}".format(self.wantReconnect),
+            )
             self.wantReconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):
@@ -322,8 +336,10 @@ class Base(Plugin):
         old_wait_until = self.pyfile.waitUntil
         new_wait_until = time.time() + wait_time + float(not strict)
 
-        self.log_debug("WAIT set to timestamp {}".format(new_wait_until),
-                       "Previous waitUntil: {}".format(old_wait_until))
+        self.log_debug(
+            "WAIT set to timestamp {}".format(new_wait_until),
+            "Previous waitUntil: {}".format(old_wait_until),
+        )
 
         self.pyfile.waitUntil = new_wait_until
         return True
@@ -336,7 +352,7 @@ class Base(Plugin):
             self.set_wait(seconds)
 
         if reconnect is None:
-            reconnect = (seconds > self.config.get('max_wait', 10) * 60)
+            reconnect = seconds > self.config.get("max_wait", 10) * 60
 
         self.set_reconnect(reconnect)
 
@@ -384,8 +400,9 @@ class Base(Plugin):
         """
         Skip and give msg
         """
-        raise Skip(encode(msg or self.pyfile.error or self.pyfile.pluginname)
-                   )  # TODO: Remove `encode` in 0.6.x
+        raise Skip(
+            encode(msg or self.pyfile.error or self.pyfile.pluginname)
+        )  # TODO: Remove `encode` in 0.6.x
 
     # TODO: Remove in 0.6.x
     def fail(self, msg=""):
@@ -397,16 +414,19 @@ class Base(Plugin):
         if msg:
             self.pyfile.error = msg
         else:
-            msg = self.pyfile.error or self.info.get(
-                'error') or self.pyfile.getStatusName()
+            msg = (
+                self.pyfile.error
+                or self.info.get("error")
+                or self.pyfile.getStatusName()
+            )
 
         raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def error(self, msg="", type=_("Parse")):
-        type = _("{} error").format(type.strip(
-        ).capitalize() if type else _("Unknown"))
+        type = _("{} error").format(type.strip().capitalize() if type else _("Unknown"))
         msg = _("{type}: {msg} | Plugin may be out of date").format(
-            **{'type': type, 'msg': msg or self.pyfile.error})
+            **{"type": type, "msg": msg or self.pyfile.error}
+        )
 
         self.fail(msg)
 
@@ -435,8 +455,7 @@ class Base(Plugin):
 
     def restart(self, msg="", premium=True):
         if not msg:
-            msg = _("Restart plugin") if premium else _(
-                "Fallback to free processing")
+            msg = _("Restart plugin") if premium else _("Fallback to free processing")
 
         if not premium:
             if self.premium:
@@ -475,8 +494,9 @@ class Base(Plugin):
 
         raise Retry(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
-    def retry_captcha(self, attemps=10, wait=1, msg="",
-                      msgfail=_("Max captcha retries reached")):
+    def retry_captcha(
+        self, attemps=10, wait=1, msg="", msgfail=_("Max captcha retries reached")
+    ):
         self.captcha.invalid(msg)
         self.retry(attemps, wait, msg=_("Retry Captcha"), msgfail=msgfail)
 

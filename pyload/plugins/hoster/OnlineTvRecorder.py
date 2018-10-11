@@ -17,7 +17,7 @@ class OnlineTvRecorder(Http):
     # inetnum: 81.95.11.0 - 81.95.11.63
     # route:   81.95.8.0/21
     # additional: 93.115.84.162
-    __pattern__ = r'https?://(81\.95\.11\.\d{1,2}|93\.115\.84\.162|download\d{1,2}.onlinetvrecorder.com)/download/\d+/\d+/\d*/[0-9a-f]+/.+'
+    __pattern__ = r"https?://(81\.95\.11\.\d{1,2}|93\.115\.84\.162|download\d{1,2}.onlinetvrecorder.com)/download/\d+/\d+/\d*/[0-9a-f]+/.+"
     __config__ = [("activated", "bool", "Activated", True)]
     __description__ = """OnlineTvRecorder hoster plugin"""
     __license__ = "GPLv3"

@@ -6,8 +6,12 @@ import string
 import subprocess
 from builtins import _, filter, map, pypath
 
-from pyload.plugins.internal.Extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
+from pyload.plugins.internal.Extractor import (
+    ArchiveError,
+    CRCError,
+    Extractor,
+    PasswordError,
+)
 from pyload.plugins.utils import decode, encode, fsjoin, renice
 
 
@@ -21,24 +25,40 @@ class UnRar(Extractor):
 
     __description__ = """RAR extractor plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.net"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("Immenz", "immenz@gmx.net"),
-                   ("GammaCode", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.net"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("Immenz", "immenz@gmx.net"),
+        ("GammaCode", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     CMD = "unrar"
-    EXTENSIONS = ["rar", "cab", "arj", "lzh", "tar", "gz", "ace", "uue",
-                  "bz2", "jar", "iso", "xz", "z"]
+    EXTENSIONS = [
+        "rar",
+        "cab",
+        "arj",
+        "lzh",
+        "tar",
+        "gz",
+        "ace",
+        "uue",
+        "bz2",
+        "jar",
+        "iso",
+        "xz",
+        "z",
+    ]
 
-    _RE_PART = re.compile(r'\.(part|r)\d+(\.rar|\.rev)?(\.bad)?', re.I)
-    _RE_FIXNAME = re.compile(r'Building (.+)')
+    _RE_PART = re.compile(r"\.(part|r)\d+(\.rar|\.rev)?(\.bad)?", re.I)
+    _RE_FIXNAME = re.compile(r"Building (.+)")
     _RE_FILES = re.compile(
-        r'^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}',
-        re.I | re.M)
-    _RE_BADPWD = re.compile(r'password', re.I)
+        r"^(.)(\s*[\w\-.]+)\s+(\d+\s+)+(?:\d+\%\s+)?[\d\-]{8,}\s+[\d\:]{5}", re.I | re.M
+    )
+    _RE_BADPWD = re.compile(r"password", re.I)
     _RE_BADCRC = re.compile(
-        r'encrypted|damaged|CRC failed|checksum error|corrupt', re.I)
-    _RE_VERSION = re.compile(r'(?:UN)?RAR\s(\d+\.\d+)', re.I)
+        r"encrypted|damaged|CRC failed|checksum error|corrupt", re.I
+    )
+    _RE_VERSION = re.compile(r"(?:UN)?RAR\s(\d+\.\d+)", re.I)
 
     @classmethod
     def find(cls):
@@ -48,9 +68,9 @@ class UnRar(Extractor):
             else:
                 cls.CMD = "rar"
 
-            p = subprocess.Popen([cls.CMD],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             out, err = (_r.strip() if _r else "" for _r in p.communicate())
             # cls.__name__ = "RAR"
             cls.REPAIR = True
@@ -62,9 +82,9 @@ class UnRar(Extractor):
                 else:
                     cls.CMD = "unrar"
 
-                p = subprocess.Popen([cls.CMD],
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE)
+                p = subprocess.Popen(
+                    [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
                 out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
             except OSError:
@@ -154,7 +174,9 @@ class UnRar(Extractor):
             elif self._RE_BADCRC.search(err):
                 raise CRCError(err)
 
-            elif self.config.get('ignore_warnings', False) and err.startswith("WARNING:"):
+            elif self.config.get("ignore_warnings", False) and err.startswith(
+                "WARNING:"
+            ):
                 pass
 
             else:  #: Raise error if anything is on stderr
@@ -171,15 +193,10 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(
-            fsjoin(
-                dir,
-                os.path.basename(file)) for file in filter(
-                    self.ismultipart,
-                    os.listdir(dir)) if self._RE_PART.sub(
-                    "",
-                    name) == self._RE_PART.sub(
-                        "",
-                file))
+            fsjoin(dir, os.path.basename(file))
+            for file in filter(self.ismultipart, os.listdir(dir))
+            if self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
+        )
 
         #: Actually extracted file
         if self.filename not in files:
@@ -200,7 +217,7 @@ class UnRar(Extractor):
             self.log_error(err)
 
         result = set()
-        if not self.fullpath and self.VERSION.startswith('5'):
+        if not self.fullpath and self.VERSION.startswith("5"):
             # NOTE: Unrar 5 always list full path
             for f in decode(out).splitlines():
                 f = fsjoin(self.dest, os.path.basename(f.strip()))
@@ -242,7 +259,7 @@ class UnRar(Extractor):
         args.append("-y")
 
         #: Set a password
-        password = kwargs.get('password')
+        password = kwargs.get("password")
 
         if password:
             args.append("-p{}".format(password))
@@ -258,10 +275,7 @@ class UnRar(Extractor):
         self.log_debug("EXECUTE " + " ".join(call))
 
         call = list(map(encode, call))
-        p = subprocess.Popen(
-            call,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+        p = subprocess.Popen(call, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         renice(p.pid, self.priority)
 

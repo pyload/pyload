@@ -12,20 +12,17 @@ class Crypter(Base):
     __version__ = "0.20"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r"^unmatchable$"
     __config__ = [
-        ("activated",
-         "bool",
-         "Activated",
-         True),
-        ("use_premium",
-         "bool",
-         "Use premium account if available",
-         True),
-        ("folder_per_package",
-         "Default;Yes;No",
-         "Create folder for each package",
-         "Default")]
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+    ]
 
     __description__ = """Base decrypter plugin"""
     __license__ = "GPLv3"
@@ -61,12 +58,13 @@ class Crypter(Base):
         """
         Generate new packages from self.links
         """
-        name = self.info['pattern'].get("N")
+        name = self.info["pattern"].get("N")
         if name is None:
             links = list(map(self.fixurl, self.links))
             pdict = self.pyload.api.generatePackages(links)
-            packages = [(_name, _links, parse_name(_name))
-                        for _name, _links in pdict.items()]
+            packages = [
+                (_name, _links, parse_name(_name)) for _name, _links in pdict.items()
+            ]
 
         else:
             packages = [(name, self.links, parse_name(name))]
@@ -81,17 +79,17 @@ class Crypter(Base):
         pack_password = self.pyfile.package().password
         pack_queue = self.pyfile.package().queue
 
-        folder_per_package = self.config.get('folder_per_package', "Default")
+        folder_per_package = self.config.get("folder_per_package", "Default")
 
         if folder_per_package == "Default":
-            folder_per_package = self.pyload.config.get(
-                'general', 'folder_per_package')
+            folder_per_package = self.pyload.config.get("general", "folder_per_package")
         else:
             folder_per_package = folder_per_package == "Yes"
 
         for name, links, folder in self.packages:
-            self.log_info(_("Create package: {}").format(name),
-                          _("{} links").format(len(links)))
+            self.log_info(
+                _("Create package: {}").format(name), _("{} links").format(len(links))
+            )
 
             links = list(map(self.fixurl, links))
             self.log_debug("LINKS for package " + name, *links)
@@ -99,12 +97,13 @@ class Crypter(Base):
             pid = self.pyload.api.addPackage(name, links, pack_queue)
 
             if pack_password:
-                self.pyload.api.setPackageData(
-                    pid, {'password': pack_password})
+                self.pyload.api.setPackageData(pid, {"password": pack_password})
 
             #: Workaround to do not break API addPackage method
-            def set_folder(x): return self.pyload.api.setPackageData(
-                pid, {'folder': safename(x or "")})
+            def set_folder(x):
+                return self.pyload.api.setPackageData(
+                    pid, {"folder": safename(x or "")}
+                )
 
             if not folder_per_package:
                 folder = pack_folder
@@ -112,7 +111,10 @@ class Crypter(Base):
             elif not folder or folder == name:
                 folder = parse_name(name)
 
-            self.log_info(_("Save package `{name}` to folder: {folder}").format(
-                **{'name': name, 'folder': folder}))
+            self.log_info(
+                _("Save package `{name}` to folder: {folder}").format(
+                    **{"name": name, "folder": folder}
+                )
+            )
 
             set_folder(folder)

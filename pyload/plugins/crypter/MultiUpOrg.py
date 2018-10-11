@@ -14,40 +14,49 @@ class MultiUpOrg(SimpleCrypter):
     __version__ = "0.12"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No",
-                   "Create folder for each package", "Default"),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-                  ("hosts_priority", "str", "Prefered hosts priority (bar-separated)", ""),
-                  ("ignored_hosts", "str", "Ignored hosts list (bar-separated)", ""),
-                  ("grab_all", "bool", "Grab all URLs (default only first match)", False)]
+    __pattern__ = r"https?://(?:www\.)?multiup\.(?:org|eu)/(?:en/|fr/)?(?:(?P<TYPE>project|download|mirror)/)?\w+(?:/\w+)?"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("hosts_priority", "str", "Prefered hosts priority (bar-separated)", ""),
+        ("ignored_hosts", "str", "Ignored hosts list (bar-separated)", ""),
+        ("grab_all", "bool", "Grab all URLs (default only first match)", False),
+    ]
 
     __description__ = """MultiUp.org crypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    NAME_PATTERN = r'<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )'
-    OFFLINE_PATTERN = r'File not found'
-    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
+    NAME_PATTERN = r"<title>.*(?:Project|Projet|ownload|élécharger) (?P<N>.+?) (\(|- )"
+    OFFLINE_PATTERN = r"File not found"
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
-    URL_REPLACEMENTS = [(r'https?://(?:www\.)?multiup\.(?:org|eu)/',
-                         "http://www.multiup.eu/"), (r'/fr/', "/en/")]
+    URL_REPLACEMENTS = [
+        (r"https?://(?:www\.)?multiup\.(?:org|eu)/", "http://www.multiup.eu/"),
+        (r"/fr/", "/en/"),
+    ]
 
     COOKIES = [("multiup.eu", "_locale", "en")]
 
     def get_links(self):
-        m_type = self.info['pattern']['TYPE']
-        hosts_priority = [_h for _h in self.config.get(
-            'hosts_priority').split('|') if _h]
-        ignored_hosts = [_h for _h in self.config.get('ignored_hosts').split('|') if _h]
-        grab_all = self.config.get('grab_all')
+        m_type = self.info["pattern"]["TYPE"]
+        hosts_priority = [
+            _h for _h in self.config.get("hosts_priority").split("|") if _h
+        ]
+        ignored_hosts = [_h for _h in self.config.get("ignored_hosts").split("|") if _h]
+        grab_all = self.config.get("grab_all")
 
         if m_type == "project":
             return re.findall(
-                r'\n(http://www\.multiup\.eu/(?:en|fr)/download/.*)',
-                self.data)
+                r"\n(http://www\.multiup\.eu/(?:en|fr)/download/.*)", self.data
+            )
 
         elif m_type in ("download", None):
             recaptcha = ReCaptcha(self.pyfile)
@@ -59,7 +68,11 @@ class MultiUpOrg(SimpleCrypter):
                 try:
                     response, challenge = recaptcha.challenge(captcha_key)
                 except BadHeader as e:
-                    if e.code == 400 and "Please enable JavaScript to get a reCAPTCHA challenge" in e.content:
+                    if (
+                        e.code == 400
+                        and "Please enable JavaScript to get a reCAPTCHA challenge"
+                        in e.content
+                    ):
                         self.log_warning(_("Unsupported reCAPTCHA, retrying"))
                         self.retry()
 
@@ -67,13 +80,13 @@ class MultiUpOrg(SimpleCrypter):
                         raise
 
                 else:
-                    inputs['g-recaptcha-response'] = response
+                    inputs["g-recaptcha-response"] = response
                     self.data = self.load(mirror_page, post=inputs)
 
             else:
                 dl_url = re.search(
-                    r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>',
-                    self.data).group(1)
+                    r'href="(.*)">.*\n.*<h5>DOWNLOAD</h5>', self.data
+                ).group(1)
                 mirror_page = urllib.parse.urljoin("http://www.multiup.eu/", dl_url)
                 self.data = self.load(mirror_page)
 
@@ -81,10 +94,9 @@ class MultiUpOrg(SimpleCrypter):
 
         hosts_data = {}
         for _a in re.findall(
-            r'<a\s*class="btn btn-small disabled link host"(.+?)/a>',
-            self.data,
-                re.S):
-            validity = re.search(r'validity=(\w+)', _a).group(1)
+            r'<a\s*class="btn btn-small disabled link host"(.+?)/a>', self.data, re.S
+        ):
+            validity = re.search(r"validity=(\w+)", _a).group(1)
             if validity in ("valid", "unknown"):
                 host = re.search(r'nameHost="(.+?)"', _a).group(1)
                 url = re.search(r'href="(.+?)"', _a).group(1)

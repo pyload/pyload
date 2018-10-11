@@ -13,32 +13,34 @@ class MirrorcreatorCom(Crypter):
     __version__ = "0.03"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("hosters_priority", "str",
-                   "Prefered hoster priority (bar-separated)", ""),
-                  ("ignored_hosters", "str",
-                   "Ignored hoster list (bar-separated)", ""),
-                  ("grab_all", "bool", "Grab all URLs (default only first match)", False)]
+    __pattern__ = r"https?://(?:www\.)?(?:mirrorcreator\.com/(?:files/|download\.php\?uid=)|mir\.cr/)(?P<ID>\w{8})"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("hosters_priority", "str", "Prefered hoster priority (bar-separated)", ""),
+        ("ignored_hosters", "str", "Ignored hoster list (bar-separated)", ""),
+        ("grab_all", "bool", "Grab all URLs (default only first match)", False),
+    ]
 
     __description__ = """Mirrorcreator.com decrypter plugin"""
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     URL_REPLACEMENTS = [
-        (__pattern__ + '.*',
-         r'https://www.mirrorcreator.com/download.php?uid=\g<ID>')]
+        (__pattern__ + ".*", r"https://www.mirrorcreator.com/download.php?uid=\g<ID>")
+    ]
 
-    OFFLINE_PATTERN = r'>Unfortunately, the link you have clicked is not available|>Error - Link disabled or is invalid|>Links Unavailable as the File Belongs to Suspended Account\\. <|>Links Unavailable\\.<'
+    OFFLINE_PATTERN = r">Unfortunately, the link you have clicked is not available|>Error - Link disabled or is invalid|>Links Unavailable as the File Belongs to Suspended Account\\. <|>Links Unavailable\\.<"
     LINK_PATTERN = r'<div class="highlight redirecturl">(.+?)<'
 
     def decrypt(self, pyfile):
         pyfile.url = replace_patterns(pyfile.url, self.URL_REPLACEMENTS)
 
-        hosters_priority = [_h for _h in self.config.get(
-            'hosters_priority').split('|') if _h]
-        ignored_hosters = [_h for _h in self.config.get(
-            'ignored_hosters').split('|') if _h]
+        hosters_priority = [
+            _h for _h in self.config.get("hosters_priority").split("|") if _h
+        ]
+        ignored_hosters = [
+            _h for _h in self.config.get("ignored_hosters").split("|") if _h
+        ]
 
         self.data = self.load(pyfile.url)
 
@@ -49,19 +51,21 @@ class MirrorcreatorCom(Crypter):
         pack_name, pack_folder = self.get_package_info()
 
         m = re.search(
-            r'"(/mstat\.php\?uid={}.+?)"' %
-            self.info['pattern']['ID'],
-            self.data)
+            r'"(/mstat\.php\?uid={}.+?)"' % self.info["pattern"]["ID"], self.data
+        )
         if m is None:
             self.fail("mstat URL not found")
 
         self.data = self.load(self.fixurl(m.group(1)))
 
         hosters_data = {}
-        for _tr in re.findall(r'<tr>(.+?)</tr>', self.data, re.S):
+        for _tr in re.findall(r"<tr>(.+?)</tr>", self.data, re.S):
             m = re.search(
-                r'<a href="(/showlink\.php\?uid={}.+?)".*&hname=(\w+)' %
-                self.info['pattern']['ID'], _tr, re.S)
+                r'<a href="(/showlink\.php\?uid={}.+?)".*&hname=(\w+)'
+                % self.info["pattern"]["ID"],
+                _tr,
+                re.S,
+            )
             if m is not None:
                 hosters_data[m.group(2)] = m.group(1)
 
@@ -71,22 +75,21 @@ class MirrorcreatorCom(Crypter):
             if _h in hosters_data and _h not in ignored_hosters:
                 self.log_debug("Adding '{}' link".format(_h))
                 choosen_hosters.append(_h)
-                if not self.config.get('grab_all'):
+                if not self.config.get("grab_all"):
                     break
 
         # Now the rest of the hosters
-        if self.config.get('grab_all') or (
-                not self.config.get('grab_all') and not choosen_hosters):
+        if self.config.get("grab_all") or (
+            not self.config.get("grab_all") and not choosen_hosters
+        ):
             for _h in hosters_data:
                 if _h not in ignored_hosters and _h not in choosen_hosters:
                     self.log_debug("Adding '{}' link".format(_h))
                     choosen_hosters.append(_h)
-                    if not self.config.get('grab_all'):
+                    if not self.config.get("grab_all"):
                         break
 
-        pack_links = [
-            self.resolve_hoster(
-                hosters_data[_h]) for _h in choosen_hosters]
+        pack_links = [self.resolve_hoster(hosters_data[_h]) for _h in choosen_hosters]
 
         if pack_links:
             self.packages.append((pack_name, pack_links, pack_folder))
@@ -101,9 +104,7 @@ class MirrorcreatorCom(Crypter):
         return m.group(1)
 
     def get_package_info(self):
-        m = re.search(
-            r'<title>Download links for ([^<]+) - Mirrorcreator',
-            self.data)
+        m = re.search(r"<title>Download links for ([^<]+) - Mirrorcreator", self.data)
         if m is not None:
             pack_name = m.group(1)
 

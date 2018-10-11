@@ -9,7 +9,7 @@ class SpeedfileCz(DeadHoster):
     __version__ = "0.37"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?speedfile\.cz/.+'
+    __pattern__ = r"http://(?:www\.)?speedfile\.cz/.+"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Speedfile.cz hoster plugin"""

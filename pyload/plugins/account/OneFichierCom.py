@@ -15,9 +15,11 @@ class OneFichierCom(Account):
 
     __description__ = """1fichier.com account plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("Elrick69", "elrick69[AT]rocketmail[DOT]com"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     VALID_UNTIL_PATTERN = r'valid until <span style="font-weight:bold">(\d+\-\d+\-\d+)<'
 
@@ -42,27 +44,36 @@ class OneFichierCom(Account):
             else:
                 premium = True
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft,
-                'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
         login_url = "https://1fichier.com/login.pl?lg=en"
 
         try:
-            html = self.load(login_url,
-                             ref=login_url,
-                             post={'mail': user,
-                                   'pass': password,
-                                   'It': "on",
-                                   'purge': "off",
-                                   'valider': "Send"})
+            html = self.load(
+                login_url,
+                ref=login_url,
+                post={
+                    "mail": user,
+                    "pass": password,
+                    "It": "on",
+                    "purge": "off",
+                    "valider": "Send",
+                },
+            )
 
             if any(
-                _x in html for _x in (
-                    '>Invalid username or Password',
-                    '>Invalid email address',
-                    '>Invalid password')):
+                _x in html
+                for _x in (
+                    ">Invalid username or Password",
+                    ">Invalid email address",
+                    ">Invalid password",
+                )
+            ):
                 self.fail_login()
 
         except BadHeader as e:

@@ -25,17 +25,18 @@ class PluginManager(object):
         "captcha",
         "account",
         "addon",
-        "internal")
+        "internal",
+    )
 
     PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
     VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
-    CONFIG = re.compile(r'__config__.*=.*(\[[^\]]+\])', re.MULTILINE)
+    CONFIG = re.compile(r"__config__.*=.*(\[[^\]]+\])", re.MULTILINE)
     DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
 
     def __init__(self, core):
         self.pyload = core
 
-        #self.config = self.pyload.config
+        # self.config = self.pyload.config
         self.log = core.log
 
         self.plugins = {}
@@ -96,7 +97,7 @@ class PluginManager(object):
         merge(default_config, config)
 
         for name, config in default_config.items():
-            desc = config.pop('desc', "")
+            desc = config.pop("desc", "")
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)
@@ -129,8 +130,13 @@ class PluginManager(object):
 
         configs = {}
         for f in listdir(pfolder):
-            if (isfile(join(pfolder, f)) and f.endswith(".py") or f.endswith("_25.pyc")
-                    or f.endswith("_26.pyc") or f.endswith("_27.pyc")) and not f.startswith("_"):
+            if (
+                isfile(join(pfolder, f))
+                and f.endswith(".py")
+                or f.endswith("_25.pyc")
+                or f.endswith("_26.pyc")
+                or f.endswith("_27.pyc")
+            ) and not f.startswith("_"):
 
                 data = open(join(pfolder, f))
                 content = data.read()
@@ -193,31 +199,31 @@ class PluginManager(object):
                 config = self.CONFIG.findall(content)
                 if config:
                     config = literal_eval(
-                        config[0].strip().replace(
-                            "\n", "").replace(
-                            "\r", ""))
+                        config[0].strip().replace("\n", "").replace("\r", "")
+                    )
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
 
-                    if isinstance(config, list) and all(isinstance(c, tuple)
-                                                        for c in config):
+                    if isinstance(config, list) and all(
+                        isinstance(c, tuple) for c in config
+                    ):
                         config = dict((x[0], x[1:]) for x in config)
                     else:
                         self.log.error("Invalid config in {}: {}".format(name, config))
                         continue
 
                     if folder == "addons" and "activated" not in config:
-                        config['activated'] = ["bool", "Activated", False]
+                        config["activated"] = ["bool", "Activated", False]
 
-                    config['desc'] = desc
+                    config["desc"] = desc
                     configs[name] = config
 
                 elif folder == "addons":  # force config creation
                     desc = self.DESC.findall(content)
                     desc = desc[0][1] if desc else ""
-                    config['activated'] = ["bool", "Activated", False]
+                    config["activated"] = ["bool", "Activated", False]
 
-                    config['desc'] = desc
+                    config["desc"] = desc
                     configs[name] = config
 
         if not home:
@@ -235,7 +241,10 @@ class PluginManager(object):
 
         for url in urls:
             if type(url) not in (
-                    str, bytes, memoryview):  # check memoryview (as py2 byffer)
+                str,
+                bytes,
+                memoryview,
+            ):  # check memoryview (as py2 byffer)
                 continue
             found = False
 
@@ -244,10 +253,10 @@ class PluginManager(object):
                 continue
 
             for name, value in chain(
-                iter(
-                    self.crypterPlugins.items()), iter(
-                    self.hosterPlugins.items()), iter(
-                    self.containerPlugins.items())):
+                iter(self.crypterPlugins.items()),
+                iter(self.hosterPlugins.items()),
+                iter(self.containerPlugins.items()),
+            ):
                 if value["re"].match(url):
                     res.append((url, name))
                     last = (name, value)
@@ -299,18 +308,19 @@ class PluginManager(object):
                 return plugins[name]["pyload"]
             try:
                 module = __import__(
-                    self.ROOT +
-                    "{}.{}".format(
-                        type,
-                        plugins[name]["name"]),
+                    self.ROOT + "{}.{}".format(type, plugins[name]["name"]),
                     globals(),
                     locals(),
-                    plugins[name]["name"])
+                    plugins[name]["name"],
+                )
                 plugins[name]["pyload"] = module  # cache import, maybe unneeded
                 return module
             except Exception as e:
-                self.log.error(_("Error importing {name}: {msg}").format(
-                    **{"name": name, "msg": str(e)}))
+                self.log.error(
+                    _("Error importing {name}: {msg}").format(
+                        **{"name": name, "msg": str(e)}
+                    )
+                )
                 if self.pyload.debug:
                     print_exc()
         else:
@@ -329,9 +339,9 @@ class PluginManager(object):
 
     def find_module(self, fullname, path=None):
         # redirecting imports if necesarry
-        if fullname.startswith(
-                self.ROOT) or fullname.startswith(
-                self.USERROOT):  # seperate pyload plugins
+        if fullname.startswith(self.ROOT) or fullname.startswith(
+            self.USERROOT
+        ):  # seperate pyload plugins
             if fullname.startswith(self.USERROOT):
                 user = 1
             else:
@@ -340,7 +350,7 @@ class PluginManager(object):
             split = fullname.split(".")
             if len(split) != 4 - user:
                 return
-            type, name = split[2 - user:4 - user]
+            type, name = split[2 - user : 4 - user]
 
             if type in self.plugins and name in self.plugins[type]:
                 # userplugin is a newer version
@@ -431,7 +441,7 @@ class PluginManager(object):
         merge(default_config, config)
 
         for name, config in default_config.items():
-            desc = config.pop('desc', "")
+            desc = config.pop("desc", "")
             config = [[k] + list(v) for k, v in config.items()]
             try:
                 self.pyload.config.addPluginConfig(name, config, desc)

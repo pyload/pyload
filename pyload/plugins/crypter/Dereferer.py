@@ -11,12 +11,18 @@ class Dereferer(SimpleCrypter):
     __version__ = "0.26"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No",
-                   "Create folder for each package", "Default"),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?(?:\w+\.)*?(?P<DOMAIN>(?:[\d.]+|[\w\-]{3,63}(?:\.[a-zA-Z]{2,}){1,2})(?:\:\d+)?)/.*?(?P<LINK>[\w^_]+://.+)"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Universal link dereferer"""
     __license__ = "GPLv3"
@@ -29,19 +35,21 @@ class Dereferer(SimpleCrypter):
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
-        return SimpleCrypter._log(
-            self, level, plugintype, pluginname, messages)
+        return SimpleCrypter._log(self, level, plugintype, pluginname, messages)
 
     def init(self):
-        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[
-            self.classname]['pattern']  # TODO: Recheck in 0.6.x
+        self.__pattern__ = self.pyload.pluginManager.crypterPlugins[self.classname][
+            "pattern"
+        ]  # TODO: Recheck in 0.6.x
 
-        self.PLUGIN_DOMAIN = re.match(
-            self.__pattern__,
-            self.pyfile.url).group("DOMAIN").lower()
+        self.PLUGIN_DOMAIN = (
+            re.match(self.__pattern__, self.pyfile.url).group("DOMAIN").lower()
+        )
         self.PLUGIN_NAME = "".join(
-            part.capitalize() for part in re.split(
-                r'\.|\d+|-', self.PLUGIN_DOMAIN) if part != '.')
+            part.capitalize()
+            for part in re.split(r"\.|\d+|-", self.PLUGIN_DOMAIN)
+            if part != "."
+        )
 
     def get_links(self):
-        return [self.info['pattern']['LINK']]
+        return [self.info["pattern"]["LINK"]]

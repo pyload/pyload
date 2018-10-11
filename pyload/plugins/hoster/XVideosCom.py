@@ -14,7 +14,7 @@ class XVideosCom(Hoster):
     __version__ = "0.17"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?xvideos\.com/video(\d+)'
+    __pattern__ = r"https?://(?:www\.)?xvideos\.com/video(\d+)"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """XVideos.com hoster plugin"""
@@ -25,12 +25,9 @@ class XVideosCom(Hoster):
         site = self.load(pyfile.url)
         title_search = re.search(r'<meta\s+property="og:title"\s+content="(.+?)"', site)
         id_search = re.search(self.__pattern__, pyfile.url)
-        pyfile.name = "{} ({}).mp4".format(
-            title_search.group(1),
-            id_search.group(1),
-        )
+        pyfile.name = "{} ({}).mp4".format(title_search.group(1), id_search.group(1))
         self.download(
             urllib.parse.unquote(
-                re.search(
-                    r'html5player\.setVideoUrlHigh\(\'(.+?)\'\)',
-                    site).group(1)))
+                re.search(r"html5player\.setVideoUrlHigh\(\'(.+?)\'\)", site).group(1)
+            )
+        )

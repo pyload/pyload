@@ -12,16 +12,24 @@ class EmbeduploadCom(Crypter):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?embedupload\.com/\?d=.+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No",
-                   "Create folder for each package", "Default"),
-                  ("preferedHoster",
-                   "str",
-                   "Prefered hoster list (bar-separated)",
-                   "embedupload"),
-                  ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", "")]
+    __pattern__ = r"http://(?:www\.)?embedupload\.com/\?d=.+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+        (
+            "preferedHoster",
+            "str",
+            "Prefered hoster list (bar-separated)",
+            "embedupload",
+        ),
+        ("ignoredHoster", "str", "Ignored hoster list (bar-separated)", ""),
+    ]
 
     __description__ = """EmbedUpload.com decrypter plugin"""
     __license__ = "GPLv3"
@@ -35,8 +43,8 @@ class EmbeduploadCom(Crypter):
 
         m = re.findall(self.LINK_PATTERN, self.data)
         if m is not None:
-            prefered_set = set(self.config.get('preferedHoster').split('|'))
-            prefered_set = [s.lower().split('.')[0] for s in prefered_set]
+            prefered_set = set(self.config.get("preferedHoster").split("|"))
+            prefered_set = [s.lower().split(".")[0] for s in prefered_set]
 
             self.log_debug("PF: {}".format(prefered_set))
 
@@ -44,8 +52,8 @@ class EmbeduploadCom(Crypter):
             self.links = self.get_location(tmp_links)
 
             if not self.links:
-                ignored_set = set(self.config.get('ignoredHoster').split('|'))
-                ignored_set = [s.lower().split('.')[0] for s in ignored_set]
+                ignored_set = set(self.config.get("ignoredHoster").split("|"))
+                ignored_set = [s.lower().split(".")[0] for s in ignored_set]
 
                 self.log_debug("IG: {}".format(ignored_set))
 
@@ -57,8 +65,8 @@ class EmbeduploadCom(Crypter):
         for link in tmp_links:
             try:
                 header = self.load(link, just_header=True)
-                if 'location' in header:
-                    new_links.append(header.get('location'))
+                if "location" in header:
+                    new_links.append(header.get("location"))
             except BadHeader:
                 pass
         return new_links

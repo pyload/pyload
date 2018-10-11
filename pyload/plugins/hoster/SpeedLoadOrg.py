@@ -9,7 +9,7 @@ class SpeedLoadOrg(DeadHoster):
     __version__ = "1.07"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?speedload\.org/(?P<ID>\w+)'
+    __pattern__ = r"http://(?:www\.)?speedload\.org/(?P<ID>\w+)"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Speedload.org hoster plugin"""

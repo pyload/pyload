@@ -6,12 +6,24 @@ from builtins import _, object
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
+
 # TODO: Remove in 0.6.x
 from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry
 from pyload.plugins.Plugin import SkipDownload as Skip
-from pyload.plugins.utils import (DB, Config, decode, encode, exists, fixurl,
-                                  format_exc, fsjoin, html_unescape, parse_html_header,
-                                  remove, set_cookies)
+from pyload.plugins.utils import (
+    DB,
+    Config,
+    decode,
+    encode,
+    exists,
+    fixurl,
+    format_exc,
+    fsjoin,
+    html_unescape,
+    parse_html_header,
+    remove,
+    set_cookies,
+)
 
 if os.name != "nt":
     import grp
@@ -39,8 +51,9 @@ class Plugin(object):
         self.init()
 
     def __repr__(self):
-        return "<{type} {name}>".format(**{'type': self.__type__.capitalize(),
-                                           'name': self.classname})
+        return "<{type} {name}>".format(
+            **{"type": self.__type__.capitalize(), "name": self.classname}
+        )
 
     @property
     def classname(self):
@@ -72,32 +85,39 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = " | ".join(decode(a).strip() for a in messages if a)
-        log("{plugintype} {pluginname}: {msg}".format(
-            **{'plugintype': plugintype.upper(), 'pluginname': pluginname, 'msg': msg}))
+        log(
+            "{plugintype} {pluginname}: {msg}".format(
+                **{
+                    "plugintype": plugintype.upper(),
+                    "pluginname": pluginname,
+                    "msg": msg,
+                }
+            )
+        )
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
+        if self.pyload.debug and kwargs.get("trace"):
             self._print_exc()
 
     def log_info(self, *args, **kwargs):
         self._log("info", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
+        if self.pyload.debug and kwargs.get("trace"):
             self._print_exc()
 
     def log_warning(self, *args, **kwargs):
         self._log("warning", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace'):
+        if self.pyload.debug and kwargs.get("trace"):
             self._print_exc()
 
     def log_error(self, *args, **kwargs):
         self._log("error", self.__type__, self.__name__, args)
-        if self.pyload.debug and kwargs.get('trace', True):
+        if self.pyload.debug and kwargs.get("trace", True):
             self._print_exc()
 
     def log_critical(self, *args, **kwargs):
         self._log("critical", self.__type__, self.__name__, args)
-        if kwargs.get('trace', True):
+        if kwargs.get("trace", True):
             self._print_exc()
 
     def _print_exc(self):
@@ -112,8 +132,7 @@ class Plugin(object):
             remove(path, trash)
 
         except (NameError, OSError) as e:
-            self.log_warning(
-                _("Error removing `{}`").format(os.path.abspath(path)), e)
+            self.log_warning(_("Error removing `{}`").format(os.path.abspath(path)), e)
             return False
 
         else:
@@ -126,18 +145,16 @@ class Plugin(object):
         if not exists(path):
             return
 
-        if self.pyload.config.get('permission', "change_file"):
+        if self.pyload.config.get("permission", "change_file"):
             permission = self.pyload.config.get(
-                'permission', "folder" if os.path.isdir(path) else "file")
+                "permission", "folder" if os.path.isdir(path) else "file"
+            )
             mode = int(permission, 8)
             os.chmod(path, mode)
 
-        if os.name != "nt" and self.pyload.config.get(
-                'permission', "change_dl"):
-            uid = pwd.getpwnam(self.pyload.config.get('permission', "user"))[2]
-            gid = grp.getgrnam(
-                self.pyload.config.get(
-                    'permission', "group"))[2]
+        if os.name != "nt" and self.pyload.config.get("permission", "change_dl"):
+            uid = pwd.getpwnam(self.pyload.config.get("permission", "user"))[2]
+            gid = grp.getgrnam(self.pyload.config.get("permission", "group"))[2]
             os.chown(path, uid, gid)
 
     def skip(self, msg):
@@ -153,17 +170,18 @@ class Plugin(object):
         raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def load(
-            self,
-            url,
-            get={},
-            post={},
-            ref=True,
-            cookies=True,
-            just_header=False,
-            decode=True,
-            multipart=False,
-            redirect=True,
-            req=None):
+        self,
+        url,
+        get={},
+        post={},
+        ref=True,
+        cookies=True,
+        just_header=False,
+        decode=True,
+        multipart=False,
+        redirect=True,
+        req=None,
+    ):
         """
         Load content at url and returns it
 
@@ -178,10 +196,13 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug(
-                "LOAD URL " + url, *[
-                    "{}={}".format(
-                        key, value) for key, value in locals().items() if key not in (
-                        "self", "url", "_[1]")])
+                "LOAD URL " + url,
+                *[
+                    "{}={}".format(key, value)
+                    for key, value in locals().items()
+                    if key not in ("self", "url", "_[1]")
+                ],
+            )
 
         url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
@@ -219,7 +240,8 @@ class Plugin(object):
             bool(cookies),
             just_header,
             multipart,
-            decode is True)  # TODO: Fix network multipart in 0.6.x
+            decode is True,
+        )  # TODO: Fix network multipart in 0.6.x
 
         # TODO: Move to network in 0.6.x
         if not redirect:
@@ -227,11 +249,14 @@ class Plugin(object):
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif isinstance(redirect, int):
-            maxredirs = int(
-                self.pyload.api.getConfigValue(
-                    "UserAgentSwitcher",
-                    "maxredirs",
-                    "plugin")) or 5  # TODO: Remove `int` in 0.6.x
+            maxredirs = (
+                int(
+                    self.pyload.api.getConfigValue(
+                        "UserAgentSwitcher", "maxredirs", "plugin"
+                    )
+                )
+                or 5
+            )  # TODO: Remove `int` in 0.6.x
             # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
@@ -249,7 +274,7 @@ class Plugin(object):
             self.dump_html()
 
         # TODO: Move to network in 0.6.x
-        header = {'code': req.code, 'url': req.lastEffectiveURL}
+        header = {"code": req.code, "url": req.lastEffectiveURL}
         # NOTE: req can be a HTTPRequest or a Browser object
         header.update(parse_html_header(http_req.header))
 
@@ -261,16 +286,17 @@ class Plugin(object):
             return html
 
     def upload(
-            self,
-            path,
-            url,
-            get={},
-            ref=True,
-            cookies=True,
-            just_header=False,
-            decode=True,
-            redirect=True,
-            req=None):
+        self,
+        path,
+        url,
+        get={},
+        ref=True,
+        cookies=True,
+        just_header=False,
+        decode=True,
+        redirect=True,
+        req=None,
+    ):
         # TODO: This should really go to HTTPRequest.py
         """
         Uploads a file at url and returns response content
@@ -285,12 +311,15 @@ class Plugin(object):
         """
         if self.pyload.debug:
             self.log_debug(
-                "UPLOAD URL " + url, *[
-                    "{}={}".format(
-                        key, value) for key, value in locals().items() if key not in (
-                        "self", "url", "_[1]")])
+                "UPLOAD URL " + url,
+                *[
+                    "{}={}".format(key, value)
+                    for key, value in locals().items()
+                    if key not in ("self", "url", "_[1]")
+                ],
+            )
 
-        with open(path, 'rb') as f:
+        with open(path, "rb") as f:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:
@@ -359,11 +388,14 @@ class Plugin(object):
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
             elif isinstance(redirect, int):
-                maxredirs = int(
-                    self.pyload.api.getConfigValue(
-                        "UserAgentSwitcher",
-                        "maxredirs",
-                        "plugin")) or 5  # TODO: Remove `int` in 0.6.x
+                maxredirs = (
+                    int(
+                        self.pyload.api.getConfigValue(
+                            "UserAgentSwitcher", "maxredirs", "plugin"
+                        )
+                    )
+                    or 5
+                )  # TODO: Remove `int` in 0.6.x
                 # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
@@ -380,7 +412,7 @@ class Plugin(object):
                 self.dump_html()
 
             # TODO: Move to network in 0.6.x
-            header = {'code': req.code, 'url': req.lastEffectiveURL}
+            header = {"code": req.code, "url": req.lastEffectiveURL}
             # NOTE: req can be a HTTPRequest or a Browser object
             header.update(parse_html_header(http_req.header))
 
@@ -399,8 +431,9 @@ class Plugin(object):
                 "tmp",
                 self.classname,
                 "{}_line{}.dump.html".format(
-                    frame.f_back.f_code.co_name,
-                    frame.f_back.f_lineno))
+                    frame.f_back.f_code.co_name, frame.f_back.f_lineno
+                ),
+            )
 
             if not exists(os.path.join("tmp", self.classname)):
                 os.makedirs(os.path.join("tmp", self.classname))

@@ -14,40 +14,60 @@ class ExternalScripts(Addon):
     __version__ = "0.73"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("unlock", "bool", "Execute script concurrently", False)]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("unlock", "bool", "Execute script concurrently", False),
+    ]
 
     __description__ = """Run external scripts"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT}yahoo[DOT]com"),
+    ]
 
     def init(self):
         self.scripts = {}
 
-        self.folders = ["pyload_start", "pyload_restart", "pyload_stop",
-                        "before_reconnect", "after_reconnect",
-                        "download_preparing", "download_failed",
-                        # TODO: Invert 'download_processed', 'download_finished' order
-                        # in 0.6.x
-                        "download_finished", "download_processed",
-                        "archive_extract_failed", "archive_extracted",
-                        # TODO: Invert 'package_finished', 'package_processed' order in
-                        # 0.6.x
-                        "package_finished", "package_processed",
-                        "package_deleted", "package_failed", "package_extract_failed", "package_extracted",
-                        # TODO: Invert `all_downloads_processed`,
-                        # `all_downloads_finished` order in 0.6.x
-                        "all_downloads_processed", "all_downloads_finished",
-                        "all_archives_extracted", "all_archives_processed"]
+        self.folders = [
+            "pyload_start",
+            "pyload_restart",
+            "pyload_stop",
+            "before_reconnect",
+            "after_reconnect",
+            "download_preparing",
+            "download_failed",
+            # TODO: Invert 'download_processed', 'download_finished' order
+            # in 0.6.x
+            "download_finished",
+            "download_processed",
+            "archive_extract_failed",
+            "archive_extracted",
+            # TODO: Invert 'package_finished', 'package_processed' order in
+            # 0.6.x
+            "package_finished",
+            "package_processed",
+            "package_deleted",
+            "package_failed",
+            "package_extract_failed",
+            "package_extracted",
+            # TODO: Invert `all_downloads_processed`,
+            # `all_downloads_finished` order in 0.6.x
+            "all_downloads_processed",
+            "all_downloads_finished",
+            "all_archives_extracted",
+            "all_archives_processed",
+        ]
 
-        self.event_map = {'archive_extract_failed': "archive_extract_failed",
-                          'archive_extracted': "archive_extracted",
-                          'package_extract_failed': "package_extract_failed",
-                          'package_extracted': "package_extracted",
-                          'all_archives_extracted': "all_archives_extracted",
-                          'all_archives_processed': "all_archives_processed",
-                          'pyload_updated': "pyload_updated"}
+        self.event_map = {
+            "archive_extract_failed": "archive_extract_failed",
+            "archive_extracted": "archive_extracted",
+            "package_extract_failed": "package_extract_failed",
+            "package_extracted": "package_extracted",
+            "all_archives_extracted": "all_archives_extracted",
+            "all_archives_processed": "all_archives_processed",
+            "pyload_updated": "pyload_updated",
+        }
 
         self.periodical.start(60)
         self.periodical_task()  # NOTE: Initial scan so dont miss `pyload_start` scripts if any
@@ -85,33 +105,39 @@ class ExternalScripts(Addon):
                     if not os.path.isfile(file):
                         continue
 
-                    if file[0] in ("#", "_") or file.endswith(
-                            "~") or file.endswith(".swp"):
+                    if (
+                        file[0] in ("#", "_")
+                        or file.endswith("~")
+                        or file.endswith(".swp")
+                    ):
                         continue
 
                     if not os.access(file, os.X_OK):
                         self.log_warning(
-                            _("Script `{}` is not executable").format(entry))
+                            _("Script `{}` is not executable").format(entry)
+                        )
 
                     scripts.append(file)
 
-            new_scripts = [
-                _s for _s in scripts if _s not in self.scripts[folder]]
+            new_scripts = [_s for _s in scripts if _s not in self.scripts[folder]]
 
             if new_scripts:
                 script_names = list(map(os.path.basename, new_scripts))
                 self.log_info(
                     _("Activated scripts in folder `{}`: {}").format(
-                        folder, ", ".join(script_names)))
+                        folder, ", ".join(script_names)
+                    )
+                )
 
-            removed_scripts = [
-                _s for _s in self.scripts[folder] if _s not in scripts]
+            removed_scripts = [_s for _s in self.scripts[folder] if _s not in scripts]
 
             if removed_scripts:
                 script_names = list(map(os.path.basename, removed_scripts))
                 self.log_info(
                     _("Deactivated scripts in folder `{}`: {}").format(
-                        folder, ", ".join(script_names)))
+                        folder, ", ".join(script_names)
+                    )
+                )
 
             self.scripts[folder] = scripts
 
@@ -119,11 +145,9 @@ class ExternalScripts(Addon):
         call = list(map(encode, [command] + list(args)))
 
         self.log_debug(
-            "EXECUTE " +
-            " ".join(
-                '"' +
-                _arg +
-                '"' if ' ' in _arg else _arg for _arg in call))
+            "EXECUTE "
+            + " ".join('"' + _arg + '"' if " " in _arg else _arg for _arg in call)
+        )
 
         p = subprocess.Popen(call, bufsize=-1)  # NOTE: output goes to pyload
 
@@ -148,20 +172,20 @@ class ExternalScripts(Addon):
                 p = self.call_cmd(file, *args)
 
             except Exception as e:
-                self.log_error(_("Runtime error: {}").format(file),
-                               e or _("Unknown error"))
+                self.log_error(
+                    _("Runtime error: {}").format(file), e or _("Unknown error")
+                )
 
             else:
-                lock = kwargs.get('lock', None)
-                if lock is True or lock is None and not self.config.get(
-                        'unlock'):
+                lock = kwargs.get("lock", None)
+                if lock is True or lock is None and not self.config.get("unlock"):
                     p.communicate()
 
     def pyload_updated(self, etag):
         self.call_script("pyload_updated", etag)
 
     def pyload_start(self):
-        self.call_script('pyload_start')
+        self.call_script("pyload_start")
 
     def exit(self):
         event = "restart" if self.pyload.do_restart else "stop"
@@ -193,21 +217,11 @@ class ExternalScripts(Addon):
         self.call_script("download_processed", *args)
 
     def archive_extract_failed(self, pyfile, archive):
-        args = [
-            pyfile.id,
-            pyfile.name,
-            archive.filename,
-            archive.out,
-            archive.files]
+        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self.call_script("archive_extract_failed", *args)
 
     def archive_extracted(self, pyfile, archive):
-        args = [
-            pyfile.id,
-            pyfile.name,
-            archive.filename,
-            archive.out,
-            archive.files]
+        args = [pyfile.id, pyfile.name, archive.filename, archive.out, archive.files]
         self.call_script("archive_extracted", *args)
 
     def package_finished(self, pypack):

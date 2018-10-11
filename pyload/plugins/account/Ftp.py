@@ -13,5 +13,5 @@ class Ftp(Account):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    info_threshold = 1000000
-    login_timeout = 1000000
+    info_threshold = 1_000_000
+    login_timeout = 1_000_000

@@ -11,7 +11,6 @@ import _thread
 
 
 class Forwarder(object):
-
     def __init__(self, extip, extport=9666):
         print("Start portforwarding to {}:{}".format(extip, extport))
         proxy(extip, extport, 9666)
@@ -38,7 +37,7 @@ def server(*settings):
 
 
 def forward(source, destination):
-    string = ' '
+    string = " "
     while string:
         string = source.recv(1024)
         if string:

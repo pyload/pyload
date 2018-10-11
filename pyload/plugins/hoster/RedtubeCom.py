@@ -15,7 +15,7 @@ class RedtubeCom(Hoster):
     __version__ = "0.27"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?redtube\.com/\d+'
+    __pattern__ = r"http://(?:www\.)?redtube\.com/\d+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Redtube.com hoster plugin"""
@@ -27,7 +27,7 @@ class RedtubeCom(Hoster):
     def process(self, pyfile):
         html = self.load(pyfile.url)
 
-        m = re.search(r'sources: ({.+?}),', html)
+        m = re.search(r"sources: ({.+?}),", html)
         if m is None:
             self.error(_("sources pattern not found"))
 

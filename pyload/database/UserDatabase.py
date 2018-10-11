@@ -15,8 +15,8 @@ class UserMethods(object):
         c = db.c
         c.execute(
             'SELECT id, name, password, role, permission, template, email FROM "users" WHERE name=?',
-            (user,
-             ))
+            (user,),
+        )
         r = c.fetchone()
         if not r:
             return {}
@@ -25,29 +25,37 @@ class UserMethods(object):
         pw = r[2][5:]
         h = sha1(salt + password)
         if h.hexdigest() == pw:
-            return {"id": r[0], "name": r[1], "role": r[3],
-                    "permission": r[4], "template": r[5], "email": r[6]}
+            return {
+                "id": r[0],
+                "name": r[1],
+                "role": r[3],
+                "permission": r[4],
+                "template": r[5],
+                "email": r[6],
+            }
         else:
             return {}
 
     @style.queue
     def addUser(self, db, user, password):
-        salt = reduce(lambda x, y: x +
-                      y, [str(random.randint(0, 9)) for i in range(0, 5)])
+        salt = reduce(
+            lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
+        )
         h = sha1(salt + password)
         password = salt + h.hexdigest()
 
         c = db.c
-        c.execute('SELECT name FROM users WHERE name=?', (user, ))
+        c.execute("SELECT name FROM users WHERE name=?", (user,))
         if c.fetchone() is not None:
-            c.execute('UPDATE users SET password=? WHERE name=?', (password, user))
+            c.execute("UPDATE users SET password=? WHERE name=?", (password, user))
         else:
             c.execute(
-                'INSERT INTO users (name, password) VALUES (?, ?)', (user, password))
+                "INSERT INTO users (name, password) VALUES (?, ?)", (user, password)
+            )
 
     @style.queue
     def changePassword(self, db, user, oldpw, newpw):
-        db.c.execute('SELECT id, name, password FROM users WHERE name=?', (user, ))
+        db.c.execute("SELECT id, name, password FROM users WHERE name=?", (user,))
         r = db.c.fetchone()
         if not r:
             return False
@@ -56,8 +64,9 @@ class UserMethods(object):
         pw = r[2][5:]
         h = sha1(salt + oldpw)
         if h.hexdigest() == pw:
-            salt = reduce(lambda x, y: x +
-                          y, [str(random.randint(0, 9)) for i in range(0, 5)])
+            salt = reduce(
+                lambda x, y: x + y, [str(random.randint(0, 9)) for i in range(0, 5)]
+            )
             h = sha1(salt + newpw)
             password = salt + h.hexdigest()
 
@@ -76,7 +85,7 @@ class UserMethods(object):
 
     @style.queue
     def listUsers(self, db):
-        db.c.execute('SELECT name FROM users')
+        db.c.execute("SELECT name FROM users")
         users = []
         for row in db.c:
             users.append(row[0])
@@ -87,14 +96,18 @@ class UserMethods(object):
         db.c.execute("SELECT name, permission, role, template, email FROM users")
         user = {}
         for r in db.c:
-            user[r[0]] = {"permission": r[1], "role": r[2],
-                          "template": r[3], "email": r[4]}
+            user[r[0]] = {
+                "permission": r[1],
+                "role": r[2],
+                "template": r[3],
+                "email": r[4],
+            }
 
         return user
 
     @style.queue
     def removeUser(self, db, user):
-        db.c.execute('DELETE FROM users WHERE name=?', (user, ))
+        db.c.execute("DELETE FROM users WHERE name=?", (user,))
 
 
 DatabaseBackend.registerSub(UserMethods)

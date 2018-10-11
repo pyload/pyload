@@ -12,27 +12,32 @@ class MultiHoster(SimpleHoster):
     __version__ = "0.67"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", False),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
-                  ("revert_failed", "bool", "Revert to standard download if fails", True)]
+    __pattern__ = r"^unmatchable$"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", False),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+        ("revert_failed", "bool", "Revert to standard download if fails", True),
+    ]
 
     __description__ = """Multi hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
-    OFFLINE_PATTERN = r'^unmatchable$'
-    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
+    OFFLINE_PATTERN = r"^unmatchable$"
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"
 
     LEECH_HOSTER = False
 
     def init(self):
         self.PLUGIN_NAME = self.pyload.pluginManager.hosterPlugins.get(self.classname)[
-            'name']
+            "name"
+        ]
 
     def _log(self, level, plugintype, pluginname, messages):
         messages = (self.PLUGIN_NAME,) + messages
@@ -55,8 +60,9 @@ class MultiHoster(SimpleHoster):
         SimpleHoster._prepare(self)
 
         if self.DIRECT_LINK is None:
-            self.direct_dl = self.__pattern__ != r'^unmatchable$' and re.match(
-                self.__pattern__, self.pyfile.url)
+            self.direct_dl = self.__pattern__ != r"^unmatchable$" and re.match(
+                self.__pattern__, self.pyfile.url
+            )
 
         else:
             self.direct_dl = self.DIRECT_LINK
@@ -67,16 +73,17 @@ class MultiHoster(SimpleHoster):
 
         except Fail as e:
             hdict = self.pyload.pluginManager.hosterPlugins.get(
-                self.pyfile.pluginname, {})
-            if self.config.get('revert_failed', True) and hdict.get('new_module'):
-                tmp_module = hdict.pop('new_module', None)
-                tmp_name = hdict.pop('new_name', None)
+                self.pyfile.pluginname, {}
+            )
+            if self.config.get("revert_failed", True) and hdict.get("new_module"):
+                tmp_module = hdict.pop("new_module", None)
+                tmp_name = hdict.pop("new_name", None)
 
                 self.pyfile.plugin = None
                 self.pyfile.initPlugin()
 
-                hdict['new_module'] = tmp_module
-                hdict['new_name'] = tmp_name
+                hdict["new_module"] = tmp_module
+                hdict["new_name"] = tmp_name
 
                 self.restart(_("Revert to original hoster plugin"))
 

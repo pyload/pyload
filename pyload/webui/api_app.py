@@ -15,7 +15,6 @@ from pyload.webui.webinterface import PYLOAD
 
 
 class TBaseEncoder(json.JSONEncoder):
-
     def default(self, o):
         if isinstance(o, BaseObject):
             return toDict(o)
@@ -24,26 +23,28 @@ class TBaseEncoder(json.JSONEncoder):
 
 # accepting positional arguments, as well as kwargs via post and get
 
+
 @route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
 @route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    if 'u' in request.POST and 'p' in request.POST:
-        info = PYLOAD.checkAuth(request.POST['u'], request.POST['p'])
+    if "u" in request.POST and "p" in request.POST:
+        info = PYLOAD.checkAuth(request.POST["u"], request.POST["p"])
         if info:
             if not PYLOAD.isAuthorized(
-                    func, {"role": info["role"], "permission": info["permission"]}):
+                func, {"role": info["role"], "permission": info["permission"]}
+            ):
                 return HTTPError(401, json.dumps("Unauthorized"))
 
         else:
             return HTTPError(403, json.dumps("Forbidden"))
 
     else:
-        s = request.environ.get('beaker.session')
-        if 'session' in request.POST:
-            s = s.get_by_id(request.POST['session'])
+        s = request.environ.get("beaker.session")
+        if "session" in request.POST:
+            s = s.get_by_id(request.POST["session"])
 
         if not s or not s.get("authenticated", False):
             return HTTPError(403, json.dumps("Forbidden"))
@@ -63,8 +64,7 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception as e:
         print_exc()
-        return HTTPError(500, json.dumps(
-            {"error": e, "traceback": format_exc()}))
+        return HTTPError(500, json.dumps({"error": e, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
@@ -72,8 +72,10 @@ def callApi(func, *args, **kwargs):
         print("Invalid API call", func)
         return HTTPError(404, json.dumps("Not Found"))
 
-    result = getattr(PYLOAD, func)(*[literal_eval(x) for x in args],
-                                   **dict([(x, literal_eval(y)) for x, y in kwargs.items()]))
+    result = getattr(PYLOAD, func)(
+        *[literal_eval(x) for x in args],
+        **dict([(x, literal_eval(y)) for x, y in kwargs.items()]),
+    )
 
     # null is invalid json  response
     if result is None:
@@ -111,5 +113,5 @@ def logout():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = request.environ.get('beaker.session')
+    s = request.environ.get("beaker.session")
     s.delete()

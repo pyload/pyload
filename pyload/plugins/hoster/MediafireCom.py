@@ -12,24 +12,28 @@ class MediafireCom(SimpleHoster):
     __version__ = "0.98"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Mediafire.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("zoidberg", "zoidberg@mujmail.cz"),
-                   ("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("zoidberg", "zoidberg@mujmail.cz"),
+        ("stickell", "l.stickell@yahoo.it"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     NAME_PATTERN = r'<META NAME="description" CONTENT="(?P<N>.+?)"/>'
     SIZE_PATTERN = r'<div class="fileName">(?P<N>.+?)</div>'
 
-    TEMP_OFFLINE_PATTERN = r'^unmatchable$'
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"
     OFFLINE_PATTERN = r'class="error_msg_title"'
 
     LINK_FREE_PATTERN = r'aria-label="Download file"\s+href="(.+?)"'
@@ -48,11 +52,9 @@ class MediafireCom(SimpleHoster):
             self.captcha = solvemedia
             response, challenge = solvemedia.challenge(captcha_key)
             self.data = self.load(
-                "http://www.mediafire.com/?" +
-                self.info['pattern']['ID'],
-                post={
-                    'adcopy_challenge': challenge,
-                    'adcopy_response': response})
+                "http://www.mediafire.com/?" + self.info["pattern"]["ID"],
+                post={"adcopy_challenge": challenge, "adcopy_response": response},
+            )
             return
 
         recaptcha = ReCaptcha(self.pyfile)
@@ -66,7 +68,7 @@ class MediafireCom(SimpleHoster):
                 self.captcha = recaptcha
                 response, challenge = recaptcha.challenge(captcha_key)
 
-                inputs['g-recaptcha-response'] = response
+                inputs["g-recaptcha-response"] = response
                 self.data = self.load(self.fixurl(url), post=inputs)
 
             else:
@@ -82,7 +84,7 @@ class MediafireCom(SimpleHoster):
                 self.fail(_("No password found"))
             else:
                 self.log_info(_("Password protected link, trying: {}").format(password))
-                self.data = self.load(self.link, post={'downloadp': password})
+                self.data = self.load(self.link, post={"downloadp": password})
 
                 if self.PASSWORD_PATTERN in self.data:
                     self.fail(_("Wrong password"))

@@ -10,8 +10,10 @@ class RestartFailed(Addon):
     __version__ = "1.65"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("interval", "int", "Check interval in minutes", 90)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("interval", "int", "Check interval in minutes", 90),
+    ]
 
     __description__ = """Restart all the failed downloads in queue"""
     __license__ = "GPLv3"
@@ -22,4 +24,4 @@ class RestartFailed(Addon):
         self.pyload.api.restartFailed()
 
     def activate(self):
-        self.periodical.start(self.config.get('interval') * 60)
+        self.periodical.start(self.config.get("interval") * 60)

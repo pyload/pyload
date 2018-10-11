@@ -11,35 +11,36 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster
 # http://www.load.to/oeSmrfkXE/random100.bin
 
 
-
-
 class LoadTo(SimpleHoster):
     __name__ = "LoadTo"
     __type__ = "hoster"
     __version__ = "0.29"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?load\.to/\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"http://(?:www\.)?load\.to/\w+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Load.to hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("halfman", "Pulpan3@gmail.com"),
-                   ("stickell", "l.stickell@yahoo.it")]
+    __authors__ = [
+        ("halfman", "Pulpan3@gmail.com"),
+        ("stickell", "l.stickell@yahoo.it"),
+    ]
 
-    NAME_PATTERN = r'<h1>(?P<N>.+?)</h1>'
-    SIZE_PATTERN = r'Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
-    OFFLINE_PATTERN = r'>Can\'t find file'
+    NAME_PATTERN = r"<h1>(?P<N>.+?)</h1>"
+    SIZE_PATTERN = r"Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+)"
+    OFFLINE_PATTERN = r">Can\'t find file"
 
     LINK_FREE_PATTERN = r'<form method="post" action="(.+?)"'
     WAIT_PATTERN = r'type="submit" value="Download \((\d+)\)"'
 
-    URL_REPLACEMENTS = [(r'(\w)$', r'\1/')]
+    URL_REPLACEMENTS = [(r"(\w)$", r"\1/")]
 
     def setup(self):
         self.multiDL = True
@@ -64,7 +65,11 @@ class LoadTo(SimpleHoster):
 
         if captcha_key:
             response, challenge = self.captcha.challenge(captcha_key)
-            self.download(self.link,
-                          post={'adcopy_challenge': challenge,
-                                'adcopy_response': response,
-                                'returnUrl': pyfile.url})
+            self.download(
+                self.link,
+                post={
+                    "adcopy_challenge": challenge,
+                    "adcopy_response": response,
+                    "returnUrl": pyfile.url,
+                },
+            )

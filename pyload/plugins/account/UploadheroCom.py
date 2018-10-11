@@ -19,32 +19,27 @@ class UploadheroCom(Account):
 
     def grab_info(self, user, password, data):
         _re_premium = re.compile(
-            'Il vous reste <span class="bleu">(\d+)</span> jours premium')
+            'Il vous reste <span class="bleu">(\d+)</span> jours premium'
+        )
 
         html = self.load("http://uploadhero.co/my-account")
 
         if _re_premium.search(html):
-            end_date = datetime.date.today() + \
-                datetime.timedelta(
-                days=int(
-                    _re_premium.search(html).group(1)))
+            end_date = datetime.date.today() + datetime.timedelta(
+                days=int(_re_premium.search(html).group(1))
+            )
             end_date = time.mktime(end_date.timetuple())
-            account_info = {
-                'validuntil': end_date,
-                'trafficleft': -1,
-                'premium': True}
+            account_info = {"validuntil": end_date, "trafficleft": -1, "premium": True}
         else:
-            account_info = {
-                'validuntil': -1,
-                'trafficleft': -1,
-                'premium': False}
+            account_info = {"validuntil": -1, "trafficleft": -1, "premium": False}
 
         return account_info
 
     def signin(self, user, password, data):
-        html = self.load("http://uploadhero.co/lib/connexion.php",
-                         post={'pseudo_login': user,
-                               'password_login': password})
+        html = self.load(
+            "http://uploadhero.co/lib/connexion.php",
+            post={"pseudo_login": user, "password_login": password},
+        )
 
         if "mot de passe invalide" in html:
             self.fail_login()

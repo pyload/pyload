@@ -10,7 +10,7 @@ class BasePlugin(Http):
     __version__ = "0.52"
     __status__ = "testing"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r"^unmatchable$"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Default hoster plugin when any other didnt fit"""

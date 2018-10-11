@@ -33,6 +33,7 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return f(cls.db, *args, **kwargs)
+
         return x
 
     @classmethod
@@ -41,6 +42,7 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
+
         return x
 
     @classmethod
@@ -49,6 +51,7 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.async_(f, *args, **kwargs)
+
         return x
 
 
@@ -67,17 +70,20 @@ class DatabaseJob(object):
 
     def __repr__(self):
         from os.path import basename
+
         frame = self.frame.f_back
         output = ""
         for i in range(5):
-            output += "\t{}:{}, {}\n".format(basename(frame.f_code.co_filename),
-                                             frame.f_lineno, frame.f_code.co_name)
+            output += "\t{}:{}, {}\n".format(
+                basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name
+            )
             frame = frame.f_back
         del frame
         del self.frame
 
         return "DataBase Job {}:{}\n{}Result: {}".format(
-            self.f.__name__, self.args[1:], output, self.result)
+            self.f.__name__, self.args[1:], output, self.result
+        )
 
     def processJob(self):
         try:
@@ -85,8 +91,9 @@ class DatabaseJob(object):
         except Exception as e:
             print_exc()
             try:
-                print("Database Error @", self.f.__name__,
-                      self.args[1:], self.kwargs, e)
+                print(
+                    "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
+                )
             except Exception:
                 pass
 
@@ -163,7 +170,8 @@ class DatabaseBackend(Thread):
             if v < 2:
                 try:
                     self.manager.pyload.log.warning(
-                        _("Filedatabase was deleted due to incompatible version."))
+                        _("Filedatabase was deleted due to incompatible version.")
+                    )
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
                 remove("files.version")
@@ -186,7 +194,8 @@ class DatabaseBackend(Thread):
 
     def _convertV2(self):
         self.c.execute(
-            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
+        )
         try:
             self.manager.pyload.log.info(_("Database was converted from v2 to v3."))
         except Exception:
@@ -194,7 +203,9 @@ class DatabaseBackend(Thread):
         self._convertV3()
 
     def _convertV3(self):
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
+        )
         try:
             self.manager.pyload.log.info(_("Database was converted from v3 to v4."))
         except Exception:
@@ -205,39 +216,49 @@ class DatabaseBackend(Thread):
     def _createTables(self):
         """create tables for database"""
 
-        self.c.execute('CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))')
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "packages" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "folder" TEXT, "password" TEXT DEFAULT "", "site" TEXT DEFAULT "", "queue" INTEGER DEFAULT 0 NOT NULL, "packageorder" INTEGER DEFAULT 0 NOT NULL)'
+        )
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "links" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "url" TEXT NOT NULL, "name" TEXT, "size" INTEGER DEFAULT 0 NOT NULL, "status" INTEGER DEFAULT 3 NOT NULL, "plugin" TEXT DEFAULT "BasePlugin" NOT NULL, "error" TEXT DEFAULT "", "linkorder" INTEGER DEFAULT 0 NOT NULL, "package" INTEGER DEFAULT 0 NOT NULL, FOREIGN KEY(package) REFERENCES packages(id))'
+        )
         self.c.execute('CREATE INDEX IF NOT EXISTS "pIdIndex" ON links(package)')
         self.c.execute(
-            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")')
-        self.c.execute('CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)')
+            'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
+        )
+        self.c.execute(
+            'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
+        )
 
-        self.c.execute('CREATE VIEW IF NOT EXISTS "pstats" AS \
+        self.c.execute(
+            'CREATE VIEW IF NOT EXISTS "pstats" AS \
         SELECT p.id AS id, SUM(l.size) AS sizetotal, COUNT(l.id) AS linkstotal, linksdone, sizedone\
         FROM packages p JOIN links l ON p.id = l.package LEFT OUTER JOIN\
         (SELECT p.id AS id, COUNT(*) AS linksdone, SUM(l.size) AS sizedone \
         FROM packages p JOIN links l ON p.id = l.package AND l.status in (0,4,13) GROUP BY p.id) s ON s.id = p.id \
-        GROUP BY p.id')
+        GROUP BY p.id'
+        )
 
         # try to lower ids
-        self.c.execute('SELECT max(id) FROM LINKS')
+        self.c.execute("SELECT max(id) FROM LINKS")
         fid = self.c.fetchone()[0]
         if fid:
             fid = int(fid)
         else:
             fid = 0
-        self.c.execute('UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (fid, "links"))
+        self.c.execute("UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?", (fid, "links"))
 
-        self.c.execute('SELECT max(id) FROM packages')
+        self.c.execute("SELECT max(id) FROM packages")
         pid = self.c.fetchone()[0]
         if pid:
             pid = int(pid)
         else:
             pid = 0
         self.c.execute(
-            'UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?', (pid, "packages"))
+            "UPDATE SQLITE_SEQUENCE SET seq=? WHERE name=?", (pid, "packages")
+        )
 
-        self.c.execute('VACUUM')
+        self.c.execute("VACUUM")
 
     def _migrateUser(self):
         if exists("pyload.db"):
@@ -245,9 +266,11 @@ class DatabaseBackend(Thread):
                 self.pyload.log.info(_("Converting old Django DB"))
             except Exception:
                 print("Converting old Django DB")
-            conn = sqlite3.connect('pyload.db')
+            conn = sqlite3.connect("pyload.db")
             c = conn.cursor()
-            c.execute("SELECT username, password, email from auth_user WHERE is_superuser")
+            c.execute(
+                "SELECT username, password, email from auth_user WHERE is_superuser"
+            )
             users = []
             for r in c:
                 pw = r[1].split("$")
@@ -256,7 +279,8 @@ class DatabaseBackend(Thread):
             conn.close()
 
             self.c.executemany(
-                "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users)
+                "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users
+            )
             move("pyload.db", "pyload.old.db")
 
     def createCursor(self):
@@ -275,12 +299,12 @@ class DatabaseBackend(Thread):
         self.conn.rollback()
 
     def async_(self, f, *args, **kwargs):
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
 
     def queue(self, f, *args, **kwargs):
-        args = (self, ) + args
+        args = (self,) + args
         job = DatabaseJob(f, *args, **kwargs)
         self.jobs.put(job)
         job.wait()

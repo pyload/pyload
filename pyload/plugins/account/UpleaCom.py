@@ -16,11 +16,11 @@ class UpleaCom(Account):
     __license__ = "GPLv3"
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    LOGIN_URL = r'http://uplea.com'
+    LOGIN_URL = r"http://uplea.com"
     LOGIN_SKIP_PATTERN = r'>DISCONNECT</span> <span class="agbold">ME NOW<'
 
-    PREMIUM_PATTERN = r'Uplea premium member <'
-    VALID_UNTIL_PATTERN = r'You\'re premium member until .+?>([\d/]+)'
+    PREMIUM_PATTERN = r"Uplea premium member <"
+    VALID_UNTIL_PATTERN = r"You\'re premium member until .+?>([\d/]+)"
 
     def grab_info(self, user, password, data):
         trafficleft = -1
@@ -38,8 +38,11 @@ class UpleaCom(Account):
             premium = True
             validuntil = time.mktime(time.strptime(m.group(1), "%d/%m/%Y"))
 
-        return {'premium': premium, 'trafficleft': trafficleft,
-                'validuntil': validuntil}
+        return {
+            "premium": premium,
+            "trafficleft": trafficleft,
+            "validuntil": validuntil,
+        }
 
     def signin(self, user, password, data):
         html = self.load("http://uplea.com")
@@ -47,11 +50,10 @@ class UpleaCom(Account):
         if self.LOGIN_SKIP_PATTERN in html:
             self.skip_login()
 
-        html = self.load("http://uplea.com",
-                         post={'login': user,
-                               'password': password,
-                               'remember': 0,
-                               'login-form': ""})
+        html = self.load(
+            "http://uplea.com",
+            post={"login": user, "password": password, "remember": 0, "login-form": ""},
+        )
 
         if self.LOGIN_SKIP_PATTERN not in html:
             self.fail_login()

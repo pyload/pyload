@@ -14,13 +14,15 @@ class YourfilesTo(Hoster):
     __version__ = "0.28"
     __status__ = "testing"
 
-    __pattern__ = r'http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+'
+    __pattern__ = r"http://(?:www\.)?yourfiles\.(to|biz)/\?d=\w+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Youfiles.to hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("jeix", "jeix@hasnomail.de"),
-                   ("skydancer", "skydancer@hasnomail.de")]
+    __authors__ = [
+        ("jeix", "jeix@hasnomail.de"),
+        ("skydancer", "skydancer@hasnomail.de"),
+    ]
 
     def process(self, pyfile):
         self.pyfile = pyfile
@@ -40,7 +42,7 @@ class YourfilesTo(Hoster):
             self.download_html()
 
         #: var zzipitime = 15
-        m = re.search(r'var zzipitime = (\d+);', self.data)
+        m = re.search(r"var zzipitime = (\d+);", self.data)
         if m is not None:
             sec = int(m.group(1))
         else:
@@ -59,8 +61,9 @@ class YourfilesTo(Hoster):
         url = re.search(r"var bla = '(.*?)';", self.data)
         if url:
             url = url.group(1)
-            url = urllib.parse.unquote(url.replace(
-                "http://http:/http://", "http://").replace("dumdidum", ""))
+            url = urllib.parse.unquote(
+                url.replace("http://http:/http://", "http://").replace("dumdidum", "")
+            )
             return url
         else:
             self.error(_("Absolute filepath not found"))
@@ -78,7 +81,7 @@ class YourfilesTo(Hoster):
         if not self.data:
             self.download_html()
 
-        if re.search(r'HTTP Status 404', self.data):
+        if re.search(r"HTTP Status 404", self.data):
             return False
         else:
             return True

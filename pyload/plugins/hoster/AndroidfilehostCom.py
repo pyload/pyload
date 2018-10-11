@@ -12,12 +12,14 @@ class AndroidfilehostCom(SimpleHoster):
     __version__ = "0.07"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?androidfilehost\.com/\?fid=\d+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool", "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?androidfilehost\.com/\?fid=\d+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Androidfilehost.com hoster plugin"""
     __license__ = "GPLv3"
@@ -27,10 +29,10 @@ class AndroidfilehostCom(SimpleHoster):
     SIZE_PATTERN = r'<span class="file-attr-value">(?P<S>[\d.,]+)(?P<U>[\w^_]+)<br><span class="file-attr-label">Size</span></span>'
     HASHSUM_PATTERN = r'<span class="file-attr-value">(?P<D>.*?)<br><span class="file-attr-label">(?P<H>MD5)</span></span>'
 
-    OFFLINE_PATTERN = r'404 not found'
-    TEMP_OFFLINE_PATTERN = r'[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))'
+    OFFLINE_PATTERN = r"404 not found"
+    TEMP_OFFLINE_PATTERN = r"[^\w](503\s|[Mm]aint(e|ai)nance|[Tt]emp([.-]|orarily))"
 
-    WAIT_PATTERN = r'users must wait <strong>(\d+) secs'
+    WAIT_PATTERN = r"users must wait <strong>(\d+) secs"
 
     def setup(self):
         self.multiDL = True
@@ -47,10 +49,10 @@ class AndroidfilehostCom(SimpleHoster):
 
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-MOD-SBB-CTYPE: xhr"])
 
-        html = self.load("https://androidfilehost.com/libs/otf/mirrors.otf.php",
-                         post={'submit': 'submit',
-                               'action': 'getdownloadmirrors',
-                               'fid': fid})
+        html = self.load(
+            "https://androidfilehost.com/libs/otf/mirrors.otf.php",
+            post={"submit": "submit", "action": "getdownloadmirrors", "fid": fid},
+        )
         self.req.http.c.setopt(pycurl.HTTPHEADER, ["X-MOD-SBB-CTYPE:"])
 
         self.link = re.findall('"url":"(.*?)"', html)[0].replace("\\", "")
@@ -58,7 +60,7 @@ class AndroidfilehostCom(SimpleHoster):
 
         self.log_debug("Mirror Host: {}".format(mirror_host))
 
-        html = self.load("https://androidfilehost.com/libs/otf/stats.otf.php",
-                         get={'fid': fid,
-                              'w': 'download',
-                              'mirror': mirror_host})
+        html = self.load(
+            "https://androidfilehost.com/libs/otf/stats.otf.php",
+            get={"fid": fid, "w": "download", "mirror": mirror_host},
+        )

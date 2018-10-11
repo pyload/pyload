@@ -12,10 +12,17 @@ class DailymotionComFolder(Crypter):
     __version__ = "0.08"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("folder_per_package", "Default;Yes;No", "Create folder for each package", "Default")]
+    __pattern__ = r"https?://(?:www\.)?dailymotion\.com/((playlists/)?(?P<TYPE>playlist|user)/)?(?P<ID>[\w^_]+)(?(TYPE)|#)"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        (
+            "folder_per_package",
+            "Default;Yes;No",
+            "Create folder for each package",
+            "Default",
+        ),
+    ]
 
     __description__ = """Dailymotion.com channel & playlist decrypter"""
     __license__ = "GPLv3"
@@ -28,47 +35,48 @@ class DailymotionComFolder(Crypter):
 
     def get_playlist_info(self, id):
         ref = "playlist/" + id
-        data = {'fields': "name,owner.screenname"}
+        data = {"fields": "name,owner.screenname"}
         playlist = self.api_response(ref, data)
 
         if "error" in playlist:
             return
 
-        name = playlist['name']
-        owner = playlist['owner.screenname']
+        name = playlist["name"]
+        owner = playlist["owner.screenname"]
         return name, owner
 
     def _get_playlists(self, user_id, page=1):
         ref = "user/{}/playlists".format(user_id)
-        data = {'fields': "id", 'page': page, 'limit': 100}
+        data = {"fields": "id", "page": page, "limit": 100}
         user = self.api_response(ref, data)
 
         if "error" in user:
             return
 
-        for playlist in user['list']:
-            yield playlist['id']
+        for playlist in user["list"]:
+            yield playlist["id"]
 
-        if user['has_more']:
+        if user["has_more"]:
             for item in self._get_playlists(user_id, page + 1):
                 yield item
 
     def get_playlists(self, user_id):
-        return [(id,) + self.get_playlist_info(id)
-                for id in self._get_playlists(user_id)]
+        return [
+            (id,) + self.get_playlist_info(id) for id in self._get_playlists(user_id)
+        ]
 
     def _get_videos(self, id, page=1):
         ref = "playlist/{}/videos".format(id)
-        data = {'fields': "url", 'page': page, 'limit': 100}
+        data = {"fields": "url", "page": page, "limit": 100}
         playlist = self.api_response(ref, data)
 
         if "error" in playlist:
             return
 
-        for video in playlist['list']:
-            yield video['url']
+        for video in playlist["list"]:
+            yield video["url"]
 
-        if playlist['has_more']:
+        if playlist["has_more"]:
             for item in self._get_videos(id, page + 1):
                 yield item
 
@@ -76,8 +84,8 @@ class DailymotionComFolder(Crypter):
         return list(self._get_videos(playlist_id))[::-1]
 
     def decrypt(self, pyfile):
-        m_id = self.info['pattern']['ID']
-        m_type = self.info['pattern']['TYPE']
+        m_id = self.info["pattern"]["ID"]
+        m_type = self.info["pattern"]["TYPE"]
 
         if m_type == "playlist":
             self.log_debug("Url recognized as Playlist")
@@ -87,7 +95,8 @@ class DailymotionComFolder(Crypter):
             self.log_debug("Url recognized as Channel")
             playlists = self.get_playlists(m_id)
             self.log_debug(
-                "{} playlist\s found on channel \"{}\"".format(len(playlists), m_id))
+                '{} playlist\s found on channel "{}"'.format(len(playlists), m_id)
+            )
 
         if not playlists:
             self.fail(_("No playlist available"))
@@ -95,12 +104,10 @@ class DailymotionComFolder(Crypter):
         for p_id, p_name, p_owner in playlists:
             p_videos = self.get_videos(p_id)
             p_folder = fsjoin(
-                self.pyload.config.get(
-                    'general',
-                    'download_folder'),
-                p_owner,
-                p_name)
+                self.pyload.config.get("general", "download_folder"), p_owner, p_name
+            )
             self.log_debug(
-                "{} video\s found on playlist \"{}\"".format(len(p_videos), p_name))
+                '{} video\s found on playlist "{}"'.format(len(p_videos), p_name)
+            )
             # NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

@@ -9,7 +9,7 @@ class TrailerzoneInfo(DeadCrypter):
     __version__ = "0.08"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?trailerzone\.info/.+'
+    __pattern__ = r"http://(?:www\.)?trailerzone\.info/.+"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """TrailerZone.info decrypter plugin"""

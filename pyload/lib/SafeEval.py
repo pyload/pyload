@@ -8,15 +8,24 @@ from module.util.encoding import smart_text
 _const_codes = {
     dis.opmap[code]
     for code in (
-        'POP_TOP', 'ROT_TWO', 'ROT_THREE', 'ROT_FOUR', 'DUP_TOP', 'BUILD_LIST',
-        'BUILD_MAP', 'BUILD_TUPLE', 'LOAD_CONST', 'RETURN_VALUE', 'STORE_SUBSCR',
+        "POP_TOP",
+        "ROT_TWO",
+        "ROT_THREE",
+        "ROT_FOUR",
+        "DUP_TOP",
+        "BUILD_LIST",
+        "BUILD_MAP",
+        "BUILD_TUPLE",
+        "LOAD_CONST",
+        "RETURN_VALUE",
+        "STORE_SUBSCR",
     )
     if code in dis.opmap
 }
 
-_load_names = ['False', 'True', 'null', 'true', 'false']
+_load_names = ["False", "True", "null", "true", "false"]
 
-_locals = {'null': None, 'true': True, 'false': False}
+_locals = {"null": None, "true": True, "false": False}
 
 
 def _get_opcodes(codeobj):
@@ -51,5 +60,6 @@ def test_expr(expr, allowed_codes):
 def const_eval(expr):
     c = test_expr(expr, _const_codes)
     return eval(c, None, _locals)
+
 
 # end of http://code.activestate.com/recipes/286134/ }}}

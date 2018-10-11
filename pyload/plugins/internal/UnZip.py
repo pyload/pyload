@@ -3,8 +3,12 @@
 import sys
 import zipfile
 
-from pyload.plugins.internal.Extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
+from pyload.plugins.internal.Extractor import (
+    ArchiveError,
+    CRCError,
+    Extractor,
+    PasswordError,
+)
 from pyload.plugins.utils import encode
 
 
@@ -18,9 +22,9 @@ class UnZip(Extractor):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    VERSION = "{}.{}.{}".format(sys.version_info[0],
-                                sys.version_info[1],
-                                sys.version_info[2])
+    VERSION = "{}.{}.{}".format(
+        sys.version_info[0], sys.version_info[1], sys.version_info[2]
+    )
 
     @classmethod
     def archivetype(cls, filename):
@@ -35,14 +39,14 @@ class UnZip(Extractor):
         return sys.version_info[:2] >= (2, 6)
 
     def list(self, password=None):
-        with zipfile.ZipFile(self.filename, 'r') as z:
+        with zipfile.ZipFile(self.filename, "r") as z:
             z.setpassword(password)
             self.files = z.namelist()
         return self.files
 
     def verify(self, password=None):
         try:
-            with zipfile.ZipFile(self.filename, 'r') as z:
+            with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
                 badfile = z.testzip()
                 if badfile is not None:
@@ -61,7 +65,7 @@ class UnZip(Extractor):
         self.verify(password)
 
         try:
-            with zipfile.ZipFile(self.filename, 'r') as z:
+            with zipfile.ZipFile(self.filename, "r") as z:
                 z.setpassword(password)
                 z.extractall(self.dest)
                 self.files = z.namelist()

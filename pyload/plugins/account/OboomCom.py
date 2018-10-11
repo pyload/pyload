@@ -13,15 +13,13 @@ except ImportError:
     from binascii import b2a_hex
 
     class PBKDF2(object):
-
         def __init__(self, passphrase, salt, iterations=1000):
             self.passphrase = passphrase
             self.salt = salt
             self.iterations = iterations
 
         def hexread(self, octets):
-            return b2a_hex(
-                pbkdf2(self.passphrase, self.salt, self.iterations, octets))
+            return b2a_hex(pbkdf2(self.passphrase, self.salt, self.iterations, octets))
 
 
 class OboomCom(Account):
@@ -38,9 +36,10 @@ class OboomCom(Account):
         salt = password[::-1]
         pbkdf2 = PBKDF2(password, salt, 1000).hexread(16)
 
-        html = self.load("http://www.oboom.com/1/login",  # TODO: Revert to `https` in 0.6.x
-                         get={'auth': user,
-                              'pass': pbkdf2})
+        html = self.load(
+            "http://www.oboom.com/1/login",  # TODO: Revert to `https` in 0.6.x
+            get={"auth": user, "pass": pbkdf2},
+        )
         result = json.loads(html)
 
         if result[0] != 200:
@@ -52,28 +51,30 @@ class OboomCom(Account):
     def grab_info(self, user, password, data):
         account_data = self.load_account_data(user, password)
 
-        userData = account_data['user']
+        userData = account_data["user"]
 
-        premium = userData['premium'] != "null"
+        premium = userData["premium"] != "null"
 
-        if userData['premium_unix'] == "null":
+        if userData["premium_unix"] == "null":
             validUntil = -1
         else:
-            validUntil = float(userData['premium_unix'])
+            validUntil = float(userData["premium_unix"])
 
-        traffic = userData['traffic']
+        traffic = userData["traffic"]
 
         # TODO: Remove `/ 1024` in 0.6.x
-        trafficLeft = traffic['current'] // 1024
-        maxTraffic = traffic['max'] // 1024  # TODO: Remove `/ 1024` in 0.6.x
+        trafficLeft = traffic["current"] // 1024
+        maxTraffic = traffic["max"] // 1024  # TODO: Remove `/ 1024` in 0.6.x
 
-        session = account_data['session']
+        session = account_data["session"]
 
-        return {'premium': premium,
-                'validuntil': validUntil,
-                'trafficleft': trafficLeft,
-                'maxtraffic': maxTraffic,
-                'session': session}
+        return {
+            "premium": premium,
+            "validuntil": validUntil,
+            "trafficleft": trafficLeft,
+            "maxtraffic": maxTraffic,
+            "session": session,
+        }
 
     def signin(self, user, password, data):
         self.load_account_data(user, password)

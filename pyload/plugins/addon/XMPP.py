@@ -15,16 +15,22 @@ class XMPP(IRC, JabberClient):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
-                  ("pw", "str", "Password", ""),
-                  ("tls", "bool", "Use TLS", False),
-                  ("owners", "str", "List of JIDs accepting commands from",
-                   "me@icq-gateway.org;some@msn-gateway.org"),
-                  ("keepalive", "int", "Keepalive interval in seconds (0 to disable)", 0),
-                  ("info_file", "bool", "Inform about every file finished", False),
-                  ("info_pack", "bool", "Inform about every package finished", True),
-                  ("captcha", "bool", "Send captcha requests", True)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("jid", "str", "Jabber ID", "user@exmaple-jabber-server.org"),
+        ("pw", "str", "Password", ""),
+        ("tls", "bool", "Use TLS", False),
+        (
+            "owners",
+            "str",
+            "List of JIDs accepting commands from",
+            "me@icq-gateway.org;some@msn-gateway.org",
+        ),
+        ("keepalive", "int", "Keepalive interval in seconds (0 to disable)", 0),
+        ("info_file", "bool", "Inform about every file finished", False),
+        ("info_pack", "bool", "Inform about every package finished", True),
+        ("captcha", "bool", "Send captcha requests", True),
+    ]
 
     __description__ = """Connect to jabber and let owner perform different tasks"""
     __license__ = "GPLv3"
@@ -35,16 +41,15 @@ class XMPP(IRC, JabberClient):
     def __init__(self, *args, **kwargs):
         IRC.__init__(self, *args, **kwargs)
 
-        self.jid = pyxmpp.all.JID(self.config.get('jid'))
-        password = self.config.get('pw')
+        self.jid = pyxmpp.all.JID(self.config.get("jid"))
+        password = self.config.get("pw")
 
         #: If bare JID is provided add a resource -- it is required
         if not self.jid.resource:
             self.jid = pyxmpp.all.JID(self.jid.node, self.jid.domain, "pyLoad")
 
-        if self.config.get('tls'):
-            tls_settings = pyxmpp.streamtls.TLSSettings(
-                require=True, verify_peer=False)
+        if self.config.get("tls"):
+            tls_settings = pyxmpp.streamtls.TLSSettings(require=True, verify_peer=False)
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
             tls_settings = None
@@ -60,12 +65,10 @@ class XMPP(IRC, JabberClient):
             disco_type="bot",
             tls_settings=tls_settings,
             auth_methods=auth,
-            keepalive=self.config.get('keepalive'))
+            keepalive=self.config.get("keepalive"),
+        )
 
-        self.interface_providers = [
-            VersionHandler(self),
-            self,
-        ]
+        self.interface_providers = [VersionHandler(self), self]
 
     def activate(self):
         self.new_package = {}
@@ -74,7 +77,7 @@ class XMPP(IRC, JabberClient):
 
     def package_finished(self, pypack):
         try:
-            if self.config.get('info_pack'):
+            if self.config.get("info_pack"):
                 self.announce(_("Package finished: {}").format(pypack.name))
 
         except Exception:
@@ -82,9 +85,12 @@ class XMPP(IRC, JabberClient):
 
     def download_finished(self, pyfile):
         try:
-            if self.config.get('info_file'):
-                self.announce(_("Download finished: {name} @ {plugin}").format(
-                    **{'name': pyfile.name, 'plugin': pyfile.pluginname}))
+            if self.config.get("info_file"):
+                self.announce(
+                    _("Download finished: {name} @ {plugin}").format(
+                        **{"name": pyfile.name, "plugin": pyfile.pluginname}
+                    )
+                )
 
         except Exception:
             pass
@@ -146,7 +152,7 @@ class XMPP(IRC, JabberClient):
         # j = pyxmpp.all.JID()
         to_name = to_jid.as_utf8()
 
-        names = self.config.get('owners').split(";")
+        names = self.config.get("owners").split(";")
 
         if to_name in names or to_jid.node + "@" + to_jid.domain in names:
             messages = []
@@ -172,7 +178,8 @@ class XMPP(IRC, JabberClient):
                         from_jid=from_jid,
                         stanza_type=stanza.get_type(),
                         subject=subject,
-                        body=line)
+                        body=line,
+                    )
 
                     messages.append(m)
 
@@ -191,15 +198,14 @@ class XMPP(IRC, JabberClient):
         """
         Send message to all owners
         """
-        for user in self.config.get('owners').split(";"):
+        for user in self.config.get("owners").split(";"):
             self.log_debug("Send message to", user)
 
             to_jid = pyxmpp.all.JID(user)
 
-            m = pyxmpp.all.Message(from_jid=self.jid,
-                                   to_jid=to_jid,
-                                   stanza_type="chat",
-                                   body=message)
+            m = pyxmpp.all.Message(
+                from_jid=self.jid, to_jid=to_jid, stanza_type="chat", body=message
+            )
 
             stream = self.get_stream()
             if not stream:
@@ -222,9 +228,10 @@ class VersionHandler(object):
     This class will answer version query and announce 'jabber:iq:version' namespace
     in the client's disco#info results.
     """
+
     pyxmpp.interface.implements(
-        pyxmpp.interfaces.IIqHandlersProvider,
-        pyxmpp.interfaces.IFeaturesProvider)
+        pyxmpp.interfaces.IIqHandlersProvider, pyxmpp.interfaces.IFeaturesProvider
+    )
 
     def __init__(self, client):
         """

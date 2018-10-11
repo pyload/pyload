@@ -17,9 +17,9 @@ class UnTar(Extractor):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    VERSION = "{}.{}.{}".format(sys.version_info[0],
-                                sys.version_info[1],
-                                sys.version_info[2])
+    VERSION = "{}.{}.{}".format(
+        sys.version_info[0], sys.version_info[1], sys.version_info[2]
+    )
 
     @classmethod
     def isarchive(cls, filename):

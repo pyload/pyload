@@ -18,8 +18,8 @@ class UploadedTo(Account):
 
     COOKIES = False
 
-    PREMIUM_PATTERN = r'<em>Premium</em>'
-    VALID_UNTIL_PATTERN = r'<td>Duration:</td>\s*<th>\s*(.+?)<'
+    PREMIUM_PATTERN = r"<em>Premium</em>"
+    VALID_UNTIL_PATTERN = r"<td>Duration:</td>\s*<th>\s*(.+?)<"
     TRAFFIC_LEFT_PATTERN = r'<b class="cB">(?P<S>[\d.,]+) (?P<U>[\w^_]+)'
 
     def grab_info(self, user, password, data):
@@ -37,40 +37,45 @@ class UploadedTo(Account):
                 if expiredate == "unlimited":
                     validuntil = -1
                 else:
-                    m = re.findall(
-                        r'(\d+) (week|day|hour|minute|second)', expiredate)
+                    m = re.findall(r"(\d+) (week|day|hour|minute|second)", expiredate)
                     if m is not None:
                         validuntil = time.time()
                         for n, u in m:
-                            validuntil += float(n) * {
-                                'week': 3600 * 168,
-                                'day': 3600 * 24,
-                                'hour': 3600,
-                                'minute': 60,
-                                'second': 1}[u]
+                            validuntil += (
+                                float(n)
+                                * {
+                                    "week": 3600 * 168,
+                                    "day": 3600 * 24,
+                                    "hour": 3600,
+                                    "minute": 60,
+                                    "second": 1,
+                                }[u]
+                            )
 
             m = re.search(self.TRAFFIC_LEFT_PATTERN, html)
             if m is not None:
                 traffic = m.groupdict()
-                size = traffic['S'].replace('.', '')
-                unit = traffic['U'].lower()
+                size = traffic["S"].replace(".", "")
+                unit = traffic["U"].lower()
                 trafficleft = self.parse_traffic(size, unit)
 
         else:
             validuntil = -1
             trafficleft = -1
 
-        return {'validuntil': validuntil,
-                'trafficleft': trafficleft,
-                'premium': premium}
+        return {
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "premium": premium,
+        }
 
     def signin(self, user, password, data):
         try:
             self.load("http://uploaded.net/me")
 
-            html = self.load("http://uploaded.net/io/login",
-                             post={'id': user,
-                                   'pw': password})
+            html = self.load(
+                "http://uploaded.net/io/login", post={"id": user, "pw": password}
+            )
 
             m = re.search(r'"err":"(.+?)"', html)
             if m is not None:

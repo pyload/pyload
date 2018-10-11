@@ -139,7 +139,8 @@ class HTTPChunk(HTTPRequest):
 
     def __repr__(self):
         return "<HTTPChunk id={}, size={}, arrived={}>".format(
-            self.id, self.size, self.arrived)
+            self.id, self.size, self.arrived
+        )
 
     @property
     def cj(self):
@@ -149,11 +150,8 @@ class HTTPChunk(HTTPRequest):
         """ returns a Curl handle ready to use for perform/multiperform """
 
         self.setRequestContext(
-            self.p.url,
-            self.p.get,
-            self.p.post,
-            self.p.referer,
-            self.p.cj)
+            self.p.url, self.p.get, self.p.post, self.p.referer, self.p.cj
+        )
         self.c.setopt(pycurl.WRITEFUNCTION, self.writeBody)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
@@ -172,14 +170,15 @@ class HTTPChunk(HTTPRequest):
                 if self.arrived + self.range[0] >= self.range[1]:
                     return None
 
-                if self.id == len(
-                        self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
+                if (
+                    self.id == len(self.p.info.chunks) - 1
+                ):  # as last chunk dont set end range, so we get everything
                     range = "{}-".format(self.arrived + self.range[0])
                 else:
-                    range = "{}-{}".format(self.arrived +
-                                           self.range[0], min(self.range[1] +
-                                                              1, self.p.size -
-                                                              1))
+                    range = "{}-{}".format(
+                        self.arrived + self.range[0],
+                        min(self.range[1] + 1, self.p.size - 1),
+                    )
 
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
@@ -192,8 +191,9 @@ class HTTPChunk(HTTPRequest):
                 if self.id == len(self.p.info.chunks) - 1:  # see above
                     range = "{}-".format(self.range[0])
                 else:
-                    range = "{}-{}".format(self.range[0],
-                                           min(self.range[1] + 1, self.p.size - 1))
+                    range = "{}-{}".format(
+                        self.range[0], min(self.range[1] + 1, self.p.size - 1)
+                    )
 
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)

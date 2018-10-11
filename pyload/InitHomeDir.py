@@ -19,17 +19,20 @@ sys.path.append(join(pypath, "pyload", "lib"))
 
 homedir = ""
 
-if platform == 'nt':
+if platform == "nt":
     homedir = path.expanduser("~")
     if homedir == "~":
         import ctypes
 
         CSIDL_APPDATA = 26
         _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-        _SHGetFolderPath.argtypes = [ctypes.wintypes.HWND,
-                                     ctypes.c_int,
-                                     ctypes.wintypes.HANDLE,
-                                     ctypes.wintypes.DWORD, ctypes.wintypes.LPCWSTR]
+        _SHGetFolderPath.argtypes = [
+            ctypes.wintypes.HWND,
+            ctypes.c_int,
+            ctypes.wintypes.HANDLE,
+            ctypes.wintypes.DWORD,
+            ctypes.wintypes.LPCWSTR,
+        ]
 
         path_buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
         result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
@@ -47,9 +50,9 @@ if "--configdir=" in args:
     end = args.find("-", pos + 12)
 
     if end == -1:
-        configdir = args[pos + 12:].strip()
+        configdir = args[pos + 12 :].strip()
     else:
-        configdir = args[pos + 12:end].strip()
+        configdir = args[pos + 12 : end].strip()
 elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
     f = open(path.join(pypath, "pyload", "config", "configdir"), "rb")
     c = f.read().strip()
@@ -67,4 +70,4 @@ if not path.exists(configdir):
 builtins.configdir = configdir
 chdir(configdir)
 
-#print("Using {} as working directory.".format(configdir))
+# print("Using {} as working directory.".format(configdir))

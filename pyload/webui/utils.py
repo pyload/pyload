@@ -64,7 +64,7 @@ def set_permission(perms):
 
 
 def set_session(request, info):
-    s = request.environ.get('beaker.session')
+    s = request.environ.get("beaker.session")
     s["authenticated"] = True
     s["user_id"] = info["id"]
     s["name"] = info["name"]
@@ -77,27 +77,29 @@ def set_session(request, info):
 
 
 def parse_userdata(session):
-    return {"name": session.get("name", "Anonymous"),
-            "is_admin": True if session.get("role", 1) == 0 else False,
-            "is_authenticated": session.get("authenticated", False)}
+    return {
+        "name": session.get("name", "Anonymous"),
+        "is_admin": True if session.get("role", 1) == 0 else False,
+        "is_authenticated": session.get("authenticated", False),
+    }
 
 
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
-            s = request.environ.get('beaker.session')
+            s = request.environ.get("beaker.session")
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
-                        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                             return HTTPError(403, "Forbidden")
                         else:
                             return redirect(PREFIX + "/nopermission")
 
                 return func(*args, **kwargs)
             else:
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return HTTPError(403, "Forbidden")
                 else:
                     return redirect(PREFIX + "/login")

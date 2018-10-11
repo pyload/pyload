@@ -25,7 +25,9 @@ class UnSkipOnFail(Addon):
         if link:
             self.log_info(
                 _("Queue found duplicate: {} (pid:{})").format(
-                    link.name, link.packageID))
+                    link.name, link.packageID
+                )
+            )
 
             #: Change status of "link" to "new_status".
             #: "link" has to be a valid FileData object,
@@ -72,13 +74,15 @@ class UnSkipOnFail(Addon):
                     return link
 
     def _create_pyFile(self, pylink):
-        return PyFile(self.pyload.files,
-                      pylink.fid,
-                      pylink.url,
-                      pylink.name,
-                      pylink.size,
-                      pylink.status,
-                      pylink.error,
-                      pylink.plugin,
-                      pylink.packageID,
-                      pylink.order)
+        return PyFile(
+            self.pyload.files,
+            pylink.fid,
+            pylink.url,
+            pylink.name,
+            pylink.size,
+            pylink.status,
+            pylink.error,
+            pylink.plugin,
+            pylink.packageID,
+            pylink.order,
+        )

@@ -61,7 +61,7 @@ class MultipartPostHandler(BaseHandler):
             v_files = []
             v_vars = []
             try:
-                for(key, value) in data.items():
+                for (key, value) in data.items():
                     if isinstance(value, io.IOBase):  # check io.IOBase (as py2 file)
                         v_files.append((key, value))
                     else:
@@ -69,21 +69,26 @@ class MultipartPostHandler(BaseHandler):
             except TypeError:
                 systype, value, traceback = sys.exc_info()
                 raise TypeError(
-                    "not a valid non-string sequence or mapping object").with_traceback(traceback)
+                    "not a valid non-string sequence or mapping object"
+                ).with_traceback(traceback)
 
             if len(v_files) == 0:
                 data = urlencode(v_vars, doseq)
             else:
                 boundary, data = self.multipart_encode(v_vars, v_files)
 
-                contenttype = 'multipart/form-data; boundary={}'.format(boundary)
-                if(request.has_header('Content-Type')
-                   and request.get_header('Content-Type').find('multipart/form-data') != 0):
+                contenttype = "multipart/form-data; boundary={}".format(boundary)
+                if (
+                    request.has_header("Content-Type")
+                    and request.get_header("Content-Type").find("multipart/form-data")
+                    != 0
+                ):
                     print(
                         "Replacing {} with {}".format(
-                            request.get_header('content-type'),
-                            'multipart/form-data'))
-                request.add_unredirected_header('Content-Type', contenttype)
+                            request.get_header("content-type"), "multipart/form-data"
+                        )
+                    )
+                request.add_unredirected_header("Content-Type", contenttype)
 
             request.add_data(data)
 
@@ -94,25 +99,30 @@ class MultipartPostHandler(BaseHandler):
             boundary = mimetools.choose_boundary()
         if buf is None:
             buf = cStringIO()
-        for(key, value) in vars:
-            buf.write('--{}\r\n'.format(boundary))
+        for (key, value) in vars:
+            buf.write("--{}\r\n".format(boundary))
             buf.write('Content-Disposition: form-data; name="{}"'.format(key))
-            buf.write('\r\n\r\n' + value + '\r\n')
-        for(key, fd) in files:
-            #file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
-            filename = fd.name.split('/')[-1]
-            contenttype = mimetypes.guess_type(
-                filename)[0] or 'application/octet-stream'
-            buf.write('--{}\r\n'.format(boundary))
+            buf.write("\r\n\r\n" + value + "\r\n")
+        for (key, fd) in files:
+            # file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
+            filename = fd.name.split("/")[-1]
+            contenttype = (
+                mimetypes.guess_type(filename)[0] or "application/octet-stream"
+            )
+            buf.write("--{}\r\n".format(boundary))
             buf.write(
-                'Content-Disposition: form-data; name="{}"; filename="{}"\r\n'.format(key, filename))
-            buf.write('Content-Type: {}\r\n'.format(contenttype))
+                'Content-Disposition: form-data; name="{}"; filename="{}"\r\n'.format(
+                    key, filename
+                )
+            )
+            buf.write("Content-Type: {}\r\n".format(contenttype))
             # buffer += 'Content-Length: {}\r\n'.format(file_size)
             fd.seek(0)
-            buf.write('\r\n' + fd.read() + '\r\n')
-        buf.write('--' + boundary + '--\r\n\r\n')
+            buf.write("\r\n" + fd.read() + "\r\n")
+        buf.write("--" + boundary + "--\r\n\r\n")
         buf = buf.getvalue()
         return boundary, buf
+
     multipart_encode = Callable(multipart_encode)
 
     https_request = http_request
@@ -128,9 +138,11 @@ def main():
     def validateFile(url):
         temp = tempfile.mkstemp(suffix=".html")
         write(temp[0], opener.open(url).read())
-        params = {"ss": "0",            # show source
-                  "doctype": "Inline",
-                  "uploaded_file": open(temp[1], "rb")}
+        params = {
+            "ss": "0",  # show source
+            "doctype": "Inline",
+            "uploaded_file": open(temp[1], "rb"),
+        }
         print(opener.open(validatorURL, params).read())
         remove(temp[1])
 

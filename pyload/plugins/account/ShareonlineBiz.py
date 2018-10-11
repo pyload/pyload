@@ -15,17 +15,21 @@ class ShareonlineBiz(Account):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def api_response(self, user, password):
-        res = self.load("https://api.share-online.biz/cgi-bin",
-                        get={'q': "userdetails",
-                             'aux': "traffic",
-                             'username': user,
-                             'password': password},
-                        decode=False)
+        res = self.load(
+            "https://api.share-online.biz/cgi-bin",
+            get={
+                "q": "userdetails",
+                "aux": "traffic",
+                "username": user,
+                "password": password,
+            },
+            decode=False,
+        )
 
         api = dict(line.split("=") for line in res.splitlines() if "=" in line)
 
-        if 'a' not in api:
-            self.fail_login(res.strip('*'))
+        if "a" not in api:
+            self.fail_login(res.strip("*"))
 
         return api
 
@@ -37,14 +41,15 @@ class ShareonlineBiz(Account):
 
         api_info = self.api_response(user, password)
 
-        premium = api_info['group'] in (
+        premium = api_info["group"] in (
             "PrePaid",
             "Premium",
             "Penalty-Premium",
             "VIP",
-            "VIP-Special")
-        validuntil = float(api_info['expire_date'])
-        traffic = float(api_info['traffic_1d'].split(";")[0])
+            "VIP-Special",
+        )
+        validuntil = float(api_info["expire_date"])
+        traffic = float(api_info["traffic_1d"].split(";")[0])
 
         if maxtraffic > traffic:
             trafficleft = maxtraffic - traffic
@@ -54,11 +59,13 @@ class ShareonlineBiz(Account):
         maxtraffic //= 1024  # TODO: Remove `/ 1024` in 0.6.x
         trafficleft //= 1024  # TODO: Remove `/ 1024` in 0.6.x
 
-        return {'premium': premium,
-                'validuntil': validuntil,
-                'trafficleft': trafficleft,
-                'maxtraffic': maxtraffic}
+        return {
+            "premium": premium,
+            "validuntil": validuntil,
+            "trafficleft": trafficleft,
+            "maxtraffic": maxtraffic,
+        }
 
     def signin(self, user, password, data):
         api_info = self.api_response(user, password)
-        set_cookie(self.req.cj, "share-online.biz", 'a', api_info['a'])
+        set_cookie(self.req.cj, "share-online.biz", "a", api_info["a"])

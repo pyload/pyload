@@ -19,17 +19,18 @@ class HTTPDownload(object):
     """ loads a url http + ftp """
 
     def __init__(
-            self,
-            url,
-            filename,
-            get={},
-            post={},
-            referer=None,
-            cj=None,
-            bucket=None,
-            options={},
-            progressNotify=None,
-            disposition=False):
+        self,
+        url,
+        filename,
+        get={},
+        post={},
+        referer=None,
+        cj=None,
+        bucket=None,
+        options={},
+        progressNotify=None,
+        disposition=False,
+    ):
         self.url = url
         self.filename = filename  # complete file destination, not only name
         self.get = get
@@ -105,7 +106,8 @@ class HTTPDownload(object):
                     remove(init)
                     self.info.remove()  # there are probably invalid chunks
                     raise Exception(
-                        "Downloaded content was smaller than expected. Try to reduce download connections.")
+                        "Downloaded content was smaller than expected. Try to reduce download connections."
+                    )
                 remove(fname)  # remove chunk
             fo.close()
 
@@ -147,8 +149,9 @@ class HTTPDownload(object):
     def _download(self, chunks, resume):
         if not resume:
             self.info.clear()
-            self.info.addChunk("{}.chunk0".format(self.filename),
-                               (0, 0))  # create an initial entry)
+            self.info.addChunk(
+                "{}.chunk0".format(self.filename), (0, 0)
+            )  # create an initial entry)
 
         self.chunks = []
 
@@ -163,12 +166,16 @@ class HTTPDownload(object):
         chunksDone = set()  # list of curl handles that are finished
         chunksCreated = False
         done = False
-        if self.info.getCount() > 1:  # This is a resume, if we were chunked originally assume still can
+        if (
+            self.info.getCount() > 1
+        ):  # This is a resume, if we were chunked originally assume still can
             self.chunkSupport = True
 
         while True:
             # need to create chunks
-            if not chunksCreated and self.chunkSupport and self.size:  # will be setted later by first chunk
+            if (
+                not chunksCreated and self.chunkSupport and self.size
+            ):  # will be setted later by first chunk
 
                 if not resume:
                     self.info.setSize(self.size)
@@ -213,8 +220,8 @@ class HTTPDownload(object):
                         chunk.verifyHeader()
                     except BadHeader as e:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(
-                                chunk.id + 1, str(e)))
+                            "Chunk {} failed: {}".format(chunk.id + 1, str(e))
+                        )
                         failed.append(chunk)
                         ex = e
                     else:
@@ -228,16 +235,16 @@ class HTTPDownload(object):
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(
-                            "Chunk {} failed: {}".format(
-                                chunk.id + 1, str(ex)))
+                            "Chunk {} failed: {}".format(chunk.id + 1, str(ex))
+                        )
                         continue
 
                     try:  # check if the header implies success, else add it to failed list
                         chunk.verifyHeader()
                     except BadHeader as e:
                         self.log.debug(
-                            "Chunk {} failed: {}".format(
-                                chunk.id + 1, str(e)))
+                            "Chunk {} failed: {}".format(chunk.id + 1, str(e))
+                        )
                         failed.append(chunk)
                         ex = e
                     else:
@@ -248,7 +255,12 @@ class HTTPDownload(object):
                     # note that other chunks are closed and downloaded with init too
                     if failed and init not in failed and init.c not in chunksDone:
                         self.log.error(
-                            _("Download chunks failed, fallback to single connection | {}".format(str(ex))))
+                            _(
+                                "Download chunks failed, fallback to single connection | {}".format(
+                                    str(ex)
+                                )
+                            )
+                        )
 
                         # list of chunks to clean and remove
                         to_clean = [x for x in self.chunks if x is not init]
@@ -261,8 +273,8 @@ class HTTPDownload(object):
                         init.resetRange()
                         self.info.clear()
                         self.info.addChunk(
-                            "{}.chunk0".format(
-                                self.filename), (0, self.size))
+                            "{}.chunk0".format(self.filename), (0, self.size)
+                        )
                         self.info.save()
                     elif failed:
                         if ex:
@@ -275,7 +287,8 @@ class HTTPDownload(object):
                     if len(chunksDone) >= len(self.chunks):
                         if len(chunksDone) > len(self.chunks):
                             self.log.warning(
-                                "Finished download chunks size incorrect, please report bug.")
+                                "Finished download chunks size incorrect, please report bug."
+                            )
                         done = True  # all chunks loaded
 
                     break
@@ -285,8 +298,11 @@ class HTTPDownload(object):
 
             # calc speed once per second, averaging over 3 seconds
             if lastTimeCheck + 1 < t:
-                diff = [c.arrived - (self.lastArrived[i] if len(self.lastArrived) > i else 0)
-                        for i, c in enumerate(self.chunks)]
+                diff = [
+                    c.arrived
+                    - (self.lastArrived[i] if len(self.lastArrived) > i else 0)
+                    for i, c in enumerate(self.chunks)
+                ]
 
                 self.lastSpeeds[1] = self.lastSpeeds[0]
                 self.lastSpeeds[0] = self.speeds

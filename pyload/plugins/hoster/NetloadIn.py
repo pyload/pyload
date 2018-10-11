@@ -9,11 +9,13 @@ class NetloadIn(DeadHoster):
     __version__ = "0.55"
     __status__ = "stable"
 
-    __pattern__ = r'https?://(?:www\.)?netload\.(in|me)/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)'
+    __pattern__ = r"https?://(?:www\.)?netload\.(in|me)/(?P<PATH>datei|index\.php\?id=10&file_id=)(?P<ID>\w+)"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Netload.in hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("spoob", "spoob@pyload.net"),
-                   ("RaNaN", "ranan@pyload.net"),
-                   ("Gregy", "gregy@gregy.cz")]
+    __authors__ = [
+        ("spoob", "spoob@pyload.net"),
+        ("RaNaN", "ranan@pyload.net"),
+        ("Gregy", "gregy@gregy.cz"),
+    ]

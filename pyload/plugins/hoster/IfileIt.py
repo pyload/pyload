@@ -9,7 +9,7 @@ class IfileIt(DeadHoster):
     __version__ = "0.34"
     __status__ = "stable"
 
-    __pattern__ = r'^unmatchable$'
+    __pattern__ = r"^unmatchable$"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Ifile.it hoster plugin"""

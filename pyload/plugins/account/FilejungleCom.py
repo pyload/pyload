@@ -21,7 +21,9 @@ class FilejungleCom(Account):
 
     URL = "http://filejungle.com/"
     TRAFFIC_LEFT_PATTERN = r'"/extend_premium\.php">Until (\d+ \w+ \d+)<br'
-    LOGIN_FAILED_PATTERN = r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
+    LOGIN_FAILED_PATTERN = (
+        r'<span htmlfor="loginUser(Name|Password)" generated="true" class="fail_info">'
+    )
 
     def grab_info(self, user, password, data):
         html = self.load(self.URL + "dashboard.php")
@@ -33,17 +35,20 @@ class FilejungleCom(Account):
             premium = False
             validuntil = -1
 
-        return {'premium': premium, 'trafficleft': -
-                1, 'validuntil': validuntil}
+        return {"premium": premium, "trafficleft": -1, "validuntil": validuntil}
 
     def signin(self, user, password, data):
-        html = self.load(urllib.parse.urljoin(self.URL, "login.php"),
-                         post={'loginUserName': user,
-                               'loginUserPassword': password,
-                               'loginFormSubmit': "Login",
-                               'recaptcha_challenge_field': "",
-                               'recaptcha_response_field': "",
-                               'recaptcha_shortencode_field': ""})
+        html = self.load(
+            urllib.parse.urljoin(self.URL, "login.php"),
+            post={
+                "loginUserName": user,
+                "loginUserPassword": password,
+                "loginFormSubmit": "Login",
+                "recaptcha_challenge_field": "",
+                "recaptcha_response_field": "",
+                "recaptcha_shortencode_field": "",
+            },
+        )
 
         if re.search(self.LOGIN_FAILED_PATTERN, html):
             self.fail_login()

@@ -69,7 +69,7 @@ class CaptchaManager(object):
 
 
 class CaptchaTask(object):
-    def __init__(self, id, format, params={}, result_type='textual'):
+    def __init__(self, id, format, params={}, result_type="textual"):
         self.id = str(id)
         self.captchaParams = params
         self.captchaFormat = format
@@ -91,7 +91,7 @@ class CaptchaTask(object):
 
         elif self.isPositional():
             try:
-                parts = result.split(',')
+                parts = result.split(",")
                 self.result = (int(parts[0]), int(parts[1]))
             except Exception:
                 self.result = None
@@ -120,15 +120,15 @@ class CaptchaTask(object):
 
     def isTextual(self):
         """ returns if text is written on the captcha """
-        return self.captchaResultType == 'textual'
+        return self.captchaResultType == "textual"
 
     def isPositional(self):
         """ returns if user have to click a specific region on the captcha """
-        return self.captchaResultType == 'positional'
+        return self.captchaResultType == "positional"
 
     def isInteractive(self):
         """ returns if user has to solve the captcha in an interactive iframe """
-        return self.captchaResultType == 'interactive'
+        return self.captchaResultType == "interactive"
 
     def setWatingForUser(self, exclusive):
         if exclusive:

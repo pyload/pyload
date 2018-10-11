@@ -9,7 +9,7 @@ class SecuredIn(DeadCrypter):
     __version__ = "0.26"
     __status__ = "stable"
 
-    __pattern__ = r'http://(?:www\.)?secured\.in/download-[\d]+\-\w{8}\.html'
+    __pattern__ = r"http://(?:www\.)?secured\.in/download-[\d]+\-\w{8}\.html"
     __config__ = [("activated", "bool", "Activated", True)]
 
     __description__ = """Secured.in decrypter plugin"""

@@ -15,4 +15,4 @@ class File4SafeCom(XFSAccount):
 
     PLUGIN_DOMAIN = "file4safe.com"
 
-    LOGIN_FAIL_PATTERN = r'input_login'
+    LOGIN_FAIL_PATTERN = r"input_login"

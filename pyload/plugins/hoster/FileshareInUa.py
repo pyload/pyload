@@ -9,7 +9,7 @@ class FileshareInUa(DeadHoster):
     __version__ = "0.07"
     __status__ = "stable"
 
-    __pattern__ = r'https?://(?:www\.)?fileshare\.in\.ua/\w{7}'
+    __pattern__ = r"https?://(?:www\.)?fileshare\.in\.ua/\w{7}"
     __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Fileshare.in.ua hoster plugin"""

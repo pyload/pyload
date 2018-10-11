@@ -34,7 +34,8 @@ class PullManager(object):
             self.newClient(uuid)
             events = [
                 ReloadAllEvent("queue").toList(),
-                ReloadAllEvent("collector").toList()]
+                ReloadAllEvent("collector").toList(),
+            ]
         return uniqify(events, repr)
 
     def addEvent(self, event):

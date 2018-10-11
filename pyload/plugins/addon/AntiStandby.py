@@ -29,11 +29,13 @@ class AntiStandby(Addon):
     __version__ = "0.18"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", False),
-                  ("hdd", "bool", "Prevent HDD standby", True),
-                  ("system", "bool", "Prevent OS standby", True),
-                  ("display", "bool", "Prevent display standby", False),
-                  ("interval", "int", "HDD touching interval in seconds", 25)]
+    __config__ = [
+        ("activated", "bool", "Activated", False),
+        ("hdd", "bool", "Prevent HDD standby", True),
+        ("system", "bool", "Prevent OS standby", True),
+        ("display", "bool", "Prevent display standby", False),
+        ("interval", "int", "HDD touching interval in seconds", 25),
+    ]
 
     __description__ = """Prevent OS, HDD and display standby"""
     __license__ = "GPLv3"
@@ -46,12 +48,12 @@ class AntiStandby(Addon):
         self.mtime = 0
 
     def activate(self):
-        hdd = self.config.get('hdd')
-        system = not self.config.get('system')
-        display = not self.config.get('display')
+        hdd = self.config.get("hdd")
+        system = not self.config.get("system")
+        display = not self.config.get("display")
 
         if hdd:
-            self.periodical.start(self.config.get('interval'), threaded=True)
+            self.periodical.start(self.config.get("interval"), threaded=True)
 
         if os.name == "nt":
             self.win_standby(system, display)
@@ -89,8 +91,11 @@ class AntiStandby(Addon):
             if display:
                 set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED)
             else:
-                set(Kernel32.ES_CONTINUOUS | Kernel32.ES_SYSTEM_REQUIRED |
-                    Kernel32.ES_DISPLAY_REQUIRED)
+                set(
+                    Kernel32.ES_CONTINUOUS
+                    | Kernel32.ES_SYSTEM_REQUIRED
+                    | Kernel32.ES_DISPLAY_REQUIRED
+                )
 
     @Expose
     def osx_standby(self, system=True, display=True):
@@ -101,8 +106,9 @@ class AntiStandby(Addon):
                 caffeine.on(display)
 
         except NameError:
-            self.log_warning(_("Unable to change power state"),
-                             _("caffeine lib not found"))
+            self.log_warning(
+                _("Unable to change power state"), _("caffeine lib not found")
+            )
 
         except Exception as e:
             self.log_warning(_("Unable to change power state"), e)
@@ -131,28 +137,35 @@ class AntiStandby(Addon):
 
     @Expose
     def touch(self, path):
-        with open(path, 'w'):
+        with open(path, "w"):
             os.utime(path, None)
 
         self.mtime = time.time()
 
     @Expose
     def max_mtime(self, path):
-        return max(0, 0,
-                   *(os.path.getmtime(fsjoin(root, file))
-                     for root, dirs, files in os.walk(encode(path), topdown=False)
-                     for file in files))
+        return max(
+            0,
+            0,
+            *(
+                os.path.getmtime(fsjoin(root, file))
+                for root, dirs, files in os.walk(encode(path), topdown=False)
+                for file in files
+            ),
+        )
 
     def periodical_task(self):
-        if self.config.get('hdd') is False:
+        if self.config.get("hdd") is False:
             return
 
-        if (self.pyload.threadManager.pause or
-            not self.pyload.api.isTimeDownload() or
-                not self.pyload.threadManager.getActiveFiles()):
+        if (
+            self.pyload.threadManager.pause
+            or not self.pyload.api.isTimeDownload()
+            or not self.pyload.threadManager.getActiveFiles()
+        ):
             return
 
-        dl_folder = self.pyload.config.get('general', 'download_folder')
+        dl_folder = self.pyload.config.get("general", "download_folder")
         if (self.max_mtime(dl_folder) - self.mtime) < self.periodical.interval:
             return
 

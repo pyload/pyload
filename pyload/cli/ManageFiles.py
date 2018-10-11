@@ -17,7 +17,7 @@ class ManageFiles(Handler):
         self.target = Destination.Queue
         self.pos = 0  # position in queue
         self.package = -1  # choosen package
-        self.mode = ""   # move/delete/restart
+        self.mode = ""  # move/delete/restart
 
         self.cache = None
         self.links = None
@@ -92,12 +92,17 @@ class ManageFiles(Handler):
 
             println(
                 line + 1,
-                "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.")
+                "Enter single number, comma seperated numbers or ranges. eg. 1,2,3 or 1-3.",
+            )
             line += 2
         else:
             println(line, _("Choose what you want to do or enter package number."))
-            println(line + 1, "{} - {}, {} - {}, {} - {}".format(mag("d"),
-                                                                 _("delete"), mag("m"), _("move"), mag("r"), _("restart")))
+            println(
+                line + 1,
+                "{} - {}, {} - {}, {} - {}".format(
+                    mag("d"), _("delete"), mag("m"), _("move"), mag("r"), _("restart")
+                ),
+            )
             line += 2
 
         if self.package < 0:
@@ -120,8 +125,13 @@ class ManageFiles(Handler):
             i = 0
             for value in islice(pack.links, self.pos, self.pos + 5):
                 try:
-                    println(line, mag(value.fid) + ": {} | {} | {}".format(
-                        value.name, value.statusmsg, value.plugin))
+                    println(
+                        line,
+                        mag(value.fid)
+                        + ": {} | {} | {}".format(
+                            value.name, value.statusmsg, value.plugin
+                        ),
+                    )
                     line += 1
                     i += 1
                 except Exception as e:

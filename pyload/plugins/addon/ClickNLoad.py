@@ -20,38 +20,43 @@ class ClickNLoad(Addon):
     __version__ = "0.61"
     __status__ = "testing"
 
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("port", "int", "Port", 9666),
-                  ("extern", "bool", "Listen for external connections", True),
-                  ("dest", "queue;collector", "Add packages to", "collector")]
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("port", "int", "Port", 9666),
+        ("extern", "bool", "Listen for external connections", True),
+        ("dest", "queue;collector", "Add packages to", "collector"),
+    ]
 
     __description__ = """Click'n'Load support"""
     __license__ = "GPLv3"
-    __authors__ = [("RaNaN", "RaNaN@pyload.de"),
-                   ("Walter Purcaro", "vuolter@gmail.com"),
-                   ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
+    __authors__ = [
+        ("RaNaN", "RaNaN@pyload.de"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+        ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com"),
+    ]
 
     def init(self):
-        self.cnl_ip = "" if self.config.get('extern') else "127.0.0.1"
-        self.cnl_port = self.config.get('port')
-        self.web_ip = "127.0.0.1" if any(
-            _ip == self.pyload.config.get(
-                'webinterface',
-                'host') for _ip in (
-                "0.0.0.0",
-                "")) else self.pyload.config.get(
-            'webinterface',
-            'host')
-        self.web_port = self.pyload.config.get('webinterface', 'port')
+        self.cnl_ip = "" if self.config.get("extern") else "127.0.0.1"
+        self.cnl_port = self.config.get("port")
+        self.web_ip = (
+            "127.0.0.1"
+            if any(
+                _ip == self.pyload.config.get("webinterface", "host")
+                for _ip in ("0.0.0.0", "")
+            )
+            else self.pyload.config.get("webinterface", "host")
+        )
+        self.web_port = self.pyload.config.get("webinterface", "port")
 
         self.server_running = False
         self.do_exit = False
         self.exit_done = threading.Event()
 
     def activate(self):
-        if not self.pyload.config.get('webinterface', 'activated'):
+        if not self.pyload.config.get("webinterface", "activated"):
             self.log_warning(
-                _("pyLoad's Web interface is not active, ClickNLoad cannot start"))
+                _("pyLoad's Web interface is not active, ClickNLoad cannot start")
+            )
             return
 
         self.pyload.scheduler.addJob(5, self.proxy, threaded=False)
@@ -63,14 +68,15 @@ class ClickNLoad(Addon):
             self.do_exit = True
 
             try:
-                wakeup_socket = socket.socket(
-                    socket.AF_INET, socket.SOCK_STREAM)
+                wakeup_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 wakeup_socket.connect(
-                    ("127.0.0.1" if any(
-                        _ip == self.cnl_ip for _ip in (
-                            "0.0.0.0",
-                            "")) else self.cnl_ip,
-                        self.cnl_port))
+                    (
+                        "127.0.0.1"
+                        if any(_ip == self.cnl_ip for _ip in ("0.0.0.0", ""))
+                        else self.cnl_ip,
+                        self.cnl_port,
+                    )
+                )
                 wakeup_socket.close()
             except Exception:
                 pass
@@ -79,8 +85,7 @@ class ClickNLoad(Addon):
             if self.exit_done.isSet():
                 self.log_debug("Server exited successfully")
             else:
-                self.log_warning(
-                    _("Server was not exited gracefully, shutdown forced"))
+                self.log_warning(_("Server was not exited gracefully, shutdown forced"))
 
     @lock
     @threaded
@@ -99,8 +104,9 @@ class ClickNLoad(Addon):
     def proxy(self):
         self.log_info(
             _("Proxy listening on {}:{}").format(
-                self.cnl_ip or "0.0.0.0",
-                self.cnl_port))
+                self.cnl_ip or "0.0.0.0", self.cnl_port
+            )
+        )
         self._server()
 
     @threaded
@@ -120,17 +126,17 @@ class ClickNLoad(Addon):
                 if not self.do_exit:
                     self.log_debug("Connection from {}:{}".format(*client_addr))
 
-                    server_socket = socket.socket(
-                        socket.AF_INET, socket.SOCK_STREAM)
+                    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                    if self.pyload.config.get('webinterface', 'https'):
+                    if self.pyload.config.get("webinterface", "https"):
                         try:
                             server_socket = ssl.wrap_socket(server_socket)
 
                         except NameError:
                             self.log_error(
                                 _("Missing SSL lib"),
-                                _("Please disable HTTPS in pyLoad settings"))
+                                _("Please disable HTTPS in pyLoad settings"),
+                            )
                             client_socket.close()
                             continue
 
@@ -142,9 +148,8 @@ class ClickNLoad(Addon):
                     server_socket.connect((self.web_ip, self.web_port))
 
                     self.forward(
-                        client_socket,
-                        server_socket,
-                        self.config.get('dest') == "queue")
+                        client_socket, server_socket, self.config.get("dest") == "queue"
+                    )
                     self.forward(server_socket, client_socket)
 
                 else:

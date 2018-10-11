@@ -10,11 +10,11 @@ from pyload.plugins.internal.SimpleHoster import SimpleHoster
 def get_info(urls):
     for url in urls:
         h = get_url(url, just_header=True)
-        m = re.search(r'Location: (.+)\r\n', h)
+        m = re.search(r"Location: (.+)\r\n", h)
 
         if m and not re.match(
-                m.group(1),
-                FilefactoryCom.__pattern__):  # : It's a direct link! Skipping
+            m.group(1), FilefactoryCom.__pattern__
+        ):  # : It's a direct link! Skipping
             yield (url, 0, 7, url)
         else:
             #: It's a standard html page
@@ -27,26 +27,31 @@ class FilefactoryCom(SimpleHoster):
     __version__ = "0.64"
     __status__ = "testing"
 
-    __pattern__ = r'https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+'
-    __config__ = [("activated", "bool", "Activated", True),
-                  ("use_premium", "bool", "Use premium account if available", True),
-                  ("fallback", "bool",
-                   "Fallback to free download if premium fails", True),
-                  ("chk_filesize", "bool", "Check file size", True),
-                  ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10)]
+    __pattern__ = r"https?://(?:www\.)?filefactory\.com/(file|trafficshare/\w+)/\w+"
+    __config__ = [
+        ("activated", "bool", "Activated", True),
+        ("use_premium", "bool", "Use premium account if available", True),
+        ("fallback", "bool", "Fallback to free download if premium fails", True),
+        ("chk_filesize", "bool", "Check file size", True),
+        ("max_wait", "int", "Reconnect if waiting time is greater than minutes", 10),
+    ]
 
     __description__ = """Filefactory.com hoster plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("stickell", "l.stickell@yahoo.it"),
-                   ("Walter Purcaro", "vuolter@gmail.com")]
+    __authors__ = [
+        ("stickell", "l.stickell@yahoo.it"),
+        ("Walter Purcaro", "vuolter@gmail.com"),
+    ]
 
     INFO_PATTERN = r'<div id="file_name"[^>]*>\s*<h2>(?P<N>[^<]+)</h2>\s*<div id="file_info">\s*(?P<S>[\d.,]+) (?P<U>[\w^_]+) uploaded'
-    OFFLINE_PATTERN = r'<h2>File Removed</h2>|This file is no longer available|Invalid Download Link'
+    OFFLINE_PATTERN = (
+        r"<h2>File Removed</h2>|This file is no longer available|Invalid Download Link"
+    )
 
     LINK_FREE_PATTERN = LINK_PREMIUM_PATTERN = r'"([^"]+filefactory\.com/get.+?)"'
 
     WAIT_PATTERN = r'<div id="countdown_clock" data-delay="(\d+)">'
-    PREMIUM_ONLY_PATTERN = r'>Premium Account Required'
+    PREMIUM_ONLY_PATTERN = r">Premium Account Required"
 
     COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
 
@@ -67,10 +72,12 @@ class FilefactoryCom(SimpleHoster):
             self.wait(m.group(1))
 
     def check_download(self):
-        check = self.scan_download({
-            'multiple': "You are currently downloading too many files at once.",
-            'error': '<div id="errorMessage">'
-        })
+        check = self.scan_download(
+            {
+                "multiple": "You are currently downloading too many files at once.",
+                "error": '<div id="errorMessage">',
+            }
+        )
 
         if check == "multiple":
             self.log_debug("Parallel downloads detected; waiting 15 minutes")
