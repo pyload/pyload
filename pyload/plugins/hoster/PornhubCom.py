@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
+from builtins import _
 
 from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest

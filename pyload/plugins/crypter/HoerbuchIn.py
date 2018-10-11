@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
+from builtins import _
 
 import BeautifulSoup
 from pyload.plugins.internal.Crypter import Crypter

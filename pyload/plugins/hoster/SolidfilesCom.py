@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
+
 #
 # Test links:
 #   http://www.solidfiles.com/d/609cdb4b1b
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class SolidfilesCom(SimpleHoster):

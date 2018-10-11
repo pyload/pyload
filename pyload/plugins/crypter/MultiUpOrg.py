@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import urllib.parse
+from builtins import _
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha

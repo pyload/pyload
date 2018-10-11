@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import os.path
+from builtins import _
 
 from pyload.plugins.internal.OCR import OCR
 

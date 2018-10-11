@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import time
 import urllib.parse
+from builtins import _
 
 import pycurl
 from pyload.plugins.internal.Account import Account

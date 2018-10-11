@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
+from builtins import _
 
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import json

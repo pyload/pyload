@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from builtins import _
-# @author: mkaay, RaNaN
-
 from os.path import exists
 
 from pyload.remote.RemoteManager import BackendBase
@@ -10,6 +8,10 @@ from pyload.remote.thriftbackend.Protocol import ProtocolFactory
 from pyload.remote.thriftbackend.Socket import ServerSocket
 from pyload.remote.thriftbackend.Transport import TransportFactory
 from thrift.server import TServer
+
+# @author: mkaay, RaNaN
+
+
 
 #from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
 

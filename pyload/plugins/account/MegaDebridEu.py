@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from builtins import _
-
 from functools import reduce
 
 import pycurl

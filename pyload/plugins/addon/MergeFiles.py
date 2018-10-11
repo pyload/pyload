@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import os
 import re
+from builtins import _
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import fsjoin, threaded

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import xml.etree.ElementTree as etree
+from builtins import _
 
 from pyload.plugins.internal.Hoster import Hoster
 

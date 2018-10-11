@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import xml.dom.minidom
+from builtins import _
 
 import Crypto.Cipher.AES
 from pyload.plugins.internal.Container import Container

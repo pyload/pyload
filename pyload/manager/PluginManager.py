@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
+import importlib
 import re
 import sys
-import importlib
 from builtins import _, object, pypath, str
 from itertools import chain
 from os import listdir, makedirs

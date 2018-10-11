@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import re
 from builtins import _
+
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 #
 # Test links:
@@ -10,9 +13,7 @@ from builtins import _
 # if your download not starts because of pycurl timeouts:
 # Adjust timeouts in /usr/share/pyload/pyload/network/HTTPRequest.py
 
-import re
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class RemixshareCom(SimpleHoster):

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import socket
 import threading
 import time
+from builtins import _
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import forward, lock, threaded

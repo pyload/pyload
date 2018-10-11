@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
+from builtins import _
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

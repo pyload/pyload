@@ -2,7 +2,6 @@
 # @author: RaNaN, mkaay
 
 import inspect
-
 from builtins import _, object, range, str
 from os import remove
 from os.path import exists

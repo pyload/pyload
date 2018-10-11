@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import urllib.parse
+from builtins import _
 
 from pyload.plugins.internal.MultiHoster import MultiHoster
 from pyload.plugins.utils import json

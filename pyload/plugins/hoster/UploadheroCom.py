@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
+import re
+import urllib.parse
 from builtins import _
+
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 #
 # Test links:
 # http://uploadhero.co/dl/wQBRAVSM
 
 
-import re
-import urllib.parse
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadheroCom(SimpleHoster):

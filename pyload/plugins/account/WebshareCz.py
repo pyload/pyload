@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import hashlib
 import re
 import time
+from builtins import _
 
 from pyload.network.RequestFactory import getURL as get_url
 from pyload.plugins.internal.Account import Account

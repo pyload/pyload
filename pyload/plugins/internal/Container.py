@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import os
 import urllib.parse
+from builtins import _
 
 from pyload.plugins.internal.Crypter import Crypter
 from pyload.plugins.utils import encode, exists

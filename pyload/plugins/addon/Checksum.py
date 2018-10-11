@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import hashlib
 import os
 import re
 import time
 import zlib
+from builtins import _
 from threading import Event
 
 from pyload.plugins.internal.Addon import Addon

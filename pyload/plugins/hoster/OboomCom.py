@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
+import re
 from builtins import _
+
+from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.Hoster import Hoster
+from pyload.plugins.utils import json
 
 #
 # Test links:
 # https://www.oboom.com/B7CYZIEB/10Mio.dat
 
-import re
 
-from pyload.plugins.captcha.ReCaptcha import ReCaptcha
-from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.utils import json
 
 
 class OboomCom(Hoster):

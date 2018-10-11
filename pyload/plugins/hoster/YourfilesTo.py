@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import urllib.error
 import urllib.parse
 import urllib.request
+from builtins import _
 
 from pyload.plugins.internal.Hoster import Hoster
 

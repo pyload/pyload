@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
 import time
+from builtins import _
 
 import pycurl
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

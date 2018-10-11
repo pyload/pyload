@@ -5,7 +5,6 @@ import dis
 
 from module.util.encoding import smart_text
 
-
 _const_codes = {
     dis.opmap[code]
     for code in (

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import base64
 import re
+from builtins import _
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request

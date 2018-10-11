@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import codecs
+from builtins import _
 
 from pyload.plugins.internal.Container import Container
 from pyload.plugins.utils import encode

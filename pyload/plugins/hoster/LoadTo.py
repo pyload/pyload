@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
+import re
 from builtins import _
+
+from pyload.plugins.captcha.SolveMedia import SolveMedia
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 #
 # Test links:
 # http://www.load.to/JWydcofUY6/random.bin
 # http://www.load.to/oeSmrfkXE/random100.bin
 
-import re
 
-from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class LoadTo(SimpleHoster):

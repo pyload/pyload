@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+import re
 from builtins import _
+
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 #
 # Test link:
 #   http://mystore.to/dl/mxcA50jKfP
 
-import re
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class MystoreTo(SimpleHoster):

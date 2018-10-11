@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import datetime
+from builtins import _
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import seconds_to_nexthour

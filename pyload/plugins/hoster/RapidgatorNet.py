@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import re
+from builtins import _
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
