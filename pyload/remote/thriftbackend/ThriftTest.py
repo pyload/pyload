@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import sys
 import xmlrpc.client
-from builtins import _, input, range
+from builtins import input, range
 from getpass import getpass
 from os.path import abspath, dirname, join
 from time import time

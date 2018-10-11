@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from builtins import _
 
 import os
 import subprocess
 import sys
-from builtins import _, input
+from builtins import input
 
 #from pyload import InitHomeDir
 
