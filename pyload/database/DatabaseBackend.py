@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
+import inspect
+
 from builtins import _, object, range, str
 from os import remove
 from os.path import exists
@@ -62,8 +64,7 @@ class DatabaseJob(object):
         self.result = None
         self.exception = False
 
-#        import inspect
-#        self.frame = inspect.currentframe()
+        self.frame = inspect.currentframe()
 
     def __repr__(self):
         from os.path import basename
@@ -175,7 +176,7 @@ class DatabaseBackend(Thread):
 
     def _convertDB(self, v):
         try:
-            getattr(self, "_convertV{:i}".format(v)())
+            getattr(self, "_convertV{:i}".format(v))()
         except Exception:
             try:
                 self.pyload.log.error(_("Filedatabase could NOT be converted."))
