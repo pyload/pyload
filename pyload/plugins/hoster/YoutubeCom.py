@@ -579,7 +579,7 @@ class YoutubeCom(Hoster):
                 sec, milli = divmod(millisec, 1000)
                 m, s = divmod(int(sec), 60)
                 h, m = divmod(m, 60)
-                return "%02d:%02d:%02d,{}".format(h, m, s, milli)
+                return "{:2d}:{:2d}:{:2d},{}".format(h, m, s, milli)
 
             i = 1
             srt = ""

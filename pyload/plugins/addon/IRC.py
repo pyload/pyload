@@ -188,7 +188,7 @@ class IRC(Thread, Notifier):
         except Exception:
             pass
 
-        handler = getattr(self, "event_{}".format(trigger, self.event_pass))
+        handler = getattr(self, "event_{}".format(trigger), self.event_pass)
         try:
             res = handler(args)
             for line in res:

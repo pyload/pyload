@@ -62,7 +62,7 @@ class RemoteManager(object):
             klass = getattr(
                 __import__(
                     "pyload.remote.{}".format(
-                        b, globals(), locals(), [b], -1), b))
+                        b), globals(), locals(), [b], -1), b)
             backend = klass(self)
             if not backend.checkDeps():
                 continue

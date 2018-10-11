@@ -815,9 +815,9 @@ def parse_html_tag_attr_value(attr_name, tag):
 def parse_html_form(attr_str, html, input_names={}):
     for form in re.finditer(
         r'(?P<TAG><form[^>]*{}.*?>)(?P<CONTENT>.*?)</?(form|body|html).*?>'.format(
-            attr_str,
+            attr_str),
             html,
-            re.I | re.S)):
+            re.I | re.S):
         inputs = {}
         action = parse_html_tag_attr_value("action", form.group('TAG'))
 

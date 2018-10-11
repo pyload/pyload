@@ -42,7 +42,7 @@ class ZbigzCom(Hoster):
             urlp.path,
             get=get_params)
 
-        m = re.search(r"{}\((.+?)\);".format(json_callback, jquery_data))
+        m = re.search(r"{}\((.+?)\);".format(json_callback), jquery_data)
 
         return json.loads(m.group(1)) if m else None
 

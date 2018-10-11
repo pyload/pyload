@@ -302,9 +302,9 @@ class Base(Plugin):
             reconnect = reconnect and self.pyload.api.isTimeReconnect()
             self.log_debug(
                 "RECONNECT{} required".format(
-                    "" if reconnect else " not",
+                    "" if reconnect else " not"),
                     "Previous wantReconnect: {}".format(
-                        self.wantReconnect)))
+                        self.wantReconnect))
             self.wantReconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):

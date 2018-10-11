@@ -147,8 +147,8 @@ class Captcha9Kw(Addon):
 
         self.log_debug(
             "NewCaptchaID ticket: {}".format(
-                res, task.captchaParams.get(
-                    'file', "")))
+                res), task.captchaParams.get(
+                    'file', ""))
 
         task.data['ticket'] = res
 

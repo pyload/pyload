@@ -262,7 +262,7 @@ class HTTPDownload(object):
                         self.info.clear()
                         self.info.addChunk(
                             "{}.chunk0".format(
-                                self.filename, (0, self.size)))
+                                self.filename), (0, self.size))
                         self.info.save()
                     elif failed:
                         raise ex
