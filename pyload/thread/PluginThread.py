@@ -634,7 +634,8 @@ class InfoThread(PluginThread):
 
             self.m.log.debug("Finished Info Fetching for {}".format(pluginname))
         except Exception as e:
-            self.m.log.warning(_("Info Fetching for {name} failed | {err}").format(**{"name": pluginname, "err": str(e)}))
+            self.m.log.warning(_("Info Fetching for {name} failed | {err}").format(
+                **{"name": pluginname, "err": str(e)}))
             if self.m.pyload.debug:
                 print_exc()
 

@@ -33,8 +33,6 @@ else:
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
 
-
-
 class Cli(object):
     def __init__(self, client, command):
         self.client = client

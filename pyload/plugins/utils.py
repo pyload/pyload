@@ -86,7 +86,8 @@ class Config(object):
 
         except KeyError:
             self.plugin.log_debug(
-                "Config option `{}` not found, use default `{}`".format(option, default))  # TODO: Restore to `log_warning` in 0.6.x
+                "Config option `{}` not found, use default `{}`".format(
+                    option, default))  # TODO: Restore to `log_warning` in 0.6.x
             return default
 
 
@@ -808,7 +809,9 @@ def parse_html_header(header):
 
 def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(
-        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'.format(attr_name), tag, re.I)
+        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'.format(attr_name),
+        tag,
+        re.I)
     return m.group(2) if m else None
 
 

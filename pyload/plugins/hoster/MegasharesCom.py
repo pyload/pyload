@@ -68,7 +68,8 @@ class MegasharesCom(SimpleHoster):
                     'random_num': random_num})
 
             self.log_info(
-                _("Reactivating passport {}: {} {}").format(passport_num, random_num, verifyinput))
+                _("Reactivating passport {}: {} {}").format(
+                    passport_num, random_num, verifyinput))
 
             res = self.load("http://d01.megashares.com{}".format(request_uri),
                             get={'rs': "check_passport_renewal",

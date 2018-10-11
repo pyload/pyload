@@ -14,7 +14,6 @@ from thrift.server import TServer
 #from pyload.remote.thriftbackend.Transport import TransportFactoryCompressed
 
 
-
 class ThriftBackend(BackendBase):
     def setup(self, host, port):
         processor = Processor(self.pyload.api)

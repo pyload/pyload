@@ -17,8 +17,6 @@ if os.name != "nt":
     from grp import getgrnam
 
 
-
-
 def chunks(iterable, size):
     it = iter(iterable)
     item = list(islice(it, size))

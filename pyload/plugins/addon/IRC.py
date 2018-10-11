@@ -240,7 +240,10 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #{}: "{}" with {:d} links.'.format(pack.pid, pack.name, len(pack.links)))
+            lines.append(
+                'PACKAGE #{}: "{}" with {:d} links.'.format(
+                    pack.pid, pack.name, len(
+                        pack.links)))
 
         return lines
 
@@ -251,7 +254,10 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #{}: "{}" with {:d} links.'.format(pack.pid, pack.name, len(pack.links)))
+            lines.append(
+                'PACKAGE #{}: "{}" with {:d} links.'.format(
+                    pack.pid, pack.name, len(
+                        pack.links)))
 
         return lines
 
@@ -285,7 +291,10 @@ class IRC(Thread, Notifier):
 
         self.more = []
 
-        lines.append('PACKAGE #{}: "{}" with {:d} links'.format(id, pack.name, len(pack.links)))
+        lines.append(
+            'PACKAGE #{}: "{}" with {:d} links'.format(
+                id, pack.name, len(
+                    pack.links)))
         for pyfile in pack.links:
             self.more.append(
                 'LINK #{}: {} ({}) [{}][{}]'.format(

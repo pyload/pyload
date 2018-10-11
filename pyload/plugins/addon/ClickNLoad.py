@@ -99,7 +99,9 @@ class ClickNLoad(Addon):
     @threaded
     def proxy(self):
         self.log_info(
-            _("Proxy listening on {}:{}").format(self.cnl_ip or "0.0.0.0", self.cnl_port))
+            _("Proxy listening on {}:{}").format(
+                self.cnl_ip or "0.0.0.0",
+                self.cnl_port))
         self._server()
 
     @threaded

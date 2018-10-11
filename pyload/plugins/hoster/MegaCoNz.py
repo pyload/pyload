@@ -341,12 +341,14 @@ class MegaCoNz(Hoster):
             file_mac = cbc_mac.digest()
             if file_mac == meta_mac:
                 self.log_info(
-                    _('File integrity of "{}" verified by CBC-MAC checksum ({})').format(self.pyfile.name.rsplit(
-                        self.FILE_SUFFIX)[0], meta_mac))
+                    _('File integrity of "{}" verified by CBC-MAC checksum ({})').format(
+                        self.pyfile.name.rsplit(
+                            self.FILE_SUFFIX)[0], meta_mac))
             else:
                 self.log_warning(
-                    _('CBC-MAC checksum for file "{}" does not match ({} != {})').format(self.pyfile.name.rsplit(
-                        self.FILE_SUFFIX)[0], file_mac, meta_mac))
+                    _('CBC-MAC checksum for file "{}" does not match ({} != {})').format(
+                        self.pyfile.name.rsplit(
+                            self.FILE_SUFFIX)[0], file_mac, meta_mac))
                 self.checksum_failed(file_decrypted, _("Checksums do not match"))
 
         self.last_download = decode(file_decrypted)

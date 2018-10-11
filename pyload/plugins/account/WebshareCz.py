@@ -14,9 +14,6 @@ except ImportError:
     passlib = None
 
 
-
-
-
 class WebshareCz(Account):
     __name__ = "WebshareCz"
     __type__ = "account"

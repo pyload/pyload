@@ -107,7 +107,8 @@ class ZbigzCom(Hoster):
             self.data = self.load("http://m.zbigz.com/file/{}/-1".format(file_id))
 
             m = re.search(
-                r'\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\''.format(file_id), self.data)
+                r'\'(http://\w+.zbigz.com/core/zipstate.php\?hash={}&did=(\w+)).+?\''.format(file_id),
+                self.data)
             if m is None:
                 self.fail("Zip state URL not found")
 

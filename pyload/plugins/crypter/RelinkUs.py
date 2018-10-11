@@ -201,14 +201,16 @@ class RelinkUs(Crypter):
             if self.FILE_NOTITLE not in title:
                 name = folder = title
                 self.log_debug(
-                    "Found name [{}] and folder [{}] in package info".format(name, folder))
+                    "Found name [{}] and folder [{}] in package info".format(
+                        name, folder))
 
         #: Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(name, folder))
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(
+                    name, folder))
 
         #: Return package info
         return name, folder

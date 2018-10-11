@@ -147,7 +147,8 @@ class LinkCryptWs(Crypter):
         folder = self.pyfile.package().folder
 
         self.log_debug(
-            "Defaulting to pyfile name [{}] and folder [{}] for package".format(name, folder))
+            "Defaulting to pyfile name [{}] and folder [{}] for package".format(
+                name, folder))
 
         return name, folder
 
@@ -178,7 +179,8 @@ class LinkCryptWs(Crypter):
             return self.handle_container(source_type)
 
         else:
-            self.fail(_("Unknown source type: {}").format(source_type))  # TODO: Replace with self.error in 0.6.x
+            # TODO: Replace with self.error in 0.6.x
+            self.fail(_("Unknown source type: {}").format(source_type))
 
     def handle_web_links(self):
         self.log_debug("Search for Web links ")
@@ -238,8 +240,8 @@ class LinkCryptWs(Crypter):
 
         if not container_type.isalnum(
         ):  #: Check to prevent broken re-pattern (cnl2, rsdf, ccf, dlc, web are all alpha-numeric)
-            self.fail(
-                _("Unknown container type: {}").format(container_type))  # TODO: Replace with self.error in 0.6.x
+            # TODO: Replace with self.error in 0.6.x
+            self.fail(_("Unknown container type: {}").format(container_type))
 
         for line in self.container_html:
             if container_type in line:
@@ -253,7 +255,8 @@ class LinkCryptWs(Crypter):
 
                 pack_name, folder_name = self.get_package_info()
                 self.log_debug(
-                    "Added package with name {}.{} and container link {}".format(pack_name, container_type, clink.group(1)))
+                    "Added package with name {}.{} and container link {}".format(
+                        pack_name, container_type, clink.group(1)))
                 self.pyload.api.uploadContainer(
                     '.'.join([pack_name, container_type]), self.load(clink.group(1)))
                 return "Found it"

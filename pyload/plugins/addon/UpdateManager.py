@@ -256,7 +256,8 @@ class UpdateManager(Addon):
         if blacklist:
             # NOTE: Protect UpdateManager from self-removing
             if os.name == "nt":
-                # NOTE: Windows filesystem is case insensitive, make sure we do not delete legitimate plugins
+                # NOTE: Windows filesystem is case insensitive, make sure we do not
+                # delete legitimate plugins
                 whitelisted_plugins = [
                     (plugin['type'], plugin['name'].upper()) for plugin in updatelist]
                 blacklisted_plugins = [
@@ -282,8 +283,8 @@ class UpdateManager(Addon):
                     break
 
             for t, n in self.remove_plugins(blacklisted_plugins):
-                self.log_info(_("Removed blacklisted plugin: {type} {name}").format(**{'type': t.upper(),
-                               'name': n, }))
+                self.log_info(_("Removed blacklisted plugin: {type} {name}").format(
+                    **{'type': t.upper(), 'name': n, }))
 
         for plugin in updatelist:
             plugin_name = plugin['name']
@@ -332,8 +333,11 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception as e:
-                self.log_error(_("Error updating plugin: {} {}").format(plugin_type.rstrip('s').upper(), plugin_name),
-                               e)  # TODO: Remove rstrip in 0.6.x
+                self.log_error(
+                    _("Error updating plugin: {} {}").format(
+                        plugin_type.rstrip('s').upper(),
+                        plugin_name),
+                    e)  # TODO: Remove rstrip in 0.6.x
 
         return updated
 

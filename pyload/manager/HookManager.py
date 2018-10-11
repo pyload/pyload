@@ -108,7 +108,8 @@ class HookManager(object):
                 #hookClass = getattr(plugin, plugin.__name__)
 
                 if self.pyload.config.getPlugin(pluginname, "activated"):
-                    pluginClass = self.pyload.pluginManager.loadClass("hook", pluginname)
+                    pluginClass = self.pyload.pluginManager.loadClass(
+                        "hook", pluginname)
                     if not pluginClass:
                         continue
 

@@ -12,7 +12,8 @@ from six.moves.urllib.parse import urlencode
 from six.moves.urllib.request import BaseHandler, HTTPHandler, build_opener
 
 # 02/2006 Will Holcomb <wholcomb@gmail.com>
-# 7/26/07 Slightly modified by Brian Schneider in order to support unicode files ( multipart_encode function )
+# 7/26/07 Slightly modified by Brian Schneider in order to support unicode
+# files ( multipart_encode function )
 
 """
 Usage:
@@ -38,9 +39,6 @@ Further Example:
   The main function of this file is a sample which downloads a page and
   then uploads it to the W3C validator.
 """
-
-
-
 
 
 class Callable:
@@ -81,8 +79,9 @@ class MultipartPostHandler(BaseHandler):
                 if(request.has_header('Content-Type')
                    and request.get_header('Content-Type').find('multipart/form-data') != 0):
                     print(
-                        "Replacing {} with {}".format(request.get_header('content-type'),
-                         'multipart/form-data'))
+                        "Replacing {} with {}".format(
+                            request.get_header('content-type'),
+                            'multipart/form-data'))
                 request.add_unredirected_header('Content-Type', contenttype)
 
             request.add_data(data)

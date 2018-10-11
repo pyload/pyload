@@ -90,7 +90,8 @@ class SexuriaCom(Crypter):
                 if title:
                     name = folder = title
                     self.log_debug(
-                        "Package info found, name [{}] and folder [{}]".format(name, folder))
+                        "Package info found, name [{}] and folder [{}]".format(
+                            name, folder))
             #: Password
             pwddata = re.search(self.PATTERN_PASSWORD, html, re.I | re.S)
             if not pwddata:

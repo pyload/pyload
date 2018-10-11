@@ -116,9 +116,9 @@ class Base(Plugin):
             pass
 
         log("{plugintype} {pluginname}[{id}]: {msg}".format(**{'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'id': self.pyfile.id,
-             'msg': msg}))
+                                                               'pluginname': pluginname,
+                                                               'id': self.pyfile.id,
+                                                               'msg': msg}))
 
     def init_base(self):
         pass
@@ -303,8 +303,8 @@ class Base(Plugin):
             self.log_debug(
                 "RECONNECT{} required".format(
                     "" if reconnect else " not"),
-                    "Previous wantReconnect: {}".format(
-                        self.wantReconnect))
+                "Previous wantReconnect: {}".format(
+                    self.wantReconnect))
             self.wantReconnect = bool(reconnect)
 
     def set_wait(self, seconds, strict=False):

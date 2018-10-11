@@ -119,9 +119,9 @@ def main():
     gui_err = []
 
     # try:
-        # import PyQt4
+    # import PyQt4
     # except Exception:
-        # gui_err.append("GUI won't work without pyqt4 !!")
+    # gui_err.append("GUI won't work without pyqt4 !!")
 
     if gui_err:
         print("The system check has detected some errors:\n")

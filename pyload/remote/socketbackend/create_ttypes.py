@@ -15,7 +15,6 @@ sys.path.append(join(module, "lib"))
 sys.path.append(join(module, "remote"))
 
 
-
 def main():
 
     enums = []

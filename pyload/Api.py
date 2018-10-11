@@ -605,11 +605,20 @@ class Api(Iface):
 
         :return: list of `PackageInfo`
         """
-        return [PackageData(pack["id"], pack["name"], pack["folder"], pack["site"],
-                            pack["password"], pack["queue"], pack["order"],
-                            pack["linksdone"], pack["sizedone"], pack["sizetotal"],
-                            pack["linkstotal"])
-                for pack in self.pyload.files.getInfoData(Destination.Collector).values()]
+        return [
+            PackageData(
+                pack["id"],
+                pack["name"],
+                pack["folder"],
+                pack["site"],
+                pack["password"],
+                pack["queue"],
+                pack["order"],
+                pack["linksdone"],
+                pack["sizedone"],
+                pack["sizetotal"],
+                pack["linkstotal"]) for pack in self.pyload.files.getInfoData(
+                Destination.Collector).values()]
 
     @permission(PERMS.LIST)
     def getCollectorData(self):

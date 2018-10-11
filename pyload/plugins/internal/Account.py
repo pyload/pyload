@@ -76,9 +76,8 @@ class Account(Plugin):
         except Exception:
             pass
 
-        log("{plugintype} {pluginname}: {msg}".format(**{'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'msg': msg}))
+        log("{plugintype} {pluginname}: {msg}".format(
+            **{'plugintype': plugintype.upper(), 'pluginname': pluginname, 'msg': msg}))
 
     def setup(self):
         """

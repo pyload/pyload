@@ -51,9 +51,9 @@ class CloudMailRuFolder(Crypter):
 
         pack_links = ["https://cloud.mail.ru/dl?q={}".format(
                       base64.b64encode(json.dumps({'u': "{}{}?etag={}&key={}".format(json_data['dispatcher']['weblink_view'][0]['url'],
-                                                         urllib.parse.quote(_link['weblink']),
-                                                         _link['hash'],
-                                                         json_data['params']['tokens']['download']),
+                                                                                     urllib.parse.quote(_link['weblink']),
+                                                                                     _link['hash'],
+                                                                                     json_data['params']['tokens']['download']),
                                                    'n': urllib.parse.quote_plus(_link['name']),
                                                    's': _link['size']})))
                       for _link in json_data['folders']['folder']['list']

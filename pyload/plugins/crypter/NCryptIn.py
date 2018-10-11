@@ -135,7 +135,8 @@ class NCryptIn(Crypter):
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(name, folder))
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(
+                    name, folder))
         return name, folder
 
     def unlock_protection(self):

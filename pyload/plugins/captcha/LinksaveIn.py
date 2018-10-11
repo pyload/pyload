@@ -13,8 +13,6 @@ except ImportError:
     import Image
 
 
-
-
 class LinksaveIn(OCR):
     __name__ = "LinksaveIn"
     __type__ = "ocr"

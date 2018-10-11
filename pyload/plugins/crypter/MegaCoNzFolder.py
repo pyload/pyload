@@ -56,7 +56,7 @@ class MegaCoNzFolder(Crypter):
             MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key)))
 
         self.links = [_("https://mega.co.nz/#N!{}!{}###n={}").format(_f['h'],
-                       get_node_key(_f['k'][_f['k'].index(':') + 1:]),
-                       id)
+                                                                     get_node_key(_f['k'][_f['k'].index(':') + 1:]),
+                                                                     id)
                       for _f in res['f']
                       if _f['t'] == 0 and ':' in _f['k']]

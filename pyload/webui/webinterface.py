@@ -29,8 +29,6 @@ PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
 sys.path.append(PYLOAD_DIR)
 
 
-
-
 SETUP = None
 PYLOAD = None
 
@@ -124,7 +122,6 @@ web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
-
 
 
 def run_simple(host="0.0.0.0", port="8000"):

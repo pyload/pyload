@@ -123,7 +123,8 @@ class OboomCom(Hoster):
                 self.offline()
         else:
             self.fail(
-                _("Could not retrieve file info. Error code {}: {}").format(result[0], result[1]))
+                _("Could not retrieve file info. Error code {}: {}").format(
+                    result[0], result[1]))
 
     def get_download_ticket(self):
         apiUrl = "http://api.oboom.com/1/dl"

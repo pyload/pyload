@@ -253,7 +253,8 @@ class UnRar(Extractor):
         if self.keepbroken:
             args.append("-kb")
 
-        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        # NOTE: return codes are not reliable, some kind of threading, cleanup
+        # whatever issue
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 

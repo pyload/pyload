@@ -37,10 +37,6 @@ from pyload.webui.ServerThread import WebServer
 CURRENT_VERSION = '0.5.0'
 
 
-
-
-
-
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 

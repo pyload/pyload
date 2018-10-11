@@ -18,11 +18,6 @@ path = join((abspath(dirname(__file__))), "..", "..", "lib")
 sys.path.append(path)
 
 
-
-
-
-
-
 def bench(f, *args, **kwargs):
     s = time()
     ret = [f(*args, **kwargs) for i in range(0, 100)]

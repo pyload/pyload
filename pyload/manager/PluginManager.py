@@ -234,7 +234,8 @@ class PluginManager(object):
         res = []  # tupels of (url, plugin)
 
         for url in urls:
-            if type(url) not in (str, bytes, memoryview):  # check memoryview (as py2 byffer)
+            if type(url) not in (
+                    str, bytes, memoryview):  # check memoryview (as py2 byffer)
                 continue
             found = False
 

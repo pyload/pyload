@@ -72,9 +72,8 @@ class Plugin(object):
     def _log(self, level, plugintype, pluginname, messages):
         log = getattr(self.pyload.log, level)
         msg = " | ".join(decode(a).strip() for a in messages if a)
-        log("{plugintype} {pluginname}: {msg}".format(**{'plugintype': plugintype.upper(),
-             'pluginname': pluginname,
-             'msg': msg}))
+        log("{plugintype} {pluginname}: {msg}".format(
+            **{'plugintype': plugintype.upper(), 'pluginname': pluginname, 'msg': msg}))
 
     def log_debug(self, *args, **kwargs):
         self._log("debug", self.__type__, self.__name__, args)

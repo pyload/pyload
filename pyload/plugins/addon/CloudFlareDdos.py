@@ -281,7 +281,8 @@ class CloudFlareDdos(Addon):
 
         else:
             # NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
-            # NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
+            # NOTE: Also that way we can use 'owner_plugin.req.header' to get the
+            # headers, otherwise we cannot get them
             res = CloudFlare.handle_function(
                 self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
             if kwargs.get('just_header', False):

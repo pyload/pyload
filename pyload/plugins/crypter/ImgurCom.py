@@ -58,7 +58,8 @@ class ImgurCom(SimpleCrypter):
                           for e in embedded_json['album_images']['images'])
 
             self.log_debug(
-                "Found {} of {} expected links in embedded JSON".format(len(images), self.total_num_images))
+                "Found {} of {} expected links in embedded JSON".format(
+                    len(images), self.total_num_images))
 
             # Depeding on the gallery, the embedded JSON may not contain all image information, then we also try the external JSON
             # If this doesn't help either (which is possible),... TODO: Find
@@ -72,7 +73,8 @@ class ImgurCom(SimpleCrypter):
                     images = dict((e['hash'], e['ext'])
                                   for e in external_json['data']['images'])
                     self.log_debug(
-                        "Found {} of {} expected links in external JSON".format(len(images), self.total_num_images))
+                        "Found {} of {} expected links in external JSON".format(
+                            len(images), self.total_num_images))
 
                 except (KeyError, TypeError):
                     self.log_debug(
@@ -102,7 +104,8 @@ class ImgurCom(SimpleCrypter):
             return []
 
         # Translate new IDs to Direct-URLs
-        return ["http://i.imgur.com/{}{}".format(id, ids_json[id]) for id in ids_indirect]
+        return ["http://i.imgur.com/{}{}".format(id, ids_json[id])
+                for id in ids_indirect]
 
     def setup(self):
         self.gallery_name = None
@@ -132,7 +135,8 @@ class ImgurCom(SimpleCrypter):
         num_images_found = len(direct_links) + len(indirect_links)
         if num_images_found < self.total_num_images:
             self.log_error(
-                _("Could not save all images of this gallery: {}/{}").format(num_images_found, self.total_num_images))
+                _("Could not save all images of this gallery: {}/{}").format(
+                    num_images_found, self.total_num_images))
 
         # If we could extract a name, use this to create a specific package
         if self.gallery_name:
