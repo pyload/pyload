@@ -138,7 +138,7 @@ class ShareLinksBiz(Crypter):
         #: Get captcha map
         captcha_map = self._get_captcha_map()
         self.log_debug(
-            "Captcha map with [{:d}] positions".format(len(list(captcha_map.keys()))))
+            "Captcha map with [{}] positions".format(len(list(captcha_map.keys()))))
 
         #: Request user for captcha coords
         m = re.search(
@@ -225,10 +225,10 @@ class ShareLinksBiz(Crypter):
         # TODO: Gather paginated web links
         pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
         ids = re.findall(pattern, self.data)
-        self.log_debug("Decrypting {:d} Web links".format(len(ids)))
+        self.log_debug("Decrypting {} Web links".format(len(ids)))
         for i, ID in enumerate(ids):
             try:
-                self.log_debug("Decrypting Web link {:d}, [{}]".format(i + 1, ID))
+                self.log_debug("Decrypting Web link {}, [{}]".format(i + 1, ID))
 
                 dw_link = self.base_url + "/get/lnk/" + ID
                 res = self.load(dw_link)
@@ -268,7 +268,7 @@ class ShareLinksBiz(Crypter):
         containers_links = re.findall(pattern, self.data)
 
         self.log_debug(
-            "Decrypting {:d} Container links".format(len(containers_links)))
+            "Decrypting {} Container links".format(len(containers_links)))
 
         for container_link in containers_links:
             link = "{}/get/{}/{}".format(self.base_url,
@@ -330,5 +330,5 @@ class ShareLinksBiz(Crypter):
         links = list(filter(bool, text.split('\n')))
 
         #: Log and return
-        self.log_debug("Block has {:d} links".format(len(links)))
+        self.log_debug("Block has {} links".format(len(links)))
         return links

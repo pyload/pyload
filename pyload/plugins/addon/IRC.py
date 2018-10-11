@@ -170,7 +170,7 @@ class IRC(Thread, Notifier):
             return
         elif msg['text'] == "\x01TIME\x01":
             self.log_debug("Sending CTCP TIME")
-            self.sock.send("NOTICE {} :{:d}\r\n".format(msg['origin'], time.time()))
+            self.sock.send("NOTICE {} :{}\r\n".format(msg['origin'], time.time()))
             return
         elif msg['text'] == "\x01LAG\x01":
             self.log_debug("Received CTCP LAG")  #: don't know how to answer
@@ -222,7 +222,7 @@ class IRC(Thread, Notifier):
             else:
                 temp_progress = "{}% ({})".format(data.percent, data.format_size)
 
-            lines.append("#{:d} - {} - {} - {} - {} - {}".format(
+            lines.append("#{} - {} - {} - {} - {} - {}".format(
                 data.fid,
                 data.name,
                 data.statusmsg,
@@ -241,7 +241,7 @@ class IRC(Thread, Notifier):
         lines = []
         for pack in pdata:
             lines.append(
-                'PACKAGE #{}: "{}" with {:d} links.'.format(
+                'PACKAGE #{}: "{}" with {} links.'.format(
                     pack.pid, pack.name, len(
                         pack.links)))
 
@@ -255,7 +255,7 @@ class IRC(Thread, Notifier):
         lines = []
         for pack in pdata:
             lines.append(
-                'PACKAGE #{}: "{}" with {:d} links.'.format(
+                'PACKAGE #{}: "{}" with {} links.'.format(
                     pack.pid, pack.name, len(
                         pack.links)))
 
@@ -292,7 +292,7 @@ class IRC(Thread, Notifier):
         self.more = []
 
         lines.append(
-            'PACKAGE #{}: "{}" with {:d} links'.format(
+            'PACKAGE #{}: "{}" with {} links'.format(
                 id, pack.name, len(
                     pack.links)))
         for pyfile in pack.links:
@@ -310,7 +310,7 @@ class IRC(Thread, Notifier):
         else:
             lines.extend(self.more[:6])
             self.more = self.more[6:]
-            lines.append("{:d} more links do display.".format(len(self.more)))
+            lines.append("{} more links do display.".format(len(self.more)))
 
         return lines
 
@@ -320,7 +320,7 @@ class IRC(Thread, Notifier):
 
         lines = self.more[:6]
         self.more = self.more[6:]
-        lines.append("{:d} more links do display.".format(len(self.more)))
+        lines.append("{} more links do display.".format(len(self.more)))
 
         return lines
 
@@ -350,14 +350,14 @@ class IRC(Thread, Notifier):
             # TODO: add links
 
             return [
-                "INFO: Added {:d} links to Package {} [#{:d}]".format(
+                "INFO: Added {} links to Package {} [#{}]".format(
                     len(links), pack['name'], id)]
 
         except Exception:
             #: Create new package
             id = self.pyload.api.addPackage(pack, links, 1)
             return [
-                "INFO: Created new Package {} [#{:d}] with {#{:d}} links.".format(
+                "INFO: Created new Package {} [#{}] with {#{}} links.".format(
                     pack, id, len(links))]
 
     def event_del(self, args):
@@ -367,11 +367,11 @@ class IRC(Thread, Notifier):
 
         if args[0] == "-p":
             ret = self.pyload.api.deletePackages(list(map(int, args[1:])))
-            return ["INFO: Deleted {:d} packages!".format(len(args[1:]))]
+            return ["INFO: Deleted {} packages!".format(len(args[1:]))]
 
         elif args[0] == "-l":
             ret = self.pyload.api.delLinks(list(map(int, args[1:])))
-            return ["INFO: Deleted {:d} links!".format(len(args[1:]))]
+            return ["INFO: Deleted {} links!".format(len(args[1:]))]
 
         else:
             return [
@@ -385,10 +385,10 @@ class IRC(Thread, Notifier):
         try:
             self.pyload.api.getPackageInfo(id)
         except PackageDoesNotExists:
-            return ["ERROR: Package #{:d} does not exist.".format(id)]
+            return ["ERROR: Package #{} does not exist.".format(id)]
 
         self.pyload.api.pushToQueue(id)
-        return ["INFO: Pushed package #{:d} to queue.".format(id)]
+        return ["INFO: Pushed package #{} to queue.".format(id)]
 
     def event_pull(self, args):
         if not args:
@@ -396,10 +396,10 @@ class IRC(Thread, Notifier):
 
         id = int(args[0])
         if not self.pyload.api.getPackageData(id):
-            return ["ERROR: Package #{:d} does not exist.".format(id)]
+            return ["ERROR: Package #{} does not exist.".format(id)]
 
         self.pyload.api.pullFromQueue(id)
-        return ["INFO: Pulled package #{:d} from queue to collector.".format(id)]
+        return ["INFO: Pulled package #{} from queue to collector.".format(id)]
 
     def event_c(self, args):
         """

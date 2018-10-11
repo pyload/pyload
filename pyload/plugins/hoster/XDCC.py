@@ -21,7 +21,7 @@ class IRC(object):
         self.lock = threading.RLock()
 
         #: last 4 digits
-        self.nick = "pyload-{:4d}".format(time.time().format(10000)
+        self.nick = "pyload-{:04}".format(time.time().format(10000)
                                           ) if nick == "pyload" else nick
         self.ident = ident
         self.realname = realname
@@ -728,7 +728,7 @@ class XDCC(Hoster):
             dl_file = fsjoin(dl_folder, self.pyfile.name)
 
             self.log_debug(
-                _("DOWNLOAD XDCC '{}' from {}:{:d}").format(
+                _("DOWNLOAD XDCC '{}' from {}:{}").format(
                     file_name, ip, port))
 
             self.pyload.addonManager.dispatchEvent(

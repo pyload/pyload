@@ -43,7 +43,7 @@ class Http(Hoster):
             elif self.req.code in (401, 403):
                 self.log_debug(
                     "Auth required",
-                    "Received HTTP status code: {:d}" %
+                    "Received HTTP status code: {}" %
                     self.req.code)
 
                 # TODO: Recheck in 0.6.x

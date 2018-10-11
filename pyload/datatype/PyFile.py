@@ -240,7 +240,7 @@ class PyFile(object):
 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
-        return "{:2d}:{:2d}:{:2d}".format(hours, minutes, seconds)
+        return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
     def formatSize(self):
         """ formats size to readable format """
@@ -255,7 +255,7 @@ class PyFile(object):
 
         hours, seconds = divmod(seconds, 3600)
         minutes, seconds = divmod(seconds, 60)
-        return "{:2d}:{:2d}:{:2d}".format(hours, minutes, seconds)
+        return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
     def getSpeed(self):
         """ calculates speed """

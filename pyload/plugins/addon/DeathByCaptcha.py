@@ -144,7 +144,7 @@ class DeathByCaptcha(Addon):
 
         for _i in range(24):
             time.sleep(5)
-            res = self.api_response("captcha/{:d}".format(ticket), False)
+            res = self.api_response("captcha/{}".format(ticket), False)
             if res['text'] and res['is_correct']:
                 break
         else:
@@ -178,7 +178,7 @@ class DeathByCaptcha(Addon):
         balance, rate = self.info['balance'], self.info['rate']
         self.log_info(
             _("Account balance"),
-            _("US${:3f} ({:d} captchas left at {:2f} cents each)").format(
+            _("US${:.3f} ({} captchas left at {:.2f} cents each)").format(
                 balance // 100,
                 balance // rate,
                 rate))
@@ -193,7 +193,7 @@ class DeathByCaptcha(Addon):
         if task.data['service'] == self.classname and "ticket" in task.data:
             try:
                 res = self.api_response(
-                    "captcha/{:d}/report".format(task.data['ticket']), True)
+                    "captcha/{}/report".format(task.data['ticket']), True)
 
             except DeathByCaptchaException as e:
                 self.log_error(e)

@@ -68,7 +68,7 @@ class LinkdecrypterCom(MultiCrypter):
                 captcha = self.captcha.decrypt(
                     captcha_url, output_type=result_type)
                 if result_type == "positional":
-                    captcha = "{:d}|{:d}".format(*captcha)
+                    captcha = "{}|{}".format(*captcha)
                 self.data = self.load(
                     'http://linkdecrypter.com/',
                     post={

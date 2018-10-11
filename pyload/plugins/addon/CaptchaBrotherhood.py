@@ -62,7 +62,7 @@ class CaptchaBrotherhood(Addon):
             raise CaptchaBrotherhoodException(res)
         else:
             credits = int(res[3:])
-            self.log_info(_("{:d} credits left").format(credits))
+            self.log_info(_("{} credits left").format(credits))
             self.info['credits'] = credits
             return credits
 

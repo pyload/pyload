@@ -120,7 +120,7 @@ class SevenZip(Extractor):
                 raise ArchiveError(err)
 
         if p.returncode > 1:
-            raise ArchiveError(_("Process return code: {:d}").format(p.returncode))
+            raise ArchiveError(_("Process return code: {}").format(p.returncode))
 
     def chunks(self):
         files = []
@@ -146,7 +146,7 @@ class SevenZip(Extractor):
             raise ArchiveError(_("Cannot open file"))
 
         if p.returncode > 1:
-            raise ArchiveError(_("Process return code: {:d}").format(p.returncode))
+            raise ArchiveError(_("Process return code: {}").format(p.returncode))
 
         files = set()
         for groups in self._RE_FILES.findall(out):

@@ -303,7 +303,7 @@ class Core(object):
 
         if os.name != "nt" and self.config["general"]["renice"]:
             os.system(
-                "renice {:d} {:d}".format(
+                "renice {} {}".format(
                     self.config["general"]["renice"],
                     os.getpid()))
 
@@ -645,7 +645,7 @@ def deamon():
         if pid > 0:
             sys.exit(0)
     except OSError as e:
-        sys.stderr.write("fork #1 failed: {:d} ({})\n".format(e.errno, e.strerror))
+        sys.stderr.write("fork #1 failed: {} ({})\n".format(e.errno, e.strerror))
         sys.exit(1)
 
     # decouple from parent environment
@@ -657,10 +657,10 @@ def deamon():
         pid = os.fork()
         if pid > 0:
             # exit from second parent, print(eventual PID before)
-            print("Daemon PID {:d}".format(pid))
+            print("Daemon PID {}".format(pid))
             sys.exit(0)
     except OSError as e:
-        sys.stderr.write("fork #2 failed: {:d} ({})\n".format(e.errno, e.strerror))
+        sys.stderr.write("fork #2 failed: {} ({})\n".format(e.errno, e.strerror))
         sys.exit(1)
 
     # Iterate through and close some file descriptors.

@@ -91,7 +91,7 @@ class HTTPDownload(object):
                 # input file
                 # seek to beginning of chunk, to get rid of overlapping chunks
                 fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
-                fname = fs_encode("{}.chunk{:d}".format(self.filename, i))
+                fname = fs_encode("{}.chunk{}".format(self.filename, i))
                 fi = open(fname, "rb")
                 buf = 32 * 1024
                 while True:  # copy in chunks, consumes less memory
@@ -213,7 +213,7 @@ class HTTPDownload(object):
                         chunk.verifyHeader()
                     except BadHeader as e:
                         self.log.debug(
-                            "Chunk {:d} failed: {}".format(
+                            "Chunk {} failed: {}".format(
                                 chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e
@@ -228,7 +228,7 @@ class HTTPDownload(object):
                         failed.append(chunk)
                         ex = pycurl.error(errno, msg)
                         self.log.debug(
-                            "Chunk {:d} failed: {}".format(
+                            "Chunk {} failed: {}".format(
                                 chunk.id + 1, str(ex)))
                         continue
 
@@ -236,7 +236,7 @@ class HTTPDownload(object):
                         chunk.verifyHeader()
                     except BadHeader as e:
                         self.log.debug(
-                            "Chunk {:d} failed: {}".format(
+                            "Chunk {} failed: {}".format(
                                 chunk.id + 1, str(e)))
                         failed.append(chunk)
                         ex = e

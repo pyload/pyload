@@ -23,9 +23,9 @@ def bench(f, *args, **kwargs):
     ret = [f(*args, **kwargs) for i in range(0, 100)]
     e = time()
     try:
-        print("{}: {:f} s".format(f._Method__name, e - s))
+        print("{}: {} s".format(f._Method__name, e - s))
     except BaseException:
-        print("{}: {:f} s".format(f.__name__, e - s))
+        print("{}: {} s".format(f.__name__, e - s))
     return ret
 
 

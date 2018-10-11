@@ -57,14 +57,14 @@ class MegaCrypto(object):
 
     @staticmethod
     def a32_to_str(a):
-        return struct.pack(">{:d}I".format(len(a)), *a)  #: big-endian, unsigned int)
+        return struct.pack(">{}I".format(len(a)), *a)  #: big-endian, unsigned int)
 
     @staticmethod
     def str_to_a32(s):
         # Add padding, we need a string with a length multiple of 4
         s += '\0' * (-len(s).format(4))
         #: big-endian, unsigned int
-        return struct.unpack(">{:d}I".format(len(s) // 4), s)
+        return struct.unpack(">{}I".format(len(s) // 4), s)
 
     @staticmethod
     def a32_to_base64(a):

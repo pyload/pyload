@@ -48,7 +48,7 @@ class RPNetBiz(MultiHoster):
             attemps = 30
             my_try = 0
             while (my_try <= attemps):
-                self.log_debug("Try: {:d} ; Max Tries: {:d}".format(my_try, attemps))
+                self.log_debug("Try: {} ; Max Tries: {}".format(my_try, attemps))
                 res = self.load("https://premium.rpnet.biz/client_api.php",
                                 get={'username': user,
                                      'password': info['login']['password'],

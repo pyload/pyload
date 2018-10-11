@@ -16,7 +16,7 @@ def format_time(seconds):
 
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
-    return "{:2d}:{:2d}:{:2d}".format(hours, minutes, seconds)
+    return "{:02}:{:02}:{:02}".format(hours, minutes, seconds)
 
 
 def get_sort_key(item):

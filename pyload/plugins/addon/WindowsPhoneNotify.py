@@ -52,7 +52,7 @@ class WindowsPhoneNotify(Notifier):
         webservice.putheader("Content-type", "text/xml")
         webservice.putheader("X-NotificationClass", "2")
         webservice.putheader("X-WindowsPhone-Target", "toast")
-        webservice.putheader("Content-length", "{:d}".format(len(request)))
+        webservice.putheader("Content-length", "{}".format(len(request)))
         webservice.endheaders()
         webservice.send(request)
         webservice.close()

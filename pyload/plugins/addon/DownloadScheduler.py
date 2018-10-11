@@ -82,7 +82,7 @@ class DownloadScheduler(Addon):
             self.pyload.api.unpauseServer()
 
             if speed > 0:
-                self.log_info(_("Setting download speed to {:d} kB/s").format(speed))
+                self.log_info(_("Setting download speed to {} kB/s").format(speed))
                 self.pyload.config.set('download', 'limit_speed', 1)
                 self.pyload.config.set('download', 'max_speed', speed)
 

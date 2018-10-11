@@ -161,7 +161,7 @@ class UnRar(Extractor):
                 raise ArchiveError(err)
 
         if p.returncode:
-            raise ArchiveError(_("Process return code: {:d}").format(p.returncode))
+            raise ArchiveError(_("Process return code: {}").format(p.returncode))
 
         return self.list(password)
 

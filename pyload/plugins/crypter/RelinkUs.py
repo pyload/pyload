@@ -282,14 +282,14 @@ class RelinkUs(Crypter):
         pack_links = []
         params = re.findall(self.WEB_FORWARD_PATTERN, self.data)
 
-        self.log_debug("Decrypting {:d} Web links".format(len(params)))
+        self.log_debug("Decrypting {} Web links".format(len(params)))
 
         for index, param in enumerate(params):
             try:
                 url = self.WEB_FORWARD_URL + "?{}".format(param)
 
                 self.log_debug(
-                    "Decrypting Web link {:d}, {}".format(index + 1, url))
+                    "Decrypting Web link {}, {}".format(index + 1, url))
 
                 res = self.load(url)
                 link = re.search(self.WEB_LINK_PATTERN, res).group(1)
@@ -314,7 +314,7 @@ class RelinkUs(Crypter):
         vcrypted = re.findall(crypted_re, cnl2_form, re.I)
 
         #: Log and return
-        self.log_debug("Detected {:d} crypted blocks".format(len(vcrypted)))
+        self.log_debug("Detected {} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
@@ -334,5 +334,5 @@ class RelinkUs(Crypter):
         links = list(filter(bool, text.split('\n')))
 
         #: Log and return
-        self.log_debug("Package has {:d} links".format(len(links)))
+        self.log_debug("Package has {} links".format(len(links)))
         return links

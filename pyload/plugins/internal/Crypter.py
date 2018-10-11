@@ -91,7 +91,7 @@ class Crypter(Base):
 
         for name, links, folder in self.packages:
             self.log_info(_("Create package: {}").format(name),
-                          _("{:d} links").format(len(links)))
+                          _("{} links").format(len(links)))
 
             links = list(map(self.fixurl, links))
             self.log_debug("LINKS for package " + name, *links)

@@ -173,7 +173,7 @@ class Hoster(Base):
                 code = header.get('code')
 
                 if code in (301, 302) or resumable:
-                    self.log_debug("Redirect #{:d} to: {}".format(i, location))
+                    self.log_debug("Redirect #{} to: {}".format(i, location))
                     header = self.load(location, just_header=True)
                     url = location
                     continue
@@ -394,7 +394,7 @@ class Hoster(Base):
             size = self.pyfile.size // 1024
             self.log_info(
                 _("Filesize: {} KiB").format(size),
-                _("Traffic left for user `{}`: {:d} KiB").format(
+                _("Traffic left for user `{}`: {} KiB").format(
                     self.account.user,
                     traffic))
             return size > traffic

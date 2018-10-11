@@ -60,7 +60,7 @@ class Ftp(Hoster):
             if "530" in e.args[1]:
                 self.fail(_("Authorization required"))
             else:
-                self.fail(_("Error {:d}: {}").format(e.args))
+                self.fail(_("Error {}: {}").format(e.args))
 
         self.req.http.c.setopt(pycurl.NOBODY, 0)
         self.log_debug(self.req.http.header)

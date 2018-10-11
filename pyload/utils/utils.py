@@ -102,7 +102,7 @@ def formatSize(size):
     while size > 1000:
         size /= 1024.0
         steps += 1
-    return "{:2f} {}".format(size, sizes[steps])
+    return "{:.2f} {}".format(size, sizes[steps])
 
 
 def formatSpeed(speed):

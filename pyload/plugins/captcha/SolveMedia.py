@@ -87,7 +87,7 @@ class SolveMedia(CaptchaService):
             else:
                 if "error" in html:
                     self.log_warning(_("Captcha code was invalid"))
-                    self.log_debug("Retry #{:d}".format(i))
+                    self.log_debug("Retry #{}".format(i))
                     html = self.pyfile.plugin.load(redirect)
                 else:
                     break

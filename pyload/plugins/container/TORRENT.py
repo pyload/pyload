@@ -41,7 +41,7 @@ class TORRENT(Container):
         with open(fs_filename, "rb") as f:
             torrent_content = f.read()
 
-        time_ref = ("{:2f}".format(time.time())[-6:].replace(".", ""))
+        time_ref = ("{:.2f}".format(time.time())[-6:].replace(".", ""))
 
         pack_name = "torrent {}".format(time_ref)
         m = re.search(r'name(\d+):', torrent_content)

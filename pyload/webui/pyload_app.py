@@ -163,7 +163,7 @@ def error500(error):
 @route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
     response.headers['Expires'] = time.strftime(
-        "%a, {:d} %b %Y %H:%M:%S GMT", time.gmtime(
+        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(
             time.time() + 60 * 60 * 24 * 2))
     response.headers['Cache-control'] = "public"
     response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
@@ -182,7 +182,7 @@ def js_dynamic(path):
 @route('/media/<path:path>')
 def server_static(path):
     response.headers['Expires'] = time.strftime(
-        "%a, {:d} %b %Y %H:%M:%S GMT", time.gmtime(
+        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(
             time.time() + 60 * 60 * 24 * 7))
     response.headers['Cache-control'] = "public"
     return static_file(path, root=join(PROJECT_DIR, "media"))

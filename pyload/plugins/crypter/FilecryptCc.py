@@ -121,7 +121,7 @@ class FilecryptCc(Crypter):
 
         mirror = re.findall(self.MIRROR_PAGE_PATTERN, self.site_with_links)
 
-        self.log_info(_("Found {:d} mirrors").format(len(mirror)))
+        self.log_info(_("Found {} mirrors").format(len(mirror)))
 
         for i in mirror[1:]:
             self.site_with_links = self.site_with_links + self._filecrypt_load_url(i)

@@ -30,7 +30,7 @@ class MegasharesCom(SimpleHoster):
     SIZE_PATTERN = r'<strong><span class="black">Filesize:</span></strong> (?P<S>[\d.,]+) (?P<U>[\w^_]+)'
     OFFLINE_PATTERN = r'<dd class="red">(Invalid Link Request|Link has been deleted|Invalid link)'
 
-    LINK_PATTERN = r'<div id="show_download_button_{:d}".*?>\s*<a href="(.+?)">'
+    LINK_PATTERN = r'<div id="show_download_button_{}".*?>\s*<a href="(.+?)">'
 
     PASSPORT_LEFT_PATTERN = r'Your Download Passport is: <.*?>(\w+).*?You have.*?<.*?>.*?([\d.]+) (\w+)'
     PASSPORT_RENEW_PATTERN = r'(\d+):<strong>(\d+)</strong>:<strong>(\d+)</strong>'
@@ -89,7 +89,7 @@ class MegasharesCom(SimpleHoster):
         if m is not None:
             time = [int(x) for x in m.groups()]
             renew = time[0] + (time[1] * 60) + (time[2] * 60)
-            self.log_debug("Waiting {:d} seconds for a new passport".format(renew))
+            self.log_debug("Waiting {} seconds for a new passport".format(renew))
             self.retry(wait=renew, msg=_("Passport renewal"))
 
         #: Check traffic left on passport
@@ -100,7 +100,7 @@ class MegasharesCom(SimpleHoster):
         self.log_info(_("Download passport: {}").format(m.group(1)))
         data_left = float(m.group(2)) * \
             1024 ** {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3}[m.group(3)]
-        self.log_info(_("Data left: {} {} ({:d} MB needed)").format(
+        self.log_info(_("Data left: {} {} ({} MB needed)").format(
             m.group(2), m.group(3), self.pyfile.size // 1048576))
 
         if not data_left:

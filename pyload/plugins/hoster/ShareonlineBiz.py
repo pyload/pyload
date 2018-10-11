@@ -74,7 +74,7 @@ class ShareonlineBiz(SimpleHoster):
         m = re.search(r'var wait=(\d+);', self.data)
         self.set_wait(int(m.group(1)) if m else 30)
 
-        res = self.load("{}/free/captcha/{:d}".format(self.pyfile.url,
+        res = self.load("{}/free/captcha/{}".format(self.pyfile.url,
                                                       int(time.time() * 1000)),
                         post={'dl_free': "1",
                               'recaptcha_challenge_field': challenge,

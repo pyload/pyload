@@ -66,7 +66,7 @@ class Captcha(Plugin):
         :return: result of decrypting
         """
         result = None
-        time_ref = ("{:2f}".format(time.time())[-6:].replace(".", ""))
+        time_ref = ("{:.2f}".format(time.time())[-6:].replace(".", ""))
 
         with open(os.path.join("tmp", "captcha_image_{}_{}.{}".format(self.pyfile.plugin.__name__, time_ref, input_type)), "wb") as img_f:
             img_f.write(img)

@@ -340,7 +340,7 @@ class Plugin(Base):
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = ("{:2f}".format(time())[-6:].replace(".", ""))
+        id = ("{:.2f}".format(time())[-6:].replace(".", ""))
         temp_file = open(
             join(
                 "tmp",

@@ -253,7 +253,7 @@ class NCryptIn(Crypter):
 
         pattern = r'/container/(rsdf|dlc|ccf)/(\w+)'
         containersLinks = re.findall(pattern, self.data)
-        self.log_debug("Decrypting {:d} Container links".format(len(containersLinks)))
+        self.log_debug("Decrypting {} Container links".format(len(containersLinks)))
         for containerLink in containersLinks:
             link = "http://ncrypt.in/container/{}/{}.{}".format(
                 containerLink[0], containerLink[1], containerLink[0])
@@ -267,9 +267,9 @@ class NCryptIn(Crypter):
         links = re.findall(pattern, self.data)
 
         pack_links = []
-        self.log_debug("Decrypting {:d} Web links".format(len(links)))
+        self.log_debug("Decrypting {} Web links".format(len(links)))
         for i, link in enumerate(links):
-            self.log_debug("Decrypting Web link {:d}, {}".format(i + 1, link))
+            self.log_debug("Decrypting Web link {}, {}".format(i + 1, link))
             decrypted_link = self.decrypt(link)
             if decrypted_link:
                 pack_links.append(decrypted_link)
@@ -297,7 +297,7 @@ class NCryptIn(Crypter):
         vcrypted = re.findall(crypted_re, self.data)
 
         #: Log and return
-        self.log_debug("Detected {:d} crypted blocks".format(len(vcrypted)))
+        self.log_debug("Detected {} crypted blocks".format(len(vcrypted)))
         return vcrypted, vjk
 
     def _get_links(self, crypted, jk):
@@ -317,5 +317,5 @@ class NCryptIn(Crypter):
         links = list(filter(bool, text.split('\n')))
 
         #: Log and return
-        self.log_debug("Block has {:d} links".format(len(links)))
+        self.log_debug("Block has {} links".format(len(links)))
         return links

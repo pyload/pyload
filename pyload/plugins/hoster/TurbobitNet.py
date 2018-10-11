@@ -144,7 +144,7 @@ class TurbobitNet(SimpleHoster):
         self.set_reconnect(False)
 
         for b in [1, 3]:
-            self.jscode = "var id = \'{}\';var b = {:d};var inn = \'{}\';{}out".format(
+            self.jscode = "var id = \'{}\';var b = {};var inn = \'{}\';{}out".format(
                           self.info['pattern']['ID'], b, urllib.parse.quote(fun), rtUpdate)
 
             try:
@@ -172,5 +172,5 @@ class TurbobitNet(SimpleHoster):
     def get_local_time_string(self):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
-        return "{} GMT{:3d}{:2d}".format(time.strftime(
+        return "{} GMT{:03}{:02}".format(time.strftime(
             "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz.format(3600))

@@ -65,7 +65,7 @@ class FileserveCom(Hoster):
         pyfile.name, pyfile.size, status, self.url = self._get_info(self.url)
         if status != 2:
             self.offline()
-        self.log_debug("File Name: {} Size: {:d}".format(pyfile.name, pyfile.size))
+        self.log_debug("File Name: {} Size: {}".format(pyfile.name, pyfile.size))
 
         if self.premium:
             self.handle_premium()

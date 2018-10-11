@@ -314,7 +314,7 @@ class Cli(object):
                 self.client.movePackage((pack.dest + 1).format(2), pack.pid)
 
         elif command == "check":
-            print(_("Checking {:d} links:").format(len(args)))
+            print(_("Checking {} links:").format(len(args)))
             print()
             rid = self.client.checkOnlineStatus(args).rid
             self.printOnlineCheck(self.client, rid)

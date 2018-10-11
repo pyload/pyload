@@ -56,7 +56,7 @@ class MultishareCz(SimpleHoster):
             self.fail(_("Not enough credit left to download file"))
 
         self.download(
-            "http://dl{:d}.mms.multishare.cz/html/mms_process.php".format(
+            "http://dl{}.mms.multishare.cz/html/mms_process.php".format(
                 round(
                     random.random() *
                     10000 *

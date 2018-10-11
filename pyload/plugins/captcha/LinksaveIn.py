@@ -149,7 +149,7 @@ class LinksaveIn(OCR):
         final = ""
         for n, letter in enumerate(letters):
             self.img = letter
-            self.img.save(self.data_dir + "letter{:d}.png".format(n))
+            self.img.save(self.data_dir + "letter{}.png".format(n))
             self.run_tesser(True, True, False, False)
             final += self.result_captcha
 

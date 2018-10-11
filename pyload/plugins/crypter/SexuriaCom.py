@@ -125,7 +125,7 @@ class SexuriaCom(Crypter):
         else:
             for i, link in enumerate(linklist):
                 self.log_debug(
-                    "Supported link {:d}/{:d}: {}".format(i + 1, len(linklist), link))
+                    "Supported link {}/{}: {}".format(i + 1, len(linklist), link))
 
         #: All done, return to caller
         return name, linklist, folder, password

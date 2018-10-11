@@ -40,7 +40,7 @@ class HellshareCz(Account):
                             vt[1] == lt.tm_mon and vt[0] < lt.tm_mday))
                     validuntil = time.mktime(
                         time.strptime(
-                            "{}{:d} 23:59:59".format(
+                            "{}{} 23:59:59".format(
                                 credit,
                                 year),
                             "%d.%m.%Y %H:%M:%S"))

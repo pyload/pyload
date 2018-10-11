@@ -269,8 +269,8 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
 def format_time(value):
     dt = datetime.datetime(1, 1, 1) + \
         datetime.timedelta(seconds=abs(int(value)))
-    days = ("{:d} days".format(dt.day - 1)) if dt.day > 1 else ""
-    tm = ", ".join("{:d} {}s".format(getattr(dt, attr), attr)
+    days = ("{} days".format(dt.day - 1)) if dt.day > 1 else ""
+    tm = ", ".join("{} {}s".format(getattr(dt, attr), attr)
                    for attr in ("hour", "minute", "second")
                    if getattr(dt, attr))
     return days + (" and " if days and tm else "") + tm
@@ -283,7 +283,7 @@ def format_size(value):
         else:
             value /= 1024.0
 
-    return "{:2f} {}".format(value, 'EiB')
+    return "{:.2f} {}".format(value, 'EiB')
 
 
 def compare_time(start, end):

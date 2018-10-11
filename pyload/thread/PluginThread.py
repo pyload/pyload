@@ -529,7 +529,7 @@ class InfoThread(PluginThread):
 
             packs = parseNames([(name, url) for name, x, y, url in self.cache])
 
-            self.m.log.debug("Fetched and generated {:d} packages".format(len(packs)))
+            self.m.log.debug("Fetched and generated {} packages".format(len(packs)))
 
             for k, v in packs:
                 self.m.pyload.api.addPackage(k, v)
@@ -616,7 +616,7 @@ class InfoThread(PluginThread):
 
             if result:
                 self.m.log.debug(
-                    "Fetched {:d} values from cache for {}".format(
+                    "Fetched {} values from cache for {}".format(
                         len(result), pluginname))
                 cb(pluginname, result)
 
@@ -667,7 +667,7 @@ class InfoThread(PluginThread):
 
             data = self.m.pyload.pluginManager.parseUrls(pyfile.plugin.urls)
 
-            self.m.log.debug("Got {:d} links.".format(len(data)))
+            self.m.log.debug("Got {} links.".format(len(data)))
 
         except Exception as e:
             self.m.log.debug("Pre decrypting error: {}".format(str(e)))

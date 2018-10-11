@@ -411,7 +411,7 @@ class YoutubeCom(Hoster):
         def is_video(x): return 'v' in self.formats[x]['type']
         if desired_fmt not in self.formats or not is_video(desired_fmt):
             self.log_warning(
-                _("VIDEO ITAG {:d} unknown, using default").format(desired_fmt))
+                _("VIDEO ITAG {} unknown, using default").format(desired_fmt))
             desired_fmt = 22
 
         #: Build dictionary of supported itags (3D/2D)
@@ -424,7 +424,7 @@ class YoutubeCom(Hoster):
             self.fail(_("No available video stream meets your preferences"))
 
         self.log_debug(
-            "DESIRED VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{}) {}found, {}allowed".format(
+            "DESIRED VIDEO STREAM: ITAG:{} ({} {}x{} Q:{} 3D:{}) {}found, {}allowed".format(
                 desired_fmt,
                 self.formats[desired_fmt]['ext'],
                 self.formats[desired_fmt]['width'],
@@ -452,7 +452,7 @@ class YoutubeCom(Hoster):
                     video_streams.keys()))
 
         self.log_debug(
-            "CHOSEN VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{})".format(
+            "CHOSEN VIDEO STREAM: ITAG:{} ({} {}x{} Q:{} 3D:{})".format(
                 chosen_fmt,
                 self.formats[chosen_fmt]['ext'],
                 self.formats[chosen_fmt]['width'],
@@ -502,7 +502,7 @@ class YoutubeCom(Hoster):
         def is_audio(x): return self.formats[x]['type'] == "a"
         if desired_fmt not in self.formats or not is_audio(desired_fmt):
             self.log_warning(
-                _("AUDIO ITAG {:d} unknown, using default").format(desired_fmt))
+                _("AUDIO ITAG {} unknown, using default").format(desired_fmt))
             desired_fmt = 141
 
         #: Build dictionary of supported audio itags
@@ -536,7 +536,7 @@ class YoutubeCom(Hoster):
                     audio_streams.keys()))
 
         self.log_debug(
-            "CHOSEN AUDIO STREAM: ITAG:{:d} ({} {} Q:{:d})".format(
+            "CHOSEN AUDIO STREAM: ITAG:{} ({} {} Q:{})".format(
                 chosen_fmt,
                 self.formats[chosen_fmt]['ext'],
                 self.formats[chosen_fmt]['acodec'],
@@ -582,7 +582,7 @@ class YoutubeCom(Hoster):
                 sec, milli = divmod(millisec, 1000)
                 m, s = divmod(int(sec), 60)
                 h, m = divmod(m, 60)
-                return "{:2d}:{:2d}:{:2d},{}".format(h, m, s, milli)
+                return "{:02}:{:02}:{:02},{}".format(h, m, s, milli)
 
             i = 1
             srt = ""

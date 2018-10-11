@@ -89,7 +89,7 @@ class XFSHoster(SimpleHoster):
 
     def handle_free(self, pyfile):
         for i in range(1, 6):
-            self.log_debug("Getting download link #{:d}...".format(i))
+            self.log_debug("Getting download link #{}...".format(i))
 
             self.check_errors()
 
@@ -126,7 +126,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parse_html_form()
 
-        upload_id = "{:12d}".format(int(random.random() * 10 ** 12))
+        upload_id = "{:012}".format(int(random.random() * 10 ** 12))
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'
