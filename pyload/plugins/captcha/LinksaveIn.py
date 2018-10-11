@@ -2,7 +2,7 @@
 
 import glob
 import os
-from builtins import range
+from builtins import _, range
 
 try:
     from PIL import Image

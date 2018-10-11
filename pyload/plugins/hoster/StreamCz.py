@@ -4,7 +4,7 @@ import hashlib
 import os
 import time
 import urllib.parse
-from builtins import range, str
+from builtins import _, range, str
 
 from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

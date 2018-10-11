@@ -5,7 +5,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import chr
+from builtins import _, chr
 
 from pyload.network.RequestFactory import getURL as get_url
 

@@ -8,7 +8,7 @@
 #  options string: py:slots,dynamic
 #
 
-from builtins import object
+from builtins import _, object
 
 from thrift.protocol.TBase import TBase
 from thrift.Thrift import TMessageType, TProcessor, TType

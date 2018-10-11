@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import chr, range
+from builtins import _, chr, range
 
 import Crypto.PublicKey.RSA
 

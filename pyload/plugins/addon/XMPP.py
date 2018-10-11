@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import object
+from builtins import _, object
 
 import pyxmpp
 import pyxmpp.all

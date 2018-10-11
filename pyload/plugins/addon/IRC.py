@@ -6,7 +6,7 @@ import socket
 import ssl
 import time
 import traceback
-from builtins import map
+from builtins import _, map
 from threading import Thread
 
 import pycurl

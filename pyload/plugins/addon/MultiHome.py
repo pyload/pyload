@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from builtins import object, str
+from builtins import _, object, str
 
 from pyload.plugins.internal.Addon import Addon
 

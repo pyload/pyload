@@ -4,7 +4,7 @@
 import os
 import subprocess
 import sys
-from builtins import input
+from builtins import _, input
 
 #from pyload import InitHomeDir
 

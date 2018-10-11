@@ -5,7 +5,7 @@ import os
 import random
 import re
 import struct
-from builtins import object, range, str
+from builtins import _, object, range, str
 
 import Crypto.Cipher.AES
 import Crypto.Util.Counter

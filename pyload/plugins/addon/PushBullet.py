@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import str
+from builtins import _, str
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request

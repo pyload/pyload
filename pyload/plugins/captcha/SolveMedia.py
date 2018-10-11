@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.internal.CaptchaService import CaptchaService
 from pyload.plugins.internal.Plugin import Fail

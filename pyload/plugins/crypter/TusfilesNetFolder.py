@@ -3,7 +3,7 @@
 import math
 import re
 import urllib.parse
-from builtins import range, str
+from builtins import _, range, str
 
 from pyload.plugins.internal.XFSCrypter import XFSCrypter
 

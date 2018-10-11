@@ -2,7 +2,7 @@
 
 import random
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

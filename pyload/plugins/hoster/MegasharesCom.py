@@ -2,7 +2,7 @@
 
 import re
 import time
-from builtins import str
+from builtins import _, str
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

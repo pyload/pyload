@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 import time
-from builtins import object
+from builtins import _, object
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import Expose, encode, fsjoin

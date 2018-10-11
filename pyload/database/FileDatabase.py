@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from builtins import object, range, str, zip
+from builtins import _, object, range, str, zip
 from threading import RLock
 
 from pyload.database import DatabaseBackend, style

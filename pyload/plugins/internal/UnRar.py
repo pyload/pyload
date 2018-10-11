@@ -4,7 +4,7 @@ import os
 import re
 import string
 import subprocess
-from builtins import pypath, filter, map
+from builtins import _, pypath, filter, map
 
 from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
 from pyload.plugins.utils import decode, encode, fsjoin, renice

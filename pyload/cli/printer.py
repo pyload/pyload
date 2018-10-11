@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import str
+from builtins import _, str
 
 
 def blue(string):

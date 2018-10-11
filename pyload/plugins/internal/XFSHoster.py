@@ -3,7 +3,7 @@
 import operator
 import random
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia

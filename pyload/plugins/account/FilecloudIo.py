@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.internal.Account import Account
 from pyload.plugins.utils import json, set_cookie

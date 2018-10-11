@@ -4,7 +4,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import chr
+from builtins import _, chr
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

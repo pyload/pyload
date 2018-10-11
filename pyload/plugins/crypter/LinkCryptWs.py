@@ -2,7 +2,7 @@
 
 import binascii
 import re
-from builtins import filter, zip
+from builtins import _, filter, zip
 
 import Crypto.Cipher.AES
 import pycurl

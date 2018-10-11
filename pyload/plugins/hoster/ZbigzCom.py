@@ -4,7 +4,7 @@ import random
 import re
 import time
 import urllib.parse
-from builtins import range, str
+from builtins import _, range, str
 
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import json

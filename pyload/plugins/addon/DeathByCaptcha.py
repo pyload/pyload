@@ -3,7 +3,7 @@
 import base64
 import re
 import time
-from builtins import range, str
+from builtins import _, range, str
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader

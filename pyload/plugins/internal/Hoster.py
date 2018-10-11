@@ -4,7 +4,7 @@ import builtins
 import mimetypes
 import os
 import re
-from builtins import range
+from builtins import _, range
 
 from future.utils import with_metaclass
 

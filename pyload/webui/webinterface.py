@@ -4,7 +4,7 @@
 
 import os
 import sys
-from builtins import str
+from builtins import _, str
 from os import makedirs
 from os.path import abspath, dirname, exists, join
 

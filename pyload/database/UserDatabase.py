@@ -2,7 +2,7 @@
 # @author: mkaay
 
 import random
-from builtins import object, range, str
+from builtins import _, object, range, str
 from functools import reduce
 from hashlib import sha1
 

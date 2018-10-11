@@ -2,7 +2,7 @@
 
 import binascii
 import re
-from builtins import filter
+from builtins import _, filter
 
 import Crypto.Cipher.AES
 

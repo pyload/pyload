@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import map
+from builtins import _, map
 
 from pyload.plugins.utils import json
 from pyload.plugins.internal.MultiAccount import MultiAccount

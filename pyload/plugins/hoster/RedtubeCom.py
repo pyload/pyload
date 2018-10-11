@@ -3,7 +3,7 @@
 import os
 import re
 import urllib.parse
-from builtins import str
+from builtins import _, str
 
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import json

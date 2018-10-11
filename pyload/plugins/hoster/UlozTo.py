@@ -2,7 +2,7 @@
 
 import os
 import re
-from builtins import str
+from builtins import _, str
 
 import pycurl
 

@@ -2,7 +2,7 @@
 
 import re
 import time
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.internal.Account import Account
 from pyload.plugins.utils import decode, remove_chars, uniqify

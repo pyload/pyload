@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
-from builtins import object, range, str
+from builtins import _, object, range, str
 from os import remove
 from os.path import exists
 from queue import Queue

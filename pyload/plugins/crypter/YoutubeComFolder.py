@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from builtins import map
+from builtins import _, map
 
 from pyload.plugins.internal.Crypter import Crypter
 from pyload.plugins.utils import fsjoin, json

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.utils import seconds_to_midnight
 from pyload.plugins.internal.MultiHoster import MultiHoster

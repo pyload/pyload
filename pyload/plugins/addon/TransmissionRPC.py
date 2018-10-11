@@ -2,7 +2,7 @@
 
 import random
 import re
-from builtins import range
+from builtins import _, range
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader

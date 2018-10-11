@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import object, range, str
+from builtins import _, object, range, str
 from logging import getLogger
 from os import remove
 from os.path import dirname

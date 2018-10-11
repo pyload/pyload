@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import object
+from builtins import _, object
 from logging import getLogger
 
 from pyload.network.HTTPDownload import HTTPDownload

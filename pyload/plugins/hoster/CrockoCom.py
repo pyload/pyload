@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from builtins import range
+from builtins import _, range
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

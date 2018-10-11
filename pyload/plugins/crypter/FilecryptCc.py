@@ -8,7 +8,7 @@
 import binascii
 import re
 import urllib.parse
-from builtins import filter, range, str
+from builtins import _, filter, range, str
 
 import Crypto.Cipher.AES
 from pyload.network.CookieJar import CookieJar

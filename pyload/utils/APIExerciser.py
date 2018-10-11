@@ -2,7 +2,7 @@
 
 import gc
 import string
-from builtins import range
+from builtins import _, range
 from math import floor
 from random import choice, randint, sample
 from threading import Thread

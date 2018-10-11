@@ -3,7 +3,7 @@
 # @author: RaNaN
 
 import socket
-from builtins import object
+from builtins import _, object
 from sys import argv, exit
 from traceback import print_exc
 

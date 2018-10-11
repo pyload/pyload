@@ -3,7 +3,7 @@
 import inspect
 import re
 import urllib.parse
-from builtins import hex, next, object, str
+from builtins import _, hex, next, object, str
 
 from pyload.network.HTTPRequest import BadHeader
 

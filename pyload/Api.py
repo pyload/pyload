@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 import re
-from builtins import object, str
+from builtins import _, object, str
 from os.path import join
 from time import time
 

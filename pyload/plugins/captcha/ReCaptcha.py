@@ -6,7 +6,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import range, str
+from builtins import _, range, str
 from io import StringIO
 
 from pyload.plugins.internal.CaptchaService import CaptchaService

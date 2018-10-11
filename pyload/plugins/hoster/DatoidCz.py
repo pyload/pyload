@@ -2,7 +2,7 @@
 
 import time
 import urllib.parse
-from builtins import str
+from builtins import _, str
 
 from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

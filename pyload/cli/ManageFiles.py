@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import map, range, str
+from builtins import _, map, range, str
 from itertools import islice
 from time import time
 

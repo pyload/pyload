@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import object, range
+from builtins import _, object, range
 
 from nose.tools import nottest
 from pyload.utils.utils import APIExerciser

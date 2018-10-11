@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL as get_url

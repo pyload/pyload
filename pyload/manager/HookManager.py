@@ -3,7 +3,7 @@
 
 import builtins
 import traceback
-from builtins import object, str
+from builtins import _, object, str
 from threading import RLock
 from types import MethodType
 

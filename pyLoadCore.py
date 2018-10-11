@@ -9,7 +9,7 @@ import os
 import signal
 import subprocess
 import sys
-from builtins import owd, pypath, object, range, str
+from builtins import _, owd, pypath, object, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from imp import find_module

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import gzip
-from builtins import object, str
+from builtins import _, object, str
 
 try:
     from io import StringIO

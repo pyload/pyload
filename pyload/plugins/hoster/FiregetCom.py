@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from builtins import chr
+from builtins import _, chr
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-from builtins import str
+from builtins import _, str
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

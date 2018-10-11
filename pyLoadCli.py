@@ -5,7 +5,7 @@
 import configparser
 import os
 import sys
-from builtins import owd, pypath, input, object, range, str
+from builtins import _, owd, pypath, input, object, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from os import _exit

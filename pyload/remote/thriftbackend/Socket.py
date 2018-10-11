@@ -2,7 +2,7 @@
 
 import errno
 import sys
-from builtins import object
+from builtins import _, object
 from time import sleep
 
 from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException

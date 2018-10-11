@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-from builtins import object
+from builtins import _, object
 from threading import Lock
 
 from pyload.network.Browser import Browser

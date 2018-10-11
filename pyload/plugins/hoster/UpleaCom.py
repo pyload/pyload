@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from builtins import chr, range
+from builtins import _, chr, range
 
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

@@ -2,7 +2,7 @@
 # coding:utf-8
 
 import re
-from builtins import filter, input, object
+from builtins import _, filter, input, object
 from os import listdir
 
 from pyload import InitHomeDir

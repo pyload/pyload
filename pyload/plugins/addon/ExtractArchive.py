@@ -2,7 +2,7 @@
 
 import os
 import sys
-from builtins import object
+from builtins import _, object
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError

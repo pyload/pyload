@@ -2,7 +2,7 @@
 
 import inspect
 import os
-from builtins import object
+from builtins import _, object
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request

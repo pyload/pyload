@@ -8,7 +8,7 @@ import struct
 import sys
 import threading
 import time
-from builtins import object, range, str
+from builtins import _, object, range, str
 
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import encode, exists, fsjoin, lock, threaded

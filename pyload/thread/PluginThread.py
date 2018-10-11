@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import str
+from builtins import _, str
 from copy import copy
 from os import listdir, stat
 from os.path import join

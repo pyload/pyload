@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import pypath, zip
+from builtins import _, pypath, zip
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded

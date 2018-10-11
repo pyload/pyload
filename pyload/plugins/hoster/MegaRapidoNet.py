@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-from builtins import range, str
+from builtins import _, range, str
 
 from pyload.plugins.internal.MultiHoster import MultiHoster
 

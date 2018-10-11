@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 import re
-from builtins import pypath, object, range, str
+from builtins import _, pypath, object, range, str
 from os.path import exists, join
 from random import choice
 from subprocess import Popen

@@ -23,7 +23,7 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import map, object, str
+from builtins import _, map, object, str
 
 try:
     import simplejson as json

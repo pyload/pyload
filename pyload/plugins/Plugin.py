@@ -2,7 +2,7 @@
 # @author: RaNaN, spoob, mkaay
 
 import os
-from builtins import object, str
+from builtins import _, object, str
 from itertools import islice
 from os import chmod, makedirs, remove, stat
 from os.path import exists, join

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import object, str
+from builtins import _, object, str
 from os.path import exists
 from shutil import copy
 from threading import Lock

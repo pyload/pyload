@@ -2,7 +2,7 @@
 
 import random
 import re
-from builtins import range
+from builtins import _, range
 
 from pyload.network.RequestFactory import getURL as get_url
 

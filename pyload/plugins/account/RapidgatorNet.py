@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import str
+from builtins import _, str
 
 from pyload.plugins.internal.Account import Account
 from pyload.plugins.utils import json

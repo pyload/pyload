@@ -7,7 +7,7 @@ import select
 import socket
 import struct
 import time
-from builtins import object
+from builtins import _, object
 
 from pyload.plugins.Plugin import Abort
 

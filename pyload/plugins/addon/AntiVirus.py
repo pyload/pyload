@@ -3,7 +3,7 @@
 import os
 import shutil
 import subprocess
-from builtins import map
+from builtins import _, map
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded

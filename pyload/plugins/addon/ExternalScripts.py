@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import map
+from builtins import _, map
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import Expose, encode

@@ -7,7 +7,7 @@ import os
 import re
 import sys
 import time
-from builtins import chr, map
+from builtins import _, chr, map
 from html.entities import name2codepoint
 from os.path import join
 from string import maketrans

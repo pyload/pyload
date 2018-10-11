@@ -7,7 +7,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import range
+from builtins import _, range
 
 import Crypto.Cipher.ARC4
 import pycurl

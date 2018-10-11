@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-from builtins import object, str
+from builtins import _, object, str
 from threading import Lock
 from time import time
 from traceback import print_exc

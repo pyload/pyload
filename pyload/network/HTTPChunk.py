@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 import codecs
-from builtins import object, range, str
+from builtins import _, object, range, str
 from os import fsync, remove, stat
 from os.path import exists
 from re import search

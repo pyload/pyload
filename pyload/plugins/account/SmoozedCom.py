@@ -2,7 +2,7 @@
 
 import hashlib
 import time
-from builtins import object
+from builtins import _, object
 
 from pyload.plugins.utils import json
 from pyload.plugins.internal.MultiAccount import MultiAccount

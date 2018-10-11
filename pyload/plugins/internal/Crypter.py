@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from builtins import map
+from builtins import _, map
 
 from pyload.plugins.internal.Base import Base
 from pyload.plugins.utils import parse_name, safename
