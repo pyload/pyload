@@ -245,8 +245,7 @@ class ShareLinksBiz(Crypter):
                 dl_link = self.js.eval(jslauncher.format(jscode))
 
                 self.log_debug(
-                    "JsEngine returns value [{}] for redirection link" %
-                    dl_link)
+                    "JsEngine returns value [{}] for redirection link".format(dl_link))
 
                 pack_links.append(dl_link)
 

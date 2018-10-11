@@ -122,8 +122,7 @@ class NCryptIn(Crypter):
                 if keyword in content:
                     self.protection_type = keyword
                     self.log_debug(
-                        "Links are {} protected" %
-                        self.protection_type)
+                        "Links are {} protected".format(self.protection_type))
                     return True
         return False
 
@@ -152,8 +151,7 @@ class NCryptIn(Crypter):
         if "password" in form:
             password = self.get_password()
             self.log_debug(
-                "Submitting password [{}] for protected links" %
-                password)
+                "Submitting password [{}] for protected links".format(password))
             postData['password'] = password
 
         #: Resolve anicaptcha
@@ -208,8 +206,7 @@ class NCryptIn(Crypter):
         require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
         if require_js_engine and not self.js:
             self.log_debug(
-                "No JS engine available, skip {} links" %
-                link_source_type)
+                "No JS engine available, skip {} links".format(link_source_type))
             return []
 
         #: Select suitable handler

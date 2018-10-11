@@ -114,8 +114,7 @@ class Plugin(object):
 
         except (NameError, OSError) as e:
             self.log_warning(
-                _("Error removing `{}`") %
-                os.path.abspath(path), e)
+                _("Error removing `{}`").format(os.path.abspath(path)), e)
             return False
 
         else:

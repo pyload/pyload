@@ -125,7 +125,7 @@ class XFSHoster(SimpleHoster):
 
         action, inputs = self.parse_html_form()
 
-        upload_id = "%012d".format(int(random.random() * 10 ** 12))
+        upload_id = "{:12d}".format(int(random.random() * 10 ** 12))
         action += upload_id + "&js_on=1&utype=prem&upload_type=url"
 
         inputs['tos'] = '1'
@@ -250,7 +250,7 @@ class XFSHoster(SimpleHoster):
                 a[1] for a in sorted(
                     numerals, key=operator.itemgetter(0)))
 
-            self.log_debug("Captcha code: {}".format(inputs['code'], numerals))
+            self.log_debug("Captcha code: {}".format(inputs['code']), numerals)
             return
 
         recaptcha = ReCaptcha(self.pyfile)

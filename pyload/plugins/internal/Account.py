@@ -203,8 +203,7 @@ class Account(Plugin):
 
         if refresh and self.info['login']['valid']:
             self.log_info(
-                _("Grabbing account info for user `{}`...") %
-                self.user)
+                _("Grabbing account info for user `{}`...").format(self.user))
             self.info = self._grab_info()
 
             self.syncback()
@@ -234,8 +233,7 @@ class Account(Plugin):
 
         except Exception as e:
             self.log_warning(
-                _("Error loading info for user `{}`") %
-                self.user, e)
+                _("Error loading info for user `{}`").format(self.user), e)
 
         finally:
             return self.info
@@ -290,8 +288,7 @@ class Account(Plugin):
 
         if user in self.accounts:
             self.log_error(
-                _("Error adding user `{}`") %
-                user, _("User already exists"))
+                _("Error adding user `{}`").format(user), _("User already exists"))
             return False
 
         d = {'login': user,
@@ -371,8 +368,7 @@ class Account(Plugin):
 
             if time.time() > data['validuntil'] > 0:
                 self.log_warning(
-                    _("Not using account `{}` because the account has expired") %
-                    user)
+                    _("Not using account `{}` because the account has expired").format(user))
                 continue
 
             if data['premium']:
@@ -407,8 +403,7 @@ class Account(Plugin):
 
         elif user not in self.accounts:
             self.log_error(
-                _("Error choosing user `{}`") %
-                user, _("User does not exists"))
+                _("Error choosing user `{}`").format(user), _("User does not exists"))
             return False
 
         if self.req and user == self.user:

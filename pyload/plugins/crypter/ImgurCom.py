@@ -66,8 +66,7 @@ class ImgurCom(SimpleCrypter):
             if len(images) < self.total_num_images:
                 external_json = json.loads(
                     self.load(
-                        self.GALLERY_JSON %
-                        gallery_id))
+                        self.GALLERY_JSON.format(gallery_id)))
 
                 try:
                     images = dict((e['hash'], e['ext'])

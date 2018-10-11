@@ -59,7 +59,7 @@ class ChunkInfo(object):
         for i, c in enumerate(self.chunks):
             fh.write("#{:d}:\n".format(i))
             fh.write("\tname:{}\n".format(c[0]))
-            fh.write("\trange:%i-%i\n".format(c[1]))
+            fh.write("\trange:{:i}-{:i}\n".format(*c[1]))
         fh.close()
 
     @staticmethod
@@ -175,9 +175,9 @@ class HTTPChunk(HTTPRequest):
 
                 if self.id == len(
                         self.p.info.chunks) - 1:  # as last chunk dont set end range, so we get everything
-                    range = "%i-".format(self.arrived + self.range[0])
+                    range = "{:i}-".format(self.arrived + self.range[0])
                 else:
-                    range = "%i-%i".format(self.arrived +
+                    range = "{:i}-{:i}".format(self.arrived +
                                            self.range[0], min(self.range[1] +
                                                               1, self.p.size -
                                                               1))
@@ -185,15 +185,15 @@ class HTTPChunk(HTTPRequest):
                 self.log.debug("Chunked resume with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
             else:
-                self.log.debug("Resume File from %i".format(self.arrived))
+                self.log.debug("Resume File from {:i}".format(self.arrived))
                 self.c.setopt(pycurl.RESUME_FROM, self.arrived)
 
         else:
             if self.range:
                 if self.id == len(self.p.info.chunks) - 1:  # see above
-                    range = "%i-".format(self.range[0])
+                    range = "{:i}-".format(self.range[0])
                 else:
-                    range = "%i-%i".format(self.range[0],
+                    range = "{:i}-{:i}".format(self.range[0],
                                            min(self.range[1] + 1, self.p.size - 1))
 
                 self.log.debug("Chunked with range {}".format(range))

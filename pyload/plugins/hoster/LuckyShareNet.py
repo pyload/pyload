@@ -35,8 +35,7 @@ class LuckyShareNet(SimpleHoster):
             if m is not None:
                 seconds = int(m.group(1))
                 self.log_debug(
-                    "You have to wait {:d} seconds between free downloads" %
-                    seconds)
+                    "You have to wait {:d} seconds between free downloads".format(seconds))
                 self.retry(wait=seconds)
             else:
                 self.error(

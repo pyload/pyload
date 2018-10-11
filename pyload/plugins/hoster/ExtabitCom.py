@@ -60,8 +60,7 @@ class ExtabitCom(SimpleHoster):
                 'challenge'] = self.captcha.challenge(captcha_key)
 
             html = self.load(
-                "http://extabit.com/file/{}/" %
-                fileID, get=get_data)
+                "http://extabit.com/file/{}/".format(fileID), get=get_data)
             res = json.loads(html)
 
             if "ok" in res:

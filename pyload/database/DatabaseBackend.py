@@ -175,7 +175,7 @@ class DatabaseBackend(Thread):
 
     def _convertDB(self, v):
         try:
-            getattr(self, "_convertV%i".format(v)())
+            getattr(self, "_convertV{:i}".format(v)())
         except Exception:
             try:
                 self.core.log.error(_("Filedatabase could NOT be converted."))

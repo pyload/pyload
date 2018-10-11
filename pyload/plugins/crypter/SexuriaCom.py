@@ -73,15 +73,13 @@ class SexuriaCom(Crypter):
                 re.I).group('ID')
             if id:
                 linklist.append(
-                    "http://sexuria.com/v1/Pornos_Kostenlos_liebe_{}.html" %
-                    id)
+                    "http://sexuria.com/v1/Pornos_Kostenlos_liebe_{}.html".format(id))
 
         elif re.match(self.PATTERN_SUPPORTED_CRYPT, url, re.I):
             #: Extract info from main file
             id = re.search(self.PATTERN_SUPPORTED_CRYPT, url, re.I).group('ID')
             html = self.load(
-                "http://sexuria.com/v1/Pornos_Kostenlos_info_{}.html" %
-                id)
+                "http://sexuria.com/v1/Pornos_Kostenlos_info_{}.html".format(id))
             #: Webpage title / Package name
             titledata = re.search(self.PATTERN_TITLE, html, re.I)
             if not titledata:
@@ -101,8 +99,7 @@ class SexuriaCom(Crypter):
                 if pwd and not (pwd in self.LIST_PWDIGNORE):
                     password = pwd
                     self.log_debug(
-                        "Package info found, password [{}]" %
-                        password)
+                        "Package info found, password [{}]".format(password))
 
             #: Process links (dl_link)
             html = self.load(url)

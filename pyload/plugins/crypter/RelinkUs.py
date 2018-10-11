@@ -138,8 +138,7 @@ class RelinkUs(Crypter):
         password = self.get_password()
 
         self.log_debug(
-            "Submitting password [{}] for protected links" %
-            password)
+            "Submitting password [{}] for protected links".format(password))
 
         if password:
             passwd_url = self.PASSWORD_SUBMIT_URL + "?id={}".format(self.file_id)

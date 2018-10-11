@@ -220,7 +220,7 @@ class ConfigParser(object):
         """saves config to filename"""
         with open(filename, "wb") as f:
             chmod(filename, 0o600)
-            f.write("version: %i \n".format(CONF_VERSION))
+            f.write("version: {:i} \n".format(CONF_VERSION))
             for section in sorted(config.keys()):
                 f.write('\n{} - "{}":\n'.format(section, config[section]["desc"]))
 

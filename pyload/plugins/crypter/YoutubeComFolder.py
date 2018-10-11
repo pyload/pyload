@@ -111,8 +111,7 @@ class YoutubeComFolder(Crypter):
                     p_id in list(channel['relatedPlaylists'].items()))
 
                 self.log_debug(
-                    "Channel's related playlists found = {}" %
-                    list(relatedplaylist.keys()))
+                    "Channel's related playlists found = {}".format(list(relatedplaylist.keys())))
 
                 relatedplaylist['uploads']['title'] = "Unplaylisted videos"
                 relatedplaylist['uploads'][

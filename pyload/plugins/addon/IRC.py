@@ -85,8 +85,7 @@ class IRC(Thread, Notifier):
             url = re.search(r"src='([^']+)'", html).group(1)
             self.response(_("New Captcha Request: {}").format(url))
             self.response(
-                _("Answer with 'c {} text on the captcha'") %
-                task.id)
+                _("Answer with 'c {} text on the captcha'").format(task.id))
 
     def run(self):
         #: Connect to IRC etc.
@@ -350,7 +349,7 @@ class IRC(Thread, Notifier):
             #: Create new package
             id = self.pyload.api.addPackage(pack, links, 1)
             return [
-                "INFO: Created new Package {} [#%d] with {#{:d}} links.".format(
+                "INFO: Created new Package {} [#{:d}] with {#{:d}} links.".format(
                     pack, id, len(links))]
 
     def event_del(self, args):

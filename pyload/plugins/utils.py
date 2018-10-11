@@ -278,7 +278,7 @@ def format_time(value):
 def format_size(value):
     for unit in ('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'):
         if abs(value) < 1024.0:
-            return "%3.2f {}".format(value, unit)
+            return "{:3.2f} {}".format(value, unit)
         else:
             value /= 1024.0
 
@@ -808,8 +808,7 @@ def parse_html_header(header):
 
 def parse_html_tag_attr_value(attr_name, tag):
     m = re.search(
-        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1' %
-        attr_name, tag, re.I)
+        r'{}\s*=\s*(["\']?)((?<=")[^"]+|(?<=\')[^\']+|[^>\s"\'][^>\s]*)\1'.format(attr_name), tag, re.I)
     return m.group(2) if m else None
 
 

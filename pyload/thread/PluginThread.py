@@ -95,7 +95,7 @@ class PluginThread(Thread):
                                                            frame.f_lineno)
 
             for key, value in list(frame.f_locals.items()):
-                dump += "\t%20s = ".format(key)
+                dump += "\t{:20} = ".format(key)
                 try:
                     dump += pformat(value) + "\n"
                 except Exception as e:
@@ -110,7 +110,7 @@ class PluginThread(Thread):
         for name in dir(pyfile.plugin):
             attr = getattr(pyfile.plugin, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = ".format(name)
+                dump += "\t{:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:
@@ -121,7 +121,7 @@ class PluginThread(Thread):
         for name in dir(pyfile):
             attr = getattr(pyfile, name)
             if not name.endswith("__") and not isinstance(attr, MethodType):
-                dump += "\t%20s = ".format(name)
+                dump += "\t{:20} = ".format(name)
                 try:
                     dump += pformat(attr) + "\n"
                 except Exception as e:

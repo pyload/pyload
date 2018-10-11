@@ -21,7 +21,7 @@ class IRC(object):
         self.lock = threading.RLock()
 
         #: last 4 digits
-        self.nick = "pyload-%04d".format(time.time().format(10000)
+        self.nick = "pyload-{:4d}".format(time.time().format(10000)
                                          ) if nick == "pyload" else nick
         self.ident = ident
         self.realname = realname
