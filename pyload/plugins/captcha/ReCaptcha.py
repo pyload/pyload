@@ -164,8 +164,7 @@ class ReCaptcha(CaptchaService):
 
         if version in (1, 2, "2js"):
             return getattr(
-                self, "_challenge_v{}".format(version)(key, secure_token=secure_token)
-            )
+                self, "_challenge_v{}".format(version))(key, secure_token=secure_token)
         else:
             return self.challenge(
                 key,
