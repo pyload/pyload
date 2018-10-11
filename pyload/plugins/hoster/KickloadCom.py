@@ -10,7 +10,7 @@ class KickloadCom(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?kickload\.com/get/.+'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Kickload.com hoster plugin"""
     __license__ = "GPLv3"

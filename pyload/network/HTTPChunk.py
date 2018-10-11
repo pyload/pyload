@@ -205,7 +205,7 @@ class HTTPChunk(HTTPRequest):
 
     def writeHeader(self, buf):
         self.header += buf
-        # @TODO forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
+        # TODO: forward headers?, this is possibly unneeeded, when we just parse valid 200 headers
         # as first chunk, we will parse the headers
         if not self.range and self.header.endswith("\r\n\r\n"):
             self.parseHeader()

@@ -10,7 +10,7 @@ class IFileWs(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?ifile\.ws/\w{12}'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Ifile.ws hoster plugin"""
     __license__ = "GPLv3"

@@ -28,13 +28,13 @@ class ExternalScripts(Addon):
         self.folders = ["pyload_start", "pyload_restart", "pyload_stop",
                         "before_reconnect", "after_reconnect",
                         "download_preparing", "download_failed",
-                        # @TODO: Invert 'download_processed', 'download_finished' order in 0.6.x
+                        # TODO: Invert 'download_processed', 'download_finished' order in 0.6.x
                         "download_finished", "download_processed",
                         "archive_extract_failed", "archive_extracted",
-                        # @TODO: Invert 'package_finished', 'package_processed' order in 0.6.x
+                        # TODO: Invert 'package_finished', 'package_processed' order in 0.6.x
                         "package_finished", "package_processed",
                         "package_deleted", "package_failed", "package_extract_failed", "package_extracted",
-                        # @TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.6.x
+                        # TODO: Invert `all_downloads_processed`, `all_downloads_finished` order in 0.6.x
                         "all_downloads_processed", "all_downloads_finished",
                         "all_archives_extracted", "all_archives_processed"]
 
@@ -47,7 +47,7 @@ class ExternalScripts(Addon):
                           'pyload_updated': "pyload_updated"}
 
         self.periodical.start(60)
-        self.periodical_task()  # @NOTE: Initial scan so dont miss `pyload_start` scripts if any
+        self.periodical_task()  # NOTE: Initial scan so dont miss `pyload_start` scripts if any
 
     def activate(self):
         self.pyload_start()
@@ -122,7 +122,7 @@ class ExternalScripts(Addon):
                 _arg +
                 '"' if ' ' in _arg else _arg for _arg in call))
 
-        p = subprocess.Popen(call, bufsize=-1)  # @NOTE: output goes to pyload
+        p = subprocess.Popen(call, bufsize=-1)  # NOTE: output goes to pyload
 
         return p
 

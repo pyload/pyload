@@ -140,7 +140,7 @@ class Checksum(Addon):
 
         elif hasattr(pyfile.plugin, "info") and isinstance(pyfile.plugin.info, dict):
             data = pyfile.plugin.info.copy()
-            # @NOTE: Don't check file size until a similary matcher will be implemented
+            # NOTE: Don't check file size until a similary matcher will be implemented
             data.pop('size', None)
 
         else:

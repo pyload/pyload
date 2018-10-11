@@ -47,7 +47,7 @@ class Http(Hoster):
                     "Received HTTP status code: {:d}" %
                     self.req.code)
 
-                # @TODO: Recheck in 0.6.x
+                # TODO: Recheck in 0.6.x
                 if self.account:
                     servers = [x['login']
                                for x in self.account.getAllAccounts()]

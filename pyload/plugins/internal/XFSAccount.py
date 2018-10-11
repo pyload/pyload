@@ -65,7 +65,7 @@ class XFSAccount(Account):
         if self.COOKIES:
             self._set_xfs_cookie()
 
-    # @TODO: Implement default grab_hosters routine
+    # TODO: Implement default grab_hosters routine
     # def grab_hosters(self, user, password, data):
         # pass
 
@@ -75,7 +75,7 @@ class XFSAccount(Account):
         leechtraffic = None
         premium = None
 
-        if not self.PLUGIN_URL:  # @TODO: Remove in 0.6.x
+        if not self.PLUGIN_URL:  # TODO: Remove in 0.6.x
             return
 
         self.data = self.load(self.PLUGIN_URL,

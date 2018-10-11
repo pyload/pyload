@@ -130,14 +130,14 @@ class SimpleCrypter(Crypter):
 
         return info
 
-    #@TODO: Remove in 0.6.x
+    # TODO: Remove in 0.6.x
     def setup_base(self):
         account_name = self.classname.rsplit("Folder", 1)[0]
 
         if self.account:
             self.req = self.pyload.requestFactory.getRequest(
                 account_name, self.account.user)
-            # @NOTE: Don't call get_info here to reduce overhead
+            # NOTE: Don't call get_info here to reduce overhead
             self.premium = self.account.info['data']['premium']
         else:
             self.req = self.pyload.requestFactory.getRequest(account_name)
@@ -145,7 +145,7 @@ class SimpleCrypter(Crypter):
 
         Crypter.setup_base(self)
 
-    #@TODO: Remove in 0.6.x
+    # TODO: Remove in 0.6.x
     def load_account(self):
         class_name = self.classname
         self.__class__.__name__ = class_name.rsplit("Folder", 1)[0]

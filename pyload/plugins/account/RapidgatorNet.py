@@ -36,7 +36,7 @@ class RapidgatorNet(Account):
 
             if json_data['response_status'] == 200:
                 validuntil = json_data['response']['expire_date']
-                # @TODO: Remove `/ 1024` in 0.6.x
+                # TODO: Remove `/ 1024` in 0.6.x
                 trafficleft = float(json_data['response']['traffic_left']) // 1024
                 premium = True
 

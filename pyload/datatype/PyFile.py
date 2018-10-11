@@ -134,7 +134,7 @@ class PyFile(object):
 
     def setStatus(self, status):
         self.status = statusMap[status]
-        self.sync()  # @TODO needed aslong no better job approving exists
+        self.sync()  # TODO: needed aslong no better job approving exists
 
     def setCustomStatus(self, msg, status="processing"):
         self.statusname = msg

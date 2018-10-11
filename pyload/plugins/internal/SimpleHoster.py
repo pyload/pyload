@@ -262,7 +262,7 @@ class SimpleHoster(Hoster):
     def process(self, pyfile):
         self._prepare()
 
-        # @TODO: Remove `handle_multi`, use MultiHoster instead
+        # TODO: Remove `handle_multi`, use MultiHoster instead
         if self.leech_dl:
             self.log_info(_("Processing as debrid download..."))
             self.handle_multi(pyfile)
@@ -326,7 +326,7 @@ class SimpleHoster(Hoster):
                 self.log_info(_("Checking file (with custom rules)..."))
 
                 with open(encode(self.last_download), "rb") as f:
-                    self.data = f.read(1048576)  # @TODO: Recheck in 0.6.x
+                    self.data = f.read(1048576)  # TODO: Recheck in 0.6.x
 
                 self.check_errors()
 

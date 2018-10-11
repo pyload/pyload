@@ -179,7 +179,7 @@ class IRC(object):
                                 _("[{}] Ping? Pong!").format(sender_nick))
                             self.irc_sock.send(
                                 "NOTICE {} :\x01PING {}\x01\r\n".format(
-                                    sender_nick, ctcp_args))  # @NOTE: PING is not a typo
+                                    sender_nick, ctcp_args))  # NOTE: PING is not a typo
 
                         else:
                             break

@@ -254,9 +254,9 @@ class UpdateManager(Addon):
         req = self.pyload.requestFactory.getRequest(self.classname)
 
         if blacklist:
-            # @NOTE: Protect UpdateManager from self-removing
+            # NOTE: Protect UpdateManager from self-removing
             if os.name == "nt":
-                # @NOTE: Windows filesystem is case insensitive, make sure we do not delete legitimate plugins
+                # NOTE: Windows filesystem is case insensitive, make sure we do not delete legitimate plugins
                 whitelisted_plugins = [
                     (plugin['type'], plugin['name'].upper()) for plugin in updatelist]
                 blacklisted_plugins = [
@@ -291,7 +291,7 @@ class UpdateManager(Addon):
             plugin_version = plugin['version']
 
             plugins = getattr(self.pyload.pluginManager, "{}Plugins".format(
-                plugin_type.rstrip('s')))  # @TODO: Remove rstrip in 0.6.x)
+                plugin_type.rstrip('s')))  # TODO: Remove rstrip in 0.6.x)
 
             oldver = float(plugins[plugin_name]['v']
                            ) if plugin_name in plugins else None
@@ -312,7 +312,7 @@ class UpdateManager(Addon):
             else:
                 continue
 
-            self.log_info(msg.format(**{'type': plugin_type.rstrip('s').upper(),  # @TODO: Remove rstrip in 0.6.x
+            self.log_info(msg.format(**{'type': plugin_type.rstrip('s').upper(),  # TODO: Remove rstrip in 0.6.x
                                         'name': plugin_name,
                                         'oldver': oldver,
                                         'newver': newver}))
@@ -333,7 +333,7 @@ class UpdateManager(Addon):
 
             except Exception as e:
                 self.log_error(_("Error updating plugin: {} {}").format(plugin_type.rstrip('s').upper(), plugin_name),
-                               e)  # @TODO: Remove rstrip in 0.6.x
+                               e)  # TODO: Remove rstrip in 0.6.x
 
         return updated
 

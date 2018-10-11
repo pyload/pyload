@@ -10,7 +10,7 @@ class LemUploadsCom(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?lemuploads\.com/\w{12}'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """LemUploads.com hoster plugin"""
     __license__ = "GPLv3"

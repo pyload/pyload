@@ -28,14 +28,14 @@ class Account(Plugin):
         self.manager = manager
         self.lock = threading.RLock()
 
-        self.accounts = accounts  # @TODO: Recheck in 0.6.x
+        self.accounts = accounts  # TODO: Recheck in 0.6.x
         self.user = None
 
         self.timeout = self.LOGIN_TIMEOUT
 
         #: Callback of periodical job task, used by HookManager
         self.periodical = Periodical(self, self.periodical_task)
-        self.cb = self.periodical.cb  # @TODO: Recheck in 0.6.x
+        self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
 
         self.init()
 
@@ -138,14 +138,14 @@ class Account(Plugin):
 
             return bool(self.info['login']['valid'])
 
-    # @TODO: Recheck in 0.6.x
+    # TODO: Recheck in 0.6.x
     def syncback(self):
         """
         Wrapper to directly sync self.info -> self.accounts[self.user]
         """
         return self.sync(reverse=True)
 
-    # @TODO: Recheck in 0.6.x
+    # TODO: Recheck in 0.6.x
     def sync(self, reverse=False):
         """
         Sync self.accounts[self.user] -> self.info
@@ -250,7 +250,7 @@ class Account(Plugin):
         pass
 
     ###########################################################################
-    #@TODO: Recheck and move to `AccountManager` in 0.6.x ####################
+    # TODO: Recheck and move to `AccountManager` in 0.6.x ####################
     ###########################################################################
 
     @lock
@@ -271,13 +271,13 @@ class Account(Plugin):
     @lock
     def getAllAccounts(self, force=False):
         if force:
-            self.init_accounts()  # @TODO: Recheck in 0.6.x
+            self.init_accounts()  # TODO: Recheck in 0.6.x
 
-        # @NOTE: `init_accounts()` already calls getAccountData(user, True), avoid calling `get_info()` twice
-        # @NOTE: So force=False always here
+        # NOTE: `init_accounts()` already calls getAccountData(user, True), avoid calling `get_info()` twice
+        # NOTE: So force=False always here
         return [self.getAccountData(user, False) for user in self.accounts]
 
-    # @TODO: Remove in 0.6.x
+    # TODO: Remove in 0.6.x
     @lock
     def scheduleRefresh(self, user, force=False):
         pass
@@ -386,7 +386,7 @@ class Account(Plugin):
                            if info['data']['validuntil']]
 
         if not validuntil_list:
-            # @TODO: Random account?! Rewrite in 0.6.x
+            # TODO: Random account?! Rewrite in 0.6.x
             return random.choice(account_list)
 
         return sorted(validuntil_list,
@@ -427,10 +427,10 @@ class Account(Plugin):
 
     ###########################################################################
 
-    def parse_traffic(self, size, unit=None):  # @NOTE: Returns kilobytes only in 0.5.0
+    def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
         self.log_debug("Size: {}".format(size),
                        "Unit: {}".format(unit or "N/D"))
-        # @TODO: Remove `/ 1024` in 0.6.x
+        # TODO: Remove `/ 1024` in 0.6.x
         return parse_size(size, unit or "byte") // 1024
 
     def fail_login(self, msg=_("Login handshake has failed")):

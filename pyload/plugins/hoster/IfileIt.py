@@ -10,7 +10,7 @@ class IfileIt(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'^unmatchable$'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Ifile.it hoster plugin"""
     __license__ = "GPLv3"

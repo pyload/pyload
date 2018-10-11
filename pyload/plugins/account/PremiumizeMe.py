@@ -51,7 +51,7 @@ class PremiumizeMe(MultiAccount):
         if res['status'] == 200:
             validuntil = float(res['result']['expires'])
 
-            # @TODO: Remove `/ 1024` in 0.6.x
+            # TODO: Remove `/ 1024` in 0.6.x
             trafficleft = max(0, res['result']['trafficleft_bytes'] // 1024)
 
             if res['result']['type'] != 'free':

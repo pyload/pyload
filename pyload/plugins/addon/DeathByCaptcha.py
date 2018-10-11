@@ -127,7 +127,7 @@ class DeathByCaptcha(Addon):
             raise DeathByCaptchaException('service-overload')
 
     def submit(self, captcha, captchaType="file", match=None):
-        # @NOTE: Workaround multipart-post bug in HTTPRequest.py
+        # NOTE: Workaround multipart-post bug in HTTPRequest.py
         if re.match(r"^\w*$", self.config.get('password')):
             multipart = True
             data = (pycurl.FORM_FILE, captcha)

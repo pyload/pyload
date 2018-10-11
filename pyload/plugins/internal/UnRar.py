@@ -201,7 +201,7 @@ class UnRar(Extractor):
 
         result = set()
         if not self.fullpath and self.VERSION.startswith('5'):
-            # @NOTE: Unrar 5 always list full path
+            # NOTE: Unrar 5 always list full path
             for f in decode(out).splitlines():
                 f = fsjoin(self.dest, os.path.basename(f.strip()))
                 if os.path.isfile(f):
@@ -252,7 +252,7 @@ class UnRar(Extractor):
         if self.keepbroken:
             args.append("-kb")
 
-        # @NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
+        # NOTE: return codes are not reliable, some kind of threading, cleanup whatever issue
         call = [self.CMD, command] + args + list(xargs)
         self.log_debug("EXECUTE " + " ".join(call))
 

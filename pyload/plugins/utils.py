@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 #
-# @TODO: Move to utils directory in 0.6.x
+# TODO: Move to utils directory in 0.6.x
 
 
-# import HTMLParser  #@TODO: Use in 0.6.x
+# import HTMLParser  # TODO: Use in 0.6.x
 
 import datetime
 import hashlib
@@ -21,7 +21,7 @@ import traceback
 import urllib.error
 import urllib.parse
 import urllib.request
-import xml.sax.saxutils  # @TODO: Remove in 0.6.x
+import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import map, object, str
 
@@ -40,7 +40,7 @@ try:
 except ImportError:
     pass
 
-# @TODO: Remove in 0.6.x
+# TODO: Remove in 0.6.x
 
 
 class utils(object):
@@ -86,7 +86,7 @@ class Config(object):
 
         except KeyError:
             self.plugin.log_debug(
-                "Config option `{}` not found, use default `{}`".format(option, default))  # @TODO: Restore to `log_warning` in 0.6.x
+                "Config option `{}` not found, use default `{}`".format(option, default))  # TODO: Restore to `log_warning` in 0.6.x
             return default
 
 
@@ -366,7 +366,7 @@ def html_unescape(text):
     Removes HTML or XML character references and entities from a text string
     """
     return xml.sax.saxutils.unescape(text)
-    # @TODO: Replace in 0.6.x with:
+    # TODO: Replace in 0.6.x with:
     # h = HTMLParser.HTMLParser()
     # return h.unescape(text)
 
@@ -395,7 +395,7 @@ def normalize(value):
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
 
-# @NOTE: Revert to `decode` in Python 3
+# NOTE: Revert to `decode` in Python 3
 def decode(value, encoding=None, errors='strict'):
     """
     Encoded string (default to own system encoding) -> unicode string
@@ -528,7 +528,7 @@ def truncate(name, length):
     return "{}~{}".format(name[:trunc * 2], name[-trunc:])
 
 
-# @TODO: Recheck in 0.6.x
+# TODO: Recheck in 0.6.x
 def safepath(value):
     """
     Remove invalid characters and truncate the path if needed
@@ -718,7 +718,7 @@ def format_exc(frame=None):
     if exc_info[0] is not None:
         exception_callstack = traceback.extract_tb(exc_info[2])
 
-        # @NOTE: Does this exception belongs to us?
+        # NOTE: Does this exception belongs to us?
         if callstack[-1][0] == exception_callstack[0][0]:
             callstack = callstack[:-1]
             callstack.extend(exception_callstack)
@@ -770,7 +770,7 @@ def replace_patterns(value, rules):
     return value
 
 
-# @TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
+# TODO: Remove in 0.6.x and fix exp in CookieJar.setCookie
 def set_cookie(cj, domain, name, value, path='/',
                exp=time.time() + 180 * 24 * 3600):
     args = list(map(encode, [domain, name, value, path])) + [int(exp)]

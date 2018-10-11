@@ -21,7 +21,7 @@ class BigfileTo(Account):
         trafficleft = -1 if premium else None
 
         return {'validuntil': None, 'trafficleft': trafficleft,
-                'premium': premium}  # @TODO: validuntil
+                'premium': premium}  # TODO: validuntil
 
     def signin(self, user, password, data):
         html = self.load("https://www.bigfile.to/login.php",

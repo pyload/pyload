@@ -37,7 +37,7 @@ class OboomCom(Account):
         salt = password[::-1]
         pbkdf2 = PBKDF2(password, salt, 1000).hexread(16)
 
-        html = self.load("http://www.oboom.com/1/login",  # @TODO: Revert to `https` in 0.6.x
+        html = self.load("http://www.oboom.com/1/login",  # TODO: Revert to `https` in 0.6.x
                          get={'auth': user,
                               'pass': pbkdf2})
         result = json.loads(html)
@@ -62,9 +62,9 @@ class OboomCom(Account):
 
         traffic = userData['traffic']
 
-        # @TODO: Remove `/ 1024` in 0.6.x
+        # TODO: Remove `/ 1024` in 0.6.x
         trafficLeft = traffic['current'] // 1024
-        maxTraffic = traffic['max'] // 1024  # @TODO: Remove `/ 1024` in 0.6.x
+        maxTraffic = traffic['max'] // 1024  # TODO: Remove `/ 1024` in 0.6.x
 
         session = account_data['session']
 

@@ -313,7 +313,7 @@ def downloads():
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
-    # @TODO some files can not be downloaded
+    # TODO: some files can not be downloaded
 
     root = PYLOAD.getConfigValue("general", "download_folder")
 

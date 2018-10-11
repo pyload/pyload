@@ -20,7 +20,7 @@ class AntiVirus(Addon):
     __version__ = "0.21"
     __status__ = "broken"
 
-    # @TODO: add trash option (use Send2Trash lib)
+    # TODO: add trash option (use Send2Trash lib)
     __config__ = [("activated", "bool", "Activated", False),
                   ("action", "Antivirus default;Delete;Quarantine",
                    "Manage infected files", "Antivirus default"),

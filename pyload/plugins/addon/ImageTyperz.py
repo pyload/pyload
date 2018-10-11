@@ -69,7 +69,7 @@ class ImageTyperz(Addon):
         req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
         try:
-            # @NOTE: Workaround multipart-post bug in HTTPRequest.py
+            # NOTE: Workaround multipart-post bug in HTTPRequest.py
             if re.match(r"^\w*$", self.config.get('password')):
                 multipart = True
                 data = (pycurl.FORM_FILE, captcha)

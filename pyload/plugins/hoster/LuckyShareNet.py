@@ -44,7 +44,7 @@ class LuckyShareNet(SimpleHoster):
             self.retry(msg=_("Hash expired"))
         return json.loads(rep)
 
-    # @TODO: There should be a filesize limit for free downloads
+    # TODO: There should be a filesize limit for free downloads
     #:       Some files could not be downloaded in free mode
     def handle_free(self, pyfile):
         rep = self.load(

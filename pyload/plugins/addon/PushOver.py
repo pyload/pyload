@@ -38,4 +38,4 @@ class PushOver(Notifier):
                   post={'token': token,
                         'user': user,
                         'title': event,
-                        'message': msg or event})  # @NOTE: msg can not be None or empty
+                        'message': msg or event})  # NOTE: msg can not be None or empty

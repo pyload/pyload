@@ -159,7 +159,7 @@ class ExtractArchive(Addon):
 
     @threaded
     def extract_queued(self, thread):
-        # @NOTE: doing the check here for safety (called by coreReady)
+        # NOTE: doing the check here for safety (called by coreReady)
         if self.extracting:
             return
 
@@ -171,14 +171,14 @@ class ExtractArchive(Addon):
                 self.last_package = False
                 if self.extract(
                         packages,
-                        thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                        thread):  # NOTE: check only if all gone fine, no failed reporting for now
                     self.manager.dispatchEvent("all_archives_extracted")
                 self.manager.dispatchEvent("all_archives_processed")
 
             else:
                 if self.extract(
                         packages,
-                        thread):  # @NOTE: check only if all gone fine, no failed reporting for now
+                        thread):  # NOTE: check only if all gone fine, no failed reporting for now
                     pass
 
             packages = self.queue.get()  #: Check for packages added during extraction
@@ -217,7 +217,7 @@ class ExtractArchive(Addon):
             self.extract_queued()
 
     @Expose
-    def extract(self, ids, thread=None):  # @TODO: Use pypack, not pid to improve method usability
+    def extract(self, ids, thread=None):  # TODO: Use pypack, not pid to improve method usability
         if not ids:
             return False
 

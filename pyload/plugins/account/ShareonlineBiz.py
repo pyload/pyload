@@ -51,8 +51,8 @@ class ShareonlineBiz(Account):
         else:
             trafficleft = -1
 
-        maxtraffic //= 1024  # @TODO: Remove `/ 1024` in 0.6.x
-        trafficleft //= 1024  # @TODO: Remove `/ 1024` in 0.6.x
+        maxtraffic //= 1024  # TODO: Remove `/ 1024` in 0.6.x
+        trafficleft //= 1024  # TODO: Remove `/ 1024` in 0.6.x
 
         return {'premium': premium,
                 'validuntil': validuntil,

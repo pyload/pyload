@@ -25,7 +25,7 @@ def is_simple_plugin(obj):
 
 
 def get_plugin_last_header(plugin):
-    # @NOTE: req can be a HTTPRequest or a Browser object
+    # NOTE: req can be a HTTPRequest or a Browser object
     return plugin.req.http.header if hasattr(
         plugin.req, "http") else plugin.req.header
 
@@ -281,12 +281,12 @@ class CloudFlareDdos(Addon):
             return self.old_get_url(*args, **kwargs)
 
         else:
-            # @NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
-            # @NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
+            # NOTE: Better use owner_plugin.load() instead of get_url() so cookies are saved and so captcha credits
+            # NOTE: Also that way we can use 'owner_plugin.req.header' to get the headers, otherwise we cannot get them
             res = CloudFlare.handle_function(
                 self, owner_plugin, "get_url", owner_plugin.load, (args, kwargs))
             if kwargs.get('just_header', False):
-                # @NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
+                # NOTE: SimpleHoster/SimpleCrypter returns a dict while get_url() returns raw headers string,
                 # make sure we return a string for get_url('just_header'=True)
                 res = get_plugin_last_header(owner_plugin)
 

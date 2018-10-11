@@ -220,7 +220,7 @@ class ShareLinksBiz(Crypter):
         pack_links = []
         self.log_debug("Handling Web links")
 
-        # @TODO: Gather paginated web links
+        # TODO: Gather paginated web links
         pattern = r'javascript:_get\(\'(.*?)\', \d+, \'\'\)'
         ids = re.findall(pattern, self.data)
         self.log_debug("Decrypting {:d} Web links".format(len(ids)))

@@ -43,7 +43,7 @@ class HighWayMe(MultiAccount):
 
         if 'premium_traffic' in json_data[
                 'user'] and json_data['user']['premium_traffic']:
-            # @TODO: Remove `/ 1024` in 0.6.x
+            # TODO: Remove `/ 1024` in 0.6.x
             trafficleft = float(json_data['user']['premium_traffic']) // 1024
 
         return {'premium': premium,

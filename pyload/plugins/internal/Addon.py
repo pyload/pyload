@@ -8,11 +8,11 @@ from pyload.plugins.internal.Plugin import Plugin
 
 class Addon(Plugin):
     __name__ = "Addon"
-    __type__ = "hook"  # @TODO: Change to `addon` in 0.6.x
+    __type__ = "hook"  # TODO: Change to `addon` in 0.6.x
     __version__ = "0.55"
     __status__ = "stable"
 
-    __threaded__ = []  # @TODO: Remove in 0.6.x
+    __threaded__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Base addon plugin"""
     __license__ = "GPLv3"
@@ -28,14 +28,14 @@ class Addon(Plugin):
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
         self.event_map = {}
 
-        self.info['ip'] = None  # @TODO: Remove in 0.6.x
+        self.info['ip'] = None  # TODO: Remove in 0.6.x
 
         #: Callback of periodical job task, used by HookManager
         self.periodical = Periodical(self, self.periodical_task)
-        self.cb = self.periodical.cb  # @TODO: Recheck in 0.6.x
+        self.cb = self.periodical.cb  # TODO: Recheck in 0.6.x
 
         self.init()
-        self._init_events()  # @TODO: Remove in 0.6.x
+        self._init_events()  # TODO: Remove in 0.6.x
         self.init_events()
 
     @property
@@ -45,12 +45,12 @@ class Addon(Plugin):
         """
         return self.config.get('activated')
 
-    # @TODO: Remove in 0.6.x
+    # TODO: Remove in 0.6.x
     def _log(self, level, plugintype, pluginname, messages):
         plugintype = "addon" if plugintype == "hook" else plugintype
         return Plugin._log(self, level, plugintype, pluginname, messages)
 
-    # @TODO: Remove in 0.6.x
+    # TODO: Remove in 0.6.x
     def _init_events(self):
         event_map = {'allDownloadsFinished': "all_downloads_finished",
                      'allDownloadsProcessed': "all_downloads_processed",
@@ -113,7 +113,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `exit` instead (Remove in 0.6.x)
     def coreExiting(self):
-        self.unload()  # @TODO: Fix in 0.6.x
+        self.unload()  # TODO: Fix in 0.6.x
         return self.exit()
 
     def config_changed(self, category, option, value, section):
@@ -133,7 +133,7 @@ class Addon(Plugin):
 
     #: Deprecated method, use `download_preparing` instead (Remove in 0.6.x)
     def downloadPreparing(self, pyfile):
-        if pyfile.plugin.req is not None:  # @TODO: Remove in 0.6.x
+        if pyfile.plugin.req is not None:  # TODO: Remove in 0.6.x
             return self.download_preparing(pyfile)
 
     def download_start(self, pyfile, url, filename):
@@ -155,7 +155,7 @@ class Addon(Plugin):
     #: Deprecated method, use `download_failed` instead (Remove in 0.6.x)
     def downloadFailed(self, pyfile):
         if pyfile.hasStatus(
-                "failed"):  # @NOTE: Check if "still" set as failed (Fix in 0.6.x)
+                "failed"):  # NOTE: Check if "still" set as failed (Fix in 0.6.x)
             return self.download_failed(pyfile)
 
     def package_processed(self, pypack):

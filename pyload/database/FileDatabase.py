@@ -44,11 +44,11 @@ class FileHandler(object):
 
         self.cache = {}  # holds instances for files
         self.packageCache = {}  # same for packages
-        # @TODO: purge the cache
+        # TODO: purge the cache
 
         self.jobCache = {}
 
-        self.lock = RLock()  # @TODO should be a Lock w/o R
+        self.lock = RLock()  # TODO: should be a Lock w/o R
         #self.lock._Verbose__verbose = True
 
         self.filecount = -1  # if an invalid value is set get current value from db
@@ -128,7 +128,7 @@ class FileHandler(object):
         self.db.addLinks(data, package)
         self.core.threadManager.createInfoThread(data, package)
 
-        # @TODO change from reloadAll event to package update event
+        # TODO: change from reloadAll event to package update event
         self.core.pullManager.addEvent(ReloadAllEvent("collector"))
 
     # ----------------------------------------------------------------------
@@ -299,8 +299,8 @@ class FileHandler(object):
     def getJob(self, occ):
         """get suitable job"""
 
-        # @TODO clean mess
-        # @TODO improve selection of valid jobs
+        # TODO: clean mess
+        # TODO: improve selection of valid jobs
 
         if occ in self.jobCache:
             if self.jobCache[occ]:
@@ -332,7 +332,7 @@ class FileHandler(object):
             else:
                 pyfile = self.getFile(self.jobCache[occ].pop())
 
-            # @TODO: maybe the new job has to be approved...
+            # TODO: maybe the new job has to be approved...
 
         #pyfile = self.getFile(self.jobCache[occ].pop())
         return pyfile
@@ -925,7 +925,7 @@ class FileMethods(object):
     def getJob(self, occ):
         """return pyfile ids, which are suitable for download and dont use a occupied plugin"""
 
-        # @TODO improve this hardcoded method
+        # TODO: improve this hardcoded method
         # plugins which are processed in collector
         pre = "('DLC', 'LinkList', 'SerienjunkiesOrg', 'CCF', 'RSDF')"
 

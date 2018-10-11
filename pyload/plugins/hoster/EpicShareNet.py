@@ -10,7 +10,7 @@ class EpicShareNet(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'https?://(?:www\.)?epicshare\.net/\w{12}'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """EpicShare.net hoster plugin"""
     __license__ = "GPLv3"

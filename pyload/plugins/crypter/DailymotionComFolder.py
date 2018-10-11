@@ -102,5 +102,5 @@ class DailymotionComFolder(Crypter):
                 p_name)
             self.log_debug(
                 "{} video\s found on playlist \"{}\"".format(len(p_videos), p_name))
-            # @NOTE: Folder is NOT recognized by pyload 0.5.0!
+            # NOTE: Folder is NOT recognized by pyload 0.5.0!
             self.packages.append((p_name, p_videos, p_folder))

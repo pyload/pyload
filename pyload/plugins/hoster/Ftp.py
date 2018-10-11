@@ -35,7 +35,7 @@ class Ftp(Hoster):
         pyfile.name = parse_name(p_url.path.rpartition('/')[2])
 
         if "@" not in netloc:
-            # @TODO: Recheck in 0.6.x
+            # TODO: Recheck in 0.6.x
             if self.account:
                 servers = [x['login'] for x in self.account.getAllAccounts()]
             else:

@@ -34,7 +34,7 @@ class Dereferer(SimpleCrypter):
 
     def init(self):
         self.__pattern__ = self.pyload.pluginManager.crypterPlugins[
-            self.classname]['pattern']  # @TODO: Recheck in 0.6.x
+            self.classname]['pattern']  # TODO: Recheck in 0.6.x
 
         self.PLUGIN_DOMAIN = re.match(
             self.__pattern__,

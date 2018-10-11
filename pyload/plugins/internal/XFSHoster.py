@@ -34,7 +34,7 @@ class XFSHoster(SimpleHoster):
     PLUGIN_DOMAIN = None
 
     DIRECT_LINK = None
-    # @NOTE: hould be set to `False` by default for safe, but I am lazy...
+    # NOTE: hould be set to `False` by default for safe, but I am lazy...
     LEECH_HOSTER = True
 
     NAME_PATTERN = r'(Filename[ ]*:[ ]*</b>(</td><td nowrap>)?|name="fname"[ ]+value="|<[\w^_]+ class="(file)?name">)\s*(?P<N>.+?)(\s*<|")'

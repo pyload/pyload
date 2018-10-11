@@ -95,7 +95,7 @@ class IRC(Thread, Notifier):
 
         if self.config.get('ssl'):
             self.sock = ssl.wrap_socket(
-                self.sock, cert_reqs=ssl.CERT_NONE)  # @TODO: support certificate
+                self.sock, cert_reqs=ssl.CERT_NONE)  # TODO: support certificate
 
         nick = self.config.get('nick')
         self.sock.send("NICK {}\r\n".format(nick))
@@ -339,7 +339,7 @@ class IRC(Thread, Notifier):
             if not pack:
                 return ["ERROR: Package doesn't exists."]
 
-            # @TODO: add links
+            # TODO: add links
 
             return [
                 "INFO: Added {:d} links to Package {} [#{:d}]".format(

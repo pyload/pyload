@@ -26,7 +26,7 @@ class BIGHTTPRequest(HTTPRequest):
     loading very big web pages by overrding HTTPRequest's write() function
     """
 
-    # @TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
+    # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
     def __init__(self, cookies=None, options=None, limit=1000000):
         self.limit = limit
         HTTPRequest.__init__(self, cookies=cookies, options=options)
@@ -60,7 +60,7 @@ class FilecryptCc(Crypter):
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de"),
                    ("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
-    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  #@TODO: Extend
+    # URL_REPLACEMENTS  = [(r'.html$', ""), (r'$', ".html")]  # TODO: Extend
     # SimpleCrypter
 
     COOKIES = [("filecrypt.cc", "lang", "en")]
@@ -91,7 +91,7 @@ class FilecryptCc(Crypter):
     def decrypt(self, pyfile):
         self.data = self._filecrypt_load_url(pyfile.url)
 
-        if "content notfound" in self.data:  # @NOTE: "content notfound" is NOT a typo
+        if "content notfound" in self.data:  # NOTE: "content notfound" is NOT a typo
             self.offline()
 
         self.handle_password_protection()

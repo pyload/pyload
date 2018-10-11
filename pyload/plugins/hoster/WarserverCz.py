@@ -10,7 +10,7 @@ class WarserverCz(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?warserver\.cz/stahnout/\d+'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Warserver.cz hoster plugin"""
     __license__ = "GPLv3"

@@ -44,7 +44,7 @@ CURRENT_VERSION = '0.5.0'
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
 
-# TODO List
+# TODO: List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
 
@@ -349,7 +349,7 @@ class Core(object):
 
         self.writePidFile()
 
-        # @TODO refractor
+        # TODO: refractor
 
         remote.activated = self.remote
         self.log.debug("Remote activated: {}".format(self.remote))
@@ -482,7 +482,7 @@ class Core(object):
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
                 self.removeLogger()
-                _exit(0)  # @TODO thrift blocks shutdown
+                _exit(0)  # TODO: thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()

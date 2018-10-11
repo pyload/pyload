@@ -40,7 +40,7 @@ class FastshareCz(Account):
     def signin(self, user, password, data):
         set_cookie(self.req.cj, "fastshare.cz", "lang", "en")
 
-        # @NOTE: Do not remove or it will not login
+        # NOTE: Do not remove or it will not login
         self.load('https://www.fastshare.cz/login')
 
         html = self.load("https://www.fastshare.cz/sql.php",

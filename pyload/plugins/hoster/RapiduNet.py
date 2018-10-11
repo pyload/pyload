@@ -56,7 +56,7 @@ class RapiduNet(SimpleHoster):
 
             self.log_info(_("You've reach your daily download transfer"))
 
-            # @NOTE: check t in case of not synchronised clock
+            # NOTE: check t in case of not synchronised clock
             self.retry(10, 10 if t < 1 else None, _("Try tomorrow again"))
 
         else:

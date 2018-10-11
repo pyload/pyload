@@ -50,7 +50,7 @@ class SimplyPremiumCom(MultiAccount):
 
         if 'remain_traffic' in json_data[
                 'result'] and json_data['result']['remain_traffic']:
-            # @TODO: Remove `/ 1024` in 0.6.x
+            # TODO: Remove `/ 1024` in 0.6.x
             trafficleft = float(json_data['result']['remain_traffic']) // 1024
 
         return {'premium': premium, 'validuntil': validuntil,

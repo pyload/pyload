@@ -245,7 +245,7 @@ class Plugin(Base):
         10 - not implemented
         20 - unknown error
         """
-        # @TODO checksum check addon
+        # TODO: checksum check addon
 
         return True, 10
 

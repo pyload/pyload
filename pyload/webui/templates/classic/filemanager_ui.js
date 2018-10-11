@@ -149,7 +149,7 @@ var Item = new Class({
     },
 
     reorderElements: function() {
-      //TODO sort the main ul again (to keep data ordered after renaming something)
+      //TODO: sort the main ul again (to keep data ordered after renaming something)
     },
 
     del: function(event) {

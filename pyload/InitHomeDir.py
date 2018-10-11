@@ -7,7 +7,7 @@ from os import chdir, makedirs, path
 from os.path import join
 from sys import argv, platform
 
-builtins._ = lambda x: x  #@TODO: remove
+builtins._ = lambda x: x  # TODO: remove
 builtins.owd = path.abspath("")  # original working directory
 builtins.pypath = pypath = path.abspath(path.join(__file__, "..", ".."))
 

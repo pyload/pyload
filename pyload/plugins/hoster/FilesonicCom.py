@@ -10,7 +10,7 @@ class FilesonicCom(DeadHoster):
     __status__ = "stable"
 
     __pattern__ = r'http://(?:www\.)?filesonic\.com/file/\w+'
-    __config__ = []  # @TODO: Remove in 0.6.x
+    __config__ = []  # TODO: Remove in 0.6.x
 
     __description__ = """Filesonic.com hoster plugin"""
     __license__ = "GPLv3"

@@ -6,7 +6,7 @@ from builtins import object
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
-# @TODO: Remove in 0.6.x
+# TODO: Remove in 0.6.x
 from pyload.plugins.Plugin import Abort, Fail
 from pyload.plugins.Plugin import SkipDownload as Skip
 
@@ -18,7 +18,7 @@ if os.name != "nt":
     import pwd
 
 
-# @NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
+# NOTE: save decode() as _decode() for use with load(url, decode='decode-str')
 _decode = decode
 
 
@@ -57,7 +57,7 @@ class Plugin(object):
 
         #: Browser instance, see `network.Browser`
         self.req = self.pyload.requestFactory.getRequest(self.classname)
-        self.req.setOption("timeout", 60)  # @TODO: Remove in 0.6.x
+        self.req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
 
         #: Last loaded html
         self.last_html = ""
@@ -108,7 +108,7 @@ class Plugin(object):
         finally:
             del frame
 
-    def remove(self, path, trash=False):  # @TODO: Change to `trash=True` in 0.6.x
+    def remove(self, path, trash=False):  # TODO: Change to `trash=True` in 0.6.x
         try:
             remove(path, trash)
 
@@ -145,13 +145,13 @@ class Plugin(object):
         """
         Skip and give msg
         """
-        raise Skip(encode(msg))  # @TODO: Remove `encode` in 0.6.x
+        raise Skip(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def fail(self, msg):
         """
         Fail and give msg
         """
-        raise Fail(encode(msg))  # @TODO: Remove `encode` in 0.6.x
+        raise Fail(encode(msg))  # TODO: Remove `encode` in 0.6.x
 
     def load(
             self,
@@ -189,27 +189,27 @@ class Plugin(object):
 
         if req is False:
             req = get_request()
-            req.setOption("timeout", 60)  # @TODO: Remove in 0.6.x
+            req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
 
         elif not req:
             req = self.req
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if isinstance(cookies, list):
             set_cookies(req.cj, cookies)
 
         http_req = self.req.http if hasattr(self.req, "http") else self.req
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if not redirect:
-            # @NOTE: req can be a HTTPRequest or a Browser object
+            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
         elif isinstance(redirect, int):
-            # @NOTE: req can be a HTTPRequest or a Browser object
+            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if isinstance(ref, str):
             req.lastURL = ref
 
@@ -221,11 +221,11 @@ class Plugin(object):
             bool(cookies),
             just_header,
             multipart,
-            decode is True)  # @TODO: Fix network multipart in 0.6.x
+            decode is True)  # TODO: Fix network multipart in 0.6.x
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if not redirect:
-            # @NOTE: req can be a HTTPRequest or a Browser object
+            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.FOLLOWLOCATION, 1)
 
         elif isinstance(redirect, int):
@@ -233,15 +233,15 @@ class Plugin(object):
                 self.pyload.api.getConfigValue(
                     "UserAgentSwitcher",
                     "maxredirs",
-                    "plugin")) or 5  # @TODO: Remove `int` in 0.6.x
-            # @NOTE: req can be a HTTPRequest or a Browser object
+                    "plugin")) or 5  # TODO: Remove `int` in 0.6.x
+            # NOTE: req can be a HTTPRequest or a Browser object
             http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if decode:
             html = html_unescape(html)
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         if isinstance(decode, str):
             html = _decode(html, decode)
 
@@ -250,9 +250,9 @@ class Plugin(object):
         if self.pyload.debug:
             self.dump_html()
 
-        # @TODO: Move to network in 0.6.x
+        # TODO: Move to network in 0.6.x
         header = {'code': req.code, 'url': req.lastEffectiveURL}
-        # @NOTE: req can be a HTTPRequest or a Browser object
+        # NOTE: req can be a HTTPRequest or a Browser object
         header.update(parse_html_header(http_req.header))
 
         self.last_header = header
@@ -273,7 +273,7 @@ class Plugin(object):
             decode=True,
             redirect=True,
             req=None):
-        # @TODO: This should really go to HTTPRequest.py
+        # TODO: This should really go to HTTPRequest.py
         """
         Uploads a file at url and returns response content
 
@@ -298,7 +298,7 @@ class Plugin(object):
 
             if req is False:
                 req = get_request()
-                req.setOption("timeout", 60)  # @TODO: Remove in 0.6.x
+                req.setOption("timeout", 60)  # TODO: Remove in 0.6.x
 
             elif not req:
                 req = self.req
@@ -309,11 +309,11 @@ class Plugin(object):
             http_req = self.req.http if hasattr(self.req, "http") else self.req
 
             if not redirect:
-                # @NOTE: req can be a HTTPRequest or a Browser object
+                # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.FOLLOWLOCATION, 0)
 
             elif isinstance(redirect, int):
-                # @NOTE: req can be a HTTPRequest or a Browser object
+                # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, redirect)
 
             if isinstance(ref, str):
@@ -366,14 +366,14 @@ class Plugin(object):
                     self.pyload.api.getConfigValue(
                         "UserAgentSwitcher",
                         "maxredirs",
-                        "plugin")) or 5  # @TODO: Remove `int` in 0.6.x
-                # @NOTE: req can be a HTTPRequest or a Browser object
+                        "plugin")) or 5  # TODO: Remove `int` in 0.6.x
+                # NOTE: req can be a HTTPRequest or a Browser object
                 http_req.c.setopt(pycurl.MAXREDIRS, maxredirs)
 
             if decode:
                 html = html_unescape(html)
 
-            # @TODO: Move to network in 0.6.x
+            # TODO: Move to network in 0.6.x
             if isinstance(decode, str):
                 html = _decode(html, decode)
 
@@ -382,9 +382,9 @@ class Plugin(object):
             if self.pyload.debug:
                 self.dump_html()
 
-            # @TODO: Move to network in 0.6.x
+            # TODO: Move to network in 0.6.x
             header = {'code': req.code, 'url': req.lastEffectiveURL}
-            # @NOTE: req can be a HTTPRequest or a Browser object
+            # NOTE: req can be a HTTPRequest or a Browser object
             header.update(parse_html_header(http_req.header))
 
             self.last_header = header
