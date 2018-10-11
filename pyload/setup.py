@@ -8,7 +8,7 @@ from getpass import getpass
 from subprocess import PIPE, call
 from sys import exit
 
-import pyload.utils.utils.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 from pyload.utils.utils import get_console_encoding
 
 

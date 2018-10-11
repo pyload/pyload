@@ -19,7 +19,7 @@ from sys import argv, executable, exit
 from time import sleep, time
 from traceback import print_exc
 
-import pyload.utils.utils.pylgettext as gettext
+import pyload.utils.pylgettext as gettext
 from pyload import InitHomeDir, remote
 from pyload.config.ConfigParser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
@@ -31,7 +31,7 @@ from pyload.network.RequestFactory import RequestFactory
 from pyload.remote.RemoteManager import RemoteManager
 from pyload.Scheduler import Scheduler
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
-from pyload.utils.utils.JsEngine import JsEngine
+from pyload.utils.JsEngine import JsEngine
 from pyload.webui.ServerThread import WebServer
 
 CURRENT_VERSION = '0.5.0'
@@ -454,7 +454,7 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         # test api
-#        from pyload.utils.utils.APIExerciser import startApiExerciser
+#        from pyload.utils.APIExerciser import startApiExerciser
 #        startApiExerciser(self, 3)
 
         # some memory stats

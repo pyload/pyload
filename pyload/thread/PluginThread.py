@@ -18,7 +18,7 @@ from pyload.Api import OnlineStatus
 from pyload.datatype.PyFile import PyFile
 from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.utils import save_join
-from pyload.utils.utils.packagetools import parseNames
+from pyload.utils.packagetools import parseNames
 
 
 class PluginThread(Thread):
