@@ -97,23 +97,23 @@ class AntiVirus(Addon):
                 try:
                     if action == "Delete":
                         if not self.config.get('deltotrash'):
-                            os.remove(file)
+                            os.remove(target)
 
                         else:
                             try:
-                                send2trash.send2trash(file)
+                                send2trash.send2trash(target)
 
                             except NameError:
                                 self.log_warning(
                                     _("Send2Trash lib not found, moving to quarantine instead"))
                                 pyfile.setCustomStatus(_("file moving"))
-                                shutil.move(file, self.config.get('quardir'))
+                                shutil.move(target, self.config.get('quardir'))
 
                             except Exception as e:
                                 self.log_warning(
                                     _("Unable to move file to trash: {}, moving to quarantine instead") % e)
                                 pyfile.setCustomStatus(_("file moving"))
-                                shutil.move(file, self.config.get('quardir'))
+                                shutil.move(target, self.config.get('quardir'))
 
                             else:
                                 self.log_debug(
@@ -121,7 +121,7 @@ class AntiVirus(Addon):
 
                     elif action == "Quarantine":
                         pyfile.setCustomStatus(_("file moving"))
-                        shutil.move(file, self.config.get('quardir'))
+                        shutil.move(target, self.config.get('quardir'))
 
                 except (IOError, shutil.Error) as e:
                     self.log_error(target_repr, action + " action failed!", e)

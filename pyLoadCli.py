@@ -311,7 +311,7 @@ class Cli(object):
         elif command == "move":
             for pid in args:
                 pack = self.client.getPackageInfo(int(pid))
-                self.client.movePackage((pack.dest + 1).format(2), pack.pid)
+                self.client.movePackage((pack.dest + 1) % 2, pack.pid)
 
         elif command == "check":
             print(_("Checking {} links:").format(len(args)))

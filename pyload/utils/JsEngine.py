@@ -78,7 +78,7 @@ if not ENGINE or DEBUG:
             path = join(pypath, "js.jar")
 
         if not path:
-            raise Exception
+            raise
 
         import subprocess
 

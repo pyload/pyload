@@ -48,7 +48,7 @@ class MegaCrypto(object):
     @staticmethod
     def base64_decode(data):
         #: Add padding, we need a string with a length multiple of 4
-        data += '=' * (-len(data).format(4))
+        data += '=' * (-len(data) % 4)
         return base64.b64decode(str(data), "-_")
 
     @staticmethod
@@ -62,7 +62,7 @@ class MegaCrypto(object):
     @staticmethod
     def str_to_a32(s):
         # Add padding, we need a string with a length multiple of 4
-        s += '\0' * (-len(s).format(4))
+        s += '\0' * (-len(s) % 4)
         #: big-endian, unsigned int
         return struct.unpack(">{}I".format(len(s) // 4), s)
 

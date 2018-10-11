@@ -7,7 +7,7 @@ from os import listdir, stat
 from os.path import join
 from pprint import pformat
 from queue import Queue
-from sys import exc_clear, exc_info
+from sys import exc_info
 from threading import Thread
 from time import gmtime, sleep, strftime, time
 from traceback import format_exc, print_exc
@@ -314,7 +314,7 @@ class DownloadThread(PluginThread):
             finally:
                 self.m.pyload.files.save()
                 pyfile.checkIfProcessed()
-                exc_clear()
+                # exc_clear()
 
             # pyfile.plugin.req.clean()
 
@@ -409,7 +409,7 @@ class DecrypterThread(PluginThread):
                 self.active = False
                 self.m.pyload.files.save()
                 self.m.localThreads.remove(self)
-                exc_clear()
+                # exc_clear()
 
         # self.m.pyload.addonManager.downloadFinished(pyfile)
 

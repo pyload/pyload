@@ -550,7 +550,7 @@ class FileHandler(object):
             if not pyfile.package().setFinished:
                 self.pyload.log.info(
                     _("Package finished: {}").format(
-                        pyfile.package()).name)
+                        pyfile.package().name))
                 self.pyload.addonManager.packageFinished(pyfile.package())
                 pyfile.package().setFinished = True
 

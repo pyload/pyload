@@ -51,7 +51,7 @@ class RapiduNet(SimpleHoster):
                                         post={'_go': ""})
 
         if str(jsvars['timeToDownload']) == "stop":
-            t = (24 * 60 * 60) - (int(time.time()).format(24 * 60 * 60)) + time.altzone
+            t = (24 * 60 * 60) - (int(time.time()) % 24 * 60 * 60) + time.altzone
 
             self.log_info(_("You've reach your daily download transfer"))
 

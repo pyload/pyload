@@ -124,10 +124,8 @@ def freeSpace(folder):
         return s.f_bsize * s.f_bavail
 
 
-def uniqify(seq, idfun=None):
+def uniqify(seq, idfun=lambda x: x):
     # order preserving
-    if idfun is None:
-        def idfun(x): return x
     seen = {}
     result = []
     for item in seq:

@@ -48,7 +48,7 @@ class DLC(Container):
         with open(fs_filename) as dlc:
             data = dlc.read().strip()
 
-        data += '=' * (-len(data).format(4))
+        data += '=' * (-len(data) % 4)
 
         dlc_key = data[-88:]
         dlc_data = data[:-88].decode('base64')

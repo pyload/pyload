@@ -33,15 +33,15 @@ SETUP = None
 PYLOAD = None
 
 
-if not ServerThread.pyload:
+if not ServerThread.core:
     if ServerThread.setup:
         SETUP = ServerThread.setup
         config = SETUP.config
     else:
         raise Exception("Could not access pyLoad Core")
 else:
-    PYLOAD = ServerThread.pyload.api
-    config = ServerThread.pyload.config
+    PYLOAD = ServerThread.core.api
+    config = ServerThread.core.config
 
 
 JS = JsEngine()

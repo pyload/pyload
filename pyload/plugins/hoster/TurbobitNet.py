@@ -173,4 +173,4 @@ class TurbobitNet(SimpleHoster):
         lt = time.localtime()
         tz = time.altzone if lt.tm_isdst else time.timezone
         return "{} GMT{:03}{:02}".format(time.strftime(
-            "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz.format(3600))
+            "%a %b %d %Y %H:%M:%S", lt), -tz // 3600, tz % 3600)

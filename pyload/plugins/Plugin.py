@@ -50,6 +50,8 @@ class Base(object):
     A Base class with log/config/db methods *all* plugin types can use
     """
 
+    __name__ = "Base"
+    
     def __init__(self, core):
         #: Core instance
         self.pyload = core

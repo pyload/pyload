@@ -265,7 +265,10 @@ class HTTPDownload(object):
                                 self.filename), (0, self.size))
                         self.info.save()
                     elif failed:
-                        raise ex
+                        if ex:
+                            raise ex
+                        else:
+                            raise
 
                     lastFinishCheck = t
 
