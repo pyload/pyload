@@ -27,10 +27,10 @@ class LinkFilter(Addon):
     __authors__ = [("segelkma", None)]
 
     def activate(self):
-        self.manager.addEvent("linksAdded", self.filter_links)
+        self.m.addEvent("linksAdded", self.filter_links)
 
     def deactivate(self):
-        self.manager.removeEvent("linksAdded", self.filter_links)
+        self.m.removeEvent("linksAdded", self.filter_links)
 
     def filter_links(self, links, pid):
         filters = self.config.get("filter").replace(" ", "")

@@ -95,7 +95,7 @@ It requires a `dict` that maps event names to function names or a `list` of func
             print("The underlying event (allDownloadsFinished) for this method is not available through the base class")
 
 An advantage of the event listener is that you are able to register and remove the listeners at runtime.
-Use `self.manager.addEvent("name", function)`, `self.manager.removeEvent("name", function)` and see doc for
+Use `self.m.addEvent("name", function)`, `self.m.removeEvent("name", function)` and see doc for
 :class:`AddonManager <pyload.manager.AddonManager.AddonManager>`. Contrary to ``event_map``, ``function`` has to be a reference
 and **not** a `string`.
 

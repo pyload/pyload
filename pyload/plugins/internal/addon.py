@@ -22,7 +22,7 @@ class Addon(Plugin):
         self._init(core)
 
         #: `AddonManager`
-        self.manager = manager
+        self.m = manager
         self.lock = threading.Lock()
 
         #: Automatically register event listeners for functions, attribute will be deleted dont use it yourself
@@ -64,16 +64,16 @@ class Addon(Plugin):
             "package_processed": "package_processed",
         }
         for event, funcs in event_map.items():
-            self.manager.addEvent(event, getattr(self, funcs))
+            self.m.addEvent(event, getattr(self, funcs))
 
     def init_events(self):
         if self.event_map:
             for event, funcs in self.event_map.items():
                 if isiterable(funcs):
                     for f in funcs:
-                        self.manager.addEvent(event, getattr(self, f))
+                        self.m.addEvent(event, getattr(self, f))
                 else:
-                    self.manager.addEvent(event, getattr(self, funcs))
+                    self.m.addEvent(event, getattr(self, funcs))
 
             #: Delete for various reasons
             self.event_map = None

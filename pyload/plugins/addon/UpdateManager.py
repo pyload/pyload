@@ -226,7 +226,7 @@ class UpdateManager(Addon):
 
             paused = self.pyload.threadManager.pause
             self.pyload.api.pauseServer()
-            self.manager.dispatchEvent("plugin_updated", updated)
+            self.m.dispatchEvent("plugin_updated", updated)
             if not paused:
                 self.pyload.api.unpauseServer()
         else:
@@ -420,7 +420,7 @@ class UpdateManager(Addon):
 
                 if plugin_type == "addon":
                     try:
-                        self.manager.deactivateAddon(plugin_name)
+                        self.m.deactivateAddon(plugin_name)
 
                     except Exception as e:
                         self.log_debug(e, trace=True)

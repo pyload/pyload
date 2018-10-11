@@ -16,49 +16,49 @@ class EventMapper(Addon):
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
     def activate(self, *args):
-        self.manager.dispatchEvent("activate", *args)
+        self.m.dispatchEvent("activate", *args)
 
     def exit(self, *args):
-        self.manager.dispatchEvent("exit", *args)
+        self.m.dispatchEvent("exit", *args)
 
     def config_changed(self, *args):
-        self.manager.dispatchEvent("config_changed", *args)
+        self.m.dispatchEvent("config_changed", *args)
 
     def all_downloads_finished(self, *args):
-        self.manager.dispatchEvent("all_downloads_finished", *args)
+        self.m.dispatchEvent("all_downloads_finished", *args)
 
     def all_downloads_processed(self, *args):
-        self.manager.dispatchEvent("all_downloads_processed", *args)
+        self.m.dispatchEvent("all_downloads_processed", *args)
 
     def links_added(self, *args):
-        self.manager.dispatchEvent("links_added", *args)
+        self.m.dispatchEvent("links_added", *args)
 
     def download_preparing(self, *args):
-        self.manager.dispatchEvent("download_preparing", *args)
+        self.m.dispatchEvent("download_preparing", *args)
 
     def download_finished(self, *args):
-        self.manager.dispatchEvent("download_finished", *args)
+        self.m.dispatchEvent("download_finished", *args)
 
     def download_failed(self, *args):
-        self.manager.dispatchEvent("download_failed", *args)
+        self.m.dispatchEvent("download_failed", *args)
 
     def package_deleted(self, *args):
-        self.manager.dispatchEvent("package_deleted", *args)
+        self.m.dispatchEvent("package_deleted", *args)
 
     def package_finished(self, *args):
-        self.manager.dispatchEvent("package_finished", *args)
+        self.m.dispatchEvent("package_finished", *args)
 
     def before_reconnect(self, *args):
-        self.manager.dispatchEvent("before_reconnect", *args)
+        self.m.dispatchEvent("before_reconnect", *args)
 
     def after_reconnect(self, *args):
-        self.manager.dispatchEvent("after_reconnect", *args)
+        self.m.dispatchEvent("after_reconnect", *args)
 
     def captcha_task(self, *args):
-        self.manager.dispatchEvent("captcha_task", *args)
+        self.m.dispatchEvent("captcha_task", *args)
 
     def captcha_correct(self, *args):
-        self.manager.dispatchEvent("captcha_correct", *args)
+        self.m.dispatchEvent("captcha_correct", *args)
 
     def captcha_invalid(self, *args):
-        self.manager.dispatchEvent("captcha_invalid", *args)
+        self.m.dispatchEvent("captcha_invalid", *args)

@@ -173,7 +173,7 @@ class DatabaseBackend(Thread):
         if v < DB_VERSION:
             if v < 2:
                 try:
-                    self.manager.pyload.log.warning(
+                    self.m.pyload.log.warning(
                         _("Filedatabase was deleted due to incompatible version.")
                     )
                 except Exception:
@@ -201,7 +201,7 @@ class DatabaseBackend(Thread):
             'CREATE TABLE IF NOT EXISTS "storage" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "identifier" TEXT NOT NULL, "key" TEXT NOT NULL, "value" TEXT DEFAULT "")'
         )
         try:
-            self.manager.pyload.log.info(_("Database was converted from v2 to v3."))
+            self.m.pyload.log.info(_("Database was converted from v2 to v3."))
         except Exception:
             print("Database was converted from v2 to v3.")
         self._convertV3()
@@ -211,7 +211,7 @@ class DatabaseBackend(Thread):
             'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT, "name" TEXT NOT NULL, "email" TEXT DEFAULT "" NOT NULL, "password" TEXT NOT NULL, "role" INTEGER DEFAULT 0 NOT NULL, "permission" INTEGER DEFAULT 0 NOT NULL, "template" TEXT DEFAULT "default" NOT NULL)'
         )
         try:
-            self.manager.pyload.log.info(_("Database was converted from v3 to v4."))
+            self.m.pyload.log.info(_("Database was converted from v3 to v4."))
         except Exception:
             print("Database was converted from v3 to v4.")
 

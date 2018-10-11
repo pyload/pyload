@@ -153,8 +153,8 @@ class ExtractArchive(Addon):
                 if self.extract(
                     packages, thread
                 ):  # NOTE: check only if all gone fine, no failed reporting for now
-                    self.manager.dispatchEvent("all_archives_extracted")
-                self.manager.dispatchEvent("all_archives_processed")
+                    self.m.dispatchEvent("all_archives_extracted")
+                self.m.dispatchEvent("all_archives_processed")
 
             else:
                 if self.extract(
@@ -382,7 +382,7 @@ class ExtractArchive(Addon):
                                         (fid, filename, os.path.dirname(filename))
                                     )  #: Append as new target
 
-                            self.manager.dispatchEvent(
+                            self.m.dispatchEvent(
                                 "archive_extracted", pyfile, archive
                             )
 
@@ -419,11 +419,11 @@ class ExtractArchive(Addon):
                                 )
 
                     extracted.append(pid)
-                    self.manager.dispatchEvent("package_extracted", pypack)
+                    self.m.dispatchEvent("package_extracted", pypack)
 
                 else:
                     failed.append(pid)
-                    self.manager.dispatchEvent("package_extract_failed", pypack)
+                    self.m.dispatchEvent("package_extract_failed", pypack)
 
                     self.failed.add(pid)
             else:
@@ -581,7 +581,7 @@ class ExtractArchive(Addon):
         except Exception as e:
             self.log_error(name, _("Unknown error"), e)
 
-        self.manager.dispatchEvent("archive_extract_failed", pyfile, archive)
+        self.m.dispatchEvent("archive_extract_failed", pyfile, archive)
 
         raise Exception(_("Extract failed"))
 

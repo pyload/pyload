@@ -34,7 +34,7 @@ class DeleteFinished(Addon):
             self.add_event("package_finished", self.wakeup)
 
     def deactivate(self):
-        self.manager.removeEvent("package_finished", self.wakeup)
+        self.m.removeEvent("package_finished", self.wakeup)
 
     def activate(self):
         self.info["sleep"] = True
@@ -53,7 +53,7 @@ class DeleteFinished(Addon):
         )
 
     def wakeup(self, pypack):
-        self.manager.removeEvent("package_finished", self.wakeup)
+        self.m.removeEvent("package_finished", self.wakeup)
         self.info["sleep"] = False
 
     ## event managing ##
@@ -61,10 +61,10 @@ class DeleteFinished(Addon):
         """
         Adds an event listener for event name.
         """
-        if event in self.manager.events:
-            if func in self.manager.events[event]:
+        if event in self.m.events:
+            if func in self.m.events[event]:
                 self.log_debug("Function already registered", func)
             else:
-                self.manager.events[event].append(func)
+                self.m.events[event].append(func)
         else:
-            self.manager.events[event] = [func]
+            self.m.events[event] = [func]

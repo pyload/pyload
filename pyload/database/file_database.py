@@ -792,7 +792,7 @@ class FileMethods(object):
                 "size": r[3],
                 "format_size": formatSize(r[3]),
                 "status": r[4],
-                "statusmsg": self.manager.statusMsg[r[4]],
+                "statusmsg": self.m.statusMsg[r[4]],
                 "error": r[5],
                 "plugin": r[6],
                 "package": r[7],
@@ -862,7 +862,7 @@ class FileMethods(object):
             "size": r[3],
             "format_size": formatSize(r[3]),
             "status": r[4],
-            "statusmsg": self.manager.statusMsg[r[4]],
+            "statusmsg": self.m.statusMsg[r[4]],
             "error": r[5],
             "plugin": r[6],
             "package": r[7],
@@ -890,7 +890,7 @@ class FileMethods(object):
                 "size": r[3],
                 "format_size": formatSize(r[3]),
                 "status": r[4],
-                "statusmsg": self.manager.statusMsg[r[4]],
+                "statusmsg": self.m.statusMsg[r[4]],
                 "error": r[5],
                 "plugin": r[6],
                 "package": r[7],
@@ -998,7 +998,7 @@ class FileMethods(object):
         r = self.c.fetchone()
         if not r:
             return None
-        return PyPackage(self.manager, id, *r)
+        return PyPackage(self.m, id, *r)
 
     # ----------------------------------------------------------------------
     @style.queue
@@ -1013,7 +1013,7 @@ class FileMethods(object):
         r = self.c.fetchone()
         if not r:
             return None
-        return PyFile(self.manager, id, *r)
+        return PyFile(self.m, id, *r)
 
     @style.queue
     def getJob(self, occ):
