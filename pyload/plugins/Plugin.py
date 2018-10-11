@@ -51,7 +51,7 @@ class Base(object):
     """
 
     __name__ = "Base"
-    
+
     def __init__(self, core):
         #: Core instance
         self.pyload = core

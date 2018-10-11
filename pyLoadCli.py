@@ -5,7 +5,7 @@
 import configparser
 import os
 import sys
-from builtins import _, input, object, owd, pypath, range, str
+from builtins import _, homedir, input, object, owd, pypath, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from os import _exit
@@ -20,7 +20,6 @@ from pyload.Api import Destination
 from pyload.cli import AddPackage, ManageFiles
 from pyload.cli.printer import *
 from pyload.lib.Getch import Getch
-from pyload.lib.rename_process import renameProcess
 from pyload.remote.thriftbackend.ThriftClient import (ConnectionClosed, NoConnection,
                                                       NoSSL, ThriftClient, WrongLogin)
 from pyload.utils.utils import decode, formatSize
@@ -39,7 +38,7 @@ class Cli(object):
         self.command = command
 
         if not self.command:
-            renameProcess('pyLoadCli')
+            # renameProcess('pyLoadCli')
             self.getch = Getch()
             self.input = ""
             self.inputline = 0
@@ -368,7 +367,7 @@ class Cli(object):
                 else:
                     check = "Unknown"
 
-                print("%-45s %-12s\t %-15s\t {}".format(status.name,
+                print("{:-45} {:-12}\t {:-15}\t {}".format(status.name,
                                                         formatSize(status.size), status.plugin, check))
 
             if result.rid == -1:
