@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 #
 # TODO: Move to utils directory in 0.6.x

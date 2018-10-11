@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from builtins import _
 # 02/2006 Will Holcomb <wholcomb@gmail.com>
 # 7/26/07 Slightly modified by Brian Schneider in order to support unicode files ( multipart_encode function )
 

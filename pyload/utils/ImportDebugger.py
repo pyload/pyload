@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 import sys
 from builtins import _, object

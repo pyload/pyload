@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 #
 # pyLoad documentation build configuration file, created by
 # sphinx-quickstart on Sat Jun  4 11:54:34 2011.

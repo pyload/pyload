@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 # @author: RaNaN, mkaay
 
 from builtins import _, object, range, str, zip

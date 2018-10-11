@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 # JDownloader/src/jd/controlling/LinkGrabberPackager.java
 
 import re

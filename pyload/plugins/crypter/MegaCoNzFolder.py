@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
 from pyload.plugins.internal.Crypter import Crypter

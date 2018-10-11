@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 # {{{ http://code.activestate.com/recipes/286134/ (r3) (modified)
 
 import dis

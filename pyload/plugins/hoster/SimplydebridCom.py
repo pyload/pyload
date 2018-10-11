@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 from pyload.plugins.utils import replace_patterns
 from pyload.plugins.internal.MultiHoster import MultiHoster

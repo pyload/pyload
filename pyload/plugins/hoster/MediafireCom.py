@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.captcha.SolveMedia import SolveMedia

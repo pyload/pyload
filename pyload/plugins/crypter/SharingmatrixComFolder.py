@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from builtins import _
 
 from pyload.plugins.internal.DeadCrypter import DeadCrypter
 
