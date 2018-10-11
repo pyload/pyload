@@ -18,18 +18,10 @@ from pyload.utils.JsEngine import JsEngine
 from pyload.utils.json_layer import json
 from pyload.utils.utils import decode, formatSize
 from pyload.webui import ServerThread, api_app, cnl_app, json_app, pyload_app
-from pyload.webui.filters import (
-    date,
-    path_make_absolute,
-    path_make_relative,
-    quotepath,
-    truncate,
-)
-from pyload.webui.middlewares import (
-    GZipMiddleWare,
-    PrefixMiddleware,
-    StripPathMiddleware,
-)
+from pyload.webui.filters import (date, path_make_absolute, path_make_relative,
+                                  quotepath, truncate)
+from pyload.webui.middlewares import (GZipMiddleWare, PrefixMiddleware,
+                                      StripPathMiddleware)
 
 PROJECT_DIR = abspath(dirname(__file__))
 PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))

@@ -6,24 +6,12 @@ from builtins import _, object
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
-
 # TODO: Remove in 0.6.x
 from pyload.plugins.Plugin import Abort, Fail, Reconnect, Retry
 from pyload.plugins.Plugin import SkipDownload as Skip
-from pyload.plugins.utils import (
-    DB,
-    Config,
-    decode,
-    encode,
-    exists,
-    fixurl,
-    format_exc,
-    fsjoin,
-    html_unescape,
-    parse_html_header,
-    remove,
-    set_cookies,
-)
+from pyload.plugins.utils import (DB, Config, decode, encode, exists, fixurl,
+                                  format_exc, fsjoin, html_unescape, parse_html_header,
+                                  remove, set_cookies)
 
 if os.name != "nt":
     import grp

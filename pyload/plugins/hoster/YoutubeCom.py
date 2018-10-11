@@ -16,15 +16,8 @@ from pyload.network.CookieJar import CookieJar
 from pyload.network.HTTPRequest import HTTPRequest
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.internal.Plugin import Abort, Skip
-from pyload.plugins.utils import (
-    exists,
-    isexecutable,
-    json,
-    reduce,
-    renice,
-    replace_patterns,
-    which,
-)
+from pyload.plugins.utils import (exists, isexecutable, json, reduce, renice,
+                                  replace_patterns, which)
 
 
 class BIGHTTPRequest(HTTPRequest):
