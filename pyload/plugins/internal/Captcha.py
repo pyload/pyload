@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import base64
 import os
 import time
+from builtins import _
 
 from pyload.plugins.internal.Plugin import Plugin
 

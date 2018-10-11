@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import inspect
 import re
 import time
 import urllib.parse
+from builtins import _
 
 from pyload.plugins.internal.Captcha import Captcha
 from pyload.plugins.internal.Plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip

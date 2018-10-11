@@ -13,11 +13,11 @@ import pyload.utils.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 from bottle import app, run
 from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, PrefixLoader
+from pyload import InitHomeDir
 from pyload.utils.utils import decode, formatSize
 from pyload.utils.utils.JsEngine import JsEngine
 from pyload.utils.utils.json_layer import json
 from pyload.webui import ServerThread, api_app, cnl_app, json_app, pyload_app
-from pyload import InitHomeDir
 from pyload.webui.filters import (date, path_make_absolute, path_make_relative,
                                   quotepath, truncate)
 from pyload.webui.middlewares import (GZipMiddleWare, PrefixMiddleware,

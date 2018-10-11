@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import logging
 import os
 import threading
+from builtins import _
 from os.path import exists
 
 core = None

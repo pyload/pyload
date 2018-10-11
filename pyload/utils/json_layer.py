@@ -10,4 +10,3 @@ except ImportError:  # use system simplejson if available
     import simplejson as json
     from simplejson import loads as json_loads
     from simplejson import dumps as json_dumps
-    

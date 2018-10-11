@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from builtins import _
-
 import random
 import threading
 import time
+from builtins import _
 
 from pyload.plugins.internal.Plugin import Plugin, Skip
 from pyload.plugins.utils import (Periodical, compare_time, decode, isiterable, lock,
