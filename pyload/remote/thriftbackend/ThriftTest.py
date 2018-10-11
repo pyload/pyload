@@ -9,8 +9,8 @@ from time import time
 
 from pyload.remote.thriftbackend.Protocol import Protocol
 from pyload.remote.thriftbackend.Socket import Socket
-from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
-from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from pyload.remote.thriftbackend.thriftgen import Pyload
+from pyload.remote.thriftbackend.thriftgen.ttypes import *
 from thrift import Thrift
 from thrift.transport import TTransport
 

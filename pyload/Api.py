@@ -14,8 +14,8 @@ from pyload.utils.utils import compare_time, freeSpace, json
 
 if activated:
     try:
-        from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
-        from pyload.remote.thriftbackend.thriftgen.pyload.Pyload import Iface
+        from pyload.remote.thriftbackend.thriftgen.ttypes import *
+        from pyload.remote.thriftbackend.thriftgen.Pyload import Iface
 
         BaseObject = TBase
     except ImportError:

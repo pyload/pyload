@@ -9,7 +9,7 @@ from pyload.remote.thriftbackend.Protocol import Protocol
 from pyload.remote.thriftbackend.socket import error
 # from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.Socket import Socket
-from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
+from pyload.remote.thriftbackend.thriftgen import Pyload
 from thrift.transport import TTransport
 
 try:
