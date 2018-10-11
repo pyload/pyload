@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from builtins import _
 # @author: spoob, sebnapi, RaNaN, mkaay
 
 import builtins
