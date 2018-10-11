@@ -24,8 +24,7 @@ class UnSkipOnFail(Addon):
         link = self.find_duplicate(pyfile)
         if link:
             self.log_info(
-                _("Queue found duplicate: {} (pid:{})") %
-                (link.name, link.packageID))
+                _("Queue found duplicate: {} (pid:{})").format(link.name, link.packageID))
 
             #: Change status of "link" to "new_status".
             #: "link" has to be a valid FileData object,

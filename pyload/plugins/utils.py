@@ -86,8 +86,7 @@ class Config(object):
 
         except KeyError:
             self.plugin.log_debug(
-                "Config option `{}` not found, use default `{}`" %
-                (option, default))  # @TODO: Restore to `log_warning` in 0.6.x
+                "Config option `{}` not found, use default `{}`".format(option, default))  # @TODO: Restore to `log_warning` in 0.6.x
             return default
 
 

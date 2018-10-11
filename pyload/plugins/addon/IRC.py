@@ -168,8 +168,7 @@ class IRC(Thread, Notifier):
         if msg['text'] == "\x01VERSION\x01":
             self.log_debug("Sending CTCP VERSION")
             self.sock.send(
-                "NOTICE {} :{}\r\n" %
-                (msg['origin'], "pyLoad! IRC Interface"))
+                "NOTICE {} :{}\r\n".format(msg['origin'], "pyLoad! IRC Interface"))
             return
         elif msg['text'] == "\x01TIME\x01":
             self.log_debug("Sending CTCP TIME")
@@ -205,8 +204,7 @@ class IRC(Thread, Notifier):
             for t in self.config.get('owner').split():
                 self.sock.send("PRIVMSG {} :{}\r\n".format(t.strip(), msg))
         else:
-            self.sock.send("PRIVMSG {} :{}\r\n" %
-                           (origin.split("!", 1)[0], msg))
+            self.sock.send("PRIVMSG {} :{}\r\n".format(origin.split("!", 1)[0], msg))
 
     # Events
     def event_pass(self, args):
@@ -244,8 +242,7 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #{}: "{}" with {:d} links.' %
-                         (pack.pid, pack.name, len(pack.links)))
+            lines.append('PACKAGE #{}: "{}" with {:d} links.'.format(pack.pid, pack.name, len(pack.links)))
 
         return lines
 
@@ -256,8 +253,7 @@ class IRC(Thread, Notifier):
 
         lines = []
         for pack in pdata:
-            lines.append('PACKAGE #{}: "{}" with {:d} links.' %
-                         (pack.pid, pack.name, len(pack.links)))
+            lines.append('PACKAGE #{}: "{}" with {:d} links.'.format(pack.pid, pack.name, len(pack.links)))
 
         return lines
 
@@ -291,8 +287,7 @@ class IRC(Thread, Notifier):
 
         self.more = []
 
-        lines.append('PACKAGE #{}: "{}" with {:d} links' %
-                     (id, pack.name, len(pack.links)))
+        lines.append('PACKAGE #{}: "{}" with {:d} links'.format(id, pack.name, len(pack.links)))
         for pyfile in pack.links:
             self.more.append(
                 'LINK #{}: {} ({}) [{}][{}]'.format(

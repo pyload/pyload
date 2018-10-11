@@ -75,10 +75,9 @@ class Account(Plugin):
         except Exception:
             pass
 
-        log("{plugintype} {pluginname}: {msg}" %
-            {'plugintype': plugintype.upper(),
+        log("{plugintype} {pluginname}: {msg}".format(**{'plugintype': plugintype.upper(),
              'pluginname': pluginname,
-             'msg': msg})
+             'msg': msg}))
 
     def setup(self):
         """
@@ -211,8 +210,7 @@ class Account(Plugin):
             self.syncback()
 
             self.log_debug(
-                "Account info for user `{}`: {}" %
-                (self.user, self.info))
+                "Account info for user `{}`: {}".format(self.user, self.info))
 
         return self.info
 

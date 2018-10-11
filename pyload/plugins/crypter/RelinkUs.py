@@ -162,8 +162,7 @@ class RelinkUs(Crypter):
                 input_type="png",
                 output_type='positional')  # , ocr="CircleCaptcha")
             self.log_debug(
-                "Captcha resolved, coords ({},{})" %
-                (coords[0], coords[1]))
+                "Captcha resolved, coords ({},{})".format(coords[0], coords[1]))
 
             post_data = {'button.x': coords[0],
                          'button.y': coords[1],
@@ -204,16 +203,14 @@ class RelinkUs(Crypter):
             if self.FILE_NOTITLE not in title:
                 name = folder = title
                 self.log_debug(
-                    "Found name [{}] and folder [{}] in package info" %
-                    (name, folder))
+                    "Found name [{}] and folder [{}] in package info".format(name, folder))
 
         #: Fallback to defaults
         if not name or not folder:
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [{}] and folder [{}]" %
-                (name, folder))
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(name, folder))
 
         #: Return package info
         return name, folder

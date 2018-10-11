@@ -202,15 +202,13 @@ class Checksum(Addon):
                         elif checksum is not None:
                             if checksum.lower() == data['hash'][key].lower():
                                 self.log_info(
-                                    _('File integrity of "{}" verified by {} checksum ({})') %
-                                    (pyfile.name, key.upper(), checksum.lower()))
+                                    _('File integrity of "{}" verified by {} checksum ({})').format(pyfile.name, key.upper(), checksum.lower()))
                                 pyfile.error = _("checksum verified")
                                 break
 
                             else:
                                 self.log_warning(
-                                    _("{} checksum for file {} does not match ({} != {})") %
-                                    (key.upper(), pyfile.name, checksum, data['hash'][key].lower()))
+                                    _("{} checksum for file {} does not match ({} != {})").format(key.upper(), pyfile.name, checksum, data['hash'][key].lower()))
 
                                 self.check_failed(
                                     pyfile, local_file, "Checksums do not match")
@@ -314,8 +312,7 @@ class Checksum(Addon):
                         if checksum.lower() == data['HASH'].lower():
                             self.retries.pop(fid, 0)
                             self.log_info(
-                                _('File integrity of "{}" verified by {} checksum ({})') %
-                                (data['NAME'], algorithm, checksum))
+                                _('File integrity of "{}" verified by {} checksum ({})').format(data['NAME'], algorithm, checksum))
 
                             if pyfile is not None:
                                 pyfile.error = _("checksum verified")
@@ -324,8 +321,7 @@ class Checksum(Addon):
 
                         else:
                             self.log_warning(
-                                _("{} checksum for file {} does not match ({} != {})") %
-                                (algorithm.upper(), data['NAME'], checksum.lower(), data['HASH'].lower()))
+                                _("{} checksum for file {} does not match ({} != {})").format(algorithm.upper(), data['NAME'], checksum.lower(), data['HASH'].lower()))
 
                             if fid is not None:
                                 failed.append((fid, local_file))

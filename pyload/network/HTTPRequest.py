@@ -52,8 +52,7 @@ class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
         Exception.__init__(
-            self, "Bad server response: {} {}" %
-            (code, responses.get(
+            self, "Bad server response: {} {}".format(code, responses.get(
                 int_code, unofficial_responses.get(
                     int_code, "unknown error code"))))
         self.code = int_code

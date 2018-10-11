@@ -148,8 +148,7 @@ class LinkCryptWs(Crypter):
         folder = self.pyfile.package().folder
 
         self.log_debug(
-            "Defaulting to pyfile name [{}] and folder [{}] for package" %
-            (name, folder))
+            "Defaulting to pyfile name [{}] and folder [{}] for package".format(name, folder))
 
         return name, folder
 
@@ -257,8 +256,7 @@ class LinkCryptWs(Crypter):
 
                 pack_name, folder_name = self.get_package_info()
                 self.log_debug(
-                    "Added package with name {}.{} and container link {}" %
-                    (pack_name, container_type, clink.group(1)))
+                    "Added package with name {}.{} and container link {}".format(pack_name, container_type, clink.group(1)))
                 self.pyload.api.uploadContainer(
                     '.'.join([pack_name, container_type]), self.load(clink.group(1)))
                 return "Found it"

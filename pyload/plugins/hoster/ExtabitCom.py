@@ -75,8 +75,7 @@ class ExtabitCom(SimpleHoster):
             self.error(_("Bad JSON response"))
 
         self.data = self.load(
-            "http://extabit.com/file/{}{}" %
-            (fileID, res['href']))
+            "http://extabit.com/file/{}{}".format(fileID, res['href']))
 
         m = re.search(self.LINK_FREE_PATTERN, self.data)
         if m is None:

@@ -132,14 +132,12 @@ class NCryptIn(Crypter):
         if m is not None:
             name = folder = m.group('N').strip()
             self.log_debug(
-                "Found name [{}] and folder [{}] in package info" %
-                (name, folder))
+                "Found name [{}] and folder [{}] in package info".format(name, folder))
         else:
             name = self.package.name
             folder = self.package.folder
             self.log_debug(
-                "Package info not found, defaulting to pyfile name [{}] and folder [{}]" %
-                (name, folder))
+                "Package info not found, defaulting to pyfile name [{}] and folder [{}]".format(name, folder))
         return name, folder
 
     def unlock_protection(self):

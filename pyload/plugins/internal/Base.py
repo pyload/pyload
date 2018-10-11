@@ -115,11 +115,10 @@ class Base(Plugin):
         except Exception:
             pass
 
-        log("{plugintype} {pluginname}[{id}]: {msg}" %
-            {'plugintype': plugintype.upper(),
+        log("{plugintype} {pluginname}[{id}]: {msg}".format(**{'plugintype': plugintype.upper(),
              'pluginname': pluginname,
              'id': self.pyfile.id,
-             'msg': msg})
+             'msg': msg}))
 
     def init_base(self):
         pass
@@ -203,8 +202,7 @@ class Base(Plugin):
 
         if size:
             self.log_info(
-                _("Link size: {} ({} bytes)") %
-                (format_size(size), size))
+                _("Link size: {} ({} bytes)").format(format_size(size), size))
         else:
             self.log_info(_("Link size: N/D"))
 

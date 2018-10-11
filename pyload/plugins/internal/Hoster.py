@@ -329,8 +329,7 @@ class Hoster(Base):
                     safename = newname
 
                 self.log_info(
-                    _("`{}` saved as `{}`") %
-                    (self.pyfile.name, safename))
+                    _("`{}` saved as `{}`").format(self.pyfile.name, safename))
 
             self.pyfile.name = safename
 

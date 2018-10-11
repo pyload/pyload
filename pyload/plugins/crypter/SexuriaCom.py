@@ -91,8 +91,7 @@ class SexuriaCom(Crypter):
                 if title:
                     name = folder = title
                     self.log_debug(
-                        "Package info found, name [{}] and folder [{}]" %
-                        (name, folder))
+                        "Package info found, name [{}] and folder [{}]".format(name, folder))
             #: Password
             pwddata = re.search(self.PATTERN_PASSWORD, html, re.I | re.S)
             if not pwddata:
@@ -127,8 +126,7 @@ class SexuriaCom(Crypter):
         else:
             for i, link in enumerate(linklist):
                 self.log_debug(
-                    "Supported link {:d}/{:d}: {}" %
-                    (i + 1, len(linklist), link))
+                    "Supported link {:d}/{:d}: {}".format(i + 1, len(linklist), link))
 
         #: All done, return to caller
         return name, linklist, folder, password

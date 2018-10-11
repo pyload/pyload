@@ -61,8 +61,7 @@ class LuckyShareNet(SimpleHoster):
 
         response, challenge = self.captcha.challenge()
         rep = self.load(
-            r'http://luckyshare.net/download/verify/challenge/{}/response/{}/hash/{}' %
-            (challenge, response, json_data['hash']))
+            r'http://luckyshare.net/download/verify/challenge/{}/response/{}/hash/{}'.format(challenge, response, json_data['hash']))
 
         self.log_debug("JSON: " + rep)
 

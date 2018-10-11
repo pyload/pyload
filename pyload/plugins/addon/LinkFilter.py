@@ -59,8 +59,7 @@ class LinkFilter(Addon):
             linkstring = '' if self.config.get('filter_all') else 'hoster '
             linkstring += 'link' if linkcount == 1 else 'links'
             self.log_warning(
-                _('Whitelist filter removed {} {} not containing ({})') %
-                (linkcount, linkstring, ', '.join(filters)))
+                _('Whitelist filter removed {} {} not containing ({})').format(linkcount, linkstring, ', '.join(filters)))
 
     def blacklist(self, links, filters):
         for _filter in filters:
@@ -74,8 +73,7 @@ class LinkFilter(Addon):
                 linkstring = '' if self.config.get('filter_all') else 'hoster '
                 linkstring += 'link' if linkcount == 1 else 'links'
                 self.log_warning(
-                    'Blacklist filter removed {} {} containing {}' %
-                    (linkcount, linkstring, _filter))
+                    'Blacklist filter removed {} {} containing {}'.format(linkcount, linkstring, _filter))
 
     def is_hoster_link(self, link):
         # declare all links as hoster links so the filter will work on all links

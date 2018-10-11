@@ -77,8 +77,7 @@ class MultipartPostHandler(BaseHandler):
                 if(request.has_header('Content-Type')
                    and request.get_header('Content-Type').find('multipart/form-data') != 0):
                     print(
-                        "Replacing %s with %s" %
-                        (request.get_header('content-type'),
+                        "Replacing %s with %s".format(request.get_header('content-type'),
                          'multipart/form-data'))
                 request.add_unredirected_header('Content-Type', contenttype)
 
@@ -102,9 +101,8 @@ class MultipartPostHandler(BaseHandler):
                 filename)[0] or 'application/octet-stream'
             buf.write('--%s\r\n' % boundary)
             buf.write(
-                'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' %
-                (key, filename))
-            buf.write('Content-Type: %s\r\n' % contenttype)
+                'Content-Disposition: form-data; name="%s"; filename="%s"\r\n'.format(key, filename))
+            buf.write('Content-Type: %s\r\n'.format(contenttype))
             # buffer += 'Content-Length: %s\r\n' % file_size
             fd.seek(0)
             buf.write('\r\n' + fd.read() + '\r\n')

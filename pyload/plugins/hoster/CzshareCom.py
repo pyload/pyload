@@ -57,11 +57,9 @@ class CzshareCom(SimpleHoster):
         try:
             credit = parse_size(m.group(1).replace(' ', ''), m.group(2))
             self.log_info(
-                _("Premium download for %i KiB of Credit") %
-                (self.pyfile.size // 1024))
+                _("Premium download for %i KiB of Credit").format(self.pyfile.size // 1024))
             self.log_info(
-                _("User {} has %i KiB left") %
-                (self.account.user, credit // 1024))
+                _("User {} has %i KiB left").format(self.account.user, credit // 1024))
             if credit < self.pyfile.size:
                 self.log_info(
                     _("Not enough credit to download file: {}") %

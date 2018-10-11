@@ -425,8 +425,7 @@ class YoutubeCom(Hoster):
             self.fail(_("No available video stream meets your preferences"))
 
         self.log_debug(
-            "DESIRED VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{}) {}found, {}allowed" %
-            (desired_fmt,
+            "DESIRED VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{}) {}found, {}allowed".format(desired_fmt,
              self.formats[desired_fmt]['ext'],
              self.formats[desired_fmt]['width'],
              self.formats[desired_fmt]['height'],
@@ -453,8 +452,7 @@ class YoutubeCom(Hoster):
                     video_streams.keys()))
 
         self.log_debug(
-            "CHOSEN VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{})" %
-            (chosen_fmt,
+            "CHOSEN VIDEO STREAM: ITAG:{:d} ({} {:d}x{:d} Q:{:d} 3D:{})".format(chosen_fmt,
              self.formats[chosen_fmt]['ext'],
              self.formats[chosen_fmt]['width'],
              self.formats[chosen_fmt]['height'],
@@ -537,8 +535,7 @@ class YoutubeCom(Hoster):
                     audio_streams.keys()))
 
         self.log_debug(
-            "CHOSEN AUDIO STREAM: ITAG:{:d} ({} {} Q:{:d})" %
-            (chosen_fmt,
+            "CHOSEN AUDIO STREAM: ITAG:{:d} ({} {} Q:{:d})".format(chosen_fmt,
              self.formats[chosen_fmt]['ext'],
              self.formats[chosen_fmt]['acodec'],
              self.formats[chosen_fmt]['qi']))
@@ -937,8 +934,7 @@ class JSInterpreter(object):
 
         for op, opfunc in self._ASSIGN_OPERATORS:
             m = re.match(
-                r'(?x)(?P<out>{})(?:\[(?P<index>[^\]]+?)\])?\s*{}(?P<expr>.*)$' %
-                (self._VARNAME_PATTERN, re.escape(op)), expr)
+                r'(?x)(?P<out>{})(?:\[(?P<index>[^\]]+?)\])?\s*{}(?P<expr>.*)$'.format(self._VARNAME_PATTERN, re.escape(op)), expr)
             if m is None:
                 continue
             right_val = self.interpret_expression(

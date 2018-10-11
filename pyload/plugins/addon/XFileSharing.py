@@ -77,8 +77,7 @@ class XFileSharing(Addon):
             match_list = '|'.join(sorted(plugin_set)).replace('.', '\.')
             pattern = self._regexmap[type][1].format(match_list)
 
-            self.log_info(_("Handle {:d} {}{}: {}") %
-                          (len(plugin_set),
+            self.log_info(_("Handle {:d} {}{}: {}").format(len(plugin_set),
                            type,
                            "" if len(plugin_set) == 1 else "s",
                            match_list.replace('\.', '.').replace('|', ', ')))

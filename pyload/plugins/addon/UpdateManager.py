@@ -282,9 +282,8 @@ class UpdateManager(Addon):
                     break
 
             for t, n in self.remove_plugins(blacklisted_plugins):
-                self.log_info(_("Removed blacklisted plugin: {type} {name}") %
-                              {'type': t.upper(),
-                               'name': n, })
+                self.log_info(_("Removed blacklisted plugin: {type} {name}").format(**{'type': t.upper(),
+                               'name': n, }))
 
         for plugin in updatelist:
             plugin_name = plugin['name']
@@ -333,8 +332,7 @@ class UpdateManager(Addon):
                     raise Exception(_("Version mismatch"))
 
             except Exception as e:
-                self.log_error(_("Error updating plugin: {} {}") %
-                               (plugin_type.rstrip('s').upper(), plugin_name),
+                self.log_error(_("Error updating plugin: {} {}").format(plugin_type.rstrip('s').upper(), plugin_name),
                                e)  # @TODO: Remove rstrip in 0.6.x
 
         return updated

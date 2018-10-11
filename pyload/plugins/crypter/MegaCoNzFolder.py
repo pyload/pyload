@@ -54,8 +54,7 @@ class MegaCoNzFolder(Crypter):
         def get_node_key(k): return MegaCrypto.base64_encode(
             MegaCrypto.a32_to_str(MegaCrypto.decrypt_key(k, master_key)))
 
-        self.links = [_("https://mega.co.nz/#N!{}!{}###n={}") %
-                      (_f['h'],
+        self.links = [_("https://mega.co.nz/#N!{}!{}###n={}").format(_f['h'],
                        get_node_key(_f['k'][_f['k'].index(':') + 1:]),
                        id)
                       for _f in res['f']
