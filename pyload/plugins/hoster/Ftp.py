@@ -5,7 +5,6 @@ import re
 import urllib.parse
 
 import pycurl
-
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import parse_name
 

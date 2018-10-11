@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.utils import set_cookie
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.utils import set_cookie
 
 
 class XFSCrypter(SimpleCrypter):

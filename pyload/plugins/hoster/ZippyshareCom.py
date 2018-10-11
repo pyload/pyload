@@ -7,7 +7,6 @@ import urllib.parse
 import urllib.request
 
 import BeautifulSoup
-
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

@@ -4,8 +4,8 @@ from builtins import _
 import os
 import re
 
-from pyload.plugins.utils import encode
 from pyload.plugins.internal.Plugin import Plugin
+from pyload.plugins.utils import encode
 
 
 class ArchiveError(Exception):

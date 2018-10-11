@@ -4,7 +4,6 @@ from builtins import _
 import re
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Crypter import Crypter
 
 

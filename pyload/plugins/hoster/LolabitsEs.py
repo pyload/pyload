@@ -2,8 +2,8 @@
 
 import re
 
-from pyload.plugins.utils import html_unescape
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import html_unescape
 
 
 class LolabitsEs(SimpleHoster):

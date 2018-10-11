@@ -4,7 +4,6 @@ from builtins import _
 import re
 
 from pyload.network.RequestFactory import getURL as get_url
-
 from pyload.plugins.internal.Base import parse_fileInfo
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

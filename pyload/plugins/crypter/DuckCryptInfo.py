@@ -5,7 +5,6 @@ import re
 from builtins import _, str
 
 import BeautifulSoup
-
 from pyload.plugins.internal.Crypter import Crypter
 
 

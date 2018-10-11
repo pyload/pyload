@@ -11,7 +11,6 @@ from types import MethodType
 from _thread import start_new_thread
 from pyload.manager.PluginManager import literal_eval
 from pyload.thread.PluginThread import HookThread
-
 from pyload.utils.utils import lock
 
 

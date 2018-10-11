@@ -8,7 +8,6 @@ import urllib.request
 from builtins import _, chr
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 

@@ -6,9 +6,8 @@ from builtins import _, str
 
 import Crypto.Hash.SHA
 import pycurl
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.utils import json
 
 
 def args(**kwargs):

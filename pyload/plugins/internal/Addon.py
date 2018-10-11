@@ -3,8 +3,8 @@ from builtins import _
 
 import threading
 
-from pyload.plugins.utils import Periodical, isiterable
 from pyload.plugins.internal.Plugin import Plugin
+from pyload.plugins.utils import Periodical, isiterable
 
 
 class Addon(Plugin):

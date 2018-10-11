@@ -6,14 +6,13 @@ from builtins import _, object
 from os.path import abspath, dirname, join
 from traceback import print_exc
 
-from thrift.transport import TTransport
-
 from pyload.remote.thriftbackend.Protocol import Protocol
 from pyload.remote.thriftbackend.socket import error
 #from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.Socket import Socket
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from thrift.transport import TTransport
 
 try:
     import thrift

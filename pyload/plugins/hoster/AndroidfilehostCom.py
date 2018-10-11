@@ -3,7 +3,6 @@
 import re
 
 import pycurl
-
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 

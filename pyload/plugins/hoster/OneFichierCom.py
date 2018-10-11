@@ -5,9 +5,8 @@ import re
 from builtins import _, map, range
 
 from pyload.network.RequestFactory import getURL as get_url
-
-from pyload.plugins.utils import format_exc
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import format_exc
 
 
 class OneFichierCom(SimpleHoster):

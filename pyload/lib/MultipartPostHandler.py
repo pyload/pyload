@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import mimetools
+import mimetypes
 from builtins import _
+from os import remove, write
+
+from six.moves import cStringIO
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import BaseHandler, HTTPHandler, build_opener
+
 # 02/2006 Will Holcomb <wholcomb@gmail.com>
 # 7/26/07 Slightly modified by Brian Schneider in order to support unicode files ( multipart_encode function )
 
@@ -29,15 +39,8 @@ Further Example:
   then uploads it to the W3C validator.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-import mimetools
-import mimetypes
-from os import remove, write
 
-from six.moves import cStringIO
-from six.moves.urllib.parse import urlencode
-from six.moves.urllib.request import BaseHandler, HTTPHandler, build_opener
 
 
 class Callable:

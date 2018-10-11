@@ -4,9 +4,8 @@ from builtins import _
 import time
 
 from pyload.network.HTTPRequest import BadHeader
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.MultiAccount import MultiAccount
+from pyload.plugins.utils import json
 
 
 def args(**kwargs):

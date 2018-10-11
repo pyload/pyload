@@ -4,7 +4,6 @@ from builtins import _
 import re
 
 from pyload.datatype.PyFile import PyFile
-
 from pyload.plugins.internal.Addon import Addon
 
 

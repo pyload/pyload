@@ -2,7 +2,7 @@
 from builtins import _
 # @author: RaNaN
 
-from builtins import _, pypath, object
+from builtins import _, object, pypath
 from imp import find_module
 from os.path import exists, join
 from urllib.parse import quote

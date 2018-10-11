@@ -2,7 +2,6 @@
 from builtins import _
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Plugin import Retry
 from pyload.plugins.internal.XFSHoster import XFSHoster
 

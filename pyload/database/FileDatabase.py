@@ -6,9 +6,10 @@ from builtins import _, object, range, str, zip
 from threading import RLock
 
 from pyload.database import DatabaseBackend, style
-from pyload.manager.PullEvents import InsertEvent, ReloadAllEvent, RemoveEvent, UpdateEvent
 from pyload.datatype.PyFile import PyFile
 from pyload.datatype.PyPackage import PyPackage
+from pyload.manager.PullEvents import (InsertEvent, ReloadAllEvent, RemoveEvent,
+                                       UpdateEvent)
 from pyload.utils.utils import formatSize, lock
 
 try:

@@ -6,7 +6,7 @@ from builtins import _
 import configparser
 import os
 import sys
-from builtins import _, owd, pypath, input, object, range, str
+from builtins import _, input, object, owd, pypath, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from os import _exit

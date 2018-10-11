@@ -4,8 +4,8 @@ from builtins import _
 import re
 import urllib.parse
 
-from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import json
 
 
 class YibaishiwuCom(SimpleHoster):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
-from pyload.plugins.internal.SimpleHoster import SimpleHoster
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
+from pyload.plugins.internal.SimpleHoster import SimpleHoster
 
 
 class UploadgigCom(SimpleHoster):

@@ -3,8 +3,8 @@ from builtins import _
 
 import hashlib
 
-from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import json
 
 
 class UpfileVn(SimpleHoster):

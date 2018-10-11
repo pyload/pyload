@@ -7,7 +7,6 @@ import urllib.parse
 import urllib.request
 
 import MultipartPostHandler
-
 from pyload.plugins.internal.Container import Container
 from pyload.plugins.utils import encode, fsjoin
 

@@ -8,13 +8,12 @@ from getpass import getpass
 from os.path import abspath, dirname, join
 from time import time
 
-from thrift import Thrift
-from thrift.transport import TTransport
-
 from pyload.remote.thriftbackend.Protocol import Protocol
 from pyload.remote.thriftbackend.Socket import Socket
 from pyload.remote.thriftbackend.thriftgen.pyload import Pyload
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from thrift import Thrift
+from thrift.transport import TTransport
 
 path = join((abspath(dirname(__file__))), "..", "..", "lib")
 sys.path.append(path)

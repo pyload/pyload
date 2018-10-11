@@ -9,6 +9,5 @@ from builtins import _
 #  options string: py:slots,dynamic
 #
 
-from thrift.Thrift import TException, TMessageType, TType
-
 from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
+from thrift.Thrift import TException, TMessageType, TType

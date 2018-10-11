@@ -8,7 +8,6 @@ import urllib.parse
 from builtins import _, map, range
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import threaded
 

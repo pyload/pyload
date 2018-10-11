@@ -5,7 +5,6 @@ import re
 import urllib.parse
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
 

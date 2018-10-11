@@ -11,10 +11,9 @@ from builtins import _
 
 from builtins import _, object
 
+from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 from thrift.protocol.TBase import TBase
 from thrift.Thrift import TMessageType, TProcessor, TType
-
-from pyload.remote.thriftbackend.thriftgen.pyload.ttypes import *
 
 
 class Iface(object):

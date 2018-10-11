@@ -6,7 +6,6 @@ import urllib.parse
 from builtins import _, range
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Hoster import Hoster
 
 

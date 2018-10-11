@@ -4,9 +4,8 @@ from builtins import _
 import hashlib
 
 import pycurl
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.MultiAccount import MultiAccount
+from pyload.plugins.utils import json
 
 
 class LinkifierCom(MultiAccount):

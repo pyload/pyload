@@ -3,10 +3,10 @@ from builtins import _
 
 import os
 import subprocess
-from builtins import _, pypath, map, range, str
+from builtins import _, map, pypath, range, str
 
-from pyload.plugins.utils import encode, fsjoin
 from pyload.plugins.internal.Plugin import Plugin
+from pyload.plugins.utils import encode, fsjoin
 
 try:
     from PIL import Image

@@ -3,6 +3,9 @@ from builtins import _
 
 from builtins import _, object
 
+from pyload.plugins.internal.Account import Account
+from pyload.plugins.utils import json
+
 try:
     from beaker.crypto.pbkdf2 import PBKDF2
 
@@ -20,8 +23,6 @@ except ImportError:
         def hexread(self, octets):
             return b2a_hex(
                 pbkdf2(self.passphrase, self.salt, self.iterations, octets))
-from pyload.plugins.internal.Account import Account
-from pyload.plugins.utils import json
 
 
 class OboomCom(Account):

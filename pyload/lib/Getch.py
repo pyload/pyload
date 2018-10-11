@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 
+
 class Getch:
     """
     Gets a single character from standard input.  Does not echo to

@@ -9,9 +9,8 @@ import urllib.request
 from builtins import _, chr
 
 from pyload.network.RequestFactory import getURL as get_url
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleCrypter import SimpleCrypter
+from pyload.plugins.utils import json
 
 
 def xor_decrypt(data, key):

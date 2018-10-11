@@ -4,9 +4,8 @@ from builtins import _
 import re
 
 from pyload.network.RequestFactory import getURL as get_url
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import json
 
 
 class OpenloadIo(SimpleHoster):

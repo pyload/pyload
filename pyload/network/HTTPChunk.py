@@ -10,9 +10,8 @@ from re import search
 from time import sleep
 
 import pycurl
-from pyload.utils.utils import fs_encode
-
 from pyload.network.HTTPRequest import HTTPRequest
+from pyload.utils.utils import fs_encode
 
 
 class WrongFormat(Exception):

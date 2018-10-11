@@ -3,7 +3,7 @@ from builtins import _
 # @author: RaNaN
 
 import re
-from builtins import _, pypath, object, range, str
+from builtins import _, object, pypath, range, str
 from os.path import exists, join
 from random import choice
 from subprocess import Popen
@@ -12,11 +12,10 @@ from time import sleep, time
 from traceback import print_exc
 
 import pycurl
-from pyload.network.RequestFactory import getURL
 from pyload.datatype.PyFile import PyFile
-from pyload.utils.utils import freeSpace, lock
-
+from pyload.network.RequestFactory import getURL
 from pyload.thread import PluginThread
+from pyload.utils.utils import freeSpace, lock
 
 
 class ThreadManager(object):

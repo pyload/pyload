@@ -6,7 +6,6 @@ import time
 import urllib.parse
 
 import pycurl
-
 from pyload.plugins.internal.Account import Account
 from pyload.plugins.utils import json
 

@@ -5,7 +5,6 @@ import re
 import time
 
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Account import Account
 
 

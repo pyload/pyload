@@ -4,8 +4,8 @@ from builtins import _
 import re
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
-from pyload.plugins.utils import parse_time
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import parse_time
 
 
 class KatfileCom(SimpleHoster):

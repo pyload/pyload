@@ -4,7 +4,6 @@ from builtins import _
 from builtins import _, chr, range
 
 import Crypto.PublicKey.RSA
-
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
 from pyload.plugins.internal.Account import Account
 

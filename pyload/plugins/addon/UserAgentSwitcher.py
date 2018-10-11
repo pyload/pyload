@@ -4,7 +4,6 @@ from builtins import _
 import pycurl
 from pyload.network.Browser import Browser
 from pyload.network.HTTPRequest import HTTPRequest
-
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import encode
 

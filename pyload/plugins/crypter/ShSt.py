@@ -2,7 +2,6 @@
 from builtins import _
 
 import pycurl
-
 from pyload.plugins.internal.Crypter import Crypter
 
 

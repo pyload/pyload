@@ -4,7 +4,6 @@ from builtins import _
 
 from bottle import HTTPError, ServerAdapter, redirect, request
 from pyload.Api import PERMS, ROLE, has_permission
-
 from pyload.webui.webinterface import PREFIX, TEMPLATE, env
 
 

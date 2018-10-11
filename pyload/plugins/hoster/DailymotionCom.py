@@ -3,9 +3,8 @@ from builtins import _
 
 import re
 
-from pyload.network.RequestFactory import getURL as get_url
 from pyload.datatype.PyFile import statusMap
-
+from pyload.network.RequestFactory import getURL as get_url
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import json
 

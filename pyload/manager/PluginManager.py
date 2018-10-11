@@ -4,7 +4,7 @@ from builtins import _
 
 import re
 import sys
-from builtins import _, pypath, object, str
+from builtins import _, object, pypath, str
 from itertools import chain
 from os import listdir, makedirs
 from os.path import abspath, exists, isfile, join

@@ -4,7 +4,7 @@ from builtins import _
 
 import os
 import sys
-from builtins import _, pypath, input, object, str
+from builtins import _, input, object, pypath, str
 from getpass import getpass
 from subprocess import PIPE, call
 from sys import exit

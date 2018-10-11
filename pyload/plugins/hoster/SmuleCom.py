@@ -3,9 +3,8 @@ from builtins import _
 
 import re
 
-from pyload.utils.utils.JsEngine import JsEngine
-
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.utils.utils.JsEngine import JsEngine
 
 
 class SmuleCom(SimpleHoster):

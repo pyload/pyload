@@ -10,7 +10,6 @@ from builtins import _, range
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
-
 from pyload.plugins.internal.Hoster import Hoster
 from pyload.plugins.utils import exists, json
 

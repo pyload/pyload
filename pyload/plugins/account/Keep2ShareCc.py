@@ -3,7 +3,6 @@ from builtins import _
 
 from pyload.network.HTTPRequest import BadHeader
 from pyload.network.RequestFactory import getURL as get_url
-
 from pyload.plugins.internal.Account import Account
 from pyload.plugins.utils import json
 

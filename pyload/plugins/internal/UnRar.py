@@ -5,9 +5,10 @@ import os
 import re
 import string
 import subprocess
-from builtins import _, pypath, filter, map
+from builtins import _, filter, map, pypath
 
-from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from pyload.plugins.internal.Extractor import (ArchiveError, CRCError, Extractor,
+                                               PasswordError)
 from pyload.plugins.utils import decode, encode, fsjoin, renice
 
 

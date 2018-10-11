@@ -6,7 +6,6 @@ import re
 
 import pycurl
 from pyload.network.RequestFactory import getRequest as get_request
-
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.utils import threaded
 

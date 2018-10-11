@@ -6,9 +6,8 @@ import re
 from builtins import _, range
 
 from pyload.network.RequestFactory import getURL as get_url
-
-from pyload.plugins.utils import json
 from pyload.plugins.internal.SimpleHoster import SimpleHoster
+from pyload.plugins.utils import json
 
 
 def gen_r():

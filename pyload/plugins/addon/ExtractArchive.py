@@ -7,7 +7,8 @@ from builtins import _, object
 
 from pyload.plugins.internal.Addon import Addon
 from pyload.plugins.internal.Extractor import ArchiveError, CRCError, PasswordError
-from pyload.plugins.utils import Expose, encode, exists, fsjoin, safename, threaded, uniqify
+from pyload.plugins.utils import (Expose, encode, exists, fsjoin, safename, threaded,
+                                  uniqify)
 
 # monkey patch bug in python 2.6 and lower
 # http://bugs.python.org/issue6122 , http://bugs.python.org/issue1236 ,

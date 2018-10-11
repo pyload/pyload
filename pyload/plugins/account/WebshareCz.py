@@ -6,7 +6,6 @@ import re
 import time
 
 from pyload.network.RequestFactory import getURL as get_url
-
 from pyload.plugins.internal.Account import Account
 
 try:

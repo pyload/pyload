@@ -4,7 +4,8 @@ from builtins import _
 import sys
 import zipfile
 
-from pyload.plugins.internal.Extractor import ArchiveError, CRCError, Extractor, PasswordError
+from pyload.plugins.internal.Extractor import (ArchiveError, CRCError, Extractor,
+                                               PasswordError)
 from pyload.plugins.utils import encode
 
 

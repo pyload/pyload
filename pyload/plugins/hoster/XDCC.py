@@ -12,8 +12,8 @@ import time
 from builtins import _, object, range, str
 
 from pyload.plugins.internal.Hoster import Hoster
-from pyload.plugins.utils import encode, exists, fsjoin, lock, threaded
 from pyload.plugins.Plugin import Abort
+from pyload.plugins.utils import encode, exists, fsjoin, lock, threaded
 
 
 class IRC(object):

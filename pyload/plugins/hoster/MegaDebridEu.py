@@ -3,9 +3,8 @@ from builtins import _
 
 import pycurl
 from pyload.network.HTTPRequest import BadHeader
-
-from pyload.plugins.utils import encode, json
 from pyload.plugins.internal.MultiHoster import MultiHoster
+from pyload.plugins.utils import encode, json
 
 
 def args(**kwargs):

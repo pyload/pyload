@@ -7,7 +7,6 @@ from builtins import _, filter, zip
 
 import Crypto.Cipher.AES
 import pycurl
-
 from pyload.plugins.internal.Crypter import Crypter
 from pyload.plugins.utils import html_unescape, set_cookie
 

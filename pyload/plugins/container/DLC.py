@@ -5,7 +5,6 @@ import re
 import xml.dom.minidom
 
 import Crypto.Cipher.AES
-
 from pyload.plugins.internal.Container import Container
 from pyload.plugins.utils import decode, encode
 
