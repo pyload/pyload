@@ -20,16 +20,16 @@ from time import sleep, time
 from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
-from pyload import InitHomeDir, remote
+from pyload import inithomedir, remote
 from pyload.config.ConfigParser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
 from pyload.manager.AccountManager import AccountManager
 from pyload.manager.CaptchaManager import CaptchaManager
 from pyload.manager.PluginManager import PluginManager
-from pyload.manager.PullEvents import PullManager
+from pyload.manager.event_manager import EventManager
 from pyload.network.RequestFactory import RequestFactory
 from pyload.remote.RemoteManager import RemoteManager
-from pyload.Scheduler import Scheduler
+from pyload.scheduler import Scheduler
 from pyload.utils.JsEngine import JsEngine
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.ServerThread import WebServer
@@ -159,9 +159,9 @@ class Core(object):
         print("pyLoad v{}     2008-2011 the pyLoad Team".format(CURRENT_VERSION))
         print("")
         if sys.argv[0].endswith(".py"):
-            print("Usage: python pyLoadCore.py [options]")
+            print("Usage: python pyLoad.py [options]")
         else:
-            print("Usage: pyLoadCore [options]")
+            print("Usage: pyLoad [options]")
         print("")
         print("<Options>")
         print("  -v, --version", " " * 10, "Print version to terminal")
@@ -396,7 +396,7 @@ class Core(object):
                 self.config.oldRemoteData["password"],
             )
 
-            self.log.info(_("Please check your logindata with ./pyLoadCore.py -u"))
+            self.log.info(_("Please check your logindata with ./pyLoad.py -u"))
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -422,7 +422,7 @@ class Core(object):
 
         # hell yeah, so many important managers :D
         self.pluginManager = PluginManager(self)
-        self.pullManager = PullManager(self)
+        self.pullManager = EventManager(self)
         self.accountManager = AccountManager(self)
         self.threadManager = ThreadManager(self)
         self.captchaManager = CaptchaManager(self)
@@ -514,7 +514,7 @@ class Core(object):
         self.db.manager = self.files  # ugly?
 
     def init_webserver(self):
-        if self.config["webinterface"]["activated"]:
+        if self.config["webui"]["activated"]:
             self.webserver = WebServer(self)
             self.webserver.start()
 
@@ -642,7 +642,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config["webinterface"]["activated"] and hasattr(self, "webserver"):
+            if self.config["webui"]["activated"] and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in self.threadManager.threads:
@@ -709,9 +709,9 @@ def deamon():
 
 
 def main():
-    # change name to 'pyLoadCore'
+    # change name to 'pyLoad'
     # from pyload.lib.rename_process import renameProcess
-    # renameProcess('pyLoadCore')
+    # renameProcess('pyLoad')
     if "--daemon" in sys.argv:
         deamon()
     else:

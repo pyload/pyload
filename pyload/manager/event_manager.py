@@ -7,7 +7,7 @@ from time import time
 from pyload.utils.utils import uniqify
 
 
-class PullManager(object):
+class EventManager(object):
     def __init__(self, core):
         self.pyload = core
         self.clients = []

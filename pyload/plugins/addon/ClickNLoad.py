@@ -41,19 +41,19 @@ class ClickNLoad(Addon):
         self.web_ip = (
             "127.0.0.1"
             if any(
-                _ip == self.pyload.config.get("webinterface", "host")
+                _ip == self.pyload.config.get("webui", "host")
                 for _ip in ("0.0.0.0", "")
             )
-            else self.pyload.config.get("webinterface", "host")
+            else self.pyload.config.get("webui", "host")
         )
-        self.web_port = self.pyload.config.get("webinterface", "port")
+        self.web_port = self.pyload.config.get("webui", "port")
 
         self.server_running = False
         self.do_exit = False
         self.exit_done = threading.Event()
 
     def activate(self):
-        if not self.pyload.config.get("webinterface", "activated"):
+        if not self.pyload.config.get("webui", "activated"):
             self.log_warning(
                 _("pyLoad's Web interface is not active, ClickNLoad cannot start")
             )
@@ -128,7 +128,7 @@ class ClickNLoad(Addon):
 
                     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                    if self.pyload.config.get("webinterface", "https"):
+                    if self.pyload.config.get("webui", "https"):
                         try:
                             server_socket = ssl.wrap_socket(server_socket)
 

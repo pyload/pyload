@@ -3,7 +3,7 @@
 
 from builtins import object
 
-from pyload.manager.PullEvents import UpdateEvent
+from pyload.manager.event_manager import UpdateEvent
 from pyload.utils.utils import save_path
 
 

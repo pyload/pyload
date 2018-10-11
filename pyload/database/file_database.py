@@ -7,7 +7,7 @@ from threading import RLock
 from pyload.database import DatabaseBackend, style
 from pyload.datatype.PyFile import PyFile
 from pyload.datatype.PyPackage import PyPackage
-from pyload.manager.PullEvents import (InsertEvent, ReloadAllEvent, RemoveEvent,
+from pyload.manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEvent,
                                        UpdateEvent)
 from pyload.utils.utils import formatSize, lock
 

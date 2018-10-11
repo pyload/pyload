@@ -5,7 +5,7 @@ import threading
 from builtins import _
 from os.path import exists
 
-webinterface = None
+webui = None
 core = None
 setup = None
 log = logging.getLogger("log")
@@ -18,19 +18,19 @@ class WebServer(threading.Thread):
         self.pyload = pycore
         core = pycore
         self.running = True
-        self.server = pycore.config["webinterface"]["server"]
-        self.https = pycore.config["webinterface"]["https"]
+        self.server = pycore.config["webui"]["server"]
+        self.https = pycore.config["webui"]["https"]
         self.cert = pycore.config["ssl"]["cert"]
         self.key = pycore.config["ssl"]["key"]
-        self.host = pycore.config["webinterface"]["host"]
-        self.port = pycore.config["webinterface"]["port"]
+        self.host = pycore.config["webui"]["host"]
+        self.port = pycore.config["webui"]["port"]
 
         self.setDaemon(True)
 
     def run(self):
-        from pyload.webui import webinterface
+        from pyload.webui import webui
 
-        global webinterface
+        global webui
 
         if self.https:
             if not exists(self.cert) or not exists(self.key):
@@ -92,7 +92,7 @@ class WebServer(threading.Thread):
                     "Server set to threaded, due to known performance problems on windows."
                 )
             )
-            self.pyload.config["webinterface"]["server"] = "threaded"
+            self.pyload.config["webui"]["server"] = "threaded"
             self.server = "threaded"
 
         if self.server == "fastcgi":
@@ -116,7 +116,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webinterface.run_simple(host=self.host, port=self.port)
+        webui.run_simple(host=self.host, port=self.port)
 
     def start_threaded(self):
         if self.https:
@@ -134,7 +134,7 @@ class WebServer(threading.Thread):
                 )
             )
 
-        webinterface.run_threaded(
+        webui.run_threaded(
             host=self.host, port=self.port, cert=self.cert, key=self.key
         )
 
@@ -145,7 +145,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webinterface.run_fcgi(host=self.host, port=self.port)
+        webui.run_fcgi(host=self.host, port=self.port)
 
     def start_lightweight(self):
         if self.https:
@@ -158,7 +158,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webinterface.run_lightweight(host=self.host, port=self.port)
+        webui.run_lightweight(host=self.host, port=self.port)
 
     def quit(self):
         self.running = False

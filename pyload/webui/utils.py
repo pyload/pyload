@@ -3,7 +3,7 @@
 
 from bottle import HTTPError, ServerAdapter, redirect, request
 from pyload.Api import PERMS, ROLE, has_permission
-from pyload.webui.webinterface import PREFIX, TEMPLATE, env
+from pyload.webui.webui import PREFIX, TEMPLATE, env
 
 
 def render_to_response(name, args={}, proc=[]):

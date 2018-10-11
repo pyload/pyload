@@ -48,7 +48,7 @@ msgstr ""
 #: pyload/setup.py:77
 msgid ""
 "Don't forget: You can always rerun this assistent with --setup or -s "
-"parameter, when you start pyLoadCore."
+"parameter, when you start pyLoad."
 msgstr ""
 
 #: pyload/setup.py:78
@@ -56,7 +56,7 @@ msgid "If you have any problems with this assistent hit STRG-C,"
 msgstr ""
 
 #: pyload/setup.py:79
-msgid "to abort and don't let him start with pyLoadCore automatically anymore."
+msgid "to abort and don't let him start with pyLoad automatically anymore."
 msgstr ""
 
 #: pyload/setup.py:81

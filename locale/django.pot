@@ -117,7 +117,7 @@ msgid "not available"
 msgstr ""
 
 #: pyload/webui/pyload_app.py:509
-msgid "Run pyLoadCore.py -s to access the setup."
+msgid "Run pyLoad.py -s to access the setup."
 msgstr ""
 
 #: pyload/webui/json_app.py:60

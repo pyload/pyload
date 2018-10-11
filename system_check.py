@@ -6,7 +6,7 @@ import subprocess
 import sys
 from builtins import input
 
-# from pyload import InitHomeDir
+# from pyload import inithomedir
 
 # very ugly prints, but at least it works with python 3
 
@@ -63,7 +63,7 @@ def main():
     print("JS engine:", js)
 
     print("\n\n#####   System Status   #####")
-    print("\n##  pyLoadCore  ##")
+    print("\n##  pyLoad  ##")
 
     core_err = []
     core_info = []
@@ -115,7 +115,7 @@ def main():
         for err in core_err:
             print(err)
     else:
-        print("No Problems detected, pyLoadCore should work fine.")
+        print("No Problems detected, pyLoad should work fine.")
 
     if core_info:
         print("\nPossible improvements for pyload:\n")

@@ -8,7 +8,7 @@ from os.path import join
 from urllib.parse import unquote
 
 from bottle import HTTPError, request, route
-from pyload.webui.webinterface import DL_ROOT, JS, PYLOAD
+from pyload.webui.webui import DL_ROOT, JS, PYLOAD
 
 try:
     from Crypto.Cipher import AES

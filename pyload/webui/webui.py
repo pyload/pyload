@@ -13,7 +13,7 @@ import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 from bottle import app, run
 from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, PrefixLoader
-from pyload import InitHomeDir
+from pyload import inithomedir
 from pyload.utils.JsEngine import JsEngine
 from pyload.utils.utils import decode, formatSize, json
 from pyload.webui import ServerThread, api_app, cnl_app, json_app, pyload_app
@@ -45,10 +45,10 @@ else:
 
 JS = JsEngine()
 
-TEMPLATE = config.get("webinterface", "template")
+TEMPLATE = config.get("webui", "template")
 DL_ROOT = config.get("general", "download_folder")
 LOG_ROOT = config.get("log", "log_folder")
-PREFIX = config.get("webinterface", "prefix")
+PREFIX = config.get("webui", "prefix")
 
 if PREFIX:
     PREFIX = PREFIX.rstrip("/")

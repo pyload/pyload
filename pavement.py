@@ -56,7 +56,7 @@ setup(
     # setup_requires=["setuptools_hg"],
     entry_points={
         "console_scripts": [
-            "pyLoadCore = pyLoadCore:main",
+            "pyLoad = pyLoad:main",
             "pyLoadCli = pyLoadCli:main",
         ]
     },
@@ -237,7 +237,7 @@ def generate_locale():
         "webui/pyload",
         "setup.py",
     ]
-    makepot("pyload", path("pyload"), EXCLUDE, "./pyLoadCore.py\n")
+    makepot("pyload", path("pyload"), EXCLUDE, "./pyLoad.py\n")
 
     # makepot("gui", path("pyload") / "gui", [], includes="./pyLoadGui.py\n")
     makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")

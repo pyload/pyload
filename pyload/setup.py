@@ -72,12 +72,12 @@ class Setup(object):
         )
         print(
             _(
-                "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoadCore."
+                "Don't forget: You can always rerun this assistent with --setup or -s parameter, when you start pyLoad."
             )
         )
         print(_("If you have any problems with this assistent hit STRG-C,"))
         print(
-            _("to abort and don't let him start with pyLoadCore automatically anymore.")
+            _("to abort and don't let him start with pyLoad automatically anymore.")
         )
         print("")
         print(_("When you are ready for system check, hit enter."))
@@ -364,7 +364,7 @@ class Setup(object):
         print(_("## Webinterface Setup ##"))
 
         print("")
-        self.config["webinterface"]["activated"] = self.ask(
+        self.config["webui"]["activated"] = self.ask(
             _("Activate webinterface?"), self.yes, bool=True
         )
         print("")
@@ -373,8 +373,8 @@ class Setup(object):
                 "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
             )
         )
-        self.config["webinterface"]["host"] = self.ask(_("Address"), "0.0.0.0")
-        self.config["webinterface"]["port"] = self.ask(_("Port"), "8000")
+        self.config["webui"]["host"] = self.ask(_("Address"), "0.0.0.0")
+        self.config["webui"]["port"] = self.ask(_("Port"), "8000")
         print("")
         print(
             _(
@@ -416,7 +416,7 @@ class Setup(object):
             _("come back here and change the builtin server to the threaded one here.")
         )
 
-        self.config["webinterface"]["server"] = self.ask(
+        self.config["webui"]["server"] = self.ask(
             _("Server"), "builtin", ["builtin", "threaded", "fastcgi", "lightweight"]
         )
 
@@ -432,7 +432,7 @@ class Setup(object):
             for t in os.listdir(os.path.join(pypath, "pyload", "web", "templates"))
             if os.path.isdir(os.path.join(pypath, "pyload", "web", "templates", t))
         ]
-        self.config["webinterface"]["template"] = self.ask(
+        self.config["webui"]["template"] = self.ask(
             _("Template"), "classic", templates
         )
 
@@ -454,7 +454,7 @@ class Setup(object):
 
         ssl = self.ask(_("Activate SSL?"), self.yes, bool=True)
         self.config["ssl"]["activated"] = ssl
-        self.config["webinterface"]["https"] = ssl
+        self.config["webui"]["https"] = ssl
 
     def set_user(self):
         gettext.setpaths(

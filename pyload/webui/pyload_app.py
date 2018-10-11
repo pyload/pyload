@@ -15,7 +15,7 @@ from pyload.webui.filters import relpath, unquotepath
 from pyload.webui.utils import (get_permission, login_required, parse_permissions,
                                 parse_userdata, permlist, render_to_response,
                                 set_permission, set_session, toDict)
-from pyload.webui.webinterface import (PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP,
+from pyload.webui.webui import (PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP,
                                        env)
 
 # @author: RaNaN
@@ -573,7 +573,7 @@ def admin():
 @route("/setup")
 def setup():
     if PYLOAD or not SETUP:
-        return base([_("Run pyLoadCore.py -s to access the setup.")])
+        return base([_("Run pyLoad.py -s to access the setup.")])
 
     return render_to_response("setup.html", {"user": False, "perms": False})
 
@@ -597,7 +597,7 @@ def info():
         "download": abspath(conf["general"]["download_folder"]["value"]),
         "freespace": formatSize(PYLOAD.freeSpace()),
         "remote": conf["remote"]["port"]["value"],
-        "webif": conf["webinterface"]["port"]["value"],
+        "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],
     }
 

@@ -45,17 +45,17 @@ Optional
 First start
 ===========
 
-Note: If you installed pyload via package-manager `python pyLoadCore.py` is probably equivalent to `pyLoadCore`
+Note: If you installed pyload via package-manager `python pyLoad.py` is probably equivalent to `pyLoad`
 
 Run::
 
-    python pyLoadCore.py
+    python pyLoad.py
 
 and follow the instructions of the setup assistent.
 
 For a list of options use::
 
-    python pyLoadCore.py -h
+    python pyLoad.py -h
 
 Configuration
 =============
@@ -67,7 +67,7 @@ the options take a look at https://github.com/pyload/pyload/wiki/Configuration.
 
 To restart the configure assistent run::
 
-    python pyLoadCore.py -s
+    python pyLoad.py -s
 
 Adding downloads
 ----------------
