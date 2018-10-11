@@ -1,0 +1,40 @@
+Beaker == 1.9.1
+beautifulsoup4 == 4.6.0
+bottle == 0.12.13
+cherrypy == 14.2.0
+peewee == 3.3.1
+pycryptodomex == 3.6.1
+pycurl == 7.43.0.1
+setproctitle == 1.1.10
+six == 1.11.0
+thrift == 0.11.0
+
+# Everything needed in production
+
+# Flask
+Flask==1.0.1
+MarkupSafe==1.0
+Werkzeug==0.14.1
+Jinja2==2.10
+itsdangerous==0.24
+click==6.7
+
+# Database
+Flask-SQLAlchemy==2.3.2
+SQLAlchemy==1.2.7
+
+# Migrations
+Flask-Migrate==2.1.1
+
+# Deployment
+gunicorn>=19.1.1
+
+# Auth
+Flask-Login==0.4.1
+Flask-Bcrypt==0.7.1
+
+# Caching
+Flask-Caching>=1.0.0
+
+# Debug toolbar
+Flask-DebugToolbar==0.10.1

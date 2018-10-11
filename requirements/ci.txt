@@ -1,0 +1,10 @@
+# Requirements for CI/CD environments
+-r dev.txt
+
+codacy-coverage == 1.3.11
+codeclimate-test-reporter == 0.2.3
+# FIXME: coverage has to be <4.4 because of the Codacy integration
+# and https://bitbucket.org/ned/coveragepy/issues/578/incomplete-file-path-in-xml-report
+coverage == 4.3.4
+coveralls == 1.3.0
+pytest-cov == 2.5.1
