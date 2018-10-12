@@ -13,6 +13,7 @@ import configparser
 import os
 import sys
 from builtins import _, homedir, input, object, owd, pypath, range, str
+from easy_getch import getch
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from os import _exit
@@ -27,7 +28,6 @@ from pyload.Api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
-from pyload.lib.Getch import Getch
 from pyload.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                       NoSSL, ThriftClient, WrongLogin)
 from pyload.utils.utils import decode, formatSize
@@ -47,7 +47,6 @@ class Cli(object):
 
         if not self.command:
             # renameProcess('pyLoadCLI')
-            self.getch = Getch()
             self.input = ""
             self.inputline = 0
             self.lastLowestLine = 0
@@ -88,8 +87,8 @@ class Cli(object):
         handle input
         """
         while True:
-            # inp = raw_input()
-            inp = self.getch.impl()
+            # inp = input()
+            inp = getch()
             if ord(inp) == 3:
                 os.system("clear")
                 sys.exit()  # ctrl + c

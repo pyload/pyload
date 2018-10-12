@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import inspect
 import re
 import urllib.parse
@@ -120,7 +121,7 @@ class CloudFlare(object):
 
             # Safely evaluate the Javascript expression
             get_params["jschl_answer"] = str(
-                int(owner_plugin.js.eval(js)) + len(domain)
+                int(js2py.eval_js(js)) + len(domain)
             )
 
             owner_plugin.wait()  # Do the actual wait

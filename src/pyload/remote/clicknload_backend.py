@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import js2py
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
@@ -128,7 +129,7 @@ class CNLHandler(BaseHTTPRequestHandler):
 
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
         jk = "{} f()".format(jk)
-        jk = js.eval(jk)
+        jk = js2py.eval_js(jk)
         Key = unhexlify(jk)
         IV = Key
 

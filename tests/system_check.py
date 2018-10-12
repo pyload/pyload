@@ -57,11 +57,6 @@ def main():
     except Exception:
         print("pyqt:", "missing")
 
-    from pyload.utils import js_engine
-
-    js = js_engine.ENGINE if js_engine.ENGINE else "missing"
-    print("JS engine:", js)
-
     print("\n\n#####   System Status   #####")
     print("\n##  pyLoad  ##")
 
@@ -122,23 +117,7 @@ def main():
         for line in core_info:
             print(line)
 
-    print("\n##  pyLoadGui  ##")
-
-    gui_err = []
-
-    # try:
-    # import PyQt4
-    # except Exception:
-    # gui_err.append("GUI won't work without pyqt4 !!")
-
-    if gui_err:
-        print("The system check has detected some errors:\n")
-        for err in gui_err:
-            print(err)
-    else:
-        print("No Problems detected, pyLoadGui should work fine.")
-
-    print("\n##  Webinterface  ##")
+    print("\n##  Web Interface  ##")
 
     web_err = []
     web_info = []

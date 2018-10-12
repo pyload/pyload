@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+
+import js2py
 import re
 from builtins import _
 
-from pyload.network.cookie_factory import CookieJar
+from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.plugins.internal.plugin import Abort
 from pyload.plugins.internal.simplehoster import SimpleHoster
@@ -109,7 +111,7 @@ class PornhubCom(SimpleHoster):
         script = re.sub(r"[\n\t]|/\*.+?\*/", "", script)
         script += "JSON.stringify({});".format(result_var)
 
-        res = self.js.eval(script)
+        res = js2py.eval_js(script)
         json_data = json.loads(res)
 
         urls = dict(

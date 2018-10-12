@@ -8,7 +8,9 @@ from os.path import join
 from urllib.parse import unquote
 
 from bottle import HTTPError, request, route
-from pyload.webui import DL_ROOT, JS, PYLOAD
+from pyload.webui import DL_ROOT, PYLOAD
+
+import js2py
 
 try:
     from Cryptodome.Cipher import AES
@@ -88,7 +90,7 @@ def addcrypted2():
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     if JS:
         jk = "{} f()".format(jk)
-        jk = JS.eval(jk)
+        jk = js2py.eval_js(jk)
 
     else:
         try:

@@ -81,7 +81,7 @@ class Setup(object):
         print(_("When you are ready for system check, hit enter."))
         input()
 
-        basic, ssl, captcha, web, js = self.system_check()
+        basic, ssl, captcha, web = self.system_check()
         print("")
 
         if not basic:
@@ -103,13 +103,9 @@ class Setup(object):
             avail.append(_("ssl connection"))
         if captcha:
             avail.append(_("automatic captcha decryption"))
-        # if gui:
-        # avail.append(_("GUI"))
         if web:
             avail.append(_("Webinterface"))
-        if js:
-            avail.append(_("extended Click'N'Load"))
-
+            
         string = ""
 
         for av in avail:
@@ -145,19 +141,6 @@ class Setup(object):
                 print(_("** no Captcha OCR Recognition available **"))
                 print(_("Only needed for some hosters and as freeuser."))
                 print("")
-
-            # if not gui:
-            # print(_("** Gui not available **"))
-            # print(_("The Graphical User Interface."))
-            # print("")
-
-            if not js:
-                print(_("** no JavaScript engine found **"))
-                print(
-                    _(
-                        "You will need this for some Click'N'Load links. Install Spidermonkey, ossp-js, pyv8 or rhino"
-                    )
-                )
 
             print(
                 _("You can abort the setup now and fix some dependicies if you want.")
@@ -258,11 +241,6 @@ class Setup(object):
         captcha = pil and tesser
 
         print("")
-
-        # gui = self.check_module("PyQt4")
-        # self.print_dep("PyQt4", gui)
-
-        print("")
         jinja = True
 
         try:
@@ -297,12 +275,7 @@ class Setup(object):
 
         web = sqlite and beaker
 
-        from pyload.utils import js_engine
-
-        js = True if js_engine.ENGINE else False
-        self.print_dep(_("JS engine"), js)
-
-        return basic, ssl, captcha, web, js
+        return basic, ssl, captcha, web
 
     def conf_basic(self):
         print("")

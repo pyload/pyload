@@ -135,12 +135,6 @@ msgstr ""
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
-#: pyload/utils/js_engine.py:156
-msgid ""
-"No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or "
-"rhino"
-msgstr ""
-
 #: pyload/remote/ThriftBackend.py:39
 msgid "Using SSL ThriftBackend"
 msgstr ""

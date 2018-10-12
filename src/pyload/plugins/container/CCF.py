@@ -5,7 +5,7 @@ import urllib.parse
 import urllib.request
 from builtins import _
 
-import MultipartPostHandler
+import requests
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import encode, fsjoin
 
@@ -37,12 +37,9 @@ class CCF(Container):
 
     def decrypt(self, pyfile):
         fs_filename = encode(pyfile.url)
-        opener = urllib.request.build_opener(MultipartPostHandler.MultipartPostHandler)
 
-        dlc_content = opener.open(
-            "http://service.jdownloader.net/dlcrypt/getDLC.php",
-            {"src": "ccf", "filename": "test.ccf", "upload": open(fs_filename, "rb")},
-        ).read()
+        dlc_content = requests.post("http://service.jdownloader.net/dlcrypt/getDLC.php", 
+                            data={"src": "ccf", "filename": "test.ccf"}, files={"upload": open(fs_filename, "rb")}).read()
 
         dl_folder = self.pyload.config.get("general", "download_folder")
         dlc_file = fsjoin(dl_folder, "tmp_{}.dlc".format(pyfile.name))

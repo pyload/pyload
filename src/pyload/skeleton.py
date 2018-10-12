@@ -37,7 +37,7 @@ from pyload.manager.plugin_manager import PluginManager
 from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
-from pyload.utils.js_engine import JsEngine
+import js2py
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.server_thread import WebServer
 from pyload import __version__
@@ -71,7 +71,6 @@ class Core(object):
 
     def __init__(self):
         self.doDebug = False
-        self.startedInGui = False
         self.running = False
         self.daemon = False
         self.remote = True
@@ -431,8 +430,6 @@ class Core(object):
         self.captchaManager = CaptchaManager(self)
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
-
-        self.js = JsEngine()
 
         self.log.info(_("Downloadtime: {}").format(self.api.isTimeDownload()))
 

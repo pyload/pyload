@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import re
 import urllib.error
 import urllib.parse
@@ -114,4 +115,4 @@ class ZippyshareCom(SimpleHoster):
         #: Get the file's url by evaluating all the scripts
         scripts = inits + scripts + ["document.dlbutton.href"]
 
-        return self.js.eval("\n".join(scripts))
+        return js2py.eval_js("\n".join(scripts))

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import binascii
 import re
 from builtins import _, filter, zip
@@ -230,7 +231,7 @@ class LinkCryptWs(Crypter):
             self.container_html = container_html_text.splitlines()
 
     def handle_javascript(self, line):
-        return self.js.eval(
+        return js2py.eval_js(
             line.replace(
                 "{}))",
                 "{}).replace('document.open();document.write','').replace(';document.close();',''))",

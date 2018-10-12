@@ -12,7 +12,7 @@ from sys import version_info
 from traceback import print_exc
 
 from pyload.config.config_parser import IGNORE
-from pyload.lib.SafeEval import const_eval as literal_eval
+from ast import literal_eval
 
 
 class PluginManager(object):

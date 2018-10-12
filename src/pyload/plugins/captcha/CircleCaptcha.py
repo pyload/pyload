@@ -87,7 +87,7 @@ class CircleCaptcha(OCR):
                     if howmany <= cleandeep and howmany > 0:
                         #: Clean pixel
                         for ic in range(1, cleandeep + 1):
-                            #: raw_input('2'+str(ic))
+                            #: input('2'+str(ic))
                             if y - ic > 0:
                                 pix[x, y - ic] = self.BACKGROUND
                     howmany = 0
@@ -475,7 +475,7 @@ class CircleCaptcha(OCR):
         if maxX - minX >= c[2] * 2 * 0.75:
             return -1
         if maxY - minY >= c[2] * 2 * 0.75:
-            #: raw_input('tro')
+            #: input('tro')
             return -1
         """
         #: Lenght of missing cannot be less 10% of diameter

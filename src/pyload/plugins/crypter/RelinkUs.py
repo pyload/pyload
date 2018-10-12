@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import binascii
 import re
 from builtins import _, filter, zip
@@ -322,7 +323,7 @@ class RelinkUs(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval("{} f()".format(jk))
+        jreturn = js2py.eval_js("{} f()".format(jk))
         self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 

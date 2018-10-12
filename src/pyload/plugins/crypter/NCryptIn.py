@@ -3,6 +3,7 @@
 import binascii
 import re
 from builtins import _, filter, zip
+import js2py
 
 import Cryptodome.Cipher.AES
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
@@ -207,8 +208,8 @@ class NCryptIn(Crypter):
 
     def handle_link_source(self, link_source_type):
         #: Check for JS engine
-        require_js_engine = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
-        if require_js_engine and not self.js:
+        require_js = link_source_type in ("cnl2", "rsdf", "ccf", "dlc")
+        if require_js and not self.js:
             self.log_debug(
                 "No JS engine available, skip {} links".format(link_source_type)
             )
@@ -308,7 +309,7 @@ class NCryptIn(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval("{} f()".format(jk))
+        jreturn = js2py.eval_js("{} f()".format(jk))
         self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 

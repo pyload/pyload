@@ -6,7 +6,7 @@ from threading import Lock
 
 from pyload.network.browser import Browser
 from pyload.network.bucket import Bucket
-from pyload.network.cookie_factory import CookieJar
+from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.network.xdcc_request import XDCCRequest
 

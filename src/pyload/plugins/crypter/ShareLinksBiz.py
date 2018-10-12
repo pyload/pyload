@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import binascii
 import re
 from builtins import _, filter
@@ -244,10 +245,10 @@ class ShareLinksBiz(Crypter):
                     res,
                     re.S,
                 ).group(1)
-                jscode = self.js.eval(_("f = {}").format(jscode))
+                jscode = js2py.eval_js(_("f = {}").format(jscode))
                 jslauncher = "window=''; parent={frames:{Main:{location:{href:''}}},location:''}; {}; parent.frames.Main.location.href"
 
-                dl_link = self.js.eval(jslauncher.format(jscode))
+                dl_link = js2py.eval_js(jslauncher.format(jscode))
 
                 self.log_debug(
                     "JsEngine returns value [{}] for redirection link".format(dl_link)
@@ -318,7 +319,7 @@ class ShareLinksBiz(Crypter):
 
     def _get_links(self, crypted, jk):
         #: Get key
-        jreturn = self.js.eval(_("{} f()").format(jk))
+        jreturn = js2py.eval_js(_("{} f()").format(jk))
         self.log_debug("JsEngine returns value [{}]".format(jreturn))
         key = binascii.unhexlify(jreturn)
 

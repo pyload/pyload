@@ -3,7 +3,7 @@ import re
 from builtins import _
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.utils.js_engine import JsEngine
+import js2py
 
 
 class SmuleCom(SimpleHoster):
@@ -74,9 +74,6 @@ class SmuleCom(SimpleHoster):
 
         process_function = m.group(0)
 
-        # step 3: assemble the new js code
-        js = JsEngine()
-
         new_js_code = (
             decoder_function
             + "; "
@@ -89,7 +86,7 @@ class SmuleCom(SimpleHoster):
         )
 
         self.log_debug("Running js script: {}".format(new_js_code))
-        js_result = js.eval(new_js_code)
+        js_result = js2py.eval_js(new_js_code)
         self.log_debug("Result is: {}".format(js_result))
 
         self.link = js_result

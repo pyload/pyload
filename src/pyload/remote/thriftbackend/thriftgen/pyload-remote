@@ -16,6 +16,8 @@ from thrift.transport import TSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
+from ast import literal_eval
+
 import Pyload
 from ttypes import *
 
@@ -221,7 +223,7 @@ elif cmd == 'getLog':
   if len(args) != 1:
     print('getLog requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getLog(eval(args[0]),))
+  pp.pprint(client.getLog(literal_eval(args[0]),))
 
 elif cmd == 'isTimeDownload':
   if len(args) != 0:
@@ -245,13 +247,13 @@ elif cmd == 'generatePackages':
   if len(args) != 1:
     print('generatePackages requires 1 args')
     sys.exit(1)
-  pp.pprint(client.generatePackages(eval(args[0]),))
+  pp.pprint(client.generatePackages(literal_eval(args[0]),))
 
 elif cmd == 'checkURLs':
   if len(args) != 1:
     print('checkURLs requires 1 args')
     sys.exit(1)
-  pp.pprint(client.checkURLs(eval(args[0]),))
+  pp.pprint(client.checkURLs(literal_eval(args[0]),))
 
 elif cmd == 'parseURLs':
   if len(args) != 2:
@@ -263,19 +265,19 @@ elif cmd == 'checkOnlineStatus':
   if len(args) != 1:
     print('checkOnlineStatus requires 1 args')
     sys.exit(1)
-  pp.pprint(client.checkOnlineStatus(eval(args[0]),))
+  pp.pprint(client.checkOnlineStatus(literal_eval(args[0]),))
 
 elif cmd == 'checkOnlineStatusContainer':
   if len(args) != 3:
     print('checkOnlineStatusContainer requires 3 args')
     sys.exit(1)
-  pp.pprint(client.checkOnlineStatusContainer(eval(args[0]),args[1],args[2],))
+  pp.pprint(client.checkOnlineStatusContainer(literal_eval(args[0]),args[1],args[2],))
 
 elif cmd == 'pollResults':
   if len(args) != 1:
     print('pollResults requires 1 args')
     sys.exit(1)
-  pp.pprint(client.pollResults(eval(args[0]),))
+  pp.pprint(client.pollResults(literal_eval(args[0]),))
 
 elif cmd == 'statusDownloads':
   if len(args) != 0:
@@ -287,19 +289,19 @@ elif cmd == 'getPackageData':
   if len(args) != 1:
     print('getPackageData requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getPackageData(eval(args[0]),))
+  pp.pprint(client.getPackageData(literal_eval(args[0]),))
 
 elif cmd == 'getPackageInfo':
   if len(args) != 1:
     print('getPackageInfo requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getPackageInfo(eval(args[0]),))
+  pp.pprint(client.getPackageInfo(literal_eval(args[0]),))
 
 elif cmd == 'getFileData':
   if len(args) != 1:
     print('getFileData requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getFileData(eval(args[0]),))
+  pp.pprint(client.getFileData(literal_eval(args[0]),))
 
 elif cmd == 'getQueue':
   if len(args) != 0:
@@ -329,31 +331,31 @@ elif cmd == 'getPackageOrder':
   if len(args) != 1:
     print('getPackageOrder requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getPackageOrder(eval(args[0]),))
+  pp.pprint(client.getPackageOrder(literal_eval(args[0]),))
 
 elif cmd == 'getFileOrder':
   if len(args) != 1:
     print('getFileOrder requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getFileOrder(eval(args[0]),))
+  pp.pprint(client.getFileOrder(literal_eval(args[0]),))
 
 elif cmd == 'generateAndAddPackages':
   if len(args) != 2:
     print('generateAndAddPackages requires 2 args')
     sys.exit(1)
-  pp.pprint(client.generateAndAddPackages(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.generateAndAddPackages(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'addPackage':
   if len(args) != 3:
     print('addPackage requires 3 args')
     sys.exit(1)
-  pp.pprint(client.addPackage(args[0],eval(args[1]),eval(args[2]),))
+  pp.pprint(client.addPackage(args[0],literal_eval(args[1]),literal_eval(args[2]),))
 
 elif cmd == 'addFiles':
   if len(args) != 2:
     print('addFiles requires 2 args')
     sys.exit(1)
-  pp.pprint(client.addFiles(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.addFiles(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'uploadContainer':
   if len(args) != 2:
@@ -365,43 +367,43 @@ elif cmd == 'deleteFiles':
   if len(args) != 1:
     print('deleteFiles requires 1 args')
     sys.exit(1)
-  pp.pprint(client.deleteFiles(eval(args[0]),))
+  pp.pprint(client.deleteFiles(literal_eval(args[0]),))
 
 elif cmd == 'deletePackages':
   if len(args) != 1:
     print('deletePackages requires 1 args')
     sys.exit(1)
-  pp.pprint(client.deletePackages(eval(args[0]),))
+  pp.pprint(client.deletePackages(literal_eval(args[0]),))
 
 elif cmd == 'pushToQueue':
   if len(args) != 1:
     print('pushToQueue requires 1 args')
     sys.exit(1)
-  pp.pprint(client.pushToQueue(eval(args[0]),))
+  pp.pprint(client.pushToQueue(literal_eval(args[0]),))
 
 elif cmd == 'pullFromQueue':
   if len(args) != 1:
     print('pullFromQueue requires 1 args')
     sys.exit(1)
-  pp.pprint(client.pullFromQueue(eval(args[0]),))
+  pp.pprint(client.pullFromQueue(literal_eval(args[0]),))
 
 elif cmd == 'restartPackage':
   if len(args) != 1:
     print('restartPackage requires 1 args')
     sys.exit(1)
-  pp.pprint(client.restartPackage(eval(args[0]),))
+  pp.pprint(client.restartPackage(literal_eval(args[0]),))
 
 elif cmd == 'restartFile':
   if len(args) != 1:
     print('restartFile requires 1 args')
     sys.exit(1)
-  pp.pprint(client.restartFile(eval(args[0]),))
+  pp.pprint(client.restartFile(literal_eval(args[0]),))
 
 elif cmd == 'recheckPackage':
   if len(args) != 1:
     print('recheckPackage requires 1 args')
     sys.exit(1)
-  pp.pprint(client.recheckPackage(eval(args[0]),))
+  pp.pprint(client.recheckPackage(literal_eval(args[0]),))
 
 elif cmd == 'stopAllDownloads':
   if len(args) != 0:
@@ -413,43 +415,43 @@ elif cmd == 'stopDownloads':
   if len(args) != 1:
     print('stopDownloads requires 1 args')
     sys.exit(1)
-  pp.pprint(client.stopDownloads(eval(args[0]),))
+  pp.pprint(client.stopDownloads(literal_eval(args[0]),))
 
 elif cmd == 'setPackageName':
   if len(args) != 2:
     print('setPackageName requires 2 args')
     sys.exit(1)
-  pp.pprint(client.setPackageName(eval(args[0]),args[1],))
+  pp.pprint(client.setPackageName(literal_eval(args[0]),args[1],))
 
 elif cmd == 'movePackage':
   if len(args) != 2:
     print('movePackage requires 2 args')
     sys.exit(1)
-  pp.pprint(client.movePackage(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.movePackage(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'moveFiles':
   if len(args) != 2:
     print('moveFiles requires 2 args')
     sys.exit(1)
-  pp.pprint(client.moveFiles(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.moveFiles(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'orderPackage':
   if len(args) != 2:
     print('orderPackage requires 2 args')
     sys.exit(1)
-  pp.pprint(client.orderPackage(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.orderPackage(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'orderFile':
   if len(args) != 2:
     print('orderFile requires 2 args')
     sys.exit(1)
-  pp.pprint(client.orderFile(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.orderFile(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'setPackageData':
   if len(args) != 2:
     print('setPackageData requires 2 args')
     sys.exit(1)
-  pp.pprint(client.setPackageData(eval(args[0]),eval(args[1]),))
+  pp.pprint(client.setPackageData(literal_eval(args[0]),literal_eval(args[1]),))
 
 elif cmd == 'deleteFinished':
   if len(args) != 0:
@@ -473,7 +475,7 @@ elif cmd == 'getAccounts':
   if len(args) != 1:
     print('getAccounts requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getAccounts(eval(args[0]),))
+  pp.pprint(client.getAccounts(literal_eval(args[0]),))
 
 elif cmd == 'getAccountTypes':
   if len(args) != 0:
@@ -485,13 +487,13 @@ elif cmd == 'updateAccount':
   if len(args) != 4:
     print('updateAccount requires 4 args')
     sys.exit(1)
-  pp.pprint(client.updateAccount(eval(args[0]),args[1],args[2],eval(args[3]),))
+  pp.pprint(client.updateAccount(literal_eval(args[0]),args[1],args[2],literal_eval(args[3]),))
 
 elif cmd == 'removeAccount':
   if len(args) != 2:
     print('removeAccount requires 2 args')
     sys.exit(1)
-  pp.pprint(client.removeAccount(eval(args[0]),args[1],))
+  pp.pprint(client.removeAccount(literal_eval(args[0]),args[1],))
 
 elif cmd == 'login':
   if len(args) != 2:
@@ -521,13 +523,13 @@ elif cmd == 'hasService':
   if len(args) != 2:
     print('hasService requires 2 args')
     sys.exit(1)
-  pp.pprint(client.hasService(eval(args[0]),args[1],))
+  pp.pprint(client.hasService(literal_eval(args[0]),args[1],))
 
 elif cmd == 'call':
   if len(args) != 1:
     print('call requires 1 args')
     sys.exit(1)
-  pp.pprint(client.call(eval(args[0]),))
+  pp.pprint(client.call(literal_eval(args[0]),))
 
 elif cmd == 'getAllInfo':
   if len(args) != 0:
@@ -539,7 +541,7 @@ elif cmd == 'getInfoByPlugin':
   if len(args) != 1:
     print('getInfoByPlugin requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getInfoByPlugin(eval(args[0]),))
+  pp.pprint(client.getInfoByPlugin(literal_eval(args[0]),))
 
 elif cmd == 'isCaptchaWaiting':
   if len(args) != 0:
@@ -551,19 +553,19 @@ elif cmd == 'getCaptchaTask':
   if len(args) != 1:
     print('getCaptchaTask requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getCaptchaTask(eval(args[0]),))
+  pp.pprint(client.getCaptchaTask(literal_eval(args[0]),))
 
 elif cmd == 'getCaptchaTaskStatus':
   if len(args) != 1:
     print('getCaptchaTaskStatus requires 1 args')
     sys.exit(1)
-  pp.pprint(client.getCaptchaTaskStatus(eval(args[0]),))
+  pp.pprint(client.getCaptchaTaskStatus(literal_eval(args[0]),))
 
 elif cmd == 'setCaptchaResult':
   if len(args) != 2:
     print('setCaptchaResult requires 2 args')
     sys.exit(1)
-  pp.pprint(client.setCaptchaResult(eval(args[0]),args[1],))
+  pp.pprint(client.setCaptchaResult(literal_eval(args[0]),args[1],))
 
 else:
   print('Unrecognized method {}'.format(cmd))

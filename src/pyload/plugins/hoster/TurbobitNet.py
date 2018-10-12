@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import js2py
 import binascii
 import random
 import re
@@ -154,7 +155,7 @@ class TurbobitNet(SimpleHoster):
             )
 
             try:
-                out = self.js.eval(self.jscode)
+                out = js2py.eval_js(self.jscode)
                 self.log_debug("URL", self.js.engine, out)
                 if out.startswith("/download/"):
                     return "http://turbobit.net{}".format(out.strip())
