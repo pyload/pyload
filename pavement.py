@@ -44,7 +44,6 @@ setup(
         "jinja2",
         "pycurl",
         "Beaker",
-        "BeautifulSoup>=3.2, <3.3",
     ]
     + extradeps,
     extras_require={

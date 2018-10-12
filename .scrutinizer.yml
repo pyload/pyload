@@ -1,0 +1,17 @@
+# language: python
+checks:
+  python:
+    basic_eval_used: true
+    basic_exec_used: true
+    code_rating: true
+    duplicate_code: true
+    imports_deprecated_module: true
+tools:
+  pylint:
+    python_version: 3
+    # config_file: .pylintrc
+filter:
+  excluded_paths:
+    - 'docs/'
+    - 'locale/'
+    - 'tests/'
