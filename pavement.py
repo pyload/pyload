@@ -37,7 +37,7 @@ setup(
     # data_files=[],
     include_package_data=True,
     # exluced from build but not from sdist
-    exclude_package_data={"pyload": ["docs*", "scripts*", "tests*"]},
+    exclude_package_data={"pyload": ["docs*", "tests*"]},
     # 'bottle >= 0.10.0' not in list, because its small and contain little modifications
     install_requires=[
         "thrift >= 0.8.0",

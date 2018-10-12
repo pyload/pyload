@@ -1,8 +1,0 @@
-Beaker == 1.9.1
-bottle == 0.12.13
-#cherrypy == 14.2.0
-pycryptodomex == 3.6.1
-pycurl == 7.43.0.1
-setproctitle == 1.1.10
-thrift == 0.11.0
-jinja2
