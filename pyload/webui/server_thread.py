@@ -134,9 +134,7 @@ class WebServer(threading.Thread):
                 )
             )
 
-        webui.run_threaded(
-            host=self.host, port=self.port, cert=self.cert, key=self.key
-        )
+        webui.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
     def start_fcgi(self):
 

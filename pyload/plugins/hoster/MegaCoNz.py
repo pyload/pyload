@@ -300,7 +300,9 @@ class MegaCoNz(Hoster):
         Decrypts and verifies checksum to the file at 'last_download'.
         """
         k, iv, meta_mac = MegaCrypto.get_cipher_key(key)
-        ctr = Cryptodome.Util.Counter.new(128, initial_value=((iv[0] << 32) + iv[1]) << 64)
+        ctr = Cryptodome.Util.Counter.new(
+            128, initial_value=((iv[0] << 32) + iv[1]) << 64
+        )
         cipher = Cryptodome.Cipher.AES.new(
             MegaCrypto.a32_to_str(k), Cryptodome.Cipher.AES.MODE_CTR, counter=ctr
         )

@@ -33,8 +33,8 @@ from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
 from pyload.manager.account_manager import AccountManager
 from pyload.manager.captcha_manager import CaptchaManager
-from pyload.manager.plugin_manager import PluginManager
 from pyload.manager.event_manager import EventManager
+from pyload.manager.plugin_manager import PluginManager
 from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler

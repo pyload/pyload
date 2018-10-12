@@ -382,9 +382,7 @@ class ExtractArchive(Addon):
                                         (fid, filename, os.path.dirname(filename))
                                     )  #: Append as new target
 
-                            self.m.dispatchEvent(
-                                "archive_extracted", pyfile, archive
-                            )
+                            self.m.dispatchEvent("archive_extracted", pyfile, archive)
 
                 files_ids = new_files_ids  #: Also check extracted files
 

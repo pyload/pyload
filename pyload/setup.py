@@ -76,9 +76,7 @@ class Setup(object):
             )
         )
         print(_("If you have any problems with this assistent hit STRG-C,"))
-        print(
-            _("to abort and don't let him start with pyLoad automatically anymore.")
-        )
+        print(_("to abort and don't let him start with pyLoad automatically anymore."))
         print("")
         print(_("When you are ready for system check, hit enter."))
         input()
@@ -432,9 +430,7 @@ class Setup(object):
             for t in os.listdir(os.path.join(pypath, "pyload", "web", "templates"))
             if os.path.isdir(os.path.join(pypath, "pyload", "web", "templates", t))
         ]
-        self.config["webui"]["template"] = self.ask(
-            _("Template"), "classic", templates
-        )
+        self.config["webui"]["template"] = self.ask(_("Template"), "classic", templates)
 
     def conf_ssl(self):
         print("")

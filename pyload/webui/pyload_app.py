@@ -15,8 +15,7 @@ from pyload.webui.filters import relpath, unquotepath
 from pyload.webui.utils import (get_permission, login_required, parse_permissions,
                                 parse_userdata, permlist, render_to_response,
                                 set_permission, set_session, toDict)
-from pyload.webui.webui import (PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP,
-                                       env)
+from pyload.webui.webui import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
 
 # @author: RaNaN
 

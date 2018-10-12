@@ -262,7 +262,9 @@ def sign_string(message, pem_private, pem_passphrase="", sign_algo="SHA384"):
 
     priv_key = RSA.importKey(pem_private, passphrase=pem_passphrase)
     signer = PKCS1_v1_5.new(priv_key)
-    digest = getattr(__import__("Cryptodome.Hash", fromlist=[sign_algo]), sign_algo).new()
+    digest = getattr(
+        __import__("Cryptodome.Hash", fromlist=[sign_algo]), sign_algo
+    ).new()
     digest.update(message)
     return b2a_hex(signer.sign(digest))
 
