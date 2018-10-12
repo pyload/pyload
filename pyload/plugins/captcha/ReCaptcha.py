@@ -9,7 +9,7 @@ import urllib.request
 from builtins import _, range, str
 from io import StringIO
 
-from pyload.plugins.internal.captchaservice import CaptchaService
+from pyload.plugins.internal.captcha_service import CaptchaService
 
 try:
     no_pil = False

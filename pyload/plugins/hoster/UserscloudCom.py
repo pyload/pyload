@@ -2,7 +2,7 @@
 
 import re
 
-from pyload.network.cookie_jar import CookieJar
+from pyload.network.cookie_factory import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.plugins.internal.plugin import Abort
 from pyload.plugins.internal.simplehoster import SimpleHoster

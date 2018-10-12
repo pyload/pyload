@@ -243,7 +243,7 @@ def generate_locale():
     makepot("cli", path("pyload") / "cli", [], includes="./pyLoadCli.py\n")
     makepot("setup", "", [], includes="./pyload/setup.py\n")
 
-    EXCLUDE = ["ServerThread.py", "webui/media/default"]
+    EXCLUDE = ["server_thread.py", "webui/media/default"]
 
     # strings from js files
     strings = set()

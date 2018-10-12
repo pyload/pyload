@@ -47,8 +47,8 @@ class Setup(object):
         #        viaweb = self.ask(_("Start initial webinterface for configuration?"), "y", bool=True)
         #        if viaweb:
         #            try:
-        #                from pyload.webui import ServerThread
-        #                ServerThread.setup = self
+        #                from pyload.webui import server_thread
+        #                server_thread.setup = self
         #                from pyload.webui import webinterface
         #                webinterface.run_simple()
         #                return False
@@ -299,9 +299,9 @@ class Setup(object):
 
         web = sqlite and beaker
 
-        from pyload.utils import JsEngine
+        from pyload.utils import js_engine
 
-        js = True if JsEngine.ENGINE else False
+        js = True if js_engine.ENGINE else False
         self.print_dep(_("JS engine"), js)
 
         return basic, ssl, captcha, web, js

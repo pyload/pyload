@@ -3,7 +3,7 @@
 import re
 from builtins import _, range
 
-from pyload.plugins.internal.captchaservice import CaptchaService
+from pyload.plugins.internal.captcha_service import CaptchaService
 from pyload.plugins.internal.plugin import Fail
 
 

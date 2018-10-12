@@ -57,9 +57,9 @@ def main():
     except Exception:
         print("pyqt:", "missing")
 
-    from pyload.utils import JsEngine
+    from pyload.utils import js_engine
 
-    js = JsEngine.ENGINE if JsEngine.ENGINE else "missing"
+    js = js_engine.ENGINE if js_engine.ENGINE else "missing"
     print("JS engine:", js)
 
     print("\n\n#####   System Status   #####")

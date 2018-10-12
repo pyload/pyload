@@ -135,7 +135,7 @@ msgstr ""
 msgid "killed pyLoad from Terminal"
 msgstr ""
 
-#: pyload/utils/JsEngine.py:156
+#: pyload/utils/js_engine.py:156
 msgid ""
 "No js engine detected, please install either Spidermonkey, ossp-js, pyv8 or "
 "rhino"
@@ -210,82 +210,82 @@ msgstr ""
 msgid "No Client connected for captcha decrypting"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:35
+#: pyload/webui/server_thread.py:35
 msgid "SSL certificates not found."
 msgstr ""
 
-#: pyload/webui/ServerThread.py:39
+#: pyload/webui/server_thread.py:39
 #, python-format
 msgid "Sorry, we dropped support for starting %s directly within pyLoad"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:40
+#: pyload/webui/server_thread.py:40
 msgid "You can use the threaded server which offers good performance and ssl,"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:41
+#: pyload/webui/server_thread.py:41
 #, python-format
 msgid ""
 "of course you can still use your existing %s with pyLoads fastcgi server"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:42
+#: pyload/webui/server_thread.py:42
 msgid "sample configs are located in the pyload/webui/servers directory"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:49
+#: pyload/webui/server_thread.py:49
 #, python-format
 msgid "Can't use %(server)s, python-flup is not installed!"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:56
+#: pyload/webui/server_thread.py:56
 #, python-format
 msgid "Error importing lightweight server: %s"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:57
+#: pyload/webui/server_thread.py:57
 msgid ""
 "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:58
+#: pyload/webui/server_thread.py:58
 msgid "Copy the boern.so to pyload/lib folder or use setup.py install"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:59
+#: pyload/webui/server_thread.py:59
 msgid ""
 "Of course you need to be familiar with linux and know how to compile software"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:63
+#: pyload/webui/server_thread.py:63
 msgid "Server set to threaded, due to known performance problems on windows."
 msgstr ""
 
-#: pyload/webui/ServerThread.py:80 pyload/webui/ServerThread.py:103
+#: pyload/webui/server_thread.py:80 pyload/webui/server_thread.py:103
 msgid "This server offers no SSL, please consider using threaded instead"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:82
+#: pyload/webui/server_thread.py:82
 #, python-format
 msgid "Starting builtin webserver: %(host)s:%(port)d"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:87
+#: pyload/webui/server_thread.py:87
 #, python-format
 msgid "Starting threaded SSL webserver: %(host)s:%(port)d"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:91
+#: pyload/webui/server_thread.py:91
 #, python-format
 msgid "Starting threaded webserver: %(host)s:%(port)d"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:97
+#: pyload/webui/server_thread.py:97
 #, python-format
 msgid "Starting fastcgi server: %(host)s:%(port)d"
 msgstr ""
 
-#: pyload/webui/ServerThread.py:105
+#: pyload/webui/server_thread.py:105
 #, python-format
 msgid "Starting lightweight webserver (bjoern): %(host)s:%(port)d"
 msgstr ""
@@ -795,73 +795,73 @@ msgstr ""
 msgid "Download chunks failed, fallback to single connection | %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:183
+#: pyload/thread/plugin_thread.py:183
 #, python-format
 msgid "Download starts: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:189
+#: pyload/thread/plugin_thread.py:189
 #, python-format
 msgid "Download finished: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:194 pyload/thread/PluginThread.py:366
+#: pyload/thread/plugin_thread.py:194 pyload/thread/plugin_thread.py:366
 #, python-format
 msgid "Plugin %s is missing a function."
 msgstr ""
 
-#: pyload/thread/PluginThread.py:202 pyload/thread/PluginThread.py:265
-#: pyload/thread/PluginThread.py:383
+#: pyload/thread/plugin_thread.py:202 pyload/thread/plugin_thread.py:265
+#: pyload/thread/plugin_thread.py:383
 #, python-format
 msgid "Download aborted: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:222
+#: pyload/thread/plugin_thread.py:222
 #, python-format
 msgid "Download restarted: %(name)s | %(msg)s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:231 pyload/thread/PluginThread.py:374
+#: pyload/thread/plugin_thread.py:231 pyload/thread/plugin_thread.py:374
 #, python-format
 msgid "Download is offline: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:234
+#: pyload/thread/plugin_thread.py:234
 #, python-format
 msgid "Download is temporary offline: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:237 pyload/thread/PluginThread.py:304
+#: pyload/thread/plugin_thread.py:237 pyload/thread/plugin_thread.py:304
 #, python-format
 msgid "Download failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:254
+#: pyload/thread/plugin_thread.py:254
 msgid ""
 "Couldn't connect to host or connection reset, waiting 1 minute and retry."
 msgstr ""
 
-#: pyload/thread/PluginThread.py:290
+#: pyload/thread/plugin_thread.py:290
 #, python-format
 msgid "Download skipped: %(name)s due to %(plugin)s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:362
+#: pyload/thread/plugin_thread.py:362
 #, python-format
 msgid "Decrypting starts: %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:377 pyload/thread/PluginThread.py:395
+#: pyload/thread/plugin_thread.py:377 pyload/thread/plugin_thread.py:395
 #, python-format
 msgid "Decrypting failed: %(name)s | %(msg)s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:389
+#: pyload/thread/plugin_thread.py:389
 #, python-format
 msgid "Retrying %s"
 msgstr ""
 
-#: pyload/thread/PluginThread.py:636
+#: pyload/thread/plugin_thread.py:636
 #, python-format
 msgid "Info Fetching for %(name)s failed | %(err)s"
 msgstr ""

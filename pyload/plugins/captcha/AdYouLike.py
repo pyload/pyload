@@ -2,7 +2,7 @@
 import re
 from builtins import _
 
-from pyload.plugins.internal.captchaservice import CaptchaService
+from pyload.plugins.internal.captcha_service import CaptchaService
 from pyload.plugins.utils import json
 
 

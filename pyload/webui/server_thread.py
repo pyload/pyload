@@ -28,7 +28,7 @@ class WebServer(threading.Thread):
         self.setDaemon(True)
 
     def run(self):
-        from pyload.webui import webui
+        from pyload import webui
 
         global webui
 
