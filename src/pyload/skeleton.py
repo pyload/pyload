@@ -44,9 +44,9 @@ from pyload.webui.server_thread import WebServer
 
 CURRENT_VERSION = "0.5.0"
 
-
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
+
 
 # TODO: List
 # - configurable auth system ldap/mysql
@@ -529,7 +529,7 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter(
-            "%(asctime) %(levelname)-8s  %(message)", "%d.%m.%Y %H:%M:%S"
+            "[%(asctime)s] %(levelname)s:%(name)s:%(message)s", "%Y-%m-%d %H:%M:%S"
         )
         console.setFormatter(frm)
         self.log = logging.getLogger("log")  # settable in config
@@ -677,7 +677,7 @@ class Core(object):
         return join(pypath, *args)
 
 
-def deamon():
+def daemon():
     try:
         pid = os.fork()
         if pid > 0:
@@ -716,12 +716,17 @@ def deamon():
     pyload_core.start()
 
 
-def main():
+def main(args):
+    """Main entry point allowing external calls
+
+    Args:
+      args ([str]): command line parameter list
+    """
     # change name to 'pyLoad'
     # from pyload.lib.rename_process import renameProcess
     # renameProcess('pyLoad')
     if "--daemon" in sys.argv:
-        deamon()
+        daemon()
     else:
         pyload_core = Core()
         try:
@@ -732,7 +737,13 @@ def main():
             pyload_core.removeLogger()
             _exit(1)
 
+            
+def run():
+    """
+    Entry point for console_scripts
+    """
+    main(sys.argv[1:])
 
-# And so it begins...
+
 if __name__ == "__main__":
-    main()
+    run()

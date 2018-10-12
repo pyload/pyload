@@ -535,7 +535,12 @@ def writeConfig(opts):
         print(_("Couldn't write user config file"))
 
 
-def main():
+def main(args):
+    """Main entry point allowing external calls
+
+    Args:
+      args ([str]): command line parameter list
+    """
     config = {"addr": "127.0.0.1", "port": "7227", "language": "en"}
     try:
         config["language"] = os.environ["LANG"][0:2]
@@ -684,6 +689,13 @@ def main():
         writeConfig(config)
         Cli(client, command)
 
+        
+def run():
+    """
+    Entry point for console_scripts
+    """
+    main(sys.argv[1:])
+
 
 if __name__ == "__main__":
-    main()
+    run()
