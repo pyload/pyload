@@ -40,7 +40,7 @@ from pyload.scheduler import Scheduler
 import js2py
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.server_thread import WebServer
-from pyload import __version__
+from pyload import __version__ as PYLOAD_VERSION
 
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
@@ -103,7 +103,7 @@ class Core(object):
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
-                        print("pyLoad", __version__)
+                        print("pyLoad", PYLOAD_VERSION)
                         exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
@@ -161,7 +161,7 @@ class Core(object):
 
     def print_help(self):
         print("")
-        print("pyLoad v{}     2018 pyLoad team".format(__version__))
+        print("pyLoad v{}     2018 pyLoad team".format(PYLOAD_VERSION))
         print("")
         print("Usage: pyLoad [options]")
         print("")
@@ -279,7 +279,7 @@ class Core(object):
         starts the fun :D.
         """
 
-        self.version = __version__
+        self.version = PYLOAD_VERSION
 
         if not exists("pyload.conf"):
             from pyload.setup import Setup

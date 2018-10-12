@@ -48,7 +48,7 @@ function PackageUI (url, type){
 
     this.deleteFinished = function () {
         indicateLoad();
-        $.get("{{'/api/deleteFinished'|url}}", function(data) {
+        $.get("{{'/api/v1/deleteFinished'|url}}", function(data) {
             if (data.length > 0) {
                 window.location.reload();
             } else {
@@ -64,7 +64,7 @@ function PackageUI (url, type){
 
     this.restartFailed = function () {
         indicateLoad();
-        $.get( "{{'/api/restartFailed'|url}}", function(data) {
+        $.get( "{{'/api/v1/restartFailed'|url}}", function(data) {
             if (data.length > 0) {
                 $.each(packages,function(pack) {
                     this.close();
@@ -196,7 +196,7 @@ function Package (ui, id, ele){
             var lid = $(this).find('.child').attr('id').match(/[0-9]+/);
             var imgs = $(this).find('.child_secrow span');
             $(imgs[3]).bind('click',{ lid: lid}, function(e) {
-                $.get("{{'/api/deleteFiles/['|url}}" + lid + "]", function () {
+                $.get("{{'/api/v1/deleteFiles/['|url}}" + lid + "]", function () {
                     $('#file_' + lid).remove()
                 }).fail(function () {
                     indicateFail();
@@ -204,7 +204,7 @@ function Package (ui, id, ele){
             });
 
             $(imgs[4]).bind('click',{ lid: lid},function(e) {
-                $.get("{{'/api/restartFile/'|url}}" + lid, function () {
+                $.get("{{'/api/v1/restartFile/'|url}}" + lid, function () {
                     var ele1 = $('#file_' + lid);
                     var imgs1 = $(ele1).find(".glyphicon");
                     $(imgs1[0]).attr( "class","glyphicon glyphicon-time text-info");
@@ -265,7 +265,7 @@ function Package (ui, id, ele){
 
     this.deletePackage = function(event) {
         indicateLoad();
-        $.get("{{'/api/deletePackages/['|url}}" + id + "]", function () {
+        $.get("{{'/api/v1/deletePackages/['|url}}" + id + "]", function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
@@ -278,7 +278,7 @@ function Package (ui, id, ele){
 
     this.restartPackage = function(event) {
         indicateLoad();
-        $.get("{{'/api/restartPackage/'|url}}" + id, function () {
+        $.get("{{'/api/v1/restartPackage/'|url}}" + id, function () {
             thisObject.close();
             indicateSuccess();
         }).fail(function () {

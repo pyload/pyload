@@ -82,7 +82,7 @@ since they share the same cookie/session.
 
 However, if you are building a external client and want to authenticate manually
 you have to send your credentials ``username`` and ``password`` as
-POST parameter to ``http://pyload-core/api/login``.
+POST parameter to ``http://pyload-core/api/v1/login``.
 
 The result will be your session id. If you are using cookies, it will be set and you can use the API now.
 In case you dont't have cookies enabled you can pass the session id as ``session`` POST parameter
@@ -95,7 +95,7 @@ Calling Methods
 In general you can use any method listed at the :class:`Api <pyload.Api.Api>` documentation, which is also available to
 the thriftbackend.
 
-Access works simply via ``http://pyload-core/api/methodName``, where ``pyload-core`` is the ip address
+Access works simply via ``http://pyload-core/api/v1/methodName``, where ``pyload-core`` is the ip address
 or hostname including the webinterface port. By default on local access this would be `localhost:8000`.
 
 The return value will be formatted in JSON, complex data types as dictionaries.
@@ -106,13 +106,13 @@ Passing parameters
 ==================
 
 To pass arguments you have two choices.
-Either use positional arguments, eg ``http://pyload-core/api/getFileData/1``, where 1 is the FileID, or use keyword arguments
-supplied via GET or POST ``http://pyload-core/api/getFileData?fid=1``. You can find the argument names in the :class:`Api <pyload.Api.Api>`
+Either use positional arguments, eg ``http://pyload-core/api/v1/getFileData/1``, where 1 is the FileID, or use keyword arguments
+supplied via GET or POST ``http://pyload-core/api/v1/getFileData?fid=1``. You can find the argument names in the :class:`Api <pyload.Api.Api>`
 documentation.
 
-It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/getFileData/1`` is valid because
+It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/v1/getFileData/1`` is valid because
 1 represents an integer in json format. On the other hand if the method is expecting strings, this would be correct:
-``http://pyload-core/api/getUserData/"username"/"password"``.
+``http://pyload-core/api/v1/getUserData/"username"/"password"``.
 
 Strings are wrapped in double qoutes, because `"username"` represents a string in json format. It's not limited to strings and intergers,
 every container type like lists and dicts are possible. You usually don't have to convert them. just use a json encoder before using them

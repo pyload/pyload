@@ -69,6 +69,8 @@ def has_permission(userperms, perms):
     # bytewise or perms before if needed
     return perms == (userperms & perms)
 
+# API VERSION
+__version__ = 1
 
 class Api(Iface):
     """

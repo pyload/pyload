@@ -240,7 +240,7 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("{{'/api/unpauseServer'|url}}", function () {
+        $.get("{{'/api/v1/unpauseServer'|url}}", function () {
             $.ajax({
                 method: "POST",
                 url: "{{'/json/status'|url}}",
@@ -252,11 +252,11 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("{{'/api/stopAllDownloads'|url}}");
+        $.get("{{'/api/v1/stopAllDownloads'|url}}");
     });
 
     $("#action_stop").click(function() {
-        $.get("{{'/api/pauseServer'|url}}", function () {
+        $.get("{{'/api/v1/pauseServer'|url}}", function () {
             $.ajax({
                 method: "POST",
                 url: "{{'/json/status'|url}}",

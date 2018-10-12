@@ -11,6 +11,8 @@ from pyload.plugins.utils import json  # change to core utils
 from pyload.webui.utils import set_session, toDict
 from pyload.webui import PYLOAD
 
+from pyload.api import __version__ as API_VERSION
+
 # json encoder that accepts TBase objects
 
 
@@ -24,8 +26,8 @@ class TBaseEncoder(json.JSONEncoder):
 # accepting positional arguments, as well as kwargs via post and get
 
 
-@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#")
-@route(r"/api/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#", method="POST")
+@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION))
+@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION), method="POST")
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -85,7 +87,7 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@route("/api/login", method="POST")
+@route("/api/v{}/login".format(API_VERSION), method="POST")
 def login():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -108,7 +110,7 @@ def login():
         return json.dumps(True)
 
 
-@route("/api/logout")
+@route("/api/v{}/logout".format(API_VERSION))
 def logout():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")

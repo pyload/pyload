@@ -7,7 +7,9 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import urlopen
 
-url = "http://localhost:8001/api/{}"
+from pyload.api import __version__ as API_VERSION
+
+url = "http://localhost:8001/api/v{}/\{\}".format(API_VERSION)
 
 
 class TestJson(object):
