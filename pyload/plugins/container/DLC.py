@@ -3,7 +3,7 @@ import re
 import xml.dom.minidom
 from builtins import _
 
-import Crypto.Cipher.AES
+import Cryptodome.Cipher.AES
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import decode, encode
 
@@ -62,12 +62,12 @@ class DLC(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        key = iv = Crypto.Cipher.AES.new(
-            self.KEY, Crypto.Cipher.AES.MODE_CBC, self.IV
+        key = iv = Cryptodome.Cipher.AES.new(
+            self.KEY, Cryptodome.Cipher.AES.MODE_CBC, self.IV
         ).decrypt(rc)
 
         self.data = (
-            Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv)
+            Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CBC, iv)
             .decrypt(dlc_data)
             .decode("base64")
         )

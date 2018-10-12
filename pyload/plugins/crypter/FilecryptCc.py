@@ -10,7 +10,7 @@ import re
 import urllib.parse
 from builtins import _, filter, range, str
 
-import Crypto.Cipher.AES
+import Cryptodome.Cipher.AES
 from pyload.network.cookie_factory import CookieJar
 from pyload.network.http_request import BadHeader, HTTPRequest
 from pyload.plugins.captcha.CoinHive import CoinHive
@@ -345,7 +345,7 @@ class FilecryptCc(Crypter):
         #: Decrypt
         # Key = key
         # IV = key
-        obj = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, key)
+        obj = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CBC, key)
         text = obj.decrypt(crypted.decode("base64"))
 
         #: Extract links

@@ -2,7 +2,7 @@
 
 from builtins import chr, range
 
-import Crypto.PublicKey.RSA
+import Cryptodome.PublicKey.RSA
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
 from pyload.plugins.internal.account import Account
 
@@ -96,7 +96,7 @@ class MegaCoNz(Account):
                 privk = privk[l:]
 
             encrypted_sid = self.mpi_to_int(MegaCrypto.base64_decode(res["csid"]))
-            rsa = Crypto.PublicKey.RSA.construct(
+            rsa = Cryptodome.PublicKey.RSA.construct(
                 (
                     rsa_private_key[0] * rsa_private_key[1],
                     int(0),

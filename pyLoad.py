@@ -381,7 +381,7 @@ class Core(object):
         remote.activated = self.remote
         self.log.debug("Remote activated: {}".format(self.remote))
 
-        self.check_install("Crypto", _("pycrypto to decode container files"))
+        self.check_install("Cryptodome", _("pycrypto to decode container files"))
         # img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
         # self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_file("tmp", _("folder for temporary files"), True)

@@ -12,7 +12,7 @@ from urllib.parse import unquote
 from pyload.remote.remote_manager import BackendBase
 
 try:
-    from Crypto.Cipher import AES
+    from Cryptodome.Cipher import AES
 except Exception:
     pass
 

@@ -25,9 +25,9 @@ def main():
         print("pycurl:", "missing")
 
     try:
-        import Crypto
+        import Cryptodome
 
-        print("py-crypto:", Crypto.__version__)
+        print("py-crypto:", Cryptodome.__version__)
     except Exception:
         print("py-crypto:", "missing")
 
