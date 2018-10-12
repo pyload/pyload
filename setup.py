@@ -11,11 +11,4 @@
 
 from setuptools import setup
 
-setup(
-    entry_points={
-        "console_scripts": [
-            "pyLoad = pyLoad:main",
-            "pyLoadCLI = pyLoadCli:main",
-        ]
-    }
-)
+setup()
