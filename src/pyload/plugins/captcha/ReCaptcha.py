@@ -10,21 +10,9 @@ from builtins import _, range, str
 from io import StringIO
 
 from pyload.plugins.internal.captcha_service import CaptchaService
-
-try:
-    no_pil = False
-    from PIL import Image
-    from PIL import ImageDraw
-    from PIL import ImageFont
-
-except ImportError:
-    try:
-        import Image
-        import ImageDraw
-        import ImageFont
-
-    except ImportError:
-        no_pil = True
+from Pillow import Image
+from Pillow import ImageDraw
+from Pillow import ImageFont
 
 
 class ReCaptcha(CaptchaService):
@@ -232,12 +220,6 @@ class ReCaptcha(CaptchaService):
         return vers, language, jsh
 
     def _prepare_image(self, image, challenge_msg):
-        if no_pil:
-            self.log_error(
-                _("Missing PIL lib"), _("Please install python's PIL library")
-            )
-            self.fail(_("Missing PIL lib"))
-
         dummy_text = "pk"
         # This is just a string to calculate biggest height of a text, since usually
         # the letters 'p' and 'k' reach to the lower most respective higher most

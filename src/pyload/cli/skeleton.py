@@ -28,7 +28,7 @@ from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
 from pyload.lib.Getch import Getch
-from pyload.remote.thriftbackend.thriftClient import (ConnectionClosed, NoConnection,
+from pyload.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
                                                       NoSSL, ThriftClient, WrongLogin)
 from pyload.utils.utils import decode, formatSize
 

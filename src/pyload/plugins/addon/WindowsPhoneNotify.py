@@ -48,7 +48,7 @@ class WindowsPhoneNotify(Notifier):
     def send(self, event, msg, key):
         id, url = key
         request = self.format_request("{}: {}".format(event, msg) if msg else event)
-        webservice = http.client.HTTP(url)
+        webservice = http.client.http(url)
 
         webservice.putrequest("POST", id)
         webservice.putheader("Host", url)

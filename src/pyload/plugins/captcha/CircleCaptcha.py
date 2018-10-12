@@ -13,8 +13,8 @@ import urllib.parse
 import urllib.request
 from builtins import _, input, object, range, str
 
-import Image
-import ImageDraw
+from Pillow import Image
+from Pillow import ImageDraw
 from pyload.plugins.internal.ocr import OCR
 
 
