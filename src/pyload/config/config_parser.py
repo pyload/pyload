@@ -20,7 +20,8 @@ IGNORE = (
     "FlyshareCz",
 )
 
-CONF_VERSION = 1
+# CONFIG_VERSION
+__version__ = 1
 
 
 class ConfigParser(object):
@@ -73,7 +74,7 @@ class ConfigParser(object):
 
             if not exists("plugin.conf"):
                 f = open("plugin.conf", "wb")
-                f.write("version: " + str(CONF_VERSION))
+                f.write("version: " + str(__version__))
                 f.close()
                 chmod("plugin.conf", 0o600)
 
@@ -82,7 +83,7 @@ class ConfigParser(object):
             f.close()
             v = v[v.find(":") + 1 :].strip()
 
-            if not v or int(v) < CONF_VERSION:
+            if not v or int(v) < __version__:
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print("Old version of config was replaced")
 
@@ -91,9 +92,9 @@ class ConfigParser(object):
             f.close()
             v = v[v.find(":") + 1 :].strip()
 
-            if not v or int(v) < CONF_VERSION:
+            if not v or int(v) < __version__:
                 f = open("plugin.conf", "wb")
-                f.write("version: " + str(CONF_VERSION))
+                f.write("version: " + str(__version__))
                 f.close()
                 print("Old version of plugin-config replaced")
         except Exception:
@@ -251,7 +252,7 @@ class ConfigParser(object):
         """
         with open(filename, "wb") as f:
             chmod(filename, 0o600)
-            f.write("version: {} \n".format(CONF_VERSION))
+            f.write("version: {} \n".format(__version__))
             for section in sorted(config.keys()):
                 f.write('\n{} - "{}":\n'.format(section, config[section]["desc"]))
 

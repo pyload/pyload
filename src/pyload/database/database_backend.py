@@ -17,7 +17,8 @@ try:
 except Exception:
     import sqlite3
 
-DB_VERSION = 4
+# DATABASE VERSION
+__version__ = 4
 
 
 class style(object):
@@ -163,14 +164,14 @@ class DatabaseBackend(Thread):
         """
         if not exists("files.version"):
             f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
+            f.write(str(__version__))
             f.close()
             return
 
         f = open("files.version", "rb")
         v = int(f.read().strip())
         f.close()
-        if v < DB_VERSION:
+        if v < __version__:
             if v < 2:
                 try:
                     self.m.pyload.log.warning(
@@ -181,7 +182,7 @@ class DatabaseBackend(Thread):
                 remove("files.version")
                 move("files.db", "files.backup.db")
             f = open("files.version", "wb")
-            f.write(str(DB_VERSION))
+            f.write(str(__version__))
             f.close()
             return v
 

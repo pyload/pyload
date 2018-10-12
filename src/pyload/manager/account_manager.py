@@ -9,7 +9,8 @@ from threading import Lock
 from pyload.manager.event_manager import AccountUpdateEvent
 from pyload.utils.utils import chmod, lock
 
-ACC_VERSION = 1
+# MANAGER VERSION
+__version__ = 1
 
 
 class AccountManager(object):
@@ -70,7 +71,7 @@ class AccountManager(object):
 
         if not exists("accounts.conf"):
             f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
+            f.write("version: " + str(__version__))
             f.close()
 
         f = open("accounts.conf", "rb")
@@ -78,10 +79,10 @@ class AccountManager(object):
         version = content[0].split(":")[1].strip() if content else ""
         f.close()
 
-        if not version or int(version) < ACC_VERSION:
+        if not version or int(version) < __version__:
             copy("accounts.conf", "accounts.backup")
             f = open("accounts.conf", "wb")
-            f.write("version: " + str(ACC_VERSION))
+            f.write("version: " + str(__version__))
             f.close()
             self.pyload.log.warning(
                 _("Account settings deleted, due to new config format.")
@@ -132,7 +133,7 @@ class AccountManager(object):
         """
 
         f = open("accounts.conf", "wb")
-        f.write("version: " + str(ACC_VERSION) + "\n")
+        f.write("version: " + str(__version__) + "\n")
 
         for plugin, accounts in self.accounts.items():
             f.write("\n")
