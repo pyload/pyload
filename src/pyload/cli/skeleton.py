@@ -25,7 +25,8 @@ from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
 from pyload.Api import Destination
-from pyload.cli import AddPackage, ManageFiles
+from pyload.cli.addpackage import AddPackage
+from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
 from pyload.lib.Getch import Getch
 from pyload.remote.thriftbackend.thriftClient import (ConnectionClosed, NoConnection,
@@ -46,7 +47,7 @@ class Cli(object):
         self.command = command
 
         if not self.command:
-            # renameProcess('pyLoadCli')
+            # renameProcess('pyLoadCLI')
             self.getch = Getch()
             self.input = ""
             self.inputline = 0
@@ -434,12 +435,12 @@ class RefreshThread(Thread):
 
 def print_help(config):
     print()
-    print("pyLoadCli Copyright (c) 2008-2011 the pyLoad Team")
+    print("pyLoad CLI Copyright (c) 2018 pyLoad team")
     print()
-    print("Usage: [python] pyLoadCli.py [options] [command]")
+    print("Usage: pyLoadCLI [options] [command]")
     print()
     print("<Commands>")
-    print("See pyLoadCli.py -c for a complete listing.")
+    print("See pyLoadCLI -c for a complete listing.")
     print()
     print("<Options>")
     print("  -i, --interactive", " Start in interactive mode")
@@ -527,7 +528,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(join(homedir, ".pyloadcli"), "w") as cfgfile:
+        with open(join(homedir, ".pyLoadCLI"), "w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))
@@ -553,7 +554,7 @@ def main(args):
         config["language"] = "en"
 
     configFile = configparser.ConfigParser()
-    configFile.read(join(homedir, ".pyloadcli"))
+    configFile.read(join(homedir, ".pyload-cli.conf"))
 
     if configFile.has_section("cli"):
         for opt in configFile.items("cli"):
@@ -561,7 +562,7 @@ def main(args):
 
     gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation(
-        "pyLoadCli",
+        "cli",
         join(pypath, "locale"),
         languages=[config["language"], "en"],
         fallback=True,
@@ -602,7 +603,7 @@ def main(args):
                     [join(os.sep, "usr", "share", "pyload", "locale"), None]
                 )
                 translation = gettext.translation(
-                    "pyLoadCli",
+                    "cli",
                     join(pypath, "locale"),
                     languages=[config["language"], "en"],
                     fallback=True,

@@ -11,7 +11,7 @@ class GigasizeCom(OCR):
 
     __description__ = """Gigasize.com ocr plugin"""
     __license__ = "GPLv3"
-    __authors__ = [("pyLoad Team", "admin@pyload.net")]
+    __authors__ = [("pyLoad team", "admin@pyload.net")]
 
     def recognize(self, image):
         self.load_image(image)

@@ -41,8 +41,7 @@ from pyload.scheduler import Scheduler
 from pyload.utils.js_engine import JsEngine
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.server_thread import WebServer
-
-CURRENT_VERSION = "0.5.0"
+from pyload import __version__
 
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
@@ -106,7 +105,7 @@ class Core(object):
 
                 for option, argument in options:
                     if option in ("-v", "--version"):
-                        print("pyLoad", CURRENT_VERSION)
+                        print("pyLoad", __version__)
                         exit()
                     elif option in ("-p", "--pidfile"):
                         self.pidfile = argument
@@ -164,12 +163,9 @@ class Core(object):
 
     def print_help(self):
         print("")
-        print("pyLoad v{}     2008-2011 the pyLoad Team".format(CURRENT_VERSION))
+        print("pyLoad v{}     2018 pyLoad team".format(__version__))
         print("")
-        if sys.argv[0].endswith(".py"):
-            print("Usage: python pyLoad.py [options]")
-        else:
-            print("Usage: pyLoad [options]")
+        print("Usage: pyLoad [options]")
         print("")
         print("<Options>")
         print("  -v, --version", " " * 10, "Print version to terminal")
@@ -285,7 +281,7 @@ class Core(object):
         starts the fun :D.
         """
 
-        self.version = CURRENT_VERSION
+        self.version = __version__
 
         if not exists("pyload.conf"):
             from pyload.setup import Setup
@@ -371,7 +367,7 @@ class Core(object):
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info(_("Starting") + " pyLoad {}".format(CURRENT_VERSION))
+        self.log.info(_("Starting") + " pyLoad {}".format(self.version))
         self.log.info(_("Using home directory: {}").format(getcwd()))
 
         self.writePidFile()
@@ -404,7 +400,7 @@ class Core(object):
                 self.config.oldRemoteData["password"],
             )
 
-            self.log.info(_("Please check your logindata with ./pyLoad.py -u"))
+            self.log.info(_("Please check your logindata with pyLoad -u"))
 
         if self.deleteLinks:
             self.log.info(_("All links removed"))
@@ -481,7 +477,7 @@ class Core(object):
         self.log.info(_("pyLoad is up and running"))
 
         # test api
-        #        from pyload.utils.api_exerciser import startApiExerciser
+        #        from tests.api_exerciser import startApiExerciser
         #        startApiExerciser(self, 3)
 
         # some memory stats

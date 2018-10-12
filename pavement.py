@@ -28,7 +28,7 @@ setup(
     url="http://pyload.net",
     download_url="http://pyload.net/download",
     license="GPL v3",
-    author="pyLoad Team",
+    author="pyLoad team",
     author_email="support@pyload.net",
     platforms=("Any",),
     # package_dir={'pyload': 'src'},
@@ -76,7 +76,7 @@ options(
 # xgettext args
 xargs = [
     "--from-code=utf-8",
-    "--copyright-holder=pyLoad Team",
+    "--copyright-holder=pyLoad team",
     "--package-name=pyLoad",
     "--package-version={}".format(options.version),
     "--msgid-bugs-address='bugs@pyload.net'",
@@ -254,7 +254,7 @@ def generate_locale():
             js.write('_("{}")\n'.format(s))
 
     makepot(
-        "django",
+        "webui",
         path("pyload/webui"),
         EXCLUDE,
         "./{}\n".format(trans.relpath(), [".py", ".html"], ["--language=Python"]),

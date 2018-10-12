@@ -26,9 +26,6 @@ before_script:
   - apt-get install git
   - git config --global user.email "you@example.com"
   - git config --global user.name "Your Name"
-  # Install dependencies of your package and the testing environment
-  - pip install -r requirements.txt
-  - pip install -r test-requirements.txt
 
 # Run in different environments
 py27:

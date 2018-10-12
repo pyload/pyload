@@ -4,7 +4,7 @@ Credits
 #### Thanks to RaNaN, sebnapi and spoob who created pyLoad!
 
 
-### pyLoad Team
+### pyLoad team
 
  - Christian Rakow (RaNaN) <Mast3rRaNaN@hotmail.de>
  - Jonas Engelhardt (Jonn3y)
@@ -44,9 +44,9 @@ You can see their recent activities here: <http://translate.pyload.org/project/p
 
 ### Supporters
 
-Sadly, is really hard to list all the users who helped the pyLoad Team in these last years testing code, reporting issues,
+Sadly, is really hard to list all the users who helped pyLoad team in these last years testing code, reporting issues,
 opening topic to share tips and advices, fix troubles or simply discuss about this project...
-**The pyLoad Team can be only forever thankful to all of you for your free efforts!**
+**pyLoad team can be only forever thankful to all of you for your free efforts!**
 
 
 -------------------------

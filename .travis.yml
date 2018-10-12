@@ -13,10 +13,6 @@ matrix:
     - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
 install:
   - source tests/travis_install.sh
-  - pip install -r requirements.txt
-  # ^  DEPRECATION WARNING:
-  # The automatic creation of a `requirements.txt` file is deprecated.
-  # See `Dependency Management` in the docs for other options.
 before_script:
   - git config --global user.email "you@example.com"
   - git config --global user.name "Your Name"
