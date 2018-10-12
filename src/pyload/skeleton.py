@@ -26,7 +26,9 @@ from sys import argv, executable, exit
 from time import sleep, time
 from traceback import print_exc
 
+import js2py
 import pyload.utils.pylgettext as gettext
+from pyload import __version__ as PYLOAD_VERSION
 from pyload import inithomedir, remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
@@ -37,10 +39,8 @@ from pyload.manager.plugin_manager import PluginManager
 from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
-import js2py
 from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.server_thread import WebServer
-from pyload import __version__ as PYLOAD_VERSION
 
 enc = get_console_encoding(sys.stdout.encoding)
 sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
@@ -729,7 +729,7 @@ def main(args):
             pyload_core.removeLogger()
             _exit(1)
 
-            
+
 def run():
     """
     Entry point for console_scripts

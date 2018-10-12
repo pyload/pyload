@@ -9,10 +9,8 @@ import urllib.request
 from builtins import _, range, str
 from io import StringIO
 
+from Pillow import Image, ImageDraw, ImageFont
 from pyload.plugins.internal.captcha_service import CaptchaService
-from Pillow import Image
-from Pillow import ImageDraw
-from Pillow import ImageFont
 
 
 class ReCaptcha(CaptchaService):

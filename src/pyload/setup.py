@@ -105,7 +105,7 @@ class Setup(object):
             avail.append(_("automatic captcha decryption"))
         if web:
             avail.append(_("Webinterface"))
-            
+
         string = ""
 
         for av in avail:

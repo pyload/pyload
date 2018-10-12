@@ -7,10 +7,9 @@ from builtins import str
 from os.path import join
 from urllib.parse import unquote
 
+import js2py
 from bottle import HTTPError, request, route
 from pyload.webui import DL_ROOT, PYLOAD
-
-import js2py
 
 try:
     from Cryptodome.Cipher import AES

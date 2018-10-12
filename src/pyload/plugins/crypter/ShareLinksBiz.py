@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import js2py
 import binascii
 import re
 from builtins import _, filter
 
 import Cryptodome.Cipher.AES
+import js2py
 from pyload.plugins.internal.crypter import Crypter
 
 

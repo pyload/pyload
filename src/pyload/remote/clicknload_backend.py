@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-import js2py
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
@@ -10,6 +9,7 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
+import js2py
 from pyload.remote.remote_manager import BackendBase
 
 try:

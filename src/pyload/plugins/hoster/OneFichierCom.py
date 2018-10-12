@@ -85,9 +85,12 @@ class OneFichierCom(SimpleHoster):
                         if "filename=" in headers.get("content-disposition"):
                             _name = dict(
                                 _i.split("=")
-                                for _i in list(map(
-                                    str.strip, headers["content-disposition"].split(";")
-                                ))[1:]
+                                for _i in list(
+                                    map(
+                                        str.strip,
+                                        headers["content-disposition"].split(";"),
+                                    )
+                                )[1:]
                             )
                             name = _name["filename"].strip("\"'")
                         else:

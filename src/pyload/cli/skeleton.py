@@ -13,7 +13,6 @@ import configparser
 import os
 import sys
 from builtins import _, homedir, input, object, owd, pypath, range, str
-from easy_getch import getch
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from os import _exit
@@ -24,12 +23,13 @@ from time import sleep
 from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
+from easy_getch import getch
 from pyload.Api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
 from pyload.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
-                                                      NoSSL, ThriftClient, WrongLogin)
+                                                       NoSSL, ThriftClient, WrongLogin)
 from pyload.utils.utils import decode, formatSize
 
 if os.name == "nt":
@@ -688,7 +688,7 @@ def main(args):
         writeConfig(config)
         Cli(client, command)
 
-        
+
 def run():
     """
     Entry point for console_scripts

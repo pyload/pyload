@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import js2py
 import inspect
 import re
 import urllib.parse
 from builtins import _, hex, next, object, str
 
+import js2py
 from pyload.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.addon import Addon
@@ -120,9 +120,7 @@ class CloudFlare(object):
                 return None  # Tell the exception handler to re-throw the exception
 
             # Safely evaluate the Javascript expression
-            get_params["jschl_answer"] = str(
-                int(js2py.eval_js(js)) + len(domain)
-            )
+            get_params["jschl_answer"] = str(int(js2py.eval_js(js)) + len(domain))
 
             owner_plugin.wait()  # Do the actual wait
 

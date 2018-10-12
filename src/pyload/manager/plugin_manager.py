@@ -4,6 +4,7 @@
 import importlib
 import re
 import sys
+from ast import literal_eval
 from builtins import _, object, pypath, str
 from itertools import chain
 from os import listdir, makedirs
@@ -12,7 +13,6 @@ from sys import version_info
 from traceback import print_exc
 
 from pyload.config.config_parser import IGNORE
-from ast import literal_eval
 
 
 class PluginManager(object):

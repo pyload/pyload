@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import js2py
 import binascii
 import random
 import re
@@ -11,6 +10,7 @@ import urllib.request
 from builtins import _, range
 
 import Cryptodome.Cipher.ARC4
+import js2py
 import pycurl
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster

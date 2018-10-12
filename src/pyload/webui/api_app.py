@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from ast import literal_eval
 from itertools import chain
 from traceback import format_exc, print_exc
 from urllib.parse import unquote
 
 from bottle import HTTPError, request, response, route
 from pyload.Api import BaseObject
-from ast import literal_eval
-from pyload.plugins.utils import json  # change to core utils
-from pyload.webui.utils import set_session, toDict
-from pyload.webui import PYLOAD
-
 from pyload.api import __version__ as API_VERSION
+from pyload.plugins.utils import json  # change to core utils
+from pyload.webui import PYLOAD
+from pyload.webui.utils import set_session, toDict
 
 # json encoder that accepts TBase objects
 
@@ -27,7 +26,10 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 @route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION))
-@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION), method="POST")
+@route(
+    r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION),
+    method="POST",
+)
 def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
