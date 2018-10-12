@@ -25,9 +25,9 @@ class TBaseEncoder(json.JSONEncoder):
 # accepting positional arguments, as well as kwargs via post and get
 
 
-@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION))
+@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{{}}]*#".format(API_VERSION))
 @route(
-    r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{}]*#".format(API_VERSION),
+    r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{{}}]*#".format(API_VERSION),
     method="POST",
 )
 def call_api(func, args=""):

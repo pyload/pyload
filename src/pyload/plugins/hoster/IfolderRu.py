@@ -33,7 +33,7 @@ class IfolderRu(SimpleHoster):
     OFFLINE_PATTERN = r"<p>Файл номер <b>.*?</b> (не найден|удален) !!!</p>"
 
     SESSION_ID_PATTERN = r'<input type="hidden" name="session" value="(.+?)"'
-    INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\)\{tag\.value = "(.+?)";\}'
+    INTS_SESSION_PATTERN = r'\(\'ints_session\'\);\s*if\(tag\){{tag\.value = "(.+?)";}}'
     HIDDEN_INPUT_PATTERN = r"var v = .*?name=\'(.+?)\' value=\'1\'"
 
     LINK_FREE_PATTERN = r'<a href="(.+?)" class="downloadbutton_files"'

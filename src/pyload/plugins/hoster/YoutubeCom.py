@@ -1475,7 +1475,7 @@ class JSInterpreter(object):
     def extract_object(self, objname):
         obj = {}
         obj_m = re.search(
-            r"(?:var\s+)?{}\s*=\s*\{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*\{.*?\}(?:,\s*)?)*)\}\s*;".format(
+            r"(?:var\s+)?{}\s*=\s*{{\s*(?P<fields>([a-zA-Z$0-9]+\s*:\s*function\(.*?\)\s*{{.*?}}(?:,\s*)?)*)}}\s*;".format(
                 re.escape(objname)
             ),
             self.code,
@@ -1494,7 +1494,7 @@ class JSInterpreter(object):
 
     def extract_function(self, function_name):
         func_m = re.search(
-            r"(?x)(?:function\s+{}|[{;,]\s*{}\s*=\s*function|var\s+{}\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*\{(?P<code>[^}]+)\}".format(
+            r"(?x)(?:function\s+{}|[{;,]\s*{}\s*=\s*function|var\s+{}\s*=\s*function)\s*\((?P<args>[^)]*)\)\s*{{(?P<code>[^}]+)}}".format(
                 re.escape(function_name),
                 re.escape(function_name),
                 re.escape(function_name),

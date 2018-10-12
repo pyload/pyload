@@ -44,7 +44,7 @@ class TORRENT(Container):
         m = re.search(r"name(\d+):", torrent_content)
         if m:
             m = re.search(
-                r"name{}:(.\{{}\})".format(m.group(1), m.group(1)), torrent_content
+                r"name{}:(.{{{}}})".format(m.group(1), m.group(1)), torrent_content
             )
             if m:
                 pack_name = safename(m.group(1))

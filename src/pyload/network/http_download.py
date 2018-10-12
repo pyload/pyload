@@ -281,10 +281,7 @@ class HTTPDownload(object):
                         )
                         self.info.save()
                     elif failed:
-                        if ex:
-                            raise ex
-                        else:
-                            raise
+                        raise ex or Exception
 
                     lastFinishCheck = t
 

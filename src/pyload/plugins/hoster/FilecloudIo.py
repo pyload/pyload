@@ -51,7 +51,7 @@ class FilecloudIo(SimpleHoster):
         post_url = m.group(1)
 
         m = re.search(
-            r"\$\.ajax\(.*data:\s*(\{.+?\})\s*\}\)\.done\(function", self.data, re.S
+            r"\$\.ajax\(.*data:\s*({{.+?}})\s*\}\)\.done\(function", self.data, re.S
         )
         if m is None:
             self.error(_("post parameters pattern not found"))
