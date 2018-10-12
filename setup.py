@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    Setup file for pyload.
-    Use setup.cfg to configure your project.
+#      ____________
+#   _ /       |    \ ___________ _ _______________ _ ___ _______________
+#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
+# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
+# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
+#  \______\    /______|_|___|__/________________________//______ /___/__/
+#          \  /
+#           \/
 
-    This file was generated with PyScaffold 3.1.
-    PyScaffold helps you to put up the scaffold of your new Python project.
-    Learn more under: https://pyscaffold.org/
-"""
 import sys
 
 from pkg_resources import require, VersionConflict

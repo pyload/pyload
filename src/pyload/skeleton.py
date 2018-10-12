@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: spoob, sebnapi, RaNaN, mkaay, vuolter
 #      ____________
 #   _ /       |    \ ___________ _ _______________ _ ___ _______________
 #  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\

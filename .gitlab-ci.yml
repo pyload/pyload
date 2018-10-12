@@ -28,16 +28,6 @@ before_script:
   - git config --global user.name "Your Name"
 
 # Run in different environments
-py27:
-  image: "python:2.7"
-  script:
-  - python setup.py test
-
-py33:
-  image: "python:3.3"
-  script:
-  - python setup.py test
-
 py34:
   image: "python:3.4"
   script:

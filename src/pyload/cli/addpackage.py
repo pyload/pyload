@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+# @author: RaNaN
 from builtins import _
 
 from pyload.cli.handler import Handler
 from pyload.cli.printer import *
-
-# @author: RaNaN
 
 
 class AddPackage(Handler):

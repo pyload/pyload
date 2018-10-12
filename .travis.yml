@@ -1,9 +1,22 @@
-# Travis configuration file using the build matrix feature
-# Read more under http://docs.travis-ci.com/user/build-configuration/
-# THIS SCRIPT IS SUPPOSED TO BE AN EXAMPLE. MODIFY IT ACCORDING TO YOUR NEEDS!
-
 sudo: false
 language: python
+git:
+  depth: 3
+  lfs_skip_smudge: true
+  submodules: false
+branches:
+  only:
+    - develop
+    - /^v\d+\.\d+\.\d+$/
+python:
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.6-dev
+  - 3.7-dev
+  - 3.8-dev
+  - nightly
+  - pypy3.5
 virtualenv:
   system_site_packages: true
 matrix:
@@ -11,14 +24,23 @@ matrix:
     - python: 3.4
       env: DISTRIB="ubuntu" TOX_PYTHON_VERSION="py34" COVERAGE="true"
     - env: DISTRIB="conda" PYTHON_VERSION="3.6" COVERAGE="false"
+    - os: osx
+      language: generic
+      env: TRAVIS_PYTHON_VERSION=3.5
+      python: 3.5
+      before_install: pyenv install 3.5.0
+  allow_failures:
+    - os: osx
+    - python: 3.6-dev
+    - python: 3.7-dev
+    - python: 3.8-dev
+    - python: nightly
+    - python: pypy3.5
+  fast_finish: true
 install:
   - source tests/travis_install.sh
-before_script:
-  - git config --global user.email "you@example.com"
-  - git config --global user.name "Your Name"
 script:
   - python setup.py test
-  # ^  Change here if using tox
 after_success:
   - if [[ "$COVERAGE" == "true" ]]; then coveralls || echo "failed"; fi
 after_script:
