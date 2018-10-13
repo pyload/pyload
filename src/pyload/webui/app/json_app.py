@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from builtins import _
-from os.path import join
+import os
 from shutil import copyfileobj
 from traceback import print_exc
 
@@ -164,7 +164,7 @@ def add_package():
         if not name or name == "New Package":
             name = f.name
 
-        fpath = join(
+        fpath = os.path.join(
             PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename
         )
         with open(fpath, "wb") as destination:

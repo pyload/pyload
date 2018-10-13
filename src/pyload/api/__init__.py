@@ -3,7 +3,7 @@
 
 import re
 from builtins import _, object, str
-from os.path import join
+import os
 from time import time
 
 from pyload.datatype.pyfile import PyFile
@@ -305,7 +305,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = join(self.pyload.config["log"]["log_folder"], "log.txt")
+        filename = os.path.join(self.pyload.config["log"]["log_folder"], "log.txt")
         try:
             with open(filename, "r") as fh:
                 lines = fh.readlines()
@@ -485,7 +485,7 @@ class Api(Iface):
         :return: online check
         """
         with open(
-            join(self.pyload.config["general"]["download_folder"], "tmp_" + container),
+            os.path.join(self.pyload.config["general"]["download_folder"], "tmp_" + container),
             "wb",
         ) as th:
             th.write(str(data))
@@ -871,7 +871,7 @@ class Api(Iface):
         :param data: file content
         """
         with open(
-            join(self.pyload.config["general"]["download_folder"], "tmp_" + filename),
+            os.path.join(self.pyload.config["general"]["download_folder"], "tmp_" + filename),
             "wb",
         ) as th:
             th.write(str(data))

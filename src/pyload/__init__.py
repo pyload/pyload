@@ -12,7 +12,6 @@ finally:
 import builtins
 import sys
 import os
-from os.path import join
 from sys import argv, platform
 
 builtins._ = lambda x: x  # TODO: os.remove
@@ -23,7 +22,7 @@ builtins.addonManager = None  # TODO: os.remove
 builtins.owd = os.path.abspath("")  # original working directory
 builtins.pypath = pypath = os.path.abspath(os.path.join(__file__, "..", ".."))
 
-sys.path.append(join(pypath, "pyload", "lib"))
+sys.path.append(os.path.join(pypath, "pyload", "lib"))
 
 homedir = ""
 

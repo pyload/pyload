@@ -8,7 +8,6 @@ from ast import literal_eval
 from builtins import _, object, pypath, str
 from itertools import chain
 import os
-from os.path import abspath, exists, isfile, join
 from sys import version_info
 from traceback import print_exc
 
@@ -64,12 +63,12 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
-        sys.path.append(abspath(""))
+        sys.path.append(os.path.abspath(""))
 
-        if not exists("userplugins"):
+        if not os.path.exists("userplugins"):
             os.makedirs("userplugins")
-        if not exists(join("userplugins", "__init__.py")):
-            f = open(join("userplugins", "__init__.py"), "wb")
+        if not os.path.exists(os.path.join("userplugins", "__init__.py")):
+            f = open(os.path.join("userplugins", "__init__.py"), "wb")
             f.close()
 
         self.crypterPlugins, config = self.parse("crypter", pattern=True)
@@ -122,27 +121,27 @@ class PluginManager(object):
         """
         plugins = {}
         if home:
-            pfolder = join("userplugins", folder)
-            if not exists(pfolder):
+            pfolder = os.path.join("userplugins", folder)
+            if not os.path.exists(pfolder):
                 os.makedirs(pfolder)
-            if not exists(join(pfolder, "__init__.py")):
-                f = open(join(pfolder, "__init__.py"), "wb")
+            if not os.path.exists(os.path.join(pfolder, "__init__.py")):
+                f = open(os.path.join(pfolder, "__init__.py"), "wb")
                 f.close()
 
         else:
-            pfolder = join(pypath, "pyload", "plugins", folder)
+            pfolder = os.path.join(pypath, "pyload", "plugins", folder)
 
         configs = {}
         for f in os.listdir(pfolder):
             if (
-                isfile(join(pfolder, f))
+                os.path.isfile(os.path.join(pfolder, f))
                 and f.endswith(".py")
                 or f.endswith("_25.pyc")
                 or f.endswith("_26.pyc")
                 or f.endswith("_27.pyc")
             ) and not f.startswith("_"):
 
-                with open(join(pfolder, f)) as data:
+                with open(os.path.join(pfolder, f)) as data:
                     content = data.read()
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):

@@ -4,7 +4,7 @@ import sys
 import xmlrpc.client
 from builtins import input, range
 from getpass import getpass
-from os.path import abspath, dirname, join
+import os
 from time import time
 
 from pyload.remote.thriftbackend.protocol import Protocol
@@ -14,7 +14,7 @@ from pyload.remote.thriftbackend.thriftgen.ttypes import *
 from thrift import Thrift
 from thrift.transport import TTransport
 
-path = join((abspath(dirname(__file__))), "..", "..", "lib")
+path = os.path.join((os.path.abspath(os.path.dirname(__file__))), "..", "..", "lib")
 sys.path.append(path)
 
 

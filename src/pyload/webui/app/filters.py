@@ -1,30 +1,9 @@
 # -*- coding: utf-8 -*-
 
+
 import os
-from os.path import abspath, commonprefix, join
 
 quotechar = "::%2F"
-
-try:
-    from os.path import relpath
-except Exception:
-    from posixpath import curdir, sep, pardir
-
-    def relpath(path, start=curdir):
-        """
-        Return a relative version of a path.
-        """
-        if not path:
-            raise ValueError("no path specified")
-        start_list = abspath(start).split(sep)
-        path_list = abspath(path).split(sep)
-        # Work out how much of the filepath is shared by start and path.
-        i = len(commonprefix([start_list, path_list]))
-        rel_list = [pardir] * (len(start_list) - i) + path_list[i:]
-        if not rel_list:
-            return curdir
-        return join(*rel_list)
-
 
 def quotepath(path):
     try:
@@ -55,7 +34,7 @@ def path_make_absolute(path):
 
 
 def path_make_relative(path):
-    p = relpath(path)
+    p = os.path.relpath(path)
     if os.path.isfile(p):
         return p
     elif p[-1] == os.path.sep:

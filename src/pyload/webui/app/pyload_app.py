@@ -5,8 +5,6 @@ import time
 from builtins import _
 from datetime import datetime
 from operator import attrgetter, itemgetter
-import os
-from os.path import abspath, isdir, isfile, join
 from urllib.parse import unquote
 
 from bottle import HTTPError, error, redirect, request, response, route, static_file
@@ -79,7 +77,7 @@ def choose_path(browse_for, path=""):
             cwd = os.path.abspath(path)
             abs = True
         else:
-            cwd = relpath(path)
+            cwd = os.path.relpath(path)
     else:
         cwd = os.getcwd()
 
@@ -87,10 +85,10 @@ def choose_path(browse_for, path=""):
     parentdir = os.path.dirname(cwd)
     if not abs:
         if os.path.abspath(cwd) == os.path.abspath("/"):
-            cwd = relpath(cwd)
+            cwd = os.path.relpath(cwd)
         else:
-            cwd = relpath(cwd) + os.path.os.sep
-        parentdir = relpath(parentdir) + os.path.os.sep
+            cwd = os.path.relpath(cwd) + os.path.os.sep
+        parentdir = os.path.relpath(parentdir) + os.path.os.sep
 
     if os.path.abspath(cwd) == os.path.abspath("/"):
         parentdir = ""
@@ -110,22 +108,22 @@ def choose_path(browse_for, path=""):
     for f in folders:
         try:
             # f = f.decode(getfilesystemencoding())
-            data = {"name": f, "fullpath": join(cwd, f)}
+            data = {"name": f, "fullpath": os.path.join(cwd, f)}
             data["sort"] = data["fullpath"].lower()
             data["modified"] = datetime.fromtimestamp(
-                int(os.path.getmtime(join(cwd, f)))
+                int(os.path.getmtime(os.path.join(cwd, f)))
             )
             data["ext"] = os.path.splitext(f)[1]
         except Exception:
             continue
 
-        if os.path.isdir(join(cwd, f)):
+        if os.path.isdir(os.path.join(cwd, f)):
             data["type"] = "dir"
         else:
             data["type"] = "file"
 
-        if os.path.isfile(join(cwd, f)):
-            data["size"] = os.path.getsize(join(cwd, f))
+        if os.path.isfile(os.path.join(cwd, f)):
+            data["size"] = os.path.getsize(os.path.join(cwd, f))
 
             power = 0
             while (data["size"] / 1024.0) > 0.3:
@@ -189,7 +187,7 @@ def js_dynamic(path):
             t = env.get_template("js/{}".format(path))
             return t.render()
         else:
-            return static_file(path, root=join(PROJECT_DIR, "media", "js"))
+            return static_file(path, root=os.path.join(PROJECT_DIR, "media", "js"))
     except Exception:
         return HTTPError(404, "Not Found")
 
@@ -200,17 +198,17 @@ def server_static(path):
         "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     )
     response.headers["Cache-control"] = "public"
-    return static_file(path, root=join(PROJECT_DIR, "media"))
+    return static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
 
 @route(r"/favicon.ico")
 def favicon():
-    return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
+    return static_file("favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img"))
 
 
 @route(r"/robots.txt")
 def robots():
-    return static_file("robots.txt", root=join(PROJECT_DIR, "media", "txt"))
+    return static_file("robots.txt", root=os.path.join(PROJECT_DIR, "media", "txt"))
 
 
 @route(r"/login", method="GET")
@@ -296,25 +294,25 @@ def collector():
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
 
-    if not isdir(root):
+    if not os.path.isdir(root):
         return base([_("Download directory not found.")])
     data = {"folder": [], "files": []}
 
     items = os.listdir(fs_encode(root))
 
     for item in sorted([fs_decode(x) for x in items]):
-        if isdir(save_join(root, item)):
+        if os.path.isdir(save_join(root, item)):
             folder = {"name": item, "path": item, "files": []}
             files = os.listdir(save_join(root, item))
             for file in sorted([fs_decode(x) for x in files]):
                 try:
-                    if isfile(save_join(root, item, file)):
+                    if os.path.isfile(save_join(root, item, file)):
                         folder["files"].append(file)
                 except Exception:
                     pass
 
             data["folder"].append(folder)
-        elif isfile(join(root, item)):
+        elif os.path.isfile(os.path.join(root, item)):
             data["files"].append(item)
 
     return render_to_response("downloads.html", {"files": data}, [pre_processor])
@@ -591,9 +589,9 @@ def info():
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
         "version": PYLOAD.getServerVersion(),
-        "folder": abspath(PYLOAD_DIR),
-        "config": abspath(""),
-        "download": abspath(conf["general"]["download_folder"]["value"]),
+        "folder": os.path.abspath(PYLOAD_DIR),
+        "config": os.path.abspath(""),
+        "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
         "freespace": formatSize(PYLOAD.freeSpace()),
         "remote": conf["remote"]["port"]["value"],
         "webif": conf["webui"]["port"]["value"],

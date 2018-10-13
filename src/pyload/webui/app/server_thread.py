@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 import threading
 from builtins import _
-from os.path import exists
+import os
 
 webui = None
 core = None
@@ -33,7 +32,7 @@ class WebServer(threading.Thread):
         global webui
 
         if self.https:
-            if not exists(self.cert) or not exists(self.key):
+            if not os.path.exists(self.cert) or not os.path.exists(self.key):
                 log.warning(_("SSL certificates not found."))
                 self.https = False
 

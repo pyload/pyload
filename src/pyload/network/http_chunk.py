@@ -4,7 +4,6 @@
 import codecs
 from builtins import object, range, str
 import os
-from os.path import exists
 from re import search
 from time import sleep
 
@@ -64,7 +63,7 @@ class ChunkInfo(object):
     @staticmethod
     def load(name):
         fs_name = fs_encode("{}.chunks".format(name))
-        if not exists(fs_name):
+        if not os.path.exists(fs_name):
             raise IOError
         fh = codecs.open(fs_name, "r", "utf_8")
         name = fh.readline()[:-1]
@@ -95,7 +94,7 @@ class ChunkInfo(object):
 
     def remove(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        if exists(fs_name):
+        if os.path.exists(fs_name):
             os.remove(fs_name)
 
     def getCount(self):

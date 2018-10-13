@@ -4,13 +4,11 @@
 import inspect
 from builtins import _, object, range, str
 import os
-from os.path import exists
 from queue import Queue
 from shutil import move
 from threading import Event, Thread
 from traceback import print_exc
 
-from pyload.utils.utils import os.chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -70,13 +68,12 @@ class DatabaseJob(object):
         self.frame = inspect.currentframe()
 
     def __repr__(self):
-        from os.path import basename
 
         frame = self.frame.f_back
         output = ""
         for i in range(5):
             output += "\t{}:{}, {}\n".format(
-                basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name
+                os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name
             )
             frame = frame.f_back
         del frame
@@ -162,7 +159,7 @@ class DatabaseBackend(Thread):
         """
         check db version and delete it if needed.
         """
-        if not exists("files.version"):
+        if not os.path.exists("files.version"):
             with open("files.version", "wb") as f:
                 f.write(str(__version__))
             return
@@ -266,7 +263,7 @@ class DatabaseBackend(Thread):
         self.c.execute("VACUUM")
 
     def _migrateUser(self):
-        if exists("pyload.db"):
+        if os.path.exists("pyload.db"):
             try:
                 self.pyload.log.info(_("Converting old Django DB"))
             except Exception:

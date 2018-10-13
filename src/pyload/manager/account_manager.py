@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 from builtins import _, object, str
-from os.path import exists
+import os
 from shutil import copy
 from threading import Lock
 
@@ -69,7 +69,7 @@ class AccountManager(object):
         loads all accounts available.
         """
 
-        if not exists("accounts.conf"):
+        if not os.path.exists("accounts.conf"):
             with open("accounts.conf", "wb") as f:
                 f.write("version: " + str(__version__))
 

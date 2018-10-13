@@ -4,7 +4,6 @@
 from builtins import _, str
 from copy import copy
 import os
-from os.path import join
 from pprint import pformat
 from queue import Queue
 from sys import exc_info
@@ -52,11 +51,11 @@ class PluginThread(Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in os.listdir(join("tmp", pyfile.pluginname)):
+            for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
                 try:
                     # avoid encoding errors
                     zip.write(
-                        join("tmp", pyfile.pluginname, f),
+                        os.path.join("tmp", pyfile.pluginname, f),
                         save_join(pyfile.pluginname, f),
                     )
                 except Exception:

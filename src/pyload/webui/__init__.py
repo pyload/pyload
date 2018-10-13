@@ -5,8 +5,6 @@
 import os
 import sys
 from builtins import str
-import os
-from os.path import abspath, dirname, exists, join
 
 import bottle
 import pyload.utils.pylgettext as gettext
@@ -29,8 +27,8 @@ from pyload.webui.middlewares import (
     StripPathMiddleware,
 )
 
-PROJECT_DIR = abspath(dirname(__file__))
-PYLOAD_DIR = abspath(join(PROJECT_DIR, "..", ".."))
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+PYLOAD_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
@@ -62,16 +60,16 @@ if PREFIX:
 DEBUG = config.get("general", "debug_mode") or "-d" in sys.argv or "--debug" in sys.argv
 bottle.debug(DEBUG)
 
-cache = join("tmp", "jinja_cache")
-if not exists(cache):
+cache = os.path.join("tmp", "jinja_cache")
+if not os.path.exists(cache):
     os.makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, "{}.cache")
 
-mapping = {"js": FileSystemLoader(join(PROJECT_DIR, "media", "js"))}
-for template in os.listdir(join(PROJECT_DIR, "templates")):
-    if os.path.isdir(join(PROJECT_DIR, "templates", template)):
-        mapping[template] = FileSystemLoader(join(PROJECT_DIR, "templates", template))
+mapping = {"js": FileSystemLoader(os.path.join(PROJECT_DIR, "media", "js"))}
+for template in os.listdir(os.path.join(PROJECT_DIR, "templates")):
+    if os.path.isdir(os.path.join(PROJECT_DIR, "templates", template)):
+        mapping[template] = FileSystemLoader(os.path.join(PROJECT_DIR, "templates", template))
 
 loader = PrefixLoader(mapping)
 
@@ -96,10 +94,10 @@ env.filters["formatsize"] = formatSize
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
 env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
 
-gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
 translation = gettext.translation(
     "webui",
-    join(PYLOAD_DIR, "locale"),
+    os.path.join(PYLOAD_DIR, "locale"),
     languages=[config.get("general", "language"), "en"],
     fallback=True,
 )

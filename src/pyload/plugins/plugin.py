@@ -4,8 +4,6 @@
 import os
 from builtins import _, object, str
 from itertools import islice
-import os
-from os.path import exists, join
 from random import randint
 from time import sleep, time
 
@@ -414,7 +412,7 @@ class Plugin(Base):
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
         with open(
-            join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb"
+            os.path.join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb"
         ) as temp_file:
             temp_file.write(img)
 
@@ -508,11 +506,11 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            if not exists(join("tmp", self.__name__)):
-                os.makedirs(join("tmp", self.__name__))
+            if not os.path.exists(os.path.join("tmp", self.__name__)):
+                os.makedirs(os.path.join("tmp", self.__name__))
 
             with open(
-                join(
+                os.path.join(
                     "tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(
@@ -575,7 +573,7 @@ class Plugin(Base):
 
         location = save_join(download_folder, self.pyfile.package().folder)
 
-        if not exists(location):
+        if not os.path.exists(location):
             os.makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
 
             if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
@@ -593,7 +591,7 @@ class Plugin(Base):
         location = fs_decode(location)
         name = save_path(self.pyfile.name)
 
-        filename = join(location, name)
+        filename = os.path.join(location, name)
 
         self.pyload.addonManager.dispatchEvent(
             "downloadStarts", self.pyfile, url, filename
@@ -620,7 +618,7 @@ class Plugin(Base):
                 "{name} saved as {newname}".format(**{"name": name, "newname": newname})
             )
             self.pyfile.name = newname
-            filename = join(location, newname)
+            filename = os.path.join(location, newname)
 
         fs_filename = fs_encode(filename)
 
@@ -654,7 +652,7 @@ class Plugin(Base):
         :return: dictionary key of the first rule that matched
         """
         lastDownload = fs_encode(self.lastDownload)
-        if not exists(lastDownload):
+        if not os.path.exists(lastDownload):
             return None
 
         size = os.stat(lastDownload)
@@ -721,7 +719,7 @@ class Plugin(Base):
         if (
             starting
             and self.pyload.config["download"]["skip_existing"]
-            and exists(location)
+            and os.path.exists(location)
         ):
             size = os.stat(location).st_size
             if size >= self.pyfile.size:
@@ -731,7 +729,7 @@ class Plugin(Base):
             self.pyfile.id, self.pyfile.package().folder, self.pyfile.name
         )
         if pyfile:
-            if exists(location):
+            if os.path.exists(location):
                 raise SkipDownload(pyfile[0])
 
             self.log.debug(

@@ -2,7 +2,7 @@
 
 import sys
 from builtins import object
-from os.path import abspath, dirname, join
+import os
 from traceback import print_exc
 
 from pyload.remote.thriftbackend.protocol import Protocol
@@ -14,7 +14,7 @@ from thrift.transport import TTransport
 try:
     import thrift
 except ImportError:
-    sys.path.append(abspath(join(dirname(abspath(__file__)), "..", "..", "lib")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "lib")))
 
 
 # modules should import ttypes from here, when want to avoid importing API

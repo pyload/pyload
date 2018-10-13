@@ -3,7 +3,7 @@
 
 import re
 from builtins import _, object, pypath, range, str
-from os.path import exists, join
+import os
 from random import choice
 from subprocess import Popen
 from threading import Event, Lock
@@ -173,9 +173,9 @@ class ThreadManager(object):
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not exists(self.pyload.config["reconnect"]["method"]):
-            if exists(join(pypath, self.pyload.config["reconnect"]["method"])):
-                self.pyload.config["reconnect"]["method"] = join(
+        if not os.path.exists(self.pyload.config["reconnect"]["method"]):
+            if os.path.exists(os.path.join(pypath, self.pyload.config["reconnect"]["method"])):
+                self.pyload.config["reconnect"]["method"] = os.path.join(
                     pypath, self.pyload.config["reconnect"]["method"]
                 )
             else:

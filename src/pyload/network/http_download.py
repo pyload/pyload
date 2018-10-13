@@ -4,7 +4,6 @@
 from builtins import _, object, range, str
 from logging import getLogger
 import os
-from os.path import dirname
 from shutil import move
 from time import time
 
@@ -112,7 +111,7 @@ class HTTPDownload(object):
                     os.remove(fname)  # os.remove chunk
 
         if self.nameDisposition and self.disposition:
-            self.filename = save_join(dirname(self.filename), self.nameDisposition)
+            self.filename = save_join(os.path.dirname(self.filename), self.nameDisposition)
 
         move(init, fs_encode(self.filename))
         self.info.os.remove()  # os.remove info file

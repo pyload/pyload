@@ -2,7 +2,7 @@
 
 import re
 from builtins import object, pypath, str
-from os.path import exists, join
+import os
 from shutil import copy
 from time import sleep
 from traceback import print_exc
@@ -68,11 +68,11 @@ class ConfigParser(object):
         determines if config need to be copied.
         """
         try:
-            if not exists("pyload.conf"):
-                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+            if not os.path.exists("pyload.conf"):
+                copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 chmod("pyload.conf", 0o600)
 
-            if not exists("plugin.conf"):
+            if not os.path.exists("plugin.conf"):
                 with open("plugin.conf", "wb") as f:
                     f.write("version: " + str(__version__))
                     
@@ -84,7 +84,7 @@ class ConfigParser(object):
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
-                copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print("Old version of config was replaced")
 
             with open("plugin.conf", "rb") as f:
@@ -109,7 +109,7 @@ class ConfigParser(object):
         reads the config file.
         """
 
-        self.config = self.parseConfig(join(pypath, "pyload", "config", "default.conf"))
+        self.config = self.parseConfig(os.path.join(pypath, "pyload", "config", "default.conf"))
         self.plugin = self.parseConfig("plugin.conf")
 
         try:

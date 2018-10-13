@@ -3,16 +3,16 @@
 
 import inspect
 import sys
-from os.path import abspath, dirname, join
+import os
 
 from pyload.remote.thriftbackend.thriftgen import ttypes
 from pyload.remote.thriftbackend.thriftgen.pyload import Iface
 
-path = dirname(abspath(__file__))
-module = join(path, "..", "..")
+path = os.path.dirname(os.path.abspath(__file__))
+module = os.path.join(path, "..", "..")
 
-sys.path.append(join(module, "lib"))
-sys.path.append(join(module, "remote"))
+sys.path.append(os.path.join(module, "lib"))
+sys.path.append(os.path.join(module, "remote"))
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
         else:
             enums.append(klass)
 
-    with open(join(path, "ttypes.py"), "wb") as f:
+    with open(os.path.join(path, "ttypes.py"), "wb") as f:
 
         f.write(
         """# -*- coding: utf-8 -*-

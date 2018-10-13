@@ -4,7 +4,7 @@ import re
 from base64 import standard_b64decode
 from binascii import unhexlify
 from builtins import str
-from os.path import join
+import os
 from urllib.parse import unquote
 
 import js2py
@@ -59,7 +59,7 @@ def addcrypted():
     )
     dlc = request.forms["crypted"].replace(" ", "+")
 
-    dlc_path = join(
+    dlc_path = os.path.join(
         DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
     with open(dlc_path, "wb") as dlc_file:

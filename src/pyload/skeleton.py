@@ -12,7 +12,6 @@
 import builtins
 import logging
 import logging.handlers
-import os
 import signal
 import subprocess
 import sys
@@ -21,7 +20,6 @@ from codecs import getwriter
 from getopt import GetoptError, getopt
 from imp import find_module
 import os
-from os.path import exists, join
 from sys import argv, executable, exit
 from time import sleep, time
 from traceback import print_exc
@@ -247,10 +245,10 @@ class Core(object):
             t = time()
             print("waiting for pyLoad to quit")
 
-            while exists(self.pidfile) and t + 10 > time():
+            while os.path.exists(self.pidfile) and t + 10 > time():
                 sleep(0.25)
 
-            if not exists(self.pidfile):
+            if not os.path.exists(self.pidfile):
                 print("pyLoad successfully stopped")
             else:
                 os.kill(pid, 9)  # SIGKILL
@@ -269,8 +267,8 @@ class Core(object):
                 if "_25" in f or "_26" in f or "_27" in f:
                     continue
 
-                print(join(path, f))
-                os.remove(join(path, f))
+                print(os.path.join(path, f))
+                os.remove(os.path.join(path, f))
 
     def start(self, rpc=True, web=True):
         """
@@ -279,7 +277,7 @@ class Core(object):
 
         self.version = PYLOAD_VERSION
 
-        if not exists("pyload.conf"):
+        if not os.path.exists("pyload.conf"):
             from pyload.setup import Setup
 
             print("This is your first start, running configuration assistent now.")
@@ -308,7 +306,7 @@ class Core(object):
 
         self.config = ConfigParser()
 
-        gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
+        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
         translation = gettext.translation(
             "pyLoad",
             self.path("locale"),
@@ -443,15 +441,15 @@ class Core(object):
 
         self.config.save()  # save so config files gets filled
 
-        link_file = join(pypath, "links.txt")
+        link_file = os.path.join(pypath, "links.txt")
 
-        if exists(link_file):
+        if os.path.exists(link_file):
             with open(link_file, "rb") as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
 
         link_file = "links.txt"
-        if exists(link_file):
+        if os.path.exists(link_file):
             with open(link_file, "rb") as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
@@ -525,14 +523,14 @@ class Core(object):
         if self.config["log"]["file_log"]:
             if self.config["log"]["log_rotate"]:
                 file_handler = logging.handlers.RotatingFileHandler(
-                    join(self.config["log"]["log_folder"], "log.txt"),
+                    os.path.join(self.config["log"]["log_folder"], "log.txt"),
                     maxBytes=self.config["log"]["log_size"] * 1024,
                     backupCount=int(self.config["log"]["log_count"]),
                     encoding="utf8",
                 )
             else:
                 file_handler = logging.FileHandler(
-                    join(self.config["log"]["log_folder"], "log.txt"), encoding="utf8"
+                    os.path.join(self.config["log"]["log_folder"], "log.txt"), encoding="utf8"
                 )
 
             file_handler.setFormatter(frm)
@@ -585,7 +583,7 @@ class Core(object):
         file_created = True
         file_exists = True
         for tmp_name in tmp_names:
-            if not exists(tmp_name):
+            if not os.path.exists(tmp_name):
                 file_exists = False
                 if empty:
                     try:
@@ -662,7 +660,7 @@ class Core(object):
         self.deletePidFile()
 
     def path(self, *args):
-        return join(pypath, *args)
+        return os.path.join(pypath, *args)
 
 
 def daemon():
