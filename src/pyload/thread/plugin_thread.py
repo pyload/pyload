@@ -9,7 +9,7 @@ from queue import Queue
 from sys import exc_info
 from threading import Thread
 from time import gmtime, sleep, strftime, time
-from traceback import format_exc, print_exc
+import traceback
 from types import MethodType
 
 from pycurl import error
@@ -85,7 +85,7 @@ class PluginThread(Thread):
             self.m.pyload.api.getServerVersion(),
             pyfile.pluginname,
             pyfile.plugin.__version__,
-            format_exc(),
+            traceback.format_exc(),
         )
 
         tb = exc_info()[2]
@@ -297,7 +297,7 @@ class DownloadThread(PluginThread):
                     pyfile.setStatus("failed")
                     self.m.log.error("pycurl error {}: {}".format(code, msg))
                     if self.m.pyload.debug:
-                        print_exc()
+                        traceback.print_exc()
                         self.writeDebugReport(pyfile)
 
                     self.m.pyload.addonManager.downloadFailed(pyfile)
@@ -333,7 +333,7 @@ class DownloadThread(PluginThread):
                 pyfile.error = str(e)
 
                 if self.m.pyload.debug:
-                    print_exc()
+                    traceback.print_exc()
                     self.writeDebugReport(pyfile)
 
                 self.m.pyload.addonManager.downloadFailed(pyfile)
@@ -443,7 +443,7 @@ class DecrypterThread(PluginThread):
             self.active.error = str(e)
 
             if self.m.pyload.debug:
-                print_exc()
+                traceback.print_exc()
                 self.writeDebugReport(pyfile)
 
             return
@@ -600,7 +600,7 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
-                    print_exc()
+                    traceback.print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
 
@@ -701,7 +701,7 @@ class InfoThread(PluginThread):
                 )
             )
             if self.m.pyload.debug:
-                print_exc()
+                traceback.print_exc()
 
             # generate default results
             if err:

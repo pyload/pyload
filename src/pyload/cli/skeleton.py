@@ -13,12 +13,12 @@ import configparser
 import os
 import sys
 from builtins import _, homedir, input, object, owd, pypath, range, str
-from codecs import getwriter
+import codecs
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
 from time import sleep
-from traceback import print_exc
+import traceback
 
 import pyload.utils.pylgettext as gettext
 from pyload.api import Destination
@@ -34,7 +34,7 @@ if os.name == "nt":
 else:
     enc = "utf8"
 
-sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
+sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
 class Cli(object):
@@ -423,7 +423,7 @@ class RefreshThread(Thread):
             except Exception as e:
                 println(2, red(str(e)))
                 self.cli.reset()
-                print_exc()
+                traceback.print_exc()
 
 
 def print_help(config):

@@ -5,7 +5,7 @@
 import socket
 from builtins import object
 from sys import argv, exit
-from traceback import print_exc
+import traceback
 
 import _thread
 
@@ -33,7 +33,7 @@ def server(*settings):
             _thread.start_new_thread(forward, (client_socket, server_socket))
             _thread.start_new_thread(forward, (server_socket, client_socket))
     except Exception:
-        print_exc()
+        traceback.print_exc()
 
 
 def forward(source, destination):

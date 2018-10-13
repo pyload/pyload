@@ -3,9 +3,9 @@
 import re
 from builtins import object, pypath, str
 import os
-from shutil import copy
+import shutil
 from time import sleep
-from traceback import print_exc
+import traceback
 
 from pyload.utils.utils import chmod
 
@@ -69,7 +69,7 @@ class ConfigParser(object):
         """
         try:
             if not os.path.exists("pyload.conf"):
-                copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 chmod("pyload.conf", 0o600)
 
             if not os.path.exists("plugin.conf"):
@@ -84,7 +84,7 @@ class ConfigParser(object):
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
-                copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print("Old version of config was replaced")
 
             with open("plugin.conf", "rb") as f:
@@ -126,7 +126,7 @@ class ConfigParser(object):
 
         except Exception as e:
             print("Config Warning")
-            print_exc()
+            traceback.print_exc()
 
     def parseConfig(self, config):
         """
@@ -218,7 +218,7 @@ class ConfigParser(object):
                 except Exception as e:
                     print("Config Warning:")
                     print(line)
-                    print_exc()
+                    traceback.print_exc()
 
         return conf
 

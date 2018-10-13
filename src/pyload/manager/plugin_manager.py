@@ -9,7 +9,7 @@ from builtins import _, object, pypath, str
 from itertools import chain
 import os
 from sys import version_info
-from traceback import print_exc
+import traceback
 
 from pyload.config.config_parser import IGNORE
 
@@ -331,7 +331,7 @@ class PluginManager(object):
                     )
                 )
                 if self.pyload.debug:
-                    print_exc()
+                    traceback.print_exc()
         else:
             self.log.debug("Plugin {} not found".format(name))
             self.log.debug("Available plugins : {}".format(str(plugins)))

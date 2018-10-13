@@ -3,7 +3,7 @@
 
 from builtins import _, object, str
 import os
-from shutil import copy
+import shutil
 from threading import Lock
 
 from pyload.manager.event_manager import AccountUpdateEvent
@@ -78,7 +78,7 @@ class AccountManager(object):
             version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
-            copy("accounts.conf", "accounts.backup")
+            shutil.copy("accounts.conf", "accounts.backup")
             with open("accounts.conf", "wb") as f:
                 f.write("version: " + str(__version__))
             self.pyload.log.warning(

@@ -4,10 +4,10 @@ import sys
 import time
 from builtins import _
 from datetime import datetime
-from operator import attrgetter, itemgetter
+import operator
 from urllib.parse import unquote
 
-from bottle import HTTPError, error, redirect, request, response, route, static_file
+import bottle
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
 from pyload.webui.filters import relpath, unquotepath
@@ -136,7 +136,7 @@ def choose_path(browse_for, path=""):
 
         files.append(data)
 
-    files = sorted(files, key=itemgetter("type", "sort"))
+    files = sorted(files, key=operator.itemgetter("type", "sort"))
 
     return render_to_response(
         "pathchooser.html",
@@ -173,7 +173,7 @@ def error500(error):
 # render js
 
 
-@route(r"/media/js/<path:re:.+\.js>")
+@bottle.route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
     response.headers["Expires"] = time.strftime(
         "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 2)
@@ -187,44 +187,44 @@ def js_dynamic(path):
             t = env.get_template("js/{}".format(path))
             return t.render()
         else:
-            return static_file(path, root=os.path.join(PROJECT_DIR, "media", "js"))
+            return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media", "js"))
     except Exception:
-        return HTTPError(404, json.dumps("Not Found"))
+        return bottle.HTTPError(404, json.dumps("Not Found"))
 
 
-@route(r"/media/<path:path>")
+@bottle.route(r"/media/<path:path>")
 def server_static(path):
     response.headers["Expires"] = time.strftime(
         "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     )
     response.headers["Cache-control"] = "public"
-    return static_file(path, root=os.path.join(PROJECT_DIR, "media"))
+    return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
 # rewrite to return theme favicon
-@route(r"/favicon.ico")
+@bottle.route(r"/favicon.ico")
 def favicon():
-    return static_file("favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img"))
+    return bottle.static_file("favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img"))
 
 
-@route(r"/robots.txt")
+@bottle.route(r"/robots.txt")
 def robots():
-    return static_file("robots.txt", root=PROJECT_DIR)
+    return bottle.static_file("robots.txt", root=PROJECT_DIR)
 
 
-@route(r"/login", method="GET")
+@bottle.route(r"/login", method="GET")
 def login():
     if not PYLOAD and SETUP:
-        redirect(PREFIX + "/setup")
+        bottle.redirect(PREFIX + "/setup")
     else:
         return render_to_response("login.html", proc=[pre_processor])
 
 
-@route(r"/nopermission")
+@bottle.route(r"/nopermission")
 def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@route(r"/login", method="POST")
+@bottle.route(r"/login", method="POST")
 def login_post():
     user = request.forms.get("username")
     password = request.forms.get("password")
@@ -235,18 +235,18 @@ def login_post():
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
     set_session(request, info)
-    return redirect(PREFIX + "/")
+    return bottle.redirect(PREFIX + "/")
 
 
-@route(r"/logout")
+@bottle.route(r"/logout")
 def logout():
     s = request.environ.get("beaker.session")
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
 
-@route(r"/")
-@route(r"/home")
+@bottle.route(r"/")
+@bottle.route(r"/home")
 @login_required("LIST")
 def home():
     try:
@@ -254,7 +254,7 @@ def home():
     except Exception:
         s = request.environ.get("beaker.session")
         s.delete()
-        return redirect(PREFIX + "/login")
+        return bottle.redirect(PREFIX + "/login")
 
     for link in res:
         if link["status"] == 12:
@@ -265,31 +265,31 @@ def home():
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
 
-@route(r"/queue")
+@bottle.route(r"/queue")
 @login_required("LIST")
 def queue():
     queue = PYLOAD.getQueue()
 
-    queue.sort(key=attrgetter("order"))
+    queue.sort(key=operator.attrgetter("order"))
 
     return render_to_response(
         "queue.html", {"content": queue, "target": 1}, [pre_processor]
     )
 
 
-@route(r"/collector")
+@bottle.route(r"/collector")
 @login_required("LIST")
 def collector():
     queue = PYLOAD.getCollector()
 
-    queue.sort(key=attrgetter("order"))
+    queue.sort(key=operator.attrgetter("order"))
 
     return render_to_response(
         "queue.html", {"content": queue, "target": 0}, [pre_processor]
     )
 
 
-@route(r"/downloads")
+@bottle.route(r"/downloads")
 @login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
@@ -318,7 +318,7 @@ def downloads():
     return render_to_response("downloads.html", {"files": data}, [pre_processor])
 
 
-@route(r"/downloads/get/<path:re:.+>")
+@bottle.route(r"/downloads/get/<path:re:.+>")
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
@@ -328,14 +328,14 @@ def get_download(path):
 
     path = os.path.replace("..", "")
     try:
-        return static_file(fs_encode(path), fs_encode(root), download=True)
+        return bottle.static_file(fs_encode(path), fs_encode(root), download=True)
 
     except Exception as e:
         print(e)
-        return HTTPError(404, json.dumps("File not Found"))
+        return bottle.HTTPError(404, json.dumps("File not Found"))
 
 
-@route(r"/settings")
+@bottle.route(r"/settings")
 @login_required("SETTINGS")
 def config():
     conf = PYLOAD.getConfig()
@@ -407,24 +407,24 @@ def config():
     )
 
 
-@route(r"/filechooser")
-@route(r"/filechooser/:file#.+#")
+@bottle.route(r"/filechooser")
+@bottle.route(r"/filechooser/:file#.+#")
 @login_required("STATUS")
 def file(file=""):
     return choose_path("file", file)
 
 
-@route(r"/pathchooser")
-@route(r"/pathchooser/:path#.+#")
+@bottle.route(r"/pathchooser")
+@bottle.route(r"/pathchooser/:path#.+#")
 @login_required("STATUS")
 def path(path=""):
     return choose_path("folder", path)
 
 
-@route(r"/logs")
-@route(r"/logs", method="POST")
-@route(r"/logs/<item>")
-@route(r"/logs/<item>", method="POST")
+@bottle.route(r"/logs")
+@bottle.route(r"/logs", method="POST")
+@bottle.route(r"/logs/<item>")
+@bottle.route(r"/logs/<item>", method="POST")
 @login_required("LOGS")
 def logs(item=-1):
     s = request.environ.get("beaker.session")
@@ -528,8 +528,8 @@ def logs(item=-1):
     )
 
 
-@route(r"/admin")
-@route(r"/admin", method="POST")
+@bottle.route(r"/admin")
+@bottle.route(r"/admin", method="POST")
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -567,12 +567,12 @@ def admin():
     )
 
 
-@route(r"/setup")
+@bottle.route(r"/setup")
 def setup():
     return base([_("Run pyLoad -s to access the setup.")])
 
 
-@route(r"/info")
+@bottle.route(r"/info")
 @login_required("STATUS")
 def info():
     conf = PYLOAD.getConfigDict()

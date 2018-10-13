@@ -4,7 +4,7 @@
 from builtins import _, object, str
 from threading import Lock
 from time import time
-from traceback import print_exc
+import traceback
 
 
 class CaptchaManager(object):
@@ -57,7 +57,7 @@ class CaptchaManager(object):
                 plugin.newCaptchaTask(task)
             except Exception:
                 if self.pyload.debug:
-                    print_exc()
+                    traceback.print_exc()
 
         if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)

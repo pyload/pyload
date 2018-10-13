@@ -8,7 +8,7 @@ from random import choice
 from subprocess import Popen
 from threading import Event, Lock
 from time import sleep, time
-from traceback import print_exc
+import traceback
 
 import pycurl
 from pyload.datatype.pyfile import PyFile
@@ -133,7 +133,7 @@ class ThreadManager(object):
             self.log.error(_("Reconnect Failed: {}").format(str(e)))
             self.reconnecting.clear()
             if self.pyload.debug:
-                print_exc()
+                traceback.print_exc()
         self.checkThreadCount()
 
         try:
@@ -141,7 +141,7 @@ class ThreadManager(object):
         except Exception as e:
             self.log.warning("Assign job error", e)
             if self.pyload.debug:
-                print_exc()
+                traceback.print_exc()
 
             sleep(0.5)
             self.assignJob()
@@ -208,7 +208,7 @@ class ThreadManager(object):
             self.pyload.config["reconnect"]["activated"] = False
             self.reconnecting.clear()
             if self.pyload.debug:
-                print_exc()
+                traceback.print_exc()
             return
 
         reconn.wait()
@@ -322,7 +322,7 @@ class ThreadManager(object):
                 job.initPlugin()
             except Exception as e:
                 self.log.critical(str(e))
-                print_exc()
+                traceback.print_exc()
                 job.setStatus("failed")
                 job.error = str(e)
                 job.release()

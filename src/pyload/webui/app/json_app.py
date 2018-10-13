@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from builtins import _
 import os
-from shutil import copyfileobj
-from traceback import print_exc
+import shutil
+import traceback
 
-from bottle import HTTPError, request, route
+import bottle
 from pyload.utils.utils import decode, formatSize
 from pyload.webui import PYLOAD
 from pyload.webui.utils import login_required, apiver_check, render_to_response, toDict
@@ -22,8 +22,8 @@ def get_sort_key(item):
     return item["order"]
 
 
-@route(r"/json/<apiver>/status")
-@route(r"/json/<apiver>/status", method="POST")
+@bottle.route(r"/json/<apiver>/status")
+@bottle.route(r"/json/<apiver>/status", method="POST")
 @apiver_check
 @login_required("LIST")
 def status():
@@ -32,11 +32,11 @@ def status():
         status["captcha"] = PYLOAD.isCaptchaWaiting()
         return status
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/links")
-@route(r"/json/<apiver>/links", method="POST")
+@bottle.route(r"/json/<apiver>/links")
+@bottle.route(r"/json/<apiver>/links", method="POST")
 @apiver_check
 @login_required("LIST")
 def links():
@@ -61,11 +61,11 @@ def links():
         data = {"links": links, "ids": ids}
         return data
     except Exception as e:
-        print_exc()
-        return HTTPError()
+        traceback.print_exc()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/packages")
+@bottle.route(r"/json/<apiver>/packages")
 @apiver_check
 @login_required("LIST")
 def packages():
@@ -81,10 +81,10 @@ def packages():
         return data
 
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/package/<id:int>")
+@bottle.route(r"/json/<apiver>/package/<id:int>")
 @apiver_check
 @login_required("LIST")
 def package(id):
@@ -116,11 +116,11 @@ def package(id):
         return data
 
     except Exception:
-        print_exc()
-        return HTTPError()
+        traceback.print_exc()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/package_order/<ids>")
+@bottle.route(r"/json/<apiver>/package_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def package_order(ids):
@@ -129,10 +129,10 @@ def package_order(ids):
         PYLOAD.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/abort_link/<id:int>")
+@bottle.route(r"/json/<apiver>/abort_link/<id:int>")
 @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -140,10 +140,10 @@ def abort_link(id):
         PYLOAD.stopDownloads([id])
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/link_order/<ids>")
+@bottle.route(r"/json/<apiver>/link_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def link_order(ids):
@@ -152,11 +152,11 @@ def link_order(ids):
         PYLOAD.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/add_package")
-@route(r"/json/<apiver>/add_package", method="POST")
+@bottle.route(r"/json/<apiver>/add_package")
+@bottle.route(r"/json/<apiver>/add_package", method="POST")
 @apiver_check
 @login_required("ADD")
 def add_package():
@@ -176,7 +176,7 @@ def add_package():
             PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename
         )
         with open(fpath, "wb") as destination:
-            copyfileobj(f.file, destination)
+            shutil.copyfileobj(f.file, destination)
         links.insert(0, fpath)
     except Exception:
         pass
@@ -190,7 +190,7 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
+@bottle.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
 @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
@@ -198,10 +198,10 @@ def move_package(dest, id):
         PYLOAD.movePackage(dest, id)
         return {"response": "success"}
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/edit_package", method="POST")
+@bottle.route(r"/json/<apiver>/edit_package", method="POST")
 @apiver_check
 @login_required("MODIFY")
 def edit_package():
@@ -217,11 +217,11 @@ def edit_package():
         return {"response": "success"}
 
     except Exception:
-        return HTTPError()
+        return bottle.HTTPError()
 
 
-@route(r"/json/<apiver>/set_captcha")
-@route(r"/json/<apiver>/set_captcha", method="POST")
+@bottle.route(r"/json/<apiver>/set_captcha")
+@bottle.route(r"/json/<apiver>/set_captcha", method="POST")
 @apiver_check
 @login_required("ADD")
 def set_captcha():
@@ -246,7 +246,7 @@ def set_captcha():
         return {"captcha": False}
 
 
-@route(r"/json/<apiver>/load_config/<category>/<section>")
+@bottle.route(r"/json/<apiver>/load_config/<category>/<section>")
 @apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
@@ -270,7 +270,7 @@ def load_config(category, section):
     )
 
 
-@route(r"/json/<apiver>/save_config/<category>", method="POST")
+@bottle.route(r"/json/<apiver>/save_config/<category>", method="POST")
 @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
@@ -286,7 +286,7 @@ def save_config(category):
         PYLOAD.setConfigValue(section, option, decode(value), category)
 
 
-@route(r"/json/<apiver>/add_account", method="POST")
+@bottle.route(r"/json/<apiver>/add_account", method="POST")
 @apiver_check
 @login_required("ACCOUNTS")
 def add_account():
@@ -297,7 +297,7 @@ def add_account():
     PYLOAD.updateAccount(type, login, password)
 
 
-@route(r"/json/<apiver>/update_accounts", method="POST")
+@bottle.route(r"/json/<apiver>/update_accounts", method="POST")
 @apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():
@@ -325,7 +325,7 @@ def update_accounts():
             PYLOAD.removeAccount(plugin, user)
 
 
-@route(r"/json/<apiver>/change_password", method="POST")
+@bottle.route(r"/json/<apiver>/change_password", method="POST")
 @apiver_check
 def change_password():
 
@@ -335,4 +335,4 @@ def change_password():
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print("Wrong password")
-        return HTTPError()
+        return bottle.HTTPError()

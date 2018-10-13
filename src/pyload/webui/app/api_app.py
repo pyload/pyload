@@ -2,10 +2,10 @@
 
 from ast import literal_eval
 from itertools import chain
-from traceback import format_exc, print_exc
+import traceback
 from urllib.parse import unquote
 
-from bottle import HTTPError, request, response, route
+import bottle
 from pyload.api import BaseObject
 from pyload.plugins.utils import json  # change to core utils
 from pyload.webui import PYLOAD
@@ -20,8 +20,8 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-@route(r'/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>')
-@route(
+@bottle.route(r'/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>')
+@bottle.route(
     r'/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>',
     method="POST",
 )
@@ -36,10 +36,10 @@ def call_api(func, args=""):
             if not PYLOAD.isAuthorized(
                 func, {"role": info["role"], "permission": info["permission"]}
             ):
-                return HTTPError(401, json.dumps("Unauthorized"))
+                return bottle.HTTPError(401, json.dumps("Unauthorized"))
 
         else:
-            return HTTPError(403, json.dumps("Forbidden"))
+            return bottle.HTTPError(403, json.dumps("Forbidden"))
 
     else:
         s = request.environ.get("beaker.session")
@@ -47,10 +47,10 @@ def call_api(func, args=""):
             s = s.get_by_id(request.POST["session"])
 
         if not s or not s.get("authenticated", False):
-            return HTTPError(403, json.dumps("Forbidden"))
+            return bottle.HTTPError(403, json.dumps("Forbidden"))
 
         if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
-            return HTTPError(401, json.dumps("Unauthorized"))
+            return bottle.HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
@@ -63,14 +63,14 @@ def call_api(func, args=""):
     try:
         return callApi(func, *args, **kwargs)
     except Exception as e:
-        print_exc()
-        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
+        traceback.print_exc()
+        return bottle.HTTPError(500, json.dumps({"error": e.message, "traceback": traceback.format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
         print("Invalid API call", func)
-        return HTTPError(404, json.dumps("Not Found"))
+        return bottle.HTTPError(404, json.dumps("Not Found"))
 
     result = getattr(PYLOAD, func)(
         *[literal_eval(x) for x in args],
@@ -82,7 +82,7 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@route(r"/api/<apiver>/login", method="POST")
+@bottle.route(r"/api/<apiver>/login", method="POST")
 @apiver_check
 def login():
     response.headers.replace("Content-type", "application/json")
@@ -106,7 +106,7 @@ def login():
         return json.dumps(True)
 
 
-@route(r"/api/<apiver>/logout")
+@bottle.route(r"/api/<apiver>/logout")
 @apiver_check
 def logout():
     response.headers.replace("Content-type", "application/json")

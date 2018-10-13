@@ -5,9 +5,9 @@ import inspect
 from builtins import _, object, range, str
 import os
 from queue import Queue
-from shutil import move
+import shutil
 from threading import Event, Thread
-from traceback import print_exc
+import traceback
 
 
 import sqlite3
@@ -84,7 +84,7 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as e:
-            print_exc()
+            traceback.print_exc()
             try:
                 print(
                     "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
@@ -173,7 +173,7 @@ class DatabaseBackend(Thread):
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
                 os.remove("files.version")
-                move("files.db", "files.backup.db")
+                shutil.move("files.db", "files.backup.db")
             with open("files.version", "wb") as f:
                 f.write(str(__version__))
             return v
@@ -278,7 +278,7 @@ class DatabaseBackend(Thread):
             self.c.executemany(
                 "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users
             )
-            move("pyload.db", "pyload.old.db")
+            shutil.move("pyload.db", "pyload.old.db")
 
     def createCursor(self):
         return self.conn.cursor()

@@ -7,7 +7,7 @@ from math import floor
 from random import choice, randint, sample
 from threading import Thread
 from time import time
-from traceback import format_exc, print_exc
+import traceback
 
 from pyload.remote.thriftbackend.thriftClient import Destination, ThriftClient
 
@@ -75,8 +75,8 @@ class APIExerciser(Thread):
                     self.pyload.log.error(
                         "Excerciser {} throw an execption".format(self.id)
                     )
-                    print_exc()
-                    out.write(format_exc() + 2 * "\n")
+                    traceback.print_exc()
+                    out.write(traceback.format_exc() + 2 * "\n")
                     out.flush()
 
                 if not self.count % 100:

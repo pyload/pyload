@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from bottle import HTTPError, ServerAdapter, redirect, request
+import bottle
 from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui import PREFIX, TEMPLATE, env
 
@@ -92,7 +92,7 @@ def apiver_check(func):
     # if no apiver is provided assumes latest
     def _view(*args, **kwargs):
         if int(kwargs.get('apiver', API_VERSION).strip('v')) < API_VERSION:
-            return HTTPError(404, json.dumps("Obsolete API"))
+            return bottle.HTTPError(404, json.dumps("Obsolete API"))
         return func(*args, **kwargs)
     return _view
     
@@ -106,16 +106,16 @@ def login_required(perm=None):
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
                         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                            return HTTPError(403, json.dumps("Forbidden"))
+                            return bottle.HTTPError(403, json.dumps("Forbidden"))
                         else:
-                            return redirect(PREFIX + "/nopermission")
+                            return bottle.redirect(PREFIX + "/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return HTTPError(403, json.dumps("Forbidden"))
+                    return bottle.HTTPError(403, json.dumps("Forbidden"))
                 else:
-                    return redirect(PREFIX + "/login")
+                    return bottle.redirect(PREFIX + "/login")
 
         return _view
 

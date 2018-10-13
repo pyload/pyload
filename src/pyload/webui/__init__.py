@@ -9,8 +9,8 @@ from builtins import str
 import bottle
 import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
-from bottle import app, run
-from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, PrefixLoader
+import bottle
+import jinja2
 from pyload.utils.utils import decode, formatSize
 from pyload.plugins.utils import json  # change to core utils
 from pyload.webui import server_thread, api_app, cnl_app, json_app, pyload_app
@@ -58,10 +58,10 @@ cache = os.path.join("tmp", "jinja_cache")
 if not os.path.exists(cache):
     os.makedirs(cache)
 
-bcc = FileSystemBytecodeCache(cache, "{}.cache")
-loader = jinja2.FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
+bcc = jinja2.FileSystemBytecodeCache(cache, "{}.cache")
+loader = jinja2.jinja2.FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
 
-env = Environment(
+env = jinja2.Environment(
     loader=loader,
     extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
     trim_blocks=True,
@@ -107,15 +107,15 @@ session_opts = {
     "session.auto": False,
 }
 
-web = StripPathMiddleware(SessionMiddleware(app(), session_opts))
+web = StripPathMiddleware(SessionMiddleware(bottle.app(), session_opts))
 web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 from pyload.webui import app
-def run_simple(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True)
+def run_builtin(host="0.0.0.0", port="8000"):
+    bottle.run(app=web, host=host, port=port, quiet=True)
 
     
 def run_auto(host="0.0.0.0", port="8000"):
@@ -123,7 +123,7 @@ def run_auto(host="0.0.0.0", port="8000"):
 
 
 def run_lightweight(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, server="bjoern", quiet=True)
+    bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True)
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
@@ -137,7 +137,7 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     from pyload.webui.app.utils import CherryPyWSGI
 
-    run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
+    bottle.run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):

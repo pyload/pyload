@@ -3,7 +3,7 @@
 import sys
 from builtins import object
 import os
-from traceback import print_exc
+import traceback
 
 from pyload.remote.thriftbackend.protocol import Protocol
 # from thrift.transport.TZlibTransport import TZlibTransport
@@ -45,7 +45,7 @@ class ThriftClient(object):
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
-                print_exc()
+                traceback.print_exc()
                 raise NoConnection
 
         try:
@@ -70,7 +70,7 @@ class ThriftClient(object):
             elif e.args and e.args[0] == 32:
                 raise NoConnection
             else:
-                print_exc()
+                traceback.print_exc()
                 raise NoConnection
 
         if not correct:

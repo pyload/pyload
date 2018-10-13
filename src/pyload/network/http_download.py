@@ -4,7 +4,7 @@
 from builtins import _, object, range, str
 from logging import getLogger
 import os
-from shutil import move
+import shutil
 from time import time
 
 import pycurl
@@ -113,7 +113,7 @@ class HTTPDownload(object):
         if self.nameDisposition and self.disposition:
             self.filename = save_join(os.path.dirname(self.filename), self.nameDisposition)
 
-        move(init, fs_encode(self.filename))
+        shutil.move(init, fs_encode(self.filename))
         self.info.os.remove()  # os.remove info file
 
     def download(self, chunks=1, resume=False):

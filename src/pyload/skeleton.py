@@ -16,13 +16,13 @@ import signal
 import subprocess
 import sys
 from builtins import _, object, owd, pypath, range, str
-from codecs import getwriter
+import codecs
 from getopt import GetoptError, getopt
 from imp import find_module
 import os
 from sys import argv, executable, exit
 from time import sleep, time
-from traceback import print_exc
+import traceback
 
 import js2py
 import pyload.utils.pylgettext as gettext
@@ -41,7 +41,7 @@ from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
 from pyload.webui.server_thread import WebServer
 
 enc = get_console_encoding(sys.stdout.encoding)
-sys.stdout = getwriter(enc)(sys.stdout, errors="replace")
+sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
 # TODO: List
@@ -292,7 +292,7 @@ class Core(object):
                 print("\nSetup interrupted")
             except Exception:
                 res = False
-                print_exc()
+                traceback.print_exc()
                 print("Setup failed")
             if not res:
                 os.remove("pyload.conf")
@@ -650,7 +650,7 @@ class Core(object):
 
         except Exception:
             if self.debug:
-                print_exc()
+                traceback.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:

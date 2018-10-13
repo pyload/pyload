@@ -3,7 +3,7 @@
 
 import io
 from builtins import object, range, str
-from codecs import BOM_UTF8, getincrementaldecoder, lookup
+import codecs
 from http.client import responses
 from logging import getLogger
 from urllib.parse import quote, urlencode
@@ -322,10 +322,10 @@ class HTTPRequest(object):
 
         try:
             # self.log.debug("Decoded {}".format(encoding ))
-            if lookup(encoding).name == "utf-8" and rep.startswith(BOM_UTF8):
+            if codecs.lookup(encoding).name == "utf-8" and rep.startswith(codecs.BOM_UTF8):
                 encoding = "utf-8-sig"
 
-            decoder = getincrementaldecoder(encoding)("replace")
+            decoder = codecs.getincrementaldecoder(encoding)("replace")
             rep = decoder.decode(rep, True)
 
             # TODO: html_unescape as default
