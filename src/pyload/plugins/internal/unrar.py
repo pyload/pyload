@@ -2,7 +2,6 @@
 
 import os
 import re
-import string
 import subprocess
 from builtins import _, filter, map, pypath
 
@@ -148,7 +147,7 @@ class UnRar(Extractor):
                 self.pyfile.setProgress(int(s))
                 s = ""
             #: Not reading a digit -> therefore restart
-            elif c not in string.digits:
+            elif not c.isdigit():
                 s = ""
             #: Add digit to progressstring
             else:

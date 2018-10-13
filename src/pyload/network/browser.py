@@ -8,7 +8,6 @@ from pyload.network.http_request import HTTPRequest
 
 
 class Browser(object):
-    __slots__ = ("log", "options", "bucket", "cj", "_size", "http", "dl")
 
     def __init__(self, bucket=None, options={}):
         self.log = getLogger("log")

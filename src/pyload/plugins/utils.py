@@ -13,7 +13,6 @@ import os
 import re
 import shutil
 import socket
-import string
 import subprocess
 import sys
 import time
@@ -496,7 +495,7 @@ def remove_chars(value, repl):
         return value.translate(dict((ord(s), None) for s in repl))
 
     elif isinstance(value, str):
-        return value.translate(string.maketrans("", ""), repl)
+        return value.translate(str.maketrans("", ""), repl)
 
 
 def fixurl(url, unquote=None):

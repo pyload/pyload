@@ -2,7 +2,7 @@
 # @author: RaNaN
 
 from bottle import HTTPError, ServerAdapter, redirect, request
-from pyload.Api import PERMS, ROLE, has_permission
+from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui import PREFIX, TEMPLATE, env
 
 

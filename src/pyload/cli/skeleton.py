@@ -23,7 +23,7 @@ from time import sleep
 from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
-from pyload.Api import Destination
+from pyload.api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *

@@ -14,7 +14,7 @@ from traceback import format_exc, print_exc
 from types import MethodType
 
 from pycurl import error
-from pyload.Api import OnlineStatus
+from pyload.api import OnlineStatus
 from pyload.datatype.pyfile import PyFile
 from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames

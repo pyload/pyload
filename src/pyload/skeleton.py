@@ -29,7 +29,7 @@ from traceback import print_exc
 import js2py
 import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
-from pyload import inithomedir, remote
+from pyload import remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
 from pyload.manager.account_manager import AccountManager

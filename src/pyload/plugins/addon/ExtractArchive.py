@@ -207,9 +207,9 @@ class ExtractArchive(Addon):
         extracted = []
         failed = []
 
-        def toList(string):
+        def toList(value):
             return (
-                string.replace(" ", "").replace(",", "|").replace(";", "|").split("|")
+                value.replace(" ", "").replace(",", "|").replace(";", "|").split("|")
             )
 
         destination = self.config.get("destination")

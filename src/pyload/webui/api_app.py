@@ -6,7 +6,7 @@ from traceback import format_exc, print_exc
 from urllib.parse import unquote
 
 from bottle import HTTPError, request, response, route
-from pyload.Api import BaseObject
+from pyload.api import BaseObject
 from pyload.api import __version__ as API_VERSION
 from pyload.plugins.utils import json  # change to core utils
 from pyload.webui import PYLOAD

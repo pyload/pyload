@@ -12,7 +12,6 @@ import time
 from builtins import chr, map
 from html.entities import name2codepoint
 from os.path import join
-from string import maketrans
 
 
 def chmod(*args):
@@ -22,24 +21,24 @@ def chmod(*args):
         pass
 
 
-def decode(string):
+def decode(value):
     """
     decode string with utf if possible.
     """
     try:
-        return string.decode("utf8", "replace")
+        return str.decode("utf8", "replace")
     except Exception:
-        return string
+        return value
 
 
-def remove_chars(string, repl):
+def remove_chars(value, repl):
     """
     removes all chars in repl from string.
     """
-    if isinstance(string, str):
-        return string.translate(maketrans("", ""), repl)
-    elif isinstance(string, str):
-        return string.translate(dict([(ord(s), None) for s in repl]))
+    if isinstance(value, str):
+        return str.translate(str.maketrans("", ""), repl)
+    elif isinstance(value, str):
+        return str.translate(dict([(ord(s), None) for s in repl]))
 
 
 def save_path(name):
@@ -62,11 +61,11 @@ def save_join(*args):
 
 if sys.getfilesystemencoding().startswith("ANSI"):
 
-    def fs_encode(string):
+    def fs_encode(value):
         try:
-            string = string.encode("utf-8")
+            value = str.encode("utf-8")
         finally:
-            return string
+            return value
 
     fs_decode = decode  # decode utf8
 
@@ -152,19 +151,19 @@ def uniqify(seq, idfun=lambda x: x):
     return result
 
 
-def parseFileSize(string, unit=None):  # returns bytes
+def parseFileSize(value, unit=None):  # returns bytes
     if not unit:
-        m = re.match(r"(\d*[\.,]?\d+)(.*)", string.strip().lower())
+        m = re.match(r"(\d*[\.,]?\d+)(.*)", value.strip().lower())
         if m:
             traffic = float(m.group(1).replace(",", "."))
             unit = m.group(2)
         else:
             return 0
     else:
-        if isinstance(string, str):
-            traffic = float(string.replace(",", "."))
+        if isinstance(value, str):
+            traffic = float(value.replace(",", "."))
         else:
-            traffic = string
+            traffic = value
 
     # ignore case
     unit = unit.lower().strip()

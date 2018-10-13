@@ -13,12 +13,12 @@ First of all, you need to know what you can do with our API. It lets you do all 
 retrieving download status, manage queue, manage accounts, modify config and so on.
 
 This document is not intended to explain every function in detail, for a complete listing
-see :class:`Api <pyload.Api.Api>`.
+see :class:`Api <pyload.api.Api>`.
 
 Of course its possible to access the ``core.api`` attribute in plugins and addons, but much more
 interesting is the possibillity to call function from different programs written in many different languages.
 
-pyLoad uses thrift as backend and provides its :class:`Api <pyload.Api.Api>` as service.
+pyLoad uses thrift as backend and provides its :class:`Api <pyload.api.Api>` as service.
 More information about thrift can be found here http://wiki.apache.org/thrift/.
 
 
@@ -92,7 +92,7 @@ so pyLoad can authenticate you.
 Calling Methods
 ===============
 
-In general you can use any method listed at the :class:`Api <pyload.Api.Api>` documentation, which is also available to
+In general you can use any method listed at the :class:`Api <pyload.api.Api>` documentation, which is also available to
 the thriftbackend.
 
 Access works simply via ``http://pyload-core/api/v1/methodName``, where ``pyload-core`` is the ip address
@@ -107,7 +107,7 @@ Passing parameters
 
 To pass arguments you have two choices.
 Either use positional arguments, eg ``http://pyload-core/api/v1/getFileData/1``, where 1 is the FileID, or use keyword arguments
-supplied via GET or POST ``http://pyload-core/api/v1/getFileData?fid=1``. You can find the argument names in the :class:`Api <pyload.Api.Api>`
+supplied via GET or POST ``http://pyload-core/api/v1/getFileData?fid=1``. You can find the argument names in the :class:`Api <pyload.api.Api>`
 documentation.
 
 It is important that *all* arguments are in JSON format. So ``http://pyload-core/api/v1/getFileData/1`` is valid because

@@ -63,7 +63,7 @@ class FileHandler(object):
 
         self.db = self.pyload.db
 
-    def change(self, func):
+    def change(func):
         def new(*args):
             args[0].unchanged = False
             args[0].filecount = -1
