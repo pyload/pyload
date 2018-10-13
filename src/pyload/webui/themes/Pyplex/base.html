@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="{{'/css/jquery-ui-1.12.1.min.css'|url}}"/>
 <link rel="stylesheet" type="text/css" href="{{'/css/styles.css'|url}}">
 
-<link rel="icon" href="{{'/favicon.ico'|url}}"/>
+<link rel="icon" href="{{'/img/favicon.ico'|url}}"/>
 
 <style type="text/css">
 .ui-icon,
@@ -188,15 +188,15 @@
 {% block dialog %}
 {% endblock %}
 
-{% include "pyplex/window.html" %}
-{% include "pyplex/captcha.html" %}
+{% include "/window.html" %}
+{% include "/captcha.html" %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
-<script type="text/javascript" src="{{'/media/js/pyplex/jquery-3.2.1.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/pyplex/jquery-ui-1.12.1.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/pyplex/jquery.peekabar.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/pyplex/bootstrap.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/pyplex/base.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/jquery-3.2.1.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/jquery-ui-1.12.1.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/jquery.peekabar.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/bootstrap.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
 
 {% block footer %}
 {% endblock %}

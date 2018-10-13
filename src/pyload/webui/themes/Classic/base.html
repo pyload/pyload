@@ -9,14 +9,14 @@
 <link rel="stylesheet" type="text/css" href="{{'/css/window.css'|url}}"/>
 <link rel="stylesheet" type="text/css" href="{{'/css/MooDialog.css'|url}}"/>
 
-<script type="text/javascript" src="{{'/media/js/classic/mootools-core-1.4.1.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/classic/mootools-more-1.4.0.1.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/classic/MooDialog_static.js'|url}}"></script>
-<script type="text/javascript" src="{{'/media/js/classic/purr_static.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/mootools-core-1.4.1.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/mootools-more-1.4.0.1.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/MooDialog_static.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/purr_static.js'|url}}"></script>
 
-<script type="text/javascript" src="{{'/media/js/classic/base.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
 
-<link rel="icon" href="{{'/favicon.ico'|url}}" />
+<link rel="icon" href="{{'/img/favicon.ico'|url}}" />
 
 <style type="text/css">
 #head-menu {
@@ -111,27 +111,27 @@ a.cog {
 	background:url("{{'/img/success.png'|url}}") no-repeat #000 7px 10px;
 }
 .purr-alert.notice{
-	background:url("{{'/img//notice.png'|url}}") no-repeat #000 7px 10px;
+	background:url("{{'/img/notice.png'|url}}") no-repeat #000 7px 10px;
 }
 .MooDialog .close {
-	background: url("{{'/media/img/dialog-close.png'|url}}") no-repeat;
+	background: url("{{'/img/dialog-close.png'|url}}") no-repeat;
 }
 .MooDialog .MooDialogAlert,
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPrompt,
 .MooDialog .MooDialogError {
-	background: url("{{'/media/img/dialog-warning.png'|url}}") no-repeat;
+	background: url("{{'/img/dialog-warning.png'|url}}") no-repeat;
 	padding-left: 40px;
 	min-height: 40px;
 }
 
 .MooDialog .MooDialogConfirm,
 .MooDialog .MooDialogPromt {
-	background: url("{{'/media/img/dialog-question.png'|url}}") no-repeat;
+	background: url("{{'/img/dialog-question.png'|url}}") no-repeat;
 }
 
 .MooDialog .MooDialogError {
-	background: url("{{'/media/img/dialog-error.png'|url}}") no-repeat;
+	background: url("{{'/img/dialog-error.png'|url}}") no-repeat;
 }
 </style>
 <title>{% block title %}pyLoad {{_("Webinterface")}}{% endblock %}</title>
@@ -283,8 +283,8 @@ a.cog {
 </div>
 
 <div style="display: none;">
-    {% include "classic/window.html" %}
-    {% include "classic/captcha.html" %}
+    {% include "/window.html" %}
+    {% include "/captcha.html" %}
     {% block hidden %}
     {% endblock %}
 </div>

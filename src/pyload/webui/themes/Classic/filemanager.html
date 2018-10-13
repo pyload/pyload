@@ -2,7 +2,7 @@
 
 {% block head %}
 
-<script type="text/javascript" src="{{'/filemanager_ui.js'|url}}"></script>
+<script type="text/javascript" src="{{'/js/filemanager.js'|url}}"></script>
 
 <script type="text/javascript">
 
@@ -75,6 +75,6 @@ document.addEvent("domready", function(){
 {{ display_folder(root, true) }}
 </ul>
 
-{% include "classic/rename_directory.html" %}
+{% include "/rename_directory.html" %}
 
 {% endblock %}
