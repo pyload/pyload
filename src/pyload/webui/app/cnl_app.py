@@ -11,17 +11,14 @@ import js2py
 from bottle import HTTPError, request, route
 from pyload.webui import DL_ROOT, PYLOAD
 
-try:
-    from Cryptodome.Cipher import AES
-except Exception:
-    pass
+from Cryptodome.Cipher import AES
 
 
 def local_check(function):
     def _view(*args, **kwargs):
         if (
             request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost")
-            or request.environ.get("HTTP_HOST", "0") == "127.0.0.1:9666"
+            or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666")
         ):
             return function(*args, **kwargs)
         else:
@@ -31,7 +28,7 @@ def local_check(function):
 
 
 @route("/flash")
-@route("/flash/:id")
+@route("/flash/<id>")
 @route("/flash", method="POST")
 @local_check
 def flash(id="0"):
@@ -117,7 +114,7 @@ def addcrypted2():
     obj = AES.new(Key, AES.MODE_CBC, IV)
     urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
-    urls = [x.strip() for x in urls if x.strip()]
+    urls = list(filter(None, map(str.strip, urls)))
 
     try:
         if package:
@@ -136,10 +133,7 @@ def addcrypted2():
 @route("/flashgot", method="POST")
 @local_check
 def flashgot():
-    if (
-        request.environ["HTTP_REFERER"] != "http://localhost:9666/flashgot"
-        and request.environ["HTTP_REFERER"] != "http://127.0.0.1:9666/flashgot"
-    ):
+    if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot")):
         return HTTPError()
 
     autostart = int(request.forms.get("autostart", 0))

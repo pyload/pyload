@@ -13,8 +13,6 @@ from pyload.webui import PYLOAD
 from pyload.webui.utils import set_session, toDict
 
 # json encoder that accepts TBase objects
-
-
 class TBaseEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, BaseObject):
@@ -23,11 +21,9 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-
-
-@route(r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{{}}]*#".format(API_VERSION))
+@route(r'/api/v{}/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>'.format(API_VERSION))
 @route(
-    r"/api/v{}/:func:args#[a-zA-Z0-9\-_/\"'\[\]%{{}}]*#".format(API_VERSION),
+    r'/api/v{}/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>'.format(API_VERSION),
     method="POST",
 )
 def call_api(func, args=""):
@@ -68,7 +64,7 @@ def call_api(func, args=""):
         return callApi(func, *args, **kwargs)
     except Exception as e:
         print_exc()
-        return HTTPError(500, json.dumps({"error": e, "traceback": format_exc()}))
+        return HTTPError(500, json.dumps({"error": e.message, "traceback": format_exc()}))
 
 
 def callApi(func, *args, **kwargs):
@@ -82,10 +78,7 @@ def callApi(func, *args, **kwargs):
     )
 
     # null is invalid json  response
-    if result is None:
-        result = True
-
-    return json.dumps(result, cls=TBaseEncoder)
+    return json.dumps(result or True, cls=TBaseEncoder)
 
 
 # post -> username, password
