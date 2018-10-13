@@ -23,7 +23,6 @@ from time import sleep
 from traceback import print_exc
 
 import pyload.utils.pylgettext as gettext
-from easy_getch import getch
 from pyload.Api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
@@ -87,8 +86,7 @@ class Cli(object):
         handle input
         """
         while True:
-            # inp = input()
-            inp = getch()
+            inp = input()
             if ord(inp) == 3:
                 os.system("clear")
                 sys.exit()  # ctrl + c
