@@ -51,45 +51,44 @@ class ChunkInfo(object):
 
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        fh = codecs.open(fs_name, "w", "utf_8")
-        fh.write("name:{}\n".format(self.name))
-        fh.write("size:{}\n".format(self.size))
-        for i, c in enumerate(self.chunks):
-            fh.write("#{}:\n".format(i))
-            fh.write("\tname:{}\n".format(c[0]))
-            fh.write("\trange:{}-{}\n".format(*c[1]))
-        fh.close()
+        with codecs.open(fs_name, "w", "utf_8") as fh:
+            fh.write("name:{}\n".format(self.name))
+            fh.write("size:{}\n".format(self.size))
+            for i, c in enumerate(self.chunks):
+                fh.write("#{}:\n".format(i))
+                fh.write("\tname:{}\n".format(c[0]))
+                fh.write("\trange:{}-{}\n".format(*c[1]))
 
     @staticmethod
     def load(name):
         fs_name = fs_encode("{}.chunks".format(name))
         if not os.path.exists(fs_name):
             raise IOError
-        fh = codecs.open(fs_name, "r", "utf_8")
-        name = fh.readline()[:-1]
-        size = fh.readline()[:-1]
-        if name.startswith("name:") and size.startswith("size:"):
-            name = name[5:]
-            size = size[5:]
-        else:
-            fh.close()
-            raise WrongFormat
-        ci = ChunkInfo(name)
-        ci.loaded = True
-        ci.setSize(size)
-        while True:
-            if not fh.readline():  # skip line
-                break
-            name = fh.readline()[1:-1]
-            range = fh.readline()[1:-1]
-            if name.startswith("name:") and range.startswith("range:"):
+        with codecs.open(fs_name, "r", "utf_8") as fh:
+            name = fh.readline()[:-1]
+            size = fh.readline()[:-1]
+            if name.startswith("name:") and size.startswith("size:"):
                 name = name[5:]
-                range = range[6:].split("-")
+                size = size[5:]
             else:
+                fh.close()
                 raise WrongFormat
+            ci = ChunkInfo(name)
+            ci.loaded = True
+            ci.setSize(size)
+            while True:
+                if not fh.readline():  # skip line
+                    break
+                name = fh.readline()[1:-1]
+                range = fh.readline()[1:-1]
+                if name.startswith("name:") and range.startswith("range:"):
+                    name = name[5:]
+                    range = range[6:].split("-")
+                else:
+                    raise WrongFormat
 
-            ci.addChunk(name, (int(range[0]), int(range[1])))
-        fh.close()
+                ci.addChunk(name, (int(range[0]), int(range[1])))
+                
         return ci
 
     def remove(self):

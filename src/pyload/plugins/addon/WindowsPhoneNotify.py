@@ -48,14 +48,12 @@ class WindowsPhoneNotify(Notifier):
     def send(self, event, msg, key):
         id, url = key
         request = self.format_request("{}: {}".format(event, msg) if msg else event)
-        webservice = http.client.HTTPConnection(url)
-
-        webservice.putrequest("POST", id)
-        webservice.putheader("Host", url)
-        webservice.putheader("Content-type", "text/xml")
-        webservice.putheader("X-NotificationClass", "2")
-        webservice.putheader("X-WindowsPhone-Target", "toast")
-        webservice.putheader("Content-length", "{}".format(len(request)))
-        webservice.endheaders()
-        webservice.send(request)
-        webservice.close()
+        with http.client.HTTPConnection(url) as webservice:
+            webservice.putrequest("POST", id)
+            webservice.putheader("Host", url)
+            webservice.putheader("Content-type", "text/xml")
+            webservice.putheader("X-NotificationClass", "2")
+            webservice.putheader("X-WindowsPhone-Target", "toast")
+            webservice.putheader("Content-length", "{}".format(len(request)))
+            webservice.endheaders()
+            webservice.send(request)

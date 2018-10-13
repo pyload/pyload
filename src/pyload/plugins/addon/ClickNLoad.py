@@ -115,47 +115,46 @@ class ClickNLoad(Addon):
             self.exit_done.clear()
             self.server_running = True
 
-            dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            dock_socket.bind((self.cnl_ip, self.cnl_port))
-            dock_socket.listen(5)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dock_socket:
+                dock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                dock_socket.bind((self.cnl_ip, self.cnl_port))
+                dock_socket.listen(5)
 
-            while True:
-                client_socket, client_addr = dock_socket.accept()
+                while True:
+                    client_socket, client_addr = dock_socket.accept()
 
-                if not self.do_exit:
-                    self.log_debug("Connection from {}:{}".format(*client_addr))
+                    if not self.do_exit:
+                        self.log_debug("Connection from {}:{}".format(*client_addr))
 
-                    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-                    if self.pyload.config.get("webui", "https"):
-                        try:
-                            server_socket = ssl.wrap_socket(server_socket)
+                        if self.pyload.config.get("webui", "https"):
+                            try:
+                                server_socket = ssl.wrap_socket(server_socket)
 
-                        except NameError:
-                            self.log_error(
-                                _("Missing SSL lib"),
-                                _("Please disable HTTPS in pyLoad settings"),
-                            )
-                            client_socket.close()
-                            continue
+                            except NameError:
+                                self.log_error(
+                                    _("Missing SSL lib"),
+                                    _("Please disable HTTPS in pyLoad settings"),
+                                )
+                                client_socket.close()
+                                continue
 
-                        except Exception as e:
-                            self.log_error(_("SSL error: {}").format(e))
-                            client_socket.close()
-                            continue
+                            except Exception as e:
+                                self.log_error(_("SSL error: {}").format(e))
+                                client_socket.close()
+                                continue
 
-                    server_socket.connect((self.web_ip, self.web_port))
+                        server_socket.connect((self.web_ip, self.web_port))
 
-                    self.forward(
-                        client_socket, server_socket, self.config.get("dest") == "queue"
-                    )
-                    self.forward(server_socket, client_socket)
+                        self.forward(
+                            client_socket, server_socket, self.config.get("dest") == "queue"
+                        )
+                        self.forward(server_socket, client_socket)
 
-                else:
-                    break
+                    else:
+                        break
 
-            dock_socket.close()
             self.server_running = False
             self.exit_done.set()
 

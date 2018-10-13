@@ -49,11 +49,10 @@ class ExpertDecoders(Addon):
         with open(task.captchaParams["file"], "rb") as f:
             data = f.read()
 
-        req = get_request()
-        #: Raise timeout threshold
-        req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
+        with get_request() as req:
+            #: Raise timeout threshold
+            req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
-        try:
             result = self.load(
                 self.API_URL,
                 post={
@@ -64,8 +63,6 @@ class ExpertDecoders(Addon):
                 },
                 req=req,
             )
-        finally:
-            req.close()
 
         self.log_debug("Result {} : {}".format(ticket, result))
         task.setResult(result)

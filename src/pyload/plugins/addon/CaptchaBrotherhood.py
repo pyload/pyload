@@ -67,50 +67,46 @@ class CaptchaBrotherhood(Addon):
 
     def submit(self, captcha, captchaType="file", match=None):
         try:
-            img = Image.open(captcha)
-            output = io.StringIO()
-            self.log_debug("CAPTCHA IMAGE", img, img.format, img.mode)
-            if img.format in ("GIF", "JPEG"):
-                img.save(output, img.format)
-            else:
-                if img.mode != "RGB":
-                    img = img.convert("RGB")
-                img.save(output, "JPEG")
-            data = output.getvalue()
-            output.close()
+            with Image.open(captcha), io.StringIO() as img, output:
+                self.log_debug("CAPTCHA IMAGE", img, img.format, img.mode)
+                if img.format in ("GIF", "JPEG"):
+                    img.save(output, img.format)
+                else:
+                    if img.mode != "RGB":
+                        img = img.convert("RGB")
+                    img.save(output, "JPEG")
+                data = output.getvalue()
 
         except Exception as e:
             raise CaptchaBrotherhoodException(
                 "Reading or converting captcha image failed: {}".format(e)
             )
 
-        req = get_request()
+        with get_request() as req:
 
-        url = "{}sendNewCaptcha.aspx?{}".format(
-            self.API_URL,
-            urllib.parse.urlencode(
-                {
-                    "username": self.config.get("username"),
-                    "password": self.config.get("password"),
-                    "captchaSource": "pyLoad",
-                    "timeout": "80",
-                }
-            ),
-        )
+            url = "{}sendNewCaptcha.aspx?{}".format(
+                self.API_URL,
+                urllib.parse.urlencode(
+                    {
+                        "username": self.config.get("username"),
+                        "password": self.config.get("password"),
+                        "captchaSource": "pyLoad",
+                        "timeout": "80",
+                    }
+                ),
+            )
 
-        req.c.setopt(pycurl.URL, url)
-        req.c.setopt(pycurl.POST, 1)
-        req.c.setopt(pycurl.POSTFIELDS, data)
-        req.c.setopt(pycurl.HTTPHEADER, ["Content-Type: text/html"])
+            req.c.setopt(pycurl.URL, url)
+            req.c.setopt(pycurl.POST, 1)
+            req.c.setopt(pycurl.POSTFIELDS, data)
+            req.c.setopt(pycurl.HTTPHEADER, ["Content-Type: text/html"])
 
-        try:
-            req.c.perform()
-            res = req.getResponse()
+            try:
+                req.c.perform()
+                res = req.getResponse()
 
-        except Exception as e:
-            raise CaptchaBrotherhoodException("Submit captcha image failed")
-
-        req.close()
+            except Exception as e:
+                raise CaptchaBrotherhoodException("Submit captcha image failed")
 
         if not res.startswith("OK"):
             raise CaptchaBrotherhoodException(res[1])

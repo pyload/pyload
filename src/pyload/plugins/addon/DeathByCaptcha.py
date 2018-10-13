@@ -63,57 +63,54 @@ class DeathByCaptcha(Addon):
     API_URL = "http://api.dbcapi.me/api/"
 
     def api_response(self, api="captcha", post=False, multipart=False):
-        req = get_request()
-        req.c.setopt(
-            pycurl.HTTPHEADER,
-            ["Accept: application/json", "User-Agent: pyLoad {}" % self.pyload.version],
-        )
-
-        if post:
-            if not isinstance(post, dict):
-                post = {}
-            post.update(
-                {
-                    "username": self.config.get("username"),
-                    "password": self.config.get("password"),
-                }
+        with get_request() as req:
+            req.c.setopt(
+                pycurl.HTTPHEADER,
+                ["Accept: application/json", "User-Agent: pyLoad {}" % self.pyload.version],
             )
 
-        res = None
-        try:
-            html = self.load(
-                "{}{}".format(self.API_URL, api),
-                post=post,
-                multipart=multipart,
-                req=req,
-            )
+            if post:
+                if not isinstance(post, dict):
+                    post = {}
+                post.update(
+                    {
+                        "username": self.config.get("username"),
+                        "password": self.config.get("password"),
+                    }
+                )
 
-            self.log_debug(html)
-            res = json.loads(html)
+            res = None
+            try:
+                html = self.load(
+                    "{}{}".format(self.API_URL, api),
+                    post=post,
+                    multipart=multipart,
+                    req=req,
+                )
 
-            if "error" in res:
-                raise DeathByCaptchaException(res["error"])
-            elif "status" not in res:
-                raise DeathByCaptchaException(str(res))
+                self.log_debug(html)
+                res = json.loads(html)
 
-        except BadHeader as e:
-            if e.code == 403:
-                raise DeathByCaptchaException("not-logged-in")
+                if "error" in res:
+                    raise DeathByCaptchaException(res["error"])
+                elif "status" not in res:
+                    raise DeathByCaptchaException(str(res))
 
-            elif e.code == 413:
-                raise DeathByCaptchaException("invalid-captcha")
+            except BadHeader as e:
+                if e.code == 403:
+                    raise DeathByCaptchaException("not-logged-in")
 
-            elif e.code == 503:
-                raise DeathByCaptchaException("service-overload")
+                elif e.code == 413:
+                    raise DeathByCaptchaException("invalid-captcha")
 
-            elif e.code in (400, 405):
-                raise DeathByCaptchaException("invalid-request")
+                elif e.code == 503:
+                    raise DeathByCaptchaException("service-overload")
 
-            else:
-                raise
+                elif e.code in (400, 405):
+                    raise DeathByCaptchaException("invalid-request")
 
-        finally:
-            req.close()
+                else:
+                    raise
 
         return res
 

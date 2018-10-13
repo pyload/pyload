@@ -161,33 +161,31 @@ class RealdebridComTorrent(Hoster):
             self.download(api_data["download"])
 
     def delete_torrent_from_server(self, torrent_id):
-        c = pycurl.Curl()
-        c.setopt(
-            pycurl.URL,
-            "{}/torrents/delete/{}?auth_token={}".format(
-                self.API_URL, torrent_id, self.api_token
-            ),
-        )
-        c.setopt(pycurl.SSL_VERIFYPEER, 0)
-        c.setopt(
-            pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher")
-        )
-        c.setopt(
-            pycurl.HTTPHEADER,
-            [
-                "Accept: */*",
-                "Accept-Language: en-US,en",
-                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
-                "Connection: keep-alive",
-                "Keep-Alive: 300",
-                "Expect:",
-            ],
-        )
-        c.setopt(pycurl.CUSTOMREQUEST, "DELETE")
-        c.perform()
-        code = c.getinfo(pycurl.RESPONSE_CODE)
-        c.close()
-
+        with pycurl.Curl() as c:
+            c.setopt(
+                pycurl.URL,
+                "{}/torrents/delete/{}?auth_token={}".format(
+                    self.API_URL, torrent_id, self.api_token
+                ),
+            )
+            c.setopt(pycurl.SSL_VERIFYPEER, 0)
+            c.setopt(
+                pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher")
+            )
+            c.setopt(
+                pycurl.HTTPHEADER,
+                [
+                    "Accept: */*",
+                    "Accept-Language: en-US,en",
+                    "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7",
+                    "Connection: keep-alive",
+                    "Keep-Alive: 300",
+                    "Expect:",
+                ],
+            )
+            c.setopt(pycurl.CUSTOMREQUEST, "DELETE")
+            c.perform()
+            code = c.getinfo(pycurl.RESPONSE_CODE)
         return code
 
     def process(self, pyfile):

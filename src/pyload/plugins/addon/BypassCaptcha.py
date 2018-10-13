@@ -55,12 +55,11 @@ class BypassCaptcha(Addon):
         return int(data["Left"])
 
     def submit(self, captcha, captchaType="file", match=None):
-        req = get_request()
+        with get_request() as req:
 
-        #: Raise timeout threshold
-        req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
+            #: Raise timeout threshold
+            req.c.setopt(pycurl.LOW_SPEED_TIME, 80)
 
-        try:
             res = self.load(
                 self.SUBMIT_URL,
                 post={
@@ -71,8 +70,6 @@ class BypassCaptcha(Addon):
                 },
                 req=req,
             )
-        finally:
-            req.close()
 
         data = dict(x.split(" ", 1) for x in res.splitlines())
         if not data or "Value" not in data:

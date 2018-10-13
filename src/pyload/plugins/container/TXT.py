@@ -38,28 +38,26 @@ class TXT(Container):
             encoding = "utf-8"
 
         fs_filename = encode(pyfile.url)
-        txt = codecs.open(fs_filename, "r", encoding)
-        curPack = "Parsed links from {}".format(pyfile.name)
-        packages = {curPack: []}
+        with codecs.open(fs_filename, "r", encoding) as txt:
+            curPack = "Parsed links from {}".format(pyfile.name)
+            packages = {curPack: []}
 
-        for link in txt.readlines():
-            link = link.strip()
+            for link in txt.readlines():
+                link = link.strip()
 
-            if not link:
-                continue
+                if not link:
+                    continue
 
-            if link.startswith(";"):
-                continue
+                if link.startswith(";"):
+                    continue
 
-            if link.startswith("[") and link.endswith("]"):
-                #: New package
-                curPack = link[1:-1]
-                packages[curPack] = []
-                continue
+                if link.startswith("[") and link.endswith("]"):
+                    #: New package
+                    curPack = link[1:-1]
+                    packages[curPack] = []
+                    continue
 
-            packages[curPack].append(link)
-
-        txt.close()
+                packages[curPack].append(link)
 
         #: Empty packages fix
         for key, value in packages.items():

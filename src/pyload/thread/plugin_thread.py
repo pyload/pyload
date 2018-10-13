@@ -49,25 +49,24 @@ class PluginThread(Thread):
         try:
             import zipfile
 
-            zip = zipfile.ZipFile(dump_name, "w")
+            with zipfile.ZipFile(dump_name, "w") as zip:
 
-            for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
-                try:
-                    # avoid encoding errors
-                    zip.write(
-                        os.path.join("tmp", pyfile.pluginname, f),
-                        save_join(pyfile.pluginname, f),
-                    )
-                except Exception:
-                    pass
+                for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
+                    try:
+                        # avoid encoding errors
+                        zip.write(
+                            os.path.join("tmp", pyfile.pluginname, f),
+                            save_join(pyfile.pluginname, f),
+                        )
+                    except Exception:
+                        pass
 
-            info = zipfile.ZipInfo(
-                save_join(pyfile.pluginname, "debug_Report.txt"), gmtime()
-            )
-            info.external_attr = 0o644 << 16  # change permissions
+                info = zipfile.ZipInfo(
+                    save_join(pyfile.pluginname, "debug_Report.txt"), gmtime()
+                )
+                info.external_attr = 0o644 << 16  # change permissions
 
-            zip.writestr(info, dump)
-            zip.close()
+                zip.writestr(info, dump
 
             if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")

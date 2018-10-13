@@ -265,18 +265,16 @@ class DatabaseBackend(Thread):
                 self.pyload.log.info(_("Converting old Django DB"))
             except Exception:
                 print("Converting old Django DB")
-            conn = sqlite3.connect("pyload.db")
-            c = conn.cursor()
-            c.execute(
-                "SELECT username, password, email from auth_user WHERE is_superuser"
-            )
-            users = []
-            for r in c:
-                pw = r[1].split("$")
-                users.append((r[0], pw[1] + pw[2], r[2]))
-            c.close()
-            conn.close()
-
+            with sqlite3.connect("pyload.db") as conn:
+                with conn.cursor() as c:
+                    c.execute(
+                        "SELECT username, password, email from auth_user WHERE is_superuser"
+                    )
+                    users = []
+                    for r in c:
+                        pw = r[1].split("$")
+                        users.append((r[0], pw[1] + pw[2], r[2]))
+                        
             self.c.executemany(
                 "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users
             )

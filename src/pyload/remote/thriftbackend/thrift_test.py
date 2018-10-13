@@ -42,43 +42,39 @@ bench(proxy.status_downloads)
 # bench(proxy.get_collector)
 print()
 try:
-
     # Make socket
-    transport = Socket("localhost", 7228, False)
+    with Socket("localhost", 7228, False) as transport:
 
-    # Buffering is critical. Raw sockets are very slow
-    transport = TTransport.TBufferedTransport(transport)
+        # Buffering is critical. Raw sockets are very slow
+        transport = TTransport.TBufferedTransport(transport)
 
-    # Wrap in a protocol
-    protocol = Protocol(transport)
+        # Wrap in a protocol
+        protocol = Protocol(transport)
 
-    # Create a client to use the protocol encoder
-    client = Pyload.Client(protocol)
+        # Create a client to use the protocol encoder
+        client = Pyload.Client(protocol)
 
-    # Connect!
-    transport.open()
+        # Connect!
+        transport.open()
 
-    print("Login", client.login(user, passwd))
+        print("Login", client.login(user, passwd))
 
-    bench(client.getServerVersion)
-    bench(client.statusServer)
-    bench(client.statusDownloads)
-    # bench(client.getQueue)
-    # bench(client.getCollector)
+        bench(client.getServerVersion)
+        bench(client.statusServer)
+        bench(client.statusDownloads)
+        # bench(client.getQueue)
+        # bench(client.getCollector)
 
-    print()
-    print(client.getServerVersion())
-    print(client.statusServer())
-    print(client.statusDownloads())
-    q = client.getQueue()
+        print()
+        print(client.getServerVersion())
+        print(client.statusServer())
+        print(client.statusDownloads())
+        q = client.getQueue()
 
-    for p in q:
-        data = client.getPackageData(p.pid)
-        print(data)
-        print("Package Name: ", data.name)
-
-    # Close!
-    transport.close()
-
+        for p in q:
+            data = client.getPackageData(p.pid)
+            print(data)
+            print("Package Name: ", data.name)
+            
 except Thrift.TException as tx:
     print("ThriftExpection: {}".format(tx.message))
