@@ -199,9 +199,8 @@ class Core(object):
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
-        f = open(self.pidfile, "wb")
-        f.write(str(pid))
-        f.close()
+        with open(self.pidfile, "wb") as f:
+            f.write(str(pid))
 
     def deletePidFile(self):
         if self.checkPidFile():
@@ -213,9 +212,8 @@ class Core(object):
         return pid as int or 0.
         """
         if os.path.isfile(self.pidfile):
-            f = open(self.pidfile, "rb")
-            pid = f.read().strip()
-            f.close()
+            with open(self.pidfile, "rb") as f:
+                pid = f.read().strip()
             if pid:
                 pid = int(pid)
                 return pid
@@ -448,17 +446,15 @@ class Core(object):
         link_file = join(pypath, "links.txt")
 
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.addPackage("links.txt", [link_file], 1)
 
         link_file = "links.txt"
         if exists(link_file):
-            f = open(link_file, "rb")
-            if f.read().strip():
-                self.api.addPackage("links.txt", [link_file], 1)
-            f.close()
+            with open(link_file, "rb") as f:
+                if f.read().strip():
+                    self.api.addPackage("links.txt", [link_file], 1)
 
         # self.scheduler.addJob(0, self.accountManager.getAccountInfos)
         self.log.info(_("Activating Accounts..."))
@@ -597,7 +593,7 @@ class Core(object):
                             tmp_name = tmp_name.replace("/", sep)
                             makedirs(tmp_name)
                         else:
-                            open(tmp_name, "w")
+                            open(tmp_name, "w")  # where is closed?
                     except Exception:
                         file_created = False
                 else:

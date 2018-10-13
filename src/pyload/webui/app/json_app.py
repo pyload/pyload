@@ -167,9 +167,8 @@ def add_package():
         fpath = join(
             PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename
         )
-        destination = open(fpath, "wb")
-        copyfileobj(f.file, destination)
-        destination.close()
+        with open(fpath, "wb") as destination:
+            copyfileobj(f.file, destination)
         links.insert(0, fpath)
     except Exception:
         pass

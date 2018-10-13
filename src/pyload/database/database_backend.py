@@ -163,14 +163,13 @@ class DatabaseBackend(Thread):
         check db version and delete it if needed.
         """
         if not exists("files.version"):
-            f = open("files.version", "wb")
-            f.write(str(__version__))
-            f.close()
+            with open("files.version", "wb") as f:
+                f.write(str(__version__))
             return
 
-        f = open("files.version", "rb")
-        v = int(f.read().strip())
-        f.close()
+        with open("files.version", "rb") as f:
+            v = int(f.read().strip())
+            
         if v < __version__:
             if v < 2:
                 try:
@@ -181,9 +180,8 @@ class DatabaseBackend(Thread):
                     print("Filedatabase was deleted due to incompatible version.")
                 remove("files.version")
                 move("files.db", "files.backup.db")
-            f = open("files.version", "wb")
-            f.write(str(__version__))
-            f.close()
+            with open("files.version", "wb") as f:
+                f.write(str(__version__))
             return v
 
     def _convertDB(self, v):

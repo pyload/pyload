@@ -142,9 +142,8 @@ class PluginManager(object):
                 or f.endswith("_27.pyc")
             ) and not f.startswith("_"):
 
-                data = open(join(pfolder, f))
-                content = data.read()
-                data.close()
+                with open(join(pfolder, f)) as data:
+                    content = data.read()
 
                 if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
                     continue

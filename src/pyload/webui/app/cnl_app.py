@@ -62,9 +62,8 @@ def addcrypted():
     dlc_path = join(
         DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
-    dlc_file = open(dlc_path, "wb")
-    dlc_file.write(dlc)
-    dlc_file.close()
+    with open(dlc_path, "wb") as dlc_file:
+        dlc_file.write(dlc)
 
     try:
         PYLOAD.addPackage(package, [dlc_path], 0)

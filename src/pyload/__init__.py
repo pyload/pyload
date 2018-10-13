@@ -62,9 +62,8 @@ if "--configdir=" in args:
     else:
         configdir = args[pos + 12 : end].strip()
 elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
-    f = open(path.join(pypath, "pyload", "config", "configdir"), "rb")
-    c = f.read().strip()
-    f.close()
+    with open(path.join(pypath, "pyload", "config", "configdir"), "rb") as f:
+        c = f.read().strip()
     configdir = path.join(pypath, c)
 else:
     if platform in ("posix", "linux2"):

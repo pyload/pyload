@@ -307,9 +307,8 @@ class Api(Iface):
         """
         filename = join(self.pyload.config["log"]["log_folder"], "log.txt")
         try:
-            fh = open(filename, "r")
-            lines = fh.readlines()
-            fh.close()
+            with open(filename, "r") as fh:
+                lines = fh.readlines()
             if offset >= len(lines):
                 return []
             return lines[offset:]
@@ -485,12 +484,11 @@ class Api(Iface):
         :param data: file content
         :return: online check
         """
-        th = open(
+        with open(
             join(self.pyload.config["general"]["download_folder"], "tmp_" + container),
             "wb",
-        )
-        th.write(str(data))
-        th.close()
+        ) as th:
+            th.write(str(data))
 
         return self.checkOnlineStatus(urls + [th.name])
 
@@ -872,12 +870,11 @@ class Api(Iface):
         :param filename: filename, extension is important so it can correctly decrypted
         :param data: file content
         """
-        th = open(
+        with open(
             join(self.pyload.config["general"]["download_folder"], "tmp_" + filename),
             "wb",
-        )
-        th.write(str(data))
-        th.close()
+        ) as th:
+            th.write(str(data))
 
         self.addPackage(th.name, [th.name], Destination.Queue)
 

@@ -89,29 +89,27 @@ class HTTPDownload(object):
         init = fs_encode(self.info.getChunkName(0))  # initial chunk name
 
         if self.info.getCount() > 1:
-            fo = open(init, "rb+")  # first chunkfile
-            for i in range(1, self.info.getCount()):
-                # input file
-                # seek to beginning of chunk, to get rid of overlapping chunks
-                fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
-                fname = fs_encode("{}.chunk{}".format(self.filename, i))
-                fi = open(fname, "rb")
-                buf = 32 * 1024
-                while True:  # copy in chunks, consumes less memory
-                    data = fi.read(buf)
-                    if not data:
-                        break
-                    fo.write(data)
-                fi.close()
-                if fo.tell() < self.info.getChunkRange(i)[1]:
-                    fo.close()
-                    remove(init)
-                    self.info.remove()  # there are probably invalid chunks
-                    raise Exception(
-                        "Downloaded content was smaller than expected. Try to reduce download connections."
-                    )
-                remove(fname)  # remove chunk
-            fo.close()
+            with open(init, "rb+") as fo: # first chunkfile
+                for i in range(1, self.info.getCount()):
+                    # input file
+                    # seek to beginning of chunk, to get rid of overlapping chunks
+                    fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
+                    fname = fs_encode("{}.chunk{}".format(self.filename, i))
+                    with open(fname, "rb") as fi:
+                        buf = 32 * 1024
+                        while True:  # copy in chunks, consumes less memory
+                            data = fi.read(buf)
+                            if not data:
+                                break
+                            fo.write(data)
+                    if fo.tell() < self.info.getChunkRange(i)[1]:
+                        fo.close()
+                        remove(init)
+                        self.info.remove()  # there are probably invalid chunks
+                        raise Exception(
+                            "Downloaded content was smaller than expected. Try to reduce download connections."
+                        )
+                    remove(fname)  # remove chunk
 
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)

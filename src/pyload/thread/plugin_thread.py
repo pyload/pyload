@@ -77,9 +77,8 @@ class PluginThread(Thread):
             self.m.log.debug("Error creating zip file: {}".format(e))
 
             dump_name = dump_name.replace(".zip", ".txt")
-            f = open(dump_name, "wb")
-            f.write(dump)
-            f.close()
+            with open(dump_name, "wb") as f:
+                f.write(dump)
 
         self.m.pyload.log.info("Debug Report written to {}".format(dump_name))
 

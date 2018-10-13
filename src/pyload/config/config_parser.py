@@ -73,29 +73,29 @@ class ConfigParser(object):
                 chmod("pyload.conf", 0o600)
 
             if not exists("plugin.conf"):
-                f = open("plugin.conf", "wb")
-                f.write("version: " + str(__version__))
-                f.close()
+                with open("plugin.conf", "wb") as f:
+                    f.write("version: " + str(__version__))
+                    
                 chmod("plugin.conf", 0o600)
 
-            f = open("pyload.conf", "rb")
-            v = f.readline()
-            f.close()
+            with open("pyload.conf", "rb") as f:
+                v = f.readline()
+                
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
                 copy(join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
                 print("Old version of config was replaced")
 
-            f = open("plugin.conf", "rb")
-            v = f.readline()
-            f.close()
+            with open("plugin.conf", "rb") as f:
+                v = f.readline()
+                
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
-                f = open("plugin.conf", "wb")
-                f.write("version: " + str(__version__))
-                f.close()
+                with open("plugin.conf", "wb") as f:
+                    f.write("version: " + str(__version__))
+                    
                 print("Old version of plugin-config replaced")
         except Exception:
             if n < 3:
@@ -133,94 +133,93 @@ class ConfigParser(object):
         parses a given configfile.
         """
 
-        f = open(config)
+        with open(config) as f:
 
-        config = f.read()
+            config = f.read()
 
-        config = config.splitlines()[1:]
+            config = config.splitlines()[1:]
 
-        conf = {}
+            conf = {}
 
-        section, option, value, typ, desc = "", "", "", "", ""
+            section, option, value, typ, desc = "", "", "", "", ""
 
-        listmode = False
+            listmode = False
 
-        for line in config:
-            comment = line.rfind("#")
-            if (
-                line.find(":", comment) < 0 > line.find("=", comment)
-                and comment > 0
-                and line[comment - 1].isspace()
-            ):
-                line = line.rpartition("#")  # removes comments
-                if line[1]:
-                    line = line[0]
-                else:
-                    line = line[2]
-
-            line = line.strip()
-
-            try:
-                if line == "":
-                    continue
-                elif line.endswith(":"):
-                    section, none, desc = line[:-1].partition("-")
-                    section = section.strip()
-                    desc = desc.replace('"', "").strip()
-                    conf[section] = {"desc": desc}
-                else:
-                    if listmode:
-                        if line.endswith("]"):
-                            listmode = False
-                            line = line.replace("]", "")
-
-                        value += [
-                            self.cast(typ, x.strip()) for x in line.split(",") if x
-                        ]
-
-                        if not listmode:
-                            conf[section][option] = {
-                                "desc": desc,
-                                "type": typ,
-                                "value": value,
-                            }
-
+            for line in config:
+                comment = line.rfind("#")
+                if (
+                    line.find(":", comment) < 0 > line.find("=", comment)
+                    and comment > 0
+                    and line[comment - 1].isspace()
+                ):
+                    line = line.rpartition("#")  # removes comments
+                    if line[1]:
+                        line = line[0]
                     else:
-                        m = self.CONFLINE.search(line)
+                        line = line[2]
 
-                        typ = m.group("T")
-                        option = m.group("N")
-                        desc = m.group("D").strip()
-                        value = m.group("V").strip()
+                line = line.strip()
 
-                        if value.startswith("["):
-                            if value.endswith("]"):
+                try:
+                    if line == "":
+                        continue
+                    elif line.endswith(":"):
+                        section, none, desc = line[:-1].partition("-")
+                        section = section.strip()
+                        desc = desc.replace('"', "").strip()
+                        conf[section] = {"desc": desc}
+                    else:
+                        if listmode:
+                            if line.endswith("]"):
                                 listmode = False
-                                value = value[:-1]
-                            else:
-                                listmode = True
+                                line = line.replace("]", "")
 
-                            value = [
-                                self.cast(typ, x.strip())
-                                for x in value[1:].split(",")
-                                if x
+                            value += [
+                                self.cast(typ, x.strip()) for x in line.split(",") if x
                             ]
+
+                            if not listmode:
+                                conf[section][option] = {
+                                    "desc": desc,
+                                    "type": typ,
+                                    "value": value,
+                                }
+
                         else:
-                            value = self.cast(typ, value)
+                            m = self.CONFLINE.search(line)
 
-                        if not listmode:
-                            conf[section][option] = {
-                                "desc": desc,
-                                "type": typ,
-                                "value": value,
-                            }
+                            typ = m.group("T")
+                            option = m.group("N")
+                            desc = m.group("D").strip()
+                            value = m.group("V").strip()
 
-            except Exception as e:
-                print("Config Warning:")
-                print(line)
-                print_exc()
+                            if value.startswith("["):
+                                if value.endswith("]"):
+                                    listmode = False
+                                    value = value[:-1]
+                                else:
+                                    listmode = True
 
-        f.close()
+                                value = [
+                                    self.cast(typ, x.strip())
+                                    for x in value[1:].split(",")
+                                    if x
+                                ]
+                            else:
+                                value = self.cast(typ, value)
+
+                            if not listmode:
+                                conf[section][option] = {
+                                    "desc": desc,
+                                    "type": typ,
+                                    "value": value,
+                                }
+
+                except Exception as e:
+                    print("Config Warning:")
+                    print(line)
+                    print_exc()
+
         return conf
 
     def updateValues(self, config, dest):

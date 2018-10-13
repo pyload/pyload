@@ -502,9 +502,8 @@ class Setup(object):
             path = os.path.join(pypath, path)
             if not os.path.exists(path):
                 os.makedirs(path)
-            f = open(os.path.join(pypath, "pyload", "config", "configdir"), "wb")
-            f.write(path)
-            f.close()
+            with open(os.path.join(pypath, "pyload", "config", "configdir"), "wb") as f:
+                f.write(path)
             print(
                 _("Configpath changed, setup will now close, please restart to go on.")
             )

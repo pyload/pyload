@@ -70,20 +70,17 @@ class AccountManager(object):
         """
 
         if not exists("accounts.conf"):
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(__version__))
-            f.close()
+            with open("accounts.conf", "wb") as f:
+                f.write("version: " + str(__version__))
 
-        f = open("accounts.conf", "rb")
-        content = f.readlines()
-        version = content[0].split(":")[1].strip() if content else ""
-        f.close()
+        with open("accounts.conf", "rb") as f:
+            content = f.readlines()
+            version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
             copy("accounts.conf", "accounts.backup")
-            f = open("accounts.conf", "wb")
-            f.write("version: " + str(__version__))
-            f.close()
+            with open("accounts.conf", "wb") as f:
+                f.write("version: " + str(__version__))
             self.pyload.log.warning(
                 _("Account settings deleted, due to new config format.")
             )
@@ -132,20 +129,18 @@ class AccountManager(object):
         save all account information.
         """
 
-        f = open("accounts.conf", "wb")
-        f.write("version: " + str(__version__) + "\n")
+        with open("accounts.conf", "wb") as f:
+            f.write("version: " + str(__version__) + "\n")
 
-        for plugin, accounts in self.accounts.items():
-            f.write("\n")
-            f.write(plugin + ":\n")
+            for plugin, accounts in self.accounts.items():
+                f.write("\n")
+                f.write(plugin + ":\n")
 
-            for name, data in accounts.items():
-                f.write("\n\t{}:{}\n".format(name, data["password"]))
-                if data["options"]:
-                    for option, values in data["options"].items():
-                        f.write("\t@{} {}\n".format(option, " ".join(values)))
-
-        f.close()
+                for name, data in accounts.items():
+                    f.write("\n\t{}:{}\n".format(name, data["password"]))
+                    if data["options"]:
+                        for option, values in data["options"].items():
+                            f.write("\t@{} {}\n".format(option, " ".join(values)))
         chmod(f.name, 0o600)
 
     # ----------------------------------------------------------------------

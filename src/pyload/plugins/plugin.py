@@ -414,11 +414,10 @@ class Plugin(Base):
         img = self.load(url, get=get, post=post, cookies=cookies)
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
-        temp_file = open(
+        with open(
             join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb"
-        )
-        temp_file.write(img)
-        temp_file.close()
+        ) as temp_file:
+            temp_file.write(img)
 
         has_plugin = self.__name__ in self.pyload.pluginManager.captchaPlugins
 
@@ -513,7 +512,7 @@ class Plugin(Base):
             if not exists(join("tmp", self.__name__)):
                 makedirs(join("tmp", self.__name__))
 
-            f = open(
+            with open(
                 join(
                     "tmp",
                     self.__name__,
@@ -522,16 +521,15 @@ class Plugin(Base):
                     ),
                 ),
                 "wb",
-            )
-            del frame  # delete the frame or it wont be cleaned
+            ) as f:
+                del frame  # delete the frame or it wont be cleaned
 
-            try:
-                tmp = res.encode("utf8")
-            except Exception:
-                tmp = res
+                try:
+                    tmp = res.encode("utf8")
+                except Exception:
+                    tmp = res
 
-            f.write(tmp)
-            f.close()
+                f.write(tmp)
 
         if just_header:
             # parse header
@@ -668,9 +666,8 @@ class Plugin(Base):
         elif size > max_size and not read_size:
             return None
         self.log.debug("Download Check triggered")
-        f = open(lastDownload, "rb")
-        content = f.read(read_size if read_size else -1)
-        f.close()
+        with open(lastDownload, "rb") as f:
+            content = f.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         # self.log.debug("Content: {}".format(content))
         for name, rule in rules.items():

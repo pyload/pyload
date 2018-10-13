@@ -39,9 +39,8 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            f = open("response.dump", "wb")
-            f.write(rep)
-            f.close()
+            with open("response.dump", "wb") as f:
+                f.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
         self.rep.write(buf)
