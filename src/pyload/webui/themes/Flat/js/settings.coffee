@@ -51,7 +51,7 @@ class SettingsUI
 
     new Request({
       "method" : "get"
-      "url" : "/json/v1/load_config/#{category}/#{section}"
+      "url" : "/json/load_config/#{category}/#{section}"
       'onSuccess': (data) =>
         target.set "html", data
         target.reveal()
@@ -65,7 +65,7 @@ class SettingsUI
 
     form.set "send", {
       'method': "post"
-      'url': "/json/v1/save_config/#{category}"
+      'url': "/json/save_config/#{category}"
       "onSuccess" : ->
         root.notify.alert '{{ _("Settings saved.")}}', {
               'className': 'success'

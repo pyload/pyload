@@ -28,7 +28,7 @@ function EntryManager(){
         thisObject=this;
         $.ajax({
             method:"post",
-            url: "{{'/json/v1/links'|url}}",
+            url: "{{'/json/links'|url}}",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -36,7 +36,7 @@ function EntryManager(){
         setInterval(function() {
         $.ajax({
             method:"post",
-            url: "{{'/json/v1/links'|url}}",
+            url: "{{'/json/links'|url}}",
             async: true,
             timeout: 30000,
             success: thisObject.update
@@ -242,7 +242,7 @@ function LinkEntry(id){
         this.fadeBar = this.elements.pgbTr;
 
         $(this.elements.remove).click(function(){
-            $.get( "{{'/json/v1/abort_link/'|url}}"+id)});
+            $.get( "{{'/json/abort_link/'|url}}"+id)});
     };
     this.update = function(item){
             $(this.elements.name).text(item.name);

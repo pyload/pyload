@@ -41,7 +41,7 @@ window.addEvent "domready", ->
     $('quit-pyload').addEvent "click", (e) ->
         new MooDialog.Confirm "{{_('You are really sure you want to quit pyLoad?')}}", ->
             new Request.JSON({
-                url: '/api/v1/kill'
+                url: '/api/kill'
                 method: 'get'
             }).send()
         , ->
@@ -50,7 +50,7 @@ window.addEvent "domready", ->
     $('restart-pyload').addEvent "click", (e) ->
         new MooDialog.Confirm "{{_('Are you sure you want to restart pyLoad?')}}", ->
             new Request.JSON({
-                url: '/api/v1/restart'
+                url: '/api/restart'
                 method: 'get'
                 onSuccess: (data) -> alert "{{_('pyLoad restarted')}}"
             }).send()

@@ -13,7 +13,7 @@ document.addEvent("domready", function(){
 var EntryManager = new Class({
     initialize: function(){
         this.json = new Request.JSON({
-		url: "{{'/json/v1/links'|url}}",
+		url: "{{'/json/links'|url}}",
                 secure: false,
                 async: true,
 		onSuccess: this.update.bind(this),
@@ -165,7 +165,7 @@ var LinkEntry = new Class({
             this.fadeBar = new Fx.Tween(this.elements.pgbTr);
 
             this.elements.remove.addEvent('click', function(){
-                new Request({method: 'get', url: "{{'/json/v1/abort_link/'|url}}" + this.id}).send();
+                new Request({method: 'get', url: "{{'/json/abort_link/'|url}}" + this.id}).send();
             }.bind(this));
 
         },
