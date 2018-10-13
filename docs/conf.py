@@ -80,8 +80,25 @@ extensions = [
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
+# To configure AutoStructify
+def setup(app):
+    from recommonmark.transform import AutoStructify
+    app.add_config_value('recommonmark_config', {
+        'auto_toc_tree_section': 'Contents',
+        'enable_eval_rst': True,
+        'enable_auto_doc_ref': True,
+        'enable_math': True,
+        'enable_inline_math': True
+    }, True)
+    app.add_transform(AutoStructify)
+    
+# Additional parsers besides rst
+source_parsers = {
+   '.md': 'recommonmark.parser.CommonMarkParser',
+}
+
 # The suffix of source filenames.
-source_suffix = ".rst"
+source_suffix = ['.rst', '.md']
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
