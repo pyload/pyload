@@ -5,6 +5,8 @@ from bottle import HTTPError, ServerAdapter, redirect, request
 from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui import PREFIX, TEMPLATE, env
 
+from pyload.api import __version__ as API_VERSION
+
 
 def render_to_response(name, args={}, proc=[]):
     for p in proc:
@@ -86,6 +88,15 @@ def parse_userdata(session):
     }
 
 
+def apiver_check(func):
+    # if no apiver is provided assumes latest
+    def _view(*args, **kwargs):
+        if int(kwargs.get('apiver', API_VERSION).strip('v')) < API_VERSION:
+            return HTTPError(404, json.dumps("Obsolete API"))
+        return func(*args, **kwargs)
+    return _view
+    
+    
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
@@ -95,14 +106,14 @@ def login_required(perm=None):
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
                         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                            return HTTPError(403, "Forbidden")
+                            return HTTPError(403, json.dumps("Forbidden"))
                         else:
                             return redirect(PREFIX + "/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return HTTPError(403, "Forbidden")
+                    return HTTPError(403, json.dumps("Forbidden"))
                 else:
                     return redirect(PREFIX + "/login")
 

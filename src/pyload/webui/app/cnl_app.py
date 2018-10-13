@@ -22,7 +22,7 @@ def local_check(func):
         ):
             return func(*args, **kwargs)
         else:
-            return HTTPError(403, "Forbidden")
+            return HTTPError(403, json.dumps("Forbidden"))
 
     return _view
 

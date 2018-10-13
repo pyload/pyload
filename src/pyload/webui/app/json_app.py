@@ -7,7 +7,7 @@ from traceback import print_exc
 from bottle import HTTPError, request, route
 from pyload.utils.utils import decode, formatSize
 from pyload.webui import PYLOAD
-from pyload.webui.utils import login_required, render_to_response, toDict
+from pyload.webui.utils import login_required, apiver_check, render_to_response, toDict
 
 
 def format_time(seconds):
@@ -22,8 +22,9 @@ def get_sort_key(item):
     return item["order"]
 
 
-@route(r"/json/status")
-@route(r"/json/status", method="POST")
+@route(r"/json/<apiver>/status")
+@route(r"/json/<apiver>/status", method="POST")
+@apiver_check
 @login_required("LIST")
 def status():
     try:
@@ -34,8 +35,9 @@ def status():
         return HTTPError()
 
 
-@route(r"/json/links")
-@route(r"/json/links", method="POST")
+@route(r"/json/<apiver>/links")
+@route(r"/json/<apiver>/links", method="POST")
+@apiver_check
 @login_required("LIST")
 def links():
     try:
@@ -63,7 +65,8 @@ def links():
         return HTTPError()
 
 
-@route(r"/json/packages")
+@route(r"/json/<apiver>/packages")
+@apiver_check
 @login_required("LIST")
 def packages():
     print("/json/packages")
@@ -81,7 +84,8 @@ def packages():
         return HTTPError()
 
 
-@route(r"/json/package/<id:int>")
+@route(r"/json/<apiver>/package/<id:int>")
+@apiver_check
 @login_required("LIST")
 def package(id):
     try:
@@ -116,7 +120,8 @@ def package(id):
         return HTTPError()
 
 
-@route(r"/json/package_order/:ids")
+@route(r"/json/<apiver>/package_order/<ids>")
+@apiver_check
 @login_required("ADD")
 def package_order(ids):
     try:
@@ -127,7 +132,8 @@ def package_order(ids):
         return HTTPError()
 
 
-@route(r"/json/abort_link/<id:int>")
+@route(r"/json/<apiver>/abort_link/<id:int>")
+@apiver_check
 @login_required("DELETE")
 def abort_link(id):
     try:
@@ -137,7 +143,8 @@ def abort_link(id):
         return HTTPError()
 
 
-@route(r"/json/link_order/:ids")
+@route(r"/json/<apiver>/link_order/<ids>")
+@apiver_check
 @login_required("ADD")
 def link_order(ids):
     try:
@@ -148,8 +155,9 @@ def link_order(ids):
         return HTTPError()
 
 
-@route(r"/json/add_package")
-@route(r"/json/add_package", method="POST")
+@route(r"/json/<apiver>/add_package")
+@route(r"/json/<apiver>/add_package", method="POST")
+@apiver_check
 @login_required("ADD")
 def add_package():
     name = request.forms.get("add_name", "New Package").strip()
@@ -174,10 +182,7 @@ def add_package():
         pass
 
     name = name.decode("utf8", "ignore")
-
-    links = [x.strip() for x in links]
-    links = [x for x in links if x != ""]
-
+    links = list(filter(None, map(str.strip, links)))
     pack = PYLOAD.addPackage(name, links, queue)
     if pw:
         pw = pw.decode("utf8", "ignore")
@@ -185,7 +190,8 @@ def add_package():
         PYLOAD.setPackageData(pack, data)
 
 
-@route(r"/json/move_package/<dest:int>/<id:int>")
+@route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
+@apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
     try:
@@ -195,7 +201,8 @@ def move_package(dest, id):
         return HTTPError()
 
 
-@route(r"/json/edit_package", method="POST")
+@route(r"/json/<apiver>/edit_package", method="POST")
+@apiver_check
 @login_required("MODIFY")
 def edit_package():
     try:
@@ -213,8 +220,9 @@ def edit_package():
         return HTTPError()
 
 
-@route(r"/json/set_captcha")
-@route(r"/json/set_captcha", method="POST")
+@route(r"/json/<apiver>/set_captcha")
+@route(r"/json/<apiver>/set_captcha", method="POST")
+@apiver_check
 @login_required("ADD")
 def set_captcha():
     if request.environ.get("REQUEST_METHOD", "GET") == "POST":
@@ -238,7 +246,8 @@ def set_captcha():
         return {"captcha": False}
 
 
-@route(r"/json/load_config/:category/:section")
+@route(r"/json/<apiver>/load_config/<category>/<section>")
+@apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
     conf = None
@@ -261,7 +270,8 @@ def load_config(category, section):
     )
 
 
-@route(r"/json/save_config/:category", method="POST")
+@route(r"/json/<apiver>/save_config/<category>", method="POST")
+@apiver_check
 @login_required("SETTINGS")
 def save_config(category):
     for key, value in request.POST.items():
@@ -276,7 +286,8 @@ def save_config(category):
         PYLOAD.setConfigValue(section, option, decode(value), category)
 
 
-@route(r"/json/add_account", method="POST")
+@route(r"/json/<apiver>/add_account", method="POST")
+@apiver_check
 @login_required("ACCOUNTS")
 def add_account():
     login = request.POST["account_login"]
@@ -286,7 +297,8 @@ def add_account():
     PYLOAD.updateAccount(type, login, password)
 
 
-@route(r"/json/update_accounts", method="POST")
+@route(r"/json/<apiver>/update_accounts", method="POST")
+@apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():
     deleted = []  # dont update deleted accs or they will be created again
@@ -313,7 +325,8 @@ def update_accounts():
             PYLOAD.removeAccount(plugin, user)
 
 
-@route(r"/json/change_password", method="POST")
+@route(r"/json/<apiver>/change_password", method="POST")
+@apiver_check
 def change_password():
 
     user = request.POST["user_login"]

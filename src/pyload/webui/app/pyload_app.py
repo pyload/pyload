@@ -37,7 +37,7 @@ def pre_processor():
         # check if update check is available
         if info:
             if info["pyload"] == "True":
-                update = True
+                update = info['version']
             if info["plugins"] == "True":
                 plugins = True
 
@@ -189,7 +189,7 @@ def js_dynamic(path):
         else:
             return static_file(path, root=os.path.join(PROJECT_DIR, "media", "js"))
     except Exception:
-        return HTTPError(404, "Not Found")
+        return HTTPError(404, json.dumps("Not Found"))
 
 
 @route(r"/media/<path:path>")
@@ -200,7 +200,7 @@ def server_static(path):
     response.headers["Cache-control"] = "public"
     return static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
-
+# rewrite to return theme favicon
 @route(r"/favicon.ico")
 def favicon():
     return static_file("favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img"))
@@ -208,7 +208,7 @@ def favicon():
 
 @route(r"/robots.txt")
 def robots():
-    return static_file("robots.txt", root=os.path.join(PROJECT_DIR, "media", "txt"))
+    return static_file("robots.txt", root=PROJECT_DIR)
 
 
 @route(r"/login", method="GET")
@@ -332,7 +332,7 @@ def get_download(path):
 
     except Exception as e:
         print(e)
-        return HTTPError(404, "File not Found.")
+        return HTTPError(404, json.dumps("File not Found"))
 
 
 @route(r"/settings")
@@ -423,8 +423,8 @@ def path(path=""):
 
 @route(r"/logs")
 @route(r"/logs", method="POST")
-@route(r"/logs/:item")
-@route(r"/logs/:item", method="POST")
+@route(r"/logs/<item>")
+@route(r"/logs/<item>", method="POST")
 @login_required("LOGS")
 def logs(item=-1):
     s = request.environ.get("beaker.session")
@@ -533,7 +533,7 @@ def logs(item=-1):
 @login_required("ADMIN")
 def admin():
     # convert to dict
-    user = dict([(name, toDict(y)) for name, y in PYLOAD.getAllUserData().items()])
+    user = {name: toDict(y)) for name, y in PYLOAD.getAllUserData().items()}
     perms = permlist()
 
     for data in user.values():
@@ -569,22 +569,15 @@ def admin():
 
 @route(r"/setup")
 def setup():
-    if PYLOAD or not SETUP:
-        return base([_("Run pyLoad -s to access the setup.")])
-
-    return render_to_response("setup.html", {"user": False, "perms": False})
+    return base([_("Run pyLoad -s to access the setup.")])
 
 
 @route(r"/info")
 @login_required("STATUS")
 def info():
     conf = PYLOAD.getConfigDict()
-
-    if hasattr(os, "uname"):
-        extra = os.uname()
-    else:
-        extra = tuple()
-
+    extra = os.uname() if hasattr(os, "uname") else tuple()
+    
     data = {
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
