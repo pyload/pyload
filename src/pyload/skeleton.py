@@ -372,7 +372,7 @@ class Core(object):
         self.log.debug("Remote activated: {}".format(self.remote))
 
         self.check_install("Cryptodome", _("pycrypto to decode container files"))
-        # img = self.check_install("Image", _("Python Image Libary (PIL) for captcha reading"))
+        # img = self.check_install("Image", _("Python Image Libary (Pillow) for captcha reading"))
         # self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_file("tmp", _("folder for temporary files"), True)
         # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True

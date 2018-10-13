@@ -226,7 +226,7 @@ class Setup(object):
 
         print("")
 
-        pil = self.check_module("Image") or self.check_module("PIL")
+        pil = self.check_module("Image") or self.check_module("Pillow")
         self.print_dep("py-imaging", pil)
 
         if os.name == "nt":

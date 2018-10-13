@@ -67,7 +67,7 @@ class AddonManager(object):
         self.lock = RLock()
         self.createIndex()
 
-    def try_catch(self, func):
+    def try_catch(func):
         def new(*args):
             try:
                 return func(*args)

@@ -10,10 +10,7 @@ from threading import Event, Thread
 from traceback import print_exc
 
 
-try:
-    from pysqlite2 import dbapi2 as sqlite3
-except Exception:
-    import sqlite3
+import sqlite3
 
 # DATABASE VERSION
 __version__ = 4

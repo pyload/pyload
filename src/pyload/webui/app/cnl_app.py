@@ -14,13 +14,13 @@ from pyload.webui import DL_ROOT, PYLOAD
 import Cryptodome.Cipher.AES
 
 
-def local_check(function):
+def local_check(func):
     def _view(*args, **kwargs):
         if (
             request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost")
             or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666")
         ):
-            return function(*args, **kwargs)
+            return func(*args, **kwargs)
         else:
             return HTTPError(403, "Forbidden")
 
