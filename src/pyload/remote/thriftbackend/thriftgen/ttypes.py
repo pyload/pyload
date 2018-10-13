@@ -152,26 +152,7 @@ class DownloadInfo(TBase):
     - packageName
     - plugin
     """
-
-    __slots__ = [
-        "fid",
-        "name",
-        "speed",
-        "eta",
-        "format_eta",
-        "bleft",
-        "size",
-        "format_size",
-        "percent",
-        "status",
-        "statusmsg",
-        "format_wait",
-        "wait_until",
-        "packageID",
-        "packageName",
-        "plugin",
-    ]
-
+    
     thrift_spec = (
         None,  # 0
         (1, TType.I32, "fid", None, None),  # 1
@@ -242,8 +223,6 @@ class ServerStatus(TBase):
     - reconnect
     """
 
-    __slots__ = ["pause", "active", "queue", "total", "speed", "download", "reconnect"]
-
     thrift_spec = (
         None,  # 0
         (1, TType.BOOL, "pause", None, None),  # 1
@@ -284,8 +263,6 @@ class ConfigItem(TBase):
     - type
     """
 
-    __slots__ = ["name", "description", "value", "type"]
-
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, "name", None, None),  # 1
@@ -310,8 +287,6 @@ class ConfigSection(TBase):
     - items
     - outline
     """
-
-    __slots__ = ["name", "description", "items", "outline"]
 
     thrift_spec = (
         None,  # 0
@@ -350,20 +325,6 @@ class FileData(TBase):
     - error
     - order
     """
-
-    __slots__ = [
-        "fid",
-        "url",
-        "name",
-        "plugin",
-        "size",
-        "format_size",
-        "status",
-        "statusmsg",
-        "packageID",
-        "error",
-        "order",
-    ]
 
     thrift_spec = (
         None,  # 0
@@ -425,22 +386,6 @@ class PackageData(TBase):
     - links
     - fids
     """
-
-    __slots__ = [
-        "pid",
-        "name",
-        "folder",
-        "site",
-        "password",
-        "dest",
-        "order",
-        "linksdone",
-        "sizedone",
-        "sizetotal",
-        "linkstotal",
-        "links",
-        "fids",
-    ]
 
     thrift_spec = (
         None,  # 0
@@ -511,18 +456,6 @@ class InteractionTask(TBase):
     - plugin
     """
 
-    __slots__ = [
-        "iid",
-        "input",
-        "structure",
-        "preset",
-        "output",
-        "data",
-        "title",
-        "description",
-        "plugin",
-    ]
-
     thrift_spec = (
         None,  # 0
         (1, TType.I32, "iid", None, None),  # 1
@@ -569,8 +502,6 @@ class CaptchaTask(TBase):
     - resultType
     """
 
-    __slots__ = ["tid", "data", "type", "resultType"]
-
     thrift_spec = (
         None,  # 0
         (1, TType.I16, "tid", None, None),  # 1
@@ -595,8 +526,6 @@ class EventInfo(TBase):
     - type
     - destination
     """
-
-    __slots__ = ["eventname", "id", "type", "destination"]
 
     thrift_spec = (
         None,  # 0
@@ -623,8 +552,6 @@ class UserData(TBase):
     - permission
     - templateName
     """
-
-    __slots__ = ["name", "email", "role", "permission", "templateName"]
 
     thrift_spec = (
         None,  # 0
@@ -658,17 +585,6 @@ class AccountInfo(TBase):
     - premium
     - type
     """
-
-    __slots__ = [
-        "validuntil",
-        "login",
-        "options",
-        "valid",
-        "trafficleft",
-        "maxtraffic",
-        "premium",
-        "type",
-    ]
 
     thrift_spec = (
         None,  # 0
@@ -719,8 +635,6 @@ class ServiceCall(TBase):
     - parseArguments
     """
 
-    __slots__ = ["plugin", "func", "arguments", "parseArguments"]
-
     thrift_spec = (
         None,  # 0
         (1, TType.STRING, "plugin", None, None),  # 1
@@ -746,8 +660,6 @@ class OnlineStatus(TBase):
     - status
     - size
     """
-
-    __slots__ = ["name", "plugin", "packagename", "status", "size"]
 
     thrift_spec = (
         None,  # 0
@@ -775,8 +687,6 @@ class OnlineCheck(TBase):
     - rid
     - data
     """
-
-    __slots__ = ["rid", "data"]
 
     thrift_spec = (
         None,  # 0
@@ -807,8 +717,6 @@ class PackageDoesNotExists(TExceptionBase):
     - pid
     """
 
-    __slots__ = ["pid"]
-
     thrift_spec = (None, (1, TType.I32, "pid", None, None))  # 0  # 1
 
     def __init__(self, pid=None):
@@ -824,8 +732,6 @@ class FileDoesNotExists(TExceptionBase):
 
     - fid
     """
-
-    __slots__ = ["fid"]
 
     thrift_spec = (None, (1, TType.I32, "fid", None, None))  # 0  # 1
 
@@ -843,8 +749,6 @@ class ServiceDoesNotExists(TExceptionBase):
     - plugin
     - func
     """
-
-    __slots__ = ["plugin", "func"]
 
     thrift_spec = (
         None,  # 0
@@ -866,8 +770,6 @@ class ServiceException(TExceptionBase):
 
     - msg
     """
-
-    __slots__ = ["msg"]
 
     thrift_spec = (None, (1, TType.STRING, "msg", None, None))  # 0  # 1
 
