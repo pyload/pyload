@@ -34,10 +34,7 @@ try:
 except ImportError:
     reduce = reduce
 
-try:
-    import send2trash
-except ImportError:
-    pass
+import send2trash
 
 # TODO: Remove in 0.6.x
 

@@ -960,11 +960,7 @@ class YoutubeCom(Hoster):
 
         subs_dl = self.config.get("subs_dl")
         if subs_dl != "off":
-            subs_dl_langs = [
-                _x.strip()
-                for _x in self.config.get("subs_dl_langs", "").split(",")
-                if _x.strip()
-            ]
+            subs_dl_langs = list(filter(None, map(str.strip, self.config.get("subs_dl_langs", "").split(","))))
             if subs_dl_langs:
                 # Download only listed subtitles (`subs_dl_langs` config gives the
                 # priority)

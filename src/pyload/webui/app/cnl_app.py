@@ -11,7 +11,7 @@ import js2py
 from bottle import HTTPError, request, route
 from pyload.webui import DL_ROOT, PYLOAD
 
-from Cryptodome.Cipher import AES
+import Cryptodome.Cipher.AES
 
 
 def local_check(function):
@@ -27,21 +27,21 @@ def local_check(function):
     return _view
 
 
-@route("/flash")
-@route("/flash/<id>")
-@route("/flash", method="POST")
+@route(r"/flash")
+@route(r"/flash/<id>")
+@route(r"/flash", method="POST")
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@route("/flash/add", method="POST")
+@route(r"/flash/add", method="POST")
 @local_check
 def add():
     package = request.forms.get(
         "package", request.forms.get("source", request.POST.get("referer", None))
     )
-    urls = [x.strip() for x in request.POST["urls"].split("\n") if x.strip()]
+    urls = list(filter(None, map(str.strip,  request.POST["urls"].split("\n"))))
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -51,7 +51,7 @@ def add():
     return ""
 
 
-@route("/flash/addcrypted", method="POST")
+@route(r"/flash/addcrypted", method="POST")
 @local_check
 def addcrypted():
     package = request.forms.get(
@@ -74,7 +74,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@route("/flash/addcrypted2", method="POST")
+@route(r"/flash/addcrypted2", method="POST")
 @local_check
 def addcrypted2():
     package = request.forms.get(
@@ -111,7 +111,7 @@ def addcrypted2():
 
     IV = Key
 
-    obj = AES.new(Key, AES.MODE_CBC, IV)
+    obj = Cryptodome.Cipher.AES.new(Key, Cryptodome.Cipher.AES.MODE_CBC, IV)
     urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
     urls = list(filter(None, map(str.strip, urls)))
@@ -127,10 +127,10 @@ def addcrypted2():
         return "success\r\n"
 
 
-@route("/flashgot_pyload")
-@route("/flashgot_pyload", method="POST")
-@route("/flashgot")
-@route("/flashgot", method="POST")
+@route(r"/flashgot_pyload")
+@route(r"/flashgot_pyload", method="POST")
+@route(r"/flashgot")
+@route(r"/flashgot", method="POST")
 @local_check
 def flashgot():
     if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot")):
@@ -138,7 +138,8 @@ def flashgot():
 
     autostart = int(request.forms.get("autostart", 0))
     package = request.forms.get("package", None)
-    urls = [x.strip() for x in request.POST["urls"].split("\n") if x.strip()]
+    
+    urls = list(filter(None, map(str.strip, request.POST["urls"].split("\n"))))
     # folder = request.forms.get('dir', None)
 
     if package:
@@ -149,7 +150,7 @@ def flashgot():
     return ""
 
 
-@route("/crossdomain.xml")
+@route(r"/crossdomain.xml")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -160,7 +161,7 @@ def crossdomain():
     return rep
 
 
-@route("/flash/checkSupportForUrl")
+@route(r"/flash/checkSupportForUrl")
 @local_check
 def checksupport():
     url = request.GET.get("url")
@@ -170,7 +171,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@route("/jdcheck.js")
+@route(r"/jdcheck.js")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

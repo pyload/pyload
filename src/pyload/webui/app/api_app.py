@@ -82,7 +82,7 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@route("/api/v{}/login".format(API_VERSION), method="POST")
+@route(r"/api/v{}/login".format(API_VERSION), method="POST")
 def login():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -105,7 +105,7 @@ def login():
         return json.dumps(True)
 
 
-@route("/api/v{}/logout".format(API_VERSION))
+@route(r"/api/v{}/logout".format(API_VERSION))
 def logout():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")

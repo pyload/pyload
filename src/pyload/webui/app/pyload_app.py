@@ -194,7 +194,7 @@ def js_dynamic(path):
         return HTTPError(404, "Not Found")
 
 
-@route("/media/<path:path>")
+@route(r"/media/<path:path>")
 def server_static(path):
     response.headers["Expires"] = time.strftime(
         "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
@@ -203,17 +203,17 @@ def server_static(path):
     return static_file(path, root=join(PROJECT_DIR, "media"))
 
 
-@route("/favicon.ico")
+@route(r"/favicon.ico")
 def favicon():
     return static_file("favicon.ico", root=join(PROJECT_DIR, "media", "img"))
 
 
-@route("/robots.txt")
+@route(r"/robots.txt")
 def robots():
     return static_file("robots.txt", root=join(PROJECT_DIR, "media", "txt"))
 
 
-@route("/login", method="GET")
+@route(r"/login", method="GET")
 def login():
     if not PYLOAD and SETUP:
         redirect(PREFIX + "/setup")
@@ -221,12 +221,12 @@ def login():
         return render_to_response("login.html", proc=[pre_processor])
 
 
-@route("/nopermission")
+@route(r"/nopermission")
 def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@route("/login", method="POST")
+@route(r"/login", method="POST")
 def login_post():
     user = request.forms.get("username")
     password = request.forms.get("password")
@@ -240,15 +240,15 @@ def login_post():
     return redirect(PREFIX + "/")
 
 
-@route("/logout")
+@route(r"/logout")
 def logout():
     s = request.environ.get("beaker.session")
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
 
-@route("/")
-@route("/home")
+@route(r"/")
+@route(r"/home")
 @login_required("LIST")
 def home():
     try:
@@ -267,7 +267,7 @@ def home():
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
 
-@route("/queue")
+@route(r"/queue")
 @login_required("LIST")
 def queue():
     queue = PYLOAD.getQueue()
@@ -279,7 +279,7 @@ def queue():
     )
 
 
-@route("/collector")
+@route(r"/collector")
 @login_required("LIST")
 def collector():
     queue = PYLOAD.getCollector()
@@ -291,7 +291,7 @@ def collector():
     )
 
 
-@route("/downloads")
+@route(r"/downloads")
 @login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD.getConfigValue("general", "download_folder")
@@ -320,7 +320,7 @@ def downloads():
     return render_to_response("downloads.html", {"files": data}, [pre_processor])
 
 
-@route("/downloads/get/<path:re:.+>")
+@route(r"/downloads/get/<path:re:.+>")
 @login_required("DOWNLOAD")
 def get_download(path):
     path = unquote(path).decode("utf8")
@@ -337,7 +337,7 @@ def get_download(path):
         return HTTPError(404, "File not Found.")
 
 
-@route("/settings")
+@route(r"/settings")
 @login_required("SETTINGS")
 def config():
     conf = PYLOAD.getConfig()
@@ -409,24 +409,24 @@ def config():
     )
 
 
-@route("/filechooser")
-@route("/filechooser/:file#.+#")
+@route(r"/filechooser")
+@route(r"/filechooser/:file#.+#")
 @login_required("STATUS")
 def file(file=""):
     return choose_path("file", file)
 
 
-@route("/pathchooser")
-@route("/pathchooser/:path#.+#")
+@route(r"/pathchooser")
+@route(r"/pathchooser/:path#.+#")
 @login_required("STATUS")
 def path(path=""):
     return choose_path("folder", path)
 
 
-@route("/logs")
-@route("/logs", method="POST")
-@route("/logs/:item")
-@route("/logs/:item", method="POST")
+@route(r"/logs")
+@route(r"/logs", method="POST")
+@route(r"/logs/:item")
+@route(r"/logs/:item", method="POST")
 @login_required("LOGS")
 def logs(item=-1):
     s = request.environ.get("beaker.session")
@@ -530,8 +530,8 @@ def logs(item=-1):
     )
 
 
-@route("/admin")
-@route("/admin", method="POST")
+@route(r"/admin")
+@route(r"/admin", method="POST")
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -569,7 +569,7 @@ def admin():
     )
 
 
-@route("/setup")
+@route(r"/setup")
 def setup():
     if PYLOAD or not SETUP:
         return base([_("Run pyLoad -s to access the setup.")])
@@ -577,7 +577,7 @@ def setup():
     return render_to_response("setup.html", {"user": False, "perms": False})
 
 
-@route("/info")
+@route(r"/info")
 @login_required("STATUS")
 def info():
     conf = PYLOAD.getConfigDict()

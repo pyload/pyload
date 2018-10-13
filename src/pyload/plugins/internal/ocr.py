@@ -7,11 +7,7 @@ from builtins import _, map, pypath, range, str
 from pyload.plugins.internal.plugin import Plugin
 from pyload.plugins.utils import encode, fsjoin
 
-try:
-    from PIL import Image
-
-except ImportError:
-    import Image
+from Pillow import Image
 
 # import tempfile
 

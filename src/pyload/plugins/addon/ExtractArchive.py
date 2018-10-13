@@ -8,11 +8,7 @@ from pyload.plugins.internal.addon import Addon
 from pyload.plugins.internal.extractor import ArchiveError, CRCError, PasswordError
 from pyload.plugins.utils import (Expose, encode, exists, fsjoin, safename, threaded,
                                   uniqify)
-
-try:
-    import send2trash
-except ImportError:
-    pass
+import send2trash
 
 
 class ArchiveQueue(object):

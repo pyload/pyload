@@ -12,10 +12,7 @@ from urllib.parse import unquote
 import js2py
 from pyload.remote.remote_manager import BackendBase
 
-try:
-    from Cryptodome.Cipher import AES
-except Exception:
-    pass
+import Cryptodome.Cipher.AES
 
 
 core = None
@@ -133,7 +130,7 @@ class CNLHandler(BaseHTTPRequestHandler):
         Key = unhexlify(jk)
         IV = Key
 
-        obj = AES.new(Key, AES.MODE_CBC, IV)
+        obj = Cryptodome.Cipher.AES.new(Key, Cryptodome.Cipher.AES.MODE_CBC, IV)
         result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = [x for x in result if x != ""]

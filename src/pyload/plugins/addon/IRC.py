@@ -105,8 +105,9 @@ class IRC(Thread, Notifier):
         self.sock.send("NICK {}\r\n".format(nick))
         self.sock.send("USER {} {} bla :{}\r\n".format(nick, host, nick))
         for t in self.config.get("owner").split():
-            if t.strip().startswith("#"):
-                self.sock.send("JOIN {}\r\n".format(t.strip()))
+            t = t.strip()
+            if t.startswith("#"):
+                self.sock.send("JOIN {}\r\n".format(t))
         self.log_info(_("Connected to"), host)
         self.log_info(_("Switching to listening mode!"))
         try:
