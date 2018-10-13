@@ -686,16 +686,12 @@ class YoutubeCom(Hoster):
         def allowed_suffix(x):
             return self.config.get(self.formats[x]["ext"])
 
-        video_streams = dict(
-            [
-                (_s[0], _s[1:])
+        video_streams = {_s[0]: _s[1:]
                 for _s in self.streams
                 if _s[0] in self.formats
                 and allowed_suffix(_s[0])
                 and is_video(_s[0])
-                and self.formats[_s[0]]["3d"] == use3d
-            ]
-        )
+                and self.formats[_s[0]]["3d"] == use3d}
 
         if not video_streams:
             self.fail(_("No available video stream meets your preferences"))
@@ -812,16 +808,12 @@ class YoutubeCom(Hoster):
                 and self.formats[x]["ext"] == self.formats[video_fmt]["ext"]
             )
 
-        audio_streams = dict(
-            [
-                (_s[0], _s[1:])
+        audio_streams = {_s[0]: _s[1:]
                 for _s in self.streams
                 if _s[0] in self.formats
                 and is_audio(_s[0])
                 and allowed_codec(_s[0])
-                and allowed_suffix(_s[0])
-            ]
-        )
+                and allowed_suffix(_s[0])}
 
         if not audio_streams:
             self.fail(_("No available audio stream meets your preferences"))
@@ -937,18 +929,13 @@ class YoutubeCom(Hoster):
             subs = json.loads(self.player_config["args"]["player_response"])[
                 "captions"
             ]["playerCaptionsTracklistRenderer"]["captionTracks"]
-            subtitles_urls = dict(
-                [
-                    (
-                        _subtitle["languageCode"],
+            subtitles_urls = {
+                        _subtitle["languageCode"]:
                         urllib.parse.unquote(_subtitle["baseUrl"]).decode(
                             "unicode-escape"
                         )
-                        + "&fmt=3",
-                    )
-                    for _subtitle in subs
-                ]
-            )
+                        + "&fmt=3"
+                    for _subtitle in subs}
             self.log_debug(
                 "AVAILABLE SUBTITLES: {}".format(list(subtitles_urls.keys()) or "None")
             )
@@ -1179,7 +1166,7 @@ class YoutubeCom(Hoster):
         self.start_time = (0, 0)
         m = re.search(r"t=(?:(\d+)m)?(\d+)s", pyfile.url)
         if self.ffmpeg and m:
-            self.start_time = tuple([0 if _x is None else int(_x) for _x in m.groups()])
+            self.start_time = tuple(0 if _x is None else int(_x) for _x in m.groups())
             self.file_name += " (starting at {}m{}s)".format(
                 self.start_time[0], self.start_time[1]
             )
@@ -1198,7 +1185,7 @@ class YoutubeCom(Hoster):
         for streams_key in streams_keys:
             streams = self.player_config["args"][streams_key]
             streams = [_s.split("&") for _s in streams.split(",")]
-            streams = [dict((_x.split("=", 1)) for _x in _s) for _s in streams]
+            streams = [dict(_x.split("=", 1) for _x in _s) for _s in streams]
             streams = [
                 (
                     int(_s["itag"]),
@@ -1211,7 +1198,7 @@ class YoutubeCom(Hoster):
 
             self.streams += streams
 
-        self.log_debug("AVAILABLE STREAMS: {}".format([_s[0] for _s in self.streams]))
+        self.log_debug("AVAILABLE STREAMS: {}".format(_s[0] for _s in self.streams))
 
         video_filename, video_itag = self._handle_video()
 
@@ -1511,7 +1498,7 @@ class JSInterpreter(object):
 
     def build_function(self, argnames, code):
         def resf(argvals):
-            local_vars = dict(list(zip(argnames, argvals)))
+            local_vars = dict(zip(argnames, argvals))
             for stmt in code.split(";"):
                 res, abort = self.interpret_statement(stmt, local_vars)
                 if abort:

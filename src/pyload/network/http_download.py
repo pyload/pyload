@@ -76,7 +76,7 @@ class HTTPDownload(object):
 
     @property
     def arrived(self):
-        return sum([c.arrived for c in self.chunks])
+        return sum(c.arrived for c in self.chunks)
 
     @property
     def percent(self):

@@ -38,10 +38,8 @@ class ZeveraCom(MultiAccount):
 
         if ":" in res:
             res = res.replace(",", "\n")
-            return dict(
-                (y.strip().lower(), z.strip())
-                for (y, z) in [x.split(":", 1) for x in res.splitlines() if ":" in x]
-            )
+            return {y.strip().lower(): z.strip()
+                for (y, z) in [x.split(":", 1) for x in res.splitlines() if ":" in x}
         else:
             return res
 

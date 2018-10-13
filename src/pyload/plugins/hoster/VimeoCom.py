@@ -83,10 +83,8 @@ class VimeoCom(SimpleHoster):
 
         json_data = json.loads(json_data)
 
-        videos = dict(
-            (v["quality"], v["url"])
-            for v in json_data["request"]["files"]["progressive"]
-        )
+        videos = {v["quality"]: v["url"]
+            for v in json_data["request"]["files"]["progressive"]}
 
         quality = self.config.get("quality")
         if quality == "Highest":

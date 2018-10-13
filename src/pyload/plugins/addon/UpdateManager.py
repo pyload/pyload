@@ -252,7 +252,7 @@ class UpdateManager(Addon):
         for l in updatelist, blacklist:
             nl = []
             for line in l:
-                d = dict(list(zip(schema, line.split("|"))))
+                d = dict(zip(schema, line.split("|")))
                 d["name"] = d["name"].rsplit(".py", 1)[0]
                 nl.append(d)
             l[:] = nl

@@ -300,11 +300,11 @@ def downloads():
 
     items = os.listdir(fs_encode(root))
 
-    for item in sorted([fs_decode(x) for x in items]):
+    for item in sorted(fs_decode(x) for x in items):
         if os.path.isdir(save_join(root, item)):
             folder = {"name": item, "path": item, "files": []}
             files = os.listdir(save_join(root, item))
-            for file in sorted([fs_decode(x) for x in files]):
+            for file in sorted(fs_decode(x) for x in files):
                 try:
                     if os.path.isfile(save_join(root, item, file)):
                         folder["files"].append(file)
@@ -366,7 +366,7 @@ def config():
             validuntil = _("not available")
         else:
             t = time.localtime(data.validuntil)
-            validuntil = time.strftime("%d.%m.%Y", t)
+            validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
 
         if "time" in data.options:
             try:
@@ -442,7 +442,7 @@ def logs(item=-1):
 
     if request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            fro = datetime.strptime(request.forms["from"], "%d.%m.%Y %H:%M:%S")
+            fro = datetime.strptime(request.forms["from"], "%Y-%m-%d %H:%M:%S")
         except Exception:
             pass
         try:
@@ -482,7 +482,7 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(date + " " + time, "%d.%m.%Y %H:%M:%S")
+                dtime = datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
             except Exception:
                 dtime = None
                 date = "?"
@@ -517,7 +517,7 @@ def logs(item=-1):
         {
             "warning": warning,
             "log": data,
-            "from": fro.strftime("%d.%m.%Y %H:%M:%S"),
+            "from": fro.strftime("%Y-%m-%d %H:%M:%S"),
             "reversed": reversed,
             "perpage": perpage,
             "perpage_p": sorted(perpage_p),

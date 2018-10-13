@@ -275,7 +275,7 @@ class Checksum(Addon):
             )
 
             pdata = list(pypack.getChildren().items())
-            files_ids = dict([(fdata["name"], fdata["id"]) for fid, fdata in pdata])
+            files_ids = {fdata["name"]: fdata["id"] for fid, fdata in pdata}
             failed_queue = []
             for fid, fdata in pdata:
                 file_type = os.path.splitext(fdata["name"])[1][1:].lower()

@@ -74,7 +74,7 @@ def callApi(func, *args, **kwargs):
 
     result = getattr(PYLOAD, func)(
         *[literal_eval(x) for x in args],
-        **dict([(x, literal_eval(y)) for x, y in kwargs.items()]),
+        **{x: literal_eval(y) for x, y in kwargs.items()},
     )
 
     # null is invalid json  response

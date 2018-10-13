@@ -188,7 +188,7 @@ class Account(Plugin):
         def clear(x):
             return {} if isinstance(x, dict) else [] if isiterable(x) else None
 
-        self.info["data"] = dict((k, clear(v)) for k, v in self.info["data"].items())
+        self.info["data"] = {k: clear(v) for k, v in self.info["data"].items()}
         self.info["data"]["options"] = {"limitDL": ["0"]}
 
         self.syncback()

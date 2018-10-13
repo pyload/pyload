@@ -96,7 +96,7 @@ class MultiAccount(Account):
 
     def plugins_updated(self, type_plugins):
         if not any(
-            [t in ("internal", "addon") for t, n in type_plugins]
+            t in ("internal", "addon") for t, n in type_plugins
         ):  #: do nothing if restart required
             self.reactivate()
 
@@ -170,10 +170,8 @@ class MultiAccount(Account):
         self.supported = []
 
         if self.plugintype == "hoster":
-            plugin_map = dict(
-                (name.lower(), name)
-                for name in self.pyload.pluginManager.hosterPlugins.keys()
-            )
+            plugin_map = {name.lower(): name
+                for name in self.pyload.pluginManager.hosterPlugins.keys()}
 
             account_list = [
                 account.type.lower()

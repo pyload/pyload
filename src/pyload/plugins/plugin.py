@@ -72,7 +72,7 @@ class Base(object):
         self.log.info(
             "{}: {}".format(
                 self.__name__,
-                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+                " | ".join(a if isinstance(a, str) else str(a) for a in args),
             )
         )
 
@@ -80,7 +80,7 @@ class Base(object):
         self.log.warning(
             "{}: {}".format(
                 self.__name__,
-                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+                " | ".join(a if isinstance(a, str) else str(a) for a in args),
             )
         )
 
@@ -88,7 +88,7 @@ class Base(object):
         self.log.error(
             "{}: {}".format(
                 self.__name__,
-                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+                " | ".join(a if isinstance(a, str) else str(a) for a in args),
             )
         )
 
@@ -96,7 +96,7 @@ class Base(object):
         self.log.debug(
             "{}: {}".format(
                 self.__name__,
-                " | ".join([a if isinstance(a, str) else str(a) for a in args]),
+                " | ".join(a if isinstance(a, str) else str(a) for a in args),
             )
         )
 

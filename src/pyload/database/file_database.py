@@ -101,7 +101,7 @@ class FileHandler(object):
         data = self.db.getAllLinks(queue)
         packs = self.db.getAllPackages(queue)
 
-        data.update([(x.id, x.toDbDict()[x.id]) for x in self.cache.values()])
+        data.update((x.id, x.toDbDict()[x.id]) for x in self.cache.values())
 
         for x in self.packageCache.values():
             if x.queue != queue or x.id not in packs:
@@ -922,7 +922,7 @@ class FileMethods(object):
         ids = []
         self.c.execute(
             "SELECT id FROM links WHERE url IN ('{}')".format(
-                "','".join([x[3] for x in data])
+                "','".join(x[3] for x in data)
             )
         )
         for r in self.c:

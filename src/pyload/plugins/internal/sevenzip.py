@@ -183,7 +183,7 @@ class SevenZip(Extractor):
         p = self.call_cmd(command, self.filename, password=password)
         out, err = (_r.strip() if _r else "" for _r in p.communicate())
 
-        if any([_e in err for _e in ("Can not open", "cannot find the file")]):
+        if any(_e in err for _e in ("Can not open", "cannot find the file")):
             raise ArchiveError(_("Cannot open file"))
 
         if p.returncode > 1:

@@ -209,7 +209,7 @@ class PluginManager(object):
                     if isinstance(config, list) and all(
                         isinstance(c, tuple) for c in config
                     ):
-                        config = dict((x[0], x[1:]) for x in config)
+                        config = {x[0]: x[1:] for x in config}
                     else:
                         self.log.error("Invalid config in {}: {}".format(name, config))
                         continue

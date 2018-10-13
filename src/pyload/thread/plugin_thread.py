@@ -557,7 +557,7 @@ class InfoThread(PluginThread):
         # filter out container plugins
         for name in self.m.pyload.pluginManager.containerPlugins:
             if name in plugins:
-                container.extend([(name, url) for url in plugins[name]])
+                container.extend((name, url) for url in plugins[name])
 
                 del plugins[name]
 
@@ -583,7 +583,7 @@ class InfoThread(PluginThread):
 
                     self.updateCache(pluginname, result)
 
-            packs = parseNames([(name, url) for name, x, y, url in self.cache])
+            packs = parseNames((name, url) for name, x, y, url in self.cache)
 
             self.m.log.debug("Fetched and generated {} packages".format(len(packs)))
 

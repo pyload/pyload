@@ -114,9 +114,7 @@ class DB(object):
             if not entry:
                 value = default
             else:
-                value = dict(
-                    (k, json.loads(v.decode("base64"))) for k, v in value.items()
-                )
+                value = {k: json.loads(v.decode("base64")) for k, v in value.items()}
 
         return value
 
@@ -489,7 +487,7 @@ def remove_chars(value, repl):
         return value
 
     elif isinstance(value, str):
-        return value.translate(dict((ord(s), None) for s in repl))
+        return value.translate({ord(s): None for s in repl})
 
     elif isinstance(value, str):
         return value.translate(str.maketrans("", ""), repl)
@@ -611,7 +609,7 @@ def parse_size(value, unit=""):  #: returns bytes
         return int(size)
 
     sizeunits = ["b", "k", "m", "g", "t", "p", "e"]
-    sizemap = dict((u, i * 10) for i, u in enumerate(sizeunits))
+    sizemap = {u: i * 10 for i, u in enumerate(sizeunits)}
     magnitude = sizemap[unit]
 
     i, d = divmod(size, 1)

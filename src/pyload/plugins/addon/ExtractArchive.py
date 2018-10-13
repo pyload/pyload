@@ -263,17 +263,15 @@ class ExtractArchive(Addon):
             matched = False
             success = True
             files_ids = list(
-                dict(
-                    (
-                        fdata["name"],
+                {
+                        fdata["name"]:
                         (
                             fdata["id"],
                             (fsjoin(pack_dl_folder, fdata["name"])),
                             extract_folder,
-                        ),
-                    )
+                        )
                     for fdata in pypack.getChildren().values()
-                ).values()
+                }.values()
             )  # : Remove duplicates
 
             #: Check as long there are unseen files
@@ -355,7 +353,7 @@ class ExtractArchive(Addon):
                             self.log_debug("Extracted files: {}".format(new_files))
 
                             new_folders = uniqify(
-                                [os.path.dirname(_f) for _f in new_files]
+                                os.path.dirname(_f) for _f in new_files
                             )
                             for foldername in new_folders:
                                 self.set_permissions(fsjoin(extract_folder, foldername))

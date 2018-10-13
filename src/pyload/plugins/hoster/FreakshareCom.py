@@ -180,7 +180,7 @@ class FreakshareCom(Hoster):
             r"<input\stype=\"hidden\"\svalue=\"(.*?)\"\sname=\"(.*?)\"\s\/>",
             re_envelope,
         )
-        request_options = dict((n, v) for (v, n) in to_sort)
+        request_options = {n: v for (v, n) in to_sort}
 
         herewego = self.load(
             self.pyfile.url, None, request_options
@@ -190,7 +190,7 @@ class FreakshareCom(Hoster):
             r"<input\stype=\".*?\"\svalue=\"(\S*?)\".*?name=\"(\S*?)\"\s.*?\/>",
             herewego,
         )
-        request_options = dict((n, v) for (v, n) in to_sort)
+        request_options = {n: v for (v, n) in to_sort}
 
         challenge = re.search(
             r"http://api\.recaptcha\.net/challenge\?k=(\w+)", herewego

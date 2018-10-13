@@ -35,10 +35,8 @@ class QuickshareCz(SimpleHoster):
         self.get_fileInfo()
 
         #: Parse js variables
-        self.jsvars = dict(
-            (x, y.strip("'"))
-            for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.data)
-        )
+        self.jsvars = {x: y.strip("'")
+            for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.data}
         self.log_debug(self.jsvars)
         pyfile.name = self.jsvars["ID3"]
 
@@ -66,11 +64,9 @@ class QuickshareCz(SimpleHoster):
     def handle_free(self, pyfile):
         #: Get download url
         download_url = "{}/download.php".format(self.jsvars["server"])
-        data = dict(
-            (x, self.jsvars[x])
+        data = {x: self.jsvars[x]
             for x in self.jsvars
-            if x in ("ID1", "ID2", "ID3", "ID4")
-        )
+            if x in ("ID1", "ID2", "ID3", "ID4")}
         self.log_debug("FREE URL1:" + download_url, data)
 
         header = self.load(download_url, post=data, just_header=True)
@@ -92,9 +88,7 @@ class QuickshareCz(SimpleHoster):
 
     def handle_premium(self, pyfile):
         download_url = "{}/download_premium.php".format(self.jsvars["server"])
-        data = dict(
-            (x, self.jsvars[x])
+        data = {x: self.jsvars[x]
             for x in self.jsvars
-            if x in ("ID1", "ID2", "ID4", "ID5")
-        )
+            if x in ("ID1", "ID2", "ID4", "ID5")}
         self.download(download_url, get=data)

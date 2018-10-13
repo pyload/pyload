@@ -113,13 +113,9 @@ class PornhubCom(SimpleHoster):
         res = js2py.eval_js(script)
         json_data = json.loads(res)
 
-        urls = dict(
-            [
-                (int(re.search("^(\d+)", _x["text"]).group(0)), _x["url"])
+        urls = {int(re.search("^(\d+)", _x["text"]).group(0)): _x["url"]
                 for _x in json_data
-                if _x["url"]
-            ]
-        )
+                if _x["url"]}
 
         quality = max(urls.keys())
 

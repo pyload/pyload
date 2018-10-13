@@ -328,11 +328,11 @@ class Cli(object):
             self.client.addPackage(args[0], args[1:], Destination.Collector)
 
         elif command == "del_file":
-            self.client.deleteFiles([int(x) for x in args])
+            self.client.deleteFiles(int(x) for x in args)
             print("Files deleted.")
 
         elif command == "del_package":
-            self.client.deletePackages([int(x) for x in args])
+            self.client.deletePackages(int(x) for x in args)
             print("Packages deleted.")
 
         elif command == "move":

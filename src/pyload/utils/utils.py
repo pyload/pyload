@@ -37,7 +37,7 @@ def remove_chars(value, repl):
     if isinstance(value, str):
         return str.translate(str.maketrans("", ""), repl)
     elif isinstance(value, str):
-        return str.translate(dict([(ord(s), None) for s in repl]))
+        return str.translate({ord(s): None for s in repl})
 
 
 def save_path(name):

@@ -10,7 +10,7 @@ from pyload.plugins.utils import json
 
 
 def gen_r():
-    return "0." + "".join([random.choice("0123456789") for x in range(16)])
+    return "0." + "".join(random.choice("0123456789") for x in range(16))
 
 
 class TenluaVn(SimpleHoster):
