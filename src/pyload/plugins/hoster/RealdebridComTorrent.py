@@ -16,7 +16,7 @@ from pyload.plugins.utils import exists, json
 class RealdebridComTorrent(Hoster):
     __name__ = "RealdebridComTorrent"
     __type__ = "hoster"
-    __version__ = "0.01"
+    __version__ = "0.02"
     __pyload_version__ = "0.5"
     __status__ = "testing"
 
@@ -158,7 +158,7 @@ class RealdebridComTorrent(Hoster):
         else:
             self.pyfile.name = api_data["filename"]
             self.pyfile.size = api_data["filesize"]
-            self.chunk_limit = api_data["chunks"]
+            self.chunk_limit = api_data["chunks"] if api_data['filesize'] < 2 * 1024**3 else 1
             self.download(api_data["download"])
 
     def delete_torrent_from_server(self, torrent_id):
