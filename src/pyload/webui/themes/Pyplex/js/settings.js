@@ -100,7 +100,7 @@ SettingsUI = (function() {
         d = $(this).attr('id').split('|'), c = d[0], g = d[1];
         b = $(this).text();
         f = c === 'general' ? generalPanel : pluginPanel;
-        $.get( "{{'/json/load_config/'|url}}" + c + '/' + g, function(e) {
+        $.get( "{{'/json/v1/load_config/'|url}}" + c + '/' + g, function(e) {
                 f.html(e);
             });
     };
@@ -109,7 +109,7 @@ SettingsUI = (function() {
         c = $(this).attr('id').split("_")[0];
         $.ajax({
             method: "post",
-            url: "{{'/json/save_config/'|url}}" + c,
+            url: "{{'/json/v1/save_config/'|url}}" + c,
             data: $("#" + c + "_form").serialize(),
             async: true,
             success: function () {
@@ -126,7 +126,7 @@ SettingsUI = (function() {
         $(this).addClass("disabled");
         $.ajax({
             method: "post",
-            url: "{{'/json/add_account'|url}}",
+            url: "{{'/json/v1/add_account'|url}}",
             async: true,
             data: $("#add_account_form").serialize(),
             success: function () {
@@ -143,7 +143,7 @@ SettingsUI = (function() {
         indicateLoad();
         $.ajax({
             method: "post",
-            url: "{{'/json/update_accounts'|url}}",
+            url: "{{'/json/v1/update_accounts'|url}}",
             data: $("#account_form").serialize(),
             async: true,
             success: function () {

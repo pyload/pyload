@@ -214,7 +214,7 @@ $(function() {
             return false;
         } else {
             $.ajax({
-                url: "{{'/json/add_package'|url}}",
+                url: "{{'/json/v1/add_package'|url}}",
                 method: "POST",
                 data: formData,
                 processData: false,
@@ -243,7 +243,7 @@ $(function() {
         $.get("{{'/api/v1/unpauseServer'|url}}", function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'|url}}",
+                url: "{{'/json/v1/status'|url}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -259,7 +259,7 @@ $(function() {
         $.get("{{'/api/v1/pauseServer'|url}}", function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'|url}}",
+                url: "{{'/json/v1/status'|url}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -280,7 +280,7 @@ $(function() {
 
     $.ajax({
         method:"post",
-        url: "{{'/json/status'|url}}",
+        url: "{{'/json/v1/status'|url}}",
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -289,7 +289,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method: "POST",
-            url: "{{'/json/status'|url}}",
+            url: "{{'/json/v1/status'|url}}",
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -378,7 +378,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "{{'/json/set_captcha'|url}}",
+            url: "{{'/json/v1/set_captcha'|url}}",
             async: true,
             method: b,
             data: a,

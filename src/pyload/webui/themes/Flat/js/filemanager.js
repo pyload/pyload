@@ -166,7 +166,7 @@ var Item = new Class({
         hide_confirm_box();
     new Request.JSON({
             method: 'POST',
-            url: "/json/filemanager/delete",
+            url: "/json/v1/filemanager/delete",
         data: {'path': this.path, 'name': this.name},
             onSuccess: function(data) {
         if(data.response == "success")
@@ -210,7 +210,7 @@ var Item = new Class({
         hide_rename_box();
     new Request.JSON({
             method: 'POST',
-            url: "/json/filemanager/rename",
+            url: "/json/v1/filemanager/rename",
             onSuccess: function(data) {
         if(data.response == "success")
         {
@@ -233,7 +233,7 @@ var Item = new Class({
     mkdir: function(event) {
       new Request.JSON({
       method: 'POST',
-      url: "/json/filemanager/mkdir",
+      url: "/json/v1/filemanager/mkdir",
       data: {'path': this.path + "/" + this.name, 'name': '{{_("New folder")}}'},
       onSuccess: function(data) {
           if(data.response == "success")

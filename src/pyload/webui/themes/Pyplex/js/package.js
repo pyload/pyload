@@ -35,7 +35,7 @@ function PackageUI (url, type){
                 }
                 var order = ui.item.data('pid') + '|' + newIndex;
                 indicateLoad();
-                $.get("{{'/json/package_order/'|url}}" + order, function () {
+                $.get("{{'/json/v1/package_order/'|url}}" + order, function () {
                     indicateFinish();
                     return true;
                 } ).fail(function () {
@@ -133,7 +133,7 @@ function Package (ui, id, ele){
 
     this.loadLinks = function () {
         indicateLoad();
-        $.get("{{'/json/package/'|url}}" + id, thisObject.createLinks).fail(function () {
+        $.get("{{'/json/v1/package/'|url}}" + id, thisObject.createLinks).fail(function () {
             indicateFail();
         });
     };
@@ -234,7 +234,7 @@ function Package (ui, id, ele){
                 }
                 var order = ui.item.data('lid') + '|' + newIndex;
                 indicateLoad();
-                $.get("{{'/json/link_order/'|url}}" + order, function () {
+                $.get("{{'/json/v1/link_order/'|url}}" + order, function () {
                     indicateFinish();
                     return true;
                 } ).fail(function () {
@@ -303,7 +303,7 @@ function Package (ui, id, ele){
 
     this.movePackage = function(event) {
         indicateLoad();
-        $.get("{{'/json/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function () {
+        $.get("{{'/json/v1/move_package/'|url}}" + ((ui.type + 1) % 2) + "/" + id, function () {
             $(ele).remove();
             indicateFinish();
         }).fail(function () {
@@ -315,11 +315,11 @@ function Package (ui, id, ele){
 
     this.editOrder = function(event) {
         indicateLoad();
-        $.get("{{'/json/package/'|url}}" + id, function(data){
+        $.get("{{'/json/v1/package/'|url}}" + id, function(data){
             length = data.links.length;
             for (i = 1; i <= length/2; i++){
                 order = data.links[length-i].fid + '|' + (i-1);
-                $.get( "{{'/json/link_order/'|url}}" + order).fail(function () {
+                $.get( "{{'/json/v1/link_order/'|url}}" + order).fail(function () {
                     indicateFail();
                 });
             }
@@ -346,7 +346,7 @@ function Package (ui, id, ele){
 
     this.savePackage = function(event) {
         $.ajax({
-            url: "{{'/json/edit_package'|url}}",
+            url: "{{'/json/v1/edit_package'|url}}",
             type: 'post',
             dataType: 'json',
             data: $('#pack_form').serialize()

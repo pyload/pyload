@@ -10,7 +10,7 @@ $(function() {
         if (i === g) {
             $.ajax({
                 method: "post",
-                url: "{{'/json/change_password'|url}}",
+                url: "{{'/json/v1/change_password'|url}}",
                 data: $("#password_form").serialize(),
                 async: true,
                 success: function () {
