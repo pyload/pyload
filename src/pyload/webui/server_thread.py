@@ -115,7 +115,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webui.run_simple(host=self.host, port=self.port)
+        webui.run_builtin(host=self.host, port=self.port)
 
     def start_threaded(self):
         if self.https:

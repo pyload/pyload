@@ -42,7 +42,7 @@ class PluginThread(Thread):
         """
 
         dump_name = "debug_{}_{}.zip".format(
-            pyfile.pluginname, strftime("%d-%m-%Y_%H-%M-%S")
+            pyfile.pluginname, strftime("%Y-%m-%d_%H-%M-%S")
         )
         dump = self.getDebugDump(pyfile)
 

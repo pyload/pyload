@@ -50,7 +50,7 @@ class Setup(object):
         #                from pyload.webui import server_thread
         #                server_thread.setup = self
         #                from pyload.webui import webinterface
-        #                webinterface.run_simple()
+        #                webinterface.run_auto()
         #                return False
         #            except Exception as e:
         #                print("Setup failed with this error: ", e)

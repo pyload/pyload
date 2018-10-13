@@ -14,21 +14,15 @@ from jinja2 import Environment, FileSystemBytecodeCache, FileSystemLoader, Prefi
 from pyload.utils.utils import decode, formatSize
 from pyload.plugins.utils import json  # change to core utils
 from pyload.webui import server_thread, api_app, cnl_app, json_app, pyload_app
-from pyload.webui.filters import (
-    date,
-    path_make_absolute,
-    path_make_relative,
-    quotepath,
-    truncate,
-)
+
 from pyload.webui.middlewares import (
     GZipMiddleWare,
     PrefixMiddleware,
     StripPathMiddleware,
 )
 
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-PYLOAD_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
+THEME_DIR  = os.path.abspath(os.path.join(os.path.dirname(__file__), "themes"))
+PYLOAD_DIR = os.path.abspath(os.path.join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
 
@@ -47,7 +41,7 @@ else:
     PYLOAD = server_thread.core.api
     config = server_thread.core.config
 
-TEMPLATE = config.get("webui", "template")
+THEME = config.get("webui", "template")
 DL_ROOT = config.get("general", "download_folder")
 LOG_ROOT = config.get("log", "log_folder")
 PREFIX = config.get("webui", "prefix")
@@ -65,13 +59,7 @@ if not os.path.exists(cache):
     os.makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, "{}.cache")
-
-mapping = {"js": FileSystemLoader(os.path.join(PROJECT_DIR, "media", "js"))}
-for template in os.listdir(os.path.join(PROJECT_DIR, "templates")):
-    if os.path.isdir(os.path.join(PROJECT_DIR, "templates", template)):
-        mapping[template] = FileSystemLoader(os.path.join(PROJECT_DIR, "templates", template))
-
-loader = PrefixLoader(mapping)
+loader = jinja2.FileSystemLoader([THEME_DIR, os.path.join(THEME_DIR, THEME)])
 
 env = Environment(
     loader=loader,
@@ -81,6 +69,13 @@ env = Environment(
     bytecode_cache=bcc,
 )
 
+from pyload.webui.filters import (
+    date,
+    path_make_absolute,
+    path_make_relative,
+    quotepath,
+    truncate,
+)
 
 env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
@@ -118,13 +113,17 @@ web = GZipMiddleWare(web)
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
-
+from pyload.webui import app
 def run_simple(host="0.0.0.0", port="8000"):
     run(app=web, host=host, port=port, quiet=True)
 
+    
+def run_auto(host="0.0.0.0", port="8000"):
+    bottle.run(app=web, host=host, port=port, server="auto", quiet=True)
+
 
 def run_lightweight(host="0.0.0.0", port="8000"):
-    run(app=web, host=host, port=port, quiet=True, server="bjoern")
+    run(app=web, host=host, port=port, server="bjoern", quiet=True)
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
@@ -136,16 +135,10 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
 
     CherryPyWSGIServer.numthreads = theads
 
-    from pyload.webui.utils import CherryPyWSGI
+    from pyload.webui.app.utils import CherryPyWSGI
 
     run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):
-    from bottle import FlupFCGIServer
-
-    run(app=web, host=host, port=port, server=FlupFCGIServer, quiet=True)
-
-
-if __name__ == "__main__":
-    run(app=web, port=8001)
+    bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True)
