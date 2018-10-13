@@ -3,14 +3,14 @@
 
 import inspect
 from builtins import _, object, range, str
-from os import remove
+import os
 from os.path import exists
 from queue import Queue
 from shutil import move
 from threading import Event, Thread
 from traceback import print_exc
 
-from pyload.utils.utils import chmod
+from pyload.utils.utils import os.chmod
 
 try:
     from pysqlite2 import dbapi2 as sqlite3
@@ -131,7 +131,7 @@ class DatabaseBackend(Thread):
         convert = self._checkVersion()  # returns None or current version
 
         self.conn = sqlite3.connect("files.db")
-        chmod("files.db", 0o600)
+        os.chmod("files.db", 0o600)
 
         self.c = self.conn.cursor()  # compatibility
 
@@ -178,7 +178,7 @@ class DatabaseBackend(Thread):
                     )
                 except Exception:
                     print("Filedatabase was deleted due to incompatible version.")
-                remove("files.version")
+                os.remove("files.version")
                 move("files.db", "files.backup.db")
             with open("files.version", "wb") as f:
                 f.write(str(__version__))
@@ -321,7 +321,7 @@ class DatabaseBackend(Thread):
 
     @classmethod
     def unregisterSub(cls, klass):
-        cls.subs.remove(klass)
+        cls.subs.os.remove(klass)
 
     def __getattr__(self, attr):
         for sub in DatabaseBackend.subs:

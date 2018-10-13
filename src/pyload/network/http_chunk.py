@@ -3,7 +3,7 @@
 
 import codecs
 from builtins import object, range, str
-from os import fsync, remove, stat
+import os
 from os.path import exists
 from re import search
 from time import sleep
@@ -96,7 +96,7 @@ class ChunkInfo(object):
     def remove(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
         if exists(fs_name):
-            remove(fs_name)
+            os.remove(fs_name)
 
     def getCount(self):
         return len(self.chunks)
@@ -130,7 +130,7 @@ class HTTPChunk(HTTPRequest):
         self.initHandle()
         self.setInterface(self.p.options)
 
-        self.BOMChecked = False  # check and remove byte order mark
+        self.BOMChecked = False  # check and os.remove byte order mark
 
         self.rep = None
 
@@ -165,7 +165,7 @@ class HTTPChunk(HTTPRequest):
             self.fp = open(fs_name, "ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
-                self.arrived = stat(fs_name).st_size
+                self.arrived = os.stat(fs_name).st_size
 
             if self.range:
                 # do nothing if chunk already finished
@@ -293,7 +293,7 @@ class HTTPChunk(HTTPRequest):
         flush and close file.
         """
         self.fp.flush()
-        fsync(self.fp.fileno())  # make sure everything was written to disk
+        os.fsync(self.fp.fileno())  # make sure everything was written to disk
         self.fp.close()  # needs to be closed, or merging chunks will fail
 
     def close(self):

@@ -20,7 +20,7 @@ from builtins import _, object, owd, pypath, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
 from imp import find_module
-from os import _exit, chdir, close, execl, getcwd, makedirs, remove, sep, walk
+import os
 from os.path import exists, join
 from sys import argv, executable, exit
 from time import sleep, time
@@ -194,7 +194,7 @@ class Core(object):
     def quit(self, a, b):
         self.shutdown()
         self.log.info(_("Received Quit signal"))
-        _exit(1)
+        os._exit(1)
 
     def writePidFile(self):
         self.deletePidFile()
@@ -261,7 +261,7 @@ class Core(object):
             print("Error quitting pyLoad")
 
     def cleanTree(self):
-        for path, dirs, files in walk(self.path("")):
+        for path, dirs, files in os.walk(self.path("")):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
                     continue
@@ -270,7 +270,7 @@ class Core(object):
                     continue
 
                 print(join(path, f))
-                remove(join(path, f))
+                os.remove(join(path, f))
 
     def start(self, rpc=True, web=True):
         """
@@ -297,7 +297,7 @@ class Core(object):
                 print_exc()
                 print("Setup failed")
             if not res:
-                remove("pyload.conf")
+                os.remove("pyload.conf")
 
             exit()
 
@@ -364,7 +364,7 @@ class Core(object):
         self.shuttedDown = False
 
         self.log.info(_("Starting") + " pyLoad {}".format(self.version))
-        self.log.info(_("Using home directory: {}").format(getcwd()))
+        self.log.info(_("Using home directory: {}").format(os.getcwd()))
 
         self.writePidFile()
 
@@ -399,7 +399,7 @@ class Core(object):
             self.log.info(_("Please check your logindata with pyLoad -u"))
 
         if self.deleteLinks:
-            self.log.info(_("All links removed"))
+            self.log.info(_("All links os.removed"))
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
@@ -472,7 +472,7 @@ class Core(object):
         #        from tests.api_exerciser import startApiExerciser
         #        startApiExerciser(self, 3)
 
-        # some memory stats
+        # some memory os.stats
         #        from guppy import hpy
         #        hp=hpy()
         #        import objgraph
@@ -496,8 +496,8 @@ class Core(object):
             if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
-                self.removeLogger()
-                _exit(0)  # TODO: thrift blocks shutdown
+                self.os.removeLogger()
+                os._exit(0)  # TODO: thrift blocks shutdown
 
             self.threadManager.work()
             self.scheduler.work()
@@ -543,7 +543,7 @@ class Core(object):
 
     def removeLogger(self):
         for h in self.log.handlers:
-            self.log.removeHandler(h)
+            self.log.os.removeHandler(h)
             h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
@@ -590,8 +590,8 @@ class Core(object):
                 if empty:
                     try:
                         if folder:
-                            tmp_name = tmp_name.replace("/", sep)
-                            makedirs(tmp_name)
+                            tmp_name = tmp_name.replace("/", os.sep)
+                            os.makedirs(tmp_name)
                         else:
                             open(tmp_name, "w")  # where is closed?
                     except Exception:
@@ -624,16 +624,16 @@ class Core(object):
 
     def restart(self):
         self.shutdown()
-        chdir(owd)
+        os.chdir(owd)
         # close some open fds
         for i in range(3, 50):
             try:
-                close(i)
+                os.close(i)
             except BaseException:
                 pass
 
-        execl(executable, executable, *sys.argv)
-        _exit(0)
+        os.execl(executable, executable, *sys.argv)
+        os._exit(0)
 
     def shutdown(self):
         self.log.info(_("shutting down..."))
@@ -722,8 +722,8 @@ def main(args):
         except KeyboardInterrupt:
             pyload_core.shutdown()
             pyload_core.log.info(_("killed pyLoad from Terminal"))
-            pyload_core.removeLogger()
-            _exit(1)
+            pyload_core.os.removeLogger()
+            os._exit(1)
 
 
 def run():

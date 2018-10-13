@@ -11,24 +11,24 @@ finally:
 
 import builtins
 import sys
-from os import chdir, makedirs, path
+import os
 from os.path import join
 from sys import argv, platform
 
-builtins._ = lambda x: x  # TODO: remove
+builtins._ = lambda x: x  # TODO: os.remove
 
-builtins.pyreq = None  # TODO: remove
-builtins.addonManager = None  # TODO: remove
+builtins.pyreq = None  # TODO: os.remove
+builtins.addonManager = None  # TODO: os.remove
 
-builtins.owd = path.abspath("")  # original working directory
-builtins.pypath = pypath = path.abspath(path.join(__file__, "..", ".."))
+builtins.owd = os.path.abspath("")  # original working directory
+builtins.pypath = pypath = os.path.abspath(os.path.join(__file__, "..", ".."))
 
 sys.path.append(join(pypath, "pyload", "lib"))
 
 homedir = ""
 
 if platform == "nt":
-    homedir = path.expanduser("~")
+    homedir = os.path.expanduser("~")
     if homedir == "~":
         import ctypes
 
@@ -46,7 +46,7 @@ if platform == "nt":
         result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
         homedir = path_buf.value
 else:
-    homedir = path.expanduser("~")
+    homedir = os.path.expanduser("~")
 
 builtins.homedir = homedir
 
@@ -61,20 +61,20 @@ if "--configdir=" in args:
         configdir = args[pos + 12 :].strip()
     else:
         configdir = args[pos + 12 : end].strip()
-elif path.exists(path.join(pypath, "pyload", "config", "configdir")):
-    with open(path.join(pypath, "pyload", "config", "configdir"), "rb") as f:
+elif os.path.exists(os.path.join(pypath, "pyload", "config", "configdir")):
+    with open(os.path.join(pypath, "pyload", "config", "configdir"), "rb") as f:
         c = f.read().strip()
-    configdir = path.join(pypath, c)
+    configdir = os.path.join(pypath, c)
 else:
     if platform in ("posix", "linux2"):
-        configdir = path.join(homedir, ".pyload")
+        configdir = os.path.join(homedir, ".pyload")
     else:
-        configdir = path.join(homedir, "pyload")
+        configdir = os.path.join(homedir, "pyload")
 
-if not path.exists(configdir):
-    makedirs(configdir, 0o700)
+if not os.path.exists(configdir):
+    os.makedirs(configdir, 0o700)
 
 builtins.configdir = configdir
-chdir(configdir)
+os.chdir(configdir)
 
 # print("Using {} as working directory.".format(configdir))

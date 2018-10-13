@@ -33,7 +33,7 @@ def decode(value):
 
 def remove_chars(value, repl):
     """
-    removes all chars in repl from string.
+    os.removes all chars in repl from string.
     """
     if isinstance(value, str):
         return str.translate(str.maketrans("", ""), repl)
@@ -42,11 +42,11 @@ def remove_chars(value, repl):
 
 
 def save_path(name):
-    # remove some chars
+    # os.remove some chars
     if os.name == "nt":
-        return remove_chars(name, '/\\?%*:|"<>')
+        return os.remove_chars(name, '/\\?%*:|"<>')
     else:
-        return remove_chars(name, '/\\"')
+        return os.remove_chars(name, '/\\"')
 
 
 def save_join(*args):
@@ -129,9 +129,7 @@ def freeSpace(folder):
         )
         return free_bytes.value
     else:
-        from os import statvfs
-
-        s = statvfs(folder)
+        s = os.statvfs(folder)
         return s.f_bsize * s.f_bavail
 
 

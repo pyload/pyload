@@ -3,7 +3,7 @@
 
 from builtins import _, object, range, str
 from logging import getLogger
-from os import remove
+import os
 from os.path import dirname
 from shutil import move
 from time import time
@@ -104,18 +104,18 @@ class HTTPDownload(object):
                             fo.write(data)
                     if fo.tell() < self.info.getChunkRange(i)[1]:
                         fo.close()
-                        remove(init)
-                        self.info.remove()  # there are probably invalid chunks
+                        os.remove(init)
+                        self.info.os.remove()  # there are probably invalid chunks
                         raise Exception(
                             "Downloaded content was smaller than expected. Try to reduce download connections."
                         )
-                    remove(fname)  # remove chunk
+                    os.remove(fname)  # os.remove chunk
 
         if self.nameDisposition and self.disposition:
             self.filename = save_join(dirname(self.filename), self.nameDisposition)
 
         move(init, fs_encode(self.filename))
-        self.info.remove()  # remove info file
+        self.info.os.remove()  # os.remove info file
 
     def download(self, chunks=1, resume=False):
         """
@@ -134,7 +134,7 @@ class HTTPDownload(object):
                 # try again without resume
                 self.log.debug("Errno 33 -> Restart without resume")
 
-                # remove old handles
+                # os.remove old handles
                 for chunk in self.chunks:
                     self.closeChunk(chunk)
 
@@ -264,12 +264,12 @@ class HTTPDownload(object):
                             )
                         )
 
-                        # list of chunks to clean and remove
+                        # list of chunks to clean and os.remove
                         to_clean = [x for x in self.chunks if x is not init]
                         for chunk in to_clean:
                             self.closeChunk(chunk)
-                            self.chunks.remove(chunk)
-                            remove(fs_encode(self.info.getChunkName(chunk.id)))
+                            self.chunks.os.remove(chunk)
+                            os.remove(fs_encode(self.info.getChunkName(chunk.id)))
 
                         # let first chunk load the rest and update the info file
                         init.resetRange()
@@ -337,7 +337,7 @@ class HTTPDownload(object):
 
     def closeChunk(self, chunk):
         try:
-            self.m.remove_handle(chunk.c)
+            self.m.os.remove_handle(chunk.c)
         except pycurl.error as e:
             self.log.debug("Error removing chunk: {}".format(str(e)))
         finally:

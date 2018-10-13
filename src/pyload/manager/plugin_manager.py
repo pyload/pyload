@@ -7,7 +7,7 @@ import sys
 from ast import literal_eval
 from builtins import _, object, pypath, str
 from itertools import chain
-from os import listdir, makedirs
+import os
 from os.path import abspath, exists, isfile, join
 from sys import version_info
 from traceback import print_exc
@@ -67,7 +67,7 @@ class PluginManager(object):
         sys.path.append(abspath(""))
 
         if not exists("userplugins"):
-            makedirs("userplugins")
+            os.makedirs("userplugins")
         if not exists(join("userplugins", "__init__.py")):
             f = open(join("userplugins", "__init__.py"), "wb")
             f.close()
@@ -124,7 +124,7 @@ class PluginManager(object):
         if home:
             pfolder = join("userplugins", folder)
             if not exists(pfolder):
-                makedirs(pfolder)
+                os.makedirs(pfolder)
             if not exists(join(pfolder, "__init__.py")):
                 f = open(join(pfolder, "__init__.py"), "wb")
                 f.close()
@@ -133,7 +133,7 @@ class PluginManager(object):
             pfolder = join(pypath, "pyload", "plugins", folder)
 
         configs = {}
-        for f in listdir(pfolder):
+        for f in os.listdir(pfolder):
             if (
                 isfile(join(pfolder, f))
                 and f.endswith(".py")
@@ -355,7 +355,7 @@ class PluginManager(object):
         # redirecting imports if necesarry
         if fullname.startswith(self.ROOT) or fullname.startswith(
             self.USERROOT
-        ):  # seperate pyload plugins
+        ):  # os.seperate pyload plugins
             if fullname.startswith(self.USERROOT):
                 user = 1
             else:

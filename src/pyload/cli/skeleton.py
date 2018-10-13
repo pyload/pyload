@@ -15,7 +15,7 @@ import sys
 from builtins import _, homedir, input, object, owd, pypath, range, str
 from codecs import getwriter
 from getopt import GetoptError, getopt
-from os import _exit
+import os
 from os.path import basename, exists, join
 from sys import exit
 from threading import Lock, Thread
@@ -421,7 +421,7 @@ class RefreshThread(Thread):
             except ConnectionClosed:
                 os.system("clear")
                 print(_("pyLoad was terminated"))
-                _exit(0)
+                os._exit(0)
             except Exception as e:
                 println(2, red(str(e)))
                 self.cli.reset()

@@ -3,7 +3,7 @@
 
 from builtins import _, str
 from copy import copy
-from os import listdir, stat
+import os
 from os.path import join
 from pprint import pformat
 from queue import Queue
@@ -52,7 +52,7 @@ class PluginThread(Thread):
 
             zip = zipfile.ZipFile(dump_name, "w")
 
-            for f in listdir(join("tmp", pyfile.pluginname)):
+            for f in os.listdir(join("tmp", pyfile.pluginname)):
                 try:
                     # avoid encoding errors
                     zip.write(
@@ -70,7 +70,7 @@ class PluginThread(Thread):
             zip.writestr(info, dump)
             zip.close()
 
-            if not stat(dump_name).st_size:
+            if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")
 
         except Exception as e:
@@ -179,7 +179,7 @@ class DownloadThread(PluginThread):
 
             if self.active == "quit":
                 self.active = False
-                self.m.threads.remove(self)
+                self.m.threads.os.remove(self)
                 return True
 
             try:
@@ -455,12 +455,12 @@ class DecrypterThread(PluginThread):
                 self.active.release()
                 self.active = False
                 self.m.pyload.files.save()
-                self.m.localThreads.remove(self)
+                self.m.localThreads.os.remove(self)
                 # exc_clear()
 
         # self.m.pyload.addonManager.downloadFinished(pyfile)
 
-        # self.m.localThreads.remove(self)
+        # self.m.localThreads.os.remove(self)
         # self.active.finishIfDone()
         if not retry:
             pyfile.delete()
@@ -500,7 +500,7 @@ class AddonThread(PluginThread):
 
     def finishFile(self, pyfile):
         if pyfile in self.active:
-            self.active.remove(pyfile)
+            self.active.os.remove(pyfile)
 
         pyfile.finishIfDone()
 
@@ -521,7 +521,7 @@ class AddonThread(PluginThread):
             for x in local:
                 self.finishFile(x)
 
-            self.m.localThreads.remove(self)
+            self.m.localThreads.os.remove(self)
 
 
 class InfoThread(PluginThread):

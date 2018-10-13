@@ -4,7 +4,7 @@
 import os
 from builtins import _, object, str
 from itertools import islice
-from os import chmod, makedirs, remove, stat
+import os
 from os.path import exists, join
 from random import randint
 from time import sleep, time
@@ -12,7 +12,6 @@ from time import sleep, time
 from pyload.utils.utils import fs_decode, fs_encode, save_join, save_path
 
 if os.name != "nt":
-    from os import chown
     from pwd import getpwnam
     from grp import getgrnam
 
@@ -441,11 +440,11 @@ class Plugin(Base):
 
             while task.isWaiting():
                 if self.pyfile.abort:
-                    captchaManager.removeTask(task)
+                    captchaManager.os.removeTask(task)
                     raise Abort
                 sleep(1)
 
-            captchaManager.removeTask(task)
+            captchaManager.os.removeTask(task)
 
             if (
                 task.error and has_plugin
@@ -469,7 +468,7 @@ class Plugin(Base):
 
         if not self.pyload.debug:
             try:
-                remove(temp_file.name)
+                os.remove(temp_file.name)
             except Exception:
                 pass
 
@@ -510,7 +509,7 @@ class Plugin(Base):
 
             frame = currentframe()
             if not exists(join("tmp", self.__name__)):
-                makedirs(join("tmp", self.__name__))
+                os.makedirs(join("tmp", self.__name__))
 
             with open(
                 join(
@@ -577,14 +576,14 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not exists(location):
-            makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
+            os.makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
 
             if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
                 try:
                     uid = getpwnam(self.config["permission"]["user"])[2]
                     gid = getgrnam(self.config["permission"]["group"])[2]
 
-                    chown(location, uid, gid)
+                    os.chown(location, uid, gid)
                 except Exception as e:
                     self.log.warning(
                         _("Setting User and Group failed: {}").format(str(e))
@@ -626,14 +625,14 @@ class Plugin(Base):
         fs_filename = fs_encode(filename)
 
         if self.pyload.config["permission"]["change_file"]:
-            chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
+            os.chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
 
         if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
             try:
                 uid = getpwnam(self.config["permission"]["user"])[2]
                 gid = getgrnam(self.config["permission"]["group"])[2]
 
-                chown(fs_filename, uid, gid)
+                os.chown(fs_filename, uid, gid)
             except Exception as e:
                 self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
 
@@ -658,7 +657,7 @@ class Plugin(Base):
         if not exists(lastDownload):
             return None
 
-        size = stat(lastDownload)
+        size = os.stat(lastDownload)
         size = size.st_size
 
         if api_size and api_size <= size:
@@ -674,13 +673,13 @@ class Plugin(Base):
             if type(rule) in (str, bytes):
                 if rule in content:
                     if delete:
-                        remove(lastDownload)
+                        os.remove(lastDownload)
                     return name
             elif hasattr(rule, "search"):
                 m = rule.search(content)
                 if m:
                     if delete:
-                        remove(lastDownload)
+                        os.remove(lastDownload)
                     self.lastCheck = m
                     return name
 
@@ -743,7 +742,7 @@ class Plugin(Base):
 
     def clean(self):
         """
-        clean everything and remove references.
+        clean everything and os.remove references.
         """
         if hasattr(self, "pyfile"):
             del self.pyfile

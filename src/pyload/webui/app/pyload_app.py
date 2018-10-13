@@ -5,7 +5,7 @@ import time
 from builtins import _
 from datetime import datetime
 from operator import attrgetter, itemgetter
-from os import listdir
+import os
 from os.path import abspath, isdir, isfile, join
 from urllib.parse import unquote
 
@@ -62,7 +62,7 @@ def choose_path(browse_for, path=""):
     path = os.path.normpath(unquotepath(path))
 
     try:
-        path = path.decode("utf8")
+        path = os.path.decode("utf8")
     except Exception:
         pass
 
@@ -89,8 +89,8 @@ def choose_path(browse_for, path=""):
         if os.path.abspath(cwd) == os.path.abspath("/"):
             cwd = relpath(cwd)
         else:
-            cwd = relpath(cwd) + os.path.sep
-        parentdir = relpath(parentdir) + os.path.sep
+            cwd = relpath(cwd) + os.path.os.sep
+        parentdir = relpath(parentdir) + os.path.os.sep
 
     if os.path.abspath(cwd) == os.path.abspath("/"):
         parentdir = ""
@@ -300,12 +300,12 @@ def downloads():
         return base([_("Download directory not found.")])
     data = {"folder": [], "files": []}
 
-    items = listdir(fs_encode(root))
+    items = os.listdir(fs_encode(root))
 
     for item in sorted([fs_decode(x) for x in items]):
         if isdir(save_join(root, item)):
             folder = {"name": item, "path": item, "files": []}
-            files = listdir(save_join(root, item))
+            files = os.listdir(save_join(root, item))
             for file in sorted([fs_decode(x) for x in files]):
                 try:
                     if isfile(save_join(root, item, file)):
@@ -328,7 +328,7 @@ def get_download(path):
 
     root = PYLOAD.getConfigValue("general", "download_folder")
 
-    path = path.replace("..", "")
+    path = os.path.replace("..", "")
     try:
         return static_file(fs_encode(path), fs_encode(root), download=True)
 

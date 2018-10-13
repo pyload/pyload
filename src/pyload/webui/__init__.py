@@ -5,7 +5,7 @@
 import os
 import sys
 from builtins import str
-from os import makedirs
+import os
 from os.path import abspath, dirname, exists, join
 
 import bottle
@@ -64,7 +64,7 @@ bottle.debug(DEBUG)
 
 cache = join("tmp", "jinja_cache")
 if not exists(cache):
-    makedirs(cache)
+    os.makedirs(cache)
 
 bcc = FileSystemBytecodeCache(cache, "{}.cache")
 
