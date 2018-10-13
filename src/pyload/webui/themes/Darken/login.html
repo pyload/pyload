@@ -1,0 +1,37 @@
+{% extends '/base.html' %}
+
+{% block title %}{{_("Login")}} - {{super()}} {% endblock %}
+
+{% block content %}
+
+<div class="centeralign">
+<form action="" method="post" accept-charset="utf-8" id="login">
+    <div class="no">
+        <input type="hidden" name="do" value="login" />
+        <fieldset>
+        <legend>Login</legend>
+{% if errors %}
+<p style="color:red;">{{_("Your username and password didn't match. Please try again.")}}</p>
+{% endif %}
+    <table id="login_table">
+        <tr>
+            <td>{{_("Username")}}</td>
+            <td><input type="text" size="20" name="username" /></td>
+        </tr>
+        <tr>
+            <td>{{_("Password")}}</td>
+            <td><input type="password" size="20" name="password" /></td>
+        </tr>
+<tr>
+<td>&nbsp;</td>
+        <td><input type="submit" value="Login" class="button" /></td>
+</tr>
+</table>
+        </fieldset>
+    </div>
+</form>
+
+</div>
+<br>
+
+{% endblock %}

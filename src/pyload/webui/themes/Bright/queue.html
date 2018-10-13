@@ -1,0 +1,109 @@
+{% extends '/base.html' %}
+{% block head %}
+
+<script type="text/javascript" src="/js/package.js"></script>
+
+<script type="text/javascript">
+
+document.addEvent("domready", function(){
+    var pUI = new PackageUI("url", {{ target }});
+});
+</script>
+{% endblock %}
+
+{% if target %}
+    {% set name = _("Queue") %}
+{% else %}
+    {% set name = _("Collector") %}
+{% endif %}
+
+{% block pageactions %}
+<div class="btn-group btn-group-sm" role="group" aria-label="..." style="margin-left:10px;">
+        <button id="del_finished" class="btn btn-default"><span>{{_("Delete Finished")}}</span></button>
+        <button id="restart_failed" class="btn btn-default"><span>{{_("Restart Failed")}}</span></button>
+</div>
+{% endblock %}
+
+{% block title %}{{name}} - {{super()}} {% endblock %}
+{% block subtitle %}{{name}}{% endblock %}
+
+{% block content %}
+{% autoescape true %}
+
+<ul id="package-list" style="list-style: none; padding-left: 0; margin-top: -10px;">
+{% for package in content %}
+    <li>
+<div id="package_{{package.pid}}" >
+    <div class="order" style="display: none;">{{ package.order }}</div>
+
+    <div class="packagename" style="float:left; width: 50%; cursor: pointer">
+        <span class="glyphicon glyphicon-folder-close"></span>
+        <span class="name" style="font-size: 16px; font-weight: bold;"><em class="package_drag" style="font-style:normal">{{package.name }}</em></span>
+        &nbsp;&nbsp;
+        <span class="buttons" style="opacity:0">
+        <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/img/delete.png" /></span>
+        &nbsp;&nbsp;
+        <span class="glyphicon glyphicon-repeat" title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/arrow_refresh.png" /></span>
+        &nbsp;&nbsp;
+         <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/pencil.png" /></span>
+        &nbsp;&nbsp;
+         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/package_go.png" /></span>
+        </span>
+    </div>
+    {% set progress = (package.linksdone * 100) / package.linkstotal %}
+
+    <div id="progress" class="progress" style="float:left; width: 50%; margin-top: -5px; color:#fff; font-weight: 700; font-size:12px;">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%; height: 100%; position: relative; z-index: 1;">
+            <label>{{ package.linksdone }} / {{ package.linkstotal }}</label>
+        </div>
+        <label style="right: 30px; position: absolute; z-index: 2; color:#fff;">
+            {{ package.sizedone|formatsize }} / {{ package.sizetotal|formatsize }}</label>
+        </div>
+    <div style="clear: both; margin-bottom: -10px"></div>
+
+
+    <div id="children_{{package.pid}}" style="display: none; margin-bottom: 15px;" class="children">
+    <span class="child_secrow" style="margin-bottom: 30px; margin-top: 5px;">{{_("Folder:")}} <span class="folder">{{package.folder}}</span> | {{_("Password:")}} <span class="password">{{package.password}}</span></span>
+    <ul id="sort_children_{{package.pid}}" style="list-style: none; padding-left: 0">
+    </ul>
+    </div>
+</div>
+    </li>
+{% endfor %}
+</ul>
+{% endautoescape %}
+{% endblock %}
+
+{% block hidden %}
+<div id="pack_box" style="z-index: 2">
+    <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data">
+    <h3>{{_("Edit Package")}}</h3>
+    <p>{{_("Edit the package detais below.")}}</p>
+
+    <input name="pack_id" id="pack_id" type="hidden" value=""/>
+
+    <div class="form-group">
+        <label for="pack_name">{{_("Name")}}</label>
+        <input class="form-control" id="pack_name" name="pack_name" type="text" />
+        <p class="help-block">{{_("The name of the package.")}}</p>
+    </div>
+    <div class="form-group">
+        <label for="pack_folder">{{_("Folder")}}</label>
+        <input class="form-control" id="pack_folder" name="pack_folder" type="text" />
+        <p class="help-block">{{_("Name of subfolder for these downloads.")}}</p>
+    </div>
+    <div class="form-group">
+        <label for="pack_pws">{{_("Password")}}</label>
+        <textarea class="form-control" style=" width: 100%;" rows="3" name="pack_pws" id="pack_pws"></textarea>
+        <p class="help-block">{{_("List of passwords used for unrar.")}}</p>
+    </div>
+    <button class="btn btn-primary" style="float: right; margin-left: 5px;" type="submit">{{_("Submit")}}</button>
+    <button  class="btn btn-default" id="pack_reset" style="float: right;" type="reset" >{{_("Reset")}}</button>
+
+
+    <div class="spacer"></div>
+
+    </form>
+
+</div>
+{% endblock %}
