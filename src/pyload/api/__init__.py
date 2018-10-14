@@ -242,8 +242,8 @@ class Api(Iface):
 
         :return: new reconnect state
         """
-        self.pyload.config["reconnect"]["activated"] ^= True
-        return self.pyload.config["reconnect"]["activated"]
+        self.pyload.config.toggle("reconnect", "activated")
+        return self.pyload.config.get("reconnect", "activated")
 
     @permission(PERMS.LIST)
     def statusServer(self):
@@ -259,7 +259,7 @@ class Api(Iface):
             self.pyload.files.getFileCount(),
             0,
             not self.pyload.threadManager.pause and self.isTimeDownload(),
-            self.pyload.config["reconnect"]["activated"] and self.isTimeReconnect(),
+            self.pyload.config.get("reconnect", "activated") and self.isTimeReconnect(),
         )
 
         for pyfile in [
@@ -276,7 +276,7 @@ class Api(Iface):
         """
         Available free space at download directory in bytes.
         """
-        return freeSpace(self.pyload.config["general"]["download_folder"])
+        return freeSpace(self.pyload.config.get("general", "download_folder"))
 
     @permission(PERMS.ALL)
     def getServerVersion(self):
@@ -305,7 +305,7 @@ class Api(Iface):
         :param offset: line offset
         :return: List of log entries
         """
-        filename = os.path.join(self.pyload.config["log"]["log_folder"], "log.txt")
+        filename = os.path.join(self.pyload.config.get("log", "log_folder"), "log.txt")
         try:
             with open(filename, "r") as fh:
                 lines = fh.readlines()
@@ -322,8 +322,8 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config["downloadTime"]["start"].split(":")
-        end = self.pyload.config["downloadTime"]["end"].split(":")
+        start = self.pyload.config.get("downloadTime", "start").split(":")
+        end = self.pyload.config.get("downloadTime", "end").split(":")
         return compare_time(start, end)
 
     @permission(PERMS.STATUS)
@@ -333,9 +333,9 @@ class Api(Iface):
 
         :return: bool
         """
-        start = self.pyload.config["reconnect"]["startTime"].split(":")
-        end = self.pyload.config["reconnect"]["endTime"].split(":")
-        return compare_time(start, end) and self.pyload.config["reconnect"]["activated"]
+        start = self.pyload.config.get("reconnect", "startTime").split(":")
+        end = self.pyload.config.get("reconnect", "endTime").split(":")
+        return compare_time(start, end) and self.pyload.config.get("reconnect", "activated")
 
     @permission(PERMS.LIST)
     def statusDownloads(self):
@@ -382,7 +382,7 @@ class Api(Iface):
         :param dest: `Destination`
         :return: package id of the new package
         """
-        if self.pyload.config["general"]["folder_per_package"]:
+        if self.pyload.config.get("general", "folder_per_package"):
             folder = name
         else:
             folder = ""
@@ -485,7 +485,7 @@ class Api(Iface):
         :return: online check
         """
         with open(
-            os.path.join(self.pyload.config["general"]["download_folder"], "tmp_" + container),
+            os.path.join(self.pyload.config.get("general", "download_folder"), "tmp_" + container),
             "wb",
         ) as th:
             th.write(str(data))
@@ -871,7 +871,7 @@ class Api(Iface):
         :param data: file content
         """
         with open(
-            os.path.join(self.pyload.config["general"]["download_folder"], "tmp_" + filename),
+            os.path.join(self.pyload.config.get("general", "download_folder"), "tmp_" + filename),
             "wb",
         ) as th:
             th.write(str(data))
@@ -1133,7 +1133,7 @@ class Api(Iface):
         :param remoteip:
         :return: dict with info, empty when login is incorrect
         """
-        if self.pyload.config["remote"]["nolocalauth"] and remoteip == "127.0.0.1":
+        if self.pyload.config.get("remote", "nolocalauth") and remoteip == "127.0.0.1":
             return "local"
 
         return self.pyload.db.checkAuth(username, password)

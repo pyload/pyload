@@ -322,7 +322,7 @@ class ConfigParser(object):
         provides dictonary like access: c['section']['option']
         """
         return Section(self, section)
-
+ 
     def get(self, section, option):
         """
         get value.
@@ -346,6 +346,9 @@ class ConfigParser(object):
         self.config[section][option]["value"] = value
         self.save()
 
+    def toggle(self, section, option):
+        self.set(section, option, self.get(section, option) ^= True)
+      
     def getPlugin(self, plugin, option):
         """
         gets a value for a plugin.

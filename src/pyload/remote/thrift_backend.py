@@ -22,13 +22,13 @@ class ThriftBackend(BackendBase):
         key = None
         cert = None
 
-        if self.pyload.config["ssl"]["activated"]:
-            if os.path.exists(self.pyload.config["ssl"]["cert"]) and os.path.exists(
-                self.pyload.config["ssl"]["key"]
+        if self.pyload.config.get("ssl", "activated"):
+            if os.path.exists(self.pyload.config.get("ssl", "cert")) and os.path.exists(
+                self.pyload.config.get("ssl", "key")
             ):
                 self.pyload.log.info(_("Using SSL ThriftBackend"))
-                key = self.pyload.config["ssl"]["key"]
-                cert = self.pyload.config["ssl"]["cert"]
+                key = self.pyload.config.get("ssl", "key") 
+                cert = self.pyload.config.get("ssl", "cert") 
 
         transport = ServerSocket(port, host, key, cert)
 

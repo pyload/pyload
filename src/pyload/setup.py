@@ -304,48 +304,48 @@ class Setup(object):
                 "However, if you only want to use the webinterface you may disable it to save ram."
             )
         )
-        self.config["remote"]["activated"] = self.ask(
+        self.config.set("remote", "activated", self.ask(
             _("Enable remote access"), self.yes, bool=True
-        )
+        ))
 
         print("")
         langs = self.config.getMetaData("general", "language")
-        self.config["general"]["language"] = self.ask(
+        self.config.set("general", "language", self.ask(
             _("Language"), "en", langs["type"].split(";")
-        )
+        ))
 
-        self.config["general"]["download_folder"] = self.ask(
+        self.config.set("general", "download_folder", self.ask(
             _("Downloadfolder"), "Downloads"
-        )
-        self.config["download"]["max_downloads"] = self.ask(
+        ))
+        self.config.set("download", "max_downloads", self.ask(
             _("Max parallel downloads"), "3"
-        )
+        ))
         # print(_("You should disable checksum proofing, if you have low hardware requirements."))
-        # self.config["general"]["checksum"] = self.ask(_("Proof checksum?"), "y", bool=True)
+        # self.config.set("general", "checksum", self.ask(_("Proof checksum?"), "y", bool=True))
 
         reconnect = self.ask(_("Use Reconnect?"), self.no, bool=True)
-        self.config["reconnect"]["activated"] = reconnect
+        self.config.set("reconnect", "activated", reconnect)
         if reconnect:
-            self.config["reconnect"]["method"] = self.ask(
+            self.config.set("reconnect", "method", self.ask(
                 _("Reconnect script location"), "./reconnect.sh"
-            )
+            ))
 
     def conf_web(self):
         print("")
         print(_("## Webinterface Setup ##"))
 
         print("")
-        self.config["webui"]["activated"] = self.ask(
+        self.config.set("webui", "activated", self.ask(
             _("Activate webinterface?"), self.yes, bool=True
-        )
+        ))
         print("")
         print(
             _(
                 "Listen address, if you use 127.0.0.1 or localhost, the webinterface will only accessible locally."
             )
         )
-        self.config["webui"]["host"] = self.ask(_("Address"), "0.0.0.0")
-        self.config["webui"]["port"] = self.ask(_("Port"), "8000")
+        self.config.set("webui", "host", self.ask(_("Address"), "0.0.0.0"))
+        self.config.set("webui", "port", self.ask(_("Port"), "8000"))
         print("")
         print(
             _(
@@ -387,9 +387,9 @@ class Setup(object):
             _("come back here and change the builtin server to the threaded one here.")
         )
 
-        self.config["webui"]["server"] = self.ask(
+        self.config.set("webui", "server", self.ask(
             _("Server"), "builtin", ["builtin", "threaded", "fastcgi", "lightweight"]
-        )
+        ))
 
         print("")
         print(
@@ -403,7 +403,7 @@ class Setup(object):
             for t in os.listdir(os.path.join(pypath, "pyload", "web", "templates"))
             if os.path.isdir(os.path.join(pypath, "pyload", "web", "templates", t))
         ]
-        self.config["webui"]["template"] = self.ask(_("Template"), "classic", templates)
+        self.config.set("webui", "template", self.ask(_("Template"), "classic", templates))
 
     def conf_ssl(self):
         print("")
@@ -422,8 +422,8 @@ class Setup(object):
         print(_("If you're done and everything went fine, you can activate ssl now."))
 
         ssl = self.ask(_("Activate SSL?"), self.yes, bool=True)
-        self.config["ssl"]["activated"] = ssl
-        self.config["webui"]["https"] = ssl
+        self.config.set("ssl", "activated", ssl)
+        self.config.set("webui", "https", ssl)
 
     def set_user(self):
         gettext.setpaths(
@@ -432,7 +432,7 @@ class Setup(object):
         translation = gettext.translation(
             "setup",
             os.path.join(self.path, "locale"),
-            languages=[self.config["general"]["language"], "en"],
+            languages=[self.config.get("general", "language"), "en"],
             fallback=True,
         )
         translation.install(True)
@@ -489,7 +489,7 @@ class Setup(object):
             translation = gettext.translation(
                 "setup",
                 os.path.join(self.path, "locale"),
-                languages=[self.config["general"]["language"], "en"],
+                languages=[self.config.get("general", "language"), "en"],
                 fallback=True,
             )
             translation.install(True)

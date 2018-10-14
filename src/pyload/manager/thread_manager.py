@@ -159,7 +159,7 @@ class ThreadManager(object):
         """
 
         if not (
-            self.pyload.config["reconnect"]["activated"]
+            self.pyload.config.get("reconnect", "activated")
             and self.pyload.api.isTimeReconnect()
         ):
             return False
@@ -173,13 +173,13 @@ class ThreadManager(object):
         if not (0 < active.count(True) == len(active)):
             return False
 
-        if not os.path.exists(self.pyload.config["reconnect"]["method"]):
-            if os.path.exists(os.path.join(pypath, self.pyload.config["reconnect"]["method"])):
-                self.pyload.config["reconnect"]["method"] = os.path.join(
-                    pypath, self.pyload.config["reconnect"]["method"]
-                )
+        if not os.path.exists(self.pyload.config.get("reconnect", "method")):
+            if os.path.exists(os.path.join(pypath, self.pyload.config.get("reconnect", "method"))):
+                self.pyload.config.set("reconnect", "method", os.path.join(
+                    pypath, self.pyload.config.get("reconnect", "method")
+                ))
             else:
-                self.pyload.config["reconnect"]["activated"] = False
+                self.pyload.config.set("reconnect", "activated", False)
                 self.log.warning(_("Reconnect script not found!"))
                 return
 
@@ -201,11 +201,11 @@ class ThreadManager(object):
 
         try:
             reconn = Popen(
-                self.pyload.config["reconnect"]["method"], bufsize=-1, shell=True
+                self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
             )  # , stdout=subprocess.PIPE)
         except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
-            self.pyload.config["reconnect"]["activated"] = False
+            self.pyload.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
             if self.pyload.debug:
                 traceback.print_exc()
@@ -330,11 +330,11 @@ class ThreadManager(object):
 
             if job.plugin.__type__ == "hoster":
                 spaceLeft = (
-                    freeSpace(self.pyload.config["general"]["download_folder"])
+                    freeSpace(self.pyload.config.get("general", "download_folder"))
                     // 1024
                     // 1024
                 )
-                if spaceLeft < self.pyload.config["general"]["min_free_space"]:
+                if spaceLeft < self.pyload.config.get("general", "min_free_space"):
                     self.log.warning(_("Not enough space left on device"))
                     self.pause = True
 

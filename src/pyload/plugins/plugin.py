@@ -240,8 +240,8 @@ class Plugin(Base):
 
     def getChunkCount(self):
         if self.chunkLimit <= 0:
-            return self.config["download"]["chunks"]
-        return min(self.config["download"]["chunks"], self.chunkLimit)
+            return self.config.get("download", "chunks")
+        return min(self.config.get("download", "chunks"), self.chunkLimit)
 
     def __call__(self):
         return self.__name__
@@ -569,17 +569,17 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config["general"]["download_folder"]
+        download_folder = self.config.get("general", "download_folder") 
 
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not os.path.exists(location):
-            os.makedirs(location, int(self.pyload.config["permission"]["folder"], 8))
+            os.makedirs(location, int(self.pyload.config.get("permission", "folder"), 8))
 
-            if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
+            if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
                 try:
-                    uid = getpwnam(self.config["permission"]["user"])[2]
-                    gid = getgrnam(self.config["permission"]["group"])[2]
+                    uid = getpwnam(self.config.get("permission", "user"))[2]
+                    gid = getgrnam(self.config.get("permission", "group"))[2]
 
                     os.chown(location, uid, gid)
                 except Exception as e:
@@ -622,13 +622,13 @@ class Plugin(Base):
 
         fs_filename = fs_encode(filename)
 
-        if self.pyload.config["permission"]["change_file"]:
-            os.chmod(fs_filename, int(self.pyload.config["permission"]["file"], 8))
+        if self.pyload.config.get("permission", "change_file"):
+            os.chmod(fs_filename, int(self.pyload.config.get("permission", "file"), 8))
 
-        if self.pyload.config["permission"]["change_dl"] and os.name != "nt":
+        if self.pyload.config.get("permission", "change_dl")  and os.name != "nt":
             try:
-                uid = getpwnam(self.config["permission"]["user"])[2]
-                gid = getgrnam(self.config["permission"]["group"])[2]
+                uid = getpwnam(self.config.get("permission", "user"))[2]
+                gid = getgrnam(self.config.get("permission", "group"))[2]
 
                 os.chown(fs_filename, uid, gid)
             except Exception as e:
@@ -713,12 +713,12 @@ class Plugin(Base):
                 ):  # a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.config["general"]["download_folder"]
+        download_folder = self.config.get("general", "download_folder") 
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
         if (
             starting
-            and self.pyload.config["download"]["skip_existing"]
+            and self.pyload.config.get("download", "skip_existing")
             and os.path.exists(location)
         ):
             size = os.stat(location).st_size

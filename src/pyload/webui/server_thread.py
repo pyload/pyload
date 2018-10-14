@@ -17,12 +17,12 @@ class WebServer(threading.Thread):
         self.pyload = pycore
         core = pycore
         self.running = True
-        self.server = pycore.config["webui"]["server"]
-        self.https = pycore.config["webui"]["https"]
-        self.cert = pycore.config["ssl"]["cert"]
-        self.key = pycore.config["ssl"]["key"]
-        self.host = pycore.config["webui"]["host"]
-        self.port = pycore.config["webui"]["port"]
+        self.server = pycore.config.get("webui", "server") 
+        self.https = pycore.config.get("webui", "https") 
+        self.cert = pycore.config.get("ssl", "cert") 
+        self.key = pycore.config.get("ssl", "key") 
+        self.host = pycore.config.get("webui", "host") 
+        self.port = pycore.config.get("webui", "port")
 
         self.setDaemon(True)
 
@@ -91,7 +91,7 @@ class WebServer(threading.Thread):
                     "Server set to threaded, due to known performance problems on windows."
                 )
             )
-            self.pyload.config["webui"]["server"] = "threaded"
+            self.pyload.config.set("webui", "server", "threaded")
             self.server = "threaded"
 
         if self.server == "fastcgi":

@@ -310,45 +310,45 @@ class Core(object):
         translation = gettext.translation(
             "pyLoad",
             self.path("locale"),
-            languages=[self.config["general"]["language"], "en"],
+            languages=[self.config.get("general", "language"), "en"],
             fallback=True,
         )
         translation.install(True)
 
-        self.debug = self.doDebug or self.config["general"]["debug_mode"]
-        self.remote &= self.config["remote"]["activated"]
+        self.debug = self.doDebug or self.config.get("general", "debug_mode") 
+        self.remote &= self.config.get("remote", "activated") 
 
         pid = self.isAlreadyRunning()
         if pid:
             print(_("pyLoad already running with pid {}").format(pid))
             exit()
 
-        if os.name != "nt" and self.config["general"]["renice"]:
+        if os.name != "nt" and self.config.get("general", "renice"):
             os.system(
-                "renice {} {}".format(self.config["general"]["renice"], os.getpid())
+                "renice {} {}".format(self.config.get("general", "renice"), os.getpid())
             )
 
-        if self.config["permission"]["change_group"]:
+        if self.config.get("permission", "change_group"):
             if os.name != "nt":
                 try:
                     from grp import getgrnam
 
-                    group = getgrnam(self.config["permission"]["group"])
+                    group = getgrnam(self.config.get("permission", "group"))
                     os.setgid(group[2])
                 except Exception as e:
                     print(_("Failed changing group: {}").format(e))
 
-        if self.config["permission"]["change_user"]:
+        if self.config.get("permission", "change_user"):
             if os.name != "nt":
                 try:
                     from pwd import getpwnam
 
-                    user = getpwnam(self.config["permission"]["user"])
+                    user = getpwnam(self.config.get("permission", "user"))
                     os.setuid(user[2])
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e))
 
-        self.check_file(self.config["log"]["log_folder"], _("folder for logs"), True)
+        self.check_file(self.config.get("log", "log_folder"), _("folder for logs"), True)
 
         if self.debug:
             self.init_logger(logging.DEBUG)  # logging level
@@ -380,10 +380,10 @@ class Core(object):
         self.captcha = True  # checks seems to fail, althoug tesseract is available
 
         self.check_file(
-            self.config["general"]["download_folder"], _("folder for downloads"), True
+            self.config.get("general", "download_folder"), _("folder for downloads"), True
         )
 
-        if self.config["ssl"]["activated"]:
+        if self.config.get("ssl", "activated"):
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
@@ -435,7 +435,7 @@ class Core(object):
         if web:
             self.init_webserver()
 
-        spaceLeft = freeSpace(self.config["general"]["download_folder"])
+        spaceLeft = freeSpace(self.config.get("general", "download_folder"))
 
         self.log.info(_("Free space: {}").format(formatSize(spaceLeft)))
 
@@ -508,7 +508,7 @@ class Core(object):
         self.db.manager = self.files  # ugly?
 
     def init_webserver(self):
-        if self.config["webui"]["activated"]:
+        if self.config.get("webui", "activated"):
             self.webserver = WebServer(self)
             self.webserver.start()
 
@@ -520,17 +520,17 @@ class Core(object):
         console.setFormatter(frm)
         self.log = logging.getLogger("log")  # settable in config
 
-        if self.config["log"]["file_log"]:
-            if self.config["log"]["log_rotate"]:
+        if self.config.get("log", "file_log"):
+            if self.config.get("log", "log_rotate"):
                 file_handler = logging.handlers.RotatingFileHandler(
-                    os.path.join(self.config["log"]["log_folder"], "log.txt"),
-                    maxBytes=self.config["log"]["log_size"] * 1024,
-                    backupCount=int(self.config["log"]["log_count"]),
+                    os.path.join(self.config.get("log", "log_folder"), "log.txt"),
+                    maxBytes=self.config.get("log", "log_size") * 1024,
+                    backupCount=int(self.config.get("log", "log_count")),
                     encoding="utf8",
                 )
             else:
                 file_handler = logging.FileHandler(
-                    os.path.join(self.config["log"]["log_folder"], "log.txt"), encoding="utf8"
+                    os.path.join(self.config.get("log", "log_folder"), "log.txt"), encoding="utf8"
                 )
 
             file_handler.setFormatter(frm)
@@ -636,7 +636,7 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config["webui"]["activated"] and hasattr(self, "webserver"):
+            if self.config.get("webui", "activated") and hasattr(self, "webserver"):
                 self.webserver.quit()
 
             for thread in self.threadManager.threads:
