@@ -6,10 +6,6 @@ import subprocess
 import sys
 from builtins import input
 
-# from pyload import inithomedir
-
-# very ugly prints, but at least it works with python 3
-
 
 def main():
     print("#####   System Information   #####\n")

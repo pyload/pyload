@@ -14,7 +14,7 @@ import configparser
 import os
 import sys
 import traceback
-from builtins import _, homedir, input, object, PKGDIR, range, str
+from builtins import _, HOMEDIR, input, object, PKGDIR, range, str
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
@@ -520,7 +520,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(os.path.join(homedir, ".pyLoadCLI"), "w") as cfgfile:
+        with open(os.path.join(HOMEDIR, ".pyload-cli.conf"), "w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))
@@ -546,7 +546,7 @@ def main(args):
         config["language"] = "en"
 
     configFile = configparser.ConfigParser()
-    configFile.read(os.path.join(homedir, ".pyload-cli.conf"))
+    configFile.read(os.path.join(HOMEDIR, ".pyload-cli.conf"))
 
     if configFile.has_section("cli"):
         for opt in configFile.items("cli"):

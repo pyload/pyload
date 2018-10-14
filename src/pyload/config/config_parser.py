@@ -53,6 +53,10 @@ class ConfigParser(object):
         """
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
+        
+        self.configpath = os.path.join(HOMEDIR, "pyload.conf")
+        self.pluginpath = os.path.join(HOMEDIR, "plugins.conf")
+        
         self.oldRemoteData = {}
 
         self.pluginCB = None  # callback when plugin config value is changed
@@ -68,20 +72,20 @@ class ConfigParser(object):
         determines if config need to be copied.
         """
         try:
-            if not os.path.exists("pyload.conf"):
+            if not os.path.exists(self.configpath):
                 shutil.copy(
                     os.path.join(PKGDIR, "pyload", "config", "default.conf"),
-                    "pyload.conf",
+                    self.configpath,
                 )
-                chmod("pyload.conf", 0o600)
+                chmod(self.configpath, 0o600)
 
-            if not os.path.exists("plugin.conf"):
-                with open("plugin.conf", "wb") as f:
+            if not os.path.exists(self.pluginpath):
+                with open(self.pluginpath, "wb") as f:
                     f.write("version: " + str(__version__))
 
-                chmod("plugin.conf", 0o600)
+                chmod(self.pluginpath, 0o600)
 
-            with open("pyload.conf", "rb") as f:
+            with open(self.configpath, "rb") as f:
                 v = f.readline()
 
             v = v[v.find(":") + 1 :].strip()
@@ -89,17 +93,17 @@ class ConfigParser(object):
             if not v or int(v) < __version__:
                 shutil.copy(
                     os.path.join(PKGDIR, "pyload", "config", "default.conf"),
-                    "pyload.conf",
+                    self.configpath,
                 )
                 print("Old version of config was replaced")
 
-            with open("plugin.conf", "rb") as f:
+            with open(self.pluginpath, "rb") as f:
                 v = f.readline()
 
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
-                with open("plugin.conf", "wb") as f:
+                with open(self.pluginpath, "wb") as f:
                     f.write("version: " + str(__version__))
 
                 print("Old version of plugin-config replaced")
@@ -118,10 +122,10 @@ class ConfigParser(object):
         self.config = self.parseConfig(
             os.path.join(PKGDIR, "pyload", "config", "default.conf")
         )
-        self.plugin = self.parseConfig("plugin.conf")
+        self.plugin = self.parseConfig(self.pluginpath)
 
         try:
-            homeconf = self.parseConfig("pyload.conf")
+            homeconf = self.parseConfig(self.configpath)
             if "username" in homeconf["remote"]:
                 if "password" in homeconf["remote"]:
                     self.oldRemoteData = {
@@ -322,8 +326,8 @@ class ConfigParser(object):
         saves the configs to disk.
         """
 
-        self.saveConfig(self.config, "pyload.conf")
-        self.saveConfig(self.plugin, "plugin.conf")
+        self.saveConfig(self.config, self.configpath)
+        self.saveConfig(self.plugin, self.pluginpath)
 
     def __getitem__(self, section):
         """
