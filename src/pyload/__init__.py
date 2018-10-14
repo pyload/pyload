@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-from pkg_resources import get_distribution, DistributionNotFound
+import pkg_resources
+import semver
 
 try:
     dist_name = "pyload-ng"
-    __version__ = get_distribution(dist_name).version
-except DistributionNotFound:
+    __version__ = pkg_resources.get_distribution(dist_name).version
+except pkg_resources.DistributionNotFound:
     __version__ = "unknown"
 finally:
-    del get_distribution, DistributionNotFound
+    __version_info__ = semver.parse_version_info("0.0.0" if __version__ == 'unknown' else __version__)
+    del pkg_resources
+    del semver
 
 import builtins
 import sys
