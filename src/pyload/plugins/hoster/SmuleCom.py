@@ -3,6 +3,7 @@ import re
 from builtins import _
 
 import js2py
+
 from pyload.plugins.internal.simplehoster import SimpleHoster
 
 

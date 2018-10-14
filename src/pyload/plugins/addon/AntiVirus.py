@@ -5,10 +5,10 @@ import shutil
 import subprocess
 from builtins import _, map
 
+import send2trash
+
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
-
-import send2trash
 
 
 class AntiVirus(Addon):

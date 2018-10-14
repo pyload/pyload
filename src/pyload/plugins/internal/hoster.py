@@ -5,7 +5,6 @@ import os
 import re
 from builtins import _, range
 
-
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.base import Base
 from pyload.plugins.internal.plugin import Fail

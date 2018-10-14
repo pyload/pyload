@@ -2,10 +2,10 @@
 # @author: RaNaN, spoob, mkaay
 
 import os
+import time
 from builtins import _, object, str
 from itertools import islice
 from random import randint
-import time
 
 from pyload.utils.utils import fs_decode, fs_encode, save_join, save_path
 

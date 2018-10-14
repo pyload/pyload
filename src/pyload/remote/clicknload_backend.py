@@ -9,11 +9,10 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-import js2py
-from pyload.remote.remote_manager import BackendBase
-
 import Cryptodome.Cipher.AES
+import js2py
 
+from pyload.remote.remote_manager import BackendBase
 
 core = None
 js = None

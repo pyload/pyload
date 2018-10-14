@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import io
 import os
 import re
 import urllib.error
 import urllib.parse
 import urllib.request
 from builtins import _, range, str
-import io
 
 from Pillow import Image, ImageDraw, ImageFont
 from pyload.plugins.internal.captcha_service import CaptchaService

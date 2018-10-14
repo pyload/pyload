@@ -2,15 +2,13 @@
 # @author: RaNaN, mkaay
 
 import inspect
-from builtins import _, object, range, str
 import os
-from queue import Queue
 import shutil
-from threading import Event, Thread
-import traceback
-
-
 import sqlite3
+import traceback
+from builtins import _, object, range, str
+from queue import Queue
+from threading import Event, Thread
 
 # DATABASE VERSION
 __version__ = 4

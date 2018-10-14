@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import _, str
-from copy import copy
 import os
 import pprint
+import time
+import traceback
+from builtins import _, str
+from copy import copy
 from queue import Queue
 from sys import exc_info
 from threading import Thread
-import time
-import traceback
 from types import MethodType
 
 import pycurl

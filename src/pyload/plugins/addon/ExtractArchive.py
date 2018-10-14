@@ -3,18 +3,12 @@
 import os
 from builtins import _, object
 
+import send2trash
+
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.internal.extractor import ArchiveError, CRCError, PasswordError
-from pyload.plugins.utils import (
-    Expose,
-    encode,
-    exists,
-    fsjoin,
-    safename,
-    threaded,
-    uniqify,
-)
-import send2trash
+from pyload.plugins.utils import (Expose, encode, exists, fsjoin, safename, threaded,
+                                  uniqify)
 
 
 class ArchiveQueue(object):

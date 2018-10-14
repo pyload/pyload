@@ -2,10 +2,10 @@
 # @author: RaNaN
 
 import os
+import subprocess
 import sys
 from builtins import _, input, object, pypath, str
 from getpass import getpass
-import subprocess
 from sys import exit
 
 import pyload.utils.pylgettext as gettext

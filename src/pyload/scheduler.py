@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
+import time
 from builtins import object
 from heapq import heappop, heappush
 from threading import Lock
-import time
 
 from _thread import start_new_thread
 

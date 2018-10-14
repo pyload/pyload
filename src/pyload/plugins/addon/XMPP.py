@@ -5,6 +5,7 @@ from builtins import _, object
 import pyxmpp2
 import pyxmpp2.all
 import pyxmpp2.interfaces
+
 from pyload.plugins.addon.IRC import IRC
 
 

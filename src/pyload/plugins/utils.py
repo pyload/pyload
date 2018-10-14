@@ -24,6 +24,8 @@ import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
 from builtins import _, addonManager, map, object, str
 
+import send2trash
+
 try:
     import simplejson as json
 except ImportError:
@@ -34,7 +36,6 @@ try:
 except ImportError:
     reduce = reduce
 
-import send2trash
 
 # TODO: Remove in 0.6.x
 

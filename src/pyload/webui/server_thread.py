@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 import threading
 from builtins import _
-import os
 
 webui = None
 core = None

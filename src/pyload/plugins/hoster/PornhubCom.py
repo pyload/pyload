@@ -4,6 +4,7 @@ import re
 from builtins import _
 
 import js2py
+
 from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.plugins.internal.plugin import Abort

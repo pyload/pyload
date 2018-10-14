@@ -2,8 +2,8 @@
 # @author: RaNaN
 
 import codecs
-from builtins import object, range, str
 import os
+from builtins import object, range, str
 from re import search
 
 import pycurl

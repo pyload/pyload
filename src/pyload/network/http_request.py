@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import codecs
 import io
 from builtins import object, range, str
-import codecs
 from http.client import responses
 from logging import getLogger
 from urllib.parse import quote, urlencode

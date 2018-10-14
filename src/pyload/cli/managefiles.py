@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import time
 from builtins import _, map, range, str
 from itertools import islice
-import time
 
 from pyload.api import Destination, PackageData
 from pyload.cli.handler import Handler

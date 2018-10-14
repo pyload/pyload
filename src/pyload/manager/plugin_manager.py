@@ -2,14 +2,15 @@
 # @author: mkaay, RaNaN
 
 import importlib
-import semver
+import os
 import re
 import sys
+import traceback
 from ast import literal_eval
 from builtins import _, object, pypath, str
 from itertools import chain
-import os
-import traceback
+
+import semver
 
 from pyload.config.config_parser import IGNORE
 

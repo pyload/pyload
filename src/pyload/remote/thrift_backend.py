@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 import os
+from builtins import _
+
+from thrift.server import TServer
 
 from pyload.remote.remote_manager import BackendBase
 from pyload.remote.thriftbackend.processor import Processor
 from pyload.remote.thriftbackend.protocol import ProtocolFactory
 from pyload.remote.thriftbackend.socket import ServerSocket
 from pyload.remote.thriftbackend.transport import TransportFactory
-from thrift.server import TServer
 
 # @author: mkaay, RaNaN
 

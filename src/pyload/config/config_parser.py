@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import re
-from builtins import object, pypath, str
 import os
+import re
 import shutil
-from time import sleep
 import traceback
+from builtins import object, pypath, str
+from time import sleep
 
 from pyload.utils.utils import chmod
 

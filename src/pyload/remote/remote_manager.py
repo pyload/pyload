@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
+import traceback
 from builtins import _, object, str
 from threading import Thread
-import traceback
 
 
 class BackendBase(Thread):

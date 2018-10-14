@@ -2,12 +2,12 @@
 
 import gc
 import string
+import time
+import traceback
 from builtins import range
 from math import floor
 from random import choice, randint, sample
 from threading import Thread
-import time
-import traceback
 
 from pyload.remote.thriftbackend.thriftClient import Destination, ThriftClient
 

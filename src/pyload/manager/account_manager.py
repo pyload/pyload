@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import _, object, str
 import os
 import shutil
+from builtins import _, object, str
 from threading import Lock
 
 from pyload.manager.event_manager import AccountUpdateEvent

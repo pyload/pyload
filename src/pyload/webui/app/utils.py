@@ -2,10 +2,11 @@
 # @author: RaNaN
 
 import bottle
-from pyload.api import PERMS, ROLE, has_permission
-from pyload.webui import PREFIX, TEMPLATE, env
 
+from pyload.api import PERMS, ROLE
 from pyload.api import __version__ as API_VERSION
+from pyload.api import has_permission
+from pyload.webui import PREFIX, TEMPLATE, env
 
 
 def render_to_response(name, args={}, proc=[]):

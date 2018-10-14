@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from builtins import _
 import os
 import shutil
 import traceback
+from builtins import _
 
 import bottle
+
 from pyload.utils.utils import decode, formatSize
 from pyload.webui import PYLOAD
-from pyload.webui.utils import login_required, apiver_check, render_to_response, toDict
+from pyload.webui.utils import apiver_check, login_required, render_to_response, toDict
 
 
 def format_time(seconds):

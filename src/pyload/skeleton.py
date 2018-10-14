@@ -10,25 +10,23 @@
 #           \/
 
 import builtins
+import codecs
 import logging
 import logging.handlers
+import os
 import signal
 import subprocess
 import sys
-from builtins import _, object, owd, pypath, range, str
-import codecs
-from getopt import GetoptError, getopt
-from imp import find_module
-import os
-from sys import argv, executable, exit
 import time
 import traceback
+from builtins import _, object, owd, pypath, range, str
+from getopt import GetoptError, getopt
+from imp import find_module
+from sys import argv, executable, exit
 
 import pyload.utils.pylgettext as gettext
-from pyload import (
-    __version__ as PYLOAD_VERSION,
-    __version_info__ as PYLOAD_VERSION_INFO,
-)
+from pyload import __version__ as PYLOAD_VERSION
+from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler

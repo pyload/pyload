@@ -1,27 +1,20 @@
 # -*- coding: utf-8 -*-
+import datetime
+import operator
 import os
 import sys
 import time
 from builtins import _
-import datetime
-import operator
 from urllib.parse import unquote
 
 import bottle
+
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
 from pyload.webui.filters import relpath, unquotepath
-from pyload.webui.utils import (
-    get_permission,
-    login_required,
-    parse_permissions,
-    parse_userdata,
-    permlist,
-    render_to_response,
-    set_permission,
-    set_session,
-    toDict,
-)
+from pyload.webui.utils import (get_permission, login_required, parse_permissions,
+                                parse_userdata, permlist, render_to_response,
+                                set_permission, set_session, toDict)
 
 # @author: RaNaN
 

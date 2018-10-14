@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-from builtins import _, object, str
-from threading import Lock
 import time
 import traceback
+from builtins import _, object, str
+from threading import Lock
 
 
 class CaptchaManager(object):

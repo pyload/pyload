@@ -4,8 +4,9 @@ import errno
 import sys
 from builtins import object
 
-from pyload.remote.thriftbackend import socket
 from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException
+
+from pyload.remote.thriftbackend import socket
 
 WantReadError = Exception  # overwritten when ssl is used
 

@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import traceback
 from ast import literal_eval
 from itertools import chain
-import traceback
 from urllib.parse import unquote
 
 import bottle
+
 from pyload.api import BaseObject
 from pyload.plugins.utils import json  # change to core utils
 from pyload.webui import PYLOAD
-from pyload.webui.utils import set_session, toDict, apiver_check
+from pyload.webui.utils import apiver_check, set_session, toDict
+
 
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 from base64 import standard_b64decode
 from binascii import unhexlify
 from builtins import str
-import os
 from urllib.parse import unquote
 
-import js2py
 import bottle
-from pyload.webui import DL_ROOT, PYLOAD
-
 import Cryptodome.Cipher.AES
+import js2py
+
+from pyload.webui import DL_ROOT, PYLOAD
 
 
 def local_check(func):

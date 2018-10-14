@@ -5,8 +5,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-import BeautifulSoup
 import js2py
+
+import BeautifulSoup
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+import time
 from builtins import object
 from threading import Lock
-import time
 
 
 class Bucket(object):

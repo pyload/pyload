@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-from builtins import object
 import time
+from builtins import object
 
 from pyload.utils.utils import uniqify
 

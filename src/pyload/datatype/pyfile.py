@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN, mkaay
 
+import time
 from builtins import object
 from threading import RLock
-import time
 
 from pyload.manager.event_manager import UpdateEvent
 from pyload.utils.utils import formatSize, lock

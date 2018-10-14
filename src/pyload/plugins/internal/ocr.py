@@ -4,10 +4,9 @@ import os
 import subprocess
 from builtins import _, map, pypath, range, str
 
+from Pillow import Image
 from pyload.plugins.internal.plugin import Plugin
 from pyload.plugins.utils import encode, fsjoin
-
-from Pillow import Image
 
 # import tempfile
 

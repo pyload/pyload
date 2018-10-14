@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-import sys
 import os
+import sys
 
 from pyload.remote.thriftbackend.thriftgen import ttypes
 from pyload.remote.thriftbackend.thriftgen.pyload import Iface

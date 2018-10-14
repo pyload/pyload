@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-import re
-from builtins import _, object, pypath, range, str
 import os
-from random import choice
+import re
 import subprocess
-from threading import Event, Lock
 import time
 import traceback
+from builtins import _, object, pypath, range, str
+from random import choice
+from threading import Event, Lock
 
 import pycurl
 from pyload.datatype.pyfile import PyFile

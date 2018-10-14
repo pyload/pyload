@@ -3,9 +3,9 @@
 # @author: RaNaN
 
 import socket
+import traceback
 from builtins import object
 from sys import argv, exit
-import traceback
 
 import _thread
 

@@ -9,6 +9,7 @@ from builtins import _, object, range, str
 
 import Cryptodome.Cipher.AES
 import Cryptodome.Util.Counter
+
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import decode, encode, exists, fsjoin, json

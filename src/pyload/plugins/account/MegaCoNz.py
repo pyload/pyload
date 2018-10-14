@@ -3,6 +3,7 @@
 from builtins import chr, range
 
 import Cryptodome.PublicKey.RSA
+
 from pyload.plugins.hoster.MegaCoNz import MegaClient, MegaCrypto
 from pyload.plugins.internal.account import Account
 

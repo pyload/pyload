@@ -5,12 +5,12 @@ Store all usefull functions here.
 """
 
 
+import os
 import re
 import sys
 import time
 from builtins import chr, map
 from html.entities import name2codepoint
-import os
 
 
 def chmod(*args):

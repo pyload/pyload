@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import sys
-from builtins import object
 import os
+import sys
 import traceback
+from builtins import object
+
+from thrift.transport import TTransport
 
 from pyload.remote.thriftbackend.protocol import Protocol
-
 # from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.socket import Socket, error
 from pyload.remote.thriftbackend.thriftgen import Pyload
-from thrift.transport import TTransport
 
 try:
     import thrift

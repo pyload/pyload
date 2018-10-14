@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import gzip
-from builtins import object, str
 import io
+from builtins import object, str
 
 
 class StripPathMiddleware(object):

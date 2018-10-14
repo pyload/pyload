@@ -3,10 +3,10 @@
 import hashlib
 import time
 
+from beaker.crypto.pbkdf2 import PBKDF2
+
 from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import json
-
-from beaker.crypto.pbkdf2 import PBKDF2
 
 
 class SmoozedCom(MultiAccount):

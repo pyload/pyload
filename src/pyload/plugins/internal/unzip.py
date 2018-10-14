@@ -3,12 +3,8 @@
 import sys
 import zipfile
 
-from pyload.plugins.internal.extractor import (
-    ArchiveError,
-    CRCError,
-    Extractor,
-    PasswordError,
-)
+from pyload.plugins.internal.extractor import (ArchiveError, CRCError, Extractor,
+                                               PasswordError)
 from pyload.plugins.utils import encode
 
 

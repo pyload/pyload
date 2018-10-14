@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-from builtins import object
 import time
+from builtins import object
 
 
 class CookieJar(object):

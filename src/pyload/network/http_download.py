@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from builtins import _, object, range, str
-from logging import getLogger
 import os
 import shutil
 import time
+from builtins import _, object, range, str
+from logging import getLogger
 
 import pycurl
 from pyload.network.http_chunk import ChunkInfo, HTTPChunk

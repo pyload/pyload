@@ -4,6 +4,7 @@ import xml.dom.minidom
 from builtins import _
 
 import Cryptodome.Cipher.AES
+
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import decode, encode
 

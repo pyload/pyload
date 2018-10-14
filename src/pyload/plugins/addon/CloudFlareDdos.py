@@ -6,6 +6,7 @@ import urllib.parse
 from builtins import _, hex, next, object, str
 
 import js2py
+
 from pyload.network.http_request import BadHeader
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.addon import Addon

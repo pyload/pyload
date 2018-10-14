@@ -11,6 +11,7 @@ import urllib.parse
 from builtins import _, filter, range, str
 
 import Cryptodome.Cipher.AES
+
 from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import BadHeader, HTTPRequest
 from pyload.plugins.captcha.CoinHive import CoinHive
