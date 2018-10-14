@@ -24,7 +24,6 @@ from sys import argv, executable, exit
 import time
 import traceback
 
-import js2py
 import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION, __version_info__ as PYLOAD_VERSION_INFO
 from pyload import remote

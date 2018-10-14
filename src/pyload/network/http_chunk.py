@@ -5,7 +5,6 @@ import codecs
 from builtins import object, range, str
 import os
 from re import search
-from time import sleep
 
 import pycurl
 from pyload.network.http_request import HTTPRequest

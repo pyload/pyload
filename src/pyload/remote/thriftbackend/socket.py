@@ -3,7 +3,6 @@
 import errno
 import sys
 from builtins import object
-from time import sleep
 
 from pyload.remote.thriftbackend import socket
 from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException

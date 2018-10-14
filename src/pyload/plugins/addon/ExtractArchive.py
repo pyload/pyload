@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 from builtins import _, object
 
 from pyload.plugins.internal.addon import Addon

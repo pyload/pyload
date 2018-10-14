@@ -11,7 +11,6 @@ from pyload.manager.event_manager import (InsertEvent, ReloadAllEvent, RemoveEve
                                           UpdateEvent)
 from pyload.utils.utils import formatSize, lock
 
-import sqlite3
 
 
 class FileHandler(object):

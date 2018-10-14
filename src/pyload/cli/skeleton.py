@@ -17,7 +17,6 @@ import codecs
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
-from time import sleep
 import traceback
 
 import pyload.utils.pylgettext as gettext

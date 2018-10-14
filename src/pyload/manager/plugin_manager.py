@@ -9,7 +9,6 @@ from ast import literal_eval
 from builtins import _, object, pypath, str
 from itertools import chain
 import os
-from sys import version_info
 import traceback
 
 from pyload.config.config_parser import IGNORE
