@@ -15,7 +15,6 @@ from pyload.plugins.utils import threaded
 from Pillow import Image
 
 
-
 class CaptchaBrotherhoodException(Exception):
     def __init__(self, err):
         self.err = err

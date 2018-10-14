@@ -133,7 +133,9 @@ class PluginThread(Thread):
 
         if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += pprint.pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
+            dump += (
+                pprint.pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
+            )
 
         return dump
 

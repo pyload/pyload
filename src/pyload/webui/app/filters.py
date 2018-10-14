@@ -5,6 +5,7 @@ import os
 
 quotechar = "::%2F"
 
+
 def quotepath(path):
     try:
         return path.replace(".." + os.path.sep, quotechar)

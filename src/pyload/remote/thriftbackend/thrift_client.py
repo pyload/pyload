@@ -6,6 +6,7 @@ import os
 import traceback
 
 from pyload.remote.thriftbackend.protocol import Protocol
+
 # from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.socket import Socket, error
 from pyload.remote.thriftbackend.thriftgen import Pyload
@@ -14,7 +15,11 @@ from thrift.transport import TTransport
 try:
     import thrift
 except ImportError:
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "lib")))
+    sys.path.append(
+        os.path.abspath(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "lib")
+        )
+    )
 
 
 # modules should import ttypes from here, when want to avoid importing API

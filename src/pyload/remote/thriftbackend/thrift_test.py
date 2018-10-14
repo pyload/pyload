@@ -75,6 +75,6 @@ try:
             data = client.getPackageData(p.pid)
             print(data)
             print("Package Name: ", data.name)
-            
+
 except Thrift.TException as tx:
     print("ThriftExpection: {}".format(tx.message))

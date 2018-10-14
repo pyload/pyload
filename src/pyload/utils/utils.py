@@ -52,7 +52,9 @@ def save_join(*args):
     """
     joins a path, encoding aware.
     """
-    return fs_encode(os.path.join(*[x if isinstance(x, str) else decode(x) for x in args]))
+    return fs_encode(
+        os.path.join(*[x if isinstance(x, str) else decode(x) for x in args])
+    )
 
 
 # File System Encoding functions:

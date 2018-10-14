@@ -91,12 +91,13 @@ def parse_userdata(session):
 def apiver_check(func):
     # if no apiver is provided assumes latest
     def _view(*args, **kwargs):
-        if int(kwargs.get('apiver', API_VERSION).strip('v')) < API_VERSION:
+        if int(kwargs.get("apiver", API_VERSION).strip("v")) < API_VERSION:
             return bottle.HTTPError(404, json.dumps("Obsolete API"))
         return func(*args, **kwargs)
+
     return _view
-    
-    
+
+
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):

@@ -49,7 +49,9 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
             self.jid = pyxmpp2.all.JID(self.jid.node, self.jid.domain, "pyLoad")
 
         if self.config.get("tls"):
-            tls_settings = pyxmpp2.streamtls.TLSSettings(require=True, verify_peer=False)
+            tls_settings = pyxmpp2.streamtls.TLSSettings(
+                require=True, verify_peer=False
+            )
             auth = ("sasl:PLAIN", "sasl:DIGEST-MD5")
         else:
             tls_settings = None

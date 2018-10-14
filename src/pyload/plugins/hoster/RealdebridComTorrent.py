@@ -171,7 +171,8 @@ class RealdebridComTorrent(Hoster):
             )
             c.setopt(pycurl.SSL_VERIFYPEER, 0)
             c.setopt(
-                pycurl.USERAGENT, self.config.get("useragent", plugin="UserAgentSwitcher")
+                pycurl.USERAGENT,
+                self.config.get("useragent", plugin="UserAgentSwitcher"),
             )
             c.setopt(
                 pycurl.HTTPHEADER,

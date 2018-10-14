@@ -8,7 +8,9 @@ try:
 except pkg_resources.DistributionNotFound:
     __version__ = "unknown"
 finally:
-    __version_info__ = semver.parse_version_info("0.0.0" if __version__ == 'unknown' else __version__)
+    __version_info__ = semver.parse_version_info(
+        "0.0.0" if __version__ == "unknown" else __version__
+    )
     del pkg_resources
     del semver
 

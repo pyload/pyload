@@ -24,8 +24,13 @@ from pyload.api import Destination
 from pyload.cli.addpackage import AddPackage
 from pyload.cli.managefiles import ManageFiles
 from pyload.cli.printer import *
-from pyload.remote.thriftbackend.thrift_client import (ConnectionClosed, NoConnection,
-                                                       NoSSL, ThriftClient, WrongLogin)
+from pyload.remote.thriftbackend.thrift_client import (
+    ConnectionClosed,
+    NoConnection,
+    NoSSL,
+    ThriftClient,
+    WrongLogin,
+)
 from pyload.utils.utils import decode, formatSize
 
 if os.name == "nt":
@@ -540,9 +545,9 @@ def main(args):
     except Exception:
         pass
 
-    if (not os.path.exists(os.path.join(pypath, "locale", config["language"]))) or config[
-        "language"
-    ] == "":
+    if (
+        not os.path.exists(os.path.join(pypath, "locale", config["language"]))
+    ) or config["language"] == "":
         config["language"] = "en"
 
     configFile = configparser.ConfigParser()

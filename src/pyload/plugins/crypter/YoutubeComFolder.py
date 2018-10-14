@@ -123,8 +123,10 @@ class YoutubeComFolder(Crypter):
                     )
                 )
 
-                relatedplaylist = {p_name: self.get_playlist(p_id)
-                    for p_name, p_id in channel["relatedPlaylists"].items()}
+                relatedplaylist = {
+                    p_name: self.get_playlist(p_id)
+                    for p_name, p_id in channel["relatedPlaylists"].items()
+                }
 
                 self.log_debug(
                     "Channel's related playlists found = {}".format(

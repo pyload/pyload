@@ -88,7 +88,7 @@ class HTTPDownload(object):
         init = fs_encode(self.info.getChunkName(0))  # initial chunk name
 
         if self.info.getCount() > 1:
-            with open(init, "rb+") as fo: # first chunkfile
+            with open(init, "rb+") as fo:  # first chunkfile
                 for i in range(1, self.info.getCount()):
                     # input file
                     # seek to beginning of chunk, to get rid of overlapping chunks
@@ -111,7 +111,9 @@ class HTTPDownload(object):
                     os.remove(fname)  # os.remove chunk
 
         if self.nameDisposition and self.disposition:
-            self.filename = save_join(os.path.dirname(self.filename), self.nameDisposition)
+            self.filename = save_join(
+                os.path.dirname(self.filename), self.nameDisposition
+            )
 
         shutil.move(init, fs_encode(self.filename))
         self.info.os.remove()  # os.remove info file

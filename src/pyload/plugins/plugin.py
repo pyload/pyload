@@ -412,7 +412,10 @@ class Plugin(Base):
 
         id = "{:.2f}".format(time())[-6:].replace(".", "")
         with open(
-            os.path.join("tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)), "wb"
+            os.path.join(
+                "tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)
+            ),
+            "wb",
         ) as temp_file:
             temp_file.write(img)
 
@@ -569,12 +572,14 @@ class Plugin(Base):
 
         self.pyfile.setStatus("downloading")
 
-        download_folder = self.config.get("general", "download_folder") 
+        download_folder = self.config.get("general", "download_folder")
 
         location = save_join(download_folder, self.pyfile.package().folder)
 
         if not os.path.exists(location):
-            os.makedirs(location, int(self.pyload.config.get("permission", "folder"), 8))
+            os.makedirs(
+                location, int(self.pyload.config.get("permission", "folder"), 8)
+            )
 
             if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
                 try:
@@ -625,7 +630,7 @@ class Plugin(Base):
         if self.pyload.config.get("permission", "change_file"):
             os.chmod(fs_filename, int(self.pyload.config.get("permission", "file"), 8))
 
-        if self.pyload.config.get("permission", "change_dl")  and os.name != "nt":
+        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
             try:
                 uid = getpwnam(self.config.get("permission", "user"))[2]
                 gid = getgrnam(self.config.get("permission", "group"))[2]
@@ -713,7 +718,7 @@ class Plugin(Base):
                 ):  # a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
-        download_folder = self.config.get("general", "download_folder") 
+        download_folder = self.config.get("general", "download_folder")
         location = save_join(download_folder, pack.folder, self.pyfile.name)
 
         if (

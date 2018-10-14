@@ -152,7 +152,7 @@ class DownloadInfo(TBase):
     - packageName
     - plugin
     """
-    
+
     thrift_spec = (
         None,  # 0
         (1, TType.I32, "fid", None, None),  # 1

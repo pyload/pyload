@@ -4,6 +4,7 @@ import gzip
 from builtins import object, str
 import io
 
+
 class StripPathMiddleware(object):
     def __init__(self, app):
         self.app = app

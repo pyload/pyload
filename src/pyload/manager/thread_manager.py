@@ -174,10 +174,14 @@ class ThreadManager(object):
             return False
 
         if not os.path.exists(self.pyload.config.get("reconnect", "method")):
-            if os.path.exists(os.path.join(pypath, self.pyload.config.get("reconnect", "method"))):
-                self.pyload.config.set("reconnect", "method", os.path.join(
-                    pypath, self.pyload.config.get("reconnect", "method")
-                ))
+            if os.path.exists(
+                os.path.join(pypath, self.pyload.config.get("reconnect", "method"))
+            ):
+                self.pyload.config.set(
+                    "reconnect",
+                    "method",
+                    os.path.join(pypath, self.pyload.config.get("reconnect", "method")),
+                )
             else:
                 self.pyload.config.set("reconnect", "activated", False)
                 self.log.warning(_("Reconnect script not found!"))

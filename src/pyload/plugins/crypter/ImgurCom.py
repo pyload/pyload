@@ -72,7 +72,9 @@ class ImgurCom(SimpleCrypter):
             self.total_num_images = int(embedded_json["num_images"])
 
             # Extract images
-            images = {e["hash"]: e["ext"] for e in embedded_json["album_images"]["images"]}
+            images = {
+                e["hash"]: e["ext"] for e in embedded_json["album_images"]["images"]
+            }
 
             self.log_debug(
                 "Found {} of {} expected links in embedded JSON".format(
@@ -89,7 +91,9 @@ class ImgurCom(SimpleCrypter):
                 )
 
                 try:
-                    images = {e["hash"]: e["ext"] for e in external_json["data"]["images"]}
+                    images = {
+                        e["hash"]: e["ext"] for e in external_json["data"]["images"]
+                    }
                     self.log_debug(
                         "Found {} of {} expected links in external JSON".format(
                             len(images), self.total_num_images

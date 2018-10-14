@@ -69,33 +69,39 @@ class ConfigParser(object):
         """
         try:
             if not os.path.exists("pyload.conf"):
-                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(
+                    os.path.join(pypath, "pyload", "config", "default.conf"),
+                    "pyload.conf",
+                )
                 chmod("pyload.conf", 0o600)
 
             if not os.path.exists("plugin.conf"):
                 with open("plugin.conf", "wb") as f:
                     f.write("version: " + str(__version__))
-                    
+
                 chmod("plugin.conf", 0o600)
 
             with open("pyload.conf", "rb") as f:
                 v = f.readline()
-                
+
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
-                shutil.copy(os.path.join(pypath, "pyload", "config", "default.conf"), "pyload.conf")
+                shutil.copy(
+                    os.path.join(pypath, "pyload", "config", "default.conf"),
+                    "pyload.conf",
+                )
                 print("Old version of config was replaced")
 
             with open("plugin.conf", "rb") as f:
                 v = f.readline()
-                
+
             v = v[v.find(":") + 1 :].strip()
 
             if not v or int(v) < __version__:
                 with open("plugin.conf", "wb") as f:
                     f.write("version: " + str(__version__))
-                    
+
                 print("Old version of plugin-config replaced")
         except Exception:
             if n < 3:
@@ -109,7 +115,9 @@ class ConfigParser(object):
         reads the config file.
         """
 
-        self.config = self.parseConfig(os.path.join(pypath, "pyload", "config", "default.conf"))
+        self.config = self.parseConfig(
+            os.path.join(pypath, "pyload", "config", "default.conf")
+        )
         self.plugin = self.parseConfig("plugin.conf")
 
         try:
@@ -322,7 +330,7 @@ class ConfigParser(object):
         provides dictonary like access: c['section']['option']
         """
         return Section(self, section)
- 
+
     def get(self, section, option):
         """
         get value.
@@ -348,7 +356,7 @@ class ConfigParser(object):
 
     def toggle(self, section, option):
         self.set(section, option, self.get(section, option) ^ True)
-      
+
     def getPlugin(self, plugin, option):
         """
         gets a value for a plugin.

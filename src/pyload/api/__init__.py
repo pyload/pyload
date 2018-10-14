@@ -335,7 +335,9 @@ class Api(Iface):
         """
         start = self.pyload.config.get("reconnect", "startTime").split(":")
         end = self.pyload.config.get("reconnect", "endTime").split(":")
-        return compare_time(start, end) and self.pyload.config.get("reconnect", "activated")
+        return compare_time(start, end) and self.pyload.config.get(
+            "reconnect", "activated"
+        )
 
     @permission(PERMS.LIST)
     def statusDownloads(self):
@@ -485,7 +487,9 @@ class Api(Iface):
         :return: online check
         """
         with open(
-            os.path.join(self.pyload.config.get("general", "download_folder"), "tmp_" + container),
+            os.path.join(
+                self.pyload.config.get("general", "download_folder"), "tmp_" + container
+            ),
             "wb",
         ) as th:
             th.write(str(data))
@@ -871,7 +875,9 @@ class Api(Iface):
         :param data: file content
         """
         with open(
-            os.path.join(self.pyload.config.get("general", "download_folder"), "tmp_" + filename),
+            os.path.join(
+                self.pyload.config.get("general", "download_folder"), "tmp_" + filename
+            ),
             "wb",
         ) as th:
             th.write(str(data))

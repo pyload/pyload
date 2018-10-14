@@ -71,11 +71,13 @@ class OneFichierCom(SimpleHoster):
         redirect = url
         for i in range(10):
             try:
-                headers = {k.lower(): v
+                headers = {
+                    k.lower(): v
                     for k, v in re.findall(
                         r"(?P<name>.+?): (?P<value>.+?)\r?\n",
                         get_url(redirect, just_header=True),
-                    )}
+                    )
+                }
                 if "location" in headers and headers["location"]:
                     redirect = headers["location"]
 

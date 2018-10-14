@@ -135,35 +135,40 @@ class PluginManager(object):
         configs = {}
         for f in os.listdir(pfolder):
             if (
-                os.path.isfile(os.path.join(pfolder, f))
-                and f.endswith(".py")
+                os.path.isfile(os.path.join(pfolder, f)) and f.endswith(".py")
             ) and not f.startswith("_"):
 
                 with open(os.path.join(pfolder, f)) as data:
                     content = data.read()
-                    
+
                 name = f[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
-                    
+
                 pyload_version = self.PYLOAD_VERSION.findall(content)
                 if pyload_version:
                     requires_version = "{}.0".format(pyload_version)
                     requires_version_info = semver.parse_version_info(requires_version)
-                
+
                     if self.pyload.version_info.major:
                         core_version = self.pyload.version_info.major
                         plugin_version = requires_version_info.major
                     else:
                         core_version = self.pyload.version_info.minor
                         plugin_version = requires_version_info.minor
-                        
+
                     if core_version > plugin_version:
-                        self.log.warning(_("Plugin {} not compatible with current pyLoad version").format(name))
+                        self.log.warning(
+                            _(
+                                "Plugin {} not compatible with current pyLoad version"
+                            ).format(name)
+                        )
                         continue
                 else:
-                    self.log.debug("__pyload_version__ not found in plugin {}".format(name))
-                                   
+                    self.log.debug(
+                        "__pyload_version__ not found in plugin {}".format(name)
+                    )
+
                 version = self.VERSION.findall(content)
                 if version:
                     version = float(version.group(1))

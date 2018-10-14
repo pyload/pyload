@@ -21,9 +21,16 @@ def myquote(url):
 
 def myurlencode(data):
     data = dict(data)
-    return urlencode({x.encode("utf_8") if isinstance(x, str) else x:
-                y.encode("utf_8") if isinstance(y, str) else y
-            for x, y in iter(data.items())})
+    return urlencode(
+        {
+            x.encode("utf_8")
+            if isinstance(x, str)
+            else x: y.encode("utf_8")
+            if isinstance(y, str)
+            else y
+            for x, y in iter(data.items())
+        }
+    )
 
 
 bad_headers = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
@@ -322,7 +329,9 @@ class HTTPRequest(object):
 
         try:
             # self.log.debug("Decoded {}".format(encoding ))
-            if codecs.lookup(encoding).name == "utf-8" and rep.startswith(codecs.BOM_UTF8):
+            if codecs.lookup(encoding).name == "utf-8" and rep.startswith(
+                codecs.BOM_UTF8
+            ):
                 encoding = "utf-8-sig"
 
             decoder = codecs.getincrementaldecoder(encoding)("replace")

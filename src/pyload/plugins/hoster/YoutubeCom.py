@@ -16,8 +16,15 @@ from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.internal.plugin import Abort, Skip
-from pyload.plugins.utils import (exists, isexecutable, json, reduce, renice,
-                                  replace_patterns, which)
+from pyload.plugins.utils import (
+    exists,
+    isexecutable,
+    json,
+    reduce,
+    renice,
+    replace_patterns,
+    which,
+)
 
 
 class BIGHTTPRequest(HTTPRequest):
@@ -687,12 +694,14 @@ class YoutubeCom(Hoster):
         def allowed_suffix(x):
             return self.config.get(self.formats[x]["ext"])
 
-        video_streams = {_s[0]: _s[1:]
-                for _s in self.streams
-                if _s[0] in self.formats
-                and allowed_suffix(_s[0])
-                and is_video(_s[0])
-                and self.formats[_s[0]]["3d"] == use3d}
+        video_streams = {
+            _s[0]: _s[1:]
+            for _s in self.streams
+            if _s[0] in self.formats
+            and allowed_suffix(_s[0])
+            and is_video(_s[0])
+            and self.formats[_s[0]]["3d"] == use3d
+        }
 
         if not video_streams:
             self.fail(_("No available video stream meets your preferences"))
@@ -809,12 +818,14 @@ class YoutubeCom(Hoster):
                 and self.formats[x]["ext"] == self.formats[video_fmt]["ext"]
             )
 
-        audio_streams = {_s[0]: _s[1:]
-                for _s in self.streams
-                if _s[0] in self.formats
-                and is_audio(_s[0])
-                and allowed_codec(_s[0])
-                and allowed_suffix(_s[0])}
+        audio_streams = {
+            _s[0]: _s[1:]
+            for _s in self.streams
+            if _s[0] in self.formats
+            and is_audio(_s[0])
+            and allowed_codec(_s[0])
+            and allowed_suffix(_s[0])
+        }
 
         if not audio_streams:
             self.fail(_("No available audio stream meets your preferences"))
@@ -931,12 +942,12 @@ class YoutubeCom(Hoster):
                 "captions"
             ]["playerCaptionsTracklistRenderer"]["captionTracks"]
             subtitles_urls = {
-                        _subtitle["languageCode"]:
-                        urllib.parse.unquote(_subtitle["baseUrl"]).decode(
-                            "unicode-escape"
-                        )
-                        + "&fmt=3"
-                    for _subtitle in subs}
+                _subtitle["languageCode"]: urllib.parse.unquote(
+                    _subtitle["baseUrl"]
+                ).decode("unicode-escape")
+                + "&fmt=3"
+                for _subtitle in subs
+            }
             self.log_debug(
                 "AVAILABLE SUBTITLES: {}".format(list(subtitles_urls.keys()) or "None")
             )
@@ -947,7 +958,12 @@ class YoutubeCom(Hoster):
 
         subs_dl = self.config.get("subs_dl")
         if subs_dl != "off":
-            subs_dl_langs = list(filter(None, map(str.strip, self.config.get("subs_dl_langs", "").split(","))))
+            subs_dl_langs = list(
+                filter(
+                    None,
+                    map(str.strip, self.config.get("subs_dl_langs", "").split(",")),
+                )
+            )
             if subs_dl_langs:
                 # Download only listed subtitles (`subs_dl_langs` config gives the
                 # priority)

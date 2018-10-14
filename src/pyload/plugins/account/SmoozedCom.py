@@ -8,6 +8,7 @@ from pyload.plugins.utils import json
 
 from beaker.crypto.pbkdf2 import PBKDF2
 
+
 class SmoozedCom(MultiAccount):
     __name__ = "SmoozedCom"
     __type__ = "account"

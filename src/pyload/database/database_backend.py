@@ -70,7 +70,9 @@ class DatabaseJob(object):
         output = ""
         for i in range(5):
             output += "\t{}:{}, {}\n".format(
-                os.path.basename(frame.f_code.co_filename), frame.f_lineno, frame.f_code.co_name
+                os.path.basename(frame.f_code.co_filename),
+                frame.f_lineno,
+                frame.f_code.co_name,
             )
             frame = frame.f_back
         del frame
@@ -163,7 +165,7 @@ class DatabaseBackend(Thread):
 
         with open("files.version", "rb") as f:
             v = int(f.read().strip())
-            
+
         if v < __version__:
             if v < 2:
                 try:
@@ -274,7 +276,7 @@ class DatabaseBackend(Thread):
                     for r in c:
                         pw = r[1].split("$")
                         users.append((r[0], pw[1] + pw[2], r[2]))
-                        
+
             self.c.executemany(
                 "INSERT INTO users(name, password, email) VALUES (?, ?, ?)", users
             )

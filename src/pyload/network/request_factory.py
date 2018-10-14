@@ -20,7 +20,7 @@ class RequestFactory(object):
         self.cookiejars = {}
 
     def iface(self):
-        return self.pyload.config.get("download", "interface") 
+        return self.pyload.config.get("download", "interface")
 
     def getRequest(self, pluginName, account=None, type="HTTP", **kwargs):
         self.lock.acquire()
@@ -83,14 +83,14 @@ class RequestFactory(object):
 
             username = None
             if (
-                self.pyload.config.get("proxy", "username") 
-                and self.pyload.config.get("proxy", "username") .lower() != "none"
+                self.pyload.config.get("proxy", "username")
+                and self.pyload.config.get("proxy", "username").lower() != "none"
             ):
-                username = self.pyload.config.get("proxy", "username") 
+                username = self.pyload.config.get("proxy", "username")
 
             pw = None
             if (
-                self.pyload.config.get("proxy", "password") 
+                self.pyload.config.get("proxy", "password")
                 and self.pyload.config.get("proxy", "password").lower() != "none"
             ):
                 pw = self.pyload.config.get("proxy", "password")

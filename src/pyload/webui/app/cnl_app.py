@@ -16,9 +16,12 @@ import Cryptodome.Cipher.AES
 
 def local_check(func):
     def _view(*args, **kwargs):
-        if (
-            request.environ.get("REMOTE_ADDR", "0") in ("127.0.0.1", "localhost")
-            or request.environ.get("HTTP_HOST", "0") in ("127.0.0.1:9666", "localhost:9666")
+        if request.environ.get("REMOTE_ADDR", "0") in (
+            "127.0.0.1",
+            "localhost",
+        ) or request.environ.get("HTTP_HOST", "0") in (
+            "127.0.0.1:9666",
+            "localhost:9666",
         ):
             return func(*args, **kwargs)
         else:
@@ -41,7 +44,7 @@ def add():
     package = request.forms.get(
         "package", request.forms.get("source", request.POST.get("referer", None))
     )
-    urls = list(filter(None, map(str.strip,  request.POST["urls"].split("\n"))))
+    urls = list(filter(None, map(str.strip, request.POST["urls"].split("\n"))))
 
     if package:
         PYLOAD.addPackage(package, urls, 0)
@@ -132,12 +135,15 @@ def addcrypted2():
 @bottle.route(r"/flashgot", method="POST")
 @local_check
 def flashgot():
-    if request.environ['HTTP_REFERER'] not in ("http://localhost:9666/flashgot", "http://127.0.0.1:9666/flashgot"):
+    if request.environ["HTTP_REFERER"] not in (
+        "http://localhost:9666/flashgot",
+        "http://127.0.0.1:9666/flashgot",
+    ):
         return bottle.HTTPError()
 
     autostart = int(request.forms.get("autostart", 0))
     package = request.forms.get("package", None)
-    
+
     urls = list(filter(None, map(str.strip, request.POST["urls"].split("\n"))))
     # folder = request.forms.get('dir', None)
 

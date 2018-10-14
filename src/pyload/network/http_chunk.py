@@ -87,7 +87,7 @@ class ChunkInfo(object):
                     raise WrongFormat
 
                 ci.addChunk(name, (int(range[0]), int(range[1])))
-                
+
         return ci
 
     def remove(self):

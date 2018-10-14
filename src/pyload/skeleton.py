@@ -25,7 +25,10 @@ import time
 import traceback
 
 import pyload.utils.pylgettext as gettext
-from pyload import __version__ as PYLOAD_VERSION, __version_info__ as PYLOAD_VERSION_INFO
+from pyload import (
+    __version__ as PYLOAD_VERSION,
+    __version_info__ as PYLOAD_VERSION_INFO,
+)
 from pyload import remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
@@ -302,7 +305,9 @@ class Core(object):
 
         self.config = ConfigParser()
 
-        gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+        gettext.setpaths(
+            [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None]
+        )
         translation = gettext.translation(
             "pyLoad",
             self.path("locale"),
@@ -311,8 +316,8 @@ class Core(object):
         )
         translation.install(True)
 
-        self.debug = self.doDebug or self.config.get("general", "debug_mode") 
-        self.remote &= self.config.get("remote", "activated") 
+        self.debug = self.doDebug or self.config.get("general", "debug_mode")
+        self.remote &= self.config.get("remote", "activated")
 
         pid = self.isAlreadyRunning()
         if pid:
@@ -344,7 +349,9 @@ class Core(object):
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e))
 
-        self.check_file(self.config.get("log", "log_folder"), _("folder for logs"), True)
+        self.check_file(
+            self.config.get("log", "log_folder"), _("folder for logs"), True
+        )
 
         if self.debug:
             self.init_logger(logging.DEBUG)  # logging level
@@ -376,7 +383,9 @@ class Core(object):
         self.captcha = True  # checks seems to fail, althoug tesseract is available
 
         self.check_file(
-            self.config.get("general", "download_folder"), _("folder for downloads"), True
+            self.config.get("general", "download_folder"),
+            _("folder for downloads"),
+            True,
         )
 
         if self.config.get("ssl", "activated"):
@@ -526,7 +535,8 @@ class Core(object):
                 )
             else:
                 file_handler = logging.FileHandler(
-                    os.path.join(self.config.get("log", "log_folder"), "log.txt"), encoding="utf8"
+                    os.path.join(self.config.get("log", "log_folder"), "log.txt"),
+                    encoding="utf8",
                 )
 
             file_handler.setFormatter(frm)

@@ -127,7 +127,9 @@ class ClickNLoad(Addon):
                     if not self.do_exit:
                         self.log_debug("Connection from {}:{}".format(*client_addr))
 
-                        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        server_socket = socket.socket(
+                            socket.AF_INET, socket.SOCK_STREAM
+                        )
 
                         if self.pyload.config.get("webui", "https"):
                             try:
@@ -149,7 +151,9 @@ class ClickNLoad(Addon):
                         server_socket.connect((self.web_ip, self.web_port))
 
                         self.forward(
-                            client_socket, server_socket, self.config.get("dest") == "queue"
+                            client_socket,
+                            server_socket,
+                            self.config.get("dest") == "queue",
                         )
                         self.forward(server_socket, client_socket)
 

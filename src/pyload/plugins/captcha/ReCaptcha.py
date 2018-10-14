@@ -322,7 +322,9 @@ class ReCaptcha(CaptchaService):
                 text_area_height + margin * 2
             )  # add some margin on top and bottom of text
 
-            img2 = Image.new("RGB", (img.size[0], img.size[1] + text_area_height), "white")
+            img2 = Image.new(
+                "RGB", (img.size[0], img.size[1] + text_area_height), "white"
+            )
             img2.paste(img, (0, text_area_height))
             draw = ImageDraw.Draw(img2)
 

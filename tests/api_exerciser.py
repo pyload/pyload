@@ -87,9 +87,13 @@ class APIExerciser(Thread):
                     out.flush()
 
                 if not sumCalled % 1000:  # not thread safe
-                    self.pyload.log.info("Exercisers tested {} api calls".format(sumCalled))
+                    self.pyload.log.info(
+                        "Exercisers tested {} api calls".format(sumCalled)
+                    )
                     persec = sumCalled // (time() - self.time)
-                    self.pyload.log.info("Approx. {:.2f} calls per second.".format(persec))
+                    self.pyload.log.info(
+                        "Approx. {:.2f} calls per second.".format(persec)
+                    )
                     self.pyload.log.info(
                         "Approx. {:.2f} ms per call.".format(1000 // persec)
                     )

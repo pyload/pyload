@@ -5,8 +5,15 @@ from builtins import _, object
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.internal.extractor import ArchiveError, CRCError, PasswordError
-from pyload.plugins.utils import (Expose, encode, exists, fsjoin, safename, threaded,
-                                  uniqify)
+from pyload.plugins.utils import (
+    Expose,
+    encode,
+    exists,
+    fsjoin,
+    safename,
+    threaded,
+    uniqify,
+)
 import send2trash
 
 
@@ -204,9 +211,7 @@ class ExtractArchive(Addon):
         failed = []
 
         def toList(value):
-            return (
-                value.replace(" ", "").replace(",", "|").replace(";", "|").split("|")
-            )
+            return value.replace(" ", "").replace(",", "|").replace(";", "|").split("|")
 
         destination = self.config.get("destination")
         subfolder = self.config.get("subfolder")
@@ -264,12 +269,11 @@ class ExtractArchive(Addon):
             success = True
             files_ids = list(
                 {
-                        fdata["name"]:
-                        (
-                            fdata["id"],
-                            (fsjoin(pack_dl_folder, fdata["name"])),
-                            extract_folder,
-                        )
+                    fdata["name"]: (
+                        fdata["id"],
+                        (fsjoin(pack_dl_folder, fdata["name"])),
+                        extract_folder,
+                    )
                     for fdata in pypack.getChildren().values()
                 }.values()
             )  # : Remove duplicates

@@ -21,7 +21,7 @@ from pyload.webui.middlewares import (
     StripPathMiddleware,
 )
 
-THEME_DIR  = os.path.abspath(os.path.join(os.path.dirname(__file__), "themes"))
+THEME_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "themes"))
 PYLOAD_DIR = os.path.abspath(os.path.join(THEME_DIR, "..", "..", ".."))
 
 sys.path.append(PYLOAD_DIR)
@@ -114,10 +114,12 @@ if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 from pyload.webui import app
+
+
 def run_builtin(host="0.0.0.0", port="8000"):
     bottle.run(app=web, host=host, port=port, quiet=True)
 
-    
+
 def run_auto(host="0.0.0.0", port="8000"):
     bottle.run(app=web, host=host, port=port, server="auto", quiet=True)
 

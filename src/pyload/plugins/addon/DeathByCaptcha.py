@@ -67,7 +67,10 @@ class DeathByCaptcha(Addon):
         with get_request() as req:
             req.c.setopt(
                 pycurl.HTTPHEADER,
-                ["Accept: application/json", "User-Agent: pyLoad {}" % self.pyload.version],
+                [
+                    "Accept: application/json",
+                    "User-Agent: pyLoad {}" % self.pyload.version,
+                ],
             )
 
             if post:

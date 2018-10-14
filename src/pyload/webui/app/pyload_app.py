@@ -11,9 +11,17 @@ import bottle
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui import PREFIX, PROJECT_DIR, PYLOAD, PYLOAD_DIR, SETUP, env
 from pyload.webui.filters import relpath, unquotepath
-from pyload.webui.utils import (get_permission, login_required, parse_permissions,
-                                parse_userdata, permlist, render_to_response,
-                                set_permission, set_session, toDict)
+from pyload.webui.utils import (
+    get_permission,
+    login_required,
+    parse_permissions,
+    parse_userdata,
+    permlist,
+    render_to_response,
+    set_permission,
+    set_session,
+    toDict,
+)
 
 # @author: RaNaN
 
@@ -37,7 +45,7 @@ def pre_processor():
         # check if update check is available
         if info:
             if info["pyload"] == "True":
-                update = info['version']
+                update = info["version"]
             if info["plugins"] == "True":
                 plugins = True
 
@@ -187,7 +195,9 @@ def js_dynamic(path):
             t = env.get_template("js/{}".format(path))
             return t.render()
         else:
-            return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media", "js"))
+            return bottle.static_file(
+                path, root=os.path.join(PROJECT_DIR, "media", "js")
+            )
     except Exception:
         return bottle.HTTPError(404, json.dumps("Not Found"))
 
@@ -200,10 +210,13 @@ def server_static(path):
     response.headers["Cache-control"] = "public"
     return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
+
 # rewrite to return theme favicon
 @bottle.route(r"/favicon.ico")
 def favicon():
-    return bottle.static_file("favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img"))
+    return bottle.static_file(
+        "favicon.ico", root=os.path.join(PROJECT_DIR, "media", "img")
+    )
 
 
 @bottle.route(r"/robots.txt")
@@ -482,7 +495,9 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
+                dtime = datetime.datetime.strptime(
+                    date + " " + time, "%Y-%m-%d %H:%M:%S"
+                )
             except Exception:
                 dtime = None
                 date = "?"
@@ -577,7 +592,7 @@ def setup():
 def info():
     conf = PYLOAD.getConfigDict()
     extra = os.uname() if hasattr(os, "uname") else tuple()
-    
+
     data = {
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
