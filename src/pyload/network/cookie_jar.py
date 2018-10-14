@@ -2,7 +2,7 @@
 # @author: mkaay, RaNaN
 
 from builtins import object
-from time import time
+import time
 
 
 class CookieJar(object):

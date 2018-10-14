@@ -32,14 +32,14 @@ class SecureSocketConnection(object):
         try:
             return self.__dict__["connection"].send(buff)
         except WantReadError:
-            sleep(0.1)
+            time.sleep(0.1)
             return self.send(buff)
 
     def recv(self, buff):
         try:
             return self.__dict__["connection"].recv(buff)
         except WantReadError:
-            sleep(0.1)
+            time.sleep(0.1)
             return self.recv(buff)
 
 

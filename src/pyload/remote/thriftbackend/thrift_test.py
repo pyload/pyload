@@ -5,7 +5,7 @@ import xmlrpc.client
 from builtins import input, range
 from getpass import getpass
 import os
-from time import time
+import time
 
 from pyload.remote.thriftbackend.protocol import Protocol
 from pyload.remote.thriftbackend.socket import Socket
@@ -19,9 +19,9 @@ sys.path.append(path)
 
 
 def bench(f, *args, **kwargs):
-    s = time()
+    s = time.time()
     ret = [f(*args, **kwargs) for i in range(0, 100)]
-    e = time()
+    e = time.time()
     try:
         print("{}: {} s".format(f._Method__name, e - s))
     except BaseException:

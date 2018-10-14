@@ -3,7 +3,7 @@ import os
 import sys
 import time
 from builtins import _
-from datetime import datetime
+import datetime
 import operator
 from urllib.parse import unquote
 
@@ -110,7 +110,7 @@ def choose_path(browse_for, path=""):
             # f = f.decode(getfilesystemencoding())
             data = {"name": f, "fullpath": os.path.join(cwd, f)}
             data["sort"] = data["fullpath"].lower()
-            data["modified"] = datetime.fromtimestamp(
+            data["modified"] = datetime.datetime.fromtimestamp(
                 int(os.path.getmtime(os.path.join(cwd, f)))
             )
             data["ext"] = os.path.splitext(f)[1]
@@ -442,7 +442,7 @@ def logs(item=-1):
 
     if request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            fro = datetime.strptime(request.forms["from"], "%Y-%m-%d %H:%M:%S")
+            fro = datetime.datetime.strptime(request.forms["from"], "%Y-%m-%d %H:%M:%S")
         except Exception:
             pass
         try:
@@ -470,7 +470,7 @@ def logs(item=-1):
             1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
         )
 
-    if isinstance(fro, datetime):  # we will search for datetime
+    if isinstance(fro, datetime.datetime):  # we will search for datetime.datetime
         item = -1
 
     data = []
@@ -482,7 +482,7 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
+                dtime = datetime.datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
             except Exception:
                 dtime = None
                 date = "?"
@@ -490,7 +490,7 @@ def logs(item=-1):
                 level = "?"
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter  # found our datetime
+                item = counter  # found our datetime.datetime
             if item >= 0:
                 data.append(
                     {
@@ -509,7 +509,7 @@ def logs(item=-1):
                 break
 
     if fro is None:  # still not set, empty log?
-        fro = datetime.now()
+        fro = datetime.datetime.now()
     if reversed:
         data.reverse()
     return render_to_response(

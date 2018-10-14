@@ -3,14 +3,14 @@
 
 from builtins import object
 from threading import Lock
-from time import time
+import time
 
 
 class Bucket(object):
     def __init__(self):
         self.rate = 0
         self.tokens = 0
-        self.timestamp = time()
+        self.timestamp = time.time()
         self.lock = Lock()
 
     def __bool__(self):
@@ -42,7 +42,7 @@ class Bucket(object):
 
     def calc_tokens(self):
         if self.tokens < self.rate:
-            now = time()
+            now = time.time()
             delta = self.rate * (now - self.timestamp)
             self.tokens = min(self.rate, self.tokens + delta)
             self.timestamp = now

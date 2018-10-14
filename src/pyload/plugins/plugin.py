@@ -5,7 +5,7 @@ import os
 from builtins import _, object, str
 from itertools import islice
 from random import randint
-from time import sleep, time
+import time
 
 from pyload.utils.utils import fs_decode, fs_encode, save_join, save_path
 
@@ -191,7 +191,7 @@ class Plugin(Base):
         self.chunkLimit = 1
         self.resumeDownload = False
 
-        #: time() + wait in seconds
+        #: time.time() + wait in seconds
         self.waitUntil = 0
         self.waiting = False
 
@@ -313,7 +313,7 @@ class Plugin(Base):
         """
         if reconnect:
             self.wantReconnect = True
-        self.pyfile.waitUntil = time() + int(seconds)
+        self.pyfile.waitUntil = time.time() + int(seconds)
 
     def wait(self):
         """
@@ -322,7 +322,7 @@ class Plugin(Base):
         self.waiting = True
         self.pyfile.setStatus("waiting")
 
-        while self.pyfile.waitUntil > time():
+        while self.pyfile.waitUntil > time.time():
             self.thread.m.reconnecting.wait(2)
 
             if self.pyfile.abort:
@@ -424,7 +424,7 @@ class Plugin(Base):
             Ocr = None
 
         if Ocr and not forceUser:
-            sleep(randint(3000, 5000) / 1000.0)
+            time.sleep(randint(3000, 5000) / 1000.0)
             if self.pyfile.abort:
                 raise Abort
 
@@ -440,7 +440,7 @@ class Plugin(Base):
                 if self.pyfile.abort:
                     captchaManager.os.removeTask(task)
                     raise Abort
-                sleep(1)
+                time.sleep(1)
 
             captchaManager.os.removeTask(task)
 

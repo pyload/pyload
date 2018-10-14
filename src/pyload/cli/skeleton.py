@@ -385,7 +385,7 @@ class Cli(object):
 
     def printOnlineCheck(self, client, rid):
         while True:
-            sleep(1)
+            time.sleep(1)
             result = client.pollResults(rid)
             for url, status in result.data.items():
                 if status.status == 2:
@@ -413,7 +413,7 @@ class RefreshThread(Thread):
 
     def run(self):
         while True:
-            sleep(1)
+            time.sleep(1)
             try:
                 self.cli.refresh()
             except ConnectionClosed:

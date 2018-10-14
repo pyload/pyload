@@ -5,7 +5,7 @@ import os
 import sys
 from builtins import _, input, object, pypath, str
 from getpass import getpass
-from subprocess import PIPE, call
+import subprocess
 from sys import exit
 
 import pyload.utils.pylgettext as gettext
@@ -530,9 +530,9 @@ class Setup(object):
             return False
 
     def check_prog(self, command):
-        pipe = PIPE
+        pipe = subprocess.PIPE
         try:
-            call(command, stdout=pipe, stderr=pipe)
+            subprocess.call(command, stdout=pipe, stderr=pipe)
             return True
         except Exception:
             return False

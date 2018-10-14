@@ -8,7 +8,7 @@ import pprint
 from queue import Queue
 from sys import exc_info
 from threading import Thread
-from time import gmtime, sleep, strftime, time
+import time
 import traceback
 from types import MethodType
 
@@ -42,7 +42,7 @@ class PluginThread(Thread):
         """
 
         dump_name = "debug_{}_{}.zip".format(
-            pyfile.pluginname, strftime("%Y-%m-%d_%H-%M-%S")
+            pyfile.pluginname, time.strftime("%Y-%m-%d_%H-%M-%S")
         )
         dump = self.getDebugDump(pyfile)
 
@@ -62,7 +62,7 @@ class PluginThread(Thread):
                         pass
 
                 info = zipfile.ZipInfo(
-                    save_join(pyfile.pluginname, "debug_Report.txt"), gmtime()
+                    save_join(pyfile.pluginname, "debug_Report.txt"), time.gmtime()
                 )
                 info.external_attr = 0o644 << 16  # change permissions
 
@@ -221,7 +221,7 @@ class DownloadThread(PluginThread):
                 # pyfile.req.clearCookies()
 
                 while self.m.reconnecting.isSet():
-                    sleep(0.5)
+                    time.sleep(0.5)
 
                 continue
 
@@ -274,12 +274,12 @@ class DownloadThread(PluginThread):
                             "Couldn't connect to host or connection reset, waiting 1 minute and retry."
                         )
                     )
-                    wait = time() + 60
+                    wait = time.time() + 60
 
                     pyfile.waitUntil = wait
                     pyfile.setStatus("waiting")
-                    while time() < wait:
-                        sleep(1)
+                    while time.time() < wait:
+                        time.sleep(1)
                         if pyfile.abort:
                             break
 
@@ -631,7 +631,7 @@ class InfoThread(PluginThread):
 
             self.m.infoResults[self.rid]["ALL_INFO_FETCHED"] = {}
 
-        self.m.timestamp = time() + 5 * 60
+        self.m.timestamp = time.time() + 5 * 60
 
     def updateDB(self, plugin, result):
         self.m.pyload.files.updateFileInfo(result, self.pid)

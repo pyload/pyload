@@ -6,7 +6,7 @@ from builtins import range
 from math import floor
 from random import choice, randint, sample
 from threading import Thread
-from time import time
+import time
 import traceback
 
 from pyload.remote.thriftbackend.thriftClient import Destination, ThriftClient
@@ -46,7 +46,7 @@ class APIExerciser(Thread):
         self.setDaemon(True)
         self.pyload = core
         self.count = 0  # number of methods
-        self.time = time()
+        self.time = time.time()
 
         if thrift:
             self.api = ThriftClient(user=user, password=pw)
@@ -95,7 +95,7 @@ class APIExerciser(Thread):
                     )
                     self.pyload.log.info("Collected garbage: {}".format(gc.collect()))
 
-                    # sleep(random() / 500)
+                    # time.sleep(random() / 500)
 
     def testAPI(self):
         global sumCalled

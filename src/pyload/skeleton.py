@@ -21,7 +21,7 @@ from getopt import GetoptError, getopt
 from imp import find_module
 import os
 from sys import argv, executable, exit
-from time import sleep, time
+import time
 import traceback
 
 import js2py
@@ -242,11 +242,11 @@ class Core(object):
         try:
             os.kill(pid, 3)  # SIGUIT
 
-            t = time()
+            t = time.time()
             print("waiting for pyLoad to quit")
 
-            while os.path.exists(self.pidfile) and t + 10 > time():
-                sleep(0.25)
+            while os.path.exists(self.pidfile) and t + 10 > time.time():
+                time.sleep(0.25)
 
             if not os.path.exists(self.pidfile):
                 print("pyLoad successfully stopped")
@@ -479,7 +479,7 @@ class Core(object):
 
         while True:
             try:
-                sleep(2)
+                time.sleep(2)
             except IOError as e:
                 if e.errno != 4:  # errno.EINTR
                     raise
@@ -615,7 +615,7 @@ class Core(object):
                         exit()
 
     def isClientConnected(self):
-        return (self.lastClientConnected + 30) > time()
+        return (self.lastClientConnected + 30) > time.time()
 
     def restart(self):
         self.shutdown()

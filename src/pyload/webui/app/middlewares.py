@@ -2,8 +2,7 @@
 
 import gzip
 from builtins import object, str
-from io import StringIO
-
+import io
 
 class StripPathMiddleware(object):
     def __init__(self, app):
@@ -76,7 +75,7 @@ class GzipResponse(object):
     def __init__(self, start_response, compress_level):
         self.start_response = start_response
         self.compress_level = compress_level
-        self.buffer = StringIO()
+        self.buffer = io.StringIO()
         self.compressible = False
         self.content_length = None
         self.headers = ()

@@ -5,9 +5,9 @@ import re
 from builtins import _, object, pypath, range, str
 import os
 from random import choice
-from subprocess import Popen
+import subprocess
 from threading import Event, Lock
-from time import sleep, time
+import time
 import traceback
 
 import pycurl
@@ -70,7 +70,7 @@ class ThreadManager(object):
         start a thread whichs fetches online status and other infos
         data = [ .. () .. ]
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         plugin_thread.InfoThread(self, data, pid)
 
@@ -79,7 +79,7 @@ class ThreadManager(object):
         """
         creates a thread to fetch online status, returns result id.
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         rid = self.resultIDs
         self.resultIDs += 1
@@ -93,7 +93,7 @@ class ThreadManager(object):
         """
         returns result and clears it.
         """
-        self.timestamp = time() + 5 * 60
+        self.timestamp = time.time() + 5 * 60
 
         if rid in self.infoResults:
             data = self.infoResults[rid]
@@ -143,11 +143,11 @@ class ThreadManager(object):
             if self.pyload.debug:
                 traceback.print_exc()
 
-            sleep(0.5)
+            time.sleep(0.5)
             self.assignJob()
             # it may be failed non critical so we try it again
 
-        if (self.infoCache or self.infoResults) and self.timestamp < time():
+        if (self.infoCache or self.infoResults) and self.timestamp < time.time():
             self.infoCache.clear()
             self.infoResults.clear()
             self.log.debug("Cleared Result cache")
@@ -191,7 +191,7 @@ class ThreadManager(object):
         while [x.active.plugin.waiting for x in self.threads if x.active].count(
             True
         ) != 0:
-            sleep(0.25)
+            time.sleep(0.25)
 
         ip = self.getIP()
 
@@ -200,7 +200,7 @@ class ThreadManager(object):
         self.log.debug("Old IP: {}".format(ip))
 
         try:
-            reconn = Popen(
+            reconn = subprocess.Popen(
                 self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
             )  # , stdout=subprocess.PIPE)
         except Exception:
@@ -212,7 +212,7 @@ class ThreadManager(object):
             return
 
         reconn.wait()
-        sleep(1)
+        time.sleep(1)
         ip = self.getIP()
         self.pyload.addonManager.afterReconnecting(ip)
 
@@ -238,7 +238,7 @@ class ThreadManager(object):
                 break
             except Exception:
                 ip = ""
-                sleep(1)
+                time.sleep(1)
 
         return ip
 

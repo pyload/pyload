@@ -3,7 +3,7 @@
 
 from builtins import _, object, str
 from threading import Lock
-from time import time
+import time
 import traceback
 
 
@@ -115,7 +115,7 @@ class CaptchaTask(object):
         self.status = "waiting"
 
     def isWaiting(self):
-        if self.result or self.error or time() > self.waitUntil:
+        if self.result or self.error or time.time() > self.waitUntil:
             return False
 
         return True
@@ -145,7 +145,7 @@ class CaptchaTask(object):
             self.status = "shared-user"
 
     def timedOut(self):
-        return time() > self.waitUntil
+        return time.time() > self.waitUntil
 
     def invalid(self):
         """

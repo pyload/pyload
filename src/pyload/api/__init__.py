@@ -4,7 +4,7 @@
 import re
 from builtins import _, object, str
 import os
-from time import time
+import time
 
 from pyload.datatype.pyfile import PyFile
 from pyload.network.request_factory import getURL
@@ -976,7 +976,7 @@ class Api(Iface):
 
         :return: bool
         """
-        self.pyload.lastClientConnected = time()
+        self.pyload.lastClientConnected = time.time()
         task = self.pyload.captchaManager.getTask()
         return task is not None
 
@@ -988,7 +988,7 @@ class Api(Iface):
         :param exclusive: unused
         :return: `CaptchaTask`
         """
-        self.pyload.lastClientConnected = time()
+        self.pyload.lastClientConnected = time.time()
         task = self.pyload.captchaManager.getTask()
         if task:
             task.setWatingForUser(exclusive=exclusive)
@@ -1006,7 +1006,7 @@ class Api(Iface):
         :param tid: task id
         :return: string
         """
-        self.pyload.lastClientConnected = time()
+        self.pyload.lastClientConnected = time.time()
         t = self.pyload.captchaManager.getTaskByID(tid)
         return t.getStatus() if t else ""
 
@@ -1018,7 +1018,7 @@ class Api(Iface):
         :param tid: task id
         :param result: captcha result
         """
-        self.pyload.lastClientConnected = time()
+        self.pyload.lastClientConnected = time.time()
         task = self.pyload.captchaManager.getTaskByID(tid)
         if task:
             task.setResult(result)

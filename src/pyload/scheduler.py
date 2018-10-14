@@ -4,7 +4,7 @@
 from builtins import object
 from heapq import heappop, heappush
 from threading import Lock
-from time import time
+import time
 
 from _thread import start_new_thread
 
@@ -39,7 +39,7 @@ class Scheduler(object):
 
     def addJob(self, t, call, args=[], kwargs={}, threaded=True):
         d = Deferred()
-        t += time()
+        t += time.time()
         j = Job(t, call, args, kwargs, d, threaded)
         self.queue.put((t, j))
         return d
@@ -67,7 +67,7 @@ class Scheduler(object):
             if not j:
                 break
             else:
-                if t <= time():
+                if t <= time.time():
                     j.start()
                 else:
                     self.queue.put((t, j))

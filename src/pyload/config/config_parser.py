@@ -99,7 +99,7 @@ class ConfigParser(object):
                 print("Old version of plugin-config replaced")
         except Exception:
             if n < 3:
-                sleep(0.3)
+                time.sleep(0.3)
                 self.checkVersion(n + 1)
             else:
                 raise

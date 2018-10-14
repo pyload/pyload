@@ -3,7 +3,7 @@
 
 from builtins import object
 from threading import RLock
-from time import sleep, time
+import time
 
 from pyload.manager.event_manager import UpdateEvent
 from pyload.utils.utils import formatSize, lock
@@ -60,7 +60,7 @@ class PyFile(object):
         self.plugin = None
         # self.download = None
 
-        self.waitUntil = 0  # time() + time to wait
+        self.waitUntil = 0  # time.time() + time to wait
 
         # status attributes
         self.active = False  # obsolete?
@@ -193,7 +193,7 @@ class PyFile(object):
             self.abort = True
             if self.plugin and self.plugin.req:
                 self.plugin.req.abortDownloads()
-            sleep(0.1)
+            time.sleep(0.1)
 
         self.abort = False
         if self.hasPlugin() and self.plugin.req:
@@ -222,7 +222,7 @@ class PyFile(object):
         """
         formats and return wait time in humanreadable format.
         """
-        seconds = self.waitUntil - time()
+        seconds = self.waitUntil - time.time()
 
         if seconds < 0:
             return "00:00:00"

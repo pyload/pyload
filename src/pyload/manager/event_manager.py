@@ -2,7 +2,7 @@
 # @author: mkaay
 
 from builtins import object
-from time import time
+import time
 
 from pyload.utils.utils import uniqify
 
@@ -17,7 +17,7 @@ class EventManager(object):
 
     def clean(self):
         for n, client in enumerate(self.clients):
-            if client.lastActive + 30 < time():
+            if client.lastActive + 30 < time.time():
                 del self.clients[n]
 
     def getEvents(self, uuid):
@@ -25,7 +25,7 @@ class EventManager(object):
         validUuid = False
         for client in self.clients:
             if client.uuid == uuid:
-                client.lastActive = time()
+                client.lastActive = time.time()
                 validUuid = True
                 while client.newEvents():
                     events.append(client.popEvent().toList())
@@ -46,7 +46,7 @@ class EventManager(object):
 class Client(object):
     def __init__(self, uuid):
         self.uuid = uuid
-        self.lastActive = time()
+        self.lastActive = time.time()
         self.events = []
 
     def newEvents(self):

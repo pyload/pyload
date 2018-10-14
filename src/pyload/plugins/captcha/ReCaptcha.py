@@ -7,7 +7,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from builtins import _, range, str
-from io import StringIO
+import io
 
 from Pillow import Image, ImageDraw, ImageFont
 from pyload.plugins.internal.captcha_service import CaptchaService
@@ -225,7 +225,7 @@ class ReCaptcha(CaptchaService):
         # points in a text font (see typography) and thus we can hereby calculate
         # the biggest text height of a given font
 
-        with StringIO() as s:
+        with io.StringIO() as s:
             s.write(image)
             s.seek(0)
 

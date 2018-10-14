@@ -3,7 +3,7 @@
 
 from builtins import _, map, range, str
 from itertools import islice
-from time import time
+import time
 
 from pyload.api import Destination, PackageData
 from pyload.cli.handler import Handler
@@ -148,7 +148,7 @@ class ManageFiles(Handler):
         return line + 2
 
     def getPackages(self):
-        if self.cache and self.time + 2 < time():
+        if self.cache and self.time + 2 < time.time():
             return self.cache
 
         if self.target == Destination.Queue:
@@ -157,12 +157,12 @@ class ManageFiles(Handler):
             data = self.client.getCollector()
 
         self.cache = data
-        self.time = time()
+        self.time = time.time()
 
         return data
 
     def getLinks(self):
-        if self.links and self.time + 1 < time():
+        if self.links and self.time + 1 < time.time():
             return self.links
 
         try:
@@ -171,7 +171,7 @@ class ManageFiles(Handler):
             data = PackageData(links=[])
 
         self.links = data
-        self.time = time()
+        self.time = time.time()
 
         return data
 
