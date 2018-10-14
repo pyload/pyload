@@ -15,6 +15,7 @@ class ZippyshareCom(SimpleHoster):
     __name__ = "ZippyshareCom"
     __type__ = "hoster"
     __version__ = "0.98"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?P<HOST>www\d{0,3}\.zippyshare\.com)/(?:[vd]/|view\.jsp.*key=)(?P<KEY>[\w^_]+)"

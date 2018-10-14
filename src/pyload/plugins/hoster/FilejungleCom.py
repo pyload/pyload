@@ -7,6 +7,7 @@ class FilejungleCom(FileserveCom):
     __name__ = "FilejungleCom"
     __type__ = "hoster"
     __version__ = "0.57"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?filejungle\.com/f/(?P<ID>[^/]+)"

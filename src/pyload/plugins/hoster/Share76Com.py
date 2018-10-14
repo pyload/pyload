@@ -7,6 +7,7 @@ class Share76Com(DeadHoster):
     __name__ = "Share76Com"
     __type__ = "hoster"
     __version__ = "0.09"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?share76\.com/\w{12}"

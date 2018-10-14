@@ -526,6 +526,7 @@ class XDCC(Hoster):
     __name__ = "XDCC"
     __type__ = "hoster"
     __version__ = "0.48"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = (

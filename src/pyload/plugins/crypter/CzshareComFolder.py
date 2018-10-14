@@ -9,6 +9,7 @@ class CzshareComFolder(Crypter):
     __name__ = "CzshareComFolder"
     __type__ = "crypter"
     __version__ = "0.27"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?(czshare|sdilej)\.(com|cz)/folders/.+"

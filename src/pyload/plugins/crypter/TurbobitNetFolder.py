@@ -8,6 +8,7 @@ class TurbobitNetFolder(SimpleCrypter):
     __name__ = "TurbobitNetFolder"
     __type__ = "crypter"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "broken"
 
     __pattern__ = r"http://(?:www\.)?turbobit\.net/download/folder/(?P<ID>\w+)"

@@ -9,6 +9,7 @@ class CryptCat(SimpleCrypter):
     __name__ = "CryptCat"
     __type__ = "crypter"
     __version__ = "0.04"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?crypt\.cat/\w+"

@@ -12,6 +12,7 @@ class XFSAccount(Account):
     __name__ = "XFSAccount"
     __type__ = "account"
     __version__ = "0.59"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __config__ = [

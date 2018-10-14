@@ -7,6 +7,7 @@ class RapidfileshareNet(XFSAccount):
     __name__ = "RapidfileshareNet"
     __type__ = "account"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Rapidfileshare.net account plugin"""

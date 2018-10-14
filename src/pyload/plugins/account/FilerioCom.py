@@ -7,6 +7,7 @@ class FilerioCom(XFSAccount):
     __name__ = "FilerioCom"
     __type__ = "account"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """FileRio.in account plugin"""

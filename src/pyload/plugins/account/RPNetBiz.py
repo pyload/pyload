@@ -8,6 +8,7 @@ class RPNetBiz(MultiAccount):
     __name__ = "RPNetBiz"
     __type__ = "account"
     __version__ = "0.22"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

@@ -7,6 +7,7 @@ class SharebeesCom(DeadHoster):
     __name__ = "SharebeesCom"
     __type__ = "hoster"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?sharebees\.com/\w{12}"

@@ -10,6 +10,7 @@ class FreakshareCom(Account):
     __name__ = "FreakshareCom"
     __type__ = "account"
     __version__ = "0.21"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Freakshare.com account plugin"""

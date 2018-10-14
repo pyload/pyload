@@ -10,6 +10,7 @@ class HearthisAtFolder(Crypter):
     __name__ = "HearthisAtFolder"
     __type__ = "crypter"
     __version__ = "0.01"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?hearthis\.at/.*(?<!#pyload)$"

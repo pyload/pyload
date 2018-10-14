@@ -9,6 +9,7 @@ class NowVideoSx(SimpleHoster):
     __name__ = "NowVideoSx"
     __type__ = "hoster"
     __version__ = "0.17"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?nowvideo\.[a-zA-Z]{2,}/(video/|mobile/(#/videos/|.+?id=))(?P<ID>\w+)"

@@ -7,6 +7,7 @@ class StealthTo(DeadCrypter):
     __name__ = "StealthTo"
     __type__ = "crypter"
     __version__ = "0.25"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?stealth\.to/folder/.+"

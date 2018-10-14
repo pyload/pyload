@@ -7,6 +7,7 @@ class LemUploadsCom(DeadHoster):
     __name__ = "LemUploadsCom"
     __type__ = "hoster"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"https?://(?:www\.)?lemuploads\.com/\w{12}"

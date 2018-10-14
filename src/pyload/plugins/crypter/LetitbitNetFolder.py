@@ -7,6 +7,7 @@ class LetitbitNetFolder(DeadCrypter):
     __name__ = "LetitbitNet"
     __type__ = "crypter"
     __version__ = "0.18"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?letitbit\.net/folder/\w+"

@@ -16,6 +16,7 @@ class OCR(Plugin):
     __name__ = "OCR"
     __type__ = "ocr"
     __version__ = "0.26"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __description__ = """OCR base plugin"""

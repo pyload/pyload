@@ -9,6 +9,7 @@ class ZeveraCom(MultiAccount):
     __name__ = "ZeveraCom"
     __type__ = "account"
     __version__ = "0.36"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

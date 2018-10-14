@@ -17,6 +17,7 @@ class TenluaVn(SimpleHoster):
     __name__ = "TenluaVn"
     __type__ = "hoster"
     __version__ = "0.03"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?tenlua\.vn(?!/folder)/.+?/(?P<ID>[0-9a-f]+)/"

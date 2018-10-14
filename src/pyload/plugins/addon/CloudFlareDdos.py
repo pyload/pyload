@@ -182,6 +182,7 @@ class CloudFlareDdos(Addon):
     __name__ = "CloudFlareDdos"
     __type__ = "addon"
     __version__ = "0.13"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", False)]

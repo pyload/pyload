@@ -12,6 +12,7 @@ class RealdebridCom(MultiHoster):
     __name__ = "RealdebridCom"
     __type__ = "hoster"
     __version__ = "0.78"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = (

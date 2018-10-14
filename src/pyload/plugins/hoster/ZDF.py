@@ -11,6 +11,7 @@ class ZDF(Hoster):
     __name__ = "ZDF Mediathek"
     __type__ = "hoster"
     __version__ = "0.89"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?zdf\.de/ZDFmediathek/\D*(\d+)\D*"

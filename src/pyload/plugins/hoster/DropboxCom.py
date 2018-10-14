@@ -7,6 +7,7 @@ class DropboxCom(SimpleHoster):
     __name__ = "DropboxCom"
     __type__ = "hoster"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?dropbox\.com/.+"

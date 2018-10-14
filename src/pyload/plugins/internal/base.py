@@ -27,6 +27,7 @@ class Base(Plugin):
     __name__ = "Base"
     __type__ = "base"
     __version__ = "0.34"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"

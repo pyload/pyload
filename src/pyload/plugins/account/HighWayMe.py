@@ -8,6 +8,7 @@ class HighWayMe(MultiAccount):
     __name__ = "HighWayMe.py"
     __type__ = "account"
     __version__ = "0.10"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

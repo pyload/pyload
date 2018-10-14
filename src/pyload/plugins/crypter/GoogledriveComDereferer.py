@@ -9,6 +9,7 @@ class GoogledriveComDereferer(Crypter):
     __name__ = "GoogledriveComDereferer"
     __type__ = "crypter"
     __version__ = "0.01"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:drive|docs)\.google\.com/open\?(?:.+;)?id=(?P<ID>[-\w]+)"

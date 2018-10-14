@@ -9,6 +9,7 @@ class DeleteFinished(Addon):
     __name__ = "DeleteFinished"
     __type__ = "addon"
     __version__ = "1.19"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

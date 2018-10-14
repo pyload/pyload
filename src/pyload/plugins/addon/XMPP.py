@@ -6,13 +6,13 @@ import pyxmpp2
 import pyxmpp2.all
 import pyxmpp2.interfaces
 from pyload.plugins.addon.IRC import IRC
-from pyxmpp2.jabber.client import JabberClient
 
 
-class XMPP(IRC, JabberClient):
+class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
     __name__ = "XMPP"
     __type__ = "addon"
     __version__ = "0.18"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [
@@ -57,7 +57,7 @@ class XMPP(IRC, JabberClient):
 
         #: Setup client with provided connection information
         #: And identity data
-        JabberClient.__init__(
+        pyxmpp2.jabber.client.JabberClient.__init__(
             self,
             self.jid,
             password,

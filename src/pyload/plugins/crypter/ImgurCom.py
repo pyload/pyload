@@ -11,6 +11,7 @@ class ImgurCom(SimpleCrypter):
     __name__ = "ImgurCom"
     __type__ = "crypter"
     __version__ = "0.61"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.|m\.)?imgur\.com/(a|gallery|)/?\w{5,7}"

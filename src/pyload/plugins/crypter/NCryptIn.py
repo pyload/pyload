@@ -14,6 +14,7 @@ class NCryptIn(Crypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __version__ = "1.43"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)"

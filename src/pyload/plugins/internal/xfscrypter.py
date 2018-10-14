@@ -9,6 +9,7 @@ class XFSCrypter(SimpleCrypter):
     __name__ = "XFSCrypter"
     __type__ = "crypter"
     __version__ = "0.26"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"

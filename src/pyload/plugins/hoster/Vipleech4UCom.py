@@ -7,6 +7,7 @@ class Vipleech4UCom(DeadHoster):
     __name__ = "Vipleech4UCom"
     __type__ = "hoster"
     __version__ = "0.25"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?vipleech4u\.com/manager\.php"

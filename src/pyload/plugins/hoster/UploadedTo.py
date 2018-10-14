@@ -14,6 +14,7 @@ class UploadedTo(SimpleHoster):
     __name__ = "UploadedTo"
     __type__ = "hoster"
     __version__ = "1.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(uploaded\.(to|net)|ul\.to)(/file/|/?\?id=|.*?&id=|/)(?P<ID>\w+)"

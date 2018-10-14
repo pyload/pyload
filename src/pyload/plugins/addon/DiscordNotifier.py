@@ -8,6 +8,7 @@ class DiscordNotifier(Notifier):
     __name__ = "DiscordNotifier"
     __type__ = "addon"
     __version__ = "0.1"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

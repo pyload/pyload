@@ -11,6 +11,7 @@ class MegasharesCom(SimpleHoster):
     __name__ = "MegasharesCom"
     __type__ = "hoster"
     __version__ = "0.37"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = (

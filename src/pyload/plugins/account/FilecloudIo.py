@@ -10,6 +10,7 @@ class FilecloudIo(Account):
     __name__ = "FilecloudIo"
     __type__ = "account"
     __version__ = "0.13"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """FilecloudIo account plugin"""

@@ -9,6 +9,7 @@ class UptoboxCom(XFSAccount):
     __name__ = "UptoboxCom"
     __type__ = "account"
     __version__ = "0.23"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Uptobox.com account plugin"""

@@ -7,6 +7,7 @@ class BigfileToFolder(SimpleCrypter):
     __name__ = "BigfileToFolder"
     __type__ = "crypter"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:uploadable\.ch|bigfile\.to)/list/\w+"

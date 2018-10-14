@@ -10,6 +10,7 @@ class SkipRev(Addon):
     __name__ = "SkipRev"
     __type__ = "addon"
     __version__ = "0.38"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

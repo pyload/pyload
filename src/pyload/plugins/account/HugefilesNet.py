@@ -7,6 +7,7 @@ class HugefilesNet(XFSAccount):
     __name__ = "HugefilesNet"
     __type__ = "account"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Hugefiles.net account plugin"""

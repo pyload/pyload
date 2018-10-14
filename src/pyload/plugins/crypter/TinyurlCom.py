@@ -7,6 +7,7 @@ class TinyurlCom(SimpleCrypter):
     __name__ = "TinyurlCom"
     __type__ = "crypter"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(preview\.)?tinyurl\.com/[\w\-]+"

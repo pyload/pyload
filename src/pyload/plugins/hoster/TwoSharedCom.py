@@ -7,6 +7,7 @@ class TwoSharedCom(SimpleHoster):
     __name__ = "TwoSharedCom"
     __type__ = "hoster"
     __version__ = "0.19"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?2shared\.com/(account/)?(download|get|file|document|photo|video|audio)/.+"

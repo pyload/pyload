@@ -7,6 +7,7 @@ class MultihostersCom(ZeveraCom):
     __name__ = "MultihostersCom"
     __type__ = "account"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Multihosters.com account plugin"""

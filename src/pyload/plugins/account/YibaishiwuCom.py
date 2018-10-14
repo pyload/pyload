@@ -9,6 +9,7 @@ class YibaishiwuCom(Account):
     __name__ = "YibaishiwuCom"
     __type__ = "account"
     __version__ = "0.09"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """115.com account plugin"""

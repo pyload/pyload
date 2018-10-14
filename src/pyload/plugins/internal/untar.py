@@ -11,6 +11,7 @@ class UnTar(Extractor):
     __name__ = "UnTar"
     __type__ = "extractor"
     __version__ = "0.04"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __description__ = """TAR extractor plugin"""

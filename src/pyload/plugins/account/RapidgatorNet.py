@@ -10,6 +10,7 @@ class RapidgatorNet(Account):
     __name__ = "RapidgatorNet"
     __type__ = "account"
     __version__ = "0.24"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Rapidgator.net account plugin"""

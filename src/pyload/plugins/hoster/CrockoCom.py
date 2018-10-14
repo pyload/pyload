@@ -12,6 +12,7 @@ class CrockoCom(SimpleHoster):
     __name__ = "CrockoCom"
     __type__ = "hoster"
     __version__ = "0.27"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?(crocko|easy-share)\.com/\w+"

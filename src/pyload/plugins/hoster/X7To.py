@@ -7,6 +7,7 @@ class X7To(DeadHoster):
     __name__ = "X7To"
     __type__ = "hoster"
     __version__ = "0.46"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?x7\.to/"

@@ -11,6 +11,7 @@ class HighWayMe(MultiHoster):
     __name__ = "HighWayMe"
     __type__ = "hoster"
     __version__ = "0.24"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://.+high-way\.my"

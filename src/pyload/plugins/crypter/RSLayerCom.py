@@ -7,6 +7,7 @@ class RSLayerCom(DeadCrypter):
     __name__ = "RSLayerCom"
     __type__ = "crypter"
     __version__ = "0.26"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?rs-layer\.com/directory-"

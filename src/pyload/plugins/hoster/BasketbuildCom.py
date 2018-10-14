@@ -15,6 +15,7 @@ class BasketbuildCom(SimpleHoster):
     __name__ = "BasketbuildCom"
     __type__ = "hoster"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:\w\.)?basketbuild\.com/filedl/.+"

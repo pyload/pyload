@@ -9,6 +9,7 @@ class FreetexthostCom(SimpleCrypter):
     __name__ = "FreetexthostCom"
     __type__ = "crypter"
     __version__ = "0.06"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?freetexthost\.com/\w+"

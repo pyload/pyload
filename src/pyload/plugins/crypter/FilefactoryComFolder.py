@@ -7,6 +7,7 @@ class FilefactoryComFolder(SimpleCrypter):
     __name__ = "FilefactoryComFolder"
     __type__ = "crypter"
     __version__ = "0.38"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?filefactory\.com/(?:f|folder)/\w+"

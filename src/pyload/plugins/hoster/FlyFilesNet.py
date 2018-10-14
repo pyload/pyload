@@ -12,6 +12,7 @@ class FlyFilesNet(SimpleHoster):
     __name__ = "FlyFilesNet"
     __type__ = "hoster"
     __version__ = "0.15"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?flyfiles\.net/.+"

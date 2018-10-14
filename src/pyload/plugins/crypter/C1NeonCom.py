@@ -7,6 +7,7 @@ class C1NeonCom(DeadCrypter):
     __name__ = "C1NeonCom"
     __type__ = "crypter"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?c1neon\.com/.+"

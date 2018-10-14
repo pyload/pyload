@@ -7,6 +7,7 @@ class FileshareInUa(DeadHoster):
     __name__ = "FileshareInUa"
     __type__ = "hoster"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"https?://(?:www\.)?fileshare\.in\.ua/\w{7}"

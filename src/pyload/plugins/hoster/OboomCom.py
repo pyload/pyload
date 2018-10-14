@@ -15,6 +15,7 @@ class OboomCom(Hoster):
     __name__ = "OboomCom"
     __type__ = "hoster"
     __version__ = "0.46"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?oboom\.com/(?:#(?:id=|/)?)?(?P<ID>\w{8})"

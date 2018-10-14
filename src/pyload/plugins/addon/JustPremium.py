@@ -9,6 +9,7 @@ class JustPremium(Addon):
     __name__ = "JustPremium"
     __type__ = "addon"
     __version__ = "0.27"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

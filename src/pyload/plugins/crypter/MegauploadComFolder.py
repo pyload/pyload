@@ -7,6 +7,7 @@ class MegauploadComFolder(DeadCrypter):
     __name__ = "MegauploadComFolder"
     __type__ = "crypter"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = (

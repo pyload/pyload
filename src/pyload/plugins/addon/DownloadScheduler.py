@@ -10,6 +10,7 @@ class DownloadScheduler(Addon):
     __name__ = "DownloadScheduler"
     __type__ = "addon"
     __version__ = "0.30"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

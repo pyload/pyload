@@ -10,6 +10,7 @@ class OverLoadMe(MultiAccount):
     __name__ = "OverLoadMe"
     __type__ = "account"
     __version__ = "0.13"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

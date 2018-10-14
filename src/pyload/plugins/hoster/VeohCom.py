@@ -9,6 +9,7 @@ class VeohCom(SimpleHoster):
     __name__ = "VeohCom"
     __type__ = "hoster"
     __version__ = "0.28"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?veoh\.com/(tv/)?(watch|videos)/(?P<ID>v\w+)"

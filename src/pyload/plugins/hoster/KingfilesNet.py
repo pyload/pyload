@@ -10,6 +10,7 @@ class KingfilesNet(SimpleHoster):
     __name__ = "KingfilesNet"
     __type__ = "hoster"
     __version__ = "0.13"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?kingfiles\.net/(?P<ID>\w{12})"

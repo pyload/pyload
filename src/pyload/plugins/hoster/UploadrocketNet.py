@@ -9,6 +9,7 @@ class UploadrocketNet(XFSHoster):
     __name__ = "UploadrocketNet"
     __type__ = "hoster"
     __version__ = "0.02"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?uploadrocket\.net/\w{12}"

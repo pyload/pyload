@@ -7,6 +7,7 @@ class EgoFilesCom(DeadHoster):
     __name__ = "EgoFilesCom"
     __type__ = "hoster"
     __version__ = "0.21"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"https?://(?:www\.)?egofiles\.com/\w+"

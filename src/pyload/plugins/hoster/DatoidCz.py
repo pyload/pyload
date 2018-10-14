@@ -12,6 +12,7 @@ class DatoidCz(SimpleHoster):
     __name__ = "DatoidCz"
     __type__ = "hoster"
     __version__ = "0.02"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?datoid\.(?:cz|sk|pl)/(?!slozka)\w{6}"

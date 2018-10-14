@@ -7,6 +7,7 @@ class BayfilesCom(DeadHoster):
     __name__ = "BayfilesCom"
     __type__ = "hoster"
     __version__ = "0.14"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"https?://(?:www\.)?bayfiles\.(com|net)/file/(?P<ID>\w+/\w+/[^/]+)"

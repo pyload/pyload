@@ -9,6 +9,7 @@ class PremiumTo(MultiAccount):
     __name__ = "PremiumTo"
     __type__ = "account"
     __version__ = "0.19"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

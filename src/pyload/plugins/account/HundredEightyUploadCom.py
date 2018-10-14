@@ -7,6 +7,7 @@ class HundredEightyUploadCom(XFSAccount):
     __name__ = "HundredEightyUploadCom"
     __type__ = "account"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """180upload.com account plugin"""

@@ -10,6 +10,7 @@ class HearthisAt(Hoster):
     __name__ = "HearthisAt"
     __type__ = "hoster"
     __version__ = "0.03"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?hearthis\.at/.*#pyload$"

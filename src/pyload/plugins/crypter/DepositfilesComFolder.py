@@ -7,6 +7,7 @@ class DepositfilesComFolder(SimpleCrypter):
     __name__ = "DepositfilesComFolder"
     __type__ = "crypter"
     __version__ = "0.07"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?depositfiles\.com/folders/\w+"

@@ -10,6 +10,7 @@ class SmuleCom(SimpleHoster):
     __name__ = "SmuleCom"
     __type__ = "hoster"
     __version__ = "0.04"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?smule\.com/recording/.+"

@@ -12,6 +12,7 @@ class UnZip(Extractor):
     __name__ = "UnZip"
     __type__ = "extractor"
     __version__ = "1.25"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __description__ = """ZIP extractor plugin"""

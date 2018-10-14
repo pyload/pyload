@@ -42,7 +42,6 @@ import send2trash
 class utils(object):
     __name__ = "utils"
     __type__ = "plugin"
-    __version__ = "0.51"
     __status__ = "stable"
 
     __pattern__ = r"^unmatchable$"

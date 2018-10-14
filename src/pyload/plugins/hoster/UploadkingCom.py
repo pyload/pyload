@@ -7,6 +7,7 @@ class UploadkingCom(DeadHoster):
     __name__ = "UploadkingCom"
     __type__ = "hoster"
     __version__ = "0.19"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?uploadking\.com/\w{10}"

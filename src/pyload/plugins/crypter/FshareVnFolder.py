@@ -11,6 +11,7 @@ class FshareVnFolder(Crypter):
     __name__ = "FshareVnFolder"
     __type__ = "crypter"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/folder/(?P<ID>\w+)"

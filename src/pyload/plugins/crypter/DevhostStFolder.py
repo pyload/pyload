@@ -15,6 +15,7 @@ class DevhostStFolder(SimpleCrypter):
     __name__ = "DevhostStFolder"
     __type__ = "crypter"
     __version__ = "0.12"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = (

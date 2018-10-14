@@ -7,6 +7,7 @@ class File4SafeCom(XFSAccount):
     __name__ = "File4SafeCom"
     __type__ = "account"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """File4Safe.com account plugin"""

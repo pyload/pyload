@@ -12,6 +12,7 @@ class MultiAccount(Account):
     __name__ = "MultiAccount"
     __type__ = "account"
     __version__ = "0.22"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __config__ = [

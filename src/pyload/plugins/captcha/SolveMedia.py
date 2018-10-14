@@ -11,6 +11,7 @@ class SolveMedia(CaptchaService):
     __name__ = "SolveMedia"
     __type__ = "captcha"
     __version__ = "0.22"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """SolveMedia captcha service plugin"""

@@ -17,6 +17,7 @@ class WebshareCz(Account):
     __name__ = "WebshareCz"
     __type__ = "account"
     __version__ = "0.16"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Webshare.cz account plugin"""

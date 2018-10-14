@@ -7,6 +7,7 @@ class MegauploadCom(DeadHoster):
     __name__ = "MegauploadCom"
     __type__ = "hoster"
     __version__ = "0.36"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?megaupload\.com/\?.*&?(d|v)=\w+"

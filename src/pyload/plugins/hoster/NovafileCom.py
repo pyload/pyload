@@ -12,6 +12,7 @@ class NovafileCom(XFSHoster):
     __name__ = "NovafileCom"
     __type__ = "hoster"
     __version__ = "0.11"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?novafile\.com/\w{12}"

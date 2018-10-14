@@ -13,6 +13,7 @@ class UlozTo(Account):
     __name__ = "UlozTo"
     __type__ = "account"
     __version__ = "0.28"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Uloz.to account plugin"""

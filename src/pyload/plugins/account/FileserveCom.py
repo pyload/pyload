@@ -10,6 +10,7 @@ class FileserveCom(Account):
     __name__ = "FileserveCom"
     __type__ = "account"
     __version__ = "0.27"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Fileserve.com account plugin"""

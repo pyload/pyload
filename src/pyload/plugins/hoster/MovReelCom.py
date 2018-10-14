@@ -7,6 +7,7 @@ class MovReelCom(XFSHoster):
     __name__ = "MovReelCom"
     __type__ = "hoster"
     __version__ = "1.31"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?movreel\.com/\w{12}"

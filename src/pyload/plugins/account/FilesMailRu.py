@@ -7,6 +7,7 @@ class FilesMailRu(Account):
     __name__ = "FilesMailRu"
     __type__ = "account"
     __version__ = "0.18"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Filesmail.ru account plugin"""

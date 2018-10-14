@@ -9,6 +9,7 @@ class NosuploadCom(XFSHoster):
     __name__ = "NosuploadCom"
     __type__ = "hoster"
     __version__ = "0.38"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?nosupload\.com/\?d=\w{12}"

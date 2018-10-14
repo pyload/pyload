@@ -15,6 +15,7 @@ class TORRENT(Container):
     __name__ = "TORRENT"
     __type__ = "container"
     __version__ = "0.01"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"^(?!file://).+\.torrent$"

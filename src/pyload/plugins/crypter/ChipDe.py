@@ -9,6 +9,7 @@ class ChipDe(Crypter):
     __name__ = "ChipDe"
     __type__ = "crypter"
     __version__ = "0.16"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?chip\.de/video/.+\.html"

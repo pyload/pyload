@@ -9,6 +9,7 @@ class GoogledriveComFolder(Crypter):
     __name__ = "GoogledriveComFolder"
     __type__ = "crypter"
     __version__ = "0.12"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?drive\.google\.com/(?:folderview\?.*id=|drive/(?:.+?/)?folders/)(?P<ID>[-\w]+)"

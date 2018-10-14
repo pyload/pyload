@@ -7,6 +7,7 @@ class FiletramCom(SimpleCrypter):
     __name__ = "FiletramCom"
     __type__ = "crypter"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?filetram\.com/[^/]+/.+"

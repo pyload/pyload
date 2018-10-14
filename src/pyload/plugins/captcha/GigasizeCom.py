@@ -7,6 +7,7 @@ class GigasizeCom(OCR):
     __name__ = "GigasizeCom"
     __type__ = "ocr"
     __version__ = "0.17"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Gigasize.com ocr plugin"""

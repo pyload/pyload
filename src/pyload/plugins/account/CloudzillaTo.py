@@ -9,6 +9,7 @@ class CloudzillaTo(Account):
     __name__ = "CloudzillaTo"
     __type__ = "account"
     __version__ = "0.09"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Cloudzilla.to account plugin"""

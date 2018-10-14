@@ -12,6 +12,7 @@ class TenluaVn(Account):
     __name__ = "TenluaVn"
     __type__ = "account"
     __version__ = "0.01"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """TenluaVn account plugin"""

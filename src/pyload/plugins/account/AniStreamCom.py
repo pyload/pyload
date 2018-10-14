@@ -7,6 +7,7 @@ class AniStreamCom(XFSAccount):
     __name__ = "AniStreamCom"
     __type__ = "account"
     __version__ = "0.05"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __description__ = """Ani-Stream.com account plugin"""

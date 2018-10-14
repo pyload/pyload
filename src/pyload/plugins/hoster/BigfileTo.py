@@ -11,6 +11,7 @@ class BigfileTo(SimpleHoster):
     __name__ = "BigfileTo"
     __type__ = "hoster"
     __version__ = "0.19"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?(?:uploadable\.ch|bigfile.to)/file/(?P<ID>\w+)"

@@ -7,6 +7,7 @@ class ExashareCom(XFSHoster):
     __name__ = "ExashareCom"
     __type__ = "hoster"
     __version__ = "0.08"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://(?:www\.)?exashare\.com/\w{12}"

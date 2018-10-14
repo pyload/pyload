@@ -7,6 +7,7 @@ class UploadhereCom(DeadHoster):
     __name__ = "UploadhereCom"
     __type__ = "hoster"
     __version__ = "0.17"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = r"http://(?:www\.)?uploadhere\.com/\w{10}"

@@ -9,6 +9,7 @@ class MyfastfileCom(MultiHoster):
     __name__ = "MyfastfileCom"
     __type__ = "hoster"
     __version__ = "0.16"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"http://\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/dl/"

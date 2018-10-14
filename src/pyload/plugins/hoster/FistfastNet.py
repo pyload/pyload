@@ -7,6 +7,7 @@ class FistfastNet(XFSHoster):
     __name__ = "FistfastNet"
     __type__ = "hoster"
     __version__ = "0.01"
+    __pyload_version__ = "0.5"
     __status__ = "testing"
 
     __pattern__ = r"https?://(?:www\.)?fistfast\.net/\w{12}"

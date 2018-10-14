@@ -7,6 +7,7 @@ class HellspyCz(DeadHoster):
     __name__ = "HellspyCz"
     __type__ = "hoster"
     __version__ = "0.33"
+    __pyload_version__ = "0.5"
     __status__ = "stable"
 
     __pattern__ = (
