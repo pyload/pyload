@@ -4,7 +4,7 @@
 from builtins import _, str
 from copy import copy
 import os
-from pprint import pformat
+import pprint
 from queue import Queue
 from sys import exc_info
 from threading import Thread
@@ -12,7 +12,7 @@ from time import gmtime, sleep, strftime, time
 import traceback
 from types import MethodType
 
-from pycurl import error
+import pycurl
 from pyload.api import OnlineStatus
 from pyload.datatype.pyfile import PyFile
 from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
@@ -102,7 +102,7 @@ class PluginThread(Thread):
             for key, value in frame.f_locals.items():
                 dump += "\t{:20} = ".format(key)
                 try:
-                    dump += pformat(value) + "\n"
+                    dump += pprint.pformat(value) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
@@ -117,7 +117,7 @@ class PluginThread(Thread):
             if not name.endswith("__") and not isinstance(attr, MethodType):
                 dump += "\t{:20} = ".format(name)
                 try:
-                    dump += pformat(attr) + "\n"
+                    dump += pprint.pformat(attr) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
@@ -128,13 +128,13 @@ class PluginThread(Thread):
             if not name.endswith("__") and not isinstance(attr, MethodType):
                 dump += "\t{:20} = ".format(name)
                 try:
-                    dump += pformat(attr) + "\n"
+                    dump += pprint.pformat(attr) + "\n"
                 except Exception as e:
                     dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
 
         if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"
-            dump += pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
+            dump += pprint.pformat(self.m.pyload.config.plugin[pyfile.pluginname]) + "\n"
 
         return dump
 
@@ -259,7 +259,7 @@ class DownloadThread(PluginThread):
                 self.clean(pyfile)
                 continue
 
-            except error as e:
+            except pycurl.error as e:
                 if len(e.args) == 2:
                     code, msg = e.args
                 else:

@@ -2,6 +2,7 @@
 # @author: mkaay, RaNaN
 
 import importlib
+import semver
 import re
 import sys
 from ast import literal_eval
@@ -27,10 +28,11 @@ class PluginManager(object):
         "internal",
     )
 
-    PATTERN = re.compile(r'__pattern__.*=.*r("|\')([^"\']+)')
-    VERSION = re.compile(r'__version__.*=.*("|\')([0-9.]+)')
-    CONFIG = re.compile(r"__config__.*=.*(\[[^\]]+\])", re.MULTILINE)
-    DESC = re.compile(r'__description__.?=.?("|"""|\')([^"\']+)')
+    PATTERN = re.compile(r'__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
+    VERSION = re.compile(r'__version__\s*=\s*(?:"|\')([\d.]+)')
+    PYLOAD_VERSION = re.compile(r'__version__\s*=\s*(?:"|\')([\d.]+)')
+    CONFIG = re.compile(r"__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
+    DESC = re.compile(r'__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
     def __init__(self, core):
         self.pyload = core
@@ -136,29 +138,38 @@ class PluginManager(object):
             if (
                 os.path.isfile(os.path.join(pfolder, f))
                 and f.endswith(".py")
-                or f.endswith("_25.pyc")
-                or f.endswith("_26.pyc")
-                or f.endswith("_27.pyc")
             ) and not f.startswith("_"):
 
                 with open(os.path.join(pfolder, f)) as data:
                     content = data.read()
-
-                if f.endswith("_25.pyc") and version_info[0:2] != (2, 5):
-                    continue
-                elif f.endswith("_26.pyc") and version_info[0:2] != (2, 6):
-                    continue
-                elif f.endswith("_27.pyc") and version_info[0:2] != (2, 7):
-                    continue
-
+                    
                 name = f[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
-
+                    
+                pyload_version = self.PYLOAD_VERSION.findall(content)
+                if pyload_version:
+                    requires_version = "{}.0".format(pyload_version)
+                    requires_version_info = semver.parse_version_info(requires_version)
+                
+                    if self.pyload.version_info.major:
+                        core_version = self.pyload.version_info.major
+                        plugin_version = requires_version_info.major
+                    else:
+                        core_version = self.pyload.version_info.minor
+                        plugin_version = requires_version_info.minor
+                        
+                    if core_version > plugin_version:
+                        self.log.warning(_("Plugin {} not compatible with current pyLoad version").format(name))
+                        continue
+                else:
+                    self.log.debug("__pyload_version__ not found in plugin {}".format(name))
+                                   
                 version = self.VERSION.findall(content)
                 if version:
-                    version = float(version[0][1])
+                    version = float(version.group(1))
                 else:
+                    self.log.debug("__version__ not found in plugin {}".format(name))
                     version = 0
 
                 # home contains plugins from pyload root
@@ -182,7 +193,7 @@ class PluginManager(object):
                     pattern = self.PATTERN.findall(content)
 
                     if pattern:
-                        pattern = pattern[0][1]
+                        pattern = pattern.group(1)
                     else:
                         pattern = r"^unmachtable$"
 
@@ -204,7 +215,7 @@ class PluginManager(object):
                         config[0].strip().replace("\n", "").replace("\r", "")
                     )
                     desc = self.DESC.findall(content)
-                    desc = desc[0][1] if desc else ""
+                    desc = desc.group(1) if desc else ""
 
                     if isinstance(config, list) and all(
                         isinstance(c, tuple) for c in config
@@ -222,7 +233,7 @@ class PluginManager(object):
 
                 elif folder == "addons":  # force config creation
                     desc = self.DESC.findall(content)
-                    desc = desc[0][1] if desc else ""
+                    desc = desc.group(1) if desc else ""
                     config["activated"] = ["bool", "Activated", False]
 
                     config["desc"] = desc

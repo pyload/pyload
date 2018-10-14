@@ -26,7 +26,7 @@ import traceback
 
 import js2py
 import pyload.utils.pylgettext as gettext
-from pyload import __version__ as PYLOAD_VERSION
+from pyload import __version__ as PYLOAD_VERSION, __version_info__ as PYLOAD_VERSION_INFO
 from pyload import remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database import DatabaseBackend, FileHandler
@@ -263,10 +263,6 @@ class Core(object):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
                     continue
-
-                if "_25" in f or "_26" in f or "_27" in f:
-                    continue
-
                 print(os.path.join(path, f))
                 os.remove(os.path.join(path, f))
 
@@ -276,6 +272,7 @@ class Core(object):
         """
 
         self.version = PYLOAD_VERSION
+        self.version_info = PYLOAD_VERSION_INFO
 
         if not os.path.exists("pyload.conf"):
             from pyload.setup import Setup
