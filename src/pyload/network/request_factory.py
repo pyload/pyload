@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay, RaNaN
 
-from builtins import object, pyreq
+from builtins import object, REQUESTS
 from threading import Lock
 
 from pyload.network.browser import Browser
@@ -123,10 +123,10 @@ class RequestFactory(object):
             self.bucket.setRate(self.pyload.config.get("download", "max_speed") * 1024)
 
 
-# needs pyreq in global namespace
+# needs REQUESTS in global namespace
 def getURL(*args, **kwargs):
-    return pyreq.getURL(*args, **kwargs)
+    return REQUESTS.getURL(*args, **kwargs)
 
 
 def getRequest(*args, **kwargs):
-    return pyreq.getHTTPRequest()
+    return REQUESTS.getHTTPRequest()

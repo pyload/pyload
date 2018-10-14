@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from builtins import _, filter, map, pypath
+from builtins import _, filter, map, PKGDIR
 
 from pyload.plugins.internal.extractor import (ArchiveError, CRCError, Extractor,
                                                PasswordError)
@@ -60,7 +60,7 @@ class UnRar(Extractor):
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(pypath, "RAR.exe")
+                cls.CMD = os.path.join(PKGDIR, "RAR.exe")
             else:
                 cls.CMD = "rar"
 
@@ -74,7 +74,7 @@ class UnRar(Extractor):
         except OSError:
             try:
                 if os.name == "nt":
-                    cls.CMD = os.path.join(pypath, "UnRAR.exe")
+                    cls.CMD = os.path.join(PKGDIR, "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"
 

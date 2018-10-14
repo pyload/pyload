@@ -48,7 +48,7 @@ class AddonManager(object):
         self.pyload = core
         self.config = self.pyload.config
 
-        builtins.addonManager = self  # needed to let addons register themself
+        builtins.ADDONMANAGER = self  # needed to let addons register themself
 
         self.log = self.pyload.log
         self.plugins = []

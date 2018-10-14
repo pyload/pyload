@@ -19,7 +19,7 @@ import subprocess
 import sys
 import time
 import traceback
-from builtins import _, object, owd, pypath, range, str
+from builtins import _, object, PKGDIR, range, str
 from getopt import GetoptError, getopt
 from imp import find_module
 from sys import argv, executable, exit
@@ -118,21 +118,21 @@ class Core(object):
                         from pyload.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(PKGDIR, self.config)
                         s.set_user()
                         exit()
                     elif option in ("-s", "--setup"):
                         from pyload.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(PKGDIR, self.config)
                         s.start()
                         exit()
                     elif option == "--changedir":
                         from pyload.setup import Setup
 
                         self.config = ConfigParser()
-                        s = Setup(pypath, self.config)
+                        s = Setup(PKGDIR, self.config)
                         s.conf_path(True)
                         exit()
                     elif option in ("-q", "--quit"):
@@ -279,7 +279,7 @@ class Core(object):
 
             print("This is your first start, running configuration assistent now.")
             self.config = ConfigParser()
-            s = Setup(pypath, self.config)
+            s = Setup(PKGDIR, self.config)
             res = False
             try:
                 res = s.start()
@@ -404,7 +404,7 @@ class Core(object):
             self.db.purgeLinks()
 
         self.requestFactory = RequestFactory(self)
-        builtins.pyreq = self.requestFactory
+        builtins.REQUESTS = self.requestFactory
 
         self.lastClientConnected = 0
 
@@ -444,7 +444,7 @@ class Core(object):
 
         self.config.save()  # save so config files gets filled
 
-        link_file = os.path.join(pypath, "links.txt")
+        link_file = os.path.join(PKGDIR, "links.txt")
 
         if os.path.exists(link_file):
             with open(link_file, "rb") as f:
@@ -626,7 +626,6 @@ class Core(object):
 
     def restart(self):
         self.shutdown()
-        os.chdir(owd)
         # close some open fds
         for i in range(3, 50):
             try:
@@ -664,7 +663,7 @@ class Core(object):
         self.deletePidFile()
 
     def path(self, *args):
-        return os.path.join(pypath, *args)
+        return os.path.join(PKGDIR, *args)
 
 
 def daemon():

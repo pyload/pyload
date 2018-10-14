@@ -15,9 +15,6 @@ from pyload.remote.thriftbackend.socket import Socket
 from pyload.remote.thriftbackend.thriftgen import Pyload
 from pyload.remote.thriftbackend.thriftgen.ttypes import *
 
-path = os.path.join((os.path.abspath(os.path.dirname(__file__))), "..", "..", "lib")
-sys.path.append(path)
-
 
 def bench(f, *args, **kwargs):
     s = time.time()

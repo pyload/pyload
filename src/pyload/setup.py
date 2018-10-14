@@ -4,7 +4,7 @@
 import os
 import subprocess
 import sys
-from builtins import _, input, object, pypath, str
+from builtins import _, input, object, PKGDIR, str
 from getpass import getpass
 from sys import exit
 
@@ -231,7 +231,7 @@ class Setup(object):
 
         if os.name == "nt":
             tesser = self.check_prog(
-                [os.path.join(pypath, "tesseract", "tesseract.exe"), "-v"]
+                [os.path.join(PKGDIR, "tesseract", "tesseract.exe"), "-v"]
             )
         else:
             tesser = self.check_prog(["tesseract", "-v"])
@@ -414,8 +414,8 @@ class Setup(object):
 
         templates = [
             t
-            for t in os.listdir(os.path.join(pypath, "pyload", "web", "templates"))
-            if os.path.isdir(os.path.join(pypath, "pyload", "web", "templates", t))
+            for t in os.listdir(os.path.join(PKGDIR, "pyload", "web", "templates"))
+            if os.path.isdir(os.path.join(PKGDIR, "pyload", "web", "templates", t))
         ]
         self.config.set(
             "webui", "template", self.ask(_("Template"), "classic", templates)
@@ -515,10 +515,10 @@ class Setup(object):
         )
         path = self.ask(_("Configpath"), os.path.abspath(""))
         try:
-            path = os.path.join(pypath, path)
+            path = os.path.join(PKGDIR, path)
             if not os.path.exists(path):
                 os.makedirs(path)
-            with open(os.path.join(pypath, "pyload", "config", "configdir"), "wb") as f:
+            with open(os.path.join(PKGDIR, "pyload", "config", "configdir"), "wb") as f:
                 f.write(path)
             print(
                 _("Configpath changed, setup will now close, please restart to go on.")

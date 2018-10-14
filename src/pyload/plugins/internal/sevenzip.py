@@ -3,7 +3,7 @@
 import os
 import re
 import subprocess
-from builtins import _, filter, map, pypath
+from builtins import _, filter, map, PKGDIR
 
 from pyload.plugins.internal.extractor import (ArchiveError, CRCError, Extractor,
                                                PasswordError)
@@ -83,7 +83,7 @@ class SevenZip(Extractor):
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(pypath, "7z.exe")
+                cls.CMD = os.path.join(PKGDIR, "7z.exe")
 
             p = subprocess.Popen(
                 [cls.CMD], stdout=subprocess.PIPE, stderr=subprocess.PIPE

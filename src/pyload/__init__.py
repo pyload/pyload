@@ -1,84 +1,53 @@
 # -*- coding: utf-8 -*-
+#      ____________
+#   _ /       |    \ ___________ _ _______________ _ ___ _______________
+#  /  |    ___/    |   _ __ _  _| |   ___  __ _ __| |   \\    ___  ___ _\
+# /   \___/  ______/  | '_ \ || | |__/ _ \/ _` / _` |    \\  / _ \/ _ `/ \
+# \       |   o|      | .__/\_, |____\___/\__,_\__,_|    // /_//_/\_, /  /
+#  \______\    /______|_|___|__/________________________//______ /___/__/
+#          \  /
+#           \/
+
+import builtins
+# import codecs
+import os
 import pkg_resources
 import semver
+# import sys
 
 try:
-    dist_name = "pyload-ng"
+    dist_name = "pyload"
+    __path__ = pkg_resources.resource_filename(dist_name)
     __version__ = pkg_resources.get_distribution(dist_name).version
+    
 except pkg_resources.DistributionNotFound:
-    __version__ = "unknown"
+    __path__ = os.path.realpath(os.path.join(__file__, "..", "..", ".."))
+    
+    ver_path = os.path.join(__path__, 'VERSION.md')
+    with open(ver_path) as f:
+        __version__ = f.read().strip()
+        
 finally:
-    __version_info__ = semver.parse_version_info(
-        "0.0.0" if __version__ == "unknown" else __version__
-    )
+    __version_info__ = semver.parse_version_info(__version__)
+    del os
     del pkg_resources
     del semver
 
-import builtins
-import sys
-import os
-from sys import argv, platform
+    
+builtins.PKGDIR = __path__
+builtins.HOMEDIR = os.path.expanduser('~')
+# builtins.DATADIR = os.getenv(
+# 'APPDATA') if os.name == 'nt' else builtins.HOMEDIR
+# builtins.TMPDIR = tempfile.gettempdir()
 
-builtins._ = lambda x: x  # TODO: os.remove
+# TODO: remove
+builtins._ = lambda x: x
+builtins.REQUESTS = None
+builtins.ADDONMANAGER = None
 
-builtins.pyreq = None  # TODO: os.remove
-builtins.addonManager = None  # TODO: os.remove
 
-builtins.owd = os.path.abspath("")  # original working directory
-builtins.pypath = pypath = os.path.abspath(os.path.join(__file__, "..", ".."))
+locale.setlocale(locale.LC_ALL, '')
 
-sys.path.append(os.path.join(pypath, "pyload", "lib"))
 
-homedir = ""
-
-if platform == "nt":
-    homedir = os.path.expanduser("~")
-    if homedir == "~":
-        import ctypes
-
-        CSIDL_APPDATA = 26
-        _SHGetFolderPath = ctypes.windll.shell32.SHGetFolderPathW
-        _SHGetFolderPath.argtypes = [
-            ctypes.wintypes.HWND,
-            ctypes.c_int,
-            ctypes.wintypes.HANDLE,
-            ctypes.wintypes.DWORD,
-            ctypes.wintypes.LPCWSTR,
-        ]
-
-        path_buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
-        result = _SHGetFolderPath(0, CSIDL_APPDATA, 0, 0, path_buf)
-        homedir = path_buf.value
-else:
-    homedir = os.path.expanduser("~")
-
-builtins.homedir = homedir
-
-args = " ".join(argv[1:])
-
-# dirty method to set configdir from commandline arguments
-if "--configdir=" in args:
-    pos = args.find("--configdir=")
-    end = args.find("-", pos + 12)
-
-    if end == -1:
-        configdir = args[pos + 12 :].strip()
-    else:
-        configdir = args[pos + 12 : end].strip()
-elif os.path.exists(os.path.join(pypath, "pyload", "config", "configdir")):
-    with open(os.path.join(pypath, "pyload", "config", "configdir"), "rb") as f:
-        c = f.read().strip()
-    configdir = os.path.join(pypath, c)
-else:
-    if platform in ("posix", "linux2"):
-        configdir = os.path.join(homedir, ".pyload")
-    else:
-        configdir = os.path.join(homedir, "pyload")
-
-if not os.path.exists(configdir):
-    os.makedirs(configdir, 0o700)
-
-builtins.configdir = configdir
-os.chdir(configdir)
-
-# print("Using {} as working directory.".format(configdir))
+# codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
+# sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")  

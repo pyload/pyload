@@ -5,14 +5,11 @@ import inspect
 import os
 import sys
 
+from builtins import PKGDIR
 from pyload.remote.thriftbackend.thriftgen import ttypes
 from pyload.remote.thriftbackend.thriftgen.pyload import Iface
 
-path = os.path.dirname(os.path.abspath(__file__))
-module = os.path.join(path, "..", "..")
-
-sys.path.append(os.path.join(module, "lib"))
-sys.path.append(os.path.join(module, "remote"))
+sys.path.append(os.path.join(PKGDIR, "remote"))
 
 
 def main():

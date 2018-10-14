@@ -4,7 +4,7 @@ import os
 import re
 import shutil
 import traceback
-from builtins import object, pypath, str
+from builtins import object, PKGDIR, str
 from time import sleep
 
 from pyload.utils.utils import chmod
@@ -70,7 +70,7 @@ class ConfigParser(object):
         try:
             if not os.path.exists("pyload.conf"):
                 shutil.copy(
-                    os.path.join(pypath, "pyload", "config", "default.conf"),
+                    os.path.join(PKGDIR, "pyload", "config", "default.conf"),
                     "pyload.conf",
                 )
                 chmod("pyload.conf", 0o600)
@@ -88,7 +88,7 @@ class ConfigParser(object):
 
             if not v or int(v) < __version__:
                 shutil.copy(
-                    os.path.join(pypath, "pyload", "config", "default.conf"),
+                    os.path.join(PKGDIR, "pyload", "config", "default.conf"),
                     "pyload.conf",
                 )
                 print("Old version of config was replaced")
@@ -116,7 +116,7 @@ class ConfigParser(object):
         """
 
         self.config = self.parseConfig(
-            os.path.join(pypath, "pyload", "config", "default.conf")
+            os.path.join(PKGDIR, "pyload", "config", "default.conf")
         )
         self.plugin = self.parseConfig("plugin.conf")
 

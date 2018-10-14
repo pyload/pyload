@@ -22,7 +22,7 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import _, addonManager, map, object, str
+from builtins import _, ADDONMANAGER, map, object, str
 
 import send2trash
 
@@ -131,7 +131,7 @@ class Expose(object):
     """
 
     def __new__(cls, fn, *args, **kwargs):
-        addonManager.addRPC(fn.__module__, fn.__name__, fn.__doc__)
+        ADDONMANAGER.addRPC(fn.__module__, fn.__name__, fn.__doc__)
         return fn
 
 
@@ -238,7 +238,7 @@ def lock(fn):
 
 def threaded(fn):
     def run(*args, **kwargs):
-        addonManager.startThread(fn, *args, **kwargs)
+        ADDONMANAGER.startThread(fn, *args, **kwargs)
 
     return run
 

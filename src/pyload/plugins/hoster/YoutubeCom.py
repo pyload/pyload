@@ -8,7 +8,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, map, object, pypath, range, str, zip
+from builtins import _, map, object, PKGDIR, range, str, zip
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
@@ -80,8 +80,8 @@ class Ffmpeg(object):
         try:
             if os.name == "nt":
                 ffmpeg = (
-                    os.path.join(pypath, "ffmpeg.exe")
-                    if isexecutable(os.path.join(pypath, "ffmpeg.exe"))
+                    os.path.join(PKGDIR, "ffmpeg.exe")
+                    if isexecutable(os.path.join(PKGDIR, "ffmpeg.exe"))
                     else "ffmpeg.exe"
                 )
 

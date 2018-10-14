@@ -7,7 +7,7 @@ import re
 import sys
 import traceback
 from ast import literal_eval
-from builtins import _, object, pypath, str
+from builtins import _, object, PKGDIR, str
 from itertools import chain
 
 import semver
@@ -131,7 +131,7 @@ class PluginManager(object):
                 f.close()
 
         else:
-            pfolder = os.path.join(pypath, "pyload", "plugins", folder)
+            pfolder = os.path.join(PKGDIR, "pyload", "plugins", folder)
 
         configs = {}
         for f in os.listdir(pfolder):

@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import _, pypath, zip
+from builtins import _, PKGDIR, zip
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
@@ -413,7 +413,7 @@ class UpdateManager(Addon):
         self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
 
         for plugin_type, plugin_name in plugin_ids:
-            rootplugins = os.path.join(pypath, "pyload", "plugins")
+            rootplugins = os.path.join(PKGDIR, "pyload", "plugins")
 
             for basedir in ("userplugins", rootplugins):
                 py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")

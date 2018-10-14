@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import _, map, pypath, range, str
+from builtins import _, map, PKGDIR, range, str
 
 from Pillow import Image
 from pyload.plugins.internal.plugin import Plugin
@@ -94,7 +94,7 @@ class OCR(Plugin):
         self.img.save(tmpTif.name, "TIFF")
 
         if os.name == "nt":
-            command = os.path.join(pypath, "tesseract", "tesseract.exe")
+            command = os.path.join(PKGDIR, "tesseract", "tesseract.exe")
         else:
             command = "tesseract"
 

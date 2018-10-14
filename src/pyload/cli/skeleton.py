@@ -14,7 +14,7 @@ import configparser
 import os
 import sys
 import traceback
-from builtins import _, homedir, input, object, owd, pypath, range, str
+from builtins import _, homedir, input, object, PKGDIR, range, str
 from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
@@ -347,11 +347,11 @@ class Cli(object):
 
         elif command == "check_container":
             path = args[0]
-            if not os.path.exists(os.path.join(owd, path)):
+            if not os.path.exists(path):
                 print(_("File does not exists."))
                 return
 
-            with open(os.path.join(owd, path), "rb") as f:
+            with open(path, "rb") as f:
                 content = f.read()
 
             rid = self.client.checkOnlineStatusContainer(
@@ -541,7 +541,7 @@ def main(args):
         pass
 
     if (
-        not os.path.exists(os.path.join(pypath, "locale", config["language"]))
+        not os.path.exists(os.path.join(PKGDIR, "locale", config["language"]))
     ) or config["language"] == "":
         config["language"] = "en"
 
@@ -555,7 +555,7 @@ def main(args):
     gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
     translation = gettext.translation(
         "cli",
-        os.path.join(pypath, "locale"),
+        os.path.join(PKGDIR, "locale"),
         languages=[config["language"], "en"],
         fallback=True,
     )
@@ -596,7 +596,7 @@ def main(args):
                 )
                 translation = gettext.translation(
                     "cli",
-                    os.path.join(pypath, "locale"),
+                    os.path.join(PKGDIR, "locale"),
                     languages=[config["language"], "en"],
                     fallback=True,
                 )
