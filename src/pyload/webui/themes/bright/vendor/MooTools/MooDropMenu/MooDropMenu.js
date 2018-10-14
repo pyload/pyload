@@ -34,7 +34,9 @@ var MooDropMenu = new Class({
 		mouseoutDelay: 200,
 		mouseoverDelay: 0,
 		listSelector: 'ul',
-		itemSelector: 'li'
+		itemSelector: 'li',
+		openEvent: 'mouseenter',
+		closeEvent: 'mouseleave'
 	},
 
 	initialize: function(menu, options, level){
@@ -50,27 +52,22 @@ var MooDropMenu = new Class({
 			var parent = el.getParent(options.itemSelector),
 				timer;
 
-			parent.addEvents({
+			parent.addEvent(options.openEvent, function(){
+				parent.store('DropDownOpen', true);
 
-				'mouseenter': function(){
-					parent.store('DropDownOpen', true);
+				clearTimeout(timer);
+				if (options.mouseoverDelay) timer = this.fireEvent.delay(options.mouseoverDelay, this, ['open', el]);
+				else this.fireEvent('open', el);
 
-					clearTimeout(timer);
-					if (options.mouseoverDelay) timer = this.fireEvent.delay(options.mouseoverDelay, this, ['open', el]);
-					else this.fireEvent('open', el);
+			}.bind(this)).addEvent(options.closeEvent, function(){
+				parent.store('DropDownOpen', false);
 
-				}.bind(this),
+				clearTimeout(timer);
+				timer = (function(){
+					if (!parent.retrieve('DropDownOpen')) this.fireEvent('close', el);
+				}).delay(options.mouseoutDelay, this);
 
-				'mouseleave': function(){
-					parent.store('DropDownOpen', false);
-
-					clearTimeout(timer);
-					timer = (function(){
-						if (!parent.retrieve('DropDownOpen')) this.fireEvent('close', el);
-					}).delay(options.mouseoutDelay, this);
-
-				}.bind(this)
-			});
+			}.bind(this));
 
 		}, this);
 	},
