@@ -6,8 +6,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link rel="stylesheet" type="text/css" href="{{'/css/bootstrap.min.css'|url}}">
-<link rel="stylesheet" type="text/css" href="{{'/css/jquery-ui-1.12.1.min.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/vendor/Bootstrap/css/bootstrap.min.css'|url}}">
+<link rel="stylesheet" type="text/css" href="{{'/vendor/jQuery/jQuery UI/jquery-ui.min.css'|url}}"/>
 <link rel="stylesheet" type="text/css" href="{{'/css/styles.css'|url}}">
 
 <link rel="icon" href="{{'/img/favicon.ico'|url}}"/>
@@ -15,7 +15,7 @@
 <style type="text/css">
 .ui-icon,
 .ui-widget-content .ui-icon {
-  background-image: url("{{'/img/ui-icons_444444_256x240.png'|url}}");
+  background-image: url("{{'/vendor/jQuery/jQuery UI/images/ui-icons_444444_256x240.png'|url}}");
 }
 
 #goto_top.affix-top {
@@ -192,10 +192,10 @@
 {% include "/captcha.html" %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
-<script type="text/javascript" src="{{'/js/jquery-3.2.1.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/js/jquery-ui-1.12.1.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/js/jquery.peekabar.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/js/bootstrap.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/jQuery/jquery.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/jQuery/jQuery UI/jquery-ui.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/Bootstrap/js/bootstrap.min.js'|url}}"></script>
 <script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
 
 {% block footer %}
