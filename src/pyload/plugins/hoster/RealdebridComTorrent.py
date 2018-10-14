@@ -58,7 +58,7 @@ class RealdebridComTorrent(Hoster):
         self.premium = True
         self.no_fallback = True
 
-    def time.sleep(self, sec):
+    def sleep(self, sec):
         for _i in range(sec):
             if self.pyfile.abort:
                 break

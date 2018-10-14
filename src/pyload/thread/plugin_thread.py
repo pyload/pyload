@@ -50,7 +50,6 @@ class PluginThread(Thread):
             import zipfile
 
             with zipfile.ZipFile(dump_name, "w") as zip:
-
                 for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
                     try:
                         # avoid encoding errors
@@ -66,7 +65,7 @@ class PluginThread(Thread):
                 )
                 info.external_attr = 0o644 << 16  # change permissions
 
-                zip.writestr(info, dump
+                zip.writestr(info, dump)
 
             if not os.stat(dump_name).st_size:
                 raise Exception("Empty Zipfile")

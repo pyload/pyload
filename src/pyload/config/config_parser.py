@@ -347,7 +347,7 @@ class ConfigParser(object):
         self.save()
 
     def toggle(self, section, option):
-        self.set(section, option, self.get(section, option) ^= True)
+        self.set(section, option, self.get(section, option) ^ True)
       
     def getPlugin(self, plugin, option):
         """

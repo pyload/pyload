@@ -37,7 +37,7 @@ class QuickshareCz(SimpleHoster):
 
         #: Parse js variables
         self.jsvars = {x: y.strip("'")
-            for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.data}
+            for x, y in re.findall(r"var (\w+) = ([\d.]+|'.+?')", self.data)}
         self.log_debug(self.jsvars)
         pyfile.name = self.jsvars["ID3"]
 

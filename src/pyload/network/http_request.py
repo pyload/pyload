@@ -23,7 +23,7 @@ def myurlencode(data):
     data = dict(data)
     return urlencode({x.encode("utf_8") if isinstance(x, str) else x:
                 y.encode("utf_8") if isinstance(y, str) else y
-            for x, y in iter(data.items())}
+            for x, y in iter(data.items())})
 
 
 bad_headers = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))

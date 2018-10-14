@@ -44,7 +44,7 @@ class ZbigzCom(Hoster):
 
         return json.loads(m.group(1)) if m else None
 
-    def time.sleep(self, sec):
+    def sleep(self, sec):
         for _i in range(sec):
             if self.pyfile.abort:
                 break

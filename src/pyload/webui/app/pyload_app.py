@@ -533,7 +533,7 @@ def logs(item=-1):
 @login_required("ADMIN")
 def admin():
     # convert to dict
-    user = {name: toDict(y)) for name, y in PYLOAD.getAllUserData().items()}
+    user = {name: toDict(y) for name, y in PYLOAD.getAllUserData().items()}
     perms = permlist()
 
     for data in user.values():
