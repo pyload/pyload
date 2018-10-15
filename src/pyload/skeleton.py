@@ -497,7 +497,7 @@ class Core(object):
             if self.do_kill:
                 self.shutdown()
                 self.log.info(_("pyLoad quits"))
-                self.os.removeLogger()
+                self.removeLogger()
                 os._exit(0)  # TODO: thrift blocks shutdown
 
             self.threadManager.work()
@@ -723,7 +723,7 @@ def main(args):
         except KeyboardInterrupt:
             pyload_core.shutdown()
             pyload_core.log.info(_("killed pyLoad from Terminal"))
-            pyload_core.os.removeLogger()
+            pyload_core.removeLogger()
             os._exit(1)
 
 

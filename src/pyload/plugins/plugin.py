@@ -410,7 +410,7 @@ class Plugin(Base):
 
         img = self.load(url, get=get, post=post, cookies=cookies)
 
-        id = "{:.2f}".format(time())[-6:].replace(".", "")
+        id = "{:.2f}".format(time.time())[-6:].replace(".", "")
         with open(
             os.path.join(
                 "tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)

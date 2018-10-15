@@ -111,7 +111,7 @@ class CaptchaTask(object):
         """
         let the captcha wait secs for the solution.
         """
-        self.waitUntil = max(time() + sec, self.waitUntil)
+        self.waitUntil = max(time.time() + sec, self.waitUntil)
         self.status = "waiting"
 
     def isWaiting(self):

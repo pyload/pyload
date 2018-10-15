@@ -13,28 +13,28 @@ import builtins
 import os
 import pkg_resources
 import semver
+import tempfile
 # import sys
 
 try:
     dist_name = "pyload"
-    __path__ = pkg_resources.resource_filename(dist_name)
+    pkgdir = pkg_resources.resource_filename(dist_name, "")
     __version__ = pkg_resources.get_distribution(dist_name).version
     
 except pkg_resources.DistributionNotFound:
-    __path__ = os.path.realpath(os.path.join(__file__, "..", "..", ".."))
+    pkgdir = os.path.realpath(os.path.join(__file__, "..", "..", ".."))
     
-    ver_path = os.path.join(__path__, 'VERSION.md')
+    ver_path = os.path.join(pkgdir, 'VERSION.md')
     with open(ver_path) as f:
         __version__ = f.read().strip()
         
 finally:
     __version_info__ = semver.parse_version_info(__version__)
-    del os
     del pkg_resources
     del semver
 
-    
-builtins.PKGDIR = __path__
+# remove from builtins and keep them just here?
+builtins.PKGDIR = pkgdir
 builtins.HOMEDIR = os.path.expanduser('~')
 builtins.DATADIR = os.getenv('APPDATA') if os.name == 'nt' else builtins.HOMEDIR
 builtins.TMPDIR = tempfile.gettempdir()
@@ -50,3 +50,8 @@ locale.setlocale(locale.LC_ALL, '')
 
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")  
+
+del pkgdir
+del locale
+del os
+del tempfile

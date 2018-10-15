@@ -66,7 +66,7 @@ class CaptchaBrotherhood(Addon):
 
     def submit(self, captcha, captchaType="file", match=None):
         try:
-            with Image.open(captcha), io.StringIO() as img, output:
+            with Image.open(captcha) as img, io.StringIO() as output:
                 self.log_debug("CAPTCHA IMAGE", img, img.format, img.mode)
                 if img.format in ("GIF", "JPEG"):
                     img.save(output, img.format)

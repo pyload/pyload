@@ -4,8 +4,8 @@ import os
 import re
 import shutil
 import traceback
-from builtins import object, PKGDIR, str
-from time import sleep
+from builtins import object, PKGDIR, str, HOMEDIR
+import time
 
 from pyload.utils.utils import chmod
 
