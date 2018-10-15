@@ -6,17 +6,17 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<link rel="stylesheet" type="text/css" href="/css/window.css"/>
-<link rel="stylesheet" type="text/css" href="/css/MooDialog.css"/>
-<link rel="stylesheet" href="/vendor/Bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{'/css/window.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{'/css/MooDialog.css'|url}}"/>
+<link rel="stylesheet" href="{{'/vendor/Bootstrap/css/bootstrap.min.css'|url}}">
 
-<script type="text/javascript" src="/vendor/MooTools/MooTools-Core.min.js"></script>
-<script type="text/javascript" src="/vendor/MooTools/MooTools-More.min.js"></script>
-<script type="text/javascript" src="/vendor/MooTools/MooDialog/MooDialog.js"></script>
-<script type="text/javascript" src="/vendor/MooTools/Purr/purr.js"></script>
+<script type="text/javascript" src="{{'/vendor/MooTools/MooTools-Core.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/MooTools/MooTools-More.min.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/MooTools/MooDialog/MooDialog.js'|url}}"></script>
+<script type="text/javascript" src="{{'/vendor/MooTools/Purr/purr.js'|url}}"></script>
 
 
-<script type="text/javascript" src="/js/base.js"></script>
+<script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
 
 
 
@@ -72,7 +72,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" href="#"><img id="head-logo" src="/img/pyload-banner.png" alt="pyLoad" style="height:30px;"/></a>
+              <a class="navbar-brand" href="#"><img id="head-logo" src="{{'/img/pyload-banner.png'|url}}" alt="pyLoad" style="height:30px;"/></a>
             </div>
 
     <a href="/"></a>
@@ -91,33 +91,33 @@
             <a href="/" title=""><span class="glyphicon glyphicon-home"></span> {{_("Home")}}</a>
         </li>
         <li {{ selected('queue') }}>
-            <a href="/queue/" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
+            <a href="{{'/queue/'|url}}" title=""><span class="glyphicon glyphicon-tasks"></span> {{_("Queue")}}</a>
         </li>
         <li {{ selected('collector') }}>
-            <a href="/collector/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
+            <a href="{{'/collector/'|url}}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("Collector")}}</a>
         </li>
         <li {{ selected('downloads') }}>
-            <a href="/downloads/" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
+            <a href="{{'/downloads/'|url}}" title=""> <span class="glyphicon glyphicon-download"></span> {{_("Downloads")}}</a>
         </li>
 {#        <li {{ selected('filemanager') }}>#}
-{#            <a href="/filemanager/" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
+{#            <a href="{{'/filemanager/'|url}}" title=""><span class="glyphicon glyphicon-magnet"></span>  {{_("FileManager")}}</a>#}
 {#        </li>#}
         <li {{ selected('logs', True) }}>
-            <a href="/logs/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
+            <a href="{{'/logs/'|url}}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-list"></span> {{_("Logs")}}</a>
         </li>
         <li {{ selected('settings', True) }}>
-            <a href="/settings/"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
+            <a href="{{'/settings/'|url}}"  class="action index" accesskey="x" rel="nofollow"><span class="glyphicon glyphicon-wrench"></span> {{_("Config")}}</a>
         </li>
         {% endblock %}
 
 
                       </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
+                      <li><a href="{{'/info'|url}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
                      {% if user.is_admin %}
-                     <li><a href="/admin" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
+                     <li><a href="{{'/admin'|url}}" class="action profile" rel="nofollow"><span class="glyphicon glyphicon-cog"></span></a></li>
                      {% endif %}
-                      <li><a href="/info"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
+                      <li><a href="{{'/info'|url}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span></a></li>
 
                     </ul>
                   </div><!-- /.navbar-collapse -->
@@ -171,7 +171,7 @@
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
-    <img src="/img/ajax-loader.gif" alt="" style="padding-right: 5px"/>
+    <img src="{{'/img/ajax-loader.gif'|url}}" alt="" style="padding-right: 5px"/>
     {{_("loading")}}
 </div>
 

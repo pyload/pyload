@@ -1,7 +1,7 @@
 {% extends '/base.html' %}
 {% block head %}
 
-<script type="text/javascript" src="/js/package.js"></script>
+<script type="text/javascript" src="{{'/js/package.js'|url}}"></script>
 
 <script type="text/javascript">
 
@@ -41,13 +41,13 @@ document.addEvent("domready", function(){
         <span class="name" style="font-size: 16px; font-weight: bold;"><em class="package_drag" style="font-style:normal">{{package.name }}</em></span>
         &nbsp;&nbsp;
         <span class="buttons" style="opacity:0">
-        <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="/img/delete.png" /></span>
+        <span class="glyphicon glyphicon-trash" title="{{_("Delete Package")}}" style="cursor: pointer" width="12px" height="12px" src="{{'/img/delete.png'|url}}" /></span>
         &nbsp;&nbsp;
-        <span class="glyphicon glyphicon-repeat" title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/arrow_refresh.png" /></span>
+        <span class="glyphicon glyphicon-repeat" title="{{_("Restart Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/img/arrow_refresh.png'|url}}" /></span>
         &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/pencil.png" /></span>
+         <span class="glyphicon glyphicon-pencil" title="{{_("Edit Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/img/pencil.png'|url}}" /></span>
         &nbsp;&nbsp;
-         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="/img/package_go.png" /></span>
+         <span class="glyphicon glyphicon-transfer" title="{{_("Move Package")}}" style="margin-left: -10px; cursor: pointer" height="12px" src="{{'/img/package_go.png'|url}}" /></span>
         </span>
     </div>
     {% set progress = (package.linksdone * 100) / package.linkstotal %}
@@ -76,7 +76,7 @@ document.addEvent("domready", function(){
 
 {% block hidden %}
 <div id="pack_box" style="z-index: 2">
-    <form id="pack_form" class="from-group" action="/json/edit_package" method="POST" enctype="multipart/form-data">
+    <form id="pack_form" class="from-group" action="{{'/json/edit_package'|url}}" method="POST" enctype="multipart/form-data">
     <h3>{{_("Edit Package")}}</h3>
     <p>{{_("Edit the package detais below.")}}</p>
 
