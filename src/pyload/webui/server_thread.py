@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
-import logging
 import os
 import threading
 from builtins import _
 
-webui = None
-core = None
-setup = None
-log = logging.getLogger("log")
+
+PYLOAD_API = None
 
 
 class WebServer(threading.Thread):
-    def __init__(self, pycore):
-        global core
+    def __init__(self, core):
         threading.Thread.__init__(self)
-        self.pyload = pycore
-        core = pycore
+        
+        self.pyload = core
+        PYLOAD_API = core
+        
+        self.webui = None
         self.running = True
+        
         self.server = pycore.config.get("webui", "server")
         self.https = pycore.config.get("webui", "https")
         self.cert = pycore.config.get("ssl", "cert")
@@ -29,30 +29,30 @@ class WebServer(threading.Thread):
     def run(self):
         from pyload import webui
 
-        global webui
+        self.webui= webui
 
         if self.https:
             if not os.path.exists(self.cert) or not os.path.exists(self.key):
-                log.warning(_("SSL certificates not found."))
+                self.pyload.log.warning(_("SSL certificates not found."))
                 self.https = False
 
         if self.server in ("lighttpd", "nginx"):
-            log.warning(
+            self.pyload.log.warning(
                 _(
                     "Sorry, we dropped support for starting {} directly within pyLoad"
                 ).format(self.server)
             )
-            log.warning(
+            self.pyload.log.warning(
                 _(
                     "You can use the threaded server which offers good performance and ssl,"
                 )
             )
-            log.warning(
+            self.pyload.log.warning(
                 _(
                     "of course you can still use your existing {} with pyLoads fastcgi server"
                 ).format(self.server)
             )
-            log.warning(
+            self.pyload.log.warning(
                 _("sample configs are located in the pyload/webui/servers directory")
             )
             self.server = "builtin"
@@ -61,7 +61,7 @@ class WebServer(threading.Thread):
             try:
                 import flup
             except Exception:
-                log.warning(
+                self.pyload.log.warning(
                     _("Can't use {}, python-flup is not installed!").format(self.server)
                 )
                 self.server = "builtin"
@@ -69,16 +69,16 @@ class WebServer(threading.Thread):
             try:
                 import bjoern
             except Exception as e:
-                log.error(_("Error importing lightweight server: {}").format(e))
-                log.warning(
+                self.pyload.log.error(_("Error importing lightweight server: {}").format(e))
+                self.pyload.log.warning(
                     _(
                         "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
                     )
                 )
-                log.warning(
+                self.pyload.log.warning(
                     _("Copy the boern.so to pyload/lib folder or use setup.py install")
                 )
-                log.warning(
+                self.pyload.log.warning(
                     _(
                         "Of course you need to be familiar with linux and know how to compile software"
                     )
@@ -106,7 +106,7 @@ class WebServer(threading.Thread):
     def start_builtin(self):
 
         if self.https:
-            log.warning(
+            self.pyload.log.warning(
                 _("This server offers no SSL, please consider using threaded instead")
             )
 
@@ -115,7 +115,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webui.run_builtin(host=self.host, port=self.port)
+        self.webui.run_builtin(host=self.host, port=self.port)
 
     def start_threaded(self):
         if self.https:
@@ -133,7 +133,7 @@ class WebServer(threading.Thread):
                 )
             )
 
-        webui.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
+        self.webui.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
 
     def start_fcgi(self):
 
@@ -142,11 +142,11 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webui.run_fcgi(host=self.host, port=self.port)
+        self.webui.run_fcgi(host=self.host, port=self.port)
 
     def start_lightweight(self):
         if self.https:
-            log.warning(
+            self.pyload.log.warning(
                 _("This server offers no SSL, please consider using threaded instead")
             )
 
@@ -155,7 +155,7 @@ class WebServer(threading.Thread):
                 **{"host": self.host, "port": self.port}
             )
         )
-        webui.run_lightweight(host=self.host, port=self.port)
+        self.webui.run_lightweight(host=self.host, port=self.port)
 
     def quit(self):
         self.running = False

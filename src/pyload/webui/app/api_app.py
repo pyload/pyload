@@ -9,7 +9,7 @@ import bottle
 
 from pyload.api import BaseObject
 from pyload.plugins.utils import json  # change to core utils
-from pyload.webui import PYLOAD
+from pyload.webui import PYLOAD_API
 from pyload.webui.utils import apiver_check, set_session, toDict
 
 
@@ -32,9 +32,9 @@ def call_api(func, args=""):
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
     if "u" in bottle.request.POST and "p" in bottle.request.POST:
-        info = PYLOAD.checkAuth(bottle.request.POST["u"], bottle.request.POST["p"])
+        info = PYLOAD_API.checkAuth(bottle.request.POST["u"], bottle.request.POST["p"])
         if info:
-            if not PYLOAD.isAuthorized(
+            if not PYLOAD_API.isAuthorized(
                 func, {"role": info["role"], "permission": info["permission"]}
             ):
                 return bottle.HTTPError(401, json.dumps("Unauthorized"))
@@ -50,7 +50,7 @@ def call_api(func, args=""):
         if not s or not s.get("authenticated", False):
             return bottle.HTTPError(403, json.dumps("Forbidden"))
 
-        if not PYLOAD.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+        if not PYLOAD_API.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
             return bottle.HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
@@ -71,11 +71,11 @@ def call_api(func, args=""):
 
 
 def callApi(func, *args, **kwargs):
-    if not hasattr(PYLOAD.EXTERNAL, func) or func.startswith("_"):
+    if not hasattr(PYLOAD_API.EXTERNAL, func) or func.startswith("_"):
         print("Invalid API call", func)
         return bottle.HTTPError(404, json.dumps("Not Found"))
 
-    result = getattr(PYLOAD, func)(
+    result = getattr(PYLOAD_API, func)(
         *[literal_eval(x) for x in args],
         **{x: literal_eval(y) for x, y in kwargs.items()},
     )
@@ -94,7 +94,7 @@ def login():
     user = bottle.request.forms.get("username")
     password = bottle.request.forms.get("password")
 
-    info = PYLOAD.checkAuth(user, password)
+    info = PYLOAD_API.checkAuth(user, password)
 
     if not info:
         return json.dumps(False)

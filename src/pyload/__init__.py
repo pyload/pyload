@@ -36,9 +36,8 @@ finally:
     
 builtins.PKGDIR = __path__
 builtins.HOMEDIR = os.path.expanduser('~')
-# builtins.DATADIR = os.getenv(
-# 'APPDATA') if os.name == 'nt' else builtins.HOMEDIR
-# builtins.TMPDIR = tempfile.gettempdir()
+builtins.DATADIR = os.getenv('APPDATA') if os.name == 'nt' else builtins.HOMEDIR
+builtins.TMPDIR = tempfile.gettempdir()
 
 # TODO: remove
 builtins._ = lambda x: x

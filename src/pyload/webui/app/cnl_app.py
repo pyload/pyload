@@ -11,7 +11,7 @@ import bottle
 import Cryptodome.Cipher.AES
 import js2py
 
-from pyload.webui import DL_ROOT, PYLOAD
+from pyload.webui.server_thread import PYLOAD_API
 
 
 def local_check(func):
@@ -47,9 +47,9 @@ def add():
     urls = list(filter(None, map(str.strip, bottle.request.POST["urls"].split("\n"))))
 
     if package:
-        PYLOAD.addPackage(package, urls, 0)
+        PYLOAD_API.addPackage(package, urls, 0)
     else:
-        PYLOAD.generateAndAddPackages(urls, 0)
+        PYLOAD_API.generateAndAddPackages(urls, 0)
 
     return ""
 
@@ -62,14 +62,14 @@ def addcrypted():
     )
     dlc = bottle.request.forms["crypted"].replace(" ", "+")
 
-    dlc_path = os.path.join(
-        DL_ROOT, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    dl_path = PYLOAD_API.getConfigValue("general", "download_folder")
+    dlc_path = os.path.join(dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
     with open(dlc_path, "wb") as dlc_file:
         dlc_file.write(dlc)
 
     try:
-        PYLOAD.addPackage(package, [dlc_path], 0)
+        PYLOAD_API.addPackage(package, [dlc_path], 0)
     except Exception:
         return bottle.HTTPError()
     else:
@@ -120,9 +120,9 @@ def addcrypted2():
 
     try:
         if package:
-            PYLOAD.addPackage(package, urls, 0)
+            PYLOAD_API.addPackage(package, urls, 0)
         else:
-            PYLOAD.generateAndAddPackages(urls, 0)
+            PYLOAD_API.generateAndAddPackages(urls, 0)
     except Exception:
         return "failed can't add"
     else:
@@ -148,9 +148,9 @@ def flashgot():
     # folder = bottle.request.forms.get('dir', None)
 
     if package:
-        PYLOAD.addPackage(package, urls, autostart)
+        PYLOAD_API.addPackage(package, urls, autostart)
     else:
-        PYLOAD.generateAndAddPackages(urls, autostart)
+        PYLOAD_API.generateAndAddPackages(urls, autostart)
 
     return ""
 
@@ -170,7 +170,7 @@ def crossdomain():
 @local_check
 def checksupport():
     url = bottle.request.GET.get("url")
-    res = PYLOAD.checkURLs([url])
+    res = PYLOAD_API.checkURLs([url])
     supported = not res[0][1] is None
 
     return str(supported).lower()

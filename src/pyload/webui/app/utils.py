@@ -4,16 +4,20 @@
 import bottle
 
 from pyload.api import PERMS, ROLE
-from pyload.api import __version__ as API_VERSION
 from pyload.api import has_permission
-from pyload.webui import PREFIX, TEMPLATE, env
+from pyload.webui import PREFIX, env
+from pyload.webui.server_thread import PYLOAD_API
 
 
-def render_to_response(name, args={}, proc=[]):
+def get_themedir():
+    theme = PYLOAD_API.getConfigValue("webui", "theme").lower()
+    return os.path.join('themes', theme)
+    
+    
+def render_to_response(path, args={}, proc=[]):
     for p in proc:
         args.update(p())
-
-    t = env.get_template(TEMPLATE + "/" + name)
+    t = env.get_template(path, get_themedir())
     return t.render(**args)
 
 
@@ -84,7 +88,7 @@ def set_session(request, info):
 def parse_userdata(session):
     return {
         "name": session.get("name", "Anonymous"),
-        "is_admin": True if session.get("role", 1) == 0 else False,
+        "is_admin": session.get("role", 1) == 0,
         "is_authenticated": session.get("authenticated", False),
     }
 
@@ -92,7 +96,8 @@ def parse_userdata(session):
 def apiver_check(func):
     # if no apiver is provided assumes latest
     def _view(*args, **kwargs):
-        if int(kwargs.get("apiver", API_VERSION).strip("v")) < API_VERSION:
+        core_apiver = PYLOAD_API.__version__
+        if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return bottle.HTTPError(404, json.dumps("Obsolete API"))
         return func(*args, **kwargs)
 
@@ -110,14 +115,14 @@ def login_required(perm=None):
                         if bottle.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                             return bottle.HTTPError(403, json.dumps("Forbidden"))
                         else:
-                            return bottle.redirect(PREFIX + "/nopermission")
+                            return bottle.redirect("{}/nopermission".format(PREFIX))
 
                 return func(*args, **kwargs)
             else:
                 if bottle.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return bottle.HTTPError(403, json.dumps("Forbidden"))
                 else:
-                    return bottle.redirect(PREFIX + "/login")
+                    return bottle.redirect("{}/login".format(PREFIX))
 
         return _view
 

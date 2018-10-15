@@ -7,7 +7,7 @@ from builtins import _
 import bottle
 
 from pyload.utils.utils import decode, formatSize
-from pyload.webui import PYLOAD
+from pyload.webui.server_thread import PYLOAD_API
 from pyload.webui.utils import apiver_check, login_required, render_to_response, toDict
 
 
@@ -29,8 +29,8 @@ def get_sort_key(item):
 @login_required("LIST")
 def status():
     try:
-        status = toDict(PYLOAD.statusServer())
-        status["captcha"] = PYLOAD.isCaptchaWaiting()
+        status = toDict(PYLOAD_API.statusServer())
+        status["captcha"] = PYLOAD_API.isCaptchaWaiting()
         return status
     except Exception:
         return bottle.HTTPError()
@@ -42,7 +42,7 @@ def status():
 @login_required("LIST")
 def links():
     try:
-        links = [toDict(x) for x in PYLOAD.statusDownloads()]
+        links = [toDict(x) for x in PYLOAD_API.statusDownloads()]
         ids = []
         for link in links:
             ids.append(link["fid"])
@@ -72,12 +72,12 @@ def links():
 def packages():
     print("/json/packages")
     try:
-        data = PYLOAD.getQueue()
+        data = PYLOAD_API.getQueue()
 
         for package in data:
             package["links"] = []
-            for file in PYLOAD.get_package_files(package["id"]):
-                package["links"].append(PYLOAD.get_file_info(file))
+            for file in PYLOAD_API.get_package_files(package["id"]):
+                package["links"].append(PYLOAD_API.get_file_info(file))
 
         return data
 
@@ -90,7 +90,7 @@ def packages():
 @login_required("LIST")
 def package(id):
     try:
-        data = toDict(PYLOAD.getPackageData(id))
+        data = toDict(PYLOAD_API.getPackageData(id))
         data["links"] = [toDict(x) for x in data["links"]]
 
         for pyfile in data["links"]:
@@ -127,7 +127,7 @@ def package(id):
 def package_order(ids):
     try:
         pid, pos = ids.split("|")
-        PYLOAD.orderPackage(int(pid), int(pos))
+        PYLOAD_API.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
         return bottle.HTTPError()
@@ -138,7 +138,7 @@ def package_order(ids):
 @login_required("DELETE")
 def abort_link(id):
     try:
-        PYLOAD.stopDownloads([id])
+        PYLOAD_API.stopDownloads([id])
         return {"response": "success"}
     except Exception:
         return bottle.HTTPError()
@@ -150,7 +150,7 @@ def abort_link(id):
 def link_order(ids):
     try:
         pid, pos = ids.split("|")
-        PYLOAD.orderFile(int(pid), int(pos))
+        PYLOAD_API.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
         return bottle.HTTPError()
@@ -174,7 +174,7 @@ def add_package():
             name = f.name
 
         fpath = os.path.join(
-            PYLOAD.getConfigValue("general", "download_folder"), "tmp_" + f.filename
+            PYLOAD_API.getConfigValue("general", "download_folder"), "tmp_" + f.filename
         )
         with open(fpath, "wb") as destination:
             shutil.copyfileobj(f.file, destination)
@@ -184,11 +184,11 @@ def add_package():
 
     name = name.decode("utf8", "ignore")
     links = list(filter(None, map(str.strip, links)))
-    pack = PYLOAD.addPackage(name, links, queue)
+    pack = PYLOAD_API.addPackage(name, links, queue)
     if pw:
         pw = pw.decode("utf8", "ignore")
         data = {"password": pw}
-        PYLOAD.setPackageData(pack, data)
+        PYLOAD_API.setPackageData(pack, data)
 
 
 @bottle.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
@@ -196,7 +196,7 @@ def add_package():
 @login_required("MODIFY")
 def move_package(dest, id):
     try:
-        PYLOAD.movePackage(dest, id)
+        PYLOAD_API.movePackage(dest, id)
         return {"response": "success"}
     except Exception:
         return bottle.HTTPError()
@@ -214,7 +214,7 @@ def edit_package():
             "password": bottle.request.forms.get("pack_pws").decode("utf8", "ignore"),
         }
 
-        PYLOAD.setPackageData(id, data)
+        PYLOAD_API.setPackageData(id, data)
         return {"response": "success"}
 
     except Exception:
@@ -228,13 +228,13 @@ def edit_package():
 def set_captcha():
     if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            PYLOAD.setCaptchaResult(
+            PYLOAD_API.setCaptchaResult(
                 bottle.request.forms["cap_id"], bottle.request.forms["cap_result"]
             )
         except Exception:
             pass
 
-    task = PYLOAD.getCaptchaTask()
+    task = PYLOAD_API.getCaptchaTask()
 
     if task.tid >= 0:
         return {
@@ -253,9 +253,9 @@ def set_captcha():
 def load_config(category, section):
     conf = None
     if category == "general":
-        conf = PYLOAD.getConfigDict()
+        conf = PYLOAD_API.getConfigDict()
     elif category == "plugin":
-        conf = PYLOAD.getPluginConfigDict()
+        conf = PYLOAD_API.getPluginConfigDict()
 
     for key, option in conf[section].items():
         if key in ("desc", "outline"):
@@ -284,7 +284,7 @@ def save_config(category):
         if category == "general":
             category = "core"
 
-        PYLOAD.setConfigValue(section, option, decode(value), category)
+        PYLOAD_API.setConfigValue(section, option, decode(value), category)
 
 
 @bottle.route(r"/json/<apiver>/add_account", method="POST")
@@ -295,7 +295,7 @@ def add_account():
     password = bottle.request.POST["account_password"]
     type = bottle.request.POST["account_type"]
 
-    PYLOAD.updateAccount(type, login, password)
+    PYLOAD_API.updateAccount(type, login, password)
 
 
 @bottle.route(r"/json/<apiver>/update_accounts", method="POST")
@@ -316,14 +316,14 @@ def update_accounts():
             continue
 
         if action == "password":
-            PYLOAD.updateAccount(plugin, user, value)
+            PYLOAD_API.updateAccount(plugin, user, value)
         elif action == "time" and "-" in value:
-            PYLOAD.updateAccount(plugin, user, options={"time": [value]})
+            PYLOAD_API.updateAccount(plugin, user, options={"time": [value]})
         elif action == "limitdl" and value.isdigit():
-            PYLOAD.updateAccount(plugin, user, options={"limitDL": [value]})
+            PYLOAD_API.updateAccount(plugin, user, options={"limitDL": [value]})
         elif action == "delete":
             deleted.append((plugin, user))
-            PYLOAD.removeAccount(plugin, user)
+            PYLOAD_API.removeAccount(plugin, user)
 
 
 @bottle.route(r"/json/<apiver>/change_password", method="POST")
@@ -334,6 +334,6 @@ def change_password():
     oldpw = bottle.request.POST["login_current_password"]
     newpw = bottle.request.POST["login_new_password"]
 
-    if not PYLOAD.changePassword(user, oldpw, newpw):
+    if not PYLOAD_API.changePassword(user, oldpw, newpw):
         print("Wrong password")
         return bottle.HTTPError()
