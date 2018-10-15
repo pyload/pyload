@@ -1,87 +1,24 @@
-Description
-===========
+<p align="center"><a href="https://pyload.net"><img src="/media/logo.png" alt="pyLoad" width="100" height="100" /></a></p>
+<h2 align="center"></h2>
+<h6 align="right">Development branch 0.5.x</h6>
 
-pyLoad is a free and open source downloader for 1-click-hosting sites
-like rapidshare.com or uploaded.to.
-It supports link decryption as well as all important container formats.
+Requires Python 3.6 and good luck.
 
-pyLoad is written entirely in Python and is currently under heavy development.
+Install:
 
-For news, downloads, wiki, forum and further information visit https://pyload.net
+    pip install .[all]
+    
+> **Note:**
+> On Windows pycurl installation fails sometimes (the unlucky part).
 
-To report bugs, suggest features, ask a question, get the developer version
-or help us out, visit http://github.com/pyload/pyload
+Run:
+    
+    pyLoad
+    
+Help:
 
-Documentation about extending pyLoad can be found at https://github.com/pyload/pyload/wiki or join us at #pyload on irc.freenode.net
-
-Dependencies
-============
-
-You need at least Python 2.5 to run pyLoad and all of these required libraries.
-They should be automatically installed when using pip install.
-The prebuilt pyload packages also install these dependencies or have them included, so manuall install
-is only needed when installing pyLoad from source.
-
-Required
---------
-
-- pycurl a.k.a python-curl
-- jinja2
-- beaker
-- thrift
-
-Some plugins require additional packages, only install these when needed.
-
-Optional
---------
-
-- pycrypto: RSDF/CCF/DLC support
-- tesseract, python-pil a.k.a python-imaging: Automatic captcha recognition for a small amount of plugins
-- jsengine (spidermonkey, ossp-js, pyv8, rhino): Used for several hoster, ClickNLoad
-- feedparser
-- BeautifulSoup
-- pyOpenSSL: For SSL connection
-
-First start
-===========
-
-Note: If you installed pyload via package-manager `python pyLoad.py` is probably equivalent to `pyLoad`
-
-Run::
-
-    python pyLoad.py
-
-and follow the instructions of the setup assistent.
-
-For a list of options use::
-
-    python pyLoad.py -h
-
-Configuration
-=============
-
-After finishing the setup assistent pyLoad is ready to use and more configuration can be done via webinterface.
-Additionally you could simply edit the config files located in your pyLoad home dir (defaults to: ~/.pyload)
-with your favorite editor and edit the appropriate options. For a short description of
-the options take a look at https://github.com/pyload/pyload/wiki/Configuration.
-
-To restart the configure assistent run::
-
-    python pyLoad.py -s
-
-Adding downloads
-----------------
-
-To start the CLI and connect to a local server, run::
-
-    python pyLoadCli.py -l
-
-for more options refer to::
-
-    python pyLoadCli.py -h
-
-The webinterface can be accessed when pointing your webbrowser to the ip and configured port, defaults to http://localhost:8000
-
-Notes
-=====
-For more information, see https://pyload.net
+    pyLoad -h
+    
+    
+-------------------------
+###### © 2018 pyLoad team
