@@ -17,7 +17,7 @@ class WebServer(threading.Thread):
         self.webui = None
         self.running = True
         
-        self.server = pycore.config.get("webui", "server")
+        self.server = pycore.config.get("webui", "server").lower()
         self.https = pycore.config.get("webui", "https")
         self.cert = pycore.config.get("ssl", "cert")
         self.key = pycore.config.get("ssl", "key")
