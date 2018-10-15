@@ -9,25 +9,27 @@
 #           \/
 
 import builtins
+
 # import codecs
 import os
 import pkg_resources
 import semver
 import tempfile
+
 # import sys
 
 try:
     dist_name = "pyload"
     pkgdir = pkg_resources.resource_filename(dist_name, "")
     __version__ = pkg_resources.get_distribution(dist_name).version
-    
+
 except pkg_resources.DistributionNotFound:
     pkgdir = os.path.realpath(os.path.join(__file__, "..", "..", ".."))
-    
-    ver_path = os.path.join(pkgdir, 'VERSION.md')
+
+    ver_path = os.path.join(pkgdir, "VERSION.md")
     with open(ver_path) as f:
         __version__ = f.read().strip()
-        
+
 finally:
     __version_info__ = semver.parse_version_info(__version__)
     del pkg_resources
@@ -35,8 +37,8 @@ finally:
 
 # remove from builtins and keep them just here?
 builtins.PKGDIR = pkgdir
-builtins.HOMEDIR = os.path.expanduser('~')
-builtins.DATADIR = os.getenv('APPDATA') if os.name == 'nt' else builtins.HOMEDIR
+builtins.HOMEDIR = os.path.expanduser("~")
+builtins.DATADIR = os.getenv("APPDATA") if os.name == "nt" else builtins.HOMEDIR
 builtins.TMPDIR = tempfile.gettempdir()
 
 # TODO: remove
@@ -45,11 +47,11 @@ builtins.REQUESTS = None
 builtins.ADDONMANAGER = None
 
 
-locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, "")
 
 
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
-# sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")  
+# sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
 del pkgdir
 del locale

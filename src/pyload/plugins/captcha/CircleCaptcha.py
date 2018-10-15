@@ -635,13 +635,7 @@ class CircleCaptcha(OCR):
                             y3 = y1
                             for j in range(1, 50):
                                 retval = self.find_last_pixel_y(
-                                    im,
-                                    pix,
-                                    x3,
-                                    y3,
-                                    invert == 1,
-                                    -1,
-                                    True,
+                                    im, pix, x3, y3, invert == 1, -1, True
                                 )
                                 # self.log_debug(x3, y3, retval[0], invert)
                                 y3 = retval[0]

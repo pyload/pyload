@@ -7,8 +7,16 @@ from builtins import _
 
 from pyload.plugins.internal.captcha import Captcha
 from pyload.plugins.internal.plugin import Abort, Fail, Plugin, Reconnect, Retry, Skip
-from pyload.plugins.utils import (decode, encode, fixurl, format_size, format_time,
-                                  parse_html_form, parse_name, replace_patterns)
+from pyload.plugins.utils import (
+    decode,
+    encode,
+    fixurl,
+    format_size,
+    format_time,
+    parse_html_form,
+    parse_name,
+    replace_patterns,
+)
 
 
 # TODO: Recheck in 0.6.x

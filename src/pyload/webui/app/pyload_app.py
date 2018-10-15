@@ -16,9 +16,18 @@ from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui.app import PREFIX, env
 from pyload.webui.server_thread import PYLOAD_API
 from pyload.webui.app.filters import relpath, unquotepath
-from pyload.webui.app.utils import (get_permission, login_required, parse_permissions,
-                                parse_userdata, permlist, render_to_response,
-                                set_permission, set_session, toDict, get_themedir)
+from pyload.webui.app.utils import (
+    get_permission,
+    login_required,
+    parse_permissions,
+    parse_userdata,
+    permlist,
+    render_to_response,
+    set_permission,
+    set_session,
+    toDict,
+    get_themedir,
+)
 
 # @author: RaNaN
 
@@ -166,8 +175,8 @@ def error403(code):
 @bottle.error(404)
 def error404(code):
     return "Sorry, this page does not exist"
-    
-    
+
+
 @error(500)
 def error500(error):
     if error.traceback:
@@ -185,7 +194,7 @@ def error500(error):
 
 
 # to fix
-@bottle.route('/<file:re:(.+/)?[^/]+\.min\.[^/]+>')
+@bottle.route("/<file:re:(.+/)?[^/]+\.min\.[^/]+>")
 def server_min(theme, filename):
     path = os.path.join(get_themedir(), filename)
     if not os.path.isfile(path):
@@ -194,7 +203,8 @@ def server_min(theme, filename):
         return server_js(path)
     else:
         return server_static(path)
-        
+
+
 # render js
 
 
@@ -212,9 +222,7 @@ def js_dynamic(path):
             t = env.get_template("js/{}".format(path))
             return t.render()
         else:
-            return bottle.static_file(
-                path, root=os.path.join(get_themedir(), "js")
-            )
+            return bottle.static_file(path, root=os.path.join(get_themedir(), "js"))
     except Exception:
         return bottle.HTTPError(404, json.dumps("Not Found"))
 
@@ -231,9 +239,7 @@ def server_static(path):
 # rewrite to return theme favicon
 @bottle.route(r"/favicon.ico")
 def favicon():
-    return bottle.static_file(
-        "favicon.ico", root=os.path.join(get_themedir(), "img")
-    )
+    return bottle.static_file("favicon.ico", root=os.path.join(get_themedir(), "img"))
 
 
 @bottle.route(r"/robots.txt")
@@ -512,9 +518,7 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(
-                    date + " " + time, "%Y-%m-%d %H:%M:%S"
-                )
+                dtime = datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
             except Exception:
                 dtime = None
                 date = "?"
@@ -592,7 +596,9 @@ def admin():
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
-            PYLOAD_API.setUserPermission(name, user[name]["permission"], user[name]["role"])
+            PYLOAD_API.setUserPermission(
+                name, user[name]["permission"], user[name]["role"]
+            )
 
     return render_to_response(
         "admin.html", {"users": user, "permlist": perms}, [pre_processor]

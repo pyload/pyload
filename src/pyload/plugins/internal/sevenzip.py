@@ -5,8 +5,12 @@ import re
 import subprocess
 from builtins import _, filter, map, PKGDIR
 
-from pyload.plugins.internal.extractor import (ArchiveError, CRCError, Extractor,
-                                               PasswordError)
+from pyload.plugins.internal.extractor import (
+    ArchiveError,
+    CRCError,
+    Extractor,
+    PasswordError,
+)
 from pyload.plugins.utils import encode, fsjoin, renice
 
 

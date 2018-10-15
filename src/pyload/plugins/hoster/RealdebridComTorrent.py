@@ -159,7 +159,9 @@ class RealdebridComTorrent(Hoster):
         else:
             self.pyfile.name = api_data["filename"]
             self.pyfile.size = api_data["filesize"]
-            self.chunk_limit = api_data["chunks"] if api_data['filesize'] < 2 * 1024**3 else 1
+            self.chunk_limit = (
+                api_data["chunks"] if api_data["filesize"] < 2 * 1024 ** 3 else 1
+            )
             self.download(api_data["download"])
 
     def delete_torrent_from_server(self, torrent_id):

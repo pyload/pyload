@@ -45,7 +45,7 @@ class RSDF(Container):
         IV = binascii.unhexlify(self.IV)
 
         backend = default_backend()
-        
+
         cipher = Cipher(algorithms.AES(KEY), modes.ECB, backend=backend)
         encryptor = cipher.encryptor()
         iv = encryptor.update(IV) + encryptor.finalize()

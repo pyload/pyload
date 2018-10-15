@@ -53,10 +53,10 @@ class ConfigParser(object):
         """
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
-        
+
         self.configpath = os.path.join(HOMEDIR, "pyload.conf")
         self.pluginpath = os.path.join(HOMEDIR, "plugins.conf")
-        
+
         self.oldRemoteData = {}
 
         self.pluginCB = None  # callback when plugin config value is changed

@@ -12,9 +12,9 @@ from pyload.webui.server_thread import PYLOAD_API
 
 def get_themedir():
     theme = PYLOAD_API.getConfigValue("webui", "theme").lower()
-    return os.path.join('themes', theme)
-    
-    
+    return os.path.join("themes", theme)
+
+
 def render_to_response(path, args={}, proc=[]):
     for p in proc:
         args.update(p())
@@ -113,7 +113,10 @@ def login_required(perm=None):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
-                        if bottle.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                        if (
+                            bottle.request.headers.get("X-Requested-With")
+                            == "XMLHttpRequest"
+                        ):
                             return bottle.HTTPError(403, json.dumps("Forbidden"))
                         else:
                             return bottle.redirect("{}/nopermission".format(PREFIX))

@@ -43,7 +43,8 @@ def flash(id="0"):
 @local_check
 def add():
     package = bottle.request.forms.get(
-        "package", bottle.request.forms.get("source", bottle.request.POST.get("referer", None))
+        "package",
+        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
     )
     urls = list(filter(None, map(str.strip, bottle.request.POST["urls"].split("\n"))))
 
@@ -59,12 +60,14 @@ def add():
 @local_check
 def addcrypted():
     package = bottle.request.forms.get(
-        "package", bottle.request.forms.get("source", bottle.request.POST.get("referer", None))
+        "package",
+        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
     )
     dlc = bottle.request.forms["crypted"].replace(" ", "+")
 
     dl_path = PYLOAD_API.getConfigValue("general", "download_folder")
-    dlc_path = os.path.join(dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
+    dlc_path = os.path.join(
+        dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
     with open(dlc_path, "wb") as dlc_file:
         dlc_file.write(dlc)
@@ -81,7 +84,8 @@ def addcrypted():
 @local_check
 def addcrypted2():
     package = bottle.request.forms.get(
-        "package", bottle.request.forms.get("source", bottle.request.POST.get("referer", None))
+        "package",
+        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
     )
     crypted = bottle.request.forms["crypted"]
     jk = bottle.request.forms["jk"]

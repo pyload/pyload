@@ -50,13 +50,17 @@ def call_api(func, args=""):
         if not s or not s.get("authenticated", False):
             return bottle.HTTPError(403, json.dumps("Forbidden"))
 
-        if not PYLOAD_API.isAuthorized(func, {"role": s["role"], "permission": s["perms"]}):
+        if not PYLOAD_API.isAuthorized(
+            func, {"role": s["role"], "permission": s["perms"]}
+        ):
             return bottle.HTTPError(401, json.dumps("Unauthorized"))
 
     args = args.split("/")[1:]
     kwargs = {}
 
-    for x, y in chain(iter(bottle.request.GET.items()), iter(bottle.request.POST.items())):
+    for x, y in chain(
+        iter(bottle.request.GET.items()), iter(bottle.request.POST.items())
+    ):
         if x in ("u", "p", "session"):
             continue
         kwargs[x] = unquote(y)

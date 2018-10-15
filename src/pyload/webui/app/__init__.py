@@ -81,7 +81,7 @@ web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
-    
+
 
 def run_builtin(host="0.0.0.0", port="8000"):
     bottle.run(app=web, host=host, port=port, quiet=True)

@@ -10,13 +10,13 @@ PYLOAD_API = None
 class WebServer(threading.Thread):
     def __init__(self, core):
         threading.Thread.__init__(self)
-        
+
         self.pyload = core
         PYLOAD_API = core
-        
+
         self.app = None
         self.running = True
-        
+
         self.server = core.config.get("webui", "server").lower()
         self.https = core.config.get("webui", "https")
         self.cert = core.config.get("ssl", "cert")
@@ -69,7 +69,9 @@ class WebServer(threading.Thread):
             try:
                 import bjoern
             except Exception as e:
-                self.pyload.log.error(_("Error importing lightweight server: {}").format(e))
+                self.pyload.log.error(
+                    _("Error importing lightweight server: {}").format(e)
+                )
                 self.pyload.log.warning(
                     _(
                         "You need to download and compile bjoern, https://github.com/jonashaag/bjoern"
@@ -133,7 +135,9 @@ class WebServer(threading.Thread):
                 )
             )
 
-        self.app.run_threaded(host=self.host, port=self.port, cert=self.cert, key=self.key)
+        self.app.run_threaded(
+            host=self.host, port=self.port, cert=self.cert, key=self.key
+        )
 
     def start_fcgi(self):
 
