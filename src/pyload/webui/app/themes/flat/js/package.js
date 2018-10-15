@@ -198,13 +198,13 @@ var Package = new Class({
                 }
             });
 
-            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='../img/{icon}' style='width: 12px; height:12px;'/></span>\n".substitute({'icon': link.icon});
+            var html = "<span style='cursor: move' class='child_status sorthandle'><img src='{{\'/img/{icon}\'|url}}' style='width: 12px; height:12px;'/></span>\n".substitute({'icon': link.icon});
             html += "<span style='font-size: 15px'><a href=\"{url}\" target=\"_blank\">{name}</a></span><br /><div class='child_secrow'>".substitute({'url': link.url, 'name': link.name});
             html += "<span class='child_status'>{statusmsg}</span>{error}&nbsp;".substitute({'statusmsg': link.statusmsg, 'error':link.error});
             html += "<span class='child_status'>{format_size}</span>".substitute({'format_size': link.format_size});
             html += "<span class='child_status'>{plugin}</span>&nbsp;&nbsp;".substitute({'plugin': link.plugin});
-            html += "<img title='{{_(\"Delete Link\")}}' style='cursor: pointer;' width='10px' height='10px' src='../img/delete.png' />&nbsp;&nbsp;";
-            html += "<img title='{{_(\"Restart Link\")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='../img/arrow_refresh.png' /></div>";
+            html += "<img title='{{_(\"Delete Link\")}}' style='cursor: pointer;' width='10px' height='10px' src='{{\'/img/delete.png\'|url}}' />&nbsp;&nbsp;";
+            html += "<img title='{{_(\"Restart Link\")}}' style='cursor: pointer;margin-left: -4px' width='10px' height='10px' src='{{\'/img/arrow_refresh.png\'|url}}' /></div>";
 
             var div = new Element("div", {
                 'id': "file_" + link.id,
@@ -254,7 +254,7 @@ var Package = new Class({
                     onSuccess: function() {
                         var ele = $('file_' + this);
                         var imgs = ele.getElements("img");
-                        imgs[0].set("src", "../img/status_queue.png");
+                        imgs[0].set("src", "{{'/img/status_queue.png'|url}}");
                         var spans = ele.getElements(".child_status");
                         spans[1].set("html", "queued");
                         indicateSuccess();

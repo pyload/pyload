@@ -319,7 +319,7 @@ function LoadJsonToContent(a) {
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
-                icon: "{{'../img/favicon.ico'|url}}",
+                icon: "{{'/img/favicon.ico'|url}}",
                 body: "{{_('New Captcha Request')}}",
                 tag: 'pyload_captcha'
             });
