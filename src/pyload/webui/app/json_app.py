@@ -161,14 +161,14 @@ def link_order(ids):
 @apiver_check
 @login_required("ADD")
 def add_package():
-    name = request.forms.get("add_name", "New Package").strip()
-    queue = int(request.forms["add_dest"])
-    links = decode(request.forms["add_links"])
+    name = bottle.request.forms.get("add_name", "New Package").strip()
+    queue = int(bottle.request.forms["add_dest"])
+    links = decode(bottle.request.forms["add_links"])
     links = links.split("\n")
-    pw = request.forms.get("add_password", "").strip("\n\r")
+    pw = bottle.request.forms.get("add_password", "").strip("\n\r")
 
     try:
-        f = request.files["add_file"]
+        f = bottle.request.files["add_file"]
 
         if not name or name == "New Package":
             name = f.name
@@ -207,11 +207,11 @@ def move_package(dest, id):
 @login_required("MODIFY")
 def edit_package():
     try:
-        id = int(request.forms.get("pack_id"))
+        id = int(bottle.request.forms.get("pack_id"))
         data = {
-            "name": request.forms.get("pack_name").decode("utf8", "ignore"),
-            "folder": request.forms.get("pack_folder").decode("utf8", "ignore"),
-            "password": request.forms.get("pack_pws").decode("utf8", "ignore"),
+            "name": bottle.request.forms.get("pack_name").decode("utf8", "ignore"),
+            "folder": bottle.request.forms.get("pack_folder").decode("utf8", "ignore"),
+            "password": bottle.request.forms.get("pack_pws").decode("utf8", "ignore"),
         }
 
         PYLOAD.setPackageData(id, data)
@@ -226,10 +226,10 @@ def edit_package():
 @apiver_check
 @login_required("ADD")
 def set_captcha():
-    if request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
             PYLOAD.setCaptchaResult(
-                request.forms["cap_id"], request.forms["cap_result"]
+                bottle.request.forms["cap_id"], bottle.request.forms["cap_result"]
             )
         except Exception:
             pass
@@ -275,7 +275,7 @@ def load_config(category, section):
 @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
-    for key, value in request.POST.items():
+    for key, value in bottle.request.POST.items():
         try:
             section, option = key.split("|")
         except Exception:
@@ -291,9 +291,9 @@ def save_config(category):
 @apiver_check
 @login_required("ACCOUNTS")
 def add_account():
-    login = request.POST["account_login"]
-    password = request.POST["account_password"]
-    type = request.POST["account_type"]
+    login = bottle.request.POST["account_login"]
+    password = bottle.request.POST["account_password"]
+    type = bottle.request.POST["account_type"]
 
     PYLOAD.updateAccount(type, login, password)
 
@@ -304,7 +304,7 @@ def add_account():
 def update_accounts():
     deleted = []  # dont update deleted accs or they will be created again
 
-    for name, value in request.POST.items():
+    for name, value in bottle.request.POST.items():
         value = value.strip()
         if not value:
             continue
@@ -330,9 +330,9 @@ def update_accounts():
 @apiver_check
 def change_password():
 
-    user = request.POST["user_login"]
-    oldpw = request.POST["login_current_password"]
-    newpw = request.POST["login_new_password"]
+    user = bottle.request.POST["user_login"]
+    oldpw = bottle.request.POST["login_current_password"]
+    newpw = bottle.request.POST["login_new_password"]
 
     if not PYLOAD.changePassword(user, oldpw, newpw):
         print("Wrong password")

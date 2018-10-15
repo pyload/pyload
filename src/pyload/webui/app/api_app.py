@@ -31,8 +31,8 @@ def call_api(func, args=""):
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    if "u" in request.POST and "p" in request.POST:
-        info = PYLOAD.checkAuth(request.POST["u"], request.POST["p"])
+    if "u" in bottle.request.POST and "p" in bottle.request.POST:
+        info = PYLOAD.checkAuth(bottle.request.POST["u"], bottle.request.POST["p"])
         if info:
             if not PYLOAD.isAuthorized(
                 func, {"role": info["role"], "permission": info["permission"]}
@@ -43,9 +43,9 @@ def call_api(func, args=""):
             return bottle.HTTPError(403, json.dumps("Forbidden"))
 
     else:
-        s = request.environ.get("beaker.session")
-        if "session" in request.POST:
-            s = s.get_by_id(request.POST["session"])
+        s = bottle.request.environ.get("beaker.session")
+        if "session" in bottle.request.POST:
+            s = s.get_by_id(bottle.request.POST["session"])
 
         if not s or not s.get("authenticated", False):
             return bottle.HTTPError(403, json.dumps("Forbidden"))
@@ -56,7 +56,7 @@ def call_api(func, args=""):
     args = args.split("/")[1:]
     kwargs = {}
 
-    for x, y in chain(iter(request.GET.items()), iter(request.POST.items())):
+    for x, y in chain(iter(bottle.request.GET.items()), iter(bottle.request.POST.items())):
         if x in ("u", "p", "session"):
             continue
         kwargs[x] = unquote(y)
@@ -91,8 +91,8 @@ def login():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    user = request.forms.get("username")
-    password = request.forms.get("password")
+    user = bottle.request.forms.get("username")
+    password = bottle.request.forms.get("password")
 
     info = PYLOAD.checkAuth(user, password)
 
@@ -115,5 +115,5 @@ def logout():
     response.headers.replace("Content-type", "application/json")
     response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = request.environ.get("beaker.session")
+    s = bottle.request.environ.get("beaker.session")
     s.delete()

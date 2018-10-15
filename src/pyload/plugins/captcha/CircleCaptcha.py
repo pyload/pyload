@@ -823,9 +823,9 @@ class CircleCaptcha(OCR):
 
 # DEBUG
 # import datetime
-# a = datetime.datetime.now()
+# a = datetime.now()
 # x = CircleCaptcha()
 # coords = x.decrypt_from_file("decripter/captx.html2.gif")
 # coords = x.decrypt_from_web("http://ncrypt.in/classes/captcha/circlecaptcha.php")
-# b = datetime.datetime.now()
+# b = datetime.now()
 # self.log_debug("Elapsed time: {} seconds".format(b-a).seconds)
