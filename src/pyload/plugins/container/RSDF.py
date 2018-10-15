@@ -3,7 +3,8 @@ import binascii
 import re
 from builtins import _
 
-import Cryptodome.Cipher.AES
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import encode
@@ -43,8 +44,11 @@ class RSDF(Container):
         KEY = binascii.unhexlify(self.KEY)
         IV = binascii.unhexlify(self.IV)
 
-        iv = Cryptodome.Cipher.AES.new(KEY, Cryptodome.Cipher.AES.MODE_ECB).encrypt(IV)
-        cipher = Cryptodome.Cipher.AES.new(KEY, Cryptodome.Cipher.AES.MODE_CFB, iv)
+        backend = default_backend()
+        
+        cipher = Cipher(algorithms.AES(KEY), modes.ECB, backend=backend)
+        encryptor = cipher.encryptor()
+        iv = encryptor.update(IV) + encryptor.finalize()
 
         try:
             fs_filename = encode(pyfile.url)
@@ -67,5 +71,8 @@ class RSDF(Container):
             for link in raw_links:
                 if not link:
                     continue
-                link = cipher.decrypt(link.decode("base64")).replace("CCF: ", "")
+                cipher = Cipher(algorithms.AES(KEY), modes.CFB(iv), backend=backend)
+                decryptor = cipher.decryptor()
+                value = decryptor.update(link.decode("base64")) + decryptor.finalize()
+                link = value.replace("CCF: ", "")
                 self.links.append(link)

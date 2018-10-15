@@ -3,7 +3,8 @@ import re
 import xml.dom.minidom
 from builtins import _
 
-import Cryptodome.Cipher.AES
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import decode, encode
@@ -64,15 +65,12 @@ class DLC(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        key = iv = Cryptodome.Cipher.AES.new(
-            self.KEY, Cryptodome.Cipher.AES.MODE_CBC, self.IV
-        ).decrypt(rc)
+        backend = default_backend()
+        cipher = Cipher(algorithms.AES(self.KEY), modes.CBC(self.IV), backend=backend)
+        decryptor = cipher.decryptor()
+        key = decryptor.update(rc) + decryptor.finalize()
 
-        self.data = (
-            Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CBC, iv)
-            .decrypt(dlc_data)
-            .decode("base64")
-        )
+        self.data = Fernet(key).decrypt(dlc_data).decode("base64")
 
         self.packages = [
             (name or pyfile.name, links, name or pyfile.name)

@@ -9,7 +9,7 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-import Cryptodome.Cipher.AES
+from cryptography.fernet import Fernet
 import js2py
 
 from pyload.remote.remote_manager import BackendBase
@@ -126,10 +126,9 @@ class CNLHandler(BaseHTTPRequestHandler):
         crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
         jk = "{} f()".format(jk)
         jk = js2py.eval_js(jk)
-        Key = unhexlify(jk)
-        IV = Key
+        key = unhexlify(jk)
 
-        obj = Cryptodome.Cipher.AES.new(Key, Cryptodome.Cipher.AES.MODE_CBC, IV)
+        obj = Fernet(key)
         result = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
         result = [x for x in result if x != ""]

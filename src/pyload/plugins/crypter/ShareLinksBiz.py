@@ -4,7 +4,7 @@ import binascii
 import re
 from builtins import _, filter
 
-import Cryptodome.Cipher.AES
+from cryptography.fernet import Fernet
 import js2py
 
 from pyload.plugins.internal.crypter import Crypter
@@ -326,9 +326,7 @@ class ShareLinksBiz(Crypter):
         key = binascii.unhexlify(jreturn)
 
         #: Decrypt
-        Key = key
-        IV = key
-        obj = Cryptodome.Cipher.AES.new(Key, Cryptodome.Cipher.AES.MODE_CBC, IV)
+        obj = Fernet(key)
         text = obj.decrypt(crypted.decode("base64"))
 
         #: Extract links

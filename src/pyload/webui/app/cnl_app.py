@@ -8,7 +8,7 @@ from builtins import str
 from urllib.parse import unquote
 
 import bottle
-import Cryptodome.Cipher.AES
+from cryptography.fernet import Fernet
 import js2py
 
 from pyload.webui.server_thread import PYLOAD_API
@@ -106,14 +106,12 @@ def addcrypted2():
                 )
 
     try:
-        Key = unhexlify(jk)
+        key = unhexlify(jk)
     except Exception:
         print("Could not decrypt key, please install py-spidermonkey or ossp-js")
         return "failed"
 
-    IV = Key
-
-    obj = Cryptodome.Cipher.AES.new(Key, Cryptodome.Cipher.AES.MODE_CBC, IV)
+    obj = Fernet(key)
     urls = obj.decrypt(crypted).replace("\x00", "").replace("\r", "").split("\n")
 
     urls = list(filter(None, map(str.strip, urls)))

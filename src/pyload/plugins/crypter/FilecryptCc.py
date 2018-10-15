@@ -10,7 +10,7 @@ import re
 import urllib.parse
 from builtins import _, filter, range, str
 
-import Cryptodome.Cipher.AES
+from cryptography.fernet import Fernet
 
 from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import BadHeader, HTTPRequest
@@ -344,9 +344,7 @@ class FilecryptCc(Crypter):
         key = binascii.unhexlify(str(jk))
 
         #: Decrypt
-        # Key = key
-        # IV = key
-        obj = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CBC, key)
+        obj = Fernet(key)
         text = obj.decrypt(crypted.decode("base64"))
 
         #: Extract links
