@@ -90,21 +90,6 @@ def addcrypted2():
     jk = "{} f()".format(jk)
     jk = js2py.eval_js(jk)
 
-    else:
-        try:
-            jk = re.findall(r"return ('|\")(.+)('|\")", jk)[0][1]
-        except Exception:
-            # Test for some known js functions to decode
-            if jk.find("dec") > -1 and jk.find("org") > -1:
-                org = re.findall(r"var org = ('|\")([^\"']+)", jk)[0][1]
-                jk = list(org)
-                jk.reverse()
-                jk = "".join(jk)
-            else:
-                print(
-                    "Could not decrypt key, please install py-spidermonkey or ossp-js"
-                )
-
     try:
         key = unhexlify(jk)
     except Exception:
