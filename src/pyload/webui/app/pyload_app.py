@@ -124,7 +124,7 @@ def choose_path(browse_for, path=""):
             # f = f.decode(getfilesystemencoding())
             data = {"name": f, "fullpath": os.path.join(cwd, f)}
             data["sort"] = data["fullpath"].lower()
-            data["modified"] = datetime.fromtimestamp(
+            data["modified"] = datetime.datetime.fromtimestamp(
                 int(os.path.getmtime(os.path.join(cwd, f)))
             )
             data["ext"] = os.path.splitext(f)[1]
@@ -177,7 +177,7 @@ def error404(code):
     return "Sorry, this page does not exist"
 
 
-@error(500)
+@bottle.error(500)
 def error500(error):
     if error.traceback:
         print(error.traceback)
@@ -193,16 +193,16 @@ def error500(error):
     )
 
 
-# to fix
-@bottle.route("/<file:re:(.+/)?[^/]+\.min\.[^/]+>")
-def server_min(theme, filename):
-    path = os.path.join(get_themedir(), filename)
-    if not os.path.isfile(path):
-        path = path.replace(".min.", ".")
-    if path.endswith(".js"):
-        return server_js(path)
-    else:
-        return server_static(path)
+# TODO: fix
+# @bottle.route("/<file:re:(.+/)?[^/]+\.min\.[^/]+>")
+# def server_min(theme, filename):
+    # path = os.path.join(get_themedir(), filename)
+    # if not os.path.isfile(path):
+        # path = path.replace(".min.", ".")
+    # if path.endswith(".js"):
+        # return server_js(path)
+    # else:
+        # return server_static(path)
 
 
 # render js
@@ -233,6 +233,7 @@ def server_static(path):
         "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     )
     bottle.response.headers["Cache-control"] = "public"
+    PROJECT_DIR = ""  # TODO: fix
     return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
 
@@ -270,7 +271,7 @@ def login_post():
     if not info:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    set_session(request, info)
+    set_session(bottle.request, info)
     return bottle.redirect("{}/".format(PREFIX))
 
 
@@ -478,7 +479,7 @@ def logs(item=-1):
 
     if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            fro = datetime.strptime(bottle.request.forms["from"], "%Y-%m-%d %H:%M:%S")
+            fro = datetime.datetime.strptime(bottle.request.forms["from"], "%Y-%m-%d %H:%M:%S")
         except Exception:
             pass
         try:
@@ -518,7 +519,7 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
+                dtime = datetime.datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
             except Exception:
                 dtime = None
                 date = "?"
@@ -545,7 +546,7 @@ def logs(item=-1):
                 break
 
     if fro is None:  # still not set, empty log?
-        fro = datetime.now()
+        fro = datetime.datetime.now()
     if reversed:
         data.reverse()
     return render_to_response(

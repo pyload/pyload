@@ -746,7 +746,7 @@ def format_exc(frame=None):
 
 
 def seconds_to_nexthour(strict=False):
-    now = datetime.today()
+    now = datetime.datetime.today()
     nexthour = now.replace(
         minute=0 if strict else 1, second=0, microsecond=0
     ) + datetime.timedelta(hours=1)
@@ -755,9 +755,9 @@ def seconds_to_nexthour(strict=False):
 
 def seconds_to_midnight(utc=None, strict=False):
     if isinstance(utc, int):
-        now = datetime.utcnow() + datetime.timedelta(hours=utc)
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=utc)
     else:
-        now = datetime.today()
+        now = datetime.datetime.today()
 
     midnight = now.replace(
         hour=0, minute=0 if strict else 1, second=0, microsecond=0

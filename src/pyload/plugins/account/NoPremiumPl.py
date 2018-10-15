@@ -62,7 +62,7 @@ class NoPremiumPl(MultiAccount):
 
         if result.get("expire"):
             valid_untill = time.mktime(
-                datetime.fromtimestamp(int(result["expire"])).timetuple()
+                datetime.datetime.fromtimestamp(int(result["expire"])).timetuple()
             )
 
         traffic_left = result["balance"] * 1024

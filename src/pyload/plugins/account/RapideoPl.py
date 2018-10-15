@@ -61,7 +61,7 @@ class RapideoPl(MultiAccount):
         if "expire" in result.keys() and result["expire"]:
             premium = True
             valid_untill = time.mktime(
-                datetime.fromtimestamp(int(result["expire"])).timetuple()
+                datetime.datetime.fromtimestamp(int(result["expire"])).timetuple()
             )
 
         traffic_left = result["balance"]

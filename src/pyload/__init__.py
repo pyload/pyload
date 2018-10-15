@@ -55,7 +55,7 @@ locale.setlocale(locale.LC_ALL, "")
 
 
 # TODO: remove
-userdir = os.path.join(HOMEDIR, '.pyload')
+userdir = os.path.join(builtins.HOMEDIR, '.pyload')
 os.makedirs(userdir, exist_ok=True)
 os.chdir(userdir)
 del userdir

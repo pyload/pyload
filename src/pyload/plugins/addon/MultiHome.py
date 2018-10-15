@@ -93,7 +93,7 @@ class MultiHome(Addon):
 
         return self.old_get_request(plugin_name, account)
 
-    def build_get_request(func):
+    def build_get_request(self):
         def resfunc(*args):
             return self.get_request(*args)
 

@@ -140,7 +140,7 @@ def toDict(obj):
     return ret
 
 
-class CherryPyWSGI(ServerAdapter):
+class CherryPyWSGI(bottle.ServerAdapter):
     def run(self, handler):
         from wsgiserver import CherryPyWSGIServer
 

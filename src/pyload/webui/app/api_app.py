@@ -103,7 +103,7 @@ def login():
     if not info:
         return json.dumps(False)
 
-    s = set_session(request, info)
+    s = set_session(bottle.request, info)
 
     # get the session id by dirty way, documentations seems wrong
     try:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import binascii
 import re
 from builtins import _, filter, zip

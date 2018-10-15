@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import http.client
-
+from contextlib import closing
 from pyload.plugins.internal.notifier import Notifier
 
 
@@ -49,7 +49,7 @@ class WindowsPhoneNotify(Notifier):
     def send(self, event, msg, key):
         id, url = key
         request = self.format_request("{}: {}".format(event, msg) if msg else event)
-        with http.client.HTTPConnection(url) as webservice:
+        with closing(http.client.HTTPConnection(url)) as webservice:
             webservice.putrequest("POST", id)
             webservice.putheader("Host", url)
             webservice.putheader("Content-type", "text/xml")

@@ -93,6 +93,15 @@ class HTTPRequest(object):
 
         self.log = getLogger("log")
 
+        
+    def __enter__(self):
+        return self
+
+        
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+        
+        
     def initHandle(self):
         """
         sets common options to curl handle.
