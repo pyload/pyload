@@ -38,7 +38,7 @@ class HotFolder(Addon):
 
         try:
             if not os.path.isdir(os.path.join(folder, "finished")):
-                os.makedirs(os.path.join(folder, "finished"))
+                os.makedirs(os.path.join(folder, "finished"), exist_ok=True)
 
             if self.config.get("watchfile"):
                 with open(file, "a+") as f:

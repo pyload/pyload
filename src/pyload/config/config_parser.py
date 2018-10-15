@@ -9,16 +9,6 @@ import time
 
 from pyload.utils.utils import chmod
 
-# ignore these plugin configs, mainly because plugins were wiped out
-IGNORE = (
-    "FreakshareNet",
-    "SpeedManager",
-    "ArchiveTo",
-    "ShareCx",
-    ("addons", "UnRar"),
-    "EasyShareCom",
-    "FlyshareCz",
-)
 
 # CONFIG_VERSION
 __version__ = 1
@@ -46,6 +36,7 @@ class ConfigParser(object):
     CONFLINE = re.compile(
         r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
+    VERSION = re.compile(r'version\s*:\s*(\d+)')
 
     def __init__(self):
         """
@@ -54,8 +45,8 @@ class ConfigParser(object):
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
 
-        self.configpath = os.path.join(HOMEDIR, "pyload.conf")
-        self.pluginpath = os.path.join(HOMEDIR, "plugins.conf")
+        self.configpath = os.path.join(HOMEDIR, '.pyload', "pyload.conf")
+        self.pluginpath = os.path.join(HOMEDIR, '.pyload', "plugins.conf")
 
         self.oldRemoteData = {}
 
@@ -65,51 +56,49 @@ class ConfigParser(object):
 
         self.readConfig()
 
-        self.deleteOldPlugins()
-
     def checkVersion(self, n=0):
         """
         determines if config need to be copied.
         """
         try:
             if not os.path.exists(self.configpath):
+                os.makedirs(os.path.dirname(self.configpath), exist_ok=True)                
                 shutil.copy(
-                    os.path.join(PKGDIR, "pyload", "config", "default.conf"),
+                    os.path.join(PKGDIR, "config", "default.conf"),
                     self.configpath,
                 )
                 chmod(self.configpath, 0o600)
 
             if not os.path.exists(self.pluginpath):
+                os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)  
                 with open(self.pluginpath, "wb") as f:
                     f.write("version: " + str(__version__))
-
                 chmod(self.pluginpath, 0o600)
 
             with open(self.configpath, "rb") as f:
-                v = f.readline()
-
-            v = v[v.find(":") + 1 :].strip()
-
-            if not v or int(v) < __version__:
+                content = f.read()
+                
+            version = self.VERSION.findall(content)
+            if not version or int(version) < __version__:
                 shutil.copy(
-                    os.path.join(PKGDIR, "pyload", "config", "default.conf"),
+                    os.path.join(PKGDIR, "config", "default.conf"),
                     self.configpath,
                 )
                 print("Old version of config was replaced")
 
             with open(self.pluginpath, "rb") as f:
-                v = f.readline()
+                content = f.read()
 
-            v = v[v.find(":") + 1 :].strip()
-
-            if not v or int(v) < __version__:
+            version = self.VERSION.findall(content)
+            if not version or int(version) < __version__:
                 with open(self.pluginpath, "wb") as f:
                     f.write("version: " + str(__version__))
 
                 print("Old version of plugin-config replaced")
+                
         except Exception:
             if n < 3:
-                time.sleep(0.3)
+                time.sleep(1)
                 self.checkVersion(n + 1)
             else:
                 raise
@@ -120,7 +109,7 @@ class ConfigParser(object):
         """
 
         self.config = self.parseConfig(
-            os.path.join(PKGDIR, "pyload", "config", "default.conf")
+            os.path.join(PKGDIR, "config", "default.conf")
         )
         self.plugin = self.parseConfig(self.pluginpath)
 
@@ -426,14 +415,6 @@ class ConfigParser(object):
         """
         if name in self.plugin:
             del self.plugin[name]
-
-    def deleteOldPlugins(self):
-        """
-        remove old plugins from config.
-        """
-        for name in IGNORE:
-            if name in self.plugin:
-                del self.plugin[name]
 
 
 class Section(object):

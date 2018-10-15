@@ -2,7 +2,7 @@
 
 import inspect
 import os
-from builtins import _, object
+from builtins import _, object, HOMEDIR
 
 import pycurl
 from pyload.network.request_factory import getRequest as get_request
@@ -429,6 +429,8 @@ class Plugin(object):
 
         try:
             framefile = fsjoin(
+                HOMEDIR,
+                '.pyload',
                 "tmp",
                 self.classname,
                 "{}_line{}.dump.html".format(
@@ -436,8 +438,7 @@ class Plugin(object):
                 ),
             )
 
-            if not exists(os.path.join("tmp", self.classname)):
-                os.makedirs(os.path.join("tmp", self.classname))
+            os.makedirs(os.path.join(HOMEDIR, '.pyload', "tmp", self.classname), exist_ok=True)
 
             with open(framefile, "wb") as f:
                 try:

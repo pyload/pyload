@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import _, PKGDIR, zip
+from builtins import _, PKGDIR, HOMEDIR, zip
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
@@ -108,8 +108,7 @@ class UpdateManager(Addon):
             for m in sys.modules.values()
             if m
             and (
-                m.__name__.startswith("pyload.plugins.")
-                or m.__name__.startswith("userplugins.")
+                m.__name__.startswith("pyload.plugins.") or  m.__name__.startswith("userplugins.")
             )
             and m.__name__.count(".") >= 2
         ]
@@ -323,6 +322,7 @@ class UpdateManager(Addon):
                     )
                 )
 
+        userplugins = os.path.join(HOMEDIR, ".pyload", "userplugins")
         for plugin in updatelist:
             plugin_name = plugin["name"]
             plugin_type = plugin["type"]
@@ -374,7 +374,7 @@ class UpdateManager(Addon):
                 m = self._VERSION.search(content)
                 if m and m.group(2) == plugin_version:
                     with open(
-                        fsjoin("userplugins", plugin_type, plugin_name + ".py"), "wb"
+                        fsjoin(userplugins, plugin_type, plugin_name + ".py"), "wb"
                     ) as f:
                         f.write(encode(content))
 
@@ -413,9 +413,10 @@ class UpdateManager(Addon):
         self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
 
         for plugin_type, plugin_name in plugin_ids:
-            rootplugins = os.path.join(PKGDIR, "pyload", "plugins")
+            userplugins = os.path.join(HOMEDIR, ".pyload", "plugins")
+            rootplugins = os.path.join(PKGDIR, "plugins")
 
-            for basedir in ("userplugins", rootplugins):
+            for basedir in (userplugins, rootplugins):
                 py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 

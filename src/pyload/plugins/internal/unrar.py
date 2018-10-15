@@ -64,7 +64,7 @@ class UnRar(Extractor):
     def find(cls):
         try:
             if os.name == "nt":
-                cls.CMD = os.path.join(PKGDIR, "RAR.exe")
+                cls.CMD = os.path.join(PKGDIR, 'lib', "RAR.exe")
             else:
                 cls.CMD = "rar"
 
@@ -78,7 +78,7 @@ class UnRar(Extractor):
         except OSError:
             try:
                 if os.name == "nt":
-                    cls.CMD = os.path.join(PKGDIR, "UnRAR.exe")
+                    cls.CMD = os.path.join(PKGDIR, 'lib', "UnRAR.exe")
                 else:
                     cls.CMD = "unrar"
 

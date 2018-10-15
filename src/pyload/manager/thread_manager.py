@@ -6,7 +6,7 @@ import re
 import subprocess
 import time
 import traceback
-from builtins import _, object, PKGDIR, range, str
+from builtins import _, object, HOMEDIR, range, str
 from random import choice
 from threading import Event, Lock
 
@@ -175,12 +175,12 @@ class ThreadManager(object):
 
         if not os.path.exists(self.pyload.config.get("reconnect", "method")):
             if os.path.exists(
-                os.path.join(PKGDIR, self.pyload.config.get("reconnect", "method"))
+                os.path.join(HOMEDIR, ".pyload", self.pyload.config.get("reconnect", "method"))
             ):
                 self.pyload.config.set(
                     "reconnect",
                     "method",
-                    os.path.join(PKGDIR, self.pyload.config.get("reconnect", "method")),
+                    os.path.join(HOMEDIR, ".pyload", self.pyload.config.get("reconnect", "method")),
                 )
             else:
                 self.pyload.config.set("reconnect", "activated", False)

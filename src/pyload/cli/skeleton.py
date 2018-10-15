@@ -249,7 +249,7 @@ class Cli(object):
         self.lastLowestLine = line
 
         # set cursor to position
-        print("\033[" + str(self.inputline) + ";0H")
+        print("\033[{};0H".format(self.inputline))
 
     def onChar(self, char):
         """
@@ -526,7 +526,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(os.path.join(HOMEDIR, ".pyload-cli.conf"), "w") as cfgfile:
+        with open(os.path.join(HOMEDIR, '.pyload', ".pyload-cli.conf"), "w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))
@@ -552,7 +552,7 @@ def main(args):
         config["language"] = "en"
 
     configFile = configparser.ConfigParser()
-    configFile.read(os.path.join(HOMEDIR, ".pyload-cli.conf"))
+    configFile.read(os.path.join(HOMEDIR, '.pyload', ".pyload-cli.conf"))
 
     if configFile.has_section("cli"):
         for opt in configFile.items("cli"):

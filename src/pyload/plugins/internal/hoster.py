@@ -313,13 +313,7 @@ class Hoster(Base):
         dl_dir = encode(dl_dirname)
         dl_file = encode(dl_filename)
 
-        if not exists(dl_dir):
-            try:
-                os.makedirs(dl_dir)
-
-            except Exception as e:
-                self.fail(e)
-
+        os.makedirs(dl_dir, exist_ok=True)
         self.set_permissions(dl_dir)
 
         self.pyload.addonManager.dispatchEvent(

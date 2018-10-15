@@ -260,11 +260,9 @@ class ExtractArchive(Addon):
                     pypack.folder or safename(pypack.name.replace("http://", "")),
                 )
 
-            if not exists(extract_folder):
-                os.makedirs(extract_folder)
-
-                if subfolder:
-                    self.set_permissions(extract_folder)
+            os.makedirs(extract_folder, exist_ok=True)
+            if subfolder:
+                self.set_permissions(extract_folder)
 
             matched = False
             success = True

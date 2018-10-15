@@ -11,6 +11,7 @@
 import builtins
 
 # import codecs
+import locale
 import os
 import pkg_resources
 import semver
@@ -24,9 +25,8 @@ try:
     __version__ = pkg_resources.get_distribution(dist_name).version
 
 except pkg_resources.DistributionNotFound:
-    pkgdir = os.path.realpath(os.path.join(__file__, "..", "..", ".."))
-
-    ver_path = os.path.join(pkgdir, "VERSION.md")
+    pkgdir = os.path.realpath(os.path.join(__file__, ".."))    
+    ver_path = os.path.join(pkgdir, '..', '..', "VERSION.md")
     with open(ver_path) as f:
         __version__ = f.read().strip()
 
@@ -52,6 +52,14 @@ locale.setlocale(locale.LC_ALL, "")
 
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
+
+
+# TODO: remove
+userdir = os.path.join(HOMEDIR, '.pyload')
+os.makedirs(userdir, exist_ok=True)
+os.chdir(userdir)
+del userdir
+
 
 del pkgdir
 del locale

@@ -3,7 +3,7 @@
 
 import os
 import time
-from builtins import _, object, str
+from builtins import _, object, str, HOMEDIR
 from itertools import islice
 from random import randint
 
@@ -100,12 +100,6 @@ class Base(object):
             )
         )
 
-    def setConf(self, option, value):
-        """
-        see `setConfig`
-        """
-        self.pyload.config.setPlugin(self.__name__, option, value)
-
     def setConfig(self, option, value):
         """
         Set config value for current plugin.
@@ -114,13 +108,7 @@ class Base(object):
         :param value:
         :return:
         """
-        self.setConf(option, value)
-
-    def getConf(self, option):
-        """
-        see `getConfig`
-        """
-        return self.pyload.config.getPlugin(self.__name__, option)
+        self.pyload.config.setPlugin(self.__name__, option, value)
 
     def getConfig(self, option):
         """
@@ -129,7 +117,7 @@ class Base(object):
         :param option:
         :return:
         """
-        return self.getConf(option)
+        return self.pyload.config.getPlugin(self.__name__, option)
 
     def setStorage(self, key, value):
         """
@@ -413,6 +401,7 @@ class Plugin(Base):
         id = "{:.2f}".format(time.time())[-6:].replace(".", "")
         with open(
             os.path.join(
+                HOMEDIR, '.pyload'
                 "tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)
             ),
             "wb",
@@ -509,11 +498,12 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            if not os.path.exists(os.path.join("tmp", self.__name__)):
-                os.makedirs(os.path.join("tmp", self.__name__))
+            os.makedirs(os.path.join(HOMEDIR, '.pyload', "tmp", self.__name__), exist_ok=True)
 
             with open(
                 os.path.join(
+                    HOMEDIR,
+                    '.pyload',
                     "tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(
@@ -576,21 +566,20 @@ class Plugin(Base):
 
         location = save_join(download_folder, self.pyfile.package().folder)
 
-        if not os.path.exists(location):
-            os.makedirs(
-                location, int(self.pyload.config.get("permission", "folder"), 8)
-            )
+        os.makedirs(
+            location, int(self.pyload.config.get("permission", "folder"), 8), exist_ok=True
+        )
 
-            if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
-                try:
-                    uid = getpwnam(self.config.get("permission", "user"))[2]
-                    gid = getgrnam(self.config.get("permission", "group"))[2]
+        if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
+            try:
+                uid = getpwnam(self.config.get("permission", "user"))[2]
+                gid = getgrnam(self.config.get("permission", "group"))[2]
 
-                    os.chown(location, uid, gid)
-                except Exception as e:
-                    self.log.warning(
-                        _("Setting User and Group failed: {}").format(str(e))
-                    )
+                os.chown(location, uid, gid)
+            except Exception as e:
+                self.log.warning(
+                    _("Setting User and Group failed: {}").format(str(e))
+                )
 
         # convert back to unicode
         location = fs_decode(location)

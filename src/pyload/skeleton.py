@@ -19,7 +19,7 @@ import subprocess
 import sys
 import time
 import traceback
-from builtins import _, object, PKGDIR, range, str
+from builtins import _, object, PKGDIR, HOMEDIR, range, str
 from getopt import GetoptError, getopt
 from imp import find_module
 from sys import argv, executable, exit
@@ -87,10 +87,7 @@ class Core(object):
                         "clean",
                         "help",
                         "debug",
-                        "user",
-                        "setup",
                         "configdir=",
-                        "changedir",
                         "daemon",
                         "quit",
                         "status",
@@ -114,27 +111,6 @@ class Core(object):
                         exit()
                     elif option in ("-d", "--debug"):
                         self.doDebug = True
-                    elif option in ("-u", "--user"):
-                        from pyload.setup import Setup
-
-                        self.config = ConfigParser()
-                        s = Setup(PKGDIR, self.config)
-                        s.set_user()
-                        exit()
-                    elif option in ("-s", "--setup"):
-                        from pyload.setup import Setup
-
-                        self.config = ConfigParser()
-                        s = Setup(PKGDIR, self.config)
-                        s.start()
-                        exit()
-                    elif option == "--changedir":
-                        from pyload.setup import Setup
-
-                        self.config = ConfigParser()
-                        s = Setup(PKGDIR, self.config)
-                        s.conf_path(True)
-                        exit()
                     elif option in ("-q", "--quit"):
                         self.quitInstance()
                         exit()
@@ -167,12 +143,9 @@ class Core(object):
         print("  -v, --version", " " * 10, "Print version to terminal")
         print("  -c, --clear", " " * 12, "Delete all saved packages/links")
         # print("  -a, --add=<link/list>", " " * 2, "Add the specified links")
-        print("  -u, --user", " " * 13, "Manages users")
         print("  -d, --debug", " " * 12, "Enable debug mode")
-        print("  -s, --setup", " " * 12, "Run Setup Assistent")
         print("  --configdir=<dir>", " " * 6, "Run with <dir> as config directory")
         print("  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>")
-        print("  --changedir", " " * 12, "Change config dir permanently")
         print("  --daemon", " " * 15, "Daemonmize after start")
         print("  --no-remote", " " * 12, "Disable remote access (saves RAM)")
         print("  --status", " " * 15, "Display pid if running or False")
@@ -259,7 +232,7 @@ class Core(object):
             print("Error quitting pyLoad")
 
     def cleanTree(self):
-        for path, dirs, files in os.walk(self.path("")):
+        for path, dirs, files in os.walk(PKGDIR):
             for f in files:
                 if not f.endswith(".pyo") and not f.endswith(".pyc"):
                     continue
@@ -274,28 +247,6 @@ class Core(object):
         self.version = PYLOAD_VERSION
         self.version_info = PYLOAD_VERSION_INFO
 
-        if not os.path.exists("pyload.conf"):
-            from pyload.setup import Setup
-
-            print("This is your first start, running configuration assistent now.")
-            self.config = ConfigParser()
-            s = Setup(PKGDIR, self.config)
-            res = False
-            try:
-                res = s.start()
-            except SystemExit:
-                pass
-            except KeyboardInterrupt:
-                print("\nSetup interrupted")
-            except Exception:
-                res = False
-                traceback.print_exc()
-                print("Setup failed")
-            if not res:
-                os.remove("pyload.conf")
-
-            exit()
-
         try:
             signal.signal(signal.SIGQUIT, self.quit)
         except Exception:
@@ -307,8 +258,8 @@ class Core(object):
             [os.path.join(os.sep, "usr", "share", "pyload", "locale"), None]
         )
         translation = gettext.translation(
-            "pyLoad",
-            self.path("locale"),
+            "pyload",
+            os.path.join(PKGDIR, 'locale'),
             languages=[self.config.get("general", "language"), "en"],
             fallback=True,
         )
@@ -375,7 +326,7 @@ class Core(object):
         self.check_install("cryptography", _("pycrypto to decode container files"))
         # img = self.check_install("Image", _("Python Image Libary (Pillow) for captcha reading"))
         # self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_file("tmp", _("folder for temporary files"), True)
+        self.check_file(os.path.join(HOMEDIR, '.pyload', "tmp"), _("folder for temporary files"), True)
         # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True  # checks seems to fail, althoug tesseract is available
@@ -444,7 +395,7 @@ class Core(object):
 
         self.config.save()  # save so config files gets filled
 
-        link_file = os.path.join(PKGDIR, "links.txt")
+        link_file = os.path.join(HOMEDIR, '.pyload', "links.txt")
 
         if os.path.exists(link_file):
             with open(link_file, "rb") as f:
@@ -593,7 +544,7 @@ class Core(object):
                     try:
                         if folder:
                             tmp_name = tmp_name.replace("/", os.sep)
-                            os.makedirs(tmp_name)
+                            os.makedirs(tmp_name, exist_ok=True)
                         else:
                             open(tmp_name, "w")  # where is closed?
                     except Exception:

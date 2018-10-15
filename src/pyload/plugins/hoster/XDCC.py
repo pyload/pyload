@@ -781,13 +781,7 @@ class XDCC(Hoster):
                 if self.pyload.config.get("general", "folder_per_package")
                 else "",
             )
-            if not exists(dl_folder):
-                try:
-                    os.makedirs(dl_folder)
-
-                except Exception as e:
-                    self.fail(e)
-
+            os.makedirs(dl_folder, exist_ok=True)
             self.set_permissions(dl_folder)
 
             self.check_duplicates()

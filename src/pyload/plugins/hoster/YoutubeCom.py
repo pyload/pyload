@@ -80,8 +80,8 @@ class Ffmpeg(object):
         try:
             if os.name == "nt":
                 ffmpeg = (
-                    os.path.join(PKGDIR, "ffmpeg.exe")
-                    if isexecutable(os.path.join(PKGDIR, "ffmpeg.exe"))
+                    os.path.join(PKGDIR, 'lib', "ffmpeg.exe")
+                    if isexecutable(os.path.join(PKGDIR, 'lib', "ffmpeg.exe"))
                     else "ffmpeg.exe"
                 )
 

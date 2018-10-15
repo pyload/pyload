@@ -7,12 +7,10 @@ import re
 import sys
 import traceback
 from ast import literal_eval
-from builtins import _, object, PKGDIR, str
+from builtins import _, object, PKGDIR, HOMEDIR, str
 from itertools import chain
 
 import semver
-
-from pyload.config.config_parser import IGNORE
 
 
 class PluginManager(object):
@@ -65,13 +63,16 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
-        sys.path.append(os.path.abspath(""))
+        sys.path.append(os.path.join(HOMEDIR, '.pyload', 'userplugins'))
 
-        if not os.path.exists("userplugins"):
-            os.makedirs("userplugins")
-        if not os.path.exists(os.path.join("userplugins", "__init__.py")):
-            f = open(os.path.join("userplugins", "__init__.py"), "wb")
+        userplugins_dir = os.path.join(HOMEDIR, '.pyload', "userplugins")
+        os.makedirs(userplugins_dir, exist_ok=True)
+            
+        try:
+            f = open(os.path.join(userplugins_dir, "__init__.py"), "wb")
             f.close()
+        except Exception:
+            pass
 
         self.crypterPlugins, config = self.parse("crypter", pattern=True)
         self.plugins["crypter"] = self.crypterPlugins
@@ -123,15 +124,15 @@ class PluginManager(object):
         """
         plugins = {}
         if home:
-            pfolder = os.path.join("userplugins", folder)
-            if not os.path.exists(pfolder):
-                os.makedirs(pfolder)
-            if not os.path.exists(os.path.join(pfolder, "__init__.py")):
+            pfolder = os.path.join(HOMEDIR, '.pyload', "userplugins", folder)
+            os.makedirs(pfolder, exist_ok=True)                
+            try:
                 f = open(os.path.join(pfolder, "__init__.py"), "wb")
                 f.close()
-
+            except Exception:
+                pass
         else:
-            pfolder = os.path.join(PKGDIR, "pyload", "plugins", folder)
+            pfolder = os.path.join(PKGDIR, "plugins", folder)
 
         configs = {}
         for f in os.listdir(pfolder):
@@ -181,9 +182,6 @@ class PluginManager(object):
                 if isinstance(home, dict) and name in home:
                     if home[name]["v"] >= version:
                         continue
-
-                if name in IGNORE or (folder, name) in IGNORE:
-                    continue
 
                 plugins[name] = {}
                 plugins[name]["v"] = version
@@ -236,7 +234,7 @@ class PluginManager(object):
                     config["desc"] = desc
                     configs[name] = config
 
-                elif folder == "addons":  # force config creation
+                else:
                     desc = self.DESC.findall(content)
                     desc = desc.group(1) if desc else ""
                     config["activated"] = ["bool", "Activated", False]

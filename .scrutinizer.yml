@@ -1,5 +1,8 @@
 # language: python
 checks:
+  javascript:
+    code_rating: true
+    duplicate_code: true
   python:
     basic_eval_used: true
     basic_exec_used: true
@@ -11,8 +14,6 @@ tools:
     python_version: 3
     # config_file: .pylintrc
 filter:
-  excluded_paths:
-    - 'docs/'
-    - 'locale/'
-    - 'media/'
-    - 'tests/'
+  paths: ["src/*", "tests/*"]
+  dependency_paths:
+    - '*/vendor/'

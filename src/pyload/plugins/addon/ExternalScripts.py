@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import _, map
+from builtins import _, map, HOMEDIR
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode
@@ -78,16 +78,12 @@ class ExternalScripts(Addon):
 
     def make_folders(self):
         for folder in self.folders:
-            dir = os.path.join("scripts", folder)
+            dir = os.path.join(HOMEDIR, '.pyload', "scripts", folder)
 
             if os.path.isdir(dir):
                 continue
 
-            try:
-                os.makedirs(dir)
-
-            except OSError as e:
-                self.log_debug(e, trace=True)
+            os.makedirs(dir, exist_ok=True)
 
     def periodical_task(self):
         self.make_folders()
