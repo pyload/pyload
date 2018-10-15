@@ -4,7 +4,7 @@ from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import json
+import json
 
 
 class LuckyShareNet(SimpleHoster):

@@ -3,7 +3,7 @@ import re
 from builtins import _
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import json
+import json
 
 
 class SoundcloudCom(SimpleHoster):

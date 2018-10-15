@@ -2,10 +2,11 @@
 # @author: RaNaN
 
 import bottle
+import os
+import json
 
-from pyload.api import PERMS, ROLE
-from pyload.api import has_permission
-from pyload.webui import PREFIX, env
+from pyload.api import PERMS, ROLE, has_permission
+from pyload.webui.app import PREFIX, env
 from pyload.webui.server_thread import PYLOAD_API
 
 

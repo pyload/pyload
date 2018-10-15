@@ -2,7 +2,7 @@
 from builtins import _
 
 from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import json
+import json
 
 
 class RapideoPl(MultiHoster):

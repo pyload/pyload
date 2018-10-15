@@ -8,9 +8,9 @@ from urllib.parse import unquote
 import bottle
 
 from pyload.api import BaseObject
-from pyload.plugins.utils import json  # change to core utils
-from pyload.webui import PYLOAD_API
-from pyload.webui.utils import apiver_check, set_session, toDict
+import json
+from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.app.utils import apiver_check, set_session, toDict
 
 
 # json encoder that accepts TBase objects
@@ -28,8 +28,8 @@ class TBaseEncoder(json.JSONEncoder):
 )
 @apiver_check
 def call_api(func, args=""):
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
     if "u" in bottle.request.POST and "p" in bottle.request.POST:
         info = PYLOAD_API.checkAuth(bottle.request.POST["u"], bottle.request.POST["p"])
@@ -88,8 +88,8 @@ def callApi(func, *args, **kwargs):
 @bottle.route(r"/api/<apiver>/login", method="POST")
 @apiver_check
 def login():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
     user = bottle.request.forms.get("username")
     password = bottle.request.forms.get("password")
@@ -112,8 +112,8 @@ def login():
 @bottle.route(r"/api/<apiver>/logout")
 @apiver_check
 def logout():
-    response.headers.replace("Content-type", "application/json")
-    response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.headers.replace("Content-type", "application/json")
+    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
     s = bottle.request.environ.get("beaker.session")
     s.delete()

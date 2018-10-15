@@ -6,7 +6,8 @@ from builtins import _, str
 
 import pycurl
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import json, parse_name, timestamp
+from pyload.plugins.utils import parse_name, timestamp
+import json
 
 
 def convert_decimal_prefix(m):

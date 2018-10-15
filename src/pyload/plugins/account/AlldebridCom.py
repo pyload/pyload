@@ -3,7 +3,7 @@
 from functools import reduce
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-from pyload.plugins.utils import json
+import json
 
 
 class AlldebridCom(MultiAccount):

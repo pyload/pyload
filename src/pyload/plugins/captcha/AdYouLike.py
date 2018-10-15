@@ -3,7 +3,7 @@ import re
 from builtins import _
 
 from pyload.plugins.internal.captcha_service import CaptchaService
-from pyload.plugins.utils import json
+import json
 
 
 class AdYouLike(CaptchaService):

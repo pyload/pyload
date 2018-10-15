@@ -5,7 +5,7 @@ from builtins import _
 from pyload.datatype.pyfile import statusMap
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import json
+import json
 
 
 def get_info(urls):

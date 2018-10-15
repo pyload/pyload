@@ -12,10 +12,10 @@ from beaker.middleware import SessionMiddleware
 import bottle
 import jinja2
 from pyload.utils.utils import decode, formatSize
-from pyload.plugins.utils import json  # change to core utils
+import json
 from pyload.webui.server_thread import PYLOAD_API
 
-from pyload.webui.middlewares import (
+from pyload.webui.app.middlewares import (
     GZipMiddleWare,
     PrefixMiddleware,
     StripPathMiddleware,
@@ -38,7 +38,7 @@ env = jinja2.Environment(
     bytecode_cache=bcc,
 )
 
-from pyload.webui.filters import (
+from pyload.webui.app.filters import (
     date,
     path_make_absolute,
     path_make_relative,
@@ -81,9 +81,7 @@ web = GZipMiddleWare(web)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
-
-from pyload.webui import app
-
+    
 
 def run_builtin(host="0.0.0.0", port="8000"):
     bottle.run(app=web, host=host, port=port, quiet=True)

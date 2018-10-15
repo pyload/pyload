@@ -11,10 +11,12 @@ from builtins import PKGDIR, HOMEDIR
 
 import bottle
 
+import json
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
-from pyload.webui.server_thread import PREFIX, PYLOAD_API, env
-from pyload.webui.filters import relpath, unquotepath
-from pyload.webui.utils import (get_permission, login_required, parse_permissions,
+from pyload.webui.app import PREFIX, env
+from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.app.filters import relpath, unquotepath
+from pyload.webui.app.utils import (get_permission, login_required, parse_permissions,
                                 parse_userdata, permlist, render_to_response,
                                 set_permission, set_session, toDict, get_themedir)
 
@@ -198,11 +200,11 @@ def server_min(theme, filename):
 
 @bottle.route(r"/media/js/<path:re:.+\.js>")
 def js_dynamic(path):
-    response.headers["Expires"] = time.strftime(
+    bottle.response.headers["Expires"] = time.strftime(
         "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 2)
     )
-    response.headers["Cache-control"] = "public"
-    response.headers["Content-Type"] = "text/javascript; charset=UTF-8"
+    bottle.response.headers["Cache-control"] = "public"
+    bottle.response.headers["Content-Type"] = "text/javascript; charset=UTF-8"
 
     try:
         # static files are not rendered
@@ -219,10 +221,10 @@ def js_dynamic(path):
 
 @bottle.route(r"/media/<path:path>")
 def server_static(path):
-    response.headers["Expires"] = time.strftime(
+    bottle.response.headers["Expires"] = time.strftime(
         "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     )
-    response.headers["Cache-control"] = "public"
+    bottle.response.headers["Cache-control"] = "public"
     return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media"))
 
 
@@ -236,7 +238,7 @@ def favicon():
 
 @bottle.route(r"/robots.txt")
 def robots():
-    return bottle.static_file("robots.txt")
+    return bottle.static_file("robots.txt", root=".")
 
 
 @bottle.route(r"/login", method="GET")

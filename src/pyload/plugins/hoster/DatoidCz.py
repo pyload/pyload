@@ -5,7 +5,7 @@ import urllib.parse
 from builtins import str
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import json
+import json
 
 
 class DatoidCz(SimpleHoster):

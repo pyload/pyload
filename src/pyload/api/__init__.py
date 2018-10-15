@@ -11,7 +11,7 @@ from pyload.network.request_factory import getURL
 from pyload.remote import activated
 from pyload.utils.packagetools import parseNames
 from pyload.utils.utils import compare_time, freeSpace
-from pyload.plugins.utils import json  # change to core utils
+import json
 
 if activated:
     try:

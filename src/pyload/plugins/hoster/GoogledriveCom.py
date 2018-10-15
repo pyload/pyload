@@ -7,7 +7,7 @@
 
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import json
+import json
 
 
 class GoogledriveCom(Hoster):

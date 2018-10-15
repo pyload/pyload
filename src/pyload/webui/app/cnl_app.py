@@ -7,6 +7,7 @@ from binascii import unhexlify
 from builtins import str
 from urllib.parse import unquote
 
+import json
 import bottle
 from cryptography.fernet import Fernet
 import js2py
@@ -86,9 +87,8 @@ def addcrypted2():
     jk = bottle.request.forms["jk"]
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
-    if JS:
-        jk = "{} f()".format(jk)
-        jk = js2py.eval_js(jk)
+    jk = "{} f()".format(jk)
+    jk = js2py.eval_js(jk)
 
     else:
         try:

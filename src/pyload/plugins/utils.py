@@ -25,21 +25,10 @@ import zlib
 from builtins import _, ADDONMANAGER, map, object, str
 
 import send2trash
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
-try:
-    from functools import reduce
-except ImportError:
-    reduce = reduce
+import json
 
 
 # TODO: Remove in 0.6.x
-
-
 class utils(object):
     __name__ = "utils"
     __type__ = "plugin"

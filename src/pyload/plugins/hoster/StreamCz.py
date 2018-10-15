@@ -7,7 +7,7 @@ import urllib.parse
 from builtins import _, range, str
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-from pyload.plugins.utils import json
+import json
 
 
 def get_api_password(episode):

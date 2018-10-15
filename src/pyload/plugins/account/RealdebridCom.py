@@ -4,7 +4,7 @@ from builtins import _
 
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.multiaccount import MultiAccount
-from pyload.plugins.utils import json
+import json
 
 
 def args(**kwargs):

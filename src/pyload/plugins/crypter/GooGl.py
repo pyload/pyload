@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
-from pyload.plugins.utils import json
+import json
 
 
 class GooGl(SimpleCrypter):

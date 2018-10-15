@@ -4,7 +4,8 @@ import hashlib
 
 import pycurl
 from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import json, seconds_to_midnight
+from pyload.plugins.utils import seconds_to_midnight
+import json
 
 
 class LinkifierCom(MultiHoster):

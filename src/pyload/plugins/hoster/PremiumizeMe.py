@@ -3,7 +3,7 @@ import urllib.parse
 from builtins import _
 
 from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import json
+import json
 
 
 class PremiumizeMe(MultiHoster):

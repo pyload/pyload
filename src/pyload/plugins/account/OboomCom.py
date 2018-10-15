@@ -5,7 +5,7 @@ from builtins import _
 from beaker.crypto.pbkdf2 import PBKDF2
 
 from pyload.plugins.internal.account import Account
-from pyload.plugins.utils import json
+import json
 
 
 class OboomCom(Account):

@@ -7,7 +7,7 @@ import hashlib
 
 import pycurl
 from pyload.plugins.internal.multihoster import MultiHoster
-from pyload.plugins.utils import json
+import json
 
 
 def args(**kwargs):
