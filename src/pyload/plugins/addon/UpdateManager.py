@@ -8,7 +8,7 @@ import time
 from builtins import _, PKGDIR, HOMEDIR, zip
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
+from pyload.plugins.utils import Expose, encode, exists, threaded
 
 
 class UpdateManager(Addon):
@@ -374,7 +374,7 @@ class UpdateManager(Addon):
                 m = self._VERSION.search(content)
                 if m and m.group(2) == plugin_version:
                     with open(
-                        fsjoin(userplugins, plugin_type, plugin_name + ".py"), "wb"
+                        os.path.join(userplugins, plugin_type, plugin_name + ".py"), "wb"
                     ) as f:
                         f.write(encode(content))
 
@@ -417,7 +417,7 @@ class UpdateManager(Addon):
             rootplugins = os.path.join(PKGDIR, "plugins")
 
             for basedir in (userplugins, rootplugins):
-                py_filename = fsjoin(basedir, plugin_type, plugin_name + ".py")
+                py_filename = os.path.join(basedir, plugin_type, plugin_name + ".py")
                 pyc_filename = py_filename + "c"
 
                 if plugin_type == "addon":

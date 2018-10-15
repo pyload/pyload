@@ -8,7 +8,7 @@ from builtins import _, range
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.base import Base
 from pyload.plugins.internal.plugin import Fail
-from pyload.plugins.utils import encode, exists, fsjoin, parse_name, safejoin
+from pyload.plugins.utils import encode, exists, parse_name, safejoin
 
 
 class Hoster(Base):
@@ -249,7 +249,7 @@ class Hoster(Base):
 
         else:
             if self.req.code in (404, 410):
-                bad_file = fsjoin(os.path.dirname(filename), newname)
+                bad_file = os.path.join(os.path.dirname(filename), newname)
                 if self.remove(bad_file):
                     return ""
             else:
@@ -331,8 +331,8 @@ class Hoster(Base):
 
             if safename != newname:
                 try:
-                    old_file = fsjoin(dl_dirname, newname)
-                    new_file = fsjoin(dl_dirname, safename)
+                    old_file = os.path.join(dl_dirname, newname)
+                    new_file = os.path.join(dl_dirname, safename)
                     os.rename(old_file, new_file)
 
                 except OSError as e:
@@ -522,7 +522,7 @@ class Hoster(Base):
                     self.skip(pyfile.pluginname)
 
         dl_folder = self.pyload.config.get("general", "download_folder")
-        dl_file = fsjoin(dl_folder, pack_folder, self.pyfile.name)
+        dl_file = os.path.join(dl_folder, pack_folder, self.pyfile.name)
 
         if not exists(dl_file):
             return
@@ -547,7 +547,7 @@ class Hoster(Base):
 
             while True:
                 name = "{} ({}){}".format(m.group(1), dl_n + 1, m.group(3) or "")
-                dl_file = fsjoin(dl_folder, pack_folder, name)
+                dl_file = os.path.join(dl_folder, pack_folder, name)
                 if not exists(dl_file):
                     break
 

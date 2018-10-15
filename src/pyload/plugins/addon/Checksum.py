@@ -8,7 +8,7 @@ from builtins import _
 from threading import Event
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import encode, format_time, fsjoin, threaded
+from pyload.plugins.utils import encode, format_time, threaded
 
 
 def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
@@ -158,7 +158,7 @@ class Checksum(Addon):
 
         local_file = encode(pyfile.plugin.last_download)
         # dl_folder  = self.pyload.config.get("general", "download_folder")
-        # local_file = encode(fsjoin(dl_folder, pyfile.package().folder, pyfile.name))
+        # local_file = encode(os.path.join(dl_folder, pyfile.package().folder, pyfile.name))
 
         if not os.path.isfile(local_file):
             self.check_failed(pyfile, None, "File does not exist")
@@ -271,7 +271,7 @@ class Checksum(Addon):
     @threaded
     def verify_package(self, pypack, event_finished, thread=None):
         try:
-            dl_folder = fsjoin(
+            dl_folder = os.path.join(
                 self.pyload.config.get("general", "download_folder"), pypack.folder, ""
             )
 
@@ -284,7 +284,7 @@ class Checksum(Addon):
                 if file_type not in self.formats:
                     continue
 
-                hash_file = encode(fsjoin(dl_folder, fdata["name"]))
+                hash_file = encode(os.path.join(dl_folder, fdata["name"]))
                 if not os.path.isfile(hash_file):
                     self.log_warning(_("File not found"), fdata["name"])
                     continue
@@ -299,7 +299,7 @@ class Checksum(Addon):
                     data = m.groupdict()
                     self.log_debug(fdata["name"], data)
 
-                    local_file = encode(fsjoin(dl_folder, data["NAME"]))
+                    local_file = encode(os.path.join(dl_folder, data["NAME"]))
                     algorithm = self._methodmap.get(file_type, file_type)
 
                     pyfile = None

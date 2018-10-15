@@ -5,7 +5,7 @@ from builtins import _
 import requests
 
 from pyload.plugins.internal.container import Container
-from pyload.plugins.utils import encode, fsjoin
+from pyload.plugins.utils import encode
 
 
 class CCF(Container):
@@ -45,7 +45,7 @@ class CCF(Container):
             ).read()
 
         dl_folder = self.pyload.config.get("general", "download_folder")
-        dlc_file = fsjoin(dl_folder, "tmp_{}.dlc".format(pyfile.name))
+        dlc_file = os.path.join(dl_folder, "tmp_{}.dlc".format(pyfile.name))
 
         try:
             dlc = (

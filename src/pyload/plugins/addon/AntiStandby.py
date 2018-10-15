@@ -7,7 +7,7 @@ import time
 from builtins import _, object
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, fsjoin
+from pyload.plugins.utils import Expose, encode
 
 try:
     import caffeine
@@ -149,7 +149,7 @@ class AntiStandby(Addon):
             0,
             0,
             *(
-                os.path.getmtime(fsjoin(root, file))
+                os.path.getmtime(os.path.join(root, file))
                 for root, dirs, files in os.walk(encode(path), topdown=False)
                 for file in files
             ),

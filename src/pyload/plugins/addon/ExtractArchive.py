@@ -11,7 +11,6 @@ from pyload.plugins.utils import (
     Expose,
     encode,
     exists,
-    fsjoin,
     safename,
     threaded,
     uniqify,
@@ -245,17 +244,17 @@ class ExtractArchive(Addon):
 
             self.log_info(_("Check package: {}").format(pypack.name))
 
-            pack_dl_folder = fsjoin(
+            pack_dl_folder = os.path.join(
                 dl_folder, pypack.folder, ""
             )  #: Force trailing slash
 
             #: Determine output folder
-            extract_folder = fsjoin(
+            extract_folder = os.path.join(
                 pack_dl_folder, destination, ""
             )  #: Force trailing slash
 
             if subfolder:
-                extract_folder = fsjoin(
+                extract_folder = os.path.join(
                     extract_folder,
                     pypack.folder or safename(pypack.name.replace("http://", "")),
                 )
@@ -270,7 +269,7 @@ class ExtractArchive(Addon):
                 {
                     fdata["name"]: (
                         fdata["id"],
-                        (fsjoin(pack_dl_folder, fdata["name"])),
+                        (os.path.join(pack_dl_folder, fdata["name"])),
                         extract_folder,
                     )
                     for fdata in pypack.getChildren().values()
@@ -359,14 +358,14 @@ class ExtractArchive(Addon):
                                 os.path.dirname(_f) for _f in new_files
                             )
                             for foldername in new_folders:
-                                self.set_permissions(fsjoin(extract_folder, foldername))
+                                self.set_permissions(os.path.join(extract_folder, foldername))
 
                             for filename in new_files:
-                                self.set_permissions(fsjoin(extract_folder, filename))
+                                self.set_permissions(os.path.join(extract_folder, filename))
 
                             for filename in new_files:
                                 file = encode(
-                                    fsjoin(os.path.dirname(archive.filename), filename)
+                                    os.path.join(os.path.dirname(archive.filename), filename)
                                 )
                                 if not exists(file):
                                     self.log_debug(

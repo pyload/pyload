@@ -459,13 +459,6 @@ def remove(path, trash=True):
         os.remove(path)
 
 
-def fsjoin(*args):
-    """
-    Like os.path.join, but encoding aware (for safe-joining see `safejoin`)
-    """
-    return encode(os.path.join(*args))
-
-
 def remove_chars(value, repl):
     """
     Remove all chars in repl from string.
@@ -967,8 +960,8 @@ def copy_tree(src, dst, overwrite=False, preserve_metadata=False):
                 shutil.copystat(src_dir, dst_dir)
 
         for filename in files:
-            src_file = fsjoin(src_dir, filename)
-            dst_file = fsjoin(dst_dir, filename)
+            src_file = os.path.join(src_dir, filename)
+            dst_file = os.path.join(dst_dir, filename)
 
             if exists(dst_file):
                 if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):
@@ -997,8 +990,8 @@ def move_tree(src, dst, overwrite=False):
             del_dir = False
 
         for filename in files:
-            src_file = fsjoin(src_dir, filename)
-            dst_file = fsjoin(dst_dir, filename)
+            src_file = os.path.join(src_dir, filename)
+            dst_file = os.path.join(dst_dir, filename)
 
             if exists(dst_file):
                 if overwrite or overwrite is None and mtime(src_file) > mtime(dst_file):

@@ -18,7 +18,6 @@ from pyload.plugins.utils import (
     exists,
     fixurl,
     format_exc,
-    fsjoin,
     html_unescape,
     parse_html_header,
     remove,
@@ -428,7 +427,7 @@ class Plugin(object):
         frame = inspect.currentframe()
 
         try:
-            framefile = fsjoin(
+            framefile = os.path.join(
                 HOMEDIR,
                 '.pyload',
                 "tmp",

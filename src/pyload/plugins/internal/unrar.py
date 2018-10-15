@@ -11,7 +11,7 @@ from pyload.plugins.internal.extractor import (
     Extractor,
     PasswordError,
 )
-from pyload.plugins.utils import decode, encode, fsjoin, renice
+from pyload.plugins.utils import decode, encode, renice
 
 
 class UnRar(Extractor):
@@ -193,7 +193,7 @@ class UnRar(Extractor):
 
         #: eventually Multipart Files
         files.extend(
-            fsjoin(dir, os.path.basename(file))
+            os.path.join(dir, os.path.basename(file))
             for file in filter(self.ismultipart, os.listdir(dir))
             if self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
         )
@@ -220,16 +220,16 @@ class UnRar(Extractor):
         if not self.fullpath and self.VERSION.startswith("5"):
             # NOTE: Unrar 5 always list full path
             for f in decode(out).splitlines():
-                f = fsjoin(self.dest, os.path.basename(f.strip()))
+                f = os.path.join(self.dest, os.path.basename(f.strip()))
                 if os.path.isfile(f):
-                    result.add(fsjoin(self.dest, os.path.basename(f)))
+                    result.add(os.path.join(self.dest, os.path.basename(f)))
         else:
             if self.fullpath:
                 for f in decode(out).splitlines():
                     # Unrar fails to list all directories for some archives
                     f = f.strip()
                     while f:
-                        fabs = fsjoin(self.dest, f)
+                        fabs = os.path.join(self.dest, f)
                         if fabs not in result:
                             result.add(fabs)
                             f = os.path.dirname(f)
@@ -237,7 +237,7 @@ class UnRar(Extractor):
                             break
             else:
                 for f in decode(out).splitlines():
-                    result.add(fsjoin(self.dest, f.strip()))
+                    result.add(os.path.join(self.dest, f.strip()))
 
         self.files = list(result)
         return self.files

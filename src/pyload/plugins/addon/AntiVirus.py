@@ -8,7 +8,7 @@ from builtins import _, map
 import send2trash
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import Expose, encode, exists, fsjoin, threaded
+from pyload.plugins.utils import Expose, encode, exists, threaded
 
 
 class AntiVirus(Addon):
@@ -58,7 +58,7 @@ class AntiVirus(Addon):
                 if self.pyload.config.get("general", "folder_per_package")
                 else ""
             )
-            target = fsjoin(dl_folder, package_folder, pyfile.name)
+            target = os.path.join(dl_folder, package_folder, pyfile.name)
             target_repr = "Folder: " + package_folder or dl_folder
         else:
             target = encode(pyfile.plugin.last_download)

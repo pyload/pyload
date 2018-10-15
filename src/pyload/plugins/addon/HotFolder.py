@@ -5,7 +5,7 @@ import time
 from builtins import _
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import encode, fsjoin
+from pyload.plugins.utils import encode
 
 
 class HotFolder(Addon):
@@ -51,7 +51,7 @@ class HotFolder(Addon):
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(fsjoin(folder, "finished", name), "wb") as f:
+                    with open(os.path.join(folder, "finished", name), "wb") as f:
                         f.write(content)
 
                     self.pyload.api.addPackage(f.name, [f.name], 1)

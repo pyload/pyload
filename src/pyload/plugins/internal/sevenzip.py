@@ -11,7 +11,7 @@ from pyload.plugins.internal.extractor import (
     Extractor,
     PasswordError,
 )
-from pyload.plugins.utils import encode, fsjoin, renice
+from pyload.plugins.utils import encode, renice
 
 
 class SevenZip(Extractor):
@@ -171,7 +171,7 @@ class SevenZip(Extractor):
 
         #: eventually Multipart Files
         files.extend(
-            fsjoin(dir, os.path.basename(file))
+            os.path.join(dir, os.path.basename(file))
             for file in filter(self.ismultipart, os.listdir(dir))
             if self._RE_PART.sub("", name) == self._RE_PART.sub("", file)
         )
@@ -197,7 +197,7 @@ class SevenZip(Extractor):
         files = set()
         for groups in self._RE_FILES.findall(out):
             f = groups[-1].strip()
-            files.add(fsjoin(self.dest, f))
+            files.add(os.path.join(self.dest, f))
 
         self.files = list(files)
 

@@ -6,7 +6,7 @@ from builtins import _, map, PKGDIR, range, str
 
 from Pillow import Image
 from pyload.plugins.internal.plugin import Plugin
-from pyload.plugins.utils import encode, fsjoin
+from pyload.plugins.utils import encode
 
 # import tempfile
 
@@ -79,11 +79,11 @@ class OCR(Plugin):
     ):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(fsjoin("tmp", "tmpTif_{}.tif" % self.classname), "wb")
+            tmpTif = open(os.path.join("tmp", "tmpTif_{}.tif" % self.classname), "wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(fsjoin("tmp", "tmpTxt_{}.txt" % self.classname), "wb")
+            tmpTxt = open(os.path.join("tmp", "tmpTxt_{}.txt" % self.classname), "wb")
             tmpTxt.close()
 
         except IOError as e:
@@ -109,7 +109,7 @@ class OCR(Plugin):
         if subset and (digits or lowercase or uppercase):
             # tmpSub = tempfile.NamedTemporaryFile(suffix=".subset")
             with open(
-                fsjoin("tmp", "tmpSub_{}.subset".format(self.classname)), "wb"
+                os.path.join("tmp", "tmpSub_{}.subset".format(self.classname)), "wb"
             ) as tmpSub:
                 tmpSub.write("tessedit_char_whitelist ")
 

@@ -2,7 +2,7 @@
 <h2 align="center"></h2>
 <h6 align="right">Development branch 0.5.x</h6>
 
-Requires Python 3.6 and good luck.
+Requires **Python 3.6** and good luck.
 
 Install:
 

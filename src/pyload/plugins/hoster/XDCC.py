@@ -12,7 +12,7 @@ from builtins import _, object, range, str
 
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.plugin import Abort
-from pyload.plugins.utils import encode, exists, fsjoin, lock, threaded
+from pyload.plugins.utils import encode, exists, lock, threaded
 
 
 class IRC(object):
@@ -775,7 +775,7 @@ class XDCC(Hoster):
 
             self.pyfile.setStatus("downloading")
 
-            dl_folder = fsjoin(
+            dl_folder = os.path.join(
                 self.pyload.config.get("general", "download_folder"),
                 self.pyfile.package().folder
                 if self.pyload.config.get("general", "folder_per_package")
@@ -786,7 +786,7 @@ class XDCC(Hoster):
 
             self.check_duplicates()
 
-            dl_file = fsjoin(dl_folder, self.pyfile.name)
+            dl_file = os.path.join(dl_folder, self.pyfile.name)
 
             self.log_debug(
                 _("DOWNLOAD XDCC '{}' from {}:{}").format(file_name, ip, port)

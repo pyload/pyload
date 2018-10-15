@@ -5,7 +5,6 @@ import urllib.parse
 from builtins import _, map
 
 from pyload.plugins.internal.crypter import Crypter
-from pyload.plugins.utils import fsjoin
 import json
 
 
@@ -156,7 +155,7 @@ class YoutubeComFolder(Crypter):
         for p in playlists:
             p_name = p["title"]
             p_videos = self.get_videos_id(p["id"])
-            p_folder = fsjoin(
+            p_folder = os.path.join(
                 self.pyload.config.get("general", "download_folder"),
                 p["channelTitle"],
                 p_name,

@@ -12,7 +12,7 @@ import Cryptodome.Util.Counter
 
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
-from pyload.plugins.utils import decode, encode, exists, fsjoin
+from pyload.plugins.utils import decode, encode, exists
 import json
 
 ############################ General errors ###################################
@@ -415,7 +415,7 @@ class MegaCoNz(Hoster):
         """
         if self.pyload.config.get("download", "skip_existing"):
             download_folder = self.pyload.config.get("general", "download_folder")
-            dest_file = fsjoin(
+            dest_file = os.path.join(
                 download_folder,
                 self.pyfile.package().folder
                 if self.pyload.config.get("general", "folder_per_package")

@@ -4,7 +4,7 @@ import re
 from builtins import _
 
 from pyload.plugins.internal.addon import Addon
-from pyload.plugins.utils import fsjoin, threaded
+from pyload.plugins.utils import threaded
 
 
 class MergeFiles(Addon):
@@ -37,12 +37,12 @@ class MergeFiles(Addon):
         dl_folder = self.pyload.config.get("general", "download_folder")
 
         if self.pyload.config.get("general", "folder_per_package"):
-            dl_folder = fsjoin(dl_folder, pack.folder)
+            dl_folder = os.path.join(dl_folder, pack.folder)
 
         for name, file_list in files.items():
             self.log_info(_("Starting merging of"), name)
 
-            with open(fsjoin(dl_folder, name), "wb") as final_file:
+            with open(os.path.join(dl_folder, name), "wb") as final_file:
                 for splitted_file in file_list:
                     self.log_debug("Merging part", splitted_file)
 
@@ -51,7 +51,7 @@ class MergeFiles(Addon):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(fsjoin(dl_folder, splitted_file), "rb") as s_file:
+                        with open(os.path.join(dl_folder, splitted_file), "rb") as s_file:
                             size_written = 0
                             s_file_size = int(
                                 os.path.getsize(os.path.join(dl_folder, splitted_file))

@@ -10,7 +10,7 @@ import js2py
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.captcha import Captcha
 from pyload.plugins.internal.crypter import Crypter
-from pyload.plugins.utils import fsjoin, replace_patterns
+from pyload.plugins.utils import replace_patterns
 
 
 class RelinkUs(Crypter):
@@ -272,7 +272,7 @@ class RelinkUs(Crypter):
             try:
                 dlc = self.load(container_url)
                 dlc_filename = self.file_id + ".dlc"
-                dlc_filepath = fsjoin(
+                dlc_filepath = os.path.join(
                     self.pyload.config.get("general", "download_folder"), dlc_filename
                 )
                 with open(dlc_filepath, "wb") as f:
