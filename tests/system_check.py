@@ -21,11 +21,11 @@ def main():
         print("pycurl:", "missing")
 
     try:
-        import Cryptodome
+        import cryptography
 
-        print("py-crypto:", Cryptodome.__version__)
+        print("cryptography:", cryptography.__version__)
     except Exception:
-        print("py-crypto:", "missing")
+        print("cryptography:", "missing")
 
     try:
         import OpenSSL

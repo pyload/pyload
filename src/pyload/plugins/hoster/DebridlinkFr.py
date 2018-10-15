@@ -3,7 +3,7 @@
 import time
 from builtins import str
 
-import Cryptodome.Hash.SHA
+import hashlib
 
 import pycurl
 from pyload.plugins.internal.multihoster import MultiHoster
@@ -43,9 +43,9 @@ class DebridlinkFr(MultiHoster):
         if session:
             ts = str(int(time.time() - float(session["tsd"])))
 
-            sha1 = Cryptodome.Hash.SHA.new()
-            sha1.update(ts + method + session["key"])
-            sign = sha1.hexdigest()
+            m = hashlib.sha1()
+            m.update(ts + method + session["key"])
+            sign = m.hexdigest()
 
             self.req.http.c.setopt(
                 pycurl.HTTPHEADER,

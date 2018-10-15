@@ -9,7 +9,8 @@ import urllib.parse
 import urllib.request
 from builtins import _, range
 
-import Cryptodome.Cipher.ARC4
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 import js2py
 
 import pycurl
@@ -174,10 +175,12 @@ class TurbobitNet(SimpleHoster):
         self.wait()
 
     def decrypt(self, data):
-        cipher = Cryptodome.Cipher.ARC4.new(
-            binascii.hexlify("E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0")
-        )
-        return binascii.unhexlify(cipher.encrypt(binascii.unhexlify(data)))
+        data = binascii.unhexlify(data)
+        key = binascii.hexlify("E\x15\xa1\x9e\xa3M\xa0\xc6\xa0\x84\xb6H\x83\xa8o\xa0")
+        cipher = Cipher(algorithms.ARC4(key), mode=None, backend=default_backend())
+        encryptor = cipher.encryptor()
+        value = encryptor.update() + encryptor.finalize()
+        return binascii.unhexlify(value)
 
     def get_local_time_string(self):
         lt = time.localtime()
