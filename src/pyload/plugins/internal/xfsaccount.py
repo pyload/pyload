@@ -87,7 +87,7 @@ class XFSAccount(Account):
             self.PLUGIN_URL, get={"op": "my_account"}, cookies=self.COOKIES
         )
 
-        premium = True if re.search(self.PREMIUM_PATTERN, self.data) else False
+        premium = re.search(self.PREMIUM_PATTERN, self.data) is not None
 
         m = re.search(self.VALID_UNTIL_PATTERN, self.data)
         if m is not None:

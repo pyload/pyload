@@ -41,7 +41,7 @@ class IRC(object):
 
     def _data_available(self):
         fdset = select.select([self.irc_sock], [], [], 0)
-        return True if self.irc_sock in fdset[0] else False
+        return self.irc_sock in fdset[0]
 
     def _get_response_line(self, timeout=5):
         start_time = time.time()

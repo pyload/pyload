@@ -14,7 +14,7 @@ class Bucket(object):
         self.lock = Lock()
 
     def __bool__(self):
-        return False if self.rate < 10240 else True
+        return not self.rate < 10240
 
     def setRate(self, rate):
         self.lock.acquire()

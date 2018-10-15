@@ -102,7 +102,7 @@ class SevenZip(Extractor):
 
     @classmethod
     def ismultipart(cls, filename):
-        return True if cls._RE_PART.search(filename) else False
+        return cls._RE_PART.search(filename) is not None
 
     def verify(self, password=None):
         #: 7z can't distinguish crc and pw error in test

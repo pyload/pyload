@@ -90,7 +90,7 @@ class XDCCRequest(object):
 
     def download(self, ip, port, filename, progressNotify=None, resume=None):
         self.progressNotify = progressNotify
-        self.send_64bits_ack = False if self.filesize < 1 << 32 else True
+        self.send_64bits_ack = not self.filesize < 1 << 32
 
         chunk_name = filename + ".chunk0"
 

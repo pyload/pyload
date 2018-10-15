@@ -26,7 +26,7 @@ class UploadedTo(Account):
     def grab_info(self, user, password, data):
         html = self.load("http://uploaded.net/me")
 
-        premium = True if re.search(self.PREMIUM_PATTERN, html) else False
+        premium = re.search(self.PREMIUM_PATTERN, html) is not None
         if premium:
             validuntil = None
             trafficleft = None

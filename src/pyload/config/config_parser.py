@@ -306,7 +306,7 @@ class ConfigParser(object):
         elif typ == "int":
             return int(value)
         elif typ == "bool":
-            return True if value.lower() in ("1", "true", "on", "an", "yes") else False
+            return value.lower() in ("1", "true", "on", "yes", "y")
         elif typ == "time":
             if not value:
                 value = "0:00"

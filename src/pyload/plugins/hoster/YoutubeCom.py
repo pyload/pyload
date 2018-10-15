@@ -1201,7 +1201,7 @@ class YoutubeCom(Hoster):
                     int(_s["itag"]),
                     urllib.parse.unquote(_s["url"]),
                     _s.get("s", _s.get("sig", None)),
-                    True if "s" in _s else False,
+                    "s" in _s,
                 )
                 for _s in streams
             ]

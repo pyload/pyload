@@ -22,7 +22,7 @@ class YibaishiwuCom(Account):
         html = self.load("http://115.com/")
 
         m = re.search(self.ACCOUNT_INFO_PATTERN, html, re.S)
-        premium = True if m and "is_vip: 1" in m.group(1) else False
+        premium = m and "is_vip: 1" in m.group(1)
         validuntil = trafficleft = -1 if m else 0
         return {
             "validuntil": validuntil,

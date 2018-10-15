@@ -639,7 +639,7 @@ class CircleCaptcha(OCR):
                                     pix,
                                     x3,
                                     y3,
-                                    True if invert == 1 else False,
+                                    invert == 1,
                                     -1,
                                     True,
                                 )
