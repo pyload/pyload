@@ -44,8 +44,8 @@ class ConfigParser(object):
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
 
-        self.configpath = os.path.join(HOMEDIR, ".pyload", "pyload.conf")
-        self.pluginpath = os.path.join(HOMEDIR, ".pyload", "plugins.conf")
+        self.configpath = os.path.join(HOMEDIR, "pyLoad", "pyload.conf")
+        self.pluginpath = os.path.join(HOMEDIR, "pyLoad", "plugins.conf")
 
         self.oldRemoteData = {}
 

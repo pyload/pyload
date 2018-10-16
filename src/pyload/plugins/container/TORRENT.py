@@ -7,6 +7,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from builtins import HOMEDIR
+
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import encode, safename
 
@@ -50,7 +52,7 @@ class TORRENT(Container):
             if m:
                 pack_name = safename(m.group(1))
 
-        torrent_filename = os.path.join("tmp", "tmp_{}.torrent".format(pack_name))
+        torrent_filename = os.path.join(HOMEDIR, "pyLoad", ".tmp", "tmp_{}.torrent".format(pack_name))
         with open(torrent_filename, "wb") as f:
             f.write(torrent_content)
 

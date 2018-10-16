@@ -50,11 +50,11 @@ class PluginThread(Thread):
             import zipfile
 
             with zipfile.ZipFile(dump_name, "w") as zip:
-                for f in os.listdir(os.path.join("tmp", pyfile.pluginname)):
+                for f in os.listdir(os.path.join(HOMEDIR, "pyLoad", ".tmp", pyfile.pluginname)):
                     try:
                         # avoid encoding errors
                         zip.write(
-                            os.path.join("tmp", pyfile.pluginname, f),
+                            os.path.join(HOMEDIR, ".tmp", pyfile.pluginname, f),
                             save_join(pyfile.pluginname, f),
                         )
                     except Exception:

@@ -308,7 +308,7 @@ class Core(object):
         # img = self.check_install("Image", _("Python Image Libary (Pillow) for captcha reading"))
         # self.check_install("pycurl", _("pycurl to download any files"), True, True)
         self.check_file(
-            os.path.join(HOMEDIR, ".pyload", "tmp"),
+            os.path.join(HOMEDIR, "pyLoad", ".tmp"),
             _("folder for temporary files"),
             True,
         )
@@ -377,7 +377,7 @@ class Core(object):
 
         self.config.save()  # save so config files gets filled
 
-        link_file = os.path.join(HOMEDIR, ".pyload", "links.txt")
+        link_file = os.path.join(HOMEDIR, "pyLoad", "links.txt")
 
         if os.path.exists(link_file):
             with open(link_file) as f:

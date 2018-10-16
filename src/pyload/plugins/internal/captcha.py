@@ -2,7 +2,7 @@
 import base64
 import os
 import time
-from builtins import _
+from builtins import _, HOMEDIR
 
 from pyload.plugins.internal.plugin import Plugin
 
@@ -86,7 +86,8 @@ class Captcha(Plugin):
 
         with open(
             os.path.join(
-                "tmp",
+                HOMEDIR, "pyLoad",
+                ".tmp",
                 "captcha_image_{}_{}.{}".format(
                     self.pyfile.plugin.__name__, time_ref, input_type
                 ),

@@ -402,7 +402,7 @@ class Plugin(Base):
         with open(
             os.path.join(
                 HOMEDIR,
-                ".pyload" "tmp",
+                "pyLoad", ".tmp",
                 "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
             ),
             "wb",
@@ -500,14 +500,14 @@ class Plugin(Base):
 
             frame = currentframe()
             os.makedirs(
-                os.path.join(HOMEDIR, ".pyload", "tmp", self.__name__), exist_ok=True
+                os.path.join(HOMEDIR, "pyLoad", ".tmp", self.__name__), exist_ok=True
             )
 
             with open(
                 os.path.join(
                     HOMEDIR,
-                    ".pyload",
-                    "tmp",
+                    "pyLoad",
+                    ".tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(
                         frame.f_back.f_code.co_name, frame.f_back.f_lineno

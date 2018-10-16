@@ -171,7 +171,7 @@ class ThreadManager(object):
         if not os.path.exists(self.pyload.config.get("reconnect", "method")):
             if os.path.exists(
                 os.path.join(
-                    HOMEDIR, ".pyload", self.pyload.config.get("reconnect", "method")
+                    HOMEDIR, "pyLoad", self.pyload.config.get("reconnect", "method")
                 )
             ):
                 self.pyload.config.set(
@@ -179,7 +179,7 @@ class ThreadManager(object):
                     "method",
                     os.path.join(
                         HOMEDIR,
-                        ".pyload",
+                        "pyLoad",
                         self.pyload.config.get("reconnect", "method"),
                     ),
                 )

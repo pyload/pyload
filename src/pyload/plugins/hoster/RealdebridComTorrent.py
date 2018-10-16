@@ -6,7 +6,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, range
+from builtins import _, range, HOMEDIR
 
 import pycurl
 from pyload.network.http_request import BadHeader
@@ -71,7 +71,7 @@ class RealdebridComTorrent(Hoster):
             if self.pyfile.url.startswith("http"):
                 torrent_content = self.load(self.pyfile.url, decode=False)
                 torrent_filename = os.path.join(
-                    "tmp", "tmp_{}.torrent".format(self.pyfile.package().name)
+                    HOMEDIR, "pyLoad", ".tmp", "tmp_{}.torrent".format(self.pyfile.package().name)
                 )
                 with open(torrent_filename, "wb") as f:
                     f.write(torrent_content)

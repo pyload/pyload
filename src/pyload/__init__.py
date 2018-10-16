@@ -54,7 +54,7 @@ if os.name == "nt":
 
 
 # TODO: remove
-userdir = os.path.join(builtins.HOMEDIR, ".pyload")
+userdir = os.path.join(builtins.HOMEDIR, "pyLoad")
 os.makedirs(userdir, exist_ok=True)
 os.chdir(userdir)
 del userdir

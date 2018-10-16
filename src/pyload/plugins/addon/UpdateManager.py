@@ -324,7 +324,7 @@ class UpdateManager(Addon):
                     )
                 )
 
-        userplugins = os.path.join(HOMEDIR, ".pyload", "userplugins")
+        userplugins = os.path.join(HOMEDIR, "pyLoad", "userplugins")
         for plugin in updatelist:
             plugin_name = plugin["name"]
             plugin_type = plugin["type"]
@@ -416,7 +416,7 @@ class UpdateManager(Addon):
         self.log_debug("Requested deletion of plugins: {}".format(plugin_ids))
 
         for plugin_type, plugin_name in plugin_ids:
-            userplugins = os.path.join(HOMEDIR, ".pyload", "plugins")
+            userplugins = os.path.join(HOMEDIR, "pyLoad", "plugins")
             rootplugins = os.path.join(PKGDIR, "plugins")
 
             for basedir in (userplugins, rootplugins):

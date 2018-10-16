@@ -617,7 +617,7 @@ def info():
         "os": " ".join((os.name, sys.platform) + extra),
         "version": PYLOAD_API.getServerVersion(),
         "folder": os.path.abspath(PKGDIR),
-        "config": os.path.abspath(os.path.join(HOMEDIR, ".pyload")),
+        "config": os.path.abspath(os.path.join(HOMEDIR, "pyLoad")),
         "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
         "freespace": formatSize(PYLOAD_API.freeSpace()),
         "remote": conf["remote"]["port"]["value"],
