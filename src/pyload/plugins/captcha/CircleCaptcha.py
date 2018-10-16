@@ -537,7 +537,7 @@ class CircleCaptcha(OCR):
                         result = 1
                 if curpix <= self.BLACKCOLOR:
                     result = -1
-        # self.log_debug(str((x, y)) + " = " + str(result))
+        # self.log_debug("{} = {}".format((x, y), result))
         return result
 
     def decrypt(self, img):
@@ -554,8 +554,8 @@ class CircleCaptcha(OCR):
                 iDebugSaveFile = iDebugSaveFile + 1
                 # if iDebugSaveFile < 7:
                 # continue
-                im.save("output" + str(iDebugSaveFile) + ".png", "png")
-                input("frame: " + str(im))
+                im.save("output{}.png".format(iDebugSaveFile), "png")
+                input("frame: {}".format(im))
 
             pix = im.load()
 
@@ -575,7 +575,7 @@ class CircleCaptcha(OCR):
 
             #: Clean image for powerfull search
             self.clean_image(im, pix)
-            im.save("cleaned" + str(iDebugSaveFile) + ".png", "png")
+            im.save("cleaned{}.png".format(iDebugSaveFile), "png")
 
             found = set()
             findnewcircle = True
@@ -593,12 +593,12 @@ class CircleCaptcha(OCR):
                         break
                     if self.pyload.debug:
                         self.log_debug(
-                            "x1, y1 -> " + str((x1, y1)) + ": " + str(pix[x1, y1])
+                            "x1, y1 -> {}: {}".format((x1, y1), pix[x1, y1])
                         )
 
                     if (x1, y1) in self.pointsofcirclefound:
                         if self.pyload.debug:
-                            self.log_debug("Found " + str((x1, y1)))
+                            self.log_debug("Found {}".format((x1, y1)))
                         continue
 
                     if self.pyload.debug:
@@ -616,7 +616,7 @@ class CircleCaptcha(OCR):
                             break
                         if self.pyload.debug:
                             self.log_debug(
-                                "x2, y2 -> " + str((x2, y1)) + ": " + str(pix[x2, y1])
+                                "x2, y2 -> {}: {}".format((x2, y1), pix[x2, y1])
                             )
                         if abs(x2 - x1) < min_distance:
                             continue

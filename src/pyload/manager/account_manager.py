@@ -70,17 +70,17 @@ class AccountManager(object):
         """
 
         if not os.path.exists("accounts.conf"):
-            with open("accounts.conf", "wb") as f:
-                f.write("version: " + str(__version__))
+            with open("accounts.conf", "w") as f:
+                f.write("version: {}".format(__version__))
 
-        with open("accounts.conf", "rb") as f:
+        with open("accounts.conf") as f:
             content = f.readlines()
             version = content[0].split(":")[1].strip() if content else ""
 
         if not version or int(version) < __version__:
             shutil.copy("accounts.conf", "accounts.backup")
-            with open("accounts.conf", "wb") as f:
-                f.write("version: " + str(__version__))
+            with open("accounts.conf", "w") as f:
+                f.write("version: {}".format(__version__))
             self.pyload.log.warning(
                 _("Account settings deleted, due to new config format.")
             )
@@ -129,8 +129,8 @@ class AccountManager(object):
         save all account information.
         """
 
-        with open("accounts.conf", "wb") as f:
-            f.write("version: " + str(__version__) + "\n")
+        with open("accounts.conf", "w") as f:
+            f.write("version: {}\n".format(__version__)
 
             for plugin, accounts in self.accounts.items():
                 f.write("\n")

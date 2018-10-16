@@ -439,13 +439,8 @@ class Plugin(object):
 
             os.makedirs(os.path.join(HOMEDIR, '.pyload', "tmp", self.classname), exist_ok=True)
 
-            with open(framefile, "wb") as f:
-                try:
-                    html = encode(self.last_html)
-                except Exception:
-                    html = self.last_html
-
-                f.write(html)
+            with open(framefile, "w") as f:
+                f.write(self.last_html)
 
         except IOError as e:
             self.log_error(e)

@@ -608,8 +608,8 @@ class ExtractArchive(Addon):
 
         except IOError as e:
             if e.errno == 2:
-                with open(file, "wb") as f:
-                    pass
+                f = open(file, "w")
+                f.close()
 
             else:
                 self.log_error(e)

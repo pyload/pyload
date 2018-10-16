@@ -103,7 +103,7 @@ class PluginThread(Thread):
                 try:
                     dump += pprint.pformat(value) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
             del frame
 
@@ -118,7 +118,7 @@ class PluginThread(Thread):
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
         dump += "\nPYFILE OBJECT DUMP: \n\n"
 
@@ -129,7 +129,7 @@ class PluginThread(Thread):
                 try:
                     dump += pprint.pformat(attr) + "\n"
                 except Exception as e:
-                    dump += "<ERROR WHILE PRINTING VALUE> " + str(e) + "\n"
+                    dump += "<ERROR WHILE PRINTING VALUE> {}\n".format(e)
 
         if pyfile.pluginname in self.m.pyload.config.plugin:
             dump += "\n\nCONFIG: \n\n"

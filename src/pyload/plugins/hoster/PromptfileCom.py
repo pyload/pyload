@@ -42,7 +42,7 @@ class PromptfileCom(SimpleHoster):
         mod = re.search(self.MODIFY_PATTERN, self.data)
         payload = {m.group(1): mod.group(1) + m.group(2)}
 
-        self.log_debug("Read chash: " + str(payload))
+        self.log_debug("Read chash: {}".format(payload))
 
         #: Continue to stage2
         self.data = self.load(pyfile.url, post=payload)

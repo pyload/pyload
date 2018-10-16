@@ -35,8 +35,7 @@ class TORRENT(Container):
     __authors__ = [("GammaC0de", "nitzo2001[AT]yahoo[DOT]com")]
 
     def decrypt(self, pyfile):
-        fs_filename = encode(pyfile.url)
-        with open(fs_filename, "rb") as f:
+        with open(pyfile.url, "rb") as f:
             torrent_content = f.read()
 
         time_ref = "{:.2f}".format(time.time())[-6:].replace(".", "")

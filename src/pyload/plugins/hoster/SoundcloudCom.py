@@ -71,4 +71,4 @@ class SoundcloudCom(SimpleHoster):
             stream_name, self.link = http_streams[
                 0 if self.config.get("quality") == "Higher" else -1
             ]
-            pyfile.name += "." + stream_name.split("_")[1].lower()
+            pyfile.name += ".{}".format(stream_name.split("_")[1].lower())

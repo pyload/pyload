@@ -71,11 +71,11 @@ class ConfigParser(object):
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)  
-                with open(self.pluginpath, "wb") as f:
-                    f.write("version: " + str(__version__))
+                with open(self.pluginpath, "w") as f:
+                    f.write("version: {}".format(__version__))
                 chmod(self.pluginpath, 0o600)
 
-            with open(self.configpath, "rb") as f:
+            with open(self.configpath) as f:
                 content = f.read()
                 
             version = self.VERSION.findall(content)
@@ -86,13 +86,13 @@ class ConfigParser(object):
                 )
                 print("Old version of config was replaced")
 
-            with open(self.pluginpath, "rb") as f:
+            with open(self.pluginpath) as f:
                 content = f.read()
 
             version = self.VERSION.findall(content)
             if not version or int(version) < __version__:
-                with open(self.pluginpath, "wb") as f:
-                    f.write("version: " + str(__version__))
+                with open(self.pluginpath, "w") as f:
+                    f.write("version: {}".format(__version__))
 
                 print("Old version of plugin-config replaced")
                 
@@ -250,7 +250,7 @@ class ConfigParser(object):
         """
         saves config to filename.
         """
-        with open(filename, "wb") as f:
+        with open(filename, "w") as f:
             chmod(filename, 0o600)
             f.write("version: {} \n".format(__version__))
             for section in sorted(config.keys()):
@@ -265,7 +265,7 @@ class ConfigParser(object):
                     if isinstance(data["value"], list):
                         value = "[ \n"
                         for x in data["value"]:
-                            value += "\t\t" + str(x) + ",\n"
+                            value += "\t\t{},\n".format(x)
                         value += "\t\t]\n"
                     else:
                         if type(data["value"]) in (str, bytes):

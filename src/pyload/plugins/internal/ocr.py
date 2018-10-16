@@ -129,7 +129,7 @@ class OCR(Plugin):
         self.log_debug("Reading txt...")
 
         try:
-            with open(tmpTxt.name, "r") as f:
+            with open(tmpTxt.name) as f:
                 self.result_captcha = f.read().replace("\n", "")
 
         except Exception:

@@ -67,7 +67,7 @@ class TXT(Container):
 
         if self.config.get("flush"):
             try:
-                txt = open(fs_filename, "wb")
+                txt = open(fs_filename, "w")
                 txt.close()
 
             except IOError:

@@ -307,7 +307,7 @@ class Api(Iface):
         """
         filename = os.path.join(self.pyload.config.get("log", "log_folder"), "log.txt")
         try:
-            with open(filename, "r") as fh:
+            with open(filename) as fh:
                 lines = fh.readlines()
             if offset >= len(lines):
                 return []

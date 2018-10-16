@@ -52,7 +52,7 @@ class RSDF(Container):
 
         try:
             fs_filename = encode(pyfile.url)
-            with open(fs_filename, "r") as rsdf:
+            with open(fs_filename, "rb") as rsdf:
                 data = rsdf.read()
 
         except IOError as e:

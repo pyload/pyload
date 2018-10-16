@@ -37,7 +37,7 @@ def main():
         else:
             enums.append(klass)
 
-    with open("ttypes.py", "wb") as f:
+    with open("ttypes.py", "w") as f:
 
         f.write(
             """# -*- coding: utf-8 -*-
@@ -46,7 +46,7 @@ from builtins import _
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
 class BaseObject(object):
-\t__slots__ = []
+    __slots__ = []
 
 """
         )

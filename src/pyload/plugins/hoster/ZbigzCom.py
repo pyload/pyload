@@ -26,7 +26,7 @@ class ZbigzCom(Hoster):
 
     def jquery_call(self, url, file_id, call_id, **kwargs):
         current_millis = int(time.time() * 1000)
-        json_callback = "jQuery" + call_id + "_" + str(current_millis)
+        json_callback = "jQuery{}_{}".format(call_id, current_millis)
 
         urlp = urllib.parse.urlparse(url)
         get_params = kwargs.copy()

@@ -46,7 +46,7 @@ class HotFolder(Addon):
                     content = f.read().strip()
 
                 if content:
-                    f = open(file, "wb")
+                    f = open(file, "w")
                     f.close()
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))

@@ -170,7 +170,7 @@ class Core(object):
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
-        with open(self.pidfile, "wb") as f:
+        with open(self.pidfile, "w") as f:
             f.write(str(pid))
 
     def deletePidFile(self):
@@ -183,7 +183,7 @@ class Core(object):
         return pid as int or 0.
         """
         if os.path.isfile(self.pidfile):
-            with open(self.pidfile, "rb") as f:
+            with open(self.pidfile) as f:
                 pid = f.read().strip()
             if pid:
                 pid = int(pid)
@@ -398,13 +398,13 @@ class Core(object):
         link_file = os.path.join(HOMEDIR, '.pyload', "links.txt")
 
         if os.path.exists(link_file):
-            with open(link_file, "rb") as f:
+            with open(link_file) as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
 
         link_file = "links.txt"
         if os.path.exists(link_file):
-            with open(link_file, "rb") as f:
+            with open(link_file) as f:
                 if f.read().strip():
                     self.api.addPackage("links.txt", [link_file], 1)
 
