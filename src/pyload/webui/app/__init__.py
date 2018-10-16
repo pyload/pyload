@@ -28,7 +28,10 @@ if PREFIX:
 
 bottle.debug(PYLOAD_API.getConfigValue("general", "debug_mode"))
 
-bcc = jinja2.FileSystemBytecodeCache()  #: handle tmp folder
+cache = os.path.join(HOMEDIR, 'pyLoad', '.tmp', 'webui')
+os.makedirs(cache, exist_ok=True)
+
+bcc = jinja2.FileSystemBytecodeCache(cache)  # TODO: change to TMPDIR
 loader = jinja2.FileSystemLoader(os.path.join(PKGDIR, "webui", "themes"))
 env = jinja2.Environment(
     loader=loader,
@@ -83,19 +86,23 @@ if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 
-def run_builtin(host="0.0.0.0", port="8000"):
+def run_wgsi(host="0.0.0.0", port="8000", debug=False):
+    bottle.setDebug(debug)
     bottle.run(app=web, host=host, port=port, quiet=True)
 
 
-def run_auto(host="0.0.0.0", port="8000"):
+def run_auto(host="0.0.0.0", port="8000", debug=False):
+    bottle.setDebug(debug)
     bottle.run(app=web, host=host, port=port, server="auto", quiet=True)
 
 
-def run_lightweight(host="0.0.0.0", port="8000"):
+def run_bjoern(host="0.0.0.0", port="8000", debug=False):
+    bottle.setDebug(debug)
     bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True)
 
 
-def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
+def run_cherrypy(host="0.0.0.0", port="8000", debug=False, theads=3, cert="", key=""):
+    bottle.setDebug(debug)
     bottle.run(
         app=web,
         host=host,
@@ -105,7 +112,8 @@ def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
         ssl_certificate=cert,
         ssl_private_key=key,
     )
+    
 
-
-def run_fcgi(host="0.0.0.0", port="8000"):
+def run_fcgi(host="0.0.0.0", port="8000", debug=False):
+    bottle.setDebug(debug)
     bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True)
