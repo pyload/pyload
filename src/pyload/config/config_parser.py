@@ -6,6 +6,7 @@ import shutil
 from builtins import object, PKGDIR, str, HOMEDIR
 import time
 
+from pyload import exc_logger
 from pyload.utils.utils import chmod
 
 
@@ -121,7 +122,7 @@ class ConfigParser(object):
             self.updateValues(homeconf, self.config)
 
         except Exception as e:
-            print(e)
+            exc_logger.exception(e)
 
     def parseConfig(self, config):
         """
@@ -211,7 +212,7 @@ class ConfigParser(object):
                                 }
 
                 except Exception as e:
-                    print(line, e)
+                    exc_logger.exception(e)
 
         return conf
 
