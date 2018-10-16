@@ -196,13 +196,13 @@ def error500(error):
 # TODO: fix
 # @bottle.route("/<file:re:(.+/)?[^/]+\.min\.[^/]+>")
 # def server_min(theme, filename):
-    # path = os.path.join(get_themedir(), filename)
-    # if not os.path.isfile(path):
-        # path = path.replace(".min.", ".")
-    # if path.endswith(".js"):
-        # return server_js(path)
-    # else:
-        # return server_static(path)
+# path = os.path.join(get_themedir(), filename)
+# if not os.path.isfile(path):
+# path = path.replace(".min.", ".")
+# if path.endswith(".js"):
+# return server_js(path)
+# else:
+# return server_static(path)
 
 
 # render js
@@ -479,7 +479,9 @@ def logs(item=-1):
 
     if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
-            fro = datetime.datetime.strptime(bottle.request.forms["from"], "%Y-%m-%d %H:%M:%S")
+            fro = datetime.datetime.strptime(
+                bottle.request.forms["from"], "%Y-%m-%d %H:%M:%S"
+            )
         except Exception:
             pass
         try:
@@ -519,7 +521,9 @@ def logs(item=-1):
         if counter >= item:
             try:
                 date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
-                dtime = datetime.datetime.strptime(date + " " + time, "%Y-%m-%d %H:%M:%S")
+                dtime = datetime.datetime.strptime(
+                    date + " " + time, "%Y-%m-%d %H:%M:%S"
+                )
             except Exception:
                 dtime = None
                 date = "?"
@@ -622,7 +626,7 @@ def info():
         "os": " ".join((os.name, sys.platform) + extra),
         "version": PYLOAD_API.getServerVersion(),
         "folder": os.path.abspath(PKGDIR),
-        "config": os.path.abspath(os.path.join(HOMEDIR, '.pyload')),
+        "config": os.path.abspath(os.path.join(HOMEDIR, ".pyload")),
         "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
         "freespace": formatSize(PYLOAD_API.freeSpace()),
         "remote": conf["remote"]["port"]["value"],

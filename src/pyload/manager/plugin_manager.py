@@ -63,11 +63,11 @@ class PluginManager(object):
                 else:
                     dst[name] = src[name]
 
-        sys.path.append(os.path.join(HOMEDIR, '.pyload', 'userplugins'))
+        sys.path.append(os.path.join(HOMEDIR, ".pyload", "userplugins"))
 
-        userplugins_dir = os.path.join(HOMEDIR, '.pyload', "userplugins")
+        userplugins_dir = os.path.join(HOMEDIR, ".pyload", "userplugins")
         os.makedirs(userplugins_dir, exist_ok=True)
-            
+
         try:
             f = open(os.path.join(userplugins_dir, "__init__.py"), "wb")
             f.close()
@@ -124,8 +124,8 @@ class PluginManager(object):
         """
         plugins = {}
         if home:
-            pfolder = os.path.join(HOMEDIR, '.pyload', "userplugins", folder)
-            os.makedirs(pfolder, exist_ok=True)                
+            pfolder = os.path.join(HOMEDIR, ".pyload", "userplugins", folder)
+            os.makedirs(pfolder, exist_ok=True)
             try:
                 f = open(os.path.join(pfolder, "__init__.py"), "wb")
                 f.close()

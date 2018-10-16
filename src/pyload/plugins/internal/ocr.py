@@ -94,7 +94,7 @@ class OCR(Plugin):
         self.img.save(tmpTif.name, "TIFF")
 
         if os.name == "nt":
-            command = os.path.join(PKGDIR, 'lib', "tesseract", "tesseract.exe")
+            command = os.path.join(PKGDIR, "lib", "tesseract", "tesseract.exe")
         else:
             command = "tesseract"
 

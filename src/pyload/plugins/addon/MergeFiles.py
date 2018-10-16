@@ -51,7 +51,9 @@ class MergeFiles(Addon):
                     pyfile.setStatus("processing")
 
                     try:
-                        with open(os.path.join(dl_folder, splitted_file), "rb") as s_file:
+                        with open(
+                            os.path.join(dl_folder, splitted_file), "rb"
+                        ) as s_file:
                             size_written = 0
                             s_file_size = int(
                                 os.path.getsize(os.path.join(dl_folder, splitted_file))

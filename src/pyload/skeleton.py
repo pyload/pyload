@@ -259,7 +259,7 @@ class Core(object):
         )
         translation = gettext.translation(
             "pyload",
-            os.path.join(PKGDIR, 'locale'),
+            os.path.join(PKGDIR, "locale"),
             languages=[self.config.get("general", "language"), "en"],
             fallback=True,
         )
@@ -326,7 +326,11 @@ class Core(object):
         self.check_install("cryptography", _("pycrypto to decode container files"))
         # img = self.check_install("Image", _("Python Image Libary (Pillow) for captcha reading"))
         # self.check_install("pycurl", _("pycurl to download any files"), True, True)
-        self.check_file(os.path.join(HOMEDIR, '.pyload', "tmp"), _("folder for temporary files"), True)
+        self.check_file(
+            os.path.join(HOMEDIR, ".pyload", "tmp"),
+            _("folder for temporary files"),
+            True,
+        )
         # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
         self.captcha = True  # checks seems to fail, althoug tesseract is available
@@ -395,7 +399,7 @@ class Core(object):
 
         self.config.save()  # save so config files gets filled
 
-        link_file = os.path.join(HOMEDIR, '.pyload', "links.txt")
+        link_file = os.path.join(HOMEDIR, ".pyload", "links.txt")
 
         if os.path.exists(link_file):
             with open(link_file) as f:

@@ -592,9 +592,7 @@ class CircleCaptcha(OCR):
                     if x1 == -1:
                         break
                     if self.pyload.debug:
-                        self.log_debug(
-                            "x1, y1 -> {}: {}".format((x1, y1), pix[x1, y1])
-                        )
+                        self.log_debug("x1, y1 -> {}: {}".format((x1, y1), pix[x1, y1]))
 
                     if (x1, y1) in self.pointsofcirclefound:
                         if self.pyload.debug:

@@ -25,8 +25,8 @@ try:
     __version__ = pkg_resources.get_distribution(dist_name).version
 
 except pkg_resources.DistributionNotFound:
-    pkgdir = os.path.realpath(os.path.join(__file__, ".."))    
-    ver_path = os.path.join(pkgdir, '..', '..', "VERSION.md")
+    pkgdir = os.path.realpath(os.path.join(__file__, ".."))
+    ver_path = os.path.join(pkgdir, "..", "..", "VERSION.md")
     with open(ver_path) as f:
         __version__ = f.read().strip()
 
@@ -55,7 +55,7 @@ locale.setlocale(locale.LC_ALL, "")
 
 
 # TODO: remove
-userdir = os.path.join(builtins.HOMEDIR, '.pyload')
+userdir = os.path.join(builtins.HOMEDIR, ".pyload")
 os.makedirs(userdir, exist_ok=True)
 os.chdir(userdir)
 del userdir

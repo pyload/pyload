@@ -7,14 +7,7 @@ import send2trash
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.internal.extractor import ArchiveError, CRCError, PasswordError
-from pyload.plugins.utils import (
-    Expose,
-    encode,
-    exists,
-    safename,
-    threaded,
-    uniqify,
-)
+from pyload.plugins.utils import Expose, encode, exists, safename, threaded, uniqify
 
 
 class ArchiveQueue(object):
@@ -358,14 +351,20 @@ class ExtractArchive(Addon):
                                 os.path.dirname(_f) for _f in new_files
                             )
                             for foldername in new_folders:
-                                self.set_permissions(os.path.join(extract_folder, foldername))
+                                self.set_permissions(
+                                    os.path.join(extract_folder, foldername)
+                                )
 
                             for filename in new_files:
-                                self.set_permissions(os.path.join(extract_folder, filename))
+                                self.set_permissions(
+                                    os.path.join(extract_folder, filename)
+                                )
 
                             for filename in new_files:
                                 file = encode(
-                                    os.path.join(os.path.dirname(archive.filename), filename)
+                                    os.path.join(
+                                        os.path.dirname(archive.filename), filename
+                                    )
                                 )
                                 if not exists(file):
                                     self.log_debug(

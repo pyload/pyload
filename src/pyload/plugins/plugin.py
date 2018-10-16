@@ -401,8 +401,9 @@ class Plugin(Base):
         id = "{:.2f}".format(time.time())[-6:].replace(".", "")
         with open(
             os.path.join(
-                HOMEDIR, '.pyload'
-                "tmp", "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype)
+                HOMEDIR,
+                ".pyload" "tmp",
+                "tmpCaptcha_{}_{}.{}".format(self.__name__, id, imgtype),
             ),
             "wb",
         ) as temp_file:
@@ -498,12 +499,14 @@ class Plugin(Base):
             from inspect import currentframe
 
             frame = currentframe()
-            os.makedirs(os.path.join(HOMEDIR, '.pyload', "tmp", self.__name__), exist_ok=True)
+            os.makedirs(
+                os.path.join(HOMEDIR, ".pyload", "tmp", self.__name__), exist_ok=True
+            )
 
             with open(
                 os.path.join(
                     HOMEDIR,
-                    '.pyload',
+                    ".pyload",
                     "tmp",
                     self.__name__,
                     "{}_line{}.dump.html".format(
@@ -567,7 +570,9 @@ class Plugin(Base):
         location = save_join(download_folder, self.pyfile.package().folder)
 
         os.makedirs(
-            location, int(self.pyload.config.get("permission", "folder"), 8), exist_ok=True
+            location,
+            int(self.pyload.config.get("permission", "folder"), 8),
+            exist_ok=True,
         )
 
         if self.pyload.config.get("permission", "change_dl") and os.name != "nt":
@@ -577,9 +582,7 @@ class Plugin(Base):
 
                 os.chown(location, uid, gid)
             except Exception as e:
-                self.log.warning(
-                    _("Setting User and Group failed: {}").format(str(e))
-                )
+                self.log.warning(_("Setting User and Group failed: {}").format(str(e)))
 
         # convert back to unicode
         location = fs_decode(location)

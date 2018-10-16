@@ -108,7 +108,8 @@ class UpdateManager(Addon):
             for m in sys.modules.values()
             if m
             and (
-                m.__name__.startswith("pyload.plugins.") or  m.__name__.startswith("userplugins.")
+                m.__name__.startswith("pyload.plugins.")
+                or m.__name__.startswith("userplugins.")
             )
             and m.__name__.count(".") >= 2
         ]
@@ -374,7 +375,8 @@ class UpdateManager(Addon):
                 m = self._VERSION.search(content)
                 if m and m.group(2) == plugin_version:
                     with open(
-                        os.path.join(userplugins, plugin_type, plugin_name + ".py"), "wb"
+                        os.path.join(userplugins, plugin_type, plugin_name + ".py"),
+                        "wb",
                     ) as f:
                         f.write(encode(content))
 

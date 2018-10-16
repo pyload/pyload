@@ -60,7 +60,9 @@ class TwojlimitPl(MultiAccount):
             if json_data.get("expire"):
                 premium = True
                 validuntil = time.mktime(
-                    datetime.datetime.fromtimestamp(int(json_data["expire"])).timetuple()
+                    datetime.datetime.fromtimestamp(
+                        int(json_data["expire"])
+                    ).timetuple()
                 )
 
             trafficleft = json_data["balance"]

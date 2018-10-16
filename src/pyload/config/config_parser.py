@@ -36,7 +36,7 @@ class ConfigParser(object):
     CONFLINE = re.compile(
         r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
-    VERSION = re.compile(r'version\s*:\s*(\d+)')
+    VERSION = re.compile(r"version\s*:\s*(\d+)")
 
     def __init__(self):
         """
@@ -45,8 +45,8 @@ class ConfigParser(object):
         self.config = {}  # the config values
         self.plugin = {}  # the config for plugins
 
-        self.configpath = os.path.join(HOMEDIR, '.pyload', "pyload.conf")
-        self.pluginpath = os.path.join(HOMEDIR, '.pyload', "plugins.conf")
+        self.configpath = os.path.join(HOMEDIR, ".pyload", "pyload.conf")
+        self.pluginpath = os.path.join(HOMEDIR, ".pyload", "plugins.conf")
 
         self.oldRemoteData = {}
 
@@ -62,27 +62,25 @@ class ConfigParser(object):
         """
         try:
             if not os.path.exists(self.configpath):
-                os.makedirs(os.path.dirname(self.configpath), exist_ok=True)                
+                os.makedirs(os.path.dirname(self.configpath), exist_ok=True)
                 shutil.copy(
-                    os.path.join(PKGDIR, "config", "default.conf"),
-                    self.configpath,
+                    os.path.join(PKGDIR, "config", "default.conf"), self.configpath
                 )
                 chmod(self.configpath, 0o600)
 
             if not os.path.exists(self.pluginpath):
-                os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)  
+                os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
                 with open(self.pluginpath, "w") as f:
                     f.write("version: {}".format(__version__))
                 chmod(self.pluginpath, 0o600)
 
             with open(self.configpath) as f:
                 content = f.read()
-                
+
             version = self.VERSION.findall(content)
             if not version or int(version) < __version__:
                 shutil.copy(
-                    os.path.join(PKGDIR, "config", "default.conf"),
-                    self.configpath,
+                    os.path.join(PKGDIR, "config", "default.conf"), self.configpath
                 )
                 print("Old version of config was replaced")
 
@@ -95,7 +93,7 @@ class ConfigParser(object):
                     f.write("version: {}".format(__version__))
 
                 print("Old version of plugin-config replaced")
-                
+
         except Exception:
             if n < 3:
                 time.sleep(1)
@@ -108,9 +106,7 @@ class ConfigParser(object):
         reads the config file.
         """
 
-        self.config = self.parseConfig(
-            os.path.join(PKGDIR, "config", "default.conf")
-        )
+        self.config = self.parseConfig(os.path.join(PKGDIR, "config", "default.conf"))
         self.plugin = self.parseConfig(self.pluginpath)
 
         try:

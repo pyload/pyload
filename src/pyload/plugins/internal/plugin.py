@@ -429,7 +429,7 @@ class Plugin(object):
         try:
             framefile = os.path.join(
                 HOMEDIR,
-                '.pyload',
+                ".pyload",
                 "tmp",
                 self.classname,
                 "{}_line{}.dump.html".format(
@@ -437,7 +437,9 @@ class Plugin(object):
                 ),
             )
 
-            os.makedirs(os.path.join(HOMEDIR, '.pyload', "tmp", self.classname), exist_ok=True)
+            os.makedirs(
+                os.path.join(HOMEDIR, ".pyload", "tmp", self.classname), exist_ok=True
+            )
 
             with open(framefile, "w") as f:
                 f.write(self.last_html)
