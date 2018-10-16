@@ -32,4 +32,4 @@ def white(string):
 
 
 def println(line, content):
-    print("\033[{};0H\033[2K{}".format(line, content)
+    print("\033[{};0H\033[2K".format(line), content)

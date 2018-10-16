@@ -130,7 +130,7 @@ class AccountManager(object):
         """
 
         with open("accounts.conf", "w") as f:
-            f.write("version: {}\n".format(__version__)
+            f.write("version: {}\n".format(__version__))
 
             for plugin, accounts in self.accounts.items():
                 f.write("\n")
