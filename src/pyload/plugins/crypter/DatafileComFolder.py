@@ -9,8 +9,9 @@ class DatafileComFolder(Crypter):
     __name__ = "DatafileComFolder"
     __type__ = "crypter"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?datafile\.com/f/\w{12}"
     __config__ = [

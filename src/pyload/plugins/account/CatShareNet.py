@@ -10,8 +10,9 @@ class CatShareNet(Account):
     __name__ = "CatShareNet"
     __type__ = "account"
     __version__ = "0.16"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Catshare.net account plugin"""
     __license__ = "GPLv3"

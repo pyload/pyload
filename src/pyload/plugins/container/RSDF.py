@@ -14,8 +14,9 @@ class RSDF(Container):
     __name__ = "RSDF"
     __type__ = "container"
     __version__ = "0.37"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r".+\.rsdf$"
     __config__ = [

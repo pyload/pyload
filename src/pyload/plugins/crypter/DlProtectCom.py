@@ -10,8 +10,9 @@ class DlProtectCom(SimpleCrypter):
     __name__ = "DlProtectCom"
     __type__ = "crypter"
     __version__ = "0.13"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?dl-protect1\.com/\w+"
     __config__ = [

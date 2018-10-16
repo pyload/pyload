@@ -11,8 +11,9 @@ class FshareVn(Account):
     __name__ = "FshareVn"
     __type__ = "account"
     __version__ = "0.22"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Fshare.vn account plugin"""
     __license__ = "GPLv3"

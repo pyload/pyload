@@ -32,8 +32,9 @@ class CaptchaBrotherhood(Addon):
     __name__ = "CaptchaBrotherhood"
     __type__ = "addon"
     __version__ = "0.16"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("activated", "bool", "Activated", False),

@@ -13,8 +13,9 @@ class RapiduNet(SimpleHoster):
     __name__ = "RapiduNet"
     __type__ = "hoster"
     __version__ = "0.15"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?rapidu\.net/(?P<ID>\d{10})"
     __config__ = [

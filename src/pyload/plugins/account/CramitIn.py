@@ -7,8 +7,9 @@ class CramitIn(XFSAccount):
     __name__ = "CramitIn"
     __type__ = "account"
     __version__ = "0.08"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Cramit.in account plugin"""
     __license__ = "GPLv3"

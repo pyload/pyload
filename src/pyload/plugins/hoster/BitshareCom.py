@@ -7,8 +7,9 @@ class BitshareCom(DeadHoster):
     __name__ = "BitshareCom"
     __type__ = "hoster"
     __version__ = "0.62"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?bitshare\.com/(files/)?(?(1)|\?f=)(?P<ID>\w+)(?(1)/(?P<NAME>.+?)\.html)"
     __config__ = [("activated", "bool", "Activated", True)]

@@ -7,8 +7,9 @@ class FilerioCom(XFSHoster):
     __name__ = "FilerioCom"
     __type__ = "hoster"
     __version__ = "0.13"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?(filerio\.(in|com)|filekeen\.com)/\w{12}"
     __config__ = [

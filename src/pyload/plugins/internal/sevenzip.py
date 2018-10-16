@@ -18,8 +18,9 @@ class SevenZip(Extractor):
     __name__ = "SevenZip"
     __type__ = "extractor"
     __version__ = "0.27"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """7-Zip extractor plugin"""
     __license__ = "GPLv3"

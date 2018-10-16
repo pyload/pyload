@@ -9,8 +9,9 @@ class SmoozedCom(MultiHoster):
     __name__ = "SmoozedCom"
     __type__ = "hoster"
     __version__ = "0.15"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     #: Since we want to allow the user to specify the list of hoster to use we let MultiHoster.activate
     __pattern__ = r"^unmatchable$"

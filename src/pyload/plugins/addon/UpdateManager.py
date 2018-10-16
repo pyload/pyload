@@ -15,8 +15,9 @@ class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "addon"
     __version__ = "1.20"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("activated", "bool", "Activated", True),

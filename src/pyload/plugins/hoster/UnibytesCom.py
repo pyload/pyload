@@ -11,8 +11,9 @@ class UnibytesCom(SimpleHoster):
     __name__ = "UnibytesCom"
     __type__ = "hoster"
     __version__ = "0.21"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?unibytes\.com/[\w\- .]{11}B"
     __config__ = [

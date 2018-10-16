@@ -34,8 +34,9 @@ class CircleCaptcha(OCR):
     __name__ = "CircleCaptcha"
     __type__ = "ocr"
     __version__ = "1.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Circle captcha ocr plugin"""
     __license__ = "GPLv3"

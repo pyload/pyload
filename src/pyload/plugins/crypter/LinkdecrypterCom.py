@@ -9,8 +9,9 @@ class LinkdecrypterCom(MultiCrypter):
     __name__ = "LinkdecrypterCom"
     __type__ = "crypter"
     __version__ = "0.39"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

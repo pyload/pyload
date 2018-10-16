@@ -18,8 +18,9 @@ class UnRar(Extractor):
     __name__ = "UnRar"
     __type__ = "extractor"
     __version__ = "1.38"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [("ignore_warnings", "bool", "Ignore unrar warnings", False)]
 

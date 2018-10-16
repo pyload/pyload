@@ -18,8 +18,9 @@ class RelinkUs(Crypter):
     __name__ = "RelinkUs"
     __type__ = "crypter"
     __version__ = "3.22"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = (
         r"http://(?:www\.)?relink\.(?:us|to)/(f/|((view|go)\.php\?id=))(?P<ID>.+)"

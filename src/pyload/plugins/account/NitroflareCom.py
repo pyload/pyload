@@ -10,8 +10,9 @@ class NitroflareCom(Account):
     __name__ = "NitroflareCom"
     __type__ = "account"
     __version__ = "0.20"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Nitroflare.com account plugin"""
     __license__ = "GPLv3"

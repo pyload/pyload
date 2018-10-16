@@ -10,8 +10,9 @@ class FileSharkPl(SimpleHoster):
     __name__ = "FileSharkPl"
     __type__ = "hoster"
     __version__ = "0.22"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?fileshark\.pl/pobierz/\d+/\w+"
     __config__ = [

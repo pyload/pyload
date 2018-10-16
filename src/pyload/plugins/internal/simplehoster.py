@@ -18,8 +18,9 @@ class SimpleHoster(Hoster):
     __name__ = "SimpleHoster"
     __type__ = "hoster"
     __version__ = "2.27"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

@@ -10,8 +10,9 @@ class Crypter(Base):
     __name__ = "Crypter"
     __type__ = "crypter"
     __version__ = "0.20"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

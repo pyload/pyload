@@ -10,8 +10,9 @@ class CoinHive(CaptchaService):
     __name__ = "CoinHive"
     __type__ = "captcha"
     __version__ = "0.01"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = "CoinHive captcha service plugin"
     __license__ = "GPLv3"

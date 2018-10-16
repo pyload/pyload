@@ -7,8 +7,9 @@ class TusfilesNet(XFSAccount):
     __name__ = "TusfilesNet"
     __type__ = "account"
     __version__ = "0.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Tusfile.net account plugin"""
     __license__ = "GPLv3"

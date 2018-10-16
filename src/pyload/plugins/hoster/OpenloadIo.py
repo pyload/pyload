@@ -11,8 +11,9 @@ class OpenloadIo(SimpleHoster):
     __name__ = "OpenloadIo"
     __type__ = "hoster"
     __version__ = "0.20"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?openload\.(co|io)/(f|embed)/(?P<ID>[\w\-]+)"
     __config__ = [

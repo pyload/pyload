@@ -11,8 +11,9 @@ class LuckyShareNet(SimpleHoster):
     __name__ = "LuckyShareNet"
     __type__ = "hoster"
     __version__ = "0.14"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?luckyshare\.net/(?P<ID>\d{10,})"
     __config__ = [

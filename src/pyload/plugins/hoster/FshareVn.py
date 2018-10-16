@@ -14,8 +14,9 @@ class FshareVn(SimpleHoster):
     __name__ = "FshareVn"
     __type__ = "hoster"
     __version__ = "0.32"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?fshare\.vn/file/.+"
     __config__ = [

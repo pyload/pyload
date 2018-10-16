@@ -10,8 +10,9 @@ class FilefactoryCom(Account):
     __name__ = "FilefactoryCom"
     __type__ = "account"
     __version__ = "0.23"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Filefactory.com account plugin"""
     __license__ = "GPLv3"

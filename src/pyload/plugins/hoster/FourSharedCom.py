@@ -10,8 +10,9 @@ class FourSharedCom(SimpleHoster):
     __name__ = "FourSharedCom"
     __type__ = "hoster"
     __version__ = "0.37"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?4shared(-china)?\.com/(account/)?(download|get|file|document|photo|video|audio|mp3|office|rar|zip|archive|music)/.+"
     __config__ = [

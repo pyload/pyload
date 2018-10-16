@@ -37,8 +37,9 @@ class Plugin(object):
     __name__ = "Plugin"
     __type__ = "plugin"
     __version__ = "0.74"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __config__ = []  #: [("name", "type", "desc", "default")]
 

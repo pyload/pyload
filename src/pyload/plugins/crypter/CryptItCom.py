@@ -7,8 +7,9 @@ class CryptItCom(DeadCrypter):
     __name__ = "CryptItCom"
     __type__ = "crypter"
     __version__ = "0.16"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?crypt-it\.com/(s|e|d|c)/\w+"
     __config__ = [("activated", "bool", "Activated", True)]

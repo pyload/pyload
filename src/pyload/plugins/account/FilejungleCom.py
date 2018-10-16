@@ -11,8 +11,9 @@ class FilejungleCom(Account):
     __name__ = "FilejungleCom"
     __type__ = "account"
     __version__ = "0.19"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Filejungle.com account plugin"""
     __license__ = "GPLv3"

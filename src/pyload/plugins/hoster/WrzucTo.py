@@ -10,8 +10,9 @@ class WrzucTo(SimpleHoster):
     __name__ = "WrzucTo"
     __type__ = "hoster"
     __version__ = "0.09"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?wrzuc\.to/(\w+(\.wt|\.html)|(\w+/?linki/\w+))"
     __config__ = [

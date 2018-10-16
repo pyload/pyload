@@ -7,8 +7,9 @@ class EventMapper(Addon):
     __name__ = "EventMapper"
     __type__ = "addon"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [("activated", "bool", "Activated", True)]
 

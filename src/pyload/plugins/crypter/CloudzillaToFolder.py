@@ -9,8 +9,9 @@ class CloudzillaToFolder(SimpleCrypter):
     __name__ = "CloudzillaToFolder"
     __type__ = "crypter"
     __version__ = "0.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?cloudzilla\.to/share/folder/(?P<ID>[\w^_]+)"
     __config__ = [

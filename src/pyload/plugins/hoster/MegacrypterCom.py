@@ -10,8 +10,9 @@ class MegacrypterCom(MegaCoNz):
     __name__ = "MegacrypterCom"
     __type__ = "hoster"
     __version__ = "0.28"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://\w{0,10}\.?megacrypter\.com/[\w\-!]+"
     __config__ = [("activated", "bool", "Activated", True)]

@@ -9,8 +9,9 @@ class MegaCoNzFolder(Crypter):
     __name__ = "MegaCoNzFolder"
     __type__ = "crypter"
     __version__ = "0.21"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#F!(?P<ID>[\w^_]+)!(?P<KEY>[\w,\-=]+)"
     __config__ = [

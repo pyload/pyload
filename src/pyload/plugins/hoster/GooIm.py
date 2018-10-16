@@ -12,8 +12,9 @@ class GooIm(SimpleHoster):
     __name__ = "GooIm"
     __type__ = "hoster"
     __version__ = "0.09"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?goo\.im/.+"
     __config__ = [

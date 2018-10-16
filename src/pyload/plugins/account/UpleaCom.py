@@ -10,8 +10,9 @@ class UpleaCom(Account):
     __name__ = "UpleaCom"
     __type__ = "account"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """UpleaCom account plugin"""
     __license__ = "GPLv3"

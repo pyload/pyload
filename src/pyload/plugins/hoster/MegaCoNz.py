@@ -282,8 +282,9 @@ class MegaCoNz(Hoster):
     __name__ = "MegaCoNz"
     __type__ = "hoster"
     __version__ = "0.52"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"(https?://(?:www\.)?mega(\.co)?\.nz/|mega:|chrome:.+?)#(?P<TYPE>N|)!(?P<ID>[\w^_]+)!(?P<KEY>[\w\-,=]+)(?:###n=(?P<OWNER>[\w^_]+))?"
     __config__ = [("activated", "bool", "Activated", True)]

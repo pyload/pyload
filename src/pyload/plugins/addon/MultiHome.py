@@ -28,8 +28,9 @@ class MultiHome(Addon):
     __name__ = "MultiHome"
     __type__ = "addon"
     __version__ = "0.21"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("activated", "bool", "Activated", False),

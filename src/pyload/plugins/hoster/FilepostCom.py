@@ -13,8 +13,9 @@ class FilepostCom(SimpleHoster):
     __name__ = "FilepostCom"
     __type__ = "hoster"
     __version__ = "0.41"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?(?:filepost\.com/files|fp\.io)/(?P<ID>[^/]+)"
     __config__ = [

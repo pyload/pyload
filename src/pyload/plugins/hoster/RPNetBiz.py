@@ -9,8 +9,9 @@ class RPNetBiz(MultiHoster):
     __name__ = "RPNetBiz"
     __type__ = "hoster"
     __version__ = "0.22"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://.+rpnet\.biz"
     __config__ = [

@@ -14,8 +14,9 @@ class UploadheroCom(SimpleHoster):
     __name__ = "UploadheroCom"
     __type__ = "hoster"
     __version__ = "0.23"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?uploadhero\.com?/dl/\w+"
     __config__ = [

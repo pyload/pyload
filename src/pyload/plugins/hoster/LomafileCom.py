@@ -7,8 +7,9 @@ class LomafileCom(DeadHoster):
     __name__ = "LomafileCom"
     __type__ = "hoster"
     __version__ = "0.57"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://lomafile\.com/\w{12}"
     __config__ = []  # TODO: Remove in 0.6.x

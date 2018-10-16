@@ -14,8 +14,9 @@ class ZbigzCom(Hoster):
     __name__ = "ZbigzCom"
     __type__ = "hoster"
     __version__ = "0.03"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://.+\.torrent|magnet:\?.+"
     __config__ = [("activated", "bool", "Activated", False)]

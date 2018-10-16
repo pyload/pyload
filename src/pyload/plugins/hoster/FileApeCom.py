@@ -7,8 +7,9 @@ class FileApeCom(DeadHoster):
     __name__ = "FileApeCom"
     __type__ = "hoster"
     __version__ = "0.17"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = (
         r"http://(?:www\.)?fileape\.com/(index\.php\?act=download\&id=|dl/)\w+"

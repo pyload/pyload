@@ -7,8 +7,9 @@ class JDlist(Crypter):
     __name__ = "JDlist"
     __type__ = "crypter"
     __version__ = "0.05"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"jdlist://(?P<LIST>[\w\+^_]+==)"
     __config__ = [

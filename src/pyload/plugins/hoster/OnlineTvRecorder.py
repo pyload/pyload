@@ -11,8 +11,9 @@ class OnlineTvRecorder(Http):
     __name__ = "OnlineTvRecorder"
     __type__ = "hoster"
     __version__ = "0.05"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     # RIPE Database:
     # inetnum: 81.95.11.0 - 81.95.11.63

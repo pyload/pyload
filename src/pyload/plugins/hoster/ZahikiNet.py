@@ -7,8 +7,9 @@ class ZahikiNet(DeadHoster):
     __name__ = "ZahikiNet"
     __type__ = "hoster"
     __version__ = "0.07"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?zahiki\.net/\w+/.+"
     __config__ = [("activated", "bool", "Activated", True)]

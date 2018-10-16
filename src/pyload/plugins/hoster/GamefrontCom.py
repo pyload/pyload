@@ -7,8 +7,9 @@ class GamefrontCom(SimpleHoster):
     __name__ = "GamefrontCom"
     __type__ = "hoster"
     __version__ = "0.13"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?gamefront\.com/files/(?P<ID>\d+)"
     __config__ = [

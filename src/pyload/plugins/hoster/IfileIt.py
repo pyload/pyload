@@ -7,8 +7,9 @@ class IfileIt(DeadHoster):
     __name__ = "IfileIt"
     __type__ = "hoster"
     __version__ = "0.34"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = []  # TODO: Remove in 0.6.x

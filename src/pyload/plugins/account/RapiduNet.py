@@ -11,8 +11,9 @@ class RapiduNet(Account):
     __name__ = "RapiduNet"
     __type__ = "account"
     __version__ = "0.12"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Rapidu.net account plugin"""
     __license__ = "GPLv3"

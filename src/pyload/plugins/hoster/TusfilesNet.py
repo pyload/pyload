@@ -9,8 +9,9 @@ class TusfilesNet(XFSHoster):
     __name__ = "TusfilesNet"
     __type__ = "hoster"
     __version__ = "0.18"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?tusfiles\.net/\w{12}"
     __config__ = [

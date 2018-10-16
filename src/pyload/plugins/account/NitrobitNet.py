@@ -7,8 +7,9 @@ class NitrobitNet(Account):
     __name__ = "NitrobitNet"
     __type__ = "account"
     __version__ = "0.01"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Nitrobit.net account plugin"""
     __license__ = "GPLv3"

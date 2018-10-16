@@ -7,8 +7,9 @@ class TNTVillageScambioeticoOrg(SimpleCrypter):
     __name__ = "TNTVillageScambioeticoOrg"
     __type__ = "crypter"
     __version__ = "0.07"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?forum\.tntvillage\.scambioetico\.org/index\.php\?.*showtopic=\d+"
     __config__ = [

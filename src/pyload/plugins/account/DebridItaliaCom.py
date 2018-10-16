@@ -9,8 +9,9 @@ class DebridItaliaCom(MultiAccount):
     __name__ = "DebridItaliaCom"
     __type__ = "account"
     __version__ = "0.22"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("mh_mode", "all;listed;unlisted", "Filter hosters to use", "all"),

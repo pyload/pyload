@@ -51,8 +51,9 @@ class FilecryptCc(Crypter):
     __name__ = "FilecryptCc"
     __type__ = "crypter"
     __version__ = "0.37"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?filecrypt\.cc/Container/\w+"
     __config__ = [

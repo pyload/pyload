@@ -7,8 +7,9 @@ class FilejokerNet(XFSAccount):
     __name__ = "FilejokerNet"
     __type__ = "account"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Filejoker.net account plugin"""
     __license__ = "GPLv3"

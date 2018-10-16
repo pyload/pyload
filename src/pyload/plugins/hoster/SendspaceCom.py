@@ -9,8 +9,9 @@ class SendspaceCom(SimpleHoster):
     __name__ = "SendspaceCom"
     __type__ = "hoster"
     __version__ = "0.23"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?sendspace\.com/file/\w+"
     __config__ = [

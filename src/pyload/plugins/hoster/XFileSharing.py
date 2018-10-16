@@ -10,8 +10,9 @@ class XFileSharing(XFSHoster):
     __name__ = "XFileSharing"
     __type__ = "hoster"
     __version__ = "0.65"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

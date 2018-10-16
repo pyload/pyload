@@ -10,8 +10,9 @@ class UploadgigCom(Account):
     __name__ = "UploadgigCom"
     __type__ = "account"
     __version__ = "0.03"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """UploadgigCom account plugin"""
     __license__ = "GPLv3"

@@ -7,8 +7,9 @@ class MultihostersCom(ZeveraCom):
     __name__ = "MultihostersCom"
     __type__ = "hoster"
     __version__ = "0.08"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)multihosters\.com/(getFiles\.ashx|Members/download\.ashx)\?.*ourl=.+"
     __config__ = [("activated", "bool", "Activated", True)]

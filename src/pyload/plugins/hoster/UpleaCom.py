@@ -21,8 +21,9 @@ class UpleaCom(SimpleHoster):
     __name__ = "UpleaCom"
     __type__ = "hoster"
     __version__ = "0.21"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?uplea\.com/dl/\w{15}"
     __config__ = [

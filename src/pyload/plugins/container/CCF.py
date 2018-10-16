@@ -14,8 +14,9 @@ class CCF(Container):
     __name__ = "CCF"
     __type__ = "container"
     __version__ = "0.29"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r".+\.ccf$"
     __config__ = [

@@ -9,8 +9,9 @@ class YesPornPleaseCom(Hoster):
     __name__ = "YesPornPleaseCom"
     __type__ = "hoster"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?yespornplease\.com/view/(\d+)"
     __config__ = [

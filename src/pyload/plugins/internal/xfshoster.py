@@ -20,8 +20,9 @@ class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
     __version__ = "0.80"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

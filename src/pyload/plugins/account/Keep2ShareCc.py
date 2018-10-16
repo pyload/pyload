@@ -10,8 +10,9 @@ class Keep2ShareCc(Account):
     __name__ = "Keep2ShareCc"
     __type__ = "account"
     __version__ = "0.15"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Keep2Share.cc account plugin"""
     __license__ = "GPLv3"

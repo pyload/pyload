@@ -10,8 +10,9 @@ class MediafireCom(SimpleHoster):
     __name__ = "MediafireCom"
     __type__ = "hoster"
     __version__ = "0.98"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?mediafire\.com/(file/|view/\??|download(\.php\?|/)|\?)(?P<ID>\w+)"
     __config__ = [

@@ -7,8 +7,9 @@ class RehostTo(MultiHoster):
     __name__ = "RehostTo"
     __type__ = "hoster"
     __version__ = "0.29"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://.*rehost\.to\..+"
     __config__ = [

@@ -23,8 +23,9 @@ class Extractor(Plugin):
     __name__ = "Extractor"
     __type__ = "extractor"
     __version__ = "0.48"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Base extractor plugin"""
     __license__ = "GPLv3"

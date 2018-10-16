@@ -9,8 +9,9 @@ class MultishareCz(SimpleHoster):
     __name__ = "MultishareCz"
     __type__ = "hoster"
     __version__ = "0.48"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?multishare\.cz/stahnout/(?P<ID>\d+)"
     __config__ = [

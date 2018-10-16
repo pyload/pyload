@@ -17,8 +17,9 @@ class ReCaptcha(CaptchaService):
     __name__ = "ReCaptcha"
     __type__ = "captcha"
     __version__ = "0.38"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = "ReCaptcha captcha service plugin"
     __license__ = "GPLv3"

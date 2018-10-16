@@ -11,8 +11,9 @@ class UpstoreNet(SimpleHoster):
     __name__ = "UpstoreNet"
     __type__ = "hoster"
     __version__ = "0.13"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?(?:upstore\.net|upsto\.re)/(?P<ID>\w+)"
     __config__ = [

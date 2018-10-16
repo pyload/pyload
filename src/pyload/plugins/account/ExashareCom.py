@@ -7,8 +7,9 @@ class ExashareCom(XFSAccount):
     __name__ = "ExashareCom"
     __type__ = "account"
     __version__ = "0.06"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Exashare.com account plugin"""
     __license__ = "GPLv3"

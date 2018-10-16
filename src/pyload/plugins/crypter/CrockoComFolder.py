@@ -7,8 +7,9 @@ class CrockoComFolder(SimpleCrypter):
     __name__ = "CrockoComFolder"
     __type__ = "crypter"
     __version__ = "0.07"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?crocko\.com/f/.+"
     __config__ = [

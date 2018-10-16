@@ -7,8 +7,9 @@ class FurLy(SimpleCrypter):
     __name__ = "FurLy"
     __type__ = "crypter"
     __version__ = "0.06"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?fur\.ly/(\d/)?\w+"
     __config__ = [

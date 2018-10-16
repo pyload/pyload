@@ -9,8 +9,9 @@ class HostujeNet(SimpleHoster):
     __name__ = "HostujeNet"
     __type__ = "hoster"
     __version__ = "0.06"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?hostuje\.net/\w+"
     __config__ = [

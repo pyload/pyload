@@ -10,8 +10,9 @@ class MultiHoster(SimpleHoster):
     __name__ = "MultiHoster"
     __type__ = "hoster"
     __version__ = "0.67"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

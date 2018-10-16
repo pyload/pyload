@@ -9,8 +9,9 @@ class FilesMailRu(Hoster):
     __name__ = "FilesMailRu"
     __type__ = "hoster"
     __version__ = "0.41"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?files\.mail\.ru/.+"
     __config__ = [("activated", "bool", "Activated", True)]

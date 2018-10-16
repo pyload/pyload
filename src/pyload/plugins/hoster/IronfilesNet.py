@@ -8,8 +8,9 @@ class IronfilesNet(SimpleHoster):
     __name__ = "IronfilesNet"
     __type__ = "hoster"
     __version__ = "0.01"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://ironfiles\.net/file/download/id/(?P<ID>\d+)(?:/key/(?P<KEY>65a2bfa38c2c1899))?"
     __config__ = [

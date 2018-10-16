@@ -9,8 +9,9 @@ class LinkdecrypterComHook(Addon):
     __name__ = "LinkdecrypterComHook"
     __type__ = "addon"
     __version__ = "1.11"
-    __pyload_version__ = "0.5"
     __status__ = "broken"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("activated", "bool", "Activated", False),

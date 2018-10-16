@@ -12,8 +12,9 @@ class ShareplaceCom(SimpleHoster):
     __name__ = "ShareplaceCom"
     __type__ = "hoster"
     __version__ = "0.19"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?shareplace\.(com|org)/\?\w+"
     __config__ = [("activated", "bool", "Activated", True)]

@@ -7,8 +7,9 @@ class NetfolderIn(DeadCrypter):
     __name__ = "NetfolderIn"
     __type__ = "crypter"
     __version__ = "0.78"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?netfolder\.(in|me)/(folder\.php\?folder_id=)?(?P<ID>\w+)(?(1)|/\w+)"
     __config__ = [("activated", "bool", "Activated", True)]

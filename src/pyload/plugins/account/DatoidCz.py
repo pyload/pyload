@@ -9,8 +9,9 @@ class DatoidCz(Account):
     __name__ = "DatoidCz"
     __type__ = "account"
     __version__ = "0.39"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """Datoid.cz account plugin"""
     __license__ = "GPLv3"

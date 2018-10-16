@@ -7,8 +7,9 @@ class StreamcloudEu(XFSHoster):
     __name__ = "StreamcloudEu"
     __type__ = "hoster"
     __version__ = "0.16"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?streamcloud\.eu/\w{12}"
     __config__ = [

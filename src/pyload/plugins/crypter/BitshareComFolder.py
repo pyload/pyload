@@ -7,8 +7,9 @@ class BitshareComFolder(DeadCrypter):
     __name__ = "BitshareComFolder"
     __type__ = "crypter"
     __version__ = "0.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?bitshare\.com/\?d=\w+"
     __config__ = [("activated", "bool", "Activated", True)]

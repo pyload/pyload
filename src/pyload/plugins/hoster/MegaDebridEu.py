@@ -16,8 +16,9 @@ class MegaDebridEu(MultiHoster):
     __name__ = "MegaDebridEu"
     __type__ = "hoster"
     __version__ = "0.58"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://((?:www\d+\.|s\d+\.)?mega-debrid\.eu|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/download/file/[\w^_]+"
     __config__ = [

@@ -11,8 +11,9 @@ class SimplyPremiumCom(MultiHoster):
     __name__ = "SimplyPremiumCom"
     __type__ = "hoster"
     __version__ = "0.17"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://.+simply-premium\.com"
     __config__ = [

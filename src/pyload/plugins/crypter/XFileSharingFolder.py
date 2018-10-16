@@ -10,8 +10,9 @@ class XFileSharingFolder(XFSCrypter):
     __name__ = "XFileSharingFolder"
     __type__ = "crypter"
     __version__ = "0.25"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [

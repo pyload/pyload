@@ -14,8 +14,9 @@ class UlozTo(OCR):
     __name__ = "UlozTo"
     __type__ = "captcha"
     __version__ = "0.05"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __description__ = """UlozTo audio captcha service plugin"""
     __license__ = "GPLv3"

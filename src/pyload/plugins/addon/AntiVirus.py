@@ -15,8 +15,9 @@ class AntiVirus(Addon):
     __name__ = "AntiVirus"
     __type__ = "addon"
     __version__ = "0.21"
-    __pyload_version__ = "0.5"
     __status__ = "broken"
+
+    __pyload_version__ = "0.5"
 
     # TODO: add trash option (use Send2Trash lib)
     __config__ = [

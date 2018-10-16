@@ -10,8 +10,9 @@ class EmbeduploadCom(Crypter):
     __name__ = "EmbeduploadCom"
     __type__ = "crypter"
     __version__ = "0.08"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?embedupload\.com/\?d=.+"
     __config__ = [

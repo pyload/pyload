@@ -9,8 +9,9 @@ class TenluaVnFolder(SimpleCrypter):
     __name__ = "TenluaVnFolder"
     __type__ = "crypter"
     __version__ = "0.02"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://(?:www\.)?tenlua\.vn/folder/.+?/(?P<ID>[0-9a-f]+)/"
     __config__ = [

@@ -14,8 +14,9 @@ class FourChanOrg(Crypter):
     __name__ = "FourChanOrg"
     __type__ = "crypter"
     __version__ = "0.38"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?boards\.4chan\.org/\w+/res/(\d+)"
     __config__ = [

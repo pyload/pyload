@@ -11,8 +11,9 @@ class NarodRu(SimpleHoster):
     __name__ = "NarodRu"
     __type__ = "hoster"
     __version__ = "0.17"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?narod(\.yandex)?\.ru/(disk|start/\d+\.\w+\-narod\.yandex\.ru)/(?P<ID>\d+)/.+"
     __config__ = [

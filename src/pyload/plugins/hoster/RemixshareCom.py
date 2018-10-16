@@ -18,8 +18,9 @@ class RemixshareCom(SimpleHoster):
     __name__ = "RemixshareCom"
     __type__ = "hoster"
     __version__ = "0.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"https?://remixshare\.com/(download|dl)/\w+"
     __config__ = [

@@ -9,8 +9,9 @@ class FreakhareComFolder(SimpleCrypter):
     __name__ = "FreakhareComFolder"
     __type__ = "crypter"
     __version__ = "0.09"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?freakshare\.com/folder/.+"
     __config__ = [

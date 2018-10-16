@@ -7,8 +7,9 @@ class RgHostNet(SimpleHoster):
     __name__ = "RgHostNet"
     __type__ = "hoster"
     __version__ = "0.09"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?rghost\.(net|ru)/[\d\-]+"
     __config__ = [

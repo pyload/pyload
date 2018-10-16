@@ -10,8 +10,9 @@ class UloziskoSk(SimpleHoster):
     __name__ = "UloziskoSk"
     __type__ = "hoster"
     __version__ = "0.31"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?ulozisko\.sk/.+"
     __config__ = [

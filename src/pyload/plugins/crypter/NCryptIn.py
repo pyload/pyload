@@ -7,8 +7,9 @@ class NCryptIn(DeadCrypter):
     __name__ = "NCryptIn"
     __type__ = "crypter"
     __version__ = "1.44"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?ncrypt\.in/(?P<TYPE>folder|link|frame)-([^/\?]+)"
     __config__ = []  # TODO: Remove in 0.6.x

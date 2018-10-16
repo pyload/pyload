@@ -10,8 +10,9 @@ class XFileSharing(Addon):
     __name__ = "XFileSharing"
     __type__ = "addon"
     __version__ = "0.56"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __config__ = [
         ("activated", "bool", "Activated", False),

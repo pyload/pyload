@@ -7,8 +7,9 @@ class FilestubeCom(SimpleCrypter):
     __name__ = "FilestubeCom"
     __type__ = "crypter"
     __version__ = "0.11"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?filestube\.(?:com|to)/\w+"
     __config__ = [

@@ -7,8 +7,9 @@ class FilesonicComFolder(DeadCrypter):
     __name__ = "FilesonicComFolder"
     __type__ = "crypter"
     __version__ = "0.18"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"http://(?:www\.)?filesonic\.com/folder/\w+"
     __config__ = [("activated", "bool", "Activated", True)]

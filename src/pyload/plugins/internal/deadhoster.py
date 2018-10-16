@@ -8,8 +8,9 @@ class DeadHoster(Hoster):
     __name__ = "DeadHoster"
     __type__ = "hoster"
     __version__ = "0.24"
-    __pyload_version__ = "0.5"
     __status__ = "stable"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = r"^unmatchable$"
     __config__ = [("activated", "bool", "Activated", True)]

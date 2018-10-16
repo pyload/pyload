@@ -9,8 +9,9 @@ class EdiskCz(SimpleHoster):
     __name__ = "EdiskCz"
     __type__ = "hoster"
     __version__ = "0.28"
-    __pyload_version__ = "0.5"
     __status__ = "testing"
+
+    __pyload_version__ = "0.5"
 
     __pattern__ = (
         r"http://(?:www\.)?edisk\.(cz|sk|eu)/(stahni|sk/stahni|en/download)/.+"
