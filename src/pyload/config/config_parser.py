@@ -3,7 +3,6 @@
 import os
 import re
 import shutil
-import traceback
 from builtins import object, PKGDIR, str, HOMEDIR
 import time
 
@@ -33,10 +32,10 @@ class ConfigParser(object):
     }
     """
 
-    CONFLINE = re.compile(
+    _CONFLINE = re.compile(
         r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
-    VERSION = re.compile(r"version\s*:\s*(\d+)")
+    _VERSION = re.compile(r"^\s*version\s*:\s*(\d+)")
 
     def __init__(self):
         """
@@ -77,8 +76,8 @@ class ConfigParser(object):
             with open(self.configpath) as f:
                 content = f.read()
 
-            version = self.VERSION.findall(content)
-            if not version or int(version) < __version__:
+            m_ver = self._VERSION.match(content)
+            if m_ver is None or int(m_ver.group(1)) < __version__:
                 shutil.copy(
                     os.path.join(PKGDIR, "config", "default.conf"), self.configpath
                 )
@@ -87,8 +86,8 @@ class ConfigParser(object):
             with open(self.pluginpath) as f:
                 content = f.read()
 
-            version = self.VERSION.findall(content)
-            if not version or int(version) < __version__:
+            m_ver = self._VERSION.match(content)
+            if m_ver is None or int(m_ver.group(1)) < __version__:
                 with open(self.pluginpath, "w") as f:
                     f.write("version: {}".format(__version__))
 
@@ -123,7 +122,6 @@ class ConfigParser(object):
 
         except Exception as e:
             print("Config Warning")
-            traceback.print_exc()
 
     def parseConfig(self, config):
         """
@@ -183,7 +181,7 @@ class ConfigParser(object):
                                 }
 
                         else:
-                            m = self.CONFLINE.search(line)
+                            m = self._CONFLINE.match(line)
 
                             typ = m.group("T")
                             option = m.group("N")
@@ -215,7 +213,6 @@ class ConfigParser(object):
                 except Exception as e:
                     print("Config Warning:")
                     print(line)
-                    traceback.print_exc()
 
         return conf
 

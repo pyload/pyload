@@ -298,7 +298,6 @@ class DownloadThread(PluginThread):
                     pyfile.setStatus("failed")
                     self.m.log.error("pycurl error {}: {}".format(code, msg))
                     if self.m.pyload.debug:
-                        traceback.print_exc()
                         self.writeDebugReport(pyfile)
 
                     self.m.pyload.addonManager.downloadFailed(pyfile)
@@ -334,7 +333,6 @@ class DownloadThread(PluginThread):
                 pyfile.error = str(e)
 
                 if self.m.pyload.debug:
-                    traceback.print_exc()
                     self.writeDebugReport(pyfile)
 
                 self.m.pyload.addonManager.downloadFailed(pyfile)
@@ -444,7 +442,6 @@ class DecrypterThread(PluginThread):
             self.active.error = str(e)
 
             if self.m.pyload.debug:
-                traceback.print_exc()
                 self.writeDebugReport(pyfile)
 
             return
@@ -601,7 +598,6 @@ class InfoThread(PluginThread):
                 try:
                     data = self.decryptContainer(name, url)
                 except Exception:
-                    traceback.print_exc()
                     self.m.log.error("Could not decrypt container.")
                     data = []
 
@@ -701,8 +697,6 @@ class InfoThread(PluginThread):
                     **{"name": pluginname, "err": str(e)}
                 )
             )
-            if self.m.pyload.debug:
-                traceback.print_exc()
 
             # generate default results
             if err:

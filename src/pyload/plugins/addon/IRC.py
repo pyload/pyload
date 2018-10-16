@@ -5,7 +5,6 @@ import select
 import socket
 import ssl
 import time
-import traceback
 from builtins import _, map
 from threading import Thread
 
@@ -116,8 +115,6 @@ class IRC(Thread, Notifier):
 
         except IRCError as ex:
             self.sock.send("QUIT :byebye\r\n")
-            if self.pyload.debug:
-                traceback.print_exc()
             self.sock.close()
 
     def main_loop(self):

@@ -3,7 +3,7 @@
 
 from builtins import object
 
-from pyload.database import DatabaseBackend, style
+from pyload.database.database_backend import DatabaseBackend, style
 
 
 class StorageMethods(object):

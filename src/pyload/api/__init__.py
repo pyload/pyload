@@ -8,21 +8,17 @@ import time
 
 from pyload.datatype.pyfile import PyFile
 from pyload.network.request_factory import getURL
-from pyload.remote import activated
 from pyload.utils.packagetools import parseNames
 from pyload.utils.utils import compare_time, freeSpace
 import json
 
-if activated:
-    try:
-        from pyload.remote.thriftbackend.thriftgen.ttypes import *
-        from pyload.remote.thriftbackend.thriftgen.pyload import Iface
+try:
+    from pyload.remote.thriftbackend.thriftgen.ttypes import *
+    from pyload.remote.thriftbackend.thriftgen.Pyload import Iface
 
-        BaseObject = TBase
-    except ImportError:
-        print("Thrift not imported")
-        from pyload.remote.socketbackend.ttypes import *
-else:
+    BaseObject = TBase
+except ImportError:
+    print("Thrift not imported")
     from pyload.remote.socketbackend.ttypes import *
 
 # contains function names mapped to their permissions

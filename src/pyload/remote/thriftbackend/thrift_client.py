@@ -2,7 +2,6 @@
 
 import os
 import sys
-import traceback
 from builtins import object
 
 from thrift.transport import TTransport
@@ -44,7 +43,6 @@ class ThriftClient(object):
             if e.args and e.args[0] in (111, 10061):
                 raise NoConnection
             else:
-                traceback.print_exc()
                 raise NoConnection
 
         try:
@@ -69,7 +67,6 @@ class ThriftClient(object):
             elif e.args and e.args[0] == 32:
                 raise NoConnection
             else:
-                traceback.print_exc()
                 raise NoConnection
 
         if not correct:

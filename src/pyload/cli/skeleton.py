@@ -13,7 +13,6 @@ import codecs
 import configparser
 import os
 import sys
-import traceback
 from builtins import _, HOMEDIR, input, object, PKGDIR, range, str
 from getopt import GetoptError, getopt
 from sys import exit
@@ -428,7 +427,6 @@ class RefreshThread(Thread):
             except Exception as e:
                 println(2, red(str(e)))
                 self.cli.reset()
-                traceback.print_exc()
 
 
 def print_help(config):

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: mkaay
 
-import traceback
 from builtins import _, object, str
 from threading import Thread
 
@@ -20,8 +19,6 @@ class BackendBase(Thread):
             self.serve()
         except Exception as e:
             self.pyload.log.error(_("Remote backend error: {}").format(e))
-            if self.pyload.debug:
-                traceback.print_exc()
         finally:
             self.running = False
 
@@ -80,8 +77,6 @@ class RemoteManager(object):
                         **{"name": b, "error": str(e)}
                     )
                 )
-                if self.pyload.debug:
-                    traceback.print_exc()
             else:
                 backend.start()
                 self.backends.append(backend)

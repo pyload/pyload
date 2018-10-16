@@ -5,7 +5,6 @@ import inspect
 import os
 import shutil
 import sqlite3
-import traceback
 from builtins import _, object, range, str
 from queue import Queue
 from threading import Event, Thread
@@ -84,7 +83,6 @@ class DatabaseJob(object):
         try:
             self.result = self.f(*self.args, **self.kwargs)
         except Exception as e:
-            traceback.print_exc()
             try:
                 print(
                     "Database Error @", self.f.__name__, self.args[1:], self.kwargs, e
@@ -124,7 +122,7 @@ class DatabaseBackend(Thread):
         """
         convert = self._checkVersion()  # returns None or current version
 
-        self.conn = sqlite3.connect("files.db")
+        self.conn = sqlite3.connect("files.db", isolation_level=None)
         os.chmod("files.db", 0o600)
 
         self.c = self.conn.cursor()  # compatibility
@@ -265,7 +263,7 @@ class DatabaseBackend(Thread):
                 self.pyload.log.info(_("Converting old Django DB"))
             except Exception:
                 print("Converting old Django DB")
-            with sqlite3.connect("pyload.db") as conn:
+            with sqlite3.connect("pyload.db", isolation_level=None) as conn:
                 with conn.cursor() as c:
                     c.execute(
                         "SELECT username, password, email from auth_user WHERE is_superuser"

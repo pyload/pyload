@@ -10,14 +10,13 @@
 
 import builtins
 
-# import codecs
 import locale
 import os
 import pkg_resources
 import semver
+import sys
 import tempfile
-
-# import sys
+import traceback
 
 try:
     dist_name = "pyload"
@@ -50,6 +49,7 @@ builtins.ADDONMANAGER = None
 locale.setlocale(locale.LC_ALL, "")
 
 
+# import codecs
 # codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
 # sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
 
@@ -61,7 +61,23 @@ os.chdir(userdir)
 del userdir
 
 
+exc_logger = logging.getLogger("exception")
+
+def excepthook(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    msg_list = traceback.format_exception_only(exc_type, exc_value)
+    exc_info = (exc_type, exc_value, exc_traceback)
+    exc_logger.exception(*msg_list, exc_info=exc_info)
+
+sys.excepthook = excepthook
+del excepthook
+
+
 del pkgdir
 del locale
 del os
+del sys
 del tempfile
+del traceback

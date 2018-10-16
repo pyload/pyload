@@ -91,7 +91,7 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        self.log = getLogger("log")
+        self.log = getLogger("pyload")
 
     def __enter__(self):
         return self

@@ -68,7 +68,6 @@ def call_api(func, args=""):
     try:
         return callApi(func, *args, **kwargs)
     except Exception as e:
-        traceback.print_exc()
         return bottle.HTTPError(
             500, json.dumps({"error": e.message, "traceback": traceback.format_exc()})
         )

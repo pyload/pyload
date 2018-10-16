@@ -9,7 +9,7 @@ from pyload.network.http_request import HTTPRequest
 
 class Browser(object):
     def __init__(self, bucket=None, options={}):
-        self.log = getLogger("log")
+        self.log = getLogger("pyload")
 
         self.options = options  # holds pycurl options
         self.bucket = bucket

@@ -4,7 +4,7 @@
 from builtins import _, object, range, str, zip
 from threading import RLock
 
-from pyload.database import DatabaseBackend, style
+from pyload.database.database_backend import DatabaseBackend, style
 from pyload.datatype.pyfile import PyFile
 from pyload.datatype.pypackage import PyPackage
 from pyload.manager.event_manager import (

@@ -2,7 +2,6 @@
 # @author: RaNaN, mkaay
 
 import builtins
-import traceback
 from builtins import _, object, str
 from threading import RLock
 from types import MethodType
@@ -73,8 +72,6 @@ class AddonManager(object):
                 return func(*args)
             except Exception as e:
                 args[0].log.error(_("Error executing addons: {}").format(str(e)))
-                if args[0].pyload.debug:
-                    traceback.print_exc()
 
         return new
 
@@ -124,8 +121,6 @@ class AddonManager(object):
 
             except Exception:
                 self.log.warning(_("Failed activating {}").format(pluginname))
-                if self.pyload.debug:
-                    traceback.print_exc()
 
         self.log.info(_("Activated plugins: {}").format(", ".join(sorted(active))))
         self.log.info(_("Deactivate plugins: {}").format(", ".join(sorted(deactive))))
@@ -318,5 +313,3 @@ class AddonManager(object):
                             event, f, args, str(e)
                         )
                     )
-                    if self.pyload.debug:
-                        traceback.print_exc()

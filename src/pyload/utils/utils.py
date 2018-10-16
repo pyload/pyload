@@ -74,17 +74,6 @@ else:
     fs_encode = fs_decode = lambda x: x  # do nothing
 
 
-def get_console_encoding(enc):
-    if os.name == "nt":
-        if enc == "cp65001":  # aka UTF-8
-            print("WARNING: Windows codepage 65001 is not supported.")
-            enc = "cp850"
-    else:
-        enc = "utf8"
-
-    return enc
-
-
 def compare_time(start, end):
     start = list(map(int, start))
     end = list(map(int, end))

@@ -3,7 +3,6 @@
 # @author: RaNaN
 
 import socket
-import traceback
 from builtins import object
 from sys import argv, exit
 
@@ -22,19 +21,16 @@ def proxy(*settings):
 
 
 def server(*settings):
-    try:
-        dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        dock_socket.bind(("127.0.0.1", settings[2]))
-        dock_socket.listen(5)
-        while True:
-            client_socket = dock_socket.accept()[0]
-            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server_socket.connect((settings[0], settings[1]))
-            _thread.start_new_thread(forward, (client_socket, server_socket))
-            _thread.start_new_thread(forward, (server_socket, client_socket))
-    except Exception:
-        traceback.print_exc()
-
+    dock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    dock_socket.bind(("127.0.0.1", settings[2]))
+    dock_socket.listen(5)
+    while True:
+        client_socket = dock_socket.accept()[0]
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.connect((settings[0], settings[1]))
+        _thread.start_new_thread(forward, (client_socket, server_socket))
+        _thread.start_new_thread(forward, (server_socket, client_socket))
+        
 
 def forward(source, destination):
     string = " "

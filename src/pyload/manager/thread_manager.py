@@ -5,7 +5,6 @@ import os
 import re
 import subprocess
 import time
-import traceback
 from builtins import _, object, HOMEDIR, range, str
 from random import choice
 from threading import Event, Lock
@@ -132,16 +131,12 @@ class ThreadManager(object):
         except Exception as e:
             self.log.error(_("Reconnect Failed: {}").format(str(e)))
             self.reconnecting.clear()
-            if self.pyload.debug:
-                traceback.print_exc()
         self.checkThreadCount()
 
         try:
             self.assignJob()
         except Exception as e:
             self.log.warning("Assign job error", e)
-            if self.pyload.debug:
-                traceback.print_exc()
 
             time.sleep(0.5)
             self.assignJob()
@@ -217,8 +212,6 @@ class ThreadManager(object):
             self.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config.set("reconnect", "activated", False)
             self.reconnecting.clear()
-            if self.pyload.debug:
-                traceback.print_exc()
             return
 
         reconn.wait()
@@ -332,7 +325,6 @@ class ThreadManager(object):
                 job.initPlugin()
             except Exception as e:
                 self.log.critical(str(e))
-                traceback.print_exc()
                 job.setStatus("failed")
                 job.error = str(e)
                 job.release()

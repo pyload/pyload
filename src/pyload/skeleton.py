@@ -18,18 +18,19 @@ import signal
 import subprocess
 import sys
 import time
-import traceback
 from builtins import _, object, PKGDIR, HOMEDIR, range, str
 from getopt import GetoptError, getopt
 from imp import find_module
 from sys import argv, executable, exit
 
 import pyload.utils.pylgettext as gettext
+from pyload import exc_logger
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import remote
 from pyload.config.config_parser import ConfigParser
-from pyload.database import DatabaseBackend, FileHandler
+from pyload.database.database_backend import DatabaseBackend
+from pyload.database.file_database import FileHandler
 from pyload.manager.account_manager import AccountManager
 from pyload.manager.captcha_manager import CaptchaManager
 from pyload.manager.event_manager import EventManager
@@ -37,27 +38,12 @@ from pyload.manager.plugin_manager import PluginManager
 from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
-from pyload.utils.utils import formatSize, freeSpace, get_console_encoding
+from pyload.utils.utils import formatSize, freeSpace
 from pyload.webui.server_thread import WebServer
-
-enc = get_console_encoding(sys.stdout.encoding)
-sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
-
 
 # TODO: List
 # - configurable auth system ldap/mysql
 # - cron job like sheduler
-
-
-def exceptHook(exc_type, exc_value, exc_traceback):
-    logger = logging.getLogger("log")
-    if issubclass(exc_type, KeyboardInterrupt):
-        sys.__excepthook__(exc_type, exc_value, exc_traceback)
-        return
-
-    logger.error(
-        "<<< UNCAUGHT EXCEPTION >>>", exc_info=(exc_type, exc_value, exc_traceback)
-    )
 
 
 class Core(object):
@@ -306,21 +292,17 @@ class Core(object):
             self.init_logger(logging.DEBUG)  # logging level
         else:
             self.init_logger(logging.INFO)  # logging level
-
-        sys.excepthook = exceptHook
-
+        
         self.do_kill = False
         self.do_restart = False
         self.shuttedDown = False
 
-        self.log.info(_("Starting") + " pyLoad {}".format(self.version))
+        self.log.info(_("Starting pyLoad {}").format(self.version))
         self.log.info(_("Using home directory: {}").format(os.getcwd()))
 
         self.writePidFile()
 
         # TODO: refractor
-
-        remote.activated = self.remote
         self.log.debug("Remote activated: {}".format(self.remote))
 
         self.check_install("cryptography", _("pycrypto to decode container files"))
@@ -365,12 +347,9 @@ class Core(object):
 
         # later imported because they would trigger api import, and remote value
         # not set correctly
-        from pyload import Api
+        from pyload.api import Api
         from pyload.manager.addon_manager import AddonManager
         from pyload.manager.thread_manager import ThreadManager
-
-        if Api.activated != self.remote:
-            self.log.warning("Import error: API remote status not correct.")
 
         self.api = Api.Api(self)
 
@@ -446,7 +425,7 @@ class Core(object):
                     raise
 
             if self.do_restart:
-                self.log.info(_("restarting pyLoad"))
+                self.log.info(_("Restarting pyLoad"))
                 self.restart()
 
             if self.do_kill:
@@ -473,10 +452,10 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter(
-            "[%(asctime)s] %(levelname)s:%(name)s:%(message)s", "%Y-%m-%d %H:%M:%S"
+            "[{asctime}]  {levelname:8}  {name:16}  {message}", "%Y-%m-%d %H:%M:%S", '{'
         )
         console.setFormatter(frm)
-        self.log = logging.getLogger("log")  # settable in config
+        self.log = logging.getLogger("pyload")  # settable in config
 
         if self.config.get("log", "file_log"):
             if self.config.get("log", "log_rotate"):
@@ -494,8 +473,10 @@ class Core(object):
 
             file_handler.setFormatter(frm)
             self.log.addHandler(file_handler)
+            exc_logger.addHandler(file_handler)
 
         self.log.addHandler(console)  # if console logging
+        exc_logger.addHandler(console)
         self.log.setLevel(level)
 
     def removeLogger(self):
@@ -607,8 +588,6 @@ class Core(object):
             self.addonManager.coreExiting()
 
         except Exception:
-            if self.debug:
-                traceback.print_exc()
             self.log.info(_("error while shutting down"))
 
         finally:

@@ -26,11 +26,11 @@ class PluginManager(object):
         "internal",
     )
 
-    PATTERN = re.compile(r'__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
-    VERSION = re.compile(r'__version__\s*=\s*(?:"|\')([\d.]+)')
-    PYLOAD_VERSION = re.compile(r'__version__\s*=\s*(?:"|\')([\d.]+)')
-    CONFIG = re.compile(r"__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
-    DESC = re.compile(r'__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
+    _PATTERN = re.compile(r'^\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
+    _VERSION = re.compile(r'^\s*__version__\s*=\s*(?:"|\')([\d.]+)')
+    _PYLOAD_VERSION = re.compile(r'^\s*__version__\s*=\s*(?:"|\')([\d.]+)')
+    _CONFIG = re.compile(r"^\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
+    _DESC = re.compile(r'^\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
     def __init__(self, core):
         self.pyload = core
@@ -147,8 +147,14 @@ class PluginManager(object):
                 if name[-1] == ".":
                     name = name[:-4]
 
-                pyload_version = self.PYLOAD_VERSION.findall(content)
-                if pyload_version:
+                m_pyver = self._PYLOAD_VERSION.match(content)
+                if m_pyver is None:
+                    self.log.debug(
+                        "__pyload_version__ not found in plugin {}".format(name)
+                    )
+                else:
+                    pyload_version = m_pyver.group(1)
+                    
                     requires_version = "{}.0".format(pyload_version)
                     requires_version_info = semver.parse_version_info(requires_version)
 
@@ -166,17 +172,13 @@ class PluginManager(object):
                             ).format(name)
                         )
                         continue
-                else:
-                    self.log.debug(
-                        "__pyload_version__ not found in plugin {}".format(name)
-                    )
 
-                version = self.VERSION.findall(content)
-                if version:
-                    version = float(version.group(1))
-                else:
+                m_ver = self._VERSION.match(content)
+                if m_ver is None:
                     self.log.debug("__version__ not found in plugin {}".format(name))
                     version = 0
+                else:
+                    version = float(m_ver.group(1))
 
                 # home contains plugins from pyload root
                 if isinstance(home, dict) and name in home:
@@ -193,12 +195,8 @@ class PluginManager(object):
                 plugins[name]["name"] = module
 
                 if pattern:
-                    pattern = self.PATTERN.findall(content)
-
-                    if pattern:
-                        pattern = pattern.group(1)
-                    else:
-                        pattern = r"^unmachtable$"
+                    m_p = self._PATTERN.findall(content)
+                    pattern = r"^unmachtable$" if m_pat is None else m_pat.group(1)
 
                     plugins[name]["pattern"] = pattern
 
@@ -212,35 +210,34 @@ class PluginManager(object):
                     self.pyload.config.deleteConfig(name)
                     continue
 
-                config = self.CONFIG.findall(content)
-                if config:
-                    config = literal_eval(
-                        config[0].strip().replace("\n", "").replace("\r", "")
-                    )
-                    desc = self.DESC.findall(content)
-                    desc = desc.group(1) if desc else ""
-
-                    if isinstance(config, list) and all(
-                        isinstance(c, tuple) for c in config
-                    ):
-                        config = {x[0]: x[1:] for x in config}
-                    else:
-                        self.log.error("Invalid config in {}: {}".format(name, config))
-                        continue
-
-                    if folder == "addons" and "activated" not in config:
-                        config["activated"] = ["bool", "Activated", False]
-
+                m_desc = self._DESC.match(content)
+                desc = "" if m_desc is None else m_desc.group(1)
+                    
+                config = self._CONFIG.findall(content)
+                if not config:
+                    config["activated"] = ["bool", "Activated", False]
                     config["desc"] = desc
                     configs[name] = config
-
+                    continue
+                    
+                config = literal_eval(
+                    config[0].strip().replace("\n", "").replace("\r", "")
+                )
+                
+                if isinstance(config, list) and all(
+                    isinstance(c, tuple) for c in config
+                ):
+                    config = {x[0]: x[1:] for x in config}
                 else:
-                    desc = self.DESC.findall(content)
-                    desc = desc.group(1) if desc else ""
+                    self.log.error("Invalid config in {}: {}".format(name, config))
+                    continue
+
+                if folder == "addons" and "activated" not in config:
                     config["activated"] = ["bool", "Activated", False]
 
-                    config["desc"] = desc
-                    configs[name] = config
+                config["desc"] = desc
+                configs[name] = config
+
 
         if not home:
             temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)

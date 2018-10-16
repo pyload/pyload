@@ -2,7 +2,6 @@
 # @author: mkaay, RaNaN
 
 import time
-import traceback
 from builtins import _, object, str
 from threading import Lock
 
@@ -56,8 +55,7 @@ class CaptchaManager(object):
             try:
                 plugin.newCaptchaTask(task)
             except Exception:
-                if self.pyload.debug:
-                    traceback.print_exc()
+                pass
 
         if task.handler or cli:  # The captcha was handled
             self.tasks.append(task)

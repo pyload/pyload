@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import shutil
-import traceback
 from builtins import _
 
 import bottle
@@ -67,7 +66,6 @@ def links():
         data = {"links": links, "ids": ids}
         return data
     except Exception as e:
-        traceback.print_exc()
         return bottle.HTTPError()
 
 
@@ -122,7 +120,6 @@ def package(id):
         return data
 
     except Exception:
-        traceback.print_exc()
         return bottle.HTTPError()
 
 
