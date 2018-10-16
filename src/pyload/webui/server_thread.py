@@ -12,7 +12,7 @@ class WebServer(threading.Thread):
         threading.Thread.__init__(self)
 
         self.pyload = core
-        PYLOAD_API = core
+        PYLOAD_API = core.api
 
         self.app = None
         self.running = True

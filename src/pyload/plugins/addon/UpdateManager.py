@@ -32,7 +32,7 @@ class UpdateManager(Addon):
     __license__ = "GPLv3"
     __authors__ = [("Walter Purcaro", "vuolter@gmail.com")]
 
-    _VERSION = re.compile(r'^\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
+    _VERSION = re.compile(r'\s*__version__\s*=\s*("|\')([\d.]+)\1', re.M)
 
     # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
@@ -373,7 +373,7 @@ class UpdateManager(Addon):
                     raise Exception(_("URL not found"))
 
                 m = self._VERSION.search(content)
-                if m and m.group(2) == plugin_version:
+                if m is not None and m.group(2) == plugin_version:
                     with open(
                         os.path.join(userplugins, plugin_type, plugin_name + ".py"),
                         "wb",

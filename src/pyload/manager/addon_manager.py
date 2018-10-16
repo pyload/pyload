@@ -58,8 +58,7 @@ class AddonManager(object):
 
         # registering callback for config event
         self.config.pluginCB = MethodType(
-            self.dispatchEvent, "pluginConfigChanged", str
-        )
+            self.dispatchEvent, "pluginConfigChanged")
 
         self.addEvent("pluginConfigChanged", self.manageAddons)
 

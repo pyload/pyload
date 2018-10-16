@@ -33,9 +33,9 @@ class ConfigParser(object):
     """
 
     _CONFLINE = re.compile(
-        r'^\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
+        r'\s*(?P<T>.+?)\s+(?P<N>[^ ]+?)\s*:\s*"(?P<D>.+?)"\s*=\s?(?P<V>.*)'
     )
-    _VERSION = re.compile(r"^\s*version\s*:\s*(\d+)")
+    _VERSION = re.compile(r"\s*version\s*:\s*(\d+)")
 
     def __init__(self):
         """
@@ -76,7 +76,7 @@ class ConfigParser(object):
             with open(self.configpath) as f:
                 content = f.read()
 
-            m_ver = self._VERSION.match(content)
+            m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
                 shutil.copy(
                     os.path.join(PKGDIR, "config", "default.conf"), self.configpath
@@ -86,7 +86,7 @@ class ConfigParser(object):
             with open(self.pluginpath) as f:
                 content = f.read()
 
-            m_ver = self._VERSION.match(content)
+            m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
                 with open(self.pluginpath, "w") as f:
                     f.write("version: {}".format(__version__))
@@ -121,7 +121,7 @@ class ConfigParser(object):
             self.updateValues(homeconf, self.config)
 
         except Exception as e:
-            print("Config Warning")
+            print(e)
 
     def parseConfig(self, config):
         """
@@ -181,7 +181,7 @@ class ConfigParser(object):
                                 }
 
                         else:
-                            m = self._CONFLINE.match(line)
+                            m = self._CONFLINE.search(line)
 
                             typ = m.group("T")
                             option = m.group("N")
@@ -211,8 +211,7 @@ class ConfigParser(object):
                                 }
 
                 except Exception as e:
-                    print("Config Warning:")
-                    print(line)
+                    print(line, e)
 
         return conf
 
@@ -261,10 +260,7 @@ class ConfigParser(object):
                             value += "\t\t{},\n".format(x)
                         value += "\t\t]\n"
                     else:
-                        if type(data["value"]) in (str, bytes):
-                            value = data["value"] + "\n"
-                        else:
-                            value = str(data["value"]) + "\n"
+                        value = str(data["value"]) + "\n"
                     try:
                         f.write(
                             '\t{} {} : "{}" = {}'.format(
@@ -282,24 +278,20 @@ class ConfigParser(object):
         """
         cast value to given format.
         """
-        if type(value) not in (str, bytes):
-            return value
-
-        elif typ == "int":
+        if typ == "int":
             return int(value)
         elif typ == "bool":
+            value = "" if value is None else str(value)
             return value.lower() in ("1", "true", "on", "yes", "y")
         elif typ == "time":
+            value = "" if value is None else str(value)
             if not value:
                 value = "0:00"
             if ":" not in value:
                 value += ":00"
             return value
         elif typ in ("str", "file", "folder"):
-            try:
-                return value.encode("utf8")
-            except Exception:
-                return value
+            return "" if value is None else str(value)
         else:
             return value
 
@@ -321,14 +313,7 @@ class ConfigParser(object):
         """
         get value.
         """
-        val = self.config[section][option]["value"]
-        try:
-            if type(val) in (str, bytes):
-                return val.decode("utf8")
-            else:
-                return val
-        except Exception:
-            return val
+        return self.config[section][option]["value"]
 
     def set(self, section, option, value):
         """
@@ -349,10 +334,7 @@ class ConfigParser(object):
         """
         val = self.plugin[plugin][option]["value"]
         try:
-            if type(val) in (str, bytes):
-                return val.decode("utf8")
-            else:
-                return val
+            return str(val)
         except Exception:
             return val
 

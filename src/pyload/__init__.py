@@ -10,6 +10,8 @@
 
 import builtins
 
+import _locale
+import logging
 import locale
 import os
 import pkg_resources
@@ -47,11 +49,8 @@ builtins.ADDONMANAGER = None
 
 
 locale.setlocale(locale.LC_ALL, "")
-
-
-# import codecs
-# codecs.register(lambda enc: codecs.lookup('utf-8') if enc == 'cp65001' else None)
-# sys.stdout = codecs.getwriter(sys.console_encoding(sys.stdout.encoding))(sys.stdout, errors="replace")
+if os.name == 'nt':
+    _locale._getdefaultlocale = (lambda *args: ['en_US', 'utf_8_sig'])
 
 
 # TODO: remove
@@ -69,15 +68,17 @@ def excepthook(exc_type, exc_value, exc_traceback):
         return
     msg_list = traceback.format_exception_only(exc_type, exc_value)
     exc_info = (exc_type, exc_value, exc_traceback)
-    exc_logger.exception(*msg_list, exc_info=exc_info)
+    exc_logger.exception(msg_list[-1], exc_info=exc_info)
 
 sys.excepthook = excepthook
 del excepthook
 
 
+del _locale
 del pkgdir
 del locale
+del logging
 del os
 del sys
 del tempfile
-del traceback
+# del traceback

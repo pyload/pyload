@@ -26,11 +26,11 @@ class PluginManager(object):
         "internal",
     )
 
-    _PATTERN = re.compile(r'^\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
-    _VERSION = re.compile(r'^\s*__version__\s*=\s*(?:"|\')([\d.]+)')
-    _PYLOAD_VERSION = re.compile(r'^\s*__version__\s*=\s*(?:"|\')([\d.]+)')
-    _CONFIG = re.compile(r"^\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
-    _DESC = re.compile(r'^\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
+    _PATTERN = re.compile(r'\s*__pattern__\s*=\s*r?(?:"|\')([^"\']+)')
+    _VERSION = re.compile(r'\s*__version__\s*=\s*(?:"|\')([\d.]+)')
+    _PYLOAD_VERSION = re.compile(r'\s*__pyload_version__\s*=\s*(?:"|\')([\d.]+)')
+    _CONFIG = re.compile(r"\s*__config__\s*=\s*(\[[^\]]+\])", re.MULTILINE)
+    _DESC = re.compile(r'\s*__description__\s*=\s*(?:"|"""|\')([^"\']+)', re.MULTILINE)
 
     def __init__(self, core):
         self.pyload = core
@@ -146,8 +146,8 @@ class PluginManager(object):
                 name = f[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
-
-                m_pyver = self._PYLOAD_VERSION.match(content)
+                    
+                m_pyver = self._PYLOAD_VERSION.search(content)
                 if m_pyver is None:
                     self.log.debug(
                         "__pyload_version__ not found in plugin {}".format(name)
@@ -173,7 +173,7 @@ class PluginManager(object):
                         )
                         continue
 
-                m_ver = self._VERSION.match(content)
+                m_ver = self._VERSION.search(content)
                 if m_ver is None:
                     self.log.debug("__version__ not found in plugin {}".format(name))
                     version = 0
@@ -195,7 +195,7 @@ class PluginManager(object):
                 plugins[name]["name"] = module
 
                 if pattern:
-                    m_p = self._PATTERN.findall(content)
+                    m_pat = self._PATTERN.search(content)
                     pattern = r"^unmachtable$" if m_pat is None else m_pat.group(1)
 
                     plugins[name]["pattern"] = pattern
@@ -210,14 +210,16 @@ class PluginManager(object):
                     self.pyload.config.deleteConfig(name)
                     continue
 
-                m_desc = self._DESC.match(content)
+                m_desc = self._DESC.search(content)
                 desc = "" if m_desc is None else m_desc.group(1)
                     
                 config = self._CONFIG.findall(content)
                 if not config:
-                    config["activated"] = ["bool", "Activated", False]
-                    config["desc"] = desc
-                    configs[name] = config
+                    new_config = {
+                        "activated": ["bool", "Activated", False],
+                        "desc": desc
+                    }
+                    configs[name] = new_config
                     continue
                     
                 config = literal_eval(

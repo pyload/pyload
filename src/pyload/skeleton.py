@@ -351,7 +351,7 @@ class Core(object):
         from pyload.manager.addon_manager import AddonManager
         from pyload.manager.thread_manager import ThreadManager
 
-        self.api = Api.Api(self)
+        self.api = Api(self)
 
         self.scheduler = Scheduler(self)
 
@@ -364,7 +364,7 @@ class Core(object):
         self.addonManager = AddonManager(self)
         self.remoteManager = RemoteManager(self)
 
-        self.log.info(_("Downloadtime: {}").format(self.api.isTimeDownload()))
+        self.log.info(_("Download time: {}").format(self.api.isTimeDownload()))
 
         if rpc:
             self.remoteManager.startBackends()
@@ -452,7 +452,7 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter(
-            "[{asctime}]  {levelname:8}  {name:16}  {message}", "%Y-%m-%d %H:%M:%S", '{'
+            "[{asctime}]  {levelname:8}  {name:20}  {message}", "%Y-%m-%d %H:%M:%S", '{'
         )
         console.setFormatter(frm)
         self.log = logging.getLogger("pyload")  # settable in config

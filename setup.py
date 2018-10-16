@@ -12,7 +12,7 @@
 import sys
 
 from pkg_resources import VersionConflict, require
-from setuptools import setup
+from setuptools import setup, Command
 
 try:
     require("setuptools>=38.3")
@@ -20,6 +20,20 @@ except VersionConflict:
     print("Error: version of setuptools is too old (<38.3)!")
     sys.exit(1)
 
+    
+class BuildLocale(Command):
+    """
+    Build translations
+    """
+    description = 'build locales'
+    user_options = []
+
+    def run(self):
+        self.run_command('extract_messages')
+        self.run_command('init_catalog')
+        # self.run_command('download_catalog')
+        self.run_command('compile_catalog')
+        
 
 if __name__ == "__main__":
     setup(use_pyscaffold=True)
