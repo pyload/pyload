@@ -178,7 +178,7 @@ class DownloadThread(PluginThread):
 
             if self.active == "quit":
                 self.active = False
-                self.m.threads.os.remove(self)
+                self.m.threads.remove(self)
                 return True
 
             try:
@@ -451,12 +451,12 @@ class DecrypterThread(PluginThread):
                 self.active.release()
                 self.active = False
                 self.m.pyload.files.save()
-                self.m.localThreads.os.remove(self)
+                self.m.localThreads.remove(self)
                 # exc_clear()
 
         # self.m.pyload.addonManager.downloadFinished(pyfile)
 
-        # self.m.localThreads.os.remove(self)
+        # self.m.localThreads.remove(self)
         # self.active.finishIfDone()
         if not retry:
             pyfile.delete()
@@ -496,7 +496,7 @@ class AddonThread(PluginThread):
 
     def finishFile(self, pyfile):
         if pyfile in self.active:
-            self.active.os.remove(pyfile)
+            self.active.remove(pyfile)
 
         pyfile.finishIfDone()
 
@@ -517,7 +517,7 @@ class AddonThread(PluginThread):
             for x in local:
                 self.finishFile(x)
 
-            self.m.localThreads.os.remove(self)
+            self.m.localThreads.remove(self)
 
 
 class InfoThread(PluginThread):

@@ -29,7 +29,7 @@ if PREFIX:
 bottle.debug(PYLOAD_API.getConfigValue("general", "debug_mode"))
 
 bcc = jinja2.FileSystemBytecodeCache()  #: handle tmp folder
-loader = jinja2.jinja2.FileSystemLoader(os.path.join(PKGDIR, "webui", "themes"))
+loader = jinja2.FileSystemLoader(os.path.join(PKGDIR, "webui", "themes"))
 env = jinja2.Environment(
     loader=loader,
     extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
@@ -96,17 +96,7 @@ def run_lightweight(host="0.0.0.0", port="8000"):
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
-    from wsgiserver import CherryPyWSGIServer
-
-    if cert and key:
-        CherryPyWSGIServer.ssl_certificate = cert
-        CherryPyWSGIServer.ssl_private_key = key
-
-    CherryPyWSGIServer.numthreads = theads
-
-    from pyload.webui.app.utils import CherryPyWSGI
-
-    bottle.run(app=web, host=host, port=port, server=CherryPyWSGI, quiet=True)
+    bottle.run(app=web, host=host, port=port, server="cherrypy", quiet=True, ssl_certificate=cert, ssl_private_key=key)
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):

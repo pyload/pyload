@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import os
 import threading
 from builtins import _
@@ -9,6 +10,8 @@ PYLOAD_API = None
 
 class WebServer(threading.Thread):
     def __init__(self, core):
+        global PYLOAD_API
+        
         threading.Thread.__init__(self)
 
         self.pyload = core
@@ -86,15 +89,6 @@ class WebServer(threading.Thread):
                     )
                 )
                 self.server = "builtin"
-
-        if os.name == "nt":
-            self.pyload.log.info(
-                _(
-                    "Server set to threaded, due to known performance problems on windows."
-                )
-            )
-            self.pyload.config.set("webui", "server", "threaded")
-            self.server = "threaded"
 
         if self.server == "fastcgi":
             self.start_fcgi()

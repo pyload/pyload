@@ -481,7 +481,7 @@ class Core(object):
 
     def removeLogger(self):
         for h in self.log.handlers:
-            self.log.os.removeHandler(h)
+            self.log.removeHandler(h)
             h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
