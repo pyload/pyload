@@ -5,12 +5,12 @@ import sys
 import time
 import xmlrpc.client
 from builtins import input, range
+from contextlib import closing
 from getpass import getpass
 
 from thrift import Thrift
 from thrift.transport import TTransport
 
-from contextlib import closing
 from pyload.remote.thriftbackend.protocol import Protocol
 from pyload.remote.thriftbackend.socket import Socket
 from pyload.remote.thriftbackend.thriftgen import Pyload

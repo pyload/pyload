@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
+import json
 import re
 import urllib.error
 import urllib.parse
@@ -7,7 +8,6 @@ import urllib.request
 from builtins import _
 
 from pyload.plugins.internal.crypter import Crypter
-import json
 
 
 class CloudMailRuFolder(Crypter):

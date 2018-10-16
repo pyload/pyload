@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 from builtins import _
 
 from beaker.crypto.pbkdf2 import PBKDF2
 
 from pyload.plugins.internal.account import Account
-import json
 
 
 class OboomCom(Account):

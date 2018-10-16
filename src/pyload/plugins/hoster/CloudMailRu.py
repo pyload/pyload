@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import json
 
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 
 class CloudMailRu(Hoster):

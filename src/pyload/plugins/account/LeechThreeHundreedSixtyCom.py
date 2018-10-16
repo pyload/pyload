@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class LeechThreeHundreedSixtyCom(MultiAccount):

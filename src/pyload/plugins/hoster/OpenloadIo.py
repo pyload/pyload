@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class OpenloadIo(SimpleHoster):

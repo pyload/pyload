@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-import bottle
-import os
 import json
+import os
+
+import bottle
 
 from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui.app import PREFIX, env

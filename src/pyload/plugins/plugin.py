@@ -3,7 +3,7 @@
 
 import os
 import time
-from builtins import _, object, str, HOMEDIR
+from builtins import HOMEDIR, _, object, str
 from itertools import islice
 from random import randint
 

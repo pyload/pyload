@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class UpfileVn(SimpleHoster):

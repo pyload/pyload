@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import re
 import urllib.parse
 from builtins import _, map
 
 from pyload.plugins.internal.crypter import Crypter
-import json
 
 
 class YoutubeComFolder(Crypter):

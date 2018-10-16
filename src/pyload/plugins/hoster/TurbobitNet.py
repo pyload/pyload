@@ -9,9 +9,9 @@ import urllib.parse
 import urllib.request
 from builtins import _, range
 
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
 import js2py
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 import pycurl
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha

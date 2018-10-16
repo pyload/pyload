@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import re
 import urllib.parse
 from builtins import _, str
 
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 
 class RedtubeCom(Hoster):

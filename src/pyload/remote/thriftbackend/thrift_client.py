@@ -4,16 +4,13 @@ import os
 import sys
 from builtins import object
 
+import thrift
 from thrift.transport import TTransport
 
 from pyload.remote.thriftbackend.protocol import Protocol
-
 # from thrift.transport.TZlibTransport import TZlibTransport
 from pyload.remote.thriftbackend.socket import Socket, error
 from pyload.remote.thriftbackend.thriftgen import Pyload
-
-import thrift
-
 
 # modules should import ttypes from here, when want to avoid importing API
 

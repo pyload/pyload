@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.datatype.pyfile import statusMap
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 
 def get_info(urls):

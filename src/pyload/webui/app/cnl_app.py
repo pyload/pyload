@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import re
 from base64 import standard_b64decode
@@ -7,10 +8,9 @@ from binascii import unhexlify
 from builtins import str
 from urllib.parse import unquote
 
-import json
 import bottle
-from cryptography.fernet import Fernet
 import js2py
+from cryptography.fernet import Fernet
 
 from pyload.webui.server_thread import PYLOAD_API
 

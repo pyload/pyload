@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import time
 
 from beaker.crypto.pbkdf2 import PBKDF2
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class SmoozedCom(MultiAccount):

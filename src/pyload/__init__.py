@@ -49,8 +49,8 @@ builtins.ADDONMANAGER = None
 
 
 locale.setlocale(locale.LC_ALL, "")
-if os.name == 'nt':
-    _locale._getdefaultlocale = (lambda *args: ['en_US', 'utf_8_sig'])
+if os.name == "nt":
+    _locale._getdefaultlocale = lambda *args: ["en_US", "utf_8_sig"]
 
 
 # TODO: remove
@@ -62,6 +62,7 @@ del userdir
 
 exc_logger = logging.getLogger("exception")
 
+
 def excepthook(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
@@ -69,6 +70,7 @@ def excepthook(exc_type, exc_value, exc_traceback):
     msg_list = traceback.format_exception_only(exc_type, exc_value)
     exc_info = (exc_type, exc_value, exc_traceback)
     exc_logger.exception(msg_list[-1], exc_info=exc_info)
+
 
 sys.excepthook = excepthook
 del excepthook

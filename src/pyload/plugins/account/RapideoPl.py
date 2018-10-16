@@ -2,10 +2,10 @@
 
 import datetime
 import hashlib
+import json
 import time
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class RapideoPl(MultiAccount):

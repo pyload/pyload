@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 from builtins import _, map, str
 
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
 from pyload.plugins.utils import uniqify
-import json
 
 
 class ImgurCom(SimpleCrypter):

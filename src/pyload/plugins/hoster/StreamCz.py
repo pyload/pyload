@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import os
 import time
 import urllib.parse
 from builtins import _, range, str
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 def get_api_password(episode):

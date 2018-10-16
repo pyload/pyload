@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 from builtins import _, range
 
 from pyload.plugins.internal.account import Account
 from pyload.plugins.utils import set_cookie
-import json
 
 
 class FilecloudIo(Account):

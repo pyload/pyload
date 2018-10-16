@@ -58,7 +58,9 @@ class RemoteManager(object):
 
         for b in self.available:
             klass = getattr(
-                __import__("pyload.remote.{}".format(b.lower()), globals(), locals(), [b], 0),
+                __import__(
+                    "pyload.remote.{}".format(b.lower()), globals(), locals(), [b], 0
+                ),
                 b,
             )
             backend = klass(self)

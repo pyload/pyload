@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 from builtins import map
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class OverLoadMe(MultiAccount):

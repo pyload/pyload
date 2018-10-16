@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 
 import pycurl
 from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import seconds_to_midnight
-import json
 
 
 class LinkifierCom(MultiHoster):

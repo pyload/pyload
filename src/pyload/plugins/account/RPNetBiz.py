@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.multiaccount import MultiAccount
 import json
+
+from pyload.plugins.internal.multiaccount import MultiAccount
 
 
 class RPNetBiz(MultiAccount):

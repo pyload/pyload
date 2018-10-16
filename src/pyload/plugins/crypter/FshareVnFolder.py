@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 import pycurl
 from pyload.plugins.internal.crypter import Crypter
 from pyload.plugins.utils import replace_patterns
-import json
 
 
 class FshareVnFolder(Crypter):

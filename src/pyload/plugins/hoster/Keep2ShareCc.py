@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 from builtins import _, range
 
 from pyload.network.http_request import BadHeader
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class Keep2ShareCc(SimpleHoster):

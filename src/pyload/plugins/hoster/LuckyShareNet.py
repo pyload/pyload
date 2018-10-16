@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class LuckyShareNet(SimpleHoster):

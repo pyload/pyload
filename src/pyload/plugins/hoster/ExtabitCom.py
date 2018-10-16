@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
 from pyload.plugins.utils import seconds_to_midnight
-import json
 
 
 class ExtabitCom(SimpleHoster):

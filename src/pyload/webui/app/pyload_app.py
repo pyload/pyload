@@ -1,34 +1,24 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import json
 import operator
 import os
 import sys
 import time
-from builtins import _
+from builtins import HOMEDIR, PKGDIR, _
 from urllib.parse import unquote
-
-from builtins import PKGDIR, HOMEDIR
 
 import bottle
 
-import json
 from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
 from pyload.webui.app import PREFIX, env
-from pyload.webui.server_thread import PYLOAD_API
 from pyload.webui.app.filters import relpath, unquotepath
-from pyload.webui.app.utils import (
-    get_permission,
-    login_required,
-    parse_permissions,
-    parse_userdata,
-    permlist,
-    render_to_response,
-    set_permission,
-    set_session,
-    toDict,
-    get_themedir,
-)
+from pyload.webui.app.utils import (get_permission, get_themedir, login_required,
+                                    parse_permissions, parse_userdata, permlist,
+                                    render_to_response, set_permission, set_session,
+                                    toDict)
+from pyload.webui.server_thread import PYLOAD_API
 
 # @author: RaNaN
 

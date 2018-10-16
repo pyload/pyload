@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import time
 from builtins import _, str
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class FilepostCom(SimpleHoster):

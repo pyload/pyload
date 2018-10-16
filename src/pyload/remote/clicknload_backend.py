@@ -9,8 +9,8 @@ from cgi import FieldStorage
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 
-from cryptography.fernet import Fernet
 import js2py
+from cryptography.fernet import Fernet
 
 from pyload.remote.remote_manager import BackendBase
 

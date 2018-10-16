@@ -2,6 +2,7 @@
 
 import http.client
 from contextlib import closing
+
 from pyload.plugins.internal.notifier import Notifier
 
 

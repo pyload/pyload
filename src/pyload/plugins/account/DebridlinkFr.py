@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
+import json
 import time
 from builtins import _, str
 
-import hashlib
-
 import pycurl
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 def args(**kwargs):

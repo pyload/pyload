@@ -7,13 +7,9 @@ from builtins import _
 import bottle
 
 from pyload.utils.utils import decode, formatSize
+from pyload.webui.app.utils import (apiver_check, login_required, render_to_response,
+                                    toDict)
 from pyload.webui.server_thread import PYLOAD_API
-from pyload.webui.app.utils import (
-    apiver_check,
-    login_required,
-    render_to_response,
-    toDict,
-)
 
 
 def format_time(seconds):

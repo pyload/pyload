@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from pyload.plugins.internal.multihoster import MultiHoster
 from pyload.plugins.utils import parse_size
-import json
 
 
 class AlldebridCom(MultiHoster):

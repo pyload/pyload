@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 import urllib.parse
 from builtins import _
 
 from pyload.plugins.internal.multihoster import MultiHoster
-import json
 
 
 class PremiumizeMe(MultiHoster):

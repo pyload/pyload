@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import random
 import re
 import time
@@ -7,7 +8,6 @@ import urllib.parse
 from builtins import _, range, str
 
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 
 class ZbigzCom(Hoster):

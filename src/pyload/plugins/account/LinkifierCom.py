@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 
 import pycurl
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class LinkifierCom(MultiAccount):

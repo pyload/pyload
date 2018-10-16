@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import json
 import os
 import random
 import re
@@ -13,7 +14,6 @@ import Cryptodome.Util.Counter
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import decode, encode, exists
-import json
 
 ############################ General errors ###################################
 # EINTERNAL            (-1): An internal error has occurred. Please submit a bug report, detailing the exact circumstances in which this error occurred

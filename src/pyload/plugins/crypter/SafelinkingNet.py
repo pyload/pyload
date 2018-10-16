@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+import json
 from builtins import _
 
 import pycurl
 from pyload.network.http_request import BadHeader
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.crypter import Crypter
-import json
 
 
 class SafelinkingNet(Crypter):

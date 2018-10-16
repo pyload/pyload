@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class SoundcloudCom(SimpleHoster):

@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import time
-from builtins import _, PKGDIR, HOMEDIR, zip
+from builtins import HOMEDIR, PKGDIR, _, zip
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode, exists, threaded

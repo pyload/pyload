@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.simplecrypter import SimpleCrypter
 import json
+
+from pyload.plugins.internal.simplecrypter import SimpleCrypter
 
 
 class TurbobitNetFolder(SimpleCrypter):

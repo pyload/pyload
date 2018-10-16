@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import random
 import re
 from builtins import range
@@ -8,7 +9,6 @@ import pycurl
 from pyload.network.http_request import BadHeader
 from pyload.network.request_factory import getRequest as get_request
 from pyload.plugins.internal.addon import Addon
-import json
 
 
 class TransmissionRPC(Addon):

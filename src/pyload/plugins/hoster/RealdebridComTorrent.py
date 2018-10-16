@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import time
 import urllib.error
@@ -11,7 +12,6 @@ import pycurl
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.utils import exists
-import json
 
 
 class RealdebridComTorrent(Hoster):

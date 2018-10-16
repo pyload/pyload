@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 from builtins import str
 
 from pyload.plugins.internal.account import Account
-import json
 
 
 class RapidgatorNet(Account):

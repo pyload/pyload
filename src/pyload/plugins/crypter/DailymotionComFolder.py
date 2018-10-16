@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
 import urllib.parse
 from builtins import _
 
 from pyload.plugins.internal.crypter import Crypter
-import json
 
 
 class DailymotionComFolder(Crypter):

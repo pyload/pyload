@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 
 class HearthisAt(Hoster):

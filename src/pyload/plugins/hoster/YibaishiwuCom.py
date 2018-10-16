@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 import urllib.parse
 from builtins import _
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class YibaishiwuCom(SimpleHoster):

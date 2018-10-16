@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
-import json
 
 
 class TenluaVnFolder(SimpleCrypter):

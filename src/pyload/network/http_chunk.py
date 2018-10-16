@@ -3,9 +3,10 @@
 
 import codecs
 import os
+import time
 from builtins import object, range, str
 from re import search
-import time
+
 import pycurl
 from pyload.network.http_request import HTTPRequest
 from pyload.utils.utils import fs_encode

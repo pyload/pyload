@@ -96,7 +96,15 @@ def run_lightweight(host="0.0.0.0", port="8000"):
 
 
 def run_threaded(host="0.0.0.0", port="8000", theads=3, cert="", key=""):
-    bottle.run(app=web, host=host, port=port, server="cherrypy", quiet=True, ssl_certificate=cert, ssl_private_key=key)
+    bottle.run(
+        app=web,
+        host=host,
+        port=port,
+        server="cherrypy",
+        quiet=True,
+        ssl_certificate=cert,
+        ssl_private_key=key,
+    )
 
 
 def run_fcgi(host="0.0.0.0", port="8000"):

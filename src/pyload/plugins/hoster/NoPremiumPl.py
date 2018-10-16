@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
 from builtins import _
 
 from pyload.plugins.internal.multihoster import MultiHoster
-import json
 
 
 class NoPremiumPl(MultiHoster):

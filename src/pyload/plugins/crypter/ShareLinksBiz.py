@@ -4,8 +4,8 @@ import binascii
 import re
 from builtins import _, filter
 
-from cryptography.fernet import Fernet
 import js2py
+from cryptography.fernet import Fernet
 
 from pyload.plugins.internal.crypter import Crypter
 

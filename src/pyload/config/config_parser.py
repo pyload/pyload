@@ -3,12 +3,11 @@
 import os
 import re
 import shutil
-from builtins import object, PKGDIR, str, HOMEDIR
 import time
+from builtins import HOMEDIR, PKGDIR, object, str
 
 from pyload import exc_logger
 from pyload.utils.utils import chmod
-
 
 # CONFIG_VERSION
 __version__ = 1

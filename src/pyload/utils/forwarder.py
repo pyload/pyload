@@ -30,7 +30,7 @@ def server(*settings):
         server_socket.connect((settings[0], settings[1]))
         _thread.start_new_thread(forward, (client_socket, server_socket))
         _thread.start_new_thread(forward, (server_socket, client_socket))
-        
+
 
 def forward(source, destination):
     string = " "

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import traceback
 from ast import literal_eval
 from itertools import chain
@@ -8,9 +9,8 @@ from urllib.parse import unquote
 import bottle
 
 from pyload.api import BaseObject
-import json
-from pyload.webui.server_thread import PYLOAD_API
 from pyload.webui.app.utils import apiver_check, set_session, toDict
+from pyload.webui.server_thread import PYLOAD_API
 
 
 # json encoder that accepts TBase objects

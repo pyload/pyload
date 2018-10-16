@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 import operator
 import os
 import re
@@ -8,11 +9,10 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from builtins import _, map, object, PKGDIR, range, str, zip
+from builtins import PKGDIR, _, map, object, range, str, zip
 from functools import reduce
 from xml.dom.minidom import parseString as parse_xml
 
-import json
 from pyload.network.cookie_jar import CookieJar
 from pyload.network.http_request import HTTPRequest
 from pyload.plugins.internal.hoster import Hoster

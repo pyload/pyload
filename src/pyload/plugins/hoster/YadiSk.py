@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 import random
 import re
 from builtins import _, range
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class YadiSk(SimpleHoster):

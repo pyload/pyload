@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 import urllib.parse
 
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
-import json
 
 
 class Go4UpCom(SimpleCrypter):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*
 
+import json
+
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.crypter import Crypter
-import json
 
 
 class GoogledriveComDereferer(Crypter):

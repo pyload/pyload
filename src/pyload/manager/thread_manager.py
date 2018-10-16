@@ -5,7 +5,7 @@ import os
 import re
 import subprocess
 import time
-from builtins import _, object, HOMEDIR, range, str
+from builtins import HOMEDIR, _, object, range, str
 from random import choice
 from threading import Event, Lock
 

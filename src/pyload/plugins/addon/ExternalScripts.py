@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import _, map, HOMEDIR
+from builtins import HOMEDIR, _, map
 
 from pyload.plugins.internal.addon import Addon
 from pyload.plugins.utils import Expose, encode

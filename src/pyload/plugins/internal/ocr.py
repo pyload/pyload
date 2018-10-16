@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from builtins import _, map, PKGDIR, range, str
+from builtins import PKGDIR, _, map, range, str
 
 from Pillow import Image
 from pyload.plugins.internal.plugin import Plugin

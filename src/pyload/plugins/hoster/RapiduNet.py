@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 from builtins import _, str
 
 import pycurl
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class RapiduNet(SimpleHoster):

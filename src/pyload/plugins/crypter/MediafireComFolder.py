@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.crypter import Crypter
 import json
+
+from pyload.plugins.internal.crypter import Crypter
 
 
 class MediafireComFolder(Crypter):

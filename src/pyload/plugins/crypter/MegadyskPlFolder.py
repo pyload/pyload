@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import json
 import re
 import urllib.error
 import urllib.parse
@@ -9,7 +10,6 @@ from builtins import _, chr
 
 from pyload.network.request_factory import getURL as get_url
 from pyload.plugins.internal.simplecrypter import SimpleCrypter
-import json
 
 
 def xor_decrypt(data, key):

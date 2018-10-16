@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 import re
 
 from pyload.plugins.hoster.MegaCoNz import MegaCoNz, MegaCrypto
-import json
 
 
 class MegacrypterCom(MegaCoNz):

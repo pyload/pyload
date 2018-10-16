@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from pyload.plugins.internal.multihoster import MultiHoster
 import json
+
+from pyload.plugins.internal.multihoster import MultiHoster
 
 
 class FastixRu(MultiHoster):

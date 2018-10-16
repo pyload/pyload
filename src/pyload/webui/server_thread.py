@@ -4,14 +4,13 @@ import os
 import threading
 from builtins import _
 
-
 PYLOAD_API = None
 
 
 class WebServer(threading.Thread):
     def __init__(self, core):
         global PYLOAD_API
-        
+
         threading.Thread.__init__(self)
 
         self.pyload = core

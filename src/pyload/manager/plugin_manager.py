@@ -7,7 +7,7 @@ import re
 import sys
 import traceback
 from ast import literal_eval
-from builtins import _, object, PKGDIR, HOMEDIR, str
+from builtins import HOMEDIR, PKGDIR, _, object, str
 from itertools import chain
 
 import semver
@@ -146,7 +146,7 @@ class PluginManager(object):
                 name = f[:-3]
                 if name[-1] == ".":
                     name = name[:-4]
-                    
+
                 m_pyver = self._PYLOAD_VERSION.search(content)
                 if m_pyver is None:
                     self.log.debug(
@@ -154,7 +154,7 @@ class PluginManager(object):
                     )
                 else:
                     pyload_version = m_pyver.group(1)
-                    
+
                     requires_version = "{}.0".format(pyload_version)
                     requires_version_info = semver.parse_version_info(requires_version)
 
@@ -212,20 +212,20 @@ class PluginManager(object):
 
                 m_desc = self._DESC.search(content)
                 desc = "" if m_desc is None else m_desc.group(1)
-                    
+
                 config = self._CONFIG.findall(content)
                 if not config:
                     new_config = {
                         "activated": ["bool", "Activated", False],
-                        "desc": desc
+                        "desc": desc,
                     }
                     configs[name] = new_config
                     continue
-                    
+
                 config = literal_eval(
                     config[0].strip().replace("\n", "").replace("\r", "")
                 )
-                
+
                 if isinstance(config, list) and all(
                     isinstance(c, tuple) for c in config
                 ):
@@ -239,7 +239,6 @@ class PluginManager(object):
 
                 config["desc"] = desc
                 configs[name] = config
-
 
         if not home:
             temp_plugins, temp_configs = self.parse(folder, pattern, plugins or True)

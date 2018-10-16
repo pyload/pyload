@@ -4,7 +4,7 @@ import xml.dom.minidom
 from builtins import _
 
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes, Fernet
+from cryptography.hazmat.primitives.ciphers import Cipher, Fernet, algorithms, modes
 
 from pyload.plugins.internal.container import Container
 from pyload.plugins.utils import decode, encode

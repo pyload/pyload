@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
 from functools import reduce
 
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 class AlldebridCom(MultiAccount):

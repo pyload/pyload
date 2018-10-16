@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import socket
-import time
 import errno
+import socket
 import sys
+import time
 from builtins import object
 
 from thrift.transport.TSocket import TServerSocket, TSocket, TTransportException

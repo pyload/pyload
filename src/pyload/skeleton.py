@@ -18,16 +18,15 @@ import signal
 import subprocess
 import sys
 import time
-from builtins import _, object, PKGDIR, HOMEDIR, range, str
+from builtins import HOMEDIR, PKGDIR, _, object, range, str
 from getopt import GetoptError, getopt
 from imp import find_module
 from sys import argv, executable, exit
 
 import pyload.utils.pylgettext as gettext
-from pyload import exc_logger
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
-from pyload import remote
+from pyload import exc_logger, remote
 from pyload.config.config_parser import ConfigParser
 from pyload.database.database_backend import DatabaseBackend
 from pyload.database.file_database import FileHandler
@@ -292,7 +291,7 @@ class Core(object):
             self.init_logger(logging.DEBUG)  # logging level
         else:
             self.init_logger(logging.INFO)  # logging level
-        
+
         self.do_kill = False
         self.do_restart = False
         self.shuttedDown = False
@@ -452,7 +451,7 @@ class Core(object):
     def init_logger(self, level):
         console = logging.StreamHandler(sys.stdout)
         frm = logging.Formatter(
-            "[{asctime}]  {levelname:8}  {name:20}  {message}", "%Y-%m-%d %H:%M:%S", '{'
+            "[{asctime}]  {levelname:8}  {name:20}  {message}", "%Y-%m-%d %H:%M:%S", "{"
         )
         console.setFormatter(frm)
         self.log = logging.getLogger("pyload")  # settable in config

@@ -9,6 +9,7 @@
 import datetime
 import hashlib
 import itertools
+import json
 import os
 import re
 import shutil
@@ -22,10 +23,9 @@ import urllib.parse
 import urllib.request
 import xml.sax.saxutils  # TODO: Remove in 0.6.x
 import zlib
-from builtins import _, ADDONMANAGER, map, object, str
+from builtins import ADDONMANAGER, _, map, object, str
 
 import send2trash
-import json
 
 
 # TODO: Remove in 0.6.x

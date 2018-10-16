@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import os
 import binascii
+import os
 import re
 from builtins import _, filter, zip
 
-from cryptography.fernet import Fernet
 import js2py
+from cryptography.fernet import Fernet
 
 from pyload.plugins.captcha.SolveMedia import SolveMedia
 from pyload.plugins.internal.captcha import Captcha

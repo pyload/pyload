@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import time
 from builtins import _
 
 from pyload.network.http_request import BadHeader
 from pyload.plugins.internal.multiaccount import MultiAccount
-import json
 
 
 def args(**kwargs):

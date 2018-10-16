@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
 import re
 from builtins import _
 
 from pyload.plugins.captcha.ReCaptcha import ReCaptcha
 from pyload.plugins.internal.hoster import Hoster
-import json
 
 #
 # Test links:

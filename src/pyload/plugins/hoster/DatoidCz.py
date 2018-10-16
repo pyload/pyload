@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import json
 import time
 import urllib.parse
 from builtins import str
 
 from pyload.plugins.internal.simplehoster import SimpleHoster
-import json
 
 
 class DatoidCz(SimpleHoster):

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 from pyload.plugins.internal.multiaccount import MultiAccount
 from pyload.plugins.utils import set_cookie
-import json
 
 
 class SimplyPremiumCom(MultiAccount):
