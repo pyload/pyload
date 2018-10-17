@@ -27,6 +27,7 @@ import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
 from pyload import exc_logger, remote
+from pyload.log_factory import LogFactory
 from pyload.config.config_parser import ConfigParser
 from pyload.database.database_backend import DatabaseBackend
 from pyload.database.file_database import FileHandler
@@ -283,19 +284,14 @@ class Core(object):
                 except Exception as e:
                     print(_("Failed changing user: {}").format(e))
 
-        self.check_file(
-            self.config.get("log", "log_folder"), _("folder for logs"), True
-        )
-
-        if self.debug:
-            self.init_logger(logging.DEBUG)  # logging level
-        else:
-            self.init_logger(logging.INFO)  # logging level
-
         self.do_kill = False
         self.do_restart = False
         self.shuttedDown = False
 
+        self.logfactory = LogFactory(self)
+        self.logfactory.init_logger('exception')
+        self.log = self.logfactory.get_logger('pyLoad')
+        
         self.log.info(_("Starting pyLoad {}").format(self.version))
         self.log.info(_("Using home directory: {}").format(os.getcwd()))
 
@@ -428,9 +424,8 @@ class Core(object):
                 self.restart()
 
             if self.do_kill:
-                self.shutdown()
                 self.log.info(_("pyLoad quits"))
-                self.removeLogger()
+                self.shutdown()
                 os._exit(0)  # TODO: thrift blocks shutdown
 
             self.threadManager.work()
@@ -447,41 +442,6 @@ class Core(object):
         if self.config.get("webui", "activated"):
             self.webserver = WebServer(self)
             self.webserver.start()
-
-    def init_logger(self, level):
-        console = logging.StreamHandler(sys.stdout)
-        frm = logging.Formatter(
-            "[{asctime}]  {levelname:8}  {name:20}  {message}", "%Y-%m-%d %H:%M:%S", "{"
-        )
-        console.setFormatter(frm)
-        self.log = logging.getLogger("pyload")  # settable in config
-
-        if self.config.get("log", "file_log"):
-            if self.config.get("log", "log_rotate"):
-                file_handler = logging.handlers.RotatingFileHandler(
-                    os.path.join(self.config.get("log", "log_folder"), "log.txt"),
-                    maxBytes=self.config.get("log", "log_size") * 1024,
-                    backupCount=int(self.config.get("log", "log_count")),
-                    encoding="utf8",
-                )
-            else:
-                file_handler = logging.FileHandler(
-                    os.path.join(self.config.get("log", "log_folder"), "log.txt"),
-                    encoding="utf8",
-                )
-
-            file_handler.setFormatter(frm)
-            self.log.addHandler(file_handler)
-            exc_logger.addHandler(file_handler)
-
-        self.log.addHandler(console)  # if console logging
-        exc_logger.addHandler(console)
-        self.log.setLevel(level)
-
-    def removeLogger(self):
-        for h in self.log.handlers:
-            self.log.removeHandler(h)
-            h.close()
 
     def check_install(self, check_name, legend, python=True, essential=False):
         """
@@ -591,6 +551,7 @@ class Core(object):
 
         finally:
             self.files.syncSave()
+            self.logfactory.shutdown()
             self.shuttedDown = True
 
         self.deletePidFile()
@@ -654,9 +615,8 @@ def main(args):
         try:
             pyload_core.start()
         except KeyboardInterrupt:
-            pyload_core.shutdown()
             pyload_core.log.info(_("killed pyLoad from Terminal"))
-            pyload_core.removeLogger()
+            pyload_core.shutdown()
             os._exit(1)
 
 

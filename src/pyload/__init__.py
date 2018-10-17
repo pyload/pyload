@@ -62,7 +62,6 @@ del userdir
 
 exc_logger = logging.getLogger("exception")
 
-
 def excepthook(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)

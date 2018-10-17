@@ -92,17 +92,14 @@ def run_wgsi(host="0.0.0.0", port="8000", debug=False):
 
 
 def run_auto(host="0.0.0.0", port="8000", debug=False):
-    bottle.setDebug(debug)
-    bottle.run(app=web, host=host, port=port, server="auto", quiet=True)
+    bottle.run(app=web, host=host, port=port, server="auto", quiet=True, debug=debug)
 
 
 def run_bjoern(host="0.0.0.0", port="8000", debug=False):
-    bottle.setDebug(debug)
-    bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True)
+    bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True, debug=debug)
 
 
 def run_cherrypy(host="0.0.0.0", port="8000", debug=False, theads=3, cert="", key=""):
-    bottle.setDebug(debug)
     bottle.run(
         app=web,
         host=host,
@@ -111,9 +108,9 @@ def run_cherrypy(host="0.0.0.0", port="8000", debug=False, theads=3, cert="", ke
         quiet=True,
         ssl_certificate=cert,
         ssl_private_key=key,
+        debug=debug
     )
     
 
 def run_fcgi(host="0.0.0.0", port="8000", debug=False):
-    bottle.setDebug(debug)
-    bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True)
+    bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True, debug=debug)
