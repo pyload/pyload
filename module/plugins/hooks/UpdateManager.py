@@ -34,7 +34,7 @@ class UpdateManager(Addon):
 
     # SERVER_URL     = "http://updatemanager.pyload.org"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
-    SERVER_URL = "https://github.com/pyload/updates/raw/master/plugins.txt"
+    SERVER_URL = "https://raw.githubusercontent.com/pyload/updates/master/plugins.txt"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
     def activate(self):
