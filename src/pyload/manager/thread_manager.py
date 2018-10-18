@@ -28,14 +28,14 @@ class ThreadManager(object):
         self.pyload = core
         self.log = core.log
 
-        self.threads = []  # thread list
-        self.localThreads = []  # addon+decrypter threads
+        self.threads = []  #: thread list
+        self.localThreads = []  #: addon+decrypter threads
 
         self.pause = True
 
         self.reconnecting = Event()
         self.reconnecting.clear()
-        self.downloaded = 0  # number of files downloaded since last cleanup
+        self.downloaded = 0  #: number of files downloaded since last cleanup
 
         self.lock = Lock()
 
@@ -207,7 +207,7 @@ class ThreadManager(object):
         try:
             reconn = subprocess.Popen(
                 self.pyload.config.get("reconnect", "method"), bufsize=-1, shell=True
-            )  # , stdout=subprocess.PIPE)
+            )  #: , stdout=subprocess.PIPE)
         except Exception:
             self.log.warning(_("Failed executing reconnect script!"))
             self.pyload.config.set("reconnect", "activated", False)
@@ -333,8 +333,7 @@ class ThreadManager(object):
             if job.plugin.__type__ == "hoster":
                 spaceLeft = (
                     freeSpace(self.pyload.config.get("general", "download_folder"))
-                    // 1024
-                    // 1024
+                    >> 20
                 )
                 if spaceLeft < self.pyload.config.get("general", "min_free_space"):
                     self.log.warning(_("Not enough space left on device"))

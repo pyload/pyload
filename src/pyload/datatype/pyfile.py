@@ -50,7 +50,7 @@ class PyFile(object):
 
         self.status = status
         self.pluginname = pluginname
-        self.packageid = package  # should not be used, use package() instead
+        self.packageid = package  #: should not be used, use package() instead
         self.error = error
         self.order = order
         # database information ends here
@@ -60,10 +60,10 @@ class PyFile(object):
         self.plugin = None
         # self.download = None
 
-        self.waitUntil = 0  # time.time() + time to wait
+        self.waitUntil = 0  #: time.time() + time to wait
 
         # status attributes
-        self.active = False  # obsolete?
+        self.active = False  #: obsolete?
         self.abort = False
         self.reconnected = False
 

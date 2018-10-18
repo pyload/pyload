@@ -44,20 +44,20 @@ urlmatcher = re.compile(
 
 
 class PERMS(object):
-    ALL = 0  # requires no permission, but login
-    ADD = 1  # can add packages
-    DELETE = 2  # can delete packages
-    STATUS = 4  # see and change server status
-    LIST = 16  # see queue and collector
-    MODIFY = 32  # moddify some attribute of downloads
-    DOWNLOAD = 64  # can download from webinterface
-    SETTINGS = 128  # can access settings
-    ACCOUNTS = 256  # can access accounts
-    LOGS = 512  # can see server logs
+    ALL = 0  #: requires no permission, but login
+    ADD = 1  #: can add packages
+    DELETE = 2  #: can delete packages
+    STATUS = 4  #: see and change server status
+    LIST = 16  #: see queue and collector
+    MODIFY = 32  #: moddify some attribute of downloads
+    DOWNLOAD = 64  #: can download from webinterface
+    SETTINGS = 128  #: can access settings
+    ACCOUNTS = 256  #: can access accounts
+    LOGS = 512  #: can see server logs
 
 
 class ROLE(object):
-    ADMIN = 0  # admin has all permissions implicit
+    ADMIN = 0  #: admin has all permissions implicit
     USER = 1
 
 
@@ -84,7 +84,7 @@ class Api(Iface):
     Admin user have all permissions, and are the only ones who can access the methods with no specific permission.
     """
 
-    EXTERNAL = Iface  # let the json api know which methods are external
+    EXTERNAL = Iface  #: let the json api know which methods are external
 
     def __init__(self, core):
         self.pyload = core
@@ -166,7 +166,7 @@ class Api(Iface):
             if option in (
                 "limit_speed",
                 "max_speed",
-            ):  # not so nice to update the limit
+            ):  #: not so nice to update the limit
                 self.pyload.requestFactory.updateBucket()
 
         elif section == "plugin":
@@ -263,7 +263,7 @@ class Api(Iface):
             for x in self.pyload.threadManager.threads
             if x.active and isinstance(x.active, PyFile)
         ]:
-            serverStatus.speed += pyfile.getSpeed()  # bytes/s
+            serverStatus.speed += pyfile.getSpeed()  #: bytes/s
 
         return serverStatus
 
@@ -950,7 +950,7 @@ class Api(Iface):
 
         for pid in packs:
             pack = self.pyload.files.getPackageData(int(pid))
-            while pack["order"] in order.keys():  # just in case
+            while pack["order"] in order.keys():  #: just in case
                 pack["order"] += 1
             order[pack["order"]] = pack["id"]
         return order
@@ -966,7 +966,7 @@ class Api(Iface):
         rawData = self.pyload.files.getPackageData(int(pid))
         order = {}
         for id, pyfile in rawData["links"].items():
-            while pyfile["order"] in order.keys():  # just in case
+            while pyfile["order"] in order.keys():  #: just in case
                 pyfile["order"] += 1
             order[pyfile["order"]] = pyfile["id"]
         return order

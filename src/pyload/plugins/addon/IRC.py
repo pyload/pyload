@@ -129,7 +129,7 @@ class IRC(Thread, Notifier):
             if self.abort:
                 raise IRCError("quit")
 
-            readbuffer += self.sock.recv(1024)
+            readbuffer += self.sock.recv(1 << 10)
             temp = readbuffer.split("\n")
             readbuffer = temp.pop()
 

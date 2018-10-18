@@ -60,7 +60,7 @@ class Core(object):
         self.remote = True
         self.arg_links = []
         self.pidfile = "pyload.pid"
-        self.deleteLinks = False  # will delete links on startup
+        self.deleteLinks = False  #: will delete links on startup
 
         if len(argv) > 1:
             try:
@@ -182,7 +182,7 @@ class Core(object):
         if not pid or os.name == "nt":
             return False
         try:
-            os.kill(pid, 0)  # 0 - default signal (does nothing)
+            os.kill(pid, 0)  #: 0 - default signal (does nothing)
         except Exception:
             return 0
 
@@ -199,7 +199,7 @@ class Core(object):
             return
 
         try:
-            os.kill(pid, 3)  # SIGUIT
+            os.kill(pid, 3)  #: SIGUIT
 
             t = time.time()
             print("waiting for pyLoad to quit")
@@ -210,7 +210,7 @@ class Core(object):
             if not os.path.exists(self.pidfile):
                 print("pyLoad successfully stopped")
             else:
-                os.kill(pid, 9)  # SIGKILL
+                os.kill(pid, 9)  #: SIGKILL
                 print("pyLoad did not respond")
                 print("Kill signal was send to process with id {}".format(pid))
 
@@ -310,7 +310,7 @@ class Core(object):
         )
         # tesser = self.check_install("tesseract", _("tesseract for captcha reading"), False) if os.name != "nt" else True
 
-        self.captcha = True  # checks seems to fail, althoug tesseract is available
+        self.captcha = True  #: checks seems to fail, althoug tesseract is available
 
         self.check_file(
             self.config.get("general", "download_folder"),
@@ -371,7 +371,7 @@ class Core(object):
 
         self.log.info(_("Free space: {}").format(formatSize(spaceLeft)))
 
-        self.config.save()  # save so config files gets filled
+        self.config.save()  #: save so config files gets filled
 
         link_file = os.path.join(HOMEDIR, "pyLoad", "links.txt")
 
@@ -416,7 +416,7 @@ class Core(object):
             try:
                 time.sleep(2)
             except IOError as e:
-                if e.errno != 4:  # errno.EINTR
+                if e.errno != 4:  #: errno.EINTR
                     raise
 
             if self.do_restart:
@@ -432,11 +432,11 @@ class Core(object):
             self.scheduler.work()
 
     def setupDB(self):
-        self.db = DatabaseBackend(self)  # the backend
+        self.db = DatabaseBackend(self)  #: the backend
         self.db.setup()
 
         self.files = FileHandler(self)
-        self.db.manager = self.files  # ugly?
+        self.db.manager = self.files  #: ugly?
 
     def init_webserver(self):
         if self.config.get("webui", "activated"):
@@ -490,7 +490,7 @@ class Core(object):
                             tmp_name = tmp_name.replace("/", os.sep)
                             os.makedirs(tmp_name, exist_ok=True)
                         else:
-                            open(tmp_name, "w")  # where is closed?
+                            open(tmp_name, "w")  #: where is closed?
                     except Exception:
                         file_created = False
                 else:
@@ -588,11 +588,11 @@ def daemon():
     for fd in range(0, 3):
         try:
             os.close(fd)
-        except OSError:  # ERROR as fd wasn't open to begin with (ignored)
+        except OSError:  #: ERROR as fd wasn't open to begin with (ignored)
             pass
 
-    os.open(os.devnull, os.O_RDWR)  # standard input (0)
-    os.dup2(0, 1)  # standard output (1)
+    os.open(os.devnull, os.O_RDWR)  #: standard input (0)
+    os.dup2(0, 1)  #: standard output (1)
     os.dup2(0, 2)
 
     pyload_core = Core()

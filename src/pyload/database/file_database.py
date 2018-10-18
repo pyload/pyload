@@ -43,8 +43,8 @@ class FileHandler(object):
             _("unknown"),
         ]
 
-        self.cache = {}  # holds instances for files
-        self.packageCache = {}  # same for packages
+        self.cache = {}  #: holds instances for files
+        self.packageCache = {}  #: same for packages
         # TODO: purge the cache
 
         self.jobCache = {}
@@ -52,9 +52,9 @@ class FileHandler(object):
         self.lock = RLock()  # TODO: should be a Lock w/o R
         # self.lock._Verbose__verbose = True
 
-        self.filecount = -1  # if an invalid value is set get current value from db
-        self.queuecount = -1  # number of package to be loaded
-        self.unchanged = False  # determines if any changes was made since last call
+        self.filecount = -1  #: if an invalid value is set get current value from db
+        self.queuecount = -1  #: number of package to be loaded
+        self.unchanged = False  #: determines if any changes was made since last call
 
         self.db = self.pyload.db
 
@@ -356,7 +356,7 @@ class FileHandler(object):
                     pyfile = self.getFile(self.jobCache[occ].pop())
 
         else:
-            self.jobCache = {}  # better not caching to much
+            self.jobCache = {}  #: better not caching to much
             jobs = self.db.getJob(occ)
             jobs.reverse()
             self.jobCache[occ] = jobs
@@ -829,7 +829,7 @@ class FileMethods(object):
                 "queue": r[5],
                 "order": r[6],
                 "sizetotal": int(r[7]),
-                "sizedone": r[8] if r[8] else 0,  # these can be None
+                "sizedone": r[8] if r[8] else 0,  #: these can be None
                 "linksdone": r[9] if r[9] else 0,
                 "linkstotal": r[10],
                 "links": {},
@@ -1033,7 +1033,7 @@ class FileMethods(object):
             cmd, pre
         )
 
-        self.c.execute(cmd)  # very bad!
+        self.c.execute(cmd)  #: very bad!
 
         return [x[0] for x in self.c]
 
@@ -1046,7 +1046,7 @@ class FileMethods(object):
             plugins
         )
 
-        self.c.execute(cmd)  # very bad!
+        self.c.execute(cmd)  #: very bad!
 
         return [x[0] for x in self.c]
 

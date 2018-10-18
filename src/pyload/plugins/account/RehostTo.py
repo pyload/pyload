@@ -54,7 +54,7 @@ class RehostTo(MultiAccount):
                 traffic, valid = html.split(",")
 
                 premium = True
-                trafficleft = self.parse_traffic(traffic, "MB")
+                trafficleft = self.parse_traffic(traffic, "MiB")
                 validuntil = float(valid)
 
         finally:

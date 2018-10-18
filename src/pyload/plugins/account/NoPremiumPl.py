@@ -66,7 +66,7 @@ class NoPremiumPl(MultiAccount):
                 datetime.datetime.fromtimestamp(int(result["expire"])).timetuple()
             )
 
-        traffic_left = result["balance"] * 1024
+        traffic_left = result["balance"] << 10
 
         return {
             "validuntil": valid_untill,

@@ -113,10 +113,10 @@ class MegasharesCom(SimpleHoster):
 
         self.log_info(_("Download passport: {}").format(m.group(1)))
         data_left = (
-            float(m.group(2)) * 1024 ** {"B": 0, "KB": 1, "MB": 2, "GB": 3}[m.group(3)]
+            float(m.group(2)) << 10 ** {"B": 0, "KB": 1, "MB": 2, "GB": 3}[m.group(3)]
         )
         self.log_info(
-            _("Data left: {} {} ({} MB needed)").format(
+            _("Data left: {} {} ({} MiB needed)").format(
                 m.group(2), m.group(3), self.pyfile.size // 1_048_576
             )
         )

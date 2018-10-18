@@ -47,7 +47,7 @@ class IRC(object):
         start_time = time.time()
         while time.time() - start_time < timeout:
             if self._data_available():
-                self.receive_buffer += self.irc_sock.recv(1024)
+                self.receive_buffer += self.irc_sock.recv(1 << 10)
                 self.lines += self.receive_buffer.split("\r\n")
                 self.receive_buffer = self.lines.pop()
 
@@ -351,7 +351,7 @@ class IRC(object):
                 and args[1].lower() == bot.lower()
             ):
                 self.plugin.log_debug(_("Bot '{}' is online").format(bot))
-                self.bot_host[bot] = args[3]  # bot host
+                self.bot_host[bot] = args[3]  #: bot host
                 return True
 
             else:

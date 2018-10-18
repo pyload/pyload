@@ -118,18 +118,18 @@ class CloudFlare(object):
                 owner_plugin.log_error(
                     _("Unable to parse CloudFlare's DDoS protection page")
                 )
-                return None  # Tell the exception handler to re-throw the exception
+                return None  #: Tell the exception handler to re-throw the exception
 
             # Safely evaluate the Javascript expression
             get_params["jschl_answer"] = str(int(js2py.eval_js(js)) + len(domain))
 
-            owner_plugin.wait()  # Do the actual wait
+            owner_plugin.wait()  #: Do the actual wait
 
             return owner_plugin.load(submit_url, get=get_params, ref=last_url)
 
         except Exception as e:
             addon_plugin.log_error(e)
-            return None  # Tell the exception handler to re-throw the exception
+            return None  #: Tell the exception handler to re-throw the exception
 
     @staticmethod
     def _solve_cf_security_check(addon_plugin, owner_plugin, data):
@@ -151,11 +151,11 @@ class CloudFlare(object):
 
             else:
                 addon_plugin.log_warning(_("Got unexpected CloudFlare html page"))
-                return None  # Tell the exception handler to re-throw the exception
+                return None  #: Tell the exception handler to re-throw the exception
 
         except Exception as e:
             addon_plugin.log_error(e)
-            return None  # Tell the exception handler to re-throw the exception
+            return None  #: Tell the exception handler to re-throw the exception
 
 
 class PreloadStub(object):

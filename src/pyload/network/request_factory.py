@@ -26,7 +26,7 @@ class RequestFactory(object):
         self.lock.acquire()
 
         options = self.getOptions()
-        options.update(kwargs)  # submit kwargs as additional options
+        options.update(kwargs)  #: submit kwargs as additional options
 
         if type == "XDCC":
             req = XDCCRequest(self.bucket, options)
@@ -48,7 +48,7 @@ class RequestFactory(object):
         returns a http request, dont forget to close it !
         """
         options = self.getOptions()
-        options.update(kwargs)  # submit kwargs as additional options
+        options.update(kwargs)  #: submit kwargs as additional options
         return HTTPRequest(CookieJar(None), options)
 
     def getURL(self, *args, **kwargs):
@@ -120,7 +120,7 @@ class RequestFactory(object):
         if not self.pyload.config.get("download", "limit_speed"):
             self.bucket.setRate(-1)
         else:
-            self.bucket.setRate(self.pyload.config.get("download", "max_speed") * 1024)
+            self.bucket.setRate(self.pyload.config.get("download", "max_speed") << 10)
 
 
 # needs REQUESTS in global namespace

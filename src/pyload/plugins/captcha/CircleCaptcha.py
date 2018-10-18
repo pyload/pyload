@@ -27,7 +27,7 @@ class ImageSequence(object):
                 self.im.seek(ix)
             return self.im
         except EOFError:
-            raise IndexError  # end of sequence
+            raise IndexError  #: end of sequence
 
 
 class CircleCaptcha(OCR):
@@ -562,10 +562,10 @@ class CircleCaptcha(OCR):
 
             stepheight = list(range(1, im.size[1], 2))
             #: stepheight = range(45, 47)
-            lstPoints = []  # Declares an empty list for the points
-            lstX = []  # CoordinateX
-            lstY = []  # CoordinateY
-            lstColors = []  # Declares an empty list named lst
+            lstPoints = []  #: Declares an empty list for the points
+            lstX = []  #: CoordinateX
+            lstY = []  #: CoordinateY
+            lstColors = []  #: Declares an empty list named lst
             min_distance = 10
             max_diameter = 70
 
@@ -601,7 +601,7 @@ class CircleCaptcha(OCR):
                         continue
 
                     if self.pyload.debug:
-                        pixcopy[x1, y1] = 45  # (255, 0, 0, 255)
+                        pixcopy[x1, y1] = 45  #: (255, 0, 0, 255)
                     #: found 1 pixel, seeking x2, y2
                     x2 = x1
                     y2 = y1
@@ -625,7 +625,7 @@ class CircleCaptcha(OCR):
                             break
 
                         if self.pyload.debug:
-                            pixcopy[x2, y2] = 65  # (0, 255, 0, 255)
+                            pixcopy[x2, y2] = 65  #: (0, 255, 0, 255)
                         #: found 2 pixel, seeking x3, y3
                         #: Verify cord
 

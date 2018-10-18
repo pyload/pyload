@@ -41,15 +41,15 @@ class ConfigParser(object):
         """
         Constructor.
         """
-        self.config = {}  # the config values
-        self.plugin = {}  # the config for plugins
+        self.config = {}  #: the config values
+        self.plugin = {}  #: the config for plugins
 
         self.configpath = os.path.join(HOMEDIR, "pyLoad", "pyload.conf")
         self.pluginpath = os.path.join(HOMEDIR, "pyLoad", "plugins.conf")
 
         self.oldRemoteData = {}
 
-        self.pluginCB = None  # callback when plugin config value is changed
+        self.pluginCB = None  #: callback when plugin config value is changed
 
         self.checkVersion()
 
@@ -147,7 +147,7 @@ class ConfigParser(object):
                     and comment > 0
                     and line[comment - 1].isspace()
                 ):
-                    line = line.rpartition("#")  # removes comments
+                    line = line.rpartition("#")  #: removes comments
                     if line[1]:
                         line = line[0]
                     else:

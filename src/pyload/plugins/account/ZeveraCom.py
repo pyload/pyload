@@ -67,7 +67,7 @@ class ZeveraCom(MultiAccount):
                     time.strptime(res["endsubscriptiondate"], "%Y/%m/%d %H:%M:%S")
                 )
                 trafficleft = (
-                    float(res["availabletodaytraffic"]) * 1024
+                    float(res["availabletodaytraffic"]) << 10
                     if res["orondaytrafficlimit"] != "0"
                     else -1
                 )

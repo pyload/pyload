@@ -39,7 +39,7 @@ class ShareonlineBiz(Account):
         premium = False
         validuntil = None
         trafficleft = -1
-        maxtraffic = 100 * 1024 * 1024 * 1024  #: 100 GB
+        maxtraffic = 100 << 30  #: 100 GiB
 
         api_info = self.api_response(user, password)
 
@@ -58,8 +58,8 @@ class ShareonlineBiz(Account):
         else:
             trafficleft = -1
 
-        maxtraffic //= 1024  # TODO: Remove `/ 1024` in 0.6.x
-        trafficleft //= 1024  # TODO: Remove `/ 1024` in 0.6.x
+        maxtraffic >>= 10  # TODO: Remove `>> 10` in 0.6.x
+        trafficleft >>= 10  # TODO: Remove `>> 10` in 0.6.x
 
         return {
             "premium": premium,

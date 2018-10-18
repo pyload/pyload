@@ -183,7 +183,7 @@ class Plugin(Base):
         self.waitUntil = 0
         self.waiting = False
 
-        self.ocr = None  # captcha reader instance
+        self.ocr = None  #: captcha reader instance
         #: account handler instance, see :py:class:`Account`
         self.account = pyfile.m.pyload.accountManager.getAccountPlugin(self.__name__)
 
@@ -198,12 +198,12 @@ class Plugin(Base):
             self.user, data = self.account.selectAccount()
             #: Browser instance, see `network.Browser`
             self.req = self.account.getAccountRequest(self.user)
-            self.chunkLimit = -1  # chunk limit, -1 for unlimited
+            self.chunkLimit = -1  #: chunk limit, -1 for unlimited
             #: enables resume (will be ignored if server dont accept chunks)
             self.resumeDownload = True
             self.multiDL = (
                 True
-            )  # every hoster with account should provide multiple downloads
+            )  #: every hoster with account should provide multiple downloads
             #: premium status
             self.premium = self.account.isPremium(self.user)
         else:
@@ -211,7 +211,7 @@ class Plugin(Base):
 
         #: associated pyfile instance, see `PyFile`
         self.pyfile = pyfile
-        self.thread = None  # holds thread in future
+        self.thread = None  #: holds thread in future
 
         #: location where the last call to download was saved
         self.lastDownload = ""
@@ -219,10 +219,10 @@ class Plugin(Base):
         self.lastCheck = None
         #: js engine, see `JsEngine`
         self.js = self.pyload.js
-        self.cTask = None  # captcha task
+        self.cTask = None  #: captcha task
 
-        self.retries = 0  # amount of retries already made
-        self.html = None  # some plugins store html code here
+        self.retries = 0  #: amount of retries already made
+        self.html = None  #: some plugins store html code here
 
         self.init()
 
@@ -431,15 +431,15 @@ class Plugin(Base):
 
             while task.isWaiting():
                 if self.pyfile.abort:
-                    captchaManager.os.removeTask(task)
+                    captchaManager.removeTask(task)
                     raise Abort
                 time.sleep(1)
 
-            captchaManager.os.removeTask(task)
+            captchaManager.removeTask(task)
 
             if (
                 task.error and has_plugin
-            ):  # ignore default error message since the user could use OCR
+            ):  #: ignore default error message since the user could use OCR
                 self.fail(
                     _(
                         "Pil and tesseract not installed and no Client connected for captcha decrypting"
@@ -515,7 +515,7 @@ class Plugin(Base):
                 ),
                 "wb",
             ) as f:
-                del frame  # delete the frame or it wont be cleaned
+                del frame  #: delete the frame or it wont be cleaned
 
                 try:
                     tmp = res.encode("utf8")
@@ -610,7 +610,7 @@ class Plugin(Base):
         finally:
             self.pyfile.size = self.req.size
 
-        if disposition and newname and newname != name:  # triple check, just to be sure
+        if disposition and newname and newname != name:  #: triple check, just to be sure
             self.log.info(
                 "{name} saved as {newname}".format(**{"name": name, "newname": newname})
             )
@@ -703,11 +703,11 @@ class Plugin(Base):
                 and pyfile.name == self.pyfile.name
                 and pyfile.package().folder == pack.folder
             ):
-                if pyfile.status in (0, 12):  # finished or downloading
+                if pyfile.status in (0, 12):  #: finished or downloading
                     raise SkipDownload(pyfile.pluginname)
                 elif (
                     pyfile.status in (5, 7) and starting
-                ):  # a download is waiting/starting and was appenrently started before
+                ):  #: a download is waiting/starting and was appenrently started before
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config.get("general", "download_folder")

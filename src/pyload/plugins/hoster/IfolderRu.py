@@ -26,7 +26,7 @@ class IfolderRu(SimpleHoster):
     __license__ = "GPLv3"
     __authors__ = [("zoidberg", "zoidberg@mujmail.cz")]
 
-    SIZE_REPLACEMENTS = [("Кб", "KB"), ("Мб", "MB"), ("Гб", "GB")]
+    SIZE_REPLACEMENTS = [("Кб", "KiB"), ("Мб", "MiB"), ("Гб", "GiB")]
 
     NAME_PATTERN = (
         r"(?:<div><span>)?Название:(?:</span>)? <b>(?P<N>.+?)</b><(?:/div|br)>"

@@ -34,7 +34,7 @@ class NarodRu(SimpleHoster):
         r"<title>404</title>|Файл удален с сервиса|Закончился срок хранения файла\."
     )
 
-    SIZE_REPLACEMENTS = [("КБ", "KB"), ("МБ", "MB"), ("ГБ", "GB")]
+    SIZE_REPLACEMENTS = [("КБ", "KiB"), ("МБ", "MiB"), ("ГБ", "GiB")]
     URL_REPLACEMENTS = [
         ("narod.yandex.ru/", "narod.ru/"),
         (r"/start/\d+\.\w+\-narod\.yandex\.ru/(\d{6,15})/\w+/(\w+)", r"/disk/\1/\2"),

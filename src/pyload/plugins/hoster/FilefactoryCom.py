@@ -14,7 +14,7 @@ def get_info(urls):
 
         if m and not re.match(
             m.group(1), FilefactoryCom.__pattern__
-        ):  # : It's a direct link! Skipping
+        ):  #: : It's a direct link! Skipping
             yield (url, 0, 7, url)
         else:
             #: It's a standard html page

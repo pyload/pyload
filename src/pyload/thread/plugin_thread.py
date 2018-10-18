@@ -32,7 +32,7 @@ class PluginThread(Thread):
         """
         Thread.__init__(self)
         self.setDaemon(True)
-        self.m = manager  # thread manager
+        self.m = manager  #: thread manager
 
     def writeDebugReport(self, pyfile):
         """
@@ -63,7 +63,7 @@ class PluginThread(Thread):
                 info = zipfile.ZipInfo(
                     save_join(pyfile.pluginname, "debug_Report.txt"), time.gmtime()
                 )
-                info.external_attr = 0o644 << 16  # change permissions
+                info.external_attr = 0o644 << 16  #: change permissions
 
                 zip.writestr(info, dump)
 
@@ -107,7 +107,7 @@ class PluginThread(Thread):
 
             del frame
 
-        del stack  # delete it just to be sure...
+        del stack  #: delete it just to be sure...
 
         dump += "\n\nPLUGIN OBJECT DUMP: \n\n"
 
@@ -159,7 +159,7 @@ class DownloadThread(PluginThread):
         """
         PluginThread.__init__(self, manager)
 
-        self.queue = Queue()  # job queue
+        self.queue = Queue()  #: job queue
         self.active = False
 
         self.start()
@@ -528,13 +528,13 @@ class InfoThread(PluginThread):
         PluginThread.__init__(self, manager)
 
         self.data = data
-        self.pid = pid  # package id
+        self.pid = pid  #: package id
         # [ .. (name, plugin) .. ]
 
-        self.rid = rid  # result id
-        self.add = add  # add packages instead of return result
+        self.rid = rid  #: result id
+        self.add = add  #: add packages instead of return result
 
-        self.cache = []  # accumulated data
+        self.cache = []  #: accumulated data
 
         self.start()
 
@@ -591,7 +591,7 @@ class InfoThread(PluginThread):
             # empty cache
             del self.cache[:]
 
-        else:  # post the results
+        else:  #: post the results
 
             for name, url in container:
                 # attach container content
@@ -662,8 +662,8 @@ class InfoThread(PluginThread):
 
     def fetchForPlugin(self, pluginname, plugin, urls, cb, err=None):
         try:
-            result = []  # result loaded from cache
-            process = []  # urls to process
+            result = []  #: result loaded from cache
+            process = []  #: urls to process
             for url in urls:
                 if url in self.m.infoCache:
                     result.append(self.m.infoCache[url])

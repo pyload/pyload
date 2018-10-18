@@ -36,8 +36,8 @@ class Keep2ShareCc(Account):
 
         return {
             "validuntil": json_data["account_expires"],
-            # TODO: Remove `/ 1024` in 0.6.x
-            "trafficleft": json_data["available_traffic"] // 1024,
+            # TODO: Remove `>> 10` in 0.6.x
+            "trafficleft": json_data["available_traffic"] >> 10,
             "premium": True,
         }
 

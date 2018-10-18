@@ -49,7 +49,7 @@ An example ``process`` function could look like this ::
             """
 
             def process(self, pyfile):
-                html = self.load(pyfile.url)  # load the content of the orginal pyfile.url to html
+                html = self.load(pyfile.url)  #: load the content of the orginal pyfile.url to html
 
                 # parse the name from the site and set attribute in pyfile
                 pyfile.name = self.myFunctionToParseTheName(html)
@@ -91,7 +91,7 @@ Example: ::
 
             urls = ["http://get.pyload.net/src", "http://get.pyload.net/debian", "http://get.pyload.net/win"]
 
-            self.packages.append(("pyLoad packages", urls, "pyLoad packages")) # urls list of urls
+            self.packages.append(("pyLoad packages", urls, "pyLoad packages")) #: urls list of urls
 
 They can access all the methods from :class:`Plugin <pyload.plugins.Plugin.Plugin>`, but the important thing is they
 have to append all packages they parsed to the `self.packages` list. Simply append tuples with `(name, urls, folder)`,

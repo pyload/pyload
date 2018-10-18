@@ -24,6 +24,6 @@ class NetloadIn(OCR):
 
         self.result_captcha = self.result_captcha.replace(" ", "")[
             :4
-        ]  # cut to 4 numbers
+        ]  #: cut to 4 numbers
 
         return self.result_captcha

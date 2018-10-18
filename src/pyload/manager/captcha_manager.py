@@ -10,9 +10,9 @@ class CaptchaManager(object):
     def __init__(self, core):
         self.lock = Lock()
         self.pyload = core
-        self.tasks = []  # Task store, for outgoing tasks only
+        self.tasks = []  #: Task store, for outgoing tasks only
 
-        self.ids = 0  # Only for internal purpose
+        self.ids = 0  #: Only for internal purpose
 
     def newTask(self, format, params, result_type):
         task = CaptchaTask(self.ids, format, params, result_type)
@@ -37,7 +37,7 @@ class CaptchaManager(object):
     def getTaskByID(self, tid):
         self.lock.acquire()
         for task in self.tasks:
-            if task.id == str(tid):  # Task ids are strings
+            if task.id == str(tid):  #: Task ids are strings
                 self.lock.release()
                 return task
         self.lock.release()
@@ -48,8 +48,8 @@ class CaptchaManager(object):
 
         task.setWaiting(timeout)
 
-        # if cli:  # Client connected -> should solve the captcha
-        #     task.setWaiting(50)  # Wait minimum 50 sec for response
+        # if cli:  #: Client connected -> should solve the captcha
+        #     task.setWaiting(50)  #: Wait minimum 50 sec for response
 
         for plugin in self.pyload.addonManager.activePlugins():
             try:
@@ -57,7 +57,7 @@ class CaptchaManager(object):
             except Exception:
                 pass
 
-        if task.handler or cli:  # The captcha was handled
+        if task.handler or cli:  #: The captcha was handled
             self.tasks.append(task)
             return True
 
@@ -72,13 +72,13 @@ class CaptchaTask(object):
         self.captchaParams = params
         self.captchaFormat = format
         self.captchaResultType = result_type
-        self.handler = []  # the addon plugins that will take care of the solution
+        self.handler = []  #: the addon plugins that will take care of the solution
         self.result = None
         self.waitUntil = None
-        self.error = None  # error message
+        self.error = None  #: error message
 
         self.status = "init"
-        self.data = {}  # handler can store data here
+        self.data = {}  #: handler can store data here
 
     def getCaptcha(self):
         return self.captchaParams, self.captchaFormat, self.captchaResultType

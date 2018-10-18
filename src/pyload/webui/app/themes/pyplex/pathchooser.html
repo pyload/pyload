@@ -109,7 +109,7 @@
             {% endif %}
 
             <td class="size">{% if file.type == 'file' %}
-              {% if file.unit == 'Byte' %}1 KB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
+              {% if file.unit == 'Byte' %}1 KiB{% else %}{{(file.size|round(precision=0, method='common'))|int}} {{file.unit|replace('Byte', 'B')}}{% endif %}
               {% endif %}</td>
             <td class="type">{% if file.type == 'dir' %}&lt;DIR&gt;{% else %}{{file.ext|default('file', True)}}{% endif %}</td>
             <td class="mtime">{{file.modified|date('d.m.Y - H:i:s')}}</td>

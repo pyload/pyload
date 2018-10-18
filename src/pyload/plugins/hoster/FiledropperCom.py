@@ -28,7 +28,7 @@ class FiledropperCom(SimpleHoster):
     __authors__ = [("zapp-brannigan", "fuerst.reinje@web.de")]
 
     NAME_PATTERN = r"Filename: (?P<N>.+?) <"
-    # NOTE: Website says always 0 KB
+    # NOTE: Website says always 0 KiB
     SIZE_PATTERN = r"Size: (?P<S>[\d.,]+) (?P<U>[\w^_]+),"
     OFFLINE_PATTERN = r'value="a\.swf"'
 

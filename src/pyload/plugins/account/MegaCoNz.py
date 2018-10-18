@@ -34,7 +34,7 @@ class MegaCoNz(Account):
                 validuntil = res.get("suntil", None)
                 trafficleft = (
                     res.get("mxfer", 0) - res.get("caxfer", 0) - res.get("csxfer", 0)
-                ) // 1024
+                ) >> 10
 
             # if res['rtt']:
             #     self.log_debug("Tranfare history:{}".format(res['tah']))

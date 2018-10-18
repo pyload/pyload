@@ -131,9 +131,9 @@ def choose_path(browse_for, path=""):
             data["size"] = os.path.getsize(os.path.join(cwd, f))
 
             power = 0
-            while (data["size"] / 1024.0) > 0.3:
+            while (data["size"] >> 10) > 0.3:
                 power += 1
-                data["size"] /= 1024.0
+                data["size"] >>= 10
             units = ("", "K", "M", "G", "T")
             data["unit"] = units[power] + "Byte"
         else:
@@ -386,7 +386,7 @@ def config():
         elif not data.trafficleft:
             trafficleft = _("not available")
         else:
-            trafficleft = formatSize(data.trafficleft * 1024)
+            trafficleft = formatSize(data.trafficleft << 10)
 
         if data.validuntil == -1:
             validuntil = _("unlimited")
@@ -500,7 +500,7 @@ def logs(item=-1):
             1 if len(log) - perpage + 1 < 1 or perpage == 0 else len(log) - perpage + 1
         )
 
-    if isinstance(fro, datetime.datetime):  # we will search for datetime.datetime
+    if isinstance(fro, datetime.datetime):  #: we will search for datetime.datetime
         item = -1
 
     data = []
@@ -522,7 +522,7 @@ def logs(item=-1):
                 level = "?"
                 message = l
             if item == -1 and dtime is not None and fro <= dtime:
-                item = counter  # found our datetime.datetime
+                item = counter  #: found our datetime.datetime
             if item >= 0:
                 data.append(
                     {
@@ -535,12 +535,12 @@ def logs(item=-1):
                 perpagecheck += 1
                 if (
                     fro is None and dtime is not None
-                ):  # if fro not set set it to first showed line
+                ):  #: if fro not set set it to first showed line
                     fro = dtime
             if perpagecheck >= perpage > 0:
                 break
 
-    if fro is None:  # still not set, empty log?
+    if fro is None:  #: still not set, empty log?
         fro = datetime.datetime.now()
     if reversed:
         data.reverse()

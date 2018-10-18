@@ -52,8 +52,8 @@ class Cli(object):
 
             # processor funcions, these will be changed dynamically depending on
             # control flow
-            self.headerHandler = self  # the download status
-            self.bodyHandler = self  # the menu section
+            self.headerHandler = self  #: the download status
+            self.bodyHandler = self  #: the menu section
             self.inputHandler = self
 
             os.system("clear")
@@ -86,8 +86,8 @@ class Cli(object):
             inp = input()
             if ord(inp) == 3:
                 os.system("clear")
-                sys.exit()  # ctrl + c
-            elif ord(inp) == 13:  # enter
+                sys.exit()  #: ctrl + c
+            elif ord(inp) == 13:  #: enter
                 try:
                     self.lock.acquire()
                     self.inputHandler.onEnter(self.input)
@@ -98,14 +98,14 @@ class Cli(object):
                     self.lock.release()
 
             elif ord(inp) == 127:
-                self.input = self.input[:-1]  # backspace
+                self.input = self.input[:-1]  #: backspace
                 try:
                     self.lock.acquire()
                     self.inputHandler.onBackSpace()
                 finally:
                     self.lock.release()
 
-            elif ord(inp) == 27:  # ugly symbol
+            elif ord(inp) == 27:  #: ugly symbol
                 pass
             else:
                 self.input += inp
@@ -160,7 +160,7 @@ class Cli(object):
         line += 1
 
         for download in data:
-            if download.status == 12:  # downloading
+            if download.status == 12:  #: downloading
                 percent = download.percent
                 z = percent // 4
                 speed += download.speed
@@ -286,7 +286,7 @@ class Cli(object):
                 print("No downloads running.")
 
             for download in files:
-                if download.status == 12:  # downloading
+                if download.status == 12:  #: downloading
                     print(print_status(download))
                     print(
                         "\tDownloading: {} @ {}/s\t {} ({}%%)".format(

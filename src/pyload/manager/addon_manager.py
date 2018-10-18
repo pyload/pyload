@@ -47,14 +47,14 @@ class AddonManager(object):
         self.pyload = core
         self.config = self.pyload.config
 
-        builtins.ADDONMANAGER = self  # needed to let addons register themself
+        builtins.ADDONMANAGER = self  #: needed to let addons register themself
 
         self.log = self.pyload.log
         self.plugins = []
         self.pluginMap = {}
-        self.methods = {}  # dict of names and list of methods usable by rpc
+        self.methods = {}  #: dict of names and list of methods usable by rpc
 
-        self.events = {}  # contains events
+        self.events = {}  #: contains events
 
         # registering callback for config event
         self.config.pluginCB = MethodType(self.dispatchEvent, "pluginConfigChanged")

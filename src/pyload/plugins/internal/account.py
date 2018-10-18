@@ -452,8 +452,8 @@ class Account(Plugin):
 
     def parse_traffic(self, size, unit=None):  # NOTE: Returns kilobytes only in 0.5.0
         self.log_debug("Size: {}".format(size), "Unit: {}".format(unit or "N/D"))
-        # TODO: Remove `/ 1024` in 0.6.x
-        return parse_size(size, unit or "byte") // 1024
+        # TODO: Remove `>> 10` in 0.6.x
+        return parse_size(size, unit or "byte") >> 10
 
     def fail_login(self, msg=_("Login handshake has failed")):
         return self.fail(msg)

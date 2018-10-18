@@ -253,14 +253,14 @@ class PluginManager(object):
         """
 
         last = None
-        res = []  # tupels of (url, plugin)
+        res = []  #: tupels of (url, plugin)
 
         for url in urls:
             if type(url) not in (
                 str,
                 bytes,
                 memoryview,
-            ):  # check memoryview (as py2 byffer)
+            ):  #: check memoryview (as py2 byffer)
                 continue
             found = False
 
@@ -334,7 +334,7 @@ class PluginManager(object):
                     locals(),
                     plugins[name]["name"],
                 )
-                plugins[name]["pyload"] = module  # cache import, maybe unneeded
+                plugins[name]["pyload"] = module  #: cache import, maybe unneeded
                 return module
             except Exception as e:
                 self.log.error(
@@ -366,11 +366,11 @@ class PluginManager(object):
         # redirecting imports if necesarry
         if fullname.startswith(self.ROOT) or fullname.startswith(
             self.USERROOT
-        ):  # os.seperate pyload plugins
+        ):  #: os.seperate pyload plugins
             if fullname.startswith(self.USERROOT):
                 user = 1
             else:
-                user = 0  # used as bool and int
+                user = 0  #: used as bool and int
 
             split = fullname.split(".")
             if len(split) != 4 - user:
@@ -386,7 +386,7 @@ class PluginManager(object):
                     return self
 
     def load_module(self, name, replace=True):
-        if name not in sys.modules:  # could be already in modules
+        if name not in sys.modules:  #: could be already in modules
             if replace:
                 if self.ROOT in name:
                     newname = name.replace(self.ROOT, self.USERROOT)
@@ -477,7 +477,7 @@ class PluginManager(object):
             except Exception:
                 self.log.error("Invalid config in {}: {}".format(name, config))
 
-        if "account" in as_dict:  # accounts needs to be reloaded
+        if "account" in as_dict:  #: accounts needs to be reloaded
             self.pyload.accountManager.initPlugins()
             self.pyload.scheduler.addJob(0, self.pyload.accountManager.getAccountInfos)
 

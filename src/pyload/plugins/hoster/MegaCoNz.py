@@ -220,7 +220,7 @@ class MegaClient(object):
         """
         uid = random.randint(
             10 << 9, 10 ** 10
-        )  # : Generate a session id, no idea where to obtain elsewhere
+        )  #: : Generate a session id, no idea where to obtain elsewhere
         get_params = {"id": uid}
 
         if self.node_id:

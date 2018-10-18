@@ -40,7 +40,7 @@ class XFileSharing(Addon):
         ),
     }
 
-    BUILTIN_HOSTERS = [  # WORKING HOSTERS:
+    BUILTIN_HOSTERS = [  #: WORKING HOSTERS:
         "ani-stream.com",
         "backin.net",
         "cloudshares.net",

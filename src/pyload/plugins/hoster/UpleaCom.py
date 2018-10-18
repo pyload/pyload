@@ -41,12 +41,12 @@ class UpleaCom(SimpleHoster):
     PLUGIN_DOMAIN = "uplea.com"
 
     SIZE_REPLACEMENTS = [
-        ("ko", "KB"),
-        ("mo", "MB"),
-        ("go", "GB"),
-        ("Ko", "KB"),
-        ("Mo", "MB"),
-        ("Go", "GB"),
+        ("ko", "KiB"),
+        ("mo", "MiB"),
+        ("go", "GiB"),
+        ("Ko", "KiB"),
+        ("Mo", "MiB"),
+        ("Go", "GiB"),
     ]
 
     NAME_PATTERN = r'<span class="gold-text">(?P<N>.+?)</span>'

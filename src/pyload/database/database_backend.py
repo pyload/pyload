@@ -120,12 +120,12 @@ class DatabaseBackend(Thread):
         """
         main loop, which executes commands.
         """
-        convert = self._checkVersion()  # returns None or current version
+        convert = self._checkVersion()  #: returns None or current version
 
         self.conn = sqlite3.connect("files.db", isolation_level=None)
         os.chmod("files.db", 0o600)
 
-        self.c = self.conn.cursor()  # compatibility
+        self.c = self.conn.cursor()  #: compatibility
 
         if convert is not None:
             self._convertDB(convert)
@@ -311,7 +311,7 @@ class DatabaseBackend(Thread):
 
     @classmethod
     def unregisterSub(cls, klass):
-        cls.subs.os.remove(klass)
+        cls.subs.remove(klass)
 
     def __getattr__(self, attr):
         for sub in DatabaseBackend.subs:

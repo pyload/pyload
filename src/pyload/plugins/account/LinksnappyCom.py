@@ -63,8 +63,8 @@ class LinksnappyCom(MultiAccount):
                 trafficleft = -1
 
             else:
-                # TODO: Remove `/ 1024` in 0.6.x
-                trafficleft = float(json_data["return"]["trafficleft"]) // 1024
+                # TODO: Remove `>> 10` in 0.6.x
+                trafficleft = float(json_data["return"]["trafficleft"]) >> 10
 
         return {
             "premium": premium,

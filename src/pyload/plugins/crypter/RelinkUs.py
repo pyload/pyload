@@ -160,7 +160,7 @@ class RelinkUs(Crypter):
                 get={"id": captcha_id},
                 input_type="png",
                 output_type="positional",
-            )  # , ocr="CircleCaptcha")
+            )  #: , ocr="CircleCaptcha")
             self.log_debug(
                 "Captcha resolved, coords ({},{})".format(coords[0], coords[1])
             )
@@ -194,7 +194,7 @@ class RelinkUs(Crypter):
 
         self.data = self.load(
             self.CAPTCHA_SUBMIT_URL,
-            ref=False,  # ref=self.CAPTCHA_SUBMIT_URL + "&id=" + self.file_id,
+            ref=False,  #: ref=self.CAPTCHA_SUBMIT_URL + "&id=" + self.file_id,
             get={"id": self.file_id},
             post=post_data,
         )

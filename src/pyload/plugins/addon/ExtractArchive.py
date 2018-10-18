@@ -268,7 +268,7 @@ class ExtractArchive(Addon):
                     )
                     for fdata in pypack.getChildren().values()
                 }.values()
-            )  # : Remove duplicates
+            )  #: : Remove duplicates
 
             #: Check as long there are unseen files
             while files_ids:

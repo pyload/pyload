@@ -17,9 +17,9 @@ class ManageFiles(Handler):
 
     def init(self):
         self.target = Destination.Queue
-        self.pos = 0  # position in queue
-        self.package = -1  # choosen package
-        self.mode = ""  # move/delete/restart
+        self.pos = 0  #: position in queue
+        self.package = -1  #: choosen package
+        self.mode = ""  #: move/delete/restart
 
         self.cache = None
         self.links = None

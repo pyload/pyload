@@ -301,7 +301,7 @@ def add_account():
 @apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():
-    deleted = []  # dont update deleted accs or they will be created again
+    deleted = []  #: dont update deleted accs or they will be created again
 
     for name, value in bottle.request.POST.items():
         value = value.strip()

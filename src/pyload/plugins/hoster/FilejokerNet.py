@@ -32,6 +32,6 @@ class FilejokerNet(XFSHoster):
     PREMIUM_ONLY_PATTERN = r"Free Members can download files no bigger"
 
     INFO_PATTERN = r'<div class="name-size">(?P<N>.+?) <small>\((?P<S>[\d.,]+) (?P<U>[\w^_]+)\)</small></div>'
-    SIZE_REPLACEMENTS = [("Kb", "KB"), ("Mb", "MB"), ("Gb", "GB")]
+    SIZE_REPLACEMENTS = [("Kb", "KiB"), ("Mb", "MiB"), ("Gb", "GiB")]
 
     LINK_PATTERN = r'<div class="premium-download">\s+<a href="(.+?)"'

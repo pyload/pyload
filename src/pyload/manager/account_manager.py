@@ -28,10 +28,10 @@ class AccountManager(object):
         self.lock = Lock()
 
         self.initPlugins()
-        self.saveAccounts()  # save to add categories to conf
+        self.saveAccounts()  #: save to add categories to conf
 
     def initPlugins(self):
-        self.accounts = {}  # key = ( plugin )
+        self.accounts = {}  #: key = ( plugin )
         self.plugins = {}
 
         self.initAccountPlugins()

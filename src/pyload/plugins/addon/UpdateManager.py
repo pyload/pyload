@@ -199,10 +199,10 @@ class UpdateManager(Addon):
             exitcode = 0
 
         #: Exit codes:
-        #:  -1 = No plugin updated, new pyLoad version available
-        #:   0 = No plugin updated
-        #:   1 = Plugins updated
-        #:   2 = Plugins updated, but restart required
+        #: -1 = No plugin updated, new pyLoad version available
+        #:  0 = No plugin updated
+        #:  1 = Plugins updated
+        #:  2 = Plugins updated, but restart required
         return exitcode
 
     @Expose
@@ -236,9 +236,9 @@ class UpdateManager(Addon):
             exitcode = 0
 
         #: Exit codes:
-        #:   0 = No plugin updated
-        #:   1 = Plugins updated
-        #:   2 = Plugins updated, but restart required
+        #: 0 = No plugin updated
+        #: 1 = Plugins updated
+        #: 2 = Plugins updated, but restart required
         return exitcode
 
     def parse_updates(self, server_data):

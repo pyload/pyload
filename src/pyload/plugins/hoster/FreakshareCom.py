@@ -140,7 +140,7 @@ class FreakshareCom(Hoster):
             if m is not None:
                 units = float(m.group(1).replace(",", ""))
                 pow = {"KB": 1, "MB": 2, "GB": 3}[m.group(2)]
-                size = int(units * 1024 ** pow)
+                size = int(units << 10 ** pow)
 
         return size
 

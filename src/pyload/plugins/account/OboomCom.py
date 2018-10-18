@@ -50,9 +50,9 @@ class OboomCom(Account):
 
         traffic = userData["traffic"]
 
-        # TODO: Remove `/ 1024` in 0.6.x
-        trafficLeft = traffic["current"] // 1024
-        maxTraffic = traffic["max"] // 1024  # TODO: Remove `/ 1024` in 0.6.x
+        # TODO: Remove `>> 10` in 0.6.x
+        trafficLeft = traffic["current"] >> 10
+        maxTraffic = traffic["max"] >> 10  # TODO: Remove `>> 10` in 0.6.x
 
         session = account_data["session"]
 

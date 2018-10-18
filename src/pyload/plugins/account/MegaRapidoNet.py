@@ -29,7 +29,7 @@ class MegaRapidoNet(MultiAccount):
 
     def grab_hosters(self, user, password, data):
         hosters = {
-            "1fichier": [],  # leave it there are so many possible addresses?
+            "1fichier": [],  #: leave it there are so many possible addresses?
             "1st-files": ["1st-files.com"],
             "2shared": ["2shared.com"],
             "4shared": ["4shared.com", "4shared-china.com"],

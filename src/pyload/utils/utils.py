@@ -68,10 +68,10 @@ if sys.getfilesystemencoding().startswith("ANSI"):
         finally:
             return value
 
-    fs_decode = decode  # decode utf8
+    fs_decode = decode  #: decode utf8
 
 else:
-    fs_encode = fs_decode = lambda x: x  # do nothing
+    fs_encode = fs_decode = lambda x: x  #: do nothing
 
 
 def compare_time(start, end):
@@ -100,7 +100,7 @@ def formatSize(size):
     steps = 0
     sizes = ["B", "KiB", "MiB", "GiB", "TiB"]
     while size > 1000:
-        size /= 1024.0
+        size >>= 10
         steps += 1
     return "{:.2f} {}".format(size, sizes[steps])
 
@@ -139,7 +139,7 @@ def uniqify(seq, idfun=lambda x: x):
     return result
 
 
-def parseFileSize(value, unit=None):  # returns bytes
+def parseFileSize(value, unit=None):  #: returns bytes
     if not unit:
         m = re.match(r"(\d*[\.,]?\d+)(.*)", value.strip().lower())
         if m:
@@ -197,7 +197,7 @@ def fixup(m):
         except KeyError:
             pass
 
-    return text  # leave as is
+    return text  #: leave as is
 
 
 def html_unescape(text):

@@ -81,7 +81,7 @@ class SafelinkingNet(Crypter):
             else:
                 self.error(_("Couldn't find forwarded Link"))
 
-        else:  # Process protected links
+        else:  #: Process protected links
             self.package_password = self.get_password()
 
             post_data = {"hash": self.info["pattern"]["ID"]}

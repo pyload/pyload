@@ -265,10 +265,10 @@ def format_time(value):
 
 def format_size(value):
     for unit in ("B", "KiB", "MiB", "GiB", "TiB", "PiB"):
-        if abs(value) < 1024.0:
+        if abs(value) < 1 << 10:
             return "{:3.2f} {}".format(value, unit)
         else:
-            value /= 1024.0
+            value >>= 10
 
     return "{:.2f} {}".format(value, "EiB")
 
@@ -596,7 +596,7 @@ def parse_size(value, unit=""):  #: returns bytes
 
     i, d = divmod(size, 1)
     integer = int(i) << magnitude
-    decimal = int(d * (1024 ** (magnitude // 10)))
+    decimal = int(d * (1 << 10 ** (magnitude // 10)))
 
     return integer + decimal
 
@@ -899,7 +899,7 @@ def renice(pid, value):
 
 def forward(source, destination):
     try:
-        bufsize = 1024
+        bufsize = 1 << 10
         bufdata = source.recv(bufsize)
         while bufdata:
             destination.sendall(bufdata)

@@ -64,8 +64,8 @@ class PornhubCom(SimpleHoster):
 
     NAME_PATTERN = r'"video_title":"(?P<N>.+?)"'
 
-    TEMP_OFFLINE_PATTERN = r"^unmatchable$"  # Who knows?
-    OFFLINE_PATTERN = r"^unmatchable$"  # Who knows?
+    TEMP_OFFLINE_PATTERN = r"^unmatchable$"  #: Who knows?
+    OFFLINE_PATTERN = r"^unmatchable$"  #: Who knows?
 
     @classmethod
     def get_info(cls, url="", html=""):

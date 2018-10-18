@@ -56,8 +56,8 @@ class SimplyPremiumCom(MultiAccount):
             "remain_traffic" in json_data["result"]
             and json_data["result"]["remain_traffic"]
         ):
-            # TODO: Remove `/ 1024` in 0.6.x
-            trafficleft = float(json_data["result"]["remain_traffic"]) // 1024
+            # TODO: Remove `>> 10` in 0.6.x
+            trafficleft = float(json_data["result"]["remain_traffic"]) >> 10
 
         return {
             "premium": premium,

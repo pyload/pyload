@@ -77,7 +77,7 @@ class ChunkInfo(object):
             ci.loaded = True
             ci.setSize(size)
             while True:
-                if not fh.readline():  # skip line
+                if not fh.readline():  #: skip line
                     break
                 name = fh.readline()[1:-1]
                 range = fh.readline()[1:-1]
@@ -109,8 +109,8 @@ class ChunkInfo(object):
 class HTTPChunk(HTTPRequest):
     def __init__(self, id, parent, range=None, resume=False):
         self.id = id
-        self.p = parent  # HTTPDownload instance
-        self.range = range  # tuple (start, end)
+        self.p = parent  #: HTTPDownload instance
+        self.range = range  #: tuple (start, end)
         self.resume = resume
         self.log = parent.log
 
@@ -121,14 +121,14 @@ class HTTPChunk(HTTPRequest):
         self.c = pycurl.Curl()
 
         self.header = ""
-        self.headerParsed = False  # indicates if the header has been processed
+        self.headerParsed = False  #: indicates if the header has been processed
 
-        self.fp = None  # file handle
+        self.fp = None  #: file handle
 
         self.initHandle()
         self.setInterface(self.p.options)
 
-        self.BOMChecked = False  # check and os.remove byte order mark
+        self.BOMChecked = False  #: check and os.remove byte order mark
 
         self.rep = None
 
@@ -172,7 +172,7 @@ class HTTPChunk(HTTPRequest):
 
                 if (
                     self.id == len(self.p.info.chunks) - 1
-                ):  # as last chunk dont set end range, so we get everything
+                ):  #: as last chunk dont set end range, so we get everything
                     range = "{}-".format(self.arrived + self.range[0])
                 else:
                     range = "{}-{}".format(
@@ -188,7 +188,7 @@ class HTTPChunk(HTTPRequest):
 
         else:
             if self.range:
-                if self.id == len(self.p.info.chunks) - 1:  # see above
+                if self.id == len(self.p.info.chunks) - 1:  #: see above
                     range = "{}-".format(self.range[0])
                 else:
                     range = "{}-{}".format(
@@ -247,7 +247,7 @@ class HTTPChunk(HTTPRequest):
             time.sleep(self.sleep)
 
         if self.range and self.arrived > self.size:
-            return 0  # close if we have enough data
+            return 0  #: close if we have enough data
 
     def parseHeader(self):
         """
@@ -291,8 +291,8 @@ class HTTPChunk(HTTPRequest):
         flush and close file.
         """
         self.fp.flush()
-        os.fsync(self.fp.fileno())  # make sure everything was written to disk
-        self.fp.close()  # needs to be closed, or merging chunks will fail
+        os.fsync(self.fp.fileno())  #: make sure everything was written to disk
+        self.fp.close()  #: needs to be closed, or merging chunks will fail
 
     def close(self):
         """

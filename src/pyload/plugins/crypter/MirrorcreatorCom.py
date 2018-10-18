@@ -118,6 +118,6 @@ class MirrorcreatorCom(Crypter):
 
             return pack_name, pack_name
 
-        else:  # Fallback to defaults
+        else:  #: Fallback to defaults
             pack = self.pyfile.package()
             return pack.name, pack.folder

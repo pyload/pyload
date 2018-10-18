@@ -14,7 +14,7 @@ class Bucket(object):
         self.lock = Lock()
 
     def __bool__(self):
-        return not self.rate < 10240
+        return not self.rate < 10 << 10
 
     def setRate(self, rate):
         self.lock.acquire()
@@ -25,8 +25,8 @@ class Bucket(object):
         """
         return time the process have to sleep, after consumed specified amount.
         """
-        if self.rate < 10240:
-            return 0  # min. 10kb, may become unresponsive otherwise
+        if self.rate < 10 << 10:
+            return 0  #: min. 10kb, may become unresponsive otherwise
         self.lock.acquire()
 
         self.calc_tokens()

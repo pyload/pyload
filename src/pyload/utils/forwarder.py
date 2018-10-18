@@ -35,7 +35,7 @@ def server(*settings):
 def forward(source, destination):
     string = " "
     while string:
-        string = source.recv(1024)
+        string = source.recv(1 << 10)
         if string:
             destination.sendall(string)
         else:

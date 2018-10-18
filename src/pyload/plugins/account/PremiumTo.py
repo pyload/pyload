@@ -49,8 +49,8 @@ class PremiumTo(MultiAccount):
         traffic = self.api_response("straffic", user, password)
 
         if self.req.code == 200:
-            # TODO: Remove `/ 1024` in 0.6.x
-            trafficleft = sum(map(float, traffic.split(";"))) // 1024
+            # TODO: Remove `>> 10` in 0.6.x
+            trafficleft = sum(map(float, traffic.split(";"))) >> 10
             return {"premium": True, "trafficleft": trafficleft, "validuntil": -1}
 
         else:

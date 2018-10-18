@@ -49,7 +49,7 @@ class HellshareCz(Account):
                     trafficleft = -1
                 else:
                     #: Traffic-based account
-                    trafficleft = self.parse_traffic(credit, "MB")
+                    trafficleft = self.parse_traffic(credit, "MiB")
                     validuntil = -1
 
             except Exception as e:

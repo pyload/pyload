@@ -1100,7 +1100,7 @@ class YoutubeCom(Hoster):
                         self.ffmpeg.add_stream(("s", subtitle))
 
                 self.pyfile.name = os.path.basename(final_filename)
-                self.pyfile.size = os.path.getsize(inputfile)  # : Just an estimate
+                self.pyfile.size = os.path.getsize(inputfile)  #: : Just an estimate
 
                 if self.ffmpeg.run():
                     self.remove(inputfile, trash=False)
@@ -1288,7 +1288,7 @@ class JSInterpreter(object):
     def interpret_expression(self, expr, local_vars, allow_recursion):
         expr = expr.strip()
 
-        if expr == "":  # Empty expression
+        if expr == "":  #: Empty expression
             return None
 
         if expr.startswith("("):

@@ -423,7 +423,7 @@ class Hoster(Base):
 
         else:
             # TODO: Rewrite in 0.6.x
-            size = self.pyfile.size // 1024
+            size = self.pyfile.size >> 10
             self.log_info(
                 _("Filesize: {} KiB").format(size),
                 _("Traffic left for user `{}`: {} KiB").format(
@@ -432,7 +432,7 @@ class Hoster(Base):
             )
             return size > traffic
 
-    # def check_size(self, file_size, size_tolerance=1024, delete=False):
+    # def check_size(self, file_size, size_tolerance=1 << 10, delete=False):
     # """
     # Checks the file size of the last downloaded file
 
@@ -519,7 +519,7 @@ class Hoster(Base):
                     12,
                     5,
                     7,
-                ):  # finished / downloading / waiting / starting
+                ):  #: finished / downloading / waiting / starting
                     self.skip(pyfile.pluginname)
 
         dl_folder = self.pyload.config.get("general", "download_folder")
