@@ -15,7 +15,7 @@ from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
@@ -34,7 +34,7 @@ class UpdateManager(Addon):
 
     # SERVER_URL     = "http://updatemanager.pyload.org"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
-    SERVER_URL = "https://github.com/pyload/updates/raw/master/plugins.txt"
+    SERVER_URL = "https://raw.githubusercontent.com/pyload/updates/master/plugins.txt"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
     def activate(self):
