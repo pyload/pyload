@@ -371,7 +371,7 @@ def get_console_encoding(enc):
             enc = "cp850"
             # print("WARNING: Windows codepage 65001 (UTF-8) is not supported, used `{}` instead".format(enc))
     else:
-        enc = "utf8"
+        enc = "utf-8"
 
     return enc
 

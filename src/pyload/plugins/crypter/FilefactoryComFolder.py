@@ -28,7 +28,7 @@ class FilefactoryComFolder(SimpleCrypter):
     __license__ = "GPLv3"
     __authors__ = [("stickell", "l.stickell@yahoo.it")]
 
-    COOKIES = [("filefactory.com", "locale", "en_US.utf8")]
+    COOKIES = [("filefactory.com", "locale", "en_US.utf-8")]
 
     LINK_PATTERN = r'<td>\s*<a href="(.+?)"'
     NAME_PATTERN = r"<h1>Files in <span>(?P<N>.+?)<"

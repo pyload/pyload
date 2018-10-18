@@ -221,7 +221,7 @@ class HTTPRequest(object):
                 self.c.setopt(pycurl.POSTFIELDS, post)
             else:
                 post = [
-                    (x, y.encode("utf8") if isinstance(y, str) else y)
+                    (x, y.encode("utf-8") if isinstance(y, str) else y)
                     for x, y in post.items()
                 ]
                 self.c.setopt(pycurl.HTTPPOST, post)
@@ -318,7 +318,7 @@ class HTTPRequest(object):
         decode with correct encoding, relies on header.
         """
         header = self.header.splitlines()
-        encoding = "utf8"  #: default encoding
+        encoding = "utf-8"  #: default encoding
 
         for line in header:
             line = line.lower().replace(" ", "")

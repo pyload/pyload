@@ -65,7 +65,7 @@ def choose_path(browse_for, path=""):
     path = os.path.normpath(unquotepath(path))
 
     try:
-        path = os.path.decode("utf8")
+        path = os.path.decode("utf-8")
     except Exception:
         pass
 
@@ -99,7 +99,7 @@ def choose_path(browse_for, path=""):
         parentdir = ""
 
     # try:
-    #     cwd = cwd.encode("utf8")
+    #     cwd = cwd.encode("utf-8")
     # except Exception:
     #     pass
     #
@@ -349,7 +349,7 @@ def downloads():
 @bottle.route(r"/downloads/get/<path:re:.+>")
 @login_required("DOWNLOAD")
 def get_download(path):
-    path = unquote(path).decode("utf8")
+    path = unquote(path).decode("utf-8")
     # TODO: some files can not be downloaded
 
     root = PYLOAD_API.getConfigValue("general", "download_folder")
@@ -511,7 +511,7 @@ def logs(item=-1):
 
         if counter >= item:
             try:
-                date, time, level, message = l.decode("utf8", "ignore").split(" ", 3)
+                date, time, level, message = l.decode("utf-8", "ignore").split(" ", 3)
                 dtime = datetime.datetime.strptime(
                     date + " " + time, "%Y-%m-%d %H:%M:%S"
                 )

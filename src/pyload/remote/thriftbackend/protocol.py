@@ -6,7 +6,7 @@ from thrift.protocol import TBinaryProtocol
 class Protocol(TBinaryProtocol.TBinaryProtocol):
     def writeString(self, str):
         try:
-            str = str.encode("utf8", "ignore")
+            str = str.encode("utf-8", "ignore")
         except Exception as e:
             pass
 
@@ -17,7 +17,7 @@ class Protocol(TBinaryProtocol.TBinaryProtocol):
         len = self.readI32()
         str = self.trans.readAll(len)
         try:
-            str = str.decode("utf8", "ignore")
+            str = str.decode("utf-8", "ignore")
         except Exception:
             pass
 

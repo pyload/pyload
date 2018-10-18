@@ -150,7 +150,7 @@ class Ffmpeg(object):
                 "-ss",
                 "00:{}:{}.00".format(self.start_time[0], self.start_time[1]),
                 "-sub_charenc",
-                "utf8",
+                "utf-8",
             ]
         )
 

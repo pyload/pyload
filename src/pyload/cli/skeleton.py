@@ -31,7 +31,7 @@ from pyload.utils.utils import decode, formatSize
 if os.name == "nt":
     enc = "cp850"
 else:
-    enc = "utf8"
+    enc = "utf-8"
 
 # sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 

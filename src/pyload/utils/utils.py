@@ -25,7 +25,7 @@ def decode(value):
     decode string with utf if possible.
     """
     try:
-        return str.decode("utf8", "replace")
+        return str.decode("utf-8", "replace")
     except Exception:
         return value
 
@@ -68,7 +68,7 @@ if sys.getfilesystemencoding().startswith("ANSI"):
         finally:
             return value
 
-    fs_decode = decode  #: decode utf8
+    fs_decode = decode  #: decode utf-8
 
 else:
     fs_encode = fs_decode = lambda x: x  #: do nothing

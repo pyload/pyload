@@ -489,7 +489,7 @@ class Plugin(Base):
         """
         if self.pyfile.abort:
             raise Abort
-        # utf8 vs decode -> please use decode attribute in all future plugins
+        # utf-8 vs decode -> please use decode attribute in all future plugins
         if isinstance(url, str):
             url = str(url)
 
@@ -518,7 +518,7 @@ class Plugin(Base):
                 del frame  #: delete the frame or it wont be cleaned
 
                 try:
-                    tmp = res.encode("utf8")
+                    tmp = res.encode("utf-8")
                 except Exception:
                     tmp = res
 

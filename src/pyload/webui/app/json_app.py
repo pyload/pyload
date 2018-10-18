@@ -181,11 +181,11 @@ def add_package():
     except Exception:
         pass
 
-    name = name.decode("utf8", "ignore")
+    name = name.decode("utf-8", "ignore")
     links = list(filter(None, map(str.strip, links)))
     pack = PYLOAD_API.addPackage(name, links, queue)
     if pw:
-        pw = pw.decode("utf8", "ignore")
+        pw = pw.decode("utf-8", "ignore")
         data = {"password": pw}
         PYLOAD_API.setPackageData(pack, data)
 
@@ -208,9 +208,9 @@ def edit_package():
     try:
         id = int(bottle.request.forms.get("pack_id"))
         data = {
-            "name": bottle.request.forms.get("pack_name").decode("utf8", "ignore"),
-            "folder": bottle.request.forms.get("pack_folder").decode("utf8", "ignore"),
-            "password": bottle.request.forms.get("pack_pws").decode("utf8", "ignore"),
+            "name": bottle.request.forms.get("pack_name").decode("utf-8", "ignore"),
+            "folder": bottle.request.forms.get("pack_folder").decode("utf-8", "ignore"),
+            "password": bottle.request.forms.get("pack_pws").decode("utf-8", "ignore"),
         }
 
         PYLOAD_API.setPackageData(id, data)
