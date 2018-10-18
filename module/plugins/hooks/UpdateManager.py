@@ -15,7 +15,7 @@ from ..internal.misc import Expose, encode, exists, fsjoin, threaded
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "hook"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__ = "testing"
 
     __config__ = [("activated", "bool", "Activated", True),
