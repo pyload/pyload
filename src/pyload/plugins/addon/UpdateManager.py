@@ -14,7 +14,7 @@ from pyload.plugins.utils import Expose, encode, exists, threaded
 class UpdateManager(Addon):
     __name__ = "UpdateManager"
     __type__ = "addon"
-    __version__ = "1.20"
+    __version__ = "1.21"
     __status__ = "testing"
 
     __pyload_version__ = "0.5"
@@ -37,7 +37,7 @@ class UpdateManager(Addon):
 
     # SERVER_URL     = "http://updatemanager.pyload.net"
     # SERVER_URL = "http://updatemanager-spyload.rhcloud.com"
-    SERVER_URL = "https://github.com/pyload/updates/raw/master/plugins.txt"
+    SERVER_URL = "https://raw.githubusercontent.com/pyload/updates/master/plugins.txt"
     CHECK_INTERVAL = 3 * 60 * 60  #: 3 hours
 
     def activate(self):
