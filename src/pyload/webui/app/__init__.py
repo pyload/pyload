@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: RaNaN
+# @author: RaNaN, vuolter
 
 import os
 import sys
@@ -16,7 +16,6 @@ import json
 from pyload.webui.server_thread import PYLOAD_API
 
 from pyload.webui.app.middlewares import (
-    GZipMiddleWare,
     PrefixMiddleware,
     StripPathMiddleware,
 )
@@ -32,7 +31,8 @@ cache = os.path.join(HOMEDIR, 'pyLoad', '.tmp', 'webui')
 os.makedirs(cache, exist_ok=True)
 
 bcc = jinja2.FileSystemBytecodeCache(cache)  # TODO: change to TMPDIR
-loader = jinja2.FileSystemLoader(os.path.join(PKGDIR, "webui", "themes"))
+sp = os.path.join(PKGDIR, "webui", "app", "themes")
+loader = jinja2.FileSystemLoader(sp)
 env = jinja2.Environment(
     loader=loader,
     extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
@@ -68,24 +68,22 @@ translation = gettext.translation(
 translation.install(True)
 env.install_gettext_translations(translation)
 
-
 session_opts = {
-    "session.type": "file",
-    "session.cookie_expires": False,
-    "session.data_dir": "./tmp",
-    "session.auto": False,
+    'session.type': 'file',
+    'session.cookie_expires': False,
+    'session.data_dir': cache,
+    'session.auto': False
 }
 
-web = StripPathMiddleware(SessionMiddleware(bottle.app(), session_opts))
-web = GZipMiddleWare(web)
+session = SessionMiddleware(bottle.app(), session_opts)
+web = StripPathMiddleware(session)
 
 if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 
 def run_wgsi(host="0.0.0.0", port="8000", debug=False):
-    bottle.setDebug(debug)
-    bottle.run(app=web, host=host, port=port, quiet=True)
+    bottle.run(app=web, host=host, port=port, quiet=True, debug=debug)
 
 
 def run_auto(host="0.0.0.0", port="8000", debug=False):

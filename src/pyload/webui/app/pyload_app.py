@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# @author: RaNaN
 
 import datetime
 import json
@@ -14,18 +15,14 @@ import bottle
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app import PREFIX, env
 from pyload.webui.app.filters import relpath, unquotepath
-from pyload.webui.app.utils import (get_permission, get_themedir, login_required,
+from pyload.webui.app.utils import (get_permission, get_theme, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_to_response, set_permission, set_session,
                                     toDict)
 from pyload.webui.server_thread import PYLOAD_API
 
-# @author: RaNaN
-
 
 # Helper
-
-
 def pre_processor():
     s = bottle.request.environ.get("beaker.session")
     user = parse_userdata(s)
@@ -34,17 +31,16 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
+    
     if user["is_authenticated"]:
         status = PYLOAD_API.statusServer()
-        info = PYLOAD_API.getInfoByPlugin("UpdateManager")
         captcha = PYLOAD_API.isCaptchaWaiting()
-
+        
         # check if update check is available
+        info = PYLOAD_API.getInfoByPlugin("UpdateManager")
         if info:
-            if info["pyload"] == "True":
-                update = info["version"]
-            if info["plugins"] == "True":
-                plugins = True
+            update = info["pyload"] == "True"
+            plugins = info["plugins"] == "True"
 
     return {
         "user": user,
@@ -60,8 +56,268 @@ def pre_processor():
 def base(messages):
     return render_to_response("base.html", {"messages": messages}, [pre_processor])
 
+    
+# Views
+@bottle.error(403)
+def error403(error):
+    return "The parameter you passed has the wrong format"
 
-def choose_path(browse_for, path=""):
+
+@bottle.error(404)
+def error404(error):
+    return "Sorry, this page does not exist"
+
+
+@bottle.error(500)
+def error500(error):
+    if error.traceback:
+        print(error.traceback)
+
+    return base(
+        [
+            "An Error occured, please enable debug mode to get more details.",
+            error,
+            error.traceback.replace("\n", "<br>")
+            if error.traceback
+            else "No Traceback",
+        ]
+    )
+
+
+# render js
+@bottle.route('/<path:re:.+\.js>')
+def server_js(path):
+    bottle.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+
+    if "/render/" in path or ".render." in path:
+        bottle.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                    time.gmtime(time.time() + 24 * 7 * 60 * 60))
+        bottle.response.headers['Cache-control'] = "public"
+
+        return render_to_response(path)
+    else:
+        return serve_static(path)
+        
+
+@bottle.route(r"/<path:path>")
+def serve_static(path):
+    bottle.response.headers["Expires"] = time.strftime(
+        "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
+    )
+    bottle.response.headers["Cache-control"] = "public"
+    root = os.path.join('.', 'themes', get_theme())
+    return bottle.static_file(path, root=root)
+
+
+@bottle.route(r"/favicon.ico")
+def favicon():
+    return bottle.static_file("favicon.ico", root=".")
+
+
+@bottle.route(r"/robots.txt")
+def robots():
+    return bottle.static_file("robots.txt", root=".")
+
+
+@bottle.route(r"/login", method="GET")
+def login():
+    return render_to_response("login.html", proc=[pre_processor])
+
+
+@bottle.route(r"/nopermission")
+def nopermission():
+    return base([_("You dont have permission to access this page.")])
+
+
+@bottle.route(r"/login", method="POST")
+def login_post():
+    user = bottle.request.forms.get("username")
+    password = bottle.request.forms.get("password")
+
+    info = PYLOAD_API.checkAuth(user, password)
+
+    if not info:
+        return render_to_response("login.html", {"errors": True}, [pre_processor])
+
+    set_session(bottle.request, info)
+    return bottle.redirect("{}/".format(PREFIX))
+
+
+@bottle.route(r"/logout")
+def logout():
+    s = bottle.request.environ.get("beaker.session")
+    s.delete()
+    return render_to_response("logout.html", proc=[pre_processor])
+
+
+@bottle.route(r"/")
+@bottle.route(r"/home")
+@login_required("LIST")
+def home():
+    try:
+        res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
+    except Exception:
+        s = bottle.request.environ.get("beaker.session")
+        s.delete()
+        return bottle.redirect("{}/login".format(PREFIX))
+
+    for link in res:
+        if link["status"] == 12:
+            link["information"] = "{} KiB @ {} KiB/s".format(
+                link["size"] - link["bleft"], link["speed"]
+            )
+
+    return render_to_response("home.html", {"res": res}, [pre_processor])
+
+
+@bottle.route(r"/queue")
+@login_required("LIST")
+def queue():
+    queue = PYLOAD_API.getQueue()
+
+    queue.sort(key=operator.attrgetter("order"))
+
+    return render_to_response(
+        "queue.html", {"content": queue, "target": 1}, [pre_processor]
+    )
+
+
+@bottle.route(r"/collector")
+@login_required("LIST")
+def collector():
+    queue = PYLOAD_API.getCollector()
+
+    queue.sort(key=operator.attrgetter("order"))
+
+    return render_to_response(
+        "queue.html", {"content": queue, "target": 0}, [pre_processor]
+    )
+
+
+@bottle.route(r"/downloads")
+@login_required("DOWNLOAD")
+def downloads():
+    root = PYLOAD_API.getConfigValue("general", "download_folder")
+
+    if not os.path.isdir(root):
+        return base([_("Download directory not found.")])
+    data = {"folder": [], "files": []}
+
+    items = os.listdir(fs_encode(root))
+
+    for item in sorted(fs_decode(x) for x in items):
+        if os.path.isdir(os.path.join(root, item)):
+            folder = {"name": item, "path": item, "files": []}
+            files = os.listdir(os.path.join(root, item))
+            for file in sorted(fs_decode(x) for x in files):
+                try:
+                    if os.path.isfile(os.path.join(root, item, file)):
+                        folder["files"].append(file)
+                except Exception:
+                    pass
+
+            data["folder"].append(folder)
+        elif os.path.isfile(os.path.join(root, item)):
+            data["files"].append(item)
+
+    return render_to_response("downloads.html", {"files": data}, [pre_processor])
+
+
+@bottle.route(r"/downloads/get/<filename>")
+@login_required("DOWNLOAD")
+def get_download(filename):
+    filename = unquote(filename).decode("utf-8").replace("..", "")
+    root = PYLOAD_API.getConfigValue("general", "download_folder")
+    return bottle.static_file(filename, root=root, download=True)
+
+
+@bottle.route(r"/settings")
+@login_required("SETTINGS")
+def config():
+    conf = PYLOAD_API.getConfig()
+    plugin = PYLOAD_API.getPluginConfig()
+
+    conf_menu = []
+    plugin_menu = []
+
+    for entry in sorted(conf.keys()):
+        conf_menu.append((entry, conf[entry].description))
+
+    for entry in sorted(plugin.keys()):
+        plugin_menu.append((entry, plugin[entry].description))
+
+    accs = []
+
+    for data in PYLOAD_API.getAccounts(False):
+        if data.trafficleft == -1:
+            trafficleft = _("unlimited")
+        elif not data.trafficleft:
+            trafficleft = _("not available")
+        else:
+            trafficleft = formatSize(data.trafficleft << 10)
+
+        if data.validuntil == -1:
+            validuntil = _("unlimited")
+        elif not data.validuntil:
+            validuntil = _("not available")
+        else:
+            t = time.localtime(data.validuntil)
+            validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
+
+        if "time" in data.options:
+            try:
+                _time = data.options["time"][0]
+            except Exception:
+                _time = ""
+        else:
+            _time = ""
+
+        if "limitDL" in data.options:
+            try:
+                limitdl = data.options["limitDL"][0]
+            except Exception:
+                limitdl = "0"
+        else:
+            limitdl = "0"
+
+        accs.append(
+            {
+                "type": data.type,
+                "login": data.login,
+                "valid": data.valid,
+                "premium": data.premium,
+                "trafficleft": trafficleft,
+                "validuntil": validuntil,
+                "limitdl": limitdl,
+                "time": _time,
+            }
+        )
+
+    return render_to_response(
+        "settings.html",
+        {
+            "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
+            "types": PYLOAD_API.getAccountTypes(),
+        },
+        [pre_processor],
+    )
+
+
+@bottle.route(r"/filechooser")
+@bottle.route(r"/filechooser/<filename>")
+@login_required("STATUS")
+def file(filename=""):
+    return choose_path("file", filename)
+
+
+@bottle.route(r"/pathchooser")
+@bottle.route(r"/pathchooser/<dirname>")
+@login_required("STATUS")
+def folder(dirname=""):
+    return choose_path("folder", dirname)
+
+
+def choose_path(browse_for, path):
     path = os.path.normpath(unquotepath(path))
 
     try:
@@ -155,298 +411,6 @@ def choose_path(browse_for, path=""):
         },
         [],
     )
-
-
-# Views
-@bottle.error(403)
-def error403(code):
-    return "The parameter you passed has the wrong format"
-
-
-@bottle.error(404)
-def error404(code):
-    return "Sorry, this page does not exist"
-
-
-@bottle.error(500)
-def error500(error):
-    if error.traceback:
-        print(error.traceback)
-
-    return base(
-        [
-            "An Error occured, please enable debug mode to get more details.",
-            error,
-            error.traceback.replace("\n", "<br>")
-            if error.traceback
-            else "No Traceback",
-        ]
-    )
-
-
-# TODO: fix
-# @bottle.route("/<file:re:(.+/)?[^/]+\.min\.[^/]+>")
-# def server_min(theme, filename):
-# path = os.path.join(get_themedir(), filename)
-# if not os.path.isfile(path):
-# path = path.replace(".min.", ".")
-# if path.endswith(".js"):
-# return server_js(path)
-# else:
-# return server_static(path)
-
-
-# render js
-
-
-@bottle.route(r"/media/js/<path:re:.+\.js>")
-def js_dynamic(path):
-    bottle.response.headers["Expires"] = time.strftime(
-        "%a, {} %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 2)
-    )
-    bottle.response.headers["Cache-control"] = "public"
-    bottle.response.headers["Content-Type"] = "text/javascript; charset=UTF-8"
-
-    try:
-        # static files are not rendered
-        if "static" not in path and "mootools" not in path:
-            t = env.get_template("js/{}".format(path))
-            return t.render()
-        else:
-            return bottle.static_file(path, root=os.path.join(get_themedir(), "js"))
-    except Exception:
-        return bottle.HTTPError(404, json.dumps("Not Found"))
-
-
-@bottle.route(r"/media/<path:path>")
-def server_static(path):
-    bottle.response.headers["Expires"] = time.strftime(
-        "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
-    )
-    bottle.response.headers["Cache-control"] = "public"
-    PROJECT_DIR = ""  # TODO: fix
-    return bottle.static_file(path, root=os.path.join(PROJECT_DIR, "media"))
-
-
-# rewrite to return theme favicon
-@bottle.route(r"/favicon.ico")
-def favicon():
-    return bottle.static_file("favicon.ico", root=os.path.join(get_themedir(), "img"))
-
-
-@bottle.route(r"/robots.txt")
-def robots():
-    return bottle.static_file("robots.txt", root=".")
-
-
-@bottle.route(r"/login", method="GET")
-def login():
-    if not PYLOAD_API:
-        bottle.redirect("{}/setup".format(PREFIX))
-    else:
-        return render_to_response("login.html", proc=[pre_processor])
-
-
-@bottle.route(r"/nopermission")
-def nopermission():
-    return base([_("You dont have permission to access this page.")])
-
-
-@bottle.route(r"/login", method="POST")
-def login_post():
-    user = bottle.request.forms.get("username")
-    password = bottle.request.forms.get("password")
-
-    info = PYLOAD_API.checkAuth(user, password)
-
-    if not info:
-        return render_to_response("login.html", {"errors": True}, [pre_processor])
-
-    set_session(bottle.request, info)
-    return bottle.redirect("{}/".format(PREFIX))
-
-
-@bottle.route(r"/logout")
-def logout():
-    s = bottle.request.environ.get("beaker.session")
-    s.delete()
-    return render_to_response("logout.html", proc=[pre_processor])
-
-
-@bottle.route(r"/")
-@bottle.route(r"/home")
-@login_required("LIST")
-def home():
-    try:
-        res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
-    except Exception:
-        s = bottle.request.environ.get("beaker.session")
-        s.delete()
-        return bottle.redirect("{}/login".format(PREFIX))
-
-    for link in res:
-        if link["status"] == 12:
-            link["information"] = "{} kB @ {} kB/s".format(
-                link["size"] - link["bleft"], link["speed"]
-            )
-
-    return render_to_response("home.html", {"res": res}, [pre_processor])
-
-
-@bottle.route(r"/queue")
-@login_required("LIST")
-def queue():
-    queue = PYLOAD_API.getQueue()
-
-    queue.sort(key=operator.attrgetter("order"))
-
-    return render_to_response(
-        "queue.html", {"content": queue, "target": 1}, [pre_processor]
-    )
-
-
-@bottle.route(r"/collector")
-@login_required("LIST")
-def collector():
-    queue = PYLOAD_API.getCollector()
-
-    queue.sort(key=operator.attrgetter("order"))
-
-    return render_to_response(
-        "queue.html", {"content": queue, "target": 0}, [pre_processor]
-    )
-
-
-@bottle.route(r"/downloads")
-@login_required("DOWNLOAD")
-def downloads():
-    root = PYLOAD_API.getConfigValue("general", "download_folder")
-
-    if not os.path.isdir(root):
-        return base([_("Download directory not found.")])
-    data = {"folder": [], "files": []}
-
-    items = os.listdir(fs_encode(root))
-
-    for item in sorted(fs_decode(x) for x in items):
-        if os.path.isdir(os.path.join(root, item)):
-            folder = {"name": item, "path": item, "files": []}
-            files = os.listdir(os.path.join(root, item))
-            for file in sorted(fs_decode(x) for x in files):
-                try:
-                    if os.path.isfile(os.path.join(root, item, file)):
-                        folder["files"].append(file)
-                except Exception:
-                    pass
-
-            data["folder"].append(folder)
-        elif os.path.isfile(os.path.join(root, item)):
-            data["files"].append(item)
-
-    return render_to_response("downloads.html", {"files": data}, [pre_processor])
-
-
-@bottle.route(r"/downloads/get/<path:re:.+>")
-@login_required("DOWNLOAD")
-def get_download(path):
-    path = unquote(path).decode("utf-8")
-    # TODO: some files can not be downloaded
-
-    root = PYLOAD_API.getConfigValue("general", "download_folder")
-
-    path = os.path.replace("..", "")
-    try:
-        return bottle.static_file(fs_encode(path), fs_encode(root), download=True)
-
-    except Exception as e:
-        print(e)
-        return bottle.HTTPError(404, json.dumps("File not Found"))
-
-
-@bottle.route(r"/settings")
-@login_required("SETTINGS")
-def config():
-    conf = PYLOAD_API.getConfig()
-    plugin = PYLOAD_API.getPluginConfig()
-
-    conf_menu = []
-    plugin_menu = []
-
-    for entry in sorted(conf.keys()):
-        conf_menu.append((entry, conf[entry].description))
-
-    for entry in sorted(plugin.keys()):
-        plugin_menu.append((entry, plugin[entry].description))
-
-    accs = []
-
-    for data in PYLOAD_API.getAccounts(False):
-        if data.trafficleft == -1:
-            trafficleft = _("unlimited")
-        elif not data.trafficleft:
-            trafficleft = _("not available")
-        else:
-            trafficleft = formatSize(data.trafficleft << 10)
-
-        if data.validuntil == -1:
-            validuntil = _("unlimited")
-        elif not data.validuntil:
-            validuntil = _("not available")
-        else:
-            t = time.localtime(data.validuntil)
-            validuntil = time.strftime("%Y-%m-%d %H:%M:%S", t)
-
-        if "time" in data.options:
-            try:
-                _time = data.options["time"][0]
-            except Exception:
-                _time = ""
-        else:
-            _time = ""
-
-        if "limitDL" in data.options:
-            try:
-                limitdl = data.options["limitDL"][0]
-            except Exception:
-                limitdl = "0"
-        else:
-            limitdl = "0"
-
-        accs.append(
-            {
-                "type": data.type,
-                "login": data.login,
-                "valid": data.valid,
-                "premium": data.premium,
-                "trafficleft": trafficleft,
-                "validuntil": validuntil,
-                "limitdl": limitdl,
-                "time": _time,
-            }
-        )
-
-    return render_to_response(
-        "settings.html",
-        {
-            "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
-            "types": PYLOAD_API.getAccountTypes(),
-        },
-        [pre_processor],
-    )
-
-
-@bottle.route(r"/filechooser")
-@bottle.route(r"/filechooser/:file#.+#")
-@login_required("STATUS")
-def file(file=""):
-    return choose_path("file", file)
-
-
-@bottle.route(r"/pathchooser")
-@bottle.route(r"/pathchooser/:path#.+#")
-@login_required("STATUS")
-def path(path=""):
-    return choose_path("folder", path)
 
 
 @bottle.route(r"/logs")

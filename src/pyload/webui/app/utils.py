@@ -11,16 +11,16 @@ from pyload.webui.app import PREFIX, env
 from pyload.webui.server_thread import PYLOAD_API
 
 
-def get_themedir():
-    theme = PYLOAD_API.getConfigValue("webui", "theme").lower()
-    return os.path.join("themes", theme)
+def get_theme():
+    return PYLOAD_API.getConfigValue("webui", "theme").lower()
 
-
+    
+# check
 def render_to_response(path, args={}, proc=[]):
     for p in proc:
-        args.update(p())
-    t = env.get_template(path, get_themedir())
-    return t.render(**args)
+        args.update(p())        
+    template = env.get_template(path, parent=get_theme())
+    return template.render(**args)
 
 
 def parse_permissions(session):
