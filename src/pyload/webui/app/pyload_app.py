@@ -11,7 +11,7 @@ from urllib.parse import unquote
 
 import bottle
 
-from pyload.utils.utils import formatSize, fs_decode, fs_encode, save_join
+from pyload.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app import PREFIX, env
 from pyload.webui.app.filters import relpath, unquotepath
 from pyload.webui.app.utils import (get_permission, get_themedir, login_required,
@@ -329,12 +329,12 @@ def downloads():
     items = os.listdir(fs_encode(root))
 
     for item in sorted(fs_decode(x) for x in items):
-        if os.path.isdir(save_join(root, item)):
+        if os.path.isdir(os.path.join(root, item)):
             folder = {"name": item, "path": item, "files": []}
-            files = os.listdir(save_join(root, item))
+            files = os.listdir(os.path.join(root, item))
             for file in sorted(fs_decode(x) for x in files):
                 try:
-                    if os.path.isfile(save_join(root, item, file)):
+                    if os.path.isfile(os.path.join(root, item, file)):
                         folder["files"].append(file)
                 except Exception:
                     pass

@@ -7,7 +7,7 @@ from builtins import HOMEDIR, _, object, str
 from itertools import islice
 from random import randint
 
-from pyload.utils.utils import fs_decode, fs_encode, save_join, save_path
+from pyload.utils.utils import fs_decode, fs_encode, save_path
 
 if os.name != "nt":
     from pwd import getpwnam
@@ -567,7 +567,7 @@ class Plugin(Base):
 
         download_folder = self.config.get("general", "download_folder")
 
-        location = save_join(download_folder, self.pyfile.package().folder)
+        location = os.path.join(download_folder, self.pyfile.package().folder)
 
         os.makedirs(
             location,
@@ -711,7 +711,7 @@ class Plugin(Base):
                     raise SkipDownload(pyfile.pluginname)
 
         download_folder = self.config.get("general", "download_folder")
-        location = save_join(download_folder, pack.folder, self.pyfile.name)
+        location = os.path.join(download_folder, pack.folder, self.pyfile.name)
 
         if (
             starting

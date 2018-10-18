@@ -11,7 +11,7 @@ import pycurl
 from pyload.network.http_chunk import ChunkInfo, HTTPChunk
 from pyload.network.http_request import BadHeader
 from pyload.plugins.plugin import Abort
-from pyload.utils.utils import fs_encode, save_join
+from pyload.utils.utils import fs_encode
 
 
 class HTTPDownload(object):
@@ -111,7 +111,7 @@ class HTTPDownload(object):
                     os.remove(fname)  #: os.remove chunk
 
         if self.nameDisposition and self.disposition:
-            self.filename = save_join(
+            self.filename = os.path.join(
                 os.path.dirname(self.filename), self.nameDisposition
             )
 

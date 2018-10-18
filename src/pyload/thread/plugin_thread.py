@@ -17,7 +17,6 @@ from pyload.api import OnlineStatus
 from pyload.datatype.pyfile import PyFile
 from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
 from pyload.utils.packagetools import parseNames
-from pyload.utils.utils import save_join
 
 
 class PluginThread(Thread):
@@ -55,13 +54,13 @@ class PluginThread(Thread):
                         # avoid encoding errors
                         zip.write(
                             os.path.join(HOMEDIR, ".tmp", pyfile.pluginname, f),
-                            save_join(pyfile.pluginname, f),
+                            os.path.join(pyfile.pluginname, f),
                         )
                     except Exception:
                         pass
 
                 info = zipfile.ZipInfo(
-                    save_join(pyfile.pluginname, "debug_Report.txt"), time.gmtime()
+                    os.path.join(pyfile.pluginname, "debug_Report.txt"), time.gmtime()
                 )
                 info.external_attr = 0o644 << 16  #: change permissions
 

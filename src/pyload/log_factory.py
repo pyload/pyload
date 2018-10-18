@@ -23,7 +23,7 @@ class LogFactory(object):
     def init_logger(self, name):
         logger = logging.getLogger(name)
         self.loggers[name] = logger
-        return self._init_logger(logger, name)
+        return self._init_logger(logger)
         
     def _init_logger(self, logger):
         debug = self.pyload.config.get("general", "debug_mode")
@@ -70,10 +70,12 @@ class LogFactory(object):
         color = self.pyload.config.get('log', 'console_color') and colorlog
         
         if color:
-            fmt = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{log_color} {name:>16}  {message}"
+            fmt = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{error_log_color} {reset}{log_color}{name:>16}  {message}  "
             datefmt = "%Y-%m-%d %H:%M:%S"
             
             primary_colors = {
+                'DEBUG': 'black,bg_cyan',
+                'INFO': 'black,bg_white',
                 'WARNING': 'red,bg_yellow',
                 'ERROR': 'bold,white,bg_red',
                 'CRITICAL': 'bold,white,bg_black',
@@ -83,6 +85,10 @@ class LogFactory(object):
                     'DEBUG': 'bold,white,bg_cyan',
                     'INFO': 'bold,white,bg_green',
                     'WARNING': 'bold,white,bg_yellow',
+                    'ERROR': 'bold,white,bg_red',
+                    'CRITICAL': 'bold,white,bg_black',
+                },
+                'error': {
                     'ERROR': 'bold,white,bg_red',
                     'CRITICAL': 'bold,white,bg_black',
                 }
