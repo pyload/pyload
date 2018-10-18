@@ -40,7 +40,7 @@ class TXT(Container):
             encoding = "utf-8"
 
         fs_filename = encode(pyfile.url)
-        with codecs.open(fs_filename, "r", encoding) as txt:
+        with open(fs_filename, encoding=encoding) as txt:
             curPack = "Parsed links from {}".format(pyfile.name)
             packages = {curPack: []}
 

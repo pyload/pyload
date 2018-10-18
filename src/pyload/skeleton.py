@@ -10,7 +10,6 @@
 #           \/
 
 import builtins
-import codecs
 import logging
 import logging.handlers
 import os
@@ -289,7 +288,7 @@ class Core(object):
         self.shuttedDown = False
 
         self.logfactory = LogFactory(self)
-        self.logfactory.init_logger('exception')
+        self.logfactory.init_logger(exc_logger.name)
         self.log = self.logfactory.get_logger('pyLoad')
         
         self.log.info(_("Starting pyLoad {}").format(self.version))

@@ -417,7 +417,7 @@ class Plugin(Base):
             Ocr = None
 
         if Ocr and not forceUser:
-            time.sleep(randint(3000, 5000) / 1000.0)
+            time.sleep(randint(3000, 5000) / 1000)
             if self.pyfile.abort:
                 raise Abort
 

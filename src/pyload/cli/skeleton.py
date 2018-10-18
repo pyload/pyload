@@ -9,7 +9,7 @@
 #          \  /
 #           \/
 
-import codecs
+# import codecs
 import configparser
 import os
 import sys
@@ -33,7 +33,7 @@ if os.name == "nt":
 else:
     enc = "utf8"
 
-sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
+# sys.stdout = codecs.getwriter(enc)(sys.stdout, errors="replace")
 
 
 class Cli(object):

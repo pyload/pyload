@@ -25,7 +25,7 @@ class LogFactory(object):
         self.loggers[name] = logger
         return self._init_logger(logger, name)
         
-    def _init_logger(self, logger, name):
+    def _init_logger(self, logger):
         debug = self.pyload.config.get("general", "debug_mode")
         console = self.pyload.config.get('log', 'console')
         syslog = self.pyload.config.get('log', 'syslog')
@@ -35,11 +35,11 @@ class LogFactory(object):
         logger.setLevel(level)
         
         if console:
-            self._init_console_handler(logger, name)
+            self._init_console_handler(logger)
         if syslog:
-            self._init_syslog_handler(logger, name)
+            self._init_syslog_handler(logger)
         if filelog:
-            self._init_filelog_handler(logger, name)
+            self._init_filelog_handler(logger)
         
     def get_logger(self, name):
         return self.loggers.get(name, self.init_logger(name))
@@ -66,7 +66,7 @@ class LogFactory(object):
             self._remove_handlers(logger)
         self.loggers.clear()
                              
-    def _init_console_handler(self, logger, name):
+    def _init_console_handler(self, logger):
         color = self.pyload.config.get('log', 'console_color') and colorlog
         
         if color:
@@ -101,7 +101,7 @@ class LogFactory(object):
         consolehdlr.setFormatter(consoleform)
         logger.addHandler(consolehdlr)
              
-    def _init_syslog_handler(self, logger, name):
+    def _init_syslog_handler(self, logger):
         # try to mimic to normal syslog messages
         fmt = '{asctime} {name}: {message}'
         datefmt = '%b %e %H:%M:%S'
@@ -127,7 +127,7 @@ class LogFactory(object):
         sysloghdlr.setFormatter(syslogform)
         logger.addHandler(sysloghdlr)
 
-    def _init_filelog_handler(self, logger, name):
+    def _init_filelog_handler(self, logger):
         fmt = "[{asctime}]  {levelname:8}  {name:20}  {message}"
         datefmt = "%Y-%m-%d %H:%M:%S"
         fileform = logging.Formatter(fmt, datefmt, '{')
@@ -135,7 +135,7 @@ class LogFactory(object):
         folder = self.pyload.config.get('log', 'filelog_folder')
         os.makedirs(folder, exist_ok=True)
 
-        filename = "{}.log".format(name)
+        filename = "{}.log".format(logger.name)
         filelog = os.path.join(folder, filename)
         encoding = locale.getpreferredencoding(do_setlocale=False)
         

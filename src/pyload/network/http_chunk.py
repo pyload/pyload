@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-import codecs
 import os
 import time
 from builtins import object, range, str
@@ -51,7 +50,7 @@ class ChunkInfo(object):
 
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        with codecs.open(fs_name, "w", "utf_8") as fh:
+        with open(fs_name, "w", encoding='utf-8') as fh:
             fh.write("name:{}\n".format(self.name))
             fh.write("size:{}\n".format(self.size))
             for i, c in enumerate(self.chunks):
@@ -64,7 +63,7 @@ class ChunkInfo(object):
         fs_name = fs_encode("{}.chunks".format(name))
         if not os.path.exists(fs_name):
             raise IOError
-        with codecs.open(fs_name, "r", "utf_8") as fh:
+        with open(fs_name, "r" encoding='utf-8') as fh:
             name = fh.readline()[:-1]
             size = fh.readline()[:-1]
             if name.startswith("name:") and size.startswith("size:"):

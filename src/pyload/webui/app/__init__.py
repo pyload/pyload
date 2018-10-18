@@ -11,7 +11,7 @@ import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 import bottle
 import jinja2
-from pyload.utils.utils import decode, formatSize
+from pyload.utils.utils import formatSize
 import json
 from pyload.webui.server_thread import PYLOAD_API
 
@@ -49,14 +49,11 @@ from pyload.webui.app.filters import (
     truncate,
 )
 
-env.filters["tojson"] = json.dumps
 env.filters["quotepath"] = quotepath
 env.filters["truncate"] = truncate
 env.filters["date"] = date
 env.filters["path_make_relative"] = path_make_relative
 env.filters["path_make_absolute"] = path_make_absolute
-env.filters["decode"] = decode
-env.filters["type"] = lambda x: str(type(x))
 env.filters["formatsize"] = formatSize
 env.filters["getitem"] = lambda x, y: x.__getitem__(y)
 env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
