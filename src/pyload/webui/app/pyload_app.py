@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
+from pyload.webui.app import app
+
 import datetime
 import json
 import operator
@@ -10,7 +12,7 @@ import time
 from builtins import HOMEDIR, PKGDIR, _
 from urllib.parse import unquote
 
-import bottle
+import flask
 
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app import PREFIX, env
@@ -85,7 +87,7 @@ def error500(error):
 
 
 # render js
-@bottle.route('/<path:re:.+\.js>')
+@app.route('/<path:re:.+\.js>')
 def server_js(path):
     bottle.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
@@ -99,7 +101,7 @@ def server_js(path):
         return serve_static(path)
         
 
-@bottle.route(r"/<path:path>")
+@app.route(r"/<path:path>")
 def serve_static(path):
     bottle.response.headers["Expires"] = time.strftime(
         "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
@@ -109,27 +111,27 @@ def serve_static(path):
     return bottle.static_file(path, root=root)
 
 
-@bottle.route(r"/favicon.ico")
+@app.route(r"/favicon.ico")
 def favicon():
     return bottle.static_file("favicon.ico", root=".")
 
 
-@bottle.route(r"/robots.txt")
+@app.route(r"/robots.txt")
 def robots():
     return bottle.static_file("robots.txt", root=".")
 
 
-@bottle.route(r"/login", method="GET")
+@app.route(r"/login", methods=["GET"])
 def login():
     return render_to_response("login.html", proc=[pre_processor])
 
 
-@bottle.route(r"/nopermission")
+@app.route(r"/nopermission")
 def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@bottle.route(r"/login", method="POST")
+@app.route(r"/login", methods=['POST'])
 def login_post():
     user = bottle.request.forms.get("username")
     password = bottle.request.forms.get("password")
@@ -143,15 +145,15 @@ def login_post():
     return bottle.redirect("{}/".format(PREFIX))
 
 
-@bottle.route(r"/logout")
+@app.route(r"/logout")
 def logout():
     s = bottle.request.environ.get("beaker.session")
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
 
-@bottle.route(r"/")
-@bottle.route(r"/home")
+@app.route(r"/")
+@app.route(r"/home")
 @login_required("LIST")
 def home():
     try:
@@ -170,7 +172,7 @@ def home():
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
 
-@bottle.route(r"/queue")
+@app.route(r"/queue")
 @login_required("LIST")
 def queue():
     queue = PYLOAD_API.getQueue()
@@ -182,7 +184,7 @@ def queue():
     )
 
 
-@bottle.route(r"/collector")
+@app.route(r"/collector")
 @login_required("LIST")
 def collector():
     queue = PYLOAD_API.getCollector()
@@ -194,7 +196,7 @@ def collector():
     )
 
 
-@bottle.route(r"/downloads")
+@app.route(r"/downloads")
 @login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD_API.getConfigValue("general", "download_folder")
@@ -223,7 +225,7 @@ def downloads():
     return render_to_response("downloads.html", {"files": data}, [pre_processor])
 
 
-@bottle.route(r"/downloads/get/<filename>")
+@app.route(r"/downloads/get/<filename>")
 @login_required("DOWNLOAD")
 def get_download(filename):
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -231,7 +233,7 @@ def get_download(filename):
     return bottle.static_file(filename, root=root, download=True)
 
 
-@bottle.route(r"/settings")
+@app.route(r"/settings")
 @login_required("SETTINGS")
 def config():
     conf = PYLOAD_API.getConfig()
@@ -303,15 +305,15 @@ def config():
     )
 
 
-@bottle.route(r"/filechooser")
-@bottle.route(r"/filechooser/<filename>")
+@app.route(r"/filechooser")
+@app.route(r"/filechooser/<filename>")
 @login_required("STATUS")
 def file(filename=""):
     return choose_path("file", filename)
 
 
-@bottle.route(r"/pathchooser")
-@bottle.route(r"/pathchooser/<dirname>")
+@app.route(r"/pathchooser")
+@app.route(r"/pathchooser/<dirname>")
 @login_required("STATUS")
 def folder(dirname=""):
     return choose_path("folder", dirname)
@@ -413,10 +415,8 @@ def choose_path(browse_for, path):
     )
 
 
-@bottle.route(r"/logs")
-@bottle.route(r"/logs", method="POST")
-@bottle.route(r"/logs/<item>")
-@bottle.route(r"/logs/<item>", method="POST")
+@app.route(r"/logs", methods=['GET', 'POST'])
+@app.route(r"/logs/<item>", methods=['GET', 'POST'])
 @login_required("LOGS")
 def logs(item=-1):
     s = bottle.request.environ.get("beaker.session")
@@ -524,8 +524,7 @@ def logs(item=-1):
     )
 
 
-@bottle.route(r"/admin")
-@bottle.route(r"/admin", method="POST")
+@app.route(r"/admin", methods=['GET', 'POST'])
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -565,12 +564,12 @@ def admin():
     )
 
 
-@bottle.route(r"/setup")
+@app.route(r"/setup")
 def setup():
     return base([_("Run pyLoad -s to access the setup.")])
 
 
-@bottle.route(r"/info")
+@app.route(r"/info")
 @login_required("STATUS")
 def info():
     conf = PYLOAD_API.getConfigDict()

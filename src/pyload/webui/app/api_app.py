@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from pyload.webui.app import app
+
 import json
 import traceback
 from ast import literal_eval
 from itertools import chain
 from urllib.parse import unquote
 
-import bottle
+import flask
 
 from pyload.api import BaseObject
 from pyload.webui.app.utils import apiver_check, set_session, toDict
@@ -22,9 +24,8 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-@bottle.route(r"/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
-@bottle.route(
-    r"/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", method="POST"
+@app.route(
+    r"/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", methods=['GET', 'POST']
 )
 @apiver_check
 def call_api(func, args=""):
@@ -88,7 +89,7 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@bottle.route(r"/api/<apiver>/login", method="POST")
+@app.route(r"/api/<apiver>/login", methods=['POST'])
 @apiver_check
 def login():
     bottle.response.headers.replace("Content-type", "application/json")
@@ -112,7 +113,7 @@ def login():
         return json.dumps(True)
 
 
-@bottle.route(r"/api/<apiver>/logout")
+@app.route(r"/api/<apiver>/logout")
 @apiver_check
 def logout():
     bottle.response.headers.replace("Content-type", "application/json")

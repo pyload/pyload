@@ -19,6 +19,8 @@ from getopt import GetoptError, getopt
 from sys import exit
 from threading import Lock, Thread
 
+from easy_getch import getch
+
 import pyload.utils.pylgettext as gettext
 from pyload.api import Destination
 from pyload.cli.addpackage import AddPackage
@@ -83,7 +85,7 @@ class Cli(object):
         handle input
         """
         while True:
-            inp = input()
+            inp = getch()
             if ord(inp) == 3:
                 os.system("clear")
                 sys.exit()  #: ctrl + c

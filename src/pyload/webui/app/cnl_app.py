@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pyload.webui.app import app
+
 import json
 import os
 import re
@@ -8,7 +10,7 @@ from binascii import unhexlify
 from builtins import str
 from urllib.parse import unquote
 
-import bottle
+import flask
 import js2py
 from cryptography.fernet import Fernet
 
@@ -31,15 +33,14 @@ def local_check(func):
     return _view
 
 
-@bottle.route(r"/flash")
-@bottle.route(r"/flash/<id>")
-@bottle.route(r"/flash", method="POST")
+@app.route(r"/flash/<id>")
+@app.route(r"/flash", methods=['GET', 'POST'])
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@bottle.route(r"/flash/add", method="POST")
+@app.route(r"/flash/add", methods=['POST'])
 @local_check
 def add():
     package = bottle.request.forms.get(
@@ -56,7 +57,7 @@ def add():
     return ""
 
 
-@bottle.route(r"/flash/addcrypted", method="POST")
+@app.route(r"/flash/addcrypted", methods=['POST'])
 @local_check
 def addcrypted():
     package = bottle.request.forms.get(
@@ -80,7 +81,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bottle.route(r"/flash/addcrypted2", method="POST")
+@app.route(r"/flash/addcrypted2", methods=['POST'])
 @local_check
 def addcrypted2():
     package = bottle.request.forms.get(
@@ -116,10 +117,8 @@ def addcrypted2():
         return "success\r\n"
 
 
-@bottle.route(r"/flashgot_pyload")
-@bottle.route(r"/flashgot_pyload", method="POST")
-@bottle.route(r"/flashgot")
-@bottle.route(r"/flashgot", method="POST")
+@app.route(r"/flashgot_pyload", methods=['GET', 'POST'])
+@app.route(r"/flashgot", methods=['GET', 'POST'])
 @local_check
 def flashgot():
     if bottle.request.environ["HTTP_REFERER"] not in (
@@ -142,7 +141,7 @@ def flashgot():
     return ""
 
 
-@bottle.route(r"/crossdomain.xml")
+@app.route(r"/crossdomain.xml")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -153,7 +152,7 @@ def crossdomain():
     return rep
 
 
-@bottle.route(r"/flash/checkSupportForUrl")
+@app.route(r"/flash/checkSupportForUrl")
 @local_check
 def checksupport():
     url = bottle.request.GET.get("url")
@@ -163,7 +162,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@bottle.route(r"/jdcheck.js")
+@app.route(r"/jdcheck.js")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

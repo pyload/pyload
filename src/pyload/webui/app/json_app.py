@@ -4,7 +4,8 @@ import os
 import shutil
 from builtins import _
 
-import bottle
+import flask
+from pyload.webui.app import app
 
 from pyload.utils.utils import decode, formatSize
 from pyload.webui.app.utils import (apiver_check, login_required, render_to_response,
@@ -24,8 +25,7 @@ def get_sort_key(item):
     return item["order"]
 
 
-@bottle.route(r"/json/<apiver>/status")
-@bottle.route(r"/json/<apiver>/status", method="POST")
+@app.route(r"/json/<apiver>/status", methods=['GET', 'POST'])
 @apiver_check
 @login_required("LIST")
 def status():
@@ -37,8 +37,7 @@ def status():
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/links")
-@bottle.route(r"/json/<apiver>/links", method="POST")
+@app.route(r"/json/<apiver>/links", methods=['GET', 'POST'])
 @apiver_check
 @login_required("LIST")
 def links():
@@ -66,7 +65,7 @@ def links():
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/packages")
+@app.route(r"/json/<apiver>/packages")
 @apiver_check
 @login_required("LIST")
 def packages():
@@ -85,7 +84,7 @@ def packages():
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/package/<id:int>")
+@app.route(r"/json/<apiver>/package/<id:int>")
 @apiver_check
 @login_required("LIST")
 def package(id):
@@ -120,7 +119,7 @@ def package(id):
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/package_order/<ids>")
+@app.route(r"/json/<apiver>/package_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def package_order(ids):
@@ -132,7 +131,7 @@ def package_order(ids):
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/abort_link/<id:int>")
+@app.route(r"/json/<apiver>/abort_link/<id:int>")
 @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -143,7 +142,7 @@ def abort_link(id):
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/link_order/<ids>")
+@app.route(r"/json/<apiver>/link_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def link_order(ids):
@@ -155,8 +154,7 @@ def link_order(ids):
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/add_package")
-@bottle.route(r"/json/<apiver>/add_package", method="POST")
+@app.route(r"/json/<apiver>/add_package", methods=['GET', 'POST'])
 @apiver_check
 @login_required("ADD")
 def add_package():
@@ -190,7 +188,7 @@ def add_package():
         PYLOAD_API.setPackageData(pack, data)
 
 
-@bottle.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
+@app.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
 @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
@@ -201,7 +199,7 @@ def move_package(dest, id):
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/edit_package", method="POST")
+@app.route(r"/json/<apiver>/edit_package", methods=['POST'])
 @apiver_check
 @login_required("MODIFY")
 def edit_package():
@@ -220,8 +218,7 @@ def edit_package():
         return bottle.HTTPError()
 
 
-@bottle.route(r"/json/<apiver>/set_captcha")
-@bottle.route(r"/json/<apiver>/set_captcha", method="POST")
+@app.route(r"/json/<apiver>/set_captcha", methods=['GET', 'POST'])
 @apiver_check
 @login_required("ADD")
 def set_captcha():
@@ -246,7 +243,7 @@ def set_captcha():
         return {"captcha": False}
 
 
-@bottle.route(r"/json/<apiver>/load_config/<category>/<section>")
+@app.route(r"/json/<apiver>/load_config/<category>/<section>")
 @apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
@@ -270,7 +267,7 @@ def load_config(category, section):
     )
 
 
-@bottle.route(r"/json/<apiver>/save_config/<category>", method="POST")
+@app.route(r"/json/<apiver>/save_config/<category>", methods=['POST'])
 @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
@@ -286,7 +283,7 @@ def save_config(category):
         PYLOAD_API.setConfigValue(section, option, decode(value), category)
 
 
-@bottle.route(r"/json/<apiver>/add_account", method="POST")
+@app.route(r"/json/<apiver>/add_account", methods=['POST'])
 @apiver_check
 @login_required("ACCOUNTS")
 def add_account():
@@ -297,7 +294,7 @@ def add_account():
     PYLOAD_API.updateAccount(type, login, password)
 
 
-@bottle.route(r"/json/<apiver>/update_accounts", method="POST")
+@app.route(r"/json/<apiver>/update_accounts", methods=['POST'])
 @apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():
@@ -325,7 +322,7 @@ def update_accounts():
             PYLOAD_API.removeAccount(plugin, user)
 
 
-@bottle.route(r"/json/<apiver>/change_password", method="POST")
+@app.route(r"/json/<apiver>/change_password", methods=['POST'])
 @apiver_check
 def change_password():
 

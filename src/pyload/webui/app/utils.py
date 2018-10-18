@@ -4,7 +4,7 @@
 import json
 import os
 
-import bottle
+import flask
 
 from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui.app import PREFIX, env

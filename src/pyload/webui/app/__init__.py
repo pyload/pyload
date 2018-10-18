@@ -6,10 +6,10 @@ import os
 import sys
 from builtins import str, PKGDIR
 
-import bottle
+import flask
 import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
-import bottle
+import flask
 import jinja2
 from pyload.utils.utils import formatSize
 import json
@@ -82,6 +82,23 @@ if PREFIX:
     web = PrefixMiddleware(web, prefix=PREFIX)
 
 
+
+app = None  # fix
+
+def run_flask(host='0.0.0.0', port='8000', debug=False):
+    """Run Flask server."""
+    global app
+    
+    app = Flask(__name__.split('.')[0])
+    # app = Flask(__name__, template_folder='views',static_folder='public/static')
+    
+    app.run(
+        host=host,
+        port=port,
+        use_reloader=False,
+        debug=debug
+    )
+    
 def run_wgsi(host="0.0.0.0", port="8000", debug=False):
     bottle.run(app=web, host=host, port=port, quiet=True, debug=debug)
 
