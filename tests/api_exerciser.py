@@ -63,7 +63,7 @@ class APIExerciser(Thread):
 
         self.pyload.log.info("API Excerciser started {}".format(self.id))
 
-        with open("error.log", "ab") as out:
+        with open("error.log", mode="ab") as out:
             # core errors are not logged of course
             out.write("\n" + "Starting\n")
             out.flush()

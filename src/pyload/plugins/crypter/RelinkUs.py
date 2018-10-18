@@ -277,7 +277,7 @@ class RelinkUs(Crypter):
                 dlc_filepath = os.path.join(
                     self.pyload.config.get("general", "download_folder"), dlc_filename
                 )
-                with open(dlc_filepath, "wb") as f:
+                with open(dlc_filepath, mode="wb") as f:
                     f.write(dlc)
                 pack_links.append(dlc_filepath)
 

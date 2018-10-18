@@ -69,7 +69,7 @@ class ConfigParser(object):
 
             if not os.path.exists(self.pluginpath):
                 os.makedirs(os.path.dirname(self.pluginpath), exist_ok=True)
-                with open(self.pluginpath, "w") as f:
+                with open(self.pluginpath, mode="w") as f:
                     f.write("version: {}".format(__version__))
                 chmod(self.pluginpath, 0o600)
 
@@ -88,7 +88,7 @@ class ConfigParser(object):
 
             m_ver = self._VERSION.search(content)
             if m_ver is None or int(m_ver.group(1)) < __version__:
-                with open(self.pluginpath, "w") as f:
+                with open(self.pluginpath, mode="w") as f:
                     f.write("version: {}".format(__version__))
 
                 print("Old version of plugin-config replaced")
@@ -242,7 +242,7 @@ class ConfigParser(object):
         """
         saves config to filename.
         """
-        with open(filename, "w") as f:
+        with open(filename, mode="w") as f:
             chmod(filename, 0o600)
             f.write("version: {} \n".format(__version__))
             for section in sorted(config.keys()):

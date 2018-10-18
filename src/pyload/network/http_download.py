@@ -88,13 +88,13 @@ class HTTPDownload(object):
         init = fs_encode(self.info.getChunkName(0))  #: initial chunk name
 
         if self.info.getCount() > 1:
-            with open(init, "rb+") as fo:  #: first chunkfile
+            with open(init, mode="rb+") as fo:  #: first chunkfile
                 for i in range(1, self.info.getCount()):
                     # input file
                     # seek to beginning of chunk, to get rid of overlapping chunks
                     fo.seek(self.info.getChunkRange(i - 1)[1] + 1)
                     fname = fs_encode("{}.chunk{}".format(self.filename, i))
-                    with open(fname, "rb") as fi:
+                    with open(fname, mode="rb") as fi:
                         buf = 32 << 10
                         while True:  #: copy in chunks, consumes less memory
                             data = fi.read(buf)

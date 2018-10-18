@@ -79,7 +79,7 @@ class ImageTyperz(Addon):
                 data = (pycurl.FORM_FILE, captcha)
             else:
                 multipart = False
-                with open(captcha, "rb") as f:
+                with open(captcha, mode="rb") as f:
                     data = f.read()
                 data = base64.b64encode(data)
 

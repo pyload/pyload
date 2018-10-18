@@ -155,7 +155,7 @@ class DatabaseBackend(Thread):
         check db version and delete it if needed.
         """
         if not os.path.exists("files.version"):
-            with open("files.version", "w") as f:
+            with open("files.version", mode="w") as f:
                 f.write(str(__version__))
             return
 
@@ -172,7 +172,7 @@ class DatabaseBackend(Thread):
                     print("Filedatabase was deleted due to incompatible version.")
                 os.remove("files.version")
                 shutil.move("files.db", "files.backup.db")
-            with open("files.version", "w") as f:
+            with open("files.version", mode="w") as f:
                 f.write(str(__version__))
             return v
 

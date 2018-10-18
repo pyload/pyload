@@ -318,8 +318,8 @@ class MegaCoNz(Hoster):
         file_decrypted = file_crypted.rsplit(self.FILE_SUFFIX)[0]
 
         try:
-            f = open(file_crypted, "rb")
-            df = open(file_decrypted, "wb")
+            f = open(file_crypted, mode="rb")
+            df = open(file_decrypted, mode="wb")
 
         except IOError as e:
             self.fail(e)

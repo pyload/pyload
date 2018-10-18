@@ -309,7 +309,7 @@ class Plugin(object):
                 ],
             )
 
-        with open(path, "rb") as f:
+        with open(path, mode="rb") as f:
             url = fixurl(url, unquote=True)  #: Recheck in 0.6.x
 
             if req is False:
@@ -431,7 +431,7 @@ class Plugin(object):
                 os.path.join(HOMEDIR, "pyLoad", ".tmp", self.classname), exist_ok=True
             )
 
-            with open(framefile, "w") as f:
+            with open(framefile, mode="w") as f:
                 f.write(self.last_html)
 
         except IOError as e:

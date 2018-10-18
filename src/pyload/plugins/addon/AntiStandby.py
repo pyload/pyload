@@ -139,7 +139,7 @@ class AntiStandby(Addon):
 
     @Expose
     def touch(self, path):
-        with open(path, "w"):
+        with open(path, mode="w"):
             os.utime(path, None)
 
         self.mtime = time.time()

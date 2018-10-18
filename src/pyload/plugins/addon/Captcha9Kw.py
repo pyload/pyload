@@ -94,7 +94,7 @@ class Captcha9Kw(Addon):
 
         else:
             try:
-                with open(task.captchaParams["file"], "rb") as f:
+                with open(task.captchaParams["file"], mode="rb") as f:
                     data = f.read()
 
             except IOError as e:

@@ -42,17 +42,17 @@ class HotFolder(Addon):
                 os.makedirs(os.path.join(folder, "finished"), exist_ok=True)
 
             if self.config.get("watchfile"):
-                with open(file, "a+") as f:
+                with open(file, mode="a+") as f:
                     f.seek(0)
                     content = f.read().strip()
 
                 if content:
-                    f = open(file, "w")
+                    f = open(file, mode="w")
                     f.close()
 
                     name = "{}_{}.txt".format(file, time.strftime("%H-%M-%S_%d%b%Y"))
 
-                    with open(os.path.join(folder, "finished", name), "wb") as f:
+                    with open(os.path.join(folder, "finished", name), mode="wb") as f:
                         f.write(content)
 
                     self.pyload.api.addPackage(f.name, [f.name], 1)

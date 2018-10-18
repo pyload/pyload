@@ -40,7 +40,7 @@ class CCF(Container):
     def decrypt(self, pyfile):
         fs_filename = encode(pyfile.url)
 
-        with open(fs_filename, "rb") as f:
+        with open(fs_filename, mode="rb") as f:
             dlc_content = requests.post(
                 "http://service.jdownloader.net/dlcrypt/getDLC.php",
                 data={"src": "ccf", "filename": "test.ccf"},
@@ -60,7 +60,7 @@ class CCF(Container):
         except AttributeError:
             self.fail(_("Container is corrupted"))
 
-        with open(dlc_file, "w") as tempdlc:
+        with open(dlc_file, mode="w") as tempdlc:
             tempdlc.write(dlc)
 
         self.links = [dlc_file]

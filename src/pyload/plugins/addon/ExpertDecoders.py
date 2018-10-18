@@ -48,7 +48,7 @@ class ExpertDecoders(Addon):
         task.data["ticket"] = ticket = uuid.uuid4()
         result = None
 
-        with open(task.captchaParams["file"], "rb") as f:
+        with open(task.captchaParams["file"], mode="rb") as f:
             data = f.read()
 
         with get_request() as req:

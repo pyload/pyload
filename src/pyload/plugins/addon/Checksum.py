@@ -25,7 +25,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
         ):
             h = getattr(hashlib, algorithm)()
 
-            with open(local_file, "rb") as f:
+            with open(local_file, mode="rb") as f:
                 for chunk in iter(lambda: f.read(128 * h.block_size), ""):
                     if abort and abort():
                         return False
@@ -42,7 +42,7 @@ def compute_checksum(local_file, algorithm, progress_notify=None, abort=None):
             hf = getattr(zlib, algorithm)
             last = 0
 
-            with open(local_file, "rb") as f:
+            with open(local_file, mode="rb") as f:
                 for chunk in iter(lambda: f.read(8192), ""):
                     if abort and abort():
                         return False

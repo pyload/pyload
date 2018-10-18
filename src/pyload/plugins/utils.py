@@ -920,7 +920,7 @@ def compute_checksum(filename, hashtype):
         hf = getattr(zlib, hashtype)
         last = 0
 
-        with open(file, "rb") as f:
+        with open(file, mode="rb") as f:
             for chunk in iter(lambda: f.read(buf), ""):
                 last = hf(chunk, last)
 
@@ -929,7 +929,7 @@ def compute_checksum(filename, hashtype):
     elif hashtype in hashlib.algorithms_available:
         h = hashlib.new(hashtype)
 
-        with open(file, "rb") as f:
+        with open(file, mode="rb") as f:
             for chunk in iter(lambda: f.read(buf * h.block_size), ""):
                 h.update(chunk)
 

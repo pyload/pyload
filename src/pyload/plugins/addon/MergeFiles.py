@@ -43,7 +43,7 @@ class MergeFiles(Addon):
         for name, file_list in files.items():
             self.log_info(_("Starting merging of"), name)
 
-            with open(os.path.join(dl_folder, name), "wb") as final_file:
+            with open(os.path.join(dl_folder, name), mode="wb") as final_file:
                 for splitted_file in file_list:
                     self.log_debug("Merging part", splitted_file)
 

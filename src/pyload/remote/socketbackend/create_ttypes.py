@@ -37,7 +37,7 @@ def main():
         else:
             enums.append(klass)
 
-    with open("ttypes.py", "w") as f:
+    with open("ttypes.py", mode="w") as f:
 
         f.write(
             """# -*- coding: utf-8 -*-

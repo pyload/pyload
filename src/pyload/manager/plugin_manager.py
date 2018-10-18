@@ -69,7 +69,7 @@ class PluginManager(object):
         os.makedirs(userplugins_dir, exist_ok=True)
 
         try:
-            f = open(os.path.join(userplugins_dir, "__init__.py"), "wb")
+            f = open(os.path.join(userplugins_dir, "__init__.py"), mode="wb")
             f.close()
         except Exception:
             pass
@@ -127,7 +127,7 @@ class PluginManager(object):
             pfolder = os.path.join(HOMEDIR, "pyLoad", "userplugins", folder)
             os.makedirs(pfolder, exist_ok=True)
             try:
-                f = open(os.path.join(pfolder, "__init__.py"), "wb")
+                f = open(os.path.join(pfolder, "__init__.py"), mode="wb")
                 f.close()
             except Exception:
                 pass

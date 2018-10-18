@@ -660,7 +660,7 @@ class Plugin(Base):
         elif size > max_size and not read_size:
             return None
         self.log.debug("Download Check triggered")
-        with open(lastDownload, "rb") as f:
+        with open(lastDownload, mode="rb") as f:
             content = f.read(read_size if read_size else -1)
         # produces encoding errors, better log to other file in the future?
         # self.log.debug("Content: {}".format(content))

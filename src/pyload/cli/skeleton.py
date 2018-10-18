@@ -351,7 +351,7 @@ class Cli(object):
                 print(_("File does not exists."))
                 return
 
-            with open(path, "rb") as f:
+            with open(path, mode="rb") as f:
                 content = f.read()
 
             rid = self.client.checkOnlineStatusContainer(
@@ -519,7 +519,7 @@ def print_commands():
 
 def writeConfig(opts):
     try:
-        with open(os.path.join(HOMEDIR, "pyLoad", ".pyload-cli.conf"), "w") as cfgfile:
+        with open(os.path.join(HOMEDIR, "pyLoad", ".pyload-cli.conf"), mode="w") as cfgfile:
             cfgfile.write("[cli]")
             for opt in opts:
                 cfgfile.write("{}={}\n".format(opt, opts[opt]))

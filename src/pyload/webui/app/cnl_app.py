@@ -69,7 +69,7 @@ def addcrypted():
     dlc_path = os.path.join(
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
-    with open(dlc_path, "wb") as dlc_file:
+    with open(dlc_path, mode="wb") as dlc_file:
         dlc_file.write(dlc)
 
     try:

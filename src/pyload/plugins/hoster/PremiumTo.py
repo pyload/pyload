@@ -53,7 +53,7 @@ class PremiumTo(MultiHoster):
             #: Custom error code sent - fail
             file = encode(self.last_download)
 
-            with open(file, "rb") as f:
+            with open(file, mode="rb") as f:
                 err = f.read(256).strip()
 
             self.remove(file)

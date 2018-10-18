@@ -95,7 +95,7 @@ class XDCCRequest(object):
         chunk_name = filename + ".chunk0"
 
         if resume and os.path.exists(chunk_name):
-            self.fh = open(chunk_name, "ab")
+            self.fh = open(chunk_name, mode="ab")
             resume_position = self.fh.tell()
             if not resume_position:
                 resume_position = os.stat(chunk_name).st_size
@@ -105,7 +105,7 @@ class XDCCRequest(object):
             self.received = resume_position
 
         else:
-            self.fh = open(chunk_name, "wb")
+            self.fh = open(chunk_name, mode="wb")
 
         lastUpdate = time.time()
         cumRecvLen = 0

@@ -155,7 +155,7 @@ class Core(object):
     def writePidFile(self):
         self.deletePidFile()
         pid = os.getpid()
-        with open(self.pidfile, "w") as f:
+        with open(self.pidfile, mode="w") as f:
             f.write(str(pid))
 
     def deletePidFile(self):
@@ -489,7 +489,7 @@ class Core(object):
                             tmp_name = tmp_name.replace("/", os.sep)
                             os.makedirs(tmp_name, exist_ok=True)
                         else:
-                            open(tmp_name, "w")  #: where is closed?
+                            open(tmp_name, mode="w")  #: where is closed?
                     except Exception:
                         file_created = False
                 else:

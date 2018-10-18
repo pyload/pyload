@@ -80,11 +80,11 @@ class OCR(Plugin):
     ):
         # tmpTif = tempfile.NamedTemporaryFile(suffix=".tif")
         try:
-            tmpTif = open(os.path.join(HOMEDIR, "pyLoad", ".tmp", "tmpTif_{}.tif" % self.classname), "wb")
+            tmpTif = open(os.path.join(HOMEDIR, "pyLoad", ".tmp", "tmpTif_{}.tif" % self.classname), mode="wb")
             tmpTif.close()
 
             # tmpTxt = tempfile.NamedTemporaryFile(suffix=".txt")
-            tmpTxt = open(os.path.join(HOMEDIR, "pyLoad", ".tmp", "tmpTxt_{}.txt" % self.classname), "wb")
+            tmpTxt = open(os.path.join(HOMEDIR, "pyLoad", ".tmp", "tmpTxt_{}.txt" % self.classname), mode="wb")
             tmpTxt.close()
 
         except IOError as e:

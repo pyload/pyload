@@ -608,7 +608,7 @@ class ExtractArchive(Addon):
 
         except IOError as e:
             if e.errno == 2:
-                f = open(file, "w")
+                f = open(file, mode="w")
                 f.close()
 
             else:
@@ -634,7 +634,7 @@ class ExtractArchive(Addon):
             self.passwords = uniqify([password] + self.passwords)
 
             file = encode(self.config.get("passwordfile"))
-            with open(file, "wb") as f:
+            with open(file, mode="wb") as f:
                 for pw in self.passwords:
                     f.write(pw + "\n")
 

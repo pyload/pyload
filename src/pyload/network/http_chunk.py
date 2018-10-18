@@ -50,7 +50,7 @@ class ChunkInfo(object):
 
     def save(self):
         fs_name = fs_encode("{}.chunks".format(self.name))
-        with open(fs_name, "w", encoding='utf-8') as fh:
+        with open(fs_name, mode="w", encoding='utf-8') as fh:
             fh.write("name:{}\n".format(self.name))
             fh.write("size:{}\n".format(self.size))
             for i, c in enumerate(self.chunks):
@@ -63,7 +63,7 @@ class ChunkInfo(object):
         fs_name = fs_encode("{}.chunks".format(name))
         if not os.path.exists(fs_name):
             raise IOError
-        with open(fs_name, "r" encoding='utf-8') as fh:
+        with open(fs_name, encoding='utf-8') as fh:
             name = fh.readline()[:-1]
             size = fh.readline()[:-1]
             if name.startswith("name:") and size.startswith("size:"):
@@ -159,7 +159,7 @@ class HTTPChunk(HTTPRequest):
 
         fs_name = fs_encode(self.p.info.getChunkName(self.id))
         if self.resume:
-            self.fp = open(fs_name, "ab")
+            self.fp = open(fs_name, mode="ab")
             self.arrived = self.fp.tell()
             if not self.arrived:
                 self.arrived = os.stat(fs_name).st_size
@@ -197,7 +197,7 @@ class HTTPChunk(HTTPRequest):
                 self.log.debug("Chunked with range {}".format(range))
                 self.c.setopt(pycurl.RANGE, range)
 
-            self.fp = open(fs_name, "wb")
+            self.fp = open(fs_name, mode="wb")
 
         return self.c
 

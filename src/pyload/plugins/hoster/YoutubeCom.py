@@ -39,7 +39,7 @@ class BIGHTTPRequest(HTTPRequest):
             rep = self.getResponse()
             if self.abort:
                 raise Abort
-            with open("response.dump", "wb") as f:
+            with open("response.dump", mode="wb") as f:
                 f.write(rep)
             raise Exception("Loaded Url exceeded limit")
 
@@ -985,7 +985,7 @@ class YoutubeCom(Hoster):
                         timed_text = self.load(subtitles_urls[_lang], decode=False)
                         srt = timedtext_to_srt(timed_text)
 
-                        with open(srt_filename, "w") as f:
+                        with open(srt_filename, mode="w") as f:
                             f.write(srt.encode("utf-8"))
                         self.set_permissions(srt_filename)
                         self.log_debug(
@@ -1023,7 +1023,7 @@ class YoutubeCom(Hoster):
                     timed_text = self.load(_subtitle[1], decode=False)
                     srt = timedtext_to_srt(timed_text)
 
-                    with open(srt_filename, "w") as f:
+                    with open(srt_filename, mode="w") as f:
                         f.write(srt.encode("utf-8"))
                     self.set_permissions(srt_filename)
 

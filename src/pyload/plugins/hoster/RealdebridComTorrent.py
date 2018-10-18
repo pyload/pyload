@@ -73,7 +73,7 @@ class RealdebridComTorrent(Hoster):
                 torrent_filename = os.path.join(
                     HOMEDIR, "pyLoad", ".tmp", "tmp_{}.torrent".format(self.pyfile.package().name)
                 )
-                with open(torrent_filename, "wb") as f:
+                with open(torrent_filename, mode="wb") as f:
                     f.write(torrent_content)
             else:
                 torrent_filename = urllib.request.url2pathname(self.pyfile.url[7:])

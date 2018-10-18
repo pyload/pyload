@@ -372,7 +372,7 @@ class Hoster(Base):
             self.log_warning(_("No file to scan"))
             return
 
-        with open(dl_file, "rb") as f:
+        with open(dl_file, mode="rb") as f:
             content = f.read(read_size)
 
         #: Produces encoding errors, better log to other file in the future?
