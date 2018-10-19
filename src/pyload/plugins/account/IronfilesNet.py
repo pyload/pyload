@@ -41,5 +41,5 @@ class IronfilesNet(Account):
     def signin(self, user, password, data):
         json_data = self.api_response("auth", login=user, password=password)
 
-        if json_data["result"] is False:
+        if not json_data["result"]:
             self.fail_login(json_data["message"])

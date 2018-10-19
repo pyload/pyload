@@ -111,7 +111,7 @@ class Hoster(Base):
                     e,
                 )
                 if (
-                    self.no_fallback is False
+                    not self.no_fallback
                     and self.config.get("fallback", True)
                     and self.premium
                 ):

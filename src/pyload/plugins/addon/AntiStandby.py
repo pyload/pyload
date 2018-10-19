@@ -157,7 +157,7 @@ class AntiStandby(Addon):
         )
 
     def periodical_task(self):
-        if self.config.get("hdd") is False:
+        if not self.config.get("hdd"):
             return
 
         if (

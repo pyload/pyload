@@ -42,5 +42,5 @@ class YibaishiwuCom(Account):
             },
         )
 
-        if not "var USER_PERMISSION = {" in html:
+        if "var USER_PERMISSION = {" not in html:
             self.fail_login()

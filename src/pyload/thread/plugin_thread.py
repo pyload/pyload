@@ -229,7 +229,7 @@ class DownloadThread(PluginThread):
                 reason = e.args[0]
                 self.m.log.info(
                     _("Download restarted: {name} | {msg}").format(
-                        **{"name": pyfile.name, "msg": reason}
+                        name=pyfile.name, msg=reason
                     )
                 )
                 self.queue.put(pyfile)
@@ -250,7 +250,7 @@ class DownloadThread(PluginThread):
                     pyfile.setStatus("failed")
                     self.m.log.warning(
                         _("Download failed: {name} | {msg}").format(
-                            **{"name": pyfile.name, "msg": msg}
+                            name=pyfile.name, msg=msg
                         )
                     )
                     pyfile.error = msg
@@ -309,7 +309,7 @@ class DownloadThread(PluginThread):
 
                 self.m.log.info(
                     _("Download skipped: {name} due to {plugin}").format(
-                        **{"name": pyfile.name, "plugin": e}
+                        name=pyfile.name, plugin=e
                     )
                 )
 
@@ -326,7 +326,7 @@ class DownloadThread(PluginThread):
                 pyfile.setStatus("failed")
                 self.m.log.warning(
                     _("Download failed: {name} | {msg}").format(
-                        **{"name": pyfile.name, "msg": str(e)}
+                        name=pyfile.name, msg=str(e)
                     )
                 )
                 pyfile.error = str(e)
@@ -413,7 +413,7 @@ class DecrypterThread(PluginThread):
                 self.active.setStatus("failed")
                 self.m.log.error(
                     _("Decrypting failed: {name} | {msg}").format(
-                        **{"name": self.active.name, "msg": msg}
+                        name=self.active.name, msg=msg
                     )
                 )
                 self.active.error = msg
@@ -435,7 +435,7 @@ class DecrypterThread(PluginThread):
             self.active.setStatus("failed")
             self.m.log.error(
                 _("Decrypting failed: {name} | {msg}").format(
-                    **{"name": self.active.name, "msg": str(e)}
+                    name=self.active.name, msg=str(e)
                 )
             )
             self.active.error = str(e)
@@ -693,7 +693,7 @@ class InfoThread(PluginThread):
         except Exception as e:
             self.m.log.warning(
                 _("Info Fetching for {name} failed | {err}").format(
-                    **{"name": pluginname, "err": str(e)}
+                    name=pluginname, err=str(e)
                 )
             )
 

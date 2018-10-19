@@ -64,11 +64,9 @@ class CloudzillaTo(SimpleHoster):
             self.wait(ticket["wait"], int(ticket["wait"]) > 5)
 
         self.link = "http://{server}/download/{file_id}/{ticket_id}".format(
-            **{
-                "server": ticket["server"],
-                "file_id": self.info["pattern"]["ID"],
-                "ticket_id": ticket["ticket_id"],
-            }
+                server=ticket["server"],
+                file_id=self.info["pattern"]["ID"],
+                ticket_id=ticket["ticket_id"]
         )
 
     def handle_premium(self, pyfile):

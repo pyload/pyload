@@ -503,13 +503,13 @@ class Core(object):
                     if not empty:
                         self.log.warning(
                             _("could not find {desc}: {name}").format(
-                                **{"desc": description, "name": tmp_name}
+                                desc=description, name=tmp_name
                             )
                         )
                     else:
                         print(
                             _("could not create {desc}: {name}").format(
-                                **{"desc": description, "name": tmp_name}
+                                desc=description, name=tmp_name
                             )
                         )
                     if essential:

@@ -55,7 +55,7 @@ class PluginManager(object):
             """
             for name in src:
                 if name in dst:
-                    if overwrite is True:
+                    if overwrite:
                         dst[name].update(src[name])
                     else:
                         for _k in set(src[name].keys()) - set(dst[name].keys()):
@@ -339,7 +339,7 @@ class PluginManager(object):
             except Exception as e:
                 self.log.error(
                     _("Error importing {name}: {msg}").format(
-                        **{"name": name, "msg": str(e)}
+                        name=name, msg=str(e)
                     )
                 )
                 if self.pyload.debug:
@@ -417,7 +417,7 @@ class PluginManager(object):
             """
             for name in src:
                 if name in dst:
-                    if overwrite is True:
+                    if overwrite:
                         dst[name].update(src[name])
                     else:
                         for _k in set(src[name].keys()) - set(dst[name].keys()):

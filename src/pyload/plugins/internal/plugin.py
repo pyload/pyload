@@ -41,9 +41,7 @@ class Plugin(object):
         self.init()
 
     def __repr__(self):
-        return "<{type} {name}>".format(
-            **{"type": self.__type__.capitalize(), "name": self.classname}
-        )
+        return "<{type} {name}>".format(type=self.__type__.capitalize(), name=self.classname)
 
     @property
     def classname(self):
@@ -77,11 +75,9 @@ class Plugin(object):
         msg = " | ".join(decode(a).strip() for a in messages if a)
         log(
             "{plugintype} {pluginname}: {msg}".format(
-                **{
-                    "plugintype": plugintype.upper(),
-                    "pluginname": pluginname,
-                    "msg": msg,
-                }
+                    plugintype=plugintype.upper(),
+                    pluginname=pluginname,
+                    msg=msg,
             )
         )
 

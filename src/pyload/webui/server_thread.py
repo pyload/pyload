@@ -90,7 +90,7 @@ class WebServer(threading.Thread):
 
         self.pyload.log.info(
             _("Starting flask webserver: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}
+                host=self.host, port=self.port
             )
         )
         self.app.run_flask(host=self.host, port=self.port, debug=self.pyload.debug)
@@ -104,7 +104,7 @@ class WebServer(threading.Thread):
 
         self.pyload.log.info(
             _("Starting builtin webserver: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}
+                host=self.host, port=self.port
             )
         )
         self.app.run_wgsi(host=self.host, port=self.port, debug=self.pyload.debug)
@@ -118,7 +118,7 @@ class WebServer(threading.Thread):
 
         self.pyload.log.info(
             _("Starting auto webserver: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}
+                host=self.host, port=self.port
             )
         )
         self.app.run_auto(host=self.host, port=self.port, debug=self.pyload.debug)
@@ -128,7 +128,7 @@ class WebServer(threading.Thread):
         if self.https:
             self.pyload.log.info(
                 _("Starting threaded SSL webserver: {host}:{port:d}").format(
-                    **{"host": self.host, "port": self.port}
+                    host=self.host, port=self.port
                 )
             )
         else:
@@ -136,7 +136,7 @@ class WebServer(threading.Thread):
             self.key = ""
             self.pyload.log.info(
                 _("Starting threaded webserver: {host}:{port:d}").format(
-                    **{"host": self.host, "port": self.port}
+                    host=self.host, port=self.port
                 )
             )
 
@@ -148,7 +148,7 @@ class WebServer(threading.Thread):
 
         self.pyload.log.info(
             _("Starting fastcgi server: {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}
+                host=self.host, port=self.port
             )
         )
         self.app.run_fcgi(host=self.host, port=self.port, debug=self.pyload.debug)
@@ -161,7 +161,7 @@ class WebServer(threading.Thread):
 
         self.pyload.log.info(
             _("Starting lightweight webserver (bjoern): {host}:{port:d}").format(
-                **{"host": self.host, "port": self.port}
+                host=self.host, port=self.port
             )
         )
         self.app.run_bjoern(host=self.host, port=self.port, debug=self.pyload.debug)

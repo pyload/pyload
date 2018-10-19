@@ -84,7 +84,7 @@
 
         {% macro selected(name, right=False) -%}
             {% if name in url -%}class="{% if right -%}right {% endif %}selected"{%- endif %}
-            {% if not name in url and right -%}class="right"{%- endif %}
+            {% if name not in url and right -%}class="right"{%- endif %}
         {%- endmacro %}
 
 

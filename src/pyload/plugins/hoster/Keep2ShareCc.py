@@ -54,7 +54,7 @@ class Keep2ShareCc(SimpleHoster):
         if (
             file_info["code"] != 200
             or len(file_info["files"]) == 0
-            or file_info["files"][0].get("is_available", False) is False
+            or not file_info["files"][0].get("is_available")
         ):
             return {"status": 1}
 

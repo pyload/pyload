@@ -612,7 +612,7 @@ class Plugin(Base):
 
         if disposition and newname and newname != name:  #: triple check, just to be sure
             self.log.info(
-                "{name} saved as {newname}".format(**{"name": name, "newname": newname})
+                "{name} saved as {newname}".format(name=name, newname=newname)
             )
             self.pyfile.name = newname
             filename = os.path.join(location, newname)

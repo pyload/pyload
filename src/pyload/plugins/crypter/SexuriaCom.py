@@ -106,7 +106,7 @@ class SexuriaCom(Crypter):
                 self.log_warning("No password data found, has site changed?")
             else:
                 pwd = pwddata.group("PWD").strip()
-                if pwd and not (pwd in self.LIST_PWDIGNORE):
+                if pwd and pwd not in self.LIST_PWDIGNORE:
                     password = pwd
                     self.log_debug("Package info found, password [{}]".format(password))
 
@@ -121,7 +121,7 @@ class SexuriaCom(Crypter):
                         "http://sexuria.com/", "http://www.sexuria.com/"
                     )
                     finallink = self.load(link, just_header=True)["url"]
-                    if not finallink or ("sexuria.com/" in finallink):
+                    if not finallink or "sexuria.com/" in finallink:
                         self.log_error(_("Broken for link: {}").format(link))
                     else:
                         linklist.append(finallink)

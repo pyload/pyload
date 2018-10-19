@@ -48,7 +48,7 @@ class SkipRev(Addon):
         if (
             pyfile.statusname == "unskipped"
             or not name.endswith(".rev")
-            or not ".part" in name
+            or ".part" not in name
         ):
             return
 

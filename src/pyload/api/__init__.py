@@ -398,7 +398,7 @@ class Api(Iface):
 
         self.pyload.log.info(
             _("Added package {name} containing {count:d} links").format(
-                **{"name": name, "count": len(links)}
+                name=name, count=len(links)
             )
         )
 
@@ -750,7 +750,7 @@ class Api(Iface):
 
         self.pyload.log.info(
             _("Added {count:d} links to package #{package:d} ").format(
-                **{"count": len(links), "package": pid}
+                count=len(links), package=pid
             )
         )
         self.pyload.files.save()

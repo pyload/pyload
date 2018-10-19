@@ -467,23 +467,20 @@ def print_packages(data):
 
 def print_file(download):
     return "#{id:-6d} {name:-30} {statusmsg:-10} {plugin:-8}".format(
-        **{
-            "id": download.fid,
-            "name": download.name,
-            "statusmsg": download.statusmsg,
-            "plugin": download.plugin,
-        }
+        id=download.fid,
+            name=download.name,
+            statusmsg=download.statusmsg,
+            plugin=download.plugin,
     )
 
 
 def print_status(download):
     return "#{id:-6} {name:-40} Status: {statusmsg:-10} Size: {size}".format(
-        **{
-            "id": download.fid,
-            "name": download.name,
-            "statusmsg": download.statusmsg,
-            "size": download.format_size,
-        }
+       
+            id=download.fid,
+            name=download.name,
+            statusmsg=download.statusmsg,
+            size=download.format_size,
     )
 
 
@@ -656,7 +653,7 @@ def main(args):
             except NoConnection:
                 print(
                     _("Could not establish connection to {addr}:{port}.").format(
-                        **{"addr": config["addr"], "port": config["port"]}
+                        addr=config["addr"], port=config["port"]
                     )
                 )
 
@@ -670,7 +667,7 @@ def main(args):
         except NoConnection:
             print(
                 _("Could not establish connection to {addr}:{port}.").format(
-                    **{"addr": config["addr"], "port": config["port"]}
+                    addr=config["addr"], port=config["port"]
                 )
             )
         except NoSSL:

@@ -70,7 +70,7 @@ class IRC(Thread, Notifier):
             if self.config.get("info_file"):
                 self.response(
                     _("Download finished: {name} @ {plugin} ").format(
-                        **{"name": pyfile.name, "plugin": pyfile.pluginname}
+                        name=pyfile.name, plugin=pyfile.pluginname
                     )
                 )
 
@@ -157,7 +157,7 @@ class IRC(Thread, Notifier):
                 self.handle_events(msg)
 
     def handle_events(self, msg):
-        if not msg["origin"].split("!", 1)[0] in self.config.get("owner").split():
+        if msg["origin"].split("!", 1)[0] not in self.config.get("owner").split():
             return
 
         if msg["target"].split("!", 1)[0] != self.config.get("nick"):

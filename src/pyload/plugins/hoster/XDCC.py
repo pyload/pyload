@@ -807,7 +807,7 @@ class XDCC(Hoster):
             if newname and newname != dl_file:
                 self.log_info(
                     _("{name} saved as {newname}").format(
-                        **{"name": self.pyfile.name, "newname": newname}
+                        name=self.pyfile.name, newname=newname
                     )
                 )
                 dl_file = newname

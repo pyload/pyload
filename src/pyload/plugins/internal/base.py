@@ -121,12 +121,10 @@ class Base(Plugin):
 
         log(
             "{plugintype} {pluginname}[{id}]: {msg}".format(
-                **{
-                    "plugintype": plugintype.upper(),
-                    "pluginname": pluginname,
-                    "id": self.pyfile.id,
-                    "msg": msg,
-                }
+                    plugintype=plugintype.upper(),
+                    pluginname=pluginname,
+                    id=self.pyfile.id,
+                    msg=msg
             )
         )
 
@@ -420,7 +418,7 @@ class Base(Plugin):
     def error(self, msg="", type=_("Parse")):
         type = _("{} error").format(type.strip().capitalize() if type else _("Unknown"))
         msg = _("{type}: {msg} | Plugin may be out of date").format(
-            **{"type": type, "msg": msg or self.pyfile.error}
+            type=type, msg=msg or self.pyfile.error
         )
 
         self.fail(msg)

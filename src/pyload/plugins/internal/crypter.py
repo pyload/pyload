@@ -116,7 +116,7 @@ class Crypter(Base):
 
             self.log_info(
                 _("Save package `{name}` to folder: {folder}").format(
-                    **{"name": name, "folder": folder}
+                    name=name, folder=folder
                 )
             )
 

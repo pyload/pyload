@@ -217,8 +217,8 @@ class XFSHoster(SimpleHoster):
                     self.set_wait(wait_time)
                     if (
                         wait_time < self.config.get("max_wait", 10) * 60
-                        or self.pyload.config.get("reconnect", "activated") is False
-                        or self.pyload.api.isTimeReconnect() is False
+                        or not self.pyload.config.get("reconnect", "activated")
+                        or not self.pyload.api.isTimeReconnect()
                     ):
                         self.handle_captcha(inputs)
 

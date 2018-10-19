@@ -49,5 +49,5 @@ class MegasharesCom(Account):
             },
         )
 
-        if not '<span class="b ml">{}</span>'.format(user) in html:
+        if '<span class="b ml">{}</span>'.format(user) not in html:
             self.fail_login()

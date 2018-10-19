@@ -176,7 +176,7 @@ class ExternalScripts(Addon):
 
             else:
                 lock = kwargs.get("lock", None)
-                if lock is True or lock is None and not self.config.get("unlock"):
+                if lock is not False and not self.config.get("unlock"):
                     p.communicate()
 
     def pyload_updated(self, etag):

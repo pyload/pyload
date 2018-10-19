@@ -83,11 +83,9 @@ class Account(Plugin):
 
         log(
             "{plugintype} {pluginname}: {msg}".format(
-                **{
-                    "plugintype": plugintype.upper(),
-                    "pluginname": pluginname,
-                    "msg": msg,
-                }
+                    plugintype=plugintype.upper(),
+                    pluginname=pluginname,
+                    msg=msg,
             )
         )
 

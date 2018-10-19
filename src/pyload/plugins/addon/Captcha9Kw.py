@@ -214,7 +214,7 @@ class Captcha9Kw(Addon):
         if task.isInteractive():
             if (
                 task.captchaParams["captcha_plugin"] != "ReCaptcha"
-                or self.config.get("solve_interactive") is False
+                or not self.config.get("solve_interactive")
             ):
                 return
         else:

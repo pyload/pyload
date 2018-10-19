@@ -92,7 +92,7 @@ class XMPP(IRC, pyxmpp2.jabber.client.JabberClient):
             if self.config.get("info_file"):
                 self.announce(
                     _("Download finished: {name} @ {plugin}").format(
-                        **{"name": pyfile.name, "plugin": pyfile.pluginname}
+                        name=pyfile.name, plugin=pyfile.pluginname
                     )
                 )
 

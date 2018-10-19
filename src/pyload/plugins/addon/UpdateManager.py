@@ -45,7 +45,7 @@ class UpdateManager(Addon):
             self.pyload.api.pauseServer()
             self.update()
 
-            if self.do_restart is False:
+            if not self.do_restart:
                 self.pyload.api.unpauseServer()
 
         self.periodical.start(10)
@@ -64,7 +64,7 @@ class UpdateManager(Addon):
         self.do_restart = False
 
     def all_downloads_processed(self):
-        if self.do_restart is True:
+        if self.do_restart:
             self.pyload.api.restart()
 
     def periodical_task(self):
@@ -83,7 +83,7 @@ class UpdateManager(Addon):
         ):
             self.update()
 
-        if self.do_restart is True:
+        if self.do_restart:
             if (
                 self.pyload.threadManager.pause
                 and not self.pyload.api.statusDownloads()
@@ -320,7 +320,7 @@ class UpdateManager(Addon):
             for t, n in self.remove_plugins(blacklisted_plugins):
                 self.log_info(
                     _("Removed blacklisted plugin: {type} {name}").format(
-                        **{"type": t.upper(), "name": n}
+                        type=t.upper(), name=n
                     )
                 )
 
@@ -357,14 +357,12 @@ class UpdateManager(Addon):
 
             self.log_info(
                 msg.format(
-                    **{
-                        "type": plugin_type.rstrip(
+                        type=plugin_type.rstrip(
                             "s"
                         ).upper(),  # TODO: Remove rstrip in 0.6.x
-                        "name": plugin_name,
-                        "oldver": oldver,
-                        "newver": newver,
-                    }
+                        name=plugin_name,
+                        oldver=oldver,
+                        newver=newver
                 )
             )
             try:
