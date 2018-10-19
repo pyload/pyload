@@ -1,4 +1,4 @@
-{% extends '/base.html' %}
+{% extends theme('base.html') %}
 
 {% block head %}
 
@@ -75,6 +75,6 @@ document.addEvent("domready", function(){
 {{ display_folder(root, true) }}
 </ul>
 
-{% include "/rename_directory.html" %}
+{% include theme('rename_directory.html', False) %}
 
 {% endblock %}

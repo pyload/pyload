@@ -189,8 +189,8 @@
 {% block dialog %}
 {% endblock %}
 
-{% include "/window.html" %}
-{% include "/captcha.html" %}
+{% include theme('window.html', False) %}
+{% include theme('captcha.html', False) %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
 <script type="text/javascript" src="{{'/vendor/jQuery/jquery.min.js'|url}}"></script>

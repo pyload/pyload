@@ -7,6 +7,8 @@ import sys
 from builtins import str, PKGDIR
 
 import flask
+import flask.ext.themes2
+
 import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 import jinja2
@@ -92,6 +94,9 @@ def create_app():
     app.register_blueprint(api_app.bp)
     app.register_blueprint(cnl_app.bp)
     app.register_blueprint(json_app.bp)
+    
+    flask.ext.themes2.Themes(app, app_identifier='pyload')
+    return app
     
     
 def run_flask(host='0.0.0.0', port='8000', debug=False):

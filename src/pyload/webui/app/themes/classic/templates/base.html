@@ -283,8 +283,8 @@ a.cog {
 </div>
 
 <div style="display: none;">
-    {% include "/window.html" %}
-    {% include "/captcha.html" %}
+    {% include theme('window.html', False) %}
+    {% include theme('captcha.html', False) %}
     {% block hidden %}
     {% endblock %}
 </div>

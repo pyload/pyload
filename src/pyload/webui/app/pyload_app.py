@@ -570,8 +570,14 @@ def admin():
 @bp.route(r"/setup")
 def setup():
     return base([_("Run pyLoad -s to access the setup.")])
-
-
+    
+    
+# @bp.route("/refresh")
+# def refresh():
+    # bp.app.theme_manager.refresh()
+    # return flask.redirect(flask.url_for('themes'))
+    
+    
 @bp.route(r"/info")
 @login_required("STATUS")
 def info():
