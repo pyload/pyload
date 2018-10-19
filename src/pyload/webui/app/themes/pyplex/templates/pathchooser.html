@@ -69,7 +69,7 @@
         setValid();
     }
   </script>
-  <link rel="stylesheet" type="text/css" href="{{'/css/pathchooser.css'|url}}"/>
+  <link rel="stylesheet" type="text/css" href="{{theme_static('css/pathchooser.css')}}"/>
 </head>
 <body {% if type == 'file' %}{% if oldfile %}onload="updateParent();"{% else %}onload="setInvalid();"{% endif %}{% else %}onload="updateParent();"{% endif %}>
  <table>
@@ -92,7 +92,7 @@
     {% for file in files %}
             {% if type == 'folder' %} {# browsing for folder #}
                   {% if file.type == 'dir' %}
-                    <tr class="tr-clickable" data-href="{{'/pathchooser/'|url + file.fullpath|quotepath}}" title="{{file.name}}">
+                    <tr class="tr-clickable" data-href="{{theme_static('pathchooser/')}}" title="{{file.name}}">
                       <td class="name path_directory text-ellipsis">{{file.name}}</td>
                   {% else %}
                     <tr class="tr-nonclickable" title="{{file.fullpath}}">
@@ -100,7 +100,7 @@
                   {% endif %}
             {% else %} {# browsing for file #}
                   {% if file.type == 'dir' %}
-                   <tr class="tr-clickable" data-href="{{'/filechooser/'|url + file.fullpath|quotepath}}" title="{{file.fullpath}}">
+                   <tr class="tr-clickable" data-href="{{theme_static('filechooser/')}}" title="{{file.fullpath}}">
                     <td class="name file_directory text-ellipsis">{{file.name}}</td>
                   {% else %}
                    <tr class="tr-clickable" title="{{file.fullpath}}" onclick="setFile('{{file.fullpath|replace("\\", "\\\\")}}', '{{file.name}}');">

@@ -3,13 +3,13 @@
 {% block title %}{{_("Logs")}} - {{super()}} {% endblock %}
 {% block subtitle %}{{_("Logs")}}{% endblock %}
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{{'/css/log.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/log.css')}}"/>
 {% endblock %}
 
 {% block content %}
 <div style="clear: both;"></div>
 
-<div class="logpaginator"><a href="{{ '/logs/1'|url }}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ '/logs/'|url + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ '/logs/'|url + inext|string }}">{{_("next")}} &gt;</a> <a href="{{'/logs/'|url}}">{{_("End")}} &gt;&gt;</a></div>
+<div class="logpaginator"><a href="{{ '/logs/1'|url }}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ '/logs/'|url + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ '/logs/'|url + inext|string }}">{{_("next")}} &gt;</a> <a href="{{ url_for('logs') }}">{{_("End")}} &gt;&gt;</a></div>
 <div class="logperpage">
     <form id="logform1" action="" method="POST">
         <label for="reversed">Reversed:</label>

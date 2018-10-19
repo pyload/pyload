@@ -7,11 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link rel="stylesheet" type="text/css" href="{{'/vendor/Bootstrap/css/bootstrap.min.css'|url}}">
-<link rel="stylesheet" type="text/css" href="{{'/vendor/jQuery/jQuery UI/jquery-ui.min.css'|url}}"/>
-<link rel="stylesheet" type="text/css" href="{{'/css/styles.css'|url}}">
+<link rel="stylesheet" type="text/css" href="{{theme_static('vendor/Bootstrap/css/bootstrap.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/styles.css')}}">
 
-<link rel="icon" href="{{'/img/favicon.ico'|url}}"/>
+<link rel="icon" type="image/ico" href="{{theme_static('img/favicon.ico')}}"/>
 
 <style type="text/css">
 .ui-icon,
@@ -67,7 +67,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-        <a class="navbar-brand" href="#"><img id="head-logo" src="{{'/img/pyload_banner.png'|url}}" alt="pyLoad" style="height:30px;"/></a>
+        <a class="navbar-brand" href="#"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" style="height:30px;"/></a>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
@@ -79,30 +79,30 @@
         {% block menu %}
          {% if user.is_authenticated %}
           <li ondragstart="return false;" {{selected('home')}}>
-              <a href="{{'/home/'|url}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
+              <a href="{{theme_static('home/')}}" title=""><span class="glyphicon glyphicon-home"></span><span class="hidden-sm"> {{_('Home')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('queue')}}>
-              <a href="{{'/queue/'|url}}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
+              <a href="{{ url_for('queue') }}" title=""><span class="glyphicon glyphicon-tasks"></span><span class="hidden-sm"> {{_('Queue')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('collector')}}>
-              <a href="{{'/collector/'|url}}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Collector')}}</span></a>
+              <a href="{{ url_for('collector') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('Collector')}}</span></a>
           </li>
           <li ondragstart="return false;" {{selected('downloads')}}>
-              <a href="{{'/downloads/'|url}}" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Downloads')}}</span></a>
+              <a href="{{ url_for('downloads') }}" title=""> <span class="glyphicon glyphicon-download"></span><span class="hidden-sm"> {{_('Downloads')}}</span></a>
           </li>
     {#  <li ondragstart="return false;" {{selected('filemanager')}}>#}
-    {#      <a href="{{'/filemanager/'|url}}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
+    {#      <a href="{{ url_for('filemanager') }}" title=""><span class="glyphicon glyphicon-magnet"></span><span class="hidden-sm"> {{_('FileManager')}}</span></a>#}
     {#  </li>#}
           <li ondragstart="return false;" {{selected('logs')}}>
-              <a href="{{'/logs/'|url}}" title=""><span class="glyphicon glyphicon-list"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
+              <a href="{{ url_for('logs') }}" title=""><span class="glyphicon glyphicon-list"></span><span class="hidden-sm"> {{_('Logs')}}</span></a>
           </li>
         {% if user.is_admin %}
           <li ondragstart="return false;" {{selected('admin')}}>
-              <a href="{{'/admin/'|url}}" title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm">  {{_('Administration')}}</span></a>
+              <a href="{{ url_for('admin') }}" title=""><span class="glyphicon glyphicon-cog"></span><span class="hidden-sm">  {{_('Administration')}}</span></a>
           </li>
         {% endif %}
           <li ondragstart="return false;" {{selected('settings', True)}}>
-              <a href="{{'/settings/'|url}}"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Config')}}</span></a>
+              <a href="{{ url_for('settings') }}"  title=""><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm"> {{_('Config')}}</span></a>
           </li>
          {% endif %}
         {% endblock %}
@@ -111,8 +111,8 @@
         {% if user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
             <li><span class="navbar-text"><span class="glyphicon glyphicon-user"></span><span class="hidden-sm hidden-md"> {{user.name}}</span></span></li>
-            <li><a href="{{'/logout'|url}}"  class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
-            <li><a href="{{'/info'|url}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
+            <li><a href="{{theme_static('logout')}}"  class="action logout" rel="nofollow"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-sm hidden-md">  {{_('Logout')}}</span></a></li>
+            <li><a href="{{theme_static('info')}}"  class="action info" rel="nofollow"><span class="glyphicon glyphicon-info-sign"></span><span class="hidden-sm hidden-md">  {{_('Info')}}</span></a></li>
           </ul>
         {% endif %}
       </div><!-- /.navbar-collapse -->
@@ -165,7 +165,7 @@
           {% endfor %}
         </div>
         <div id="load-indicator" style="opacity: 0; margin-top: 5px;">
-             <img src="{{'/img/ajax-loader.gif'|url}}" alt="" style="padding-right: 5px"/>
+             <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
              {{_('loading')}}
         </div>
       </div>
@@ -193,11 +193,11 @@
 {% include theme('captcha.html', False) %}
 <noscript><h1>Enable JavaScript to use the webinterface.</h1></noscript>
 
-<script type="text/javascript" src="{{'/vendor/jQuery/jquery.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/jQuery/jQuery UI/jquery-ui.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/Bootstrap/js/bootstrap.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery UI/jquery-ui.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/jQuery/jQuery.peekABar/js/jquery.peekabar.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/Bootstrap/js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('js/base.js')}}"></script>
 
 {% block footer %}
 {% endblock %}

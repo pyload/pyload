@@ -25,7 +25,7 @@
 
         }
   </script>
-  <link rel="stylesheet" type="text/css" href="{{'/css/pathchooser.css'|url}}"/>
+  <link rel="stylesheet" type="text/css" href="{{theme_static('css/pathchooser.css')}}"/>
 </head>
 <body{% if type == 'file' %}{% if not oldfile %} onload="setInvalid();"{% endif %}{% endif %}>
 <center>

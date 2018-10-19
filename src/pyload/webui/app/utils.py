@@ -5,22 +5,42 @@ import json
 import os
 
 import flask
+import flask_themes2
 
 from pyload.api import PERMS, ROLE, has_permission
 from pyload.webui.app import PREFIX, env
 from pyload.webui.server_thread import PYLOAD_API
 
 
+
+
+
+# remove
 def get_theme():
     return PYLOAD_API.getConfigValue("webui", "theme").lower()
 
     
+    
+    
+    
+def flask_render(template, args={}, proc=[]):
+    app = flask.current_app  # fix
+    context = {}  # fix
+    theme = flask.session.get('theme', app.config[get_theme()])
+    return flask_theme2.render_theme_template(theme, template, **context)
+
+
+
+    
+    
+
+    
 # check
-def render_to_response(path, args={}, proc=[]):
-    for p in proc:
-        args.update(p())        
-    template = env.get_template(path, parent=get_theme())
-    return template.render(**args)
+# def render_to_response(path, args={}, proc=[]):
+    # for p in proc:
+        # args.update(p())        
+    # template = env.get_template(path, parent=get_theme())
+    # return template.render(**args)
 
 
 def parse_permissions(session):
@@ -75,14 +95,14 @@ def set_permission(perms):
 
 
 def set_session(request, info):
-    s = flask.request.environ.get("beaker.session")
+    s = flask.session
     s["authenticated"] = True
     s["user_id"] = info["id"]
     s["name"] = info["name"]
     s["role"] = info["role"]
     s["perms"] = info["permission"]
     s["template"] = info["template"]
-    s.save()
+    s.modified = True
 
     return s
 
@@ -109,7 +129,7 @@ def apiver_check(func):
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
-            s = flask.request.environ.get("beaker.session")
+            s = flask.session
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)

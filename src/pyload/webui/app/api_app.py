@@ -26,12 +26,12 @@ class TBaseEncoder(json.JSONEncoder):
             return toDict(o)
         return json.JSONEncoder.default(self, o)
 
-
+        
 # accepting positional arguments, as well as kwargs via post and get
 @bp.route(
-    r"/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", methods=['GET', 'POST']
+    r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", methods=['GET', 'POST']
 )
-@apiver_check
+# @apiver_check
 def call_api(func, args=""):
     flask.response.headers.replace("Content-type", "application/json")
     flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -48,7 +48,7 @@ def call_api(func, args=""):
             return "Forbidden", 403
 
     else:
-        s = flask.request.environ.get("beaker.session")
+        s = flask.session
         if "session" in flask.request.form:
             s = s.get_by_id(flask.request.form["session"])
 
@@ -91,8 +91,8 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@bp.route(r"/api/<apiver>/login", methods=['POST'])
-@apiver_check
+@bp.route(r"/login", methods=['POST'])
+# @apiver_check
 def login():
     flask.response.headers.replace("Content-type", "application/json")
     flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
@@ -115,11 +115,10 @@ def login():
         return json.dumps(True)
 
 
-@bp.route(r"/api/<apiver>/logout")
-@apiver_check
+@bp.route(r"/logout")
+# @apiver_check
 def logout():
     flask.response.headers.replace("Content-type", "application/json")
     flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
-
-    s = flask.request.environ.get("beaker.session")
-    s.delete()
+    flask.session.clear()
+    flask.session.modified = True

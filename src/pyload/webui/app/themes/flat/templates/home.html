@@ -208,25 +208,25 @@ var LinkEntry = new Class({
 
 {% block menu %}
 <li class="selected">
-    <a href="/" title=""><img src="{{'/img/head-menu-home.png'|url}}" alt="" /> {{_("Home")}}</a>
+    <a href="/" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="{{'/queue/'|url}}" title=""><img src="{{'/img/head-menu-queue.png'|url}}" alt="" /> {{_("Queue")}}</a>
+    <a href="{{ url_for('queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="{{'/collector/'|url}}" title=""><img src="{{'/img/head-menu-collector.png'|url}}" alt="" /> {{_("Collector")}}</a>
+    <a href="{{ url_for('collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="{{'/downloads/'|url}}" title=""><img src="{{'/img/head-menu-development.png'|url}}" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ url_for('downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
 </li>
 <li>
-    <a href="{{'/filemanager/'|url}}" title=""><img src="{{'/img/head-menu-download.png'|url}}" alt="" /> {{_("FileManager")}}</a>
+    <a href="{{ url_for('filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("FileManager")}}</a>
 </li>
 <li class="right">
-    <a href="{{'/logs/'|url}}"  title=""><img src="{{'/img/head-menu-index.png'|url}}" alt="" />{{_("Logs")}}</a>
+    <a href="{{ url_for('logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="{{'/settings/'|url}}"  title=""><img src="{{'/img/head-menu-config.png'|url}}" alt="" />{{_("Config")}}</a>
+    <a href="{{ url_for('settings') }}"  title=""><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 
@@ -251,7 +251,7 @@ var LinkEntry = new Class({
     <td id="link_{{ link.id }}_bleft">{{ link.format_size }}</td>
     <td>
         <span id="link_{{ link.id }}_percent">{{ link.percent }}% /{{ link.bleft }}</span>
-        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="{{'/img/control_cancel.png'|url}}"/>
+        <img id="link_{{ link.id }}_remove" style="vertical-align: middle; margin-right: -20px; margin-left: 5px; margin-top: -2px; cursor:pointer;" src="{{theme_static('img/control_cancel.png')}}"/>
     </td>
   </tr>
   <tr id="link_{{ link.id }}_pgb_tr">

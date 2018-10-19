@@ -5,18 +5,18 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="{{'/css/base.css'|url}}"/>
-<link rel="stylesheet" type="text/css" href="{{'/css/window.css'|url}}"/>
-<link rel="stylesheet" type="text/css" href="{{'/css/MooDialog.css'|url}}"/>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/base.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/window.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{theme_static('css/MooDialog.css')}}"/>
 
-<script type="text/javascript" src="{{'/vendor/MooTools/MooTools-Core.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/MooTools/MooTools-More.min.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/MooTools/MooDialog/MooDialog.js'|url}}"></script>
-<script type="text/javascript" src="{{'/vendor/MooTools/Purr/purr.js'|url}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/MooTools-Core.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/MooTools-More.min.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/MooDialog/MooDialog.js')}}"></script>
+<script type="text/javascript" src="{{theme_static('vendor/MooTools/Purr/purr.js')}}"></script>
 
-<script type="text/javascript" src="{{'/js/base.js'|url}}"></script>
+<script type="text/javascript" src="{{theme_static('js/base.js')}}"></script>
 
-<link rel="icon" href="{{'/img/favicon.ico'|url}}" />
+<link rel="icon" type="image/ico" href="{{theme_static('img/favicon.ico')}}" />
 
 <style type="text/css">
 #head-menu {
@@ -162,17 +162,17 @@ a.cog {
 {% endif %}
 
 <span id="cap_info" style="display: {% if captcha %}inline{%else%}none{% endif %}">
-<img src="{{'/img/images.png'|url}}" alt="Captcha:" style="vertical-align:middle; margin:2px" />
+<img src="{{theme_static('img/images.png')}}" alt="Captcha:" style="vertical-align:middle; margin:2px" />
 <span style="font-weight: bold; cursor: pointer; margin-right: 2px;">{{_("Captcha waiting")}}</span>
 </span>
 
-    <img src="{{'/img/head-login.png'|url}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
+    <img src="{{theme_static('img/head-login.png')}}" alt="User:" style="vertical-align:middle; margin:2px" /><span style="padding-right: 2px;">{{user.name}}</span>
 	<ul id="user-actions">
-		<li><a href="{{'/logout'|url}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
+		<li><a href="{{theme_static('logout')}}" class="action logout" rel="nofollow">{{_("Logout")}}</a></li>
 		{% if user.is_admin %}
-		<li><a href="{{'/admin'|url}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
+		<li><a href="{{theme_static('admin')}}" class="action profile" rel="nofollow">{{_("Administrate")}}</a></li>
 		{% endif %}
-        <li><a href="{{'/info'|url}}" class="action info" rel="nofollow">{{_("Info")}}</a></li>
+        <li><a href="{{theme_static('info')}}" class="action info" rel="nofollow">{{_("Info")}}</a></li>
 
 	</ul>
 {% else %}
@@ -182,7 +182,7 @@ a.cog {
     {% endblock %}
 	</div>
 
-	<a href="{{'/'|url}}"><img id="head-logo" src="{{'/img/pyload_banner.png'|url}}" alt="pyLoad" /></a>
+	<a href="{{'/'|url}}"><img id="head-logo" src="{{theme_static('img/pyload_banner.png')}}" alt="pyLoad" /></a>
 
 	<div id="head-menu">
 		<ul>
@@ -194,25 +194,25 @@ a.cog {
 
 		{% block menu %}
 		<li>
-		    <a href="{{'/'|url}}" title=""><img src="{{'/img/head-menu-home.png'|url}}" alt="" /> {{_("Home")}}</a>
+		    <a href="{{'/'|url}}" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
 		</li>
 		<li {{ selected('queue') }}>
-		    <a href="{{'/queue/'|url}}" title=""><img src="{{'/img/head-menu-queue.png'|url}}" alt="" /> {{_("Queue")}}</a>
+		    <a href="{{ url_for('queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
 		</li>
 		<li {{ selected('collector') }}>
-		    <a href="{{'/collector/'|url}}" title=""><img src="{{'/img/head-menu-collector.png'|url}}" alt="" /> {{_("Collector")}}</a>
+		    <a href="{{ url_for('collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
 		</li>
 		<li {{ selected('downloads') }}>
-		    <a href="{{'/downloads/'|url}}" title=""><img src="{{'/img/head-menu-development.png'|url}}" alt="" /> {{_("Downloads")}}</a>
+		    <a href="{{ url_for('downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
 		</li>
 {#		<li {{ selected('filemanager') }}>#}
-{#		    <a href="{{'/filemanager/'|url}}" title=""><img src="{{'/img/head-menu-download.png'|url}}" alt="" /> {{_("FileManager")}}</a>#}
+{#		    <a href="{{ url_for('filemanager') }}" title=""><img src="{{theme_static('img/head-menu-download.png')}}" alt="" /> {{_("FileManager")}}</a>#}
 {#		</li>#}
 		<li {{ selected('logs', True) }}>
-		    <a href="{{'/logs/'|url}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{'/img/head-menu-index.png'|url}}" alt="" />{{_("Logs")}}</a>
+		    <a href="{{ url_for('logs') }}"  class="action index" accesskey="x" rel="nofollow"><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 		</li>
 		<li {{ selected('settings', True) }}>
-		    <a href="{{'/settings/'|url}}"  class="action index" accesskey="x" rel="nofollow"><img src="{{'/img/head-menu-config.png'|url}}" alt="" />{{_("Config")}}</a>
+		    <a href="{{ url_for('settings') }}"  class="action index" accesskey="x" rel="nofollow"><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
 		</li>
 		{% endblock %}
 
@@ -265,7 +265,7 @@ a.cog {
 {% endfor %}
 
 <div id="load-indicator" style="opacity: 0; float: right; margin-top: -10px;">
-    <img src="{{'/img/ajax-loader.gif'|url}}" alt="" style="padding-right: 5px"/>
+    <img src="{{theme_static('img/ajax-loader.gif')}}" alt="" style="padding-right: 5px"/>
     {{_("loading")}}
 </div>
 

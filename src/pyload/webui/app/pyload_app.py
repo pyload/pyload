@@ -19,7 +19,7 @@ from pyload.webui.app import PREFIX, env
 from pyload.webui.app.filters import relpath, unquotepath
 from pyload.webui.app.utils import (get_permission, get_theme, login_required,
                                     parse_permissions, parse_userdata, permlist,
-                                    render_to_response, set_permission, set_session,
+                                    flask_render, set_permission, set_session,
                                     toDict)
 from pyload.webui.server_thread import PYLOAD_API
 
@@ -29,7 +29,7 @@ bp = flask.Blueprint('app', __name__)
 
 # Helper
 def pre_processor():
-    s = flask.request.environ.get("beaker.session")
+    s = flask.session
     user = parse_userdata(s)
     perms = parse_permissions(s)
     status = {}
@@ -59,7 +59,7 @@ def pre_processor():
 
 
 def base(messages):
-    return render_to_response("base.html", {"messages": messages}, [pre_processor])
+    return flask_render("base.html", {"messages": messages}, [pre_processor])
 
     
 # Views
@@ -90,43 +90,43 @@ def base(messages):
 
 
 # render js
-@bp.route('/<path:re:.+\.js>')
-def server_js(path):
-    flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+# @bp.route('/<path:re:.+\.js>')
+# def server_js(path):
+    # flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
-    if "/render/" in path or ".render." in path:
-        flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
-                                                    time.gmtime(time.time() + 24 * 7 * 60 * 60))
-        flask.response.headers['Cache-control'] = "public"
+    # if "/render/" in path or ".render." in path:
+        # flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+                                                    # time.gmtime(time.time() + 24 * 7 * 60 * 60))
+        # flask.response.headers['Cache-control'] = "public"
 
-        return render_to_response(path)
-    else:
-        return serve_static(path)
+        # return flask_render(path)
+    # else:
+        # return serve_static(path)
         
 
-@bp.route(r"/<path:path>")
-def serve_static(path):
-    flask.response.headers["Expires"] = time.strftime(
-        "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
-    )
-    flask.response.headers["Cache-control"] = "public"
-    root = os.path.join('.', 'themes', get_theme())
-    return bottle.static_file(path, root=root)
+# @bp.route(r"/<path:path>")
+# def serve_static(path):
+    # flask.response.headers["Expires"] = time.strftime(
+        # "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
+    # )
+    # flask.response.headers["Cache-control"] = "public"
+    # root = os.path.join('.', 'themes', get_theme())
+    # return bottle.static_file(path, root=root)
 
 
-@bp.route(r"/favicon.ico")
-def favicon():
-    return bottle.static_file("favicon.ico", root=".")
+# @bp.route(r"/favicon.ico")
+# def favicon():
+    # return bottle.static_file("favicon.ico", root=".")
 
 
-@bp.route(r"/robots.txt")
-def robots():
-    return bottle.static_file("robots.txt", root=".")
+# @bp.route(r"/robots.txt")
+# def robots():
+    # return bottle.static_file("robots.txt", root=".")
 
 
 @bp.route(r"/login", methods=["GET"])
 def login():
-    return render_to_response("login.html", proc=[pre_processor])
+    return flask_render("login.html", proc=[pre_processor])
 
 
 @bp.route(r"/nopermission")
@@ -142,7 +142,7 @@ def login_post():
     info = PYLOAD_API.checkAuth(user, password)
 
     if not info:
-        return render_to_response("login.html", {"errors": True}, [pre_processor])
+        return flask_render("login.html", {"errors": True}, [pre_processor])
 
     set_session(flask.request, info)
     return flask.redirect("{}/".format(PREFIX))
@@ -150,9 +150,9 @@ def login_post():
 
 @bp.route(r"/logout")
 def logout():
-    s = flask.request.environ.get("beaker.session")
-    s.delete()
-    return render_to_response("logout.html", proc=[pre_processor])
+    flask.session.clear()
+    flask.session.modified = True
+    return flask_render("logout.html", proc=[pre_processor])
 
 
 @bp.route(r"/")
@@ -162,8 +162,8 @@ def home():
     try:
         res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
     except Exception:
-        s = flask.request.environ.get("beaker.session")
-        s.delete()
+        flask.session.clear()
+        flask.session.modified = True
         return flask.redirect("{}/login".format(PREFIX))
 
     for link in res:
@@ -172,7 +172,7 @@ def home():
                 link["size"] - link["bleft"], link["speed"]
             )
 
-    return render_to_response("home.html", {"res": res}, [pre_processor])
+    return flask_render("home.html", {"res": res}, [pre_processor])
 
 
 @bp.route(r"/queue")
@@ -182,7 +182,7 @@ def queue():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_to_response(
+    return flask_render(
         "queue.html", {"content": queue, "target": 1}, [pre_processor]
     )
 
@@ -194,7 +194,7 @@ def collector():
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return render_to_response(
+    return flask_render(
         "queue.html", {"content": queue, "target": 0}, [pre_processor]
     )
 
@@ -225,15 +225,15 @@ def downloads():
         elif os.path.isfile(os.path.join(root, item)):
             data["files"].append(item)
 
-    return render_to_response("downloads.html", {"files": data}, [pre_processor])
+    return flask_render("downloads.html", {"files": data}, [pre_processor])
 
 
 @bp.route(r"/downloads/get/<filename>")
 @login_required("DOWNLOAD")
 def get_download(filename):
     filename = unquote(filename).decode("utf-8").replace("..", "")
-    root = PYLOAD_API.getConfigValue("general", "download_folder")
-    return bottle.static_file(filename, root=root, download=True)
+    directory = PYLOAD_API.getConfigValue("general", "download_folder")
+    return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
 @bp.route(r"/settings")
@@ -298,7 +298,7 @@ def config():
             }
         )
 
-    return render_to_response(
+    return flask_render(
         "settings.html",
         {
             "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
@@ -404,7 +404,7 @@ def choose_path(browse_for, path):
 
     files = sorted(files, key=operator.itemgetter("type", "sort"))
 
-    return render_to_response(
+    return flask_render(
         "pathchooser.html",
         {
             "cwd": cwd,
@@ -422,7 +422,7 @@ def choose_path(browse_for, path):
 @bp.route(r"/logs/<item>", methods=['GET', 'POST'])
 @login_required("LOGS")
 def logs(item=-1):
-    s = flask.request.environ.get("beaker.session")
+    s = flask.session
 
     perpage = s.get("perpage", 34)
     reversed = s.get("reversed", False)
@@ -451,7 +451,7 @@ def logs(item=-1):
         except Exception:
             pass
 
-        s.save()
+        s.modified = True
 
     try:
         item = int(item)
@@ -511,7 +511,7 @@ def logs(item=-1):
         fro = datetime.datetime.now()
     if reversed:
         data.reverse()
-    return render_to_response(
+    return flask_render(
         "logs.html",
         {
             "warning": warning,
@@ -539,7 +539,7 @@ def admin():
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = data["role"] is 0
 
-    s = flask.request.environ.get("beaker.session")
+    s = flask.session
     if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         for name in user:
             if flask.request.form.get("{}|admin".format(name), False):
@@ -562,7 +562,7 @@ def admin():
                 name, user[name]["permission"], user[name]["role"]
             )
 
-    return render_to_response(
+    return flask_render(
         "admin.html", {"users": user, "permlist": perms}, [pre_processor]
     )
 
@@ -597,4 +597,4 @@ def info():
         "language": conf["general"]["language"]["value"],
     }
 
-    return render_to_response("info.html", data, [pre_processor])
+    return flask_render("info.html", data, [pre_processor])
