@@ -13,6 +13,8 @@ from pyload.webui.app.utils import (apiver_check, login_required, render_to_resp
 from pyload.webui.server_thread import PYLOAD_API
 
 
+bp = flask.Blueprint('json', __name__, url_prefix='/json')
+
 def format_time(seconds):
     seconds = int(seconds)
 
@@ -25,7 +27,7 @@ def get_sort_key(item):
     return item["order"]
 
 
-@app.route(r"/json/<apiver>/status", methods=['GET', 'POST'])
+@bp.route(r"/json/<apiver>/status", methods=['GET', 'POST'])
 @apiver_check
 @login_required("LIST")
 def status():
@@ -34,10 +36,10 @@ def status():
         status["captcha"] = PYLOAD_API.isCaptchaWaiting()
         return status
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/links", methods=['GET', 'POST'])
+@bp.route(r"/json/<apiver>/links", methods=['GET', 'POST'])
 @apiver_check
 @login_required("LIST")
 def links():
@@ -62,10 +64,10 @@ def links():
         data = {"links": links, "ids": ids}
         return data
     except Exception as e:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/packages")
+@bp.route(r"/json/<apiver>/packages")
 @apiver_check
 @login_required("LIST")
 def packages():
@@ -81,10 +83,10 @@ def packages():
         return data
 
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/package/<id:int>")
+@bp.route(r"/json/<apiver>/package/<id:int>")
 @apiver_check
 @login_required("LIST")
 def package(id):
@@ -116,10 +118,10 @@ def package(id):
         return data
 
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/package_order/<ids>")
+@bp.route(r"/json/<apiver>/package_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def package_order(ids):
@@ -128,10 +130,10 @@ def package_order(ids):
         PYLOAD_API.orderPackage(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/abort_link/<id:int>")
+@bp.route(r"/json/<apiver>/abort_link/<id:int>")
 @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -139,10 +141,10 @@ def abort_link(id):
         PYLOAD_API.stopDownloads([id])
         return {"response": "success"}
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/link_order/<ids>")
+@bp.route(r"/json/<apiver>/link_order/<ids>")
 @apiver_check
 @login_required("ADD")
 def link_order(ids):
@@ -151,21 +153,21 @@ def link_order(ids):
         PYLOAD_API.orderFile(int(pid), int(pos))
         return {"response": "success"}
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/add_package", methods=['GET', 'POST'])
+@bp.route(r"/json/<apiver>/add_package", methods=['GET', 'POST'])
 @apiver_check
 @login_required("ADD")
 def add_package():
-    name = bottle.request.forms.get("add_name", "New Package").strip()
-    queue = int(bottle.request.forms["add_dest"])
-    links = decode(bottle.request.forms["add_links"])
+    name = flask.request.form.get("add_name", "New Package").strip()
+    queue = int(flask.request.form["add_dest"])
+    links = decode(flask.request.form["add_links"])
     links = links.split("\n")
-    pw = bottle.request.forms.get("add_password", "").strip("\n\r")
+    pw = flask.request.form.get("add_password", "").strip("\n\r")
 
     try:
-        f = bottle.request.files["add_file"]
+        f = flask.request.files["add_file"]
 
         if not name or name == "New Package":
             name = f.name
@@ -173,9 +175,9 @@ def add_package():
         fpath = os.path.join(
             PYLOAD_API.getConfigValue("general", "download_folder"), "tmp_" + f.filename
         )
-        with open(fpath, mode="wb") as destination:
-            shutil.copyfileobj(f.file, destination)
+        f.save(fpath)
         links.insert(0, fpath)
+        
     except Exception:
         pass
 
@@ -188,7 +190,7 @@ def add_package():
         PYLOAD_API.setPackageData(pack, data)
 
 
-@app.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
+@bp.route(r"/json/<apiver>/move_package/<dest:int>/<id:int>")
 @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
@@ -196,36 +198,36 @@ def move_package(dest, id):
         PYLOAD_API.movePackage(dest, id)
         return {"response": "success"}
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/edit_package", methods=['POST'])
+@bp.route(r"/json/<apiver>/edit_package", methods=['POST'])
 @apiver_check
 @login_required("MODIFY")
 def edit_package():
     try:
-        id = int(bottle.request.forms.get("pack_id"))
+        id = int(flask.request.form.get("pack_id"))
         data = {
-            "name": bottle.request.forms.get("pack_name").decode("utf-8", "ignore"),
-            "folder": bottle.request.forms.get("pack_folder").decode("utf-8", "ignore"),
-            "password": bottle.request.forms.get("pack_pws").decode("utf-8", "ignore"),
+            "name": flask.request.form.get("pack_name").decode("utf-8", "ignore"),
+            "folder": flask.request.form.get("pack_folder").decode("utf-8", "ignore"),
+            "password": flask.request.form.get("pack_pws").decode("utf-8", "ignore"),
         }
 
         PYLOAD_API.setPackageData(id, data)
         return {"response": "success"}
 
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
 
 
-@app.route(r"/json/<apiver>/set_captcha", methods=['GET', 'POST'])
+@bp.route(r"/json/<apiver>/set_captcha", methods=['GET', 'POST'])
 @apiver_check
 @login_required("ADD")
 def set_captcha():
-    if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
             PYLOAD_API.setCaptchaResult(
-                bottle.request.forms["cap_id"], bottle.request.forms["cap_result"]
+                flask.request.form["cap_id"], flask.request.form["cap_result"]
             )
         except Exception:
             pass
@@ -243,7 +245,7 @@ def set_captcha():
         return {"captcha": False}
 
 
-@app.route(r"/json/<apiver>/load_config/<category>/<section>")
+@bp.route(r"/json/<apiver>/load_config/<category>/<section>")
 @apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
@@ -267,11 +269,11 @@ def load_config(category, section):
     )
 
 
-@app.route(r"/json/<apiver>/save_config/<category>", methods=['POST'])
+@bp.route(r"/json/<apiver>/save_config/<category>", methods=['POST'])
 @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
-    for key, value in bottle.request.POST.items():
+    for key, value in flask.request.form.items():
         try:
             section, option = key.split("|")
         except Exception:
@@ -283,24 +285,24 @@ def save_config(category):
         PYLOAD_API.setConfigValue(section, option, decode(value), category)
 
 
-@app.route(r"/json/<apiver>/add_account", methods=['POST'])
+@bp.route(r"/json/<apiver>/add_account", methods=['POST'])
 @apiver_check
 @login_required("ACCOUNTS")
 def add_account():
-    login = bottle.request.POST["account_login"]
-    password = bottle.request.POST["account_password"]
-    type = bottle.request.POST["account_type"]
+    login = flask.request.form["account_login"]
+    password = flask.request.form["account_password"]
+    type = flask.request.form["account_type"]
 
     PYLOAD_API.updateAccount(type, login, password)
 
 
-@app.route(r"/json/<apiver>/update_accounts", methods=['POST'])
+@bp.route(r"/json/<apiver>/update_accounts", methods=['POST'])
 @apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():
     deleted = []  #: dont update deleted accs or they will be created again
 
-    for name, value in bottle.request.POST.items():
+    for name, value in flask.request.form.items():
         value = value.strip()
         if not value:
             continue
@@ -322,14 +324,14 @@ def update_accounts():
             PYLOAD_API.removeAccount(plugin, user)
 
 
-@app.route(r"/json/<apiver>/change_password", methods=['POST'])
+@bp.route(r"/json/<apiver>/change_password", methods=['POST'])
 @apiver_check
 def change_password():
 
-    user = bottle.request.POST["user_login"]
-    oldpw = bottle.request.POST["login_current_password"]
-    newpw = bottle.request.POST["login_new_password"]
+    user = flask.request.form["user_login"]
+    oldpw = flask.request.form["login_current_password"]
+    newpw = flask.request.form["login_new_password"]
 
     if not PYLOAD_API.changePassword(user, oldpw, newpw):
         print("Wrong password")
-        return bottle.HTTPError()
+        return flask.abort(500)

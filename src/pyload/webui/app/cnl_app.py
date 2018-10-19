@@ -17,37 +17,40 @@ from cryptography.fernet import Fernet
 from pyload.webui.server_thread import PYLOAD_API
 
 
+bp = flask.Blueprint('cnl', __name__)
+
+
 def local_check(func):
     def _view(*args, **kwargs):
-        if bottle.request.environ.get("REMOTE_ADDR", "0") in (
+        if flask.request.environ.get("REMOTE_ADDR", "0") in (
             "127.0.0.1",
             "localhost",
-        ) or bottle.request.environ.get("HTTP_HOST", "0") in (
+        ) or flask.request.environ.get("HTTP_HOST", "0") in (
             "127.0.0.1:9666",
             "localhost:9666",
         ):
             return func(*args, **kwargs)
         else:
-            return bottle.HTTPError(403, json.dumps("Forbidden"))
+            return "Forbidden", 403
 
     return _view
 
 
-@app.route(r"/flash/<id>")
-@app.route(r"/flash", methods=['GET', 'POST'])
+@bp.route(r"/flash/<id>")
+@bp.route(r"/flash", methods=['GET', 'POST'])
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@app.route(r"/flash/add", methods=['POST'])
+@bp.route(r"/flash/add", methods=['POST'])
 @local_check
 def add():
-    package = bottle.request.forms.get(
+    package = flask.request.form.get(
         "package",
-        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
+        flask.request.form.get("source", flask.request.form.get("referer", None)),
     )
-    urls = list(filter(None, map(str.strip, bottle.request.POST["urls"].split("\n"))))
+    urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
 
     if package:
         PYLOAD_API.addPackage(package, urls, 0)
@@ -57,14 +60,14 @@ def add():
     return ""
 
 
-@app.route(r"/flash/addcrypted", methods=['POST'])
+@bp.route(r"/flash/addcrypted", methods=['POST'])
 @local_check
 def addcrypted():
-    package = bottle.request.forms.get(
+    package = flask.request.form.get(
         "package",
-        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
+        flask.request.form.get("source", flask.request.form.get("referer", None)),
     )
-    dlc = bottle.request.forms["crypted"].replace(" ", "+")
+    dlc = flask.request.form["crypted"].replace(" ", "+")
 
     dl_path = PYLOAD_API.getConfigValue("general", "download_folder")
     dlc_path = os.path.join(
@@ -76,20 +79,20 @@ def addcrypted():
     try:
         PYLOAD_API.addPackage(package, [dlc_path], 0)
     except Exception:
-        return bottle.HTTPError()
+        return flask.abort(500)
     else:
         return "success\r\n"
 
 
-@app.route(r"/flash/addcrypted2", methods=['POST'])
+@bp.route(r"/flash/addcrypted2", methods=['POST'])
 @local_check
 def addcrypted2():
-    package = bottle.request.forms.get(
+    package = flask.request.form.get(
         "package",
-        bottle.request.forms.get("source", bottle.request.POST.get("referer", None)),
+        flask.request.form.get("source", flask.request.form.get("referer", None)),
     )
-    crypted = bottle.request.forms["crypted"]
-    jk = bottle.request.forms["jk"]
+    crypted = flask.request.form["crypted"]
+    jk = flask.request.form["jk"]
 
     crypted = standard_b64decode(unquote(crypted.replace(" ", "+")))
     jk = "{} f()".format(jk)
@@ -117,21 +120,21 @@ def addcrypted2():
         return "success\r\n"
 
 
-@app.route(r"/flashgot_pyload", methods=['GET', 'POST'])
-@app.route(r"/flashgot", methods=['GET', 'POST'])
+@bp.route(r"/flashgot_pyload", methods=['GET', 'POST'])
+@bp.route(r"/flashgot", methods=['GET', 'POST'])
 @local_check
 def flashgot():
-    if bottle.request.environ["HTTP_REFERER"] not in (
+    if flask.request.environ["HTTP_REFERER"] not in (
         "http://localhost:9666/flashgot",
         "http://127.0.0.1:9666/flashgot",
     ):
-        return bottle.HTTPError()
+        return flask.abort(500)
 
-    autostart = int(bottle.request.forms.get("autostart", 0))
-    package = bottle.request.forms.get("package", None)
+    autostart = int(flask.request.form.get("autostart", 0))
+    package = flask.request.form.get("package", None)
 
-    urls = list(filter(None, map(str.strip, bottle.request.POST["urls"].split("\n"))))
-    # folder = bottle.request.forms.get('dir', None)
+    urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
+    # folder = flask.request.form.get('dir', None)
 
     if package:
         PYLOAD_API.addPackage(package, urls, autostart)
@@ -141,7 +144,7 @@ def flashgot():
     return ""
 
 
-@app.route(r"/crossdomain.xml")
+@bp.route(r"/crossdomain.xml")
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -152,17 +155,17 @@ def crossdomain():
     return rep
 
 
-@app.route(r"/flash/checkSupportForUrl")
+@bp.route(r"/flash/checkSupportForUrl")
 @local_check
 def checksupport():
-    url = bottle.request.GET.get("url")
+    url = flask.request.form.get("url")
     res = PYLOAD_API.checkURLs([url])
     supported = not res[0][1] is None
 
     return str(supported).lower()
 
 
-@app.route(r"/jdcheck.js")
+@bp.route(r"/jdcheck.js")
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

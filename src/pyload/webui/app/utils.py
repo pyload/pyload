@@ -75,7 +75,7 @@ def set_permission(perms):
 
 
 def set_session(request, info):
-    s = bottle.request.environ.get("beaker.session")
+    s = flask.request.environ.get("beaker.session")
     s["authenticated"] = True
     s["user_id"] = info["id"]
     s["name"] = info["name"]
@@ -100,7 +100,7 @@ def apiver_check(func):
     def _view(*args, **kwargs):
         core_apiver = PYLOAD_API.__version__
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
-            return bottle.HTTPError(404, json.dumps("Obsolete API"))
+            return "Obsolete API", 404
         return func(*args, **kwargs)
 
     return _view
@@ -109,25 +109,25 @@ def apiver_check(func):
 def login_required(perm=None):
     def _dec(func):
         def _view(*args, **kwargs):
-            s = bottle.request.environ.get("beaker.session")
+            s = flask.request.environ.get("beaker.session")
             if s.get("name", None) and s.get("authenticated", False):
                 if perm:
                     perms = parse_permissions(s)
                     if perm not in perms or not perms[perm]:
                         if (
-                            bottle.request.headers.get("X-Requested-With")
+                            flask.request.headers.get("X-Requested-With")
                             == "XMLHttpRequest"
                         ):
-                            return bottle.HTTPError(403, json.dumps("Forbidden"))
+                            return "Forbidden", 403
                         else:
-                            return bottle.redirect("{}/nopermission".format(PREFIX))
+                            return flask.redirect("{}/nopermission".format(PREFIX))
 
                 return func(*args, **kwargs)
             else:
-                if bottle.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return bottle.HTTPError(403, json.dumps("Forbidden"))
+                if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return "Forbidden", 403
                 else:
-                    return bottle.redirect("{}/login".format(PREFIX))
+                    return flask.redirect("{}/login".format(PREFIX))
 
         return _view
 
@@ -141,9 +141,9 @@ def toDict(obj):
     return ret
 
 
-class CherryPyWSGI(bottle.ServerAdapter):
-    def run(self, handler):
-        from wsgiserver import CherryPyWSGIServer
+# class CherryPyWSGI(bottle.ServerAdapter):
+    # def run(self, handler):
+        # from wsgiserver import CherryPyWSGIServer
 
-        server = CherryPyWSGIServer((self.host, self.port), handler)
-        server.start()
+        # server = CherryPyWSGIServer((self.host, self.port), handler)
+        # server.start()

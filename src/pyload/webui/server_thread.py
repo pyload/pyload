@@ -69,17 +69,33 @@ class WebServer(threading.Thread):
                 )
                 self.server = "builtin"
 
-        if self.server == "auto":
-            self.start_auto()
-        elif self.server == "cherrypy":
-            self.start_cherrypy()
-        elif self.server == "bjoern":
-            self.start_bjoern()
-        elif self.server == "fastcgi":
-            self.start_fcgi()
-        else:
-            self.start_wgsi()
+        # if self.server == "auto":
+            # self.start_auto()
+        # elif self.server == "cherrypy":
+            # self.start_cherrypy()
+        # elif self.server == "bjoern":
+            # self.start_bjoern()
+        # elif self.server == "fastcgi":
+            # self.start_fcgi()
+        # else:
+            # self.start_wgsi()
+        self.start_flask()
 
+        
+    def start_flask(self):
+        if self.https:
+            self.pyload.log.warning(
+                _("This server offers no SSL, please consider using threaded instead")
+            )
+
+        self.pyload.log.info(
+            _("Starting flask webserver: {host}:{port:d}").format(
+                **{"host": self.host, "port": self.port}
+            )
+        )
+        self.app.run_flask(host=self.host, port=self.port, debug=self.pyload.debug)
+        
+        
     def start_wgsi(self):
         if self.https:
             self.pyload.log.warning(

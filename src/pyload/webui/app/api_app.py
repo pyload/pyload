@@ -15,6 +15,10 @@ from pyload.webui.app.utils import apiver_check, set_session, toDict
 from pyload.webui.server_thread import PYLOAD_API
 
 
+
+bp = flask.Blueprint('api', __name__, url_prefix='/api')
+
+
 # json encoder that accepts TBase objects
 class TBaseEncoder(json.JSONEncoder):
     def default(self, o):
@@ -24,43 +28,43 @@ class TBaseEncoder(json.JSONEncoder):
 
 
 # accepting positional arguments, as well as kwargs via post and get
-@app.route(
+@bp.route(
     r"/api/<apiver>/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", methods=['GET', 'POST']
 )
 @apiver_check
 def call_api(func, args=""):
-    bottle.response.headers.replace("Content-type", "application/json")
-    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    flask.response.headers.replace("Content-type", "application/json")
+    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    if "u" in bottle.request.POST and "p" in bottle.request.POST:
-        info = PYLOAD_API.checkAuth(bottle.request.POST["u"], bottle.request.POST["p"])
+    if "u" in flask.request.form and "p" in flask.request.form:
+        info = PYLOAD_API.checkAuth(flask.request.form["u"], flask.request.form["p"])
         if info:
             if not PYLOAD_API.isAuthorized(
                 func, {"role": info["role"], "permission": info["permission"]}
             ):
-                return bottle.HTTPError(401, json.dumps("Unauthorized"))
+                return "Unauthorized", 401
 
         else:
-            return bottle.HTTPError(403, json.dumps("Forbidden"))
+            return "Forbidden", 403
 
     else:
-        s = bottle.request.environ.get("beaker.session")
-        if "session" in bottle.request.POST:
-            s = s.get_by_id(bottle.request.POST["session"])
+        s = flask.request.environ.get("beaker.session")
+        if "session" in flask.request.form:
+            s = s.get_by_id(flask.request.form["session"])
 
         if not s or not s.get("authenticated", False):
-            return bottle.HTTPError(403, json.dumps("Forbidden"))
+            return "Forbidden", 403
 
         if not PYLOAD_API.isAuthorized(
             func, {"role": s["role"], "permission": s["perms"]}
         ):
-            return bottle.HTTPError(401, json.dumps("Unauthorized"))
+            return "Unauthorized", 401
 
     args = args.split("/")[1:]
     kwargs = {}
 
     for x, y in chain(
-        iter(bottle.request.GET.items()), iter(bottle.request.POST.items())
+        iter(flask.request.form.items()), iter(flask.request.form.items())
     ):
         if x in ("u", "p", "session"):
             continue
@@ -69,15 +73,13 @@ def call_api(func, args=""):
     try:
         return callApi(func, *args, **kwargs)
     except Exception as e:
-        return bottle.HTTPError(
-            500, json.dumps({"error": e.message, "traceback": traceback.format_exc()})
-        )
+        return json.dumps({"error": e.message, "traceback": traceback.format_exc()}), 500
 
 
 def callApi(func, *args, **kwargs):
     if not hasattr(PYLOAD_API.EXTERNAL, func) or func.startswith("_"):
         print("Invalid API call", func)
-        return bottle.HTTPError(404, json.dumps("Not Found"))
+        return "Not Found", 404
 
     result = getattr(PYLOAD_API, func)(
         *[literal_eval(x) for x in args],
@@ -89,21 +91,21 @@ def callApi(func, *args, **kwargs):
 
 
 # post -> username, password
-@app.route(r"/api/<apiver>/login", methods=['POST'])
+@bp.route(r"/api/<apiver>/login", methods=['POST'])
 @apiver_check
 def login():
-    bottle.response.headers.replace("Content-type", "application/json")
-    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    flask.response.headers.replace("Content-type", "application/json")
+    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    user = bottle.request.forms.get("username")
-    password = bottle.request.forms.get("password")
+    user = flask.request.form.get("username")
+    password = flask.request.form.get("password")
 
     info = PYLOAD_API.checkAuth(user, password)
 
     if not info:
         return json.dumps(False)
 
-    s = set_session(bottle.request, info)
+    s = set_session(flask.request, info)
 
     # get the session id by dirty way, documentations seems wrong
     try:
@@ -113,11 +115,11 @@ def login():
         return json.dumps(True)
 
 
-@app.route(r"/api/<apiver>/logout")
+@bp.route(r"/api/<apiver>/logout")
 @apiver_check
 def logout():
-    bottle.response.headers.replace("Content-type", "application/json")
-    bottle.response.headers.append("Cache-Control", "no-cache, must-revalidate")
+    flask.response.headers.replace("Content-type", "application/json")
+    flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
-    s = bottle.request.environ.get("beaker.session")
+    s = flask.request.environ.get("beaker.session")
     s.delete()

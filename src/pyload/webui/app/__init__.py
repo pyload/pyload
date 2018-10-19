@@ -9,7 +9,6 @@ from builtins import str, PKGDIR
 import flask
 import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
-import flask
 import jinja2
 from pyload.utils.utils import formatSize
 import json
@@ -25,7 +24,7 @@ PREFIX = PYLOAD_API.getConfigValue("webui", "prefix")
 if PREFIX:
     PREFIX = "{}/".format(PREFIX.strip("/"))
 
-bottle.debug(PYLOAD_API.getConfigValue("general", "debug_mode"))
+# bottle.debug(PYLOAD_API.getConfigValue("general", "debug_mode"))
 
 cache = os.path.join(HOMEDIR, 'pyLoad', '.tmp', 'webui')
 os.makedirs(cache, exist_ok=True)
@@ -68,30 +67,36 @@ translation = gettext.translation(
 translation.install(True)
 env.install_gettext_translations(translation)
 
-session_opts = {
-    'session.type': 'file',
-    'session.cookie_expires': False,
-    'session.data_dir': cache,
-    'session.auto': False
-}
 
-session = SessionMiddleware(bottle.app(), session_opts)
-web = StripPathMiddleware(session)
+# session_opts = {
+    # 'session.type': 'file',
+    # 'session.cookie_expires': False,
+    # 'session.data_dir': cache,
+    # 'session.auto': False
+# }
 
-if PREFIX:
-    web = PrefixMiddleware(web, prefix=PREFIX)
+# session = SessionMiddleware(bottle.app(), session_opts)
+# web = StripPathMiddleware(session)
+
+# if PREFIX:
+    # web = PrefixMiddleware(web, prefix=PREFIX)
 
 
-
-app = None  # fix
-
-def run_flask(host='0.0.0.0', port='8000', debug=False):
-    """Run Flask server."""
-    global app
     
-    app = Flask(__name__.split('.')[0])
+    
+def create_app():
+    app = flask.Flask(__name__.split('.')[0])
     # app = Flask(__name__, template_folder='views',static_folder='public/static')
     
+    from pyload.webui.app import api_app, cnl_app, json_app
+    app.register_blueprint(api_app.bp)
+    app.register_blueprint(cnl_app.bp)
+    app.register_blueprint(json_app.bp)
+    
+    
+def run_flask(host='0.0.0.0', port='8000', debug=False):
+    """Run Flask server."""    
+    app = create_app()
     app.run(
         host=host,
         port=port,
@@ -99,30 +104,30 @@ def run_flask(host='0.0.0.0', port='8000', debug=False):
         debug=debug
     )
     
-def run_wgsi(host="0.0.0.0", port="8000", debug=False):
-    bottle.run(app=web, host=host, port=port, quiet=True, debug=debug)
+# def run_wgsi(host="0.0.0.0", port="8000", debug=False):
+    # bottle.run(app=web, host=host, port=port, quiet=True, debug=debug)
 
 
-def run_auto(host="0.0.0.0", port="8000", debug=False):
-    bottle.run(app=web, host=host, port=port, server="auto", quiet=True, debug=debug)
+# def run_auto(host="0.0.0.0", port="8000", debug=False):
+    # bottle.run(app=web, host=host, port=port, server="auto", quiet=True, debug=debug)
 
 
-def run_bjoern(host="0.0.0.0", port="8000", debug=False):
-    bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True, debug=debug)
+# def run_bjoern(host="0.0.0.0", port="8000", debug=False):
+    # bottle.run(app=web, host=host, port=port, server="bjoern", quiet=True, debug=debug)
 
 
-def run_cherrypy(host="0.0.0.0", port="8000", debug=False, theads=3, cert="", key=""):
-    bottle.run(
-        app=web,
-        host=host,
-        port=port,
-        server="cherrypy",
-        quiet=True,
-        ssl_certificate=cert,
-        ssl_private_key=key,
-        debug=debug
-    )
+# def run_cherrypy(host="0.0.0.0", port="8000", debug=False, theads=3, cert="", key=""):
+    # bottle.run(
+        # app=web,
+        # host=host,
+        # port=port,
+        # server="cherrypy",
+        # quiet=True,
+        # ssl_certificate=cert,
+        # ssl_private_key=key,
+        # debug=debug
+    # )
     
 
-def run_fcgi(host="0.0.0.0", port="8000", debug=False):
-    bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True, debug=debug)
+# def run_fcgi(host="0.0.0.0", port="8000", debug=False):
+    # bottle.run(app=web, host=host, port=port, server=bottle.FlupFCGIServer, quiet=True, debug=debug)

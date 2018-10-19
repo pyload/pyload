@@ -24,9 +24,12 @@ from pyload.webui.app.utils import (get_permission, get_theme, login_required,
 from pyload.webui.server_thread import PYLOAD_API
 
 
+bp = flask.Blueprint('app', __name__)
+
+
 # Helper
 def pre_processor():
-    s = bottle.request.environ.get("beaker.session")
+    s = flask.request.environ.get("beaker.session")
     user = parse_userdata(s)
     perms = parse_permissions(s)
     status = {}
@@ -49,7 +52,7 @@ def pre_processor():
         "status": status,
         "captcha": captcha,
         "perms": perms,
-        "url": bottle.request.url,
+        "url": flask.request.url,
         "update": update,
         "plugins": plugins,
     }
@@ -60,108 +63,108 @@ def base(messages):
 
     
 # Views
-@bottle.error(403)
-def error403(error):
-    return "The parameter you passed has the wrong format"
+# @bp.errorhandler(403)
+# def error403(error):
+    # return "The parameter you passed has the wrong format"
 
 
-@bottle.error(404)
-def error404(error):
-    return "Sorry, this page does not exist"
+# @bp.errorhandler(404)
+# def error404(error):
+    # return "Sorry, this page does not exist"
 
 
-@bottle.error(500)
-def error500(error):
-    if error.traceback:
-        print(error.traceback)
+# @bp.errorhandler(500)
+# def error500(error):
+    # if error.traceback:
+        # print(error.traceback)
 
-    return base(
-        [
-            "An Error occured, please enable debug mode to get more details.",
-            error,
-            error.traceback.replace("\n", "<br>")
-            if error.traceback
-            else "No Traceback",
-        ]
-    )
+    # return base(
+        # [
+            # "An Error occured, please enable debug mode to get more details.",
+            # error,
+            # error.traceback.replace("\n", "<br>")
+            # if error.traceback
+            # else "No Traceback",
+        # ]
+    # )
 
 
 # render js
-@app.route('/<path:re:.+\.js>')
+@bp.route('/<path:re:.+\.js>')
 def server_js(path):
-    bottle.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
+    flask.response.headers['Content-Type'] = "text/javascript; charset=UTF-8"
 
     if "/render/" in path or ".render." in path:
-        bottle.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
+        flask.response.headers['Expires'] = time.strftime("%a, %d %b %Y %H:%M:%S GMT",
                                                     time.gmtime(time.time() + 24 * 7 * 60 * 60))
-        bottle.response.headers['Cache-control'] = "public"
+        flask.response.headers['Cache-control'] = "public"
 
         return render_to_response(path)
     else:
         return serve_static(path)
         
 
-@app.route(r"/<path:path>")
+@bp.route(r"/<path:path>")
 def serve_static(path):
-    bottle.response.headers["Expires"] = time.strftime(
+    flask.response.headers["Expires"] = time.strftime(
         "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     )
-    bottle.response.headers["Cache-control"] = "public"
+    flask.response.headers["Cache-control"] = "public"
     root = os.path.join('.', 'themes', get_theme())
     return bottle.static_file(path, root=root)
 
 
-@app.route(r"/favicon.ico")
+@bp.route(r"/favicon.ico")
 def favicon():
     return bottle.static_file("favicon.ico", root=".")
 
 
-@app.route(r"/robots.txt")
+@bp.route(r"/robots.txt")
 def robots():
     return bottle.static_file("robots.txt", root=".")
 
 
-@app.route(r"/login", methods=["GET"])
+@bp.route(r"/login", methods=["GET"])
 def login():
     return render_to_response("login.html", proc=[pre_processor])
 
 
-@app.route(r"/nopermission")
+@bp.route(r"/nopermission")
 def nopermission():
     return base([_("You dont have permission to access this page.")])
 
 
-@app.route(r"/login", methods=['POST'])
+@bp.route(r"/login", methods=['POST'])
 def login_post():
-    user = bottle.request.forms.get("username")
-    password = bottle.request.forms.get("password")
+    user = flask.request.form.get("username")
+    password = flask.request.form.get("password")
 
     info = PYLOAD_API.checkAuth(user, password)
 
     if not info:
         return render_to_response("login.html", {"errors": True}, [pre_processor])
 
-    set_session(bottle.request, info)
-    return bottle.redirect("{}/".format(PREFIX))
+    set_session(flask.request, info)
+    return flask.redirect("{}/".format(PREFIX))
 
 
-@app.route(r"/logout")
+@bp.route(r"/logout")
 def logout():
-    s = bottle.request.environ.get("beaker.session")
+    s = flask.request.environ.get("beaker.session")
     s.delete()
     return render_to_response("logout.html", proc=[pre_processor])
 
 
-@app.route(r"/")
-@app.route(r"/home")
+@bp.route(r"/")
+@bp.route(r"/home")
 @login_required("LIST")
 def home():
     try:
         res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
     except Exception:
-        s = bottle.request.environ.get("beaker.session")
+        s = flask.request.environ.get("beaker.session")
         s.delete()
-        return bottle.redirect("{}/login".format(PREFIX))
+        return flask.redirect("{}/login".format(PREFIX))
 
     for link in res:
         if link["status"] == 12:
@@ -172,7 +175,7 @@ def home():
     return render_to_response("home.html", {"res": res}, [pre_processor])
 
 
-@app.route(r"/queue")
+@bp.route(r"/queue")
 @login_required("LIST")
 def queue():
     queue = PYLOAD_API.getQueue()
@@ -184,7 +187,7 @@ def queue():
     )
 
 
-@app.route(r"/collector")
+@bp.route(r"/collector")
 @login_required("LIST")
 def collector():
     queue = PYLOAD_API.getCollector()
@@ -196,7 +199,7 @@ def collector():
     )
 
 
-@app.route(r"/downloads")
+@bp.route(r"/downloads")
 @login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD_API.getConfigValue("general", "download_folder")
@@ -225,7 +228,7 @@ def downloads():
     return render_to_response("downloads.html", {"files": data}, [pre_processor])
 
 
-@app.route(r"/downloads/get/<filename>")
+@bp.route(r"/downloads/get/<filename>")
 @login_required("DOWNLOAD")
 def get_download(filename):
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -233,7 +236,7 @@ def get_download(filename):
     return bottle.static_file(filename, root=root, download=True)
 
 
-@app.route(r"/settings")
+@bp.route(r"/settings")
 @login_required("SETTINGS")
 def config():
     conf = PYLOAD_API.getConfig()
@@ -305,15 +308,15 @@ def config():
     )
 
 
-@app.route(r"/filechooser")
-@app.route(r"/filechooser/<filename>")
+@bp.route(r"/filechooser")
+@bp.route(r"/filechooser/<filename>")
 @login_required("STATUS")
 def file(filename=""):
     return choose_path("file", filename)
 
 
-@app.route(r"/pathchooser")
-@app.route(r"/pathchooser/<dirname>")
+@bp.route(r"/pathchooser")
+@bp.route(r"/pathchooser/<dirname>")
 @login_required("STATUS")
 def folder(dirname=""):
     return choose_path("folder", dirname)
@@ -415,11 +418,11 @@ def choose_path(browse_for, path):
     )
 
 
-@app.route(r"/logs", methods=['GET', 'POST'])
-@app.route(r"/logs/<item>", methods=['GET', 'POST'])
+@bp.route(r"/logs", methods=['GET', 'POST'])
+@bp.route(r"/logs/<item>", methods=['GET', 'POST'])
 @login_required("LOGS")
 def logs(item=-1):
-    s = bottle.request.environ.get("beaker.session")
+    s = flask.request.environ.get("beaker.session")
 
     perpage = s.get("perpage", 34)
     reversed = s.get("reversed", False)
@@ -432,18 +435,18 @@ def logs(item=-1):
     perpage_p = ((20, 20), (34, 34), (40, 40), (100, 100), (0, "all"))
     fro = None
 
-    if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         try:
             fro = datetime.datetime.strptime(
-                bottle.request.forms["from"], "%Y-%m-%d %H:%M:%S"
+                flask.request.form["from"], "%Y-%m-%d %H:%M:%S"
             )
         except Exception:
             pass
         try:
-            perpage = int(bottle.request.forms["perpage"])
+            perpage = int(flask.request.form["perpage"])
             s["perpage"] = perpage
 
-            reversed = bool(bottle.request.forms.get("reversed", False))
+            reversed = bool(flask.request.form.get("reversed", False))
             s["reversed"] = reversed
         except Exception:
             pass
@@ -524,7 +527,7 @@ def logs(item=-1):
     )
 
 
-@app.route(r"/admin", methods=['GET', 'POST'])
+@bp.route(r"/admin", methods=['GET', 'POST'])
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -536,10 +539,10 @@ def admin():
         get_permission(data["perms"], data["permission"])
         data["perms"]["admin"] = data["role"] is 0
 
-    s = bottle.request.environ.get("beaker.session")
-    if bottle.request.environ.get("REQUEST_METHOD", "GET") == "POST":
+    s = flask.request.environ.get("beaker.session")
+    if flask.request.environ.get("REQUEST_METHOD", "GET") == "POST":
         for name in user:
-            if bottle.request.POST.get("{}|admin".format(name), False):
+            if flask.request.form.get("{}|admin".format(name), False):
                 user[name]["role"] = 0
                 user[name]["perms"]["admin"] = True
             elif name != s["name"]:
@@ -550,7 +553,7 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            for perm in bottle.request.POST.getall("{}|perms".format(name)):
+            for perm in flask.request.form.getall("{}|perms".format(name)):
                 user[name]["perms"][perm] = True
 
             user[name]["permission"] = set_permission(user[name]["perms"])
@@ -564,12 +567,12 @@ def admin():
     )
 
 
-@app.route(r"/setup")
+@bp.route(r"/setup")
 def setup():
     return base([_("Run pyLoad -s to access the setup.")])
 
 
-@app.route(r"/info")
+@bp.route(r"/info")
 @login_required("STATUS")
 def info():
     conf = PYLOAD_API.getConfigDict()
