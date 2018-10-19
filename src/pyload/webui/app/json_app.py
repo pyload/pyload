@@ -5,7 +5,7 @@ import shutil
 from builtins import _
 
 import flask
-from pyload.webui.app import app
+
 
 from pyload.utils.utils import decode, formatSize
 from pyload.webui.app.utils import (apiver_check, login_required, flask_render,
@@ -27,7 +27,7 @@ def get_sort_key(item):
     return item["order"]
 
 
-@bp.route(r"/status", methods=['GET', 'POST'])
+@bp.route(r"/status", methods=['GET', 'POST'], endpoint='status')
 # @apiver_check
 @login_required("LIST")
 def status():
@@ -39,7 +39,7 @@ def status():
         return flask.abort(500)
 
 
-@bp.route(r"/links", methods=['GET', 'POST'])
+@bp.route(r"/links", methods=['GET', 'POST'], endpoint='links')
 # @apiver_check
 @login_required("LIST")
 def links():
@@ -67,7 +67,7 @@ def links():
         return flask.abort(500)
 
 
-@bp.route(r"/packages")
+@bp.route(r"/packages", endpoint='packages')
 # @apiver_check
 @login_required("LIST")
 def packages():
@@ -86,7 +86,7 @@ def packages():
         return flask.abort(500)
 
 
-@bp.route(r"/package/<id:int>")
+@bp.route(r"/package/<int:id>", endpoint='package')
 # @apiver_check
 @login_required("LIST")
 def package(id):
@@ -121,7 +121,7 @@ def package(id):
         return flask.abort(500)
 
 
-@bp.route(r"/package_order/<ids>")
+@bp.route(r"/package_order/<ids>", endpoint='package_order')
 # @apiver_check
 @login_required("ADD")
 def package_order(ids):
@@ -133,7 +133,7 @@ def package_order(ids):
         return flask.abort(500)
 
 
-@bp.route(r"/abort_link/<id:int>")
+@bp.route(r"/abort_link/<int:id>", endpoint='abort_link')
 # @apiver_check
 @login_required("DELETE")
 def abort_link(id):
@@ -144,7 +144,7 @@ def abort_link(id):
         return flask.abort(500)
 
 
-@bp.route(r"/link_order/<ids>")
+@bp.route(r"/link_order/<ids>", endpoint='link_order')
 # @apiver_check
 @login_required("ADD")
 def link_order(ids):
@@ -156,7 +156,7 @@ def link_order(ids):
         return flask.abort(500)
 
 
-@bp.route(r"/add_package", methods=['GET', 'POST'])
+@bp.route(r"/add_package", methods=['GET', 'POST'], endpoint='add_package')
 # @apiver_check
 @login_required("ADD")
 def add_package():
@@ -190,7 +190,7 @@ def add_package():
         PYLOAD_API.setPackageData(pack, data)
 
 
-@bp.route(r"/move_package/<dest:int>/<id:int>")
+@bp.route(r"/move_package/<int:dest>/<int:id>", endpoint='move_package')
 # @apiver_check
 @login_required("MODIFY")
 def move_package(dest, id):
@@ -201,7 +201,7 @@ def move_package(dest, id):
         return flask.abort(500)
 
 
-@bp.route(r"/edit_package", methods=['POST'])
+@bp.route(r"/edit_package", methods=['POST'], endpoint='edit_package')
 # @apiver_check
 @login_required("MODIFY")
 def edit_package():
@@ -220,7 +220,7 @@ def edit_package():
         return flask.abort(500)
 
 
-@bp.route(r"/set_captcha", methods=['GET', 'POST'])
+@bp.route(r"/set_captcha", methods=['GET', 'POST'], endpoint='set_captcha')
 # @apiver_check
 @login_required("ADD")
 def set_captcha():
@@ -245,7 +245,7 @@ def set_captcha():
         return {"captcha": False}
 
 
-@bp.route(r"/load_config/<category>/<section>")
+@bp.route(r"/load_config/<category>/<section>", endpoint='load_config')
 # @apiver_check
 @login_required("SETTINGS")
 def load_config(category, section):
@@ -269,7 +269,7 @@ def load_config(category, section):
     )
 
 
-@bp.route(r"/save_config/<category>", methods=['POST'])
+@bp.route(r"/save_config/<category>", methods=['POST'], endpoint='save_config')
 # @apiver_check
 @login_required("SETTINGS")
 def save_config(category):
@@ -285,7 +285,7 @@ def save_config(category):
         PYLOAD_API.setConfigValue(section, option, decode(value), category)
 
 
-@bp.route(r"/add_account", methods=['POST'])
+@bp.route(r"/add_account", methods=['POST'], endpoint='add_account')
 # @apiver_check
 @login_required("ACCOUNTS")
 def add_account():
@@ -296,7 +296,7 @@ def add_account():
     PYLOAD_API.updateAccount(type, login, password)
 
 
-@bp.route(r"/update_accounts", methods=['POST'])
+@bp.route(r"/update_accounts", methods=['POST'], endpoint='update_accounts')
 # @apiver_check
 @login_required("ACCOUNTS")
 def update_accounts():

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.webui.app import app
+
 
 import json
 import traceback
@@ -28,8 +28,10 @@ class TBaseEncoder(json.JSONEncoder):
 
         
 # accepting positional arguments, as well as kwargs via post and get
+# @bottle.route(
+    # r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>")
 @bp.route(
-    r"/api/<func><args:re:[a-zA-Z0-9\-_/\"\'\[\]%{},]*>", methods=['GET', 'POST']
+    r"/api/<func><path:args>", methods=['GET', 'POST']
 )
 # @apiver_check
 def call_api(func, args=""):

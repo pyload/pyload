@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyload.webui.app import app
+
 
 import json
 import os
@@ -36,14 +36,14 @@ def local_check(func):
     return _view
 
 
-@bp.route(r"/flash/<id>")
-@bp.route(r"/flash", methods=['GET', 'POST'])
+@bp.route(r"/flash/<id>", endpoint='flash')
+@bp.route(r"/flash", methods=['GET', 'POST'], endpoint='flash')
 @local_check
 def flash(id="0"):
     return "JDownloader\r\n"
 
 
-@bp.route(r"/flash/add", methods=['POST'])
+@bp.route(r"/flash/add", methods=['POST'], endpoint='add')
 @local_check
 def add():
     package = flask.request.form.get(
@@ -60,7 +60,7 @@ def add():
     return ""
 
 
-@bp.route(r"/flash/addcrypted", methods=['POST'])
+@bp.route(r"/flash/addcrypted", methods=['POST'], endpoint='addcrypted')
 @local_check
 def addcrypted():
     package = flask.request.form.get(
@@ -84,7 +84,7 @@ def addcrypted():
         return "success\r\n"
 
 
-@bp.route(r"/flash/addcrypted2", methods=['POST'])
+@bp.route(r"/flash/addcrypted2", methods=['POST'], endpoint='addcrypted2')
 @local_check
 def addcrypted2():
     package = flask.request.form.get(
@@ -120,8 +120,9 @@ def addcrypted2():
         return "success\r\n"
 
 
-@bp.route(r"/flashgot_pyload", methods=['GET', 'POST'])
-@bp.route(r"/flashgot", methods=['GET', 'POST'])
+
+@bp.route(r"/flashgot", methods=['GET', 'POST'], endpoint='flashgot')
+@bp.route(r"/flashgot_pyload", methods=['GET', 'POST'], endpoint='flashgot')
 @local_check
 def flashgot():
     if flask.request.environ["HTTP_REFERER"] not in (
@@ -144,7 +145,7 @@ def flashgot():
     return ""
 
 
-@bp.route(r"/crossdomain.xml")
+@bp.route(r"/crossdomain.xml", endpoint='crossdomain')
 @local_check
 def crossdomain():
     rep = '<?xml version="1.0"?>\n'
@@ -155,7 +156,7 @@ def crossdomain():
     return rep
 
 
-@bp.route(r"/flash/checkSupportForUrl")
+@bp.route(r"/flash/checkSupportForUrl", endpoint='checksupport')
 @local_check
 def checksupport():
     url = flask.request.form.get("url")
@@ -165,7 +166,7 @@ def checksupport():
     return str(supported).lower()
 
 
-@bp.route(r"/jdcheck.js")
+@bp.route(r"/jdcheck.js", endpoint='jdcheck')
 @local_check
 def jdcheck():
     rep = "jdownloader=true;\n"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @author: RaNaN
 
-from pyload.webui.app import app
+
 
 import datetime
 import json
@@ -309,14 +309,14 @@ def config():
 
 
 @bp.route(r"/filechooser")
-@bp.route(r"/filechooser/<filename>")
+@bp.route(r"/filechooser/<path:filename>")
 @login_required("STATUS")
 def file(filename=""):
     return choose_path("file", filename)
 
 
 @bp.route(r"/pathchooser")
-@bp.route(r"/pathchooser/<dirname>")
+@bp.route(r"/pathchooser/<path:dirname>")
 @login_required("STATUS")
 def folder(dirname=""):
     return choose_path("folder", dirname)

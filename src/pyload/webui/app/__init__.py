@@ -103,8 +103,8 @@ def run_flask(host='0.0.0.0', port='8000', debug=False):
     """Run Flask server."""    
     app = create_app()
     
-    with app.app_context():
-        init_db()
+    # with app.app_context():
+        # flask.init_db()
         
     app.run(
         host=host,
