@@ -10,7 +10,7 @@ class Transport(TBufferedTransport):
     DEFAULT_BUFFER = 4096
 
     def __init__(self, trans, rbuf_size=DEFAULT_BUFFER):
-        TBufferedTransport.__init__(self, trans, rbuf_size)
+        super().__init__(trans, rbuf_size)
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 
@@ -19,7 +19,7 @@ class TransportCompressed(TZlibTransport):
     DEFAULT_BUFFER = 4096
 
     def __init__(self, trans, rbuf_size=DEFAULT_BUFFER):
-        TZlibTransport.__init__(self, trans, rbuf_size)
+        super().__init__(trans, rbuf_size)
         self.handle = trans.handle
         self.remoteaddr = trans.handle.getpeername()
 

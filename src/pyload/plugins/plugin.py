@@ -169,7 +169,7 @@ class Plugin(Base):
     __author_mail__ = ("RaNaN@pyload.net", "spoob@pyload.net", "mkaay@mkaay.de")
 
     def __init__(self, pyfile):
-        Base.__init__(self, pyfile.m.pyload)
+        super().__init__(pyfile.m.pyload)
 
         self.wantReconnect = False
         #: enables simultaneous processing of multiple downloads

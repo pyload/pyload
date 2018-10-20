@@ -45,7 +45,7 @@ class SecureSocketConnection(object):
 
 class Socket(TSocket):
     def __init__(self, host="localhost", port=7228, ssl=False):
-        TSocket.__init__(self, host, port)
+        super().__init__(host, port)
         self.ssl = ssl
 
     def open(self):

@@ -7,20 +7,16 @@ from threading import Thread
 
 class BackendBase(Thread):
     def __init__(self, manager):
-        Thread.__init__(self)
+        super().__init__()
         self.m = manager
         self.pyload = manager.pyload
         self.enabled = True
-        self.running = False
 
     def run(self):
-        self.running = True
         try:
             self.serve()
         except Exception as e:
             self.pyload.log.error(_("Remote backend error: {}").format(e))
-        finally:
-            self.running = False
 
     def setup(self, host, port):
         pass

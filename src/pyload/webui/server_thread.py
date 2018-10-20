@@ -2,7 +2,7 @@
 # @author: vuolter
 
 import os
-from multiprocessing import Process
+import threading
 from builtins import _
 
 # TODO: remove
@@ -10,11 +10,11 @@ PYLOAD_API = None
 
 
 # TODO: make configurable to serve API
-class WebServer(Process):
+class WebServer(threading.Thread):
     def __init__(self, core):
         global PYLOAD_API  # make local in future
         
-        super(WebServer, self).__init__()
+        super().__init__()
         
         self.pyload = core
         self.app = None
@@ -31,8 +31,6 @@ class WebServer(Process):
     
     
     def run(self):
-        print("CIAO")
-        print("#################################################")
         from pyload.webui import app
         
         self.pyload.log.debug(_("Starting threaded webserver: {host}:{port:d}").format(

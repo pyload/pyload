@@ -102,7 +102,7 @@ class DatabaseBackend(Thread):
     subs = []
 
     def __init__(self, core):
-        Thread.__init__(self)
+        super().__init__()
         self.setDaemon(True)
         self.pyload = core
 

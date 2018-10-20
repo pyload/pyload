@@ -42,7 +42,7 @@ class APIExerciser(Thread):
     def __init__(self, core, thrift=False, user=None, pw=None):
         global idPool
 
-        Thread.__init__(self)
+        super().__init__()
         self.setDaemon(True)
         self.pyload = core
         self.count = 0  #: number of methods

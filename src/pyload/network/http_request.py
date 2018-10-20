@@ -55,8 +55,7 @@ unofficial_responses = {
 class BadHeader(Exception):
     def __init__(self, code, header="", content=""):
         int_code = int(code)
-        Exception.__init__(
-            self,
+        super().__init__(
             "Bad server response: {} {}".format(
                 code,
                 responses.get(
@@ -91,7 +90,7 @@ class HTTPRequest(object):
         self.c.setopt(pycurl.WRITEFUNCTION, self.write)
         self.c.setopt(pycurl.HEADERFUNCTION, self.writeHeader)
 
-        self.log = getLogger("pyLoad")
+        self.log = getLogger("pyload")
 
     def __enter__(self):
         return self

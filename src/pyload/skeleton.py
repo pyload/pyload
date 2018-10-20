@@ -54,7 +54,6 @@ class Core(object):
 
     def __init__(self):
         self.doDebug = False
-        self.running = False
         self.daemon = False
         self.remote = True
         self.arg_links = []
@@ -289,7 +288,7 @@ class Core(object):
 
         self.logfactory = LogFactory(self)
         self.logfactory.init_logger(exc_logger.name)
-        self.log = self.logfactory.get_logger('pyLoad')
+        self.log = self.logfactory.get_logger('pyload')
         
         self.log.info(_("Starting pyLoad {}").format(self.version))
         self.log.info(_("Using home directory: {}").format(os.getcwd()))
@@ -390,7 +389,6 @@ class Core(object):
         self.accountManager.getAccountInfos()
 
         self.threadManager.pause = False
-        self.running = True
 
         self.log.info(_("Activating Plugins..."))
         self.addonManager.coreReady()

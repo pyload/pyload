@@ -49,7 +49,7 @@ class HTTPDownload(object):
 
         self.chunks = []
 
-        self.log = getLogger("pyLoad")
+        self.log = getLogger("pyload")
 
         try:
             self.info = ChunkInfo.load(filename)

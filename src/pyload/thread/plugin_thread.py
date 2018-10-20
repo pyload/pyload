@@ -29,8 +29,8 @@ class PluginThread(Thread):
         """
         Constructor.
         """
-        Thread.__init__(self)
-        self.setDaemon(True)
+        super().__init__()
+        self.daemon = True
         self.m = manager  #: thread manager
 
     def writeDebugReport(self, pyfile):
@@ -156,7 +156,7 @@ class DownloadThread(PluginThread):
         """
         Constructor.
         """
-        PluginThread.__init__(self, manager)
+        super().__init__(manager)
 
         self.queue = Queue()  #: job queue
         self.active = False
@@ -371,7 +371,7 @@ class DecrypterThread(PluginThread):
         """
         constructor.
         """
-        PluginThread.__init__(self, manager)
+        super().__init__(manager)
 
         self.active = pyfile
         manager.localThreads.append(self)
@@ -467,11 +467,11 @@ class AddonThread(PluginThread):
     """
 
     # ----------------------------------------------------------------------
-    def __init__(self, m, function, args, kwargs):
+    def __init__(self, manager, function, args, kwargs):
         """
         Constructor.
         """
-        PluginThread.__init__(self, m)
+        super().__init__(manager)
 
         self.f = function
         self.args = args
@@ -479,7 +479,7 @@ class AddonThread(PluginThread):
 
         self.active = []
 
-        m.localThreads.append(self)
+        manager.localThreads.append(self)
 
         self.start()
 
@@ -524,7 +524,7 @@ class InfoThread(PluginThread):
         """
         Constructor.
         """
-        PluginThread.__init__(self, manager)
+        super().__init__(manager)
 
         self.data = data
         self.pid = pid  #: package id

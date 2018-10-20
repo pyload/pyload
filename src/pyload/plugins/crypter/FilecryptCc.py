@@ -30,7 +30,7 @@ class BIGHTTPRequest(HTTPRequest):
     # TODO: Add 'limit' parameter to HTTPRequest in v0.6.x
     def __init__(self, cookies=None, options=None, limit=1_000_000):
         self.limit = limit
-        HTTPRequest.__init__(self, cookies=cookies, options=options)
+        super().__init__(cookies=cookies, options=options)
 
     def write(self, buf):
         """

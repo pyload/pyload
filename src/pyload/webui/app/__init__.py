@@ -10,7 +10,7 @@ from builtins import str, PKGDIR
 import jinja2
 # from pyload.utils.utils import formatSize
 # import json
-from pyload.webui.server_process import PYLOAD_API
+from pyload.webui.server_thread import PYLOAD_API
 
 # from pyload.webui.app.middlewares import (
     # PrefixMiddleware,

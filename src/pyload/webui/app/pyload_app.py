@@ -21,7 +21,7 @@ from pyload.webui.app.utils import (get_permission, get_theme, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     flask_render, set_permission, set_session,
                                     toDict)
-from pyload.webui.server_process import PYLOAD_API
+from pyload.webui.server_thread import PYLOAD_API
 
 
 bp = flask.Blueprint('app', __name__)

@@ -5,7 +5,7 @@ from pyload.remote.thriftbackend.thriftgen import Pyload
 
 class Processor(Pyload.Processor):
     def __init__(self, *args, **kwargs):
-        Pyload.Processor.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.authenticated = {}
 
     def process(self, iprot, oprot):

@@ -408,8 +408,8 @@ class Cli(object):
 
 class RefreshThread(Thread):
     def __init__(self, cli):
-        Thread.__init__(self)
-        self.setDaemon(True)
+        super().__init__()
+        self.daemon = True
         self.cli = cli
 
     def run(self):
