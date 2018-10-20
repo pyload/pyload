@@ -6,9 +6,6 @@ import os
 import sys
 from builtins import str, PKGDIR
 
-import flask
-import flask_themes2
-
 import pyload.utils.pylgettext as gettext
 from beaker.middleware import SessionMiddleware
 import jinja2
@@ -83,34 +80,88 @@ env.install_gettext_translations(translation)
 # if PREFIX:
     # web = PrefixMiddleware(web, prefix=PREFIX)
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+### FLASK ##
 
+import flask
+from flask.helpers import get_debug_flag
+from pyload.webui.settings import ProductionConfig, DevelopmentConfig
+
+        
+def register_extensions(app):
+    from flask_themes2 import Themes
+    # from flask_bcrypt import Bcrypt
+    from flask_caching import Cache
+    from flask_debugtoolbar import DebugToolbarExtension
+    # from Flask-Babel import Babel
+
+    Themes(app, app_identifier='pyload')
+    # Babel(app)
+    # Bcrypt(app)
+    Cache(app)
+    DebugToolbarExtension(app)
     
     
-def create_app():
-    app = flask.Flask(__name__.split('.')[0])
-    # app = Flask(__name__, template_folder='views',static_folder='public/static')
-    
+def register_blueprints(app):
     from pyload.webui.app import api_app, cnl_app, json_app
+    
     app.register_blueprint(api_app.bp)
     app.register_blueprint(cnl_app.bp)
     app.register_blueprint(json_app.bp)
+
     
-    flask_themes2.Themes(app, app_identifier='pyload')
-    return app
-    
-    
-def run_flask(host='0.0.0.0', port='8000', debug=False):
-    """Run Flask server."""    
-    app = create_app()
-    
-    # with app.app_context():
-        # flask.init_db()
+def register_errorhandlers(app):
+    """Register error handlers."""
+    def render_error(error):
+        """Render error template."""
+        # If a HTTPException, pull the `code` attribute; default to 500
+        error_code = getattr(error, 'code', 500)
+        return flask.render_template('{0}.html'.format(error_code)), error_code
+
+    for errcode in (401, 404, 500):
+        app.errorhandler(errcode)(render_error)
         
+
+def create_app(config=None):    
+    app = flask.Flask(__name__.split('.')[0], instance_relative_config=True)
+    app.config.from_object(config)
+    
+    register_extensions(app)
+    register_blueprints(app)
+    register_errorhandlers(app)
+    
+    return app
+
+    
+# from flask.logging import default_handler
+
+def run_flask(host='0.0.0.0', port='8000', debug=False):
+    """Run Flask server."""
+    config = DevelopmentConfig if debug else ProductionConfig
+    app = create_app(config)
+        
+    # test
+    # logging.basicConfig(level=logging.DEBUG)
+    # app.logger.disabled = True
+    # log = logging.getLogger('werkzeug')
+    # log.disabled = True
+    # app.logger.removeHandler(default_handler)
+    
     app.run(
         host=host,
         port=port,
         use_reloader=False,
-        debug=debug
+        # debug=debug,
+        threaded=True,
+        use_evalex=False
     )
     
 # def run_wgsi(host="0.0.0.0", port="8000", debug=False):

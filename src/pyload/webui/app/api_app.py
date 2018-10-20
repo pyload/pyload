@@ -66,7 +66,7 @@ def call_api(func, args=""):
     kwargs = {}
 
     for x, y in chain(
-        iter(flask.request.form.items()), iter(flask.request.form.items())
+        iter(flask.request.args.items()), iter(flask.request.form.items())
     ):
         if x in ("u", "p", "session"):
             continue

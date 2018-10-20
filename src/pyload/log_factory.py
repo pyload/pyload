@@ -16,6 +16,32 @@ except ImportError:
     
     
 class LogFactory(object):
+
+    FILE_EXTENSION = '.log'
+    
+    LINESTYLE = '{'
+    LINEFORMAT = "[{asctime}]  {levelname:8}  {name:>16}  {message}"
+    LINEFORMAT_COLORED = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{log_color} {name:>16}  {message}  "
+    
+    DATEFORMAT = "%Y-%m-%d %H:%M:%S"
+    
+    PRIMARY_COLORS = {
+        'DEBUG': 'bold,black,bg_white',
+        'INFO': 'black,bg_white',
+        'WARNING': 'red,bg_yellow',
+        'ERROR': 'bold,white,bg_red',
+        'CRITICAL': 'bold,white,bg_black'
+    }
+    SECONDARY_COLORS = {
+        'badge': {
+            'DEBUG': 'bold,white,bg_cyan',
+            'INFO': 'bold,white,bg_green',
+            'WARNING': 'bold,white,bg_yellow',
+            'ERROR': 'bold,white,bg_red',
+            'CRITICAL': 'bold,white,bg_black'
+        }
+    }
+    
     def __init__(self, core):
         self.pyload = core
         self.loggers = {}
@@ -70,38 +96,13 @@ class LogFactory(object):
         color = self.pyload.config.get('log', 'console_color') and colorlog
         
         if color:
-            fmt = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{error_log_color} {reset}{log_color}{name:>16}  {message}  "
-            datefmt = "%Y-%m-%d %H:%M:%S"
-            
-            primary_colors = {
-                'DEBUG': 'black,bg_cyan',
-                'INFO': 'black,bg_white',
-                'WARNING': 'red,bg_yellow',
-                'ERROR': 'bold,white,bg_red',
-                'CRITICAL': 'bold,white,bg_black',
-            }
-            secondary_colors = {
-                'badge': {
-                    'DEBUG': 'bold,white,bg_cyan',
-                    'INFO': 'bold,white,bg_green',
-                    'WARNING': 'bold,white,bg_yellow',
-                    'ERROR': 'bold,white,bg_red',
-                    'CRITICAL': 'bold,white,bg_black',
-                },
-                'error': {
-                    'ERROR': 'bold,white,bg_red',
-                    'CRITICAL': 'bold,white,bg_black',
-                }
-            }
             consoleform = colorlog.ColoredFormatter(
-                fmt, datefmt=datefmt, log_colors=primary_colors,
-                secondary_log_colors=secondary_colors, 
-                style='{')
+                self.LINEFORMAT_COLORED, datefmt=self.DATEFORMAT, log_colors=self.PRIMARY_COLORS,
+                secondary_log_colors=self.SECONDARY_COLORS, 
+                style=self.LINESTYLE)
                 
         else:
-            fmt = "[{asctime}]  {levelname:8}  {name:>16}  {message}"
-            datefmt = "%Y-%m-%d %H:%M:%S"
-            consoleform = logging.Formatter(fmt, datefmt, '{')
+            consoleform = logging.Formatter(self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE)
 
         consolehdlr = logging.StreamHandler(sys.stdout)
         consolehdlr.setFormatter(consoleform)
@@ -112,7 +113,7 @@ class LogFactory(object):
         fmt = '{asctime} {name}: {message}'
         datefmt = '%b %e %H:%M:%S'
         
-        syslogform = logging.Formatter(fmt, datefmt, "{")
+        syslogform = logging.Formatter(fmt, datefmt, self.LINESTYLE)
         syslogaddr = None
 
         location = self.pyload.config.get('log', 'syslog_location')
@@ -134,14 +135,12 @@ class LogFactory(object):
         logger.addHandler(sysloghdlr)
 
     def _init_filelog_handler(self, logger):
-        fmt = "[{asctime}]  {levelname:8}  {name:20}  {message}"
-        datefmt = "%Y-%m-%d %H:%M:%S"
-        fileform = logging.Formatter(fmt, datefmt, '{')
+        fileform = logging.Formatter(self.LINEFORMAT, self.DATEFORMAT, self.LINESTYLE)
 
         folder = self.pyload.config.get('log', 'filelog_folder')
         os.makedirs(folder, exist_ok=True)
 
-        filename = "{}.log".format(logger.name)
+        filename = logger.name + self.FILE_EXTENSION
         filelog = os.path.join(folder, filename)
         encoding = locale.getpreferredencoding(do_setlocale=False)
         

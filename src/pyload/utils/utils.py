@@ -11,8 +11,15 @@ import sys
 import time
 from builtins import chr, map
 from html.entities import name2codepoint
+import string
+import random
 
 
+def random_string(lenght):
+    seq = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(seq) for _i in range(lenght))
+    
+    
 def chmod(*args):
     try:
         os.chmod(*args)

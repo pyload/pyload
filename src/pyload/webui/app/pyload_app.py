@@ -154,11 +154,16 @@ def logout():
     flask.session.modified = True
     return flask_render("logout.html", proc=[pre_processor])
 
-
+import logging  # test
 @bp.route(r"/")
 @bp.route(r"/home")
 @login_required("LIST")
 def home():
+    log = logging.getLogger('werkzeug')
+    log.info(flask.url_for('index'))
+    log.info(flask.url_for('home'))
+    log.info(flask.url_for('/'))
+    
     try:
         res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
     except Exception:
@@ -553,7 +558,7 @@ def admin():
             for perm in perms:
                 user[name]["perms"][perm] = False
 
-            for perm in flask.request.form.getall("{}|perms".format(name)):
+            for perm in flask.request.form.getlist("{}|perms".format(name)):
                 user[name]["perms"][perm] = True
 
             user[name]["permission"] = set_permission(user[name]["perms"])
