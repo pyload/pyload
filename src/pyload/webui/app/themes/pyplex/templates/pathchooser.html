@@ -13,11 +13,11 @@
     {% endif %}
 
     {% if type == 'folder' %} {# browsing for folder #}
-      var abspath = "{{'/pathchooser/'|url + cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
-      var relpath = "{{'/pathchooser/'|url + cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+      var abspath = "{{'/pathchooser/'|cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "{{'/pathchooser/'|cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}";
     {% else %} {# browsing for file #}
-      var abspath = "{{'/filechooser/'|url + oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
-      var relpath = "{{'/filechooser/'|url + oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}";
+      var abspath = "{{'/filechooser/'|oldfile|default(cwd, True)|path_make_absolute|quotepath|replace('\\', '\\\\')}}";
+      var relpath = "{{'/filechooser/'|oldfile|default(cwd, True)|path_make_relative|quotepath|replace('\\', '\\\\')}}";
     {% endif %}
     document.addEventListener("readystatechange", function(event) {
       if (this.readyState === "complete") {
@@ -63,8 +63,8 @@
     {
         cwd = fullpath;
         {% if type == "file" %} {# browsing for file #}
-          abspath = "{{'/filechooser/'|url + cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}" + name;
-          relpath = "{{'/filechooser/'|url + cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}" + name;
+          abspath = "{{'/filechooser/'|cwd|path_make_absolute|quotepath|replace('\\', '\\\\')}}" + name;
+          relpath = "{{'/filechooser/'|cwd|path_make_relative|quotepath|replace('\\', '\\\\')}}" + name;
         {% endif %}
         setValid();
     }
@@ -83,7 +83,7 @@
     </thead>
     <tbody id="tbody">
     {% if parentdir %}
-        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{'/pathchooser/'|url + (parentdir|quotepath)}}{% else %}{{'/filechooser/' + parentdir|quotepath}}{% endif %}">
+        <tr class='tr-clickable' data-href="{% if type == 'folder' %}{{'/pathchooser/'|(parentdir|quotepath)}}{% else %}{{'/filechooser/' + parentdir|quotepath}}{% endif %}">
           <td title="{{_('Parent Directory')}}"><span class="parentdir">..</span></td>
           <td></td>
           <td colspan="2">&lt;DIR&gt;</td>

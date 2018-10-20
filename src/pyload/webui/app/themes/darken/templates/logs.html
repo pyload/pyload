@@ -9,7 +9,7 @@
 {% block content %}
 <div style="clear: both;"></div>
 
-<div class="logpaginator"><a href="{{ '/logs/1'|url }}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ "/logs/" + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ "/logs/" + inext|string }}">{{_("next")}} &gt;</a> <a href="{{ url_for('logs') }}">{{_("End")}} &gt;&gt;</a></div>
+<div class="logpaginator"><a href="{{ '/logs/1'}}">&lt;&lt; {{_("Start")}}</a>  <a href="{{ "/logs/" + iprev|string }}">&lt; {{_("prev")}}</a>  <a href="{{ "/logs/" + inext|string }}">{{_("next")}} &gt;</a> <a href="{{ url_for('logs') }}">{{_("End")}} &gt;&gt;</a></div>
 <div class="logperpage">
     <form id="logform1" action="" method="POST">
         <label for="reversed">Reversed:</label>

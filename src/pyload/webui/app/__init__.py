@@ -147,15 +147,16 @@ def _configure_error_handlers(app):
         
         
 def _configure_jinja_env(app):
-    jinja_env = app.create_jinja_environment()
-    jinja_env.filters["quotepath"] = quotepath
-    jinja_env.filters["truncate"] = truncate
-    jinja_env.filters["date"] = date
-    jinja_env.filters["path_make_relative"] = path_make_relative
-    jinja_env.filters["path_make_absolute"] = path_make_absolute
-    jinja_env.filters["formatsize"] = formatSize
-    jinja_env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-    jinja_env.filters["url"] = lambda x: x
+    app.create_jinja_environment()
+    app.jinja_env.filters.update({
+        "quotepath": quotepath,
+        "truncate": truncate,
+        "date": date,
+        "path_make_relative": path_make_relative,
+        "path_make_absolute": path_make_absolute,
+        "formatsize": formatSize,
+        "getitem": lambda x, y: x.__getitem__(y)
+    })
     
     
 def create_app(api, debug=False):

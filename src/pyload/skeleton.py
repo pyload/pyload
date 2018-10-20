@@ -545,9 +545,6 @@ class Core(object):
 
             self.addonManager.coreExiting()
 
-        except Exception:
-            self.log.info(_("error while shutting down"))
-
         finally:
             self.files.syncSave()
             self.logfactory.shutdown()

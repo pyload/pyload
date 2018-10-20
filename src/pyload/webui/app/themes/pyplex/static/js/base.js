@@ -214,7 +214,7 @@ $(function() {
             return false;
         } else {
             $.ajax({
-                url: "{{'/json/add_package'|url}}",
+                url: "{{'/json/add_package'}}",
                 method: "POST",
                 data: formData,
                 processData: false,
@@ -240,10 +240,10 @@ $(function() {
     });
 
     $("#action_play").click(function() {
-        $.get("{{'/api/unpauseServer'|url}}", function () {
+        $.get("{{'/api/unpauseServer'}}", function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'|url}}",
+                url: "{{'/json/status'}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -252,14 +252,14 @@ $(function() {
     });
 
     $("#action_cancel").click(function() {
-        $.get("{{'/api/stopAllDownloads'|url}}");
+        $.get("{{'/api/stopAllDownloads'}}");
     });
 
     $("#action_stop").click(function() {
-        $.get("{{'/api/pauseServer'|url}}", function () {
+        $.get("{{'/api/pauseServer'}}", function () {
             $.ajax({
                 method: "POST",
-                url: "{{'/json/status'|url}}",
+                url: "{{'/json/status'}}",
                 async: true,
                 timeout: 3000,
                 success: LoadJsonToContent
@@ -280,7 +280,7 @@ $(function() {
 
     $.ajax({
         method:"post",
-        url: "{{'/json/status'|url}}",
+        url: "{{'/json/status'}}",
         async: true,
         timeout: 3000,
         success:LoadJsonToContent
@@ -289,7 +289,7 @@ $(function() {
     setInterval(function() {
         $.ajax({
             method: "POST",
-            url: "{{'/json/status'|url}}",
+            url: "{{'/json/status'}}",
             async: true,
             timeout: 3000,
             success:LoadJsonToContent
@@ -319,7 +319,7 @@ function LoadJsonToContent(a) {
         }
         if (desktopNotifications && !document.hasFocus() && !notificationVisible) {
             notification = new Notification('pyLoad', {
-                icon: "{{'/img/favicon.ico'|url}}",
+                icon: "{{'/img/favicon.ico'}}",
                 body: "{{_('New Captcha Request')}}",
                 tag: 'pyload_captcha'
             });
@@ -378,7 +378,7 @@ function set_captcha(a) {
 
 function load_captcha(b, a) {
     $.ajax({
-            url: "{{'/json/set_captcha'|url}}",
+            url: "{{'/json/set_captcha'}}",
             async: true,
             method: b,
             data: a,

@@ -85,7 +85,7 @@
 
             <!-- Accounts -->
             <span id="accounts" class="tabContent">
-            <form id="account_form" action="{{'/json/update_accounts'|url}}" method="POST">
+            <form id="account_form" action="{{'/json/update_accounts'}}" method="POST">
 
                         <table class="settable wide table">
 
@@ -177,7 +177,7 @@
 {% endblock %}
 {% block hidden %}
 <div id="account_box" style="z-index: 2">
-<form id="add_account_form" action="{{'/json/add_account'|url}}" method="POST" enctype="multipart/form-data">
+<form id="add_account_form" action="{{'/json/add_account'}}" method="POST" enctype="multipart/form-data">
 <h3>{{_("Add Account")}}</h3>
 <p>{{_("Enter your account data to use premium features.")}}</p>
 
