@@ -4,45 +4,22 @@
 import json
 import os
 
+import jinja2
 import flask
 import flask_themes2
 
 from pyload.api import PERMS, ROLE, has_permission
-from pyload.webui.app import PREFIX, env
+from pyload.webui.app import PREFIX
 from pyload.webui.server_thread import PYLOAD_API
 
 
-
-
-
-# remove
-def get_theme():
-    return PYLOAD_API.getConfigValue("webui", "theme").lower()
-
-    
-    
-    
-    
-def flask_render(template, args={}, proc=[]):
-    app = flask.current_app  # fix
-    context = {}  # fix
-    theme = flask.session.get('theme', app.config[get_theme()])
-    return flask_theme2.render_theme_template(theme, template, **context)
-
-
+def render_template(template, context={}, proc=[]):
+    for p in proc:
+        context.update(p())
+    theme = PYLOAD_API.getConfigValue("webui", "theme").lower()
+    return flask_themes2.render_theme_template(theme, template, _fallback=True, **context)
 
     
-    
-
-    
-# check
-# def render_to_response(path, args={}, proc=[]):
-    # for p in proc:
-        # args.update(p())        
-    # template = env.get_template(path, parent=get_theme())
-    # return template.render(**args)
-
-
 def parse_permissions(session):
     perms = {x: False for x in dir(PERMS) if not x.startswith("_")}
     perms["ADMIN"] = False
@@ -94,7 +71,7 @@ def set_permission(perms):
     return permission
 
 
-def set_session(request, info):
+def set_session(info):
     s = flask.session
     s["authenticated"] = True
     s["user_id"] = info["id"]
@@ -103,7 +80,6 @@ def set_session(request, info):
     s["perms"] = info["permission"]
     s["template"] = info["template"]
     s.modified = True
-
     return s
 
 

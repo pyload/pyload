@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 import os
 
 quotechar = "::%2F"

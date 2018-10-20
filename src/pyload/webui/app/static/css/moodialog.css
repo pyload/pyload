@@ -1,0 +1,75 @@
+/* Created by Arian Stolwijk <http://www.aryweb.nl> */
+
+.MooDialog {
+/*	position: fixed;*/
+    margin: 0 auto 0 -350px;
+    width:600px;
+    padding:14px;
+    left:50%;
+    top: 100px;
+
+	position: absolute;
+	left: 50%;
+	z-index: 50000;
+
+	background: #eef5f8;
+	color: black;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+	box-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+}
+
+.MooDialogTitle {
+	padding-top: 30px;
+}
+
+.MooDialog .title {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 3px 20px;
+	background: #b7c4dc;
+	border-bottom: 1px solid #a1aec5;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+	color: black;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+
+.MooDialog .close {
+	width: 16px;
+	height: 16px;
+	display: block;
+	cursor: pointer;
+	top: -5px;
+	left: -5px;
+	position: absolute;
+}
+
+.MooDialog .buttons {
+	text-align: right;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.MooDialog .iframe {
+	width: 100%;
+	height: 100%;
+}
+
+.MooDialog .textInput {
+	width: 200px;
+	float: left;
+}
+
+
+

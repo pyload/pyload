@@ -15,7 +15,6 @@ from pyload.webui.app.utils import apiver_check, set_session, toDict
 from pyload.webui.server_thread import PYLOAD_API
 
 
-
 bp = flask.Blueprint('api', __name__, url_prefix='/api')
 
 
@@ -107,11 +106,11 @@ def login():
     if not info:
         return json.dumps(False)
 
-    s = set_session(flask.request, info)
+    s = set_session(info)
 
     # get the session id by dirty way, documentations seems wrong
     try:
-        sid = s._headers["cookie_out"].split("=")[1].split(";")[0]
+        sid = s.headers["cookie_out"].split("=")[1].split(";")[0]
         return json.dumps(sid)
     except Exception:
         return json.dumps(True)

@@ -8,7 +8,7 @@ import flask
 
 
 from pyload.utils.utils import decode, formatSize
-from pyload.webui.app.utils import (apiver_check, login_required, flask_render,
+from pyload.webui.app.utils import (apiver_check, login_required, render_template,
                                     toDict)
 from pyload.webui.server_thread import PYLOAD_API
 
@@ -264,7 +264,7 @@ def load_config(category, section):
 
         option["value"] = decode(option["value"])
 
-    return flask_render(
+    return render_template(
         "settings_item.html", {"skey": section, "section": conf[section]}
     )
 

@@ -38,7 +38,7 @@ from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
 from pyload.utils.utils import formatSize, freeSpace
-from pyload.webui.server_process import WebServer
+from pyload.webui.server_thread import WebServer
 
 # TODO: List
 # - configurable auth system ldap/mysql

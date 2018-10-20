@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# @author: RaNaN
-
-
+# @author: RaNaN, vuolter
 
 import datetime
 import json
@@ -16,17 +14,17 @@ import flask
 
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
 from pyload.webui.app import PREFIX
-from pyload.webui.app.filters import relpath, unquotepath
-from pyload.webui.app.utils import (get_permission, get_theme, login_required,
+from pyload.webui.app.filters import unquotepath
+from pyload.webui.app.utils import (get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
-                                    flask_render, set_permission, set_session,
+                                    render_template, set_permission, set_session,
                                     toDict)
 from pyload.webui.server_thread import PYLOAD_API
 
 
 bp = flask.Blueprint('app', __name__)
 
-
+ 
 # Helper
 def pre_processor():
     s = flask.session
@@ -59,7 +57,7 @@ def pre_processor():
 
 
 def base(messages):
-    return flask_render("base.html", {"messages": messages}, [pre_processor])
+    return render_template("base.html", {"messages": messages}, [pre_processor])
 
     
 # Views
@@ -99,7 +97,7 @@ def base(messages):
                                                     # time.gmtime(time.time() + 24 * 7 * 60 * 60))
         # flask.response.headers['Cache-control'] = "public"
 
-        # return flask_render(path)
+        # return render_template(path)
     # else:
         # return serve_static(path)
         
@@ -110,7 +108,7 @@ def base(messages):
         # "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 60 * 60 * 24 * 7)
     # )
     # flask.response.headers["Cache-control"] = "public"
-    # root = os.path.join('.', 'themes', get_theme())
+    # root = os.path.join('.', 'themes', get_theme_name())
     # return bottle.static_file(path, root=root)
 
 
@@ -123,10 +121,10 @@ def base(messages):
 # def robots():
     # return bottle.static_file("robots.txt", root=".")
 
-
+    
 @bp.route(r"/login", methods=["GET"])
 def login():
-    return flask_render("login.html", proc=[pre_processor])
+    return render_template("login.html", proc=[pre_processor])
 
 
 @bp.route(r"/nopermission")
@@ -142,9 +140,9 @@ def login_post():
     info = PYLOAD_API.checkAuth(user, password)
 
     if not info:
-        return flask_render("login.html", {"errors": True}, [pre_processor])
+        return render_template("login.html", {"errors": True}, [pre_processor])
 
-    set_session(flask.request, info)
+    set_session(info)
     return flask.redirect("{}/".format(PREFIX))
 
 
@@ -152,18 +150,13 @@ def login_post():
 def logout():
     flask.session.clear()
     flask.session.modified = True
-    return flask_render("logout.html", proc=[pre_processor])
+    return render_template("logout.html", proc=[pre_processor])
 
 import logging  # test
-@bp.route(r"/")
-@bp.route(r"/home")
+@bp.route(r"/", endpoint='home')
+@bp.route(r"/home", endpoint='home')
 @login_required("LIST")
 def home():
-    log = logging.getLogger('werkzeug')
-    log.info(flask.url_for('index'))
-    log.info(flask.url_for('home'))
-    log.info(flask.url_for('/'))
-    
     try:
         res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
     except Exception:
@@ -177,34 +170,34 @@ def home():
                 link["size"] - link["bleft"], link["speed"]
             )
 
-    return flask_render("home.html", {"res": res}, [pre_processor])
+    return render_template("home.html", {"res": res}, [pre_processor])
 
 
-@bp.route(r"/queue")
+@bp.route(r"/queue", endpoint='queue')
 @login_required("LIST")
 def queue():
     queue = PYLOAD_API.getQueue()
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return flask_render(
+    return render_template(
         "queue.html", {"content": queue, "target": 1}, [pre_processor]
     )
 
 
-@bp.route(r"/collector")
+@bp.route(r"/collector", endpoint='collector')
 @login_required("LIST")
 def collector():
     queue = PYLOAD_API.getCollector()
 
     queue.sort(key=operator.attrgetter("order"))
 
-    return flask_render(
+    return render_template(
         "queue.html", {"content": queue, "target": 0}, [pre_processor]
     )
 
 
-@bp.route(r"/downloads")
+@bp.route(r"/downloads", endpoint='downloads')
 @login_required("DOWNLOAD")
 def downloads():
     root = PYLOAD_API.getConfigValue("general", "download_folder")
@@ -230,10 +223,10 @@ def downloads():
         elif os.path.isfile(os.path.join(root, item)):
             data["files"].append(item)
 
-    return flask_render("downloads.html", {"files": data}, [pre_processor])
+    return render_template("downloads.html", {"files": data}, [pre_processor])
 
 
-@bp.route(r"/downloads/get/<filename>")
+@bp.route(r"/downloads/get/<filename>", endpoint='get_download')
 @login_required("DOWNLOAD")
 def get_download(filename):
     filename = unquote(filename).decode("utf-8").replace("..", "")
@@ -241,7 +234,7 @@ def get_download(filename):
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
-@bp.route(r"/settings")
+@bp.route(r"/settings", endpoint='config')
 @login_required("SETTINGS")
 def config():
     conf = PYLOAD_API.getConfig()
@@ -303,7 +296,7 @@ def config():
             }
         )
 
-    return flask_render(
+    return render_template(
         "settings.html",
         {
             "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
@@ -313,15 +306,15 @@ def config():
     )
 
 
-@bp.route(r"/filechooser")
-@bp.route(r"/filechooser/<path:filename>")
+@bp.route(r"/filechooser", endpoint='file')
+@bp.route(r"/filechooser/<path:filename>", endpoint='file')
 @login_required("STATUS")
 def file(filename=""):
     return choose_path("file", filename)
 
 
-@bp.route(r"/pathchooser")
-@bp.route(r"/pathchooser/<path:dirname>")
+@bp.route(r"/pathchooser", endpoint='folder')
+@bp.route(r"/pathchooser/<path:dirname>", endpoint='folder')
 @login_required("STATUS")
 def folder(dirname=""):
     return choose_path("folder", dirname)
@@ -409,7 +402,7 @@ def choose_path(browse_for, path):
 
     files = sorted(files, key=operator.itemgetter("type", "sort"))
 
-    return flask_render(
+    return render_template(
         "pathchooser.html",
         {
             "cwd": cwd,
@@ -423,8 +416,8 @@ def choose_path(browse_for, path):
     )
 
 
-@bp.route(r"/logs", methods=['GET', 'POST'])
-@bp.route(r"/logs/<item>", methods=['GET', 'POST'])
+@bp.route(r"/logs", methods=['GET', 'POST'], endpoint='logs')
+@bp.route(r"/logs/<item>", methods=['GET', 'POST'], endpoint='logs')
 @login_required("LOGS")
 def logs(item=-1):
     s = flask.session
@@ -516,7 +509,7 @@ def logs(item=-1):
         fro = datetime.datetime.now()
     if reversed:
         data.reverse()
-    return flask_render(
+    return render_template(
         "logs.html",
         {
             "warning": warning,
@@ -532,7 +525,7 @@ def logs(item=-1):
     )
 
 
-@bp.route(r"/admin", methods=['GET', 'POST'])
+@bp.route(r"/admin", methods=['GET', 'POST'], endpoint='admin')
 @login_required("ADMIN")
 def admin():
     # convert to dict
@@ -567,7 +560,7 @@ def admin():
                 name, user[name]["permission"], user[name]["role"]
             )
 
-    return flask_render(
+    return render_template(
         "admin.html", {"users": user, "permlist": perms}, [pre_processor]
     )
 
@@ -583,7 +576,7 @@ def setup():
     # return flask.redirect(flask.url_for('themes'))
     
     
-@bp.route(r"/info")
+@bp.route(r"/info", endpoint='info')
 @login_required("STATUS")
 def info():
     conf = PYLOAD_API.getConfigDict()
@@ -602,4 +595,4 @@ def info():
         "language": conf["general"]["language"]["value"],
     }
 
-    return flask_render("info.html", data, [pre_processor])
+    return render_template("info.html", data, [pre_processor])

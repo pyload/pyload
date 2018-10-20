@@ -7,10 +7,9 @@ from pyload.utils.utils import random_string
 
 
 class Config(object):
-    PROJECT = "app"
-    APP_DIR = os.path.abspath(os.path.join(PKGDIR, "webui", "app"))
+    # PROJECT = "app"
+    # APP_DIR = os.path.abspath(os.path.join(PKGDIR, "webui", "app"))
     # PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
-    PROJECT_ROOT = APP_DIR
     DEBUG = False
     TESTING = False
     #: extensions
@@ -18,13 +17,16 @@ class Config(object):
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'null'
+    THEME_PATHS = os.path.abspath(os.path.join(PKGDIR, "webui", "app", 'themes'))
 
+    
 class ProductionConfig(Config):
     ENV = 'production'
     SECRET_KEY = 'dev'  # TODO: change
     #: extensions
     CACHE_TYPE = 'simple'
 
+    
 class DevelopmentConfig(Config):
     ENV = 'development'
     DEBUG = True
@@ -34,6 +36,7 @@ class DevelopmentConfig(Config):
     #: extensions
     DEBUG_TB_ENABLED = True
 
+    
 class TestingConfig(DevelopmentConfig):
     TESTING = True
     #: extensions
