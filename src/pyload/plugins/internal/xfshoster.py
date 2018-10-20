@@ -15,7 +15,7 @@ from pyload.plugins.utils import (html_unescape, parse_time, seconds_to_midnight
 class XFSHoster(SimpleHoster):
     __name__ = "XFSHoster"
     __type__ = "hoster"
-    __version__ = "0.80"
+    __version__ = "0.81"
     __status__ = "stable"
 
     __pyload_version__ = "0.5"
@@ -278,9 +278,7 @@ class XFSHoster(SimpleHoster):
 
         if captcha_key:
             self.captcha = recaptcha
-            inputs["recaptcha_response_field"], inputs[
-                "recaptcha_challenge_field"
-            ] = recaptcha.challenge(captcha_key)
+            inputs['g-recaptcha-response'], challenge = recaptcha.challenge(captcha_key)
             return
 
         solvemedia = SolveMedia(self.pyfile)
