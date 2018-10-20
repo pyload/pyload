@@ -2,5 +2,9 @@
     "application": "pyload", 
     "identifier": "flat", 
     "name": "Flat", 
-    "author": "pyLoad team"
+    "author": "",
+    "author": "",
+    "description": "",
+    "license": "",
+    "version": "1.0.0"
 }

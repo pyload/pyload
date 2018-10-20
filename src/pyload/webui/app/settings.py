@@ -7,8 +7,10 @@ from pyload.utils.utils import random_string
 
 
 class Config(object):
-    APP_DIR = os.path.abspath(os.path.join(PKGDIR, "webui", "app"))  # This directory
-    PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
+    PROJECT = "app"
+    APP_DIR = os.path.abspath(os.path.join(PKGDIR, "webui", "app"))
+    # PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
+    PROJECT_ROOT = APP_DIR
     DEBUG = False
     TESTING = False
     #: extensions
@@ -36,3 +38,8 @@ class TestingConfig(DevelopmentConfig):
     TESTING = True
     #: extensions
     BCRYPT_LOG_ROUNDS = 4
+
+    
+def get_config(debug=False):  
+    return DevelopmentConfig if debug else ProductionConfig
+    

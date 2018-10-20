@@ -15,13 +15,13 @@ from urllib.parse import unquote
 import flask
 
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
-from pyload.webui.app import PREFIX, env
+from pyload.webui.app import PREFIX
 from pyload.webui.app.filters import relpath, unquotepath
 from pyload.webui.app.utils import (get_permission, get_theme, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     flask_render, set_permission, set_session,
                                     toDict)
-from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.server_process import PYLOAD_API
 
 
 bp = flask.Blueprint('app', __name__)

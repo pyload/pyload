@@ -2,5 +2,8 @@
     "application": "pyload", 
     "identifier": "pyplex", 
     "name": "PyPlex", 
-    "author": ""
+    "author": "",
+    "description": "",
+    "license": "",
+    "version": "1.0.0"
 }

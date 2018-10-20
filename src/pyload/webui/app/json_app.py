@@ -10,7 +10,7 @@ import flask
 from pyload.utils.utils import decode, formatSize
 from pyload.webui.app.utils import (apiver_check, login_required, flask_render,
                                     toDict)
-from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.server_process import PYLOAD_API
 
 
 bp = flask.Blueprint('json', __name__, url_prefix='/json')

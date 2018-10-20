@@ -12,7 +12,7 @@ import flask
 
 from pyload.api import BaseObject
 from pyload.webui.app.utils import apiver_check, set_session, toDict
-from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.server_process import PYLOAD_API
 
 
 

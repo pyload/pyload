@@ -14,7 +14,7 @@ import flask
 import js2py
 from cryptography.fernet import Fernet
 
-from pyload.webui.server_thread import PYLOAD_API
+from pyload.webui.server_process import PYLOAD_API
 
 
 bp = flask.Blueprint('cnl', __name__)

@@ -38,7 +38,7 @@ from pyload.network.request_factory import RequestFactory
 from pyload.remote.remote_manager import RemoteManager
 from pyload.scheduler import Scheduler
 from pyload.utils.utils import formatSize, freeSpace
-from pyload.webui.server_thread import WebServer
+from pyload.webui.server_process import WebServer
 
 # TODO: List
 # - configurable auth system ldap/mysql
@@ -533,8 +533,10 @@ class Core(object):
     def shutdown(self):
         self.log.info(_("shutting down..."))
         try:
-            if self.config.get("webui", "activated") and hasattr(self, "webserver"):
+            if self.webserver.is_alive():
                 self.webserver.quit()
+                self.webserver.terminate()
+                self.webserver.join()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")

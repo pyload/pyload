@@ -21,7 +21,7 @@ class LogFactory(object):
     
     LINESTYLE = '{'
     LINEFORMAT = "[{asctime}]  {levelname:8}  {name:>16}  {message}"
-    LINEFORMAT_COLORED = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{log_color} {name:>16}  {message}  "
+    LINEFORMAT_COLORED = "{badge_log_color}[{asctime}]  {levelname:^8} {reset}{log_color} {name:>16}  {message}  {reset}{exc_log_color}"
     
     DATEFORMAT = "%Y-%m-%d %H:%M:%S"
     
@@ -39,6 +39,10 @@ class LogFactory(object):
             'WARNING': 'bold,white,bg_yellow',
             'ERROR': 'bold,white,bg_red',
             'CRITICAL': 'bold,white,bg_black'
+        },
+        'exc': {
+            'ERROR': 'bold,black,bg_white',
+            'CRITICAL': 'bold,black,bg_white'
         }
     }
     
