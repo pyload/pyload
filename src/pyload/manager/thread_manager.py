@@ -12,7 +12,9 @@ from threading import Event, Lock
 import pycurl
 from pyload.datatype.pyfile import PyFile
 from pyload.network.request_factory import getURL
-from pyload.thread import plugin_thread
+from pyload.thread.download_thread import DownloadThread
+from pyload.thread.info_thread import InfoThread
+from pyload.thread.decrypter_thread import DecrypterThread
 from pyload.utils.utils import freeSpace, lock
 
 
@@ -61,7 +63,7 @@ class ThreadManager(object):
         create a download thread.
         """
 
-        thread = plugin_thread.DownloadThread(self)
+        thread = DownloadThread(self)
         self.threads.append(thread)
 
     def createInfoThread(self, data, pid):
@@ -71,7 +73,7 @@ class ThreadManager(object):
         """
         self.timestamp = time.time() + 5 * 60
 
-        plugin_thread.InfoThread(self, data, pid)
+        InfoThread(self, data, pid)
 
     @lock
     def createResultThread(self, data, add=False):
@@ -83,7 +85,7 @@ class ThreadManager(object):
         rid = self.resultIDs
         self.resultIDs += 1
 
-        plugin_thread.InfoThread(self, data, rid=rid, add=add)
+        InfoThread(self, data, rid=rid, add=add)
 
         return rid
 
@@ -354,10 +356,10 @@ class ThreadManager(object):
                     job = self.pyload.files.getDecryptJob()
                     if job:
                         job.initPlugin()
-                        thread = plugin_thread.DecrypterThread(self, job)
+                        thread = DecrypterThread(self, job)
 
             else:
-                thread = plugin_thread.DecrypterThread(self, job)
+                thread = DecrypterThread(self, job)
 
     def getLimit(self, thread):
         limit = thread.active.plugin.account.getAccountData(thread.active.plugin.user)[

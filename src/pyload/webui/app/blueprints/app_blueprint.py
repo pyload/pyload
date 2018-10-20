@@ -239,9 +239,9 @@ def get_download(filename):
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
-@bp.route(r"/settings", endpoint='config')
+@bp.route(r"/settings", endpoint='settings')
 @login_required("SETTINGS")
-def config():
+def settings():
     api = flask.current_app.config['PYLOAD_API']
     conf = api.getConfig()
     plugin = api.getPluginConfig()

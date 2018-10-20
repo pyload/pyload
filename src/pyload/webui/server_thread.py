@@ -44,13 +44,12 @@ class WebServer(threading.Thread):
     def run(self):  
         self.pyload.log.info(_("Starting webserver: {host}:{port:d}").format(host=self.host, port=self.port))
         try:
-            self.server.start()
+            self.server.safe_start()
         except KeyboardInterrupt:
-            self.quit()
+            self.stop()
 
             
-    # TODO: self-call on terminate
-    def quit(self):
+    def stop(self):
         self.pyload.log.info(_("Stopping webserver"))
         self.server.stop()
         

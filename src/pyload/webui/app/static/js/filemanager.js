@@ -166,7 +166,7 @@ var Item = new Class({
         hide_confirm_box();
 	new Request.JSON({
             method: 'POST',
-            url: "{{'/json/filemanager/delete'|url}}",
+            url: "{{'/json/filemanager/delete'}}",
 	    data: {"path": this.path, "name": this.name},
             onSuccess: function(data) {
 		if(data.response == "success")
@@ -210,7 +210,7 @@ var Item = new Class({
         hide_rename_box();
 	new Request.JSON({
             method: 'POST',
-            url: "{{'/json/filemanager/rename'|url}}",
+            url: "{{'/json/filemanager/rename'}}",
             onSuccess: function(data) {
 		if(data.response == "success")
 		{
@@ -233,14 +233,14 @@ var Item = new Class({
     mkdir: function(event) {
       new Request.JSON({
 	  method: 'POST',
-	  url: "{{'/json/filemanager/mkdir'|url}}",
+	  url: "{{'/json/filemanager/mkdir'}}",
 	  data: {"path": this.path + "/" + this.name, "name": '{{_("New folder")}}'},
 	  onSuccess: function(data) {
 	      if(data.response == "success")
 	      {
 		new Request.HTML({
 		    method: 'POST',
-		    url: "{{'/filemanager/get_dir'|url}}",
+		    url: "{{'/filemanager/get_dir'}}",
 		    data: {"path": data.path, "name": data.name},
 		    onSuccess: function(li) {
 			//add node as first child of ul

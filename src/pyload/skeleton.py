@@ -532,9 +532,7 @@ class Core(object):
         self.log.info(_("shutting down..."))
         try:
             if self.webserver.is_alive():
-                self.webserver.quit()
-                self.webserver.terminate()
-                self.webserver.join()
+                self.webserver.stop()
 
             for thread in self.threadManager.threads:
                 thread.put("quit")

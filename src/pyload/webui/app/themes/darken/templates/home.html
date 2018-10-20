@@ -211,19 +211,19 @@ var LinkEntry = new Class({
     <a href="/" title=""><img src="{{theme_static('img/head-menu-home.png')}}" alt="" /> {{_("Home")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
+    <a href="{{ url_for('app.queue') }}" title=""><img src="{{theme_static('img/head-menu-queue.png')}}" alt="" /> {{_("Queue")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
+    <a href="{{ url_for('app.collector') }}" title=""><img src="{{theme_static('img/head-menu-collector.png')}}" alt="" /> {{_("Collector")}}</a>
 </li>
 <li>
-    <a href="{{ url_for('downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
+    <a href="{{ url_for('app.downloads') }}" title=""><img src="{{theme_static('img/head-menu-development.png')}}" alt="" /> {{_("Downloads")}}</a>
 </li>
 <li class="right">
-    <a href="{{ url_for('logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
+    <a href="{{ url_for('app.logs') }}"  title=""><img src="{{theme_static('img/head-menu-index.png')}}" alt="" />{{_("Logs")}}</a>
 </li>
 <li class="right">
-    <a href="{{ url_for('settings') }}"  title=""><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
+    <a href="{{ url_for('app.settings') }}"  title=""><img src="{{theme_static('img/head-menu-config.png')}}" alt="" />{{_("Config")}}</a>
 </li>
 {% endblock %}
 

@@ -8,7 +8,7 @@ from types import MethodType
 
 from _thread import start_new_thread
 from pyload.manager.plugin_manager import literal_eval
-from pyload.thread.plugin_thread import AddonThread
+from pyload.thread.addon_thread import AddonThread
 from pyload.utils.utils import lock
 
 

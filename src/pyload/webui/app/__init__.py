@@ -88,8 +88,8 @@ from flask_themes2 import Themes
 # from flask_bcrypt import Bcrypt
 # from flask_caching import Cache
 # from flask_debugtoolbar import DebugToolbarExtension
-# from Flask-Babel import Babel
-from pyload.webui.app.blueprints import api_blueprint, cnl_blueprint, json_blueprint, root_blueprint
+from flask_babel import Babel
+from pyload.webui.app.blueprints import api_blueprint, cnl_blueprint, json_blueprint, app_blueprint
 from pyload.webui.app.filters import (
     date,
     path_make_absolute,
@@ -102,7 +102,7 @@ DEFAULT_BLUEPRINTS = [
    api_blueprint.bp,
    cnl_blueprint.bp,
    json_blueprint.bp,
-   root_blueprint.bp
+   app_blueprint.bp
 ]    
 
    
@@ -126,7 +126,7 @@ def _configure_logging(app):
    
    
 def _configure_extensions(app):  
-    # Babel(app)
+    Babel(app)
     # Bcrypt(app)
     # Cache(app)
     # DebugToolbarExtension(app)
