@@ -10,33 +10,33 @@ from builtins import str, PKGDIR
 import jinja2
 from pyload.utils.utils import formatSize
 # import json
-from pyload.webui.server_thread import PYLOAD_API
 
 # from pyload.webui.app.middlewares import (
     # PrefixMiddleware,
     # StripPathMiddleware,
 # )
 
-PREFIX = PYLOAD_API.getConfigValue("webui", "prefix")
-
-if PREFIX:
-    PREFIX = "{}/".format(PREFIX.strip("/"))
-
 # bottle.debug(PYLOAD_API.getConfigValue("general", "debug_mode"))
 
-cache = os.path.join(HOMEDIR, 'pyLoad', '.tmp', 'webui')
-os.makedirs(cache, exist_ok=True)
 
-bcc = jinja2.FileSystemBytecodeCache(cache)  # TODO: change to TMPDIR
-sp = os.path.join(PKGDIR, "webui", "app", "themes")
-loader = jinja2.FileSystemLoader(sp)
-env = jinja2.Environment(
-    loader=loader,
-    extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
-    trim_blocks=True,
-    auto_reload=False,
-    bytecode_cache=bcc,
-)
+
+
+# cache = os.path.join(HOMEDIR, 'pyLoad', '.tmp', 'webui')
+# os.makedirs(cache, exist_ok=True)
+
+# bcc = jinja2.FileSystemBytecodeCache(cache)  # TODO: change to TMPDIR
+# sp = os.path.join(PKGDIR, "webui", "app", "themes")
+# loader = jinja2.FileSystemLoader(sp)
+# env = jinja2.Environment(
+    # loader=loader,
+    # extensions=["jinja2.ext.i18n", "jinja2.ext.autoescape"],
+    # trim_blocks=True,
+    # auto_reload=False,
+    # bytecode_cache=bcc,
+# )
+
+
+
 
 # from pyload.webui.app.filters import (
     # date,
@@ -86,8 +86,8 @@ import flask
 from pyload.webui.app.settings import get_config
 from flask_themes2 import Themes
 # from flask_bcrypt import Bcrypt
-from flask_caching import Cache
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_caching import Cache
+# from flask_debugtoolbar import DebugToolbarExtension
 # from Flask-Babel import Babel
 from pyload.webui.app.blueprints import api_blueprint, cnl_blueprint, json_blueprint, root_blueprint
 from pyload.webui.app.filters import (
@@ -155,11 +155,16 @@ def _configure_jinja_env(app):
     jinja_env.filters["path_make_absolute"] = path_make_absolute
     jinja_env.filters["formatsize"] = formatSize
     jinja_env.filters["getitem"] = lambda x, y: x.__getitem__(y)
-    jinja_env.filters["url"] = lambda x: PREFIX + x if x.startswith("/") else x
+    jinja_env.filters["url"] = lambda x: x
     
     
-def _create_blueprint(config, blueprints):    
+def create_app(api, debug=False):
+    """Run Flask server"""   
     app = flask.Flask(__name__.split('.')[0], instance_relative_config=True)
+    app.config['PYLOAD_API'] = api
+    
+    config = get_config(debug)
+    blueprints = DEFAULT_BLUEPRINTS
     
     _configure_blueprint(app, config)
     _configure_hook(app)
@@ -170,13 +175,6 @@ def _create_blueprint(config, blueprints):
     _configure_jinja_env(app)
     
     return app
-
-    
-def run(host="localhost", port=8001, cert="", key="", debug=False):
-    """Run Flask server"""
-    config = get_config(debug)
-    blueprints = DEFAULT_BLUEPRINTS
-    app = _create_blueprint(config, blueprints)
         
     # test
     # from flask.logging import default_handler
@@ -186,22 +184,3 @@ def run(host="localhost", port=8001, cert="", key="", debug=False):
     # log.disabled = True
     # app.logger.removeHandler(default_handler)
     
-    try:
-        app.run(
-            host=host,
-            port=port,
-            use_reloader=False,
-            debug=debug,
-            threaded=True,
-            use_evalex=False
-        )
-    finally:
-        return app
-    
-    
-def shutdown():
-    func = flask.request.environ.get('werkzeug.server.shutdown')
-    try:
-        func()
-    except TypeError:
-        raise RuntimeError('Not running with the Werkzeug Server')

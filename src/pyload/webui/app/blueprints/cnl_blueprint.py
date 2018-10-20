@@ -14,8 +14,6 @@ import flask
 import js2py
 from cryptography.fernet import Fernet
 
-from pyload.webui.server_thread import PYLOAD_API
-
 
 bp = flask.Blueprint('cnl', __name__)
 
@@ -52,10 +50,11 @@ def add():
     )
     urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
 
+    api = flask.current_app.config['PYLOAD_API']
     if package:
-        PYLOAD_API.addPackage(package, urls, 0)
+        api.addPackage(package, urls, 0)
     else:
-        PYLOAD_API.generateAndAddPackages(urls, 0)
+        api.generateAndAddPackages(urls, 0)
 
     return ""
 
@@ -69,7 +68,9 @@ def addcrypted():
     )
     dlc = flask.request.form["crypted"].replace(" ", "+")
 
-    dl_path = PYLOAD_API.getConfigValue("general", "download_folder")
+    api = flask.current_app.config['PYLOAD_API']
+    
+    dl_path = api.getConfigValue("general", "download_folder")
     dlc_path = os.path.join(
         dl_path, package.replace("/", "").replace("\\", "").replace(":", "") + ".dlc"
     )
@@ -77,7 +78,7 @@ def addcrypted():
         dlc_file.write(dlc)
 
     try:
-        PYLOAD_API.addPackage(package, [dlc_path], 0)
+        api.addPackage(package, [dlc_path], 0)
     except Exception:
         return flask.abort(500)
     else:
@@ -109,11 +110,12 @@ def addcrypted2():
 
     urls = list(filter(None, map(str.strip, urls)))
 
+    api = flask.current_app.config['PYLOAD_API']
     try:
         if package:
-            PYLOAD_API.addPackage(package, urls, 0)
+            api.addPackage(package, urls, 0)
         else:
-            PYLOAD_API.generateAndAddPackages(urls, 0)
+            api.generateAndAddPackages(urls, 0)
     except Exception:
         return "failed can't add"
     else:
@@ -137,10 +139,11 @@ def flashgot():
     urls = list(filter(None, map(str.strip, flask.request.form["urls"].split("\n"))))
     # folder = flask.request.form.get('dir', None)
 
+    api = flask.current_app.config['PYLOAD_API']
     if package:
-        PYLOAD_API.addPackage(package, urls, autostart)
+        api.addPackage(package, urls, autostart)
     else:
-        PYLOAD_API.generateAndAddPackages(urls, autostart)
+        api.generateAndAddPackages(urls, autostart)
 
     return ""
 
@@ -159,8 +162,9 @@ def crossdomain():
 @bp.route(r"/flash/checkSupportForUrl", endpoint='checksupport')
 @local_check
 def checksupport():
+    api = flask.current_app.config['PYLOAD_API']
     url = flask.request.form.get("url")
-    res = PYLOAD_API.checkURLs([url])
+    res = api.checkURLs([url])
     supported = not res[0][1] is None
 
     return str(supported).lower()

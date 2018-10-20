@@ -12,7 +12,6 @@ import flask
 
 from pyload.api import BaseObject
 from pyload.webui.app.utils import apiver_check, set_session, toDict
-from pyload.webui.server_thread import PYLOAD_API
 
 
 bp = flask.Blueprint('api', __name__, url_prefix='/api')
@@ -37,10 +36,12 @@ def call_api(func, args=""):
     flask.response.headers.replace("Content-type", "application/json")
     flask.response.headers.append("Cache-Control", "no-cache, must-revalidate")
 
+    api = flask.current_app.config['PYLOAD_API']
+    
     if "u" in flask.request.form and "p" in flask.request.form:
-        info = PYLOAD_API.checkAuth(flask.request.form["u"], flask.request.form["p"])
+        info = api.checkAuth(flask.request.form["u"], flask.request.form["p"])
         if info:
-            if not PYLOAD_API.isAuthorized(
+            if not api.isAuthorized(
                 func, {"role": info["role"], "permission": info["permission"]}
             ):
                 return "Unauthorized", 401
@@ -56,7 +57,7 @@ def call_api(func, args=""):
         if not s or not s.get("authenticated", False):
             return "Forbidden", 403
 
-        if not PYLOAD_API.isAuthorized(
+        if not api.isAuthorized(
             func, {"role": s["role"], "permission": s["perms"]}
         ):
             return "Unauthorized", 401
@@ -78,7 +79,9 @@ def call_api(func, args=""):
 
 
 def callApi(func, *args, **kwargs):
-    if not hasattr(PYLOAD_API.EXTERNAL, func) or func.startswith("_"):
+    api = flask.current_app.config['PYLOAD_API']
+
+    if not hasattr(api.EXTERNAL, func) or func.startswith("_"):
         print("Invalid API call", func)
         return "Not Found", 404
 
@@ -101,7 +104,8 @@ def login():
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
-    info = PYLOAD_API.checkAuth(user, password)
+    api = flask.current_app.config['PYLOAD_API']
+    info = api.checkAuth(user, password)
 
     if not info:
         return json.dumps(False)

@@ -13,13 +13,11 @@ from urllib.parse import unquote
 import flask
 
 from pyload.utils.utils import formatSize, fs_decode, fs_encode
-from pyload.webui.app import PREFIX
 from pyload.webui.app.filters import unquotepath
 from pyload.webui.app.utils import (get_permission, login_required,
                                     parse_permissions, parse_userdata, permlist,
                                     render_template, set_permission, set_session,
                                     toDict)
-from pyload.webui.server_thread import PYLOAD_API
 
 
 bp = flask.Blueprint('app', __name__)
@@ -34,13 +32,14 @@ def pre_processor():
     captcha = False
     update = False
     plugins = False
+    api = flask.current_app.config['PYLOAD_API']
     
     if user["is_authenticated"]:
-        status = PYLOAD_API.statusServer()
-        captcha = PYLOAD_API.isCaptchaWaiting()
+        status = api.statusServer()
+        captcha = api.isCaptchaWaiting()
         
         # check if update check is available
-        info = PYLOAD_API.getInfoByPlugin("UpdateManager")
+        info = api.getInfoByPlugin("UpdateManager")
         if info:
             update = info["pyload"] == "True"
             plugins = info["plugins"] == "True"
@@ -137,13 +136,14 @@ def login_post():
     user = flask.request.form.get("username")
     password = flask.request.form.get("password")
 
-    info = PYLOAD_API.checkAuth(user, password)
+    api = flask.current_app.config['PYLOAD_API']
+    info = api.checkAuth(user, password)
 
     if not info:
         return render_template("login.html", {"errors": True}, [pre_processor])
 
     set_session(info)
-    return flask.redirect("{}/".format(PREFIX))
+    return flask.redirect("/")
 
 
 @bp.route(r"/logout")
@@ -157,12 +157,13 @@ import logging  # test
 @bp.route(r"/home", endpoint='home')
 @login_required("LIST")
 def home():
+    api = flask.current_app.config['PYLOAD_API']
     try:
-        res = [toDict(x) for x in PYLOAD_API.statusDownloads()]
+        res = [toDict(x) for x in api.statusDownloads()]
     except Exception:
         flask.session.clear()
         flask.session.modified = True
-        return flask.redirect("{}/login".format(PREFIX))
+        return flask.redirect("/login")
 
     for link in res:
         if link["status"] == 12:
@@ -176,7 +177,8 @@ def home():
 @bp.route(r"/queue", endpoint='queue')
 @login_required("LIST")
 def queue():
-    queue = PYLOAD_API.getQueue()
+    api = flask.current_app.config['PYLOAD_API']
+    queue = api.getQueue()
 
     queue.sort(key=operator.attrgetter("order"))
 
@@ -188,7 +190,8 @@ def queue():
 @bp.route(r"/collector", endpoint='collector')
 @login_required("LIST")
 def collector():
-    queue = PYLOAD_API.getCollector()
+    api = flask.current_app.config['PYLOAD_API']
+    queue = api.getCollector()
 
     queue.sort(key=operator.attrgetter("order"))
 
@@ -200,7 +203,8 @@ def collector():
 @bp.route(r"/downloads", endpoint='downloads')
 @login_required("DOWNLOAD")
 def downloads():
-    root = PYLOAD_API.getConfigValue("general", "download_folder")
+    api = flask.current_app.config['PYLOAD_API']
+    root = api.getConfigValue("general", "download_folder")
 
     if not os.path.isdir(root):
         return base([_("Download directory not found.")])
@@ -229,16 +233,18 @@ def downloads():
 @bp.route(r"/downloads/get/<filename>", endpoint='get_download')
 @login_required("DOWNLOAD")
 def get_download(filename):
+    api = flask.current_app.config['PYLOAD_API']
     filename = unquote(filename).decode("utf-8").replace("..", "")
-    directory = PYLOAD_API.getConfigValue("general", "download_folder")
+    directory = api.getConfigValue("general", "download_folder")
     return flask.send_from_directory(directory, filename, as_attachment=True)
 
 
 @bp.route(r"/settings", endpoint='config')
 @login_required("SETTINGS")
 def config():
-    conf = PYLOAD_API.getConfig()
-    plugin = PYLOAD_API.getPluginConfig()
+    api = flask.current_app.config['PYLOAD_API']
+    conf = api.getConfig()
+    plugin = api.getPluginConfig()
 
     conf_menu = []
     plugin_menu = []
@@ -251,7 +257,7 @@ def config():
 
     accs = []
 
-    for data in PYLOAD_API.getAccounts(False):
+    for data in api.getAccounts(False):
         if data.trafficleft == -1:
             trafficleft = _("unlimited")
         elif not data.trafficleft:
@@ -300,7 +306,7 @@ def config():
         "settings.html",
         {
             "conf": {"plugin": plugin_menu, "general": conf_menu, "accs": accs},
-            "types": PYLOAD_API.getAccountTypes(),
+            "types": api.getAccountTypes(),
         },
         [pre_processor],
     )
@@ -421,12 +427,13 @@ def choose_path(browse_for, path):
 @login_required("LOGS")
 def logs(item=-1):
     s = flask.session
-
+    api = flask.current_app.config['PYLOAD_API']
+    
     perpage = s.get("perpage", 34)
     reversed = s.get("reversed", False)
 
     warning = ""
-    conf = PYLOAD_API.getConfigValue("log", "file_log")
+    conf = api.getConfigValue("log", "file_log")
     if not conf:
         warning = "Warning: File log is disabled, see settings page."
 
@@ -456,7 +463,7 @@ def logs(item=-1):
     except Exception:
         pass
 
-    log = PYLOAD_API.getLog()
+    log = api.getLog()
     if not perpage:
         item = 0
 
@@ -528,8 +535,9 @@ def logs(item=-1):
 @bp.route(r"/admin", methods=['GET', 'POST'], endpoint='admin')
 @login_required("ADMIN")
 def admin():
+    api = flask.current_app.config['PYLOAD_API']
     # convert to dict
-    user = {name: toDict(y) for name, y in PYLOAD_API.getAllUserData().items()}
+    user = {name: toDict(y) for name, y in api.getAllUserData().items()}
     perms = permlist()
 
     for data in user.values():
@@ -556,7 +564,7 @@ def admin():
 
             user[name]["permission"] = set_permission(user[name]["perms"])
 
-            PYLOAD_API.setUserPermission(
+            api.setUserPermission(
                 name, user[name]["permission"], user[name]["role"]
             )
 
@@ -579,17 +587,18 @@ def setup():
 @bp.route(r"/info", endpoint='info')
 @login_required("STATUS")
 def info():
-    conf = PYLOAD_API.getConfigDict()
+    api = flask.current_app.config['PYLOAD_API']
+    conf = api.getConfigDict()
     extra = os.uname() if hasattr(os, "uname") else tuple()
 
     data = {
         "python": sys.version,
         "os": " ".join((os.name, sys.platform) + extra),
-        "version": PYLOAD_API.getServerVersion(),
+        "version": api.getServerVersion(),
         "folder": os.path.abspath(PKGDIR),
         "config": os.path.abspath(os.path.join(HOMEDIR, "pyLoad")),
         "download": os.path.abspath(conf["general"]["download_folder"]["value"]),
-        "freespace": formatSize(PYLOAD_API.freeSpace()),
+        "freespace": formatSize(api.freeSpace()),
         "remote": conf["remote"]["port"]["value"],
         "webif": conf["webui"]["port"]["value"],
         "language": conf["general"]["language"]["value"],

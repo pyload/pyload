@@ -5,50 +5,52 @@ import os
 import threading
 from builtins import _
 
-# TODO: remove
-PYLOAD_API = None
+from pyload.webui.app import create_app
+from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 
 
 # TODO: make configurable to serve API
 class WebServer(threading.Thread):
+
     def __init__(self, core):
-        global PYLOAD_API  # make local in future
-        
         super().__init__()
+        self.daemon = True
         
         self.pyload = core
-        self.app = None
         
-        PYLOAD_API = core.api
-        
-        self.https = core.config.get("webui", "https")  #: recheck
+        self.use_ssl = core.config.get("webui", "use_ssl")  #: recheck
         self.host = core.config.get("webui", "host")
         self.port = core.config.get("webui", "port")
-        self.cert = core.config.get("ssl", "cert")
-        self.key = core.config.get("ssl", "key")
-
-        self.daemon = True
-    
-    
-    def run(self):
-        from pyload.webui import app
+        self.prefix = core.config.get("webui", "prefix")
         
-        self.pyload.log.debug(_("Starting threaded webserver: {host}:{port:d}").format(
-                    host=self.host, port=self.port))
-                 
-        cert = self.cert
-        key = self.key
-        if self.https and not os.path.isfile(self.cert) or not os.path.isfile(self.key):
-            self.pyload.log.warning(_("SSL certificates not found"))
-            cert = key = None
-                
-        self.app = app.run(host=self.host, port=self.port, cert=cert, key=key, debug=self.pyload.debug)
+        bind_addr = (self.host, self.port)
+        bind_path = '{}/'.format(self.prefix.strip("/"))
+        
+        self.app = create_app(core.api, self.pyload.debug)
+        self.server = WSGIServer(bind_addr, PathInfoDispatcher({bind_path: self.app}))
+        
+        if not self.use_ssl:
+            return
             
+        self.certfile = core.config.get("ssl", "certfile")
+        self.keyfile = core.config.get("ssl", "keyfile")
             
-    # TODO: self-call on shutdown
-    def quit(self):
+        if self.certfile:
+            server.ssl_certificate = self.certfile
+        if self.keyfile:
+            server.ssl_private_key = self.keyfile
+        
+    
+    def run(self):  
+        self.pyload.log.info(_("Starting webserver: {host}:{port:d}").format(host=self.host, port=self.port))
         try:
-            self.app.shutdown()
-        except AttributeError:
-            pass
+            self.server.start()
+        except KeyboardInterrupt:
+            self.quit()
+
+            
+    # TODO: self-call on terminate
+    def quit(self):
+        self.pyload.log.info(_("Stopping webserver"))
+        self.server.stop()
         

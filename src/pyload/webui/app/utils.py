@@ -9,14 +9,13 @@ import flask
 import flask_themes2
 
 from pyload.api import PERMS, ROLE, has_permission
-from pyload.webui.app import PREFIX
-from pyload.webui.server_thread import PYLOAD_API
 
 
 def render_template(template, context={}, proc=[]):
     for p in proc:
         context.update(p())
-    theme = PYLOAD_API.getConfigValue("webui", "theme").lower()
+    api = flask.current_app.config['PYLOAD_API']
+    theme = api.getConfigValue("webui", "theme").lower()
     return flask_themes2.render_theme_template(theme, template, _fallback=True, **context)
 
     
@@ -94,7 +93,8 @@ def parse_userdata(session):
 def apiver_check(func):
     # if no apiver is provided assumes latest
     def _view(*args, **kwargs):
-        core_apiver = PYLOAD_API.__version__
+        api = flask.current_app.config['PYLOAD_API']
+        core_apiver = api.__version__
         if int(kwargs.get("apiver", core_apiver).strip("v")) < core_apiver:
             return "Obsolete API", 404
         return func(*args, **kwargs)
@@ -116,14 +116,14 @@ def login_required(perm=None):
                         ):
                             return "Forbidden", 403
                         else:
-                            return flask.redirect("{}/nopermission".format(PREFIX))
+                            return flask.redirect("/nopermission")
 
                 return func(*args, **kwargs)
             else:
                 if flask.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return "Forbidden", 403
                 else:
-                    return flask.redirect("{}/login".format(PREFIX))
+                    return flask.redirect("/login")
 
         return _view
 
