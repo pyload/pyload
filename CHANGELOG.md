@@ -1,6 +1,10 @@
 Release History
 ---------------
 
+### 0.5.0 (N/D)
+
+- ...
+
 ### 0.4.9 (2011-12-14)
 
 - Fixed various encoding issues

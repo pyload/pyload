@@ -20,7 +20,7 @@ class PluginThread(Thread):
         """
         Constructor.
         """
-        super().__init__()
+        super()
         self.daemon = True
         self.m = manager  #: thread manager
 

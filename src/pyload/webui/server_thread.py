@@ -13,7 +13,7 @@ from pyload.webui.app import create_app
 # TODO: make configurable to serve API
 class WebServer(threading.Thread):
     def __init__(self, core):
-        super().__init__()
+        super()
         self.daemon = True
 
         self.pyload = core

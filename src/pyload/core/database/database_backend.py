@@ -21,29 +21,29 @@ class style(object):
         cls.db = db
 
     @classmethod
-    def inner(cls, f):
+    def inner(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
             if cls.db:
-                return f(cls.db, *args, **kwargs)
-
+                return fn(cls.db, *args, **kwargs)
         return x
 
     @classmethod
-    def queue(cls, f):
+    def queue(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
+            print(fn.name)
+            print(cls.db)
             if cls.db:
-                return cls.db.queue(f, *args, **kwargs)
+                return cls.db.queue(fn, *args, **kwargs)
         return x
 
     @classmethod
-    def async_(cls, f):
+    def async_(cls, fn):
         @staticmethod
         def x(*args, **kwargs):
             if cls.db:
-                return cls.db.async_(f, *args, **kwargs)
-
+                return cls.db.async_(fn, *args, **kwargs)
         return x
 
 
@@ -101,8 +101,8 @@ class DatabaseBackend(Thread):
     subs = []
 
     def __init__(self, core):
-        super().__init__()
-        self.setDaemon(True)
+        super()
+        self.daemon = True
         self.pyload = core
 
         self.jobs = Queue()

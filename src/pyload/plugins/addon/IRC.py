@@ -48,7 +48,7 @@ class IRC(Thread, Notifier):
     def __init__(self, *args, **kwargs):
         Thread.__init__(self)
         Notifier.__init__(self, *args, **kwargs)
-        self.setDaemon(True)
+        self.daemon = True
 
     def activate(self):
         self.abort = False

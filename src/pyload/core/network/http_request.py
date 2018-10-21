@@ -7,6 +7,7 @@ from builtins import object, range, str
 from http.client import responses
 from logging import getLogger
 from urllib.parse import quote, urlencode
+from itertools import chain
 
 import pycurl
 from pyload.plugins.plugin import Abort
@@ -33,9 +34,9 @@ def myurlencode(data):
     )
 
 
-BAD_STATUS_CODES = list(range(400, 404)) + list(range(405, 418)) + list(range(500, 506))
+BAD_STATUS_CODES = tuple(chain((400,), (401,), (403,), (404,), range(405, 418), range(500, 506)))
 
-unofficial_responses = {
+PROPRIETARY_RESPONSES = {
     440: "Login Timeout - The client's session has expired and must log in again.",
     449: "Retry With - The server cannot honour the request because the user has not provided the required information",
     451: "Redirect - Unsupported Redirect Header",
@@ -59,7 +60,7 @@ class BadHeader(Exception):
             "Bad server response: {} {}".format(
                 code,
                 responses.get(
-                    int_code, unofficial_responses.get(int_code, "unknown error code")
+                    int_code, PROPRIETARY_RESPONSES.get(int_code, "unknown error code")
                 ),
             )
         )

@@ -408,7 +408,7 @@ class Cli(object):
 
 class RefreshThread(Thread):
     def __init__(self, cli):
-        super().__init__()
+        super()
         self.daemon = True
         self.cli = cli
 

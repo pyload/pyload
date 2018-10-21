@@ -21,7 +21,7 @@ cache:
 # This is a basic example for a packages or script which doesn't use
 # services such as redis or postgres
 before_script:
-  - python -v                                   # Print out Python version for debugging
+  - python -v
   # Setup git
   - apt-get install git
   - git config --global user.email "you@example.com"
