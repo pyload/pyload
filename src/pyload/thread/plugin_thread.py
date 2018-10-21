@@ -5,18 +5,10 @@ import os
 import pprint
 import time
 import traceback
-from builtins import _, str
-from copy import copy
-from queue import Queue
 from sys import exc_info
 from threading import Thread
 from types import MethodType
 
-import pycurl
-from pyload.api import OnlineStatus
-from pyload.datatype.pyfile import PyFile
-from pyload.plugins.plugin import Abort, Fail, Reconnect, Retry, SkipDownload
-from pyload.utils.packagetools import parseNames
 
 
 class PluginThread(Thread):

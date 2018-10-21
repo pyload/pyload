@@ -2,7 +2,6 @@
 # @author: RaNaN, vuolter
 
 import datetime
-import json
 import operator
 import os
 import sys

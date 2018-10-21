@@ -2,9 +2,7 @@
 
 
 
-import json
 import os
-import re
 from base64 import standard_b64decode
 from binascii import unhexlify
 from builtins import str

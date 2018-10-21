@@ -9,7 +9,7 @@ from urllib.parse import unquote
 import flask
 
 from pyload.api import BaseObject
-from pyload.webui.app.utils import clear_session, apiver_check, set_session, toDict
+from pyload.webui.app.utils import clear_session, set_session, toDict
 
 
 bp = flask.Blueprint('api', __name__, url_prefix='/api')

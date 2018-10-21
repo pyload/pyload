@@ -3,7 +3,7 @@
 
 import os
 import shutil
-from builtins import _, object, str
+from builtins import _, object
 from threading import Lock
 
 from pyload.manager.event_manager import AccountUpdateEvent

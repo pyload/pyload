@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: vuolter
 
-import os
 import threading
 from builtins import _
 

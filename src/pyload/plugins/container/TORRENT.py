@@ -10,7 +10,7 @@ import urllib.request
 from builtins import HOMEDIR
 
 from pyload.plugins.internal.container import Container
-from pyload.plugins.utils import encode, safename
+from pyload.plugins.utils import safename
 
 
 class TORRENT(Container):

@@ -10,8 +10,6 @@
 #           \/
 
 import builtins
-import logging
-import logging.handlers
 import os
 import signal
 import subprocess
@@ -25,7 +23,7 @@ from sys import argv, executable, exit
 import pyload.utils.pylgettext as gettext
 from pyload import __version__ as PYLOAD_VERSION
 from pyload import __version_info__ as PYLOAD_VERSION_INFO
-from pyload import exc_logger, remote
+from pyload import exc_logger
 from pyload.log_factory import LogFactory
 from pyload.config.config_parser import ConfigParser
 from pyload.database.database_backend import DatabaseBackend

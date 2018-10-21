@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from builtins import str
 
 
 def blue(string):

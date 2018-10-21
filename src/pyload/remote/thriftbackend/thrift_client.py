@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 from builtins import object
 
-import thrift
 from thrift.transport import TTransport
 
 from pyload.remote.thriftbackend.protocol import Protocol

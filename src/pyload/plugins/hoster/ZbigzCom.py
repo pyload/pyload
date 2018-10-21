@@ -5,7 +5,7 @@ import random
 import re
 import time
 import urllib.parse
-from builtins import _, range, str
+from builtins import _, range
 
 from pyload.plugins.internal.hoster import Hoster
 

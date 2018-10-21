@@ -12,7 +12,7 @@ from builtins import _, object, range, str
 
 from pyload.plugins.internal.hoster import Hoster
 from pyload.plugins.plugin import Abort
-from pyload.plugins.utils import encode, exists, lock, threaded
+from pyload.plugins.utils import encode, lock, threaded
 
 
 class IRC(object):
