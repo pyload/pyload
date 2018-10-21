@@ -123,7 +123,7 @@ def create_app(api, debug=False):
     _configure_blueprints(app, blueprints)
     _configure_extensions(app)
     # _configure_logging(app)
-    _configure_error_handlers(app)
+    # _configure_error_handlers(app)
     _configure_jinja_env(app)
 
     return app

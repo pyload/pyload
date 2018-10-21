@@ -35,7 +35,6 @@ class style(object):
         def x(*args, **kwargs):
             if cls.db:
                 return cls.db.queue(f, *args, **kwargs)
-
         return x
 
     @classmethod

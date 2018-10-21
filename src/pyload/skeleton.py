@@ -318,6 +318,7 @@ class Core(object):
             self.check_install("OpenSSL", _("OpenSSL for secure connection"))
 
         self.setupDB()
+        
         if self.config.oldRemoteData:
             self.log.info(_("Moving old user config to DB"))
             self.db.addUser(
