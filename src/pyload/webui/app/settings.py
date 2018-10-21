@@ -7,17 +7,16 @@ from pyload.utils.utils import random_string
 
 
 class Config(object):
-    # PROJECT = "app"
-    # APP_DIR = os.path.abspath(os.path.join(PKGDIR, "webui", "app"))
-    # PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     DEBUG = False
     TESTING = False
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
     #: extensions
     BCRYPT_LOG_ROUNDS = 13
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'null'
-    THEME_PATHS = os.path.abspath(os.path.join(PKGDIR, "webui", "app", 'themes'))
+    THEME_PATHS = os.path.join(PKGDIR, "webui", "app", 'themes')
 
     
 class ProductionConfig(Config):

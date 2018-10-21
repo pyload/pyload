@@ -16,7 +16,8 @@ def render_template(template, context={}, proc=[]):
         context.update(p())
     api = flask.current_app.config['PYLOAD_API']
     theme = api.getConfigValue("webui", "theme").lower()
-    return flask_themes2.render_theme_template(theme, template, _fallback=True, **context)
+    theme = "flat"  # test
+    return flask_themes2.render_theme_template(theme, template, **context)
 
     
 def parse_permissions(session):

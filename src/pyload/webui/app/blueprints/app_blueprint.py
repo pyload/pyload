@@ -312,21 +312,11 @@ def settings():
     )
 
 
-@bp.route(r"/filechooser", endpoint='file')
-@bp.route(r"/filechooser/<path:filename>", endpoint='file')
+@bp.route(r"/pathchooser", endpoint='filemanager')
+@bp.route(r"/pathchooser/<path:path>", endpoint='filemanager')
 @login_required("STATUS")
-def file(filename=""):
-    return choose_path("file", filename)
-
-
-@bp.route(r"/pathchooser", endpoint='folder')
-@bp.route(r"/pathchooser/<path:dirname>", endpoint='folder')
-@login_required("STATUS")
-def folder(dirname=""):
-    return choose_path("folder", dirname)
-
-
-def choose_path(browse_for, path):
+def filemanager(path):
+    browse_for = "folder" if os.path.isdir(path) else "file"
     path = os.path.normpath(unquotepath(path))
 
     try:

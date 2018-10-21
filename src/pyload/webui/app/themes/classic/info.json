@@ -2,7 +2,7 @@
     "application": "pyload", 
     "identifier": "classic", 
     "name": "Classic", 
-    "author": "pyLoad team",
+    "author": "pyload team",
     "description": "",
     "license": "AGPL3",
     "version": "1.0.0"
